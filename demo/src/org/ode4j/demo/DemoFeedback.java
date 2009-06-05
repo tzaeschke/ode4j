@@ -88,7 +88,7 @@ class DemoFeedback extends dsFunctions {
 		{
 			System.err.println("testing space " + o1 + "  " + o2);
 			// colliding a space with something
-			OdeHelper.dSpaceCollide2(o1,o2,data,nearCallback);
+			OdeHelper.spaceCollide2(o1,o2,data,nearCallback);
 			// Note we do not want to test intersections within a space,
 			// only between spaces.
 			return;
@@ -97,7 +97,7 @@ class DemoFeedback extends dsFunctions {
 		final int N = 32;
 		//dContact contact[N];
 		DContactBuffer contacts = new DContactBuffer(N);
-		int n = OdeHelper.dCollide (o1,o2,N,contacts.getGeomBuffer());//,sizeof(dContact));
+		int n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//,sizeof(dContact));
 		if (n > 0) 
 		{
 			for (int i=0; i<n; i++) 
@@ -122,7 +122,7 @@ class DemoFeedback extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 	}
@@ -195,7 +195,7 @@ class DemoFeedback extends dsFunctions {
 		int nrofsteps = (int) Math.ceil(dt/simstep);
 		for (i=0; i<nrofsteps && !pause; i++)
 		{
-			OdeHelper.dSpaceCollide (space,null,nearCallback);
+			OdeHelper.spaceCollide (space,null,nearCallback);
 			world.quickStep (simstep);
 			contactgroup.empty ();
 			inspectJoints();
@@ -265,7 +265,7 @@ class DemoFeedback extends dsFunctions {
 		for (i=0; i<SEGMCNT-1; i++)
 		{
 			//TZ
-			jfeedbacks[i] = OdeHelper.dJointCreateFeedback();
+			jfeedbacks[i] = OdeHelper.createJointFeedback();
 			hinges[i] = OdeHelper.createHingeJoint (world,null);
 			hinges[i].attach (segbodies[i],segbodies[i+1]);
 			hinges[i].setAnchor (i + 0.5 - SEGMCNT/2.0, 0, 5);

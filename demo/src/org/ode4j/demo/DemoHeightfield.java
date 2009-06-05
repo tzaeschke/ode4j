@@ -212,7 +212,7 @@ class DemoHeightfield extends dsFunctions {
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
-		if (b1!=null && b2!=null && OdeHelper.dAreConnectedExcluding (b1,b2,DContactJoint.class)) return;
+		if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding (b1,b2,DContactJoint.class)) return;
 
 		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);   // up to MAX_CONTACTS contacts per box-box
 		for (i=0; i<MAX_CONTACTS; i++) {
@@ -224,7 +224,7 @@ class DemoHeightfield extends dsFunctions {
 			contact.surface.bounce_vel = 0.1;
 			contact.surface.soft_cfm = 0.01;
 		}
-		int numc = OdeHelper.dCollide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());
+		int numc = OdeHelper.collide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());
 		if (numc!=0) {
 			DMatrix3 RI = new DMatrix3();
 			dRSetIdentity (RI);
@@ -243,7 +243,7 @@ class DemoHeightfield extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("To drop another object, press:\n");
@@ -571,7 +571,7 @@ class DemoHeightfield extends dsFunctions {
 	{
 		dsSetColor (0,0,2);
 
-		OdeHelper.dSpaceCollide (space,0,nearCallback);
+		OdeHelper.spaceCollide (space,0,nearCallback);
 
 		//if (!pause) dWorldStep (world,0.05);
 		if (!pause) world.quickStep (0.05);
@@ -749,7 +749,7 @@ class DemoHeightfield extends dsFunctions {
 	}
 
 	private void demo(String[] args) {
-		System.out.println("ODE configuration: " + OdeHelper.dGetConfiguration());
+		System.out.println("ODE configuration: " + OdeHelper.getConfiguration());
 
 		// Is trimesh support built into this ODE?
 		//TODO g_allow_trimesh = OdeHelper.dCheckConfiguration( "ODE_EXT_trimesh" );

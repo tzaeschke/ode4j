@@ -170,7 +170,7 @@ class DemoBoxstack extends dsFunctions {
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
-		if (b1!=null && b2!=null && OdeHelper.dAreConnectedExcluding (b1,b2,DContactJoint.class)) return;
+		if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding (b1,b2,DContactJoint.class)) return;
 
 		//dContact[] contact=new dContact[MAX_CONTACTS];   // up to MAX_CONTACTS contacts per box-box
 		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
@@ -185,7 +185,7 @@ class DemoBoxstack extends dsFunctions {
 		}
 		//	if (int numc = dCollide (o1,o2,MAX_CONTACTS,&contact[0].geom,
 		//			sizeof(dContact))) {
-		int numc = OdeHelper.dCollide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());//, sizeof(dContact));
+		int numc = OdeHelper.collide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());//, sizeof(dContact));
 		if (numc!=0) {
 			DMatrix3 RI = new DMatrix3();
 			dRSetIdentity (RI);
@@ -216,7 +216,7 @@ class DemoBoxstack extends dsFunctions {
 
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(dAllocateMaskAll);
 
 		//  static float xyz[3] = {2.1640f,-1.3079f,1.7600f};
 		//  static float hpr[3] = {125.5000f,-17.0000f,0.0000f};

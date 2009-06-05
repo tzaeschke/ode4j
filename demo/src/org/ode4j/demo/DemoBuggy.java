@@ -107,7 +107,7 @@ class DemoBuggy extends dsFunctions {
 		//dContact contact[N];
 		DContactBuffer contacts = new DContactBuffer(N);
 //		n = dCollide (o1,o2,N,&contact[0].geom,sizeof(dContact));
-		n = OdeHelper.dCollide (o1,o2,N,contacts.getGeomBuffer());//[0].geom,sizeof(dContact));
+		n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//[0].geom,sizeof(dContact));
 		if (n > 0) {
 			for (i=0; i<n; i++) {
 				DContact contact = contacts.get(i);
@@ -138,7 +138,7 @@ class DemoBuggy extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {0.8317f,-0.9817f,0.8000f};
 		//  static float hpr[3] = {121.0000f,-27.5000f,0.0000f};

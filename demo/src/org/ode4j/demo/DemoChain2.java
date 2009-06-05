@@ -74,7 +74,7 @@ class DemoChain2 extends dsFunctions {
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
-		if (b1!=null && b2!=null && OdeHelper.dAreConnected (b1,b2)) return;
+		if (b1!=null && b2!=null && OdeHelper.areConnected (b1,b2)) return;
 
 		// @@@ it's still more convenient to use the C interface here.
 
@@ -82,7 +82,7 @@ class DemoChain2 extends dsFunctions {
 		DContact contact = contacts.get(0);
 		contact.surface.mode = 0;
 		contact.surface.mu = Double.POSITIVE_INFINITY;//TODO dInfinity;
-		if (OdeHelper.dCollide (o1,o2,1,contacts.getGeomBuffer())!=0) {//&contact.geom,sizeof(dContactGeom))) {
+		if (OdeHelper.collide (o1,o2,1,contacts.getGeomBuffer())!=0) {//&contact.geom,sizeof(dContactGeom))) {
 			DJoint c = OdeHelper.createContactJoint (world,contactgroup,contact);
 			c.attach(b1, b2);
 		}

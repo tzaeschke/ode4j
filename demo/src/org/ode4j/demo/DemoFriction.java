@@ -111,7 +111,7 @@ class DemoFriction extends dsFunctions {
 			contacts.get(i).surface.mu = MU;
 			contacts.get(i).surface.soft_cfm = 0.01;
 		}
-		int numc = OdeHelper.dCollide (o1,o2,3,contacts.getGeomBuffer());
+		int numc = OdeHelper.collide (o1,o2,3,contacts.getGeomBuffer());
 		if (numc!= 0) {//[0].geom,sizeof(dContact))) {
 			for (i=0; i<numc; i++) {
 				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contacts.get(i));
@@ -126,7 +126,7 @@ class DemoFriction extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 	}
@@ -145,7 +145,7 @@ class DemoFriction extends dsFunctions {
 				}
 			}
 
-			OdeHelper.dSpaceCollide (space,0,nearCallback);
+			OdeHelper.spaceCollide (space,0,nearCallback);
 			world.step (0.05);
 
 			// remove all contact joints

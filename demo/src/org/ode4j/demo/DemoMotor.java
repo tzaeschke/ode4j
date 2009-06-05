@@ -66,7 +66,7 @@ class DemoMotor extends dsFunctions {
 	private static float[] hpr = {135.0000f,-19.5000f,0.0000f};
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("Press 'q,a,z' to control one axis of lmotor connectiong two bodies. (q is +,a is 0, z is -)");
@@ -116,7 +116,7 @@ class DemoMotor extends dsFunctions {
 		DContact contact = cb.get(0);
 		contact.surface.mode = 0;
 		contact.surface.mu = OdeConstants.dInfinity;
-		if (0!=OdeHelper.dCollide (o1,o2,1,cb.getGeomBuffer()/* sizeof(dContactGeom) */ )) {
+		if (0!=OdeHelper.collide (o1,o2,1,cb.getGeomBuffer()/* sizeof(dContactGeom) */ )) {
 			DJoint c = OdeHelper.createContactJoint (world,contactgroup,contact);
 			c.attach (b1,b2);
 		}
@@ -135,7 +135,7 @@ class DemoMotor extends dsFunctions {
 	private static void simLoop (boolean pause)
 	{
 		if (!pause) {
-			OdeHelper.dSpaceCollide(space,null,nearCallback);
+			OdeHelper.spaceCollide(space,null,nearCallback);
 			world.quickStep (0.05);
 			contactgroup.empty ();
 		}

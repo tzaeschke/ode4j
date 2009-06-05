@@ -154,12 +154,12 @@ class DemoCrash extends dsFunctions {
 
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
-		if (b1!=null && b2!=null && OdeHelper.dAreConnected(b1, b2))
+		if (b1!=null && b2!=null && OdeHelper.areConnected(b1, b2))
 			return;
 
 		final int N = 4;
 		DContactBuffer contacts = new DContactBuffer(N);
-		n = OdeHelper.dCollide (o1,o2,N,contacts.getGeomBuffer());//[0].geom,sizeof(dContact));
+		n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//[0].geom,sizeof(dContact));
 		if (n > 0) {
 			for (i=0; i<n; i++) {
 				DContact contact = contacts.get(i);
@@ -184,7 +184,7 @@ class DemoCrash extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 		System.out.println("Press:\t'a' to increase speed.\n" +

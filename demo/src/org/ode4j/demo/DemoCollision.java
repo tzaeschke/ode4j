@@ -171,10 +171,10 @@ class DemoCollision extends dsFunctions {
 		DContactGeomBuffer contacts = new DContactGeomBuffer(N);
 
 		if (o2 instanceof DRay) {
-			n = OdeHelper.dCollide (o2,o1,N,contacts);//,sizeof(dContactGeom));
+			n = OdeHelper.collide (o2,o1,N,contacts);//,sizeof(dContactGeom));
 		}
 		else {
-			n = OdeHelper.dCollide (o1,o2,N,contacts);//,sizeof(dContactGeom));
+			n = OdeHelper.collide (o1,o2,N,contacts);//,sizeof(dContactGeom));
 		}
 		if (n > 0) {
 			DMatrix3 RI = new DMatrix3();
@@ -575,7 +575,7 @@ class DemoCollision extends dsFunctions {
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		ray.setRotation (R);
-		if (OdeHelper.dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test zero length ray just outside that sphere
 
@@ -587,7 +587,7 @@ class DemoCollision extends dsFunctions {
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		ray.setRotation (R);
-		if (OdeHelper.dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally contained inside the sphere
 
@@ -603,7 +603,7 @@ class DemoCollision extends dsFunctions {
 		n.normalize();
 		ray.set (q,n);
 		ray.setLength (dDISTANCE (q,q2));
-		if (OdeHelper.dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally outside the sphere
 
@@ -617,7 +617,7 @@ class DemoCollision extends dsFunctions {
 		q.eqSum( p, q, 1.01*r );
 		ray.set (q,n);
 		ray.setLength (100);
-		if (OdeHelper.dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray from outside to just above surface
 
@@ -627,12 +627,12 @@ class DemoCollision extends dsFunctions {
 		q2.eqSum( p, q, 2*r );
 		ray.set (q2,n);
 		ray.setLength (0.99*r);
-		if (OdeHelper.dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray from outside to just below surface
 
 		ray.setLength (1.01*r);
-		if (OdeHelper.dCollide (ray,sphere,1,contacts) != 1) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,sphere,1,contacts) != 1) if (testFAILED()) return false;
 		q2.eqSum( p, q, r );
 		if (dDISTANCE (contacts.get(0).pos,q2) > tol) if (testFAILED()) return false;
 
@@ -646,7 +646,7 @@ class DemoCollision extends dsFunctions {
 		n.normalize();
 		ray.set (q,n);
 		ray.setLength (100);
-		if (OdeHelper.dCollide (ray,sphere,1,contacts)!=0) {
+		if (OdeHelper.collide (ray,sphere,1,contacts)!=0) {
 			DContactGeom contact = contacts.get(0);
 			k = dDISTANCE (contacts.get(0).pos,sphere.getPosition());
 			if (dFabs(k - r) > tol) if (testFAILED()) return false;
@@ -668,7 +668,7 @@ class DemoCollision extends dsFunctions {
 		q.sub( n );
 		ray.set (q,n);
 		ray.setLength (2);
-		if (OdeHelper.dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test tangential grazing - hit
 
@@ -679,7 +679,7 @@ class DemoCollision extends dsFunctions {
 		q.sub( n );
 		ray.set (q,n);
 		ray.setLength (2);
-		if (OdeHelper.dCollide (ray,sphere,1,contacts) != 1) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,sphere,1,contacts) != 1) if (testFAILED()) return false;
 
 		return retPASSED();
 	}
@@ -724,7 +724,7 @@ class DemoCollision extends dsFunctions {
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		ray.setRotation (R);
-		if (OdeHelper.dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test zero length ray just outside box
 
@@ -738,7 +738,7 @@ class DemoCollision extends dsFunctions {
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		ray.setRotation (R);
-		if (OdeHelper.dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally contained inside the box
 
@@ -752,7 +752,7 @@ class DemoCollision extends dsFunctions {
 		n.normalize();
 		ray.set (q2,n);
 		ray.setLength (dDISTANCE(q2,q4));
-		if (OdeHelper.dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally outside the box
 
@@ -764,7 +764,7 @@ class DemoCollision extends dsFunctions {
 		q2.normalize();
 		ray.set (q3,q2);
 		ray.setLength (10);
-		if (OdeHelper.dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray from outside to just above surface
 
@@ -777,12 +777,12 @@ class DemoCollision extends dsFunctions {
 		q2.scale( -1 );
 		ray.set (q3,q2);
 		ray.setLength (k*0.99);
-		if (OdeHelper.dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray from outside to just below surface
 
 		ray.setLength (k*1.01);
-		if (OdeHelper.dCollide (ray,box,1,contacts) != 1) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,box,1,contacts) != 1) if (testFAILED()) return false;
 
 		// ********** test contact point position for random rays
 
@@ -793,7 +793,7 @@ class DemoCollision extends dsFunctions {
 		q3.normalize();
 		ray.set (q2,q3);
 		ray.setLength (10);
-		if (OdeHelper.dCollide (ray,box,1,contacts)!=0) {
+		if (OdeHelper.collide (ray,box,1,contacts)!=0) {
 			DContactGeom contact = contacts.get(0);
 			// check depth of contact point
 			if (dFabs (box.getPointDepth (contact.pos)) > tol)
@@ -856,7 +856,7 @@ class DemoCollision extends dsFunctions {
 		b.sub( a );
 		b.normalize ();
 		ray.set (a, b);
-		if (OdeHelper.dCollide (ray,ccyl,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,ccyl,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray outside ccyl that just misses (between caps)
 
@@ -868,12 +868,12 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) b.set(j,  -a.get(j)*r*2 + k*R.get(j,2) + p.get(j) );
 		ray.set (b, a);
 		ray.setLength (r*0.99);
-		if (OdeHelper.dCollide (ray,ccyl,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,ccyl,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray outside ccyl that just hits (between caps)
 
 		ray.setLength (r*1.01);
-		if (OdeHelper.dCollide (ray,ccyl,1,contacts) != 1) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,ccyl,1,contacts) != 1) if (testFAILED()) return false;
 		// check depth of contact point
 		if (dFabs (ccyl.getPointDepth (contacts.get(0).pos)) > tol)
 			if (testFAILED()) return false;
@@ -890,12 +890,12 @@ class DemoCollision extends dsFunctions {
 		}
 		ray.set (b,a);
 		ray.setLength (r*0.99);
-		if (OdeHelper.dCollide (ray,ccyl,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,ccyl,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray outside ccyl that just hits (caps)
 
 		ray.setLength (r*1.01);
-		if (OdeHelper.dCollide (ray,ccyl,1,contacts) != 1) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,ccyl,1,contacts) != 1) if (testFAILED()) return false;
 		// check depth of contact point
 		if (dFabs (ccyl.getPointDepth (contacts.get(0).pos)) > tol)
 			if (testFAILED()) return false;
@@ -908,7 +908,7 @@ class DemoCollision extends dsFunctions {
 		ray.set (a, n);
 		ray.setLength (10);
 
-		if (OdeHelper.dCollide (ray,ccyl,1,contacts)!=0) {
+		if (OdeHelper.collide (ray,ccyl,1,contacts)!=0) {
 			// check depth of contact point
 			if (dFabs (ccyl.getPointDepth (contacts.get(0).pos)) > tol)
 				if (testFAILED()) return false;
@@ -958,7 +958,7 @@ class DemoCollision extends dsFunctions {
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		ray.setRotation (R);
-		if (OdeHelper.dCollide (ray,plane,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,plane,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray above plane
 
@@ -973,7 +973,7 @@ class DemoCollision extends dsFunctions {
 		h.normalize ();
 		ray.set (b, h);
 		ray.setLength (10);
-		if (OdeHelper.dCollide (ray,plane,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,plane,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray that intersects plane
 
@@ -988,7 +988,7 @@ class DemoCollision extends dsFunctions {
 		h.normalize ();
 		ray.set (b, h);
 		ray.setLength (10);
-		if (OdeHelper.dCollide (ray,plane,1,contacts)!=0) {
+		if (OdeHelper.collide (ray,plane,1,contacts)!=0) {
 			// test that contact is on plane surface
 			if (dFabs (dDOT(contacts.get(0).pos,n) - d) > tol) if (testFAILED()) return false;
 			// also check normal signs
@@ -1006,12 +1006,12 @@ class DemoCollision extends dsFunctions {
 		h.set(n).scale( -1 );
 		ray.set (b, h);
 		ray.setLength (0.99);
-		if (OdeHelper.dCollide (ray,plane,1,contacts) != 0) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,plane,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray that just hits
 
 		ray.setLength (1.01);
-		if (OdeHelper.dCollide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
 
 		// ********** test polarity with typical ground plane
 //TODO plane.setParams vs ray.set() ?!?!?!?!?!
@@ -1021,12 +1021,12 @@ class DemoCollision extends dsFunctions {
 		b.set( 0,  -1, 0   );
 		ray.set (a,b);
 		ray.setLength (2);
-		if (OdeHelper.dCollide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
 		if (dFabs (contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
 		a.set2( -1 );
 		b.set2( 1 );
 		ray.set (a, b);
-		if (OdeHelper.dCollide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
+		if (OdeHelper.collide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
 		if (dFabs (contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
 
 		return retPASSED();
@@ -1310,7 +1310,7 @@ class DemoCollision extends dsFunctions {
 
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {2.4807,-1.8023,2.7600};
 		//  static float hpr[3] = {141.5000,-18.5000,0.0000};

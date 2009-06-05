@@ -752,7 +752,7 @@ class DemoHeightfield extends dsFunctions {
 	}
 
 	private void demo(String[] args) {
-		printf("ODE configuration: %s\n", OdeHelper.dGetConfiguration());
+		printf("ODE configuration: %s\n", OdeHelper.getConfiguration());
 
 		// Is trimesh support built into this ODE?
 		//TODO g_allow_trimesh = OdeHelper.dCheckConfiguration( "ODE_EXT_trimesh" );

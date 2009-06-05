@@ -103,12 +103,12 @@ class DemoJointPR extends dsFunctions {
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
 		if (b1!=null && b2!=null && 
-				OdeHelper.dAreConnectedExcluding (b1,b2,DContactJoint.class)) 
+				OdeHelper.areConnectedExcluding (b1,b2,DContactJoint.class)) 
 			return;
 		final int N = 10;
 		//dContact[] contact=new dContact[N];
 		DContactBuffer contacts = new DContactBuffer(N);
-		n = OdeHelper.dCollide (o1,o2,N,contacts.getGeomBuffer());//,sizeof(dContact));
+		n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//,sizeof(dContact));
 		if (n > 0)
 		{
 			for (i=0; i<n; i++)
@@ -133,7 +133,7 @@ class DemoJointPR extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("Press 'd' to add force along positive x direction.");
@@ -250,7 +250,7 @@ class DemoJointPR extends dsFunctions {
 			}
 
 			//		dSpaceCollide (space,0,&nearCallback);
-			OdeHelper.dSpaceCollide (space,null,new DNearCallback() {
+			OdeHelper.spaceCollide (space,null,new DNearCallback() {
 				@Override
 				public void call(Object data, DGeom o1, DGeom o2) {
 					nearCallback(data, o1, o2);

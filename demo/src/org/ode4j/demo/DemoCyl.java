@@ -110,7 +110,7 @@ class DemoCyl extends dsFunctions {
 		{
 			System.out.println("testing space " + o1 + "  " + o2);
 			// colliding a space with something
-			OdeHelper.dSpaceCollide2(o1,o2,data,nearCallback);
+			OdeHelper.spaceCollide2(o1,o2,data,nearCallback);
 			// Note we do not want to test intersections within a space,
 			// only between spaces.
 			return;
@@ -120,7 +120,7 @@ class DemoCyl extends dsFunctions {
 
 		final int N = 32;
 		DContactBuffer contacts = new DContactBuffer(N);
-		int n = OdeHelper.dCollide (o1,o2,N,contacts.getGeomBuffer());//[0].geom),sizeof(dContact));
+		int n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//[0].geom),sizeof(dContact));
 		if (n > 0) 
 		{
 			for (int i=0; i<n; i++) 
@@ -145,7 +145,7 @@ class DemoCyl extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {-8,-9,3};
 		//  static float hpr[3] = {45.0000f,-27.5000f,0.0000f};

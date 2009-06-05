@@ -194,7 +194,7 @@ public class DemoMotion extends dsFunctions {
 		//dContact[] contact = new dContact[MAX_CONTACTS];
 		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
 		//    int numc = dCollide (o1, o2, MAX_CONTACTS, contact[0].geom, sizeof(dContact));
-		int numc = OdeHelper.dCollide (o1, o2, MAX_CONTACTS, contacts.getGeomBuffer());
+		int numc = OdeHelper.collide (o1, o2, MAX_CONTACTS, contacts.getGeomBuffer());
 
 		if (numc != 0)
 			dRSetIdentity(RI);
@@ -445,7 +445,7 @@ public class DemoMotion extends dsFunctions {
 		final double stepsize = 0.02;
 
 		dsSetColor (0,0,2);
-		OdeHelper.dSpaceCollide (space,null,new DNearCallback() {
+		OdeHelper.spaceCollide (space,null,new DNearCallback() {
 			@Override
 			public void call(Object data, DGeom o1, DGeom o2) {
 				nearCallback(data, o1, o2);
@@ -467,7 +467,7 @@ public class DemoMotion extends dsFunctions {
 		if (write_world) {
 			File f = new File("state.dif","wt");
 			if (f != null) {
-				OdeHelper.dWorldExportDIF (world,f,"X");
+				OdeHelper.worldExportDIF (world,f,"X");
 			}
 			write_world = false;
 		}

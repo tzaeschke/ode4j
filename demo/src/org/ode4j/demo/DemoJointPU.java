@@ -208,11 +208,11 @@ class DemoJointPU extends dsFunctions {
 
 		DBody b1 = o1.getBody ();
 		DBody b2 = o2.getBody ();
-		if (b1!=null && b2!=null && OdeHelper.dAreConnectedExcluding (b1,b2,DContactJoint.class) ) return;
+		if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding (b1,b2,DContactJoint.class) ) return;
 		final int N = 10;
 		//dContact contact[N];
 		DContactBuffer contacts = new DContactBuffer(N);
-		n = OdeHelper.dCollide (o1,o2,N,contacts.getGeomBuffer());//,sizeof (dContact) );
+		n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//,sizeof (dContact) );
 		if (n > 0) {
 			for  (i=0; i<n; i++) {
 				DContact contact = contacts.get(i);
@@ -265,7 +265,7 @@ class DemoJointPU extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("This program demonstrates how the PU joint works.");
@@ -465,7 +465,7 @@ class DemoJointPU extends dsFunctions {
 				nrofsteps = 1;
 
 			for (int i=0; i<nrofsteps && !pause; i++) {
-				OdeHelper.dSpaceCollide (space,0,nearCallback);
+				OdeHelper.spaceCollide (space,0,nearCallback);
 				world.step (simstep);
 
 				contactgroup.empty ();
