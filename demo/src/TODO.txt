@@ -1,6 +1,7 @@
 REPORT MISSING:
 - dBody.destroy()
 - dCapsule class
+- dPlane2DJoint class
 - dMass.setCylinder in OO-API
 - dMass.setSphereTotal in OO-API
 - dMass.check()

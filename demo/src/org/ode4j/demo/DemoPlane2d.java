@@ -19,10 +19,8 @@
  * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.democpp;
+package org.ode4j.demo;
 
-import static org.cpp4j.C_All.*;
-import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DS_API.*;
 
 import org.ode4j.drawstuff.DS_API.DS_TEXTURE_NUMBER;
@@ -31,6 +29,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
@@ -52,6 +51,7 @@ import org.ode4j.ode.DGeom.DNearCallback;
  */
 class DemoPlane2d extends dsFunctions {
 
+	public static final int RAND_MAX = 2147483647;
 	//#   define drand48()  ((double) (((double) rand()) / ((double) RAND_MAX)))
 	private static final double drand48() {
 		//return ((double) rand()) / ((double) RAND_MAX);
@@ -81,7 +81,7 @@ class DemoPlane2d extends dsFunctions {
 	private static DVector3[]    bodies_sides = new DVector3[N_BODIES];
 
 	private static DSpace coll_space_id;
-	private static DJoint[] plane2d_joint_ids=new DJoint[N_BODIES];
+	private static DPlane2DJoint[] plane2d_joint_ids=new DPlane2DJoint[N_BODIES];
 	private static DJointGroup coll_contacts;
 
 
@@ -91,7 +91,7 @@ class DemoPlane2d extends dsFunctions {
 	private static void     cb_start ()
 	/** ********************** */
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 		dsSetViewpoint (xyz, hpr);
 	}
 
@@ -101,8 +101,8 @@ class DemoPlane2d extends dsFunctions {
 	private static void     cb_near_collision (Object data, DGeom o1, DGeom o2)
 	/********************************************************************/
 	{
-		DBody     b1 = dGeomGetBody (o1);
-		DBody     b2 = dGeomGetBody (o2);
+		DBody     b1 = o1.getBody();
+		DBody     b2 = o2.getBody();
 		//dContact    contact = new dContact();
 		DContactBuffer contacts = new DContactBuffer(1);
 
@@ -112,7 +112,7 @@ class DemoPlane2d extends dsFunctions {
 		}
 
 		// exit without doing anything if the two bodies are connected by a joint
-		if (b1!=null && b2!=null && dAreConnected(b1, b2))
+		if (b1!=null && b2!=null && OdeHelper.areConnected(b1, b2))
 		{
 			/* MTRAP; */
 			return;
@@ -121,26 +121,26 @@ class DemoPlane2d extends dsFunctions {
 		contacts.get(0).surface.mode = 0;
 		contacts.get(0).surface.mu = 0; // frictionless
 
-		if (dCollide (o1, o2, 1, contacts.getGeomBuffer())!=0);//, sizeof (dContactGeom)))
+		if (OdeHelper.collide (o1, o2, 1, contacts.getGeomBuffer())!=0);//, sizeof (dContactGeom)))
 		{
-			DJoint c = dJointCreateContact (dyn_world,
+			DJoint c = OdeHelper.createContactJoint (dyn_world,
 					coll_contacts, contacts.get(0));
-			dJointAttach (c, b1, b2);
+			c.attach (b1, b2);
 		}
 	}
 
 
 	//static void     track_to_pos (dBody &body, dJoint joint_id,
 	//        dReal target_x, dReal target_y)
-	private static void     track_to_pos (DBody body, DJoint joint_id,
+	private static void     track_to_pos (DBody body, DPlane2DJoint joint_id,
 			double target_x, double target_y)
 	/************************************************************************/
 	{
 		double  curr_x = body.getPosition().get0();
 		double  curr_y = body.getPosition().get1();
 
-		dJointSetPlane2DXParam (joint_id, dParamVel, 1 * (target_x - curr_x));
-		dJointSetPlane2DYParam (joint_id, dParamVel, 1 * (target_y - curr_y));
+		joint_id.setXParamVel (1 * (target_x - curr_x));
+		joint_id.setYParamVel (1 * (target_y - curr_y));
 	}
 
 
@@ -161,8 +161,8 @@ class DemoPlane2d extends dsFunctions {
 			angle +=  0.01 ;
 
 			track_to_pos (dyn_bodies[0], plane2d_joint_ids[0],
-					(double)( STAGE_SIZE/2 + STAGE_SIZE/2.0 * cos (angle) ),
-					(double)( STAGE_SIZE/2 + STAGE_SIZE/2.0 * sin (angle) ));
+					(double)( STAGE_SIZE/2 + STAGE_SIZE/2.0 * Math.cos (angle) ),
+					(double)( STAGE_SIZE/2 + STAGE_SIZE/2.0 * Math.sin (angle) ));
 
 			/* double   f0 = 0.001; */
 			/* for (int b = 0; b < N_BODIES; b ++) */
@@ -177,7 +177,7 @@ class DemoPlane2d extends dsFunctions {
 			for (int i = 0; i < n; i ++)
 			{
 				//dSpaceCollide (coll_space_id, 0, cb_near_collision);
-				dSpaceCollide (coll_space_id, null, myNearCallBack );
+				OdeHelper.spaceCollide (coll_space_id, null, myNearCallBack );
 				dyn_world.step ((double)(TIME_STEP/n));
 				coll_contacts.empty ();
 			}
@@ -188,14 +188,14 @@ class DemoPlane2d extends dsFunctions {
 			// @@@ hack Plane2D constraint error reduction here:
 			for (int b = 0; b < N_BODIES; b ++)
 			{
-				final DVector3C rot = dBodyGetAngularVel (dyn_bodies[b]);
+				DVector3C rot = dyn_bodies[b].getAngularVel();
 				//final double     []quat_ptr;
 				DQuaternionC     quat_ptr;
 				DQuaternion           quat= new DQuaternion();
 				double                quat_len;
 
 				double q0, q3;
-				quat_ptr = dBodyGetQuaternion (dyn_bodies[b]);
+				quat_ptr = dyn_bodies[b].getQuaternion();
 				//            quat[0] = quat_ptr[0];
 				//            quat[1] = 0;
 				//            quat[2] = 0;
@@ -206,8 +206,8 @@ class DemoPlane2d extends dsFunctions {
 				q0 /= quat_len;
 				q3 /= quat_len;
 				quat.set(q0, 0, 0, q3);
-				dBodySetQuaternion (dyn_bodies[b], quat);
-				dBodySetAngularVel (dyn_bodies[b], 0, 0, rot.get2());
+				dyn_bodies[b].setQuaternion (quat);
+				dyn_bodies[b].setAngularVel (0, 0, rot.get2());
 			}
 		}//# endif  /* ] */
 
@@ -217,13 +217,13 @@ class DemoPlane2d extends dsFunctions {
 			// @@@ friction
 			for (int b = 0; b < N_BODIES; b ++)
 			{
-				DVector3C vel = dBodyGetLinearVel (dyn_bodies[b]),
-				rot = dBodyGetAngularVel (dyn_bodies[b]);
+				DVector3C vel = dyn_bodies[b].getLinearVel(),
+				rot = dyn_bodies[b].getAngularVel();
 				double       s = 1.00;
 				double       t = 0.99;
 
-				dBodySetLinearVel (dyn_bodies[b], s*vel.get0(),s*vel.get1(),s*vel.get2());
-				dBodySetAngularVel (dyn_bodies[b],t*rot.get0(),t*rot.get1(),t*rot.get2());
+				dyn_bodies[b].setLinearVel ( vel.reScale(s) );
+				dyn_bodies[b].setAngularVel( rot.reScale(t));
 			}
 		}//# endif  /* ] */
 
@@ -252,7 +252,7 @@ class DemoPlane2d extends dsFunctions {
 		dsFunctions drawstuff_functions = new DemoPlane2d();
 
 
-		dInitODE2(0);
+		OdeHelper.initODE2(0);
 
 		// dynamic world
 
@@ -261,19 +261,19 @@ class DemoPlane2d extends dsFunctions {
 		err_reduct =  0.5 ;
 		cf_mixing =  0.001 ;
 		//TZ
-		dyn_world = dWorldCreate();
-		dWorldSetERP (dyn_world, err_reduct);
-		dWorldSetCFM (dyn_world, cf_mixing);
+		dyn_world = OdeHelper.createWorld();
+		dyn_world.setERP (err_reduct);
+		dyn_world.setCFM (cf_mixing);
 		dyn_world.setGravity (0, 0.0, -1.0);
 
-		coll_space_id = dSimpleSpaceCreate (null);
+		coll_space_id = OdeHelper.createSimpleSpace (null);
 		//coll_space_id = dSweepAndPruneSpaceCreate(null, dSAP_AXES_XYZ);
 		//coll_space_id = dHashSpaceCreate(null);
 
 		// dynamic bodies
 		for (b = 0; b < N_BODIES; b ++)
 		{
-			int     l = (int) (1 + sqrt ((double) N_BODIES));
+			int     l = (int) (1 + Math.sqrt (N_BODIES));
 			double  x = (double)( (0.5 + (b / l)) / l * STAGE_SIZE );
 			double  y = (double)( (0.5 + (b % l)) / l * STAGE_SIZE );
 			//double  z = REAL( 1.0 ) + REAL( 0.1 ) * (double)drand48();
@@ -287,11 +287,11 @@ class DemoPlane2d extends dsFunctions {
 			double r2 = drand48();
 			double r1 = drand48();
 			bodies_sides[b] = new DVector3(
-					(double)( 5. * (0.2 + 0.7*r2) / sqrt((double)N_BODIES) ),
-					(double)( 5. * (0.2 + 0.7*r1) / sqrt((double)N_BODIES) ),
+					(double)( 5. * (0.2 + 0.7*r2) / Math.sqrt(N_BODIES) ),
+					(double)( 5. * (0.2 + 0.7*r1) / Math.sqrt(N_BODIES) ),
 					z);
 
-			dyn_bodies[b] = dBodyCreate(dyn_world);
+			dyn_bodies[b] = OdeHelper.createBody(dyn_world);
 			dyn_bodies[b].setPosition (x, y, z/2);
 			dyn_bodies[b].setData (b);//(void*) (size_t)b);
 //			dBodySetLinearVel (dyn_bodies[b],
@@ -299,7 +299,7 @@ class DemoPlane2d extends dsFunctions {
 //			(double)( 3. * (drand48 () - 0.5) ), 0);
 			r2 = drand48();
 			r1 = drand48();
-			dBodySetLinearVel (dyn_bodies[b],
+			dyn_bodies[b].setLinearVel (
 			(double)( 3. * (r1 - 0.5) ), 
 			(double)( 3. * (r2 - 0.5) ), 0);
 
@@ -308,25 +308,25 @@ class DemoPlane2d extends dsFunctions {
 			m.adjust (0.1 * bodies_sides[b].get0() * bodies_sides[b].get1());
 			dyn_bodies[b].setMass (m);
 
-			plane2d_joint_ids[b] = dJointCreatePlane2D (dyn_world, null);
-			dJointAttach (plane2d_joint_ids[b], dyn_bodies[b], null);
+			plane2d_joint_ids[b] = OdeHelper.createPlane2DJoint (dyn_world, null);
+			plane2d_joint_ids[b].attach (dyn_bodies[b], null);
 		}
-		dJointSetPlane2DXParam (plane2d_joint_ids[0], dParamFMax, 10);
-		dJointSetPlane2DYParam (plane2d_joint_ids[0], dParamFMax, 10);
+		plane2d_joint_ids[0].setXParamFMax (10);
+		plane2d_joint_ids[0].setYParamFMax (10);
 
 
 		// collision geoms and joints
-		dCreatePlane (coll_space_id,  1, 0, 0, 0);
-		dCreatePlane (coll_space_id, -1, 0, 0, -STAGE_SIZE);
-		dCreatePlane (coll_space_id,  0,  1, 0, 0);
-		dCreatePlane (coll_space_id,  0, -1, 0, -STAGE_SIZE);
+		OdeHelper.createPlane (coll_space_id,  1, 0, 0, 0);
+		OdeHelper.createPlane (coll_space_id, -1, 0, 0, -STAGE_SIZE);
+		OdeHelper.createPlane (coll_space_id,  0,  1, 0, 0);
+		OdeHelper.createPlane (coll_space_id,  0, -1, 0, -STAGE_SIZE);
 
 		for (b = 0; b < N_BODIES; b ++)
 		{
 			DGeom coll_box_id;
-			coll_box_id = dCreateBox (coll_space_id,
+			coll_box_id = OdeHelper.createBox (coll_space_id,
 					bodies_sides[b].get0(), bodies_sides[b].get1(), bodies_sides[b].get2());
-			dGeomSetBody (coll_box_id, dyn_bodies[b]);
+			coll_box_id.setBody (dyn_bodies[b]);
 		}
 
 		coll_contacts = OdeHelper.createJointGroup();
@@ -343,7 +343,7 @@ class DemoPlane2d extends dsFunctions {
 			dsSimulationLoop (args, 352,288,drawstuff_functions);
 		}
 
-		dCloseODE();
+		OdeHelper.closeODE();
 	}
 
 

@@ -39,7 +39,6 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.internal.stuff.Performator;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
@@ -688,8 +687,6 @@ class DemoCrash extends dsFunctions {
 		dSpaceDestroy (space);
 		dWorldDestroy (world);
 		dCloseODE();
-		//TODO TZ remove
-		Performator.print();
 	}
 
 

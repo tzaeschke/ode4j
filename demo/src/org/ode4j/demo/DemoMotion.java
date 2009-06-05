@@ -514,9 +514,7 @@ public class DemoMotion extends dsFunctions {
 		world = OdeHelper.createWorld();
 		//space = dHashSpaceCreate (0);
 		DVector3 center = new DVector3(0,0,0), extents = new DVector3( 100, 100, 100);
-		//TODO
-		//space = dQuadTreeSpaceCreate(null, center, extents, 5);
-		space = OdeHelper.createSimpleSpace(null);
+		space = OdeHelper.createQuadTreeSpace(null, center, extents, 5);
 
 		contactgroup = OdeHelper.createJointGroup();
 		world.setGravity (0,0,-0.5);
