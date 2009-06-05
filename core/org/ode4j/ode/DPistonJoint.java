@@ -24,6 +24,52 @@ package org.ode4j.ode;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
+/**
+ * ****************************************************************************
+ * Piston
+ *
+ * ****************************************************************************
+ * Component of a Piston joint
+ * <PRE>
+ *                              |- Anchor point
+ *      Body_1                  |                       Body_2
+ *      +---------------+       V                       +------------------+
+ *     /               /|                             /                  /|
+ *    /               / +       |--      ______      /                  / +
+ *   /      x        /./........x.......(_____()..../         x        /.......> axis
+ *  +---------------+ /         |--                +------------------+ /
+ *  |               |/                             |                  |/
+ *  +---------------+                              +------------------+
+ *          |                                                 |
+ *          |                                                 |
+ *          |------------------> <----------------------------|
+ *              anchor1                  anchor2
+ *
+ *
+ * </PRE>
+ *
+ * When the prismatic joint as been elongated (i.e. dJointGetPistonPosition)
+ * return a value >  0
+ * <PRE>
+ *                                   |- Anchor point
+ *      Body_1                       |                       Body_2
+ *      +---------------+            V                       +------------------+
+ *     /               /|                                  /                  /|
+ *    /               / +            |--      ______      /                  / +
+ *   /      x        /./........_____x.......(_____()..../         x        /.......> axis
+ *  +---------------+ /              |--                +------------------+ /
+ *  |               |/                                  |                  |/
+ *  +---------------+                                   +------------------+
+ *          |                                                      |
+ *          |                                                      |
+ *          |----------------.>      <----------------------------|
+ *              anchor1         |----|         anchor2
+ *                                ^
+ *                                |-- This is what dJointGetPistonPosition will
+ *                                    return
+ * </PRE>
+ * ****************************************************************************
+ */
 public interface DPistonJoint extends DJoint {
 
 	void setAnchor (double x, double y, double z);
@@ -39,6 +85,11 @@ public interface DPistonJoint extends DJoint {
 	double getPositionRate();
 
 	void addForce (double force);
+	
+	double getParamLoStop2();
+	double getParamHiStop2();
+	void setParamLoStop2(double d);
+	void setParamHiStop2(double d);
 
 
 	//	 // intentionally undefined, don't use these

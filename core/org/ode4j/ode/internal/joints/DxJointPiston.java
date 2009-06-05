@@ -493,15 +493,8 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		}
 	}
 
-	public void dJointSetPistonAnchor ( double x, double y, double z )
+	public void dJointSetPistonAnchor ( DVector3C xyz )
 	{
-		dJointSetPistonAnchor ( new DVector3(x, y, z) );
-	}
-	public void dJointSetPistonAnchor ( DVector3 xyz )
-	{
-		//    dxJointPiston joint = ( dxJointPiston ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    checktype ( joint, dxJointPiston.class );
 		setAnchors ( xyz, anchor1, anchor2 );
 		computeInitialRelativeRotation();
 	}
@@ -750,10 +743,9 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	// *********************************
 
 	public void setAnchor (double x, double y, double z)
-	{ dJointSetPistonAnchor (x, y, z); }
+	{ dJointSetPistonAnchor (new DVector3(x, y, z)); }
 	public void setAnchor (DVector3C a)
-	//TODO use dVector3
-	{ dJointSetPistonAnchor (a.get0(), a.get1(), a.get2()); }
+	{ dJointSetPistonAnchor (a); }
 	public void getAnchor (DVector3 result)
 	{ dJointGetPistonAnchor (result); }
 	public void getAnchor2 (DVector3 result)
@@ -780,5 +772,29 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	
 	public void addForce (double force)
 	{ dJointAddPistonForce (force); }
+
+
+	@Override
+	public double getParamHiStop2() {
+		return dJointGetPistonParam(D_PARAM_NAMES_N.dParamHiStop2);
+	}
+
+
+	@Override
+	public double getParamLoStop2() {
+		return dJointGetPistonParam(D_PARAM_NAMES_N.dParamLoStop2);
+	}
+
+
+	@Override
+	public void setParamHiStop2(double d) {
+		dJointSetPistonParam(D_PARAM_NAMES_N.dParamHiStop2, d);
+	}
+
+
+	@Override
+	public void setParamLoStop2(double d) {
+		dJointSetPistonParam(D_PARAM_NAMES_N.dParamLoStop2, d);
+	}
 
 }

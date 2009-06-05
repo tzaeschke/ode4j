@@ -22,7 +22,9 @@
 package org.ode4j.ode.internal.joints;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.internal.DxWorld;
+import org.ode4j.ode.internal.Common.D_PARAM_NAMES;
 import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 
@@ -35,7 +37,7 @@ import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
     by psero@gmx.de
     Wed Apr 23 18:53:43 CEST 2003
  */
-public class DxJointPlane2D extends DxJoint
+public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 {
 	int                 row_motor_x;
 	int                 row_motor_y;
@@ -154,7 +156,6 @@ public class DxJointPlane2D extends DxJoint
 
 		// error correction (against drift):
 
-		//TODO report TZ why only in direction 'z'??
 		// a) linear vz, so that z (== pos[2]) == 0
 		info.setC(0, eps * -node[0].body._posr.pos.get2() );
 
@@ -178,39 +179,24 @@ public class DxJointPlane2D extends DxJoint
 	}
 
 
-//	public void dJointSetPlane2DXParam( dxJoint joint,
-//			D_PARAM_NAMES parameter, double value )
 	public void dJointSetPlane2DXParam( 
 			D_PARAM_NAMES_N parameter, double value )
 	{
-		//COM.dUASSERT( joint, "bad joint argument" );
-		//checktype( joint, dxJointPlane2D.class );
-		//dxJointPlane2D joint2d = ( dxJointPlane2D )( joint );
 		motor_x.set( parameter.toSUB(), value );
 	}
 
 
-//	void dJointSetPlane2DYParam( dxJoint joint,
-//			D_PARAM_NAMES parameter, double value )
 	public void dJointSetPlane2DYParam( 
 			D_PARAM_NAMES_N parameter, double value )
 	{
-//		COM.dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointPlane2D.class );
-//		dxJointPlane2D joint2d = ( dxJointPlane2D )( joint );
 		motor_y.set( parameter.toSUB(), value );
 	}
 
 
 
-//	void dJointSetPlane2DAngleParam( dxJoint joint,
-//			D_PARAM_NAMES_X parameter, double value )
 	void dJointSetPlane2DAngleParam(
 			D_PARAM_NAMES_N parameter, double value )
 	{
-//		COM.dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointPlane2D.class );
-//		dxJointPlane2D joint2d = ( dxJointPlane2D )( joint );
 		motor_angle.set( parameter.toSUB(), value );
 	}
 
@@ -221,15 +207,57 @@ public class DxJointPlane2D extends DxJoint
 
 	@Override
 	public double getParam(D_PARAM_NAMES_N parameter) {
-		//TODO
+		//TODO use 1 for x and 2 for y ?
 		throw new UnsupportedOperationException();
 	}
 
 
 	@Override
 	public void setParam(D_PARAM_NAMES_N parameter, double value) {
-		// TODO Auto-generated method stub
+		// TODO use 1 for x and 2 for y ?
 		throw new UnsupportedOperationException();
+	}
+
+
+
+	@Override
+	public double getXParamFMax() {
+		return motor_x.get( D_PARAM_NAMES.dParamFMax );
+	}
+
+	@Override
+	public double getYParamFMax() {
+		return motor_y.get( D_PARAM_NAMES.dParamFMax );
+	}
+
+	@Override
+	public void setXParamFMax(double d) {
+		dJointSetPlane2DXParam(D_PARAM_NAMES_N.dParamFMax1, d);
+	}
+
+	@Override
+	public void setYParamFMax(double d) {
+		dJointSetPlane2DYParam(D_PARAM_NAMES_N.dParamFMax1, d);
+	}
+
+	@Override
+	public double getXParamVel() {
+		return motor_x.get( D_PARAM_NAMES.dParamVel );
+	}
+
+	@Override
+	public double getYParamVel() {
+		return motor_y.get( D_PARAM_NAMES.dParamVel );
+	}
+
+	@Override
+	public void setXParamVel(double d) {
+		dJointSetPlane2DXParam(D_PARAM_NAMES_N.dParamVel1, d);
+	}
+
+	@Override
+	public void setYParamVel(double d) {
+		dJointSetPlane2DYParam(D_PARAM_NAMES_N.dParamVel1, d);
 	}
 }
 
