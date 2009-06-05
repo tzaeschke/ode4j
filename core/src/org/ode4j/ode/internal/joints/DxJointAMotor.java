@@ -606,4 +606,40 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	public void addTorques(double torque1, double torque2, double torque3)
 	{ dJointAddAMotorTorques(torque1, torque2, torque3); }
 
+
+	@Override
+	public void setParamFMax(double d) {
+		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamFMax1, d);
+	}
+
+
+	@Override
+	public void setParamFMax2(double d) {
+		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamFMax2, d);
+	}
+
+
+	@Override
+	public void setParamFMax3(double d) {
+		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamFMax3, d);
+	}
+
+
+	@Override
+	public void setParamVel(double d) {
+		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamVel1, d);
+	}
+
+
+	@Override
+	public void setParamVel2(double d) {
+		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamVel2, d);
+	}
+
+
+	@Override
+	public void setParamVel3(double d) {
+		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamVel3, d);
+	}
+
 }
