@@ -1269,7 +1269,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	{ return dBodyGetGravityMode (); }
 
 	public boolean isConnectedTo (DBody body) //const
-	{ return OdeJointsFactoryImpl.dAreConnected (this, body); }
+	{ return OdeJointsFactoryImpl.areConnected (this, body); }
 
 	public void  setAutoDisableLinearThreshold (double threshold)
 	{ dBodySetAutoDisableLinearThreshold (threshold); }

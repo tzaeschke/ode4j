@@ -1781,7 +1781,7 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 		if (extension.indexOf(' ') >= 0 || extension.length() == 0)
 			return true;  //TODO TZ report. should this not return 'false' instead?
 
-		final String config = dGetConfiguration();
+		final String config = getConfiguration();
 
 		final int ext_length = extension.length();//strlen(extension);
 

@@ -271,5 +271,35 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 	public void setParamVel3(double d) {
 		dJointSetLMotorParam(D_PARAM_NAMES_N.dParamVel3, d);
 	}
+
+	@Override
+	public double getParamFMax() {
+		return dJointGetLMotorParam(D_PARAM_NAMES_N.dParamFMax1);
+	}
+
+	@Override
+	public double getParamFMax2() {
+		return dJointGetLMotorParam(D_PARAM_NAMES_N.dParamFMax2);
+	}
+
+	@Override
+	public double getParamFMax3() {
+		return dJointGetLMotorParam(D_PARAM_NAMES_N.dParamFMax3);
+	}
+
+	@Override
+	public double getParamVel() {
+		return dJointGetLMotorParam(D_PARAM_NAMES_N.dParamVel1);
+	}
+
+	@Override
+	public double getParamVel2() {
+		return dJointGetLMotorParam(D_PARAM_NAMES_N.dParamVel2);
+	}
+
+	@Override
+	public double getParamVel3() {
+		return dJointGetLMotorParam(D_PARAM_NAMES_N.dParamVel3);
+	}
 }
 

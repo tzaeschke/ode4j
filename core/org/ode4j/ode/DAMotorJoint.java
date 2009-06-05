@@ -61,6 +61,13 @@ public interface DAMotorJoint extends DJoint {
 	double getParam (D_PARAM_NAMES_N parameter);
 
 	void addTorques(double torque1, double torque2, double torque3);
+	
+	double getParamFMax();
+	double getParamFMax2();
+	double getParamFMax3();
+	double getParamVel();
+	double getParamVel2();
+	double getParamVel3();
 	void setParamFMax(double d);
 	void setParamFMax2(double d);
 	void setParamFMax3(double d);
