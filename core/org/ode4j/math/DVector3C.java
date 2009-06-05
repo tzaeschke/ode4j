@@ -23,9 +23,11 @@ public interface DVector3C {
 	public double get2();
 	public float[] toFloatArray();
 	public DVector3 clone();
-	public double reDot(DVector3C b);
-	public double reDot(DVector3View b);
 	public double lengthSquared();
 	public double length();
+
+	public double reDot(DVector3C b);
+	public double reDot(DVector3View b);
 	public DVector3 reSub(DVector3C pos);
+	public DVector3 reScale(double s);
 }
