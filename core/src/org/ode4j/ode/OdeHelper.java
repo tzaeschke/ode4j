@@ -184,6 +184,14 @@ public abstract class OdeHelper {
 		return ODE.dJointCreatePiston((DxWorld) world, null);
 	}
 
+	// Plane2DJoint
+	public static DPlane2DJoint createPlane2DJoint (DWorld world, DJointGroup group) {
+		return ODE.dJointCreatePlane2D((DxWorld) world, group);
+	}
+	public static DPlane2DJoint createPlane2DJoint (DWorld world) {
+		return ODE.dJointCreatePlane2D((DxWorld) world, null);
+	}
+
 	// PRJoint
 	public static DPRJoint createPRJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreatePR((DxWorld) world, group);
