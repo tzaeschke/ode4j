@@ -1,0 +1,292 @@
+REPORT MISSING:
+- dBody.destroy()
+- dCapsule class
+- dMass.setCylinder in OO-API
+- dMass.setSphereTotal in OO-API
+- dMass.check()
+- dWorld.void setAutoDisableAverageSamplesCount(int average_samples_count)
+- dWorld.void setContactMaxCorrectingVel (double vel);
+- dWorld.destroy()
+- dJointGroup.destroy()
+- dGeom.setOffsetPosition()
+- dGeom.setOffsetRotation()
+- dGeomTransform API class
+- Calls to d(x)Plane.getPosition()/getRotation() should cause an error/warning (see ODE WIKI)
+
+REPORT !!!!
+- Report that SAP-Space BoxPruning may miss some collisions:
+  while ( poslist[*RunningAddress++] < poslist[IndexPair.id0] ) {}
+  This line increases the RunningAddress to the first that is not
+  smaller PLUS ONE!!  DONE (2009-05-08)
+- Why are demos still using TransformedGeom? Isn't it deprecated?
+  
+
+FIX !!!!!!!!!!!!!!!
+- dArray.push() clones Objects!!!!!!!
+
+
+DIFFERENCES:
+- No GIMPACT/OPCODE, only Heightfield
+- SAP-Space uses different implementation (merge-sort i.o. radix-sort)
+- DrawStuff is slow. The implementation would require significant changes to 
+  be a fast as the C/C++ version.
+- The OO-API is the main API. The static CCP-like API is only available to
+  simplify porting.
+- A custom cpp2java library is used for porting the code.
+- Much of the math has been moved to a separate package. dVector3 and their 
+  like now provide much own functionality.
+- The test harnesses now partly use JUnit 4, instead of the C/C++ test library.   
+- TLS Thread Local Storage has not been ported. Most likely, there is no need to
+  port this.
+- The Java implementation is 'thread-tolerant' (CORRECT TERM???) by avoiding  
+  any static variables. 
+  That means it should be possible to process different dWorlds in parallel,
+  and possibly even multiple spaces in parallel, if the dWorld is not modified (verify!).
+- Contrary to the policy in C/C++ ODE, I prefer in Java return immutable DVectors when
+  calling getXXX(), rather than having to pass in a DVector to be overwritten. The
+  reasons are partly specific to Java:
+  - Returning an immutable is very straight forward using an immutable interface
+  - I may avoid unnecessary object creation if the returned value is only used briefly
+    and only for reading
+  - It avoid possibly fatal typos, because getter and setter are distinguished by signature,
+    not only by one letter: dGeomGetPos(g,p) / dGeomSetPos(g,p) --> p = g.getPos() / get.setPos(p)
+  - Above that, I think it is normal coding practice in Java to return a value if a method has only
+    one result.
+
+REQUIRED LIBS:
+- Java 5: for everything.
+- cppLib: for everything. It is used to simplify the porting. It is currently
+  included in the ode4j jars.
+- JUnit 4: for the test harnesses
+- lwjgl 2.0.1: for DrawStuff
+
+
+
+Cleanup uses of dVector.v, especially in e.g.
+- dxBody
+- dxJoint
+- try using dVector3.create() and implement pooling (perf tests!)
+
+dxPlane._p -> Change from double[4] to dVector3?
+
+Check and remove references (and commented out occurrences) of:
+- dSetZero()
+
+- Try to avoid dPAD()
+
+
+Remove commented out references to dUSE_MALLOC_FOR_ALLOCA
+
+
+
+Check Matrix.factorCholesky(2)()
+-> TZs version causes larger w- and q-errors in DemoI ...
+-> OdeVersion seems to forget to set ratio[] to 0.0 (?) 
+
+
+TODO
+- DOC: @sa -> @see
+- DEMO: remove references to CPP4J
+- Implement auto-allocation of dContacts.
+  dContactGeom() -> auto alloc
+  dContactGeom(10) -> alloc w/ fixed limit
+  dContactGeom(10, bFixed) -> (auto-)alloc w/ bFixed limit
+- Test for thread-tolerance!! No static !?!!?!!
+- performance: dxGeom should use LinkedIdentityHashSet(?)! (spaceRemove())
+  --> Update QuadTreeSpace accordingly!
+- TRIMESH et al. Make Colliders to singletons, avoid instantiation in dxHeightfield
+- disable DEBUG modes
+- replace concatenated dVector math with specific methods, remove set() calls
+- replace methods that take x,y,z with ones that take dVector3
+- PerfTest and replace 'double[] v' in dVector3 with 'double v0, v1, v2;'
+- get rid of all _tome stuff and firstjoint/firstbody
+- Check that 'unsigned' is always assigned with fabs(y); !!!
+- replace AABB with two dVector3?
+- rename all classes to have capital 'D'?
+- Check that org.ode4j.ode.* does not reference org.ode4j.cpp  !!!
+- Check that org.ode4j.ode.* does not reference org.ode4j.*.internal.*  ?!?
+- Check that org.ode4j.demo.* does not reference org.ode4j.*.internal.*  ?!!
+- Get rid of Thread stuff in API_OdeInit / OdeInit (?)
+- rename add/sum/setDiff to eqAdd(?)/eqSum/eqDiff
+- rename xxx to retSum/retDiff
+- deprecate RefDouble in APIs!!
+- Think about Radix-sort in SAP SPACE
+- In SAP SPACE, use sort for all three dimensions and then prune Pairs
+  that are not in all Dimensions?
+
+Trimesh:
+--------
+- Heigthfield has bug (see post on March 10), use Trimesh instead
+- OPCODE is default over GIMPACT. There is also OPCODE-NEW (see WIKI)
+
+Bigger plans:
+-------------
+- Heightfield
+- Migrate javadoc from API to dBody, dContact, ... classes
+- Migrate one (or both?) of the TRIMESH libraries
+- Split ObjAPI and CppAPI into different packages
+- Make ObjAPI and Internals independent of CppAPI:
+  - No references to dClassID
+  - No references to org.tz.cpp
+- math independent of the rest
+- Check for multithreaded abilities.
+- Investigate AtomicXXX libraries
+- Implement GJK algorithm, see: 
+	http://opende.sourceforge.net/wiki/index.php/How_Collision_Detection_Works
+	http://en.wikipedia.org/wiki/Gilbert-Johnson-Keerthi_distance_algorithm
+
+- use dVector3 as param instead of 3*double, e.g.:
+	dGeomBoxSetLengths, dGeomSetPosition, dGeomBoxPointDepth,
+	dGeomSpherePointDepth, dGeomPlaneSetParams, dGeomPlanePointDepth
+	dGeomCapsuleSetParams, dGeomCapsulePointDepth, dGeomRaySet
+	
+- parallel:
+  - collision detection (one collision per thread
+  - SAP space: sort objects in three dimensions in three Threads.
+  - LPC --> This will be more complicated, I guess.
+
+-------------------
+Migration guide
+-------------------
+  
+dMass
+=====
+- dMass._c is now a dVector3, but was a dVector4
+
+
+ID
+==
+d...ID classes have been removed, use d... instead.
+The d...ID.id() method, that used to return the backing object is not necessary
+anymore, because the user is always dealing with the actual objects.
+
+
+OdeHelper
+=========
+Instead of 'new', Ode onjects have to be created via the static methods in OdeHelper.
+
+
+dCollide arguments / dContact / dContactGeom / dColliderFn
+==========================================================
+- dCollide takes as argument a dContactGeomBuffer(). This can be created via:
+  dContactBuffer contacts = new dContactBuffer(MAX_CONTACTS);
+  dCollide( ...., contacts.getGeomBuffer() );
+  This was necessary to allow it being filled with new contacts.
+- Parameter skip got removed. It is assumed that it was always size(dContact)
+  and is now assumed to be '1' (always going to the following contact).
+
+
+
+useful imports:
+===============
+import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.cpp.OdeCpp.*;
+import static org.ode4j.ode.OdeMath.*;
+import static org.cpp4j.C_All.*;
+DS_API is useful for demos
+OdeCpp is the 1to1 implementation of the C API of ODE
+OdeCppMath is the 1to1 implementation of the C math API of ODE
+C_All is useful when migrating C/C++ code to Java (e.g. demos and tests from ODE) 
+
+
+Using DrawStuff callbacks:
+==========================
+    class MyDemo extends dsFunctions { ...
+
+	main(String args) {
+		// setup pointers to drawstuff callback functions
+		dsFunctions fn = new MyDemo();
+		fn.version = DS_VERSION;
+		//  fn.start = &start;
+		//  fn.step = &simLoop;
+		//  fn.command = &command;
+		//  fn.stop = 0;
+		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+
+So MyDemo should implement dsFunctions, the implemented methods should
+call the local equivalents.
+Note that command(char c) now take a 'char' and step(boolean pause) takes
+a 'boolean' argument.
+
+
+dGeom.getClass() was renamed to dGeom.getClassID()
+dGeom.id() has been removed.
+dGeom.isSpace() has been removed.
+dGeom.DESTRUCTOR added.
+
+dBody.create() has been removed:
+    body = dBodyCreate(world);//  body.create (world);
+
+
+dGeomGetClass / type
+====================
+the getType() methods have been removed.
+//if (dGeomGetClass (g) == dPlaneClass) {
+  if (g instanceof dPlane) {
+  
+
+Joint parameters
+================
+joint.setParam (dParamVel, vel);
+-->
+joint.setParam (D_PARAM_NAMES_N.dParamVel1, vel);
+
+
+dContact
+========
+  dContact contact[N];
+  int n = dCollide (o1,o2,N,&(contact[0].geom),sizeof(dContact));
+  contact[i].xxx
+-->
+  dContactBuffer contacts = new dContactBuffer(N);
+  int n = dCollide (o1,o2,N,contacts.getGeomBuffer());
+  contacts.get(i).xxx
+  
+- CONTACT(dContactGeom* p, int skip)
+  deprecated, instead, please use: dContagGeomBuffer.get(skip);
+
+  
+ nearCallback
+ ============
+ Add the following:
+ 	private dNearCallback nearCallback = new dNearCallback() {
+		@Override
+		public void call(Object data, dGeom o1, dGeom o2) {
+			nearCallback(data, o1, o2);
+		}
+	};
+ 
+
+Class types
+===========
+dSphereClass
+-->
+dGeom.dSphereClass
+or BETTER:
+instanceof DSphere
+  
+dJointTypeContact
+-->
+Common.dJointType.dJointTypeContact
+
+
+
+Constants
+=========
+Constants are in OdeConstants
+- dInfinity
+- dContact*
+
+
+
+Other
+=====
+dJointGroupCreate (1000000);
+OdeHelper.createJointGroup (100000);
+----> The parameter has been deprecated. Set to 0.
+
+dInitODE2(0);
+---> OdeHelper.initODE2(0);
+
+dCloseODE();
+---> OdeHelper.closeODE();	

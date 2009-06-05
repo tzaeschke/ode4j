@@ -1,0 +1,14 @@
+ode4j CHANGELOG
+---------------
+
+the rules for this file:
+  * entries are sorted newest-first.
+  * summarise sets of changes.
+  * don't ever delete anything.
+  * keep the format consistent (79 char width, YYYY-MM-DD date format).
+
+------------------------------------------------------------------------------
+
+2009-06-04  Tilmann Zäschke
+        * Initial version checked in to SVN. This is a 95% complete port of 
+          ode 0.10.1 .

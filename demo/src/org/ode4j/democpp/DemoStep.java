@@ -1,0 +1,213 @@
+/*************************************************************************
+ *                                                                       *
+ * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
+ * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ *                                                                       *
+ * This library is free software; you can redistribute it and/or         *
+ * modify it under the terms of EITHER:                                  *
+ *   (1) The GNU Lesser General Public License as published by the Free  *
+ *       Software Foundation; either version 2.1 of the License, or (at  *
+ *       your option) any later version. The text of the GNU Lesser      *
+ *       General Public License is included with this library in the     *
+ *       file LICENSE.TXT.                                               *
+ *   (2) The BSD-style license that is included with this library in     *
+ *       the file LICENSE-BSD.TXT.                                       *
+ *                                                                       *
+ * This library is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
+ * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ *                                                                       *
+ *************************************************************************/
+package org.ode4j.democpp;
+
+import static org.cpp4j.Cstdio.*;
+import static org.ode4j.cpp.OdeCpp.*;
+import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.drawstuff.DS_API.*;
+
+import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DQuaternion;
+import org.ode4j.math.DVector3C;
+import org.ode4j.ode.OdeConstants;
+import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.DBody;
+import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DMass;
+import org.ode4j.ode.DWorld;
+
+/**
+ * test the step function by comparing the output of the fast and the slow
+ * version, for various systems. currently you have to define COMPARE_METHODS
+ * in step.cpp for this to work properly.
+ *  
+ * @@@ report MAX error
+ */
+class DemoStep extends dsFunctions {
+
+	// some constants
+
+	//#define NUM 10			// number of bodies
+	//#define NUMJ 9			// number of joints
+	//#define SIDE (0.2)		// side length of a box
+	//#define MASS (1.0)		// mass of a box
+	//#define RADIUS (0.1732f)	// sphere radius
+	private static int NUM = 10;	// number of bodies
+	private static int NUMJ = 9;			// number of joints
+	private static double SIDE = 0.2;		// side length of a box
+	private static double MASS = 1.0;		// mass of a box
+	private static float RADIUS = 0.1732f;	// sphere radius
+
+
+	// dynamics and collision objects
+
+	static DWorld world=null;
+	static DBody[] body=new DBody[NUM];
+	static DJoint[] joint=new DJoint[NUMJ];
+
+
+	// create the test system
+
+	private static void createTest()
+	{
+		int i,j;
+		if (world!=null) dWorldDestroy (world);
+
+		world = dWorldCreate();
+
+		// create random bodies
+		for (i=0; i<NUM; i++) {
+			// create bodies at random position and orientation
+			body[i] = dBodyCreate (world);
+			dBodySetPosition (body[i],dRandReal()*2-1,dRandReal()*2-1,
+					dRandReal()*2+RADIUS);
+			DQuaternion q = new DQuaternion();
+			for (j=0; j<4; j++) q.set(j, dRandReal()*2-1);
+			dBodySetQuaternion (body[i],q);
+
+			// set random velocity
+			dBodySetLinearVel (body[i], dRandReal()*2-1,dRandReal()*2-1,
+					dRandReal()*2-1);
+			dBodySetAngularVel (body[i], dRandReal()*2-1,dRandReal()*2-1,
+					dRandReal()*2-1);
+
+			// set random mass (random diagonal mass rotated by a random amount)
+			DMass m = dMassCreate();
+			DMatrix3 R = new DMatrix3();
+			dMassSetBox (m,1,dRandReal()+0.1,dRandReal()+0.1,dRandReal()+0.1);
+			dMassAdjust (m,dRandReal()+1);
+			for (j=0; j<4; j++) q.set(j, dRandReal()*2-1);
+			OdeMath.dQtoR (q,R);
+			dMassRotate (m,R);
+			dBodySetMass (body[i],m);
+		}
+
+		// create ball-n-socket joints at random positions, linking random bodies
+		// (but make sure not to link the same pair of bodies twice)
+		char[] linked=new char[NUM*NUM];
+		for (i=0; i<NUM*NUM; i++) linked[i] = 0;
+		for (i=0; i<NUMJ; i++) {
+			int b1,b2;
+			do {
+				b1 = (int) dRandInt (NUM);
+				b2 = (int) dRandInt (NUM);
+			} while (linked[b1*NUM + b2]!=0 || b1==b2);
+			linked[b1*NUM + b2] = 1;
+			linked[b2*NUM + b1] = 1;
+			joint[i] = dJointCreateBall (world,null);
+			dJointAttach (joint[i],body[b1],body[b2]);
+			dJointSetBallAnchor (joint[i],dRandReal()*2-1,
+					dRandReal()*2-1,dRandReal()*2+RADIUS);
+		}
+
+		for (i=0; i<NUM; i++) {
+			// move bodies a bit to get some joint error
+			final DVector3C pos = dBodyGetPosition (body[i]); 
+			dBodySetPosition (body[i],pos.get(0)+dRandReal()*0.2-0.1,
+					pos.get(1)+dRandReal()*0.2-0.1,pos.get(2)+dRandReal()*0.2-0.1);
+		}
+	}
+
+
+	private static float[] xyz = {2.6117f,-1.4433f,2.3700f};
+	private static float[] hpr = {151.5000f,-30.5000f,0.0000f};
+	// start simulation - set viewpoint
+	public void start()
+	{
+		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+
+		//  static float xyz[3] = {2.6117f,-1.4433f,2.3700f};
+		//  static float hpr[3] = {151.5000f,-30.5000f,0.0000f};
+		dsSetViewpoint (xyz,hpr);
+	}
+
+
+	// simulation loop
+
+	public void step (boolean pause)
+	{
+		if (!pause) {
+			// add random forces and torques to all bodies
+			int i;
+			final double scale1 = 5;
+			final double scale2 = 5;
+			for (i=0; i<NUM; i++) {
+				dBodyAddForce (body[i],
+						scale1*(dRandReal()*2-1),
+						scale1*(dRandReal()*2-1),
+						scale1*(dRandReal()*2-1));
+				dBodyAddTorque (body[i],
+						scale2*(dRandReal()*2-1),
+						scale2*(dRandReal()*2-1),
+						scale2*(dRandReal()*2-1));
+			}
+
+			dWorldStep (world,0.05);
+			createTest();
+		}
+
+		// float sides[3] = {SIDE,SIDE,SIDE};
+		dsSetColor (1,1,0);
+		for (int i=0; i<NUM; i++)
+			dsDrawSphere (dBodyGetPosition(body[i]), dBodyGetRotation(body[i]),RADIUS);
+	}
+
+
+	public static void main(String[] args) {
+		// setup pointers to drawstuff callback functions
+		dsFunctions fn = new DemoStep();
+		fn.version = DS_VERSION;
+		//  fn.start = &start;
+		//  fn.step = &simLoop;
+		//  fn.command = 0;
+		//  fn.stop = 0;
+		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		if(args.length==2)
+		{
+			fn.path_to_textures = args[1];
+		}
+
+		dInitODE2(0);
+		dRandSetSeed (time(null).seconds);
+		createTest();
+
+		// run simulation
+		dsSimulationLoop (args,352,288,fn);
+
+		dWorldDestroy (world);
+		dCloseODE();
+	}
+
+
+	@Override
+	public void command(char cmd) {
+		//Nothing
+	}
+
+
+	@Override
+	public void stop() {
+		// Nothing
+	}
+}

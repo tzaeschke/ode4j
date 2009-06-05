@@ -1,0 +1,15 @@
+J_Defines.txt
+
+ Created on: Aug 9, 2008
+     Author: tille
+
+
+defined:
+========
+dDOUBLE
+dNODEBUG false
+
+undefined:
+==========
+_MSC_VER 
+dSINGLE

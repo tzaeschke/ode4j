@@ -1,0 +1,15 @@
+REAL(i) not required.
+
+dxBody, dxJoint methods have all been moved into their respective classes.
+But they will continue to be available via a static API. (?)
+
+dBodyID: The 'ID' part is removed since we are always dealing with
+	actual objects.
+
+All dXXXID classes: They have been removed, there are only the dXXX and
+dxXXX classes left.
+
+All d... classes have been renamed to D... .
+
+TODO
+- in OdeMath rather than A.v[1] use v2 = A.getV() or implement A.get11()
