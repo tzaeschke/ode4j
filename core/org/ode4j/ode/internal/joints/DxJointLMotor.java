@@ -25,6 +25,8 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DLMotorJoint;
 import org.ode4j.ode.internal.DxWorld;
+import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
+
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -239,5 +241,35 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 	{ dJointSetLMotorParam (parameter, value); }
 	public double getParam (D_PARAM_NAMES_N parameter)
 	{ return dJointGetLMotorParam (parameter); }
+
+	@Override
+	public void setParamFMax(double d) {
+		dJointSetLMotorParam(D_PARAM_NAMES_N.dParamFMax1, d);
+	}
+
+	@Override
+	public void setParamFMax2(double d) {
+		dJointSetLMotorParam(D_PARAM_NAMES_N.dParamFMax2, d);
+	}
+
+	@Override
+	public void setParamFMax3(double d) {
+		dJointSetLMotorParam(D_PARAM_NAMES_N.dParamFMax3, d);
+	}
+
+	@Override
+	public void setParamVel(double d) {
+		dJointSetLMotorParam(D_PARAM_NAMES_N.dParamVel1, d);
+	}
+
+	@Override
+	public void setParamVel2(double d) {
+		dJointSetLMotorParam(D_PARAM_NAMES_N.dParamVel2, d);
+	}
+
+	@Override
+	public void setParamVel3(double d) {
+		dJointSetLMotorParam(D_PARAM_NAMES_N.dParamVel3, d);
+	}
 }
 
