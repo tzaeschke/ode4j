@@ -46,7 +46,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	 */
 	//ODE_API 
 	public static boolean dAreConnected (DBody b1, DBody b2) {
-		return ODE.dAreConnected((DBody)b1, (DBody)b2);
+		return ODE.areConnected((DBody)b1, (DBody)b2);
 	}
 
 	/**
