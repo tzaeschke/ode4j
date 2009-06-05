@@ -840,7 +840,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	static public //ODE_API 
 	void dJointSetPistonAnchor (DJoint j, double x, double y, double z) {
-		((DxJointPiston)j).dJointSetPistonAnchor(x, y, z);
+		((DxJointPiston)j).dJointSetPistonAnchor(new DVector3(x, y, z));
 	}
 
 	/**
