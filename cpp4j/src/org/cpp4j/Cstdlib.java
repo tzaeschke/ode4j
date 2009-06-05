@@ -2,8 +2,6 @@ package org.cpp4j;
 
 import java.util.Random;
 
-import com.sun.xml.internal.ws.api.pipe.NextAction;
-
 public class Cstdlib extends Cstring {
 
 	public static final int RAND_MAX = 2147483647;
