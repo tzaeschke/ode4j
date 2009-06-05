@@ -41,7 +41,7 @@ public class Cstring extends Ctime {
 	}
 
 	public static int strcmp(String s, String string) {
-		return new String(s).compareTo(string);
+		return s.compareTo(string);
 	}
 
 	/**
