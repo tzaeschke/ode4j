@@ -399,8 +399,8 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 		array[pos + 2] -= get2();
 	}
 
-	public DVector3C reScale(int i) {
-		return new DVector3(this).scale(-1);
+	public DVector3 reScale(double d) {
+		return new DVector3(this).scale(d);
 	}
 }
 
