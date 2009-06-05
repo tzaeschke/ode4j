@@ -642,4 +642,40 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamVel3, d);
 	}
 
+
+	@Override
+	public double getParamFMax() {
+		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamFMax1);
+	}
+
+
+	@Override
+	public double getParamFMax2() {
+		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamFMax2);
+	}
+
+
+	@Override
+	public double getParamFMax3() {
+		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamFMax3);
+	}
+
+
+	@Override
+	public double getParamVel() {
+		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamVel1);
+	}
+
+
+	@Override
+	public double getParamVel2() {
+		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamVel2);
+	}
+
+
+	@Override
+	public double getParamVel3() {
+		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamVel3);
+	}
+
 }

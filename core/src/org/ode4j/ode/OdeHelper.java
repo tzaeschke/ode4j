@@ -108,7 +108,7 @@ public abstract class OdeHelper {
 	 * @brief Create a new joint feedback.
 	 * @ingroup joints
 	 */
-	public static DJoint.DJointFeedback dJointCreateFeedback() {
+	public static DJoint.DJointFeedback createJointFeedback() {
 		return new DJoint.DJointFeedback();
 	}
 
@@ -300,12 +300,12 @@ public abstract class OdeHelper {
 	 *
 	 * A call to @c dInitODE is equal to the following initialization sequence
 	 * @code
-	 *     dInitODE2(0);
-	 *     dAllocateODEDataForThread(dAllocateMaskAll);
+	 *     initODE2(0);
+	 *     allocateODEDataForThread(dAllocateMaskAll);
 	 * @endcode
 	 *
-	 * @see dInitODE2
-	 * @see dAllocateODEDataForThread
+	 * @see initODE2
+	 * @see allocateODEDataForThread
 	 * @ingroup init
 	 */
 	public static void initODE() {
@@ -324,8 +324,8 @@ public abstract class OdeHelper {
 	 * The @a uiInitFlags parameter specifies initialization options to be used. These
 	 * can be combination of zero or more @c dInitODEFlags flags.
 	 *
-	 * @see dInitODEFlags
-	 * @see dCloseODE
+	 * @see initODEFlags
+	 * @see closeODE
 	 * @ingroup init
 	 */
 	public static int initODE2(int uiInitFlags/*=0*/) {
@@ -348,7 +348,7 @@ public abstract class OdeHelper {
 	 * before calling @c dCloseODE. In particular it is not allowed to call
 	 * @c dCleanupODEAllDataForThread after @c dCloseODE.
 	 *
-	 * @see dInitODE2
+	 * @see initODE2
 	 * @see dCleanupODEAllDataForThread
 	 * @ingroup init
 	 */
@@ -403,7 +403,7 @@ public abstract class OdeHelper {
 	 *
 	 * @ingroup collide
 	 */
-	public static int dCollide (DGeom o1, DGeom o2, int flags, 
+	public static int collide (DGeom o1, DGeom o2, int flags, 
 			DContactGeomBuffer contacts) {
 		return DxGeom.dCollide((DxGeom)o1, (DxGeom)o2, flags, contacts, 1);
 	}
@@ -415,7 +415,7 @@ public abstract class OdeHelper {
 	 * a joint, otherwise return 0.
 	 * @ingroup joints
 	 */
-	public static boolean dAreConnected (DBody b1, DBody b2) {
+	public static boolean areConnected (DBody b1, DBody b2) {
 		return ODE._dAreConnected(b1, b2);
 	}
 
@@ -432,7 +432,7 @@ public abstract class OdeHelper {
 	 * bodies that already have contacts.
 	 * @ingroup joints
 	 */
-	public static boolean dAreConnectedExcluding (DBody body1, DBody body2, 
+	public static boolean areConnectedExcluding (DBody body1, DBody body2, 
 			Class<? extends DJoint> ... jointType) {
 		return ODE._dAreConnectedExcluding(body1, body2, jointType);
 	}
@@ -449,7 +449,7 @@ public abstract class OdeHelper {
 	 *
 	 * @return <tt>true</tt> if exact token is present, <tt>false</tt> if not present
 	 */
-	public static boolean dCheckConfiguration( final String extension ) {
+	public static boolean checkConfiguration( final String extension ) {
 		return ODE._dCheckConfiguration(extension);
 	}
 
@@ -472,7 +472,7 @@ public abstract class OdeHelper {
 	 * ODE_OPC_16bit_indices
 	 * ODE_OPC_new_collider
 	 */
-	public static String dGetConfiguration () {
+	public static String getConfiguration () {
 		return ODE._dGetConfiguration();
 	}
 
@@ -483,7 +483,7 @@ public abstract class OdeHelper {
 	 * @param string
 	 * @deprecated TZ: Currently not implemented.
 	 */
-	public static void dWorldExportDIF(DWorld world, File f, String string) {
+	public static void worldExportDIF(DWorld world, File f, String string) {
 		throw new UnsupportedOperationException(); //TODO
 	}
 
@@ -511,7 +511,7 @@ public abstract class OdeHelper {
 	 * @ingroup init
 	 * @deprecated TZ I guess this can be removed?
 	 */
-	public static int dAllocateODEDataForThread(int uiAllocateFlags) {
+	public static int allocateODEDataForThread(int uiAllocateFlags) {
 		return OdeInit.dAllocateODEDataForThread(uiAllocateFlags);
 	}
 
@@ -600,10 +600,10 @@ public abstract class OdeHelper {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @see dSpaceCollide2
+	 * @see spaceCollide2
 	 * @ingroup collide
 	 */
-	public static void dSpaceCollide (DSpace space, Object data, DNearCallback callback) {
+	public static void spaceCollide (DSpace space, Object data, DNearCallback callback) {
 		((DxSpace)space).dSpaceCollide(data, callback);
 	}
 
@@ -643,11 +643,11 @@ public abstract class OdeHelper {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @see dSpaceCollide
-	 * @see dSpaceSetSublevel
+	 * @see spaceCollide
+	 * @see spaceSetSublevel
 	 * @ingroup collide
 	 */
-	public static void dSpaceCollide2(DGeom g1, DGeom g2, Object data,
+	public static void spaceCollide2(DGeom g1, DGeom g2, Object data,
 			DNearCallback nearCallback) {
 		DxSpace.dSpaceCollide2((DxGeom)g1, (DxGeom)g2, data, nearCallback);
 	}

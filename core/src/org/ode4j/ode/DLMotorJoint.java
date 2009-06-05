@@ -36,6 +36,13 @@ public interface DLMotorJoint extends DJoint {
 
 	void setParam (D_PARAM_NAMES_N parameter, double value);
 	double getParam (D_PARAM_NAMES_N parameter);
+	
+	double getParamVel();
+	double getParamVel2();
+	double getParamVel3();
+	double getParamFMax();
+	double getParamFMax2();
+	double getParamFMax3();
 	void setParamVel(double d);
 	void setParamVel2(double d);
 	void setParamVel3(double d);
