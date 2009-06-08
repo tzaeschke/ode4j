@@ -26,7 +26,6 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
 
 public interface DGeom {
 
@@ -77,46 +76,46 @@ public interface DGeom {
 
 
 
-	public abstract void DESTRUCTOR();
+	void DESTRUCTOR();
 
-	public abstract void destroy();
+	void destroy();
 
-	public abstract int getClassID();
+	int getClassID();
 
-	public abstract DSpace getSpace();
+	DSpace getSpace();
 
-	public abstract void setData (Object data);
-	public abstract Object getData();
+	void setData (Object data);
+	Object getData();
 
-	public abstract void setBody (DBody b);
-	public abstract DBody getBody();
+	void setBody (DBody b);
+	DBody getBody();
 
-	public abstract void setPosition (double x, double y, double z);
-	public abstract void setPosition (DVector3C xyz);
+	void setPosition (double x, double y, double z);
+	void setPosition (DVector3C xyz);
 	//const dReal * getPosition() const
-	public abstract DVector3C getPosition();
+	DVector3C getPosition();
 
-	public abstract void setRotation (final DMatrix3 R);
+	void setRotation (final DMatrix3 R);
 	//const dReal * getRotation() const
-	public abstract DMatrix3C getRotation();
+	DMatrix3C getRotation();
 
-	public abstract void setQuaternion (final DQuaternion quat);
-	public abstract DQuaternionC getQuaternion ();
+	void setQuaternion (final DQuaternion quat);
+	DQuaternionC getQuaternion ();
 
-	public abstract DAABBC getAABB ();
+	DAABBC getAABB ();
 
-	//	public abstract int isSpace();
+	//	int isSpace();
 
-	public abstract void setCategoryBits (long bits);//unsigned long bits)
-	public abstract void setCollideBits (long bits);//unsigned long bits)
+	void setCategoryBits (long bits);//unsigned long bits)
+	void setCollideBits (long bits);//unsigned long bits)
 	//unsigned 
-	public abstract long getCategoryBits();
+	long getCategoryBits();
 	//unsigned 
-	public abstract long getCollideBits();
+	long getCollideBits();
 
-	public abstract void enable();
-	public abstract void disable();
-	public abstract boolean isEnabled();
+	void enable();
+	void disable();
+	boolean isEnabled();
 
 	/**
 	 * @brief User callback for geom-geom collision testing.
@@ -138,11 +137,11 @@ public interface DGeom {
 		public void call (Object data, DGeom o1, DGeom o2);
 	}
 
-	public abstract void collide2 (DGeom g, Object data, DNearCallback callback);
+	void collide2 (DGeom g, Object data, DNearCallback callback);
 
-	public abstract void setOffsetPosition(double d, double e, double f);
+	void setOffsetPosition(double d, double e, double f);
 
-	public abstract void setOffsetRotation(DMatrix3C matrix3);
+	void setOffsetRotation(DMatrix3C matrix3);
 
 
 

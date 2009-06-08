@@ -75,6 +75,18 @@ public class DAABB extends DVector6 implements DAABBC {
 		return getMax2() - getMin2();
 	}
 	
+	public double avg0() {
+		return 0.5 * (getMax0() + getMin0());
+	}
+
+	public double avg1() {
+		return 0.5 * (getMax1() + getMin1());
+	}
+
+	public double avg2() {
+		return 0.5 * (getMax2() + getMin2());
+	}
+	
 	/**
 	 * 
 	 * @return <tt>false</tt> is any of the values is NaN.
@@ -89,6 +101,7 @@ public class DAABB extends DVector6 implements DAABBC {
 	}
 
 	/**
+	 * Checks whether the to AABBs are disjoint.
 	 * @param aabb2
 	 * @return <tt>false</tt> if the two AABBs overlap.
 	 */
@@ -191,5 +204,13 @@ public class DAABB extends DVector6 implements DAABBC {
 	@Override
 	public double getMin(int i) {
 		return v[2*i];
+	}
+
+	public DVector3 getLengths() {
+		return new DVector3(len0(), len1(), len2());
+	}
+
+	public DVector3 getCenter() {
+		return new DVector3(avg0(), avg1(), avg2());
 	}
 }
