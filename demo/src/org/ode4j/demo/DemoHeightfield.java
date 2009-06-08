@@ -552,11 +552,8 @@ class DemoHeightfield extends dsFunctions {
 		if (show_aabb) {
 			// draw the bounding box for this geom
 			DAABBC aabb = g.getAABB();
-			DVector3 bbpos = new DVector3();
-			for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
-			DVector3 bbsides = new DVector3();
-			//for (i=0; i<3; i++) bbsides.set(i, aabb.get(i*2+1) - aabb.get(i*2) );
-			bbsides.set( aabb.len0(), aabb.len1(), aabb.len2() );
+			DVector3 bbpos = aabb.getCenter();
+			DVector3 bbsides = aabb.getLengths();
 			DMatrix3 RI = new DMatrix3();
 			RI.setIdentity ();
 			dsSetColorAlpha (1,0,0,0.5f);
@@ -733,9 +730,8 @@ class DemoHeightfield extends dsFunctions {
 		{
 			// draw the bounding box for this geom
 			DAABBC aabb = gheight.getAABB();
-			DVector3 bbpos = new DVector3();
-			for (int i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
-			DVector3 bbsides = new DVector3( aabb.len0(), aabb.len1(), aabb.len2() );
+			DVector3 bbpos = aabb.getCenter();
+			DVector3 bbsides = aabb.getLengths();
 			DMatrix3 RI = new DMatrix3();
 			RI.setIdentity();
 			dsSetColorAlpha (1,0,0,0.5f);
@@ -812,7 +808,7 @@ class DemoHeightfield extends dsFunctions {
 
 		// Rotate so Z is up, not Y (which is the default orientation)
 		DMatrix3 R = new DMatrix3();
-		dRSetIdentity( R );
+		R.setIdentity();
 		dRFromAxisAndAngle( R, 1, 0, 0, DEGTORAD * 90 );
 
 		// Place it.

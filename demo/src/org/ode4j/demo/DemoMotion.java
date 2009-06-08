@@ -418,12 +418,13 @@ public class DemoMotion extends dsFunctions {
 		if (show_aabb) {
 			// draw the bounding box for this geom
 			DAABBC aabb = g.getAABB();
-			DVector3 bbpos = new DVector3();
-			for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
-			DVector3 bbsides = new DVector3();
-			for (i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i) );
+			//TODO
+			DVector3 bbpos = aabb.getCenter();
+			//for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
+			DVector3 bbsides = aabb.getLengths();
+			//for (i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i) );
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			dsSetColorAlpha (1f,0f,0f,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}

@@ -561,11 +561,9 @@ class DemoBoxstack extends dsFunctions {
 			bbpos.set( 0.5* (aabb.getMin0()+aabb.getMax0()),
 					0.5* (aabb.getMin1()+aabb.getMax1()),
 					0.5* (aabb.getMin2()+aabb.getMax2()));
-			DVector3 bbsides = new DVector3();
-			//for (i=0; i<3; i++) bbsides.set(i, aabb.get(i*2+1) - aabb.get(i*2));
-			bbsides.set( aabb.len0(), aabb.len1(), aabb.len2() );
+			DVector3 bbsides = aabb.getLengths();
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			dsSetColorAlpha (1,0,0,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}

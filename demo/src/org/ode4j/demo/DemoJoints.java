@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.cpp4j.Ctype;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -1151,7 +1150,7 @@ public class DemoJoints extends dsFunctions {
 			if (args[i].equals("-i")) cmd_interactive = true;
 			else if (args[i].equals("-g")) cmd_graphics = false;
 			else if (args[i].equals("-e")) cmd_graphics = false;
-			else if (args[i].startsWith("-n") && Ctype.isdigit(args[i].charAt(2))) {
+			else if (args[i].startsWith("-n") && Character.isDigit(args[i].charAt(2))) {
 				cmd_test_num = Integer.parseInt(args[i].substring(2));
 			}
 			else
