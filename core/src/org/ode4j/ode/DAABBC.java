@@ -21,6 +21,8 @@
  *************************************************************************/
 package org.ode4j.ode;
 
+import org.ode4j.math.DVector3;
+
 /**
  * Immutable interface for AABBs.
  *
@@ -42,4 +44,6 @@ public interface DAABBC {
 	double len2();
 	double getMax(int i);
 	double getMin(int i);
+	DVector3 getLengths();
+	DVector3 getCenter();
 }

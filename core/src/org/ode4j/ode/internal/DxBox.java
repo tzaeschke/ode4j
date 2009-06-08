@@ -69,15 +69,15 @@ public class DxBox extends DxGeom implements DBox {
 	{
 		//	  final dMatrix3& R = final_posr.R;
 		//	  final dVector3& pos = final_posr.pos;
-		final DMatrix3 R = _final_posr.R;
-		final DVector3 pos = _final_posr.pos;
+		DMatrix3C R = _final_posr.R;
+		DVector3C pos = _final_posr.pos;
 
-		double xrange = 0.5 * dFabs (R.get00() * side.get0()) +
-				dFabs (R.get01() * side.get1()) + dFabs (R.get02() * side.get2());
-		double yrange = 0.5 * dFabs (R.get10() * side.get0()) +
-				dFabs (R.get11() * side.get1()) + dFabs (R.get12() * side.get2());
-		double zrange = 0.5 * dFabs (R.get20() * side.get0()) +
-				dFabs (R.get21() * side.get1()) + dFabs (R.get22() * side.get2());
+		double xrange = 0.5 * ( dFabs (R.get00() * side.get0()) +
+				dFabs (R.get01() * side.get1()) + dFabs (R.get02() * side.get2()) );
+		double yrange = 0.5 * ( dFabs (R.get10() * side.get0()) +
+				dFabs (R.get11() * side.get1()) + dFabs (R.get12() * side.get2()) );
+		double zrange = 0.5 * ( dFabs (R.get20() * side.get0()) +
+				dFabs (R.get21() * side.get1()) + dFabs (R.get22() * side.get2()) );
 //		_aabb.v[0] = pos.v[0] - xrange;
 //		_aabb.v[1] = pos.v[0] + xrange;
 //		_aabb.v[2] = pos.v[1] - yrange;
