@@ -11,6 +11,8 @@ import org.ode4j.math.DVector3C;
 
 public class DrawStuffNull implements DrawStuff {
 
+	private static volatile boolean _run = true;
+	
 	@Override
 	public void dsDrawBox(float[] pos, float[] R, float[] sides) {
 		// Nothing
@@ -101,7 +103,8 @@ public class DrawStuffNull implements DrawStuff {
 		long startTime = System.currentTimeMillis() + 5000;
 		long fps = 0;
 		int loops = 0;
-		while (true) {
+		_run = true;
+		while (_run) {
 			//  while (run) {
 			// read in and process all pending events for the main window
 			//    XEvent event;
@@ -165,7 +168,7 @@ public class DrawStuffNull implements DrawStuff {
 
 	@Override
 	public void dsStop() {
-		// Nothing
+		_run = false;
 	}
 
 	@Override
