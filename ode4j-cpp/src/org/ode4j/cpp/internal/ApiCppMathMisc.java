@@ -23,9 +23,6 @@ package org.ode4j.cpp.internal;
 
 import org.cpp4j.Cstdio;
 import org.cpp4j.FILE;
-import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DVector;
-import org.ode4j.math.DVector3;
 import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.Misc;
 
@@ -94,9 +91,6 @@ public abstract class ApiCppMathMisc extends Common {
 	public static void dMakeRandomVector (double []A, int n, double range) {
 		Misc.dMakeRandomVector(A, n, range);
 	}
-	public static void dMakeRandomVector (DVector3 A, double range) {
-		Misc.dMakeRandomVector(A.v, 3, range);
-	}
 
 	/** make a random matrix with entries between +/- range. A has size n*m. */
 	//ODE_API 
@@ -117,12 +111,6 @@ public abstract class ApiCppMathMisc extends Common {
 	//	dReal dMaxDifference (const dReal *A, const dReal *B, int n, int m);
 	public static double dMaxDifference (final double []A, final double []B, int n, int m) {
 		return Misc.dMaxDifference(A, B, n, m);
-	}
-	public static double dMaxDifference (final DMatrix3 A, final DMatrix3 B, int n, int m) {
-		return Misc.dMaxDifference(A, B, n, m);
-	}
-	public static double dMaxDifference (final DVector A, final DVector B, int n, int m) {
-		return Misc.dMaxDifference(A.v, B.v, n, m);
 	}
 
 	/** return the maximum element difference between the lower triangle of two
