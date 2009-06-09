@@ -76,32 +76,32 @@ public class DemoJoints extends dsFunctions {
 
 
 	// dynamics objects
-	static DWorld world;
-	static DBody[] body= new DBody[2];
-	static DJoint joint;
+	private static DWorld world;
+	private static DBody[] body= new DBody[2];
+	private static DJoint joint;
 
 
 	// data from the command line arguments
-	static int cmd_test_num = -1;
+	private static int cmd_test_num = -1;
 	//static int cmd_interactive = 0;
 	//static int cmd_graphics = 1;
-	static boolean cmd_interactive = false;
-	static boolean cmd_graphics = true;
-	static String cmd_path_to_textures = null;
-	static int cmd_occasional_error = 0;	// perturb occasionally
+	private static boolean cmd_interactive = false;
+	private static boolean cmd_graphics = true;
+	private static String cmd_path_to_textures = null;
+	private static int cmd_occasional_error = 0;	// perturb occasionally
 
 
 	// info about the current test
 	//struct TestInfo;
-	static int test_num = 0;		// number of the current test
-	static int iteration = 0;
-	static int max_iterations = 0;
-	static float max_error = 0;
+	private static int test_num = 0;		// number of the current test
+	private static int iteration = 0;
+	private static int max_iterations = 0;
+	private static float max_error = 0;
 
 	//****************************************************************************
 	// utility stuff
 
-	static double length (DVector3 a)
+	private static double length (DVector3 a)
 	{
 		return a.length();
 		//return dSqrt (a.v[0]*a.v[0] + a.v[1]*a.v[1] + a.v[2]*a.v[2]);
@@ -110,7 +110,7 @@ public class DemoJoints extends dsFunctions {
 
 	// get the max difference between a 3x3 matrix and the identity
 
-	double cmpIdentity (final DMatrix3C A)
+	private double cmpIdentity (final DMatrix3C A)
 	{
 		DMatrix3 I = new DMatrix3();
 		I.dSetZero();//dSetZero (I,12);
@@ -118,13 +118,13 @@ public class DemoJoints extends dsFunctions {
 //		I.v[5] = 1;
 //		I.v[10] = 1;
 		I.eqIdentity();
-		return dMaxDifference (A,I,3,3);
+		return dMaxDifference (A,I);
 	}
 
 	//****************************************************************************
 	// test world construction and utilities
 
-	void constructWorldForTest (double gravity, int bodycount,
+	private void constructWorldForTest (double gravity, int bodycount,
 			/* body 1 pos */           double pos1x, double pos1y, double pos1z,
 			/* body 2 pos */           double pos2x, double pos2y, double pos2z,
 			/* body 1 rotation axis */ double ax1x, double ax1y, double ax1z,
@@ -190,7 +190,7 @@ public class DemoJoints extends dsFunctions {
 
 	// damp the rotational motion of body 0 a bit
 
-	void dampRotationalMotion (double kd)
+	private void dampRotationalMotion (double kd)
 	{
 		final DVector3C w = dBodyGetAngularVel (body[0]);
 		dBodyAddTorque (body[0],-kd*w.get0(),-kd*w.get1(),-kd*w.get2());
@@ -200,7 +200,7 @@ public class DemoJoints extends dsFunctions {
 	// add a spring force to keep the bodies together, otherwise they may fly
 	// apart with some joints.
 
-	void addSpringForce (double ks)
+	private void addSpringForce (double ks)
 	{
 		DVector3C p1 = dBodyGetPosition (body[0]);
 		DVector3C p2 = dBodyGetPosition (body[1]);
@@ -216,8 +216,8 @@ public class DemoJoints extends dsFunctions {
 
 	// add an oscillating Force to body 0
 
-	static double a_3=0;
-	void addOscillatingForce (double fscale)
+	private static double a_3=0;
+	private void addOscillatingForce (double fscale)
 	{
 		//TZ static double a=0;
 		dBodyAddForce (body[0],fscale*cos(2*a_3),fscale*cos(2.7183*a_3),
@@ -240,7 +240,7 @@ public class DemoJoints extends dsFunctions {
 
 	// setup for the given test. return 0 if there is no such test
 
-	int setupTest (int n)
+	private int setupTest (int n)
 	{
 		switch (n) {
 
@@ -530,23 +530,23 @@ public class DemoJoints extends dsFunctions {
 		return 0;
 	}
 
-	static double last_angle_221 = 0;
-	static double a_231 = 0;
-	static double last_pos_321 = 0;
-	static double a_331 = 0;
-	static double last_angle_421 = 0;
-	static double a_431 = 0;
-	static double a_432 = 0;
-	static double a1_600,a2_600,a3_600;
-	static double last_angle_701 = 0;
-	static double last_angle_702 = 0;
-	static double last_angle_721 = 0;
-	static double last_angle_722 = 0;
-	static double last_angle_731 = 0;
-	static double last_angle_732 = 0;
-	static double last_angle_741 = 0;
-	static double last_angle_742 = 0;
-	static double a_804 = 0;
+	private static double last_angle_221 = 0;
+	private static double a_231 = 0;
+	private static double last_pos_321 = 0;
+	private static double a_331 = 0;
+	private static double last_angle_421 = 0;
+	private static double a_431 = 0;
+	private static double a_432 = 0;
+	private static double a1_600,a2_600,a3_600;
+	private static double last_angle_701 = 0;
+	private static double last_angle_702 = 0;
+	private static double last_angle_721 = 0;
+	private static double last_angle_722 = 0;
+	private static double last_angle_731 = 0;
+	private static double last_angle_732 = 0;
+	private static double last_angle_741 = 0;
+	private static double last_angle_742 = 0;
+	private static double a_804 = 0;
 
 	// do stuff specific to this test each iteration. you can check some
 	// invariants for the test -- the return value is some scaled error measurement
@@ -565,7 +565,7 @@ public class DemoJoints extends dsFunctions {
 			// check the orientations are the same
 			DMatrix3C R1 = dBodyGetRotation (body[0]);
 			DMatrix3C R2 = dBodyGetRotation (body[1]);
-			double err1 = dMaxDifference (R1,R2,3,3);
+			double err1 = dMaxDifference (R1,R2);
 			// check the body offset is correct
 			DVector3 p = new DVector3(),pp = new DVector3();
 			DVector3C p1 = dBodyGetPosition (body[0]);
@@ -983,8 +983,8 @@ public class DemoJoints extends dsFunctions {
 
 	// start simulation - set viewpoint
 
-	static float[] xyz = {1.0382f,-1.0811f,1.4700f};
-	static float[] hpr = {135.0000f,-19.5000f,0.0000f};
+	private static float[] xyz = {1.0382f,-1.0811f,1.4700f};
+	private static float[] hpr = {135.0000f,-19.5000f,0.0000f};
 	public void start()
 	{
 		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -995,11 +995,11 @@ public class DemoJoints extends dsFunctions {
 	}
 
 
-	static int count = 0;
+	private static int count = 0;
 	// simulation loop
 
 	//static 
-	void simLoop (boolean pause)
+	private void simLoop (boolean pause)
 	{
 		// stop after a given number of iterations, as long as we are not in
 		// interactive mode
@@ -1063,7 +1063,7 @@ public class DemoJoints extends dsFunctions {
 	//****************************************************************************
 	// conduct a specific test, and report the results
 
-	void doTest (String[] args, int n, int fatal_if_bad_n)
+	private void doTest (String[] args, int n, int fatal_if_bad_n)
 	{
 		test_num = n;
 		iteration = 0;

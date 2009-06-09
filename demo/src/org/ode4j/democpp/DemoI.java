@@ -229,7 +229,7 @@ class DemoI extends dsFunctions {
 				final DVector3C w2 = dBodyGetAngularVel (test_body);
 				final DQuaternionC q1 = dBodyGetQuaternion (anchor_body);
 				final DQuaternionC q2 = dBodyGetQuaternion (test_body);
-				double maxdiff = dMaxDifference (w1,w2,1,3);
+				double maxdiff = dMaxDifference (w1,w2);
 				printf ("w-error = %.4e  (%.2f,%.2f,%.2f) and (%.2f,%.2f,%.2f)\n",
 						maxdiff,w1.get0(),w1.get1(),w1.get2(),w2.get0(),w2.get1(),w2.get2());
 				maxdiff = dMaxDifference (q1,q2,1,4);

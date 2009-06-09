@@ -805,7 +805,7 @@ class DemoCollision extends dsFunctions {
 				if (testFAILED()) return false;
 			// check position of contact point
 			for (j=0; j<3; j++) contact.pos.v[j] -= p.v[j];
-			dMultiply1 (q,dGeomGetRotation(box),contact.pos,3,3,1);
+			dMultiply1 (q,dGeomGetRotation(box),contact.pos);//,3,3,1); TZ TODO check (?)
 			if ( dFabs(dFabs (q.v[0]) - 0.5*s.v[0]) > tol &&
 					dFabs(dFabs (q.v[1]) - 0.5*s.v[1]) > tol &&
 					dFabs(dFabs (q.v[2]) - 0.5*s.v[2]) > tol) {
