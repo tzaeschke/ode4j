@@ -277,21 +277,21 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		dMULTIPLY0_331( ax1, node[0].body._posr.R, axisR1 );
 		dCROSS( q , OP.EQ , ax1, axP );
 
-		info._J[info.J1ap+0] = axP.v[0];
-		info._J[info.J1ap+1] = axP.v[1];
-		info._J[info.J1ap+2] = axP.v[2];
-		info._J[info.J1ap+s+0] = q.v[0];
-		info._J[info.J1ap+s+1] = q.v[1];
-		info._J[info.J1ap+s+2] = q.v[2];
+		info._J[info.J1ap+0] = axP.get0();
+		info._J[info.J1ap+1] = axP.get1();
+		info._J[info.J1ap+2] = axP.get2();
+		info._J[info.J1ap+s+0] = q.get0();
+		info._J[info.J1ap+s+1] = q.get1();
+		info._J[info.J1ap+s+2] = q.get2();
 
 		if ( node[1].body!=null )
 		{
-			info._J[info.J2ap+0] = -axP.v[0];
-			info._J[info.J2ap+1] = -axP.v[1];
-			info._J[info.J2ap+2] = -axP.v[2];
-			info._J[info.J2ap+s+0] = -q.v[0];
-			info._J[info.J2ap+s+1] = -q.v[1];
-			info._J[info.J2ap+s+2] = -q.v[2];
+			info._J[info.J2ap+0] = -axP.get0();
+			info._J[info.J2ap+1] = -axP.get1();
+			info._J[info.J2ap+2] = -axP.get2();
+			info._J[info.J2ap+s+0] = -q.get0();
+			info._J[info.J2ap+s+1] = -q.get1();
+			info._J[info.J2ap+s+2] = -q.get2();
 		}
 
 
@@ -364,13 +364,13 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		dCROSS(info._J, ( info.J1ap ) + s3, OP.EQ , dist, q );
 
 
-		info._J[info.J1lp+s2+0] = ax1.v[0];
-		info._J[info.J1lp+s2+1] = ax1.v[1];
-		info._J[info.J1lp+s2+2] = ax1.v[2];
+		info._J[info.J1lp+s2+0] = ax1.get0();
+		info._J[info.J1lp+s2+1] = ax1.get1();
+		info._J[info.J1lp+s2+2] = ax1.get2();
 
-		info._J[info.J1lp+s3+0] = q.v[0];
-		info._J[info.J1lp+s3+1] = q.v[1];
-		info._J[info.J1lp+s3+2] = q.v[2];
+		info._J[info.J1lp+s3+0] = q.get0();
+		info._J[info.J1lp+s3+1] = q.get1();
+		info._J[info.J1lp+s3+2] = q.get2();
 
 		if ( node[1].body!=null )
 		{
@@ -380,13 +380,13 @@ public class DxJointPR extends DxJoint implements DPRJoint
 			// The cross product is in reverse order since we want the negative value
 			dCROSS(info._J, ( info.J2ap ) + s3, OP.EQ , q, wanchor2 );
 
-			info._J[info.J2lp+s2+0] = -ax1.v[0];
-			info._J[info.J2lp+s2+1] = -ax1.v[1];
-			info._J[info.J2lp+s2+2] = -ax1.v[2];
+			info._J[info.J2lp+s2+0] = -ax1.get0();
+			info._J[info.J2lp+s2+1] = -ax1.get1();
+			info._J[info.J2lp+s2+2] = -ax1.get2();
 
-			info._J[info.J2lp+s3+0] = -q.v[0];
-			info._J[info.J2lp+s3+1] = -q.v[1];
-			info._J[info.J2lp+s3+2] = -q.v[2];
+			info._J[info.J2lp+s3+0] = -q.get0();
+			info._J[info.J2lp+s3+1] = -q.get1();
+			info._J[info.J2lp+s3+2] = -q.get2();
 		}
 
 
@@ -436,9 +436,6 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	}
 	public void dJointSetPRAnchor( DVector3C xyz )
 	{
-		//    dxJointPR joint = ( dxJointPR ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPR.class );
 		setAnchors( xyz, offset, _anchor2 );
 	}
 
@@ -446,10 +443,6 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	//void dJointSetPRAxis1( dJoint j, double x, double y, double z )
 	public void dJointSetPRAxis1( double x, double y, double z )
 	{
-		//    dxJointPR joint = ( dxJointPR ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPR.class );
-
 		setAxes( x, y, z, axisP1, null );
 
 		computeInitialRelativeRotation();
@@ -459,9 +452,6 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	//void dJointSetPRAxis2( dJoint j, double x, double y, double z )
 	public void dJointSetPRAxis2( double x, double y, double z )
 	{
-		//    dxJointPR joint = ( dxJointPR ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPR.class );
 		setAxes( x, y, z, axisR1, axisR2 );
 		computeInitialRelativeRotation();
 	}
@@ -469,9 +459,6 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 	public void dJointSetPRParam( D_PARAM_NAMES_N parameter, double value )
 	{
-		//    dxJointPR joint = ( dxJointPR ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPR.class );
 		if ( parameter.isGroup2())//and( 0xff00 ).eq( 0x100 ))
 		{
 			limotR.set( parameter.toSUB(), value);     // Take only lower part of the
@@ -485,11 +472,6 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	//void dJointGetPRAnchor( dJoint j, dVector3 result )
 	public void dJointGetPRAnchor( DVector3 result )
 	{
-		//    dxJointPR joint = ( dxJointPR ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    dUASSERT( result, "bad result argument" );
-		//    checktype( joint, dxJointPR.class );
-
 		if ( node[1].body!=null )
 			getAnchor2( result, _anchor2 );
 		else
@@ -504,28 +486,17 @@ public class DxJointPR extends DxJoint implements DPRJoint
 //	void dJointGetPRAxis1( dJoint j, dVector3 result )
 	void dJointGetPRAxis1( DVector3 result )
 	{
-//		dxJointPR joint = ( dxJointPR ) j;
-//		dUASSERT( joint, "bad joint argument" );
-		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointPR.class );
 		getAxis( result, axisP1 );
 	}
 
 //	void dJointGetPRAxis2( dJoint j, dVector3 result )
 	void dJointGetPRAxis2( DVector3 result )
 	{
-//		dxJointPR joint = ( dxJointPR ) j;
-//		dUASSERT( joint, "bad joint argument" );
-		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointPR.class );
 		getAxis( result, axisR1 );
 	}
 
 	public double dJointGetPRParam( D_PARAM_NAMES_N parameter )
 	{
-		//    dxJointPR joint = ( dxJointPR ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPR.class );
 		if ( parameter.isGroup2())//and( 0xff00 ).eq( 0x100 ))
 		{
 			return limotR.get( parameter.toSUB());
@@ -539,10 +510,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 //	void dJointAddPRTorque( dJoint j, double torque )
 	void dJointAddPRTorque( double torque )
 	{
-//		dxJointPR joint = ( dxJointPR ) j;
 		DVector3 axis = new DVector3();
-//		dAASSERT( joint );
-//		checktype( joint, dxJointPR.class );
 
 		if (( flags & dJOINT_REVERSE )!=0)
 			torque = -torque;

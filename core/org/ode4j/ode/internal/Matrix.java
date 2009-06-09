@@ -84,7 +84,22 @@ public class Matrix extends FastDot {
 		dMultiply0(A.v, ((DMatrix3)B).v, ((DVector3)C).v, p, q, r);
 		//A.eqMul(B, C);
 	}
+	/** This is equivalent to dMultiply0(A, B, C, 3, 3, 1). */
+	public static void dMultiply0 (DVector3 A, final DMatrix3C B, 
+			final DVector3C C)
+	{
+		dMultiply0(A.v, ((DMatrix3)B).v, ((DVector3)C).v, 3, 3, 1);
+		//A.eqMul(B, C);
+	}
+	/** This is equivalent to dMultiply0(A, B, C, 1, 3, 3). */
+	public static void dMultiply0 (DVector3 a, final DVector3C b, 
+			final DMatrix3C C)
+	{
+		dMultiply0(a.v, ((DVector3)b).v, ((DMatrix3)C).v, 1, 3, 3);
+		//A.eqMul(B, C);
+	}
 	
+	/** This is equivalent to dMultiply0(A, B, C, 3, 3, 3). */
 	public static void dMultiply0 (DMatrix3 A, final DMatrix3C B, 
 			final DMatrix3C C)
 	{
@@ -183,6 +198,18 @@ public class Matrix extends FastDot {
 	{
 		dMultiply1(A.v, ((DMatrix3)B).v, ((DVector3)C).v, p, q, r);
 	}
+	/** This is equivalent to dMultiply1(A, B, C, 3, 3, 1). */
+	public static void dMultiply1 (DVector3 A, final DMatrix3C B, 
+			final DVector3C C)
+	{
+		dMultiply1(A.v, ((DMatrix3)B).v, ((DVector3)C).v, 3, 3, 1);
+	}
+	/** This is equivalent to dMultiply1(A, B, C, 3, 3, 3). */
+	public static void dMultiply1 (DMatrix3 A, final DMatrix3C B, 
+			final DMatrix3C C)
+	{
+		dMultiply1(A.v, ((DMatrix3)B).v, ((DMatrix3)C).v, 3, 3, 3);
+	}
 	
 	public static void dMultiply1 (double []A, final double []B, 
 			final double []C, int p, int q, int r)
@@ -202,6 +229,13 @@ public class Matrix extends FastDot {
 		}
 	}
 
+
+	/** This is equivalent to dMultiply2(A, B, C, 3, 3, 3). */
+	public static void dMultiply2 (DMatrix3 A, final DMatrix3C B, 
+			final DMatrix3C C)
+	{
+		dMultiply2(A.v, ((DMatrix3)B).v, ((DMatrix3)C).v, 3, 3, 3);
+	}
 
 	public static void dMultiply2 (double []A, final double []B, final double []C, int p, int q, int r)
 	{

@@ -22,6 +22,7 @@
 package org.ode4j.ode.internal.joints;
 
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -62,10 +63,6 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	//double dJointGetSliderPosition ( dJoint j )
 	public double dJointGetSliderPosition ( )
 	{
-		//    dxJointSlider joint = ( dxJointSlider ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    checktype ( joint, dxJointSlider.class );
-
 		// get axis1 in global coordinates
 		DVector3 ax1 = new DVector3(), q = new DVector3();
 		dMULTIPLY0_331 ( ax1, node[0].body._posr.R, axis1 );
@@ -106,10 +103,6 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	//double dJointGetSliderPositionRate ( dJoint j )
 	public double dJointGetSliderPositionRate ( )
 	{
-		//    dxJointSlider joint = ( dxJointSlider ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    checktype ( joint, dxJointSlider.class );
-
 		// get axis1 in global coordinates
 		DVector3 ax1 = new DVector3();
 		dMULTIPLY0_331 ( ax1, node[0].body._posr.R, axis1 );
@@ -172,17 +165,15 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 
 		//double *pos1, *pos2, *R1, *R2;
 		DVector3 pos1, pos2;
-		DMatrix3 R1 = new DMatrix3();
-		DMatrix3 R2 = new DMatrix3();
+		DMatrix3C R1 = new DMatrix3();
+		DMatrix3C R2 = new DMatrix3();
 		DVector3 c = new DVector3();
 		pos1 = node[0].body._posr.pos;
-		R1 = node[0].body._posr.R; //TODO clone?
+		R1 = node[0].body._posr.R;
 		if ( node[1].body!= null )
 		{
 			pos2 = node[1].body._posr.pos;
-			R2 = node[1].body._posr.R; //TODO clone?
-//			for ( i = 0; i < 3; i++ )
-//				c.v[i] = pos2[i] - pos1[i];
+			R2 = node[1].body._posr.R;
 			c.eqDiff(pos2, pos1);
 		}
 		else
@@ -255,9 +246,6 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	//void dJointSetSliderAxis ( dJoint j, double x, double y, double z )
 	public void dJointSetSliderAxis ( double x, double y, double z )
 	{
-		//    dxJointSlider joint = ( dxJointSlider ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    checktype ( joint, dxJointSlider.class );
 		setAxes ( x, y, z, axis1, null );
 
 		// compute initial relative rotation body1 . body2, or env . body1
@@ -285,9 +273,6 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	void dJointSetSliderAxisDelta ( double x, double y, double z, 
 			double dx, double dy, double dz )
 	{
-//		dxJointSlider joint = ( dxJointSlider ) j;
-//		dUASSERT ( joint, "bad joint argument" );
-//		checktype ( joint, dxJointSlider.class );
 		setAxes ( x, y, z, axis1, null );
 
 		// compute initial relative rotation body1 . body2, or env . body1
@@ -327,18 +312,12 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	//void dJointSetSliderParam ( dJoint j, D_PARAM_NAMES parameter, double value )
 	public void dJointSetSliderParam ( D_PARAM_NAMES_N parameter, double value )
 	{
-		//    dxJointSlider joint = ( dxJointSlider ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    checktype ( joint, dxJointSlider.class );
 		limot.set ( parameter.toSUB(), value );
 	}
 
 
 	double dJointGetSliderParam ( D_PARAM_NAMES_N parameter )
 	{
-		//    dxJointSlider joint = ( dxJointSlider ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    checktype ( joint, dxJointSlider.class );
 		return limot.get ( parameter.toSUB() );
 	}
 
@@ -346,10 +325,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 //	void dJointAddSliderForce ( dJoint j, double force )
 	public void dJointAddSliderForce ( double force )
 	{
-//		dxJointSlider joint = ( dxJointSlider ) j;
 		DVector3 axis = new DVector3();
-//		dUASSERT ( joint, "bad joint argument" );
-//		checktype ( joint, dxJointSlider.class );
 
 		if ( (flags & dJOINT_REVERSE)!=0 )
 			force -= force;

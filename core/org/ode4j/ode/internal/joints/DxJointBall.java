@@ -39,15 +39,6 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	DVector3 anchor2;   // anchor w.r.t second body
 	double erp;          // error reduction
 	double cfm;          // constraint force mix in
-	//    void set( int num, double value );
-	//    double get( int num );
-
-	//    dxJointBall( dxWorld *w );
-	//    virtual void getInfo1( Info1* info );
-	//    virtual void getInfo2( Info2* info );
-	//    virtual dJointType type() const;
-	//    virtual size_t size() const;
-	//};
 
 	DxJointBall( DxWorld w ) {
 		super( w );
@@ -80,9 +71,6 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	}
 
 
-
-
-
 	//void dJointSetBallAnchor( dJoint j, double x, double y, double z )
 	public void dJointSetBallAnchor( double x, double y, double z )
 	{
@@ -90,9 +78,6 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	}
 	public void dJointSetBallAnchor( DVector3C xyz )
 	{
-		//    dxJointBall joint = ( dxJointBall )j;
-		//    COM.dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointBall.class );
 		setAnchors( xyz, anchor1, anchor2 );
 		//TODO TZ: Why not computeInitialRelativeRotations(); ??? Like in other joints?
 	}
@@ -101,9 +86,6 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	//void dJointSetBallAnchor2( dJoint j, double x, double y, double z )
 	void dJointSetBallAnchor2( double x, double y, double z )
 	{
-		//    dxJointBall joint = ( dxJointBall)j;
-		//    COM.dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointBall.class );
 		//    joint.anchor2.v[0] = x;
 		//    joint.anchor2.v[1] = y;
 		//    joint.anchor2.v[2] = z;
@@ -114,10 +96,6 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	//void dJointGetBallAnchor( dJoint j, dVector3 result )
 	void dJointGetBallAnchor( DVector3 result )
 	{
-		//    dxJointBall joint = ( dxJointBall )j;
-		//    COM.dUASSERT( joint, "bad joint argument" );
-		//    COM.dUASSERT( result, "bad result argument" );
-		//    checktype( joint, dxJointBall.class );
 		if ( (flags & dJOINT_REVERSE) != 0 )
 			getAnchor2( result, anchor2 );
 		else
@@ -128,10 +106,6 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	//void dJointGetBallAnchor2( dJoint j, dVector3 result )
 	void dJointGetBallAnchor2( DVector3 result )
 	{
-		//    dxJointBall joint = ( dxJointBall )j;
-		//    COM.dUASSERT( joint, "bad joint argument" );
-		//    COM.dUASSERT( result, "bad result argument" );
-		//    checktype( joint, dxJointBall.class );
 		if ( (flags & dJOINT_REVERSE) != 0 )
 			getAnchor( result, anchor1 );
 		else
@@ -169,18 +143,12 @@ public class DxJointBall extends DxJoint implements DBallJoint
 
 	void dJointSetBallParam( D_PARAM_NAMES parameter, double value )
 	{
-		//    dxJointBall joint = ( dxJointBall )j;
-		//    COM.dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointBall.class );
 		set( parameter, value );
 	}
 
 
 	double dJointGetBallParam( D_PARAM_NAMES parameter )
 	{
-		//    dxJointBall joint = ( dxJointBall )j;
-		//    COM.dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointBall.class );
 		return get( parameter );
 	}
 

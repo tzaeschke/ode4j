@@ -101,16 +101,19 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		//
 
 		// Setting member variables which are w.r.t body2
-		_axis1.dSetZero();//dSetZero( _axis1, 4 );
-		_axis1.v[1] = 1;
+//		_axis1.dSetZero();//dSetZero( _axis1, 4 );
+//		_axis1.v[1] = 1;
+		_axis1.set(0, 1, 0);
 
 		// Setting member variables which are w.r.t body2
 		_anchor2.dSetZero();//dSetZero( _anchor2, 4 );
-		_axis2.dSetZero();//dSetZero( _axis2, 4 );
-		_axis2.v[2] = 1;
+//		_axis2.dSetZero();//dSetZero( _axis2, 4 );
+//		_axis2.v[2] = 1;
+		_axis2.set(0, 0, 1);
 
-		axisP1.dSetZero();//dSetZero( axisP1, 4 );
-		axisP1.v[0] = 1;
+//		axisP1.dSetZero();//dSetZero( axisP1, 4 );
+//		axisP1.v[0] = 1;
+		axisP1.set(1, 0, 0);
 
 		qrel1.dSetZero();//dSetZero( qrel1, 4 );
 		qrel2.dSetZero();//dSetZero( qrel2, 4 );
@@ -139,24 +142,29 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			// get the anchor2 in global coordinates
 			dMULTIPLY0_331( anchor2, node[1].body._posr.R, _anchor2 );
 
-			q.v[0] = (( node[0].body._posr.pos.v[0] + q.v[0] ) -
-					( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
-			q.v[1] = (( node[0].body._posr.pos.v[1] + q.v[1] ) -
-					( node[1].body._posr.pos.v[1] + anchor2.v[1] ) );
-			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
-					( node[1].body._posr.pos.v[2] + anchor2.v[2] ) );
+//			q.v[0] = (( node[0].body._posr.pos.v[0] + q.v[0] ) -
+//					( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
+//			q.v[1] = (( node[0].body._posr.pos.v[1] + q.v[1] ) -
+//					( node[1].body._posr.pos.v[1] + anchor2.v[1] ) );
+//			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
+//					( node[1].body._posr.pos.v[2] + anchor2.v[2] ) );
+			q.eqSum( node[0].body._posr.pos, q );
+			q.sub( node[1].body._posr.pos );
+			q.sub( anchor2 );
 		}
 		else
 		{
 			//N.B. When there is no body 2 the joint->anchor2 is already in
 			//     global coordinates
 
-			q.v[0] = (( node[0].body._posr.pos.v[0] + q.v[0] ) -
-					( _anchor2.v[0] ) );
-			q.v[1] = (( node[0].body._posr.pos.v[1] + q.v[1] ) -
-					( _anchor2.v[1] ) );
-			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
-					( _anchor2.v[2] ) );
+//			q.v[0] = (( node[0].body._posr.pos.v[0] + q.v[0] ) -
+//					( _anchor2.v[0] ) );
+//			q.v[1] = (( node[0].body._posr.pos.v[1] + q.v[1] ) -
+//					( _anchor2.v[1] ) );
+//			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
+//					( _anchor2.v[2] ) );
+			q.eqSum( node[0].body._posr.pos, q );
+			q.sub( _anchor2 );
 
 		}
 
@@ -214,7 +222,8 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			dCROSS( lvel1, OP.EQ , r, node[0].body.avel );
 
 			// lvel1 += joint->node[0].body->lvel;
-			dOPE( lvel1.v, 0, OP.ADD_EQ , node[0].body.lvel.v );
+			//dOPE( lvel1.v, 0, OP.ADD_EQ , node[0].body.lvel.v );
+			lvel1.add(node[0].body.lvel);
 
 			if ( node[1].body!=null )
 			{
@@ -225,7 +234,9 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 				dCROSS( lvel2, OP.EQ , anchor2, node[1].body.avel );
 
 				// lvel1 -=  lvel2 + joint->node[1].body->lvel;
-				dOPE2( lvel1.v, OP.SUB_EQ , lvel2.v, OP.ADD , node[1].body.lvel.v );
+				//dOPE2( lvel1.v, OP.SUB_EQ , lvel2.v, OP.ADD , node[1].body.lvel.v );
+				lvel1.sub( lvel2 );
+				lvel1.sub( node[1].body.lvel );
 			}
 
 
@@ -321,15 +332,17 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		if ( node[1].body!=null )
 		{
 			dMULTIPLY0_331( wanchor2, R2, _anchor2 );
-			dist.v[0] = wanchor2.v[0] + pos2.v[0] - pos1.v[0];
-			dist.v[1] = wanchor2.v[1] + pos2.v[1] - pos1.v[1];
-			dist.v[2] = wanchor2.v[2] + pos2.v[2] - pos1.v[2];
+//			dist.v[0] = wanchor2.v[0] + pos2.v[0] - pos1.v[0];
+//			dist.v[1] = wanchor2.v[1] + pos2.v[1] - pos1.v[1];
+//			dist.v[2] = wanchor2.v[2] + pos2.v[2] - pos1.v[2];
+			dist.eqSum(wanchor2, pos2).sub( pos1 );
 		}
 		else
 		{
 			// dist[i] = joint->anchor2[i] - pos1[i];
 			//TZ dOPE2( dist, OP.EQ , anchor2, OP.SUB, pos1 );
-			dOP( dist.v, OP.SUB, _anchor2.v, pos1.v );
+			//dOP( dist.v, OP.SUB, _anchor2.v, pos1.v );
+			dist.eqDiff(_anchor2, pos1);
 		}
 
 		DVector3 q = new DVector3(); // Temporary axis vector
@@ -348,21 +361,22 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		DVector3 ax1 = new DVector3(), ax2 = new DVector3();
 		getAxes( ax1, ax2 );
 		double val = dDOT( ax1, ax2 );
-		q.v[0] = ax2.v[0] - val * ax1.v[0];
-		q.v[1] = ax2.v[1] - val * ax1.v[1];
-		q.v[2] = ax2.v[2] - val * ax1.v[2];
+//		q.v[0] = ax2.v[0] - val * ax1.v[0];
+//		q.v[1] = ax2.v[1] - val * ax1.v[1];
+//		q.v[2] = ax2.v[2] - val * ax1.v[2];
+		q.eqSum(ax2, ax1, -val);
 
 		DVector3 p = new DVector3();
 		dCROSS( p, OP.EQ , ax1, q );
 		dNormalize3( p );
 
 		//   info->J1a[s0+i] = p[i];
-		dOPE(info._J, ( info.J1ap ) + s0, OP.EQ , p.v );
+		dOPE(info._J, ( info.J1ap ) + s0, OP.EQ , p );
 
 		if ( node[1].body!=null )
 		{
 			//   info->J2a[s0+i] = -p[i];
-			dOPE(info._J, ( info.J2ap ) + s0, OP.EQ_SUB, p.v );
+			dOPE(info._J, ( info.J2ap ) + s0, OP.EQ_SUB, p );
 		}
 
 		// compute the right hand side of the constraint equation. Set relative
@@ -418,10 +432,10 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		dCROSS(info._J, ( info.J1ap ) + s2, OP.EQ , dist, q );
 
 		// info->J1l[s1+i] = ax[i];
-		dOPE(info._J, ( info.J1lp ) + s1, OP.EQ , ax1.v );
+		dOPE(info._J, ( info.J1lp ) + s1, OP.EQ , ax1 );
 
 		// info->J1l[s2+i] = q[i];
-		dOPE(info._J, ( info.J1lp ) + s2, OP.EQ , q.v);
+		dOPE(info._J, ( info.J1lp ) + s2, OP.EQ , q);
 
 		if ( node[1].body!=null )
 		{
@@ -434,9 +448,9 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 
 			// info->J2l[s1+i] = -ax1[i];
-			dOPE(info._J, ( info.J2lp ) + s1, OP.EQ_SUB, ax1.v );
+			dOPE(info._J, ( info.J2lp ) + s1, OP.EQ_SUB, ax1 );
 			// info->J2l[s2+i] = -ax1[i];
-			dOPE(info._J, ( info.J2lp ) + s2, OP.EQ_SUB, q.v );
+			dOPE(info._J, ( info.J2lp ) + s2, OP.EQ_SUB, q );
 
 		}
 
@@ -451,7 +465,8 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		dMULTIPLY0_331( err, R1, _anchor1 );
 		// err[i] = dist[i] - err[i];
 		//TZ dOPE2( err, OP.EQ , dist, OP.SUB, err );
-		dOP( err.v, OP.SUB , dist.v, err.v );
+		//dOP( err.v, OP.SUB , dist.v, err.v );
+		err.eqDiff(dist, err);
 		info.setC(1, k * dDOT( ax1, err ) );
 		info.setC(2, k * dDOT( q, err ) );
 
@@ -466,9 +481,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	}
 	public void dJointSetPUAnchor( DVector3C xyz )
 	{
-		//    dxJointPU joint = ( dxJointPU ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPU.class );
 		setAnchors( xyz, _anchor1, _anchor2 );
 		computeInitialRelativeRotations();
 	}
@@ -502,24 +514,22 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	void dJointSetPUAnchorDelta( double x, double y, double z,
 			double dx, double dy, double dz )
 	{
-		//		dxJointPU joint = ( dxJointPU ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		//		checktype( joint, dxJointPU.class );
-
 		if ( node[0].body!=null )
 		{
-			node[0].body._posr.pos.v[0] += dx;
-			node[0].body._posr.pos.v[1] += dy;
-			node[0].body._posr.pos.v[2] += dz;
+//			node[0].body._posr.pos.v[0] += dx;
+//			node[0].body._posr.pos.v[1] += dy;
+//			node[0].body._posr.pos.v[2] += dz;
+			node[0].body._posr.pos.add(dx, dy, dz);
 		}
 
 		setAnchors( new DVector3(x, y, z), _anchor1, _anchor2 );
 
 		if ( node[0].body!=null )
 		{
-			node[0].body._posr.pos.v[0] -= dx;
-			node[0].body._posr.pos.v[1] -= dy;
-			node[0].body._posr.pos.v[2] -= dz;
+//			node[0].body._posr.pos.v[0] -= dx;
+//			node[0].body._posr.pos.v[1] -= dy;
+//			node[0].body._posr.pos.v[2] -= dz;
+			node[0].body._posr.pos.sub(dx, dy, dz);
 		}
 
 		computeInitialRelativeRotations();
@@ -529,9 +539,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	public void dJointSetPUAxis1( double x, double y, double z )
 	{
-		//    dxJointPU joint = ( dxJointPU ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPU.class );
 		if (( flags & dJOINT_REVERSE )!=0)
 			setAxes( x, y, z, null, _axis2 );
 		else
@@ -541,9 +548,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	public void dJointSetPUAxis2( double x, double y, double z )
 	{
-		//    dxJointPU joint = ( dxJointPU ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPU.class );
 		if (( flags & dJOINT_REVERSE )!=0)
 			setAxes( x, y, z, _axis1, null );
 		else
@@ -561,24 +565,15 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	public void dJointSetPUAxis3( double x, double y, double z )
 	{
-		//    dxJointPU joint = ( dxJointPU ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPU.class );
-
 		setAxes( x, y, z, axisP1, null );
 
 		computeInitialRelativeRotations();
 	}
 
 
-
-
 	//void dJointGetPUAngles( dJoint j, double *angle1, double *angle2 )
 	void dJointGetPUAngles( RefDouble angle1, RefDouble angle2 )
 	{
-		//		dxJointUniversal joint = ( dxJointUniversal ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		//		checktype( joint, dxJointPU.class );
 		if (( flags & dJOINT_REVERSE )!=0)
 			getAngles( angle2, angle1 );
 		else
@@ -588,9 +583,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	double dJointGetPUAngle1()
 	{
-		//		dxJointUniversal joint = ( dxJointUniversal ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		//		checktype( joint, dxJointPU.class );
 		if (( flags & dJOINT_REVERSE )!=0)
 			return getAngle2Internal();
 		else
@@ -600,9 +592,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	double dJointGetPUAngle2()
 	{
-		//		dxJointUniversal joint = ( dxJointUniversal ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		//		checktype( joint, dxJointPU.class );
 		if (( flags & dJOINT_REVERSE )!=0)
 			return getAngle1Internal();
 		else
@@ -612,10 +601,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	double dJointGetPUAngle1Rate()
 	{
-		//		dxJointPU joint = ( dxJointPU ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		//		checktype( joint, dxJointPU.class );
-
 		if ( node[0].body!=null )
 		{
 			DVector3 axis = new DVector3();
@@ -635,10 +620,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	double dJointGetPUAngle2Rate()
 	{
-		//		dxJointPU joint = ( dxJointPU ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		//		checktype( joint, dxJointPU.class );
-
 		if ( node[0].body!=null )
 		{
 			DVector3 axis = new DVector3();
@@ -658,10 +639,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	public void dJointSetPUParam( D_PARAM_NAMES_N parameter, double value )
 	{
-		//    dxJointPU joint = ( dxJointPU ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPU.class );
-
 		switch ( parameter.toGROUP()) //.and( 0xff00 ))
 		{
 		case dParamGroup1:
@@ -681,35 +658,23 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	//	void dJointGetPUAnchor( dJoint j, dVector3 result )
 	public void dJointGetPUAnchor( DVector3 result )
 	{
-		//		dxJointPU joint = ( dxJointPU ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		//		dUASSERT( result, "bad result argument" );
-		//		checktype( joint, dxJointPU.class );
-
 		if ( node[1].body!=null )
 			getAnchor2( result, _anchor2 );
 		else
 		{
 			// result[i] = joint->anchor2[i];
-			dOPE( result.v, 0, OP.EQ , _anchor2.v );
+			//dOPE( result.v, 0, OP.EQ , _anchor2.v );
+			result.set( _anchor2 );
 		}
 	}
 
 	void dJointGetPUAxis1( DVector3 result )
 	{
-		//		dxJointPU joint = ( dxJointPU ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		dUASSERT( result, "bad result argument" );
-		//		checktype( joint, dxJointPU.class );
 		getAxis( result, _axis1 );
 	}
 
 	void dJointGetPUAxis2( DVector3 result )
 	{
-		//		dxJointPU joint = ( dxJointPU ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		dUASSERT( result, "bad result argument" );
-		//		checktype( joint, dxJointPU.class );
 		getAxis( result, _axis2 );
 	}
 
@@ -728,19 +693,11 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	void dJointGetPUAxis3( DVector3 result )
 	{
-		//		dxJointPU joint = ( dxJointPU ) j;
-		//		dUASSERT( joint, "bad joint argument" );
-		//		dUASSERT( result, "bad result argument" );
-		//		checktype( joint, dxJointPU.class );
 		getAxis( result, axisP1 );
 	}
 
 	public double dJointGetPUParam( D_PARAM_NAMES_N parameter )
 	{
-		//    dxJointPU joint = ( dxJointPU ) j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointPU.class );
-
 		switch ( parameter.toGROUP() )//and( 0xff00 ))
 		{
 		case dParamGroup1:

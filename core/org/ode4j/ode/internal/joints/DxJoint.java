@@ -661,7 +661,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		double sint2 = dSqrt( qrel.get1() * qrel.get1() + qrel.get2() * qrel.get2() + 
 				qrel.get3() * qrel.get3() );
 		//double theta = ( dDOT( qrel.v, 1, axis.v, 0 ) >= 0 ) ? // @@@ padding assumptions
-		double theta = ( (qrel.get1()*axis.get0() + qrel.get2()*axis.get0() + qrel.get3()*axis.get2() ) >= 0 ) ? // @@@ padding assumptions
+		double theta = ( (qrel.get1()*axis.get0() + qrel.get2()*axis.get1() + qrel.get3()*axis.get2() ) >= 0 ) ? // @@@ padding assumptions
 				( 2 * dAtan2( sint2, cost2 ) ) :  // if u points in direction of axis
 					( 2 * dAtan2( sint2, -cost2 ) );  // if u points in opposite direction
 

@@ -179,9 +179,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	
 	public void dJointSetHingeAnchor( DVector3 xyz )
 	{
-		//    dxJointHinge joint = ( dxJointHinge )j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointHinge.class );
 //		setAnchors( x, y, z, anchor1, anchor2 );
 		setAnchors( xyz, anchor1, anchor2 );
 		computeInitialRelativeRotation();
@@ -232,9 +229,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 	public void dJointSetHingeAxis( double x, double y, double z )
 	{
-		//    dxJointHinge joint = ( dxJointHinge )j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointHinge.class );
 		setAxes( x, y, z, _axis1, _axis2 );
 		computeInitialRelativeRotation();
 	}
@@ -243,9 +237,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	//void dJointSetHingeAxisOffset( dxJointHinge j, double x, double y, double z, double dangle )
 	public void dJointSetHingeAxisOffset( double x, double y, double z, double dangle )
 	{
-		//    dxJointHinge joint = ( dxJointHinge )j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointHinge.class );
 		setAxes( x, y, z, _axis1, _axis2 );
 		computeInitialRelativeRotation();
 
@@ -266,10 +257,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	//void dJointGetHingeAnchor( dxJointHinge j, dVector3 result )
 	void dJointGetHingeAnchor( DVector3 result )
 	{
-		//    dxJointHinge joint = ( dxJointHinge )j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    dUASSERT( result, "bad result argument" );
-		//    checktype( joint, dxJointHinge.class );
 		if ( (flags & dJOINT_REVERSE)!=0 )
 			getAnchor2( result, anchor2 );
 		else
@@ -280,10 +267,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	//void dJointGetHingeAnchor2( dxJointHinge j, dVector3 result )
 	void dJointGetHingeAnchor2( DVector3 result )
 	{
-		//    dxJointHinge joint = ( dxJointHinge )j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    dUASSERT( result, "bad result argument" );
-		//    checktype( joint, dxJointHinge.class );
 		if ( (flags & dJOINT_REVERSE)!=0 )
 			getAnchor( result, anchor1 );
 		else
@@ -294,10 +277,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 //	void dJointGetHingeAxis( dxJointHinge j, dVector3 result )
 	void dJointGetHingeAxis( DVector3 result )
 	{
-//		dxJointHinge joint = ( dxJointHinge )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointHinge.class );
 		getAxis( result, _axis1 );
 	}
 
@@ -305,9 +284,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	//void dJointSetHingeParam( dxJointHinge j, D_PARAM_NAMES_X parameter, double value )
 	public void dJointSetHingeParam( D_PARAM_NAMES_N parameter, double value )
 	{
-		//    dxJointHinge joint = ( dxJointHinge )j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointHinge.class );
 		limot.set( parameter.toSUB(), value );
 	}
 
@@ -315,9 +291,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	//double dJointGetHingeParam( dxJointHinge j, D_PARAM_NAMES parameter )
 	double dJointGetHingeParam( D_PARAM_NAMES_N parameter )
 	{
-		//    dxJointHinge joint = ( dxJointHinge )j;
-		//    dUASSERT( joint, "bad joint argument" );
-		//    checktype( joint, dxJointHinge.class );
 		return limot.get( parameter.toSUB() );
 	}
 
@@ -325,9 +298,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	//double dJointGetHingeAngle( dxJointHinge j )
 	public double dJointGetHingeAngle( )
 	{
-		//    dxJointHinge joint = ( dxJointHinge )j;
-		//    dAASSERT( joint );
-		//    checktype( joint, dxJointHinge.class );
 		if ( node[0].body !=null)
 		{
 			double ang = getHingeAngle( node[0].body,
@@ -345,9 +315,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 	public double dJointGetHingeAngleRate()
 	{
-		//    dxJointHinge joint = ( dxJointHinge )j;
-		//    dAASSERT( joint );
-		//    checktype( joint, dxJointHinge.class );
 		if ( node[0].body!=null )
 		{
 			DVector3 axis = new DVector3();
@@ -364,10 +331,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 //	void dJointAddHingeTorque( dxJointHinge j, double torque )
 	void dJointAddHingeTorque( double torque )
 	{
-//		dxJointHinge joint = ( dxJointHinge )j;
 		DVector3 axis = new DVector3();
-//		dAASSERT( joint );
-//		checktype( joint, dxJointHinge.class );
 
 		if ( (flags & dJOINT_REVERSE)!=0 )
 			torque = -torque;

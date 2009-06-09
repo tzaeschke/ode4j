@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DSapSpace;
 
 
@@ -179,8 +179,8 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 			return;
 		}
 
-		DVector6 bounds1 = g1._aabb;
-		DVector6 bounds2 = g2._aabb;
+		DAABB bounds1 = g1._aabb;
+		DAABB bounds2 = g2._aabb;
 
 		// check if either object is able to prove that it doesn't intersect the
 		// AABB of the other
@@ -513,7 +513,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		// 3) Prune the list
 		for (int i = 0; i < buffer.size(); i++) {
 			DxGeom g0 = buffer.get(i);
-			final DVector6 aabb0 = g0._aabb;
+			DAABB aabb0 = g0._aabb;
 			final double idx0ax0max = aabb0.get(ax0idx+1);
 			for (int j = i+1; j < buffer.size(); j++) {
 				DxGeom g1 = buffer.get(j);

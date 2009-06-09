@@ -130,6 +130,24 @@ public class OdeMath extends Rotation {
 		}
 	}
 
+	public static void dOPE(double[] a, int ofs, OP op, DVector3C b) {
+		if (op == OP.EQ) {
+			a[0+ofs] = b.get0(); 
+			a[1+ofs] = b.get1(); 
+			a[2+ofs] = b.get2();
+		} else if (op == OP.ADD_EQ) {
+			a[0+ofs] += b.get0(); 
+			a[1+ofs] += b.get1(); 
+			a[2+ofs] += b.get2();
+		} else if (op == OP.EQ_SUB) {
+			a[0+ofs] = -b.get0(); 
+			a[1+ofs] = -b.get1(); 
+			a[2+ofs] = -b.get2();
+		} else {
+			throw new UnsupportedOperationException(op.name());
+		}
+	}
+
 	private static void dOPadd(double[] a, double[] b, double[] c) {
 		a[0] = ((b)[0]) + ((c)[0]); 
 		a[1] = ((b)[1]) + ((c)[1]); 
@@ -185,15 +203,15 @@ public class OdeMath extends Rotation {
 	//    (a)[1] op1 ((b)[1]) op2 ((c)[1]); \
 	//    (a)[2] op1 ((b)[2]) op2 ((c)[2]);
 
-	public static void dOPE2(double[] a, OP op1, double[] b, OP op2, double[] c) {
-		if (op1 == OP.SUB_EQ && op2 == OP.ADD) {
-		    a[0] -= b[0] + c[0]; 
-		    a[1] -= b[1] + c[1]; 
-		    a[2] -= b[2] + c[2];
-		} else {
-			throw new UnsupportedOperationException(op1 + " / " + op2);
-		}
-	}
+//	public static void dOPE2(double[] a, OP op1, double[] b, OP op2, double[] c) {
+//		if (op1 == OP.SUB_EQ && op2 == OP.ADD) {
+//		    a[0] -= b[0] + c[0]; 
+//		    a[1] -= b[1] + c[1]; 
+//		    a[2] -= b[2] + c[2];
+//		} else {
+//			throw new UnsupportedOperationException(op1 + " / " + op2);
+//		}
+//	}
 
 	/*
 	 * Length, and squared length helpers. dLENGTH returns the length of a dVector3.
