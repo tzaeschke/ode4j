@@ -111,9 +111,9 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 			// other than the given axis.  What I have here works,
 			// although it's probably much slower than need be.
 
-			dRFrom2Axes( R, ax1.get0(), ax1.get1(), ax1.get2(), ax2.get0(), ax2.get1(), ax2.get2() );
+			dRFrom2Axes( R, ax1, ax2 );
 
-			dRtoQ( R, qcross );
+			dQfromR( qcross, R );
 
 
 			// This code is essentialy the same as getHingeAngle(), see the comments
@@ -151,17 +151,17 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 			//      normalized when we set them.
 
 			// We set the quaternion q = [cos(theta), dir*sin(theta)] = [w, x, y, Z]
-			qrel.v[0] = 0;                // equivalent to cos(Pi/2)
-			qrel.v[1] = ax1.v[0] + ax2.v[0];  // equivalent to x*sin(Pi/2); since sin(Pi/2) = 1
-			qrel.v[2] = ax1.v[1] + ax2.v[1];
-			qrel.v[3] = ax1.v[2] + ax2.v[2];
+			qrel.set0( 0 );                // equivalent to cos(Pi/2)
+			qrel.set1( ax1.get0() + ax2.get0() );  // equivalent to x*sin(Pi/2); since sin(Pi/2) = 1
+			qrel.set2( ax1.get1() + ax2.get1() );
+			qrel.set3( ax1.get2() + ax2.get2() );
 
-			double l = dRecip( Math.sqrt( qrel.v[1] * qrel.v[1] + 
-					qrel.v[2] * qrel.v[2] + 
-					qrel.v[3] * qrel.v[3] ) );
-			qrel.v[1] *= l;
-			qrel.v[2] *= l;
-			qrel.v[3] *= l;
+			double l = dRecip( Math.sqrt( qrel.get1() * qrel.get1() + 
+					qrel.get2() * qrel.get2() + 
+					qrel.get3() * qrel.get3() ) );
+			qrel.scale(1, l);
+			qrel.scale(2, l);
+			qrel.scale(3, l);
 
 			dQMultiply0( qcross2, qrel, qcross );
 
@@ -214,8 +214,8 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 			// other than the given axis.  What I have here works,
 			// although it's probably much slower than need be.
 
-			dRFrom2Axes( R, ax1.v[0], ax1.v[1], ax1.v[2], ax2.v[0], ax2.v[1], ax2.v[2] );
-			dRtoQ( R, qcross );
+			dRFrom2Axes( R, ax1, ax2 );
+			dQfromR( qcross, R );
 
 			// This code is essential the same as getHingeAngle(), see the comments
 			// there for details.
@@ -256,8 +256,8 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 			// other than the given axis.  What I have here works,
 			// although it's probably much slower than need be.
 
-			dRFrom2Axes( R, ax2.v[0], ax2.v[1], ax2.v[2], ax1.v[0], ax1.v[1], ax1.v[2] );
-			dRtoQ( R, qcross );
+			dRFrom2Axes( R, ax2, ax1 );
+			dQfromR( qcross, R );
 
 			if ( node[1].body != null )
 			{
@@ -295,7 +295,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 		if ( limiting1 || limiting2 )
 		{
 			//double angle1, angle2;
-			RefDouble angle1 = new RefDouble(0), angle2 = new RefDouble(0); 
+			RefDouble angle1 = new RefDouble(), angle2 = new RefDouble(); 
 			//getAngles( &angle1, &angle2 );
 			getAngles(angle1, angle2);
 			if ( limiting1 )
@@ -334,23 +334,24 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 		// and in the plane of axis1 and axis2
 		getAxes( ax1, ax2 );
 		k = dDOT( ax1, ax2 );
-		ax2_temp.v[0] = ax2.v[0] - k * ax1.v[0];
-		ax2_temp.v[1] = ax2.v[1] - k * ax1.v[1];
-		ax2_temp.v[2] = ax2.v[2] - k * ax1.v[2];
+//		ax2_temp.v[0] = ax2.v[0] - k * ax1.v[0];
+//		ax2_temp.v[1] = ax2.v[1] - k * ax1.v[1];
+//		ax2_temp.v[2] = ax2.v[2] - k * ax1.v[2];
+		ax2_temp.eqSum(ax2, ax1, -k);
 		dCROSS( p, OP.EQ , ax1, ax2_temp );
 		dNormalize3( p );
 
 		int s3 = 3 * info.rowskip();
 
-		info._J[info.J1ap+s3+0] = p.v[0];
-		info._J[info.J1ap+s3+1] = p.v[1];
-		info._J[info.J1ap+s3+2] = p.v[2];
+		info._J[info.J1ap+s3+0] = p.get0();
+		info._J[info.J1ap+s3+1] = p.get1();
+		info._J[info.J1ap+s3+2] = p.get2();
 
 		if ( node[1].body != null)
 		{
-			info._J[info.J2ap+s3+0] = -p.v[0];
-			info._J[info.J2ap+s3+1] = -p.v[1];
-			info._J[info.J2ap+s3+2] = -p.v[2];
+			info._J[info.J2ap+s3+0] = -p.get0();
+			info._J[info.J2ap+s3+1] = -p.get1();
+			info._J[info.J2ap+s3+2] = -p.get2();
 		}
 
 		// compute the right hand side of the constraint equation. set relative
@@ -389,13 +390,13 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 			getAxes( ax1, ax2 );
 
 			// Axis 1.
-			dRFrom2Axes( R, ax1.v[0], ax1.v[1], ax1.v[2], ax2.v[0], ax2.v[1], ax2.v[2] );
-			dRtoQ( R, qcross );
+			dRFrom2Axes( R, ax1, ax2 );
+			dQfromR( qcross, R );
 			dQMultiply1( qrel1, node[0].body._q, qcross );
 
 			// Axis 2.
-			dRFrom2Axes( R, ax2.v[0], ax2.v[1], ax2.v[2], ax1.v[0], ax1.v[1], ax1.v[2] );
-			dRtoQ( R, qcross );
+			dRFrom2Axes( R, ax2, ax1 );
+			dQfromR( qcross, R );
 			if ( node[1].body != null)
 			{
 				dQMultiply1( qrel2, node[1].body._q, qcross );
@@ -403,7 +404,8 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 			else
 			{
 				// set joint->qrel to qcross
-				for ( int i = 0; i < 4; i++ ) qrel2.v[i] = qcross.v[i];
+				//for ( int i = 0; i < 4; i++ ) qrel2.v[i] = qcross.v[i];
+				qrel2.set( qcross );
 			}
 		}
 	}
@@ -416,9 +418,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	}
 	public void dJointSetUniversalAnchor( DVector3C xyz )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointUniversal.class );
 		setAnchors( xyz, _anchor1, _anchor2 );
 		computeInitialRelativeRotations();
 	}
@@ -427,9 +426,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 //	private void dJointSetUniversalAxis1( dJoint j, double x, double y, double z )
 	public void dJointSetUniversalAxis1( double x, double y, double z )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointUniversal.class );
 		if ( (flags & dJOINT_REVERSE) != 0 )
 			setAxes( x, y, z, null, _axis2 );
 		else
@@ -441,9 +437,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 //	private void dJointSetUniversalAxis2( dJoint j, double x, double y, double z )
 	public void dJointSetUniversalAxis2( double x, double y, double z )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointUniversal.class );
 		if ( (flags & dJOINT_REVERSE) != 0 )
 			setAxes( x, y, z, _axis1, null );
 		else
@@ -455,10 +448,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 //	public void dJointGetUniversalAnchor( dJoint j, dVector3 result )
 	public void dJointGetUniversalAnchor( DVector3 result )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointUniversal.class );
 		if ( (flags & dJOINT_REVERSE) != 0 )
 			getAnchor2( result, _anchor2 );
 		else
@@ -469,10 +458,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 //	private void dJointGetUniversalAnchor2( dJoint j, dVector3 result )
 	private void dJointGetUniversalAnchor2( DVector3 result )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointUniversal.class );
 		if ( (flags & dJOINT_REVERSE) != 0 )
 			getAnchor( result, _anchor1 );
 		else
@@ -482,10 +467,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 	public void dJointGetUniversalAxis1( DVector3 result )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointUniversal.class );
 		if ( (flags & dJOINT_REVERSE) != 0)
 			getAxis2( result, _axis2 );
 		else
@@ -495,10 +476,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 	public void dJointGetUniversalAxis2( DVector3 result )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointUniversal.class );
 		if ( (flags & dJOINT_REVERSE) != 0 )
 			getAxis( result, _axis1 );
 		else
@@ -509,9 +486,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 //	private void dJointSetUniversalParam( dJoint j, int parameter, double value )
 	public void dJointSetUniversalParam( D_PARAM_NAMES_N parameter, double value )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointUniversal.class );
 		if (  parameter.isGroup2()) //and( 0xff00 ).eq( 0x100 ))
 		{
 			limot2.set( parameter.toSUB(), value);//parameter.and( 0xff ), value );
@@ -526,9 +500,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 //	private double dJointGetUniversalParam( dJoint j, D_PARAM_NAMES parameter )
 	private double dJointGetUniversalParam( D_PARAM_NAMES_N parameter )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointUniversal.class );
 		if ( parameter.isGroup2())//and( 0xff00 ).eq( 0x100 ))
 		{
 			return limot2.get( parameter.toSUB());//and( 0xff) );
@@ -613,9 +584,6 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 	private void dJointAddUniversalTorques( double torque1, double torque2 )
 	{
-//		dxJointUniversal joint = ( dxJointUniversal )j;
-//		dAASSERT( joint );
-//		checktype( joint, dxJointUniversal.class );
 		DVector3 axis1 = new DVector3(), axis2 = new DVector3();
 
 		if ( (flags & dJOINT_REVERSE) != 0 )

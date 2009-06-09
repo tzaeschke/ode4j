@@ -266,9 +266,6 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private void dJointSetHinge2Axis2( dJoint j, double x, double y, double z )
 	public void dJointSetHinge2Axis2( double x, double y, double z )
 	{
-//		dxJointHinge2 joint = ( dxJointHinge2 )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointHinge2.class );
 		if ( node[1].body != null)
 		{
 			DVector3 q = new DVector3(x, y, z);// q[4];
@@ -296,9 +293,6 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //			D_PARAM_NAMES parameter, double value )
 	public void dJointSetHinge2Param( D_PARAM_NAMES_N parameter, double value )
 	{
-//		dxJointHinge2 joint = ( dxJointHinge2 )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointHinge2.class );
 		//if ( parameter.and(0xff00).eq(0x100) )
 		if (parameter.isGroup2())
 		{
@@ -316,10 +310,6 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private void dJointGetHinge2Anchor( dJoint j, dVector3 result )
 	private void dJointGetHinge2Anchor( DVector3 result )
 	{
-//		dxJointHinge2 joint = ( dxJointHinge2 )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		dUASSERT( result, "bad result argument" );
-//		checktype( dxJointHinge2.class );
 		if ( (flags & dJOINT_REVERSE) != 0 )
 			getAnchor2( result, anchor2 );
 		else
@@ -330,10 +320,6 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private void dJointGetHinge2Anchor2( dJoint j, dVector3 result )
 	private void dJointGetHinge2Anchor2( DVector3 result )
 	{
-//		dxJointHinge2 joint = ( dxJointHinge2 )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointHinge2.class );
 		if ( (flags & dJOINT_REVERSE) != 0)
 			getAnchor( result, anchor1 );
 		else
@@ -344,10 +330,6 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private void dJointGetHinge2Axis1( dJoint j, dVector3 result )
 	private void dJointGetHinge2Axis1( DVector3 result )
 	{
-//		dxJointHinge2 joint = ( dxJointHinge2 )j;
-//		dUASSERT( joint, "bad joint argument" );
-		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointHinge2.class );
 		if ( node[0].body != null)
 		{
 			dMULTIPLY0_331( result, node[0].body._posr.R, _axis1 );
@@ -358,10 +340,6 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private void dJointGetHinge2Axis2( dJoint j, dVector3 result )
 	private void dJointGetHinge2Axis2( DVector3 result )
 	{
-//		dxJointHinge2 joint = ( dxJointHinge2 )j;
-//		dUASSERT( joint, "bad joint argument" );
-		dUASSERT( result, "bad result argument" );
-//		checktype( joint, dxJointHinge2.class );
 		if ( node[1].body!= null )
 		{
 			dMULTIPLY0_331( result, node[1].body._posr.R, _axis2 );
@@ -372,9 +350,6 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private double dJointGetHinge2Param( dJoint j, D_PARAM_NAMES_N parameter )
 	private double dJointGetHinge2Param( D_PARAM_NAMES_N parameter )
 	{
-//		dxJointHinge2 joint = ( dxJointHinge2 )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointHinge2.class );
 		if ( parameter.isGroup2())//and(0xff00).eq(0x100) )
 		{
 			return limot2.get( parameter.toSUB());
@@ -428,13 +403,9 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private void dJointAddHinge2Torques( dJoint j, double torque1, double torque2 )
 	private void dJointAddHinge2Torques( double torque1, double torque2 )
 	{
-//		dxJointHinge2 joint = ( dxJointHinge2 )j;
-		DVector3 axis1 = new DVector3(), axis2 = new DVector3();
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointHinge2.class );
-
 		if ( node[0].body != null && node[1].body != null)
 		{
+			DVector3 axis1 = new DVector3(), axis2 = new DVector3();
 			dMULTIPLY0_331( axis1, node[0].body._posr.R, _axis1 );
 			dMULTIPLY0_331( axis2, node[1].body._posr.R, _axis2 );
 //			axis1.v[0] = axis1.v[0] * torque1 + axis2.v[0] * torque2;

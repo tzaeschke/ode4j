@@ -185,9 +185,6 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 	//int dJointGetLMotorNumAxes( dJoint j )
 	int dJointGetLMotorNumAxes( )
 	{
-//		dxJointLMotor joint = ( dxJointLMotor )j;
-//		dAASSERT( joint );
-//		checktype( joint, dxJointLimitMotor.class );
 		return num;
 	}
 
@@ -195,24 +192,15 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 	//void dJointGetLMotorAxis( dJoint j, int anum, dVector3 result )
 	void dJointGetLMotorAxis( int anum, DVector3 result )
 	{
-		//dxJointLMotor joint = ( dxJointLMotor )j;
-		//dAASSERT( joint != null && anum >= 0 && anum < 3 );
 		dAASSERT( anum >= 0 && anum < 3 );
-		//checktype( joint, dxJointLimitMotor.class );
 		if ( anum < 0 ) anum = 0;
 		if ( anum > 2 ) anum = 2;
-		//    result[0] = joint.axis[anum][0];
-		//    result[1] = joint.axis[anum][1];
-		//    result[2] = joint.axis[anum][2];
 		result.set(axis[anum]);
 	}
 
 	//dReal dJointGetLMotorParam( dJoint j, int parameter )
 	public double dJointGetLMotorParam( D_PARAM_NAMES_N parameter )
 	{
-		//    dxJointLMotor joint = ( dxJointLMotor )j;
-		//    dAASSERT( joint );
-		//    checktype( joint, dxJointLimitMotor.class );
 		int anum = parameter.toGROUP().getIndex();//val() >> 8;
 		if ( anum < 0 ) anum = 0;
 		if ( anum > 2 ) anum = 2;

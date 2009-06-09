@@ -101,15 +101,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	public DxJointLimitMotor limotR = new DxJointLimitMotor();
 
 
-	//    void computeInitialRelativeRotation();
-	//
-	//
-	//    dxJointPiston( dxWorld *w );
-	//    virtual void getInfo1( Info1* info );
-	//    virtual void getInfo2( Info2* info );
-	//    virtual dJointType type() const;
-	//    virtual size_t size() const;
-	//};
 	DxJointPiston ( DxWorld w ) 
 	//dxJoint ( w )
 	{
@@ -133,10 +124,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	double dJointGetPistonPosition (  )
 	{
-//		dxJointPiston joint = ( dxJointPiston ) j;
-//		dUASSERT ( joint, "bad joint argument" );
-//		checktype ( joint, dxJointPiston.class );
-
 		if ( node[0].body!=null )
 		{
 			DVector3 q = new DVector3();
@@ -149,29 +136,34 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 				// get the anchor2 in global coordinates
 				dMULTIPLY0_331 ( anchor2, node[1].body._posr.R, anchor2 );
 
-				q.v[0] = ( ( node[0].body._posr.pos.v[0] + q.v[0] ) -
-						( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
-				q.v[1] = ( ( node[0].body._posr.pos.v[1] + q.v[1] ) -
-						( node[1].body._posr.pos.v[1] + anchor2.v[1] ) );
-				q.v[2] = ( ( node[0].body._posr.pos.v[2] + q.v[2] ) -
-						( node[1].body._posr.pos.v[2] + anchor2.v[2] ) );
+//				q.v[0] = ( ( node[0].body._posr.pos.v[0] + q.v[0] ) -
+//						( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
+//				q.v[1] = ( ( node[0].body._posr.pos.v[1] + q.v[1] ) -
+//						( node[1].body._posr.pos.v[1] + anchor2.v[1] ) );
+//				q.v[2] = ( ( node[0].body._posr.pos.v[2] + q.v[2] ) -
+//						( node[1].body._posr.pos.v[2] + anchor2.v[2] ) );
+				q.eqSum( node[0].body._posr.pos, q );
+				q.sub( node[1].body._posr.pos);
+				q.sub( anchor2 ) ;
 			}
 			else
 			{
 				// N.B. When there is no body 2 the joint->anchor2 is already in
 				//      global coordinates
-				q.v[0] = ( ( node[0].body._posr.pos.v[0] + q.v[0] ) -
-						( anchor2.v[0] ) );
-				q.v[1] = ( ( node[0].body._posr.pos.v[1] + q.v[1] ) -
-						( anchor2.v[1] ) );
-				q.v[2] = ( ( node[0].body._posr.pos.v[2] + q.v[2] ) -
-						( anchor2.v[2] ) );
+//				q.v[0] = ( ( node[0].body._posr.pos.v[0] + q.v[0] ) -
+//						( anchor2.v[0] ) );
+//				q.v[1] = ( ( node[0].body._posr.pos.v[1] + q.v[1] ) -
+//						( anchor2.v[1] ) );
+//				q.v[2] = ( ( node[0].body._posr.pos.v[2] + q.v[2] ) -
+//				( anchor2.v[2] ) );
+				q.eqSum( node[0].body._posr.pos, q ).sub( anchor2 ) ;
 
 				if (( flags & dJOINT_REVERSE )!=0)
 				{
-					q.v[0] = -q.v[0];
-					q.v[1] = -q.v[1];
-					q.v[2] = -q.v[2];
+//					q.v[0] = -q.v[0];
+//					q.v[1] = -q.v[1];
+//					q.v[2] = -q.v[2];
+					q.scale(-1);
 				}
 			}
 
@@ -189,10 +181,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	public double dJointGetPistonPositionRate ( )
 	{
-		//    dxJointPiston joint = ( dxJointPiston ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    checktype ( joint, dxJointPiston.class );
-
 		// get axis in global coordinates
 		DVector3 ax = new DVector3();
 		dMULTIPLY0_331 ( ax, node[0].body._posr.R, axis1 );
@@ -215,10 +203,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	double dJointGetPistonAngle ( )
 	{
-//		dxJointPiston joint = ( dxJointPiston  ) j;
-//		dAASSERT ( joint );
-//		checktype ( joint, dxJointPiston.class );
-
 		if ( node[0].body!=null )
 		{
 			double ang = getHingeAngle ( node[0].body, node[1].body, axis1,
@@ -234,10 +218,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	double dJointGetPistonAngleRate ( )
 	{
-//		dxJointPiston joint = ( dxJointPiston ) j;
-//		dAASSERT ( joint );
-//		checktype ( joint, dxJointPiston.class );
-
 		if ( node[0].body!=null )
 		{
 			DVector3 axis = new DVector3();
@@ -303,30 +283,26 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		// Pull out pos and R for both bodies. also get the `connection'
 		// vector pos2-pos1.
 
-		//    double *pos1, *pos2, *R1, *R2=0;
-		double[] pos1, pos2;//, R1, R2={0};  //TODO???
 		DMatrix3 R1 = null;//TZ
 		DMatrix3 R2 = null;//TZ
 		DVector3 dist = new DVector3(); // Current position of body_1  w.r.t "anchor"
 		// 2 bodies anchor is center of body 2
 		// 1 bodies anchor is origin
 		DVector3 lanchor2 = new DVector3(0, 0, 0);
-		//        {
-		//            0,0,0
-		//        };
 
-		pos1 = node[0].body._posr.pos.v;
+		DVector3C pos1 = node[0].body._posr.pos;
 		R1   = node[0].body._posr.R;
 
 		if ( node[1].body!=null )
 		{
-			pos2 = node[1].body._posr.pos.v;
+			DVector3C pos2 = node[1].body._posr.pos;
 			R2   = node[1].body._posr.R;
 
 			dMULTIPLY0_331 ( lanchor2, R2, anchor2 );
-			dist.v[0] = lanchor2.v[0] + pos2[0] - pos1[0];
-			dist.v[1] = lanchor2.v[1] + pos2[1] - pos1[1];
-			dist.v[2] = lanchor2.v[2] + pos2[2] - pos1[2];
+//			dist.v[0] = lanchor2.v[0] + pos2[0] - pos1[0];
+//			dist.v[1] = lanchor2.v[1] + pos2[1] - pos1[1];
+//			dist.v[2] = lanchor2.v[2] + pos2[2] - pos1[2];
+			dist.eqSum(lanchor2, pos2).sub(pos1);
 		}
 		else
 		{
@@ -334,7 +310,8 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			// R2 = 0;   // N.B. We can do that to be safe but it is no necessary
 			// dist[i] = joint.anchor2[i] - pos1[ui];
 			//TZ dOPE2 ( dist, OP.EQ , anchor2, OP.SUB, pos1 );
-			dOP ( dist.v, OP.SUB , anchor2.v, pos1 );
+			//dOP ( dist.v, OP.SUB , anchor2.v, pos1 );
+			dist.eqDiff(anchor2, pos1);
 		}
 
 		// ======================================================================
@@ -378,16 +355,16 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		dPlaneSpace ( ax1, p, q );
 
 		// LHS
-		dOPE ( info._J, ( info.J1ap ) + s0, OP.EQ , p.v );
-		dOPE ( info._J, ( info.J1ap ) + s1, OP.EQ , q.v );
+		dOPE ( info._J, ( info.J1ap ) + s0, OP.EQ , p );
+		dOPE ( info._J, ( info.J1ap ) + s1, OP.EQ , q );
 
 		DVector3 b = new DVector3();
 		if ( node[1].body !=null)
 		{
 			// LHS
 			//  info.J2a[s0+i] = -p[i]
-			dOPE ( info._J, ( info.J2ap ) + s0, OP.EQ_SUB, p.v );
-			dOPE ( info._J, ( info.J2ap ) + s1, OP.EQ_SUB, q.v );
+			dOPE ( info._J, ( info.J2ap ) + s0, OP.EQ_SUB, p );
+			dOPE ( info._J, ( info.J2ap ) + s1, OP.EQ_SUB, q );
 
 
 			// Some math for the RHS
@@ -436,8 +413,8 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 		dCROSS ( info._J, ( info.J1ap ) + s3, OP.EQ , dist, q );
 
-		dOPE ( info._J, ( info.J1lp ) + s2, OP.EQ , p.v );
-		dOPE ( info._J, ( info.J1lp ) + s3, OP.EQ , q.v );
+		dOPE ( info._J, ( info.J1lp ) + s2, OP.EQ , p );
+		dOPE ( info._J, ( info.J1lp ) + s3, OP.EQ , q );
 
 		if ( node[1].body!=null )
 		{
@@ -448,8 +425,8 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			dCROSS ( info._J, ( info.J2ap ) + s3, OP.EQ , q, lanchor2 );
 
 			// info.J2l[s2+i] = -p[i];
-			dOPE ( info._J, ( info.J2lp ) + s2, OP.EQ_SUB, p.v );
-			dOPE ( info._J, ( info.J2lp ) + s3, OP.EQ_SUB, q.v );
+			dOPE ( info._J, ( info.J2lp ) + s2, OP.EQ_SUB, p );
+			dOPE ( info._J, ( info.J2lp ) + s3, OP.EQ_SUB, q );
 		}
 
 
@@ -463,7 +440,8 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		DVector3 err = new DVector3();
 		dMULTIPLY0_331 ( err, R1, anchor1 );
 		//TZ dOPE2 ( err, OP.EQ , dist, -,  err );
-		dOP ( err.v, OP.SUB, dist.v, err.v );
+		//dOP ( err.v, OP.SUB, dist.v, err.v );
+		err.eqDiff(dist, err);
 
 		info.setC(2, k * dDOT ( p, err ) );
 		info.setC(3, k * dDOT ( q, err ) );
@@ -485,9 +463,9 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			else
 			{
 				// set joint->qrel to the transpose of the first body q
-				qrel.v[0] = node[0].body._q.v[0];
+				qrel.set0( node[0].body._q.get0() );
 				for ( int i = 1; i < 4; i++ )
-					qrel.v[i] = -node[0].body._q.v[i];
+					qrel.set(i, -node[0].body._q.get(i) );
 				// WARNING do we need the - in -joint->node[0].body->q[i]; or not
 			}
 		}
@@ -502,10 +480,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	void dJointSetPistonAnchorOffset (double x, double y, double z,
 			double dx, double dy, double dz)
 	{
-//		dxJointPiston joint = (dxJointPiston) j;
-//		dUASSERT (joint,"bad joint argument");
-//		checktype ( joint, dxJointPiston.class );
-
 		if ((flags & dJOINT_REVERSE)!=0)
 		{
 			dx = -dx;
@@ -539,10 +513,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	//void dJointGetPistonAnchor ( dJoint j, dVector3 result )
 	public void dJointGetPistonAnchor ( DVector3 result )
 	{
-		//    dxJointPiston joint = ( dxJointPiston ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    dUASSERT ( result, "bad result argument" );
-		//    checktype ( joint, dxJointPiston.class );
 		if (( flags & dJOINT_REVERSE )!=0)
 			getAnchor2 ( result, anchor2 );
 		else
@@ -553,10 +523,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	//void dJointGetPistonAnchor2 ( dJoint j, dVector3 result )
 	void dJointGetPistonAnchor2 ( DVector3 result )
 	{
-		//    dxJointPiston joint = ( dxJointPiston ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    dUASSERT ( result, "bad result argument" );
-		//    checktype ( joint, dxJointPiston.class );
 		if (( flags & dJOINT_REVERSE )!=0)
 			getAnchor ( result, anchor1 );
 		else
@@ -567,9 +533,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	void dJointSetPistonAxis ( double x, double y, double z )
 	{
-//		dxJointPiston joint = ( dxJointPiston ) j;
-//		dUASSERT ( joint, "bad joint argument" );
-//		checktype ( joint, dxJointPiston.class );
 		setAxes ( x, y, z, axis1, axis2 );
 
 		computeInitialRelativeRotation();
@@ -579,10 +542,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	void dJointSetPistonAxisDelta ( double x, double y, double z,
 			double dx, double dy, double dz )
 	{
-//		dxJointPiston joint = ( dxJointPiston ) j;
-//		dUASSERT ( joint, "bad joint argument" );
-//		checktype ( joint, dxJointPiston.class );
-
 		setAxes ( x, y, z, axis1, axis2 );
 
 		computeInitialRelativeRotation();
@@ -614,20 +573,11 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	void dJointGetPistonAxis ( DVector3 result )
 	{
-//		dxJointPiston joint = ( dxJointPiston ) j;
-//		dUASSERT ( joint, "bad joint argument" );
-		dUASSERT ( result, "bad result argument" );
-//		checktype ( joint, dxJointPiston.class );
-
 		getAxis ( result, axis1 );
 	}
 
 	public void dJointSetPistonParam ( D_PARAM_NAMES_N parameter, double value )
 	{
-		//    dxJointPiston joint = ( dxJointPiston ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    checktype ( joint, dxJointPiston.class );
-
 		if (  parameter.isGroup2())//and(0xff00).eq(0x100) )
 		{
 			limotR.set ( parameter.toSUB(), value );
@@ -641,10 +591,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	public double dJointGetPistonParam ( D_PARAM_NAMES_N parameter )
 	{
-		//    dxJointPiston joint = ( dxJointPiston ) j;
-		//    dUASSERT ( joint, "bad joint argument" );
-		//    checktype ( joint, dxJointPiston.class );
-
 		if ( parameter.isGroup2())//and(0xff00).eq(0x100) )
 		{
 			return limotR.get ( parameter.toSUB() );
@@ -658,10 +604,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	public void dJointAddPistonForce ( double force )
 	{
-//		dxJointPiston joint = ( dxJointPiston ) j;
-//		dUASSERT ( joint, "bad joint argument" );
-//		checktype ( joint, dxJointPiston.class );
-
 		if (( flags & dJOINT_REVERSE )!=0)
 			force -= force;
 

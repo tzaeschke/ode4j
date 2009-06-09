@@ -1226,7 +1226,7 @@ public abstract class DLCP {
 		} else {
 			tol = 1e-4f;
 		}
-		printf ("dTestSolveLCP()\n");
+		System.out.println ("dTestSolveLCP()");
 
 		double[] A = new double[n*nskip];//ALLOCA (dReal,A,n*nskip*sizeof(dReal));
 		double[] x = new double[n];//ALLOCA (dReal,x,n*sizeof(dReal));

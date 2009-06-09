@@ -301,10 +301,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	//void dJointSetAMotorNumAxes( dxJointAMotor j, int num )
 	public void dJointSetAMotorNumAxes( int num )
 	{
-		//    dxJointAMotor joint = ( dxJointAMotor )j;
-		//    dAASSERT( joint!=null && num >= 0 && num <= 3 );
 		dAASSERT( num >= 0 && num <= 3 );
-		//checktype( joint,dxJointAMotor.class);
 		if ( _mode == AMotorMode.dAMotorEuler )
 		{
 			_num = 3;
@@ -327,11 +324,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	
 	public void dJointSetAMotorAxis( int anum, int rel, DVector3C r )
 	{
-		//    dxJointAMotor joint = ( dxJointAMotor )j;
 		dAASSERT( anum >= 0 && anum <= 2 && rel >= 0 && rel <= 2 );
-		//    checktype( joint,dxJointAMotor.class);
-		//    dUASSERT( !( !joint.node[1].body && ( joint.flags & dJOINT_REVERSE ) && rel == 1 ), "no first body, can't set axis rel=1" );
-		//    dUASSERT( !( !joint.node[1].body && !( joint.flags & dJOINT_REVERSE ) && rel == 2 ), "no second body, can't set axis rel=2" );
 		dUASSERT( !( node[1].body==null 
 				&& (( flags & dJOINT_REVERSE )!=0) && rel == 1 ), 
 				"no first body, can't set axis rel=1" );
@@ -385,10 +378,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	void dJointSetAMotorAngle( int anum, double angle )
 	{
-//		dxJointAMotor joint = ( dxJointAMotor )j;
-//		dAASSERT( joint!=null && anum >= 0 && anum < 3 );
 		dAASSERT( anum >= 0 && anum < 3 );
-//		checktype( joint,dxJointAMotor.class);
 		if ( _mode == AMotorMode.dAMotorUser )
 		{
 			if ( anum < 0 ) anum = 0;
@@ -413,9 +403,6 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	//void dJointSetAMotorMode( dxJointAMotor j, dAMotorMode mode )
 	public void dJointSetAMotorMode( AMotorMode mode )
 	{
-		//    dxJointAMotor joint = ( dxJointAMotor )j;
-		//    dAASSERT( joint );
-		//    checktype( joint,dxJointAMotor.class);
 		_mode = mode;
 		if ( _mode == AMotorMode.dAMotorEuler )
 		{
@@ -427,19 +414,13 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	int dJointGetAMotorNumAxes( )
 	{
-//		dxJointAMotor joint = ( dxJointAMotor )j;
-//		dAASSERT( joint );
-//		checktype( joint,dxJointAMotor.class);
 		return _num;
 	}
 
 
 	void dJointGetAMotorAxis( int anum, DVector3 result )
 	{
-//		dxJointAMotor joint = ( dxJointAMotor )j;
-//		dAASSERT( joint!=null && anum >= 0 && anum < 3 );
 		dAASSERT( anum >= 0 && anum < 3 );
-//		checktype( joint,dxJointAMotor.class);
 		if ( anum < 0 ) anum = 0;
 		if ( anum > 2 ) anum = 2;
 		if ( _rel[anum] > 0 )
@@ -477,10 +458,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	int dJointGetAMotorAxisRel( int anum )
 	{
-//		dxJointAMotor joint = ( dxJointAMotor )j;
-//		dAASSERT( joint!=null && anum >= 0 && anum < 3 );
 		dAASSERT( anum >= 0 && anum < 3 );
-//		checktype( joint,dxJointAMotor.class);
 		if ( anum < 0 ) anum = 0;
 		if ( anum > 2 ) anum = 2;
 		return _rel[anum];
@@ -489,9 +467,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	//TODO use enum?
 	public double dJointGetAMotorAngle( int anum )
 	{
-		//    dxJointAMotor joint = ( dxJointAMotor )j;
 		dAASSERT( anum >= 0 && anum < 3 );
-		//    checktype( joint,dxJointAMotor.class);
 		if ( anum < 0 ) anum = 0;
 		if ( anum > 3 ) anum = 3;
 		return angle[anum];
@@ -500,7 +476,6 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	double dJointGetAMotorAngleRate( int anum )
 	{
-		//dxJointAMotor* joint = (dxJointAMotor*)j;
 		// @@@
 		dDebug( 0, "not yet implemented" );
 		return 0;
@@ -509,9 +484,6 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	double dJointGetAMotorParam( D_PARAM_NAMES_N parameter )
 	{
-//		dxJointAMotor joint = ( dxJointAMotor )j;
-//		dAASSERT( joint );
-//		checktype( joint,dxJointAMotor.class);
 		int anum = parameter.toGROUP().getIndex();// >> 8;
 		//    if ( anum < 0 ) anum = 0;
 		//    if ( anum > 2 ) anum = 2;
@@ -522,19 +494,13 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	AMotorMode dJointGetAMotorMode()
 	{
-//		dxJointAMotor joint = ( dxJointAMotor )j;
-//		dAASSERT( joint );
-//		checktype( joint,dxJointAMotor.class);
 		return _mode;
 	}
 
 
 	void dJointAddAMotorTorques( double torque1, double torque2, double torque3 )
 	{
-//		dxJointAMotor joint = ( dxJointAMotor )j;
 		DVector3[] axes = new DVector3[3];
-//		dAASSERT( joint );
-//		checktype( joint,dxJointAMotor.class);
 
 		if ( _num == 0 )
 			return;

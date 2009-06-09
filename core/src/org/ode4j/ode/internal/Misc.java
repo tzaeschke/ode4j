@@ -164,7 +164,10 @@ public class Misc extends Common {
 
 
 	public static void dMakeRandomVector (DVector3 A, double range) {
-		dMakeRandomVector(A.v, 3, range);
+		for (int i=0; i<3; i++) A.set(i, (dRandReal()*2.0-1.0)*range );
+	}
+	public static void dMakeRandomVector (DQuaternion A, double range) {
+		for (int i=0; i<4; i++) A.set(i, (dRandReal()*2.0-1.0)*range );
 	}
 	public static void dMakeRandomVector (double[]A, int n, double range)
 	{
@@ -172,6 +175,11 @@ public class Misc extends Common {
 	}
 
 
+	public static void dMakeRandomMatrix (DMatrix3 A, double range) {
+		for (int i=0; i<3; i++) {
+			for (int j=0; j<3; j++) A.set(i, j, (dRandReal()*2.0-1.0)*range );
+		}
+	}
 	public static void dMakeRandomMatrix (double[]A, int n, int m, double range)
 	{
 		int skip = dPAD(m);
@@ -206,15 +214,37 @@ public class Misc extends Common {
 		}
 		return max;
 	}
-	public static double dMaxDifference (final DMatrix3C A, final DMatrix3C B, int n, int m)
+	public static double dMaxDifference (final DMatrix3C A, final DMatrix3C B)
 	{
-		return dMaxDifference(((DMatrix3)A).v, ((DMatrix3)B).v, n, m);
+		double diff,max;
+		max = 0;
+		for (int i=0; i<3; i++) {
+			for (int j=0; j<3; j++) {
+				diff = Math.abs(A.get(i,j) - B.get(i,j));
+				if (diff > max) {
+					max = diff;
+				}
+			}
+		}
+		return max;
 	}
-	public static double dMaxDifference (final DVector3C A, final DVector3C B, int n, int m) {
-		return dMaxDifference(((DVector3)A).v, ((DVector3)B).v, n, m);
+	public static double dMaxDifference (final DVector3C A, final DVector3C B) {
+		double max = Math.abs(A.get0() - B.get0());
+		double diff = Math.abs(A.get1() - B.get1());
+		if (diff > max) max = diff;
+		diff = Math.abs(A.get2() - B.get2());
+		if (diff > max) max = diff;
+		return max;
 	}
 	public static double dMaxDifference (final DQuaternionC A, final DQuaternionC B, int n, int m) {
-		return dMaxDifference(((DQuaternion)A).v, ((DQuaternion)B).v, n, m);
+		double max = Math.abs(A.get0() - B.get0());
+		double diff = Math.abs(A.get1() - B.get1());
+		if (diff > max) max = diff;
+		diff = Math.abs(A.get2() - B.get2());
+		if (diff > max) max = diff;
+		diff = Math.abs(A.get3() - B.get3());
+		if (diff > max) max = diff;
+		return max;
 	}
 
 
