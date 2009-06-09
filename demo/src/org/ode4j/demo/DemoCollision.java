@@ -800,7 +800,7 @@ class DemoCollision extends dsFunctions {
 				if (testFAILED()) return false;
 			// check position of contact point
 			contact.pos.sub( p );
-			dMultiply1 (q,box.getRotation(),contact.pos,3,3,1);
+			dMultiply1 (q,box.getRotation(),contact.pos);
 			if ( dFabs(dFabs (q.get0()) - 0.5*s.get0()) > tol &&
 					dFabs(dFabs (q.get1()) - 0.5*s.get1()) > tol &&
 					dFabs(dFabs (q.get2()) - 0.5*s.get2()) > tol) {

@@ -214,7 +214,7 @@ class DemoI extends dsFunctions {
 				DVector3C w2 = test_body.getAngularVel ();
 				DQuaternionC q1 = anchor_body.getQuaternion ();
 				DQuaternionC q2 = test_body.getQuaternion ();
-				double maxdiff = dMaxDifference (w1,w2,1,3);
+				double maxdiff = dMaxDifference (w1,w2);
 				System.out.println ("w-error = " + maxdiff + "  (" + w1 + ") and (" + w2 + ")");
 				maxdiff = dMaxDifference (q1,q2,1,4);
 				System.out.println ("q-error = " + maxdiff);

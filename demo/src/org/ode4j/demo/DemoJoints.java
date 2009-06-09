@@ -21,6 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
+import org.ode4j.drawstuff.DS_API;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -130,7 +131,7 @@ public class DemoJoints extends dsFunctions {
 //		I.v[5] = 1;
 //		I.v[10] = 1;
 		I.eqIdentity();
-		return dMaxDifference (A,I,3,3);
+		return dMaxDifference (A,I);
 	}
 
 	//****************************************************************************
@@ -576,7 +577,7 @@ public class DemoJoints extends dsFunctions {
 			// check the orientations are the same
 			DMatrix3C R1 = body[0].getRotation();
 			DMatrix3C R2 = body[1].getRotation();
-			double err1 = dMaxDifference (R1,R2,3,3);
+			double err1 = dMaxDifference (R1,R2);
 			// check the body offset is correct
 			DVector3 p = new DVector3(),pp = new DVector3();
 			DVector3C p1 = body[0].getPosition();
@@ -1135,6 +1136,7 @@ public class DemoJoints extends dsFunctions {
 	public static void main (String[] args)
 	{
 		OdeHelper.initODE2(0);
+		DS_API.outputToNull();  //Avoid Drawstuff TZ
 
 		// process the command line args. anything that starts with `-' is assumed
 		// to be a drawstuff argument.

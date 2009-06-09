@@ -87,6 +87,7 @@ Check Matrix.factorCholesky(2)()
 
 TODO
 - DOC: @sa -> @see
+- change DxJoint node[0]/[1] to _node0/_node1
 - DEMO: remove references to CPP4J
 - Implement auto-allocation of dContacts.
   dContactGeom() -> auto alloc
