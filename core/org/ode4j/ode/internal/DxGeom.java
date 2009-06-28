@@ -1483,8 +1483,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 		o2.recomputePosr();
 
 		dColliderEntry ce = colliders[o1.type][o2.type];
-		System.out.println("COLLIDE:" + o1.getClass() + " / " + o2.getClass());
-		System.out.println("COLLIDE2:" + o1.type + " / " + o2.type);
 		int count = 0;
 		if (ce.fn != null) {
 			if (ce.reverse) {
@@ -1508,7 +1506,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 				count = (ce.fn).dColliderFn (o1,o2,flags,contacts);
 			}
 		}
-		System.out.println("COLLIDE3:" + count);
 		return count;
 	}
 
