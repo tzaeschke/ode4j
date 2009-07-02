@@ -251,7 +251,7 @@ public class DS_API {
 	 * @ingroup drawstuff
 	 * It changes the way objects are drawn. these changes will apply to all further
 	 * dsDrawXXX() functions. 
-	 * @param the texture number must be a DS_xxx texture constant.
+	 * @param texture_number The texture number must be a DS_xxx texture constant.
 	 * The current texture is colored according to the current color.
 	 * At the start of each frame, the texture is reset to none and the color is
 	 * reset to white.
@@ -293,7 +293,7 @@ public class DS_API {
 	 *        [ R11 R12 R13 0 ]
 	 *        [ R21 R22 R23 0 ]
 	 *        [ R31 R32 R33 0 ]
-	 * @param sides[] is an array of x,y,z side lengths.
+	 * @param sides is an array of x,y,z side lengths.
 	 */
 	//DS_API 
 //	public static  void dsDrawBox (final float pos[3], final float R[12], final float sides[3]) {

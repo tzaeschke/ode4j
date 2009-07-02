@@ -26,6 +26,15 @@ FIX !!!!!!!!!!!!!!!
 - dArray.push() clones Objects!!!!!!!
 
 
+DOC:
+- replace @sa with @see
+- replace \li with <li>
+
+dJointGetAMotorNumAxes: Unused @param 'num'
+dJointGetAMotorAxis: Unused @param 'rel'
+dJointGetAMotorMode: Unused @param 'mode'
+
+
 DIFFERENCES:
 - No GIMPACT/OPCODE, only Heightfield
 - SAP-Space uses different implementation (merge-sort i.o. radix-sort)

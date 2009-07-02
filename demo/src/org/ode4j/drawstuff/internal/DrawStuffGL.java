@@ -1846,10 +1846,10 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 //	void dsDrawBoxD (final double pos[3], final double R[12],
 //			final double sides[3])
 	/**
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawBoxD(double[], double[], double[])
+	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawBox(float[], float[], float[])
 	 */
-	public void dsDrawBox (final DVector3C pos, final DMatrix3C R,
-			final DVector3C sides)
+	public void dsDrawBox (DVector3C pos, DMatrix3C R,
+			DVector3C sides)
 	{
 		int i;
 		float[] pos2=new float[3],R2=new float[12],fsides=new float[3];
@@ -1868,7 +1868,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 	/* (non-Javadoc)
 	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawConvexD(double[], double[], double[], int, double[], int, int[])
 	 */
-	public void dsDrawConvex (final DVector3C pos, final DMatrix3C R,
+	public void dsDrawConvex (DVector3C pos, DMatrix3C R,
 			double[] _planes, int _planecount,
 			double[] _points,
 			int _pointcount,
