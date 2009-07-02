@@ -95,27 +95,32 @@ public interface DJoint {
 		public DVector3 t1 = new DVector3();		/* torque applied to body 1 */
 		public DVector3 f2 = new DVector3();		/* force applied to body 2 */
 		public DVector3 t2 = new DVector3();		/* torque applied to body 2 */
-	} //dJointFeedback;
+	}
+	
 	//virtual ~dJoint() // :
-	public void DESTRUCTOR();
+	void DESTRUCTOR();
 
-	public int getNumBodies();
+	int getNumBodies();
 
-	public void attach (DBody body1, DBody body2);
+	void attach (DBody body1, DBody body2);
 
-	public void setData (Object data);
-	public Object getData();
+	void setData (Object data);
+	Object getData();
 
 	//public dJointType getType();
 
-	public DBody getBody (int index);
+	DBody getBody (int index);
 
-	public void setFeedback(DJoint.DJointFeedback fb);
-	public DJoint.DJointFeedback getFeedback();
+	void setFeedback(DJoint.DJointFeedback fb);
+	DJoint.DJointFeedback getFeedback();
 
 	// If not implemented it will do nothing as describe in the doc
-	public abstract void setParam (D_PARAM_NAMES_N type, double value);
-	public abstract double getParam (D_PARAM_NAMES_N type);
+	void setParam (D_PARAM_NAMES_N type, double value);
+	double getParam (D_PARAM_NAMES_N type);
+
+	void enable();
+	void disable();
+	boolean isEnabled();
 
 	//	private:
 	//		// intentionally undefined, don't use these

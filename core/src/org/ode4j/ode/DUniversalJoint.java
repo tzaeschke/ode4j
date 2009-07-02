@@ -25,28 +25,32 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
 public interface DUniversalJoint extends DJoint {
-	
-	  void setAnchor (double x, double y, double z);
-	  void setAnchor (DVector3C a);
-	  void setAxis1 (double x, double y, double z);
-	  void setAxis1 (DVector3C a);
-	  void setAxis2 (double x, double y, double z);
-	  void setAxis2 (DVector3C a);
 
-	  void getAnchor (DVector3 result);
-	  void getAnchor2 (DVector3 result);
-	  void getAxis1 (DVector3 result);
-	  void getAxis2 (DVector3 result);
+	void setAnchor (double x, double y, double z);
+	void setAnchor (DVector3C a);
+	void setAxis1 (double x, double y, double z);
+	void setAxis1 (DVector3C a);
+	void setAxis2 (double x, double y, double z);
+	void setAxis2 (DVector3C a);
 
-	  //TZ removed to avoid RefDouble usage
-	  //void getAngles(double *angle1, double *angle2);
+	void getAnchor (DVector3 result);
+	void getAnchor2 (DVector3 result);
+	void getAxis1 (DVector3 result);
+	void getAxis2 (DVector3 result);
 
-	  double getAngle1();
-	  double getAngle1Rate();
-	  double getAngle2();
-	  double getAngle2Rate();
+	//TZ removed to avoid RefDouble usage
+	//void getAngles(double *angle1, double *angle2);
 
-	  void addTorques (double torque1, double torque2);
+	double getAngle1();
+	double getAngle1Rate();
+	double getAngle2();
+	double getAngle2Rate();
+
+	void addTorques (double torque1, double torque2);
+	void setAxis1Offset(double x, double y, double z, double offset1,
+			double offset2);
+	void setAxis2Offset(double x, double y, double z, double offset1,
+			double offset2);
 	
 	
 //	  // intentionally undefined, don't use these

@@ -104,7 +104,7 @@ public class DxJointGroup extends DBase implements DJointGroup
 //		stack.add(j);
 //		num++;
     	_stack.add(j);
-		j.flags |= DxJoint.dJOINT_INGROUP;
+		j.setFlagsInGroup();//j.flags |= DxJoint.dJOINT_INGROUP;
     }
     
     

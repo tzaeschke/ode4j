@@ -104,7 +104,7 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 
 		// parallel-check
 		//s = vDir1[0] * PlaneNormal[0] + vDir1[1] * PlaneNormal[1] + vDir1[2] * PlaneNormal[2];
-		s = vDir1.reDot(PlaneNormal);
+		s = vDir1.dot(PlaneNormal);
 		if(s < 0)
 			s += (1.0); // is ca. 0, if vDir1 and PlaneNormal are parallel
 		else
@@ -180,6 +180,8 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 				dVector3Copy(PlaneNormal, contact.normal);
 				contact.g1 = cylinder;
 				contact.g2 = plane;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				if( GeomCount >= (flags & DxGeom.NUMC_MASK))
 					return GeomCount; // enough contactgeoms
@@ -195,6 +197,8 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 				dVector3Copy(PlaneNormal, contact.normal);
 				contact.g1 = cylinder;
 				contact.g2 = plane;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				if( GeomCount >= (flags & DxGeom.NUMC_MASK))
 					return GeomCount; // enough contactgeoms
@@ -210,6 +214,8 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 				dVector3Copy(PlaneNormal, contact.normal);
 				contact.g1 = cylinder;
 				contact.g2 = plane;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				if( GeomCount >= (flags & DxGeom.NUMC_MASK))
 					return GeomCount; // enough contactgeoms
@@ -225,6 +231,8 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 				dVector3Copy(PlaneNormal, contact.normal);
 				contact.g1 = cylinder;
 				contact.g2 = plane;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				if( GeomCount >= (flags & DxGeom.NUMC_MASK))
 					return GeomCount; // enough contactgeoms
@@ -254,6 +262,8 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 				dVector3Copy(PlaneNormal, contact.normal);
 				contact.g1 = cylinder;
 				contact.g2 = plane;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				if( GeomCount >= (flags & DxGeom.NUMC_MASK))
 					return GeomCount; // enough contactgeoms
@@ -268,12 +278,14 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 
 			// depth of the deepest point
 			//contact.depth = planeDepth - planevec[0] * contact.pos[0] - planevec[1] * contact.pos[1] - planevec[2] * contact.pos[2];
-			contact.depth = planeDepth - planevec.reDot(contact.pos);
+			contact.depth = planeDepth - planevec.dot(contact.pos);
 			if(contact.depth >= 0)
 			{
 				dVector3Copy(PlaneNormal, contact.normal);
 				contact.g1 = cylinder;
 				contact.g2 = plane;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				if( GeomCount >= (flags & DxGeom.NUMC_MASK))
 					return GeomCount; // enough contactgeoms

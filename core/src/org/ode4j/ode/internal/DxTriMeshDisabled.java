@@ -21,9 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.nio.ByteBuffer;
-
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector6;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DTriMeshData;
@@ -83,7 +80,7 @@ class DxTriMeshDisabled extends DxTriMesh {
 	}
 
 	//TODO TZ report: identity IS NOT an indentity matrix!
-	private static dMatrix4 identity = new dMatrix4 (
+	private static final dMatrix4 identity = new dMatrix4 (
 			( 0.0 ), ( 0.0 ), ( 0.0 ), ( 0.0 ),
 			( 0.0 ), ( 0.0 ), ( 0.0 ), ( 0.0 ),
 			( 0.0 ), ( 0.0 ), ( 0.0 ), ( 0.0 ),

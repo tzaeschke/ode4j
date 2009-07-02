@@ -1164,7 +1164,7 @@ void dSolveL1T (const double *L, double *b, int n, int nskip)
 		}
 	}
 
-	private static FastLDLT D_LDLT = new FastLDLT();
+	private static final FastLDLT D_LDLT = new FastLDLT();
 	
 	public static void dFactorLDLT(double[] A, double[] d, int n, int nskip1) {
 		D_LDLT.dFactorLDLT(A, d, n, nskip1);

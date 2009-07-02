@@ -744,6 +744,8 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			dVector3Copy(m_vEp0,Contact0.pos);
 			Contact0.g1 = m_gCylinder;
 			Contact0.g2 = m_gBox;
+			Contact0.side1 = -1;
+			Contact0.side2 = -1;
 			dVector3Inv(Contact0.normal);
 			m_nContacts++;
 
@@ -756,6 +758,8 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 				dVector3Copy(m_vEp1,Contact1.pos);
 				Contact1.g1 = m_gCylinder;
 				Contact1.g2 = m_gBox;
+				Contact0.side1 = -1;
+				Contact0.side2 = -1;
 				dVector3Inv(Contact1.normal);
 				m_nContacts++;
 			}
@@ -1003,6 +1007,8 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 						dVector3Copy(vPoint,Contact0.pos);
 						Contact0.g1 = m_gCylinder;
 						Contact0.g2 = m_gBox;
+						Contact0.side1 = -1;
+						Contact0.side2 = -1;
 						dVector3Inv(Contact0.normal);
 						m_nContacts++;
 
@@ -1037,6 +1043,8 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 						dVector3Copy(vPoint,Contact0.pos);
 						Contact0.g1 = m_gCylinder;
 						Contact0.g2 = m_gBox;
+						Contact0.side1 = -1;
+						Contact0.side2 = -1;
 						dVector3Inv(Contact0.normal);
 						m_nContacts++;
 

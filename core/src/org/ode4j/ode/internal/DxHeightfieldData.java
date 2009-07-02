@@ -536,25 +536,25 @@ public class DxHeightfieldData implements DHeightfieldData {
 	//            const unsigned char *pHeightData, int bCopyHeightData,
 	//            dReal width, dReal depth, int widthSamples, int depthSamples,
 	//            dReal scale, dReal offset, dReal thickness, int bWrap )
-	void dGeomHeightfieldDataBuildByte( DxHeightfieldData d,
+	void dGeomHeightfieldDataBuildByte( 
 			final byte[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
 			double scale, double offset, double thickness, boolean bWrap )
 	{
-		dUASSERT( d, "Argument not Heightfield data" );
+//		dUASSERT( d, "Argument not Heightfield data" );
 		dIASSERT( pHeightData!=null );
 		dIASSERT( widthSamples >= 2 );	// Ensure we're making something with at least one cell.
 		dIASSERT( depthSamples >= 2 );
 
 		// set info
-		d.SetData( widthSamples, depthSamples, width, depth, scale, offset, thickness, bWrap );
-		d.m_nGetHeightMode = 1;
-		d.m_bCopyHeightData = bCopyHeightData;
+		SetData( widthSamples, depthSamples, width, depth, scale, offset, thickness, bWrap );
+		m_nGetHeightMode = 1;
+		m_bCopyHeightData = bCopyHeightData;
 
-		if ( d.m_bCopyHeightData == false )
+		if ( m_bCopyHeightData == false )
 		{
 			// Data is referenced only.
-			d.m_pHeightData = pHeightData;
+			m_pHeightData = pHeightData;
 		}
 		else
 		{
@@ -565,11 +565,11 @@ public class DxHeightfieldData implements DHeightfieldData {
 			// Copy data.
 //			memcpy( (void*)d.m_pHeightData, pHeightData,
 //					sizeof( unsigned char ) * d.m_nWidthSamples * d.m_nDepthSamples );
-			d.m_pHeightData = Arrays.copyOf(pHeightData, d.m_nWidthSamples * d.m_nDepthSamples);
+			m_pHeightData = Arrays.copyOf(pHeightData, m_nWidthSamples * m_nDepthSamples);
 		}
 
 		// Find height bounds
-		d.ComputeHeightBounds();
+		ComputeHeightBounds();
 	}
 
 
@@ -734,4 +734,14 @@ public class DxHeightfieldData implements DHeightfieldData {
 				callback, width, depth, widthSamples, depthSamples, 
 				scale, offset, thickness, wrap);
 	}
+		
+	@Override
+	public void buildByte(
+			final byte[] pHeightData, boolean bCopyHeightData,
+			double width, double depth, int widthSamples, int depthSamples,
+			double scale, double offset, double thickness, boolean bWrap ) {
+		dGeomHeightfieldDataBuildByte( pHeightData, bCopyHeightData, 
+				width, depth, widthSamples, depthSamples, scale, offset, thickness, bWrap);
+	}
+
 }

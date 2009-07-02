@@ -137,7 +137,7 @@ public class DxWorld extends DBase implements DWorld {
 		DxJoint nextj, j = firstjoint.get();
 		while (j != null) {
 			nextj = (DxJoint)j.getNext();
-			if ((j.flags & DxJoint.dJOINT_INGROUP) != 0) {
+			if ( j.isFlagsInGroup() ) {
 				// the joint is part of a group, so "deactivate" it instead
 				j.world = null;
 				j.node[0].body = null;
@@ -552,18 +552,18 @@ public class DxWorld extends DBase implements DWorld {
 				}
 				firstRound = false;//quickstart:
 
-					// traverse and tag all body's joints, add untagged connected bodies
-					// to stack
-					for (DxJointNode n=b.firstjoint.get(); n!=null; n=n.next) {
-						if (n.joint.tag==0) {
-							n.joint.tag = 1;
-							joint[jcount++] = n.joint;
-							if (n.body!=null && (n.body.tag==0)) {
-								n.body.tag = 1;
-								stack[stacksize++] = n.body;
-							}
+				// traverse and tag all body's joints, add untagged connected bodies
+				// to stack
+				for (DxJointNode n=b.firstjoint.get(); n!=null; n=n.next) {
+					if (n.joint.tag==0 && n.joint.isEnabledAndDynamic()) {
+						n.joint.tag = 1;
+						joint[jcount++] = n.joint;
+						if (n.body!=null && (n.body.tag==0)) {
+							n.body.tag = 1;
+							stack[stacksize++] = n.body;
 						}
 					}
+				}
 				dIASSERT(stacksize <= world.nb);
 				dIASSERT(stacksize <= world.nj);
 			}
@@ -595,8 +595,9 @@ public class DxWorld extends DBase implements DWorld {
 				}
 			}
 			for (j=world.firstjoint.get(); j != null; j=(DxJoint)j.getNext()) {
-				if ((j.node[0].body!=null && (j.node[0].body.flags & DxBody.dxBodyDisabled)==0) ||
-						(j.node[1].body!=null && (j.node[1].body.flags & DxBody.dxBodyDisabled)==0)) {
+				if ( ((j.node[0].body!=null && (j.node[0].body.flags & DxBody.dxBodyDisabled)==0) ||
+						(j.node[1].body!=null && (j.node[1].body.flags & DxBody.dxBodyDisabled)==0)) 
+					&& j.isEnabledAndDynamic() ){
 					if (j.tag==0) dDebug (0,"attached enabled joint not tagged");
 				}
 				else {

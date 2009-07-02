@@ -23,6 +23,7 @@
 package org.ode4j.ode.internal;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector6;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DQuadTreeSpace;
@@ -49,7 +50,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	private static final int UP = 2;
 
 	//#define DRAWBLOCKS
-	private static boolean DRAWBLOCKS = false; 
+	private static final boolean DRAWBLOCKS = false; 
 
 	//	const int SPLITAXIS = 2;
 	//	const int SPLITS = SPLITAXIS * SPLITAXIS;
@@ -139,7 +140,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 
 		//void Block::Create(const dVector3 Center, const dVector3 Extents, 
 		//Block* Parent, int Depth, Block*& Blocks){
-		void Create(final DVector3 Center, final DVector3 Extents, 
+		void Create(DVector3C Center, DVector3C Extents, 
 				Block Parent, int Depth, Block[] BlocksA, RefInt BlocksP){
 			GeomCount = 0;
 			First = null;
@@ -386,7 +387,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	//dxQuadTreeSpace::dxQuadTreeSpace(dSpace _space, 
 	//dVector3 Center, dVector3 Extents, int Depth) : dxSpace(_space){
 	DxQuadTreeSpace(DxSpace _space, 
-			DVector3 Center, DVector3 Extents, int Depth) {
+			DVector3C Center, DVector3C Extents, int Depth) {
 		super(_space);
 		type = dQuadTreeSpaceClass;
 
@@ -683,8 +684,8 @@ PARENTRECURSE:
 
 	//dSpace dQuadTreeSpaceCreate(dxSpace* space, dVector3 Center, 
 	//dVector3 Extents, int Depth){
-	public static DxQuadTreeSpace dQuadTreeSpaceCreate(DxSpace space, DVector3 Center, 
-			DVector3 Extents, int Depth){
+	public static DxQuadTreeSpace dQuadTreeSpaceCreate(DxSpace space, DVector3C Center, 
+			DVector3C Extents, int Depth){
 		return new DxQuadTreeSpace(space, Center, Extents, Depth);
 	}
 }

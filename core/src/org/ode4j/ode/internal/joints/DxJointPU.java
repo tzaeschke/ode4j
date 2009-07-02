@@ -69,11 +69,14 @@ import org.ode4j.ode.internal.DxWorld;
  */
 public class DxJointPU extends DxJointUniversal implements DPUJoint
 {
-	DVector3 axisP1 = new DVector3();    ///< @brief Axis for the prismatic articulation w.r.t first body.
-	///< @note This is considered as axis2 from the parameter
-	///< view
+	/** 
+	 * @brief Axis for the prismatic articulation w.r.t first body.
+	 * @note This is considered as axis2 from the parameter view
+	 */
+	DVector3 axisP1 = new DVector3();
+
+	/** limit and motor information for the prismatic articulation. */
 	public DxJointLimitMotor limotP = new DxJointLimitMotor(); 
-	///< limit and motor information for the prismatic articulation.
 
 
 	DxJointPU( DxWorld w ) 
@@ -166,7 +169,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			q.eqSum( node[0].body._posr.pos, q );
 			q.sub( _anchor2 );
 
-		}
+	        if ( isFlagsReverse() )
+	        {
+//	            q[0] = -q[0];
+//	            q[1] = -q[1];
+//	            q[2] = -q[2];
+	        	q.scale( -1 );
+	        }		
+	    }
 
 		DVector3 axP = new DVector3();
 		// get prismatic axis in global coordinates
@@ -225,6 +235,12 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			//dOPE( lvel1.v, 0, OP.ADD_EQ , node[0].body.lvel.v );
 			lvel1.add(node[0].body.lvel);
 
+	        // Since we want rate of change along the prismatic axis
+	        // get axisP1 in global coordinates and get the component
+	        // along this axis only
+	        DVector3 axP1 = new DVector3();
+	        dMULTIPLY0_331( axP1, node[0].body._posr.R, axisP1 );
+
 			if ( node[1].body!=null )
 			{
 				// Find the contribution of the angular rotation to the linear speed
@@ -237,15 +253,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 				//dOPE2( lvel1.v, OP.SUB_EQ , lvel2.v, OP.ADD , node[1].body.lvel.v );
 				lvel1.sub( lvel2 );
 				lvel1.sub( node[1].body.lvel );
+
+	            return dDOT( axP1, lvel1 );
+	        }
+	        else
+	        {
+	            double rate = axP1.dot( lvel1 );
+	            return isFlagsReverse() ? -rate : rate;
 			}
-
-
-			// Since we want rate of change along the prismatic axis
-			// get axisP1 in global coordinates and get the component
-			// along this axis only
-			DVector3 axP1 = new DVector3();
-			dMULTIPLY0_331( axP1, node[0].body._posr.R, axisP1 );
-			return dDOT( axP1, lvel1 );
 		}
 
 		return 0.0;
@@ -339,10 +354,21 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		}
 		else
 		{
-			// dist[i] = joint->anchor2[i] - pos1[i];
-			//TZ dOPE2( dist, OP.EQ , anchor2, OP.SUB, pos1 );
-			//dOP( dist.v, OP.SUB, _anchor2.v, pos1.v );
-			dist.eqDiff(_anchor2, pos1);
+	        if ( isFlagsReverse() )
+	        {
+	            // Invert the sign of dist
+//	            dist[0] = pos1[0] - anchor2[0];
+//	            dist[1] = pos1[1] - anchor2[1];
+//	            dist[2] = pos1[2] - anchor2[2];
+	            dist.eqDiff(pos1, _anchor2);
+		    }
+	        else
+	        {
+//	            dist[0] = anchor2[0] - pos1[0];
+//	            dist[1] = anchor2[1] - pos1[1];
+//	            dist[2] = anchor2[2] - pos1[2];
+	            dist.eqDiff(_anchor2, pos1);
+	        }
 		}
 
 		DVector3 q = new DVector3(); // Temporary axis vector
@@ -471,8 +497,19 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		info.setC(2, k * dDOT( q, err ) );
 
 		int row = 3 + limot1.addLimot( this, info, 3, ax1, true );
-		row += limot2.addLimot( this, info, row, ax2, true );
-		limotP.addLimot( this, info, row, axP, false );
+//		row += limot2.addLimot( this, info, row, ax2, true );
+//		limotP.addLimot( this, info, row, axP, false );
+
+	    if (  node[1].body!=null || !isFlagsReverse() )
+	        limotP.addLimot( this, info, row, axP, false );
+	    else
+	    {
+//	        axP[0] = -axP[0];
+//	        axP[1] = -axP[1];
+//	        axP[2] = -axP[2];
+	    	axP.scale( -1 );
+	        limotP.addLimot ( this, info, row, axP, false );
+	    }
 	}
 
 	public void dJointSetPUAnchor( double x, double y, double z )
@@ -537,9 +574,75 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 
 
+	/**
+	 * \brief This function initialize the anchor and the relative position of each body
+	 * such that dJointGetPUPosition will return the dot product of axis and [dx,dy,dy].
+	 *
+	 * The body 1 is moved to [-dx, -dy, -dx] then the anchor is set. This will be the
+	 * position 0 for the prismatic part of the joint. Then the body 1 is moved to its
+	 * original position.
+	 *
+	 * Ex:
+	 * <PRE>
+	 * dReal offset = 1;
+	 * dVector3 dir;
+	 * dJointGetPUAxis3(jId, dir);
+	 * dJointSetPUAnchor(jId, 0, 0, 0);
+	 * // If you request the position you will have: dJointGetPUPosition(jId) == 0
+	 * dJointSetPUAnchorDelta(jId, 0, 0, 0, dir[X]*offset, dir[Y]*offset, dir[Z]*offset);
+	 * // If you request the position you will have: dJointGetPUPosition(jId) == offset
+	 * </PRE>
+
+	 * @param j The PU joint for which the anchor point will be set
+	 * @param x The X position of the anchor point in world frame
+	 * @param y The Y position of the anchor point in world frame
+	 * @param z The Z position of the anchor point in world frame
+	 * @param dx A delta to be added to the X position as if the anchor was set
+	 *           when body1 was at current_position[X] + dx
+	 * @param dx A delta to be added to the Y position as if the anchor was set
+	 *           when body1 was at current_position[Y] + dy
+	 * @param dx A delta to be added to the Z position as if the anchor was set
+	 *           when body1 was at current_position[Z] + dz
+	 * @note Should have the same meaning as dJointSetSliderAxisDelta
+	 */
+	void dJointSetPUAnchorOffset( double x, double y, double z,
+			double dx, double dy, double dz )
+	{
+		DVector3 dxyz = new DVector3(dx, dy, dz);
+		
+	    if ( isFlagsReverse() )
+	    {
+//	        dx = -dx;
+//	        dy = -dy;
+//	        dz = -dz;
+	    	dxyz.scale( -1 );
+	    }
+
+	    if ( node[0].body != null )
+	    {
+//	        node[0].body._posr.pos[0] -= dx;
+//	        node[0].body._posr.pos[1] -= dy;
+//	        node[0].body._posr.pos[2] -= dz;
+	        node[0].body._posr.pos.sub(dxyz);
+	    }
+
+	    setAnchors( dxyz, _anchor1, _anchor2 );
+
+	    if ( node[0].body != null )
+	    {
+//	        node[0].body->posr.pos[0] += dx;
+//	        node[0].body->posr.pos[1] += dy;
+//	        node[0].body->posr.pos[2] += dz;
+	        node[0].body._posr.pos.add(dxyz);
+	    }
+
+	    computeInitialRelativeRotations();
+	}
+
+
 	public void dJointSetPUAxis1( double x, double y, double z )
 	{
-		if (( flags & dJOINT_REVERSE )!=0)
+		if ( isFlagsReverse() )
 			setAxes( x, y, z, null, _axis2 );
 		else
 			setAxes( x, y, z, _axis1, null );
@@ -548,7 +651,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	public void dJointSetPUAxis2( double x, double y, double z )
 	{
-		if (( flags & dJOINT_REVERSE )!=0)
+		if ( isFlagsReverse() )
 			setAxes( x, y, z, _axis1, null );
 		else
 			setAxes( x, y, z, null, _axis2 );
@@ -574,7 +677,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	//void dJointGetPUAngles( dJoint j, double *angle1, double *angle2 )
 	void dJointGetPUAngles( RefDouble angle1, RefDouble angle2 )
 	{
-		if (( flags & dJOINT_REVERSE )!=0)
+		if ( isFlagsReverse() )
 			getAngles( angle2, angle1 );
 		else
 			getAngles( angle1, angle2 );
@@ -583,7 +686,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	double dJointGetPUAngle1()
 	{
-		if (( flags & dJOINT_REVERSE )!=0)
+		if ( isFlagsReverse() )
 			return getAngle2Internal();
 		else
 			return getAngle1Internal();
@@ -592,7 +695,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	double dJointGetPUAngle2()
 	{
-		if (( flags & dJOINT_REVERSE )!=0)
+		if ( isFlagsReverse() )
 			return getAngle1Internal();
 		else
 			return getAngle2Internal();
@@ -605,7 +708,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		{
 			DVector3 axis = new DVector3();
 
-			if (( flags & dJOINT_REVERSE )!=0)
+			if ( isFlagsReverse() )
 				getAxis2( axis, _axis2 );
 			else
 				getAxis( axis, _axis1 );
@@ -624,7 +727,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		{
 			DVector3 axis = new DVector3();
 
-			if (( flags & dJOINT_REVERSE )!=0)
+			if ( isFlagsReverse() )
 				getAxis( axis, _axis1 );
 			else
 				getAxis2( axis, _axis2 );
@@ -670,12 +773,18 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	void dJointGetPUAxis1( DVector3 result )
 	{
-		getAxis( result, _axis1 );
+	    if ( isFlagsReverse() )
+	        getAxis2( result, _axis2 );
+	    else
+	        getAxis( result, _axis1 );
 	}
 
 	void dJointGetPUAxis2( DVector3 result )
 	{
-		getAxis( result, _axis2 );
+	    if ( isFlagsReverse() )
+	        getAxis( result, _axis1 );
+	    else
+	        getAxis2( result, _axis2 );
 	}
 
 	/**
@@ -715,6 +824,34 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		}
 
 		//return 0;
+	}
+
+	void setRelativeValues()
+	{
+	    DVector3 anchor = new DVector3();
+	    dJointGetPUAnchor(anchor);
+	    setAnchors( anchor, _anchor1, _anchor2 );
+
+	    DVector3 ax1 = new DVector3(), ax2 = new DVector3(), ax3 = new DVector3();
+	    dJointGetPUAxis1(ax1);
+	    dJointGetPUAxis2(ax2);
+	    dJointGetPUAxis3(ax3);
+
+	    if ( isFlagsReverse() )
+	    {
+	        setAxes( ax1, null, _axis2 );
+	        setAxes( ax2, _axis1, null );
+	    }
+	    else
+	    {
+	        setAxes( ax1, _axis1, null );
+	        setAxes( ax2, null, _axis2 );
+	    }
+
+
+	    setAxes( ax3, null, axisP1 );
+
+	    computeInitialRelativeRotations();
 	}
 
 
@@ -776,5 +913,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	{ dJointSetPUParam (parameter, value); }
 	public final double getParam (D_PARAM_NAMES_N parameter)
 	{ return dJointGetPUParam (parameter); }
+
+
+	@Override
+	public void setAnchorOffset(double x, double y, double z, double dx,
+			double dy, double dz) {
+		dJointSetPUAnchorOffset(x, y, z, dx, dy, dz);
+	}
+
+
 }
 

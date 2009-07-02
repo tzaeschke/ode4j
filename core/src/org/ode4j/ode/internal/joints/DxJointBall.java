@@ -72,10 +72,6 @@ public class DxJointBall extends DxJoint implements DBallJoint
 
 
 	//void dJointSetBallAnchor( dJoint j, double x, double y, double z )
-	public void dJointSetBallAnchor( double x, double y, double z )
-	{
-		dJointSetBallAnchor( new DVector3(x, y, z) );
-	}
 	public void dJointSetBallAnchor( DVector3C xyz )
 	{
 		setAnchors( xyz, anchor1, anchor2 );
@@ -84,19 +80,15 @@ public class DxJointBall extends DxJoint implements DBallJoint
 
 
 	//void dJointSetBallAnchor2( dJoint j, double x, double y, double z )
-	void dJointSetBallAnchor2( double x, double y, double z )
+	void dJointSetBallAnchor2( DVector3C xyz )
 	{
-		//    joint.anchor2.v[0] = x;
-		//    joint.anchor2.v[1] = y;
-		//    joint.anchor2.v[2] = z;
-		//    joint.anchor2.v[3] = 0;
-		anchor2.set(x, y, z);
+		anchor2.set(xyz);
 	}
 
 	//void dJointGetBallAnchor( dJoint j, dVector3 result )
 	void dJointGetBallAnchor( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 			getAnchor2( result, anchor2 );
 		else
 			getAnchor( result, anchor1 );
@@ -106,7 +98,7 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	//void dJointGetBallAnchor2( dJoint j, dVector3 result )
 	void dJointGetBallAnchor2( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 			getAnchor( result, anchor1 );
 		else
 			getAnchor2( result, anchor2 );
@@ -152,15 +144,26 @@ public class DxJointBall extends DxJoint implements DBallJoint
 		return get( parameter );
 	}
 
+	void setRelativeValues()
+	{
+	    DVector3 anchor = new DVector3();
+	    dJointGetBallAnchor(anchor);
+	    setAnchors( anchor, anchor1, anchor2 );
+	}
+
 
 	// *******************************
 	// API dBallJoint
 	// *******************************
 
 	public final void setAnchor (double x, double y, double z)
-	{ dJointSetBallAnchor (x, y, z); }
-	public final void setAnchor (final DVector3C a)
+	{ dJointSetBallAnchor (new DVector3(x, y, z)); }
+	public final void setAnchor (DVector3C a)
 	{ dJointSetBallAnchor (a); }
+	public final void setAnchor2 (double x, double y, double z)
+	{ dJointSetBallAnchor2 (new DVector3(x, y, z)); }
+	public final void setAnchor2 (DVector3C a)
+	{ dJointSetBallAnchor2 (a); }
 	public final void getAnchor (DVector3 result)
 	{ dJointGetBallAnchor (result); }
 	public final void getAnchor2 (DVector3 result)

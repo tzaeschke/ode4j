@@ -145,8 +145,11 @@ public class DxSphere extends DxGeom implements DSphere {
 			//  dxSphere sphere1 = (dxSphere) o1;
 			//  dxSphere sphere2 = (dxSphere) o2;
 
-			contacts.get(0).g1 = sphere1;
-			contacts.get(0).g2 = sphere2;
+			DContactGeom contact = contacts.get(0);
+			contact.g1 = sphere1;
+			contact.g2 = sphere2;
+			contact.side1 = -1;
+			contact.side2 = -1;
 
 			return DxCollisionUtil.dCollideSpheres (sphere1._final_posr.pos, sphere1._radius,
 					sphere2._final_posr.pos, sphere2._radius, contacts);
@@ -186,8 +189,11 @@ public class DxSphere extends DxGeom implements DSphere {
 			DxSphere sphere = (DxSphere) o1;
 			DxBox box = (DxBox) o2;
 
-			contacts.get(0).g1 = o1;
-			contacts.get(0).g2 = o2;
+			DContactGeom contact = contacts.get(0);
+			contact.g1 = o1;
+			contact.g2 = o2;
+			contact.side1 = -1;
+			contact.side2 = -1;
 
 			//p.set(o1._final_posr.pos).sub(o2._final_posr.pos);
 			p.eqDiff(o1._final_posr.pos, o2._final_posr.pos);
@@ -280,7 +286,10 @@ public class DxSphere extends DxGeom implements DSphere {
 			DContactGeom contact = contacts.get();
 			contact.g1 = o1;
 			contact.g2 = o2;
-			double k = o1._final_posr.pos.reDot( plane.getNormal() );//dDOT (o1._final_posr.pos,plane.getPlanePos());
+			contact.side1 = -1;
+			contact.side2 = -1;
+
+			double k = o1._final_posr.pos.dot( plane.getNormal() );//dDOT (o1._final_posr.pos,plane.getPlanePos());
 			double depth = plane.getDepth() - k + sphere._radius;
 			if (depth >= 0) {
 				//    contact.normal[0] = plane.p[0];

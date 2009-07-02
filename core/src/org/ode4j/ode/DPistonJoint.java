@@ -90,6 +90,8 @@ public interface DPistonJoint extends DJoint {
 	double getParamHiStop2();
 	void setParamLoStop2(double d);
 	void setParamHiStop2(double d);
+	double getAngle();
+	double getAngleRate();
 
 
 	//	 // intentionally undefined, don't use these

@@ -217,12 +217,29 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				double[] dx=new double[6], dy=new double[6], dz=new double[6];
 
 				// Y-axis
-				dy[0] = ( _final_posr.R.get01() * d.m_fMinHeight );
-				dy[1] = ( _final_posr.R.get11() * d.m_fMinHeight );
-				dy[2] = ( _final_posr.R.get21() * d.m_fMinHeight );
+	            if (d.m_fMinHeight != -dInfinity)
+	            {
+	            	dy[0] = ( _final_posr.R.get01() * d.m_fMinHeight );
+	            	dy[1] = ( _final_posr.R.get11() * d.m_fMinHeight );
+	            	dy[2] = ( _final_posr.R.get21() * d.m_fMinHeight );
+	            } else {
+	                // Multiplication is performed to obtain infinity of correct sign
+	                dy[0] = ( _final_posr.R.get01()!=0 ? _final_posr.R.get01() * -dInfinity : (0.0) );
+	                dy[1] = ( _final_posr.R.get11()!=0 ? _final_posr.R.get11() * -dInfinity : (0.0) );
+	                dy[2] = ( _final_posr.R.get21()!=0 ? _final_posr.R.get21() * -dInfinity : (0.0) );
+	            }
+
+	            if (d.m_fMaxHeight != dInfinity)
+	            {
 				dy[3] = ( _final_posr.R.get01() * d.m_fMaxHeight );
 				dy[4] = ( _final_posr.R.get11() * d.m_fMaxHeight );
 				dy[5] = ( _final_posr.R.get21() * d.m_fMaxHeight );
+	            } else {
+	                dy[3] = ( _final_posr.R.get01()!=0 ? _final_posr.R.get01() * dInfinity : (0.0) );
+	                dy[4] = ( _final_posr.R.get11()!=0 ? _final_posr.R.get11() * dInfinity : (0.0) );
+	                dy[5] = ( _final_posr.R.get21()!=0 ? _final_posr.R.get21() * dInfinity : (0.0) );
+	            }
+
 
 				//	#ifdef DHEIGHTFIELD_CORNER_ORIGIN
 				//
@@ -699,6 +716,9 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				pContact.normal.set( 0, -1, 0 );
 
 				pContact.depth =  minY - maxO2Height;
+
+	            pContact.side1 = -1;
+	            pContact.side2 = -1;
 
 				return 1;
 			}
@@ -1504,13 +1524,13 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 			if ( !wrapped )
 			{
 				if (    o2._aabb.get0() > terrain.m_p_data.m_fWidth //MinX
-						||  o2._aabb.get4() > terrain.m_p_data.m_fDepth) {//MinZ
+						&&  o2._aabb.get4() > terrain.m_p_data.m_fDepth) {//MinZ
 					//goto dCollideHeightfieldExit;
 					dCollideHeightfieldExit = true;
 				}
 
 				if (    o2._aabb.get1() < 0 //MaxX
-						||  o2._aabb.get5() < 0) { //MaxZ
+						&&  o2._aabb.get5() < 0) { //MaxZ
 					//goto dCollideHeightfieldExit;
 					dCollideHeightfieldExit = true;
 				}

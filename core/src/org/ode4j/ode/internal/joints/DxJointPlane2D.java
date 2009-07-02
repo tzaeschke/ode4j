@@ -72,12 +72,9 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	//    {   0,  1,  0   },
 	//    {   0,  0,  1,  }
 	//}
-	private static final DVector3[] Midentity =
-	{
-		new DVector3( 1,  0,  0 ),
-		new DVector3( 0,  1,  0 ),
-		new DVector3( 0,  0,  1 )
-	};
+	private static final DVector3 Midentity0 = new DVector3( 1,  0,  0 );
+	private static final DVector3 Midentity1 = new DVector3( 0,  1,  0 );
+	private static final DVector3 Midentity2 = new DVector3( 0,  0,  1 );
 
 
 	DxJointPlane2D( DxWorld w )// :
@@ -169,13 +166,13 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 		// if the slider is powered, or has joint limits, add in the extra row:
 
 		if ( row_motor_x > 0 )
-			motor_x.addLimot( this, info, row_motor_x, Midentity[0], false );
+			motor_x.addLimot( this, info, row_motor_x, Midentity0, false );
 
 		if ( row_motor_y > 0 )
-			motor_y.addLimot( this, info, row_motor_y, Midentity[1], false );
+			motor_y.addLimot( this, info, row_motor_y, Midentity1, false );
 
 		if ( row_motor_angle > 0 )
-			motor_angle.addLimot( this, info, row_motor_angle, Midentity[2], true );
+			motor_angle.addLimot( this, info, row_motor_angle, Midentity2, true );
 	}
 
 
@@ -258,6 +255,18 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	@Override
 	public void setYParamVel(double d) {
 		dJointSetPlane2DYParam(D_PARAM_NAMES_N.dParamVel1, d);
+	}
+
+	/** @deprecated TZ do not use. */
+	@Override
+	public void setXParam(D_PARAM_NAMES parameter, double value) {
+		motor_x.set(parameter, value);
+	}
+
+	/** @deprecated TZ do not use. */
+	@Override
+	public void setYParam(D_PARAM_NAMES parameter, double value) {
+		motor_y.set(parameter, value);
 	}
 }
 

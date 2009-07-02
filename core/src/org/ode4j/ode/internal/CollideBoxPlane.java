@@ -51,6 +51,9 @@ public class CollideBoxPlane implements DColliderFn {
 		DContactGeom contact = contacts.get(0);
 		contact.g1 = o1;
 		contact.g2 = o2;
+		contact.side1 = -1;
+		contact.side2 = -1;
+		  
 		//int ret = 0;
 		RefInt ret = new RefInt();
 
@@ -76,7 +79,7 @@ public class CollideBoxPlane implements DColliderFn {
 
 		// early exit test
 //		double depth = plane._p[3] + (0.5)*(B1+B2+B3) - dDOT(n,o1._final_posr.pos);
-		RefDouble depth = new RefDouble( plane.getDepth() + (0.5)*(B[0]+B[1]+B[2]) - n.reDot(o1._final_posr.pos) );
+		RefDouble depth = new RefDouble( plane.getDepth() + (0.5)*(B[0]+B[1]+B[2]) - n.dot(o1._final_posr.pos) );
 		if (depth.get() < 0) return 0;
 
 		// find number of contacts requested
@@ -285,8 +288,11 @@ public class CollideBoxPlane implements DColliderFn {
 		for (int i=0; i<ret; i++) {
 //			CONTACT(contact,i*skip).g1 = o1;
 //			CONTACT(contact,i*skip).g2 = o2;
-			contacts.get(i*skip).g1 = o1;
-			contacts.get(i*skip).g2 = o2;
+			DContactGeom contact = contacts.get(i*skip);
+			contact.g1 = o1;
+			contact.g2 = o2;
+			contact.side1 = -1;
+			contact.side2 = -1;
 		}
 	}
 	

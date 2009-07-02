@@ -1,6 +1,6 @@
 package org.ode4j.math;
 
-import org.ode4j.math.DMatrix3.DVector3View;
+import org.ode4j.math.DMatrix3.DVector3ColView;
 
 /**
  * This class provides functionality for dVector3 math.
@@ -52,7 +52,7 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 		return this;
 	}
 	
-	public final DVector3 set(DVector3View v2) {
+	public final DVector3 set(DVector3ColView v2) {
 		v[0] = v2.get0(); v[1] = v2.get1(); v[2] = v2.get2();
 		return this;
 	}
@@ -127,14 +127,14 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 		return this;
 	}
 	
-	public final DVector3 eqSum(DVector3View v2, double s1, DVector3 v3, double s2) {
+	public final DVector3 eqSum(DVector3ColView v2, double s1, DVector3 v3, double s2) {
 		v[0] = v2.get0()*s1 + v3.v[0]*s2; 
 		v[1] = v2.get1()*s1 + v3.v[1]*s2; 
 		v[2] = v2.get2()*s1 + v3.v[2]*s2;
 		return this;
 	}
 	
-	public final DVector3 eqSum(DVector3View v2, double s1, DVector3View v3, double s2) {
+	public final DVector3 eqSum(DVector3ColView v2, double s1, DVector3ColView v3, double s2) {
 		v[0] = v2.get0()*s1 + v3.get0()*s2; 
 		v[1] = v2.get1()*s1 + v3.get1()*s2; 
 		v[2] = v2.get2()*s1 + v3.get2()*s2;
@@ -148,7 +148,7 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 		return this;
 	}
 
-	public final DVector3 eqSum(DVector3 v2, DVector3View v3, double s2) {
+	public final DVector3 eqSum(DVector3 v2, DVector3ColView v3, double s2) {
 		v[0] = v2.get0() + v3.get0()*s2; 
 		v[1] = v2.get1() + v3.get1()*s2; 
 		v[2] = v2.get2() + v3.get2()*s2;
@@ -186,7 +186,7 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 	 * @param b 
 	 * @return (this) * b
 	 */
-	public final double reDot(DVector3C b) {
+	public final double dot(DVector3C b) {
 		return get0()*b.get0() + get1()*b.get1() + get2()*b.get2();
 	}
 	
@@ -196,7 +196,7 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 	 * @param b 
 	 * @return (this) * b
 	 */
-	public final double reDot(DVector3View b) {
+	public final double dot(DVector3View b) {
 		return get0()*b.get0() + get1()*b.get1() + get2()*b.get2();
 	}
 	
@@ -401,6 +401,14 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 
 	public DVector3 reScale(double d) {
 		return new DVector3(this).scale(d);
+	}
+
+	public void eqZero() {
+		set(0, 0, 0);
+	}
+
+	public void setZero() {
+		eqZero();
 	}
 }
 

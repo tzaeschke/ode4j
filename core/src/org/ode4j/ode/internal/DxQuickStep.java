@@ -21,8 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.util.Comparator;
-
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.joints.DxJoint;
@@ -34,7 +32,7 @@ import static org.ode4j.ode.OdeMath.*;
 
 class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 	
-	public static DxQuickStep INSTANCE = new DxQuickStep();
+	public static final DxQuickStep INSTANCE = new DxQuickStep();
 	
 	//void dxQuickStepper (dxWorld *world, dxBody * const *body, int nb,
 	//	     dxJoint * const *_joint, int nj, dReal stepsize);
@@ -369,42 +367,47 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 
 	private static class IndexError {
-		double error;		// error to sort on
-		int findex;
+//		double error;		// error to sort on
+//		int findex;
 		int index;		// row index
 	}
 
 
 	//#ifdef REORDER_CONSTRAINTS
 
-	//static int compare_index_error (const void *a, const void *b)
-	private static class IndexErrorComparator implements Comparator<IndexError> {
-//	static int compare_index_error (final IndexError a, final IndexError b)
-//	{
-//		//	if (!REORDER_CONSTRAINTS) { return;} //TZ
-//		if (!REORDER_CONSTRAINTS) { throw new IllegalStateException();} //TZ
-//		final IndexError i1 = (IndexError) a;
-//		final IndexError i2 = (IndexError) b;
-//		if (i1.findex < 0 && i2.findex >= 0) return -1;
-//		if (i1.findex >= 0 && i2.findex < 0) return 1;
-//		if (i1.error < i2.error) return -1;
-//		if (i1.error > i2.error) return 1;
-//		return 0;
-//	}
-
-		//TODO is sort order correct (-1,0,1)??
-		public int compare(IndexError a, IndexError b) {
-			if (!REORDER_CONSTRAINTS) { throw new IllegalStateException();} //TZ
-			final IndexError i1 = (IndexError) a;
-			final IndexError i2 = (IndexError) b;
-			if (i1.findex < 0 && i2.findex >= 0) return -1;
-			if (i1.findex >= 0 && i2.findex < 0) return 1;
-			if (i1.error < i2.error) return -1;
-			if (i1.error > i2.error) return 1;
-			return 0;
+	static {
+		if (REORDER_CONSTRAINTS) {
+			throw new UnsupportedOperationException();
 		}
 	}
-	//#endif
+//	//static int compare_index_error (const void *a, const void *b)
+//	private static class IndexErrorComparator implements Comparator<IndexError> {
+////	static int compare_index_error (final IndexError a, final IndexError b)
+////	{
+////		//	if (!REORDER_CONSTRAINTS) { return;} //TZ
+////		if (!REORDER_CONSTRAINTS) { throw new IllegalStateException();} //TZ
+////		final IndexError i1 = (IndexError) a;
+////		final IndexError i2 = (IndexError) b;
+////		if (i1.findex < 0 && i2.findex >= 0) return -1;
+////		if (i1.findex >= 0 && i2.findex < 0) return 1;
+////		if (i1.error < i2.error) return -1;
+////		if (i1.error > i2.error) return 1;
+////		return 0;
+////	}
+//
+//		//TODO is sort order correct (-1,0,1)??
+//		public int compare(IndexError a, IndexError b) {
+//			if (!REORDER_CONSTRAINTS) { throw new IllegalStateException();} //TZ
+//			final IndexError i1 = (IndexError) a;
+//			final IndexError i2 = (IndexError) b;
+//			if (i1.findex < 0 && i2.findex >= 0) return -1;
+//			if (i1.findex >= 0 && i2.findex < 0) return 1;
+//			if (i1.error < i2.error) return -1;
+//			if (i1.error > i2.error) return 1;
+//			return 0;
+//		}
+//	}
+//	//#endif
 
 
 	//static void SOR_LCP (int m, int nb, dRealMutablePtr J, int *jb, dxBody * const *body,
@@ -677,8 +680,8 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			// compute inverse inertia tensor in global frame
 			dMULTIPLY2_333 (tmp,body[i].invI,body[i]._posr.R);
 			dMULTIPLY0_333 (invI,i*12,body[i]._posr.R.v,0,tmp.v,0);
-			//#ifdef dGYROSCOPIC
-			if (dGYROSCOPIC) {
+
+			if (body[i].isFlagsGyroscopic()) {
 				DMatrix3 I = new DMatrix3();
 				// compute inertia tensor in global frame
 				dMULTIPLY2_333 (tmp,body[i].mass._I,body[i]._posr.R);

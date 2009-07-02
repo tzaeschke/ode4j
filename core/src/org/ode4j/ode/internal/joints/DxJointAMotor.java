@@ -326,10 +326,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	{
 		dAASSERT( anum >= 0 && anum <= 2 && rel >= 0 && rel <= 2 );
 		dUASSERT( !( node[1].body==null 
-				&& (( flags & dJOINT_REVERSE )!=0) && rel == 1 ), 
+				&& isFlagsReverse() && rel == 1 ), 
 				"no first body, can't set axis rel=1" );
 		dUASSERT( !( node[1].body==null 
-				&& !(( flags & dJOINT_REVERSE )!=0) && rel == 2 ), 
+				&& !isFlagsReverse() && rel == 2 ), 
 				"no second body, can't set axis rel=2" );
 		if ( anum < 0 ) anum = 0;
 		if ( anum > 2 ) anum = 2;
@@ -504,7 +504,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		if ( _num == 0 )
 			return;
-		dUASSERT(( flags & dJOINT_REVERSE ) == 0, 
+		dUASSERT( !isFlagsReverse(), 
 				"dJointAddAMotorTorques not yet implemented for reverse AMotor joints" );
 
 		computeGlobalAxes( axes );

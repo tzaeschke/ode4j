@@ -28,55 +28,55 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.math.DVector3View;
 import org.ode4j.math.DVector4;
+import org.ode4j.math.DMatrix3.DVector3RowTView;
 import org.ode4j.ode.internal.Rotation;
 
 public class OdeMath extends Rotation {
-
-	public static final OdeMath INSTANCE = new OdeMath();
 
 	private OdeMath() {
 		//private
 	}
 
-	/**
-	 * macro to access elements i,j in an NxM matrix A, independent of the
-	 * matrix storage convention.
-	 */
-	//#define dACCESS33(A,i,j) ((A)[(i)*4+(j)])
-	private double dACCESS33(double[] A, int i, int j) { 
-		return A[ i*4 + j ]; 
-	} 
-
-
-	/**
-	 * Macro to test for valid floating point values
-	 */
-	//#define dVALIDVEC3(v) (!(dIsNan(v[0]) || dIsNan(v[1]) || dIsNan(v[2])))
-	//#define dVALIDVEC4(v) (!(dIsNan(v[0]) || dIsNan(v[1]) || dIsNan(v[2]) || dIsNan(v[3])))
-	//#define dVALIDMAT3(m) (!(dIsNan(m[0]) || dIsNan(m[1]) || dIsNan(m[2]) || dIsNan(m[3]) || dIsNan(m[4]) || dIsNan(m[5]) || dIsNan(m[6]) || dIsNan(m[7]) || dIsNan(m[8]) || dIsNan(m[9]) || dIsNan(m[10]) || dIsNan(m[11])))
-	//#define dVALIDMAT4(m) (!(dIsNan(m[0]) || dIsNan(m[1]) || dIsNan(m[2]) || dIsNan(m[3]) || dIsNan(m[4]) || dIsNan(m[5]) || dIsNan(m[6]) || dIsNan(m[7]) || dIsNan(m[8]) || dIsNan(m[9]) || dIsNan(m[10]) || dIsNan(m[11]) || dIsNan(m[12]) || dIsNan(m[13]) || dIsNan(m[14]) || dIsNan(m[15]) ))
-	private boolean dVALIDVEC3(DVector3 v3) { 
-		double[] v = v3.v;
-		return (!(dIsNan(v[0]) || dIsNan(v[1]) || dIsNan(v[2])));
-	}
-	private boolean dVALIDVEC4(DVector4 v4) {
-		double[] v = v4.v;
-		return (!(dIsNan(v[0]) || dIsNan(v[1]) || dIsNan(v[2]) || dIsNan(v[3])));
-	}
-	private boolean dVALIDMAT3(DMatrix3 m3) { 
-		double[] m = m3.v;
-		return (!(dIsNan(m[0]) || dIsNan(m[1]) || dIsNan(m[2]) || dIsNan(m[3]) 
-				|| dIsNan(m[4]) || dIsNan(m[5]) || dIsNan(m[6]) || dIsNan(m[7]) 
-				|| dIsNan(m[8]) || dIsNan(m[9]) || dIsNan(m[10]) || dIsNan(m[11]))); 
-	}
-	private boolean dVALIDMAT4(dMatrix4 m4) {
-		double[] m = m4.v;
-		return (!(dIsNan(m[0]) || dIsNan(m[1]) || dIsNan(m[2]) || dIsNan(m[3]) 
-				|| dIsNan(m[4]) || dIsNan(m[5]) || dIsNan(m[6]) || dIsNan(m[7]) 
-				|| dIsNan(m[8]) || dIsNan(m[9]) || dIsNan(m[10]) || dIsNan(m[11]) 
-				|| dIsNan(m[12]) || dIsNan(m[13]) || dIsNan(m[14]) || dIsNan(m[15]) ));
-	}
+//	/**
+//	 * macro to access elements i,j in an NxM matrix A, independent of the
+//	 * matrix storage convention.
+//	 */
+//	//#define dACCESS33(A,i,j) ((A)[(i)*4+(j)])
+//	private double dACCESS33(double[] A, int i, int j) { 
+//		return A[ i*4 + j ]; 
+//	} 
+//
+//
+//	/**
+//	 * Macro to test for valid floating point values
+//	 */
+//	//#define dVALIDVEC3(v) (!(dIsNan(v[0]) || dIsNan(v[1]) || dIsNan(v[2])))
+//	//#define dVALIDVEC4(v) (!(dIsNan(v[0]) || dIsNan(v[1]) || dIsNan(v[2]) || dIsNan(v[3])))
+//	//#define dVALIDMAT3(m) (!(dIsNan(m[0]) || dIsNan(m[1]) || dIsNan(m[2]) || dIsNan(m[3]) || dIsNan(m[4]) || dIsNan(m[5]) || dIsNan(m[6]) || dIsNan(m[7]) || dIsNan(m[8]) || dIsNan(m[9]) || dIsNan(m[10]) || dIsNan(m[11])))
+//	//#define dVALIDMAT4(m) (!(dIsNan(m[0]) || dIsNan(m[1]) || dIsNan(m[2]) || dIsNan(m[3]) || dIsNan(m[4]) || dIsNan(m[5]) || dIsNan(m[6]) || dIsNan(m[7]) || dIsNan(m[8]) || dIsNan(m[9]) || dIsNan(m[10]) || dIsNan(m[11]) || dIsNan(m[12]) || dIsNan(m[13]) || dIsNan(m[14]) || dIsNan(m[15]) ))
+//	private boolean dVALIDVEC3(DVector3 v3) { 
+//		double[] v = v3.v;
+//		return (!(dIsNan(v[0]) || dIsNan(v[1]) || dIsNan(v[2])));
+//	}
+//	private boolean dVALIDVEC4(DVector4 v4) {
+//		double[] v = v4.v;
+//		return (!(dIsNan(v[0]) || dIsNan(v[1]) || dIsNan(v[2]) || dIsNan(v[3])));
+//	}
+//	private boolean dVALIDMAT3(DMatrix3 m3) { 
+//		double[] m = m3.v;
+//		return (!(dIsNan(m[0]) || dIsNan(m[1]) || dIsNan(m[2]) || dIsNan(m[3]) 
+//				|| dIsNan(m[4]) || dIsNan(m[5]) || dIsNan(m[6]) || dIsNan(m[7]) 
+//				|| dIsNan(m[8]) || dIsNan(m[9]) || dIsNan(m[10]) || dIsNan(m[11]))); 
+//	}
+//	private boolean dVALIDMAT4(dMatrix4 m4) {
+//		double[] m = m4.v;
+//		return (!(dIsNan(m[0]) || dIsNan(m[1]) || dIsNan(m[2]) || dIsNan(m[3]) 
+//				|| dIsNan(m[4]) || dIsNan(m[5]) || dIsNan(m[6]) || dIsNan(m[7]) 
+//				|| dIsNan(m[8]) || dIsNan(m[9]) || dIsNan(m[10]) || dIsNan(m[11]) 
+//				|| dIsNan(m[12]) || dIsNan(m[13]) || dIsNan(m[14]) || dIsNan(m[15]) ));
+//	}
 
 
 	public enum OP { ADD, SUB, MUL, DIV, EQ, /** += */ ADD_EQ, /** =- */ EQ_SUB, 
@@ -220,9 +220,9 @@ public class OdeMath extends Rotation {
 
 	//#define dLENGTHSQUARED(a) (((a)[0])*((a)[0]) + ((a)[1])*((a)[1]) + ((a)[2])*((a)[2]))
 	//public 
-	private double dLENGTHSQUARED(DVector3 a) {
-		return ((a.v[0])*(a.v[0]) + (a.v[1])*(a.v[1]) + (a.v[2])*(a.v[2]));
-	}
+//	private double dLENGTHSQUARED(DVector3 a) {
+//		return ((a.v[0])*(a.v[0]) + (a.v[1])*(a.v[1]) + (a.v[2])*(a.v[2]));
+//	}
 
 	//#ifdef __cplusplus
 
@@ -232,10 +232,10 @@ public class OdeMath extends Rotation {
 	//#else
 
 	//#define dLENGTH(a) ( dSqrt( ((a)[0])*((a)[0]) + ((a)[1])*((a)[1]) + ((a)[2])*((a)[2]) ) )
-	public static double dLENGTH(DVector3 a) {
-		return dSqrt( (a.v[0])*(a.v[0]) + (a.v[1])*(a.v[1]) + 
-				(a.v[2])*(a.v[2]) ) ;
-	}
+//	public static double dLENGTH(DVector3 a) {
+//		return dSqrt( (a.v[0])*(a.v[0]) + (a.v[1])*(a.v[1]) + 
+//				(a.v[2])*(a.v[2]) ) ;
+//	}
 
 	//#endif /* __cplusplus */
 
@@ -251,9 +251,6 @@ public class OdeMath extends Rotation {
 	 */
 
 	//#define dDOTpq(a,b,p,q) ((a)[0]*(b)[0] + (a)[p]*(b)[q] + (a)[2*(p)]*(b)[2*(q)])
-	private static double dDOTpq(DVector3 a, DVector3 b, int p, int q) {
-		return a.v[0]*b.v[0] + a.v[p]*b.v[q] + a.v[2*p]*b.v[2*q];
-	}
 	//by TZ: multiply matrices with offset
 	private static double dDOTpq(double[] a, double[] b, int p, int q) {
 		return a[0]*b[0] + a[p]*b[q] + a[2*p]*b[2*q];
@@ -288,23 +285,20 @@ public class OdeMath extends Rotation {
 	//#define dDOT41(a,b) dDOTpq(a,b,4,1)
 	//#define dDOT44(a,b) dDOTpq(a,b,4,4)
 
-	public static double dDOT(DVector3 a, DVector3 b) { return dDOTpq(a,b,1,1); }
+	public static double dDOT(DVector3 a, DVector3 b) {
+		return a.get0()*b.get0() + a.get1()*b.get1() + a.get2()*b.get2();
+	}
 	public static double dDOT(double[] a, int o1, DVector3C b) { return dDOTpq(a,o1,b); }
 	public static double dDOT(double[] a, double[] b) { return dDOTpq(a,b,1,1); }
 	public static double dDOT(double[] a, int o1, double[] b, int o2) { return dDOTpq(a,o1,b,o2,1,1); }
-	public static double dDOT13(DVector3 a, DVector3 b) { return dDOTpq(a,b,1,3); }
 	public static double dDOT13(double[] a, int o1, double[] b, int o2) { return dDOTpq(a,o1,b,o2,1,3); }
-	public static double dDOT31(DVector3 a, DVector3 b) { return dDOTpq(a,b,3,1); }
-	public static double dDOT33(DVector3 a, DVector3 b) { return dDOTpq(a,b,3,3); }
 	//Used? public double dDOT14(dVector3 a, dVector3 b) { return dDOTpq(a,b,1,4); }
 	public static double dDOT14(DVector3 a, DMatrix3 b, int o2) { return dDOTpq(a.v,0,b.v,o2,1,4); }
 	public static double dDOT14(DVector3C a, DMatrix3C b, int o2) { 
 		return dDOTpq(((DVector3)a).v,0,((DMatrix3)b).v,o2,1,4); }
-	public static double dDOT41(DVector3 a, DVector3 b) { return dDOTpq(a,b,4,1); }
 	public static double dDOT41(DMatrix3 a, int o1, DVector3 b) { return dDOTpq(a.v,o1,b.v,0,4,1); }
 	public static double dDOT41(DMatrix3C a, int o1, DVector3C b) { 
 		return dDOTpq(((DMatrix3)a).v,o1,((DVector3)b).v,0,4,1); }
-	public static double dDOT44(DVector3 a, DVector3 b) { return dDOTpq(a,b,4,4); }
 	public static double dDOT44(DMatrix3 a, int o1, DMatrix3 b, int o2) { return dDOTpq(a.v,o1,b.v,o2,4,4); }
 	public static double dDOT44(DMatrix3C a, int o1, DMatrix3C b, int o2) { 
 		return dDOTpq(((DMatrix3)a).v,o1,((DMatrix3)b).v,o2,4,4); }
@@ -403,6 +397,16 @@ public class OdeMath extends Rotation {
 		}
 	}
 
+	public static void dCROSS(DVector3View a, OP op, DVector3View b, DVector3View c) {
+		if (op == OP.EQ) {
+			a.set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
+			a.set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
+			a.set2( b.get0()*c.get1() - b.get1()*c.get0() );
+		} else {
+			throw new UnsupportedOperationException(op.name());
+		}
+	}
+
 	public static void dCROSS(DVector3 a, OP op, DVector3 b, DMatrix3 c) {
 		if (op == OP.EQ) {
 			a.set0( b.get1()*c.get02() - b.get2()*c.get01()); 
@@ -418,34 +422,34 @@ public class OdeMath extends Rotation {
 	}
 
 
-	public void dCROSSpqr(DVector3 a, OP op, DVector3 b, DVector3 c, 
-			int p, int q, int r) { 
-		(a).v[  0] = ((b).v[  q]*(c).v[2*r] - (b).v[2*q]*(c).v[  r]); 
-		(a).v[  p] = ((b).v[2*q]*(c).v[  0] - (b).v[  0]*(c).v[2*r]); 
-		(a).v[2*p] = ((b).v[  0]*(c).v[  r] - (b).v[  q]*(c).v[  0]); 
-	}
-
-	public void dCROSS114(DVector3 a, OP op, DVector3 b, DVector3 c) { 
-		dCROSSpqr(a,op,b,c,1,1,4);
-	}
-	public void dCROSS141(DVector3 a, OP op, DVector3 b, DVector3 c) { 
-		dCROSSpqr(a,op,b,c,1,4,1);
-	}
-	public void dCROSS144(DVector3 a, OP op, DVector3 b, DVector3 c) { 
-		dCROSSpqr(a,op,b,c,1,4,4);
-	}
-	public void dCROSS411(DVector3 a, OP op, DVector3 b, DVector3 c) { 
-		dCROSSpqr(a,op,b,c,4,1,1);
-	}
-	public void dCROSS414(DVector3 a, OP op, DVector3 b, DVector3 c) { 
-		dCROSSpqr(a,op,b,c,4,1,4);
-	}
-	public void dCROSS441(DVector3 a, OP op, DVector3 b, DVector3 c) { 
-		dCROSSpqr(a,op,b,c,4,4,1);
-	}
-	public void dCROSS444(DVector3 a, OP op, DVector3 b, DVector3 c) { 
-		dCROSSpqr(a,op,b,c,4,4,4);
-	}
+//	private void dCROSSpqr(DVector3 a, OP op, DVector3 b, DVector3 c, 
+//			int p, int q, int r) { 
+//		(a).v[  0] = ((b).v[  q]*(c).v[2*r] - (b).v[2*q]*(c).v[  r]); 
+//		(a).v[  p] = ((b).v[2*q]*(c).v[  0] - (b).v[  0]*(c).v[2*r]); 
+//		(a).v[2*p] = ((b).v[  0]*(c).v[  r] - (b).v[  q]*(c).v[  0]); 
+//	}
+//
+//	public void dCROSS114(DVector3 a, OP op, DVector3 b, DVector3 c) { 
+//		dCROSSpqr(a,op,b,c,1,1,4);
+//	}
+//	public void dCROSS141(DVector3 a, OP op, DVector3 b, DVector3 c) { 
+//		dCROSSpqr(a,op,b,c,1,4,1);
+//	}
+//	public void dCROSS144(DVector3 a, OP op, DVector3 b, DVector3 c) { 
+//		dCROSSpqr(a,op,b,c,1,4,4);
+//	}
+//	public void dCROSS411(DVector3 a, OP op, DVector3 b, DVector3 c) { 
+//		dCROSSpqr(a,op,b,c,4,1,1);
+//	}
+//	public void dCROSS414(DVector3 a, OP op, DVector3 b, DVector3 c) { 
+//		dCROSSpqr(a,op,b,c,4,1,4);
+//	}
+//	public void dCROSS441(DVector3 a, OP op, DVector3 b, DVector3 c) { 
+//		dCROSSpqr(a,op,b,c,4,4,1);
+//	}
+//	public void dCROSS444(DVector3 a, OP op, DVector3 b, DVector3 c) { 
+//		dCROSSpqr(a,op,b,c,4,4,4);
+//	}
 
 
 	/*
@@ -466,28 +470,28 @@ public class OdeMath extends Rotation {
 	//  (A)[2*(skip)+1] = plus (a)[0]; \
 	//} while(0)
 	public static void dCROSSMAT(DMatrix3 A, DVector3 a, int skip, int plus, int minus) {
-		(A).v[1] = minus * (a).v[2]; 
-		(A).v[2] = plus * (a).v[1]; 
-		(A).v[(skip)+0] = plus * (a).v[2]; 
-		(A).v[(skip)+2] = minus * (a).v[0]; 
-		(A).v[2*(skip)+0] = minus * (a).v[1]; 
-		(A).v[2*(skip)+1] = plus * (a).v[0]; 
+		A.set01( minus * a.get2() ); 
+		A.set02( plus  * a.get1() ); 
+		A.set10( plus  * a.get2() ); 
+		A.set12( minus * a.get0() ); 
+		A.set20( minus * a.get1() ); 
+		A.set21( plus  * a.get0() ); 
 	}
-	public static void dCROSSMAT(DMatrix3 A, DVector4 a, int skip, int plus, int minus) {
-		(A).v[1] = minus * (a).v[2]; 
-		(A).v[2] = plus * (a).v[1]; 
-		(A).v[(skip)+0] = plus * (a).v[2]; 
-		(A).v[(skip)+2] = minus * (a).v[0]; 
-		(A).v[2*(skip)+0] = minus * (a).v[1]; 
-		(A).v[2*(skip)+1] = plus * (a).v[0]; 
-	}
+//	public static void dCROSSMAT(DMatrix3 A, DVector4 a, int skip, int plus, int minus) {
+//		(A).v[1] = minus * (a).v[2]; 
+//		(A).v[2] = plus * (a).v[1]; 
+//		(A).v[(skip)+0] = plus * (a).v[2]; 
+//		(A).v[(skip)+2] = minus * (a).v[0]; 
+//		(A).v[2*(skip)+0] = minus * (a).v[1]; 
+//		(A).v[2*(skip)+1] = plus * (a).v[0]; 
+//	}
 	public static void dCROSSMAT(double[] A, int ofs, DVector3 a, int skip, int plus, int minus) {
-		A[ofs+1] = minus * (a).v[2]; 
-		A[ofs+2] = plus * (a).v[1]; 
-		A[ofs+skip+0] = plus * (a).v[2]; 
-		A[ofs+skip+2] = minus * (a).v[0]; 
-		A[ofs+2*skip+0] = minus * (a).v[1]; 
-		A[ofs+2*skip+1] = plus * (a).v[0]; 
+		A[ofs+1] = minus * a.get2(); 
+		A[ofs+2] = plus * a.get1(); 
+		A[ofs+skip+0] = plus * a.get2(); 
+		A[ofs+skip+2] = minus * a.get0(); 
+		A[ofs+2*skip+0] = minus * a.get1(); 
+		A[ofs+2*skip+1] = plus * a.get0(); 
 	}
 
 
@@ -534,15 +538,15 @@ public class OdeMath extends Rotation {
 	//} while(0)
 	private static void dMULTIPLYOP0_331(DVector3 A, DMatrix3C B2, DVector3C C) {
 		DMatrix3 B = (DMatrix3) B2;
-		A.v[0] = dDOT(B.v, 0, C); 
-		A.v[1] = dDOT(B.v, 4, C);
-		A.v[2] = dDOT(B.v, 8, C);
+		A.set0( dDOT(B.v, 0, C) ); 
+		A.set1( dDOT(B.v, 4, C) );
+		A.set2( dDOT(B.v, 8, C) );
 	} 
 	//TZ
 	private static void dMULTIPLYOP0_331(DVector3 A, DMatrix3 B, DVector4 C) {
-		A.v[0] = dDOT(B.v, 0, C.v, 0); 
-		A.v[1] = dDOT(B.v, 4, C.v, 0);
-		A.v[2] = dDOT(B.v, 8, C.v, 0);
+		A.set0( dDOT(B.v, 0, C.v, 0) ); 
+		A.set1( dDOT(B.v, 4, C.v, 0) );
+		A.set2( dDOT(B.v, 8, C.v, 0) );
 	}
 	//TZ
 	private static void dMULTIPLYOP0_331(double[] A, int a, double[] B, int b,
@@ -553,14 +557,14 @@ public class OdeMath extends Rotation {
 	}
 	private static void dMULTIPLYOP1_331(DVector3 A, DMatrix3C B2, DVector3C C) {
 		DMatrix3 B = (DMatrix3) B2;		
-		(A).v[0] = dDOT41(B.v, 0, C, 0); 
-		(A).v[1] = dDOT41(B.v, 1, C, 0); 
-		(A).v[2] = dDOT41(B.v, 2, C, 0); 
+		A.set0( dDOT41(B.v, 0, C, 0) ); 
+		A.set1( dDOT41(B.v, 1, C, 0) ); 
+		A.set2( dDOT41(B.v, 2, C, 0) ); 
 	} 
 	private static void dMULTIPLYOP0_133(DVector3 A, DVector3 B, DMatrix3 C) {
-		(A).v[0] = dDOT14(B.v, 0,C.v,0); 
-		(A).v[1] = dDOT14(B.v, 0,C.v,1); 
-		(A).v[2] = dDOT14(B.v, 0,C.v,2); 
+		A.set0( dDOT14(B.v, 0,C.v,0) ); 
+		A.set1( dDOT14(B.v, 0,C.v,1) ); 
+		A.set2( dDOT14(B.v, 0,C.v,2) ); 
 	} 
 
 	//TODO private void ASSIGN()
@@ -751,27 +755,12 @@ public class OdeMath extends Rotation {
 	//
 	//#endif // defined(__ODE__)
 
-	/*
-	 * given a unit length "normal" vector n, generate vectors p and q vectors
-	 * that are an orthonormal basis for the plane space perpendicular to n.
-	 * i.e. this makes p,q such that n,p,q are all perpendicular to each other.
-	 * q will equal n x p. if n is not unit length then p will be unit length but
-	 * q wont be.
-	 */
-
-	//ODE_API void dPlaneSpace (const dVector3 n, dVector3 p, dVector3 q);
 
 	//#ifdef __cplusplus
 	//}
 	//#endif
 	//
 	//#endif
-
-
-
-
-
-
 
 
 
@@ -791,32 +780,24 @@ public class OdeMath extends Rotation {
 	 */
 	static boolean _dSafeNormalize3 (DVector3 a)
 	{
-		dAASSERT (a);
-
-		//TODO use double a1, a2, a3; )?)
-		//TODO avoid idx by replacing it with a.scale() ?
-		
-		int idx;
-		double[] aa = new double[3];
-//		double l;
-
-		aa[0] = dFabs(a.v[0]);
-		aa[1] = dFabs(a.v[1]);
-		aa[2] = dFabs(a.v[2]);
-		if (aa[1] > aa[0]) {
-			if (aa[2] > aa[1]) { // aa[2] is largest
-				idx = 2;
+		double s;
+		double aa0 = dFabs(a.get0());
+		double aa1 = dFabs(a.get1());
+		double aa2 = dFabs(a.get2());
+		if (aa1 > aa0) {
+			if (aa2 > aa1) { // aa[2] is largest
+				s = aa2;
 			}
 			else {              // aa[1] is largest
-				idx = 1;
+				s = aa1;
 			}
 		}
 		else {
-			if (aa[2] > aa[0]) {// aa[2] is largest
-				idx = 2;
+			if (aa2 > aa0) {// aa[2] is largest
+				s = aa2;
 			}
 			else {              // aa[0] might be the largest
-				if (aa[0] <= 0) { // aa[0] might is largest
+				if (aa0 <= 0) { // aa[0] might is largest
 //					a.v[0] = 1;	// if all a's are zero, this is where we'll end up.
 //					a.v[1] = 0;	// return a default unit length vector.
 //					a.v[2] = 0;
@@ -824,7 +805,7 @@ public class OdeMath extends Rotation {
 					return false;
 				}
 				else {
-					idx = 0;
+					s = aa0;
 				}
 			}
 		}
@@ -832,11 +813,46 @@ public class OdeMath extends Rotation {
 //		a.v[0] /= aa[idx];
 //		a.v[1] /= aa[idx];
 //		a.v[2] /= aa[idx];
-		a.scale(1./aa[idx]);
+		a.scale(1./s);
 		//l = dRecipSqrt (a.v[0]*a.v[0] + a.v[1]*a.v[1] + a.v[2]*a.v[2]);
 //		a.v[0] *= l;
 //		a.v[1] *= l;
 //		a.v[2] *= l;
+		a.scale(1./a.length());
+		return true;
+	}
+	static boolean _dSafeNormalize3 (DVector3View a)
+	{
+		double s;
+		double aa0 = dFabs(a.get0());
+		double aa1 = dFabs(a.get1());
+		double aa2 = dFabs(a.get2());
+		if (aa1 > aa0) {
+			if (aa2 > aa1) { // aa[2] is largest
+				s = aa2;
+			}
+			else {              // aa[1] is largest
+				s = aa1;
+			}
+		}
+		else {
+			if (aa2 > aa0) {// aa[2] is largest
+				s = aa2;
+			}
+			else {              // aa[0] might be the largest
+				if (aa0 <= 0) { // aa[0] might is largest
+					// if all a's are zero, this is where we'll end up.
+					// return a default unit length vector.
+					a.set(1, 0, 0);
+					return false;
+				}
+				else {
+					s = aa0;
+				}
+			}
+		}
+
+		a.scale(1./s);
 		a.scale(1./a.length());
 		return true;
 	}
@@ -862,6 +878,11 @@ else {
 	 */
 
 	public static boolean  dSafeNormalize3 (DVector3 a)
+	{
+		return _dSafeNormalize3(a);
+	}
+
+	public static boolean  dSafeNormalize3 (DVector3View a)
 	{
 		return _dSafeNormalize3(a);
 	}
@@ -911,6 +932,14 @@ else {
 	}
 
 
+	/**
+	 * given a unit length "normal" vector n, generate vectors p and q vectors
+	 * that are an orthonormal basis for the plane space perpendicular to n.
+	 * i.e. this makes p,q such that n,p,q are all perpendicular to each other.
+	 * q will equal n x p. if n is not unit length then p will be unit length but
+	 * q wont be.
+	 */
+	//ODE_API void dPlaneSpace (const dVector3 n, dVector3 p, dVector3 q);
 	public static void dPlaneSpace (final DVector3 n, DVector3 p, DVector3 q)
 	{
 		dAASSERT (n, p, q);
@@ -940,4 +969,47 @@ else {
 		}
 	}
 
+
+
+	/**
+	 * This takes what is supposed to be a rotation matrix,
+	 * and make sure it is correct.
+	 * Note: this operates on rows, not columns, because for rotations
+	 * both ways give equivalent results.
+	 */
+	public static void dOrthogonalizeR(DMatrix3 m)
+	{
+		//double n0 = dLENGTHSQUARED(m);
+		DVector3RowTView row0 = m.viewRowT(0); 
+		double n0 = row0.length();
+		if (n0 != 1)
+			//dSafeNormalize3(m);
+			dSafeNormalize3(row0);
+
+		// project row[0] on row[1], should be zero
+		//double proj = dDOT(m, m+4);
+		DVector3View row1 = m.viewRowT(1);
+		double proj = row0.dot( row1 );
+		if (proj != 0) {
+			// Gram-Schmidt step on row[1]
+//			m[4] -= proj * m[0];
+//			m[5] -= proj * m[1];
+//			m[6] -= proj * m[2];
+			m.set10( m.get10() - proj * m.get00() );
+			m.set11( m.get11() - proj * m.get01() );
+			m.set12( m.get12() - proj * m.get02() );
+		}
+		double n1 = row1.dot(row1);//dLENGTHSQUARED(m+4);
+		if (n1 != 1)
+			//dSafeNormalize3(m+4);
+			dSafeNormalize3(row1);
+
+		/* just overwrite row[2], this makes sure the matrix is not
+		a reflection */
+		//dCROSS(m+8, =, m, m+4);
+		//dCROSS(m, 8, OP.EQ, m, 0, m, 4);
+		DVector3View row2 = m.viewRowT(2);
+		dCROSS(row2, OP.EQ, row0, row1);
+		//TZ m[3] = m[4+3] = m[8+3] = 0;
+	}
 }

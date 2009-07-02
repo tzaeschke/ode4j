@@ -22,17 +22,19 @@
 package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 
 public interface DHingeJoint extends DJoint {
 
 	void setAnchor (double x, double y, double z);
-	void setAnchor (final DVector3 a);
+	void setAnchor (DVector3C a);
 	void getAnchor (DVector3 result);
 	void getAnchor2 (DVector3 result);
 
 	void setAxis (double x, double y, double z);
-	void setAxis (final DVector3 a);
+	void setAxis (DVector3C a);
 	void getAxis (DVector3 result);
+	void setAxisOffset(double x, double y, double z, double angle);
 
 	double getAngle();
 	double getAngleRate();

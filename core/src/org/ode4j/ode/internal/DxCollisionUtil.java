@@ -140,7 +140,7 @@ public class DxCollisionUtil {
 	//inline dReal dVector3Dot(final dVector3& a,final dVector3& b)
 	double dVector3Dot(final DVector3C a,final DVector3 b)
 	{
-		return a.reDot(b);
+		return a.dot(b);
 	}
 
 	//inline void dVector3Inv(dVector3& a)

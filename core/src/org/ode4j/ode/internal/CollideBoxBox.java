@@ -62,12 +62,16 @@ public class CollideBoxBox implements DColliderFn {
 //			CONTACT(contact,i*skip).normal[2] = -normal.v[2];
 //			CONTACT(contact,i*skip).g1 = o1;
 //			CONTACT(contact,i*skip).g2 = o2;
+//			currContact->side1 = -1;
+//		    currContact->side2 = -1;
 //		}
 		for (int i=0; i<num; i++) {
 			DContactGeom c = contacts.get(i*skip);
 			c.normal.set(normal).scale(-1);
 			c.g1 = o1;
 			c.g2 = o2;
+			c.side1 = -1;
+			c.side2 = -1;
 		}
 		return num;
 	}

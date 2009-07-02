@@ -21,6 +21,7 @@
  *************************************************************************/
 package org.ode4j.ode;
 
+import org.ode4j.ode.internal.Common.D_PARAM_NAMES;
 import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 /**
@@ -51,6 +52,11 @@ public interface DPlane2DJoint extends DJoint {
 	double getYParamVel();
 	void setYParamFMax(double d);
 	void setYParamVel(double d);
+
+	/** @deprecated TZ Use above methods instead. */
+	void setXParam(D_PARAM_NAMES parameter, double value);
+	/** @deprecated TZ Use above methods instead. */
+	void setYParam(D_PARAM_NAMES parameter, double value);
 
 
 }

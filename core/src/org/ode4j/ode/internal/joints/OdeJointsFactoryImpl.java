@@ -73,34 +73,34 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	}
 
 
-	public DxJointBall dJointCreateBall (DxWorld w, DJointGroup group)
+	public DxJointBall dJointCreateBall (DWorld w, DJointGroup group)
 	{
 		dAASSERT (w);
-		return createJoint( new DxJointBall(w),group);
+		return createJoint( new DxJointBall((DxWorld) w),group);
 	}
 
 
-	public DxJointHinge dJointCreateHinge (DxWorld w, DJointGroup group)
+	public DxJointHinge dJointCreateHinge (DWorld w, DJointGroup group)
 	{
 		dAASSERT (w);
-		return createJoint( new DxJointHinge(w),group);
+		return createJoint( new DxJointHinge((DxWorld) w),group);
 	}
 
 
-	public DxJointSlider dJointCreateSlider (DxWorld w, DJointGroup group)
+	public DxJointSlider dJointCreateSlider (DWorld w, DJointGroup group)
 	{
 		dAASSERT (w);
-		return createJoint( new DxJointSlider(w),group);
+		return createJoint( new DxJointSlider((DxWorld) w),group);
 	}
 
 
 //	dxJoint dJointCreateContact (dWorld w, dJointGroup group,
 //			final dContact[] c)
-	public DxJointContact dJointCreateContact (DxWorld w, DJointGroup group,
+	public DxJointContact dJointCreateContact (DWorld w, DJointGroup group,
 			final DContact c)
 	{
 		dAASSERT (w, c);
-		DxJointContact j = createJoint(new DxJointContact(w), group);
+		DxJointContact j = createJoint(new DxJointContact((DxWorld) w), group);
 		j.contact = c;
 		return j;
 	}
@@ -144,36 +144,36 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	}
 
 
-	public DxJointNull dJointCreateNull (DxWorld w, DJointGroup group)
+	public DxJointNull dJointCreateNull (DWorld w, DJointGroup group)
 	{
 		dAASSERT (w);
-		return createJoint( new DxJointNull(w),group);
+		return createJoint( new DxJointNull((DxWorld) w),group);
 	}
 
 
-	public DxJointAMotor dJointCreateAMotor (DxWorld w, DJointGroup group)
+	public DxJointAMotor dJointCreateAMotor (DWorld w, DJointGroup group)
 	{
 		dAASSERT (w);
-		return createJoint(new DxJointAMotor(w),group);
+		return createJoint(new DxJointAMotor((DxWorld) w),group);
 	}
 
-	public DxJointLMotor dJointCreateLMotor (DxWorld w, DJointGroup group)
+	public DxJointLMotor dJointCreateLMotor (DWorld w, DJointGroup group)
 	{
 		dAASSERT (w);
-		return createJoint(new DxJointLMotor (w),group);
+		return createJoint(new DxJointLMotor ((DxWorld) w),group);
 	}
 
-	public DxJointPlane2D dJointCreatePlane2D (DxWorld w, DJointGroup group)
+	public DxJointPlane2D dJointCreatePlane2D (DWorld w, DJointGroup group)
 	{
 		dAASSERT (w);
-		return createJoint( new DxJointPlane2D(w),group);
+		return createJoint( new DxJointPlane2D((DxWorld) w),group);
 	}
 
 	protected static void dJointDestroy (DxJoint j)
 	{
 		dAASSERT (j);
 		//TZ size_t sz = j.size();
-		if ((j.flags & DxJoint.dJOINT_INGROUP) != 0) return;
+		if ( j.isFlagsInGroup() ) return;
 		j.removeJointReferencesFromAttachedBodies ();
 		j.removeObjectFromList ();
 		j.world.nj--;

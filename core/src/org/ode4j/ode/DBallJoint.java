@@ -28,7 +28,9 @@ import org.ode4j.math.DVector3C;
 public interface DBallJoint extends DJoint {
 
 	void setAnchor (double x, double y, double z);
+	void setAnchor2(double x, double y, double z);
 	void setAnchor (DVector3C a);
+	void setAnchor2 (DVector3C a);
 	void getAnchor (DVector3 result);
 	void getAnchor2 (DVector3 result);
 

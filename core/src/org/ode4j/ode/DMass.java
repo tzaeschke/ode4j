@@ -39,16 +39,17 @@ public interface DMass extends DMassC {
 	void setSphere (double density, double radius);
 	void setSphereTotal (double totalMass, double radius);
 
-	void setTrimesh(double density, DTriMesh geom);
+ 	void setTrimesh(double density, DTriMesh geom);
+ 	void setTrimeshTotal(double density, DTriMesh geom);
 	
 	void setCapsule (double density, int direction, double a, double b);
-	
-	//TZ commented out, should not be used anymore, or should it?
-//	void setCappedCylinder (double density, int direction, double a, double b);
+	void setCapsuleTotal (double density, int direction, double a, double b);
 	
 	void setCylinder (double density, int direction, double radius, double length);
+	void setCylinderTotal (double total, int direction, double radius, double length);
 
 	void setBox (double density, double lx, double ly, double lz);
+	void setBoxTotal (double density, double lx, double ly, double lz);
 	
 	void adjust (double newmass);
 	

@@ -198,6 +198,24 @@ public class Rotation extends Matrix {
 			q.set( 1, 0, 0, 0);
 		}
 	}
+	public static void dQFromAxisAndAngle (DQuaternion q, 
+			DVector3C axyz, double angle)
+	{
+		dAASSERT (q);
+		double l = axyz.lengthSquared();//ax*ax + ay*ay + az*az;
+		if (l > 0.0) {
+			angle *= 0.5;
+			l = dSin(angle) * dRecipSqrt(l);
+//			q.v[0] = dCos (angle);
+//			q.v[1] = ax*l;
+//			q.v[2] = ay*l;
+//			q.v[3] = az*l;
+			q.set( Math.cos(angle), axyz.get0()*l, axyz.get1()*l, axyz.get2()*l );
+		}
+		else {
+			q.set( 1, 0, 0, 0);
+		}
+	}
 
 
 	public static void dQMultiply0 (DQuaternion qa, final DQuaternionC qb, 
@@ -288,7 +306,7 @@ public class Rotation extends Matrix {
 	 * @param q
 	 * @param R
 	 */
-	public static void dRtoQ(final DMatrix3 R, DQuaternion q) {
+	public static void dRtoQ(final DMatrix3C R, DQuaternion q) {
 		dQfromR(q, R);
 	}
 

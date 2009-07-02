@@ -79,7 +79,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 
 		// get normal, with sign adjusted for body1/body2 polarity
 		DVector3 normal = new DVector3();
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 		{
 //			normal.v[0] = - contact.geom.normal.v[0];
 //			normal.v[1] = - contact.geom.normal.v[1];

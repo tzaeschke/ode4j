@@ -39,7 +39,7 @@ import static org.cpp4j.Cstdio.*;
 public class Misc extends Common {
 
 	//	static unsigned long seed = 0;  //32bit unsigned
-	private static long seed = 0;
+	private static volatile long seed = 0;
 
 	protected Misc() {
 		//private

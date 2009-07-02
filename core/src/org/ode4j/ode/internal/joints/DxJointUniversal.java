@@ -426,39 +426,169 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 //	private void dJointSetUniversalAxis1( dJoint j, double x, double y, double z )
 	public void dJointSetUniversalAxis1( double x, double y, double z )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 			setAxes( x, y, z, null, _axis2 );
 		else
 			setAxes( x, y, z, _axis1, null );
 		computeInitialRelativeRotations();
+	}
+
+	
+	void dJointSetUniversalAxis1Offset( double x, double y, double z,
+			double offset1, double offset2 )
+	{
+//		dxJointUniversal* joint = ( dxJointUniversal* )j;
+//		dUASSERT( joint, "bad joint argument" );
+//		checktype( joint, Universal );
+		DVector3C xyz = new DVector3(x, y, z);
+		
+		if ( isFlagsReverse() )
+		{
+			setAxes( xyz, null, _axis2 );
+			offset1 = -offset1;
+			offset2 = -offset2;
+		}
+		else
+			setAxes( xyz, _axis1, null );
+
+		computeInitialRelativeRotations();
+
+		DVector3 ax2 = new DVector3();
+		getAxis2( ax2, _axis2 );
+
+		{
+			DVector3 ax1 = new DVector3();
+			getAxes(ax1, ax2);
+		}
+
+
+
+		DQuaternion qAngle = new DQuaternion();
+		dQFromAxisAndAngle(qAngle, xyz, offset1);
+
+		DMatrix3 R = new DMatrix3();
+		dRFrom2Axes( R, xyz, ax2 );
+
+		DQuaternion qcross = new DQuaternion();
+		dQfromR( qcross, R );
+
+		DQuaternion qOffset = new DQuaternion();
+		dQMultiply0(qOffset, qAngle, qcross);
+
+		dQMultiply1( qrel1, node[0].body._q, qOffset );
+
+		// Calculating the second offset
+		dQFromAxisAndAngle(qAngle, ax2, offset2);
+
+		dRFrom2Axes( R, ax2, xyz );
+		dQfromR( qcross, R );
+
+		dQMultiply1(qOffset, qAngle, qcross);
+		if ( node[1].body != null )
+		{
+			dQMultiply1( qrel2, node[1].body._q, qOffset );
+		}
+		else
+		{
+//			joint->qrel2[0] = qcross[0];
+//			joint->qrel2[1] = qcross[1];
+//			joint->qrel2[2] = qcross[2];
+//			joint->qrel2[3] = qcross[3];
+			qrel2.set( qcross );
+		}
 	}
 
 
 //	private void dJointSetUniversalAxis2( dJoint j, double x, double y, double z )
 	public void dJointSetUniversalAxis2( double x, double y, double z )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 			setAxes( x, y, z, _axis1, null );
 		else
 			setAxes( x, y, z, null, _axis2 );
 		computeInitialRelativeRotations();
 	}
 
+	
+	void dJointSetUniversalAxis2Offset( double x, double y, double z,
+			double offset1, double offset2 )
+	{
+		DVector3C xyz = new DVector3(x, y, z);
+		
+		if ( isFlagsReverse() )
+		{
+			setAxes( xyz, _axis1, null );
+			offset1 = -offset2;
+			offset2 = -offset1;
+		}
+		else
+			setAxes( xyz, null, _axis2 );
 
-//	public void dJointGetUniversalAnchor( dJoint j, dVector3 result )
+
+		computeInitialRelativeRotations();
+
+		// It is easier to retreive the 2 axes here since
+		// when there is only one body B2 (the axes switch position)
+		// Doing this way eliminate the need to write the code differently
+		// for both case.
+		DVector3 ax1 = new DVector3(), ax2 = new DVector3();
+		getAxes( ax1, ax2 );
+
+
+
+		DQuaternion qAngle = new DQuaternion();
+		dQFromAxisAndAngle(qAngle, ax1, offset1);
+
+		DMatrix3 R = new DMatrix3();
+		dRFrom2Axes( R, ax1, ax2 );
+
+		DQuaternion qcross = new DQuaternion();
+		dQfromR( qcross, R );
+
+		DQuaternion qOffset = new DQuaternion();
+		dQMultiply0(qOffset, qAngle, qcross);
+
+
+
+		dQMultiply1( qrel1, node[0].body._q, qOffset );
+
+
+		// Calculating the second offset
+		dQFromAxisAndAngle(qAngle, ax2, offset2);
+
+		dRFrom2Axes( R, ax2, ax1 );
+		dQfromR( qcross, R );
+
+		dQMultiply1(qOffset, qAngle, qcross);
+		if ( node[1].body != null )
+		{
+			dQMultiply1( qrel2, node[1].body._q, qOffset );
+		}
+		else
+		{
+//			joint->qrel2[0] = qcross[0];
+//			joint->qrel2[1] = qcross[1];
+//			joint->qrel2[2] = qcross[2];
+//			joint->qrel2[3] = qcross[3];
+			qrel2.set ( qcross );
+		}
+	}
+
+
+	//	public void dJointGetUniversalAnchor( dJoint j, dVector3 result )
 	public void dJointGetUniversalAnchor( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 			getAnchor2( result, _anchor2 );
 		else
 			getAnchor( result, _anchor1 );
 	}
 
 
-//	private void dJointGetUniversalAnchor2( dJoint j, dVector3 result )
+	//	private void dJointGetUniversalAnchor2( dJoint j, dVector3 result )
 	private void dJointGetUniversalAnchor2( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 			getAnchor( result, _anchor1 );
 		else
 			getAnchor2( result, _anchor2 );
@@ -467,7 +597,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 	public void dJointGetUniversalAxis1( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0)
+		if ( isFlagsReverse() )
 			getAxis2( result, _axis2 );
 		else
 			getAxis( result, _axis1 );
@@ -476,7 +606,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 	public void dJointGetUniversalAxis2( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 			getAxis( result, _axis1 );
 		else
 			getAxis2( result, _axis2 );
@@ -519,6 +649,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 ////		checktype( joint, dxJointUniversal.class );
 //		if ( (flags & dJOINT_REVERSE) != 0 )
 //			getAngles( angle2, angle1 );
+//			angle2.d = -angle2.d;	
 //		else
 //			getAngles( angle1, angle2 );
 //	}
@@ -526,7 +657,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 	public double dJointGetUniversalAngle1( )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 			return getAngle2Internal();
 		else
 			return getAngle1Internal();
@@ -535,8 +666,8 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 	public double dJointGetUniversalAngle2( )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
-			return getAngle1Internal();
+		if ( isFlagsReverse() )
+			return -getAngle1Internal();
 		else
 			return getAngle2Internal();
 	}
@@ -548,7 +679,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 		{
 			DVector3 axis = new DVector3();
 
-			if ( (flags & dJOINT_REVERSE) != 0 )
+			if ( isFlagsReverse() )
 				getAxis2( axis, _axis2 );
 			else
 				getAxis( axis, _axis1 );
@@ -568,7 +699,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 		{
 			DVector3 axis = new DVector3();
 
-			if ( (flags & dJOINT_REVERSE) != 0 )
+			if ( isFlagsReverse() )
 				getAxis( axis, _axis1 );
 			else
 				getAxis2( axis, _axis2 );
@@ -586,7 +717,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	{
 		DVector3 axis1 = new DVector3(), axis2 = new DVector3();
 
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 		{
 			double temp = torque1;
 			torque1 = - torque2;
@@ -607,6 +738,31 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	}
 
 
+	void setRelativeValues()
+	{
+	    DVector3 anchor = new DVector3();
+	    dJointGetUniversalAnchor(anchor);
+	    setAnchors( anchor, _anchor1, _anchor2 );
+
+	    DVector3 ax1 = new DVector3(), ax2 = new DVector3();
+	    dJointGetUniversalAxis1(ax1);
+	    dJointGetUniversalAxis2(ax2);
+
+	    if ( isFlagsReverse() )
+	    {
+	        setAxes( ax1, null, _axis2 );
+	        setAxes( ax2, _axis1, null );
+	    }
+	    else
+	    {
+	        setAxes( ax1, _axis1, null );
+	        setAxes( ax2, null, _axis2 );
+	    }
+
+	    computeInitialRelativeRotations();
+	}
+
+
 	public DxJointLimitMotor getLimot1() {
 		return limot1;
 	}
@@ -620,50 +776,64 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	// API dUniversalJoint
 	// ***********************************
 	
-	  public void setAnchor (double x, double y, double z)
-	    { dJointSetUniversalAnchor (x, y, z); }
-	  public void setAnchor (DVector3C a)
-	    { dJointSetUniversalAnchor(a); }
-	  public void setAxis1 (double x, double y, double z)
-	    { dJointSetUniversalAxis1 (x, y, z); }
-	  public void setAxis1 (DVector3C a)
-	  //TODO use dVector3
-	    { setAxis1 (a.get0(), a.get1(), a.get2()); }
-	  public void setAxis2 (double x, double y, double z)
-	    { dJointSetUniversalAxis2 (x, y, z); }
-	  public void setAxis2 (DVector3C a)
-	  //TODO use dVector3
-	    { setAxis2 (a.get0(), a.get1(), a.get2()); }
+	public void setAnchor (double x, double y, double z)
+	{ dJointSetUniversalAnchor (x, y, z); }
+	public void setAnchor (DVector3C a)
+	{ dJointSetUniversalAnchor(a); }
+	public void setAxis1 (double x, double y, double z)
+	{ dJointSetUniversalAxis1 (x, y, z); }
+	public void setAxis1 (DVector3C a)
+	//TODO use dVector3
+	{ setAxis1 (a.get0(), a.get1(), a.get2()); }
+	public void setAxis2 (double x, double y, double z)
+	{ dJointSetUniversalAxis2 (x, y, z); }
+	public void setAxis2 (DVector3C a)
+	//TODO use dVector3
+	{ setAxis2 (a.get0(), a.get1(), a.get2()); }
 
-	  public void getAnchor (DVector3 result)
-	    { dJointGetUniversalAnchor (result); }
-	  public void getAnchor2 (DVector3 result)
-	    { dJointGetUniversalAnchor2 (result); }
-	  public void getAxis1 (DVector3 result)
-	    { dJointGetUniversalAxis1 (result); }
-	  public void getAxis2 (DVector3 result)
-	    { dJointGetUniversalAxis2 (result); }
+	public void getAnchor (DVector3 result)
+	{ dJointGetUniversalAnchor (result); }
+	public void getAnchor2 (DVector3 result)
+	{ dJointGetUniversalAnchor2 (result); }
+	public void getAxis1 (DVector3 result)
+	{ dJointGetUniversalAxis1 (result); }
+	public void getAxis2 (DVector3 result)
+	{ dJointGetUniversalAxis2 (result); }
 
-	  public void setParam (D_PARAM_NAMES_N parameter, double value)
-	    { dJointSetUniversalParam (parameter, value); }
-	  public double getParam (D_PARAM_NAMES_N parameter)
-	    { return dJointGetUniversalParam (parameter); }
+	public void setParam (D_PARAM_NAMES_N parameter, double value)
+	{ dJointSetUniversalParam (parameter, value); }
+	public double getParam (D_PARAM_NAMES_N parameter)
+	{ return dJointGetUniversalParam (parameter); }
 
-//	  public void getAngles(double *angle1, double *angle2)
-//	    { dJointGetUniversalAngles (angle1, angle2); }
+	//	  public void getAngles(double *angle1, double *angle2)
+	//	    { dJointGetUniversalAngles (angle1, angle2); }
 
-		/** TZ Take care to call getAngle1Internal() from dx-classes.*/
-	  public double getAngle1()
-	    { return dJointGetUniversalAngle1 (); }
-	  public double getAngle1Rate()
-	    { return dJointGetUniversalAngle1Rate (); }
-		/** TZ Take care to call getAngle2Internal() from dx-classes.*/
-	  public double getAngle2()
-	    { return dJointGetUniversalAngle2 (); }
-	  public double getAngle2Rate()
-	    { return dJointGetUniversalAngle2Rate (); }
+	/** TZ Take care to call getAngle1Internal() from dx-classes.*/
+	public double getAngle1()
+	{ return dJointGetUniversalAngle1 (); }
+	public double getAngle1Rate()
+	{ return dJointGetUniversalAngle1Rate (); }
+	/** TZ Take care to call getAngle2Internal() from dx-classes.*/
+	public double getAngle2()
+	{ return dJointGetUniversalAngle2 (); }
+	public double getAngle2Rate()
+	{ return dJointGetUniversalAngle2Rate (); }
 
-	  public void addTorques (double torque1, double torque2)
-		{ dJointAddUniversalTorques(torque1, torque2); }
+	public void addTorques (double torque1, double torque2)
+	{ dJointAddUniversalTorques(torque1, torque2); }
+
+
+	@Override
+	public void setAxis1Offset(double x, double y, double z, double offset1,
+			double offset2) {
+		dJointSetUniversalAxis1Offset(x, y, z, offset1, offset2);
+	}
+
+
+	@Override
+	public void setAxis2Offset(double x, double y, double z, double offset1,
+			double offset2) {
+		dJointSetUniversalAxis2Offset(x, y, z, offset1, offset2);
+	}
 }
 

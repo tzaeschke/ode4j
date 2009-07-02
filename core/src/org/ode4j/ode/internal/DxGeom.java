@@ -328,6 +328,14 @@ public abstract class DxGeom extends DBase implements DGeom {
 		bodyRemove();
 	}
 
+	
+	/** Get parent space TLS kind. */
+	//unsigned
+	int getParentSpaceTLSKind()
+	{
+	  return parent_space!=null ? parent_space.tls_kind : DxSpace.dSPACE_TLS_KIND_INIT_VALUE;
+	}
+
 
 	/**
 	 * test whether the given AABB object intersects with this object, return
@@ -834,7 +842,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 //	 * @deprecated see above (TZ) TODO remove?
 //	 */
 //	private static dGeomClass[] user_classes = new dGeomClass[dMaxUserClasses];
-	private static int num_user_classes = 0;
+//	private static int num_user_classes = 0;
 //
 //
 //	public class dxUserGeom extends dxGeom {
@@ -945,7 +953,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 //
 	/*extern */static void dFinitUserClasses()
 	{
-		num_user_classes = 0;
+		//TODO num_user_classes = 0;
 	}
 //
 //	Object[] dGeomGetClassData (dxGeom g)
@@ -1312,7 +1320,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		DColliderFn fn;	// collider function, 0 = no function available
 		boolean reverse;		// 1 = reverse o1 and o2
 	}
-	private static dColliderEntry[][] colliders = new dColliderEntry[dGeomNumClasses][dGeomNumClasses];
+	private static final dColliderEntry[][] colliders = new dColliderEntry[dGeomNumClasses][dGeomNumClasses];
 	private static boolean colliders_initialized = false;
 
 
@@ -1462,7 +1470,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 			DContactGeomBuffer contacts, int skip)
 	{
 		dAASSERT(o1, o2, contacts);
-		dUASSERT(colliders_initialized,"colliders array not initialized");
+		dUASSERT(colliders_initialized,
+				"Please call ODE initialization (dInitODE() or similar) before using the library");
 		dUASSERT(o1.type >= 0 && o1.type < dGeomNumClasses,"bad o1 class number");
 		dUASSERT(o2.type >= 0 && o2.type < dGeomNumClasses,"bad o2 class number");
 		// Even though comparison for greater or equal to one is used in all the
@@ -1483,8 +1492,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 		o2.recomputePosr();
 
 		dColliderEntry ce = colliders[o1.type][o2.type];
-		System.out.println("COLLIDE:" + o1.getClass() + " / " + o2.getClass());
-		System.out.println("COLLIDE2:" + o1.type + " / " + o2.type);
 		int count = 0;
 		if (ce.fn != null) {
 			if (ce.reverse) {
@@ -1508,7 +1515,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 				count = (ce.fn).dColliderFn (o1,o2,flags,contacts);
 			}
 		}
-		System.out.println("COLLIDE3:" + count);
 		return count;
 	}
 

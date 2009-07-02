@@ -54,7 +54,6 @@ public class Common extends ErrorHandler {
 	 */
 
 	public static final boolean dNODEBUG = false;
-	public static final boolean dGYROSCOPIC = true;
 	/** @deprecated TZ this can be removed? */
 	public static final boolean dUSE_MALLOC_FOR_ALLOCA = false;
 	/** @deprecated TZ this can be removed? */
@@ -79,13 +78,31 @@ public class Common extends ErrorHandler {
 		}
 	}
 	
-	//From config-defaults.h
+	// Use the error-checking memory allocation system.  Because this system uses heap
+	//  (malloc) instead of stack (alloca), it is slower.  However, it allows you to
+	//  simulate larger scenes, as well as handle out-of-memory errors in a somewhat
+	//  graceful manner
+
+	//#ifdef dUSE_MALLOC_FOR_ALLOCA
+	//enum {
+	//  d_MEMORY_OK = 0,              /* no memory errors */
+	//  d_MEMORY_OUT_OF_MEMORY        /* malloc failed due to out of memory error */
+	//};
+	//#endif
+	//TODO why check for dUSE_MALLOC_FOR_ALLOCA
+	/** no memory errors. */
+	public static final int d_MEMORY_OK = 0;             
+	/** malloc failed due to out of memory error. */
+	public static final int d_MEMORY_OUT_OF_MEMORY = 1;  
+
+
+//From config-defaults.h
 	//TODO ???
 	/** @deprecated TZ this can be removed? */
-	public static boolean  dATOMICS_ENABLED = false;
-	public static boolean  dTRIMESH_16BIT_INDICES = false;
+	public static final boolean  dATOMICS_ENABLED = false;
+	public static final boolean  dTRIMESH_16BIT_INDICES = false;
 
-	public static boolean  dTRIMESH_OPCODE_USE_NEW_TRIMESH_TRIMESH_COLLIDER = false;
+	public static final boolean  dTRIMESH_OPCODE_USE_OLD_TRIMESH_TRIMESH_COLLIDER = false;
 
 	//TODO
 	//http://www.codeguru.com/forum/printthread.php?t=323835

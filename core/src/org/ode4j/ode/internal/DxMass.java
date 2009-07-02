@@ -35,7 +35,6 @@ import static org.ode4j.ode.OdeMath.*;
 public class DxMass implements DMass {
 
 	double _mass;
-	//dVector4 _c;
 	DVector3 _c;
 	DMatrix3 _I;
 
@@ -190,11 +189,11 @@ public class DxMass implements DMass {
 	}
 
 
-	public void dMassSetCapsuleTotal (DxMass m, double total_mass, int direction,
+	public void dMassSetCapsuleTotal (double total_mass, int direction,
 			double a, double b)
 	{
-		m.dMassSetCapsule (1.0, direction, a, b);
-		m.dMassAdjust (total_mass);
+		dMassSetCapsule (1.0, direction, a, b);
+		dMassAdjust (total_mass);
 	}
 
 
@@ -465,12 +464,11 @@ public class DxMass implements DMass {
 
 
 //	public void dMassSetTrimeshTotal( dxMass m, double total_mass, dxGeom g)
-	public void dMassSetTrimeshTotal( DxMass m, double total_mass, DTriMesh g)
+	public void dMassSetTrimeshTotal(double total_mass, DTriMesh g)
 	{
-		dAASSERT( m );
 		dUASSERT( g != null, "argument not a trimesh");// && g.type == dTriMeshClass, "argument not a trimesh" );
-		m.dMassSetTrimesh( 1.0, g );
-		m.dMassAdjust( total_mass );
+		dMassSetTrimesh( 1.0, g );
+		dMassAdjust( total_mass );
 	}
 
 
@@ -577,19 +575,31 @@ public class DxMass implements DMass {
 
 
 //	public void dMassAdd (dxMass a, final dxMass b)
-	public void dMassAdd (final DxMass b)
+	public void dMassAdd (DMassC b)
 	{
 		dAASSERT (b);
-		double denom = dRecip (_mass + b._mass);
+		double denom = dRecip (_mass + b.getMass());
 		//for (i=0; i<3; i++) a._c.v[i] = (a._c.v[i]*a._mass + b._c.v[i]*b._mass)*denom;
-		DVector3 b_c = new DVector3(b._c);
-		_c.scale(_mass).add( b_c.scale(b._mass) ).scale(denom);
+		DVector3 b_c = new DVector3(b.getC());
+		_c.scale(_mass).add( b_c.scale(b.getMass()) ).scale(denom);
 		
-		_mass += b._mass;
+		_mass += b.getMass();
 		//for (i=0; i<12; i++) a._I.v[i] += b._I.v[i];
-		_I.add(b._I);
+		_I.add(b.getI());
 	}
 	
+
+//	// Backwards compatible API
+//	void dMassSetCappedCylinder(dMass *a, dReal b, int c, dReal d, dReal e)
+//	{
+//	  return dMassSetCapsule(a,b,c,d,e);
+//	}
+//
+//	void dMassSetCappedCylinderTotal(dMass *a, dReal b, int c, dReal d, dReal e)
+//	{
+//	  return dMassSetCapsuleTotal(a,b,c,d,e);
+//	}
+
 	void set(DMassC m) {
 		_mass = m.getMass();
 		_c = new DVector3(m.getC());
@@ -611,42 +621,75 @@ public class DxMass implements DMass {
 	// *****************************************8
 	
 	
+	@Override
 	public void setZero()
 	{ dMassSetZero (); }
 	
+	@Override
 	public void setParameters (double themass, double cgx, double cgy, double cgz,
 			double I11, double I22, double I33,
 			double I12, double I13, double I23)
 	{ dMassSetParameters (themass,cgx,cgy,cgz,I11,I22,I33,I12,I13,I23); }
 	
+	@Override
 	public void setSphere (double density, double radius)
 	{ dMassSetSphere (density,radius); }
 	
+	@Override
+	public void setSphereTotal(double totalMass, double radius) 
+	{ dMassSetSphereTotal(totalMass, radius);	}
+
+	@Override
 	public void setCapsule (double density, int direction, double a, double b)
-	//  { dMassSetCappedCylinder (this,density,direction,a,b); }
 	{ dMassSetCapsule (density,direction,a,b); }
 	
-	public void setCappedCylinder (double density, int direction, double a, double b)
-	{ setCapsule(density, direction, a, b); }
+	@Override
+	public void setCapsuleTotal (double density, int direction, double a, double b)
+	{ dMassSetCapsuleTotal (density,direction,a,b); }
 	
+	@Override
 	public void setCylinder (double density, int direction, double radius, double length)
 	{ dMassSetCylinder(density, direction, radius, length); }
 	
+	@Override
+	public void setCylinderTotal (double density, int direction, double radius, double length)
+	{ dMassSetCylinderTotal(density, direction, radius, length); }
+	
+	@Override
 	public void setBox (double density, double lx, double ly, double lz)
 	{ dMassSetBox (density,lx,ly,lz); }
 	
+	@Override
+	public void setBoxTotal (double density, double lx, double ly, double lz)
+	{ dMassSetBoxTotal (density,lx,ly,lz); }
+	
+	@Override
+	public void setTrimesh(double density, DTriMesh geom) {
+		dMassSetTrimesh(density, geom);
+	}
+
+	@Override
+	public void setTrimeshTotal(double density, DTriMesh geom) {
+		dMassSetTrimeshTotal(density, geom);
+	}
+
+	@Override
 	public void adjust (double newmass)
 	{ dMassAdjust (newmass); }
 	
+	@Override
 	public void translate (double x, double y, double z)
 	{ dMassTranslate (new DVector3(x,y,z)); }
 	
+	@Override
 	public void translate (DVector3C xyz)
 	{ dMassTranslate (xyz); }
 	
+	@Override
 	public void rotate (DMatrix3C R)
 	{ dMassRotate (R); }
 	
+	@Override
 	public void add (DMassC b)
 	{ dMassAdd ((DxMass) b); }
 
@@ -698,16 +741,6 @@ public class DxMass implements DMass {
 	@Override
 	public void setI(DMatrix3C I) {
 		_I.set(I);
-	}
-
-	@Override
-	public void setSphereTotal(double totalMass, double radius) {
-		dMassSetSphereTotal(totalMass, radius);
-	}
-
-	@Override
-	public void setTrimesh(double density, DTriMesh geom) {
-		dMassSetTrimesh(density, geom);
 	}
 
 	@Override

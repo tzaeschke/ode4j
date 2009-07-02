@@ -205,7 +205,7 @@ class dMatrixComparison {
 
 	//#include <setjmp.h>
 
-	private static jmp_buf jump_buffer;
+	private static final jmp_buf jump_buffer = null;
 
 	//static void myDebug (int num, final char *msg, va_list ap)
 //	static void myDebug (int num, final String msg, Object ... ap)

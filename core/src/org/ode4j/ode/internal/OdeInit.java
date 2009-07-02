@@ -232,7 +232,7 @@ public class OdeInit {
 	// initialization and shutdown routines - allocate and initialize data,
 	// cleanup before exiting
 
-	private static boolean g_bODEInitialized = false;
+	private static volatile boolean g_bODEInitialized = false;
 
 	public static void dInitODE()
 	{
@@ -439,7 +439,7 @@ public class OdeInit {
 
 		g_bODEInitialized = false;
 
-		CollideSpaceGeom.dClearPosrCache();
+		//CollideSpaceGeom.dClearPosrCache();
 		DxGeom.dFinitUserClasses();
 		DxGeom.dFinitColliders();
 

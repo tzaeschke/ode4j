@@ -156,6 +156,8 @@ public class DxCapsule extends DxGeom implements DCapsule {
 
 			contacts.get(0).g1 = o1;
 			contacts.get(0).g2 = o2;
+			contacts.get(0).side1 = -1;
+			contacts.get(0).side2 = -1;
 
 			// find the point on the cylinder axis that is closest to the sphere
 			double alpha = 
@@ -199,7 +201,10 @@ public class DxCapsule extends DxGeom implements DCapsule {
 
 			contacts.get(0).g1 = o1;
 			contacts.get(0).g2 = o2;
-
+			contacts.get(0).side1 = -1;
+			contacts.get(0).side2 = -1;
+			
+			
 			// get p1,p2 = cylinder axis endpoints, get radius
 			DVector3 p1 = new DVector3(), p2 = new DVector3();
 			double clen = cyl._lz * (0.5);
@@ -253,6 +258,8 @@ public class DxCapsule extends DxGeom implements DCapsule {
 
 			contacts.get(0).g1 = cyl1;
 			contacts.get(0).g2 = cyl2;
+			contacts.get(0).side1 = -1;
+			contacts.get(0).side2 = -1;
 
 			// copy out some variables, for convenience
 			double lz1 = cyl1._lz * (0.5);
@@ -324,6 +331,8 @@ public class DxCapsule extends DxGeom implements DCapsule {
 							if (n2!=0) {
 								c2.get().g1 = cyl1;
 								c2.get().g2 = cyl2;
+								c2.get().side1 = -1;
+								c2.get().side2 = -1;
 								return 2;
 							}
 						}
@@ -392,7 +401,7 @@ public class DxCapsule extends DxGeom implements DCapsule {
 
 			// collide the deepest capping sphere with the plane
 			//double sign = (dDOT14 (plane._p,0,o1._final_posr.R.v,2) > 0) ? (-1.0) : (1.0);
-			double sign = ( planePos.reDot( o1._final_posr.R.viewCol(2) ) > 0) ? (-1.0) : (1.0);
+			double sign = ( planePos.dot( o1._final_posr.R.viewCol(2) ) > 0) ? (-1.0) : (1.0);
 			//  p[0] = o1.final_posr.pos[0] + o1.final_posr.R[2]  * ccyl.lz * REAL(0.5) * sign;
 			//  p[1] = o1.final_posr.pos[1] + o1.final_posr.R[6]  * ccyl.lz * REAL(0.5) * sign;
 			//  p[2] = o1.final_posr.pos[2] + o1.final_posr.R[10] * ccyl.lz * REAL(0.5) * sign;
@@ -400,7 +409,7 @@ public class DxCapsule extends DxGeom implements DCapsule {
 			//  p.set(o1._final_posr.R.get(2), o1._final_posr.R.get(6), o1._final_posr.R.get(10));
 			p.scale(ccyl._lz * 0.5 * sign).add(o1._final_posr.pos);
 
-			double k = p.reDot( planePos );//dDOT (p.v,plane._p);
+			double k = p.dot( planePos );//dDOT (p.v,plane._p);
 			double depth = plane.getDepth() - k + ccyl._radius;
 			if (depth < 0) return 0;
 			DContactGeom contact = contacts.get(0);
@@ -423,7 +432,7 @@ public class DxCapsule extends DxGeom implements DCapsule {
 				p = o1._final_posr.R.columnAsNewVector(2);
 				p.scale(-ccyl._lz * 0.5 * sign).add(o1._final_posr.pos);
 
-				k = p.reDot( planePos );//dDOT (p.v,plane._p);
+				k = p.dot( planePos );//dDOT (p.v,plane._p);
 				depth = plane.getDepth() - k + ccyl._radius;
 				if (depth >= 0) {
 					//dContactGeom *c2 = CONTACT(contact,skip);
@@ -443,8 +452,11 @@ public class DxCapsule extends DxGeom implements DCapsule {
 			}
 
 			for (int i=0; i < ncontacts; i++) {
-				contacts.get(i*skip).g1 = o1;//CONTACT(contact,i*skip).g1 = o1;
-				contacts.get(i*skip).g2 = o2;//CONTACT(contact,i*skip).g2 = o2;
+				DContactGeom currContact = contacts.get(i*skip);
+				currContact.g1 = o1;//CONTACT(contact,i*skip).g1 = o1;
+				currContact.g2 = o2;//CONTACT(contact,i*skip).g2 = o2;
+				currContact.side1 = -1;
+			    currContact.side2 = -1;
 			}
 			return ncontacts;
 		}

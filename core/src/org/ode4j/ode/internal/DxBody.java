@@ -65,23 +65,25 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//	};
 	private static final int dxBodyFlagFiniteRotation = 1;	// use finite rotations
 	private static final int dxBodyFlagFiniteRotationAxis= 2;	// use finite rotations only along axis
-	static final int dxBodyDisabled				=  4;	// body is disabled
-	static final int dxBodyNoGravity				=8;	// body is not influenced by gravity
+	static final int dxBodyDisabled				=  4;		// body is disabled
+	static final int dxBodyNoGravity				=8;		// body is not influenced by gravity
 	static final int dxBodyAutoDisable 			=16;	// enable auto-disable on body
-	static final int dxBodyLinearDamping 			=32;   // using linear damping
-	static final int dxBodyAngularDamping 			=64;  // using angular damping
-	static final int dxBodyMaxAngularSpeed			=128;  // using maximum angular speed
+	static final int dxBodyLinearDamping 			=32;   	// using linear damping
+	static final int dxBodyAngularDamping 			=64;  	// use angular damping
+	static final int dxBodyMaxAngularSpeed			=128;  	// use maximum angular speed
+	private static final int dxBodyGyroscopic 				=256;	// use gyroscopic term
 
 
 	//	  public dxJointNode firstjoint;	// list of attached joints
 	//TODO
 	public final Ref<DxJointNode> firstjoint = new Ref<DxJointNode>();	// list of attached joints
+	//unsigned
 	int flags;			// some dxBodyFlagXXX flags
 	//  public dGeom geom;			// first collision geom associated with body
 	public DxGeom geom;			// first collision geom associated with body
 	DxMass mass;			// mass parameters about POR
 	DMatrix3 invI;		// inverse of mass.I
-	double invMass;		// 1 / mass.mass
+	public double invMass;		// 1 / mass.mass
 	public dxPosR _posr;			// position and orientation of point of reference
 	public DQuaternion _q;		// orientation quaternion
 	public DVector3 lvel;		// linear and angular velocity of POR
@@ -173,6 +175,8 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		b.flags |= w.body_flags & dxBodyMaxAngularSpeed;
 		b.max_angular_speed = w.max_angular_speed;
 
+		b.flags |= dxBodyGyroscopic;
+
 		return b;
 	}
 
@@ -261,19 +265,12 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//		public void dBodySetRotation (dxBody b, final dMatrix3 R)
 	public void dBodySetRotation (DMatrix3C R)
 	{
-		dAASSERT (R);
-		DQuaternion q = new DQuaternion();
-		dQfromR (q,R);
-		//dRtoQ(R, q);
-		dNormalize4 (q);
-		//			_q.v[0] = q.v[0];
-		//			_q.v[1] = q.v[1];
-		//			_q.v[2] = q.v[2];
-		//			_q.v[3] = q.v[3];
-		_q.set(q);  //TODO change to _q = q? / directly operate on _q?
-		//	  dQtoR (b.q,b.posr.R);
-		dRfromQ(_posr.R(), _q);
-
+		//memcpy(b->posr.R, R, sizeof(dMatrix3));
+		_posr.R.set(R);
+		 dOrthogonalizeR(_posr.R);
+		 dQfromR (_q, R);
+		 dNormalize4 (_q);
+		  
 		// notify all attached geoms that this body has moved
 		for (DxGeom geom2 = geom; geom2 != null; geom2 = geom2.dGeomGetBodyNext ()) {
 			geom2.dGeomMoved ();
@@ -678,6 +675,23 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	}
 
 
+	void dBodySetDynamic ()
+	{
+	  dBodySetMass(mass);
+	}
+
+	void dBodySetKinematic ()
+	{
+		//dSetZero (b->invI,4*3);
+		invI.setZero();
+		invMass = 0; 
+	}
+
+	boolean dBodyIsKinematic ()
+	{
+	  return invMass == 0;
+	}
+
 	//	void dBodyEnable (dxBody b)
 	public void dBodyEnable ()
 	{
@@ -903,7 +917,8 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	{
 		DxWorld w = world;
 		dampingp = w.dampingp;
-		int mask = dxBodyLinearDamping | dxBodyAngularDamping;
+		//unsigned
+		final int mask = dxBodyLinearDamping | dxBodyAngularDamping;
 		flags &= ~mask; // zero them
 		flags |= w.body_flags & mask;
 	}
@@ -948,6 +963,20 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		dAASSERT(geom);
 		return geom.dGeomGetBodyNext();
 	}
+
+	boolean dBodyGetGyroscopicMode()
+	{
+	        return (flags & dxBodyGyroscopic) != 0;
+	}
+
+	void dBodySetGyroscopicMode(boolean enabled)
+	{
+	        if (enabled)
+	                flags |= dxBodyGyroscopic;
+	        else
+	                flags &= ~dxBodyGyroscopic;
+	}
+
 
 	//****************************************************************************
 	// body rotation
@@ -1208,12 +1237,24 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public void setTorque (DVector3C t)
 	{ dBodySetTorque (t); }
 
+	public void setDynamic()
+	{ dBodySetDynamic (); }
+	public void setKinematic()
+	{ dBodySetKinematic (); }
+	public boolean isKinematic()
+	{ return dBodyIsKinematic (); }
+
 	public void enable()
 	{ dBodyEnable (); }
 	public void disable()
 	{ dBodyDisable (); }
 	public boolean isEnabled() //const
 	{ return dBodyIsEnabled (); }
+
+	//TZ
+	public boolean isFlagsGyroscopic() {
+		return (flags & dxBodyGyroscopic) != 0;
+	}
 
 	public void getRelPointPos (double px, double py, double pz, DVector3 result) //const
 	{ dBodyGetRelPointPos (new DVector3(px, py, pz), result); }
@@ -1268,6 +1309,11 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public boolean getGravityMode() 
 	{ return dBodyGetGravityMode (); }
 
+	public void setGyroscopicMode (boolean mode)
+	{ dBodySetGyroscopicMode(mode); }
+	public boolean getGyroscopicMode() 
+	{ return dBodyGetGyroscopicMode (); }
+
 	public boolean isConnectedTo (DBody body) //const
 	{ return OdeJointsFactoryImpl.areConnected (this, body); }
 
@@ -1321,4 +1367,5 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public void destroy() {
 		dBodyDestroy();
 	}
+
 }

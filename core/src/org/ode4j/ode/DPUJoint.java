@@ -26,29 +26,31 @@ import org.ode4j.math.DVector3C;
 
 public interface DPUJoint extends DJoint {
 
-	  void setAnchor (double x, double y, double z);
-	  void setAnchor (DVector3C a);
-	  void setAxis1 (double x, double y, double z);
-	  void setAxis1 (DVector3C a);
-	  void setAxis2 (double x, double y, double z);
-	  void setAxis3 (double x, double y, double z);
-	  void setAxis3 (DVector3C a);
-	  void setAxisP (double x, double y, double z);
-	  void setAxisP (DVector3C a);
+	void setAnchor (double x, double y, double z);
+	void setAnchor (DVector3C a);
+	void setAxis1 (double x, double y, double z);
+	void setAxis1 (DVector3C a);
+	void setAxis2 (double x, double y, double z);
+	void setAxis3 (double x, double y, double z);
+	void setAxis3 (DVector3C a);
+	void setAxisP (double x, double y, double z);
+	void setAxisP (DVector3C a);
 
-	  void getAnchor (DVector3 result);
-	  void getAxis1 (DVector3 result);
-	  void getAxis2 (DVector3 result);
-	  void getAxis3 (DVector3 result);
-	  void getAxisP (DVector3 result);
+	void getAnchor (DVector3 result);
+	void getAxis1 (DVector3 result);
+	void getAxis2 (DVector3 result);
+	void getAxis3 (DVector3 result);
+	void getAxisP (DVector3 result);
 
-	  double getAngle1();
-	  double getAngle1Rate();
-	  double getAngle2();
-	  double getAngle2Rate();
+	double getAngle1();
+	double getAngle1Rate();
+	double getAngle2();
+	double getAngle2Rate();
 
-	  double getPosition();
-	  double getPositionRate();
+	double getPosition();
+	double getPositionRate();
+	void setAnchorOffset(double x, double y, double z, double dx, double dy,
+			double dz);
 
 	
 //	  dPUJoint (const dPUJoint &);

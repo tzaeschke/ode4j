@@ -61,6 +61,8 @@ public interface DPRJoint extends DJoint {
 	void setParamHiStop(double d);
 	void setParamLoStop2(double d);
 	void setParamHiStop2(double d);
+	double getAngle();
+	double getAngleRate();
 
 
 	//	  dPRJoint (const dPRJoint &);

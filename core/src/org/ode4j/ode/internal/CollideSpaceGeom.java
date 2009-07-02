@@ -39,28 +39,30 @@ public class CollideSpaceGeom implements DColliderFn {
 
 	/** ********************* COLLIDER stuff from collision_kernel.cpp **********/
 
-//	static volatile atomicptr s_cachedPosR = 0; // dxPosR *
-	//TODO make final non-volatil!?
-	static volatile AtomicReference<dxPosR> s_cachedPosR = new AtomicReference<dxPosR>(); // dxPosR *
+	// ******* TZ: Commented out, because it doesn't seem to be used.
 	
-	//TODO is this the right place for this method?
-	/** @deprecated TZ: Is this still required? */
-	/*extern */static void dClearPosrCache()
-	{
-		if (Common.dATOMICS_ENABLED) {
-			// No threads should be accessing ODE at this time already,
-			// hence variable may be read directly.
-			dxPosR existingPosR = (dxPosR )s_cachedPosR.get();
-
-			if (existingPosR != null)
-			{
-				//TZ dFree(existingPosR, sizeof(dxPosR));
-				existingPosR = null;
-
-				s_cachedPosR.set(null);// = 0;
-			}
-		}
-	}
+//	static volatile atomicptr s_cachedPosR = 0; // dxPosR *
+	//TODO make final non-volatile!?
+//	static volatile AtomicReference<dxPosR> s_cachedPosR = new AtomicReference<dxPosR>(); // dxPosR *
+//	
+//	//TODO is this the right place for this method?
+//	/** @deprecated TZ: Is this still required? */
+//	/*extern */static void dClearPosrCache()
+//	{
+//		if (Common.dATOMICS_ENABLED) {
+//			// No threads should be accessing ODE at this time already,
+//			// hence variable may be read directly.
+//			dxPosR existingPosR = (dxPosR )s_cachedPosR.get();
+//
+//			if (existingPosR != null)
+//			{
+//				//TZ dFree(existingPosR, sizeof(dxPosR));
+//				existingPosR = null;
+//TODO if this is reenabled, enable it also in OdeInit.dCloseODE()!!!
+//				s_cachedPosR.set(null);// = 0;
+//			}
+//		}
+//	}
 
 	private class SpaceGeomColliderData {
 		int flags;			// space left in contacts array

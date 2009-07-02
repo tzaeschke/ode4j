@@ -40,7 +40,28 @@ import static org.ode4j.ode.internal.Common.*;
  * GEOM_DIRTY flag. all dirty geoms come *before* all clean geoms in the list.
  */ 
 public abstract class DxSpace extends DxGeom implements DSpace {
-	
+
+	static final int dSPACE_TLS_KIND_INIT_VALUE;
+	private static final int dSPACE_TLS_KIND_MANUAL_VALUE;
+	static {
+		if (dTLS_ENABLED) {
+			throw new UnsupportedOperationException();
+//			dSPACE_TLS_KIND_INIT_VALUE = OTK__DEFAULT;
+//			dSPACE_TLS_KIND_MANUAL_VALUE = OTK_MANUALCLEANUP;
+		} else {
+			dSPACE_TLS_KIND_INIT_VALUE = 0;
+			dSPACE_TLS_KIND_MANUAL_VALUE = 0;
+		}
+	}
+//	#define dSPACE_TLS_KIND_MANUAL_VALUE 
+//	#if dTLS_ENABLED
+//	#define dSPACE_TLS_KIND_INIT_VALUE OTK__DEFAULT
+//	#define dSPACE_TLS_KIND_MANUAL_VALUE OTK_MANUALCLEANUP
+//	#else
+//	#define dSPACE_TLS_KIND_INIT_VALUE 0
+//	#define dSPACE_TLS_KIND_MANUAL_VALUE 0
+//	#endif
+
 	protected int count;			// number of geoms in this space
 	//	  dxGeom *first;		// first geom in list
 //	dxGeom first;		// first geom in list
@@ -50,6 +71,8 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	protected List<DxGeom> _geoms = new ArrayList<DxGeom>();
 	boolean cleanup;			// cleanup mode, 1=destroy geoms on exit
 	int sublevel;         // space sublevel (used in dSpaceCollide2). NOT TRACKED AUTOMATICALLY!!!
+	//unsigned
+	int tls_kind;	// space TLS kind to be used for global caches retrieval
 
 	// cached state for getGeom()
 	int current_index;		// only valid if current_geom != 0
@@ -61,23 +84,6 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	// is locked.
 	int lock_count;
 
-	//	  dxSpace (dxSpace _space);
-	//	  ~dxSpace();
-
-	//	  void computeAABB();
-
-	//	  void setCleanup (int mode);
-	//	  int getCleanup();
-	//	  void setSublevel(int value);
-	//	  int getSublevel() const;
-	//	  int query (dxGeom geom);
-	//	  int getNumGeoms();
-	//	  virtual dxGeom *getGeom (int i);
-
-	//	  virtual void add (dxGeom *);
-	//	  virtual void remove (dxGeom *);
-	//	  virtual void dirty (dxGeom *);
-
 	abstract void cleanGeoms();
 	// turn all dirty geoms into clean geoms by computing their AABBs and any
 	// other space data structures that are required. this should clear the
@@ -87,108 +93,83 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	abstract void collide2 (Object data, DxGeom geom, DNearCallback callback);
 
 
-//	public void dSpaceDestroy (dxSpace space)
 	public void dSpaceDestroy ()
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		dGeomDestroy ();
 	}
 
-//	void dSpaceSetCleanup (dxSpace space, boolean mode)
 	public void dSpaceSetCleanup (boolean mode)
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		setCleanup (mode);
 	}
 
 
-//	boolean dSpaceGetCleanup (dxSpace space)
 	boolean dSpaceGetCleanup ()
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		return getCleanup();
 	}
 
 
-//	void dSpaceSetSublevel (dxSpace space, int sublevel)
 	void dSpaceSetSublevel (int sublevel)
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		setSublevel (sublevel);
 	}
 
 
-//	int dSpaceGetSublevel (dxSpace space)
 	int dSpaceGetSublevel ()
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		return getSublevel();
 	}
 
 
-//	void dSpaceAdd (dxSpace space, dxGeom g)
+	void dSpaceSetManualCleanup (int mode)
+	{
+		setManualCleanup(mode);
+	}
+
+	int dSpaceGetManualCleanup ()
+	{
+		return getManualCleanup();
+	}
+
+
 	public void dSpaceAdd (DxGeom g)
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		CHECK_NOT_LOCKED ();
 		add (g);
 	}
 
 
-//	void dSpaceRemove (dxSpace space, dxGeom g)
 	void dSpaceRemove (DxGeom g)
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		CHECK_NOT_LOCKED ();
 		remove (g);
 	}
 
 
-//	boolean dSpaceQuery (dxSpace space, dxGeom g)
 	boolean dSpaceQuery (DxGeom g)
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		return query (g);
 	}
 
-//	void dSpaceClean (dxSpace space){
 	void dSpaceClean (){
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		cleanGeoms();
 	}
 
-//	int dSpaceGetNumGeoms (dxSpace space)
 	public int dSpaceGetNumGeoms ()
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		return getNumGeoms();
 	}
 
 
-//	dxGeom dSpaceGetGeom (dxSpace space, int i)
 	public DxGeom dSpaceGetGeom (int i)
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		//TODO remove this cast if possible
 		return (DxGeom) getGeom (i);
 	}
 
-//	int dSpaceGetClass (dxSpace space)
 	int dSpaceGetClass ()
 	{
-		//dAASSERT (space);
-		//dUASSERT (dGeomIsSpace(),"argument not a space");
 		return type;
 	}
 
@@ -290,6 +271,9 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 			}
 			else {
 				// g1 and g2 are geoms
+				// make sure they have valid AABBs
+				g1.recomputeAABB();
+				g2.recomputeAABB();
 				collideAABBs(g1,g2, data, callback);
 			}
 		}
@@ -305,6 +289,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		//first.set) = null;
 		cleanup = true;
 		sublevel = 0;
+		tls_kind = dSPACE_TLS_KIND_INIT_VALUE;
 		current_index = 0;
 		current_geom = null;
 		lock_count = 0;
@@ -389,10 +374,20 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		return sublevel;
 	}
 
+	
+	public void setManualCleanup(int value) { 
+		tls_kind = (value != 0 ? dSPACE_TLS_KIND_MANUAL_VALUE : dSPACE_TLS_KIND_INIT_VALUE); 
+	}
+	
+	
+	public int getManualCleanup() { 
+		return (tls_kind == dSPACE_TLS_KIND_MANUAL_VALUE) ? 1 : 0; 
+	}
 
+	  
 	boolean query (DxGeom geom)
 	{
-		dAASSERT (geom);
+//		dAASSERT (geom);
 		return (geom.parent_space == this);
 	}
 

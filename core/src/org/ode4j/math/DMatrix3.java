@@ -73,7 +73,7 @@ public class DMatrix3 extends DMatrix<DVector3, DVector3> implements DMatrix3C {
 	@Override
 	public String toString() {
 		StringBuffer b = new StringBuffer();
-		b.append("dMatrix3[");
+		b.append("DMatrix3[");
 		for (int i = 0; i < v.length-1; i++) {
 			b.append(v[i]).append(", ");
 		}
@@ -160,15 +160,15 @@ public class DMatrix3 extends DMatrix<DVector3, DVector3> implements DMatrix3C {
 //			aPos++;
 //			bbPos += MAX_J;
 //		}
-		v[0]  = B.get00()*C.get00() + B.get01()*C.get10() + B.get02()*C.get20();
-		v[1]  = B.get00()*C.get01() + B.get01()*C.get11() + B.get02()*C.get21();
-		v[2]  = B.get00()*C.get02() + B.get01()*C.get12() + B.get02()*C.get22();
-		v[4]  = B.get10()*C.get00() + B.get11()*C.get10() + B.get12()*C.get20();
-		v[5]  = B.get10()*C.get01() + B.get11()*C.get11() + B.get12()*C.get21();
-		v[6]  = B.get10()*C.get02() + B.get11()*C.get12() + B.get12()*C.get22();
-		v[8]  = B.get20()*C.get00() + B.get21()*C.get10() + B.get22()*C.get20();
-		v[9]  = B.get20()*C.get01() + B.get21()*C.get11() + B.get22()*C.get21();
-		v[10] = B.get20()*C.get02() + B.get21()*C.get12() + B.get22()*C.get22();
+		set( B.get00()*C.get00() + B.get01()*C.get10() + B.get02()*C.get20(),
+				B.get00()*C.get01() + B.get01()*C.get11() + B.get02()*C.get21(),
+				B.get00()*C.get02() + B.get01()*C.get12() + B.get02()*C.get22(),
+				B.get10()*C.get00() + B.get11()*C.get10() + B.get12()*C.get20(),
+				B.get10()*C.get01() + B.get11()*C.get11() + B.get12()*C.get21(),
+				B.get10()*C.get02() + B.get11()*C.get12() + B.get12()*C.get22(),
+				B.get20()*C.get00() + B.get21()*C.get10() + B.get22()*C.get20(),
+				B.get20()*C.get01() + B.get21()*C.get11() + B.get22()*C.get21(),
+				B.get20()*C.get02() + B.get21()*C.get12() + B.get22()*C.get22());
 	}
 
 	
@@ -287,14 +287,20 @@ public class DMatrix3 extends DMatrix<DVector3, DVector3> implements DMatrix3C {
 	 * </tt>
 	 * @param c The column to return [0, 1, 2].
 	 */
-	public DVector3View viewCol(int column) {
-		return new DVector3View(column);
+	public DVector3ColView viewCol(int column) {
+		return new DVector3ColView(column);
 	}
 	
-	public class DVector3View implements DVector3I {
+
+	public DVector3RowTView viewRowT(int row) {
+		return new DVector3RowTView(row);
+	}
+
+	
+	public class DVector3ColView extends DVector3View {
 		private final int _column;
 		
-		public DVector3View(int c) {
+		public DVector3ColView(int c) {
 			_column = c;
 		}
 		
@@ -318,19 +324,72 @@ public class DMatrix3 extends DMatrix<DVector3, DVector3> implements DMatrix3C {
 			return v[2 * MAX_J + _column];
 		}
 
-		public void set(DVector3 v2) {
-			v[0 * MAX_J + _column] = v2.get0();
-			v[1 * MAX_J + _column] = v2.get1();
-			v[2 * MAX_J + _column] = v2.get2();
+		@Override
+		public void set0(double d) {
+			v[_column] = d;
 		}
 		
+		@Override
+		public void set1(double d) {
+			v[1 * MAX_J + _column] = d;
+		}
 		
 		@Override
+		public void set2(double d) {
+			v[2 * MAX_J + _column] = d;
+		}
+
+		@Override
 		public String toString() {
-			StringBuffer b = new StringBuffer();
-			b.append("dVector3View[" + get0() + ", " + get1() + ", " + get2());
-			b.append("]");
-			return b.toString();
+			return "DVector3ColView" + super.toString();
+		}
+	}
+
+	public class DVector3RowTView extends DVector3View {
+		private final int _ofs;
+		
+		public DVector3RowTView(int row) {
+			_ofs = row * MAX_J;
+		}
+		
+		@Override
+		public double get(int i) {
+			return v[_ofs + i];
+		}
+		
+		@Override
+		public double get0() {
+			return v[_ofs];
+		}
+		
+		@Override
+		public double get1() {
+			return v[1 + _ofs];
+		}
+		
+		@Override
+		public double get2() {
+			return v[2 + _ofs];
+		}
+
+		@Override
+		public void set0(double d) {
+			v[_ofs] = d;
+		}
+
+		@Override
+		public void set1(double d) {
+			v[_ofs + 1] = d;
+		}
+
+		@Override
+		public void set2(double d) {
+			v[_ofs + 2] = d;
+		}
+
+		@Override
+		public String toString() {
+			return "DVector3RowTView" + super.toString();
 		}
 	}
 
@@ -443,10 +502,32 @@ public class DMatrix3 extends DMatrix<DVector3, DVector3> implements DMatrix3C {
 		return 3;
 	}
 	
-	public boolean equals(DMatrix3 m) {
+	/**
+	 * Compares two matrices for equality.
+	 * This is marginally faster than <tt>equals(Object o)</tt>.
+	 */
+	public boolean isEqual(DMatrix3C m) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				if (v[i*MAX_J + j] != m.v[i*MAX_J + j]) return false;
+				if (get(i, j) != m.get(i, j)) return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Compares two objects for equality.
+	 * This is marginally slower than <tt>isEquals(DMatrix3C m)</tt>.
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (! (o instanceof DMatrix3C)) {
+			return false;
+		}
+		DMatrix3C m = (DMatrix3C) o;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (get(i, j) != m.get(i, j)) return false;
 			}
 		}
 		return true;
@@ -454,9 +535,7 @@ public class DMatrix3 extends DMatrix<DVector3, DVector3> implements DMatrix3C {
 
 
 	public void eqIdentity() {
-		for (int i = 0; i < v.length; i++) {
-			v[i] = 0;
-		}
+		eqZero();
 		set00(1);
 		set11(1);
 		set22(1);
@@ -465,5 +544,17 @@ public class DMatrix3 extends DMatrix<DVector3, DVector3> implements DMatrix3C {
 
 	public void setIdentity() {
 		eqIdentity();
+	}
+
+	
+	public void eqZero() {
+		for (int i = 0; i < v.length; i++) {
+			v[i] = 0;
+		}
+	}
+
+
+	public void setZero() {
+		eqZero();
 	}
 }

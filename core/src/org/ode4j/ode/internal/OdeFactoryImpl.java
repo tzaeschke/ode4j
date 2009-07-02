@@ -1670,13 +1670,9 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 //		REGISTER_EXTENSION( ODE_EXT_no_debug )
 //	#endif // dNODEBUG
 //
-//	#ifdef dGYROSCOPIC
-//	REGISTER_EXTENSION( ODE_EXT_gyroscopic )
-//	#endif // dGYROSCOPIC
-//
 //	#ifdef dUSE_MALLOC_FOR_ALLOCA
 //	REGISTER_EXTENSION( ODE_EXT_malloc_not_alloca )
-//	#endif // dGYROSCOPIC
+//	#endif
 //
 //	#if dTRIMESH_ENABLED
 //	REGISTER_EXTENSION( ODE_EXT_trimesh )
@@ -1690,7 +1686,7 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 //	REGISTER_EXTENSION( ODE_OPC_16bit_indices )
 //	#endif
 //
-//	#if dTRIMESH_OPCODE_USE_NEW_TRIMESH_TRIMESH_COLLIDER
+//	#if !dTRIMESH_OPCODE_USE_OLD_TRIMESH_TRIMESH_COLLIDER
 //	REGISTER_EXTENSION( ODE_OPC_new_collider )
 //	#endif
 //
@@ -1711,9 +1707,6 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 	if (dNODEBUG)
 		REGISTER_EXTENSION( "ODE_EXT_no_debug" );
 
-	if (dGYROSCOPIC)
-		REGISTER_EXTENSION( "ODE_EXT_gyroscopic" );
-
 	if (dUSE_MALLOC_FOR_ALLOCA)
 		REGISTER_EXTENSION( "ODE_EXT_malloc_not_alloca" );
 
@@ -1728,7 +1721,7 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 			if (dTRIMESH_16BIT_INDICES)
 				REGISTER_EXTENSION( "ODE_OPC_16bit_indices" );
 
-			if (dTRIMESH_OPCODE_USE_NEW_TRIMESH_TRIMESH_COLLIDER)
+			if (!dTRIMESH_OPCODE_USE_OLD_TRIMESH_TRIMESH_COLLIDER)
 				REGISTER_EXTENSION( "ODE_OPC_new_collider" );
 		} // dTRIMESH_OPCODE
 

@@ -132,6 +132,10 @@ public interface DBody {
 	void setTorque (double x, double y, double z);
 	void setTorque (DVector3C t);
 
+	void setDynamic();
+	void setKinematic();
+	boolean isKinematic();
+
 	void enable();
 	void disable();
 	boolean isEnabled();
@@ -194,6 +198,9 @@ public interface DBody {
 
 	double getMaxAngularSpeed();
 	void setMaxAngularSpeed(double max_speed);
+
+	boolean getGyroscopicMode();
+	void setGyroscopicMode(boolean enabled);
 
 	//	private dxBody _id;
 	//  // intentionally undefined, don't use these

@@ -82,7 +82,8 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		susp_erp = world.global_erp;
 		susp_cfm = world.global_cfm;
 
-		flags |= dJOINT_TWOBODIES;
+		//flags |= dJOINT_TWOBODIES;
+		setFlagsTwoBodies();
 	}
 
 
@@ -108,32 +109,30 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	}
 
 
-	// macro that computes ax1,ax2 = axis 1 and 2 in global coordinates (they are
-	// relative to body 1 and 2 initially) and then computes the constrained
-	// rotational axis as the cross product of ax1 and ax2.
-	// the sin and cos of the angle between axis 1 and 2 is computed, this comes
-	// from dot and cross product rules.
-
-	//#define HINGE2_GET_AXIS_INFO(axis,sin_angle,cos_angle)                  \
-	//    dVector3 ax1,ax2;                                                   \
-	//    dMULTIPLY0_331 (ax1, joint.node[0].body.posr.R, joint.axis1);    \
-	//    dMULTIPLY0_331 (ax2, joint.node[1].body.posr.R, joint.axis2);    \
-	//    dCROSS (axis,=,ax1,ax2);                                            \
-	//    sin_angle = dSqrt (axis[0]*axis[0] + axis[1]*axis[1] + axis[2]*axis[2]); \
-	//    cos_angle = dDOT (ax1,ax2);
-	private void HINGE2_GET_AXIS_INFO(DVector3 ax1, DVector3 ax2,
-			DVector3 axis, 
-			RefDouble sin_angle, RefDouble cos_angle) {
-		dMULTIPLY0_331 (ax1, node[0].body._posr.R, _axis1);    
-		dMULTIPLY0_331 (ax2, node[1].body._posr.R, _axis2);    
-		dCROSS (axis,OP.EQ,ax1,ax2);                                            
-//		sin_angle.d = dSqrt (axis.v[0]*axis.v[0] + axis.v[1]*axis.v[1] + 
-//				axis.v[2]*axis.v[2]);
-		sin_angle.d = axis.length();
-		cos_angle.d = dDOT (ax1,ax2);
+	/**
+	 * Function that computes ax1,ax2 = axis 1 and 2 in global coordinates (they are
+	 * relative to body 1 and 2 initially) and then computes the constrained
+	 * rotational axis as the cross product of ax1 and ax2.
+	 * the sin and cos of the angle between axis 1 and 2 is computed, this comes
+	 * from dot and cross product rules.
+	 * 
+	 * @param ax1 Will contain the joint axis1 in world frame
+	 * @param ax2 Will contain the joint axis2 in world frame
+	 * @param axis Will contain the cross product of ax1 x ax2
+	 * @param sin_angle
+	 * @param cos_angle
+	 */
+	private void getAxisInfo(DVector3 ax1, DVector3 ax2, DVector3 axCross,
+	                           RefDouble sin_angle, RefDouble cos_angle)
+	{
+	    dMULTIPLY0_331 (ax1, node[0].body._posr.R, _axis1);
+	    dMULTIPLY0_331 (ax2, node[1].body._posr.R, _axis2);
+	    dCROSS (axCross,OP.EQ,ax1,ax2);
+	    sin_angle.d = axCross.length();//dSqrt (axCross[0]*axCross[0] + axCross[1]*axCross[1] + axCross[2]*axCross[2]);
+	    cos_angle.d = ax1.dot(ax2);//dDOT (ax1,ax2);
 	}
-
-
+	
+	
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
@@ -143,7 +142,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		DVector3 ax1 = new DVector3(), ax2 = new DVector3();
 		//double s = 0, c = 0;
 		RefDouble s = new RefDouble(0), c = new RefDouble(0);
-		HINGE2_GET_AXIS_INFO( ax1, ax2, q, s, c);
+		getAxisInfo( ax1, ax2, q, s, c);
 		dNormalize3( q );   // @@@ quicker: divide q by s ?
 
 		// set the three ball-and-socket rows (aligned to the suspension axis ax1)
@@ -237,25 +236,14 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private void dJointSetHinge2Axis1( dJoint j, double x, double y, double z )
 	public void dJointSetHinge2Axis1( double x, double y, double z )
 	{
-//		dxJointHinge2 joint = ( dxJointHinge2 )j;
-//		dUASSERT( joint, "bad joint argument" );
-//		checktype( joint, dxJointHinge2.class );
 		if ( node[0].body != null)
 		{
-			DVector3 q = new DVector3(x, y, z);//[4];
-//			q.v[0] = x;
-//			q.v[1] = y;
-//			q.v[2] = z;
-//			q.v[3] = 0;
-			dNormalize3( q );
-			dMULTIPLY1_331( _axis1, node[0].body._posr.R, q );
-			_axis1.v[3] = 0;
+			setAxes(x, y, z, _axis1, null);
 
-			// compute the sin and cos of the angle between axis 1 and axis 2
-			DVector3 ax = new DVector3();
-			DVector3 ax1 = new DVector3(), ax2 = new DVector3();    
+	        // compute the sin and cos of the angle between axis 1 and axis 2
+	        DVector3 ax1 = new DVector3(), ax2 = new DVector3(), ax = new DVector3();
 			RefDouble s0MD = new RefDouble(s0), c0MD = new RefDouble(c0);
-			HINGE2_GET_AXIS_INFO( ax1, ax2, ax, s0MD, c0MD );
+	        getAxisInfo( ax1, ax2, ax, s0MD, c0MD );
 			c0 = c0MD.get();
 			s0 = s0MD.get();
 		}
@@ -268,20 +256,12 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	{
 		if ( node[1].body != null)
 		{
-			DVector3 q = new DVector3(x, y, z);// q[4];
-//			q[0] = x;
-//			q[1] = y;
-//			q[2] = z;
-//			q[3] = 0;
-			dNormalize3( q );
-			dMULTIPLY1_331( _axis2, node[1].body._posr.R, q );
-			_axis1.v[3] = 0;
+			setAxes(x, y, z, null, _axis2);
 
-			// compute the sin and cos of the angle between axis 1 and axis 2
-			DVector3 ax = new DVector3();
-			DVector3 ax1 = new DVector3(), ax2 = new DVector3();                                                   
+	        // compute the sin and cos of the angle between axis 1 and axis 2
+	        DVector3 ax1 = new DVector3(), ax2 = new DVector3(), ax = new DVector3();
 			RefDouble s0MD = new RefDouble(s0), c0MD = new RefDouble(c0);
-			HINGE2_GET_AXIS_INFO( ax1, ax2, ax, s0MD, c0MD );
+	        getAxisInfo( ax1, ax2, ax, s0MD, c0MD );
 			c0 = c0MD.get();
 			s0 = s0MD.get();
 		}
@@ -310,7 +290,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private void dJointGetHinge2Anchor( dJoint j, dVector3 result )
 	private void dJointGetHinge2Anchor( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0 )
+		if ( isFlagsReverse() )
 			getAnchor2( result, anchor2 );
 		else
 			getAnchor( result, anchor1 );
@@ -320,7 +300,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 //	private void dJointGetHinge2Anchor2( dJoint j, dVector3 result )
 	private void dJointGetHinge2Anchor2( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE) != 0)
+		if ( isFlagsReverse() )
 			getAnchor( result, anchor1 );
 		else
 			getAnchor2( result, anchor2 );
@@ -418,6 +398,36 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	}
 
 
+	void setRelativeValues()
+	{
+	    DVector3 anchor = new DVector3();
+	    dJointGetHinge2Anchor(anchor);
+	    setAnchors( anchor, anchor1, anchor2 );
+
+	    DVector3 axis = new DVector3();
+
+	    if ( node[0].body != null )
+	    {
+	        dJointGetHinge2Axis1(axis);
+	        setAxes( axis, _axis1, null );
+	    }
+
+	    if ( node[0].body != null )
+	    {
+	        dJointGetHinge2Axis2(axis);
+	        setAxes( axis, null, _axis2 );
+	    }
+
+	    DVector3 ax1 = new DVector3(), ax2 = new DVector3();
+	    RefDouble s0R = new RefDouble(s0), c0R = new RefDouble(c0);
+	    getAxisInfo( ax1, ax2, axis, s0R, c0R );
+	    s0 = s0R.d;
+	    c0 = c0R.d;
+
+	    makeV1andV2();
+	}
+
+	
 	public DxJointLimitMotor getLimot1() {
 		return limot1;
 	}

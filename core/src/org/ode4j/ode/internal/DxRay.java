@@ -294,6 +294,8 @@ public class DxRay extends DxGeom implements DRay {
 			DContactGeom contact = contacts.get(0);
 			contact.g1 = ray;
 			contact.g2 = sphere;
+			contact.side1 = -1;
+			contact.side2 = -1;
 			return ray_sphere_helper (ray,sphere._final_posr.pos,sphere.getRadius(),contacts,false);
 		}
 
@@ -321,6 +323,8 @@ public class DxRay extends DxGeom implements DRay {
 			DContactGeom contact = contacts.get(0);
 			contact.g1 = ray;
 			contact.g2 = box;
+			contact.side1 = -1;
+			contact.side2 = -1;
 
 			int i;
 
@@ -434,6 +438,9 @@ public class DxRay extends DxGeom implements DRay {
 			DContactGeom contact = contacts.get(0);
 			contact.g1 = ray;
 			contact.g2 = ccyl;
+			contact.side1 = -1;
+			contact.side2 = -1;
+
 			double lz2 = ccyl.getLength() * 0.5;//_lz * (0.5);
 
 			// compute some useful info
@@ -568,11 +575,11 @@ public class DxRay extends DxGeom implements DRay {
 			//  dxPlane *plane = (dxPlane*) o2;
 
 			//double alpha = plane.getD_p[3] - dDOT (plane._p,ray._final_posr.pos.v);
-			double alpha = plane.getDepth() - plane.getNormal().reDot (ray._final_posr.pos);
+			double alpha = plane.getDepth() - plane.getNormal().dot (ray._final_posr.pos);
 			// note: if alpha > 0 the starting point is below the plane
 			double nsign = (alpha > 0) ? (-1.0) : (1.0);
 			//double k = dDOT14(plane._p, 0,ray._final_posr.R.v,2);
-			double k = plane.getNormal().reDot( ray._final_posr.R.viewCol(2) );
+			double k = plane.getNormal().dot( ray._final_posr.R.viewCol(2) );
 			if (k==0) return 0;		// ray parallel to plane
 			alpha /= k;
 			if (alpha < 0 || alpha > ray._length) return 0;
@@ -589,6 +596,8 @@ public class DxRay extends DxGeom implements DRay {
 			contact.depth = alpha;
 			contact.g1 = ray;
 			contact.g2 = plane;
+			contact.side1 = -1;
+			contact.side2 = -1;
 			return 1;
 		}
 
@@ -616,6 +625,8 @@ public class DxRay extends DxGeom implements DRay {
 			DContactGeom contact = contacts.get(0);
 			contact.g1 = ray;
 			contact.g2 = cyl;
+			contact.side1 = -1;
+			contact.side2 = -1;
 
 			final double half_length = cyl.getLength() * ( 0.5 );//_lz * REAL( 0.5 );
 

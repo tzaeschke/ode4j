@@ -23,7 +23,6 @@ package org.ode4j.ode.internal;
 
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.DJoint.DJointFeedback;
 import org.ode4j.ode.OdeMath.OP;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
@@ -125,7 +124,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 	//#ifdef COMPARE_METHODS
 	//#include "testing.h"
 	//dMatrixComparison comparator;
-	private dMatrixComparison comparator = new dMatrixComparison();//TZ new
+	//private dMatrixComparison comparator = new dMatrixComparison();//TZ new
 	//#endif
 
 	// undef to use the fast decomposition
@@ -687,14 +686,16 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 		// zero all force accumulators
 		for (i=0; i<nb; i++) {
-			body[i].facc.v[0] = 0;
-			body[i].facc.v[1] = 0;
-			body[i].facc.v[2] = 0;
-			body[i].facc.v[3] = 0;
-			body[i].tacc.v[0] = 0;
-			body[i].tacc.v[1] = 0;
-			body[i].tacc.v[2] = 0;
-			body[i].tacc.v[3] = 0;
+//			body[i].facc.v[0] = 0;
+//			body[i].facc.v[1] = 0;
+//			body[i].facc.v[2] = 0;
+//			body[i].facc.v[3] = 0;
+			body[i].facc.setZero();
+//			body[i].tacc.v[0] = 0;
+//			body[i].tacc.v[1] = 0;
+//			body[i].tacc.v[2] = 0;
+//			body[i].tacc.v[3] = 0;
+			body[i].tacc.setZero();
 		}
 
 		//#ifdef TIMING
@@ -734,14 +735,8 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 		// for all bodies, compute the inertia tensor and its inverse in the global
 		// frame, and compute the rotational force and add it to the torque
-		// accumulator. I and invI are vertically stacked 3x4 matrices, one per body.
+		// accumulator. invI are vertically stacked 3x4 matrices, one per body.
 		// @@@ check computation of rotational force.
-		double[] I;
-		if (dGYROSCOPIC)//#ifdef dGYROSCOPIC  
-			I = new double[3*nb*4];//ALLOCA(double,I,3*nb*4*sizeof(double));
-		else//#else
-			I = null;
-		//#endif // for dGYROSCOPIC
 
 		double[] invI = new double[3*nb*4];//ALLOCA(double,invI,3*nb*4*sizeof(double));
 
@@ -750,21 +745,25 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 		//TZ:
 		DMatrix3 tmpM = new DMatrix3();
 		DVector3 tmpV = new DVector3();
+		DMatrix3 tmpI = new DMatrix3();
 		for (i=0; i<nb; i++) {
 			//TZ double[] tmp=new double[12];
 
 			// compute inverse inertia tensor in global frame
 			dMULTIPLY2_333 (tmpM,body[i].invI,body[i]._posr.R);
 			dMULTIPLY0_333 (invI,i*12,body[i]._posr.R.v,0,tmpM.v,0);
-			if (dGYROSCOPIC) {//#ifdef dGYROSCOPIC
+
+		    if (body[i].isFlagsGyroscopic()) {
+		        //TZ move up for performance 
+		    	//DMatrix3 I = new DMatrix3();
 				// compute inertia tensor in global frame
 				dMULTIPLY2_333 (tmpM,body[i].mass._I,body[i]._posr.R);
-				dMULTIPLY0_333 (I,i*12,body[i]._posr.R.v,0,tmpM.v,0);
+				dMULTIPLY0_333 (tmpI,body[i]._posr.R,tmpM);
 
 				// compute rotational force
-				dMULTIPLY0_331 (tmpV.v,0,I,i*12,body[i].avel.v,0);
+				dMULTIPLY0_331 (tmpV,tmpI,body[i].avel);
 				dCROSS (body[i].tacc,OP.SUB_EQ,body[i].avel,tmpV);
-			} //#endif
+			}
 		}
 
 		// add the gravity force to all bodies

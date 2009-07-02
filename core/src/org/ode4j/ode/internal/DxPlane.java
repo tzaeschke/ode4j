@@ -157,7 +157,7 @@ public class DxPlane extends DxGeom implements DPlane {
 	}
 	@Override
 	public double getPointDepth(DVector3C p) {
-		return _pD - _pV.reDot(p);
+		return _pD - _pV.dot(p);
 	}
 
 	//TZ 

@@ -166,6 +166,8 @@ class CollideCylinderSphere extends DxCollisionUtil implements DColliderFn {
 				contact.normal.eqDiff(contact.pos, SpherePos).scale( 1. / (radius2 - contact.depth));
 				contact.g1 = Cylinder;
 				contact.g2 = Sphere;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				return GeomCount;
 			}
@@ -188,6 +190,8 @@ class CollideCylinderSphere extends DxCollisionUtil implements DColliderFn {
 				contact.normal.eqDiff(contact.pos, SpherePos).scale( 1. / (radius2 - contact.depth));
 				contact.g1 = Cylinder;
 				contact.g2 = Sphere;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				return GeomCount;
 			}
@@ -220,6 +224,8 @@ class CollideCylinderSphere extends DxCollisionUtil implements DColliderFn {
 					contact.normal.set(C);
 					contact.g1 = Cylinder;
 					contact.g2 = Sphere;
+					contact.side1 = -1;
+					contact.side2 = -1;
 					GeomCount++;
 					return GeomCount;
 				}
@@ -245,6 +251,8 @@ class CollideCylinderSphere extends DxCollisionUtil implements DColliderFn {
 					contact.normal.set(C).scale(1./t);
 					contact.g1 = Cylinder;
 					contact.g2 = Sphere;
+					contact.side1 = -1;
+					contact.side2 = -1;
 					GeomCount++;
 					return GeomCount;
 				}
@@ -272,6 +280,8 @@ class CollideCylinderSphere extends DxCollisionUtil implements DColliderFn {
 				contact.normal.set(vDir1);
 				contact.g1 = Cylinder;
 				contact.g2 = Sphere;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				return GeomCount;
 			}
@@ -294,6 +304,8 @@ class CollideCylinderSphere extends DxCollisionUtil implements DColliderFn {
 				contact.normal.set(vDir1).scale(-1);
 				contact.g1 = Cylinder;
 				contact.g2 = Sphere;
+				contact.side1 = -1;
+				contact.side2 = -1;
 				GeomCount++;
 				return GeomCount;
 			}

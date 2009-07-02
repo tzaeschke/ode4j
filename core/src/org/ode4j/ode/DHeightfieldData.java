@@ -98,4 +98,52 @@ public interface DHeightfieldData {
 	 * @ingroup collide
 	 */
 	void setBounds( DHeightfieldData d, double minHeight, double maxHeight );
+
+	/**
+	 * @brief Configures a dHeightfieldData to use height data in byte format.
+	 *
+	 * Before a dHeightfieldData can be used by a geom it must be
+	 * configured to specify the format of the height data.
+	 * This call specifies that the heightfield data is stored as a rectangular
+	 * array of bytes (8 bit unsigned) representing the height at each sample point.
+	 *
+	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
+	 *
+	 * @param pHeightData A pointer to the height data.
+	 * @param bCopyHeightData When non-zero the height data is copied to an
+	 * internal store. When zero the height data is accessed by reference and
+	 * so must persist throughout the lifetime of the heightfield.
+	 *
+	 * @param width Specifies the total 'width' of the heightfield along
+	 * the geom's local x axis.
+	 * @param depth Specifies the total 'depth' of the heightfield along
+	 * the geom's local z axis.
+	 *
+	 * @param widthSamples Specifies the number of vertices to sample
+	 * along the width of the heightfield. Each vertex has a corresponding
+	 * height value which forms the overall shape.
+	 * Naturally this value must be at least two or more.
+	 * @param depthSamples Specifies the number of vertices to sample
+	 * along the depth of the heightfield.
+	 *
+	 * @param scale A uniform scale applied to all raw height data.
+	 * @param offset An offset applied to the scaled height data.
+	 *
+	 * @param thickness A value subtracted from the lowest height
+	 * value which in effect adds an additional cuboid to the base of the
+	 * heightfield. This is used to prevent geoms from looping under the
+	 * desired terrain and not registering as a collision. Note that the
+	 * thickness is not affected by the scale or offset parameters.
+	 *
+	 * @param bWrap If non-zero the heightfield will infinitely tile in both
+	 * directions along the local x and z axes. If zero the heightfield is
+	 * bounded from zero to width in the local x axis, and zero to depth in
+	 * the local z axis.
+	 *
+	 * @ingroup collide
+	 */
+	void buildByte(byte[] pHeightData,
+			boolean bCopyHeightData, double width, double depth,
+			int widthSamples, int depthSamples, double scale, double offset,
+			double thickness, boolean bWrap);
 }

@@ -158,7 +158,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 //				( anchor2.v[2] ) );
 				q.eqSum( node[0].body._posr.pos, q ).sub( anchor2 ) ;
 
-				if (( flags & dJOINT_REVERSE )!=0)
+				if (isFlagsReverse())
 				{
 //					q.v[0] = -q.v[0];
 //					q.v[1] = -q.v[1];
@@ -196,7 +196,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		else
 		{
 			double rate = dDOT ( ax, node[0].body.lvel );
-			return ( ((flags & dJOINT_REVERSE)!=0) ? -rate : rate);
+			return isFlagsReverse() ? -rate : rate;
 		}
 	}
 
@@ -207,7 +207,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		{
 			double ang = getHingeAngle ( node[0].body, node[1].body, axis1,
 					qrel );
-			if (( flags & dJOINT_REVERSE )!=0)
+			if ( isFlagsReverse() )
 				return -ang;
 			else
 				return ang;
@@ -224,7 +224,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			dMULTIPLY0_331 ( axis, node[0].body._posr.R, axis1 );
 			double rate = dDOT ( axis, node[0].body.avel );
 			if ( node[1].body!=null ) rate -= dDOT ( axis, node[1].body.avel );
-			if (( flags & dJOINT_REVERSE )!=0) rate = - rate;
+			if ( isFlagsReverse() ) rate = - rate;
 			return rate;
 		}
 		else return 0;
@@ -308,10 +308,20 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		{
 			// pos2 = 0; // N.B. We can do that to be safe but it is no necessary
 			// R2 = 0;   // N.B. We can do that to be safe but it is no necessary
-			// dist[i] = joint.anchor2[i] - pos1[ui];
-			//TZ dOPE2 ( dist, OP.EQ , anchor2, OP.SUB, pos1 );
-			//dOP ( dist.v, OP.SUB , anchor2.v, pos1 );
-			dist.eqDiff(anchor2, pos1);
+	        if ( isFlagsReverse() )
+	        {
+//	            dist[0] = pos1[0] - anchor2[0]; // Invert the value
+//	            dist[1] = pos1[1] - anchor2[1];
+//	            dist[2] = pos1[2] - anchor2[2];
+	            dist.eqDiff(pos1, anchor2);
+	        }
+	        else
+	        {
+//	            dist[0] = anchor2[0] - pos1[0];
+//	            dist[1] = anchor2[1] - pos1[1];
+//	            dist[2] = anchor2[2] - pos1[2];
+	            dist.eqDiff(anchor2, pos1);
+	        }
 		}
 
 		// ======================================================================
@@ -447,28 +457,46 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		info.setC(3, k * dDOT ( q, err ) );
 
 
-		int row = 4 + limotP.addLimot ( this, info, 4, ax1, false );
-		limotR.addLimot ( this, info, row, ax1, true );
-	}
+	    int row = 4;
+	    if (  node[1].body != null )
+	    {
+	        row += limotP.addLimot ( this, info, 4, ax1, false );
+	    }
+	    else if ( isFlagsReverse() )
+	    {
+	        DVector3 rAx1 = new DVector3();
+//	        rAx1[0] = -ax1[0];
+//	        rAx1[1] = -ax1[1];
+//	        rAx1[2] = -ax1[2];
+	        rAx1.sub( ax1 );
+	        row += limotP.addLimot ( this, info, 4, rAx1, false );
+	    }
+	    else
+	        row += limotP.addLimot ( this, info, 4, ax1, false );
 
-	void
-	computeInitialRelativeRotation()
-	{
-		if ( node[0].body!=null )
-		{
-			if ( node[1].body!=null )
-			{
-				dQMultiply1 ( qrel, node[0].body._q, node[1].body._q );
-			}
-			else
-			{
-				// set joint->qrel to the transpose of the first body q
-				qrel.set0( node[0].body._q.get0() );
-				for ( int i = 1; i < 4; i++ )
-					qrel.set(i, -node[0].body._q.get(i) );
-				// WARNING do we need the - in -joint->node[0].body->q[i]; or not
-			}
-		}
+	    limotR.addLimot ( this, info, row, ax1, true );
+//		int row = 4 + limotP.addLimot ( this, info, 4, ax1, false );
+//		limotR.addLimot ( this, info, row, ax1, true );
+//	}
+//
+//	void
+//	computeInitialRelativeRotation()
+//	{
+//		if ( node[0].body!=null )
+//		{
+//			if ( node[1].body!=null )
+//			{
+//				dQMultiply1 ( qrel, node[0].body._q, node[1].body._q );
+//			}
+//			else
+//			{
+//				// set joint->qrel to the transpose of the first body q
+//				qrel.set0( node[0].body._q.get0() );
+//				for ( int i = 1; i < 4; i++ )
+//					qrel.set(i, -node[0].body._q.get(i) );
+//				// WARNING do we need the - in -joint->node[0].body->q[i]; or not
+//			}
+//		}
 	}
 
 	public void dJointSetPistonAnchor ( DVector3C xyz )
@@ -480,7 +508,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	void dJointSetPistonAnchorOffset (double x, double y, double z,
 			double dx, double dy, double dz)
 	{
-		if ((flags & dJOINT_REVERSE)!=0)
+		if (isFlagsReverse())
 		{
 			dx = -dx;
 			dy = -dy;
@@ -513,7 +541,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	//void dJointGetPistonAnchor ( dJoint j, dVector3 result )
 	public void dJointGetPistonAnchor ( DVector3 result )
 	{
-		if (( flags & dJOINT_REVERSE )!=0)
+		if ( isFlagsReverse() )
 			getAnchor2 ( result, anchor2 );
 		else
 			getAnchor ( result, anchor1 );
@@ -523,7 +551,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	//void dJointGetPistonAnchor2 ( dJoint j, dVector3 result )
 	void dJointGetPistonAnchor2 ( DVector3 result )
 	{
-		if (( flags & dJOINT_REVERSE )!=0)
+		if ( isFlagsReverse() )
 			getAnchor ( result, anchor1 );
 		else
 			getAnchor2 ( result, anchor2 );
@@ -604,7 +632,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	public void dJointAddPistonForce ( double force )
 	{
-		if (( flags & dJOINT_REVERSE )!=0)
+		if ( isFlagsReverse() )
 			force -= force;
 
 		DVector3 axis = new DVector3();
@@ -680,6 +708,41 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	}
 
 
+	void setRelativeValues()
+	{
+	    DVector3 vec = new DVector3();
+	    dJointGetPistonAnchor(vec);
+	    setAnchors( vec, anchor1, anchor2 );
+
+	    dJointGetPistonAxis(vec);
+	    setAxes( vec, axis1, axis2 );
+
+	    computeInitialRelativeRotation();
+	}
+
+
+
+
+	private void computeInitialRelativeRotation()
+	{
+	    if ( node[0].body != null )
+	    {
+	        if ( node[1].body != null )
+	        {
+	            dQMultiply1 ( qrel, node[0].body._q, node[1].body._q );
+	        }
+	        else
+	        {
+	            // set joint->qrel to the transpose of the first body q
+	            qrel.set0( node[0].body._q.get0() );
+	            for ( int i = 1; i < 4; i++ )
+	                qrel.set(i, -node[0].body._q.get(i) );
+	            // WARNING do we need the - in -joint->node[0].body->q[i]; or not
+	        }
+	    }
+	}
+
+	
 	// *********************************
 	// API dPistinJoint
 	// *********************************
@@ -737,6 +800,18 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	@Override
 	public void setParamLoStop2(double d) {
 		dJointSetPistonParam(D_PARAM_NAMES_N.dParamLoStop2, d);
+	}
+
+
+	@Override
+	public double getAngle() {
+		return dJointGetPistonAngle();
+	}
+
+
+	@Override
+	public double getAngleRate() {
+		return dJointGetPistonAngleRate();
 	}
 
 }

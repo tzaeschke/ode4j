@@ -319,15 +319,15 @@ public class DxJointLimitMotor {
 						double vel;
 						if ( rotational )
 						{
-							vel = joint.node[0].body.avel.reDot( ax1 );
+							vel = joint.node[0].body.avel.dot( ax1 );
 							if ( joint.node[1].body != null)
-								vel -= joint.node[1].body.avel.reDot( ax1 );
+								vel -= joint.node[1].body.avel.dot( ax1 );
 						}
 						else
 						{
-							vel = joint.node[0].body.lvel.reDot( ax1 );
+							vel = joint.node[0].body.lvel.dot( ax1 );
 							if ( joint.node[1].body != null)
-								vel -= joint.node[1].body.lvel.reDot( ax1 );
+								vel -= joint.node[1].body.lvel.dot( ax1 );
 						}
 
 						// only apply bounce if the velocity is incoming, and if the

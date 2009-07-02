@@ -51,40 +51,47 @@ import static org.ode4j.ode.OdeMath.*;
 public class DxJointPR extends DxJoint implements DPRJoint
 {
 
-	DVector3 _anchor2;   ///< @brief Position of the rotoide articulation
-	///<        w.r.t second body.
-	///< @note Position of body 2 in world frame +
-	///< anchor2 in world frame give the position
-	///< of the rotoide articulation
-	DVector3 axisR1;    ///< axis of the rotoide articulation w.r.t first body.
-	///< @note This is considered as axis1 from the parameter
-	///< view.
-	DVector3 axisR2;    ///< axis of the rotoide articulation w.r.t second body.
-	///< @note This is considered also as axis1 from the
-	///< parameter view
-	DVector3 axisP1;    ///< axis for the prismatic articulation w.r.t first body.
-	///< @note This is considered as axis2 in from the parameter
-	///< view
-	DQuaternion qrel;   ///< initial relative rotation body1 -> body2.
-	DVector3 offset;    ///< @brief vector between the body1 and the rotoide
-	///< articulation.
-	///<
-	///< Going from the first to the second in the frame
-	///<  of body1.
-	///< That should be aligned with body1 center along axisP
-	///< This is calculated when the axis are set.
-	public DxJointLimitMotor limotR; ///< limit and motor information for the rotoide articulation.
-	public DxJointLimitMotor limotP; ///< limit and motor information for the prismatic articulation.
+	/**
+	 * @brief Position of the rotoide articulation w.r.t second body.
+	 * @note Position of body 2 in world frame + anchor2 in world frame give 
+	 * the position of the rotoide articulation.
+	 */
+	DVector3 _anchor2;  
+	
+	/** 
+	 * Axis of the rotoide articulation w.r.t first body.
+	 * @note This is considered as axis1 from the parameter view.
+	 */
+	DVector3 axisR1;
+	
+	/** Axis of the rotoide articulation w.r.t second body.
+	 * @note This is considered also as axis1 from the parameter view.
+	 */
+	DVector3 axisR2;
+	
+	/** Axis for the prismatic articulation w.r.t first body.
+	 * @note This is considered as axis2 in from the parameter view.
+	 */
+	DVector3 axisP1;
+	
+	/** Initial relative rotation body1 -> body2. */ 
+	DQuaternion qrel;
+	
+	/** @brief vector between the body1 and the rotoide articulation.
+	 *  
+	 * Going from the first to the second in the frame of body1.
+	 * That should be aligned with body1 center along axisP.
+	 * This is calculated when the axis are set.
+	 */
+	DVector3 offset;
+	
+	/** limit and motor information for the rotoide articulation. */
+	public DxJointLimitMotor limotR;
+	
+	/** limit and motor information for the prismatic articulation. */
+	public DxJointLimitMotor limotP;
 
 
-	//    void computeInitialRelativeRotation();
-	//
-	//
-	//    dxJointPR( dxWorld *w );
-	//    virtual void getInfo1( Info1* info );
-	//    virtual void getInfo2( Info2* info );
-	//    virtual dJointType type() const;
-	//    virtual size_t size() const;
 	DxJointPR( DxWorld w ) 
 	//dxJoint( w )
 	{
@@ -152,6 +159,11 @@ public class DxJointPR extends DxJoint implements DPRJoint
 //			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
 //					( _anchor2.v[2] ) );
 			q.eqSum(node[0].body._posr.pos, q).sub(_anchor2);
+
+			if ( isFlagsReverse() ) 
+			{
+				q.scale( -1 );
+	        }
 		}
 
 		DVector3 axP = new DVector3();
@@ -177,9 +189,50 @@ public class DxJointPR extends DxJoint implements DPRJoint
 			return dDOT( ax1, node[0].body.lvel ) - dDOT( ax1, lv2 );
 		}
 		else
-			return dDOT( ax1, node[0].body.lvel );
+	    {
+	        double rate = ax1.dot( node[0].body.lvel );
+	        return ( isFlagsReverse() ? -rate : rate);
+	    }
 	}
 
+
+	double dJointGetPRAngle()
+	{
+//	    dxJointPR* joint = ( dxJointPR* )j;
+//	    dAASSERT( joint );
+//	    checktype( joint, PR );
+	    if ( node[0].body != null )
+	    {
+	        double ang = getHingeAngle( node[0].body,
+	                                   node[1].body,
+	                                   axisR1,
+	                                   qrel );
+	        if ( isFlagsReverse() )
+	            return -ang;
+	        else
+	            return ang;
+	    }
+	    else return 0;
+	}
+
+
+
+	double dJointGetPRAngleRate()
+	{
+//	    dxJointPR* joint = ( dxJointPR* )j;
+//	    dAASSERT( joint );
+//	    checktype( joint, PR );
+	    if ( node[0].body != null )
+	    {
+	        DVector3 axis = new DVector3();
+	        dMULTIPLY0_331( axis, node[0].body._posr.R, axisR1 );
+	        double rate = dDOT( axis, node[0].body.avel );
+	        if ( node[1].body != null ) rate -= dDOT( axis, node[1].body.avel );
+	        if ( isFlagsReverse() ) rate = -rate;
+	        return rate;
+	    }
+	    else return 0;
+	}
 
 
 	public void
@@ -201,6 +254,21 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 		// powered needs an extra constraint row
 		if ( limotP.limit!=0 || limotP.fmax > 0 ) info.incM();
+
+
+	    // see if we're at a joint limit.
+	    limotR.limit = 0;
+	    if (( limotR.lostop >= -M_PI || limotR.histop <= M_PI ) &&
+	            limotR.lostop <= limotR.histop )
+	    {
+	        double angle = getHingeAngle( node[0].body,
+	                                     node[1].body,
+	                                     axisR1, qrel );
+	        limotR.testRotationalLimit( angle );
+	    }
+
+	    // powered morit or at limits needs an extra constraint row
+	    if ( limotR.limit != 0 || limotR.fmax > 0 ) info.incM();
 	}
 
 
@@ -256,10 +324,16 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		}
 		else
 		{
-//			dist.v[0] = anchor2.v[0] - pos1.v[0];
-//			dist.v[1] = anchor2.v[1] - pos1.v[1];
-//			dist.v[2] = anchor2.v[2] - pos1.v[2];
-			dist.eqDiff(_anchor2, pos1);
+	        if ( isFlagsReverse() )
+	        {
+//	            dist[0] = pos1[0] - anchor2[0]; // Invert the value
+				dist.eqDiff(pos1, _anchor2);
+	        }
+	        else
+	        {
+//	            dist[0] = anchor2[0] - pos1[0];
+				dist.eqDiff(_anchor2, pos1);
+	        }
 		}
 
 
@@ -405,7 +479,24 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		info.setC(2, k * dDOT( ax1, err ) );
 		info.setC(3, k * dDOT( q, err ) );
 
-		limotP.addLimot( this, info, 4, axP, false );
+	    int row = 4;
+	    //if (  node[1].body || !(flags & dJOINT_REVERSE) )
+	    if (  node[1].body != null || !isFlagsReverse() )
+	    {
+	        row += limotP.addLimot ( this, info, 4, axP, false );
+	    }
+	    else
+	    {
+	        DVector3 rAxP = new DVector3();
+	        rAxP.sub( axP );
+//	        rAxP[0] = -axP[0];
+//	        rAxP[1] = -axP[1];
+//	        rAxP[2] = -axP[2];
+	        row += limotP.addLimot ( this, info, 4, rAxP, false );
+	    }
+
+	    limotR.addLimot ( this, info, row, ax1, true );
+		//limotP.addLimot( this, info, 4, axP, false );
 	}
 
 
@@ -512,7 +603,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	{
 		DVector3 axis = new DVector3();
 
-		if (( flags & dJOINT_REVERSE )!=0)
+		if ( isFlagsReverse() )
 			torque = -torque;
 
 		getAxis( axis, axisR1 );
@@ -528,41 +619,68 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	}
 
 
+	void setRelativeValues()
+	{
+	    DVector3 anchor = new DVector3();
+	    dJointGetPRAnchor(anchor);
+	    setAnchors( anchor, offset, _anchor2 );
+
+	    DVector3 axis = new DVector3();
+	    dJointGetPRAxis1(axis);
+	    setAxes( axis, axisP1, null );
+
+	    dJointGetPRAxis2(axis);
+	    setAxes( axis, axisR1, axisR2 );
+
+	    computeInitialRelativeRotation();
+	}
+
+
 	// ******************************
 	// API dPRJoint
 	// ******************************
-	
-	  public void setAnchor (double x, double y, double z)
-	    { dJointSetPRAnchor (x, y, z); }
-	  public void setAnchor (DVector3C a)
-	    { dJointSetPRAnchor (a); }
-	  public void setAxis1 (double x, double y, double z)
-	    { dJointSetPRAxis1 (x, y, z); }
-	  public void setAxis1 (DVector3C a)
-	  //TODO use dVector3
-	    { setAxis1(a.get0(), a.get1(), a.get2()); }
-	  public void setAxis2 (double x, double y, double z)
-	    { dJointSetPRAxis2 (x, y, z); }
-	  public void setAxis2 (DVector3C a)
-	  //TODO use dVector3
-	    { setAxis2(a.get0(), a.get1(), a.get2()); }
 
-	  public void getAnchor (DVector3 result)
-	    { dJointGetPRAnchor (result); }
-	  public void getAxis1 (DVector3 result)
-	    { dJointGetPRAxis1 (result); }
-	  public void getAxis2 (DVector3 result)
-	    { dJointGetPRAxis2 (result); }
+	public void setAnchor (double x, double y, double z)
+	{ dJointSetPRAnchor (x, y, z); }
+	public void setAnchor (DVector3C a)
+	{ dJointSetPRAnchor (a); }
+	public void setAxis1 (double x, double y, double z)
+	{ dJointSetPRAxis1 (x, y, z); }
+	public void setAxis1 (DVector3C a)
+	//TODO use dVector3
+	{ setAxis1(a.get0(), a.get1(), a.get2()); }
+	public void setAxis2 (double x, double y, double z)
+	{ dJointSetPRAxis2 (x, y, z); }
+	public void setAxis2 (DVector3C a)
+	//TODO use dVector3
+	{ setAxis2(a.get0(), a.get1(), a.get2()); }
 
-	  public double getPosition()
-	    { return dJointGetPRPosition (); }
-	  public double getPositionRate()
-	    { return dJointGetPRPositionRate (); }
+	public void getAnchor (DVector3 result)
+	{ dJointGetPRAnchor (result); }
+	public void getAxis1 (DVector3 result)
+	{ dJointGetPRAxis1 (result); }
+	public void getAxis2 (DVector3 result)
+	{ dJointGetPRAxis2 (result); }
 
-	  public void setParam (D_PARAM_NAMES_N parameter, double value)
-	    { dJointSetPRParam (parameter, value); }
-	  public double getParam (D_PARAM_NAMES_N parameter)
-	    { return dJointGetPRParam (parameter); }
+	@Override
+	public double getAngle() {
+		return dJointGetPRAngle();
+	}
+
+	@Override
+	public double getAngleRate() {
+		return dJointGetPRAngleRate();
+	}
+
+	public double getPosition()
+	{ return dJointGetPRPosition (); }
+	public double getPositionRate()
+	{ return dJointGetPRPositionRate (); }
+
+	public void setParam (D_PARAM_NAMES_N parameter, double value)
+	{ dJointSetPRParam (parameter, value); }
+	public double getParam (D_PARAM_NAMES_N parameter)
+	{ return dJointGetPRParam (parameter); }
 
 
 	@Override

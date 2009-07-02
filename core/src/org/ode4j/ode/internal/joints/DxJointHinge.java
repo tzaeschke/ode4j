@@ -23,6 +23,7 @@ package org.ode4j.ode.internal.joints;
 
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.internal.DxWorld;
 import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
@@ -177,7 +178,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		dJointSetHingeAnchor( new DVector3(x, y, z) );
 	}
 	
-	public void dJointSetHingeAnchor( DVector3 xyz )
+	public void dJointSetHingeAnchor( DVector3C xyz )
 	{
 //		setAnchors( x, y, z, anchor1, anchor2 );
 		setAnchors( xyz, anchor1, anchor2 );
@@ -240,7 +241,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		setAxes( x, y, z, _axis1, _axis2 );
 		computeInitialRelativeRotation();
 
-		if ( (flags & dJOINT_REVERSE)!=0 ) dangle = -dangle;
+		if ( isFlagsReverse() ) dangle = -dangle;
 
 		DQuaternion qAngle = new DQuaternion(), qOffset = new DQuaternion();
 		dQFromAxisAndAngle(qAngle, x, y, z, dangle);
@@ -257,7 +258,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	//void dJointGetHingeAnchor( dxJointHinge j, dVector3 result )
 	void dJointGetHingeAnchor( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE)!=0 )
+		if ( isFlagsReverse() )
 			getAnchor2( result, anchor2 );
 		else
 			getAnchor( result, anchor1 );
@@ -267,7 +268,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	//void dJointGetHingeAnchor2( dxJointHinge j, dVector3 result )
 	void dJointGetHingeAnchor2( DVector3 result )
 	{
-		if ( (flags & dJOINT_REVERSE)!=0 )
+		if ( isFlagsReverse() )
 			getAnchor( result, anchor1 );
 		else
 			getAnchor2( result, anchor2 );
@@ -304,7 +305,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 					node[1].body,
 					_axis1,
 					qrel );
-			if ( (flags & dJOINT_REVERSE)!=0 )
+			if ( isFlagsReverse() )
 				return -ang;
 			else
 				return ang;
@@ -321,7 +322,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 			dMULTIPLY0_331( axis, node[0].body._posr.R, _axis1 );
 			double rate = dDOT( axis, node[0].body.avel );
 			if ( node[1].body!=null ) rate -= dDOT( axis, node[1].body.avel );
-			if ( (flags & dJOINT_REVERSE)!=0 ) rate = - rate;
+			if ( isFlagsReverse() ) rate = - rate;
 			return rate;
 		}
 		else return 0;
@@ -333,7 +334,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	{
 		DVector3 axis = new DVector3();
 
-		if ( (flags & dJOINT_REVERSE)!=0 )
+		if ( isFlagsReverse() )
 			torque = -torque;
 
 		getAxis( axis, _axis1 );
@@ -346,6 +347,17 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 			node[0].body.dBodyAddTorque( axis );
 		if ( node[1].body != null )
 			node[1].body.dBodyAddTorque( axis.reScale(-1) );
+	}
+
+	void setRelativeValues()
+	{
+	    DVector3 vec = new DVector3();
+	    dJointGetHingeAnchor(vec);
+	    setAnchors( vec, anchor1, anchor2 );
+
+	    dJointGetHingeAxis(vec);
+	    setAxes( vec.get0(), vec.get1(), vec.get2(), _axis1, _axis2 );
+	    computeInitialRelativeRotation();
 	}
 
 
@@ -381,7 +393,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 	public void setAnchor (double x, double y, double z)
 	{ dJointSetHingeAnchor (x, y, z); }
-	public void setAnchor (final DVector3 a)
+	public void setAnchor (DVector3C a)
 	{ dJointSetHingeAnchor (a); }
 	public void getAnchor (DVector3 result)
 	{ dJointGetHingeAnchor (result); }
@@ -390,10 +402,13 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 	public void setAxis (double x, double y, double z)
 	{ dJointSetHingeAxis (x, y, z); }
-	public void setAxis (final DVector3 a)
+	public void setAxis (DVector3C a)
 	{ setAxis(a.get0(), a.get1(), a.get2()); }
 	public void getAxis (DVector3 result)
 	{ dJointGetHingeAxis (result); }
+	@Override
+	public void setAxisOffset(double x, double y, double z, double angle) {
+		dJointSetHingeAxisOffset(x, y, z, angle); }
 
 	public double getAngle()
 	{ return dJointGetHingeAngle (); }

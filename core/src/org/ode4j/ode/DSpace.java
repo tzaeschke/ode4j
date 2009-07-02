@@ -38,6 +38,8 @@ public interface DSpace extends DGeom {
 	public DGeom getGeom (int i);
 
 	public void collide (Object data, DNearCallback callback);
+	public void setManualCleanup(int mode);
+	public int getManualCleanup();
 
 	
 	// intentionally undefined, don't use these

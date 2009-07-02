@@ -28,7 +28,7 @@ import org.ode4j.ode.DTriMesh.dTriArrayCallback;
 import org.ode4j.ode.DTriMesh.dTriCallback;
 import org.ode4j.ode.DTriMesh.dTriRayCallback;
 import org.ode4j.ode.internal.joints.DxJointGroup;
-import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.internal.DxHeightfield;
 import org.ode4j.ode.internal.DxHeightfieldData;
 import org.ode4j.ode.internal.DxSAPSpace;
@@ -55,7 +55,7 @@ import org.ode4j.ode.internal.DxWorld;
 
 public abstract class OdeHelper {
 
-	private static OdeFactoryImpl ODE = new OdeFactoryImpl(); 
+	private static final OdeFactoryImpl ODE = new OdeFactoryImpl(); 
 
 	//This could later be used to implement a pluggable factory, where the
 	//static methods call actual methods in OdeFactoryImpl.
@@ -249,41 +249,75 @@ public abstract class OdeHelper {
 	}
 
 	//ODE_API 
+	public static DSimpleSpace createSimpleSpace () {
+		return DxSimpleSpace.dSimpleSpaceCreate(null);
+	}
 	public static DSimpleSpace createSimpleSpace (DSpace space) {
 		return DxSimpleSpace.dSimpleSpaceCreate((DxSpace) space);
+	}
+	//ODE_API 
+	public static DSapSpace createSapSpace (DSapSpace.AXES axes) {
+		return DxSAPSpace.dSweepAndPruneSpaceCreate(null, axes.getCode());
 	}
 	//ODE_API 
 	public static DSapSpace createSapSpace (DSpace space, DSapSpace.AXES axes) {
 		return DxSAPSpace.dSweepAndPruneSpaceCreate((DxSpace) space, axes.getCode());
 	}
 	//ODE_API 
+	public static DHashSpace createHashSpace () {
+		return DxHashSpace.dHashSpaceCreate(null);
+	}
+	//ODE_API 
 	public static DHashSpace createHashSpace (DSpace space) {
 		return DxHashSpace.dHashSpaceCreate((DxSpace)space);
 	}
 	//ODE_API 
+	public static DQuadTreeSpace createQuadTreeSpace (
+			DVector3C Center, DVector3C Extents, int Depth) {
+		return DxQuadTreeSpace.dQuadTreeSpaceCreate(null, 
+				Center, Extents, Depth);
+	}
+	//ODE_API 
 	public static DQuadTreeSpace createQuadTreeSpace (DSpace space, 
-			DVector3 Center, DVector3 Extents, int Depth) {
+			DVector3C Center, DVector3C Extents, int Depth) {
 		return DxQuadTreeSpace.dQuadTreeSpaceCreate((DxSpace) space, 
 				Center, Extents, Depth);
 	}
 
+	public static DBox createBox(double lx, double ly, double lz) {
+		return DxBox.dCreateBox(null, lx, ly, lz);
+	}
 	public static DBox createBox(DSpace space, double lx, double ly, double lz) {
 		return DxBox.dCreateBox((DxSpace) space, lx, ly, lz);
 	}
 
+	public static DCapsule createCapsule(double radius, double length) {
+		return DxCapsule.dCreateCapsule(null, radius, length);
+	}
 	public static DCapsule createCapsule(DSpace space, double radius, double length) {
 		return DxCapsule.dCreateCapsule((DxSpace) space, radius, length);
 	}
 
+	public static DConvex createConvex(double[] planes,
+			int planecount, double[] points, int pointcount, int[] polygons) {
+		return DxConvex.dCreateConvex(null, planes, planecount, points, pointcount, polygons);
+	}
 	public static DConvex createConvex(DSpace space, double[] planes,
 			int planecount, double[] points, int pointcount, int[] polygons) {
 		return DxConvex.dCreateConvex((DxSpace)space, planes, planecount, points, pointcount, polygons);
 	}
 
+	public static DCylinder createCylinder(double radius, double length) {
+		return DxCylinder.dCreateCylinder(null, radius, length);
+	}
 	public static DCylinder createCylinder(DSpace space, double radius, double length) {
 		return DxCylinder.dCreateCylinder((DxSpace)space, radius, length);
 	}
 
+	/** @deprecated TZ: Please do not use DGeomTransform. */
+	public static DGeomTransform createGeomTransform() {
+		return DxGeomTransform.dCreateGeomTransform(null);
+	}
 	/** @deprecated TZ: Please do not use DGeomTransform. */
 	public static DGeomTransform createGeomTransform(DSpace space) {
 		return DxGeomTransform.dCreateGeomTransform((DxSpace) space);
@@ -293,10 +327,16 @@ public abstract class OdeHelper {
 		return DxPlane.dCreatePlane((DxSpace) space, a, b, c, d);
 	}
 
+	public static DRay createRay(int length) {
+		return DxRay.dCreateRay(null, length);
+	}
 	public static DRay createRay(DSpace space, int length) {
 		return DxRay.dCreateRay((DxSpace) space, length);
 	}
 	
+	public static DSphere createSphere(double radius) {
+		return DxSphere.dCreateSphere(null, radius);
+	}
 	public static DSphere createSphere(DSpace space, double radius) {
 		return DxSphere.dCreateSphere((DxSpace)space, radius);
 	}
@@ -332,8 +372,14 @@ public abstract class OdeHelper {
 	 * The @a uiInitFlags parameter specifies initialization options to be used. These
 	 * can be combination of zero or more @c dInitODEFlags flags.
 	 *
+	 * @note
+	 * If @c dInitFlagManualThreadCleanup flag is used for initialization, 
+	 * @c dSpaceSetManualCleanup must be called to set manual cleanup mode for every
+	 * space object right after creation. Failure to do so may lead to resource leaks.
+	 *
 	 * @see initODEFlags
 	 * @see closeODE
+	 * @see dSpaceSetManualCleanup
 	 * @ingroup init
 	 */
 	public static int initODE2(int uiInitFlags/*=0*/) {

@@ -47,7 +47,7 @@ public abstract class DDestructible {
 	private volatile boolean _isDestructed = false;  //TZ to assure timely destruction
 	
 	//TODO use this for debugging:
-	private static AtomicLong _counter = new AtomicLong();
+	private static final AtomicLong _counter = new AtomicLong();
 	private long _id = _counter.incrementAndGet();
 //	private RuntimeException creator;
 	protected DDestructible() {
