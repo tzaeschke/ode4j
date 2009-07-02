@@ -99,7 +99,7 @@ public class JointTest {
 
 		//		void TEST_FIXTURE(Hinge2GetInfo1_Fixture_1, test_hinge2GetInfo1)
 		@Test
-		public void TEST_FIXTURE()
+		public void test_hinge2GetInfo1()
 		{
 			//       ^Y
 			//     |---|                             HiStop

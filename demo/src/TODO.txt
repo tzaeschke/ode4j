@@ -13,6 +13,8 @@ REPORT MISSING:
 - dGeom.setOffsetRotation()
 - dGeomTransform API class
 - Calls to d(x)Plane.getPosition()/getRotation() should cause an error/warning (see ODE WIKI)
+- dPistonJoint.setAnchorOffset()
+
 
 REPORT !!!!
 - Report that SAP-Space BoxPruning may miss some collisions:
