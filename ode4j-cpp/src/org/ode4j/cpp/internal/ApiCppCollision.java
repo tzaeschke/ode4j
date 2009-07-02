@@ -1423,11 +1423,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//				final unsigned char* pHeightData, int bCopyHeightData,
 	//				double width, double depth, int widthSamples, int depthSamples,
 	//				double scale, double offset, double thickness,	int bWrap ) {
-	void dGeomHeightfieldDataBuildByte( DHeightfieldData d,
-			final byte[] pHeightData, int bCopyHeightData,
+	public static void dGeomHeightfieldDataBuildByte( DHeightfieldData d,
+			final byte[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
-			double scale, double offset, double thickness,	int bWrap ) {
-		throw new UnsupportedOperationException();
+			double scale, double offset, double thickness, boolean bWrap ) {
+		d.buildByte( pHeightData, bCopyHeightData, width, depth, 
+				widthSamples, depthSamples, scale, offset, thickness, bWrap);
 	}
 
 	/**

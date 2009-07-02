@@ -139,7 +139,7 @@ public abstract class ApiCppMass extends ApiCppOdeInit {
 		((DxMass)a).add(b);
 	}
 
-	// Backwards compatible API
+	// Backwards compatible API (deprecated)
 	//#define dMassSetCappedCylinder dMassSetCapsule
 	//#define dMassSetCappedCylinderTotal dMassSetCapsuleTotal
 //

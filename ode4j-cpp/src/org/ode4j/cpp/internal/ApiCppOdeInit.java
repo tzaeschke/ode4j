@@ -49,11 +49,16 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 //	 * operating systems resources are always released by the thread itself on its exit
 //	 * or on library closure with @c dCloseODE.
 //	 *
+//	 * With manual thread data cleanup mode every collision space object must be 
+//	 * explicitly switched to manual cleanup mode with @c dSpaceSetManualCleanup
+//	 * after creation. See description of the function for more details.
+//	 *
 //	 * If @c dInitFlagManualThreadCleanup was not specified during initialization,
 //	 * calls to @c dCleanupODEAllDataForThread are not allowed.
 //	 *
 //	 * @see dInitODE2
 //	 * @see dAllocateODEDataForThread
+//	 * @see dSpaceSetManualCleanup
 //	 * @see dCloseODE
 //	 * @ingroup init
 //	 */

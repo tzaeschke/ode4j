@@ -708,6 +708,43 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
+	 * @brief Set rigid body to dynamic state (default).
+	 * @param dBodyID identification of body.
+	 * @ingroup bodies
+	 */
+	//ODE_API
+	void dBodySetDynamic (DBody body) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @brief Set rigid body to kinematic state.
+	 * When in kinematic state the body isn't simulated as a dynamic
+	 * body (it's "unstoppable", doesn't respond to forces),
+	 * but can still affect dynamic bodies (e.g. in joints).
+	 * Kinematic bodies can be controlled by position and velocity.
+	 * @note A kinematic body has infinite mass. If you set its mass
+	 * to something else, it loses the kinematic state and behaves
+	 * as a normal dynamic body.
+	 * @param dBodyID identification of body.
+	 * @ingroup bodies
+	 */
+	//ODE_API
+	void dBodySetKinematic (DBody body) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @brief Check wether a body is in kinematic state.
+	 * @ingroup bodies
+	 * @return 1 if a body is kinematic or 0 if it is dynamic.
+	 */
+	//ODE_API
+	int dBodyIsKinematic (DBody body ) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
 	 * @brief Manually enable a body.
 	 * @param DBody identification of body.
 	 * @ingroup bodies
@@ -933,11 +970,40 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup damping bodies
 	 * @sa dWorldSetMaxAngularSpeed() dBodyResetMaxAngularSpeed()
 	 * The default value is dInfinity, but it's a good idea to limit
-	 * it at less than 500 if you build ODE with the gyroscopic term
+	 * it at less than 500 if the body has the gyroscopic term
 	 * enabled.
 	 */
 	//ODE_API 
 	void dBodySetMaxAngularSpeed(DBody b, double max_speed) {
 		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @brief Get the body's gyroscopic state.
+	 *
+	 * @return nonzero if gyroscopic term computation is enabled (default),
+	 * zero otherwise.
+	 * @ingroup bodies
+	 */
+	//ODE_API 
+	public static boolean dBodyGetGyroscopicMode(DBody b) {
+		return b.getGyroscopicMode();
+	}
+
+
+	/**
+	 * @brief Enable/disable the body's gyroscopic term.
+	 *
+	 * Disabling the gyroscopic term of a body usually improves
+	 * stability. It also helps turning spining objects, like cars'
+	 * wheels.
+	 *
+	 * @param enabled   nonzero (default) to enable gyroscopic term, 0
+	 * to disable.
+	 * @ingroup bodies
+	 */
+	//ODE_API 
+	public static void dBodySetGyroscopicMode(DBody b, boolean enabled) {
+		b.setGyroscopicMode(enabled);
 	}
 }

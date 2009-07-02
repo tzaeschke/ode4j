@@ -56,7 +56,7 @@ public abstract class ApiCppMathMatrix extends ApiCppMathRotation {
 	//	 double dDot (final double *a, final double *b, int n);
 	public static double dDot (final DVector3 a, final DVector3 b, int n) {
 		a.assertLen(n);
-		return a.reDot(b);
+		return a.dot(b);
 	}
 	public static double dDot (final double[] a, final double[] b, int n) {
 		return FastDot.dDot(a, 0, b, n);
