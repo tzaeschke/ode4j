@@ -1021,9 +1021,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 *           when body1 was at current_position[Z] - dz
 	 */
 	//ODE_API 
-	void dJointSetPistonAnchorOffset(DPistonJoint j, double x, double y, double z,
+	public static void dJointSetPistonAnchorOffset(DPistonJoint j, double x, double y, double z,
 			double dx, double dy, double dz) {
-		throw new UnsupportedOperationException();
+		j.setAnchorOffset(new DVector3(x, y, z), dx, dy, dz);
 	}
 
 
