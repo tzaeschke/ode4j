@@ -94,7 +94,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @brief Set the global ERP value, that controls how much error
 	 * correction is performed in each time step.
 	 * @ingroup world
-	 * @param DWorld the identifier of the world.
+	 * @param w the identifier of the world.
 	 * @param erp Typical values are in the range 0.1--0.8. The default is 0.2.
 	 */
 	//ODE_API 
@@ -719,7 +719,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * @brief Get the default maximum angular speed.
 	 * @ingroup damping
-	 * @sa dBodyGetMaxAngularSpeed()
+	 * @see #dBodyGetMaxAngularSpeed()
 	 */
 	//ODE_API 
 	double dWorldGetMaxAngularSpeed (DWorld w) {
@@ -731,7 +731,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * @brief Set the default maximum angular speed for new bodies.
 	 * @ingroup damping
-	 * @sa dBodySetMaxAngularSpeed()
+	 * @see #dBodySetMaxAngularSpeed(DWorld)
 	 */
 	//ODE_API 
 	public static void dWorldSetMaxAngularSpeed (DWorld w, double max_speed) {

@@ -384,20 +384,20 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief Get the type of the joint
 	 * @ingroup joints
 	 * @return the type, being one of these:
-	 * \li dJointTypeBall
-	 * \li dJointTypeHinge
-	 * \li dJointTypeSlider
-	 * \li dJointTypeContact
-	 * \li dJointTypeUniversal
-	 * \li dJointTypeHinge2
-	 * \li dJointTypeFixed
-	 * \li dJointTypeNull
-	 * \li dJointTypeAMotor
-	 * \li dJointTypeLMotor
-	 * \li dJointTypePlane2D
-	 * \li dJointTypePR
-	 * \li dJointTypePU
-	 * \li dJointTypePiston
+	 * <li> dJointTypeBall
+	 * <li> dJointTypeHinge
+	 * <li> dJointTypeSlider
+	 * <li> dJointTypeContact
+	 * <li> dJointTypeUniversal
+	 * <li> dJointTypeHinge2
+	 * <li> dJointTypeFixed
+	 * <li> dJointTypeNull
+	 * <li> dJointTypeAMotor
+	 * <li> dJointTypeLMotor
+	 * <li> dJointTypePlane2D
+	 * <li> dJointTypePR
+	 * <li> dJointTypePU
+	 * <li> dJointTypePiston
 	 */
 	//ODE_API 
 	dJointType dJointGetType (DJoint j) {
@@ -1191,9 +1191,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief Set the AMotor axes.
 	 * @param anum selects the axis to change (0,1 or 2).
 	 * @param rel Each axis can have one of three ``relative orientation'' modes
-	 * \li 0: The axis is anchored to the global frame.
-	 * \li 1: The axis is anchored to the first body.
-	 * \li 2: The axis is anchored to the second body.
+	 * <li> 0: The axis is anchored to the global frame.
+	 * <li> 1: The axis is anchored to the first body.
+	 * <li> 2: The axis is anchored to the second body.
 	 * @remarks The axis vector is always specified in global coordinates
 	 * regardless of the setting of rel.
 	 * @ingroup joints
@@ -1968,8 +1968,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Get the number of angular axes that will be controlled by the
 	 * AMotor.
-	 * @param num can range from 0 (which effectively deactivates the
-	 * joint) to 3.
+	 * Num can range from 0 (which effectively deactivates the joint) to 3.
 	 * This is automatically set to 3 in dAMotorEuler mode.
 	 * @ingroup joints
 	 */
@@ -1983,9 +1982,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief Get the AMotor axes.
 	 * @param anum selects the axis to change (0,1 or 2).
 	 * @param rel Each axis can have one of three ``relative orientation'' modes.
-	 * \li 0: The axis is anchored to the global frame.
-	 * \li 1: The axis is anchored to the first body.
-	 * \li 2: The axis is anchored to the second body.
+	 * <li> 0: The axis is anchored to the global frame.
+	 * <li> 1: The axis is anchored to the first body.
+	 * <li> 2: The axis is anchored to the second body.
 	 * @ingroup joints
 	 */
 	//ODE_API 
@@ -2003,10 +2002,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * return the relative mode.
 	 *
 	 * For dAMotorEuler mode:
-	 * \li	Only axes 0 and 2 need to be set. Axis 1 will be determined
+	 * <li>	Only axes 0 and 2 need to be set. Axis 1 will be determined
 		automatically at each time step.
-	 * \li	Axes 0 and 2 must be perpendicular to each other.
-	 * \li	Axis 0 must be anchored to the first body, axis 2 must be anchored
+	 * <li>	Axes 0 and 2 must be perpendicular to each other.
+	 * <li>	Axis 0 must be anchored to the first body, axis 2 must be anchored
 		to the second body.
 	 * @ingroup joints
 	 */
@@ -2057,9 +2056,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Get the angular motor mode.
 	 * @param mode must be one of the following constants:
-	 * \li dAMotorUser The AMotor axes and joint angle settings are entirely
+	 * <li> dAMotorUser The AMotor axes and joint angle settings are entirely
 	 * controlled by the user.  This is the default mode.
-	 * \li dAMotorEuler Euler angles are automatically computed.
+	 * <li> dAMotorEuler Euler angles are automatically computed.
 	 * The axis a1 is also automatically computed.
 	 * The AMotor axes must be set correctly when in this mode,
 	 * as described below.

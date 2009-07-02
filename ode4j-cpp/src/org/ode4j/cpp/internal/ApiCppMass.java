@@ -33,8 +33,8 @@ public abstract class ApiCppMass extends ApiCppOdeInit {
 	//struct dMass;
 	//typedef struct dMass dMass;
 
-	/** Not in the original API.
-	 * @author TZ 
+	/** 
+	 * Not in the original API. By TZ. 
 	 */
 	public static DMass dMassCreate() {
 		return new DxMass();

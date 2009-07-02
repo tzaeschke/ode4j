@@ -148,7 +148,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	/**
 	 * @brief Get the body associated with a placeable geom.
 	 * @param geom the geom to query.
-	 * @sa dGeomSetBody
+	 * @see dGeomSetBody
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -168,7 +168,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param x the new X coordinate.
 	 * @param y the new Y coordinate.
 	 * @param z the new Z coordinate.
-	 * @sa dBodySetPosition
+	 * @see dBodySetPosition
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -186,7 +186,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set.
 	 * @param R the new rotation matrix.
-	 * @sa dBodySetRotation
+	 * @see dBodySetRotation
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -205,7 +205,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set.
 	 * @param Q the new rotation.
-	 * @sa dBodySetQuaternion
+	 * @see dBodySetQuaternion
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -227,7 +227,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @remarks The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
-	 * @sa dBodyGetPosition
+	 * @see dBodyGetPosition
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -241,7 +241,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 * @param geom  the geom to query
 	 * @param pos   a copy of the geom position
-	 * @sa dGeomGetPosition
+	 * @see dGeomGetPosition
 	 */
 	//ODE_API 
 	void dGeomCopyPosition (DGeom geom, DVector3 pos) {
@@ -262,7 +262,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @remarks The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
-	 * @sa dBodyGetRotation
+	 * @see dBodyGetRotation
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -281,7 +281,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom   the geom to query.
 	 * @param R      a copy of the geom rotation
-	 * @sa dGeomGetRotation
+	 * @see dGeomGetRotation
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -300,7 +300,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to query.
 	 * @param result a copy of the rotation quaternion.
-	 * @sa dBodyGetQuaternion
+	 * @see dBodyGetQuaternion
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -430,7 +430,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set
 	 * @param bits the new bitfield value
-	 * @sa dGeomSetCategoryBits
+	 * @see dGeomSetCategoryBits
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -445,7 +445,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set
 	 * @param bits the new bitfield value
-	 * @sa dGeomSetCollideBits
+	 * @see dGeomSetCollideBits
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -463,8 +463,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the enabled state.
 	 *
 	 * @param geom   the geom to enable
-	 * @sa dGeomDisable
-	 * @sa dGeomIsEnabled
+	 * @see dGeomDisable
+	 * @see dGeomIsEnabled
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -481,8 +481,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the enabled state.
 	 *
 	 * @param geom   the geom to disable
-	 * @sa dGeomDisable
-	 * @sa dGeomIsEnabled
+	 * @see dGeomDisable
+	 * @see dGeomIsEnabled
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -500,8 +500,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom   the geom to query
 	 * @returns Non-zero if the geom is enabled, zero otherwise.
-	 * @sa dGeomDisable
-	 * @sa dGeomIsEnabled
+	 * @see dGeomDisable
+	 * @see dGeomIsEnabled
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -843,7 +843,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @sa dSpaceCollide2
+	 * @see dSpaceCollide2
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -889,8 +889,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @sa dSpaceCollide
-	 * @sa dSpaceSetSublevel
+	 * @see dSpaceCollide
+	 * @see dSpaceSetSublevel
 	 * @ingroup collide
 	 */
 	//ODE_API 
@@ -950,8 +950,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @remarks The point of reference for a sphere is its center.
 	 *
-	 * @sa dGeomDestroy
-	 * @sa dGeomSphereSetRadius
+	 * @see dGeomDestroy
+	 * @see dGeomSphereSetRadius
 	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
@@ -966,7 +966,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param sphere  the sphere to set.
 	 * @param radius  the new radius.
 	 *
-	 * @sa dGeomSphereGetRadius
+	 * @see dGeomSphereGetRadius
 	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
@@ -980,7 +980,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param sphere  the sphere to query.
 	 *
-	 * @sa dGeomSphereSetRadius
+	 * @see dGeomSphereSetRadius
 	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
@@ -1056,8 +1056,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @remarks The point of reference for a box is its center.
 	 *
-	 * @sa dGeomDestroy
-	 * @sa dGeomBoxSetLengths
+	 * @see dGeomDestroy
+	 * @see dGeomBoxSetLengths
 	 * @ingroup collide_box
 	 */
 	//ODE_API 
@@ -1074,7 +1074,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param ly      the length of the box along the Y axis
 	 * @param lz      the length of the box along the Z axis
 	 *
-	 * @sa dGeomBoxGetLengths
+	 * @see dGeomBoxGetLengths
 	 * @ingroup collide_box
 	 */
 	//ODE_API 
@@ -1089,7 +1089,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param box     the box to query
 	 * @param result  the returned side lengths
 	 *
-	 * @sa dGeomBoxSetLengths
+	 * @see dGeomBoxSetLengths
 	 * @ingroup collide_box
 	 */
 	//ODE_API 
