@@ -505,7 +505,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		computeInitialRelativeRotation();
 	}
 
-	void dJointSetPistonAnchorOffset (double x, double y, double z,
+	void dJointSetPistonAnchorOffset (DVector3C xyz,
 			double dx, double dy, double dz)
 	{
 		if (isFlagsReverse())
@@ -523,7 +523,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			node[0].body._posr.pos.sub(dx, dy, dz);
 		}
 
-		setAnchors ( new DVector3(x ,y, z), anchor1, anchor2);
+		setAnchors ( xyz, anchor1, anchor2 );
 
 		if (node[0].body!=null)
 		{
@@ -812,6 +812,13 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	@Override
 	public double getAngleRate() {
 		return dJointGetPistonAngleRate();
+	}
+
+
+	@Override
+	public void setAnchorOffset(DVector3C xyz, double dx,
+			double dy, double dz) {
+		dJointSetPistonAnchorOffset(xyz, dx, dy, dz);
 	}
 
 }

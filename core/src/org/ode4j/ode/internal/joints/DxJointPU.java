@@ -151,7 +151,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 //					( node[1].body._posr.pos.v[1] + anchor2.v[1] ) );
 //			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
 //					( node[1].body._posr.pos.v[2] + anchor2.v[2] ) );
-			q.eqSum( node[0].body._posr.pos, q );
+			q.add( node[0].body._posr.pos );
 			q.sub( node[1].body._posr.pos );
 			q.sub( anchor2 );
 		}
@@ -166,7 +166,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 //					( _anchor2.v[1] ) );
 //			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
 //					( _anchor2.v[2] ) );
-			q.eqSum( node[0].body._posr.pos, q );
+			q.add( node[0].body._posr.pos );
 			q.sub( _anchor2 );
 
 	        if ( isFlagsReverse() )

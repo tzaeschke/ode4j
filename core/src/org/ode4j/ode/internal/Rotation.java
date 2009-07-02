@@ -52,6 +52,13 @@ public class Rotation extends Matrix {
 		dQFromAxisAndAngle (q, ax, ay, az, angle);
 		dRfromQ (R, q);
 	}
+	public static void dRFromAxisAndAngle (DMatrix3 R, DVector3C axyz, double angle)
+	{
+		dAASSERT (R);
+		DQuaternion q = new DQuaternion();
+		dQFromAxisAndAngle (q, axyz, angle);
+		dRfromQ (R, q);
+	}
 
 
 	public static void dRFromEulerAngles (DMatrix3 R, double phi, double theta, 

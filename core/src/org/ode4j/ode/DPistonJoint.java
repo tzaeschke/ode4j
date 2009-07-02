@@ -76,6 +76,7 @@ public interface DPistonJoint extends DJoint {
 	void setAnchor (DVector3C a);
 	void getAnchor (DVector3 result);
 	void getAnchor2 (DVector3 result);
+	void setAnchorOffset(DVector3C xyz, double dx, double dy, double dz);
 
 	void setAxis (double x, double y, double z);
 	void setAxis (DVector3C a);
