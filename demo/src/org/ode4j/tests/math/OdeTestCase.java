@@ -28,7 +28,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector4;
 import org.ode4j.math.DVector6;
-import org.ode4j.math.DMatrix3.DVector3View;
+import org.ode4j.math.DMatrix3.DVector3ColView;
 
 public abstract class OdeTestCase extends TestCase {
 
@@ -50,7 +50,7 @@ public abstract class OdeTestCase extends TestCase {
 		}
 	}
 	
-	protected void assertEquals(DVector3 exp, DVector3View val) {
+	protected void assertEquals(DVector3 exp, DVector3ColView val) {
 		//TODO use proper EPSILON!!!
 		double eps = 10e-9;
 		for (int i = 0; i < exp.dim(); i++) {

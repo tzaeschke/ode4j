@@ -34,7 +34,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
@@ -54,7 +54,7 @@ public class DemoHinge extends dsFunctions {
 	// dynamics and collision objects
 	private static DWorld world;
 	private static DBody[] body = new DBody[2];
-	private static DJoint hinge;
+	private static DHingeJoint hinge;
 
 
 	// state set by keyboard commands

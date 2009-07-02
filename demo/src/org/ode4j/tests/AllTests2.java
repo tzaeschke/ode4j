@@ -19,6 +19,7 @@ import org.ode4j.tests.math.TestDVector6;
 	TestDVector6.class,
 	TestDQuaternion.class,
 	TestDMatrix3.class,
+	CollisionTest.class,
 	JointTest.class, 
 	TestJointFixed.class, 
 	TestJointHinge.class,

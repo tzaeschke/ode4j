@@ -9,6 +9,16 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
+2009-06-26 Tilmann Zaeschke
+		* Started migration to ode-0.11.1
+		* Investigation of TLS mapping to Java
+		* Decision that SDK will contain everything, no need for the other 
+		  JARs anymore.
+		  
+		  
+		  --WHAT about ATOMICs?
+
+
 2009-06-04  Tilmann Zäschke
         * Initial version checked in to SVN. This is a 95% complete port of 
           ode 0.10.1 .

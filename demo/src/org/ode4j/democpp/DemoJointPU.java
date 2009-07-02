@@ -29,6 +29,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -742,7 +743,7 @@ class DemoJointPU extends dsFunctions {
 
 
 		// Attache the upper box to the world
-		DJoint fixed = dJointCreateFixed (world,null);
+		DFixedJoint fixed = dJointCreateFixed (world,null);
 		dJointAttach (fixed , null, body[W]);
 		dJointSetFixed (fixed );
 

@@ -30,10 +30,10 @@ import org.ode4j.drawstuff.DS_API.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
 
@@ -64,7 +64,7 @@ class DemoStep extends dsFunctions {
 
 	static DWorld world=null;
 	static DBody[] body=new DBody[NUM];
-	static DJoint[] joint=new DJoint[NUMJ];
+	static DBallJoint[] joint=new DBallJoint[NUMJ];
 
 
 	// create the test system

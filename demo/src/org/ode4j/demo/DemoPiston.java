@@ -143,7 +143,7 @@ class DemoPiston extends dsFunctions {
 
 
 	//private int type = dJointTypePiston;
-	private Class type = DPistonJoint.class;
+	private Class<?> type = DPistonJoint.class;
 
 	//#pragma message("tc to be changed to 0")
 

@@ -27,6 +27,7 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
@@ -87,7 +88,7 @@ class DemoJointPR extends dsFunctions {
 	private static DSpace box1_space;
 	private static DBody[] box1_body = new DBody[1];
 	private static DBody[] box2_body = new DBody[1];
-	private static DJoint[] joint = new DJoint[1];
+	private static DPRJoint[] joint = new DPRJoint[1];
 	private static DJointGroup contactgroup;
 	private static DGeom ground;
 	private static DGeom[] box1 = new DGeom[1];

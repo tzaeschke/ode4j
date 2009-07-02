@@ -22,12 +22,14 @@
 package org.ode4j.democpp;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.ode.DAMotorJoint;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DLMotorJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
@@ -52,8 +54,8 @@ class DemoMotor extends dsFunctions {
 	static DWorld world;
 	static DBody[] body = new DBody[2];
 	static DGeom[] geom = new DGeom[2];
-	static DJoint[] lmotor = new DJoint[2];
-	static DJoint[] amotor = new DJoint[2];
+	static DLMotorJoint[] lmotor = new DLMotorJoint[2];
+	static DAMotorJoint[] amotor = new DAMotorJoint[2];
 	static DSpace space;
 	static DJointGroup contactgroup;
 

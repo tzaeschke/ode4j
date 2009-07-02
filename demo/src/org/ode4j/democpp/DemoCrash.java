@@ -27,6 +27,8 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DFixedJoint;
+import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -110,7 +112,7 @@ class DemoCrash extends dsFunctions {
 	private static DSpace space;
 	private static DBody[] body=new DBody[10000];
 	private static int bodies;
-	private static DJoint[] joint=new DJoint[100000];
+	private static DHinge2Joint[] joint=new DHinge2Joint[100000];
 	private static int joints;
 	private static DJointGroup contactgroup;
 	private static DGeom ground;
@@ -257,7 +259,7 @@ class DemoCrash extends dsFunctions {
 		dMassSetBox (m,1,LENGTH,WIDTH,HEIGHT);
 		dMassAdjust (m,CMASS/2.0);
 		dBodySetMass (b,m);
-		DJoint j = dJointCreateFixed(world, null);
+		DFixedJoint j = dJointCreateFixed(world, null);
 		dJointAttach(j, body[bodyI], b);
 		dJointSetFixed(j);
 		//box[boxI+1] = dCreateBox(space,LENGTH,WIDTH,HEIGHT);
@@ -441,7 +443,7 @@ class DemoCrash extends dsFunctions {
 				}
 				if (lastb!=null)
 				{
-					DJoint j = dJointCreateFixed(world,null);
+					DFixedJoint j = dJointCreateFixed(world,null);
 					dJointAttach (j, b, lastb);
 					dJointSetFixed(j);
 				}

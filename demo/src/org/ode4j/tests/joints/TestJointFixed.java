@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.ode4j.ode.internal.joints.DxJointFixed;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.tests.UnitTestPlusPlus.CheckMacros;
 
@@ -85,7 +85,7 @@ public class TestJointFixed
 		DBody bId2;
 
 
-		DJoint jId;
+		DFixedJoint jId;
 		DxJointFixed joint;
 		//    }
 

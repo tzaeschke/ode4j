@@ -990,7 +990,7 @@ void testReorthonormalize()
 
 	// matrix header on the stack
 
-	class dMatrixComparison {
+	class MatrixComparison {
 		//  struct dMatInfo;
 		//  dArray<dMatInfo*> mat;
 		//	  int afterfirst,index;
@@ -1000,7 +1000,7 @@ void testReorthonormalize()
 		int afterfirst,index;
 
 		//public:
-		//  ~dMatrixComparison();
+		//  ~MatrixComparison();
 
 		private class dMatInfo {
 			int n,m;		// size of matrix
@@ -1012,7 +1012,7 @@ void testReorthonormalize()
 		}
 
 
-		dMatrixComparison()
+		MatrixComparison()
 		{
 			afterfirst = 0;
 			index = 0;
@@ -1065,8 +1065,8 @@ void testReorthonormalize()
 			}
 			else {
 				if (lower_tri != 0 && n != m)
-					dDebug (0,"dMatrixComparison, lower triangular matrix must be square");
-				if (index >= mat.size()) dDebug (0,"dMatrixComparison, too many matrices");
+					dDebug (0,"MatrixComparison, lower triangular matrix must be square");
+				if (index >= mat.size()) dDebug (0,"MatrixComparison, too many matrices");
 				dMatInfo mp = mat.get(index);//mat[index];
 				index++;
 
@@ -1081,10 +1081,10 @@ void testReorthonormalize()
 				if (strlen(mi.name) >= mi.name.length()+1) dDebug (0,"name too long");
 
 				if (strcmp(mp.name.toCharArray(),mi.name) != 0)
-					dDebug (0,"dMatrixComparison, name mismatch (\"%s\" and \"%s\")",
+					dDebug (0,"MatrixComparison, name mismatch (\"%s\" and \"%s\")",
 							mp.name,mi.name);
 				if (mp.n != n || mp.m != m)
-					dDebug (0,"dMatrixComparison, size mismatch (%dx%d and %dx%d)",
+					dDebug (0,"MatrixComparison, size mismatch (%dx%d and %dx%d)",
 							mp.n,mp.m,n,m);
 
 				double maxdiff;
@@ -1095,7 +1095,7 @@ void testReorthonormalize()
 					maxdiff = dMaxDifference (A,mp.data,n,m);
 				}
 				if (maxdiff > tol)
-					dDebug (0,"dMatrixComparison, matrix error " +
+					dDebug (0,"MatrixComparison, matrix error " +
 							"(size=%dx%d, name=\"%s\", " +
 							"error=%.4e)",n,m,mi.name,maxdiff);
 				return maxdiff;
@@ -1137,7 +1137,7 @@ void testReorthonormalize()
 			for (int i=0; i<mat.size(); i++)
 				printf ("%d: %s (%dx%d)\n",i,mat.get(i).name,mat.get(i).n,mat.get(i).m);
 		}
-	}  //dMatrixComparison
+	}  //MatrixComparison
 
 
 	//****************************************************************************
@@ -1168,7 +1168,7 @@ void testReorthonormalize()
 		printf ("dTestMatrixComparison()\n");
 		dMessageFunction orig_debug = dGetDebugHandler();
 
-		dMatrixComparison mc = new dMatrixComparison();
+		MatrixComparison mc = new MatrixComparison();
 		double[] A = new double[50*50];
 
 		// make first sequence

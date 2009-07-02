@@ -22,6 +22,7 @@
 package org.ode4j.democpp;
 
 import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
@@ -58,7 +59,7 @@ class DemoChain1 extends dsFunctions {
 	private static DWorld world;
 	private static DSpace space;
 	private static DBody[] body = new DBody[NUM];
-	private static DJoint[] joint = new DJoint[NUM-1];
+	private static DBallJoint[] joint = new DBallJoint[NUM-1];
 	private static DJointGroup contactgroup;
 	private static DGeom[] sphere=new DGeom[NUM];
 

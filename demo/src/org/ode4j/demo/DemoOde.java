@@ -235,11 +235,11 @@ class DemoOde {
 			dMakeRandomVector (n1,1.0);
 			n2.set(n1);
 			n2.normalize();
-			if (Math.abs(n2.reDot(n2) - 1.0) > tol) bad |= 1;
+			if (Math.abs(n2.dot(n2) - 1.0) > tol) bad |= 1;
 			if (Math.abs(n2.get0()/n1.get0() - n2.get1()/n1.get1()) > tol) bad |= 2;
 			if (Math.abs(n2.get0()/n1.get0() - n2.get2()/n1.get2()) > tol) bad |= 4;
 			if (Math.abs(n2.get1()/n1.get1() - n2.get2()/n1.get2()) > tol) bad |= 8;
-			if (Math.abs(n2.reDot(n1) - Math.sqrt(n1.reDot(n1))) > tol) bad |= 16;
+			if (Math.abs(n2.dot(n1) - Math.sqrt(n1.dot(n1))) > tol) bad |= 16;
 			if (bad != 0) {
 				println ("\tFAILED (code=" + bad + ")");
 				return;
@@ -271,11 +271,11 @@ void testReorthonormalize()
 			dMakeRandomVector (n,1.0);
 			n.normalize();
 			dPlaneSpace (n,p,q);
-			if (Math.abs(n.reDot(p)) > tol) bad = 1;
-			if (Math.abs(n.reDot(q)) > tol) bad = 1;
-			if (Math.abs(p.reDot(q)) > tol) bad = 1;
-			if (Math.abs(p.reDot(p)-1) > tol) bad = 1;
-			if (Math.abs(q.reDot(q)-1) > tol) bad = 1;
+			if (Math.abs(n.dot(p)) > tol) bad = 1;
+			if (Math.abs(n.dot(q)) > tol) bad = 1;
+			if (Math.abs(p.dot(q)) > tol) bad = 1;
+			if (Math.abs(p.dot(p)-1) > tol) bad = 1;
+			if (Math.abs(q.dot(q)-1) > tol) bad = 1;
 		}
 		println ("\t", bad != 0 ? "FAILED" : "passed");
 	}
@@ -836,7 +836,7 @@ void testReorthonormalize()
 		dMakeRandomVector (u1, 1.0);
 		u1.normalize();
 		dMakeRandomVector (u2, 1.0);
-		double d = u1.reDot (u2);
+		double d = u1.dot (u2);
 		//		u2[0] -= d*u1[0];
 		//		u2[1] -= d*u1[1];
 		//		u2[2] -= d*u1[2];
@@ -957,7 +957,7 @@ void testReorthonormalize()
 
 	// matrix header on the stack
 
-	private class dMatrixComparison {
+	private class MatrixComparison {
 		//  struct dMatInfo;
 		//  dArray<dMatInfo*> mat;
 		//	  int afterfirst,index;
@@ -967,7 +967,7 @@ void testReorthonormalize()
 		int afterfirst,index;
 
 		//public:
-		//  ~dMatrixComparison();
+		//  ~MatrixComparison();
 
 		private class dMatInfo {
 			int n,m;		// size of matrix
@@ -979,7 +979,7 @@ void testReorthonormalize()
 		}
 
 
-		dMatrixComparison()
+		MatrixComparison()
 		{
 			afterfirst = 0;
 			index = 0;
@@ -1027,8 +1027,8 @@ void testReorthonormalize()
 			}
 			else {
 				if (lower_tri != 0 && n != m)
-					dDebug (0,"dMatrixComparison, lower triangular matrix must be square");
-				if (index >= mat.size()) dDebug (0,"dMatrixComparison, too many matrices");
+					dDebug (0,"MatrixComparison, lower triangular matrix must be square");
+				if (index >= mat.size()) dDebug (0,"MatrixComparison, too many matrices");
 				dMatInfo mp = mat.get(index);//mat[index];
 				index++;
 
@@ -1039,10 +1039,10 @@ void testReorthonormalize()
 				//if (strlen(mi.name) >= mi.name.length()+1) dDebug (0,"name too long");
 
 				if (!mp.name.equals(mi.name))
-					dDebug (0,"dMatrixComparison, name mismatch (\"%s\" and \"%s\")",
+					dDebug (0,"MatrixComparison, name mismatch (\"%s\" and \"%s\")",
 							mp.name,mi.name);
 				if (mp.n != n || mp.m != m)
-					dDebug (0,"dMatrixComparison, size mismatch (%dx%d and %dx%d)",
+					dDebug (0,"MatrixComparison, size mismatch (%dx%d and %dx%d)",
 							mp.n,mp.m,n,m);
 
 				double maxdiff;
@@ -1053,7 +1053,7 @@ void testReorthonormalize()
 					maxdiff = dMaxDifference (A,mp.data,n,m);
 				}
 				if (maxdiff > tol)
-					dDebug (0,"dMatrixComparison, matrix error " +
+					dDebug (0,"MatrixComparison, matrix error " +
 							"(size=%dx%d, name=\"%s\", " +
 							"error=%.4e)",n,m,mi.name,maxdiff);
 				return maxdiff;
@@ -1098,7 +1098,7 @@ void testReorthonormalize()
 				println (i + ": " + m.name + " (" + m.n + "x" + m.m + ")");
 			}
 		}
-	}  //dMatrixComparison
+	}  //MatrixComparison
 
 
 	//****************************************************************************
@@ -1132,7 +1132,7 @@ void testReorthonormalize()
 		println ("dTestMatrixComparison()");
 		dMessageFunction orig_debug = dGetDebugHandler();
 
-		dMatrixComparison mc = new dMatrixComparison();
+		MatrixComparison mc = new MatrixComparison();
 		double[] A = new double[50*50];
 
 		// make first sequence

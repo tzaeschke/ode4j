@@ -31,6 +31,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
@@ -81,7 +82,7 @@ class DemoPlane2d extends dsFunctions {
 	private static DVector3[]    bodies_sides = new DVector3[N_BODIES];
 
 	private static DSpace coll_space_id;
-	private static DJoint[] plane2d_joint_ids=new DJoint[N_BODIES];
+	private static DPlane2DJoint[] plane2d_joint_ids=new DPlane2DJoint[N_BODIES];
 	private static DJointGroup coll_contacts;
 
 
@@ -132,7 +133,7 @@ class DemoPlane2d extends dsFunctions {
 
 	//static void     track_to_pos (dBody &body, dJoint joint_id,
 	//        dReal target_x, dReal target_y)
-	private static void     track_to_pos (DBody body, DJoint joint_id,
+	private static void     track_to_pos (DBody body, DPlane2DJoint joint_id,
 			double target_x, double target_y)
 	/************************************************************************/
 	{

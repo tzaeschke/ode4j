@@ -32,14 +32,15 @@ import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
+import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DJoint.DJointFeedback;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
@@ -65,8 +66,8 @@ class DemoFeedback extends dsFunctions {
 	private static DGeom[]  seggeoms = new DGeom[SEGMCNT];
 	private static DBody[]  stackbodies = new DBody[STACKCNT];
 	private static DGeom[]  stackgeoms = new DGeom[STACKCNT];
-	private static DJoint[] hinges = new DJoint[SEGMCNT-1];
-	private static DJoint[] sliders = new DJoint[2];
+	private static DHingeJoint[] hinges = new DHingeJoint[SEGMCNT-1];
+	private static DSliderJoint[] sliders = new DSliderJoint[2];
 	private static DJoint.DJointFeedback[] jfeedbacks = new DJoint.DJointFeedback[SEGMCNT-1];
 	private static double[] colours = new double[SEGMCNT];
 	private static int[] stress = new int[SEGMCNT-1];

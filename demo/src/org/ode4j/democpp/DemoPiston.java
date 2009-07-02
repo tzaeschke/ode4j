@@ -31,6 +31,7 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -304,7 +305,7 @@ class DemoPiston extends dsFunctions {
 		if (joint!=null) {
 			joint.attach (body[BODY1], body[BODY2]);
 			if (joint instanceof DPistonJoint)
-				dJointSetPistonAnchor(joint, anchor.get(X), anchor.get(Y), anchor.get(Z));
+				dJointSetPistonAnchor((DPistonJoint)joint, anchor.get(X), anchor.get(Y), anchor.get(Z));
 		}
 
 	}
@@ -377,28 +378,28 @@ class DemoPiston extends dsFunctions {
 
 		case 't': case 'T':
 			if (joint instanceof DPistonJoint)
-				dJointAddPistonForce (joint,1);
+				dJointAddPistonForce ((DPistonJoint)joint,1);
 			else
-				dJointAddSliderForce (joint,1);
+				dJointAddSliderForce ((DSliderJoint)joint,1);
 			break;
 		case 'y': case 'Y':
 			if (joint instanceof DPistonJoint)
-				dJointAddPistonForce (joint,-1);
+				dJointAddPistonForce ((DPistonJoint)joint,-1);
 			else
-				dJointAddSliderForce (joint,-1);
+				dJointAddSliderForce ((DSliderJoint)joint,-1);
 			break;
 
 
 		case 'k': case 'K':
 			if (joint instanceof DPistonJoint) {
-				dJointSetPistonParam (joint,dParamLoStop2, -45.0*3.14159267/180.0);
-				dJointSetPistonParam (joint,dParamHiStop2,  45.0*3.14159267/180.0);
+				dJointSetPistonParam ((DPistonJoint)joint,dParamLoStop2, -45.0*3.14159267/180.0);
+				dJointSetPistonParam ((DPistonJoint)joint,dParamHiStop2,  45.0*3.14159267/180.0);
 			}
 			break;
 		case 'l': case 'L':
 			if (joint instanceof DPistonJoint) {
-				dJointSetPistonParam (joint,dParamLoStop2, -dInfinity);
-				dJointSetPistonParam (joint,dParamHiStop2, dInfinity);
+				dJointSetPistonParam ((DPistonJoint)joint,dParamLoStop2, -dInfinity);
+				dJointSetPistonParam ((DPistonJoint)joint,dParamHiStop2, dInfinity);
 			}
 			break;
 
@@ -527,7 +528,7 @@ class DemoPiston extends dsFunctions {
 
 			if (joint instanceof DPistonJoint ) {
 				DVector3 anchor = new DVector3();
-				dJointGetPistonAnchor(joint, anchor);
+				dJointGetPistonAnchor((DPistonJoint)joint, anchor);
 
 				// Draw the rotoide axis
 				rot = dGeomGetRotation (geom[BODY2]);
@@ -706,7 +707,7 @@ class DemoPiston extends dsFunctions {
 
 		if ( fixed ) {
 			// Attache external cylinder to the world
-			DJoint fixedJ = dJointCreateFixed (world,null);
+			DFixedJoint fixedJ = dJointCreateFixed (world,null);
 			dJointAttach (fixedJ , null, body[BODY2]);
 			dJointSetFixed (fixedJ );
 			dWorldSetGravity (world,0,0,-0.8);

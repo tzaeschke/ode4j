@@ -248,7 +248,7 @@ public class TestDVector3 extends OdeTestCase {
 		DVector3 x = new DVector3(1, 2, 3);
 		DVector3 y = new DVector3(4, 8, -1);
 		
-		assertEquals( 4+16-3 , x.reDot(y));
+		assertEquals( 4+16-3 , x.dot(y));
 	}		
 	
 //	@Test

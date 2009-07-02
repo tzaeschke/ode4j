@@ -1,6 +1,8 @@
 package org.ode4j.tests.UnitTestPlusPlus;
 
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 
 import junit.framework.TestCase;
 
@@ -105,8 +107,12 @@ public class CheckMacros extends TestCase {
 	//                    "Unhandled exception in CHECK_ARRAY_EQUAL(" #expected ", " #actual ")"); \
 	//        } \
 	//    } while (0)
+	public static void CHECK_ARRAY_EQUAL(DMatrix3C expected, DMatrix3C actual, int count) {
+		assertEquals(12, count);
+		assertEquals(expected, actual);
+	}
 	public static void CHECK_ARRAY_EQUAL(Object expected, Object actual, int count) {
-		throw new UnsupportedOperationException();
+		assertEquals(expected, actual);
 //		try { 
 //			UnitTest::CheckArrayEqual(testResults_, expected, actual, count, UnitTest::TestDetails(m_details, __LINE__)); 
 //		} 
@@ -134,7 +140,7 @@ public class CheckMacros extends TestCase {
 					Math.abs(actual[i]-expected[i]) <= tolerance);
 		}
 	}
-	public static void CHECK_ARRAY_CLOSE(DVector3 expected, DVector3 actual, int count, double tolerance) {
+	public static void CHECK_ARRAY_CLOSE(DVector3C expected, DVector3 actual, int count, double tolerance) {
 		for (int i = 0; i < count; i++) {
 			assertTrue("Expected: " + expected.get(i) + "  actual: " + actual.get(i) +
 					"   tolerance: " + tolerance, 

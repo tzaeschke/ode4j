@@ -66,7 +66,6 @@ REQUIRED LIBS:
 Cleanup uses of dVector.v, especially in e.g.
 - dxBody
 - dxJoint
-- try using dVector3.create() and implement pooling (perf tests!)
 
 dxPlane._p -> Change from double[4] to dVector3?
 
@@ -79,11 +78,8 @@ Check and remove references (and commented out occurrences) of:
 Remove commented out references to dUSE_MALLOC_FOR_ALLOCA
 
 
-
-Check Matrix.factorCholesky(2)()
--> TZs version causes larger w- and q-errors in DemoI ...
--> OdeVersion seems to forget to set ratio[] to 0.0 (?) 
-
+CPP API should not use internal classes ?!?!?!? Also avoid casting !!!!!
+-> Call DJoint j; j.getXY()
 
 TODO
 - DOC: @sa -> @see
@@ -150,6 +146,9 @@ Bigger plans:
 -------------------
 Migration guide
 -------------------
+ 
+Use QuickStep. Its's faster then Step. StepFast has not been migrated (or has it?)
+  
   
 dMass
 =====

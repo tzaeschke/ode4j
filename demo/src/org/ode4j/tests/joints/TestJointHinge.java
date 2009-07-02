@@ -31,7 +31,7 @@ import org.ode4j.ode.internal.joints.DxJointHinge;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DWorld;
 
 import static org.ode4j.cpp.OdeCpp.*;
@@ -106,7 +106,7 @@ public class TestJointHinge {
 		DBody bId2;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();
@@ -296,7 +296,7 @@ public class TestJointHinge {
 		DBody bId2;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();
@@ -485,7 +485,7 @@ public class TestJointHinge {
 		DBody bId1;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();
@@ -604,7 +604,7 @@ public class TestJointHinge {
 		DBody bId1;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();
@@ -725,7 +725,7 @@ public class TestJointHinge {
 		DBody bId2;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();

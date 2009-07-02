@@ -35,7 +35,7 @@ import org.ode4j.ode.internal.joints.DxJointSlider;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
 
 
@@ -90,7 +90,7 @@ public class TestJointSlider {
         DBody bId2;
 
 
-        DJoint jId;
+        DSliderJoint jId;
         DxJointSlider joint;
 //    };
 
@@ -208,7 +208,7 @@ public class TestJointSlider {
     DBody bId2;
 
 
-    DJoint jId;
+    DSliderJoint jId;
     DxJointSlider joint;
 
     static final DVector3 axis = new DVector3(1, 0, 0);
@@ -342,7 +342,7 @@ public class TestJointSlider {
     DBody bId2;
 
 
-    DJoint jId;
+    DSliderJoint jId;
     DxJointSlider joint;
 
     static final DVector3 axis = new DVector3(-1, 0, 0);
@@ -469,7 +469,7 @@ public class TestJointSlider {
 
     DBody bId1;
 
-    DJoint jId;
+    DSliderJoint jId;
     DxJointSlider joint;
 
     static final DVector3 axis = new DVector3(1, 0, 0);
@@ -551,7 +551,7 @@ public class TestJointSlider {
 
     DBody bId1;
 
-    DJoint jId;
+    DSliderJoint jId;
     DxJointSlider joint;
 
     static final DVector3 axis = new DVector3(-1, 0, 0);
@@ -640,7 +640,7 @@ public class TestJointSlider {
 
     DBody bId2;
 
-    DJoint jId;
+    DSliderJoint jId;
     DxJointSlider joint;
 
     static final DVector3 axis = new DVector3(1, 0, 0);
@@ -722,7 +722,7 @@ public class TestJointSlider {
 
     DBody bId2;
 
-    DJoint jId;
+    DSliderJoint jId;
     DxJointSlider joint;
 
     static final DVector3 axis = new DVector3(-1, 0, 0);

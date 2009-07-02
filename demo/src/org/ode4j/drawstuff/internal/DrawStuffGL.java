@@ -51,7 +51,8 @@ import static org.ode4j.drawstuff.DS_API.*;
  * 	-notex		Do not use any textures
  * 	-noshadow[s]	Do not draw any shadows
  * 	-pause		Start the simulation paused
- * 
+ *  -texturepath <path> Inform an alternative textures path
+ *
  * TODO
  * ----
  * 
@@ -1537,6 +1538,9 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 			if (args[i].equals("-noshadow")) use_shadows = false;
 			if (args[i].equals("-noshadows")) use_shadows = false;
 			if (args[i].equals("-pause")) initial_pause = true;
+		    if (args.equals("-texturepath"))
+		        if (++i < args.length)
+		          fn.path_to_textures = args[i];
 		}
 
 		if (fn.getVersion() > DS_VERSION)
