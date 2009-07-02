@@ -93,8 +93,8 @@ public interface DHeightfieldData {
 	 * A close fit will yield a more efficient collision check.
 	 *
 	 * @param d A dHeightfieldData created by dGeomHeightfieldDataCreate
-	 * @param min_height The new minimum height value. Scale, offset and thickness is then applied.
-	 * @param max_height The new maximum height value. Scale and offset is then applied.
+	 * @param minHeight The new minimum height value. Scale, offset and thickness is then applied.
+	 * @param maxHeight The new maximum height value. Scale and offset is then applied.
 	 * @ingroup collide
 	 */
 	void setBounds( DHeightfieldData d, double minHeight, double maxHeight );

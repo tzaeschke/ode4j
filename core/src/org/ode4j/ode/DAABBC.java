@@ -24,7 +24,8 @@ package org.ode4j.ode;
 import org.ode4j.math.DVector3;
 
 /**
- * Immutable interface for AABBs.
+ * Immutable interface for AABBs (Axis-aligned bounding boxes),
+ * as defined in DAABB.
  *
  * @author Tilmann Zaeschke
  */

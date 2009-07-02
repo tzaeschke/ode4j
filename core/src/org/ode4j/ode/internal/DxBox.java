@@ -120,7 +120,7 @@ public class DxBox extends DxGeom implements DBox {
 	 *
 	 * @param result  the returned side lengths
 	 *
-	 * @sa dGeomBoxSetLengths
+	 * @see #dGeomBoxSetLengths(DVector3C)
 	 * @ingroup collide_box
 	 */
 	public void dGeomBoxGetLengths (DVector3 result)

@@ -228,7 +228,6 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 	/**
 	 * Return a new vector v0 = v(this) - v3.
 	 * @param v2
-	 * @param v3
 	 */
 	public DVector3 reSub(DVector3C v2) {
 		return new DVector3(

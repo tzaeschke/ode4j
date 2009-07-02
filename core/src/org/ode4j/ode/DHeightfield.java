@@ -28,19 +28,27 @@ public interface DHeightfield extends DGeom {
 	 * Used by the callback heightfield data type to sample a height for a
 	 * given cell position.
 	 *
-	 * @param p_user_data User data specified when creating the dHeightfieldData
-	 * @param x The index of a sample in the local x axis. It is a value
-	 * in the range zero to ( nWidthSamples - 1 ).
-	 * @param x The index of a sample in the local z axis. It is a value
-	 * in the range zero to ( nDepthSamples - 1 ).
-	 *
-	 * @return The sample height which is then scaled and offset using the
-	 * values specified when the heightfield data was created.
-	 *
 	 * @ingroup collide
 	 */
 	//typedef double dHeightfieldGetHeight( void* p_user_data, int x, int z ) {
 	public static interface DHeightfieldGetHeight {
+		/**
+		 * @brief Callback prototype
+		 *
+		 * Used by the callback heightfield data type to sample a height for a
+		 * given cell position.
+		 *
+		 * @param pUserDdata User data specified when creating the dHeightfieldData
+		 * @param x The index of a sample in the local x axis. It is a value
+		 * in the range zero to ( nWidthSamples - 1 ).
+		 * @param z The index of a sample in the local z axis. It is a value
+		 * in the range zero to ( nDepthSamples - 1 ).
+		 *
+		 * @return The sample height which is then scaled and offset using the
+		 * values specified when the heightfield data was created.
+		 *
+		 * @ingroup collide
+		 */
 		public double call( Object[] pUserData, int x, int z );
 	}
 }

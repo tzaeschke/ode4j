@@ -352,8 +352,8 @@ public abstract class OdeHelper {
 	 *     allocateODEDataForThread(dAllocateMaskAll);
 	 * @endcode
 	 *
-	 * @see initODE2
-	 * @see allocateODEDataForThread
+	 * @see #initODE2(int)
+	 * @see #allocateODEDataForThread(int)
 	 * @ingroup init
 	 */
 	public static void initODE() {
@@ -377,9 +377,9 @@ public abstract class OdeHelper {
 	 * @c dSpaceSetManualCleanup must be called to set manual cleanup mode for every
 	 * space object right after creation. Failure to do so may lead to resource leaks.
 	 *
-	 * @see initODEFlags
-	 * @see closeODE
-	 * @see dSpaceSetManualCleanup
+	 * @see #initODEFlags
+	 * @see #closeODE()
+	 * @see #dSpaceSetManualCleanup
 	 * @ingroup init
 	 */
 	public static int initODE2(int uiInitFlags/*=0*/) {
@@ -402,8 +402,8 @@ public abstract class OdeHelper {
 	 * before calling @c dCloseODE. In particular it is not allowed to call
 	 * @c dCleanupODEAllDataForThread after @c dCloseODE.
 	 *
-	 * @see initODE2
-	 * @see dCleanupODEAllDataForThread
+	 * @see #initODE2(int)
+	 * @see #dCleanupODEAllDataForThread
 	 * @ingroup init
 	 */
 	public static void closeODE() {
@@ -430,7 +430,7 @@ public abstract class OdeHelper {
 	 * All other bits in flags must be set to zero. In the future the other bits
 	 * may be used to select from different contact generation strategies.
 	 *
-	 * @param contact Points to an array of dContactGeom structures. The array
+	 * @param contacts Points to an array of dContactGeom structures. The array
 	 * must be able to hold at least the maximum number of contacts. These
 	 * dContactGeom structures may be embedded within larger structures in the
 	 * array -- the skip parameter is the byte offset from one dContactGeom to
@@ -499,11 +499,11 @@ public abstract class OdeHelper {
 	 * Helper to check for a token in the ODE configuration string.
 	 * Caution, this function is case sensitive.
 	 *
-	 * @param token A configuration token, see dGetConfiguration for details
+	 * @param extension A configuration token, see dGetConfiguration for details
 	 *
 	 * @return <tt>true</tt> if exact token is present, <tt>false</tt> if not present
 	 */
-	public static boolean checkConfiguration( final String extension ) {
+	public static boolean checkConfiguration( String extension ) {
 		return ODE._dCheckConfiguration(extension);
 	}
 
@@ -560,8 +560,8 @@ public abstract class OdeHelper {
 	 * data has been allocated. The client may retry allocation attempt with the same
 	 * flags when more system resources are available.
 	 *
-	 * @see dAllocateODEDataFlags
-	 * @see dCleanupODEAllDataForThread
+	 * @see #dAllocateODEDataFlags
+	 * @see #dCleanupODEAllDataForThread
 	 * @ingroup init
 	 * @deprecated TZ I guess this can be removed?
 	 */
@@ -654,7 +654,7 @@ public abstract class OdeHelper {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @see spaceCollide2
+	 * @see #spaceCollide2(DGeom, DGeom, Object, DNearCallback)
 	 * @ingroup collide
 	 */
 	public static void spaceCollide (DSpace space, Object data, DNearCallback callback) {
@@ -697,12 +697,12 @@ public abstract class OdeHelper {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @see spaceCollide
-	 * @see spaceSetSublevel
+	 * @see #spaceCollide(DSpace, Object, DNearCallback)
+	 * @see #spaceSetSublevel
 	 * @ingroup collide
 	 */
-	public static void spaceCollide2(DGeom g1, DGeom g2, Object data,
-			DNearCallback nearCallback) {
-		DxSpace.dSpaceCollide2((DxGeom)g1, (DxGeom)g2, data, nearCallback);
+	public static void spaceCollide2(DGeom space1, DGeom space2, Object data,
+			DNearCallback callback) {
+		DxSpace.dSpaceCollide2((DxGeom)space1, (DxGeom)space2, data, callback);
 	}
 }

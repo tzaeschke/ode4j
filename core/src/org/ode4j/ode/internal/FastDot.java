@@ -39,7 +39,7 @@ public class FastDot extends Misc {
 	 * @param b
 	 * @param n
 	 * @return xxx
-	 * @deprecated, use other method
+	 * @deprecated use other method
 	 */
 	public static double dDot (final double[] a, int aOfs, final double[] b, int n)
 	{  
