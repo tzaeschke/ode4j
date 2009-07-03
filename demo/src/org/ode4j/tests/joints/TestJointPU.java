@@ -768,11 +768,11 @@ public class TestJointPU
         CHECK_CLOSE (q1_12.get3(), q.get3(), 1e-4);
 
         // Should be different than zero
-        CHECK( dJointGetPUPosition(jId_12) );
-        CHECK( dJointGetPUPosition(jId) );
+        CHECK( dJointGetPUPosition(jId_12)!=0 );
+        CHECK( dJointGetPUPosition(jId)!=0 );
 
-        CHECK( dJointGetPUPositionRate(jId_12) );
-        CHECK( dJointGetPUPositionRate(jId) );
+        CHECK( dJointGetPUPositionRate(jId_12)!=0 );
+        CHECK( dJointGetPUPositionRate(jId)!=0 );
     }
 
 
@@ -824,11 +824,11 @@ public class TestJointPU
         CHECK_CLOSE (q2_12.get3(), q.get3(), 1e-4);
 
         // Should be different than zero
-        CHECK( dJointGetPUPosition(jId_12) );
-        CHECK( dJointGetPUPosition(jId) );
+        CHECK( dJointGetPUPosition(jId_12) != 0 );
+        CHECK( dJointGetPUPosition(jId) != 0 );
 
-        CHECK( dJointGetPUPositionRate(jId_12) );
-        CHECK( dJointGetPUPositionRate(jId) );
+        CHECK( dJointGetPUPositionRate(jId_12) != 0 );
+        CHECK( dJointGetPUPositionRate(jId) != 0 );
     }
 
 

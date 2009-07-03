@@ -1,5 +1,6 @@
 package org.ode4j.tests.UnitTestPlusPlus;
 
+import org.cpp4j.java.RefDouble;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -48,6 +49,9 @@ public class CheckMacros extends TestCase {
 //					"Unhandled exception in CHECK(" #value ")"); 
 //		} 
 	}
+	public static void CHECK(boolean value) {
+		assertTrue(value);
+	}
 
 	//#define CHECK_EQUAL(expected, actual) \
 	//    do \
@@ -94,6 +98,10 @@ public class CheckMacros extends TestCase {
 		//        testResults_.OnTestFailure(UnitTest.TestDetails(m_details, __LINE__), 
 		//                "Unhandled exception in CHECK_CLOSE(" #expected ", " #actual ")"); 
 		//    } 
+	}
+	public static void CHECK_CLOSE(double expected, RefDouble actual, double tolerance) {
+		assertTrue("Expected" + expected + " / actual=" + actual + " / tolerance=" + tolerance, 
+				tolerance >= Math.abs(expected - actual.d));
 	}
 
 	//#define CHECK_ARRAY_EQUAL(expected, actual, count) \

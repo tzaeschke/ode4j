@@ -10,7 +10,6 @@ import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.OdeHelper;
 
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.cpp.OdeCppMath.*;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 
 public class CollisionTest {
@@ -33,7 +32,7 @@ public class CollisionTest {
 
 	    OdeHelper.initODE();
 
-	    {
+	    try {
 	        final int VertexCount = 4;
 	        final int IndexCount = 2*3;
 	        // this is a square on the XY plane
@@ -89,8 +88,9 @@ public class CollisionTest {
 	        nc = dCollide(trimesh, sphere, 4, cg);//&cg[0], sizeof cg[0]);
 	        CHECK_EQUAL(1, nc);
 	        CHECK_EQUAL(0, cg.get(0).depth);
+	    } finally {
+	    	OdeHelper.closeODE();
 	    }
-	    OdeHelper.closeODE();
 	}
 
 
@@ -103,7 +103,7 @@ public class CollisionTest {
 	@Test public void test_collision_heightfield_ray_fail()
 	{
 	    OdeHelper.initODE();
-	    {
+	    try {
 	        // Create quick heightfield with dummy data
 	        DHeightfieldData heightfieldData = dGeomHeightfieldDataCreate();
 	        //unsigned char dataBuffer[16+1] = "1234567890123456";
@@ -124,8 +124,9 @@ public class CollisionTest {
 	        dGeomDestroy(height);
 	        dGeomDestroy(ray);
 	        dGeomHeightfieldDataDestroy(heightfieldData);
+	    } finally {
+	    	OdeHelper.closeODE();
 	    }
-	    OdeHelper.closeODE();
 	}
 
 
