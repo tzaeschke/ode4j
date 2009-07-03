@@ -1563,8 +1563,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	//	void dJointGetUniversalAngles (dJoint j, double *angle1, double *angle2);
-	void dJointGetUniversalAngles (DUniversalJoint j, RefDouble angle1, RefDouble angle2) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetUniversalAngles (DUniversalJoint j, 
+			RefDouble angle1, RefDouble angle2) {
+		angle1.d = j.getAngle1();
+		angle2.d = j.getAngle2();
 	}
 
 
