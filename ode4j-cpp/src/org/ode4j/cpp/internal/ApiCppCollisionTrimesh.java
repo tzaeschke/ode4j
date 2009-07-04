@@ -28,12 +28,10 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DTriMesh.dTriArrayCallback;
 import org.ode4j.ode.DTriMesh.dTriCallback;
 import org.ode4j.ode.DTriMesh.dTriRayCallback;
-import org.ode4j.ode.internal.DxSpace;
-import org.ode4j.ode.internal.DxTriMesh;
-import org.ode4j.ode.internal.DxTriMeshData;
 
 
 /**
@@ -60,11 +58,11 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 */
 	//ODE_API 
 	public static DTriMeshData dGeomTriMeshDataCreate() {
-		return DxTriMeshData.dGeomTriMeshDataCreate();
+		return OdeHelper.createTriMeshData();
 	}
 	//ODE_API 
-	void dGeomTriMeshDataDestroy(DTriMeshData g) {
-		throw new UnsupportedOperationException();
+	public static void dGeomTriMeshDataDestroy(DTriMeshData g) {
+		g.destroy();
 	}
 
 
@@ -108,13 +106,13 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	public static void dGeomTriMeshDataBuildSingle(DTriMeshData g,
 			final double[] Vertices, int VertexStride, int VertexCount, 
 			final int[] Indices, int IndexCount, int TriStride) {
-		((DxTriMeshData)g).dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount, 
+		g.buildSingle(Vertices, VertexStride, VertexCount, 
 				Indices, IndexCount, TriStride);
 	}
 	public static void dGeomTriMeshDataBuildSingle(DTriMeshData g,
 			final float[] Vertices, int VertexStride, int VertexCount, 
 			final int[] Indices, int IndexCount, int TriStride) {
-		((DxTriMeshData)g).dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount, 
+		g.buildSingle(Vertices, VertexStride, VertexCount, 
 				Indices, IndexCount, TriStride);
 	}
 	/** same again with a normals array (used as trimesh-trimesh optimization) */
@@ -276,7 +274,7 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//ODE_API 
 	public static DTriMesh dCreateTriMesh(DSpace space, DTriMeshData Data, dTriCallback Callback, 
 			dTriArrayCallback ArrayCallback, dTriRayCallback RayCallback) {
-		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)Data, 
+		return OdeHelper.createTriMesh(space, Data, 
 				Callback, ArrayCallback, RayCallback);
 	}
 

@@ -190,8 +190,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	public static void dGeomSetRotation (DGeom geom, final DMatrix3 R) {
-		((DxGeom)geom).dGeomSetRotation(R);
+	public static void dGeomSetRotation (DGeom geom, final DMatrix3C R) {
+		geom.setRotation(R);
 	}
 
 
@@ -849,7 +849,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	// void dSpaceCollide (dSpace space, void *data, dNearCallback *callback) {
 	public static void dSpaceCollide (DSpace space, Object data, DNearCallback callback) {
-		((DxSpace)space).dSpaceCollide(data, callback);
+		space.collide(data, callback);
 	}
 
 
