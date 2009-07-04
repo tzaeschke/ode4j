@@ -21,16 +21,38 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-
+/**
+ * OdeConfig class.
+ *
+ * @author Tilmann Zaeschke
+ *
+ */
 public class OdeConfig {
 
-	public static final boolean dDOUBLE = true;
+	private static final boolean dDOUBLE = true;
 	
 	public enum TRIMESH {
 		DISABLED;
 	}
-	/** TZ: For now the only option: DISABLED. */
+	
+	
+	/** Do not use directly.
+	 * TZ: For now the only option: DISABLED. */
 	public static final TRIMESH dTRIMESH_TYPE = TRIMESH.DISABLED;
+	
+	/**
+	 * @return Whether double precision is used.
+	 */
+	public static boolean isDoublePrecision() {
+		return dDOUBLE;
+	}
+	
+	/**
+	 * @return Whether any TRIMESH is enabled.
+	 */
+	public static boolean isTrimeshEnabled() {
+		return dTRIMESH_TYPE != TRIMESH.DISABLED;
+	}
 	
 /* Pull in the standard headers */
 //#include <stdio.h>

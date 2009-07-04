@@ -40,7 +40,7 @@ class DxTriMeshDisabled extends DxTriMesh {
 		}
 
 		@Override
-		public void buildSingle(DTriMeshData g, double[] Vertices,
+		public void buildSingle(double[] Vertices,
 				int VertexStride, int VertexCount, int[] Indices,
 				int IndexCount, int TriStride) {
 			dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount,
@@ -48,11 +48,16 @@ class DxTriMeshDisabled extends DxTriMesh {
 		}
 
 		@Override
-		public void buildSingle(DTriMeshData g, float[] Vertices,
+		public void buildSingle(float[] Vertices,
 				int VertexStride, int VertexCount, int[] Indices,
 				int IndexCount, int TriStride) {
 			dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount,
 					Indices, IndexCount, TriStride);
+		}
+
+		@Override
+		public void destroy() {
+			//
 		}
 		
 	}
@@ -89,7 +94,7 @@ class DxTriMeshDisabled extends DxTriMesh {
 	// Stub functions for trimesh calls
 
 	DTriMeshData dGeomTriMeshDataCreate() { return null; }
-	void dGeomTriMeshDataDestroy(DTriMeshData g) {}
+	void dGeomTriMeshDataDestroy() {}
 
 	public void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data) {}
 	public Object dGeomTriMeshDataGet(DTriMeshData g, int data_id) { return null; }

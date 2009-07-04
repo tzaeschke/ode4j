@@ -21,9 +21,7 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
-import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3C;
 
@@ -95,11 +93,11 @@ public interface DGeom {
 	//const dReal * getPosition() const
 	DVector3C getPosition();
 
-	void setRotation (final DMatrix3 R);
+	void setRotation (DMatrix3C R);
 	//const dReal * getRotation() const
 	DMatrix3C getRotation();
 
-	void setQuaternion (final DQuaternion quat);
+	void setQuaternion (DQuaternionC quat);
 	DQuaternionC getQuaternion ();
 
 	DAABBC getAABB ();

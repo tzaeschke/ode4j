@@ -532,6 +532,15 @@ public abstract class OdeHelper {
 
 	/**
 	 * 
+	 * @return The version String.
+	 */
+	public static String getVersion() {
+		return "0.11.1-pre";
+	}
+	
+	
+	/**
+	 * 
 	 * @param world
 	 * @param f
 	 * @param string
@@ -615,7 +624,7 @@ public abstract class OdeHelper {
 	 * Trimesh class
 	 * Construction. Callbacks are optional.
 	 */
-	public static DGeom createTriMesh(DSpace space, DTriMeshData Data, dTriCallback Callback, 
+	public static DTriMesh createTriMesh(DSpace space, DTriMeshData Data, dTriCallback Callback, 
 			 dTriArrayCallback ArrayCallback, dTriRayCallback RayCallback) {
 		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)Data, 
 				Callback, ArrayCallback, RayCallback);

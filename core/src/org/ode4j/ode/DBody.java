@@ -63,7 +63,7 @@ import org.ode4j.math.DVector3C;
 public interface DBody {
 
 	//~dBody()
-	//void DESTRUCTOR();
+	void DESTRUCTOR();
 	void destroy();
 
 	//	  public void create (dWorld world) {

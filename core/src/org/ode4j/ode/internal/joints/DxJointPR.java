@@ -705,6 +705,18 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	public void setParamLoStop2(double d) {
 		dJointSetPRParam(D_PARAM_NAMES_N.dParamLoStop2, d);
 	}
+
+
+	@Override
+	public void setParamFMax2(double d) {
+		dJointSetPRParam(D_PARAM_NAMES_N.dParamFMax2, d);
+	}
+
+
+	@Override
+	public void setParamVel2(double d) {
+		dJointSetPRParam(D_PARAM_NAMES_N.dParamVel2, d);
+	}
 }
 
 

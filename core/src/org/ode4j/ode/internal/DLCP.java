@@ -1221,7 +1221,7 @@ public abstract class DLCP {
 		//	  const dReal tol = REAL(1e-4);
 		//	#endif
 		double tol;
-		if (OdeConfig.dDOUBLE) {//)#ifdef dDOUBLE
+		if (OdeConfig.isDoublePrecision()) {//)#ifdef dDOUBLE
 			tol = 1e-9;
 		} else {
 			tol = 1e-4f;

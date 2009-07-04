@@ -37,19 +37,19 @@ public interface DMass extends DMassC {
 			double I12, double I13, double I23);
 	
 	void setSphere (double density, double radius);
-	void setSphereTotal (double totalMass, double radius);
+	void setSphereTotal (double total, double radius);
 
  	void setTrimesh(double density, DTriMesh geom);
- 	void setTrimeshTotal(double density, DTriMesh geom);
+ 	void setTrimeshTotal(double total, DTriMesh geom);
 	
-	void setCapsule (double density, int direction, double a, double b);
-	void setCapsuleTotal (double density, int direction, double a, double b);
+	void setCapsule (double density, int direction, double radius, double length);
+	void setCapsuleTotal (double total, int direction, double radius, double length);
 	
 	void setCylinder (double density, int direction, double radius, double length);
 	void setCylinderTotal (double total, int direction, double radius, double length);
 
 	void setBox (double density, double lx, double ly, double lz);
-	void setBoxTotal (double density, double lx, double ly, double lz);
+	void setBoxTotal (double total, double lx, double ly, double lz);
 	
 	void adjust (double newmass);
 	

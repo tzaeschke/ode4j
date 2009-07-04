@@ -1162,9 +1162,9 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 
 	private static final DMatrix3C OFFSET_ROTATION_ZERO = new DMatrix3(
-			1.0, 0.0, 0.0, 0.0,
-			0.0, 1.0, 0.0, 0.0,
-			0.0, 0.0, 1.0, 0.0);
+			1.0, 0.0, 0.0,
+			0.0, 1.0, 0.0,
+			0.0, 0.0, 1.0);
 
 	//double *
 	final DMatrix3C dGeomGetOffsetRotation (DxGeom g)
@@ -1636,13 +1636,13 @@ public abstract class DxGeom extends DBase implements DGeom {
 	public DVector3C getPosition()
 	{ return dGeomGetPosition (); }
 
-	public void setRotation (final DMatrix3 R)
+	public void setRotation (DMatrix3C R)
 	{ dGeomSetRotation (R); }
 	//const dReal * getRotation() const
 	public DMatrix3C getRotation()
 	{ return dGeomGetRotation (); }
 
-	public void setQuaternion (final DQuaternion quat)
+	public void setQuaternion (DQuaternionC quat)
 	{ dGeomSetQuaternion (this,quat); }
 
 //	public int isSpace()

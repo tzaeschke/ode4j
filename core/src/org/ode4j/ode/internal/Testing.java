@@ -47,7 +47,7 @@ class dMatrixComparison {
 	//#endif
 	private static final double tol;
 	static {
-		if (OdeConfig.dDOUBLE) {
+		if (OdeConfig.isDoublePrecision()) {
 			tol = 1.0e-9;
 		} else {
 			tol = 1.0e-5f;

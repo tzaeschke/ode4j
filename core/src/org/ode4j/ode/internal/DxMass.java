@@ -190,9 +190,9 @@ public class DxMass implements DMass {
 
 
 	public void dMassSetCapsuleTotal (double total_mass, int direction,
-			double a, double b)
+			double radius, double length)
 	{
-		dMassSetCapsule (1.0, direction, a, b);
+		dMassSetCapsule (1.0, direction, radius, length);
 		dMassAdjust (total_mass);
 	}
 
@@ -636,32 +636,32 @@ public class DxMass implements DMass {
 	{ dMassSetSphere (density,radius); }
 	
 	@Override
-	public void setSphereTotal(double totalMass, double radius) 
-	{ dMassSetSphereTotal(totalMass, radius);	}
+	public void setSphereTotal(double total, double radius) 
+	{ dMassSetSphereTotal(total, radius);	}
 
 	@Override
-	public void setCapsule (double density, int direction, double a, double b)
-	{ dMassSetCapsule (density,direction,a,b); }
+	public void setCapsule (double density, int direction, double radius, double length)
+	{ dMassSetCapsule (density,direction,radius,length); }
 	
 	@Override
-	public void setCapsuleTotal (double density, int direction, double a, double b)
-	{ dMassSetCapsuleTotal (density,direction,a,b); }
+	public void setCapsuleTotal (double total, int direction, double radius, double length)
+	{ dMassSetCapsuleTotal (total,direction,radius,length); }
 	
 	@Override
 	public void setCylinder (double density, int direction, double radius, double length)
 	{ dMassSetCylinder(density, direction, radius, length); }
 	
 	@Override
-	public void setCylinderTotal (double density, int direction, double radius, double length)
-	{ dMassSetCylinderTotal(density, direction, radius, length); }
+	public void setCylinderTotal (double total, int direction, double radius, double length)
+	{ dMassSetCylinderTotal(total, direction, radius, length); }
 	
 	@Override
 	public void setBox (double density, double lx, double ly, double lz)
 	{ dMassSetBox (density,lx,ly,lz); }
 	
 	@Override
-	public void setBoxTotal (double density, double lx, double ly, double lz)
-	{ dMassSetBoxTotal (density,lx,ly,lz); }
+	public void setBoxTotal (double total, double lx, double ly, double lz)
+	{ dMassSetBoxTotal (total,lx,ly,lz); }
 	
 	@Override
 	public void setTrimesh(double density, DTriMesh geom) {
@@ -669,8 +669,8 @@ public class DxMass implements DMass {
 	}
 
 	@Override
-	public void setTrimeshTotal(double density, DTriMesh geom) {
-		dMassSetTrimeshTotal(density, geom);
+	public void setTrimeshTotal(double total, DTriMesh geom) {
+		dMassSetTrimeshTotal(total, geom);
 	}
 
 	@Override

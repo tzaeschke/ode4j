@@ -9,6 +9,7 @@ public class DMatrix3 extends DMatrix<DVector3, DVector3> implements DMatrix3C {
 	public static final int LEN = MAX_I*MAX_J;
 	public static final DMatrix3 ZERO = new DMatrix3();
 
+	/** @deprecated */
 	public DMatrix3(double d, double e, double f,
 			double g, double h, double i, double j, double k, double l,
 			double m, double n, double o) {

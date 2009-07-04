@@ -54,7 +54,8 @@ public abstract class DxTriMeshData implements DTriMeshData {
 		default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
 		}
     }
-    
+	public void dGeomTriMeshDataDestroy() {}
+   
 	public void dGeomTriMeshDataBuildSingle(
 			final double[] Vertices, int VertexStride, int VertexCount, 
 			final int[] Indices, int IndexCount, int TriStride) { }

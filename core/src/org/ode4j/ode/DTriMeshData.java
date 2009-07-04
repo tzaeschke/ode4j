@@ -22,20 +22,30 @@
 package org.ode4j.ode;
 
 
+/**
+ * TriMesh code by Erwin de Vries.
+ *
+ * Trimesh data.
+ * This is where the actual vertexdata (pointers), and BV tree is stored.
+ * Vertices should be single precision!
+ * This should be more sophisticated, so that the user can easyly implement
+ * another collision library, but this is a lot of work, and also costs some
+ * performance because some data has to be copied.
+ */
 public interface DTriMeshData {
 
 	/**
 	 * Build a TriMesh data object with single precision vertex data.
 	 */
-	void buildSingle(DTriMeshData g,
+	void buildSingle(
 			final double[] Vertices, int VertexStride, int VertexCount, 
 			final int[] Indices, int IndexCount, int TriStride);
 	/**
 	 * Build a TriMesh data object with single precision vertex data.
 	 */
-	void buildSingle(DTriMeshData g,
+	void buildSingle(
 			final float[] Vertices, int VertexStride, int VertexCount, 
 			final int[] Indices, int IndexCount, int TriStride);
 
-
+	void destroy();
 }
