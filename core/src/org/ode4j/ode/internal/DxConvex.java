@@ -1236,7 +1236,9 @@ Helper struct
 		//int side_index;
 		//dxConvex* g1;
 		//dxConvex* g2;
-		DVector3 e1a,e1b,e2a,e2b; // e1a to e1b = edge in cvx1,e2a to e2b = edge in cvx2.
+		 // e1a to e1b = edge in cvx1,e2a to e2b = edge in cvx2.
+		DVector3 e1a = new DVector3(), e1b = new DVector3();
+		DVector3 e2a = new DVector3(), e2b = new DVector3();
 	};
 
 	/** 
@@ -1948,7 +1950,7 @@ Helper struct
 			{
 				// Alias this plane.
 				//double* plane = convex.planes + ( i * 4 );
-				int planePos = i*4;
+				int planePos = i;//*4;
 	
 				// If alpha >= 0 then start point is outside of plane.
 				//alpha = dDOT( convex.planes, planePos, ray._final_posr.pos.v, 0 ) - convex.planes[planePos+3];//] - plane[3];
@@ -1978,7 +1980,7 @@ Helper struct
 			{
 				// Alias this plane.
 				//double* plane = convex.planes + ( i * 4 );
-				int planePos = i*4;
+				int planePos = i;//*4;
 	
 				// If alpha >= 0 then point is outside of plane.
 				//alpha = nsign * ( dDOT( plane, ray.final_posr.pos ) - plane[3] );
@@ -2011,12 +2013,11 @@ Helper struct
 	
 						// Alias this plane.
 						//double* planej = convex.planes + ( j * 4 );
-						int planePosJ = j*4;
+						int planePosJ = j;//*4;
 	
 						// If beta >= 0 then start is outside of plane.
 						//beta = dDOT( planej, contact.pos ) - plane[3];
 						//TODO use planePos+3 or planePosJ+3 ???
-						System.err.println("CheckME");
 						//beta = dDOT( convex.planesV[planePosJ], contact.pos) - convex.planesD[planePosJ];
 						beta = dDOT( convex.planesV[planePosJ], contact.pos) - convex.planesD[planePos];
 	
