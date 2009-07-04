@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 import org.ode4j.math.DMatrix3;

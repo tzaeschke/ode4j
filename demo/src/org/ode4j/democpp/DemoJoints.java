@@ -42,7 +42,7 @@ import org.ode4j.ode.DWorld;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -693,7 +693,10 @@ public class DemoJoints extends dsFunctions {
 			dBodyAddForce (body[1],0,0,-0.1);
 			if (iteration == 40) {
 				double a = dJointGetSliderPosition (jointS);
-				if (a > 0.2 && a < 0.5) return 0; else return 10;
+				if (a > 0.2 && a < 0.5) 
+					return 0; 
+				else 
+					return 10;
 			}
 			return 0;
 

@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import org.ode4j.drawstuff.DS_API;
+import org.ode4j.drawstuff.DrawStuff;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrixN;
 import org.ode4j.math.DQuaternion;
@@ -38,7 +38,7 @@ import org.ode4j.ode.internal.Matrix;
 
 import static org.cpp4j.Cstdio.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -215,7 +215,7 @@ class DemoI extends dsFunctions {
 
 	// simulation loop
 
-	void simLoop (boolean pause)
+	private void simLoop (boolean pause)
 	{
 		if (!pause) {
 			dBodyAddTorque (anchor_body,torque[0],torque[1],torque[2]);
@@ -256,17 +256,13 @@ class DemoI extends dsFunctions {
 	public static void main(String[] args) {
 		// setup pointers to drawstuff callback functions
 		dsFunctions fn = new DemoI();
-		fn.version = DS_API.DS_VERSION;
+		fn.version = DrawStuff.DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = 0;
 		//  fn.stop = 0;
 		//  fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		fn.setPathToTextures(DS_API.DRAWSTUFF_TEXTURE_PATH);
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
+		fn.setPathToTextures(DrawStuff.DRAWSTUFF_TEXTURE_PATH);
 
 		dInitODE2(0);
 		dRandSetSeed (time(null).seconds);

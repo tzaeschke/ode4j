@@ -34,14 +34,14 @@ import java.nio.IntBuffer;
 import org.cpp4j.FILE;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.OdeMath.OP;
 
 import static org.cpp4j.Cstdio.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 /**
  *
@@ -60,7 +60,7 @@ import static org.ode4j.drawstuff.DS_API.*;
  * 
  */
 //public class DrawStuff extends Swing implements All {
-public class DrawStuffGL extends LwJGL implements DrawStuff {
+public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 	
 	// ***************************************************************************
@@ -162,7 +162,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 
 		// skip over whitespace and comments in a stream.
 
-		static void skipWhiteSpace (String filename, PushbackInputStream f) throws IOException
+		private static void skipWhiteSpace (String filename, PushbackInputStream f) throws IOException
 		{
 			int c,d;
 			while(true) {//for(;;) {
@@ -189,7 +189,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 		// read a number from a stream, this return 0 if there is none (that's okay
 		// because 0 is a bad value for all PPM numbers anyway).
 
-		static int readNumber (String filename, PushbackInputStream f) throws IOException
+		private static int readNumber (String filename, PushbackInputStream f) throws IOException
 		{
 			int c,n=0;
 			for(;;) {
@@ -1846,7 +1846,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 //	void dsDrawBoxD (final double pos[3], final double R[12],
 //			final double sides[3])
 	/**
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawBox(float[], float[], float[])
+	 * @see org.ode4j.drawstuff.internal.DrawStuffApi#dsDrawBox(float[], float[], float[])
 	 */
 	public void dsDrawBox (DVector3C pos, DMatrix3C R,
 			DVector3C sides)

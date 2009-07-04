@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
@@ -37,7 +37,7 @@ import org.ode4j.ode.DGeom.DNearCallback;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 
 class DemoChain1 extends dsFunctions {
@@ -147,10 +147,6 @@ class DemoChain1 extends dsFunctions {
 		//  fn.command = 0;
 		//  fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		/* create world */
 		dInitODE2(0);

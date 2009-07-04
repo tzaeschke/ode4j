@@ -35,7 +35,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 class DemoSlider extends dsFunctions {
 

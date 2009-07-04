@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -50,7 +50,7 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -71,8 +71,6 @@ import static org.ode4j.ode.OdeMath.*;
  */
 class DemoJointPU extends dsFunctions {
 
-
-	//using namespace ode;
 
 //	enum IDX_CYL_DIM
 //	{
@@ -530,7 +528,7 @@ class DemoJointPU extends dsFunctions {
 				DQuaternion qq = new DQuaternion();
 				dQMultiply1 (qq, qAng, q);
 				DMatrix3 R = new DMatrix3();
-				dQtoR (qq,R);
+				dRfromQ (R,qq);
 
 
 				DCylinder cyl = (DCylinder) geomAXIS1.getGeom();
@@ -553,7 +551,7 @@ class DemoJointPU extends dsFunctions {
 
 
 				DMatrix3 R = new DMatrix3();
-				dQtoR (qq1,R);
+				dRfromQ (R,qq1);
 
 
 				DCylinder cyl = (DCylinder) geomAXIS2.getGeom();

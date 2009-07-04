@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API;
+import org.ode4j.drawstuff.DrawStuff;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -42,7 +42,7 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DAMotorJoint.AMotorMode;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -693,7 +693,10 @@ public class DemoJoints extends dsFunctions {
 			body[1].addForce (0,0,-0.1);
 			if (iteration == 40) {
 				double a = jointSlider.getPosition ();
-				if (a > 0.2 && a < 0.5) return 0; else return 10;
+				if (a > 0.2 && a < 0.5) 
+					return 0; 
+				else 
+					return 10;
 			}
 			return 0;
 
@@ -1136,7 +1139,7 @@ public class DemoJoints extends dsFunctions {
 	public static void main (String[] args)
 	{
 		OdeHelper.initODE2(0);
-		DS_API.outputToNull();  //Avoid Drawstuff TZ
+		DrawStuff.setOutputNull();  //Avoid Drawstuff TZ
 
 		// process the command line args. anything that starts with `-' is assumed
 		// to be a drawstuff argument.

@@ -24,9 +24,9 @@ package org.ode4j.democpp;
 import static org.cpp4j.Cstdio.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3C;

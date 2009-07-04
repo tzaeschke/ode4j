@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -38,9 +38,8 @@ import org.ode4j.ode.internal.DxConvex;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.DGeom.*;
 
 
 class DemoConvexCD extends dsFunctions {
@@ -120,17 +119,25 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 	private boolean DumpInfo=true;
 	private int drawmode = DS_WIREFRAME;
 
-	private final double fixed_pos_0[]={0.703704,-0.748281,0.249495};
-	private final DMatrix3 fixed_rot_0 = new DMatrix3(
-			0.996994,-0.001009,-0.077468,0.000000,
-			-0.077468,-0.000117,-0.996995,0.000000,
-			0.000996, 1.000000,-0.000195,0.000000);
+	//	private final double fixed_pos_0[]={0.703704,-0.748281,0.249495};
+	//	private final DMatrix3C fixed_rot_0 = new DMatrix3(
+	//			0.996994,-0.001009,-0.077468,0.000000,
+	//			-0.077468,-0.000117,-0.996995,0.000000,
+	//			0.000996, 1.000000,-0.000195,0.000000);
+	//
+	//	private final double fixed_pos_1[]={0.894169,-0.372081,0.249432};
+	//	private final DMatrix3C fixed_rot_1 = new DMatrix3(
+	//			-0.999461, 0.032777,0.001829,0.000000,
+	//			-0.032777,-0.999463,0.000033,0.000000,
+	//			0.001829,-0.000027,0.999998,0.000000);
 
-	private final double fixed_pos_1[]={0.894169,-0.372081,0.249432};
-	private final DMatrix3 fixed_rot_1 = new DMatrix3(
-			-0.999461, 0.032777,0.001829,0.000000,
-			-0.032777,-0.999463,0.000033,0.000000,
-			0.001829,-0.000027,0.999998,0.000000);
+	// for EDGE-EDGE test
+	private final double fixed_pos_0[]={0.0,0.0,0.25};
+	private final DMatrix3C fixed_rot_0=new DMatrix3( 1,0,0,0,1,0,0,0,1 );
+	private final double fixed_pos_1[]={0.000000,0.450000,0.600000};
+	private final DMatrix3C fixed_rot_1=new DMatrix3(0.708311,-0.705472,-0.000000,
+			0.516939,0.519297,-0.679785,
+			0.480067,0.481293,0.733034);
 
 	public void start()
 	{
@@ -158,62 +165,62 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 
 		DMatrix3 m1 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
 		DMatrix3 m2 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
-//		#if 0
-//		dGeomSetPosition (convex[0],
-//				0.0,
-//				0.0,
-//				0.25);
-//		dGeomSetPosition (convex[1],
-//				geom1pos[0],
-//				geom1pos[1],
-//				geom1pos[2]);
-//		dQtoR (geom0quat, m1);
-//		dGeomSetRotation (convex[0],m1);
-//		dQtoR (geom1quat, m2);
-//		dGeomSetRotation (convex[1],m2);
-//
-//		dGeomSetPosition (boxes[0],
-//				0.0,
-//				0.0,
-//				0.25);
-//		dGeomSetPosition (boxes[1],
-//				geom1pos[0],
-//				geom1pos[1],
-//				geom1pos[2]);
-//		dQtoR (geom0quat, m1);
-//		dGeomSetRotation (boxes[0],m1);
-//		dQtoR (geom1quat, m2);
-//		dGeomSetRotation (boxes[1],m2);
-//		#else
+		//		#if 0
+		//		dGeomSetPosition (convex[0],
+		//				0.0,
+		//				0.0,
+		//				0.25);
+		//		dGeomSetPosition (convex[1],
+		//				geom1pos[0],
+		//				geom1pos[1],
+		//				geom1pos[2]);
+		//		dQtoR (geom0quat, m1);
+		//		dGeomSetRotation (convex[0],m1);
+		//		dQtoR (geom1quat, m2);
+		//		dGeomSetRotation (convex[1],m2);
+		//
+		//		dGeomSetPosition (boxes[0],
+		//				0.0,
+		//				0.0,
+		//				0.25);
+		//		dGeomSetPosition (boxes[1],
+		//				geom1pos[0],
+		//				geom1pos[1],
+		//				geom1pos[2]);
+		//		dQtoR (geom0quat, m1);
+		//		dGeomSetRotation (boxes[0],m1);
+		//		dQtoR (geom1quat, m2);
+		//		dGeomSetRotation (boxes[1],m2);
+		//		#else
 		{
 			dGeomSetPosition (convex[0],
 					fixed_pos_0[0],
 					fixed_pos_0[1],
 					fixed_pos_0[2]);
-		dGeomSetPosition (convex[1],
-				fixed_pos_1[0],
-				fixed_pos_1[1],
-				fixed_pos_1[2]);
-		dGeomSetRotation (convex[0],fixed_rot_0);
-		dGeomSetRotation (convex[1],fixed_rot_1);
-		dGeomSetPosition (boxes[0],
-				fixed_pos_0[0],
-				fixed_pos_0[1],
-				fixed_pos_0[2]);
-		dGeomSetPosition (boxes[1],
-				fixed_pos_1[0],
-				fixed_pos_1[1],
-				fixed_pos_1[2]);
-		dGeomSetRotation (boxes[0],fixed_rot_0);
-		dGeomSetRotation (boxes[1],fixed_rot_1);
+			dGeomSetPosition (convex[1],
+					fixed_pos_1[0],
+					fixed_pos_1[1],
+					fixed_pos_1[2]);
+			dGeomSetRotation (convex[0],fixed_rot_0);
+			dGeomSetRotation (convex[1],fixed_rot_1);
+			dGeomSetPosition (boxes[0],
+					fixed_pos_0[0],
+					fixed_pos_0[1],
+					fixed_pos_0[2]);
+			dGeomSetPosition (boxes[1],
+					fixed_pos_1[0],
+					fixed_pos_1[1],
+					fixed_pos_1[2]);
+			dGeomSetRotation (boxes[0],fixed_rot_0);
+			dGeomSetRotation (boxes[1],fixed_rot_1);
 		} //#endif
 
 	}
 
-//	private int dCollideConvexConvex (dxGeom o1, dxGeom o2, int flags,
-//			dContactGeomBuffer contact, int skip);
-//	private int dCollideBoxBox (dxGeom o1, dxGeom o2, int flags,
-//			dContactGeomBuffer contacts, int skip);
+	//	private int dCollideConvexConvex (dxGeom o1, dxGeom o2, int flags,
+	//			dContactGeomBuffer contact, int skip);
+	//	private int dCollideBoxBox (dxGeom o1, dxGeom o2, int flags,
+	//			dContactGeomBuffer contacts, int skip);
 
 	private void simLoop (boolean pause)
 	{
@@ -290,41 +297,52 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 		// note: 0.0174532925 radians = 1 degree
 		DQuaternion q = new DQuaternion();
 		DMatrix3 m;
+		boolean changed = false;
 		switch(cmd)
 		{
 		case 'w':
 			geom1pos.add0(0.05);
+			changed = true;
 			break;
 		case 'a':
 			geom1pos.add1(-0.05);
+			changed = true;
 			break;
 		case 's':
 			geom1pos.add0(-0.05);
+			changed = true;
 			break;
 		case 'd':
 			geom1pos.add1(+0.05);
+			changed = true;
 			break;
 		case 'e':
 			geom1pos.add2(-0.05);
+			changed = true;
 			break;
 		case 'q':
 			geom1pos.add2(+0.05);
+			changed = true;
 			break;
 		case 'i':
 			dQFromAxisAndAngle (q, 0, 0, 1,0.0174532925);
 			dQMultiply0(geom1quat,geom1quat,q);
+			changed = true;
 			break;
 		case 'j':
 			dQFromAxisAndAngle (q, 1, 0, 0,0.0174532925);
 			dQMultiply0(geom1quat,geom1quat,q);
+			changed = true;
 			break;
 		case 'k':
 			dQFromAxisAndAngle (q, 0, 0, 1,-0.0174532925);
 			dQMultiply0(geom1quat,geom1quat,q);
+			changed = true;
 			break;
 		case 'l':
 			dQFromAxisAndAngle (q, 1, 0, 0,-0.0174532925);
 			dQMultiply0(geom1quat,geom1quat,q);
+			changed = true;
 			break;
 		case 'm':
 			//(drawmode!=DS_POLYFILL) ? drawmode=DS_POLYFILL : drawmode=DS_WIREFRAME;
@@ -336,18 +354,35 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 			break;
 		case 'n':
 			if (geoms!=convex) geoms=convex; else geoms=boxes;
+			if(geoms==convex)
+			{
+				printf("CONVEX------------------------------------------------------>\n");
+			}
+			else
+			{
+				printf("BOX--------------------------------------------------------->\n");
+			}
 			break;
 		default:
 			dsPrint ("received command %d (`%c')\n",cmd,cmd);     
 		}
-//		#if 0
-//		dGeomSetPosition (geoms[1],
-//				geom1pos[0],
-//				geom1pos[1],
-//				geom1pos[2]);
-//		dQtoR (geom1quat, m);
-//		dGeomSetRotation (geoms[1],m);
-//		#endif
+		//		#if 0
+		//		dGeomSetPosition (geoms[1],
+		//				geom1pos[0],
+		//				geom1pos[1],
+		//				geom1pos[2]);
+		//		dQtoR (geom1quat, m);
+		//		dGeomSetRotation (geoms[1],m);
+		//	    if(changed)
+		//	    {
+		//
+		//	            printf("POS: %f,%f,%f\n",geom1pos[0],geom1pos[1],geom1pos[2]);
+		//	            printf("ROT:\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n",
+		//	            m[0],m[1],m[2],m[3],
+		//	            m[4],m[5],m[6],m[7],
+		//	            m[8],m[9],m[10],m[11]);
+		//	    }
+		//		#endif
 		DumpInfo=true;
 	}
 

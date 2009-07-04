@@ -754,8 +754,8 @@ void testReorthonormalize()
 		I = (DMatrix3)m.getI();
 		if (cmp(m.getMass(),5.99961928996029) && m.getC().get0()==0 && m.getC().get1()==0 && m.getC().get2()==0 &&
 				cmp(I.get00(),1.59461986077384) &&
-				cmp(I.get11(),4.57537403079093) &&
-				cmp(I.get22(),4.57537403079093) &&
+				cmp(I.get11(),4.21878433864904) &&
+				cmp(I.get22(),4.21878433864904) &&
 				I.get01()==0 && I.get02()==0 && I.get12()==0 &&
 				I.get10()==0 && I.get20()==0 && I.get21()==0)
 			println ("\tpassed (5)"); 

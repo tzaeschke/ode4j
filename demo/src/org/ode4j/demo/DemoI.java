@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API;
+import org.ode4j.drawstuff.DrawStuff;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
@@ -35,7 +35,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -200,7 +200,7 @@ class DemoI extends dsFunctions {
 
 	// simulation loop
 
-	void simLoop (boolean pause)
+	private void simLoop (boolean pause)
 	{
 		if (!pause) {
 			anchor_body.addTorque (torque);
@@ -238,17 +238,6 @@ class DemoI extends dsFunctions {
 	public static void main(String[] args) {
 		// setup pointers to drawstuff callback functions
 		dsFunctions fn = new DemoI();
-		fn.version = DS_API.DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = 0;
-		//  fn.stop = 0;
-		//  fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		fn.setPathToTextures(DS_API.DRAWSTUFF_TEXTURE_PATH);
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		OdeHelper.initODE2(0);
 		dRandSetSeed (System.currentTimeMillis());

@@ -23,7 +23,7 @@ package org.ode4j.democpp;
 
 import org.cpp4j.FILE;
 import org.cpp4j.java.DoubleArray;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -49,7 +49,7 @@ import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.DGeom.*;
 import static org.ode4j.democpp.BunnyGeom.*;
@@ -664,7 +664,7 @@ class DemoHeightfield extends dsFunctions {
 				if ( obj[i].geom[j]!=null && dGeomGetClass(obj[i].geom[j]) == dTriMeshClass )
 				{
 					//dTriIndex* Indices = (dTriIndex*)::Indices;
-					int[][] Indices = BunnyGeom.Indices;
+					int[] Indices = BunnyGeom.Indices;
 
 					// assume all trimeshes are drawn as bunnies
 					final DVector3C Pos = dGeomGetPosition(obj[i].geom[j]);
@@ -673,15 +673,15 @@ class DemoHeightfield extends dsFunctions {
 					for (int ii = 0; ii < IndexCount / 3; ii++)
 					{
 						final float[] v = { // explicit conversion from float to dReal
-								Vertices[Indices[ii * 3][0] * 3 + 0],
-								Vertices[Indices[ii * 3][0] * 3 + 1],
-								Vertices[Indices[ii * 3][0] * 3 + 2],
-								Vertices[Indices[ii * 3][1] * 3 + 0],
-								Vertices[Indices[ii * 3][1] * 3 + 1],
-								Vertices[Indices[ii * 3][1] * 3 + 2],
-								Vertices[Indices[ii * 3][2] * 3 + 0],
-								Vertices[Indices[ii * 3][2] * 3 + 1],
-								Vertices[Indices[ii * 3][2] * 3 + 2]
+								Vertices[Indices[ii * 3+0] * 3 + 0],
+								Vertices[Indices[ii * 3+0] * 3 + 1],
+								Vertices[Indices[ii * 3+0] * 3 + 2],
+								Vertices[Indices[ii * 3+1] * 3 + 0],
+								Vertices[Indices[ii * 3+1] * 3 + 1],
+								Vertices[Indices[ii * 3+1] * 3 + 2],
+								Vertices[Indices[ii * 3+2] * 3 + 0],
+								Vertices[Indices[ii * 3+2] * 3 + 1],
+								Vertices[Indices[ii * 3+2] * 3 + 2]
 						};
 						//dsDrawTriangle(Pos, Rot, &v[0], &v[3], &v[6], 1);
 						dsDrawTriangle(Pos, Rot, v, 0, 3, 6, true);
@@ -766,10 +766,6 @@ class DemoHeightfield extends dsFunctions {
 		//	fn.command = &command;
 		//	fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		dInitODE2(0);

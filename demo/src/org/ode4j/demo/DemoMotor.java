@@ -38,7 +38,7 @@ import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 
 class DemoMotor extends dsFunctions {
@@ -152,18 +152,11 @@ class DemoMotor extends dsFunctions {
 
 	public static void main (String[] args)
 	{
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoMotor();
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length>=2)
-		{
-			fn.path_to_textures = args[1];
-		}
+		new DemoMotor().demo(args);
+	}
+	
+	
+	private void demo(String[] args) {
 
 		// create world
 		OdeHelper.initODE2(0);
@@ -219,13 +212,12 @@ class DemoMotor extends dsFunctions {
 		}
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy();
 		space.destroy ();
 		world.destroy ();
 		OdeHelper.closeODE();
-		//return 0;
 	}
 
 

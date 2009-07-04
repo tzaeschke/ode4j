@@ -22,7 +22,7 @@
 package org.ode4j.democpp;
 
 import org.cpp4j.java.RefDouble;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -48,7 +48,7 @@ import org.ode4j.ode.DGeom.DNearCallback;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -69,8 +69,6 @@ import static org.ode4j.ode.OdeMath.*;
  */
 class DemoJointPU extends dsFunctions {
 
-
-	//using namespace ode;
 
 //	enum IDX_CYL_DIM
 //	{
@@ -292,46 +290,46 @@ class DemoJointPU extends dsFunctions {
 
 			// Force
 		case 'q' : case 'Q' :
-			body[D].addForce(40,0,0);
+			dBodyAddForce(body[D],40,0,0);
 			break;
 		case 'w' : case 'W' :
-			body[D].addForce(-40,0,0);
+			dBodyAddForce(body[D],-40,0,0);
 			break;
 
 		case 'a' : case 'A' :
-			body[D].addForce(0,40,0);
+			dBodyAddForce(body[D],0,40,0);
 			break;
 		case 's' : case 'S' :
-			body[D].addForce(0,-40,0);
+			dBodyAddForce(body[D],0,-40,0);
 			break;
 
 		case 'z' : case 'Z' :
-			body[D].addForce(0,0,40);
+			dBodyAddForce(body[D],0,0,40);
 			break;
 		case 'x' : case 'X' :
-			body[D].addForce(0,0,-40);
+			dBodyAddForce(body[D],0,0,-40);
 			break;
 
 			// Torque
 		case 'e': case 'E':
-			body[D].addTorque(0.1,0,0);
+			dBodyAddTorque(body[D],0.1,0,0);
 			break;
 		case 'r': case 'R':
-			body[D].addTorque(-0.1,0,0);
+			dBodyAddTorque(body[D],-0.1,0,0);
 			break;
 
 		case 'd': case 'D':
-			body[D].addTorque(0, 0.1,0);
+			dBodyAddTorque(body[D],0, 0.1,0);
 			break;
 		case 'f': case 'F':
-			body[D].addTorque(0,-0.1,0);
+			dBodyAddTorque(body[D],0,-0.1,0);
 			break;
 
 		case 'c': case 'C':
-			body[D].addTorque(0,0,0.1);
+			dBodyAddTorque(body[D],0,0,0.1);
 			break;
 		case 'v': case 'V':
-			body[D].addTorque(0,0,0.1);
+			dBodyAddTorque(body[D],0,0,0.1);
 			break;
 
 			// Velocity of joint

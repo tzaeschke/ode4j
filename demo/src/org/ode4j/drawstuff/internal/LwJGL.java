@@ -28,8 +28,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
-import org.ode4j.drawstuff.DS_API;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.Common;
 
 import static org.cpp4j.Cstdio.*;
@@ -55,13 +56,28 @@ import static org.cpp4j.Cstdio.*;
 //#include <drawstuff/version.h>
 //#include "internal.h"
 
-abstract class LwJGL extends Internal implements DrawStuff {
+abstract class LwJGL extends Internal implements DrawStuffApi {
 
+	//Ensure that Display.destroy() is called (TZ)
+	//Not sure this works, but it's an attempt at least.
+	//-> This should avoid the Problem that a process keeps running with 99%CPU, 
+	//   even if the window is closed (clicking on the 'x'). The supposed 
+	//   problem is that when clicking 'x', Display.destroy() never gets called
+	//   by dsPlatformSimLoop(). 
+	static {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+//				Display.destroy();
+			}
+		});
+	}
+	
+	
 	//***************************************************************************
 	// error handling for unix
 
 	//static void printMessage (const char *msg1, const char *msg2, va_list ap)
-	static void printMessage (String msg1, String fmt, Object ...  ap)
+	private static void printMessage (String msg1, String fmt, Object ...  ap)
 	{
 		fflush (stderr);
 		fflush (stdout);
@@ -217,7 +233,7 @@ abstract class LwJGL extends Internal implements DrawStuff {
 	}
 
 
-	static void destroyMainWindow()
+	private static void destroyMainWindow()
 	{
 		//  glXDestroyContext (display,glx_context);
 		//  XDestroyWindow (display,win);
@@ -341,7 +357,7 @@ abstract class LwJGL extends Internal implements DrawStuff {
 
 	// return the index of the highest bit
 	//static int getHighBitIndex (unsigned int x)
-	static int getHighBitIndex (int x)
+	private static int getHighBitIndex (int x)
 	{
 		int i = 0;
 		while (x!=0) {
@@ -359,7 +375,7 @@ abstract class LwJGL extends Internal implements DrawStuff {
 		return (int) ((i >= 0) ? (x << (i)) : ((x) >> (-i))); 
 	}
 
-	static void captureFrame (int num)
+	private static void captureFrame (int num)
 	{
 		throw new UnsupportedOperationException();
 		//  fprintf (stderr,"capturing frame %04d\n",num);
@@ -522,6 +538,10 @@ abstract class LwJGL extends Internal implements DrawStuff {
 		//TZ static bool firsttime=true;
 		if (firsttime)
 		{
+			System.err.println();
+			System.err.print("Using ode4j version: " + OdeHelper.getVersion());
+			System.err.println("  [" + OdeHelper.getConfiguration() + "]");
+			System.err.println();
 			fprintf
 			(
 					stderr,
@@ -539,7 +559,7 @@ abstract class LwJGL extends Internal implements DrawStuff {
 					"   Left button - pan and tilt.\n" +
 					"   Right button - forward and sideways.\n" +
 					"   Left + Right button (or middle button) - sideways and up.\n" +
-					"\n",DS_API.DS_VERSION >> 8,DS_API.DS_VERSION & 0xff
+					"\n",DrawStuff.DS_VERSION >> 8,DrawStuff.DS_VERSION & 0xff
 			);
 			firsttime = false;
 		}

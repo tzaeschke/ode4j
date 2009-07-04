@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
@@ -41,7 +41,7 @@ import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 
 /**
@@ -231,16 +231,6 @@ class DemoFeedback extends dsFunctions {
 
 		// setup pointers to drawstuff callback functions
 		dsFunctions fn = new DemoFeedback();
-		fn.version = DS_VERSION;
-//		fn.start = &start;
-//		fn.step = &simLoop;
-//		fn.command = &command;
-//		fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		OdeHelper.initODE2(0);

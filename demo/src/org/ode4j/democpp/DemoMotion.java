@@ -23,18 +23,18 @@ package org.ode4j.democpp;
 
 import static org.cpp4j.Cstdio.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.DGeom.*;
 
 import org.cpp4j.FILE;
 import org.cpp4j.java.RefDouble;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
@@ -300,18 +300,18 @@ public class DemoMotion extends dsFunctions {
 			if (random_pos) 
 			{
 				dBodySetPosition (obj[i].body,
-						dRandReal()*2-1 + platpos.v[0],
-						dRandReal()*2-1 + platpos.v[1],
-						dRandReal()+2 + platpos.v[2]);
+						dRandReal()*2-1 + platpos.get0(),
+						dRandReal()*2-1 + platpos.get1(),
+						dRandReal()+2 + platpos.get2());
 				dRFromAxisAndAngle (R,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 						dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
 			}
 			else 
 			{
 				dBodySetPosition (obj[i].body, 
-						platpos.v[0],
-						platpos.v[1],
-						platpos.v[2]+2);
+						platpos.get0(),
+						platpos.get1(),
+						platpos.get2()+2);
 				dRSetIdentity (R);
 			}
 			dBodySetRotation (obj[i].body,R);
@@ -373,8 +373,6 @@ public class DemoMotion extends dsFunctions {
 	//void drawGeom (dxGeom g, final double[] pos, final double[] R, boolean show_aabb)
 	private void drawGeom (DGeom g, DVector3C pos, DMatrix3C R, boolean show_aabb)
 	{
-		int i;
-
 		if (g == null) return;
 		if (pos == null) pos = dGeomGetPosition (g);
 		if (R == null) R = dGeomGetRotation (g);
@@ -424,12 +422,12 @@ public class DemoMotion extends dsFunctions {
 		}
 		if (show_aabb) {
 			// draw the bounding box for this geom
-			DVector6 aabb = new DVector6();
+			DAABB aabb = new DAABB();
 			dGeomGetAABB (g,aabb);
-			DVector3 bbpos = new DVector3();
-			for (i=0; i<3; i++) bbpos.v[i] = 0.5*(aabb.v[i*2] + aabb.v[i*2+1]);
-			DVector3 bbsides = new DVector3();
-			for (i=0; i<3; i++) bbsides.v[i] = aabb.v[i*2+1] - aabb.v[i*2];
+			DVector3 bbpos = aabb.getCenter();
+			//for (i=0; i<3; i++) bbpos.v[i] = 0.5*(aabb.v[i*2] + aabb.v[i*2+1]);
+			DVector3 bbsides = aabb.getLengths();
+			//for (i=0; i<3; i++) bbsides.v[i] = aabb.v[i*2+1] - aabb.v[i*2];
 			DMatrix3 RI = new DMatrix3();
 			dRSetIdentity (RI);
 			dsSetColorAlpha (1f,0f,0f,0.5f);
@@ -442,9 +440,9 @@ public class DemoMotion extends dsFunctions {
 
 	private void updatecam()
 	{
-		xyz[0] = (float) (platpos.v[0] + 3.3f);
-		xyz[1] = (float) (platpos.v[1] - 1.8f);
-		xyz[2] = (float) (platpos.v[2] + 2f);
+		xyz[0] = (float) (platpos.get0() + 3.3f);
+		xyz[1] = (float) (platpos.get1() - 1.8f);
+		xyz[2] = (float) (platpos.get2() + 2f);
 		dsSetViewpoint (xyz, hpr);
 	}
 
@@ -513,19 +511,13 @@ public class DemoMotion extends dsFunctions {
 		//    fn.command = command;
 		//    fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		dInitODE();
 		world = dWorldCreate();
 		//space = dHashSpaceCreate (0);
 		DVector3 center = new DVector3(0,0,0), extents = new DVector3( 100, 100, 100);
-		//TODO
-		//space = dQuadTreeSpaceCreate(null, center, extents, 5);
-		space = dSimpleSpaceCreate(null);
+		space = dQuadTreeSpaceCreate(null, center, extents, 5);
 
 		contactgroup = dJointGroupCreate (0);
 		dWorldSetGravity (world, 0,0,-0.5);

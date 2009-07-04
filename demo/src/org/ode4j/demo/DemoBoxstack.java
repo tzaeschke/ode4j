@@ -21,8 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -48,8 +47,9 @@ import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.demo.IcosahedronGeom.*;
 
 class DemoBoxstack extends dsFunctions {
 
@@ -318,12 +318,21 @@ class DemoBoxstack extends dsFunctions {
 			else if (cmd == 'v') 
 			{
 				m.setBox(DENSITY,0.25,0.25,0.25);
-				obj[i].geom[0] = OdeHelper.createConvex (space,
-						planes,
-						planecount,
-						points,
-						pointcount,
-						polygons);
+				if (false) {//
+					obj[i].geom[0] = OdeHelper.createConvex (space,
+							planes,
+							planecount,
+							points,
+							pointcount,
+							polygons);
+				} else { //#else
+					obj[i].geom[0] = OdeHelper.createConvex (space,
+							Sphere_planes,
+							Sphere_planecount,
+							Sphere_points,
+							Sphere_pointcount,
+							Sphere_polygons);
+				} //#endif
 			}
 			//----> Convex Object
 			else if (cmd == 'y') {
@@ -518,11 +527,20 @@ class DemoBoxstack extends dsFunctions {
 		else if (g instanceof DConvex) 
 		{
 			//DVector3 sides={0.50,0.50,0.50};
-			dsDrawConvex(pos,R,planes,
-					planecount,
-					points,
-					pointcount,
-					polygons);
+			if (false) {
+				dsDrawConvex(pos,R,planes,
+						planecount,
+						points,
+						pointcount,
+						polygons);
+			} else { //#else
+				dsDrawConvex(pos,R,
+						Sphere_planes,
+						Sphere_planecount,
+						Sphere_points,
+						Sphere_pointcount,
+						Sphere_polygons);
+			} //#endif
 		}
 		//----> Convex Object
 		else if (g instanceof DCylinder) {
@@ -641,16 +659,6 @@ class DemoBoxstack extends dsFunctions {
 	{
 		// setup pointers to drawstuff callback functions
 		dsFunctions fn = new DemoBoxstack();
-		fn.version = DS_API.DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DS_API.DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		OdeHelper.initODE2(0);

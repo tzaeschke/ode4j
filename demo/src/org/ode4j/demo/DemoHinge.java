@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 import org.ode4j.math.DMatrix3;
@@ -131,17 +131,10 @@ public class DemoHinge extends dsFunctions {
 	}
 
 
-	//int main (int argc, char **argv)
 	public static void main(String[] args)
 	{
 		// setup pointers to drawstuff callback functions
 		dsFunctions fn = new DemoHinge();
-		fn.setVersion(DS_VERSION);
-		fn.setPathToTextures(DRAWSTUFF_TEXTURE_PATH);
-		if(args.length==2)
-		{
-			fn.setPathToTextures(args[1]);
-		}
 
 		// create world
 		OdeHelper.initODE2(0);

@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBallJoint;
@@ -38,7 +38,7 @@ import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 
 class DemoChain2 extends dsFunctions {
@@ -138,16 +138,6 @@ class DemoChain2 extends dsFunctions {
 	public static void main(String[] args) {
 		// setup pointers to drawstuff callback functions
 		dsFunctions fn = new DemoChain2();
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = 0;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		OdeHelper.initODE2(0);

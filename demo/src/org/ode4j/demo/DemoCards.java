@@ -51,6 +51,9 @@ public class DemoCards extends dsFunctions {
 	private static DWorld world;
 	private static DJointGroup contactgroup;
 
+	private static final double cwidth=.5, cthikness=.02, clength=1;
+	private static final DVector3C sides = new DVector3( cwidth, cthikness, clength ); 
+	
 	private static class Card {
 		DBody body;
 		DGeom geom;
@@ -79,12 +82,7 @@ public class DemoCards extends dsFunctions {
 		}
 	};
 
-	private static final double cwidth=.5, cthikness=.02, clength=1;
-	//const dReal Card::sides[3] = { cwidth, cthikness, clength };
-	private static final DVector3C sides = new DVector3( cwidth, cthikness, clength ); 
 
-
-	//std::vector<Card*> cards;
 	private final ArrayList<Card> cards = new ArrayList<Card>();
 
 	private int getncards(int levels)
@@ -234,16 +232,6 @@ public class DemoCards extends dsFunctions {
 	private void demo(String[] args) {
 		OdeHelper.initODE();
 
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-		//    fn.start = &start;
-		//    fn.step = &simLoop;
-		//    fn.command = &command;
-		//    fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-
-
 		world = OdeHelper.createWorld();
 		world.setGravity(0, 0, -0.5);
 		world.setQuickStepNumIterations(50); // <-- increase for more stability
@@ -255,7 +243,7 @@ public class DemoCards extends dsFunctions {
 		place_cards();
 
 		// run simulation
-		dsSimulationLoop (args, 640, 480, fn);
+		dsSimulationLoop (args, 640, 480, this);
 
 		levels = 0;
 		place_cards();

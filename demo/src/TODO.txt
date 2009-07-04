@@ -15,6 +15,13 @@ REPORT MISSING:
 - Calls to d(x)Plane.getPosition()/getRotation() should cause an error/warning (see ODE WIKI)
 - dPistonJoint.setAnchorOffset()
 
+TEST-REPORT:
+- Test is not correctly checking content of dVector3
+- demo_gyroscopic is not initializing 'contactgroup'
+- demo_kinematic is not initializing 'joints'
+- demo_moving_convex uses dWorldStepFast1, which is deprecated:
+http://groups.google.com/group/ode-users/browse_thread/thread/8d1b80ff6e5184d5/e51e74ef3b2703e0?#e51e74ef3b2703e0
+
 
 REPORT !!!!
 - Report that SAP-Space BoxPruning may miss some collisions:
@@ -280,6 +287,16 @@ instanceof DSphere
 dJointTypeContact
 -->
 Common.dJointType.dJointTypeContact
+
+
+ContactType -> Find better name
+===========
+
+if (b1!=null && b2!=null && dAreConnectedExcluding(b1, b2, dJointTypeContact))
+    return;
+-->
+if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding(b1, b2, DContactJoint.class))
+    return;
 
 
 
