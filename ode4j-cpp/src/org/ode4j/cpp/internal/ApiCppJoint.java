@@ -42,10 +42,85 @@ import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DAMotorJoint.AMotorMode;
+import org.ode4j.ode.DJoint.PARAM;
+import org.ode4j.ode.DJoint.PARAM_N;
 import org.ode4j.ode.internal.joints.DxJointGroup;
 import org.ode4j.math.DVector3;
 
 public abstract class ApiCppJoint extends ApiCppOther {
+
+	private static final int P_OFS_1 = 0x000;
+	private static final int P_OFS_2 = 0x100;
+	private static final int P_OFS_3 = 0x200;
+
+	public static final int dParamGroup = 0;
+	//	  /* parameters for limits and motors */ \
+	public static final int dParamLoStop = 0;
+	public static final int dParamHiStop = 1;
+	public static final int dParamVel = 2;
+	public static final int dParamFMax = 3;
+	public static final int dParamFudgeFactor  = 4;
+	public static final int dParamBounce  = 5;
+	public static final int dParamCFM  = 6;
+	public static final int dParamStopERP  = 7;
+	public static final int dParamStopCFM  = 8;
+	/* parameters for suspension */ 
+	public static final int dParamSuspensionERP  = 9;
+	public static final int dParamSuspensionCFM = 10;
+	public static final int dParamERP = 11;
+
+	public static final int dParamGroup1 = 0 + P_OFS_1;
+	//	  /* parameters for limits and motors */ \
+	public static final int dParamLoStop1 = 0 + P_OFS_1;
+	public static final int dParamHiStop1 = 1 + P_OFS_1;
+	public static final int dParamVel1 = 2 + P_OFS_1;
+	public static final int dParamFMax1  = 3 + P_OFS_1;
+	public static final int dParamFudgeFactor1  = 4 + P_OFS_1;
+	public static final int dParamBounce1  = 5 + P_OFS_1;
+	public static final int dParamCFM1  = 6 + P_OFS_1;
+	public static final int dParamStopERP1  = 7 + P_OFS_1;
+	public static final int dParamStopCFM1  = 8 + P_OFS_1;
+	/* parameters for suspension */ 
+	public static final int dParamSuspensionERP1  = 9 + P_OFS_1;
+	public static final int dParamSuspensionCFM1 = 10 + P_OFS_1;
+	public static final int dParamERP1 = 11 + P_OFS_1;
+
+	public static final int dParamGroup2 = 0 + P_OFS_2;
+	//	  /* parameters for limits and motors */ \
+	public static final int dParamLoStop2 = 0 + P_OFS_2;
+	public static final int dParamHiStop2 = 1 + P_OFS_2; 
+	public static final int dParamVel2 = 2 + P_OFS_2; 
+	public static final int dParamFMax2  = 3 + P_OFS_2; 
+	public static final int dParamFudgeFactor2  = 4 + P_OFS_2; 
+	public static final int dParamBounce2  = 5 + P_OFS_2; 
+	public static final int dParamCFM2  = 6 + P_OFS_2; 
+	public static final int dParamStopERP2  = 7 + P_OFS_2; 
+	public static final int dParamStopCFM2  = 8 + P_OFS_2; 
+	/* parameters for suspension */ 
+	public static final int dParamSuspensionERP2  = 9 + P_OFS_2; 
+	public static final int dParamSuspensionCFM2 = 10 + P_OFS_2;
+	public static final int dParamERP2 = 11 + P_OFS_2;
+
+	public static final int dParamGroup3 = 0 + P_OFS_3;
+	//	  /* parameters for limits and motors */ \
+	public static final int dParamLoStop3 = 0 + P_OFS_3; 
+	public static final int dParamHiStop3 = 1 + P_OFS_3; 
+	public static final int dParamVel3 = 2 + P_OFS_3; 
+	public static final int dParamFMax3  = 3 + P_OFS_3; 
+	public static final int dParamFudgeFactor3  = 4 + P_OFS_3; 
+	public static final int dParamBounce3  = 5 + P_OFS_3; 
+	public static final int dParamCFM3  = 6 + P_OFS_3; 
+	public static final int dParamStopERP3  = 7 + P_OFS_3; 
+	public static final int dParamStopCFM3  = 8 + P_OFS_3; 
+	/* parameters for suspension */ 
+	public static final int dParamSuspensionERP3  = 9 + P_OFS_3; 
+	public static final int dParamSuspensionCFM3 = 10 + P_OFS_3;
+	public static final int dParamERP3 = 11 + P_OFS_3;
+
+	
+	/* angular motor mode numbers */
+	public static final int dAMotorUser = 0;
+	public static final int dAMotorEuler = 1;
 
 	/* joint type numbers */
 
@@ -475,7 +550,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetBallParam (DBallJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -546,7 +621,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetHingeParam (DHingeJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -589,7 +664,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetSliderParam (DSliderJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -643,7 +718,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetHinge2Param (DHinge2Joint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -779,7 +854,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetUniversalParam (DUniversalJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -834,7 +909,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetPRParam (DPRJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -962,7 +1037,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetPUParam (DPUJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -1063,7 +1138,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetPistonParam (DPistonJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -1101,7 +1176,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetFixedParam (DFixedJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -1148,7 +1223,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetAMotorParam (DAMotorJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -1210,7 +1285,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetLMotorParam (DLMotorJoint j, int parameter, double value) {
-		j.setParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -1219,7 +1294,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetPlane2DXParam (DPlane2DJoint j, int parameter, double value) {
-		j.setXParam(D_PARAM_NAMES.toEnum(parameter), value);
+		j.setXParam(PARAM.toEnum(parameter), value);
 	}
 
 
@@ -1229,7 +1304,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	//ODE_API 
 	public static void dJointSetPlane2DYParam (DPlane2DJoint j, int parameter, double value) {
-		j.setYParam(D_PARAM_NAMES.toEnum(parameter), value);
+		j.setYParam(PARAM.toEnum(parameter), value);
 	}
 
 
@@ -1276,7 +1351,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetBallParam (DBallJoint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1323,7 +1398,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetHingeParam (DHingeJoint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1398,7 +1473,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetSliderParam (DSliderJoint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1454,7 +1529,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetHinge2Param (DHinge2Joint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1546,7 +1621,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetUniversalParam (DUniversalJoint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1702,7 +1777,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetPRParam (DPRJoint j, int d_param_names) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(d_param_names));
+		return j.getParam(PARAM_N.toEnum(d_param_names));
 	}
 
 
@@ -1861,7 +1936,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetPUParam (DPUJoint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1962,7 +2037,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetPistonParam (DPistonJoint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -2051,7 +2126,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetAMotorParam (DAMotorJoint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -2100,7 +2175,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetLMotorParam (DLMotorJoint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -2110,7 +2185,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static double dJointGetFixedParam (DFixedJoint j, int parameter) {
-		return j.getParam(D_PARAM_NAMES_N.toEnum(parameter));
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
