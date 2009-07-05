@@ -49,6 +49,7 @@ import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
@@ -348,22 +349,22 @@ class DemoJointPU extends dsFunctions {
 
 			// Velocity of joint
 		case ',': case '<' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel3) - VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel3, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel3) - VEL_INC;
+			joint.setParam (PARAM_N.dParamVel3, vel);
 			System.out.println("Velocity = " + vel + "  FMax = 2");
 		}
 		break;
 
 		case '.': case '>' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel3) + VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel3, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel3) + VEL_INC;
+			joint.setParam (PARAM_N.dParamVel3, vel);
 			System.out.println("Velocity = " + vel + "  FMax = 2");
 		}
 		break;
 
 		case 'l': case 'L' : {
 			double aLimit, lLimit, fmax;
-			if (  joint.getParam (D_PARAM_NAMES_N.dParamFMax1)!=0 ) {
+			if (  joint.getParam (PARAM_N.dParamFMax1)!=0 ) {
 				aLimit = dInfinity;
 				lLimit = dInfinity;
 				fmax = 0;
@@ -374,24 +375,24 @@ class DemoJointPU extends dsFunctions {
 				fmax = 0.02;
 			}
 
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax1, fmax);
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax2, fmax);
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax3, fmax);
+			joint.setParam (PARAM_N.dParamFMax1, fmax);
+			joint.setParam (PARAM_N.dParamFMax2, fmax);
+			joint.setParam (PARAM_N.dParamFMax3, fmax);
 
 			if (joint instanceof DPRJoint) {
 				DPRJoint pr = (DPRJoint) (joint);
-				pr.setParam (D_PARAM_NAMES_N.dParamLoStop1, -lLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamHiStop1, -lLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamLoStop2, aLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamHiStop2, -aLimit);
+				pr.setParam (PARAM_N.dParamLoStop1, -lLimit);
+				pr.setParam (PARAM_N.dParamHiStop1, -lLimit);
+				pr.setParam (PARAM_N.dParamLoStop2, aLimit);
+				pr.setParam (PARAM_N.dParamHiStop2, -aLimit);
 			} else if (joint instanceof DPUJoint) {
 				DPUJoint pu = (DPUJoint) (joint);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop1, -aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop1, aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop2, -aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop2, aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop3, -lLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop3, lLimit);
+				pu.setParam (PARAM_N.dParamLoStop1, -aLimit);
+				pu.setParam (PARAM_N.dParamHiStop1, aLimit);
+				pu.setParam (PARAM_N.dParamLoStop2, -aLimit);
+				pu.setParam (PARAM_N.dParamHiStop2, aLimit);
+				pu.setParam (PARAM_N.dParamLoStop3, -lLimit);
+				pu.setParam (PARAM_N.dParamHiStop3, lLimit);
 			}
 		}
 

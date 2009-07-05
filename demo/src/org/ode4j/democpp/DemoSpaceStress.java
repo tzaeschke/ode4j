@@ -428,10 +428,6 @@ class DemoSpaceStress extends dsFunctions {
 		//  fn.command = &command;
 		//  fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		dInitODE2(0);

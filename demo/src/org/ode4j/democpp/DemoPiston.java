@@ -45,6 +45,7 @@ import org.ode4j.ode.DPistonJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
@@ -68,8 +69,6 @@ import static org.ode4j.ode.DGeom.*;
  * N.B. Many command options are available type -h to print them.
  */
 class DemoPiston extends dsFunctions {
-
-	//using namespace ode;
 
 	private final double VEL_INC = 0.01; // Velocity increment
 
@@ -143,8 +142,7 @@ class DemoPiston extends dsFunctions {
 	private static final double[] RECT_SIDES = {0.3, 0.1, 0.2};
 
 
-	//private int type = dJointTypePiston;
-	private Class type = DPistonJoint.class;
+	private Class<?> type = DPistonJoint.class;
 
 	//#pragma message("tc to be changed to 0")
 
@@ -210,6 +208,8 @@ class DemoPiston extends dsFunctions {
 		printf ("Press 't' to add force on prismatic joint in the positive axis direction\n");
 		printf ("Press 'y' to add force on prismatic joint in the negative axis direction\n");
 
+	    printf ("Press 'i' to add limits on the prismatic joint (0 to 0) \n");
+	    printf ("Press 'o' to add limits on the rotoide joint (0 to 0)\n");
 		printf ("Press 'k' to add limits on the rotoide joint (-45 to 45deg) \n");
 		printf ("Press 'l' to remove limits on the rotoide joint \n");
 
@@ -221,6 +221,11 @@ class DemoPiston extends dsFunctions {
 
 		printf ("Press '+' Go to the next test case.\n");
 		printf ("Press '-' Go to the previous test case.\n");
+
+	    printf ("Press '8' To remove one of the body. The blue body and the world will be\n");
+	    printf ("          attached to the joint (blue body at position 1)\n");
+	    printf ("Press '9' To remove one of the body. The blue body and the world will be\n");
+	    printf ("          attached to the joint (body body at position 2)\n");
 	}
 
 
@@ -284,10 +289,10 @@ class DemoPiston extends dsFunctions {
 			break;
 		}
 
-		final DMatrix3 R = new DMatrix3(
-				1,0,0,0,
-				0,1,0,0,
-				0,0,1,0
+		DMatrix3C R = new DMatrix3(
+				1,0,0,
+				0,1,0,
+				0,0,1
 		);
 
 		if (body[BODY1]!=null) {
@@ -388,32 +393,47 @@ class DemoPiston extends dsFunctions {
 			else
 				dJointAddSliderForce ((DSliderJoint)joint,-1);
 			break;
+	    case '8' :
+	        dJointAttach(joint, body[0], null);
+	        break;
+	    case '9' :
+	        dJointAttach(joint, null, body[0]);
+	        break;
 
+	    case 'i':
+	    case 'I' :
+	        joint.setParam (PARAM_N.dParamLoStop1, 0);
+	        joint.setParam (PARAM_N.dParamHiStop1, 0);
+	        break;
 
-		case 'k': case 'K':
-			if (joint instanceof DPistonJoint) {
-				dJointSetPistonParam ((DPistonJoint)joint,dParamLoStop2, -45.0*3.14159267/180.0);
-				dJointSetPistonParam ((DPistonJoint)joint,dParamHiStop2,  45.0*3.14159267/180.0);
-			}
+	    case 'o':
+	    case 'O' :
+	        joint.setParam (PARAM_N.dParamLoStop2, 0);
+	        joint.setParam (PARAM_N.dParamHiStop2, 0);
+	        break;
+
+	    case 'k':
+	    case 'K':
+	        joint.setParam (PARAM_N.dParamLoStop2, -45.0*3.14159267/180.0);
+	        joint.setParam (PARAM_N.dParamHiStop2,  45.0*3.14159267/180.0);
 			break;
-		case 'l': case 'L':
-			if (joint instanceof DPistonJoint) {
-				dJointSetPistonParam ((DPistonJoint)joint,dParamLoStop2, -dInfinity);
-				dJointSetPistonParam ((DPistonJoint)joint,dParamHiStop2, dInfinity);
-			}
+	    case 'l':
+	    case 'L':
+	        joint.setParam (PARAM_N.dParamLoStop2, -dInfinity);
+	        joint.setParam (PARAM_N.dParamHiStop2, dInfinity);
 			break;
 
 			// Velocity of joint
 		case ',': case '<' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel1) - VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel1, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel1) - VEL_INC;
+			joint.setParam (PARAM_N.dParamVel1, vel);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
 
 		case '.': case '>' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel1) + VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel1, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel1) + VEL_INC;
+			joint.setParam (PARAM_N.dParamVel1, vel);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
@@ -591,7 +611,7 @@ class DemoPiston extends dsFunctions {
 		//  fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
-		DVector3 offset = new DVector3();
+		//DVector3 offset = new DVector3();
 		//dSetZero (offset, 4);
 
 		// Default test case
@@ -600,7 +620,7 @@ class DemoPiston extends dsFunctions {
 			for (int i=1; i < args.length; ++i) {
 				//static int tata = 0;
 
-				if (false) {
+				if (true) {
 					if ( 0 == strcmp ("-h", args[i]) || 0 == strcmp ("--help", args[i]) )
 						Help (args);
 

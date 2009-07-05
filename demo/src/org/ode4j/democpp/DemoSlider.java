@@ -29,7 +29,6 @@ import org.ode4j.math.DVector3C;
 
 import static org.ode4j.ode.OdeMath.*;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
@@ -158,10 +157,6 @@ class DemoSlider extends dsFunctions {
 		//  fn.command = &command;
 		//  fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		dInitODE2(0);

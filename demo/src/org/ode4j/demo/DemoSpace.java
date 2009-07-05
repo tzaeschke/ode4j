@@ -185,16 +185,6 @@ class DemoSpace extends dsFunctions {
 	}
 	
 	private void demo(String[] args) {
-		int i;
-
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		OdeHelper.initODE2(0);
 
@@ -213,11 +203,11 @@ class DemoSpace extends dsFunctions {
 		//space = OdeHelper.createSimpleSpace(null);
 		//space = OdeHelper.createHashSpace(null);
 
-		for (i=0; i < NUM; i++) geom[i] = null;
+		for (int i=0; i < NUM; i++) geom[i] = null;
 		init_test();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		space.destroy ();
 		OdeHelper.closeODE();

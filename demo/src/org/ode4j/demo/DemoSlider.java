@@ -40,10 +40,8 @@ import static org.ode4j.drawstuff.DrawStuff.*;
 class DemoSlider extends dsFunctions {
 
 	// some constants
-	//#define SIDE (0.5f)	// side length of a box
-	//#define MASS (1.0)	// mass of a box
-	private static final float SIDE = 0.5f;
-	private static final float MASS = 1.0f;
+	private static final float SIDE = 0.5f; // side length of a box
+	private static final float MASS = 1.0f; // mass of a box
 
 	// dynamics and collision objects
 	private static DWorld world;
@@ -149,16 +147,6 @@ class DemoSlider extends dsFunctions {
 	{
 		// setup pointers to drawstuff callback functions
 		dsFunctions fn = new DemoSlider();
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		OdeHelper.initODE2(0);

@@ -53,32 +53,28 @@ import org.ode4j.ode.DGeom.DNearCallback;
  */
 class DemoPlane2d extends dsFunctions {
 
-	//#   define drand48()  ((double) (((double) rand()) / ((double) RAND_MAX)))
 	private static final double drand48() {
 		//return ((double) rand()) / ((double) RAND_MAX);
-		int i1 = OdeMath.dRandInt(RAND_MAX);//rand();
-		double d = ((double) i1) / ((double) RAND_MAX);
-		return d;
+		int i1 = OdeMath.dRandInt(RAND_MAX);
+		return ((double) i1) / ((double) RAND_MAX);
 	}
-	//
-	//# define        N_BODIES        40
-	private static final int N_BODIES = 40;
-	//# define        STAGE_SIZE      8.0  // in m
-	private static final float STAGE_SIZE = 8.0f;
-	//
-	//# define        TIME_STEP       0.01
-	private static final double TIME_STEP = 0.01;
-	//# define        K_SPRING        10.0
-	//private static final double K_SPRING = 10.0;
-	//# define        K_DAMP          10.0
-	//private static final double K_DAMP = 10.0; 
+	//TZ: below is the new version from 0.11.1, but it yields different results
+	//in Java and C++
+	//#   define drand48()  ((double) (((double) rand()) / ((double) RAND_MAX)))
+//	private static final double drand48() {
+//		return ((double)rand()) / ((double)RAND_MAX);
+//	}
 
-	//using namespace ode;
+	//
+	private static final int N_BODIES = 40;
+	private static final float STAGE_SIZE = 8.0f; // in m
+
+	private static final double TIME_STEP = 0.01;
+	//private static final double K_SPRING = 10.0;
+	//private static final double K_DAMP = 10.0; 
 
 	private static DWorld   dyn_world;
 	private static DBody[]    dyn_bodies = new DBody[N_BODIES];
-	//static dReal[]    bodies_sides = new double[N_BODIES][3];
-	//static double[][]    bodies_sides = new double[N_BODIES][3];
 	private static DVector3[]    bodies_sides = new DVector3[N_BODIES];
 
 	private static DSpace coll_space_id;
@@ -98,7 +94,6 @@ class DemoPlane2d extends dsFunctions {
 
 
 
-	//static void     cb_near_collision (void *data, dGeom o1, dGeom o2)
 	private static void     cb_near_collision (Object data, DGeom o1, DGeom o2)
 	/********************************************************************/
 	{
@@ -131,8 +126,6 @@ class DemoPlane2d extends dsFunctions {
 	}
 
 
-	//static void     track_to_pos (dBody &body, dJoint joint_id,
-	//        dReal target_x, dReal target_y)
 	private static void     track_to_pos (DBody body, DPlane2DJoint joint_id,
 			double target_x, double target_y)
 	/************************************************************************/
@@ -152,7 +145,6 @@ class DemoPlane2d extends dsFunctions {
 	};
 
 	private static double angle = 0;
-	//static void     cb_sim_step (int pause)
 	private void cb_sim_step (boolean pause)
 	{
 		if (! pause)

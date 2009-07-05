@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.cpp4j.Cstdio.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
@@ -48,11 +47,6 @@ class DemoStep extends dsFunctions {
 
 	// some constants
 
-	//#define NUM 10			// number of bodies
-	//#define NUMJ 9			// number of joints
-	//#define SIDE (0.2)		// side length of a box
-	//#define MASS (1.0)		// mass of a box
-	//#define RADIUS (0.1732f)	// sphere radius
 	private static int NUM = 10;	// number of bodies
 	private static int NUMJ = 9;			// number of joints
 	private static double SIDE = 0.2;		// side length of a box
@@ -98,7 +92,7 @@ class DemoStep extends dsFunctions {
 			dMassSetBox (m,1,dRandReal()+0.1,dRandReal()+0.1,dRandReal()+0.1);
 			dMassAdjust (m,dRandReal()+1);
 			for (j=0; j<4; j++) q.set(j, dRandReal()*2-1);
-			OdeMath.dQtoR (q,R);
+			OdeMath.dRfromQ (R,q);
 			dMassRotate (m,R);
 			dBodySetMass (body[i],m);
 		}
@@ -183,13 +177,10 @@ class DemoStep extends dsFunctions {
 		//  fn.command = 0;
 		//  fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		dInitODE2(0);
-		dRandSetSeed (time(null).seconds);
+		//dRandSetSeed (time(null).seconds);
+		dRandSetSeed (System.currentTimeMillis()/1000);
 		createTest();
 
 		// run simulation
