@@ -21,8 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 /**
  * ****************************************************************************
@@ -37,11 +35,11 @@ public interface DPlane2DJoint extends DJoint {
 
 	/** @deprecated Do not use. */
 	@Override
-	double getParam(D_PARAM_NAMES_N parameter);
+	double getParam(PARAM_N parameter);
 
 	/** @deprecated Do not use. */
 	@Override
-	void setParam(D_PARAM_NAMES_N parameter, double value);
+	void setParam(PARAM_N parameter, double value);
 
 	double getXParamFMax();
 	double getXParamVel();
@@ -53,10 +51,11 @@ public interface DPlane2DJoint extends DJoint {
 	void setYParamFMax(double d);
 	void setYParamVel(double d);
 
+	void setAngleParam(PARAM parameter, double value);
 	/** @deprecated TZ Use above methods instead. */
-	void setXParam(D_PARAM_NAMES parameter, double value);
+	void setXParam(PARAM parameter, double value);
 	/** @deprecated TZ Use above methods instead. */
-	void setYParam(D_PARAM_NAMES parameter, double value);
+	void setYParam(PARAM parameter, double value);
 
 
 }

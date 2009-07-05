@@ -23,7 +23,6 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 public interface DAMotorJoint extends DJoint {
 
@@ -57,8 +56,8 @@ public interface DAMotorJoint extends DJoint {
 	double getAngle (int anum);
 	double getAngleRate (int anum);
 
-	void setParam (D_PARAM_NAMES_N parameter, double value);
-	double getParam (D_PARAM_NAMES_N parameter);
+	void setParam (PARAM_N parameter, double value);
+	double getParam (PARAM_N parameter);
 
 	void addTorques(double torque1, double torque2, double torque3);
 	

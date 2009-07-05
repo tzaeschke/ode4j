@@ -965,6 +965,6 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	{ return dJointGetFeedback(); }
 
 	// If not implemented it will do nothing as describe in the doc
-	public abstract void setParam (D_PARAM_NAMES_N parameter, double value);
-	public abstract double getParam (D_PARAM_NAMES_N parameter);
+	public abstract void setParam (PARAM_N parameter, double value);
+	public abstract double getParam (PARAM_N parameter);
 }

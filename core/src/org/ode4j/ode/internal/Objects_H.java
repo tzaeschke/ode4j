@@ -28,7 +28,7 @@ import org.ode4j.math.DVector3;
 /**
  *  object, body, and world structs.
  */
-class Objects_H extends Common {
+class Objects_H {
 
 
 	/** auto disable parameters. */

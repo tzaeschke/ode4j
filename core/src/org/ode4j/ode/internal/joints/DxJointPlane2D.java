@@ -24,18 +24,15 @@ package org.ode4j.ode.internal.joints;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 
-
-//****************************************************************************
-// Plane2D
-// 2d joint, constrains to z == 0
 /**
-    This code is part of the Plane2D ODE joint
-    by psero@gmx.de
-    Wed Apr 23 18:53:43 CEST 2003
+ * Plane2D.
+ * 2d joint, constrains to z == 0
+ * 
+ * This code is part of the Plane2D ODE joint
+ * by psero@gmx.de
+ * Wed Apr 23 18:53:43 CEST 2003
  */
 public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 {
@@ -45,13 +42,6 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	DxJointLimitMotor   motor_x = new DxJointLimitMotor();
 	DxJointLimitMotor   motor_y = new DxJointLimitMotor();
 	DxJointLimitMotor   motor_angle = new DxJointLimitMotor();
-
-
-	//    dxJointPlane2D( dxWorld w );
-	//    virtual void getInfo1( Info1* info );
-	//    virtual void getInfo2( Info2* info );
-	//    virtual dJointType type() const;
-	//    virtual size_t size() const;
 
 
 	//    # define        VoXYZ(v1, o1, x, y, z) \
@@ -177,14 +167,14 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 
 
 	public void dJointSetPlane2DXParam( 
-			D_PARAM_NAMES_N parameter, double value )
+			PARAM_N parameter, double value )
 	{
 		motor_x.set( parameter.toSUB(), value );
 	}
 
 
 	public void dJointSetPlane2DYParam( 
-			D_PARAM_NAMES_N parameter, double value )
+			PARAM_N parameter, double value )
 	{
 		motor_y.set( parameter.toSUB(), value );
 	}
@@ -192,7 +182,7 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 
 
 	void dJointSetPlane2DAngleParam(
-			D_PARAM_NAMES_N parameter, double value )
+			PARAM_N parameter, double value )
 	{
 		motor_angle.set( parameter.toSUB(), value );
 	}
@@ -203,14 +193,14 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	// ***********************************
 
 	@Override
-	public double getParam(D_PARAM_NAMES_N parameter) {
+	public double getParam(PARAM_N parameter) {
 		//TODO use 1 for x and 2 for y ?
 		throw new UnsupportedOperationException();
 	}
 
 
 	@Override
-	public void setParam(D_PARAM_NAMES_N parameter, double value) {
+	public void setParam(PARAM_N parameter, double value) {
 		// TODO use 1 for x and 2 for y ?
 		throw new UnsupportedOperationException();
 	}
@@ -219,54 +209,61 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 
 	@Override
 	public double getXParamFMax() {
-		return motor_x.get( D_PARAM_NAMES.dParamFMax );
+		return motor_x.get( PARAM.dParamFMax );
 	}
 
 	@Override
 	public double getYParamFMax() {
-		return motor_y.get( D_PARAM_NAMES.dParamFMax );
+		return motor_y.get( PARAM.dParamFMax );
 	}
 
 	@Override
 	public void setXParamFMax(double d) {
-		dJointSetPlane2DXParam(D_PARAM_NAMES_N.dParamFMax1, d);
+		dJointSetPlane2DXParam(PARAM_N.dParamFMax1, d);
 	}
 
 	@Override
 	public void setYParamFMax(double d) {
-		dJointSetPlane2DYParam(D_PARAM_NAMES_N.dParamFMax1, d);
+		dJointSetPlane2DYParam(PARAM_N.dParamFMax1, d);
 	}
 
 	@Override
 	public double getXParamVel() {
-		return motor_x.get( D_PARAM_NAMES.dParamVel );
+		return motor_x.get( PARAM.dParamVel );
 	}
 
 	@Override
 	public double getYParamVel() {
-		return motor_y.get( D_PARAM_NAMES.dParamVel );
+		return motor_y.get( PARAM.dParamVel );
 	}
 
 	@Override
 	public void setXParamVel(double d) {
-		dJointSetPlane2DXParam(D_PARAM_NAMES_N.dParamVel1, d);
+		dJointSetPlane2DXParam(PARAM_N.dParamVel1, d);
 	}
 
 	@Override
 	public void setYParamVel(double d) {
-		dJointSetPlane2DYParam(D_PARAM_NAMES_N.dParamVel1, d);
+		dJointSetPlane2DYParam(PARAM_N.dParamVel1, d);
 	}
 
 	/** @deprecated TZ do not use. */
 	@Override
-	public void setXParam(D_PARAM_NAMES parameter, double value) {
+	public void setXParam(PARAM parameter, double value) {
 		motor_x.set(parameter, value);
 	}
 
 	/** @deprecated TZ do not use. */
 	@Override
-	public void setYParam(D_PARAM_NAMES parameter, double value) {
+	public void setYParam(PARAM parameter, double value) {
 		motor_y.set(parameter, value);
+	}
+
+
+
+	@Override
+	public void setAngleParam(PARAM parameter, double value) {
+		motor_angle.set(parameter, value);
 	}
 }
 

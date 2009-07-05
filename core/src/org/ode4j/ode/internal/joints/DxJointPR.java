@@ -548,7 +548,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	}
 
 
-	public void dJointSetPRParam( D_PARAM_NAMES_N parameter, double value )
+	public void dJointSetPRParam( PARAM_N parameter, double value )
 	{
 		if ( parameter.isGroup2())//and( 0xff00 ).eq( 0x100 ))
 		{
@@ -586,7 +586,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		getAxis( result, axisR1 );
 	}
 
-	public double dJointGetPRParam( D_PARAM_NAMES_N parameter )
+	public double dJointGetPRParam( PARAM_N parameter )
 	{
 		if ( parameter.isGroup2())//and( 0xff00 ).eq( 0x100 ))
 		{
@@ -677,45 +677,45 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	public double getPositionRate()
 	{ return dJointGetPRPositionRate (); }
 
-	public void setParam (D_PARAM_NAMES_N parameter, double value)
+	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetPRParam (parameter, value); }
-	public double getParam (D_PARAM_NAMES_N parameter)
+	public double getParam (PARAM_N parameter)
 	{ return dJointGetPRParam (parameter); }
 
 
 	@Override
 	public void setParamHiStop(double d) {
-		dJointSetPRParam(D_PARAM_NAMES_N.dParamHiStop1, d);
+		dJointSetPRParam(PARAM_N.dParamHiStop1, d);
 	}
 
 
 	@Override
 	public void setParamLoStop(double d) {
-		dJointSetPRParam(D_PARAM_NAMES_N.dParamLoStop1, d);
+		dJointSetPRParam(PARAM_N.dParamLoStop1, d);
 	}
 
 
 	@Override
 	public void setParamHiStop2(double d) {
-		dJointSetPRParam(D_PARAM_NAMES_N.dParamHiStop2, d);
+		dJointSetPRParam(PARAM_N.dParamHiStop2, d);
 	}
 
 
 	@Override
 	public void setParamLoStop2(double d) {
-		dJointSetPRParam(D_PARAM_NAMES_N.dParamLoStop2, d);
+		dJointSetPRParam(PARAM_N.dParamLoStop2, d);
 	}
 
 
 	@Override
 	public void setParamFMax2(double d) {
-		dJointSetPRParam(D_PARAM_NAMES_N.dParamFMax2, d);
+		dJointSetPRParam(PARAM_N.dParamFMax2, d);
 	}
 
 
 	@Override
 	public void setParamVel2(double d) {
-		dJointSetPRParam(D_PARAM_NAMES_N.dParamVel2, d);
+		dJointSetPRParam(PARAM_N.dParamVel2, d);
 	}
 }
 

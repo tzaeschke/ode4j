@@ -614,7 +614,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 
 //	private void dJointSetUniversalParam( dJoint j, int parameter, double value )
-	public void dJointSetUniversalParam( D_PARAM_NAMES_N parameter, double value )
+	public void dJointSetUniversalParam( PARAM_N parameter, double value )
 	{
 		if (  parameter.isGroup2()) //and( 0xff00 ).eq( 0x100 ))
 		{
@@ -628,7 +628,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 
 //	private double dJointGetUniversalParam( dJoint j, D_PARAM_NAMES parameter )
-	private double dJointGetUniversalParam( D_PARAM_NAMES_N parameter )
+	private double dJointGetUniversalParam( PARAM_N parameter )
 	{
 		if ( parameter.isGroup2())//and( 0xff00 ).eq( 0x100 ))
 		{
@@ -800,9 +800,9 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	public void getAxis2 (DVector3 result)
 	{ dJointGetUniversalAxis2 (result); }
 
-	public void setParam (D_PARAM_NAMES_N parameter, double value)
+	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetUniversalParam (parameter, value); }
-	public double getParam (D_PARAM_NAMES_N parameter)
+	public double getParam (PARAM_N parameter)
 	{ return dJointGetUniversalParam (parameter); }
 
 	//	  public void getAngles(double *angle1, double *angle2)

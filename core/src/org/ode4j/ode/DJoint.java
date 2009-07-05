@@ -22,7 +22,6 @@
 package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 /**
  * @defgroup joints Joints
@@ -91,12 +90,16 @@ import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 public interface DJoint {
 
 	public static class DJointFeedback {
-		public DVector3 f1 = new DVector3();		/* force applied to body 1 */
-		public DVector3 t1 = new DVector3();		/* torque applied to body 1 */
-		public DVector3 f2 = new DVector3();		/* force applied to body 2 */
-		public DVector3 t2 = new DVector3();		/* torque applied to body 2 */
+		/** force applied to body 1 */
+		public DVector3 f1 = new DVector3();		
+		/** torque applied to body 1 */
+		public DVector3 t1 = new DVector3();		
+		/** force applied to body 2 */
+		public DVector3 f2 = new DVector3();		
+		/** torque applied to body 2 */
+		public DVector3 t2 = new DVector3();		
 	}
-	
+
 	//virtual ~dJoint() // :
 	void DESTRUCTOR();
 
@@ -114,9 +117,10 @@ public interface DJoint {
 	void setFeedback(DJoint.DJointFeedback fb);
 	DJoint.DJointFeedback getFeedback();
 
-	// If not implemented it will do nothing as describe in the doc
-	void setParam (D_PARAM_NAMES_N type, double value);
-	double getParam (D_PARAM_NAMES_N type);
+	/** If not implemented it will do nothing as describe in the doc. */
+	void setParam (PARAM_N type, double value);
+	/** If not implemented it will do nothing as describe in the doc. */
+	double getParam (PARAM_N type);
 
 	void enable();
 	void disable();
@@ -169,5 +173,178 @@ public interface DJoint {
 	//// If not implemented it will do nothing as describe in the doc
 	//virtual void setParam (int, dReal) {};
 	//virtual dReal getParam (int) const { return 0; }
-}
 
+	static final int P_OFS_1 = 0x000;
+	static final int P_OFS_2 = 0x100;
+	static final int P_OFS_3 = 0x200;
+
+	public enum PARAM {
+		//		dParamGroup(0),
+		//	  /* parameters for limits and motors */ \
+		dParamLoStop(0), 
+		dParamHiStop(1), 
+		dParamVel(2), 
+		dParamFMax (3), 
+		dParamFudgeFactor (4), 
+		dParamBounce (5), 
+		dParamCFM (6), 
+		dParamStopERP (7), 
+		dParamStopCFM (8), 
+		/* parameters for suspension */ 
+		dParamSuspensionERP (9), 
+		dParamSuspensionCFM(10),
+		dParamERP(11);
+		//		public static int START = 0x000; 
+		private final int _x;
+		private PARAM(int x) {
+			_x = x;
+		}
+
+		public PARAM and(int i) {
+			int n = _x & i;
+			for (PARAM param: values()) {
+				if (param._x == n) {
+					return param;
+				}
+			}
+			throw new IllegalArgumentException(name() + "->"+ _x + " & " + i + " = n");
+		}
+
+		public static PARAM toEnum(int n) {
+			for (PARAM param: values()) {
+				if (param._x == n) {
+					return param;
+				}
+			}
+			throw new IllegalArgumentException("n = " + n);
+		}
+	}
+
+	public enum PARAM_N {
+		//		dParamGroup(0),
+		//		//	  /* parameters for limits and motors */ \
+		//		dParamLoStop(0), 
+		//		dParamHiStop(1), 
+		//		dParamVel(2), 
+		//		dParamFMax (3), 
+		//		dParamFudgeFactor (4), 
+		//		dParamBounce (5), 
+		//		dParamCFM (6), 
+		//		dParamStopERP (7), 
+		//		dParamStopCFM (8), 
+		//		/* parameters for suspension */ 
+		//		dParamSuspensionERP (9), 
+		//		dParamSuspensionCFM(10),
+		//		dParamERP(11),
+
+		//		dParamGroup1(0, P_OFS_1),
+		//	  /* parameters for limits and motors */ \
+		dParamLoStop1(0, P_OFS_1), 
+		dParamHiStop1(1, P_OFS_1), 
+		dParamVel1(2, P_OFS_1), 
+		dParamFMax1 (3, P_OFS_1), 
+		dParamFudgeFactor1 (4, P_OFS_1), 
+		dParamBounce1 (5, P_OFS_1), 
+		dParamCFM1 (6, P_OFS_1), 
+		dParamStopERP1 (7, P_OFS_1), 
+		dParamStopCFM1 (8, P_OFS_1), 
+		/* parameters for suspension */ 
+		dParamSuspensionERP1 (9, P_OFS_1), 
+		dParamSuspensionCFM1(10, P_OFS_1),
+		dParamERP1(11, P_OFS_1),
+
+		//		dParamGroup2(0, P_OFS_2),
+		//	  /* parameters for limits and motors */ \
+		dParamLoStop2(0, P_OFS_2), 
+		dParamHiStop2(1, P_OFS_2), 
+		dParamVel2(2, P_OFS_2), 
+		dParamFMax2 (3, P_OFS_2), 
+		dParamFudgeFactor2 (4, P_OFS_2), 
+		dParamBounce2 (5, P_OFS_2), 
+		dParamCFM2 (6, P_OFS_2), 
+		dParamStopERP2 (7, P_OFS_2), 
+		dParamStopCFM2 (8, P_OFS_2), 
+		/* parameters for suspension */ 
+		dParamSuspensionERP2 (9, P_OFS_2), 
+		dParamSuspensionCFM2(10, P_OFS_2),
+		dParamERP2(11, P_OFS_2),
+
+		//		dParamGroup3(0, P_OFS_3),
+		//	  /* parameters for limits and motors */ \
+		dParamLoStop3(0, P_OFS_3), 
+		dParamHiStop3(1, P_OFS_3), 
+		dParamVel3(2, P_OFS_3), 
+		dParamFMax3 (3, P_OFS_3), 
+		dParamFudgeFactor3 (4, P_OFS_3), 
+		dParamBounce3 (5, P_OFS_3), 
+		dParamCFM3 (6, P_OFS_3), 
+		dParamStopERP3 (7, P_OFS_3), 
+		dParamStopCFM3 (8, P_OFS_3), 
+		/* parameters for suspension */ 
+		dParamSuspensionERP3 (9, P_OFS_3), 
+		dParamSuspensionCFM3(10, P_OFS_3),
+		dParamERP3(11, P_OFS_3);
+		//		public static int START = 0x000; 
+		private final int _x;
+		private final PARAM_GROUPS _group;
+		private final PARAM _sub;
+		private PARAM_N(int x, int g) {
+			_x = x + g;
+
+			switch (g) {
+			case P_OFS_1: _group = PARAM_GROUPS.dParamGroup1; break;
+			case P_OFS_2: _group = PARAM_GROUPS.dParamGroup2; break;
+			case P_OFS_3: _group = PARAM_GROUPS.dParamGroup3; break;
+			default: throw new IllegalArgumentException(name() + " g=" + g);
+			}
+
+			_sub = PARAM.toEnum(x);			
+		}
+
+		public PARAM_GROUPS toGROUP() {
+			return _group;
+		}
+
+		public PARAM toSUB() {
+			return _sub;
+		}
+
+		public boolean isGroup1() {
+			return _group == PARAM_GROUPS.dParamGroup1;
+		}
+
+		public boolean isGroup2() {
+			return _group == PARAM_GROUPS.dParamGroup2;
+		}
+
+		public boolean isGroup3() {
+			return _group == PARAM_GROUPS.dParamGroup3;
+		}
+
+		public static PARAM_N toEnum(int n) {
+			for (PARAM_N param: values()) {
+				if (param._x == n) {
+					return param;
+				}
+			}
+			throw new IllegalArgumentException("n = " + n);
+		}
+	}
+
+	public enum PARAM_GROUPS {
+
+		dParamGroup1(P_OFS_1, 0),
+		dParamGroup2(P_OFS_2, 1),
+		dParamGroup3(P_OFS_3, 2);
+
+		private final int _index;
+		private PARAM_GROUPS(int x, int index) {
+			_index = index;
+		}
+
+		public int getIndex() {
+			return _index;
+		}
+	}
+
+}

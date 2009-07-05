@@ -26,7 +26,6 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 import static org.ode4j.ode.OdeMath.*;
 
@@ -283,14 +282,14 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 
 	//void dJointSetHingeParam( dxJointHinge j, D_PARAM_NAMES_X parameter, double value )
-	public void dJointSetHingeParam( D_PARAM_NAMES_N parameter, double value )
+	public void dJointSetHingeParam( PARAM_N parameter, double value )
 	{
 		limot.set( parameter.toSUB(), value );
 	}
 
 
 	//double dJointGetHingeParam( dxJointHinge j, D_PARAM_NAMES parameter )
-	double dJointGetHingeParam( D_PARAM_NAMES_N parameter )
+	double dJointGetHingeParam( PARAM_N parameter )
 	{
 		return limot.get( parameter.toSUB() );
 	}
@@ -415,9 +414,9 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	public double getAngleRate()
 	{ return dJointGetHingeAngleRate (); }
 
-	public void setParam (D_PARAM_NAMES_N parameter, double value)
+	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetHingeParam (parameter, value); }
-	public double getParam (D_PARAM_NAMES_N parameter)
+	public double getParam (PARAM_N parameter)
 	{ return dJointGetHingeParam (parameter); }
 
 	public void addTorque (double torque)
@@ -425,31 +424,31 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	
 	@Override
 	public void setParamFMax(double d) {
-		dJointSetHingeParam(D_PARAM_NAMES_N.dParamFMax1, d);
+		dJointSetHingeParam(PARAM_N.dParamFMax1, d);
 	}
 
 
 	@Override
 	public void setParamVel(double d) {
-		dJointSetHingeParam(D_PARAM_NAMES_N.dParamVel1, d);
+		dJointSetHingeParam(PARAM_N.dParamVel1, d);
 	}
 
 
 	@Override
 	public void setParamHiStop(double d) {
-		dJointSetHingeParam(D_PARAM_NAMES_N.dParamHiStop1, d);
+		dJointSetHingeParam(PARAM_N.dParamHiStop1, d);
 	}
 
 
 	@Override
 	public void setParamLoStop(double d) {
-		dJointSetHingeParam(D_PARAM_NAMES_N.dParamLoStop1, d);
+		dJointSetHingeParam(PARAM_N.dParamLoStop1, d);
 	}
 
 
 	@Override
 	public void setParamBounce(double d) {
-		dJointSetHingeParam(D_PARAM_NAMES_N.dParamBounce1, d);
+		dJointSetHingeParam(PARAM_N.dParamBounce1, d);
 	}
 
 }

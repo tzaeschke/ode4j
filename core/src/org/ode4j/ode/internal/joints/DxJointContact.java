@@ -260,13 +260,13 @@ public class DxJointContact extends DxJoint implements DContactJoint
 
 
 	@Override
-	public double getParam(D_PARAM_NAMES_N parameter) {
+	public double getParam(PARAM_N parameter) {
 		throw new UnsupportedOperationException();
 	}
 
 
 	@Override
-	public void setParam(D_PARAM_NAMES_N parameter, double value) {
+	public void setParam(PARAM_N parameter, double value) {
 		throw new UnsupportedOperationException();
 	}
 }

@@ -25,7 +25,7 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAMotorJoint;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 import static org.ode4j.ode.OdeMath.*;
 
@@ -388,7 +388,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	}
 
 
-	public void dJointSetAMotorParam( D_PARAM_NAMES_N parameter, double value )
+	public void dJointSetAMotorParam( PARAM_N parameter, double value )
 	{
 		//TODO remove
 		int anum = parameter.toGROUP().getIndex();
@@ -482,7 +482,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	}
 
 
-	double dJointGetAMotorParam( D_PARAM_NAMES_N parameter )
+	double dJointGetAMotorParam( PARAM_N parameter )
 	{
 		int anum = parameter.toGROUP().getIndex();// >> 8;
 		//    if ( anum < 0 ) anum = 0;
@@ -564,9 +564,9 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	public double getAngleRate (int anum)
 	{ return dJointGetAMotorAngleRate (anum); }
 
-	public void setParam (D_PARAM_NAMES_N parameter, double value)
+	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetAMotorParam (parameter, value); }
-	public double getParam (D_PARAM_NAMES_N parameter)
+	public double getParam (PARAM_N parameter)
 	{ return dJointGetAMotorParam (parameter); }
 
 	public void addTorques(double torque1, double torque2, double torque3)
@@ -575,73 +575,73 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	@Override
 	public void setParamFMax(double d) {
-		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamFMax1, d);
+		dJointSetAMotorParam(PARAM_N.dParamFMax1, d);
 	}
 
 
 	@Override
 	public void setParamFMax2(double d) {
-		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamFMax2, d);
+		dJointSetAMotorParam(PARAM_N.dParamFMax2, d);
 	}
 
 
 	@Override
 	public void setParamFMax3(double d) {
-		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamFMax3, d);
+		dJointSetAMotorParam(PARAM_N.dParamFMax3, d);
 	}
 
 
 	@Override
 	public void setParamVel(double d) {
-		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamVel1, d);
+		dJointSetAMotorParam(PARAM_N.dParamVel1, d);
 	}
 
 
 	@Override
 	public void setParamVel2(double d) {
-		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamVel2, d);
+		dJointSetAMotorParam(PARAM_N.dParamVel2, d);
 	}
 
 
 	@Override
 	public void setParamVel3(double d) {
-		dJointSetAMotorParam(D_PARAM_NAMES_N.dParamVel3, d);
+		dJointSetAMotorParam(PARAM_N.dParamVel3, d);
 	}
 
 
 	@Override
 	public double getParamFMax() {
-		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamFMax1);
+		return dJointGetAMotorParam(PARAM_N.dParamFMax1);
 	}
 
 
 	@Override
 	public double getParamFMax2() {
-		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamFMax2);
+		return dJointGetAMotorParam(PARAM_N.dParamFMax2);
 	}
 
 
 	@Override
 	public double getParamFMax3() {
-		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamFMax3);
+		return dJointGetAMotorParam(PARAM_N.dParamFMax3);
 	}
 
 
 	@Override
 	public double getParamVel() {
-		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamVel1);
+		return dJointGetAMotorParam(PARAM_N.dParamVel1);
 	}
 
 
 	@Override
 	public double getParamVel2() {
-		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamVel2);
+		return dJointGetAMotorParam(PARAM_N.dParamVel2);
 	}
 
 
 	@Override
 	public double getParamVel3() {
-		return dJointGetAMotorParam(D_PARAM_NAMES_N.dParamVel3);
+		return dJointGetAMotorParam(PARAM_N.dParamVel3);
 	}
 
 }

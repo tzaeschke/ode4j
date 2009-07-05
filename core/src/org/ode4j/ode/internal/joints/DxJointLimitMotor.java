@@ -21,6 +21,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
+import org.ode4j.ode.DJoint.PARAM;
 import org.ode4j.ode.internal.joints.DxJoint.Info2;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -65,7 +66,7 @@ public class DxJointLimitMotor {
 	}
 
 
-	public void set( D_PARAM_NAMES num, double value )
+	public void set( PARAM num, double value )
 	{
 		switch ( num )
 		{
@@ -102,7 +103,7 @@ public class DxJointLimitMotor {
 	}
 
 
-	public double get( D_PARAM_NAMES num )
+	public double get( PARAM num )
 	{
 		switch ( num )
 		{

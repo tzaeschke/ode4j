@@ -740,7 +740,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	}
 
 
-	public void dJointSetPUParam( D_PARAM_NAMES_N parameter, double value )
+	public void dJointSetPUParam( PARAM_N parameter, double value )
 	{
 		switch ( parameter.toGROUP()) //.and( 0xff00 ))
 		{
@@ -805,7 +805,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		getAxis( result, axisP1 );
 	}
 
-	public double dJointGetPUParam( D_PARAM_NAMES_N parameter )
+	public double dJointGetPUParam( PARAM_N parameter )
 	{
 		switch ( parameter.toGROUP() )//and( 0xff00 ))
 		{
@@ -909,9 +909,9 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	public final double getPositionRate()
 	{ return dJointGetPUPositionRate (); }
 
-	public final void setParam (D_PARAM_NAMES_N parameter, double value)
+	public final void setParam (PARAM_N parameter, double value)
 	{ dJointSetPUParam (parameter, value); }
-	public final double getParam (D_PARAM_NAMES_N parameter)
+	public final double getParam (PARAM_N parameter)
 	{ return dJointGetPUParam (parameter); }
 
 

@@ -604,7 +604,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		getAxis ( result, axis1 );
 	}
 
-	public void dJointSetPistonParam ( D_PARAM_NAMES_N parameter, double value )
+	public void dJointSetPistonParam ( PARAM_N parameter, double value )
 	{
 		if (  parameter.isGroup2())//and(0xff00).eq(0x100) )
 		{
@@ -617,7 +617,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	}
 
 
-	public double dJointGetPistonParam ( D_PARAM_NAMES_N parameter )
+	public double dJointGetPistonParam ( PARAM_N parameter )
 	{
 		if ( parameter.isGroup2())//and(0xff00).eq(0x100) )
 		{
@@ -769,9 +769,9 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	public double getPositionRate()
 	{ return dJointGetPistonPositionRate (); }
 
-	public void setParam (D_PARAM_NAMES_N parameter, double value)
+	public void setParam (PARAM_N parameter, double value)
 		  { dJointSetPistonParam (parameter, value); }
-	public double getParam (D_PARAM_NAMES_N parameter)
+	public double getParam (PARAM_N parameter)
 		    { return dJointGetPistonParam (parameter); }
 
 	
@@ -781,25 +781,25 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	@Override
 	public double getParamHiStop2() {
-		return dJointGetPistonParam(D_PARAM_NAMES_N.dParamHiStop2);
+		return dJointGetPistonParam(PARAM_N.dParamHiStop2);
 	}
 
 
 	@Override
 	public double getParamLoStop2() {
-		return dJointGetPistonParam(D_PARAM_NAMES_N.dParamLoStop2);
+		return dJointGetPistonParam(PARAM_N.dParamLoStop2);
 	}
 
 
 	@Override
 	public void setParamHiStop2(double d) {
-		dJointSetPistonParam(D_PARAM_NAMES_N.dParamHiStop2, d);
+		dJointSetPistonParam(PARAM_N.dParamHiStop2, d);
 	}
 
 
 	@Override
 	public void setParamLoStop2(double d) {
-		dJointSetPistonParam(D_PARAM_NAMES_N.dParamLoStop2, d);
+		dJointSetPistonParam(PARAM_N.dParamLoStop2, d);
 	}
 
 

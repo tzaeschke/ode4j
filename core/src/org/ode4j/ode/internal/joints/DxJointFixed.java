@@ -153,7 +153,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 	}
 
 	//void set ( int num, double value )
-	void set (D_PARAM_NAMES num, double value)
+	void set (PARAM num, double value)
 	{
 		switch ( num )
 		{
@@ -168,7 +168,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 
 
 	//double get ( int num )
-	double get ( D_PARAM_NAMES num )
+	double get ( PARAM num )
 	{
 		switch ( num )
 		{
@@ -183,7 +183,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 
 
 	//void dJointSetFixedParam ( dJoint j, int parameter, double value )
-	public void dJointSetFixedParam ( D_PARAM_NAMES_N parameter, double value )
+	public void dJointSetFixedParam ( PARAM_N parameter, double value )
 	{
 		//    dxJointFixed joint = (dxJointFixed) j; //( dxJointFixed* ) j;
 		//    COM.dUASSERT ( joint, "bad joint argument" );
@@ -193,7 +193,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 
 
 	//double dJointGetFixedParam ( dJoint j, int parameter )
-	private double dJointGetFixedParam ( D_PARAM_NAMES_N parameter )
+	private double dJointGetFixedParam ( PARAM_N parameter )
 	{
 		//		dxJointFixed joint = (dxJointFixed) j; //( dxJointFixed* ) j;
 		//		COM.dUASSERT ( joint, "bad joint argument" );
@@ -230,10 +230,10 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 	public void set()
 	{ dJointSetFixed (); }
 
-	public void setParam (D_PARAM_NAMES_N parameter, double value)
+	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetFixedParam (parameter, value); }
 
-	public double getParam (D_PARAM_NAMES_N parameter)
+	public double getParam (PARAM_N parameter)
 	{ return dJointGetFixedParam (parameter); }
 
 

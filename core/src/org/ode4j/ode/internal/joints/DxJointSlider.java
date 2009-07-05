@@ -28,7 +28,6 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 import static org.ode4j.ode.OdeMath.*;
 
@@ -293,13 +292,13 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 
 
 	//void dJointSetSliderParam ( dJoint j, D_PARAM_NAMES parameter, double value )
-	public void dJointSetSliderParam ( D_PARAM_NAMES_N parameter, double value )
+	public void dJointSetSliderParam ( PARAM_N parameter, double value )
 	{
 		limot.set ( parameter.toSUB(), value );
 	}
 
 
-	double dJointGetSliderParam ( D_PARAM_NAMES_N parameter )
+	double dJointGetSliderParam ( PARAM_N parameter )
 	{
 		return limot.get ( parameter.toSUB() );
 	}
@@ -417,9 +416,9 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	public double getPositionRate()
 	{ return dJointGetSliderPositionRate (); }
 
-	public void setParam (D_PARAM_NAMES_N parameter, double value)
+	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetSliderParam (parameter, value); }
-	public double getParam (D_PARAM_NAMES_N parameter)
+	public double getParam (PARAM_N parameter)
 	{ return dJointGetSliderParam (parameter); }
 	// TODO: expose params through methods
 
@@ -429,30 +428,30 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	
 	@Override
 	public void setParamFMax(double d) {
-		dJointSetSliderParam(D_PARAM_NAMES_N.dParamFMax1, d);
+		dJointSetSliderParam(PARAM_N.dParamFMax1, d);
 	}
 
 
 	@Override
 	public void setParamHiStop(double d) {
-		dJointSetSliderParam(D_PARAM_NAMES_N.dParamHiStop1, d);
+		dJointSetSliderParam(PARAM_N.dParamHiStop1, d);
 	}
 
 
 	@Override
 	public void setParamLoStop(double d) {
-		dJointSetSliderParam(D_PARAM_NAMES_N.dParamLoStop1, d);
+		dJointSetSliderParam(PARAM_N.dParamLoStop1, d);
 	}
 
 
 	@Override
 	public void setParamVel(double d) {
-		dJointSetSliderParam(D_PARAM_NAMES_N.dParamVel1, d);
+		dJointSetSliderParam(PARAM_N.dParamVel1, d);
 	}
 
 
 	@Override
 	public void setParamBounce(double d) {
-		dJointSetSliderParam(D_PARAM_NAMES_N.dParamBounce1, d);
+		dJointSetSliderParam(PARAM_N.dParamBounce1, d);
 	}
 }

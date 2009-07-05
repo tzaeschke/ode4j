@@ -23,7 +23,6 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 public interface DLMotorJoint extends DJoint {
 
@@ -34,8 +33,8 @@ public interface DLMotorJoint extends DJoint {
 	void setAxis (int anum, int rel, DVector3C a);
 	void getAxis (int anum, DVector3 result);
 
-	void setParam (D_PARAM_NAMES_N parameter, double value);
-	double getParam (D_PARAM_NAMES_N parameter);
+	void setParam (PARAM_N parameter, double value);
+	double getParam (PARAM_N parameter);
 	
 	double getParamVel();
 	double getParamVel2();

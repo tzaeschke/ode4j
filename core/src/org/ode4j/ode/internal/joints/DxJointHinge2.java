@@ -271,7 +271,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 
 //	public void dJointSetHinge2Param( dxJointHinge2 j, 
 //			D_PARAM_NAMES parameter, double value )
-	public void dJointSetHinge2Param( D_PARAM_NAMES_N parameter, double value )
+	public void dJointSetHinge2Param( PARAM_N parameter, double value )
 	{
 		//if ( parameter.and(0xff00).eq(0x100) )
 		if (parameter.isGroup2())
@@ -280,8 +280,8 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		}
 		else
 		{
-			if ( parameter.toSUB() == D_PARAM_NAMES.dParamSuspensionERP ) susp_erp = value;
-			else if ( parameter.toSUB() == D_PARAM_NAMES.dParamSuspensionCFM ) susp_cfm = value;
+			if ( parameter.toSUB() == PARAM.dParamSuspensionERP ) susp_erp = value;
+			else if ( parameter.toSUB() == PARAM.dParamSuspensionCFM ) susp_cfm = value;
 			else limot1.set( parameter.toSUB(), value );
 		}
 	}
@@ -328,7 +328,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 
 
 //	private double dJointGetHinge2Param( dJoint j, D_PARAM_NAMES_N parameter )
-	private double dJointGetHinge2Param( D_PARAM_NAMES_N parameter )
+	private double dJointGetHinge2Param( PARAM_N parameter )
 	{
 		if ( parameter.isGroup2())//and(0xff00).eq(0x100) )
 		{
@@ -336,8 +336,8 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		}
 		else
 		{
-			if ( parameter.toSUB() == D_PARAM_NAMES.dParamSuspensionERP ) return susp_erp;
-			else if ( parameter.toSUB() == D_PARAM_NAMES.dParamSuspensionCFM ) return susp_cfm;
+			if ( parameter.toSUB() == PARAM.dParamSuspensionERP ) return susp_erp;
+			else if ( parameter.toSUB() == PARAM.dParamSuspensionCFM ) return susp_cfm;
 			else return limot1.get( parameter.toSUB() );
 		}
 	}
@@ -471,9 +471,9 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	  public double getAngle2Rate()
 	    { return dJointGetHinge2Angle2Rate (); }
 
-	  public void setParam (D_PARAM_NAMES_N parameter, double value)
+	  public void setParam (PARAM_N parameter, double value)
 	    { dJointSetHinge2Param (parameter, value); }
-	  public double getParam (D_PARAM_NAMES_N parameter)
+	  public double getParam (PARAM_N parameter)
 	    { return dJointGetHinge2Param (parameter); }
 
 	  public void addTorques(double torque1, double torque2)
@@ -482,55 +482,55 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 
 	@Override
 	public void setParamFMax2(double d) {
-		dJointSetHinge2Param(D_PARAM_NAMES_N.dParamFMax2, d);
+		dJointSetHinge2Param(PARAM_N.dParamFMax2, d);
 	}
 
 
 	@Override
 	public void setParamFudgeFactor(double d) {
-		dJointSetHinge2Param(D_PARAM_NAMES_N.dParamFudgeFactor1, d);
+		dJointSetHinge2Param(PARAM_N.dParamFudgeFactor1, d);
 	}
 
 
 	@Override
 	public void setParamHiStop(double d) {
-		dJointSetHinge2Param(D_PARAM_NAMES_N.dParamHiStop1, d);
+		dJointSetHinge2Param(PARAM_N.dParamHiStop1, d);
 	}
 
 
 	@Override
 	public void setParamLoStop(double d) {
-		dJointSetHinge2Param(D_PARAM_NAMES_N.dParamLoStop1, d);
+		dJointSetHinge2Param(PARAM_N.dParamLoStop1, d);
 	}
 
 
 	@Override
 	public void setParamFMax(double d) {
-		dJointSetHinge2Param(D_PARAM_NAMES_N.dParamFMax1, d);
+		dJointSetHinge2Param(PARAM_N.dParamFMax1, d);
 	}
 
 
 	@Override
 	public void setParamSuspensionCFM(double d) {
-		dJointSetHinge2Param(D_PARAM_NAMES_N.dParamSuspensionCFM1, d);
+		dJointSetHinge2Param(PARAM_N.dParamSuspensionCFM1, d);
 	}
 
 
 	@Override
 	public void setParamSuspensionERP(double d) {
-		dJointSetHinge2Param(D_PARAM_NAMES_N.dParamSuspensionERP1, d);
+		dJointSetHinge2Param(PARAM_N.dParamSuspensionERP1, d);
 	}
 
 
 	@Override
 	public void setParamVel(double d) {
-		dJointSetHinge2Param(D_PARAM_NAMES_N.dParamVel1, d);
+		dJointSetHinge2Param(PARAM_N.dParamVel1, d);
 	}
 
 
 	@Override
 	public void setParamVel2(double d) {
-		dJointSetHinge2Param(D_PARAM_NAMES_N.dParamVel2, d);
+		dJointSetHinge2Param(PARAM_N.dParamVel2, d);
 	}
 }
 

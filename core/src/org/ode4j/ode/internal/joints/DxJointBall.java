@@ -25,8 +25,6 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES;
-import org.ode4j.ode.internal.Common.D_PARAM_NAMES_N;
 
 
 /** 
@@ -105,7 +103,7 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	}
 
 
-	void set( D_PARAM_NAMES num, double value )
+	void set( PARAM num, double value )
 	{
 		switch ( num )
 		{
@@ -119,7 +117,7 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	}
 
 
-	double get( D_PARAM_NAMES num )
+	double get( PARAM num )
 	{
 		switch ( num )
 		{
@@ -133,13 +131,13 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	}
 
 
-	void dJointSetBallParam( D_PARAM_NAMES parameter, double value )
+	void dJointSetBallParam( PARAM parameter, double value )
 	{
 		set( parameter, value );
 	}
 
 
-	double dJointGetBallParam( D_PARAM_NAMES parameter )
+	double dJointGetBallParam( PARAM parameter )
 	{
 		return get( parameter );
 	}
@@ -168,13 +166,13 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	{ dJointGetBallAnchor (result); }
 	public final void getAnchor2 (DVector3 result)
 	{ dJointGetBallAnchor2 (result); }
-	public final void setParam (D_PARAM_NAMES_N parameter, double value)
+	public final void setParam (PARAM_N parameter, double value)
 	{ 
 		if (!parameter.isGroup1()) 
 		throw new IllegalArgumentException("Only Group #1 allowed, but got: " + parameter.name());
 		dJointSetBallParam (parameter.toSUB(), value); 
 	}
-	public final double getParam (D_PARAM_NAMES_N parameter)
+	public final double getParam (PARAM_N parameter)
 	{ 	
 		if (!parameter.isGroup1()) 
 		throw new IllegalArgumentException("Only Group #1 allowed, but got: " + parameter.name());
