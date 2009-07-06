@@ -36,13 +36,18 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DBody;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
+import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
@@ -380,24 +385,24 @@ public class DemoMotion extends dsFunctions {
 		int type = dGeomGetClass (g);
 		if (type == dBoxClass) {
 			DVector3 sides = new DVector3();
-			dGeomBoxGetLengths (g,sides);
+			dGeomBoxGetLengths ((DBox)g,sides);
 			dsDrawBox (pos,R,sides);
 		}
 		else if (type == dSphereClass) {
-			dsDrawSphere (pos,R,(float)dGeomSphereGetRadius (g));
+			dsDrawSphere (pos,R,(float)dGeomSphereGetRadius ((DSphere)g));
 		}
 		else if (type == dCapsuleClass) {
 			RefDouble radius = new RefDouble(0),length = new RefDouble(0);
-			dGeomCapsuleGetParams (g,radius,length);
+			dGeomCapsuleGetParams ((DCapsule)g,radius,length);
 			dsDrawCapsule (pos,R,length.getF(),radius.getF());
 		}
 		else if (type == dCylinderClass) {
 			RefDouble radius = new RefDouble(0),length = new RefDouble(0);
-			dGeomCylinderGetParams (g,radius,length);
+			dGeomCylinderGetParams ((DCylinder)g,radius,length);
 			dsDrawCylinder (pos,R,length.getF(),radius.getF());
 		}
 		else if (type == dGeomTransformClass) {
-			DGeom g2 = dGeomTransformGetGeom (g);
+			DGeom g2 = dGeomTransformGetGeom ((DGeomTransform)g);
 			final DVector3C pos2 = dGeomGetPosition (g2);
 			final DMatrix3C R2 = dGeomGetRotation (g2);
 			DVector3 actual_pos = new DVector3();

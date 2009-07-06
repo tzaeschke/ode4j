@@ -27,6 +27,7 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
@@ -81,7 +82,7 @@ class DemoBuggy extends dsFunctions {
 	private static DSpace car_space;
 	private static DGeom[] box = new DGeom[1];
 	private static DGeom[] sphere = new DGeom[3];
-	private static DGeom ground_box;
+	private static DBox ground_box;
 
 
 	// things that the user controls

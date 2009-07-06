@@ -27,6 +27,7 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.OdeConstants;
@@ -120,7 +121,7 @@ class DemoCrash extends dsFunctions {
 	private static int boxes;
 	private static DGeom[] sphere=new DGeom[10000];
 	private static int spheres;
-	private static DGeom[] wall_boxes=new DGeom[10000];
+	private static DBox[] wall_boxes=new DBox[10000];
 	private static DBody[] wall_bodies=new DBody[10000];
 	private static DGeom cannon_ball_geom;
 	private static DBody cannon_ball_body;

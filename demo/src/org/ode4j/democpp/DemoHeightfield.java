@@ -28,8 +28,13 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DConvex;
+import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.DSphere;
+import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -56,9 +61,6 @@ import static org.ode4j.democpp.BunnyGeom.*;
 
 
 class DemoHeightfield extends dsFunctions {
-	//#include "bunny_geom.h"
-
-
 
 	private static final float DEGTORAD = 0.01745329251994329577f	; //!< PI / 180.0, convert degrees to radians
 
@@ -408,7 +410,7 @@ class DemoHeightfield extends dsFunctions {
 
 				for (k=0; k<GPB; k++) {
 					obj[i].geom[k] = dCreateGeomTransform (space);
-					dGeomTransformSetCleanup (obj[i].geom[k],true);
+					dGeomTransformSetCleanup ((DGeomTransform)obj[i].geom[k],true);
 					if (k==0) {
 						double radius = dRandReal()*0.25+0.05;
 						g2[k] = dCreateSphere (null,radius);
@@ -424,7 +426,7 @@ class DemoHeightfield extends dsFunctions {
 						g2[k] = dCreateCapsule (null,radius,length);
 						dMassSetCapsule (m2,DENSITY,3,radius,length);
 					}
-					dGeomTransformSetGeom (obj[i].geom[k],g2[k]);
+					dGeomTransformSetGeom ((DGeomTransform)obj[i].geom[k],g2[k]);
 
 					// set the transformation (adjust the mass too)
 //					dGeomSetPosition (g2[k],dpos[k][0],dpos[k][1],dpos[k][2]);
@@ -504,23 +506,22 @@ class DemoHeightfield extends dsFunctions {
 		if (pos==null) pos = dGeomGetPosition (g);
 		if (R==null) R = dGeomGetRotation (g);
 
-		int type = dGeomGetClass (g);
-		if (type == dBoxClass) {
+		if (g instanceof DBox) {
 			DVector3 sides = new DVector3();
-			dGeomBoxGetLengths (g,sides);
+			dGeomBoxGetLengths ((DBox)g,sides);
 			dsDrawBox (pos,R,sides);
 		}
-		else if (type == dSphereClass) {
-			dsDrawSphere (pos,R,dGeomSphereGetRadius (g));
+		else if (g instanceof DSphere) {
+			dsDrawSphere (pos,R,dGeomSphereGetRadius ((DSphere)g));
 		}
-		else if (type == dCapsuleClass) {
+		else if (g instanceof DCapsule) {
 			//double radius,length;
 			//dGeomCapsuleGetParams (g,&radius,&length);
 			DCapsule cap = (DCapsule) g; 
 			dsDrawCapsule (pos,R,cap.getLength(),cap.getRadius());
 		}
 		//<---- Convex Object
-		else if (type == dConvexClass)
+		else if (g instanceof DConvex)
 		{
 			//dVector3 sides={0.50,0.50,0.50};
 			dsDrawConvex(pos,R,planes,
@@ -530,14 +531,14 @@ class DemoHeightfield extends dsFunctions {
 					polygons);
 		}
 		//----> Convex Object
-		else if (type == dCylinderClass) {
+		else if (g instanceof DCylinder) {
 			//double radius,length;
 			//dGeomCylinderGetParams (g,&radius,&length);
 			DCylinder cyl = (DCylinder) g;
 			dsDrawCylinder (pos,R,cyl.getLength(),cyl.getRadius());
 		}
-		else if (type == dGeomTransformClass) {
-			DGeom g2 = dGeomTransformGetGeom (g);
+		else if (g instanceof DGeomTransform) {
+			DGeom g2 = dGeomTransformGetGeom ((DGeomTransform)g);
 			final DVector3C pos2 = dGeomGetPosition (g2);
 			final DMatrix3C R2 = dGeomGetRotation (g2);
 			DVector3 actual_pos = new DVector3();
@@ -553,12 +554,12 @@ class DemoHeightfield extends dsFunctions {
 
 		if (show_aabb) {
 			// draw the bounding box for this geom
-			DVector6 aabb = new DVector6();
+			DAABB aabb = new DAABB();
 			dGeomGetAABB (g,aabb);
 			DVector3 bbpos = new DVector3();
-			for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.get(i*2) + aabb.get(i*2+1)) );
+			for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
 			DVector3 bbsides = new DVector3();
-			for (i=0; i<3; i++) bbsides.set(i, aabb.get(i*2+1) - aabb.get(i*2) );
+			for (i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i) );
 			DMatrix3 RI = new DMatrix3();
 			dRSetIdentity (RI);
 			dsSetColorAlpha (1,0,0,0.5f);
@@ -661,7 +662,7 @@ class DemoHeightfield extends dsFunctions {
 					dsSetColor (1,1,0);
 				}
 
-				if ( obj[i].geom[j]!=null && dGeomGetClass(obj[i].geom[j]) == dTriMeshClass )
+				if ( obj[i].geom[j]!=null && obj[i].geom[j] instanceof DTriMesh )
 				{
 					//dTriIndex* Indices = (dTriIndex*)::Indices;
 					int[] Indices = BunnyGeom.Indices;
@@ -733,12 +734,12 @@ class DemoHeightfield extends dsFunctions {
 		if ( show_aabb )
 		{
 			// draw the bounding box for this geom
-			DVector6 aabb = new DVector6();
+			DAABB aabb = new DAABB();
 			dGeomGetAABB (gheight,aabb);
 			DVector3 bbpos = new DVector3();
-			for (int i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.get(i*2) + aabb.get(i*2+1)) );
+			for (int i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
 			DVector3 bbsides = new DVector3();
-			for (int i=0; i<3; i++) bbsides.set(i, aabb.get(i*2+1) - aabb.get(i*2) );
+			for (int i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i) );
 			DMatrix3 RI = new DMatrix3();
 			dRSetIdentity (RI);
 			dsSetColorAlpha (1,0,0,0.5f);

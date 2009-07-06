@@ -30,12 +30,16 @@ import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector4;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DPlane;
+import org.ode4j.ode.DRay;
 import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath.OP;
 import org.ode4j.ode.DGeom.DNearCallback;
@@ -163,12 +167,12 @@ class DemoCollision extends dsFunctions {
 	//void nearCallback (void *data, dGeom o1, dGeom o2)
 	private void nearCallback (Object data, DGeom o1, DGeom o2)
 	{
-		int i,j,n;
+		int i,n;
 		final int N = 100;
 		//dContactGeom contact[N];
 		DContactGeomBuffer contacts = new DContactGeomBuffer(N);
 
-		if (dGeomGetClass (o2) == dRayClass) {
+		if (o2 instanceof DRay) {
 			n = dCollide (o2,o1,N,contacts);//,sizeof(dContactGeom));
 		}
 		else {
@@ -211,12 +215,12 @@ class DemoCollision extends dsFunctions {
 		// draw all rays
 		for (i=0; i<nGeoms; i++) {
 			DGeom g = dSpaceGetGeom (space,i);
-			if (dGeomGetClass (g) == dRayClass) {
+			if (g instanceof DRay) {
 				dsSetColor (1,1,1);
 				DVector3 origin = new DVector3(),dir=new DVector3();
-				dGeomRayGet (g,origin,dir);
+				dGeomRayGet ((DRay)g,origin,dir);
 				origin.v[2] += Z_OFFSET;
-				double length = dGeomRayGetLength (g);
+				double length = dGeomRayGetLength ((DRay)g);
 				//for (j=0; j<3; j++) dir[j] = dir[j]*length + origin[j];
 				dir.eqSum(origin, dir, length);
 				dsDrawLine (origin,dir);
@@ -235,11 +239,11 @@ class DemoCollision extends dsFunctions {
 				pos.v[2] += Z_OFFSET;
 			}
 
-			switch (dGeomGetClass (g)) {
+			switch (g.getClassID()) {
 
 			case dSphereClass: {
 				dsSetColorAlpha (1f,0f,0f,0.8f);
-				double radius = dGeomSphereGetRadius (g);
+				double radius = dGeomSphereGetRadius ((DSphere)g);
 				dsDrawSphere (pos,dGeomGetRotation(g),radius);
 				break;
 			}
@@ -247,7 +251,7 @@ class DemoCollision extends dsFunctions {
 			case dBoxClass: {
 				dsSetColorAlpha (1f,1f,0f,0.8f);
 				DVector3 sides = new DVector3();
-				dGeomBoxGetLengths (g,sides);
+				dGeomBoxGetLengths ((DBox)g,sides);
 				dsDrawBox (pos,dGeomGetRotation(g),sides);
 				break;
 			}
@@ -255,7 +259,7 @@ class DemoCollision extends dsFunctions {
 			case dCapsuleClass: {
 				dsSetColorAlpha (0f,1f,0f,0.8f);
 				RefDouble radius = new RefDouble(),length=new RefDouble();
-				dGeomCapsuleGetParams (g,radius,length);
+				dGeomCapsuleGetParams ((DCapsule)g,radius,length);
 				dsDrawCapsule (pos,dGeomGetRotation(g),length.getF(),radius.getF());
 				break;
 			}
@@ -265,7 +269,7 @@ class DemoCollision extends dsFunctions {
 				DMatrix3 R = new DMatrix3();//,sides;
 				DVector3 sides = new DVector3();
 				DVector3 pos2 = new DVector3();
-				dGeomPlaneGetParams (g,n4);
+				dGeomPlaneGetParams ((DPlane)g,n4);
 				dRFromZAxis (R,n4.get0(),n4.get1(),n4.get2());
 				for (j=0; j<3; j++) pos.set(j, n4.get(j)*n4.get3());
 				pos.v[2] += Z_OFFSET;
@@ -297,7 +301,7 @@ class DemoCollision extends dsFunctions {
 
 		//dSimpleSpace space(0);
 		DSimpleSpace space = dSimpleSpaceCreate(null);
-		DGeom sphere = dCreateSphere (null,1);
+		DSphere sphere = dCreateSphere (null,1);
 		dSpaceAdd (space,sphere);
 
 		// ********** make a random sphere of radius r at position p
@@ -341,7 +345,7 @@ class DemoCollision extends dsFunctions {
 		double ss,d;		// ss = smallest side
 
 		DSimpleSpace space = dSimpleSpaceCreate(null);
-		DGeom box = dCreateBox (null,1,1,1);
+		DBox box = dCreateBox (null,1,1,1);
 		dSpaceAdd (space,box);
 
 		// ********** make a random box
@@ -412,7 +416,7 @@ class DemoCollision extends dsFunctions {
 
 				DSimpleSpace space = dSimpleSpaceCreate(null);
 
-		DGeom ccyl = dCreateCapsule (null,1,1);
+		DCapsule ccyl = dCreateCapsule (null,1,1);
 		dSpaceAdd (space,ccyl);
 
 		// ********** make a random ccyl
@@ -500,7 +504,7 @@ class DemoCollision extends dsFunctions {
 
 				DSimpleSpace space = dSimpleSpaceCreate(null);
 
-		DGeom plane = dCreatePlane (null,0,0,1,0);
+		DPlane plane = dCreatePlane (null,0,0,1,0);
 		dSpaceAdd (space,plane);
 
 		// ********** make a random plane
@@ -553,8 +557,8 @@ class DemoCollision extends dsFunctions {
 
 		DSimpleSpace space = dSimpleSpaceCreate(null);
 
-		DGeom ray = dCreateRay (null,0);
-		DGeom sphere = dCreateSphere (null,1);
+		DRay ray = dCreateRay (null,0);
+		DSphere sphere = dCreateSphere (null,1);
 		dSpaceAdd (space,ray);
 		dSpaceAdd (space,sphere);
 
@@ -701,8 +705,8 @@ class DemoCollision extends dsFunctions {
 
 		DSimpleSpace space = dSimpleSpaceCreate(null);
 
-		DGeom ray = dCreateRay (null,0);
-		DGeom box = dCreateBox (null,1,1,1);
+		DRay ray = dCreateRay (null,0);
+		DBox box = dCreateBox (null,1,1,1);
 		dSpaceAdd (space,ray);
 		dSpaceAdd (space,box);
 
@@ -831,8 +835,8 @@ class DemoCollision extends dsFunctions {
 
 		DSimpleSpace space = dSimpleSpaceCreate(null);
 
-		DGeom ray = dCreateRay (null,0);
-		DGeom ccyl = dCreateCapsule (null,1,1);
+		DRay ray = dCreateRay (null,0);
+		DCapsule ccyl = dCreateCapsule (null,1,1);
 		dSpaceAdd (space,ray);
 		dSpaceAdd (space,ccyl);
 
@@ -942,8 +946,8 @@ class DemoCollision extends dsFunctions {
 		
 		DSimpleSpace space = dSimpleSpaceCreate(null);
 
-		DGeom ray = dCreateRay (null,0);
-		DGeom plane = dCreatePlane (null,0,0,1,0);
+		DRay ray = dCreateRay (null,0);
+		DPlane plane = dCreatePlane (null,0,0,1,0);
 		dSpaceAdd (space,ray);
 		dSpaceAdd (space,plane);
 
@@ -1196,9 +1200,9 @@ class DemoCollision extends dsFunctions {
 		
 		DSimpleSpace space = dSimpleSpaceCreate(null);
 
-		DGeom box1 = dCreateBox (null,1,1,1);
+		DBox box1 = dCreateBox (null,1,1,1);
 		dSpaceAdd (space,box1);
-		DGeom box2 = dCreateBox (null,1,1,1);
+		DBox box2 = dCreateBox (null,1,1,1);
 		dSpaceAdd (space,box2);
 
 		dMakeRandomVector (p1,0.5);
@@ -1254,9 +1258,9 @@ class DemoCollision extends dsFunctions {
 		
 		DSimpleSpace space = dSimpleSpaceCreate(null);
 
-		DGeom box1 = dCreateBox (null,1,1,1);
+		DBox box1 = dCreateBox (null,1,1,1);
 		dSpaceAdd (space,box1);
-		DGeom box2 = dCreateBox (null,1,1,1);
+		DBox box2 = dCreateBox (null,1,1,1);
 		dSpaceAdd (space,box2);
 
 		dMakeRandomVector (p1,0.5);

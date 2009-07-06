@@ -6,6 +6,7 @@ import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHeightfieldData;
+import org.ode4j.ode.DRay;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.OdeHelper;
 
@@ -113,7 +114,7 @@ public class CollisionTest {
 		    DGeom height = dCreateHeightfield(null, heightfieldData, true);
 
 	        // Create ray outside bounds
-	        DGeom ray = dCreateRay(null, 20);
+	        DRay ray = dCreateRay(null, 20);
 	        dGeomRaySet(ray, 5, 10, 1, 0, -1, 0);
 	        //DContact contactBuf[10];
 	        DContactBuffer contactBuf = new DContactBuffer(10);

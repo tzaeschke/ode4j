@@ -150,13 +150,13 @@ class DemoFeedback extends dsFunctions {
 		if (g instanceof DBox)
 		{
 			DVector3 sides = new DVector3();
-			dGeomBoxGetLengths (g, sides);
+			dGeomBoxGetLengths ((DBox)g, sides);
 			dsDrawBox (pos,R,sides);
 		}
 		if (g instanceof DCylinder)
 		{
 			RefDouble r = new RefDouble(0), l = new RefDouble(0);
-			dGeomCylinderGetParams(g, r, l);
+			dGeomCylinderGetParams((DCylinder)g, r, l);
 			dsDrawCylinder (pos, R, l.getF(), r.getF());
 		}
 	}

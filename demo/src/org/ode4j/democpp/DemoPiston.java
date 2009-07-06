@@ -30,6 +30,8 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.OdeConstants;
@@ -472,7 +474,7 @@ class DemoPiston extends dsFunctions {
 		dsSetColor (R,G,B);
 
 		DVector3 l = new DVector3();
-		dGeomBoxGetLengths (id, l);
+		dGeomBoxGetLengths ((DBox)id, l);
 		dsDrawBox (pos, rot, l);
 	}
 
@@ -524,7 +526,7 @@ class DemoPiston extends dsFunctions {
 				rot = dGeomGetRotation (geom[BODY1]);
 				dsSetColor (0,0,1);
 
-				dGeomCapsuleGetParams (geom[BODY1], radius, length);
+				dGeomCapsuleGetParams ((DCapsule)geom[BODY1], radius, length);
 				dsDrawCapsule (pos, rot, length.getF(), radius.getF());
 			}
 

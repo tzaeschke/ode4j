@@ -21,6 +21,8 @@
  *************************************************************************/
 package org.ode4j.demo;
 
+import java.io.File;
+
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -602,7 +604,8 @@ class DemoBoxstack extends dsFunctions {
 		if (!pause) world.quickStep (0.02);
 
 		if (write_world) {
-			//TODO
+			File f = new File("state.dif");
+			OdeHelper.worldExportDIF(world, f, "X");
 //			FILE f = fopen ("state.dif","wt");
 //			if (f!=null) {
 //				OdeHelper.dWorldExportDIF (world,f,"X");

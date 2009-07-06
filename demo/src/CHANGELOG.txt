@@ -9,15 +9,20 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
+2009-Jul-06 Tilmann Zaeschke
+		* Replaced usage of DVector6 with DAABB / improved DAABB
+		* Reduced usage of RefDouble in API
+		* Implemented most of the functions in the fake-C/C++ API.
+
+2009-Jul-06 Tilmann Zaeschke
+		* All code migrated to ode-0.11.1
+		* released 0.11.1-j1.0-beta-1
+
 2009-06-26 Tilmann Zaeschke
 		* Started migration to ode-0.11.1
 		* Investigation of TLS mapping to Java
 		* Decision that SDK will contain everything, no need for the other 
 		  JARs anymore.
-		  
-		  
-		  --WHAT about ATOMICs?
-
 
 2009-06-04  Tilmann Zäschke
         * Initial version checked in to SVN. This is a 95% complete port of 

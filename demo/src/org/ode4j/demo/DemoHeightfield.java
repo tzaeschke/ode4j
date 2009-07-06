@@ -787,7 +787,7 @@ class DemoHeightfield extends dsFunctions {
 
 		// Give some very bounds which, while conservative,
 		// makes AABB computation more accurate than +/-INF.
-		heightid.setBounds( heightid, ( -4.0 ), ( +6.0 ) );
+		heightid.setBounds( ( -4.0 ), ( +6.0 ) );
 
 		gheight = OdeHelper.createHeightfield( space, heightid, true );
 

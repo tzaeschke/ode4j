@@ -28,8 +28,11 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DFixedJoint;
+import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -412,7 +415,7 @@ class DemoJointPU extends dsFunctions {
 		}
 	}
 
-	private static void drawBox (DGeom id, int R, int G, int B)
+	private static void drawBox (DBox id, int R, int G, int B)
 	{
 		if (id==null)
 			return;
@@ -465,10 +468,10 @@ class DemoJointPU extends dsFunctions {
 
 			dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
 
-			drawBox (geom[W], 1,1,0);
+			drawBox ((DBox)geom[W], 1,1,0);
 
 
-			drawBox (geom[EXT], 0,1,0);
+			drawBox ((DBox)geom[EXT], 0,1,0);
 
 			DVector3 anchorPos = new DVector3();
 
@@ -500,7 +503,7 @@ class DemoJointPU extends dsFunctions {
 			if ( geom[INT]!=null ) {
 				dsSetColor (1,0,1);
 				DVector3 l = new DVector3();
-				dGeomBoxGetLengths (geom[INT], l);
+				dGeomBoxGetLengths ((DBox)geom[INT], l);
 
 				final DMatrix3C rotBox = dGeomGetRotation (geom[W]);
 
@@ -523,7 +526,9 @@ class DemoJointPU extends dsFunctions {
 				dQtoR (qq,R);
 
 
-				dGeomCylinderGetParams (dGeomTransformGetGeom (geom[AXIS1]), radius, length);
+				dGeomCylinderGetParams (
+						(DCylinder) dGeomTransformGetGeom ((DGeomTransform)geom[AXIS1]), 
+						radius, length);
 				dsSetColor (1,0,0);
 				dsDrawCylinder (anchorPos, R, length.getF(), radius.getF());
 			}
@@ -548,7 +553,9 @@ class DemoJointPU extends dsFunctions {
 				dQtoR (qq1,R);
 
 
-				dGeomCylinderGetParams (dGeomTransformGetGeom (geom[AXIS2]), radius, length);
+				dGeomCylinderGetParams (
+						(DCylinder)dGeomTransformGetGeom ((DGeomTransform)geom[AXIS2]), 
+						radius, length);
 				dsSetColor (0,0,1);
 				dsDrawCylinder (anchorPos, R, length.getF(), radius.getF());
 			}
@@ -559,7 +566,7 @@ class DemoJointPU extends dsFunctions {
 			if ( geom[ANCHOR]!=null ) {
 				dsSetColor (1,1,1);
 				DVector3 l = new DVector3();
-				dGeomBoxGetLengths (geom[ANCHOR], l);
+				dGeomBoxGetLengths ((DBox)geom[ANCHOR], l);
 
 				final DMatrix3C rotBox = dGeomGetRotation (geom[D]);
 				final DVector3C posBox = dGeomGetPosition (geom[D]);
@@ -577,7 +584,7 @@ class DemoJointPU extends dsFunctions {
 				dsDrawBox (pos, rotBox, l);
 			}
 
-			drawBox (geom[D], 1,1,0);
+			drawBox ((DBox)geom[D], 1,1,0);
 		}
 	}
 
@@ -692,7 +699,8 @@ class DemoJointPU extends dsFunctions {
 		dGeomSetCollideBits (geom[AXIS1],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
 		id = geom[AXIS1];
-		dGeomTransformSetGeom (geom[AXIS1],  dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
+		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS1],  
+				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the second axis of the universal joint
@@ -704,7 +712,8 @@ class DemoJointPU extends dsFunctions {
 		dGeomSetCollideBits (geom[AXIS2],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
 		id = geom[AXIS2];
-		dGeomTransformSetGeom (geom[AXIS2],  dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
+		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS2],  
+				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the anchor

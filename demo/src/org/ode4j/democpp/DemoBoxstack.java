@@ -29,16 +29,22 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DBody;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DConvex;
+import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.DGeom.DNearCallback;
@@ -47,7 +53,6 @@ import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.DGeom.*;
 import static org.ode4j.democpp.IcosahedronGeom.*;
 
 class DemoBoxstack extends dsFunctions {
@@ -413,7 +418,7 @@ class DemoBoxstack extends dsFunctions {
 
 				for (k=0; k<GPB; k++) {
 					obj[i].geom[k] = dCreateGeomTransform (space);
-					dGeomTransformSetCleanup (obj[i].geom[k],true);
+					dGeomTransformSetCleanup ((DGeomTransform)obj[i].geom[k],true);
 					if (k==0) {
 						double radius = dRandReal()*0.25+0.05;
 						g2[k] = dCreateSphere (null,radius);
@@ -429,7 +434,7 @@ class DemoBoxstack extends dsFunctions {
 						g2[k] = dCreateCapsule (null,radius,length);
 						dMassSetCapsule (m2,DENSITY,3,radius,length);
 					}
-					dGeomTransformSetGeom (obj[i].geom[k],g2[k]);
+					dGeomTransformSetGeom ((DGeomTransform)obj[i].geom[k],g2[k]);
 
 					// set the transformation (adjust the mass too)
 					dGeomSetPosition (g2[k],dpos[k][0],dpos[k][1],dpos[k][2]);
@@ -516,22 +521,21 @@ class DemoBoxstack extends dsFunctions {
 		if (pos==null) pos = dGeomGetPosition (g);
 		if (R==null) R = dGeomGetRotation (g);
 
-		int type = dGeomGetClass (g);
-		if (type == dBoxClass) {
+		if (g instanceof DBox) {
 			DVector3 sides = new DVector3();
-			dGeomBoxGetLengths (g,sides);
+			dGeomBoxGetLengths ((DBox)g,sides);
 			dsDrawBox (pos,R,sides);
 		}
-		else if (type == dSphereClass) {
-			dsDrawSphere (pos,R,dGeomSphereGetRadius (g));
+		else if (g instanceof DSphere) {
+			dsDrawSphere (pos,R,dGeomSphereGetRadius ((DSphere)g));
 		}
-		else if (type == dCapsuleClass) {
+		else if (g instanceof DCapsule) {
 			RefDouble radius = new RefDouble(0),length=new RefDouble(0);
-			dGeomCapsuleGetParams (g,radius,length);
+			dGeomCapsuleGetParams ((DCapsule)g,radius,length);
 			dsDrawCapsule (pos,R,length.getF(),radius.getF());
 		}
 		//<---- Convex Object
-		else if (type == dConvexClass) 
+		else if (g instanceof DConvex) 
 		{
 			//dVector3 sides={0.50,0.50,0.50};
 			if (false) {//if#
@@ -550,13 +554,13 @@ class DemoBoxstack extends dsFunctions {
 			} //#endif
 		}
 		//----> Convex Object
-		else if (type == dCylinderClass) {
+		else if (g instanceof DCylinder) {
 			RefDouble radius = new RefDouble(0),length=new RefDouble(0);
-			dGeomCylinderGetParams (g,radius,length);
+			dGeomCylinderGetParams ((DCylinder)g,radius,length);
 			dsDrawCylinder (pos,R,length.getF(),radius.getF());
 		}
-		else if (type == dGeomTransformClass) {
-			DGeom g2 = dGeomTransformGetGeom (g);
+		else if (g instanceof DGeomTransform) {
+			DGeom g2 = dGeomTransformGetGeom ((DGeomTransform)g);
 			final DVector3C pos2 = dGeomGetPosition (g2);
 			final DMatrix3C R2 = dGeomGetRotation (g2);
 			DVector3 actual_pos = new DVector3();
@@ -581,12 +585,12 @@ class DemoBoxstack extends dsFunctions {
 		}
 		if (show_aabb) {
 			// draw the bounding box for this geom
-			DVector6 aabb=new DVector6();
+			DAABB aabb=new DAABB();
 			dGeomGetAABB (g,aabb);
 			DVector3 bbpos = new DVector3();
-			for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.get(i*2) + aabb.get(i*2+1)));
+			for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)));
 			DVector3 bbsides = new DVector3();
-			for (i=0; i<3; i++) bbsides.set(i, aabb.get(i*2+1) - aabb.get(i*2));
+			for (i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i));
 			DMatrix3 RI = new DMatrix3();
 			dRSetIdentity (RI);
 			dsSetColorAlpha (1,0,0,0.5f);
@@ -606,9 +610,8 @@ class DemoBoxstack extends dsFunctions {
 			public void call(Object data, DGeom o1, DGeom o2) {
 				nearCallback(data, o1, o2);
 			}});
-		//TODO TZ
-		//if (!pause) dWorldQuickStep (world,0.02);
-		if (!pause) dWorldStep(world,0.02);
+		if (!pause) dWorldQuickStep (world,0.02);
+		//if (!pause) dWorldStep(world,0.02);
 
 		if (write_world) {
 			FILE f = fopen ("state.dif","wt");
@@ -681,9 +684,7 @@ class DemoBoxstack extends dsFunctions {
 		// create world
 		dInitODE2(0);
 		world = dWorldCreate();
-		//TODO TZ
-		//space = dHashSpaceCreate (null);
-		space = dSimpleSpaceCreate(null);
+		space = dHashSpaceCreate (null);
 		contactgroup = dJointGroupCreate (0);
 		dWorldSetGravity (world,0,0,-GRAVITY);
 		dWorldSetCFM (world,1e-5);

@@ -101,7 +101,6 @@ public class TestJointPiston
 
 		static double offset = 3.1;
 		//    };
-		//TODO
 		//    const dVector3 Fixture_dxJointPiston_B1_and_B2_At_Zero_Axis_Along_X::axis =
 		//    {
 		//        1, 0, 0
@@ -352,7 +351,6 @@ public class TestJointPiston
 		static DVector3C axis = new DVector3(-1, 0, 0);
 		static double offset = 3.1;
 		//    };
-		//TODO
 		//    const dVector3 Fixture_dxJointPiston_B1_and_B2_At_Zero_Axis_Inverse_of_X::axis =
 		//    {
 		//        -1, 0, 0
@@ -594,7 +592,6 @@ public class TestJointPiston
 
 		static double offset = 3.1;
 		//};
-		//TODO
 		//    const dVector3 Fixture_dxJointPiston_B1_At_Zero_Axis_Along_X::axis =
 		//    {
 		//        1, 0, 0
@@ -735,7 +732,6 @@ public class TestJointPiston
 
 		static double offset = 3.1;
 		//    };
-		//TODO
 		//    const dVector3 Fixture_dxJointPiston_B1_At_Zero_Axis_Inverse_of_X::axis =
 		//    {
 		//        -1, 0, 0
@@ -883,7 +879,6 @@ public class TestJointPiston
 
 		static double offset = 3.1;
 		//    };
-		//TODO
 		//    const dVector3 Fixture_dxJointPiston_B2_At_Zero_Axis_Along_X::axis =
 		//    {
 		//        1, 0, 0
@@ -1024,7 +1019,6 @@ public class TestJointPiston
 
 		static double offset = 3.1;
 		//    };
-		//TODO
 		//    const dVector3 Fixture_dxJointPiston_B2_At_Zero_Axis_Inverse_of_X::axis =
 		//    {
 		//        -1, 0, 0

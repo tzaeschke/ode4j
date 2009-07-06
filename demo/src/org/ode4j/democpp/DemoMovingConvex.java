@@ -83,8 +83,6 @@ public class DemoMovingConvex extends dsFunctions {
 	private static boolean show_contacts = false;	// show contact points?
 	private static boolean random_pos = true;	// drop objects from random position?
 
-	//TODO? typedef double dVector3R[3];
-
 	private DNearCallback nearCallback = new DNearCallback() {
 		@Override
 		public void call(Object data, DGeom o1, DGeom o2) {
@@ -309,17 +307,17 @@ public class DemoMovingConvex extends dsFunctions {
 		if ( g instanceof DBox )
 		{
 			DVector3 sides = new DVector3();
-			dGeomBoxGetLengths( g,sides );
+			dGeomBoxGetLengths( (DBox)g,sides );
 			dsDrawBox( pos,R,sides );
 		}
 		else if ( g instanceof DSphere )
 		{
-			dsDrawSphere( pos,R,dGeomSphereGetRadius( g ) );
+			dsDrawSphere( pos,R,dGeomSphereGetRadius( (DSphere)g ) );
 		}
 		else if ( g instanceof DCapsule )
 		{
 			RefDouble radius = new RefDouble(),length = new RefDouble();
-			dGeomCapsuleGetParams( g,radius,length );
+			dGeomCapsuleGetParams( (DCapsule)g,radius,length );
 			dsDrawCapsule( pos,R,length.d,radius.d );
 		}
 		else if ( g instanceof DConvex )

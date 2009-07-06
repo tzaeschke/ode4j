@@ -26,6 +26,7 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.OdeConstants;
@@ -91,8 +92,8 @@ class DemoJointPR extends dsFunctions {
 	private static DPRJoint[] joint = new DPRJoint[1];
 	private static DJointGroup contactgroup;
 	private static DGeom ground;
-	private static DGeom[] box1 = new DGeom[1];
-	private static DGeom[] box2 = new DGeom[1];
+	private static DBox[] box1 = new DBox[1];
+	private static DBox[] box2 = new DBox[1];
 
 
 	//collision detection
