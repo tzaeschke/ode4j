@@ -23,14 +23,16 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
 
 /**
  * Convenience class for operations on AABB (Axis-aligned bounding boxes).
  *
  * @author Tilmann Zaeschke
  */
-public class DAABB extends DVector6 implements DAABBC {
+public class DAABB implements DAABBC {
+	
+	private final DVector3 _min = new DVector3();
+	private final DVector3 _max = new DVector3();
 	
 	
 	/**
@@ -46,7 +48,9 @@ public class DAABB extends DVector6 implements DAABBC {
 	 * Set the minimum and maximum values to -+ the given parameters.
 	 */
 	public void setMinMax(double mm0, double mm1, double mm2) {
-		set(-mm0, mm0, -mm1, mm1, -mm2, mm2);
+		//set(-mm0, mm0, -mm1, mm1, -mm2, mm2);
+		_min.set(-mm0, -mm1, -mm2);
+		_max.set(mm0, mm1, mm2);
 	}
 
 	/**
@@ -54,13 +58,8 @@ public class DAABB extends DVector6 implements DAABBC {
 	 * @param pos
 	 */
 	public void shiftPos(DVector3C pos) {
-		//TODO optimize, use 2 dVector3 instances here!
-		add(0, pos.get0());
-		add(1, pos.get0());
-		add(2, pos.get1());
-		add(3, pos.get1());
-		add(4, pos.get2());
-		add(5, pos.get2());
+		_min.add(pos);
+		_max.add(pos);
 	}
 
 	public double len0() {
@@ -122,7 +121,7 @@ public class DAABB extends DVector6 implements DAABBC {
 	 * @param v1
 	 * @param v2
 	 */
-	public void setMinMax(DVector3 v1, DVector3 v2) {
+	public void setMinMax(DVector3C v1, DVector3C v2) {
 		if (v1.get0() < v2.get0()) {
 			setMin0( v1.get0() );
 			setMax0( v2.get0() );
@@ -149,61 +148,61 @@ public class DAABB extends DVector6 implements DAABBC {
 	}
 	
 	public void setMin0(double d) {
-		set0(d);
+		_min.set0(d);
 	}
 	
 	public void setMin1(double d) {
-		set2(d);
+		_min.set1(d);
 	}
 	
 	public void setMin2(double d) {
-		set4(d);
+		_min.set2(d);
 	}
 	
 	public void setMax0(double d) {
-		set1(d);
+		_max.set0(d);
 	}
 	
 	public void setMax1(double d) {
-		set3(d);
+		_max.set1(d);
 	}
 	
 	public void setMax2(double d) {
-		set5(d);
+		_max.set2(d);
 	}
 	
 	public double getMin0() {
-		return get0();
+		return _min.get0();
 	}
 	
 	public double getMin1() {
-		return get2();
+		return _min.get1();
 	}
 	
 	public double getMin2() {
-		return get4();
+		return _min.get2();
 	}
 	
 	public double getMax0() {
-		return get1();
+		return _max.get0();
 	}
 	
 	public double getMax1() {
-		return get3();
+		return _max.get1();
 	}
 	
 	public double getMax2() {
-		return get5();
+		return _max.get2();
 	}
 
 	@Override
 	public double getMax(int i) {
-		return v[2*i+1];
+		return _max.get(i);
 	}
 
 	@Override
 	public double getMin(int i) {
-		return v[2*i];
+		return _min.get(i);
 	}
 
 	public DVector3 getLengths() {
@@ -212,5 +211,59 @@ public class DAABB extends DVector6 implements DAABBC {
 
 	public DVector3 getCenter() {
 		return new DVector3(avg0(), avg1(), avg2());
+	}
+
+	public void set(DAABBC aabb) {
+		setMin0(aabb.getMin0());
+		setMin1(aabb.getMin1());
+		setMin2(aabb.getMin2());
+		setMax0(aabb.getMax0());
+		setMax1(aabb.getMax1());
+		setMax2(aabb.getMax2());
+	}
+	
+	public void set(double min0, double max0, double min1, 
+			double max1, double min2, double max2) {
+		_min.set(min0, min1, min2);
+		_max.set(max0, max1, max2);
+	}
+	
+	public void setZero() {
+		_min.setZero();
+		_max.setZero();
+	}
+	
+	public void setMin(DVector3C min) {
+		_min.set(min);
+	}
+	
+	public void setMax(DVector3C max) {
+		_max.set(max);
+	}
+
+	/**
+	 * Expand this AABB to include the given point.
+	 * @param tmp
+	 */
+	public void expand(DVector3C point) {
+		if (point.get0() < _min.get0()) _min.set0(point.get0());
+		if (point.get1() < _min.get1()) _min.set1(point.get1());
+		if (point.get2() < _min.get2()) _min.set2(point.get2());
+		if (point.get0() > _max.get0()) _max.set0(point.get0());
+		if (point.get1() > _max.get1()) _max.set1(point.get1());
+		if (point.get2() > _max.get2()) _max.set2(point.get2());
+	}
+
+	/**
+	 * Expand this AABB to include the given AABB.
+	 * @param tmp
+	 */
+	public void expand(DAABBC aabb) {
+		if (aabb.getMin0() < _min.get0()) _min.set0(aabb.getMin0());
+		if (aabb.getMin1() < _min.get1()) _min.set1(aabb.getMin1());
+		if (aabb.getMin2() < _min.get2()) _min.set2(aabb.getMin2());
+		if (aabb.getMax0() > _max.get0()) _max.set0(aabb.getMax0());
+		if (aabb.getMax1() > _max.get1()) _max.set1(aabb.getMax1());
+		if (aabb.getMax2() > _max.get2()) _max.set2(aabb.getMax2());
 	}
 }

@@ -32,6 +32,7 @@ import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DWorld;
 
 public class DxWorld extends DBase implements DWorld {
@@ -781,8 +782,8 @@ public class DxWorld extends DBase implements DWorld {
 
 	public void setGravity (double x, double y, double z)
 	{ dWorldSetGravity (x,y,z); }
-	public void setGravity (final DVector3 g)
-	{ setGravity (g.v[0], g.v[1], g.v[2]); }
+	public void setGravity (DVector3C g)
+	{ setGravity (g.get0(), g.get1(), g.get2()); }
 	public void getGravity (DVector3 g) 
 	{ dWorldGetGravity (this,g); }
 

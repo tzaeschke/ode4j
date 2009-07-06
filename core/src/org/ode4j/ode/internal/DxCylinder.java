@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefDouble;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DCylinder;
@@ -94,14 +93,14 @@ public class DxCylinder extends DxGeom implements DCylinder {
 		dGeomMoved ();
 	}
 
-	//void dGeomCylinderGetParams (dGeom cylinder, RefDouble radius, RefDouble length)
-	public void dGeomCylinderGetParams (RefDouble radius, RefDouble length)
-	{
-		//	dUASSERT (cylinder && cylinder.type == dCylinderClass,"argument not a ccylinder");
-		//	dxCylinder *c = (dxCylinder*) cylinder;
-		radius.set(_radius);
-		length.set(_lz);
-	}
+//	//void dGeomCylinderGetParams (dGeom cylinder, RefDouble radius, RefDouble length)
+//	public void dGeomCylinderGetParams (RefDouble radius, RefDouble length)
+//	{
+//		//	dUASSERT (cylinder && cylinder.type == dCylinderClass,"argument not a ccylinder");
+//		//	dxCylinder *c = (dxCylinder*) cylinder;
+//		radius.set(_radius);
+//		length.set(_lz);
+//	}
 
 	public double getRadius() {
 		return _radius;
@@ -113,7 +112,5 @@ public class DxCylinder extends DxGeom implements DCylinder {
 
 	public void setParams (double radius, double length)
 	{ dGeomCylinderSetParams (radius, length); }
-	public void getParams (RefDouble radius, RefDouble length)
-	{ dGeomCylinderGetParams (radius,length); }
 }
 

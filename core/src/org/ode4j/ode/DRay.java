@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.cpp4j.java.RefBoolean;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
@@ -35,7 +34,8 @@ public interface DRay extends DGeom {
 	  void get (DVector3 start, DVector3 dir);
 
 	  void setParams (boolean firstContact, boolean backfaceCull);
-	  void getParams (RefBoolean firstContact, RefBoolean backfaceCull);
+	  boolean getFirstContact();
+	  boolean getBackfaceCull();
 	  boolean getParamFirstContact ();
 	  boolean getParamBackfaceCull();
 	  void setClosestHit (boolean closestHit);

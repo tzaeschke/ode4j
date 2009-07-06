@@ -22,7 +22,12 @@
 package org.ode4j.ode;
 
 /**
- * @deprecated TZ: This is deprecated, see Wiki.
+ * From the Wiki: 
+ * The fixed joint maintains a fixed relative position and orientation between
+ * two bodies, or between a body and the static environment. Using this joint
+ * is almost never a good idea in practice, except when debugging. 
+ * If you need two bodies to be glued together it is better to represent that 
+ * as a single body. 
  */
 public interface DFixedJoint extends DJoint {
 

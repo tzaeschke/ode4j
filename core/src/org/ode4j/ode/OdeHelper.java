@@ -330,7 +330,7 @@ public abstract class OdeHelper {
 	public static DRay createRay(int length) {
 		return DxRay.dCreateRay(null, length);
 	}
-	public static DRay createRay(DSpace space, int length) {
+	public static DRay createRay(DSpace space, double length) {
 		return DxRay.dCreateRay((DxSpace) space, length);
 	}
 	

@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefBoolean;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
@@ -200,14 +199,21 @@ public class DxRay extends DxGeom implements DRay {
 
 
 	//void dGeomRayGetParams (dxGeom *g, int *FirstContact, int *BackfaceCull)
-	void dGeomRayGetParams (RefBoolean FirstContact, RefBoolean BackfaceCull)
-	{
-		//dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
-
-		//  (*FirstContact) = ((g->gflags & RAY_FIRSTCONTACT) != 0);
-		//  (*BackfaceCull) = ((g->gflags & RAY_BACKFACECULL) != 0);
-		FirstContact.set((_gflags & RAY_FIRSTCONTACT) != 0);
-		BackfaceCull.set((_gflags & RAY_BACKFACECULL) != 0);
+//	void dGeomRayGetParams (RefBoolean FirstContact, RefBoolean BackfaceCull)
+//	{
+//		//dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
+//
+//		//  (*FirstContact) = ((g->gflags & RAY_FIRSTCONTACT) != 0);
+//		//  (*BackfaceCull) = ((g->gflags & RAY_BACKFACECULL) != 0);
+//		FirstContact.set((_gflags & RAY_FIRSTCONTACT) != 0);
+//		BackfaceCull.set((_gflags & RAY_BACKFACECULL) != 0);
+//	}
+	
+	public boolean getFirstContact() {
+		return (_gflags & RAY_FIRSTCONTACT) != 0;
+	}
+	public boolean getBackfaceCull() {
+		return (_gflags & RAY_BACKFACECULL) != 0;
 	}
 
 
@@ -849,8 +855,6 @@ public class DxRay extends DxGeom implements DRay {
 
 	public void setParams (boolean firstContact, boolean backfaceCull)
 	{ dGeomRaySetParams (firstContact, backfaceCull); }
-	public void getParams (RefBoolean firstContact, RefBoolean backfaceCull)
-	{ dGeomRayGetParams (firstContact, backfaceCull); }
 	public void setClosestHit (boolean closestHit)
 	{ dGeomRaySetClosestHit (closestHit); }
 	public boolean getParamFirstContact () {

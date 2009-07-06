@@ -24,7 +24,7 @@ package org.ode4j.ode.internal;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABBC;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DQuadTreeSpace;
 import org.cpp4j.java.ObjArray;
@@ -232,10 +232,14 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 						//
 					}
 					else if (true){
-						if (g1._aabb.get(AXIS0 * 2 + 0) > Children.at(i).MaxX ||
-								g1._aabb.get(AXIS0 * 2 + 1) < Children.at(i).MinX ||
-								g1._aabb.get(AXIS1 * 2 + 0) > Children.at(i).MaxZ ||
-								g1._aabb.get(AXIS1 * 2 + 1) < Children.at(i).MinZ) continue;
+//						if (g1._aabb.get(AXIS0 * 2 + 0) > Children.at(i).MaxX ||
+//								g1._aabb.get(AXIS0 * 2 + 1) < Children.at(i).MinX ||
+//								g1._aabb.get(AXIS1 * 2 + 0) > Children.at(i).MaxZ ||
+//								g1._aabb.get(AXIS1 * 2 + 1) < Children.at(i).MinZ) continue;
+						if (g1._aabb.getMin(AXIS0) > Children.at(i).MaxX ||
+								g1._aabb.getMax(AXIS0) < Children.at(i).MinX ||
+								g1._aabb.getMin(AXIS1) > Children.at(i).MaxZ ||
+								g1._aabb.getMax(AXIS1) < Children.at(i).MinZ) continue;
 					}
 					Children.at(i).Collide(g1, Children.at(i).First, UserData, Callback);
 				}
@@ -317,15 +321,19 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		}
 
 		//bool Block::Inside(const dReal* AABB){
-		boolean Inside(final DVector6 AABB){
-			return AABB.get(AXIS0 * 2 + 0) >= MinX 
-			&& AABB.get(AXIS0 * 2 + 1) <= MaxX 
-			&& AABB.get(AXIS1 * 2 + 0) >= MinZ 
-			&& AABB.get(AXIS1 * 2 + 1) <= MaxZ;
+		boolean Inside(DAABBC AABB){
+//			return AABB.get(AXIS0 * 2 + 0) >= MinX 
+//			&& AABB.get(AXIS0 * 2 + 1) <= MaxX 
+//			&& AABB.get(AXIS1 * 2 + 0) >= MinZ 
+//			&& AABB.get(AXIS1 * 2 + 1) <= MaxZ;
+			return AABB.getMin(AXIS0) >= MinX 
+			&& AABB.getMax(AXIS0) <= MaxX 
+			&& AABB.getMin(AXIS1) >= MinZ 
+			&& AABB.getMax(AXIS1) <= MaxZ;
 		}
 
 		//Block* Block::GetBlock(const dReal* AABB){
-		Block GetBlock(final DVector6 AABB){
+		Block GetBlock(DAABBC AABB){
 			if (Inside(AABB)){
 				return GetBlockChild(AABB);	// Child or this will have a good block
 			}
@@ -336,7 +344,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		}
 
 		//Block* Block::GetBlockChild(final double[] AABB){
-		Block GetBlockChild(final DVector6 AABB){
+		Block GetBlockChild(DAABBC AABB){
 			if (Children!=null){
 				for (int i = 0; i < SPLITS; i++){
 					if (Children.at(i).Inside(AABB)){

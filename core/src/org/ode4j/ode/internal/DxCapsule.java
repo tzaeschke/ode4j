@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefDouble;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
@@ -100,13 +99,13 @@ public class DxCapsule extends DxGeom implements DCapsule {
 
 
 	//void dGeomCapsuleGetParams (dGeom g, double *radius, double *length)
-	public void dGeomCapsuleGetParams (RefDouble radius, RefDouble length)
-	{
-		//  dUASSERT (g && g.type == dCapsuleClass,"argument not a ccylinder");
-		//  dxCapsule *c = (dxCapsule*) g;
-		radius.set(_radius);
-		length.set(_lz);
-	}
+//	public void dGeomCapsuleGetParams (RefDouble radius, RefDouble length)
+//	{
+//		//  dUASSERT (g && g.type == dCapsuleClass,"argument not a ccylinder");
+//		//  dxCapsule *c = (dxCapsule*) g;
+//		radius.set(_radius);
+//		length.set(_lz);
+//	}
 
 
 	//double dGeomCapsulePointDepth (dGeom g, double x, double y, double z)
@@ -475,8 +474,6 @@ public class DxCapsule extends DxGeom implements DCapsule {
 	
 	public void setParams (double radius, double length)
 	{ dGeomCapsuleSetParams (radius, length); }
-	public void getParams (RefDouble radius, RefDouble length)
-	{ dGeomCapsuleGetParams (radius,length); }
 	public double getRadius() {
 		return _radius;
 	}

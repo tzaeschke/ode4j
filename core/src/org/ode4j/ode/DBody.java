@@ -169,6 +169,8 @@ public interface DBody {
 	int getNumJoints();
 	DJoint getJoint (int index);
 
+	DWorld getWorld();
+
 	void setGravityMode (boolean mode);
 	boolean getGravityMode();
 
@@ -184,6 +186,9 @@ public interface DBody {
 	double getAutoDisableTime();
 	void setAutoDisableFlag (boolean do_auto_disable);
 	boolean getAutoDisableFlag();
+	int getAutoDisableAverageSamplesCount();
+	void setAutoDisableAverageSamplesCount(int average_samples_count);
+	void setAutoDisableDefaults();
 
 	double getLinearDamping();
 	void setLinearDamping(double scale);

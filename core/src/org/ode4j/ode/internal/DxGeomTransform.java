@@ -69,7 +69,7 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 	void computeAABB()
 	{
 		if (obj==null) {
-			_aabb.setValues(0);//dSetZero (_aabb,6);
+			_aabb.setZero();//dSetZero (_aabb,6);
 			return;
 		}
 

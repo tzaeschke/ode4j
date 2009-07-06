@@ -25,6 +25,7 @@ import org.ode4j.math.DVector3C;
 
 public interface DPlane extends DGeom {
 
+	
 	void setParams (double a, double b, double c, double d);
 	void setParams (DVector3C n, double d);
 	//TZpublic void getParams (DVector4 result);

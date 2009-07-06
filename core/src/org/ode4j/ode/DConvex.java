@@ -23,4 +23,7 @@ package org.ode4j.ode;
 
 public interface DConvex extends DGeom {
 
+	void setConvex(double[] planes, int planeCount, double[] points,
+			int pointCount, int[] polygons);
+
 }

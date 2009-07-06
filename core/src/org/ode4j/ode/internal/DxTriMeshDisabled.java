@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.internal.Common.dMatrix4;
@@ -76,12 +76,12 @@ class DxTriMeshDisabled extends DxTriMesh {
 	//dxTriMesh::~dxTriMesh(){}
 
 	//int dxTriMesh::AABBTest(dxGeom* g, dReal aabb[6]) { return 0; }
-	boolean AABBTest(DVector6 aabb) {
+	boolean AABBTest(DAABB aabb) {
 		return false;
 	}
 	//void dxTriMesh::computeAABB() { dSetZero (aabb,6); }
 	void computeAABB() {
-		_aabb.setValues(0);
+		_aabb.setZero();
 	}
 
 	//TODO TZ report: identity IS NOT an indentity matrix!

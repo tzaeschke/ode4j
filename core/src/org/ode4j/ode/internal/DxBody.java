@@ -115,10 +115,9 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	}
 
 
-	DxWorld dBodyGetWorld (DxBody b)
+	DxWorld dBodyGetWorld ()
 	{
-		dAASSERT (b);
-		return b.world;
+		return world;
 	}
 
 	public static DxBody dBodyCreate (DxWorld w)
@@ -937,12 +936,6 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		max_angular_speed = max_speed;
 	}
 
-	/** deprecated */
-	void dBodySetMovedCallback(DxBody b, BodyMoveCallBack callback)
-	{
-		dAASSERT(b);
-		b.moved_callback = callback;
-	}
 	//	void dBodySetMovedCallback(dxBody b, void (*callback)(dxBody))
 	public void dBodySetMovedCallback(BodyMoveCallBack callback)
 	{
@@ -1366,6 +1359,24 @@ public class DxBody extends DObject implements DBody, Cloneable {
 
 	public void destroy() {
 		dBodyDestroy();
+	}
+
+
+	@Override
+	public int getAutoDisableAverageSamplesCount() {
+		return dBodyGetAutoDisableAverageSamplesCount();
+	}
+
+
+	@Override
+	public void setAutoDisableAverageSamplesCount(int average_samples_count) {
+		dBodySetAutoDisableAverageSamplesCount(average_samples_count);
+	}
+
+
+	@Override
+	public void setAutoDisableDefaults() {
+		dBodySetAutoDisableDefaults();
 	}
 
 }

@@ -34,7 +34,6 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DAABBC;
 import org.ode4j.ode.DBody;
@@ -309,7 +308,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		_next = null;
 		_prev = null;//tome = null;
 		parent_space = null;
-		_aabb.setValues(0);//dSetZero (_aabb.v,6);
+		_aabb.setZero();//dSetZero (_aabb.v,6);
 		category_bits = ~0;
 		collide_bits = ~0;
 
@@ -347,7 +346,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 * @return
 	 */
 	//	  abstract int AABBTest (dxGeom o, dReal aabb[6]);
-	boolean AABBTest (DxGeom o, DVector6 aabb)
+	boolean AABBTest (DxGeom o, DAABBC aabb)
 	{
 		return true;
 	}
@@ -739,7 +738,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 
 	//void dGeomGetAABB (dxGeom *g, double aabb[6])
-	public void dGeomGetAABB (DVector6 aabb)
+	public void dGeomGetAABB (DAABB aabb)
 	{
 		//dAASSERT (g);
 		//dAASSERT (aabb);
@@ -1031,112 +1030,105 @@ public abstract class DxGeom extends DBase implements DGeom {
 		dGeomMoved();
 	}
 
-	void dGeomSetOffsetQuaternion (DxGeom g, final DQuaternionC quat)
+	void dGeomSetOffsetQuaternion (DQuaternionC quat)
 	{
-		dAASSERT (g, quat);
-		dUASSERT (g._gflags & GEOM_PLACEABLE,"geom must be placeable");
-		dUASSERT (g.body, "geom must be on a body");
-		CHECK_NOT_LOCKED (g.parent_space);
-		if (g.offset_posr == null)
+		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
+		dUASSERT (body, "geom must be on a body");
+		CHECK_NOT_LOCKED (parent_space);
+		if (offset_posr == null)
 		{
-			g.dGeomCreateOffset ();
+			dGeomCreateOffset ();
 		}
-		dQtoR (quat, g.offset_posr.R);
-		g.dGeomMoved();
+		dRfromQ (offset_posr.R, quat);
+		dGeomMoved();
 	}
 
-	void dGeomSetOffsetWorldPosition (DxGeom g, double x, double y, double z)
+	void dGeomSetOffsetWorldPosition (double x, double y, double z)
 	{
-		dAASSERT (g);
-		dUASSERT (g._gflags & GEOM_PLACEABLE,"geom must be placeable");
-		dUASSERT (g.body, "geom must be on a body");
-		CHECK_NOT_LOCKED (g.parent_space);
-		if (g.offset_posr == null)
+		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
+		dUASSERT (body, "geom must be on a body");
+		CHECK_NOT_LOCKED (parent_space);
+		if (offset_posr == null)
 		{
-			g.dGeomCreateOffset();
+			dGeomCreateOffset();
 		}
-		g.body.dBodyGetPosRelPoint(new DVector3(x, y, z), g.offset_posr.pos);
-		g.dGeomMoved();
+		body.dBodyGetPosRelPoint(new DVector3(x, y, z), offset_posr.pos);
+		dGeomMoved();
 	}
 
-	void dGeomSetOffsetWorldRotation (DxGeom g, final DMatrix3C R)
+	void dGeomSetOffsetWorldRotation (DMatrix3C R)
 	{
-		dAASSERT (g, R);
-		dUASSERT (g._gflags & GEOM_PLACEABLE,"geom must be placeable");
-		dUASSERT (g.body, "geom must be on a body");
-		CHECK_NOT_LOCKED (g.parent_space);
-		if (g.offset_posr == null)
+		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
+		dUASSERT (body, "geom must be on a body");
+		CHECK_NOT_LOCKED (parent_space);
+		if (offset_posr == null)
 		{
-			g.dGeomCreateOffset ();
+			dGeomCreateOffset ();
 		}
-		g.recomputePosr();
+		recomputePosr();
 
 		dxPosR new_final_posr = new dxPosR();
 //		memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
-		new_final_posr.pos.set(g._final_posr.pos);
+		new_final_posr.pos.set(_final_posr.pos);
 //		memcpy(new_final_posr.R, R, sizeof(dMatrix3));
 		new_final_posr.R.set(R);
 
-		getWorldOffsetPosr(g.body._posr, new_final_posr, g.offset_posr);
-		g.dGeomMoved();
+		getWorldOffsetPosr(body._posr, new_final_posr, offset_posr);
+		dGeomMoved();
 	}
 
-	void dGeomSetOffsetWorldQuaternion (DxGeom g, final DQuaternionC quat)
+	void dGeomSetOffsetWorldQuaternion (DQuaternionC quat)
 	{
-		dAASSERT (g, quat);
-		dUASSERT (g._gflags & GEOM_PLACEABLE,"geom must be placeable");
-		dUASSERT (g.body, "geom must be on a body");
-		CHECK_NOT_LOCKED (g.parent_space);
-		if (g.offset_posr == null)
+		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
+		dUASSERT (body, "geom must be on a body");
+		CHECK_NOT_LOCKED (parent_space);
+		if (offset_posr == null)
 		{
-			g.dGeomCreateOffset ();
+			dGeomCreateOffset ();
 		}
 
-		g.recomputePosr();
+		recomputePosr();
 
 		dxPosR new_final_posr = new dxPosR();
 //		memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
-		new_final_posr.pos.set(g._final_posr.pos);
-		dQtoR (quat, new_final_posr.R);
+		new_final_posr.pos.set(_final_posr.pos);
+		dRfromQ (new_final_posr.R, quat);
 
-		getWorldOffsetPosr(g.body._posr, new_final_posr, g.offset_posr);
-		g.dGeomMoved();
+		getWorldOffsetPosr(body._posr, new_final_posr, offset_posr);
+		dGeomMoved();
 	}
 
-	void dGeomClearOffset(DxGeom g)
+	void dGeomClearOffset()
 	{
-		dAASSERT (g);
-		dUASSERT (g._gflags & GEOM_PLACEABLE,"geom must be placeable");
-		if (g.offset_posr != null)
+		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
+		if (offset_posr != null)
 		{
-			dIASSERT(g.body != null);
+			dIASSERT(body != null);
 			// no longer need an offset posr
-			dFreePosr(g.offset_posr);
-			g.offset_posr = null;
+			dFreePosr(offset_posr);
+			offset_posr = null;
 			// the geom will now share the position of the body
-			dFreePosr(g._final_posr);
-			g._final_posr = g.body._posr;
+			dFreePosr(_final_posr);
+			_final_posr = body._posr;
 			// geom has moved
-			g._gflags &= ~GEOM_POSR_BAD;
-			g.dGeomMoved();
+			_gflags &= ~GEOM_POSR_BAD;
+			dGeomMoved();
 		}
 	}
 
-	int dGeomIsOffset(DxGeom g)
+	boolean dGeomIsOffset()
 	{
-		dAASSERT (g);
-		return ((null != g.offset_posr) ? 1 : 0);
+		return null != offset_posr;
 	}
 
 	private static final DVector3C OFFSET_POSITION_ZERO = new DVector3( 0.0f, 0.0f, 0.0f );
 
 	//	final double * dGeomGetOffsetPosition (dxGeom g)
-	final DVector3C dGeomGetOffsetPosition (DxGeom g)
+	DVector3C dGeomGetOffsetPosition ()
 	{
-		dAASSERT (g);
-		if (g.offset_posr != null)
+		if (offset_posr != null)
 		{
-			return g.offset_posr.pos;
+			return offset_posr.pos;
 		}
 		return OFFSET_POSITION_ZERO;
 	}
@@ -1167,12 +1159,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 			0.0, 0.0, 1.0);
 
 	//double *
-	final DMatrix3C dGeomGetOffsetRotation (DxGeom g)
+	DMatrix3C dGeomGetOffsetRotation ()
 	{
-		dAASSERT (g);
-		if (g.offset_posr != null)
+		if (offset_posr != null)
 		{
-			return g.offset_posr.R;
+			return offset_posr.R;
 		}
 		return OFFSET_ROTATION_ZERO;
 	}
@@ -1209,12 +1200,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 		}
 	}
 
-	void dGeomGetOffsetQuaternion (DxGeom g, DQuaternion result)
+	void dGeomGetOffsetQuaternion (DQuaternion result)
 	{
-		dAASSERT (g);
-		if (g.offset_posr != null)
+		if (offset_posr != null)
 		{
-			dQfromR(result, g.offset_posr.R);
+			dQfromR(result, offset_posr.R);
 		}
 		else
 		{
@@ -1674,6 +1664,61 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 
 	public void setOffsetRotation(DMatrix3C R) {
+		dGeomSetOffsetRotation(R);
+	}
+
+
+
+	@Override
+	public void clearOffset() {
+		dGeomClearOffset();
+	}
+
+
+	@Override
+	public DVector3C getOffsetPosition() {
+		return dGeomGetOffsetPosition();
+	}
+
+
+	@Override
+	public void getOffsetQuaternion(DQuaternion result) {
+		dGeomGetOffsetQuaternion(result);
+	}
+
+
+	@Override
+	public DMatrix3C getOffsetRotation() {
+		return dGeomGetOffsetRotation();
+	}
+
+
+	@Override
+	public boolean isOffset() {
+		return dGeomIsOffset();
+	}
+
+
+	@Override
+	public void setOffsetQuaternion(DQuaternionC q) {
+		dGeomSetOffsetQuaternion(q);
+	}
+
+
+	@Override
+	public void setOffsetWorldPosition(double x, double y, double z) {
+		dGeomSetOffsetWorldPosition(x, y, z);
+	}
+
+
+	@Override
+	public void setOffsetWorldQuaternion(DQuaternionC q) {
+		dGeomSetOffsetWorldQuaternion(q);
+	}
+
+
+	@Override
+	public void setOffsetWorldRotation(DMatrix3C R) {
 		dGeomSetOffsetRotation(R);
 	}
 

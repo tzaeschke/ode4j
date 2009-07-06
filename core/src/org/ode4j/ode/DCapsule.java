@@ -21,14 +21,11 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.cpp4j.java.RefDouble;
 import org.ode4j.math.DVector3C;
 
 public interface DCapsule extends DGeom {
 
 	void setParams (double radius, double length);
-	/** @deprecated */
-	void getParams (RefDouble radius, RefDouble length);
 	double getRadius();
 	double getLength();
 	double getPointDepth(DVector3C a);

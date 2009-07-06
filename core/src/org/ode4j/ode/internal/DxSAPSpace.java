@@ -119,9 +119,9 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	//	uint32 ax0idx;
 	//	uint32 ax1idx;
 	//	uint32 ax2idx;
-	private int ax0idx;
-	private int ax1idx;
-	private int ax2idx;
+	private int ax0id;
+	private int ax1id;
+	private int ax2id;
 
 	// pruning position array scratch pad
 	// NOTE: this is float not dReal because of the OPCODE radix sorter
@@ -207,9 +207,13 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		//	_aabb[5] = dInfinity;
 		_aabb.set(-dInfinity, dInfinity, -dInfinity, dInfinity, -dInfinity, dInfinity);
 
-		ax0idx = ( ( axisorder ) & 3 ) << 1;
-		ax1idx = ( ( axisorder >> 2 ) & 3 ) << 1;
-		ax2idx = ( ( axisorder >> 4 ) & 3 ) << 1;
+//		ax0idx = ( ( axisorder ) & 3 ) << 1;
+//		ax1idx = ( ( axisorder >> 2 ) & 3 ) << 1;
+//		ax2idx = ( ( axisorder >> 4 ) & 3 ) << 1;
+		//TZ the new AABB class does not need '<< 1'.
+		ax0id = ( ( axisorder ) & 3 );
+		ax1id = ( ( axisorder >> 2 ) & 3 );
+		ax2id = ( ( axisorder >> 4 ) & 3 );
 	}
 
 	//TODO check super class?!?
@@ -388,12 +392,12 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		// separate all ENABLED geoms into infinite AABBs and normal AABBs
 		TmpGeomList.clear();//setSize(0);
 		TmpInfGeomList.setSize(0);
-		int axis0max = ax0idx + 1;
+		int axis0max = ax0id;// + 1;
 		for( int i = 0; i < geom_count; ++i ) {
 			DxGeom g = GeomList.get(i);
 			if( !GEOM_ENABLED(g) ) // skip disabled ones
 				continue;
-			final double amax = g._aabb.get(axis0max);
+			final double amax = g._aabb.getMax(axis0max);
 			if( amax == dInfinity ) // HACK? probably not...
 				TmpInfGeomList.push( g );
 			else
@@ -479,8 +483,8 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	private class GeomComparator implements Comparator<DxGeom> {
 		@Override
 		public int compare(DxGeom arg0, DxGeom arg1) {
-			double a0 = arg0._aabb.get(ax0idx);
-			double a1 = arg1._aabb.get(ax0idx);
+			double a0 = arg0._aabb.getMin(ax0id);
+			double a1 = arg1._aabb.getMin(ax0id);
 			return a1 > a0 ? -1 : (a1 < a0 ? 1 : 0);
 		}
 	}
@@ -514,17 +518,21 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		for (int i = 0; i < buffer.size(); i++) {
 			DxGeom g0 = buffer.get(i);
 			DAABB aabb0 = g0._aabb;
-			final double idx0ax0max = aabb0.get(ax0idx+1);
+			final double idx0ax0max = aabb0.getMax(ax0id);//(ax0idx+1);
 			for (int j = i+1; j < buffer.size(); j++) {
 				DxGeom g1 = buffer.get(j);
-				if (g1._aabb.get(ax0idx) > idx0ax0max) {
+				if (g1._aabb.getMin(ax0id) > idx0ax0max) {
 					//This and following elements can not intersect with g1.
 					break;
 				}
-				if ( aabb0.get(ax1idx+1) >= g1._aabb.get(ax1idx)) 
-					if (g1._aabb.get(ax1idx+1) >= aabb0.get(ax1idx) )
-						if ( aabb0.get(ax2idx+1) >= g1._aabb.get(ax2idx))
-							if (g1._aabb.get(ax2idx+1) >= aabb0.get(ax2idx) )
+//				if ( aabb0.get(ax1idx+1) >= g1._aabb.get(ax1idx)) 
+//					if (g1._aabb.get(ax1idx+1) >= aabb0.get(ax1idx) )
+//						if ( aabb0.get(ax2idx+1) >= g1._aabb.get(ax2idx))
+//							if (g1._aabb.get(ax2idx+1) >= aabb0.get(ax2idx) )
+				if ( aabb0.getMax(ax1id) >= g1._aabb.getMin(ax1id)) 
+					if (g1._aabb.getMax(ax1id) >= aabb0.getMin(ax1id) )
+						if ( aabb0.getMax(ax2id) >= g1._aabb.getMin(ax2id))
+							if (g1._aabb.getMax(ax2id) >= aabb0.getMin(ax2id) )
 								pairs.add(new Pair(g0, g1));
 			}
 		}

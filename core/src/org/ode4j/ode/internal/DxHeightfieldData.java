@@ -721,8 +721,8 @@ public class DxHeightfieldData implements DHeightfieldData {
 	}
 
 	@Override
-	public void setBounds(DHeightfieldData d, double minHeight, double maxHeight) {
-		((DxHeightfieldData)d).dGeomHeightfieldDataSetBounds( minHeight, maxHeight );
+	public void setBounds(double minHeight, double maxHeight) {
+		dGeomHeightfieldDataSetBounds( minHeight, maxHeight );
 	}
 
 	@Override

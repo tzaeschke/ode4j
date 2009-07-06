@@ -225,8 +225,10 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 				// cellsize = 2^level
 				double cellsize = ldexp (1.0,level);
 				// discretize AABB position to cell size
-				for (i=0; i < 6; i++) aabbP.dbounds[i] = (int)
-					Math.floor (geom._aabb.get(i)/cellsize);
+				for (i=0; i < 3; i++) {
+					aabbP.dbounds[2*i] = (int)Math.floor (geom._aabb.getMin(i)/cellsize);
+					aabbP.dbounds[2*i+1] = (int)Math.floor (geom._aabb.getMax(i)/cellsize);
+				}
 				// set AABB index
 				aabbP.index = n;
 				n++;

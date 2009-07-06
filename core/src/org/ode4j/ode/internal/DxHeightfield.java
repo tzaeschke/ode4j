@@ -25,7 +25,7 @@ import org.cpp4j.java.ObjArray;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
@@ -274,21 +274,21 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				//	#endif // DHEIGHTFIELD_CORNER_ORIGIN
 
 				// X extents
-				_aabb.set(0, _final_posr.pos.get0() +
+				_aabb.setMin0(_final_posr.pos.get0() +
 						dMIN3( dMIN( dx[0], dx[3] ), dMIN( dy[0], dy[3] ), dMIN( dz[0], dz[3] ) ) );
-				_aabb.set(1, _final_posr.pos.get0() +
+				_aabb.setMax0(_final_posr.pos.get0() +
 						dMAX3( dMAX( dx[0], dx[3] ), dMAX( dy[0], dy[3] ), dMAX( dz[0], dz[3] ) ) );
 
 				// Y extents
-				_aabb.set(2, _final_posr.pos.get1() +
+				_aabb.setMin1(_final_posr.pos.get1() +
 						dMIN3( dMIN( dx[1], dx[4] ), dMIN( dy[1], dy[4] ), dMIN( dz[1], dz[4] ) ) );
-				_aabb.set(3, _final_posr.pos.get1() +
+				_aabb.setMax1(_final_posr.pos.get1() +
 						dMAX3( dMAX( dx[1], dx[4] ), dMAX( dy[1], dy[4] ), dMAX( dz[1], dz[4] ) ) );
 
 				// Z extents
-				_aabb.set(4, _final_posr.pos.get2() +
+				_aabb.setMin2(_final_posr.pos.get2() +
 						dMIN3( dMIN( dx[2], dx[5] ), dMIN( dy[2], dy[5] ), dMIN( dz[2], dz[5] ) ) );
-				_aabb.set(5, _final_posr.pos.get2() +
+				_aabb.setMax2(_final_posr.pos.get2() +
 						dMAX3( dMAX( dx[2], dx[5] ), dMAX( dy[2], dy[5] ), dMAX( dz[2], dz[5] ) ) );
 			}
 			else
@@ -652,8 +652,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 		//	    final unsigned int numZ = (maxZ - minZ) + 1;
 		final int numX = (maxX - minX) + 1;
 		final int numZ = (maxZ - minZ) + 1;
-		final double minO2Height = o2._aabb.get2();
-		final double maxO2Height = o2._aabb.get3();
+		final double minO2Height = o2._aabb.getMin1();
+		final double maxO2Height = o2._aabb.getMax1();
 		//unsigned 
 		int x_local, z_local;
 		double maxY = - dInfinity;
@@ -949,12 +949,12 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 		// no FurtherPasses are needed in ray class
 		if (o2.type != dRayClass  && needFurtherPasses == false)
 		{
-			final double xratio = (o2._aabb.get1() - o2._aabb.get0()) * m_p_data.m_fInvSampleWidth;
+			final double xratio = (o2._aabb.getMax0() - o2._aabb.getMin0()) * m_p_data.m_fInvSampleWidth;
 			if (xratio > (1.5))
 				needFurtherPasses = true;
 			else
 			{
-				final double zratio = (o2._aabb.get5() - o2._aabb.get4()) * m_p_data.m_fInvSampleDepth;
+				final double zratio = (o2._aabb.getMax2() - o2._aabb.getMin2()) * m_p_data.m_fInvSampleDepth;
 				if (zratio > (1.5))
 					needFurtherPasses = true;
 			}
@@ -1449,7 +1449,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 			DVector3 posbak = new DVector3();
 			DMatrix3 Rbak = new DMatrix3();
-			DVector6 aabbbak = new DVector6();
+			DAABB aabbbak = new DAABB();
 			int gflagsbak = 0;
 			DVector3 pos0 = new DVector3(), pos1 = new DVector3();
 			DMatrix3 R1 = new DMatrix3();
@@ -1523,14 +1523,14 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 			if ( !wrapped )
 			{
-				if (    o2._aabb.get0() > terrain.m_p_data.m_fWidth //MinX
-						&&  o2._aabb.get4() > terrain.m_p_data.m_fDepth) {//MinZ
+				if (    o2._aabb.getMin0() > terrain.m_p_data.m_fWidth //MinX
+						&&  o2._aabb.getMin2() > terrain.m_p_data.m_fDepth) {//MinZ
 					//goto dCollideHeightfieldExit;
 					dCollideHeightfieldExit = true;
 				}
 
-				if (    o2._aabb.get1() < 0 //MaxX
-						&&  o2._aabb.get5() < 0) { //MaxZ
+				if (    o2._aabb.getMax0() < 0 //MaxX
+						&&  o2._aabb.getMax2() < 0) { //MaxZ
 					//goto dCollideHeightfieldExit;
 					dCollideHeightfieldExit = true;
 				}
@@ -1539,10 +1539,10 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 			DContactGeom pContact;
 			if (!dCollideHeightfieldExit) {
-				nMinX = (int) (dFloor(o2._aabb.get0() * terrain.m_p_data.m_fInvSampleWidth));
-				nMaxX = (int) (dFloor(o2._aabb.get1() * terrain.m_p_data.m_fInvSampleWidth)) + 1;
-				nMinZ = (int) (dFloor(o2._aabb.get4() * terrain.m_p_data.m_fInvSampleDepth));
-				nMaxZ = (int) (dFloor(o2._aabb.get5() * terrain.m_p_data.m_fInvSampleDepth)) + 1;
+				nMinX = (int) (dFloor(o2._aabb.getMin0() * terrain.m_p_data.m_fInvSampleWidth));
+				nMaxX = (int) (dFloor(o2._aabb.getMax0() * terrain.m_p_data.m_fInvSampleWidth)) + 1;
+				nMinZ = (int) (dFloor(o2._aabb.getMin2() * terrain.m_p_data.m_fInvSampleDepth));
+				nMaxZ = (int) (dFloor(o2._aabb.getMax2() * terrain.m_p_data.m_fInvSampleDepth)) + 1;
 
 				if ( !wrapped )
 				{
@@ -1574,7 +1574,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 					pContact = contacts.get(i*skip);//CONTACT(contact,i*skip);
 					pContact.g1 = o1;
 					pContact.g2 = o2;
-					// pContact->side1 = -1; -- Oleh_Derevenko: sides must not be erased here as they are set by respective colliders during ray/plane tests 
+					// pContact->side1 = -1; -- Oleh_Derevenko: sides must not
+					// be erased here as they are set by respective colliders during ray/plane tests 
 					// pContact->side2 = -1;
 				}
 			}

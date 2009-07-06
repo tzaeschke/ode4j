@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.DTriMesh;
 
@@ -47,7 +47,7 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 
 	abstract void ClearTCCache();
 
-	abstract boolean AABBTest(DVector6 aabb);
+	abstract boolean AABBTest(DAABB aabb);
 	abstract void computeAABB();
 
 

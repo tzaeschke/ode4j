@@ -258,21 +258,27 @@ public class DxConvex extends DxGeom implements DConvex {
 		// this can, and should be optimized
 		DVector3 point = new DVector3();
 		dMULTIPLY0_331 (point.v,0, _final_posr.R.v,0, points,0);
-		_aabb.v[0] = point.v[0]+_final_posr.pos.v[0];
-		_aabb.v[1] = point.v[0]+_final_posr.pos.v[0];
-		_aabb.v[2] = point.v[1]+_final_posr.pos.v[1];
-		_aabb.v[3] = point.v[1]+_final_posr.pos.v[1];
-		_aabb.v[4] = point.v[2]+_final_posr.pos.v[2];
-		_aabb.v[5] = point.v[2]+_final_posr.pos.v[2];
+//		_aabb.v[0] = point.v[0]+_final_posr.pos.v[0];
+//		_aabb.v[1] = point.v[0]+_final_posr.pos.v[0];
+//		_aabb.v[2] = point.v[1]+_final_posr.pos.v[1];
+//		_aabb.v[3] = point.v[1]+_final_posr.pos.v[1];
+//		_aabb.v[4] = point.v[2]+_final_posr.pos.v[2];
+//		_aabb.v[5] = point.v[2]+_final_posr.pos.v[2];
+		_aabb.setMin( _final_posr.pos );
+		_aabb.setMax( _final_posr.pos );
+		_aabb.shiftPos( point );
 		for(int i=3;i<(pointcount*3);i+=3)
 		{
 			dMULTIPLY0_331 (point.v,0, _final_posr.R.v,0, points,i);
-			_aabb.v[0] = dMIN(_aabb.v[0],point.v[0]+_final_posr.pos.v[0]);
-			_aabb.v[1] = dMAX(_aabb.v[1],point.v[0]+_final_posr.pos.v[0]);
-			_aabb.v[2] = dMIN(_aabb.v[2],point.v[1]+_final_posr.pos.v[1]);
-			_aabb.v[3] = dMAX(_aabb.v[3],point.v[1]+_final_posr.pos.v[1]);
-			_aabb.v[4] = dMIN(_aabb.v[4],point.v[2]+_final_posr.pos.v[2]);
-			_aabb.v[5] = dMAX(_aabb.v[5],point.v[2]+_final_posr.pos.v[2]);
+//			_aabb.v[0] = dMIN(_aabb.v[0],point.v[0]+_final_posr.pos.v[0]);
+//			_aabb.v[1] = dMAX(_aabb.v[1],point.v[0]+_final_posr.pos.v[0]);
+//			_aabb.v[2] = dMIN(_aabb.v[2],point.v[1]+_final_posr.pos.v[1]);
+//			_aabb.v[3] = dMAX(_aabb.v[3],point.v[1]+_final_posr.pos.v[1]);
+//			_aabb.v[4] = dMIN(_aabb.v[4],point.v[2]+_final_posr.pos.v[2]);
+//			_aabb.v[5] = dMAX(_aabb.v[5],point.v[2]+_final_posr.pos.v[2]);
+			DVector3 tmp = new DVector3();
+			tmp.eqSum( point, _final_posr.pos );
+			_aabb.expand( tmp );
 		}
 	}
 
@@ -2062,6 +2068,9 @@ Helper struct
 		}
 	}
 
-	//#endif  //ifdef 0
-	//<-- Convex Collision
+	@Override
+	public void setConvex(double[] planes, int planeCount, double[] points,
+			int pointCount, int[] polygons) {
+		dGeomSetConvex(planes, planeCount, points, pointCount, polygons);
+	}
 }

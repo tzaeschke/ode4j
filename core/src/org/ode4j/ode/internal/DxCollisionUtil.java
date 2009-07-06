@@ -29,7 +29,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector4;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 
@@ -833,14 +833,11 @@ public class DxCollisionUtil {
 	// other utility functions
 
 	//void dInfiniteAABB (dxGeom *geom, dReal aabb[6])
-	void dInfiniteAABB (DxGeom geom, DVector6 aabb)
+	void dInfiniteAABB (DxGeom geom, DAABB aabb)
 	{
-		aabb.v[0] = -dInfinity;
-		aabb.v[1] = dInfinity;
-		aabb.v[2] = -dInfinity;
-		aabb.v[3] = dInfinity;
-		aabb.v[4] = -dInfinity;
-		aabb.v[5] = dInfinity;
+		aabb.set( -dInfinity, dInfinity,
+				-dInfinity, dInfinity,
+				-dInfinity, dInfinity);
 	}
 
 

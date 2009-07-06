@@ -21,14 +21,12 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.cpp4j.java.RefDouble;
 
 public interface DCylinder extends DGeom {
 
-	public void setParams (double radius, double length);
-	public void getParams (RefDouble radius, RefDouble length);
-	public double getRadius ();
-	public double getLength ();
+	void setParams (double radius, double length);
+	double getRadius ();
+	double getLength ();
 	
 
 //	  // intentionally undefined, don't use these

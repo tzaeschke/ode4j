@@ -22,6 +22,7 @@
 package org.ode4j.ode;
 
 import org.ode4j.math.DMatrix3C;
+import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3C;
 
@@ -137,9 +138,17 @@ public interface DGeom {
 
 	void collide2 (DGeom g, Object data, DNearCallback callback);
 
+	DVector3C getOffsetPosition();
 	void setOffsetPosition(double d, double e, double f);
-
-	void setOffsetRotation(DMatrix3C matrix3);
+	DMatrix3C getOffsetRotation();
+	void setOffsetRotation(DMatrix3C R);
+	void getOffsetQuaternion(DQuaternion result);
+	void setOffsetQuaternion(DQuaternionC q);
+	void setOffsetWorldPosition(double x, double y, double z);
+	void setOffsetWorldRotation(DMatrix3C R);
+	void setOffsetWorldQuaternion(DQuaternionC q);
+	void clearOffset();
+	boolean isOffset();
 
 
 

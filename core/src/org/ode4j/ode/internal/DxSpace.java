@@ -24,6 +24,7 @@ package org.ode4j.ode.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSpace;
 
@@ -329,24 +330,28 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		if (!_geoms.isEmpty()) {
 			int i;
 			double[] a = new double[6];
-			a[0] = dInfinity;
-			a[1] = -dInfinity;
-			a[2] = dInfinity;
-			a[3] = -dInfinity;
-			a[4] = dInfinity;
-			a[5] = -dInfinity;
+			DAABB aabb = new DAABB();
+			aabb.set( dInfinity, -dInfinity,
+					dInfinity, -dInfinity,
+					dInfinity, -dInfinity);
+//			a[0] = dInfinity;
+//			a[1] = -dInfinity;
+//			a[2] = dInfinity;
+//			a[3] = -dInfinity;
+//			a[4] = dInfinity;
+//			a[5] = -dInfinity;
 			//for (dxGeom g=_first; g != null; g=g.getNext()) {
 			for (DxGeom g: _geoms) {
 				g.recomputeAABB();
-				for (i=0; i<6; i += 2) if (g._aabb.get(i) < a[i]) a[i] = g._aabb.get(i);
-				for (i=1; i<6; i += 2) if (g._aabb.get(i) > a[i]) a[i] = g._aabb.get(i);
+//				for (i=0; i<6; i += 2) if (g._aabb.get(i) < a[i]) a[i] = g._aabb.get(i);
+//				for (i=1; i<6; i += 2) if (g._aabb.get(i) > a[i]) a[i] = g._aabb.get(i);
+				aabb.expand(g.getAABB());
 			}
 			//memcpy(aabb,a,6*sizeof(double));
-			_aabb.set(a);
+			_aabb.set(aabb);
 		}
 		else {
-			//MAT.dSetZero (_aabb.v,6);
-			_aabb.setValues(0);
+			_aabb.setZero();
 		}
 	}
 

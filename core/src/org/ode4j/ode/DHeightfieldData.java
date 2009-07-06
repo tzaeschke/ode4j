@@ -97,7 +97,7 @@ public interface DHeightfieldData {
 	 * @param maxHeight The new maximum height value. Scale and offset is then applied.
 	 * @ingroup collide
 	 */
-	void setBounds( DHeightfieldData d, double minHeight, double maxHeight );
+	void setBounds( double minHeight, double maxHeight );
 
 	/**
 	 * @brief Configures a dHeightfieldData to use height data in byte format.

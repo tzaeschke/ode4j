@@ -22,6 +22,7 @@
 package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 
 /**
  * dynamics world.
@@ -39,7 +40,7 @@ public interface DWorld {
 	////		    { return _id; }
 
 	void setGravity (double x, double y, double z);
-	void setGravity (final DVector3 g);
+	void setGravity (DVector3C g);
 	void getGravity (DVector3 g) ;
 
 	void setERP (double erp);
