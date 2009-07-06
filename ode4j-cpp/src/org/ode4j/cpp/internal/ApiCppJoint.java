@@ -196,7 +196,6 @@ public abstract class ApiCppJoint extends ApiCppOther {
 		return ODE.dJointCreateContact(w, g, c);
 	}
 
-	//TODO by TZ
 	/**
 	 * @brief Create a new joint feedback.
 	 * @ingroup joints
@@ -1882,8 +1881,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	//	  void dJointGetPUAngles (dJoint j, double *angle1, double *angle2);
-	void dJointGetPUAngles (DPUJoint j, RefDouble angle1, RefDouble angle2) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPUAngles (DPUJoint j, RefDouble angle1, RefDouble angle2) {
+		angle1.d = j.getAngle1();
+		angle2.d = j.getAngle2();
 	}
 
 
