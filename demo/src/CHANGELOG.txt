@@ -9,6 +9,10 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
+2009-Jul-07 Tilmann Zaeschke
+		* Fixed Test harness errors and failures
+		* Fixed DemoBuggy
+
 2009-Jul-06 Tilmann Zaeschke
 		* Replaced usage of DVector6 with DAABB / improved DAABB
 		* Reduced usage of RefDouble in API
@@ -18,12 +22,12 @@ the rules for this file:
 		* All code migrated to ode-0.11.1
 		* released 0.11.1-j1.0-beta-1
 
-2009-06-26 Tilmann Zaeschke
+2009-Jun-26 Tilmann Zaeschke
 		* Started migration to ode-0.11.1
 		* Investigation of TLS mapping to Java
 		* Decision that SDK will contain everything, no need for the other 
 		  JARs anymore.
 
-2009-06-04  Tilmann Zäschke
+2009-Jun-04  Tilmann Zäschke
         * Initial version checked in to SVN. This is a 95% complete port of 
           ode 0.10.1 .

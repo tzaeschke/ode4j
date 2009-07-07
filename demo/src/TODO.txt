@@ -76,6 +76,10 @@ DIFFERENCES:
     not only by one letter: dGeomGetPos(g,p) / dGeomSetPos(g,p) --> p = g.getPos() / get.setPos(p)
   - Above that, I think it is normal coding practice in Java to return a value if a method has only
     one result.
+  * On the other hand, this can cause problems, because the "immutable' Object may be modified
+    while it is used, either through multithreading, or simply by other calls to the Object.
+  * Also, it may NOT be modified, because the user does not know whether he gets an actual field
+    or only a calculated result back.
 
 REQUIRED LIBS:
 - Java 6: for everything.

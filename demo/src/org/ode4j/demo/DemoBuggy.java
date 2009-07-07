@@ -112,12 +112,6 @@ class DemoBuggy extends dsFunctions {
 				contact.surface.soft_erp = 0.5;
 				contact.surface.soft_cfm = 0.3;
 				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contact);
-				System.out.println("i=" + i + "/" + n);
-				System.out.println("C=" + c);
-				System.out.println("CONT=" + contact);
-				System.out.println("GEOM=" + contact.geom);
-				System.out.println("G1=" + contact.geom.g1);
-				System.out.println("G2=" + contact.geom.g2);
 				c.attach(
 						contact.geom.g1.getBody(),
 						contact.geom.g2.getBody());
