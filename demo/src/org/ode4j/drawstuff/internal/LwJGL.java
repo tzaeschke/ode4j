@@ -339,25 +339,25 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 //	}
 
 
-	// return the index of the highest bit
-	//static int getHighBitIndex (unsigned int x)
-	private static int getHighBitIndex (int x)
-	{
-		int i = 0;
-		while (x!=0) {
-			i++;
-			x >>= 1;
-		}
-		return i-1;
-	}
-
-
-	// shift x left by i, where i can be positive or negative
-	//#define SHIFTL(x,i) (((i) >= 0) ? ((x) << (i)) : ((x) >> (-i)))
-	//int? double?
-	private final int SHIFTL(long x, int i) { 
-		return (int) ((i >= 0) ? (x << (i)) : ((x) >> (-i))); 
-	}
+//	// return the index of the highest bit
+//	//static int getHighBitIndex (unsigned int x)
+//	private static int getHighBitIndex (int x)
+//	{
+//		int i = 0;
+//		while (x!=0) {
+//			i++;
+//			x >>= 1;
+//		}
+//		return i-1;
+//	}
+//
+//
+//	// shift x left by i, where i can be positive or negative
+//	//#define SHIFTL(x,i) (((i) >= 0) ? ((x) << (i)) : ((x) >> (-i)))
+//	//int? double?
+//	private final int SHIFTL(long x, int i) { 
+//		return (int) ((i >= 0) ? (x << (i)) : ((x) >> (-i))); 
+//	}
 
 	private static void captureFrame (int num)
 	{
@@ -616,7 +616,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	//extern "C" double dsElapsedTime()
 	public double dsElapsedTime()
 	{
-		if (true) {//(HAVE_GETTIMEOFDAY) { //#if HAVE_GETTIMEOFDAY
+//		if (true) {//(HAVE_GETTIMEOFDAY) { //#if HAVE_GETTIMEOFDAY
 			//TZ static double prev=0.0;
 			//		timeval tv ;
 			//
@@ -630,10 +630,10 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 			if (retval>1.0) retval=1.0;
 			if (retval<Common.dEpsilon) retval=Common.dEpsilon;
 			return retval;
-		} else { //#else
-			return 0.01666; // Assume 60 fps
-			//#endif
-		}
+//		} else { //#else
+//			return 0.01666; // Assume 60 fps
+//			//#endif
+//		}
 
 	}
 }

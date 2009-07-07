@@ -25,13 +25,11 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.lang.Math;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.cpp4j.FILE;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
@@ -40,7 +38,6 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.OdeMath.OP;
 
-import static org.cpp4j.Cstdio.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 
 /**
@@ -167,13 +164,13 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 			int c,d;
 			while(true) {//for(;;) {
 				c = f.read();//fgetc(f);
-				if (c==EOF) dsError ("unexpected end of file in \"%s\"",filename);
+				if (c==-1) dsError ("unexpected end of file in \"%s\"",filename);
 
 				// skip comments
 				if (c == '#') {
 					do {
 						d = f.read();//fgetc(f);
-						if (d==EOF) dsError ("unexpected end of file in \"%s\"",filename);
+						if (d==-1) dsError ("unexpected end of file in \"%s\"",filename);
 					} while (d != '\n');
 					continue;
 				}
@@ -194,7 +191,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 			int c,n=0;
 			for(;;) {
 				c = f.read();//fgetc(f);
-				if (c==EOF) dsError ("unexpected end of file in \"%s\"",filename);
+				if (c==-1) dsError ("unexpected end of file in \"%s\"",filename);
 				if (c >= '0' && c <= '9') n = n*10 + (c - '0');
 				else {
 					f.unread(c);//ungetc (c,f);
@@ -208,7 +205,6 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		{
 			PushbackInputStream f = null;
 			try {
-				URL url = getClass().getResource(filename);
 				f = new PushbackInputStream( new BufferedInputStream( 
 						getClass().getResourceAsStream(filename) )); 
 				if (f==null) dsError ("Can't open image file `%s'",filename);
@@ -258,115 +254,11 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 						e2.printStackTrace();
 					}
 				}
+				throw new RuntimeException(e);
 			}
 		}
 	}
 	
-	private static class ImageCPP implements Image {
-		private int image_width,image_height;
-		private byte[] image_data;
-		//public:
-		//Image (String filename);
-		// load from PPM file
-		//  ~Image();
-		public int width() { return image_width; }
-		public int height() { return image_height; }
-		public byte[] data() { return image_data; }
-
-
-
-		// skip over whitespace and comments in a stream.
-
-		static void skipWhiteSpace (String filename, FILE f)
-		{
-			int c,d;
-			while(true) {//for(;;) {
-				c = fgetc(f);
-				if (c==EOF) dsError ("unexpected end of file in \"%s\"",filename);
-
-				// skip comments
-				if (c == '#') {
-					do {
-						d = fgetc(f);
-						if (d==EOF) dsError ("unexpected end of file in \"%s\"",filename);
-					} while (d != '\n');
-					continue;
-				}
-
-				if (c > ' ') {
-					ungetc (c,f);
-					return;
-				}
-			}
-		}
-
-
-		// read a number from a stream, this return 0 if there is none (that's okay
-		// because 0 is a bad value for all PPM numbers anyway).
-
-		static int readNumber (String filename, FILE f)
-		{
-			int c,n=0;
-			for(;;) {
-				c = fgetc(f);
-				if (c==EOF) dsError ("unexpected end of file in \"%s\"",filename);
-				if (c >= '0' && c <= '9') n = n*10 + (c - '0');
-				else {
-					ungetc (c,f);
-					return n;
-				}
-			}
-		}
-
-
-		ImageCPP (String filename)
-		{
-			FILE f = fopen (filename,"rb");
-			if (f==null) dsError ("Can't open image file `%s'",filename);
-
-			// read in header
-			if (fgetcC(f) != 'P' || fgetcC(f) != '6')
-				dsError ("image file \"%s\" is not a binary PPM (no P6 header)",filename);
-			skipWhiteSpace (filename,f);
-
-			// read in image parameters
-			image_width = readNumber (filename,f);
-			skipWhiteSpace (filename,f);
-			image_height = readNumber (filename,f);
-			skipWhiteSpace (filename,f);
-			int max_value = readNumber (filename,f);
-
-			// check values
-			if (image_width < 1 || image_height < 1)
-				dsError ("bad image file \"%s\"",filename);
-			if (max_value != 255)
-				dsError ("image file \"%s\" must have color range of 255",filename);
-
-			// read either nothing, LF (10), or CR,LF (13,10)
-			int c = fgetc(f);
-			if (c == 10) {
-				// LF
-			}
-			else if (c == 13) {
-				// CR
-				c = fgetc(f);
-				if (c != 10) ungetc (c,f);
-			}
-			else ungetc (c,f);
-
-			// read in rest of data
-			image_data = new byte [image_width*image_height*3];
-			if (fread (image_data,image_width*image_height*3,1,f) != 1)
-				dsError ("Can not read data from image file `%s'",filename);
-			fclose (f);
-		}
-
-
-		//Image::~Image()
-		//{
-		//  delete[] image_data;
-		//}
-	}
 	//***************************************************************************
 	// Texture object.
 
