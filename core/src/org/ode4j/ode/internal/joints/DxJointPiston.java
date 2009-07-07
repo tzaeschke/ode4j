@@ -134,7 +134,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			{
 				DVector3 anchor2 = new DVector3();
 				// get the anchor2 in global coordinates
-				dMULTIPLY0_331 ( anchor2, node[1].body._posr.R, anchor2 );
+				dMULTIPLY0_331 ( anchor2, node[1].body._posr.R, this.anchor2 );
 
 //				q.v[0] = ( ( node[0].body._posr.pos.v[0] + q.v[0] ) -
 //						( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
@@ -170,7 +170,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			// get axis in global coordinates
 			DVector3 ax = new DVector3();
 			dMULTIPLY0_331 ( ax, node[0].body._posr.R, axis1 );
-
+			
 			return dDOT ( ax, q );
 		}
 
