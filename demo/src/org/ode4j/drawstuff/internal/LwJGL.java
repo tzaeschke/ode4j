@@ -22,6 +22,7 @@
 package org.ode4j.drawstuff.internal;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
@@ -36,26 +37,9 @@ import org.ode4j.ode.internal.Common;
 import static org.cpp4j.Cstdio.*;
 
 
-// main window and event handling for X11
-
-//#include <ode/odeconfig.h>
-//#include "config.h"
-//#include <stdlib.h>
-//#include <string.h>
-//#include <stdarg.h>
-//#include <X11/Xlib.h>
-//#include <X11/Xatom.h>
-//#include <X11/keysym.h>
-//#include <GL/glx.h>
-//
-//#ifdef HAVE_SYS_TIME_H
-//#include <sys/time.h>
-//#endif
-//
-//#include <drawstuff/drawstuff.h>
-//#include <drawstuff/version.h>
-//#include "internal.h"
-
+/**
+ * Main window and event handling for LWJGL.
+ */
 abstract class LwJGL extends Internal implements DrawStuffApi {
 
 	//Ensure that Display.destroy() is called (TZ)
@@ -163,10 +147,10 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 		}
 		
 		if (firsttime) {
-			//TODO copied from Gears
-			System.err.println("GL_VENDOR: " + GL11.glGetString(GL11.GL_VENDOR));
-			System.err.println("GL_RENDERER: " + GL11.glGetString(GL11.GL_RENDERER));
-			System.err.println("GL_VERSION: " + GL11.glGetString(GL11.GL_VERSION));
+			System.err.println("GL_VENDOR:     " + GL11.glGetString(GL11.GL_VENDOR));
+			System.err.println("GL_RENDERER:   " + GL11.glGetString(GL11.GL_RENDERER));
+			System.err.println("GL_VERSION:    " + GL11.glGetString(GL11.GL_VERSION));
+			System.err.println("LWJGL_VERSION: " + Sys.getVersion());
 			System.err.println();
 			System.err.println("glLoadTransposeMatrixfARB() supported: " + 
 					GLContext.getCapabilities().GL_ARB_transpose_matrix);
@@ -370,7 +354,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 
 	// shift x left by i, where i can be positive or negative
 	//#define SHIFTL(x,i) (((i) >= 0) ? ((x) << (i)) : ((x) >> (-i)))
-	//TODO int? double?
+	//int? double?
 	private final int SHIFTL(long x, int i) { 
 		return (int) ((i >= 0) ? (x << (i)) : ((x) >> (-i))); 
 	}
