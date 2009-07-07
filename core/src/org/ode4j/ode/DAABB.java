@@ -266,4 +266,9 @@ public class DAABB implements DAABBC {
 		if (aabb.getMax1() > _max.get1()) _max.set1(aabb.getMax1());
 		if (aabb.getMax2() > _max.get2()) _max.set2(aabb.getMax2());
 	}
+	
+	@Override
+	public String toString() {
+		return "DAABB min=" + _min + " / max=" + _max;
+	}
 }
