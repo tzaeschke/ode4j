@@ -1524,13 +1524,13 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 			if ( !wrapped )
 			{
 				if (    o2._aabb.getMin0() > terrain.m_p_data.m_fWidth //MinX
-						&&  o2._aabb.getMin2() > terrain.m_p_data.m_fDepth) {//MinZ
+						||  o2._aabb.getMin2() > terrain.m_p_data.m_fDepth) {//MinZ
 					//goto dCollideHeightfieldExit;
 					dCollideHeightfieldExit = true;
 				}
 
 				if (    o2._aabb.getMax0() < 0 //MaxX
-						&&  o2._aabb.getMax2() < 0) { //MaxZ
+						||  o2._aabb.getMax2() < 0) { //MaxZ
 					//goto dCollideHeightfieldExit;
 					dCollideHeightfieldExit = true;
 				}
