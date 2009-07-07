@@ -20,6 +20,10 @@ import org.ode4j.ode.internal.DxGeom;
  */
 public class DContactGeom {
 	
+	DContactGeom() {
+		// Non-public
+	}
+	
 	public DVector3 pos = new DVector3();          ///< contact position
 	public DVector3 normal = new DVector3();       ///< normal vector
 	public double depth;           ///< penetration depth

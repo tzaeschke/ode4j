@@ -1,36 +1,24 @@
 package org.ode4j.ode;
 
-import java.util.ArrayList;
-
 import org.ode4j.ode.internal.DxGeom;
 
 
 /**
- * @brief A set of dContactGeom objects (TZ).
+ * @brief A set of DContactGeom objects (TZ).
  *
  * @ingroup collide
  */
 public final class DContactGeomBuffer {
-
-	private final ArrayList<DContactGeom> _buf;
+	
+	private final DContactBuffer _buf;
 	private int _ofs = 0;
 
-	public DContactGeomBuffer() {
-		_buf = new ArrayList<DContactGeom>();
-	}
-
 	public DContactGeomBuffer(int size) {
-		_buf = new ArrayList<DContactGeom>();
-		for (int i = 0; i < size; i++) {
-			_buf.add(new DContactGeom());
-		}
+		_buf = new DContactBuffer(size);
 	}
 
 	public DContactGeomBuffer(DContactBuffer contactBuffer) {
-		_buf = new ArrayList<DContactGeom>();
-		for (DContact c: contactBuffer) {
-			_buf.add(c.geom);
-		}
+		_buf = contactBuffer;
 	}
 
 	private DContactGeomBuffer(DContactGeomBuffer contactBuffer, int ofs) {
@@ -39,11 +27,11 @@ public final class DContactGeomBuffer {
 	}
 
 	public DContactGeom get() {
-		return get(_ofs);
+		return get(0);
 	}
 
 	public DContactGeom get(int i) {
-		return _buf.get(i+_ofs);
+		return _buf.get(i+_ofs).geom;
 	}
 
 	public DContactGeomBuffer createView(int skip) {
@@ -54,10 +42,11 @@ public final class DContactGeomBuffer {
 		if (!(index >= 0 && index < (flags & DxGeom.NUMC_MASK))) {
 			throw new IllegalStateException("Index="+index + "; flags="+flags);
 		}
-		return _buf.get(index+_ofs);
+		return get(index);
 	}
 
-	//TODO remove, this would affect the objects in the calling class!!!
+
+	//DO NOT IMPLEMENT! This would affect the objects in the calling class!!!
 	//	/**
 	//	 * Increments the offset of the current buffer by <tt>skip</tt>.
 	//	 * @param skip

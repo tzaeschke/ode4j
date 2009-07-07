@@ -7,11 +7,14 @@ import org.ode4j.math.DVector3;
  */
 public class DContact {
 
-	public dSurfaceParameters surface = new dSurfaceParameters();
-	public DContactGeom geom = new DContactGeom();
-	public DVector3 fdir1 = new DVector3();
+	public final dSurfaceParameters surface = new dSurfaceParameters();
+	public final DContactGeom geom = new DContactGeom();
+	public final DVector3 fdir1 = new DVector3();
 
-
+	DContact() {
+		// Nothing
+	}
+	
 	public class dSurfaceParameters {
 		/* must always be defined */
 		public int mode;

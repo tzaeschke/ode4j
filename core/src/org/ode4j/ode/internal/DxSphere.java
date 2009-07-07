@@ -283,7 +283,7 @@ public class DxSphere extends DxGeom implements DSphere {
 			DxSphere sphere = (DxSphere) o1;
 			DxPlane plane = (DxPlane) o2;
 
-			DContactGeom contact = contacts.get();
+			DContactGeom contact = contacts.get(0);
 			contact.g1 = o1;
 			contact.g2 = o2;
 			contact.side1 = -1;
