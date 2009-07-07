@@ -64,11 +64,14 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 	@Override
 	public String toString() {
 		StringBuffer b = new StringBuffer();
-		b.append("dVector3[");
-		for (int i = 0; i < v.length-1; i++) {
-			b.append(v[i]).append(", ");
-		}
-		b.append(v[v.length-1]).append("]");
+		b.append("DVector3[ ");
+		b.append(get0()).append(", ");
+		b.append(get1()).append(", ");
+		b.append(get2()).append(" ]");
+//		for (int i = 0; i < v.length-1; i++) {
+//			b.append(v[i]).append(", ");
+//		}
+//		b.append(v[v.length-1]).append("]");
 		return b.toString();
 	}
 
