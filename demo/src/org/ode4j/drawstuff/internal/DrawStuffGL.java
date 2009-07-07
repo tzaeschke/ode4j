@@ -1075,10 +1075,11 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	}
 
 
-	// call this to update the current camera position. the bits in `mode' say
-	// if the left (1), middle (2) or right (4) mouse button is pressed, and
-	// (deltax,deltay) is the amount by which the mouse pointer has moved.
-
+	/**
+	 * Call this to update the current camera position. the bits in `mode' say
+	 * if the left (1), middle (2) or right (4) mouse button is pressed, and
+	 * (deltax,deltay) is the amount by which the mouse pointer has moved.
+	 */
 	void dsMotion (int mode, int deltax, int deltay)
 	{
 		float side = 0.01f * (float)deltax;

@@ -504,12 +504,16 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 			return;
 		}
 
+		//LWJGL: 0=left 1=right 2=middle
+		//GL: 0=left 1=middle 2=right
+		
 		int mode = 0;
 		if (Mouse.isButtonDown(0)) mode |= 1; 
-		if (Mouse.isButtonDown(1)) mode |= 2; 
-		if (Mouse.isButtonDown(2)) mode |= 4;
+		if (Mouse.isButtonDown(2)) mode |= 2; 
+		if (Mouse.isButtonDown(1)) mode |= 4;
 		if (mode != 0) {
-			dsMotion (mode, dx, dy);
+			//LWJGL has inverted dy wrt C++/GL
+			dsMotion (mode, dx, -dy);
 		}
 		
 	}
