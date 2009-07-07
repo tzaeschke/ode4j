@@ -1,17 +1,13 @@
 package org.ode4j.tests;
 
 import org.junit.Test;
-import org.ode4j.math.DMatrix3;
 import org.ode4j.ode.DContactBuffer;
-import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.DRay;
-import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.OdeHelper;
 
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 
 public class CollisionTest {
 
