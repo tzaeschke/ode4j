@@ -73,12 +73,24 @@ public class DMatrix3 extends DMatrix<DVector3, DVector3> implements DMatrix3C {
 	
 	@Override
 	public String toString() {
+//		StringBuffer b = new StringBuffer();
+//		b.append("DMatrix3[");
+//		for (int i = 0; i < v.length-1; i++) {
+//			b.append(v[i]).append(", ");
+//		}
+//		b.append(v[v.length-1]).append("]");
+//		return b.toString();
 		StringBuffer b = new StringBuffer();
-		b.append("DMatrix3[");
-		for (int i = 0; i < v.length-1; i++) {
-			b.append(v[i]).append(", ");
-		}
-		b.append(v[v.length-1]).append("]");
+		b.append("DMatrix3[[");
+		b.append(get00()).append(", ");
+		b.append(get01()).append(", ");
+		b.append(get02()).append("], [");
+		b.append(get10()).append(", ");
+		b.append(get11()).append(", ");
+		b.append(get12()).append("], [");
+		b.append(get20()).append(", ");
+		b.append(get21()).append(", ");
+		b.append(get22()).append("]]");
 		return b.toString();
 	}
 	public void setOfs(int ofs, DVector3 v3) {
