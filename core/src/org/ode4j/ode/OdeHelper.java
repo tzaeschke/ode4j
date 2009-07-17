@@ -535,7 +535,7 @@ public abstract class OdeHelper {
 	 * @return The version String.
 	 */
 	public static String getVersion() {
-		return "0.11.1-pre";
+		return "0.11.1-j1.0";
 	}
 	
 	

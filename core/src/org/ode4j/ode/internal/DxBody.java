@@ -143,7 +143,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		b._q = new DQuaternion();
 		//MAT.dSetZero (b._q.v,4);
 		b._q.set( 0, 1 );
-		dRSetIdentity (b._posr.R());
+		b._posr.R().setIdentity();
 		b.lvel = new DVector3();
 		//MAT.dSetZero (b.lvel.v,4);
 		b.avel = new DVector3();
@@ -408,7 +408,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		mass.set(mass2);
 		if (!dInvertPDMatrix (mass._I.v, invI.v, 3)) {
 			dDEBUGMSG ("inertia must be positive definite!");
-			dRSetIdentity (invI);
+			invI.setIdentity();
 		}
 		invMass = dRecip(mass._mass);
 	}

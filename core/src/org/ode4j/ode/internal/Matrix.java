@@ -25,7 +25,6 @@ import java.util.Arrays;
 
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
-import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
@@ -45,7 +44,7 @@ public class Matrix extends FastDot {
 	 */
 	public static void dSetZero (double[] a, int n)
 	{
-		dAASSERT (a);
+		//dAASSERT (a);
 		dAASSERT(n >= 0);
 		while (n > 0) {
 			//*(a++) = 0;
@@ -60,7 +59,7 @@ public class Matrix extends FastDot {
 
 	public static void dSetValue (double[] a, int n, double value)
 	{
-		dAASSERT (a);
+		//dAASSERT (a);
 		dAASSERT(n >= 0);
 		while (n > 0) {
 			//*(a++) = value;
@@ -126,7 +125,7 @@ public class Matrix extends FastDot {
 			final double[] C, int p, int q, int r)
 	{
 		int i,j,k,qskip,rskip,rpad;
-		dAASSERT (A, B, C);
+		//dAASSERT (A, B, C);
 		dAASSERT(p>0 && q>0 && r>0);
 		qskip = dPAD(q);
 		rskip = dPAD(r);
@@ -161,7 +160,7 @@ public class Matrix extends FastDot {
 			final double[] C, int cOfs, int p, int q, int r)
 	{
 		int i,j,k,qskip,rskip,rpad;
-		dAASSERT (A, B, C);
+		//dAASSERT (A, B, C);
 		dAASSERT(p>0 && q>0 && r>0);
 		qskip = dPAD(q);
 		rskip = dPAD(r);
@@ -216,7 +215,7 @@ public class Matrix extends FastDot {
 	{
 		int i,j,k,pskip,rskip;
 		double sum;
-		dAASSERT (A , B, C);
+		//dAASSERT (A , B, C);
 		dAASSERT(p>0 && q>0 && r>0);
 		pskip = dPAD(p);
 		rskip = dPAD(r);
@@ -244,7 +243,7 @@ public class Matrix extends FastDot {
 		//final double[] bb,cc;
 		//TZ:
 		int aPos = 0, bPos, cPos;
-		dAASSERT (A, B , C);
+		//dAASSERT (A, B , C);
 		dAASSERT(p>0 && q>0 && r>0);
 		rpad = dPAD(r) - r;
 		qskip = dPAD(q);
@@ -281,7 +280,7 @@ public class Matrix extends FastDot {
 		int ccPos = 0; //TZ
 		double[] recip;
 		dAASSERT (n > 0);
-		dAASSERT(A);
+		//dAASSERT(A);
 		nskip = dPAD (n);
 		recip = new double[n]; //TZ (double*) ALLOCA (n * sizeof(double));
 		//TZaa = A;
@@ -386,7 +385,7 @@ public class Matrix extends FastDot {
 		int i,k,nskip;
 		double sum, y[];
 		dAASSERT (n > 0);
-		dAASSERT(L, b);
+		//dAASSERT(L, b);
 		nskip = dPAD (n);
 		y = new double[n]; //TZ (double*) ALLOCA (n*sizeof(double));
 		for (i=0; i<n; i++) {
@@ -407,7 +406,7 @@ public class Matrix extends FastDot {
 		int i,j,nskip;
 		double[] L,x;
 		dAASSERT (n > 0);
-		dAASSERT(A, Ainv);
+		//dAASSERT(A, Ainv);
 		nskip = dPAD (n);
 		L = new double[nskip*n]; //TZ (double*) ALLOCA (nskip*n*sizeof(double));
 		memcpy (L,A,nskip*n);//*sizeof(double));
@@ -428,7 +427,7 @@ public class Matrix extends FastDot {
 	{
 		double []Acopy;
 		dAASSERT (n > 0);
-		dAASSERT(A);
+		//dAASSERT(A);
 		int nskip = dPAD (n);
 		Acopy = new double[nskip*n]; //TZ (double*) ALLOCA (nskip*n * sizeof(double));
 		memcpy (Acopy, A, nskip*n);// * sizeof(double));
@@ -459,7 +458,7 @@ void dSolveL1T (const double *L, double *b, int n, int nskip)
 	 */
 
 
-	static void dVectorScale (double []a, final double []d, int n)
+	private static void dVectorScale (double []a, final double []d, int n)
 	{
 		dAASSERT (a != null, d != null, n >= 0);
 		for (int i=0; i<n; i++) a[i] *= d[i];
@@ -469,7 +468,7 @@ void dSolveL1T (const double *L, double *b, int n, int nskip)
 	public static void dSolveLDLT (final double []L, final double []d, 
 			double []b, int n, int nskip)
 	{
-		dAASSERT (L, d, b);
+		//dAASSERT (L, d, b);
 		dAASSERT(n > 0 && nskip >= n);
 		dSolveL1 (L,b,n,nskip);
 		dVectorScale (b,d,n);
@@ -488,7 +487,7 @@ void dSolveL1T (const double *L, double *b, int n, int nskip)
 		int j,p;
 		double[] W1,W2;
 		double W11,W21,alpha1,alpha2,alphanew,gamma1,gamma2,k1,k2,Wp,ell,dee;
-		dAASSERT (L, d, a);
+		//dAASSERT (L, d, a);
 		dAASSERT(n > 0 && nskip >= n);
 
 		if (n < 2) return;
@@ -574,7 +573,7 @@ void dSolveL1T (const double *L, double *b, int n, int nskip)
 			int n1, int n2, int r, int nskip)
 	{
 		int i;
-		dAASSERT(A, p, L, d);
+		//dAASSERT(A, p, L, d);
 		dAASSERT(n1 > 0 && n2 > 0 && r >= 0 && r < n2 &&
 				n1 >= n2 && nskip >= n1);
 		if (!dNODEBUG) {//#ifndef dNODEBUG

@@ -31,15 +31,16 @@ import org.ode4j.ode.OdeMath;
 
 
 /**
- * quaternions have the format: (s,vx,vy,vz) where (vx,vy,vz) is the
+ * Quaternions have the format: (s,vx,vy,vz) where (vx,vy,vz) is the
  * "rotation axis" and s is the "rotation angle".
  *
  */
 public class Rotation extends Matrix {
 
+	/** @deprecated Use DMatrix.setIdentity() instead. */
 	public static void dRSetIdentity (DMatrix3 R)
 	{
-		dAASSERT (R); 
+		//dAASSERT (R); 
 		//SET_3x3_IDENTITY;
 		R.setIdentity();
 	}
@@ -47,14 +48,14 @@ public class Rotation extends Matrix {
 	public static void dRFromAxisAndAngle (DMatrix3 R, double ax, 
 			double ay, double az, double angle)
 	{
-		dAASSERT (R);
+		//dAASSERT (R);
 		DQuaternion q = new DQuaternion();
 		dQFromAxisAndAngle (q, ax, ay, az, angle);
 		dRfromQ (R, q);
 	}
 	public static void dRFromAxisAndAngle (DMatrix3 R, DVector3C axyz, double angle)
 	{
-		dAASSERT (R);
+		//dAASSERT (R);
 		DQuaternion q = new DQuaternion();
 		dQFromAxisAndAngle (q, axyz, angle);
 		dRfromQ (R, q);
@@ -65,7 +66,7 @@ public class Rotation extends Matrix {
 			double psi)
 	{
 		double sphi,cphi,stheta,ctheta,spsi,cpsi;
-		dAASSERT (R);
+		//dAASSERT (R);
 		sphi = dSin(phi);
 		cphi = dCos(phi);
 		stheta = dSin(theta);
@@ -93,11 +94,12 @@ public class Rotation extends Matrix {
 				b.get0(), b.get1(), b.get2());
 	}
 	
+	/** @deprecated (TZ) */
 	public static void dRFrom2Axes (DMatrix3 R, double ax, double ay, double az,
 			double bx, double by, double bz)
 	{
 		double l,k;
-		dAASSERT (R);
+		//dAASSERT (R);
 		l = dSqrt (ax*ax + ay*ay + az*az);
 		if (l <= 0.0) {
 			dDEBUGMSG ("zero length vector");
@@ -179,7 +181,7 @@ public class Rotation extends Matrix {
 				p.get2(), q.get2(), n.get2());
 	}
 
-
+	/** @deprecated */
 	public static void dQSetIdentity (DQuaternion q)
 	{
 		//dAASSERT (q);
@@ -190,7 +192,7 @@ public class Rotation extends Matrix {
 	public static void dQFromAxisAndAngle (DQuaternion q, 
 			double ax, double ay, double az, double angle)
 	{
-		dAASSERT (q);
+		//dAASSERT (q);
 		double l = ax*ax + ay*ay + az*az;
 		if (l > 0.0) {
 			angle *= 0.5;
@@ -208,7 +210,7 @@ public class Rotation extends Matrix {
 	public static void dQFromAxisAndAngle (DQuaternion q, 
 			DVector3C axyz, double angle)
 	{
-		dAASSERT (q);
+		//dAASSERT (q);
 		double l = axyz.lengthSquared();//ax*ax + ay*ay + az*az;
 		if (l > 0.0) {
 			angle *= 0.5;
@@ -228,7 +230,7 @@ public class Rotation extends Matrix {
 	public static void dQMultiply0 (DQuaternion qa, final DQuaternionC qb, 
 			final DQuaternionC qc)
 	{
-		dAASSERT (qa, qb, qc);
+		//dAASSERT (qa, qb, qc);
 		qa.set0( qb.get0()*qc.get0() - qb.get1()*qc.get1() - qb.get2()*qc.get2() - qb.get3()*qc.get3() );
 		qa.set1( qb.get0()*qc.get1() + qb.get1()*qc.get0() + qb.get2()*qc.get3() - qb.get3()*qc.get2() );
 		qa.set2( qb.get0()*qc.get2() + qb.get2()*qc.get0() + qb.get3()*qc.get1() - qb.get1()*qc.get3() );
@@ -239,7 +241,7 @@ public class Rotation extends Matrix {
 	public static void dQMultiply1 (DQuaternion qa, final DQuaternionC qb, 
 			final DQuaternionC qc)
 	{
-		dAASSERT (qa, qb, qc);
+		//dAASSERT (qa, qb, qc);
 		qa.set0( qb.get0()*qc.get0() + qb.get1()*qc.get1() + qb.get2()*qc.get2() + qb.get3()*qc.get3() );
 		qa.set1( qb.get0()*qc.get1() - qb.get1()*qc.get0() - qb.get2()*qc.get3() + qb.get3()*qc.get2() );
 		qa.set2( qb.get0()*qc.get2() - qb.get2()*qc.get0() - qb.get3()*qc.get1() + qb.get1()*qc.get3() );
@@ -250,7 +252,7 @@ public class Rotation extends Matrix {
 	public static void dQMultiply2 (DQuaternion qa, final DQuaternionC qb, 
 			final DQuaternionC qc)
 	{
-		dAASSERT (qa, qb, qc);
+		//dAASSERT (qa, qb, qc);
 		qa.set0(  qb.get0()*qc.get0() + qb.get1()*qc.get1() + qb.get2()*qc.get2() + qb.get3()*qc.get3() );
 		qa.set1( -qb.get0()*qc.get1() + qb.get1()*qc.get0() - qb.get2()*qc.get3() + qb.get3()*qc.get2() );
 		qa.set2( -qb.get0()*qc.get2() + qb.get2()*qc.get0() - qb.get3()*qc.get1() + qb.get1()*qc.get3() );
@@ -261,7 +263,7 @@ public class Rotation extends Matrix {
 	public static void dQMultiply3 (DQuaternion qa, final DQuaternionC qb, 
 			final DQuaternionC qc)
 	{
-		dAASSERT (qa, qb, qc);
+		//dAASSERT (qa, qb, qc);
 		qa.set0(  qb.get0()*qc.get0() - qb.get1()*qc.get1() - qb.get2()*qc.get2() - qb.get3()*qc.get3() );
 		qa.set1( -qb.get0()*qc.get1() - qb.get1()*qc.get0() + qb.get2()*qc.get3() - qb.get3()*qc.get2() );
 		qa.set2( -qb.get0()*qc.get2() - qb.get2()*qc.get0() + qb.get3()*qc.get1() - qb.get1()*qc.get3() );
@@ -276,7 +278,7 @@ public class Rotation extends Matrix {
 
 	public static void dRfromQ (DMatrix3 R, final DQuaternionC q)
 	{
-		dAASSERT (q, R);
+		//dAASSERT (q, R);
 		// q = (s,vx,vy,vz)
 		double q0 = q.get0();
 		double q1 = q.get1();
@@ -319,7 +321,7 @@ public class Rotation extends Matrix {
 
 	public static void dQfromR (DQuaternion q, final DMatrix3C R)
 	{
-		dAASSERT (q, R);
+		//dAASSERT (q, R);
 		double tr,s;
 		tr = R.get00() + R.get11() + R.get22();
 		if (tr >= 0) {
@@ -395,7 +397,7 @@ public class Rotation extends Matrix {
 
 	public static void dDQfromW (DQuaternion dq, final DVector3C w, final DQuaternionC q)
 	{
-		dAASSERT (w, q, dq);
+		//dAASSERT (w, q, dq);
 		dq.set(0, 0.5*(- w.get0()*q.get1() - w.get1()*q.get2() - w.get2()*q.get3()) );
 		dq.set(1, 0.5*(  w.get0()*q.get0() + w.get1()*q.get3() - w.get2()*q.get2()) );
 		dq.set(2, 0.5*(- w.get0()*q.get3() + w.get1()*q.get0() + w.get2()*q.get1()) );

@@ -240,7 +240,7 @@ public class DxCollisionUtil {
 
 		if ( dFabs( det ) < (0.0005) )
 		{
-			dRSetIdentity( dst );
+			dst.setIdentity();
 			return;
 		}
 

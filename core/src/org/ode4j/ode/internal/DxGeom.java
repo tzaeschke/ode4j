@@ -296,7 +296,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		if (isPlaceable) {
 			_final_posr = dAllocPosr();
 			_final_posr.pos.setValues(0);//dSetZero (_final_posr.pos.v,4);
-			dRSetIdentity (_final_posr.R);
+			_final_posr.R.setIdentity();
 		}
 		else {
 			_final_posr = null;
@@ -991,7 +991,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		_final_posr = dAllocPosr();
 		offset_posr = dAllocPosr();
 		offset_posr.pos.setValues(0);//dSetZero (offset_posr.pos.v,4);
-		dRSetIdentity (offset_posr.R);
+		offset_posr.R.setIdentity();
 
 		_gflags |= GEOM_POSR_BAD;
 	}
