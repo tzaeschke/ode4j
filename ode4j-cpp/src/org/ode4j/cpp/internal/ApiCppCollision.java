@@ -1159,7 +1159,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	}
 
 	// For now we want to have a backwards compatible C-API, note: C++ API is not.
-	//TODO?
 	//#define dCreateCCylinder dCreateCapsule
 	//#define dGeomCCylinderSetParams dGeomCapsuleSetParams
 	//#define dGeomCCylinderGetParams dGeomCapsuleGetParams
@@ -1231,34 +1230,39 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 		return g.getClosestHit();
 	}
 
-	//TZ TODO ????: #include "collision_trimesh.h"
 	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
 	public static DGeomTransform dCreateGeomTransform (DSpace space) {
 		return OdeHelper.createGeomTransform(space);
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
 	public static void dGeomTransformSetGeom (DGeomTransform g, DGeom obj) {
 		g.setGeom(obj);
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
 	public static DGeom dGeomTransformGetGeom (DGeomTransform g) {
 		return g.getGeom();
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
 	public static void dGeomTransformSetCleanup (DGeomTransform g, boolean mode) {
 		g.setCleanup(mode);
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	int dGeomTransformGetCleanup (DGeom g) {
+	int dGeomTransformGetCleanup (DGeomTransform g) {
 		throw new UnsupportedOperationException();
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	void dGeomTransformSetInfo (DGeom g, int mode) {
+	void dGeomTransformSetInfo (DGeomTransform g, int mode) {
 		throw new UnsupportedOperationException();
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	int dGeomTransformGetInfo (DGeom g) {
+	int dGeomTransformGetInfo (DGeomTransform g) {
 		throw new UnsupportedOperationException();
 	}
 

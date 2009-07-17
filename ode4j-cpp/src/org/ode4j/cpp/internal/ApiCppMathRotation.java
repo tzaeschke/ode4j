@@ -32,7 +32,7 @@ public abstract class ApiCppMathRotation extends ApiCppMathMisc {
 
 	//ODE_API 
 	public static void dRSetIdentity (DMatrix3 R) {
-		Rotation.dRSetIdentity(R);
+		R.setIdentity();
 	}
 
 	//ODE_API 
