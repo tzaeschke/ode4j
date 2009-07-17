@@ -197,7 +197,7 @@ public class DemoMotion extends dsFunctions {
 		int numc = OdeHelper.collide (o1, o2, MAX_CONTACTS, contacts.getGeomBuffer());
 
 		if (numc != 0)
-			dRSetIdentity(RI);
+			RI.setIdentity();
 
 		boolean isplatform = (o1 == platform) || (o2 == platform);
 
@@ -308,7 +308,7 @@ public class DemoMotion extends dsFunctions {
 						platpos.get0(),
 						platpos.get1(),
 						platpos.get2()+2);
-				dRSetIdentity (R);
+				R.setIdentity();
 			}
 			obj[i].body.setRotation (R);
 			//            obj[i].body.dBodySetData (obj[i].body,(void*) i);

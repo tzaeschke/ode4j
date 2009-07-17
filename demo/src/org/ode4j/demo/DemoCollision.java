@@ -178,7 +178,7 @@ class DemoCollision extends dsFunctions {
 		}
 		if (n > 0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			DVector3 ss = new DVector3(0.01,0.01,0.01);
 			for (int i=0; i<n; i++) {
 				DContactGeom contact = contacts.get(i);

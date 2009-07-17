@@ -54,8 +54,25 @@ import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCapsule;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetRotation;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassAdd;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassRotate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetCapsule;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetSphere;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetZero;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassTranslate;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Misc.dRandReal;
+import static org.ode4j.ode.internal.Rotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.DGeom.*;
 import static org.ode4j.democpp.BunnyGeom.*;
 
@@ -282,6 +299,7 @@ class DemoHeightfield extends dsFunctions {
 		int j,k;
 		double[] sides = new double[3];
 		DMass m = OdeHelper.createMass();
+		boolean setBody;
 
 		cmd = Character.toLowerCase(cmd);//locase (cmd);
 
@@ -293,6 +311,7 @@ class DemoHeightfield extends dsFunctions {
 		if ( cmd == 'b' || cmd == 's' || cmd == 'c' || ( cmd == 'm' && g_allow_trimesh ) ||
 				cmd == 'x' || cmd == 'y' || cmd == 'v' )
 		{
+			setBody = false;
 			if ( num < NUM )
 			{
 				i = num;
@@ -390,77 +409,133 @@ class DemoHeightfield extends dsFunctions {
 				//dGeomSetPosition(obj[i].geom[0], -m.c[0], -m.c[1], -m.c[2]);
 				//dMassTranslate(m, -m.c[0], -m.c[1], -m.c[2]);
 				c.scale(-1);
-				obj[i].geom[0].setPosition(m.getC().clone().scale(-1));
+				obj[i].geom[0].setPosition(c);
 				m.translate(c);
 			}
-			else if (cmd == 'x')
-			{
-				DGeom[] g2 = new DGeom[GPB];		// encapsulated geometries
-				DVector3[] dpos = new DVector3[GPB];	// delta-positions for encapsulated geometries
-
+			else if (cmd == 'x') {
+				setBody = true;
 				// start accumulating masses for the encapsulated geometries
-				DMass m2 = OdeHelper.createMass();
+				DMass m2 = dMassCreate();
 				dMassSetZero (m);
+
+				double[][] dpos = new double[GPB][3];	// delta-positions for encapsulated geometries
+				DMatrix3[] drot = new DMatrix3[GPB];
 
 				// set random delta positions
 				for (j=0; j<GPB; j++) {
-					dpos[j] = new DVector3();
-					for (k=0; k<3; k++) dpos[j].set(k, dRandReal()*0.3-0.15);
+					for (k=0; k<3; k++) dpos[j][k] = dRandReal()*0.3-0.15;
 				}
 
 				for (k=0; k<GPB; k++) {
-					obj[i].geom[k] = dCreateGeomTransform (space);
-					dGeomTransformSetCleanup ((DGeomTransform)obj[i].geom[k],true);
 					if (k==0) {
 						double radius = dRandReal()*0.25+0.05;
-						g2[k] = dCreateSphere (null,radius);
+						obj[i].geom[k] = dCreateSphere (space,radius);
 						dMassSetSphere (m2,DENSITY,radius);
 					}
 					else if (k==1) {
-						g2[k] = dCreateBox (null,sides[0],sides[1],sides[2]);
+						obj[i].geom[k] = dCreateBox (space,sides[0],sides[1],sides[2]);
 						dMassSetBox (m2,DENSITY,sides[0],sides[1],sides[2]);
 					}
 					else {
 						double radius = dRandReal()*0.1+0.05;
 						double length = dRandReal()*1.0+0.1;
-						g2[k] = dCreateCapsule (null,radius,length);
+						obj[i].geom[k] = dCreateCapsule (space,radius,length);
 						dMassSetCapsule (m2,DENSITY,3,radius,length);
 					}
-					dGeomTransformSetGeom ((DGeomTransform)obj[i].geom[k],g2[k]);
 
-					// set the transformation (adjust the mass too)
-//					dGeomSetPosition (g2[k],dpos[k][0],dpos[k][1],dpos[k][2]);
-//					dMassTranslate (m2,dpos[k][0],dpos[k][1],dpos[k][2]);
-					g2[k].setPosition (dpos[k]);
-					m2.translate(dpos[k]);
-					DMatrix3 Rtx = new DMatrix3();
-					dRFromAxisAndAngle (Rtx,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
+					drot[k] = new DMatrix3();
+					dRFromAxisAndAngle (drot[k],dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 							dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
-					dGeomSetRotation (g2[k],Rtx);
-					dMassRotate (m2,Rtx);
+					dMassRotate (m2,drot[k]);
+
+					dMassTranslate (m2,dpos[k][0],dpos[k][1],dpos[k][2]);
 
 					// add to the total mass
 					dMassAdd (m,m2);
-				}
 
-				// move all encapsulated objects so that the center of mass is (0,0,0)
-				DVector3 c = m.getC().clone();
-				c.scale(1);
-				for (k=0; k<2; k++) {
-//					dGeomSetPosition (g2[k],
-//							dpos[k][0]-m.c[0],
-//							dpos[k][1]-m.c[1],
-//							dpos[k][2]-m.c[2]);
-				g2[k].setPosition(dpos[k].reAdd(c));
 				}
-//				dMassTranslate (m,-m.c[0],-m.c[1],-m.c[2]);
-				m.translate(c);
-			}
+				DVector3C m_c = m.getC();
+				for (k=0; k<GPB; k++) {
+					dGeomSetBody (obj[i].geom[k],obj[i].body);
+					dGeomSetOffsetPosition (obj[i].geom[k],
+							dpos[k][0]-m_c.get(0),
+							dpos[k][1]-m_c.get(1),
+							dpos[k][2]-m_c.get(2));
+					dGeomSetOffsetRotation(obj[i].geom[k], drot[k]);
+				}
+				dMassTranslate (m,-m_c.get(0),-m_c.get(1),-m_c.get(2));
+				dBodySetMass (obj[i].body,m);
 
-			for (k=0; k < GPB; k++)
-			{
-				if (obj[i].geom[k]!=null) dGeomSetBody (obj[i].geom[k],obj[i].body);
 			}
+//			else if (cmd == 'x')
+//			{
+//				DGeom[] g2 = new DGeom[GPB];		// encapsulated geometries
+//				DVector3[] dpos = new DVector3[GPB];	// delta-positions for encapsulated geometries
+//
+//				// start accumulating masses for the encapsulated geometries
+//				DMass m2 = OdeHelper.createMass();
+//				dMassSetZero (m);
+//
+//				// set random delta positions
+//				for (j=0; j<GPB; j++) {
+//					dpos[j] = new DVector3();
+//					for (k=0; k<3; k++) dpos[j].set(k, dRandReal()*0.3-0.15);
+//				}
+//
+//				for (k=0; k<GPB; k++) {
+//					obj[i].geom[k] = dCreateGeomTransform (space);
+//					dGeomTransformSetCleanup ((DGeomTransform)obj[i].geom[k],true);
+//					if (k==0) {
+//						double radius = dRandReal()*0.25+0.05;
+//						g2[k] = dCreateSphere (null,radius);
+//						dMassSetSphere (m2,DENSITY,radius);
+//					}
+//					else if (k==1) {
+//						g2[k] = dCreateBox (null,sides[0],sides[1],sides[2]);
+//						dMassSetBox (m2,DENSITY,sides[0],sides[1],sides[2]);
+//					}
+//					else {
+//						double radius = dRandReal()*0.1+0.05;
+//						double length = dRandReal()*1.0+0.1;
+//						g2[k] = dCreateCapsule (null,radius,length);
+//						dMassSetCapsule (m2,DENSITY,3,radius,length);
+//					}
+//					dGeomTransformSetGeom ((DGeomTransform)obj[i].geom[k],g2[k]);
+//
+//					// set the transformation (adjust the mass too)
+////					dGeomSetPosition (g2[k],dpos[k][0],dpos[k][1],dpos[k][2]);
+////					dMassTranslate (m2,dpos[k][0],dpos[k][1],dpos[k][2]);
+//					g2[k].setPosition (dpos[k]);
+//					m2.translate(dpos[k]);
+//					DMatrix3 Rtx = new DMatrix3();
+//					dRFromAxisAndAngle (Rtx,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
+//							dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
+//					dGeomSetRotation (g2[k],Rtx);
+//					dMassRotate (m2,Rtx);
+//
+//					// add to the total mass
+//					dMassAdd (m,m2);
+//				}
+//
+//				// move all encapsulated objects so that the center of mass is (0,0,0)
+//				DVector3 c = m.getC().clone();
+//				c.scale(-1);
+//				for (k=0; k<2; k++) {
+////					dGeomSetPosition (g2[k],
+////							dpos[k][0]-m.c[0],
+////							dpos[k][1]-m.c[1],
+////							dpos[k][2]-m.c[2]);
+//				g2[k].setPosition(dpos[k].reAdd(c));
+//				}
+////				dMassTranslate (m,-m.c[0],-m.c[1],-m.c[2]);
+//				m.translate(c);
+//			}
+
+			if (!setBody)
+				for (k=0; k < GPB; k++)
+				{
+					if (obj[i].geom[k]!=null) dGeomSetBody (obj[i].geom[k],obj[i].body);
+				}
 
 			dBodySetMass (obj[i].body,m);
 		}
