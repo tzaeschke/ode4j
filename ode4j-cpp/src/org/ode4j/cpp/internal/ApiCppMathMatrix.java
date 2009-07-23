@@ -21,9 +21,9 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
-import org.ode4j.math.DMatrix;
-import org.ode4j.math.DVector;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.internal.FastDot;
 import org.ode4j.ode.internal.Matrix;
 
@@ -54,8 +54,7 @@ public abstract class ApiCppMathMatrix extends ApiCppMathRotation {
 
 	//ODE_API 
 	//	 double dDot (final double *a, final double *b, int n);
-	public static double dDot (final DVector3 a, final DVector3 b, int n) {
-		a.assertLen(n);
+	public static double dDot (final DVector3C a, final DVector3 b, int n) {
 		return a.dot(b);
 	}
 	public static double dDot (final double[] a, final double[] b, int n) {
@@ -174,7 +173,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 */
 	//ODE_API 
 	//	 void dSolveL1 (final double *L, double *b, int n, int nskip) {
-	void dSolveL1 (final DMatrix L, DVector b, int n, int nskip) {
+	void dSolveL1 (final DMatrix3C L, DVector3 b, int n, int nskip) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -185,7 +184,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 */
 	//ODE_API 
 	//	 void dSolveL1T (final double *L, double *b, int n, int nskip) {
-	void dSolveL1T (final DMatrix L, DVector b, int n, int nskip) {
+	void dSolveL1T (final DMatrix3C L, DVector3 b, int n, int nskip) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -194,7 +193,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	//ODE_API 
 	//	 void dVectorScale (double *a, final double *d, int n) {
-	void dVectorScale (DVector a, final DVector d, int n) {
+	void dVectorScale (DVector3C a, final DVector3 d, int n) {
 		throw new UnsupportedOperationException();
 	}
 
