@@ -93,7 +93,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 //			normal.v[2] = contact.geom.normal.v[2];
 			normal.set( contact.geom.normal );
 		}
-		normal.v[3] = 0; // @@@ hmmm
+		//normal.v[3] = 0; // @@@ hmmm
 
 		// c1,c2 = contact points with respect to body PORs
 		DVector3 c1 = new DVector3(), c2 = new DVector3(); //{0,0,0};

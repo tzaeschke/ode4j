@@ -750,11 +750,11 @@ public class DxWorld extends DBase implements DWorld {
 //				bb.lvel.v[0] = 0;
 //				bb.lvel.v[1] = 0;
 //				bb.lvel.v[2] = 0;
-				bb.lvel.setValues(0);
+				bb.lvel.setZero();
 //				bb.avel.v[0] = 0;
 //				bb.avel.v[1] = 0;
 //				bb.avel.v[2] = 0;
-				bb.avel.setValues(0);
+				bb.avel.setZero();
 			}
 		}
 	}

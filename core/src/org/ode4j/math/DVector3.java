@@ -15,17 +15,26 @@ import org.ode4j.math.DMatrix3.DVector3ColView;
  * @author Tilmann Zaeschke
  *
  */
-public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C {
-	private static final int LEN = 4;
+public class DVector3 implements DVector3I, DVector3C {
+//public class DVector3 implements DVector3I, DVector3C {
+	private final double[] v;
+	private static final int LEN = 4;  //TODO 3 ?
 	public static final DVector3 ZERO = new DVector3(0, 0, 0);
 	public static final int CURRENT_LENGTH = 4;
 
+	//private static int COUNT = 0;
 	
 	public DVector3() { 
-		super(LEN); 
+		v = new double[LEN];
+		//if (COUNT++%1000000==0) System.out.println("V3="+COUNT);
 	}
 	
 	public DVector3(DVector3C v2) {
+		this();
+		set(v2);
+	}
+	
+	public DVector3(double[] v2) {
 		this();
 		set(v2);
 	}
@@ -35,25 +44,24 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 		set(i, j, k);
 	}
 	
-	/** @deprecated Wrong number of arguments. */
-	public DVector3(double i, double j, double k, double l) {
-		this();
-		set(i, j, k); 
-		v[3] = l;
+	public final DVector3 set(double[] v2) {
+		set(v2[0], v2[1], v2[2]);
+		return this;
 	}
 	
 	public final DVector3 set(double x, double y, double z) {
-		v[0] = x; v[1] = y; v[2] = z; //v[3] = v3.v[3];
+		//set0( x ); set1( y ); set2( z );
+		v[0] = x; v[1] = y; v[2] = z;
 		return this;
 	}
 	
 	public final DVector3 set(DVector3C v2) {
-		v[0] = v2.get0(); v[1] = v2.get1(); v[2] = v2.get2();
+		set0( v2.get0() ); set1( v2.get1() ); set2( v2.get2() );
 		return this;
 	}
 	
 	public final DVector3 set(DVector3ColView v2) {
-		v[0] = v2.get0(); v[1] = v2.get1(); v[2] = v2.get2();
+		set0( v2.get0() ); set1( v2.get1() ); set2( v2.get2() );
 		return this;
 	}
 	
@@ -75,38 +83,38 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 		return b.toString();
 	}
 
-	@Override
-	public void assertLen(int n) {
-		if (n!=LEN) {
-			throw new IllegalStateException("LEN is " + LEN + ", not " + n);
-		}		
-	}
+//	@Override
+//	public void assertLen(int n) {
+//		if (n!=LEN) {
+//			throw new IllegalStateException("LEN is " + LEN + ", not " + n);
+//		}		
+//	}
 	
-	public void set0(double d) {
+	public final void set0(double d) {
 		v[0] = d;
 	}
 	
-	public void set1(double d) {
+	public final void set1(double d) {
 		v[1] = d;
 	}
 	
-	public void set2(double d) {
+	public final void set2(double d) {
 		v[2] = d;
 	}
 	
-	public double get0() {
+	public final double get0() {
 		return v[0];
 	}
 	
-	public double get1() {
+	public final double get1() {
 		return v[1];
 	}
 	
-	public double get2() {
+	public final double get2() {
 		return v[2];
 	}
 	
-	public DVector3 add(double a, double b, double c) {
+	public final DVector3 add(double a, double b, double c) {
 		v[0] += a; v[1] += b; v[2] += c;
 		return this;
 	}
@@ -117,58 +125,58 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 	}
 	
 	public final DVector3 eqSum(DVector3C v2, DVector3C v3) {
-		v[0] = v2.get0() + v3.get0(); 
-		v[1] = v2.get1() + v3.get1(); 
-		v[2] = v2.get2() + v3.get2();
+		set0( v2.get0() + v3.get0() ); 
+		set1( v2.get1() + v3.get1() ); 
+		set2( v2.get2() + v3.get2() );
 		return this;
 	}
 	
 	public final DVector3 eqSum(DVector3 v2, double s1, DVector3 v3, double s2) {
-		v[0] = v2.v[0]*s1 + v3.v[0]*s2; 
-		v[1] = v2.v[1]*s1 + v3.v[1]*s2; 
-		v[2] = v2.v[2]*s1 + v3.v[2]*s2;
+		set0( v2.get0()*s1 + v3.get0()*s2 ); 
+		set1( v2.get1()*s1 + v3.get1()*s2 ); 
+		set2( v2.get2()*s1 + v3.get2()*s2 );
 		return this;
 	}
 	
 	public final DVector3 eqSum(DVector3ColView v2, double s1, DVector3 v3, double s2) {
-		v[0] = v2.get0()*s1 + v3.v[0]*s2; 
-		v[1] = v2.get1()*s1 + v3.v[1]*s2; 
-		v[2] = v2.get2()*s1 + v3.v[2]*s2;
+		set0( v2.get0()*s1 + v3.get0()*s2 ); 
+		set1( v2.get1()*s1 + v3.get1()*s2 ); 
+		set2( v2.get2()*s1 + v3.get2()*s2 );
 		return this;
 	}
 	
 	public final DVector3 eqSum(DVector3ColView v2, double s1, DVector3ColView v3, double s2) {
-		v[0] = v2.get0()*s1 + v3.get0()*s2; 
-		v[1] = v2.get1()*s1 + v3.get1()*s2; 
-		v[2] = v2.get2()*s1 + v3.get2()*s2;
+		set0( v2.get0()*s1 + v3.get0()*s2 ); 
+		set1( v2.get1()*s1 + v3.get1()*s2 ); 
+		set2( v2.get2()*s1 + v3.get2()*s2 );
 		return this;
 	}
 	
 	public final DVector3 eqSum(DVector3C v2, DVector3C v3, double s2) {
-		v[0] = v2.get0() + v3.get0()*s2; 
-		v[1] = v2.get1() + v3.get1()*s2; 
-		v[2] = v2.get2() + v3.get2()*s2;
+		set0( v2.get0() + v3.get0()*s2 ); 
+		set1( v2.get1() + v3.get1()*s2 ); 
+		set2( v2.get2() + v3.get2()*s2 );
 		return this;
 	}
 
 	public final DVector3 eqSum(DVector3 v2, DVector3ColView v3, double s2) {
-		v[0] = v2.get0() + v3.get0()*s2; 
-		v[1] = v2.get1() + v3.get1()*s2; 
-		v[2] = v2.get2() + v3.get2()*s2;
+		set0( v2.get0() + v3.get0()*s2 ); 
+		set1( v2.get1() + v3.get1()*s2 ); 
+		set2( v2.get2() + v3.get2()*s2 );
 		return this;
 	}
 	
-	public DVector3 sub(double a, double b, double c) {
+	public final DVector3 sub(double a, double b, double c) {
 		v[0] -= a; v[1] -= b; v[2] -= c;
 		return this;
 	}
 
-	public DVector3 sub(DVector3C v2) {
+	public final DVector3 sub(DVector3C v2) {
 		v[0] -= v2.get0(); v[1] -= v2.get1(); v[2] -= v2.get2();
 		return this;
 	}
 
-	public DVector3 scale(double a, double b, double c) {
+	public final DVector3 scale(double a, double b, double c) {
 		v[0] *= a; v[1] *= b; v[2] *= c;
 		return this;
 	}
@@ -178,7 +186,7 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 		return this;
 	}
 
-	public DVector3 scale(DVector3C v2) {
+	public final DVector3 scale(DVector3C v2) {
 		v[0] *= v2.get0(); v[1] *= v2.get1(); v[2] *= v2.get2();
 		return this;
 	}
@@ -221,7 +229,7 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 	 * @param v2
 	 * @param v3
 	 */
-	public DVector3 eqDiff(DVector3C v2, DVector3C v3) {
+	public final DVector3 eqDiff(DVector3C v2, DVector3C v3) {
 		v[0] = v2.get0() - v3.get0(); 
 		v[1] = v2.get1() - v3.get1(); 
 		v[2] = v2.get2() - v3.get2();
@@ -232,7 +240,7 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 	 * Return a new vector v0 = v(this) - v3.
 	 * @param v2
 	 */
-	public DVector3 reSub(DVector3C v2) {
+	public final DVector3 reSub(DVector3C v2) {
 		return new DVector3(
 				get0() - v2.get0(),
 				get1() - v2.get1(),
@@ -247,70 +255,71 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
+	 * 
+	 * This method returns (1,0,0) if no normal can be determined.
 	 */
-	private boolean _dSafeNormalize3 ()
+	public final boolean safeNormalize ()
 	{
-		//TODO use double a1, a2, a3; )?)
-		//TODO avoid idx by replacing it with a.scale() ?
-		
-		int idx;
-		double[] aa = new double[3];
-//		double l;
+		double s;
 
-		aa[0] = Math.abs(v[0]);
-		aa[1] = Math.abs(v[1]);
-		aa[2] = Math.abs(v[2]);
-		if (aa[1] > aa[0]) {
-			if (aa[2] > aa[1]) { // aa[2] is largest
-				idx = 2;
+		double aa0 = Math.abs(get0());
+		double aa1 = Math.abs(get1());
+		double aa2 = Math.abs(get2());
+		if (aa1 > aa0) {
+			if (aa2 > aa1) { // aa[2] is largest
+				s = aa2;
 			}
 			else {              // aa[1] is largest
-				idx = 1;
+				s = aa1;
 			}
 		}
 		else {
-			if (aa[2] > aa[0]) {// aa[2] is largest
-				idx = 2;
+			if (aa2 > aa0) {// aa[2] is largest
+				s = aa2;
 			}
 			else {              // aa[0] might be the largest
-				if (aa[0] <= 0) { // aa[0] might is largest
+				if (aa0 <= 0) { // aa[0] might is largest
 //					a.v[0] = 1;	// if all a's are zero, this is where we'll end up.
 //					a.v[1] = 0;	// return a default unit length vector.
 //					a.v[2] = 0;
-					this.set(1, 0, 0);
+					set(1, 0, 0);
 					return false;
 				}
 				else {
-					idx = 0;
+					s = aa0;
 				}
 			}
 		}
 
-//		a.v[0] /= aa[idx];
-//		a.v[1] /= aa[idx];
-//		a.v[2] /= aa[idx];
-		this.scale(1./aa[idx]);
-		//l = dRecipSqrt (a.v[0]*a.v[0] + a.v[1]*a.v[1] + a.v[2]*a.v[2]);
-//		a.v[0] *= l;
-//		a.v[1] *= l;
-//		a.v[2] *= l;
-		this.scale(1./this.length());
+		scale(1./s);
+		scale(1./length());
 		return true;
 	}
-	public void normalize()
+	/**
+	 * this may be called for vectors `a' with extremely small magnitude, for
+	 * example the result of a cross product on two nearly perpendicular vectors.
+	 * we must be robust to these small vectors. to prevent numerical error,
+	 * first find the component a[i] with the largest magnitude and then scale
+	 * all the components by 1/a[i]. then we can compute the length of `a' and
+	 * scale the components by 1/l. this has been verified to work with vectors
+	 * containing the smallest representable numbers.
+	 * 
+	 * This method throws an IllegalArgumentEception if no normal can be determined.
+	 */
+	public final void normalize()
 	{
-		boolean bNormalizationResult = _dSafeNormalize3();
-		if (!bNormalizationResult) throw new IllegalStateException();
+		if (!safeNormalize()) throw new IllegalStateException(
+				"Normalization failed: " + this);
 	}
 
-	public boolean isEq(DVector3 a) {
-		return v[0]==a.v[0] && v[1]==a.v[1] && v[2]==a.v[2];
+	public final boolean isEq(DVector3 a) {
+		return get0()==a.get0() && get1()==a.get1() && get2()==a.get2();
 	}
 
-	public void eqAbs() {
-		for (int i = 0; i < v.length; i++) {
-			v[i] = Math.abs(v[i]);
-		}
+	public final void eqAbs() {
+		set0( Math.abs(get0()));
+		set1( Math.abs(get1()));
+		set2( Math.abs(get2()));
 	}
 	
 //	public void dMultiply0 (final dMatrix3C B, final dVector3C C)
@@ -354,13 +363,13 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 	 * 
 	 * @return '3'.
 	 */
-	public int dim() {
+	public final int dim() {
 		//return LEN;
 		//TODO
 		return 3;
 	}
 
-	public DVector3C reAdd(DVector3C c) {
+	public final DVector3C reAdd(DVector3C c) {
 		return new DVector3(this).add(c);
 	}
 	
@@ -401,16 +410,100 @@ public class DVector3 extends DVector<DVector3> implements DVector3I, DVector3C 
 		array[pos + 2] -= get2();
 	}
 
-	public DVector3 reScale(double d) {
+	public final DVector3 reScale(double d) {
 		return new DVector3(this).scale(d);
 	}
 
-	public void eqZero() {
+	public final void eqZero() {
 		set(0, 0, 0);
 	}
 
-	public void setZero() {
+	public final void setZero() {
 		eqZero();
+	}
+	
+	public final void eqIdentity() {
+		set(1, 0, 0);
+	}
+
+	public final void setIdentity() {
+		eqIdentity();
+	}
+
+	@Override
+	public final float[] toFloatArray4() {
+		return new float[]{ (float) get0(), (float) get1(), (float) get2(), 0.0f };
+	}
+	
+	/**
+	 * @return The geometric length of this vector.
+	 */
+	public final double length() {
+		return Math.sqrt( get0()*get0() + get1()*get1() + get2()*get2() ) ;
+	}
+
+	public final double lengthSquared() {
+		return get0()*get0() + get1()*get1() + get2()*get2();
+	}
+	
+	public final double get(int i) {
+		return v[i];
+	}
+
+	@Override
+	public final float[] toFloatArray() {
+		return new float[]{(float) get0(), (float) get1(), (float) get2()};
+	}
+	
+	public final void set(int i, double d) {
+		v[i] = d;
+	}
+
+	public final void scale(int i, double d) {
+		v[i] *= d;
+	}
+
+	public final void add(int i, double d) {
+		v[i] += d;
+	}
+	
+	/**
+	 * Calculates the dot product of this vector with the specified column 
+	 * of the given Matrix.
+	 * @param m
+	 * @param col
+	 */
+	public final double dotCol(DMatrix3C m, int col) {
+		if (col == 0) {
+			return get0()*m.get00() + get1()*m.get10() + get2()*m.get20();
+		} else if (col == 1) {
+			return get0()*m.get01() + get1()*m.get11() + get2()*m.get21();
+		} else if (col == 2) {
+			return get0()*m.get02() + get1()*m.get12() + get2()*m.get22();
+		} else {
+			throw new IllegalArgumentException("col="+col);
+		}
+	}
+	
+	
+	/**
+	 * Any implementation of DVector3I will return true if get0(), get1()
+	 * and get2() return the same values.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof DVector3I)) return false;
+		DVector3I v = (DVector3I) obj;
+		return get0()==v.get0() && get1()==v.get1() && get2()==v.get2();
+	}
+	
+	@Override
+	public int hashCode() {
+		return (int) (Double.doubleToRawLongBits(get0())  * 
+		Double.doubleToRawLongBits(get1()) * 
+		Double.doubleToRawLongBits(get2()));
 	}
 }
 

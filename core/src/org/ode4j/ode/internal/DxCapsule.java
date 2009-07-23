@@ -265,16 +265,18 @@ public class DxCapsule extends DxGeom implements DCapsule {
 			double lz2 = cyl2._lz * (0.5);
 			DVector3 pos1 = cyl1._final_posr.pos;
 			DVector3 pos2 = cyl2._final_posr.pos;
-			DVector3 axis1 = new DVector3(), axis2 = new DVector3();
+			//DVector3 axis1 = new DVector3(), axis2 = new DVector3();
 			//  axis1[0] = cyl1.final_posr.R[2];
 			//  axis1[1] = cyl1.final_posr.R[6];
 			//  axis1[2] = cyl1.final_posr.R[10]
-			axis1.set(cyl1._final_posr.R.get(2), cyl1._final_posr.R.get(6), cyl1._final_posr.R.get(10));
+			//axis1.set(cyl1._final_posr.R.get(2), cyl1._final_posr.R.get(6), cyl1._final_posr.R.get(10));
+			DVector3 axis1 = cyl1._final_posr.R.columnAsNewVector(2);
 			//  axis2[0] = cyl2.final_posr.R[2];
 			//  axis2[1] = cyl2.final_posr.R[6];
 			//  axis2[2] = cyl2.final_posr.R[10];
-			axis2.set(cyl2._final_posr.R.get(2), cyl2._final_posr.R.get(6), cyl2._final_posr.R.get(10));
-
+			//axis2.set(cyl2._final_posr.R.get(2), cyl2._final_posr.R.get(6), cyl2._final_posr.R.get(10));
+			DVector3 axis2 = cyl2._final_posr.R.columnAsNewVector(2);
+			
 			// if the cylinder axes are close to parallel, we'll try to detect up to
 			// two contact points along the body of the cylinder. if we can't find any
 			// points then we'll fall back to the closest-points algorithm. note that

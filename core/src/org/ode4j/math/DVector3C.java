@@ -36,4 +36,6 @@ public interface DVector3C {
 
 	public DVector3 reSub(DVector3C pos);
 	public DVector3 reScale(double s);
+	public float[] toFloatArray4();
+	public double dotCol(DMatrix3C m, int col);
 }

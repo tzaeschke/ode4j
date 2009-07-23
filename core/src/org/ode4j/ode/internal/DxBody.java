@@ -406,7 +406,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 
 		//memcpy (b.mass,mass,sizeof(dMass));
 		mass.set(mass2);
-		if (!dInvertPDMatrix (mass._I.v, invI.v, 3)) {
+		if (!dInvertPDMatrix (mass._I, invI)) {
 			dDEBUGMSG ("inertia must be positive definite!");
 			invI.setIdentity();
 		}

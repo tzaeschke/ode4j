@@ -295,7 +295,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		body_next = null;
 		if (isPlaceable) {
 			_final_posr = dAllocPosr();
-			_final_posr.pos.setValues(0);//dSetZero (_final_posr.pos.v,4);
+			_final_posr.pos.setZero();//dSetZero (_final_posr.pos.v,4);
 			_final_posr.R.setIdentity();
 		}
 		else {
@@ -752,13 +752,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 		return _aabb;
 	}
 
-	//TODO remove this method???
 //	boolean dGeomIsSpace (dxGeom g)
-	public boolean dGeomIsSpace ()
-	{
-		//dAASSERT (g);
-		return this instanceof DSpace;
-	}
+//	public boolean dGeomIsSpace ()
+//	{
+//		//dAASSERT (g);
+//		return this instanceof DSpace;
+//	}
 
 
 	DxSpace dGeomGetSpace (DxGeom g)
@@ -767,9 +766,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 		return g.parent_space;
 	}
 
-	//TODO
 	//public int dGeomGetClass (dxGeom g)
-	public int dGeomGetClass ()
+	private int dGeomGetClass ()
 	{
 		//dAASSERT (g);
 		return type;
@@ -990,7 +988,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 		_final_posr = dAllocPosr();
 		offset_posr = dAllocPosr();
-		offset_posr.pos.setValues(0);//dSetZero (offset_posr.pos.v,4);
+		offset_posr.pos.setZero();//dSetZero (offset_posr.pos.v,4);
 		offset_posr.R.setIdentity();
 
 		_gflags |= GEOM_POSR_BAD;
@@ -1586,16 +1584,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 	// dGeom API
 	// *********************************************
 	
-	//~dGeom()
-//	public void DESTRUCTOR()
-//	{ if (_id!=null) dGeomDestroy (_id); }
-
-//	public dGeom id() //const
-//	{ return _id; }
-	//TODO TZ ?
-	//operator dGeom() //const
-	//{ return _id; }
-
 	public void destroy() {
 		//if (_id!=null) dGeomDestroy (_id);
 		//_id = null;

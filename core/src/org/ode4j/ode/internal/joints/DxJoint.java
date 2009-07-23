@@ -137,8 +137,6 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		// right hand sides of the equation J*v = c + cfm * lambda. cfm is the
 		// "constraint force mixing" vector. c is set to zero on entry, cfm is
 		// set to a constant value (typically very small or zero) value on entry.
-		//TODO only dxJointHinge uses more than 4 fields here. Should be dVector4!!
-		//TODO #2 change to double c1, c2, c3, c4; ???
 //		public dVector3 c = new dVector3();//double[] c;  //TZ: [4] ? 0,1,2,3
 //		public dVector3 cfm = new dVector3();  //TZ: [3] ?
 		protected double[] _cA;
@@ -567,8 +565,8 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 				anchor2.set(xyz);
 			}
 		}
-		anchor1.v[3] = 0;
-		anchor2.v[3] = 0;
+//		anchor1.v[3] = 0;
+//		anchor2.v[3] = 0;
 	}
 
 
@@ -588,7 +586,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			if ( axis1 != null)
 			{
 				dMULTIPLY1_331( axis1, node[0].body._posr.R, q );
-				axis1.v[3] = 0;
+//				axis1.v[3] = 0;
 			}
 			if ( axis2 != null)
 			{
@@ -603,7 +601,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //					axis2.v[2] = z;
 					axis2.set(x, y, z);
 				}
-				axis2.v[3] = 0;
+//				axis2.v[3] = 0;
 			}
 		}
 	}

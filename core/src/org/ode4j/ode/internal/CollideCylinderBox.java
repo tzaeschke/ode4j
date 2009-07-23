@@ -207,7 +207,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 //			m_vNormal[0] = (0.0);
 //			m_vNormal[1] = (0.0);
 //			m_vNormal[2] = (0.0);
-			m_vNormal.setValues(0);
+			m_vNormal.setZero();
 
 			// calculate basic angle for nCYLINDER_SEGMENT-gon
 			double fAngle = (double) (M_PI/nCYLINDER_SEGMENT);

@@ -43,4 +43,21 @@ public abstract class DVector3View implements DVector3I {
 		b.append( get2() ).append("]");
 		return b.toString();
 	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof DVector3I)) return false;
+		DVector3I v = (DVector3I) obj;
+		return get0()==v.get0() && get1()==v.get1() && get2()==v.get2();
+	}
+	
+	@Override
+	public int hashCode() {
+		return (int) (Double.doubleToRawLongBits(get0())  * 
+		Double.doubleToRawLongBits(get1()) * 
+		Double.doubleToRawLongBits(get2()));
+	}
 }

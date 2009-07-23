@@ -46,15 +46,14 @@ public class DxCollisionUtil {
 	//given a pointer `p' to a dContactGeom, return the dContactGeom at
 	//p + skip bytes.
 	//#define CONTACT(p,skip) ((dContactGeom*) (((char*)p) + (skip)))
-	//TODO remove -> migration guide!
-	/**
-	 * given a pointer `p' to a dContactGeom, return the dContactGeom at
-	 * p + skip bytes.
-	 * @deprecated Instead, please use: <tt>dContagGeomBuffer.get(skip);</tt>
-	 */
-	DContactGeom CONTACT(DContactGeom[] p, int skip) {
-		throw new UnsupportedOperationException();
-	}
+//	/**
+//	 * given a pointer `p' to a dContactGeom, return the dContactGeom at
+//	 * p + skip bytes.
+//	 * @deprecated Instead, please use: <tt>dContagGeomBuffer.get(skip);</tt>
+//	 */
+//	DContactGeom CONTACT(DContactGeom[] p, int skip) {
+//		throw new UnsupportedOperationException();
+//	}
 
 	//#if 1
 	//#include "collision_kernel.h"
@@ -81,9 +80,9 @@ public class DxCollisionUtil {
 	void dVector3Subtract(final DVector3 a,final DVector3 b,DVector3 c)
 	{
 		c.eqDiff(a, b);
-//		c.v[0] = a.v[0] - b.v[0];
-//		c.v[1] = a.v[1] - b.v[1];
-//		c.v[2] = a.v[2] - b.v[2];
+		//		c.v[0] = a.v[0] - b.v[0];
+		//		c.v[1] = a.v[1] - b.v[1];
+		//		c.v[2] = a.v[2] - b.v[2];
 	}
 
 	//Some vector math
@@ -91,38 +90,38 @@ public class DxCollisionUtil {
 	void dVector3Scale(DVector3 a,double nScale)
 	{
 		a.scale(nScale);
-//		a.v[0] *= nScale ;
-//		a.v[1] *= nScale ;
-//		a.v[2] *= nScale ;
+		//		a.v[0] *= nScale ;
+		//		a.v[1] *= nScale ;
+		//		a.v[2] *= nScale ;
 	}
 
 	//inline void dVector3Add(final dVector3& a,final dVector3& b,dVector3& c)
 	void dVector3Add(final DVector3 a,final DVector3 b,DVector3 c)
 	{
 		c.eqSum(a, b);
-//		c.v[0] = a.v[0] + b.v[0];
-//		c.v[1] = a.v[1] + b.v[1];
-//		c.v[2] = a.v[2] + b.v[2];
+		//		c.v[0] = a.v[0] + b.v[0];
+		//		c.v[1] = a.v[1] + b.v[1];
+		//		c.v[2] = a.v[2] + b.v[2];
 	}
 
 	//inline void dVector3Copy(final dVector3& a,dVector3& c)
 	void dVector3Copy(final DVector3C a,DVector3 c)
 	{
-//		c.v[0] = a.v[0];
-//		c.v[1] = a.v[1];
-//		c.v[2] = a.v[2];
+		//		c.v[0] = a.v[0];
+		//		c.v[1] = a.v[1];
+		//		c.v[2] = a.v[2];
 		c.set(a);
 	}
 
 	//inline void dVector4Copy(final dVector4& a,dVector4& c)
-//	void dVector4Copy(final DVector4 a,DVector4 c)
-//	{
-//		c.set(a);
-////		c.v[0] = a.v[0];
-////		c.v[1] = a.v[1];
-////		c.v[2] = a.v[2];
-////		c.v[3] = a.v[3];
-//	}
+	//	void dVector4Copy(final DVector4 a,DVector4 c)
+	//	{
+	//		c.set(a);
+	////		c.v[0] = a.v[0];
+	////		c.v[1] = a.v[1];
+	////		c.v[2] = a.v[2];
+	////		c.v[3] = a.v[3];
+	//	}
 
 	//inline void dVector3Cross(final dVector3& a,final dVector3& b,dVector3& c)
 	static void dVector3Cross(final DVector3 a,final DVector3 b,DVector3 c)
@@ -146,39 +145,85 @@ public class DxCollisionUtil {
 	//inline void dVector3Inv(dVector3& a)
 	void dVector3Inv(DVector3 a)
 	{
-		a.v[0] = -a.v[0];
-		a.v[1] = -a.v[1];
-		a.v[2] = -a.v[2];
+		//		a.v[0] = -a.v[0];
+		//		a.v[1] = -a.v[1];
+		//		a.v[2] = -a.v[2];
+		a.scale(-1);
 	}
 
 	//   inline dReal dVector3Length2(final dVector3& a)
 	double dVector3Length2(final DVector3 a)
 	{
-		return (a.v[0]*a.v[0]+a.v[1]*a.v[1]+a.v[2]*a.v[2]);
+		//return (a.get0()*a.get0()+a.v[1]*a.v[1]+a.v[2]*a.v[2]);
+		return a.lengthSquared();
 	}
 
 	//inline void dMat3GetCol(final dMatrix3& m,final int col, dVector3& v)
 	void dMat3GetCol(final DMatrix3 m,final int col, DVector3 v)
 	{
-		v.v[0] = m.v[col + 0];
-		v.v[1] = m.v[col + 4];
-		v.v[2] = m.v[col + 8];
+//		v.set0( m.v[col + 0] );
+//		v.set1( m.v[col + 4] );
+//		v.set2( m.v[col + 8] );
+		if (col ==0) {
+			v.set( m.get00(), m.get10(), m.get20() );
+		} else if (col == 1) {
+			v.set( m.get01(), m.get11(), m.get21() );
+		} else if (col == 2) {
+			v.set( m.get02(), m.get12(), m.get22() );
+		} else {
+			throw new IllegalArgumentException("col="+col);
+		}
 	}
 
 	//inline void dVector3CrossMat3Col(final dMatrix3& m,final int col,final dVector3& v,dVector3& r)
-	void dVector3CrossMat3Col(final DMatrix3 m,final int col,final DVector3 v,DVector3 r)
+//	void dVector3CrossMat3Col(final DMatrix3 m,final int col,final DVector3 v,DVector3 r)
+//	{
+//		r.set0( v.get1() * m.v[2*4 + col] - v.get2() * m.v[1*4 + col] ); 
+//		r.set1( v.get2() * m.v[0*4 + col] - v.get0() * m.v[2*4 + col] ); 
+//		r.set2( v.get0() * m.v[1*4 + col] - v.get1() * m.v[0*4 + col] );
+//	}
+	void dVector3CrossMat3Col(DMatrix3C m, final int col, DVector3C v,DVector3 r)
 	{
-		r.v[0] =  v.v[1] * m.v[2*4 + col] - v.v[2] * m.v[1*4 + col]; 
-		r.v[1] =  v.v[2] * m.v[0*4 + col] - v.v[0] * m.v[2*4 + col]; 
-		r.v[2] =  v.v[0] * m.v[1*4 + col] - v.v[1] * m.v[0*4 + col];
+		if (col == 0) {
+			r.set0( v.get1() * m.get20() - v.get2() * m.get10() ); 
+			r.set1( v.get2() * m.get00() - v.get0() * m.get20() ); 
+			r.set2( v.get0() * m.get10() - v.get1() * m.get00() );
+		} else if (col ==1) {
+
+			r.set0( v.get1() * m.get21() - v.get2() * m.get11() ); 
+			r.set1( v.get2() * m.get01() - v.get0() * m.get21() ); 
+			r.set2( v.get0() * m.get11() - v.get1() * m.get01() );
+		} else if (col ==2 ) {
+
+			r.set0( v.get1() * m.get22() - v.get2() * m.get12() ); 
+			r.set1( v.get2() * m.get02() - v.get0() * m.get22() ); 
+			r.set2( v.get0() * m.get12() - v.get1() * m.get02() );
+		} else {
+			throw new IllegalArgumentException("col="+col);
+		}
 	}
 
 	//inline void dMat3ColCrossVector3(final dMatrix3& m,final int col,final dVector3& v,dVector3& r)
 	void dMat3ColCrossVector3(final DMatrix3 m,final int col,final DVector3 v,DVector3 r)
 	{
-		r.v[0] =   v.v[2] * m.v[1*4 + col] - v.v[1] * m.v[2*4 + col]; 
-		r.v[1] =   v.v[0] * m.v[2*4 + col] - v.v[2] * m.v[0*4 + col]; 
-		r.v[2] =   v.v[1] * m.v[0*4 + col] - v.v[0] * m.v[1*4 + col];
+//		r.set0( v.get2() * m.v[1*4 + col] - v.get1() * m.v[2*4 + col] ); 
+//		r.set1( v.get0() * m.v[2*4 + col] - v.get2() * m.v[0*4 + col] ); 
+//		r.set2( v.get1() * m.v[0*4 + col] - v.get0() * m.v[1*4 + col] );
+		if (col ==0) {
+			r.set0( v.get2() * m.get10() - v.get1() * m.get20() ); 
+			r.set1( v.get0() * m.get20() - v.get2() * m.get00() ); 
+			r.set2( v.get1() * m.get00() - v.get0() * m.get10() );
+		} else if (col == 1) {
+			r.set0( v.get2() * m.get11() - v.get1() * m.get21() ); 
+			r.set1( v.get0() * m.get21() - v.get2() * m.get01() ); 
+			r.set2( v.get1() * m.get01() - v.get0() * m.get11() );
+		} else if (col == 2) {
+			r.set0( v.get2() * m.get12() - v.get1() * m.get22() ); 
+			r.set1( v.get0() * m.get22() - v.get2() * m.get02() ); 
+			r.set2( v.get1() * m.get02() - v.get0() * m.get12() );
+		} else {
+			throw new IllegalArgumentException("col="+col);
+		}
 	}
 
 	//inline void dMultiplyMat3Vec3(final dMatrix3& m,final dVector3& v, dVector3& r)
@@ -190,33 +235,33 @@ public class DxCollisionUtil {
 	//inline dReal dPointPlaneDistance(final dVector3& point,final dVector4& plane)
 	double dPointPlaneDistance(final DVector3 point,final DVector4 plane)
 	{
-		return (plane.v[0]*point.v[0] + plane.v[1]*point.v[1] + plane.v[2]*point.v[2] + plane.v[3]);
+		return (plane.get0()*point.get0() + plane.get1()*point.get1() + plane.get2()*point.get2() + plane.get3());
 	}
 
 	//inline void dConstructPlane(final dVector3& normal,final dReal& distance, dVector4& plane)
 	void dConstructPlane(final DVector3 normal,final double distance, DVector4 plane)
 	{
-		plane.v[0] = normal.v[0];
-		plane.v[1] = normal.v[1];
-		plane.v[2] = normal.v[2];
-		plane.v[3] = distance;
+		plane.set( normal.get0(),
+			normal.get1(),
+			normal.get2(),
+			distance);
 	}
 
 	//inline void dMatrix3Copy(final double* source,dMatrix3& dest)
 	/** @deprecated TZ Use dVector instead */
 	void dMatrix3Copy(final DMatrix3C source,DMatrix3 dest)
 	{
-//		dest.v[0]	=	source[0];
-//		dest.v[1]	=	source[1];
-//		dest.v[2]	=	source[2];
-//
-//		dest.v[4]	=	source[4];
-//		dest.v[5]	=	source[5];
-//		dest.v[6]	=	source[6];
-//
-//		dest.v[8]	=	source[8];
-//		dest.v[9]	=	source[9];
-//		dest.v[10]=	source[10];
+		//		dest.v[0]	=	source[0];
+		//		dest.v[1]	=	source[1];
+		//		dest.v[2]	=	source[2];
+		//
+		//		dest.v[4]	=	source[4];
+		//		dest.v[5]	=	source[5];
+		//		dest.v[6]	=	source[6];
+		//
+		//		dest.v[8]	=	source[8];
+		//		dest.v[9]	=	source[9];
+		//		dest.v[10]=	source[10];
 		dest.set(source);
 	}
 
@@ -225,9 +270,12 @@ public class DxCollisionUtil {
 	{
 		double det;
 
-		det = mat.v[0] * ( mat.v[5]*mat.v[10] - mat.v[9]*mat.v[6] )
-		- mat.v[1] * ( mat.v[4]*mat.v[10] - mat.v[8]*mat.v[6] )
-		+ mat.v[2] * ( mat.v[4]*mat.v[9]  - mat.v[8]*mat.v[5] );
+//		det = mat.v[0] * ( mat.v[5]*mat.v[10] - mat.v[9]*mat.v[6] )
+//		- mat.v[1] * ( mat.v[4]*mat.v[10] - mat.v[8]*mat.v[6] )
+//		+ mat.v[2] * ( mat.v[4]*mat.v[9]  - mat.v[8]*mat.v[5] );
+		det = mat.get00() * ( mat.get11()*mat.get22() - mat.get21()*mat.get12() )
+		- mat.get01() * ( mat.get10()*mat.get22() - mat.get20()*mat.get12() )
+		+ mat.get02() * ( mat.get10()*mat.get21()  - mat.get20()*mat.get11() );
 
 		return( det );
 	}
@@ -244,17 +292,17 @@ public class DxCollisionUtil {
 			return;
 		}
 
-		dst.v[0] =    ma.v[5]*ma.v[10] - ma.v[6]*ma.v[9]   / det;
-		dst.v[1] = -( ma.v[1]*ma.v[10] - ma.v[9]*ma.v[2] ) / det;
-		dst.v[2] =    ma.v[1]*ma.v[6]  - ma.v[5]*ma.v[2]   / det;
+		dst.set00(    ma.get11()*ma.get22() - ma.get12()*ma.get21()   / det );
+		dst.set01( -( ma.get01()*ma.get22() - ma.get21()*ma.get02() ) / det );
+		dst.set02(    ma.get01()*ma.get12()  - ma.get11()*ma.get02()   / det );
 
-		dst.v[4] = -( ma.v[4]*ma.v[10] - ma.v[6]*ma.v[8] ) / det;
-		dst.v[5] =    ma.v[0]*ma.v[10] - ma.v[8]*ma.v[2]   / det;
-		dst.v[6] = -( ma.v[0]*ma.v[6] - ma.v[4]*ma.v[2] ) / det;
+		dst.set10( -( ma.get10()*ma.get22() - ma.get12()*ma.get20() ) / det );
+		dst.set11(    ma.get00()*ma.get22() - ma.get20()*ma.get02()   / det );
+		dst.set12( -( ma.get00()*ma.get12() - ma.get10()*ma.get02() ) / det );
 
-		dst.v[8] =    ma.v[4]*ma.v[9] - ma.v[8]*ma.v[5]   / det;
-		dst.v[9] = -( ma.v[0]*ma.v[9] - ma.v[8]*ma.v[1] ) / det;
-		dst.v[10] =    ma.v[0]*ma.v[5] - ma.v[1]*ma.v[4]   / det;
+		dst.set20(    ma.get10()*ma.get21() - ma.get20()*ma.get11()   / det );
+		dst.set21( -( ma.get00()*ma.get21() - ma.get20()*ma.get01() ) / det );
+		dst.set22(    ma.get00()*ma.get11() - ma.get01()*ma.get10()   / det );
 	}
 
 	//inline void dQuatTransform(final dQuaternion& quat,final dVector3& source,dVector3& dest)
@@ -262,14 +310,14 @@ public class DxCollisionUtil {
 	{
 
 		// Nguyen Binh : this code seem to be the fastest.
-		double x0 = 	source.v[0] * quat.v[0] + source.v[2] * quat.v[2] - source.v[1] * quat.v[3];
-		double x1 = 	source.v[1] * quat.v[0] + source.v[0] * quat.v[3] - source.v[2] * quat.v[1];
-		double x2 = 	source.v[2] * quat.v[0] + source.v[1] * quat.v[1] - source.v[0] * quat.v[2];
-		double x3 = 	source.v[0] * quat.v[1] + source.v[1] * quat.v[2] + source.v[2] * quat.v[3];
+		double x0 = 	source.get0() * quat.get0() + source.get2() * quat.get2() - source.get1() * quat.get3();
+		double x1 = 	source.get1() * quat.get0() + source.get0() * quat.get3() - source.get2() * quat.get1();
+		double x2 = 	source.get2() * quat.get0() + source.get1() * quat.get1() - source.get0() * quat.get2();
+		double x3 = 	source.get0() * quat.get1() + source.get1() * quat.get2() + source.get2() * quat.get3();
 
-		dest.v[0]  = 	quat.v[0] * x0 + quat.v[1] * x3 + quat.v[2] * x2 - quat.v[3] * x1;
-		dest.v[1]  = 	quat.v[0] * x1 + quat.v[2] * x3 + quat.v[3] * x0 - quat.v[1] * x2;
-		dest.v[2]  = 	quat.v[0] * x2 + quat.v[3] * x3 + quat.v[1] * x1 - quat.v[2] * x0;
+		dest.set0( quat.get0() * x0 + quat.get1() * x3 + quat.get2() * x2 - quat.get3() * x1 );
+		dest.set1( quat.get0() * x1 + quat.get2() * x3 + quat.get3() * x0 - quat.get1() * x2 );
+		dest.set2( quat.get0() * x2 + quat.get3() * x3 + quat.get1() * x1 - quat.get2() * x0 );
 
 		/*
 	// nVidia SDK implementation
@@ -295,15 +343,15 @@ public class DxCollisionUtil {
 	void dQuatInvTransform(final DQuaternion quat,final DVector3 source,DVector3 dest)
 	{
 
-		double norm = quat.v[0]*quat.v[0] + quat.v[1]*quat.v[1] + quat.v[2]*quat.v[2] + quat.v[3]*quat.v[3];
+		double norm = quat.get0()*quat.get0() + quat.get1()*quat.get1() + quat.get2()*quat.get2() + quat.get3()*quat.get3();
 
 		if (norm > (0.0))
 		{
 			DQuaternion invQuat = new DQuaternion();
-			invQuat.v[0] =  quat.v[0] / norm;
-			invQuat.v[1] = -quat.v[1] / norm;
-			invQuat.v[2] = -quat.v[2] / norm;
-			invQuat.v[3] = -quat.v[3] / norm;	
+			invQuat.set0(  quat.get0() / norm );
+			invQuat.set1( -quat.get1() / norm );
+			invQuat.set2( -quat.get2() / norm );
+			invQuat.set3( -quat.get3() / norm );	
 
 			dQuatTransform(invQuat,source,dest);
 
@@ -318,25 +366,46 @@ public class DxCollisionUtil {
 	//inline void dGetEulerAngleFromRot(final dMatrix3& mRot,dReal& rX,dReal& rY,dReal& rZ)
 	void dGetEulerAngleFromRot(final DMatrix3 mRot,RefDouble rX,RefDouble rY,RefDouble rZ)
 	{
-		rY.set( asin(mRot.get(0 * 4 + 2)) );
+//		rY.set( asin(mRot.get(0 * 4 + 2)) );
+//		if (rY.get() < M_PI /2)
+//		{
+//			if (rY.get() > -M_PI /2)
+//			{
+//				rX.set( atan2(-mRot.v[1*4 + 2], mRot.v[2*4 + 2]) );
+//				rZ.set( atan2(-mRot.v[0*4 + 1], mRot.v[0*4 + 0]) );
+//			}
+//			else
+//			{
+//				// not unique
+//				rX.set( -atan2(mRot.v[1*4 + 0], mRot.v[1*4 + 1]) );
+//				rZ.set(0.0);
+//			}
+//		}
+//		else
+//		{
+//			// not unique
+//			rX.set( atan2(mRot.v[1*4 + 0], mRot.v[1*4 + 1]) );
+//			rZ.set(0.0);
+//		}
+		rY.set( asin(mRot.get02()) );
 		if (rY.get() < M_PI /2)
 		{
 			if (rY.get() > -M_PI /2)
 			{
-				rX.set( atan2(-mRot.v[1*4 + 2], mRot.v[2*4 + 2]) );
-				rZ.set( atan2(-mRot.v[0*4 + 1], mRot.v[0*4 + 0]) );
+				rX.set( atan2(-mRot.get12(), mRot.get22()) );
+				rZ.set( atan2(-mRot.get01(), mRot.get00()) );
 			}
 			else
 			{
 				// not unique
-				rX.set( -atan2(mRot.v[1*4 + 0], mRot.v[1*4 + 1]) );
+				rX.set( -atan2(mRot.get10(), mRot.get11()) );
 				rZ.set(0.0);
 			}
 		}
 		else
 		{
 			// not unique
-			rX.set( atan2(mRot.v[1*4 + 0], mRot.v[1*4 + 1]) );
+			rX.set( atan2(mRot.get10(), mRot.get11()) );
 			rZ.set(0.0);
 		}
 	}
@@ -344,22 +413,23 @@ public class DxCollisionUtil {
 	//inline void dQuatInv(final dQuaternion& source, dQuaternion& dest)
 	void dQuatInv(final DQuaternion source, DQuaternion dest)
 	{
-		double norm = source.v[0]*source.v[0] + source.v[1]*source.v[1] + source.v[2]*source.v[2] + source.v[3]*source.v[3];
+		double norm = source.get0()*source.get0() + source.get1()*source.get1() + source.get2()*source.get2() + source.get3()*source.get3();
 
 		if (norm > 0.0f)
 		{
-			dest.v[0] = source.v[0] / norm;
-			dest.v[1] = -source.v[1] / norm;
-			dest.v[2] = -source.v[2] / norm;
-			dest.v[3] = -source.v[3] / norm;	
+			dest.set0( source.get0() / norm );
+			dest.set1( -source.get1() / norm );
+			dest.set2( -source.get2() / norm );
+			dest.set3( -source.get3() / norm );	
 		}
 		else
 		{
 			// Singular -> return identity
-			dest.v[0] = (1.0);
-			dest.v[1] = (0.0);
-			dest.v[2] = (0.0);
-			dest.v[3] = (0.0);
+//			dest.v[0] = (1.0);
+//			dest.v[1] = (0.0);
+//			dest.v[2] = (0.0);
+//			dest.v[3] = (0.0);
+			dest.set( 1, 0, 0, 0 );
 		}
 	}
 
@@ -381,23 +451,26 @@ public class DxCollisionUtil {
 		double d = dDISTANCE (p1,p2);
 		if (d > (r1 + r2)) return 0;
 		if (d <= 0) {
-			c.pos.v[0] = p1.v[0];
-			c.pos.v[1] = p1.v[1];
-			c.pos.v[2] = p1.v[2];
-			c.normal.v[0] = 1;
-			c.normal.v[1] = 0;
-			c.normal.v[2] = 0;
+//			c.pos.v[0] = p1.get0();
+//			c.pos.v[1] = p1.get1();
+//			c.pos.v[2] = p1.get2();
+			c.pos.set( p1 );
+//			c.normal.v[0] = 1;
+//			c.normal.v[1] = 0;
+//			c.normal.v[2] = 0;
+			c.normal.set( 1, 0, 0 );
 			c.depth = r1 + r2;
 		}
 		else {
 			double d1 = dRecip (d);
-			c.normal.v[0] = (p1.v[0]-p2.v[0])*d1;
-			c.normal.v[1] = (p1.v[1]-p2.v[1])*d1;
-			c.normal.v[2] = (p1.v[2]-p2.v[2])*d1;
+			c.normal.set0( (p1.get0()-p2.get0())*d1 );
+			c.normal.set1( (p1.get1()-p2.get1())*d1 );
+			c.normal.set2( (p1.get2()-p2.get2())*d1 );
 			double k = (0.5) * (r2 - r1 - d);
-			c.pos.v[0] = p1.v[0] + c.normal.v[0]*k;
-			c.pos.v[1] = p1.v[1] + c.normal.v[1]*k;
-			c.pos.v[2] = p1.v[2] + c.normal.v[2]*k;
+//			c.pos.v[0] = p1.get0() + c.normal.get0()*k;
+//			c.pos.v[1] = p1.get1() + c.normal.get1()*k;
+//			c.pos.v[2] = p1.get2() + c.normal.get2()*k;
+			c.pos.eqSum( p1, c.normal, k );
 			c.depth = r1 + r2 - d;
 		}
 		return 1;
@@ -419,9 +492,10 @@ public class DxCollisionUtil {
 			RefDouble alpha, RefDouble beta)
 	{
 		DVector3 p = new DVector3();
-		p.v[0] = pb.v[0] - pa.v[0];
-		p.v[1] = pb.v[1] - pa.v[1];
-		p.v[2] = pb.v[2] - pa.v[2];
+//		p.v[0] = pb.get0() - pa.get0();
+//		p.v[1] = pb.get1() - pa.get1();
+//		p.v[2] = pb.get2() - pa.get2();
+		p.eqDiff( pb, pa );
 		double uaub = dDOT(ua,ub);
 		double q1 =  dDOT(ua,p);
 		double q2 = -dDOT(ub,p);
@@ -439,14 +513,15 @@ public class DxCollisionUtil {
 	}
 
 
-	private static void SET2(DVector3 a, DVector3 b) { a.v[0]=b.v[0]; a.v[1]=b.v[1]; a.v[2]=b.v[2];}
+	//private static void SET2(DVector3 a, DVector3 b) { a.v[0]=b.get0(); a.v[1]=b.get1(); a.v[2]=b.get2();}
+	private static void SET2(DVector3 a, DVector3 b) { a.set( b );}
 	private static void SET3(DVector3 a, DVector3 b, OP op, DVector3 c) {
 		SET3(a, 1, b, op, 1, c);
 	}
 	private static void SET3(DVector3 a, double f1, DVector3 b, OP op, double f2, DVector3 c) {
 		switch (op) {
-		case ADD: a.v[0]=b.v[0]*f1 + c.v[0]*f2; a.v[1]=b.v[1]*f1 + c.v[1]*f2; a.v[2]=b.v[2]*f1 + c.v[2]*f2; return;
-		case SUB: a.v[0]=b.v[0]*f1 - c.v[0]*f2; a.v[1]=b.v[1]*f1 - c.v[1]*f2; a.v[2]=b.v[2]*f1 - c.v[2]*f2; return;
+		case ADD: a.set0(b.get0()*f1 + c.get0()*f2); a.set1(b.get1()*f1 + c.get1()*f2); a.set2(b.get2()*f1 + c.get2()*f2); return;
+		case SUB: a.set0(b.get0()*f1 - c.get0()*f2); a.set1(b.get1()*f1 - c.get1()*f2); a.set2(b.get2()*f1 - c.get2()*f2); return;
 		default: throw new UnsupportedOperationException(); }
 	}
 	// given two line segments A and B with endpoints a1-a2 and b1-b2, return the
@@ -468,7 +543,7 @@ public class DxCollisionUtil {
 			DVector3 cp1, DVector3 cp2)
 	{
 		DVector3 a1a2=new DVector3(),b1b2=new DVector3(),a1b1=new DVector3(),a1b2=new DVector3(),
-			a2b1=new DVector3(),a2b2=new DVector3(),n=new DVector3();
+		a2b1=new DVector3(),a2b2=new DVector3(),n=new DVector3();
 		double la,lb,k,da1,da2,da3,da4,db1,db2,db3,db4,det;
 
 
@@ -620,38 +695,41 @@ public class DxCollisionUtil {
 		// we will do all subsequent computations in this box-relative coordinate
 		// system. we have to do a translation and rotation for each point.
 		DVector3 tmp=new DVector3(),s=new DVector3(),v=new DVector3();
-		tmp.v[0] = p1.v[0] - c.v[0];
-		tmp.v[1] = p1.v[1] - c.v[1];
-		tmp.v[2] = p1.v[2] - c.v[2];
+//		tmp.v[0] = p1.get0() - c.get0();
+//		tmp.v[1] = p1.get1() - c.get1();
+//		tmp.v[2] = p1.get2() - c.get2();
+		tmp.eqDiff( p1, c );
 		dMULTIPLY1_331 (s,R,tmp);
-		tmp.v[0] = p2.v[0] - p1.v[0];
-		tmp.v[1] = p2.v[1] - p1.v[1];
-		tmp.v[2] = p2.v[2] - p1.v[2];
+//		tmp.v[0] = p2.get0() - p1.get0();
+//		tmp.v[1] = p2.get1() - p1.get1();
+//		tmp.v[2] = p2.get2() - p1.get2();
+		tmp.eqDiff( p2, p1 );
 		dMULTIPLY1_331 (v,R,tmp);
 
 		// mirror the line so that v has all components >= 0
 		DVector3 sign=new DVector3();
 		for (i=0; i<3; i++) {
-			if (v.v[i] < 0) {
-				s.v[i] = -s.v[i];
-				v.v[i] = -v.v[i];
-				sign.v[i] = -1;
+			if (v.get(i) < 0) {
+				s.set(i, -s.get(i) );
+				v.set(i, -v.get(i) );
+				sign.set(i, -1);
 			}
-			else sign.v[i] = 1;
+			else sign.set(i, 1);
 		}
 
 		// compute v^2
 		DVector3 v2=new DVector3();
-		v2.v[0] = v.v[0]*v.v[0];
-		v2.v[1] = v.v[1]*v.v[1];
-		v2.v[2] = v.v[2]*v.v[2];
+		v2.set0( v.get0()*v.get0() );
+		v2.set1( v.get1()*v.get1() );
+		v2.set2( v.get2()*v.get2() );
 
 		// compute the half-sides of the box
 		//TZ double h[3];
 		DVector3 h = new DVector3();
-		h.v[0] = (0.5) * side.v[0];
-		h.v[1] = (0.5) * side.v[1];
-		h.v[2] = (0.5) * side.v[2];
+//		h.v[0] = (0.5) * side.get0();
+//		h.v[1] = (0.5) * side.get1();
+//		h.v[2] = (0.5) * side.get2();
+		h.set(side).scale(0.5);
 
 		// region is -1,0,+1 depending on which side of the box planes each
 		// coordinate is on. tanchor is the next t value at which there is a
@@ -680,14 +758,14 @@ public class DxCollisionUtil {
 
 		// find the region and tanchor values for p1
 		for (i=0; i<3; i++) {
-			if (v.v[i] > tanchor_eps) {
-				if (s.v[i] < -h.v[i]) {
+			if (v.get(i) > tanchor_eps) {
+				if (s.get(i) < -h.get(i)) {
 					region[i] = -1;
-					tanchor[i] = (-h.v[i]-s.v[i])/v.v[i];
+					tanchor[i] = (-h.get(i)-s.get(i))/v.get(i);
 				}
 				else {
-					region[i] = (s.v[i] > h.v[i]) ? 1 : 0;
-					tanchor[i] = (h.v[i]-s.v[i])/v.v[i];
+					region[i] = (s.get(i) > h.get(i)) ? 1 : 0;
+					tanchor[i] = (h.get(i)-s.get(i))/v.get(i);
 				}
 			}
 			else {
@@ -699,7 +777,7 @@ public class DxCollisionUtil {
 		// compute d|d|^2/dt for t=0. if it's >= 0 then p1 is the closest point
 		double t=0;
 		double dd2dt = 0;
-		for (i=0; i<3; i++) dd2dt -= (region[i]!=0 ? v2.v[i] : 0) * tanchor[i];
+		for (i=0; i<3; i++) dd2dt -= (region[i]!=0 ? v2.get(i) : 0) * tanchor[i];
 		if (dd2dt >= 0)	{
 			answer(t, tmp, sign, p1, s, R, lret, h, c, v, bret);//goto got_answer;
 			return;
@@ -716,7 +794,7 @@ public class DxCollisionUtil {
 			// compute d|d|^2/dt for the next t
 			double next_dd2dt = 0;
 			for (i=0; i<3; i++) {
-				next_dd2dt += (region[i]!=0 ? v2.v[i] : 0) * (next_t - tanchor[i]);
+				next_dd2dt += (region[i]!=0 ? v2.get(i) : 0) * (next_t - tanchor[i]);
 			}
 
 			// if the sign of d|d|^2/dt has changed, solution = the crossover point
@@ -730,7 +808,7 @@ public class DxCollisionUtil {
 			// advance to the next anchor point / region
 			for (i=0; i<3; i++) {
 				if (tanchor[i] == next_t) {
-					tanchor[i] = (h.v[i]-s.v[i])/v.v[i];
+					tanchor[i] = (h.get(i)-s.get(i))/v.get(i);
 					region[i]++;
 				}
 			}
@@ -742,23 +820,25 @@ public class DxCollisionUtil {
 
 		answer(t, tmp, sign, p1, s, R, lret, h, c, v, bret);//goto got_answer;
 	}
-	
+
 	//TZ
 	private static void answer(double t, DVector3 tmp, DVector3 sign, DVector3 p1, DVector3 s, DMatrix3 R,
 			DVector3 lret, DVector3 h, DVector3 c, DVector3 v, DVector3 bret) {
 		//got_answer:
 
-			// compute closest point on the line
-			for (int i=0; i<3; i++) lret.v[i] = p1.v[i] + t*tmp.v[i];	// note: tmp=p2-p1
+		// compute closest point on the line
+		//for (int i=0; i<3; i++) lret.v[i] = p1.v[i] + t*tmp.v[i];	// note: tmp=p2-p1
+		lret.eqSum(p1, tmp, t);
 
 		// compute closest point on the box
 		for (int i=0; i<3; i++) {
-			tmp.v[i] = sign.v[i] * (s.v[i] + t*v.v[i]);
-			if (tmp.v[i] < -h.v[i]) tmp.v[i] = -h.v[i];
-			else if (tmp.v[i] > h.v[i]) tmp.v[i] = h.v[i];
+			tmp.set(i, sign.get(i) * (s.get(i) + t*v.get(i)) );
+			if (tmp.get(i) < -h.get(i)) tmp.set(i, -h.get(i) );
+			else if (tmp.get(i) > h.get(i)) tmp.set(i, h.get(i) );
 		}
 		dMULTIPLY0_331 (s,R,tmp);
-		for (int i=0; i<3; i++) bret.v[i] = s.v[i] + c.v[i];
+		//for (int i=0; i<3; i++) bret.v[i] = s.v[i] + c.v[i];
+		bret.eqSum(s, c);
 	}
 
 
@@ -782,14 +862,15 @@ public class DxCollisionUtil {
 		Q11,Q12,Q13,Q21,Q22,Q23,Q31,Q32,Q33;
 
 		// get vector from centers of box 1 to box 2, relative to box 1
-		p.v[0] = p2.v[0] - p1.v[0];
-		p.v[1] = p2.v[1] - p1.v[1];
-		p.v[2] = p2.v[2] - p1.v[2];
+		//		p.v[0] = p2.get0() - p1.get0();
+		//		p.v[1] = p2.get1() - p1.get1();
+		//		p.v[2] = p2.get2() - p1.get2();
+		p.eqDiff(p2, p1);
 		dMULTIPLY1_331 (pp,R1,p);		// get pp = p relative to body 1
 
 		// get side lengths / 2
-		A1 = side1.v[0]*(0.5); A2 = side1.v[1]*(0.5); A3 = side1.v[2]*(0.5);
-		B1 = side2.v[0]*(0.5); B2 = side2.v[1]*(0.5); B3 = side2.v[2]*(0.5);
+		A1 = side1.get0()*(0.5); A2 = side1.get1()*(0.5); A3 = side1.get2()*(0.5);
+		B1 = side2.get0()*(0.5); B2 = side2.get1()*(0.5); B3 = side2.get2()*(0.5);
 
 		// for the following tests, excluding computation of Rij, in the worst case,
 		// 15 compares, 60 adds, 81 multiplies, and 24 absolutes.
@@ -798,13 +879,13 @@ public class DxCollisionUtil {
 		// separating axis = u1,u2,u3
 		R11 = dDOT44(R1,0,R2,0); R12 = dDOT44(R1,0,R2,1); R13 = dDOT44(R1,0,R2,2);
 		Q11 = dFabs(R11); Q12 = dFabs(R12); Q13 = dFabs(R13);
-		if (dFabs(pp.v[0]) > (A1 + B1*Q11 + B2*Q12 + B3*Q13)) return false;
+		if (dFabs(pp.get0()) > (A1 + B1*Q11 + B2*Q12 + B3*Q13)) return false;
 		R21 = dDOT44(R1,1,R2,0); R22 = dDOT44(R1,1,R2,1); R23 = dDOT44(R1,1,R2,2);
 		Q21 = dFabs(R21); Q22 = dFabs(R22); Q23 = dFabs(R23);
-		if (dFabs(pp.v[1]) > (A2 + B1*Q21 + B2*Q22 + B3*Q23)) return false;
+		if (dFabs(pp.get1()) > (A2 + B1*Q21 + B2*Q22 + B3*Q23)) return false;
 		R31 = dDOT44(R1,2,R2,0); R32 = dDOT44(R1,2,R2,1); R33 = dDOT44(R1,2,R2,2);
 		Q31 = dFabs(R31); Q32 = dFabs(R32); Q33 = dFabs(R33);
-		if (dFabs(pp.v[2]) > (A3 + B1*Q31 + B2*Q32 + B3*Q33)) return false;
+		if (dFabs(pp.get2()) > (A3 + B1*Q31 + B2*Q32 + B3*Q33)) return false;
 
 		// separating axis = v1,v2,v3
 		if (dFabs(dDOT41(R2,0,p)) > (A1*Q11 + A2*Q21 + A3*Q31 + B1)) return false;
@@ -812,19 +893,19 @@ public class DxCollisionUtil {
 		if (dFabs(dDOT41(R2,2,p)) > (A1*Q13 + A2*Q23 + A3*Q33 + B3)) return false;
 
 		// separating axis = u1 x (v1,v2,v3)
-		if (dFabs(pp.v[2]*R21-pp.v[1]*R31) > A2*Q31 + A3*Q21 + B2*Q13 + B3*Q12) return false;
-		if (dFabs(pp.v[2]*R22-pp.v[1]*R32) > A2*Q32 + A3*Q22 + B1*Q13 + B3*Q11) return false;
-		if (dFabs(pp.v[2]*R23-pp.v[1]*R33) > A2*Q33 + A3*Q23 + B1*Q12 + B2*Q11) return false;
+		if (dFabs(pp.get2()*R21-pp.get1()*R31) > A2*Q31 + A3*Q21 + B2*Q13 + B3*Q12) return false;
+		if (dFabs(pp.get2()*R22-pp.get1()*R32) > A2*Q32 + A3*Q22 + B1*Q13 + B3*Q11) return false;
+		if (dFabs(pp.get2()*R23-pp.get1()*R33) > A2*Q33 + A3*Q23 + B1*Q12 + B2*Q11) return false;
 
 		// separating axis = u2 x (v1,v2,v3)
-		if (dFabs(pp.v[0]*R31-pp.v[2]*R11) > A1*Q31 + A3*Q11 + B2*Q23 + B3*Q22) return false;
-		if (dFabs(pp.v[0]*R32-pp.v[2]*R12) > A1*Q32 + A3*Q12 + B1*Q23 + B3*Q21) return false;
-		if (dFabs(pp.v[0]*R33-pp.v[2]*R13) > A1*Q33 + A3*Q13 + B1*Q22 + B2*Q21) return false;
+		if (dFabs(pp.get0()*R31-pp.get2()*R11) > A1*Q31 + A3*Q11 + B2*Q23 + B3*Q22) return false;
+		if (dFabs(pp.get0()*R32-pp.get2()*R12) > A1*Q32 + A3*Q12 + B1*Q23 + B3*Q21) return false;
+		if (dFabs(pp.get0()*R33-pp.get2()*R13) > A1*Q33 + A3*Q13 + B1*Q22 + B2*Q21) return false;
 
 		// separating axis = u3 x (v1,v2,v3)
-		if (dFabs(pp.v[1]*R11-pp.v[0]*R21) > A1*Q21 + A2*Q11 + B2*Q33 + B3*Q32) return false;
-		if (dFabs(pp.v[1]*R12-pp.v[0]*R22) > A1*Q22 + A2*Q12 + B1*Q33 + B3*Q31) return false;
-		if (dFabs(pp.v[1]*R13-pp.v[0]*R23) > A1*Q23 + A2*Q13 + B1*Q32 + B2*Q31) return false;
+		if (dFabs(pp.get1()*R11-pp.get0()*R21) > A1*Q21 + A2*Q11 + B2*Q33 + B3*Q32) return false;
+		if (dFabs(pp.get1()*R12-pp.get0()*R22) > A1*Q22 + A2*Q12 + B1*Q33 + B3*Q31) return false;
+		if (dFabs(pp.get1()*R13-pp.get0()*R23) > A1*Q23 + A2*Q13 + B1*Q32 + B2*Q31) return false;
 
 		return true;
 	}
@@ -867,18 +948,22 @@ public class DxCollisionUtil {
 		{
 
 			// find intersection point of edge and plane
-			DVector3 vIntersectionPoint=new DVector3();
-			vIntersectionPoint.v[0]= vEpnt0.v[0]-(vEpnt0.v[0]-vEpnt1.v[0])*fDistance0/(fDistance0-fDistance1);
-			vIntersectionPoint.v[1]= vEpnt0.v[1]-(vEpnt0.v[1]-vEpnt1.v[1])*fDistance0/(fDistance0-fDistance1);
-			vIntersectionPoint.v[2]= vEpnt0.v[2]-(vEpnt0.v[2]-vEpnt1.v[2])*fDistance0/(fDistance0-fDistance1);
+//			DVector3 vIntersectionPoint=new DVector3();
+//			vIntersectionPoint.set0( vEpnt0.get0()-(vEpnt0.get0()-vEpnt1.get0())*fDistance0/(fDistance0-fDistance1) );
+//			vIntersectionPoint.set1( vEpnt0.get1()-(vEpnt0.get1()-vEpnt1.get1())*fDistance0/(fDistance0-fDistance1) );
+//			vIntersectionPoint.set2( vEpnt0.get2()-(vEpnt0.get2()-vEpnt1.get2())*fDistance0/(fDistance0-fDistance1) );
+			double a0, a1, a2;
+			a0 = vEpnt0.get0()-(vEpnt0.get0()-vEpnt1.get0())*fDistance0/(fDistance0-fDistance1);
+			a1 = vEpnt0.get1()-(vEpnt0.get1()-vEpnt1.get1())*fDistance0/(fDistance0-fDistance1);
+			a2 = vEpnt0.get2()-(vEpnt0.get2()-vEpnt1.get2())*fDistance0/(fDistance0-fDistance1);
 
 			// clamp correct edge to intersection point
 			if ( fDistance0 < 0 ) 
 			{
-				dVector3Copy(vIntersectionPoint,vEpnt0);
+				vEpnt0.set(a0, a1, a2);//dVector3Copy(vIntersectionPoint,vEpnt0);
 			} else 
 			{
-				dVector3Copy(vIntersectionPoint,vEpnt1);
+				vEpnt1.set(a0, a1, a2);//dVector3Copy(vIntersectionPoint,vEpnt1);
 			}
 			return true;
 		}
@@ -909,9 +994,10 @@ public class DxCollisionUtil {
 			// if first point is in front of plane
 			if( fDistance0 >= 0 ) {
 				// emit point
-				avArrayOut[ctOut.get()].v[0] = avArrayIn[i0].v[0];
-				avArrayOut[ctOut.get()].v[1] = avArrayIn[i0].v[1];
-				avArrayOut[ctOut.get()].v[2] = avArrayIn[i0].v[2];
+				//				avArrayOut[ctOut.get()].v[0] = avArrayIn[i0].get0();
+				//				avArrayOut[ctOut.get()].v[1] = avArrayIn[i0].get1();
+				//				avArrayOut[ctOut.get()].v[2] = avArrayIn[i0].get2();
+				avArrayOut[ctOut.get()].set( avArrayIn[i0] );
 				ctOut.inc();
 			}
 
@@ -920,17 +1006,18 @@ public class DxCollisionUtil {
 
 				// find intersection point of edge and plane
 				DVector3 vIntersectionPoint=new DVector3();
-				vIntersectionPoint.v[0]= avArrayIn[i0].v[0] - 
-				(avArrayIn[i0].v[0]-avArrayIn[i1].v[0])*fDistance0/(fDistance0-fDistance1);
-				vIntersectionPoint.v[1]= avArrayIn[i0].v[1] - 
-				(avArrayIn[i0].v[1]-avArrayIn[i1].v[1])*fDistance0/(fDistance0-fDistance1);
-				vIntersectionPoint.v[2]= avArrayIn[i0].v[2] - 
-				(avArrayIn[i0].v[2]-avArrayIn[i1].v[2])*fDistance0/(fDistance0-fDistance1);
+				vIntersectionPoint.set0( avArrayIn[i0].get0() - 
+						(avArrayIn[i0].get0()-avArrayIn[i1].get0())*fDistance0/(fDistance0-fDistance1) );
+				vIntersectionPoint.set1( avArrayIn[i0].get1() - 
+						(avArrayIn[i0].get1()-avArrayIn[i1].get1())*fDistance0/(fDistance0-fDistance1) );
+				vIntersectionPoint.set2( avArrayIn[i0].get2() - 
+						(avArrayIn[i0].get2()-avArrayIn[i1].get2())*fDistance0/(fDistance0-fDistance1) );
 
 				// emit intersection point
-				avArrayOut[ctOut.get()].v[0] = vIntersectionPoint.v[0];
-				avArrayOut[ctOut.get()].v[1] = vIntersectionPoint.v[1];
-				avArrayOut[ctOut.get()].v[2] = vIntersectionPoint.v[2];
+				//				avArrayOut[ctOut.get()].v[0] = vIntersectionPoint.get0();
+				//				avArrayOut[ctOut.get()].v[1] = vIntersectionPoint.get1();
+				//				avArrayOut[ctOut.get()].v[2] = vIntersectionPoint.get2();
+				avArrayOut[ctOut.get()].set( vIntersectionPoint );
 				ctOut.inc();
 			}
 		}
@@ -962,9 +1049,10 @@ public class DxCollisionUtil {
 				// emit point
 				if (dVector3Length2(avArrayIn[i0]) <= fRadius*fRadius)
 				{
-					avArrayOut[ctOut.get()].v[0] = avArrayIn[i0].v[0];
-					avArrayOut[ctOut.get()].v[1] = avArrayIn[i0].v[1];
-					avArrayOut[ctOut.get()].v[2] = avArrayIn[i0].v[2];
+					//					avArrayOut[ctOut.get()].v[0] = avArrayIn[i0].get0();
+					//					avArrayOut[ctOut.get()].v[1] = avArrayIn[i0].get1();
+					//					avArrayOut[ctOut.get()].v[2] = avArrayIn[i0].get2();
+					avArrayOut[ctOut.get()].set( avArrayIn[i0] );
 					ctOut.inc();
 				}
 			}
@@ -975,19 +1063,20 @@ public class DxCollisionUtil {
 
 				// find intersection point of edge and plane
 				DVector3 vIntersectionPoint=new DVector3();
-				vIntersectionPoint.v[0]= avArrayIn[i0].v[0] - 
-				(avArrayIn[i0].v[0]-avArrayIn[i1].v[0])*fDistance0/(fDistance0-fDistance1);
-				vIntersectionPoint.v[1]= avArrayIn[i0].v[1] - 
-				(avArrayIn[i0].v[1]-avArrayIn[i1].v[1])*fDistance0/(fDistance0-fDistance1);
-				vIntersectionPoint.v[2]= avArrayIn[i0].v[2] - 
-				(avArrayIn[i0].v[2]-avArrayIn[i1].v[2])*fDistance0/(fDistance0-fDistance1);
+				vIntersectionPoint.set0( avArrayIn[i0].get0() - 
+						(avArrayIn[i0].get0()-avArrayIn[i1].get0())*fDistance0/(fDistance0-fDistance1) );
+				vIntersectionPoint.set1( avArrayIn[i0].get1() - 
+						(avArrayIn[i0].get1()-avArrayIn[i1].get1())*fDistance0/(fDistance0-fDistance1) );
+				vIntersectionPoint.set2( avArrayIn[i0].get2() - 
+						(avArrayIn[i0].get2()-avArrayIn[i1].get2())*fDistance0/(fDistance0-fDistance1) );
 
 				// emit intersection point
 				if (dVector3Length2(avArrayIn[i0]) <= fRadius*fRadius)
 				{
-					avArrayOut[ctOut.get()].v[0] = vIntersectionPoint.v[0];
-					avArrayOut[ctOut.get()].v[1] = vIntersectionPoint.v[1];
-					avArrayOut[ctOut.get()].v[2] = vIntersectionPoint.v[2];
+					//					avArrayOut[ctOut.get()].v[0] = vIntersectionPoint.get0();
+					//					avArrayOut[ctOut.get()].v[1] = vIntersectionPoint.get1();
+					//					avArrayOut[ctOut.get()].v[2] = vIntersectionPoint.get2();
+					avArrayOut[ctOut.get()].set( vIntersectionPoint );
 					ctOut.inc();
 				}
 			}

@@ -219,8 +219,8 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 				joint.anchor2.set( x, y, z ).add( dx, dy, dz );
 			}
 		}
-		joint.anchor1.v[3] = 0;
-		joint.anchor2.v[3] = 0;
+//		joint.anchor1.v[3] = 0;
+//		joint.anchor2.v[3] = 0;
 
 		joint.computeInitialRelativeRotation();
 	}

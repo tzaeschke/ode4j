@@ -40,12 +40,12 @@ public class Timer {
 
 	//******************** JAVA implementation by TZ, based on time-of-day implementation
 
-//	private static void getClockCount (long[] cc)
-//	{
-//		long ms = System.nanoTime();//TimeMillis();
-//		//  cc[1] = ms.lo / 1000000;
-//		//  cc[0] = ms.lo - ( cc[1] * 1000000 );
-//	}
+	//	private static void getClockCount (long[] cc)
+	//	{
+	//		long ms = System.nanoTime();//TimeMillis();
+	//		//  cc[1] = ms.lo / 1000000;
+	//		//  cc[0] = ms.lo - ( cc[1] * 1000000 );
+	//	}
 	private static long getClockCount ()
 	{
 		return System.nanoTime();//TimeMillis();
@@ -58,10 +58,10 @@ public class Timer {
 	}
 
 
-//	private static double loadClockCount (long[] a)
-//	{
-//		return a[1]*1.0e6 + a[0];
-//	}
+	//	private static double loadClockCount (long[] a)
+	//	{
+	//		return a[1]*1.0e6 + a[0];
+	//	}
 	private static double loadClockCount (long a)
 	{
 		return a;
@@ -70,18 +70,18 @@ public class Timer {
 
 	public static double dTimerResolution()
 	{
-//		long cc1[] = new long[2], cc2[] = new long[2];
-//		getClockCount (cc1);
-//		do {
-//			getClockCount (cc2);
-//		}
-//		while (cc1[0]==cc2[0] && cc1[1]==cc2[1]);
-//		do {
-//			getClockCount (cc1);
-//		}
-//		while (cc1[0]==cc2[0] && cc1[1]==cc2[1]);
-//		double t1 = loadClockCount (cc1);
-//		double t2 = loadClockCount (cc2);
+		//		long cc1[] = new long[2], cc2[] = new long[2];
+		//		getClockCount (cc1);
+		//		do {
+		//			getClockCount (cc2);
+		//		}
+		//		while (cc1[0]==cc2[0] && cc1[1]==cc2[1]);
+		//		do {
+		//			getClockCount (cc1);
+		//		}
+		//		while (cc1[0]==cc2[0] && cc1[1]==cc2[1]);
+		//		double t1 = loadClockCount (cc1);
+		//		double t2 = loadClockCount (cc2);
 		long cc2;
 		long cc1 = System.nanoTime();
 		do {
@@ -90,7 +90,7 @@ public class Timer {
 		do {
 			cc1 = System.nanoTime(); 
 		} while (cc1 == cc2);
-		
+
 		return ((double)(cc1-cc2)) / dTimerTicksPerSecond();
 	}
 
@@ -111,36 +111,36 @@ public class Timer {
 	public static void dStopwatchReset (DStopwatch s)
 	{
 		s.reset();
-//		s.time = 0;
-//		s.cc = 0;
-////		s.cc[0] = 0;
-////		s.cc[1] = 0;
+		//		s.time = 0;
+		//		s.cc = 0;
+		////		s.cc[0] = 0;
+		////		s.cc[1] = 0;
 	}
 
 
 	public static void dStopwatchStart (DStopwatch s)
 	{
 		s.start();
-//		serialize();
-//		s.cc = getClockCount ();
+		//		serialize();
+		//		s.cc = getClockCount ();
 	}
 
 
 	public static void dStopwatchStop  (DStopwatch s)
 	{
-//		//long[] cc =new long[2];
-//		serialize();
-//		long cc = getClockCount ();
-//		double t1 = loadClockCount (s.cc);
-//		double t2 = loadClockCount (cc);
-//		s.time += t2-t1;
+		//		//long[] cc =new long[2];
+		//		serialize();
+		//		long cc = getClockCount ();
+		//		double t1 = loadClockCount (s.cc);
+		//		double t2 = loadClockCount (cc);
+		//		s.time += t2-t1;
 		s.stop();
 	}
 
 
 	public static double dStopwatchTime (DStopwatch s)
 	{
-//		return s.time / dTimerTicksPerSecond();
+		//		return s.time / dTimerTicksPerSecond();
 		return s.getTime();
 	}
 
@@ -169,135 +169,135 @@ public class Timer {
 
 	// make sure all slot totals and counts reset to 0 at start
 
-//	static void initSlots()
-//	{
-//		static int initialized=0;
-//		if (!initialized) {
-//			for (int i=0; i<MAXNUM; i++) {
-//				event[i].count = 0;
-//				event[i].total_t = 0;
-//				event[i].total_p = 0;
-//			}
-//			initialized = 1;
-//		}
-		//}  TODO ??
+	//	static void initSlots()
+	//	{
+	//		static int initialized=0;
+	//		if (!initialized) {
+	//			for (int i=0; i<MAXNUM; i++) {
+	//				event[i].count = 0;
+	//				event[i].total_t = 0;
+	//				event[i].total_p = 0;
+	//			}
+	//			initialized = 1;
+	//		}
+	//}  TODO ??
 
 
 	public static void dTimerStart (final String description)
-		{
-//			initSlots();
-			event[0].description = description;//const_cast<char*> (description);
-			num = 1;
+	{
+		//			initSlots();
+		event[0].description = description;//const_cast<char*> (description);
+		num = 1;
+		serialize();
+		event[0].cc = getClockCount ();
+	}
+
+
+	public static void dTimerNow (final String description)
+	{
+		if (num < MAXNUM) {
+			// do not serialize
+			event[num].cc = getClockCount ();
+			event[num].description = description;//const_cast<char*> (description);
+			num++;
+		}
+	}
+
+
+	public static void dTimerEnd()
+	{
+		if (num < MAXNUM) {
 			serialize();
-			event[0].cc = getClockCount ();
+			event[num].cc = getClockCount ();
+			event[num].description = "TOTAL";
+			num++;
 		}
+	}
 
+	//****************************************************************************
+	// print report
 
-		public static void dTimerNow (final String description)
-		{
-			if (num < MAXNUM) {
-				// do not serialize
-				event[num].cc = getClockCount ();
-				event[num].description = description;//const_cast<char*> (description);
-				num++;
-			}
-		}
-
-
-		public static void dTimerEnd()
-		{
-			if (num < MAXNUM) {
-				serialize();
-				event[num].cc = getClockCount ();
-				event[num].description = "TOTAL";
-				num++;
-			}
-		}
-
-		//****************************************************************************
-		// print report
-
-		//static void fprintDoubleWithPrefix (FILE *f, double a, const char *fmt)
-		private static void fprintDoubleWithPrefix (FILE f, double a, final String fmt)
-		{
-			if (a >= 0.999999) {
-				fprintf (f,fmt,a);
-				return;
-			}
-			a *= 1000.0;
-			if (a >= 0.999999) {
-				fprintf (f,fmt,a);
-				fprintf (f,"m");
-				return;
-			}
-			a *= 1000.0;
-			if (a >= 0.999999) {
-				fprintf (f,fmt,a);
-				fprintf (f,"u");
-				return;
-			}
-			a *= 1000.0;
+	//static void fprintDoubleWithPrefix (FILE *f, double a, const char *fmt)
+	private static void fprintDoubleWithPrefix (FILE f, double a, final String fmt)
+	{
+		if (a >= 0.999999) {
 			fprintf (f,fmt,a);
-			fprintf (f,"n");
+			return;
+		}
+		a *= 1000.0;
+		if (a >= 0.999999) {
+			fprintf (f,fmt,a);
+			fprintf (f,"m");
+			return;
+		}
+		a *= 1000.0;
+		if (a >= 0.999999) {
+			fprintf (f,fmt,a);
+			fprintf (f,"u");
+			return;
+		}
+		a *= 1000.0;
+		fprintf (f,fmt,a);
+		fprintf (f,"n");
+	}
+
+
+	public static void dTimerReport (FILE fout, int average)
+	{
+		int i;
+		int maxl;//size_t maxl;
+		double ccunit = 1.0/dTimerTicksPerSecond();
+		fprintf (fout,"\nTimer Report (");
+		fprintDoubleWithPrefix (fout,ccunit,"%.2f ");
+		fprintf (fout,"s resolution)\n------------\n");
+		if (num < 1) return;
+
+		// get maximum description length
+		maxl = 0;
+		for (i=0; i<num; i++) {
+			//size_t l = strlen (event[i].description);
+			int l = event[i].description.length();
+			if (l > maxl) maxl = l;
 		}
 
+		// calculate total time
+		double tt1 = loadClockCount (event[0].cc);
+		double tt2 = loadClockCount (event[num-1].cc);
+		double total = tt2 - tt1;
+		if (total <= 0) total = 1;
 
-		public static void dTimerReport (FILE fout, int average)
-		{
-			int i;
-			int maxl;//size_t maxl;
-			double ccunit = 1.0/dTimerTicksPerSecond();
-			fprintf (fout,"\nTimer Report (");
-			fprintDoubleWithPrefix (fout,ccunit,"%.2f ");
-			fprintf (fout,"s resolution)\n------------\n");
-			if (num < 1) return;
+		// compute time difference for all slots except the last one. update totals
+		double []times = new double[num];//(double*) ALLOCA (num * sizeof(double));
+		for (i=0; i < (num-1); i++) {
+			double t1 = loadClockCount (event[i].cc);
+			double t2 = loadClockCount (event[i+1].cc);
+			times[i] = t2 - t1;
+			event[i].count++;
+			event[i].total_t += times[i];
+			event[i].total_p += times[i]/total * 100.0;
+		}
 
-			// get maximum description length
-			maxl = 0;
-			for (i=0; i<num; i++) {
-				//size_t l = strlen (event[i].description);
-				int l = event[i].description.length();
-				if (l > maxl) maxl = l;
+		// print report (with optional averages)
+		for (i=0; i<num; i++) {
+			double t,p;
+			if (i < (num-1)) {
+				t = times[i];
+				p = t/total * 100.0;
 			}
-
-			// calculate total time
-			double tt1 = loadClockCount (event[0].cc);
-			double tt2 = loadClockCount (event[num-1].cc);
-			double total = tt2 - tt1;
-			if (total <= 0) total = 1;
-
-			// compute time difference for all slots except the last one. update totals
-			double []times = new double[num];//(double*) ALLOCA (num * sizeof(double));
-			for (i=0; i < (num-1); i++) {
-				double t1 = loadClockCount (event[i].cc);
-				double t2 = loadClockCount (event[i+1].cc);
-				times[i] = t2 - t1;
-				event[i].count++;
-				event[i].total_t += times[i];
-				event[i].total_p += times[i]/total * 100.0;
+			else {
+				t = total;
+				p = 100.0;
 			}
-
-			// print report (with optional averages)
-			for (i=0; i<num; i++) {
-				double t,p;
-				if (i < (num-1)) {
-					t = times[i];
-					p = t/total * 100.0;
-				}
-				else {
-					t = total;
-					p = 100.0;
-				}
-				//fprintf (fout,"%-*s %7.2fms %6.2f%%",(int)maxl,event[i].description, //TODO -*
-				fprintf (fout,"%s %7.2fms %6.2f%%",event[i].description,  //TODO (int)maxl
-						t*ccunit * 1000.0, p);
-				if (average!=0 && i < (num-1)) {
-					fprintf (fout,"  (avg %7.2fms %6.2f%%)",
-							(event[i].total_t / event[i].count)*ccunit * 1000.0,
-							event[i].total_p / event[i].count);
-				}
-				fprintf (fout,"\n");
+			//fprintf (fout,"%-*s %7.2fms %6.2f%%",(int)maxl,event[i].description, //TODO -*
+			fprintf (fout,"%s %7.2fms %6.2f%%",event[i].description,  //TODO (int)maxl
+					t*ccunit * 1000.0, p);
+			if (average!=0 && i < (num-1)) {
+				fprintf (fout,"  (avg %7.2fms %6.2f%%)",
+						(event[i].total_t / event[i].count)*ccunit * 1000.0,
+						event[i].total_p / event[i].count);
 			}
 			fprintf (fout,"\n");
 		}
+		fprintf (fout,"\n");
 	}
+}

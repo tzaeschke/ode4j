@@ -82,7 +82,7 @@ public class DxMass implements DMass {
 		// about partitioned PD matrices for proof.
 
 		DMatrix3 I2 = new DMatrix3(),chat = new DMatrix3();
-		chat.dSetZero();//dSetZero (chat,12);
+		//chat.setZero();//dSetZero (chat,12);
 		//dCROSSMAT (chat,m.c,4,+,-);
 		dCROSSMAT (chat,_c,4,+1,-1);
 		dMULTIPLY0_333 (I2,chat,chat);
@@ -103,8 +103,8 @@ public class DxMass implements DMass {
 	{
 		//dAASSERT (m);
 		_mass = 0.0;
-		_c.dSetZero();//dSetZero (_c.v);//,sizeof(m.c) / sizeof(double));
-		_I.dSetZero();//dSetZero (_I.v);//,sizeof(m.I) / sizeof(double));
+		_c.setZero();//dSetZero (_c.v);//,sizeof(m.c) / sizeof(double));
+		_I.setZero();//dSetZero (_I.v);//,sizeof(m.I) / sizeof(double));
 	}
 
 
@@ -503,7 +503,7 @@ public class DxMass implements DMass {
 //		dAASSERT (m);
 
 		// adjust inertia matrix
-		chat.dSetZero();//dSetZero (chat,12);
+		//chat.dSetZero();//dSetZero (chat,12);
 		dCROSSMAT (chat,_c,4,+1,-1);
 		//double a[3];
 		DVector3 a = new DVector3(xyz);
@@ -511,7 +511,7 @@ public class DxMass implements DMass {
 //		a.v[0] = x + _c.v[0];
 //		a.v[1] = y + _c.v[1];
 //		a.v[2] = z + _c.v[2];
-		ahat.dSetZero();//dSetZero (ahat,12);
+		//ahat.dSetZero();//dSetZero (ahat,12);
 		dCROSSMAT (ahat,a,4,+1,-1);
 		dMULTIPLY0_333 (t1,ahat,ahat);
 		dMULTIPLY0_333 (t2,chat,chat);

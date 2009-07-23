@@ -369,10 +369,10 @@ public class DxRay extends DxGeom implements DRay {
 			h[2] = (0.5) * box.side.get2();
 
 			// do a few early exit tests
-			if ((s.v[0] < -h[0] && v.v[0] <= 0) || s.v[0] >  h[0] ||
-					(s.v[1] < -h[1] && v.v[1] <= 0) || s.v[1] >  h[1] ||
-					(s.v[2] < -h[2] && v.v[2] <= 0) || s.v[2] >  h[2] ||
-					(v.v[0] == 0 && v.v[1] == 0 && v.v[2] == 0)) {
+			if ((s.get0() < -h[0] && v.get0() <= 0) || s.get0() >  h[0] ||
+					(s.get1() < -h[1] && v.get1() <= 0) || s.get1() >  h[1] ||
+					(s.get2() < -h[2] && v.get2() <= 0) || s.get2() >  h[2] ||
+					(v.get0() == 0 && v.get1() == 0 && v.get2() == 0)) {
 				return 0;
 			}
 
@@ -474,9 +474,9 @@ public class DxRay extends DxGeom implements DRay {
 				//				r[1] = ccyl.final_posr.pos[1] + k*ccyl.final_posr.R[1*4+2];
 				//				r[2] = ccyl.final_posr.pos[2] + k*ccyl.final_posr.R[2*4+2];
 				r.eqSum(ccyl._final_posr.R.viewCol(2), k, ccyl._final_posr.pos, 1.0);
-				if ((ray._final_posr.pos.v[0]-r.v[0])*(ray._final_posr.pos.v[0]-r.v[0]) +
-						(ray._final_posr.pos.v[1]-r.v[1])*(ray._final_posr.pos.v[1]-r.v[1]) +
-						(ray._final_posr.pos.v[2]-r.v[2])*(ray._final_posr.pos.v[2]-r.v[2]) < 
+				if ((ray._final_posr.pos.get0()-r.get0())*(ray._final_posr.pos.get0()-r.get0()) +
+						(ray._final_posr.pos.get1()-r.get1())*(ray._final_posr.pos.get1()-r.get1()) +
+						(ray._final_posr.pos.get2()-r.get2())*(ray._final_posr.pos.get2()-r.get2()) < 
 						ccyl.getRadius()*ccyl.getRadius()) {
 					inside_ccyl = true;
 				}

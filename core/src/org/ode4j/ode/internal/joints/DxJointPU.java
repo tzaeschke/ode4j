@@ -109,7 +109,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		_axis1.set(0, 1, 0);
 
 		// Setting member variables which are w.r.t body2
-		_anchor2.dSetZero();//dSetZero( _anchor2, 4 );
+		_anchor2.setZero();//dSetZero( _anchor2, 4 );
 //		_axis2.dSetZero();//dSetZero( _axis2, 4 );
 //		_axis2.v[2] = 1;
 		_axis2.set(0, 0, 1);
@@ -118,8 +118,8 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 //		axisP1.v[0] = 1;
 		axisP1.set(1, 0, 0);
 
-		qrel1.dSetZero();//dSetZero( qrel1, 4 );
-		qrel2.dSetZero();//dSetZero( qrel2, 4 );
+		qrel1.setZero();//dSetZero( qrel1, 4 );
+		qrel2.setZero();//dSetZero( qrel2, 4 );
 
 
 		limotP.init( world );

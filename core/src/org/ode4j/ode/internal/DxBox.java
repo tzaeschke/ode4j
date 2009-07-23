@@ -623,7 +623,8 @@ public class DxBox extends DxGeom implements DBox {
 			// Get world position of p2 into pa
 			for (j=0; j<3; j++) {
 				sign = (dDOT14(normal,R1,j) > 0) ? (1.0) : (-1.0);
-				for (i=0; i<3; i++) pa.v[i] += sign * A.v[j] * R1.v[i*4+j];
+				//for (i=0; i<3; i++) pa.v[i] += sign * A.v[j] * R1.v[i*4+j];
+				for (i=0; i<3; i++) pa.add(i, sign * A.get(j) * R1.get(i, j) );
 			}
 
 			// find a point pb on the intersecting edge of box 2
@@ -633,15 +634,18 @@ public class DxBox extends DxGeom implements DBox {
 			// Get world position of p2 into pb
 			for (j=0; j<3; j++) {
 				sign = (dDOT14(normal,R2,j) > 0) ? (-1.0) : (1.0);
-				for (i=0; i<3; i++) pb.v[i] += sign * B.v[j] * R2.v[i*4+j];
+				//for (i=0; i<3; i++) pb.v[i] += sign * B.v[j] * R2.v[i*4+j];
+				for (i=0; i<3; i++) pb.add(i, sign * B.get(j) * R2.get(i, j) );
 			}
 
 			RefDouble alpha = new RefDouble(0),beta = new RefDouble(0);
 			DVector3 ua = new DVector3(),ub = new DVector3();
 			// Get direction of first edge
-			for (i=0; i<3; i++) ua.set(i, R1.v[((tst._code)-7)/3 + i*4] );
+			//for (i=0; i<3; i++) ua.set(i, R1.v[((tst._code)-7)/3 + i*4] );
+			for (i=0; i<3; i++) ua.set(i, R1.get(i, (tst._code-7)/3 ) );
 			// Get direction of second edge
-			for (i=0; i<3; i++) ub.set(i, R2.v[((tst._code)-7)%3 + i*4] );
+			//for (i=0; i<3; i++) ub.set(i, R2.v[((tst._code)-7)%3 + i*4] );
+			for (i=0; i<3; i++) ub.set(i, R2.get(i, (tst._code-7)%3 ) );
 			// Get closest points between edges (one at each)
 			DxCollisionUtil.dLineClosestApproach (pa,ua,pb,ub,alpha,beta);    
 //			for (i=0; i<3; i++) pa.v[i] += ua.v[i]*alpha.get();
@@ -816,8 +820,9 @@ public class DxBox extends DxGeom implements DBox {
 			double k1 =  m22*(ret[j*2]-c1) - m12*(ret[j*2+1]-c2);
 			double k2 = -m21*(ret[j*2]-c1) + m11*(ret[j*2+1]-c2);
 			for (i=0; i<3; i++) point[cnum*3+i] =
-				center.v[i] + k1*Rb.v[i*4+a1] + k2*Rb.v[i*4+a2];
-			dep[cnum] = Sa.get(codeN) - dDOT(normal2.v, 0,point,cnum*3);
+				//center.get(i) + k1*Rb.v[i*4+a1] + k2*Rb.v[i*4+a2];
+				center.get(i) + k1*Rb.get(i, a1) + k2*Rb.get(i, a2);
+			dep[cnum] = Sa.get(codeN) - dDOT(normal2, point,cnum*3);
 			if (dep[cnum] >= 0) {
 				ret[cnum*2] = ret[j*2];
 				ret[cnum*2+1] = ret[j*2+1];

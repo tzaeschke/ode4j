@@ -236,7 +236,7 @@ public class Common extends ErrorHandler {
 //	public static final Class<?> dTRIMESH = Integer.TYPE;
 
 	/** 
-	 * round an integer up to a multiple of 4, except that 0 and 1 
+	 * Round an integer up to a multiple of 4, except that 0 and 1 
 	 * are unmodified (used to compute matrix leading dimensions).
 	 * TODO Check that returned value is used!! (NOT Call by reference).
 	 * @deprecated Remove this if possible (TZ)
@@ -247,7 +247,7 @@ public class Common extends ErrorHandler {
 	//#define dPAD(a) (((a) > 1) ? ((((a)-1)|3)+1) : (a))
 
 	/** 
-	 * these types are mainly just used in headers. 
+	 * These types are mainly just used in headers. 
 	 * @deprecated TZ: Do we really need this class??? 
 	 */
 	public static class dMatrix4 { 

@@ -109,13 +109,13 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		if ( node[1].body != null)
 		{
 			for ( int j = 0; j < 3; j++ )
-				info.setC(j, k * ( node[1].body._posr.pos.v[j] -
-						node[0].body._posr.pos.v[j] + ofs.v[j] ));
+				info.setC(j, k * ( node[1].body._posr.pos.get(j) -
+						node[0].body._posr.pos.get(j) + ofs.get(j) ));
 		}
 		else
 		{
 			for ( int j = 0; j < 3; j++ )
-				info.setC(j, k * ( offset.v[j] - node[0].body._posr.pos.v[j] ));
+				info.setC(j, k * ( offset.get(j) - node[0].body._posr.pos.get(j) ));
 		}
 	}
 
@@ -135,9 +135,11 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 			{
 				//double[] ofs = new double[4];
 				DVector3 ofs = new DVector3();
-				for ( int i = 0; i < 4; i++ )
-					ofs.v[i] = node[0].body._posr.pos.v[i] - 
-					node[1].body._posr.pos.v[i];
+//				for ( int i = 0; i < 4; i++ )
+//					ofs.v[i] = node[0].body._posr.pos.v[i] - 
+//					node[1].body._posr.pos.v[i];
+				ofs.eqDiff( node[0].body._posr.pos, node[1].body._posr.pos );
+
 				dMULTIPLY1_331 ( offset, node[0].body._posr.R, ofs );
 			}
 			else
@@ -214,10 +216,10 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 			else
 			{
 				// set qrel to the transpose of the first body q
-				qrel.v[0] =  node[0].body._q.v[0];
-				qrel.v[1] = -node[0].body._q.v[1];
-				qrel.v[2] = -node[0].body._q.v[2];
-				qrel.v[3] = -node[0].body._q.v[3];
+				qrel.set0(  node[0].body._q.get0() );
+				qrel.set1( -node[0].body._q.get1() );
+				qrel.set2( -node[0].body._q.get2() );
+				qrel.set3( -node[0].body._q.get3() );
 			}
 		}
 	}

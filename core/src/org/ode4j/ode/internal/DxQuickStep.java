@@ -25,6 +25,7 @@ import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DVector3;
 
 import static org.cpp4j.Cstdio.*;
 import static org.ode4j.ode.internal.Timer.*;
@@ -39,7 +40,7 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 
 	private static final boolean TIMING = false;
-
+	
 
 	//***************************************************************************
 	// configuration
@@ -72,11 +73,48 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 	// special matrix multipliers
 
 	// multiply block of B matrix (q x 6) with 12 dReal per row with C vektor (q)
-	private static void Multiply1_12q1 (double[] A, double[] B, int ofsB, 
-			double[] C, int ofsC, int q)
+//	private static void Multiply1_12q1 (double[] A, double[] B, final int ofsB, 
+//			double[] C, final int ofsC, final int q)
+//	{
+//		//int i, k;
+//		//dIASSERT (q>0 && A!=null && B!=null && C!=null);
+//		if (q < 0) throw new IllegalArgumentException();
+//
+//		double a = 0;
+//		double b = 0;
+//		double c = 0;
+//		double d = 0;
+//		double e = 0;
+//		double f = 0;
+//		double s;
+//
+////		for(i=0, k = 0; i<q; i++, k += 12)
+//		for(int i=ofsC, k = ofsB; i<q+ofsC; i++, k += 12)
+//		{
+//			s = C[i]; //C[i] and B[n+k] cannot overlap because its value has been read into a temporary.
+//
+//			//For the rest of the loop, the only memory dependency (array) is from B[]
+//			a += B[  k] * s;
+//			b += B[1+k] * s;
+//			c += B[2+k] * s;
+//			d += B[3+k] * s;
+//			e += B[4+k] * s;
+//			f += B[5+k] * s;
+//		}
+//
+//		A[0] = a;
+//		A[1] = b;
+//		A[2] = c;
+//		A[3] = d;
+//		A[4] = e;
+//		A[5] = f;
+//	}
+
+	// multiply block of B matrix (q x 6) with 12 dReal per row with C vektor (q)
+	private static void Multiply1_12q1 (DVector3 A1, DVector3 A2, double[] B, final int ofsB, 
+			double[] C, final int ofsC, final int q)
 	{
-		int i, k;
-		dIASSERT (q>0 && A!=null && B!=null && C!=null);
+		if (q < 0) throw new IllegalArgumentException();
 
 		double a = 0;
 		double b = 0;
@@ -86,9 +124,8 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 		double f = 0;
 		double s;
 
-		//TODO add ofsB to k  and ofsC to i
 //		for(i=0, k = 0; i<q; i++, k += 12)
-		for(i=ofsC, k = ofsB; i<q+ofsC; i++, k += 12)
+		for(int i=ofsC, k = ofsB; i<q+ofsC; i++, k += 12)
 		{
 			s = C[i]; //C[i] and B[n+k] cannot overlap because its value has been read into a temporary.
 
@@ -101,12 +138,8 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			f += B[5+k] * s;
 		}
 
-		A[0] = a;
-		A[1] = b;
-		A[2] = c;
-		A[3] = d;
-		A[4] = e;
-		A[5] = f;
+		A1.set(a, b, c);
+		A2.set(d, e, f);
 	}
 
 	//***************************************************************************
@@ -409,6 +442,10 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 //	}
 //	//#endif
 
+	
+	private static final double[] alloc(int n) {
+		return new double[n];
+	}
 
 	//static void SOR_LCP (int m, int nb, dRealMutablePtr J, int *jb, dxBody * const *body,
 	//		dRealPtr invI, dRealMutablePtr lambda, dRealMutablePtr fc, dRealMutablePtr b,
@@ -433,21 +470,22 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			dSetZero (lambda,m);
 //		}//#endif
 
-		double[] last_lambda = null;
-		if (REORDER_CONSTRAINTS) {//TZ #ifdef REORDER_CONSTRAINTS
-			// the lambda computed at the previous iteration.
-			// this is used to measure error for when we are reordering the indexes.
-			last_lambda = new double[m];
-			//dRealAllocaArray (last_lambda,m);
-		}//#endif
+			//Commented out because REORDER_CONSTRAINTS=false (TZ)
+//		double[] last_lambda = null;
+//		if (REORDER_CONSTRAINTS) {//TZ #ifdef REORDER_CONSTRAINTS
+//			// the lambda computed at the previous iteration.
+//			// this is used to measure error for when we are reordering the indexes.
+//			last_lambda = alloc(m);
+//			//dRealAllocaArray (last_lambda,m);
+//		}//#endif
 
 		// a copy of the 'hi' vector in case findex[] is being used
-		double[] hicopy = new double[m];//dRealAllocaArray (hicopy,m);
+		double[] hicopy = alloc(m);//dRealAllocaArray (hicopy,m);
 		memcpy (hicopy,hi,m);//*sizeof(dReal));
 
 		// precompute iMJ = inv(M)*J'
 		//double[] iMJ = new double[m*12];//dRealAllocaArray (iMJ,m*12);
-		double[] iMJ = new double[m*12];//dRealAllocaArray (iMJ,m*12);
+		double[] iMJ = alloc(m*12);//dRealAllocaArray (iMJ,m*12);
 		compute_invM_JT (m,J,iMJ,jb,body,invI);
 
 		// compute fc=(inv(M)*J')*lambda. we will incrementally maintain fc
@@ -461,7 +499,7 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 //		}//#endif
 
 		// precompute 1 / diagonals of A
-		double[] Ad = new double[m];// dRealAllocaArray (Ad,m);
+		double[] Ad = alloc(m);// dRealAllocaArray (Ad,m);
 		int iMJ_ofs = 0;//final double[] iMJ_ptr = iMJ;
 		int J_ofs = 0;//double[] J_ptr = J;
 		for (int i=0; i<m; i++) {
@@ -643,14 +681,12 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 		}
 	}
 
-
 	//void dxQuickStepper (dxWorld *world, dxBody * const *body, int nb,
 	//	     dxJoint * const *_joint, int nj, dReal stepsize)
 	private static void dxQuickStepper (DxWorld world, DxBody[]body, int nb,
 			DxJoint[]_joint, int nj, double stepsize)
 	{
 		int i,j;
-		//IFTIMING(dTimerStart("preprocessing");)
 		if (TIMING) dTimerStart("preprocessing");
 
 		double stepsize1 = dRecip(stepsize);
@@ -673,13 +709,13 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 		// for all bodies, compute the inertia tensor and its inverse in the global
 		// frame, and compute the rotational force and add it to the torque
 		// accumulator. I and invI are a vertical stack of 3x4 matrices, one per body.
-		double[] invI = new double[3*4*nb];//dRealAllocaArray (invI,3*4*nb);
+		double[] invI = alloc(nb*12);//new double[3*4*nb];//dRealAllocaArray (invI,3*4*nb);
 		for (i=0; i<nb; i++) {
 			DMatrix3 tmp = new DMatrix3();
 
 			// compute inverse inertia tensor in global frame
 			dMULTIPLY2_333 (tmp,body[i].invI,body[i]._posr.R);
-			dMULTIPLY0_333 (invI,i*12,body[i]._posr.R.v,0,tmp.v,0);
+			dMULTIPLY0_333 (invI,i*12,body[i]._posr.R,tmp);
 
 			if (body[i].isFlagsGyroscopic()) {
 				DMatrix3 I = new DMatrix3();
@@ -687,7 +723,8 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 				dMULTIPLY2_333 (tmp,body[i].mass._I,body[i]._posr.R);
 				dMULTIPLY0_333 (I,body[i]._posr.R,tmp);
 				// compute rotational force
-				dMULTIPLY0_331 (tmp.v,0,I.v,0,body[i].avel.v,0);
+				//dMULTIPLY0_331 (tmp.v,0,I.v,0,body[i].avel.v,0);
+				dMULTIPLY0_331 (tmp,I,body[i].avel);
 				dCROSS (body[i].tacc,OP.SUB_EQ,body[i].avel,tmp);
 			}//#endif
 		}
@@ -695,9 +732,10 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 		// add the gravity force to all bodies
 		for (i=0; i<nb; i++) {
 			if ((body[i].flags & DxBody.dxBodyNoGravity)==0) {
-				body[i].facc.v[0] += body[i].mass._mass * world.gravity.v[0];
-				body[i].facc.v[1] += body[i].mass._mass * world.gravity.v[1];
-				body[i].facc.v[2] += body[i].mass._mass * world.gravity.v[2];
+//				body[i].facc.v[0] += body[i].mass._mass * world.gravity.v[0];
+//				body[i].facc.v[1] += body[i].mass._mass * world.gravity.v[1];
+//				body[i].facc.v[2] += body[i].mass._mass * world.gravity.v[2];
+				body[i].facc.eqSum( body[i].facc, world.gravity, body[i].mass._mass );
 			}
 		}
 
@@ -726,16 +764,16 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 		}
 
 		// if there are constraints, compute the constraint force
-		double[] J = new double[m*12]; //dRealAllocaArray (J,m*12);
+		double[] J = alloc(m*12);//new double[m*12]; //dRealAllocaArray (J,m*12);
 		int[] jb = new int[m*2];//(int*) ALLOCA (m*2*sizeof(int));
 		if (m > 0) {
 			// create a constraint equation right hand side vector `c', a constraint
 			// force mixing vector `cfm', and LCP low and high bound vectors, and an
 			// 'findex' vector.
-			double[] c = new double[m];//dRealAllocaArray (c,m);
-			double[] cfm = new double[m];//dRealAllocaArray (cfm,m);
-			double[] lo = new double[m];//dRealAllocaArray (lo,m);
-			double[] hi = new double[m];//dRealAllocaArray (hi,m);
+			double[] c = alloc(m);//new double[m];//dRealAllocaArray (c,m);
+			double[] cfm = alloc(m);//new double[m];//dRealAllocaArray (cfm,m);
+			double[] lo = alloc(m);//new double[m];//dRealAllocaArray (lo,m);
+			double[] hi = alloc(m);//new double[m];//dRealAllocaArray (hi,m);
 			int[] findex = new int[m];//(int*) ALLOCA (m*sizeof(int));
 //TZ			dSetZero (c,m);
 			dSetValue (cfm,m,world.global_cfm);
@@ -756,7 +794,6 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			//   (lll) = linear jacobian data
 			//   (aaa) = angular jacobian data
 			//
-			//IFTIMING (dTimerNow ("create J");)
 			if (TIMING) dTimerNow ("create J");
 			dSetZero (J,m*12);
 			DxJoint.Info2 Jinfo = new DxJoint.Info2();
@@ -792,7 +829,7 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			// for joints, that requested feedback (which is normaly much less)
 			double[] Jcopy = null;
 			if (mfb > 0) {
-				Jcopy = new double[mfb*12];//(double[]) ALLOCA (mfb*12*sizeof(dReal));
+				Jcopy = alloc(mfb*12);//new double[mfb*12];//(double[]) ALLOCA (mfb*12*sizeof(dReal));
 				mfb = 0;
 				for (i=0; i<nj; i++)
 					if (joint[i].feedback!=null) {
@@ -816,20 +853,20 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			dIASSERT (jb_ofs == 2*m);//(jb_ptr == jb+2*m);
 
 			// compute the right hand side `rhs'
-			//IFTIMING (dTimerNow ("compute rhs");)
 			if (TIMING) dTimerNow ("compute rhs");
-			double[] tmp1 = new double[nb*6];//dRealAllocaArray (tmp1,nb*6);
+			double[] tmp1 = alloc(nb*6);//new double[nb*6];//dRealAllocaArray (tmp1,nb*6);
 			// put v/h + invM*fe into tmp1
 			for (i=0; i<nb; i++) {
 				double body_invMass = body[i].invMass;
-				for (j=0; j<3; j++) tmp1[i*6+j] = body[i].facc.v[j] * body_invMass + 
-					body[i].lvel.v[j] * stepsize1;
-				dMULTIPLY0_331 (tmp1, i*6 + 3,invI, i*12,body[i].tacc.v, 0);
-				for (j=0; j<3; j++) tmp1[i*6+3+j] += body[i].avel.v[j] * stepsize1;
+				for (j=0; j<3; j++) tmp1[i*6+j] = body[i].facc.get(j) * body_invMass + 
+					body[i].lvel.get(j) * stepsize1;
+				//dMULTIPLY0_331 (tmp1, i*6 + 3,invI, i*12,body[i].tacc.v, 0);
+				dMULTIPLY0_331 (tmp1, i*6 + 3,invI, i*12,body[i].tacc);
+				for (j=0; j<3; j++) tmp1[i*6+3+j] += body[i].avel.get(j) * stepsize1;
 			}
 
 			// put J*tmp1 into rhs
-			double[] rhs = new double[m];//dRealAllocaArray (rhs,m);
+			double[] rhs = alloc(m);//new double[m];//dRealAllocaArray (rhs,m);
 			multiply_J (m,J,jb,tmp1,rhs);
 
 			// complete rhs
@@ -839,7 +876,7 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			for (i=0; i<m; i++) cfm[i] *= stepsize1;
 
 			// load lambda from the value saved on the previous iteration
-			double[] lambda = new double[m];//dRealAllocaArray (lambda,m);
+			double[] lambda = alloc(m);//new double[m];//dRealAllocaArray (lambda,m);
 			//TZ not defined
 //			if (WARM_STARTING) {//#ifdef WARM_STARTING
 //				dSetZero (lambda,m);	//@@@ shouldn't be necessary
@@ -849,9 +886,8 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 //			}//#endif
 
 			// solve the LCP problem and get lambda and invM*constraint_force
-			//IFTIMING (dTimerNow ("solving LCP problem");)
 			if (TIMING) dTimerNow ("solving LCP problem");
-			double[] cforce = new double[nb*6];//dRealAllocaArray (cforce,nb*6);
+			double[] cforce = alloc(nb*6);//new double[nb*6];//dRealAllocaArray (cforce,nb*6);
 			SOR_LCP (m,nb,J,jb,body,invI,lambda,cforce,rhs,lo,hi,cfm,findex,world.qs);
 //			System.err.println("SOR_LCP m=" + m + " nb=" + nb + " ");
 //			System.err.println("SOR_LCP J=" + Arrays.toString(J));
@@ -881,8 +917,8 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 			// add stepsize * cforce to the body velocity
 			for (i=0; i<nb; i++) {
-				for (j=0; j<3; j++) body[i].lvel.v[j] += stepsize * cforce[i*6+j];
-				for (j=0; j<3; j++) body[i].avel.v[j] += stepsize * cforce[i*6+3+j];
+				for (j=0; j<3; j++) body[i].lvel.add(j, stepsize * cforce[i*6+j] );
+				for (j=0; j<3; j++) body[i].avel.add(j, stepsize * cforce[i*6+3+j] );
 			}
 
 
@@ -894,23 +930,29 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 				for (i=0; i<nj; i++) {
 					if (joint[i].feedback != null) {
 						DJoint.DJointFeedback fb = joint[i].feedback;
-						double[] data = new double[6];
-						Multiply1_12q1 (data, Jcopy, mfb*12, lambda,ofs[i], info[i].m);
-						fb.f1.v[0] = data[0];
-						fb.f1.v[1] = data[1];
-						fb.f1.v[2] = data[2];
-						fb.t1.v[0] = data[3];
-						fb.t1.v[1] = data[4];
-						fb.t1.v[2] = data[5];
+//						double[] data = new double[6];
+						//Multiply1_12q1 (data, Jcopy, mfb*12, lambda,ofs[i], info[i].m);
+						Multiply1_12q1 (fb.f1, fb.t1, Jcopy, mfb*12, lambda,ofs[i], info[i].m);
+////						fb.f1.v[0] = data[0];
+////						fb.f1.v[1] = data[1];
+////						fb.f1.v[2] = data[2];
+//						fb.f1.set( data[0], data[1], data[2] );
+////						fb.t1.v[0] = data[3];
+////						fb.t1.v[1] = data[4];
+////						fb.t1.v[2] = data[5];
+//						fb.t1.set( data[3], data[4], data[5] );
 						if (joint[i].node[1].body != null)
 						{
-							Multiply1_12q1 (data, Jcopy, mfb*12+6, lambda,ofs[i], info[i].m);
-							fb.f2.v[0] = data[0];
-							fb.f2.v[1] = data[1];
-							fb.f2.v[2] = data[2];
-							fb.t2.v[0] = data[3];
-							fb.t2.v[1] = data[4];
-							fb.t2.v[2] = data[5];
+							//Multiply1_12q1 (data, Jcopy, mfb*12+6, lambda,ofs[i], info[i].m);
+							Multiply1_12q1 (fb.f2, fb.t2, Jcopy, mfb*12+6, lambda,ofs[i], info[i].m);
+////							fb.f2.v[0] = data[0];
+////							fb.f2.v[1] = data[1];
+////							fb.f2.v[2] = data[2];
+//							fb.f2.set( data[0], data[1], data[2] );
+////							fb.t2.v[0] = data[3];
+////							fb.t2.v[1] = data[4];
+////							fb.t2.v[2] = data[5];
+//							fb.t2.set( data[2], data[4], data[5] );
 						}
 						mfb += info[i].getM();
 					}
@@ -921,13 +963,14 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 		// compute the velocity update:
 		// add stepsize * invM * fe to the body velocity
 
-		//IFTIMING (dTimerNow ("compute velocity update");)
 		if (TIMING) dTimerNow ("compute velocity update");
 		for (i=0; i<nb; i++) {
 			double body_invMass = body[i].invMass;
-			for (j=0; j<3; j++) body[i].lvel.v[j] += stepsize * body_invMass * body[i].facc.v[j];
-			for (j=0; j<3; j++) body[i].tacc.v[j] *= stepsize;
-			dMULTIPLYADD0_331 (body[i].avel.v,0,invI, i*12,body[i].tacc.v,0);
+			for (j=0; j<3; j++) body[i].lvel.add(j, stepsize * body_invMass * body[i].facc.get(j) );
+			//for (j=0; j<3; j++) body[i].tacc.v[j] *= stepsize;
+			body[i].tacc.scale( stepsize );
+			//dMULTIPLYADD0_331 (body[i].avel.v,0,invI, i*12,body[i].tacc.v,0);
+			dMULTIPLYADD0_331 (body[i].avel,invI, i*12,body[i].tacc);
 		}
 
 		//#if 0
@@ -946,22 +989,18 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 		// update the position and orientation from the new linear/angular velocity
 		// (over the given timestep)
-		//IFTIMING (dTimerNow ("update position");)
 		if (TIMING) dTimerNow ("update position");
 		for (i=0; i<nb; i++) body[i].dxStepBody (stepsize);
 
-		//IFTIMING (dTimerNow ("tidy up");)
 		if (TIMING) dTimerNow ("tidy up");
 
 		// zero all force accumulators
 		for (i=0; i<nb; i++) {
-			body[i].facc.dSetZero();//dSetZero (body[i].facc,3);
-			body[i].tacc.dSetZero();//dSetZero (body[i].tacc,3);
+			body[i].facc.setZero();//dSetZero (body[i].facc,3);
+			body[i].tacc.setZero();//dSetZero (body[i].tacc,3);
 		}
 
-		//IFTIMING (dTimerEnd();)
 		if (TIMING) dTimerEnd();
-		//IFTIMING (if (m > 0) dTimerReport (stdout,1);)
 		if (TIMING) if (m > 0) dTimerReport (stdout,1);
 	}
 

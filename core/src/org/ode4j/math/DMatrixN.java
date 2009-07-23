@@ -3,13 +3,14 @@ package org.ode4j.math;
 import org.ode4j.ode.internal.Misc;
 
 
-public class DMatrixN extends DMatrix<DVectorN, DVectorN> {
+public class DMatrixN {
 
+	private final double[] v;
 	private final int MAX_I; 
 	private final int MAX_J; 
 
 	public DMatrixN(int max_i, int max_j) {
-		super(max_i,max_j);
+		v = new double[max_i*max_j];
 		MAX_I = max_i;
 		MAX_J = max_j;
 	}
@@ -25,7 +26,7 @@ public class DMatrixN extends DMatrix<DVectorN, DVectorN> {
 	 * @param a
 	 */
 	private DMatrixN(double[] a, int i, int j) {
-		super(a, i, j);
+		v = a;
 		MAX_I = i;
 		MAX_J = j;
 	}
@@ -42,11 +43,11 @@ public class DMatrixN extends DMatrix<DVectorN, DVectorN> {
 	
 
 	public void setOfs(int ofs, DVector3 v3) {
-		v[ofs] = v3.v[0]; v[ofs+1] = v3.v[1]; v[ofs+2] = v3.v[2]; v[ofs+3] = v3.v[3];
+		v[ofs] = v3.get0(); v[ofs+1] = v3.get1(); v[ofs+2] = v3.get2(); //v[ofs+3] = v3.v[3];
 	}
 	public void setCol(int i, DVector3 v3) {
 		int ofs = i*4;
-		v[ofs] = v3.v[0]; v[ofs+1] = v3.v[1]; v[ofs+2] = v3.v[2]; v[ofs+3] = v3.v[3];
+		v[ofs] = v3.get0(); v[ofs+1] = v3.get1(); v[ofs+2] = v3.get2(); //v[ofs+3] = v3.v[3];
 	}
 	public void set(double[] da, int da_ofs) {
 		System.arraycopy(da, da_ofs, v, 0, v.length);
@@ -335,6 +336,17 @@ public class DMatrixN extends DMatrix<DVectorN, DVectorN> {
 //		}
 //	}
 	
+
+	/**
+	 * @param i row
+	 * @param j column
+	 * @param a value at (i,j)
+	 */
+	public void set(int i, int j, double a) {
+		v[i*MAX_J + j] = a;
+	}
+
+
 	/**
 	 * @deprecated
 	 * @param n

@@ -22,7 +22,6 @@
 package org.ode4j.ode.internal;
 
 import org.ode4j.ode.DJoint;
-import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.OdeMath.OP;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
@@ -372,9 +371,10 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 		// add the gravity force to all bodies
 		for (i=0; i<nb; i++) {
 			if ((body[i].flags & DxBody.dxBodyNoGravity)==0) {
-				body[i].facc.v[0] += body[i].mass._mass * world.gravity.v[0];
-				body[i].facc.v[1] += body[i].mass._mass * world.gravity.v[1];
-				body[i].facc.v[2] += body[i].mass._mass * world.gravity.v[2];
+//				body[i].facc.v[0] += body[i].mass._mass * world.gravity.v[0];
+//				body[i].facc.v[1] += body[i].mass._mass * world.gravity.v[1];
+//				body[i].facc.v[2] += body[i].mass._mass * world.gravity.v[2];
+				body[i].facc.eqSum( body[i].facc, world.gravity, body[i].mass._mass);
 			}
 		}
 
@@ -437,7 +437,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			invM[posMM+2*nskip+2] = body[i].invMass;//MM[2*nskip+2] = body[i].invMass;
 			posMM += 3*nskip+3;//MM += 3*nskip+3;
 			for (j=0; j<3; j++) for (k=0; k<3; k++) {
-				invM[j*nskip+k] = invI[i].v[j*4+k];//MM[j*nskip+k] = invI[i*12+j*4+k];
+				invM[j*nskip+k] = invI[i].get(j, k);//MM[j*nskip+k] = invI[i*12+j*4+k];
 			}
 		}
 
@@ -448,10 +448,10 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 		//dSetZero (fe,n6);
 		//dSetZero (v,n6);
 		for (i=0; i<nb; i++) {
-			for (j=0; j<3; j++) fe[i*6+j] = body[i].facc.v[j];
-			for (j=0; j<3; j++) fe[i*6+3+j] = body[i].tacc.v[j];
-			for (j=0; j<3; j++) v[i*6+j] = body[i].lvel.v[j];
-			for (j=0; j<3; j++) v[i*6+3+j] = body[i].avel.v[j];
+			for (j=0; j<3; j++) fe[i*6+j] = body[i].facc.get(j);
+			for (j=0; j<3; j++) fe[i*6+3+j] = body[i].tacc.get(j);
+			for (j=0; j<3; j++) v[i*6+j] = body[i].lvel.get(j);
+			for (j=0; j<3; j++) v[i*6+3+j] = body[i].avel.get(j);
 		}
 
 		// this will be set to the velocity update
@@ -667,8 +667,8 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			dTimerNow ("update velocity");
 		//#endif
 		for (i=0; i<nb; i++) {
-			for (j=0; j<3; j++) body[i].lvel.v[j] = vnew[i*6+j];
-			for (j=0; j<3; j++) body[i].avel.v[j] = vnew[i*6+3+j];
+			for (j=0; j<3; j++) body[i].lvel.set(j, vnew[i*6+j] );
+			for (j=0; j<3; j++) body[i].avel.set(j, vnew[i*6+3+j] );
 		}
 
 		// update the position and orientation from the new linear/angular velocity
@@ -751,7 +751,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 			// compute inverse inertia tensor in global frame
 			dMULTIPLY2_333 (tmpM,body[i].invI,body[i]._posr.R);
-			dMULTIPLY0_333 (invI,i*12,body[i]._posr.R.v,0,tmpM.v,0);
+			dMULTIPLY0_333 (invI,i*12,body[i]._posr.R,tmpM);
 
 		    if (body[i].isFlagsGyroscopic()) {
 		        //TZ move up for performance 
@@ -1019,10 +1019,10 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 				double body_invMass = body[i].invMass;
 				int body_invI = i*12;//double []body_invI = invI + i*12;
 				for (j=0; j<3; j++) tmp1[i*8+j] = 
-					body[i].facc.v[j] * body_invMass +
-					body[i].lvel.v[j] * stepsize1;
-				dMULTIPLY0_331 (tmp1 , i*8 + 4,invI,body_invI,body[i].tacc.v,0);
-				for (j=0; j<3; j++) tmp1[i*8+4+j] += body[i].avel.v[j] * stepsize1;
+					body[i].facc.get(j) * body_invMass +
+					body[i].lvel.get(j) * stepsize1;
+				dMULTIPLY0_331 (tmp1 , i*8 + 4,invI,body_invI,body[i].tacc);
+				for (j=0; j<3; j++) tmp1[i*8+4+j] += body[i].avel.get(j) * stepsize1;
 			}
 			// put J*tmp1 into rhs
 			double[]rhs = new double[m];//ALLOCA(double,rhs,m*sizeof(double));
@@ -1112,23 +1112,23 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 					int cf1 = 8*b1.tag;//double[] cf1 = cforce + 8*b1.tag;
 					//TODO FIXME
 					if (true) throw new UnsupportedOperationException("Fix this!");
-					cforce[cf1+0] += (fb.f1.v[0] = data[0]);
-					cforce[cf1+1] += (fb.f1.v[1] = data[1]);
-					cforce[cf1+2] += (fb.f1.v[2] = data[2]);
-					cforce[cf1+4] += (fb.t1.v[0] = data[4]);
-					cforce[cf1+5] += (fb.t1.v[1] = data[5]);
-					cforce[cf1+6] += (fb.t1.v[2] = data[6]);
+//					cforce[cf1+0] += (fb.f1.v[0] = data[0]);
+//					cforce[cf1+1] += (fb.f1.v[1] = data[1]);
+//					cforce[cf1+2] += (fb.f1.v[2] = data[2]);
+//					cforce[cf1+4] += (fb.t1.v[0] = data[4]);
+//					cforce[cf1+5] += (fb.t1.v[1] = data[5]);
+//					cforce[cf1+6] += (fb.t1.v[2] = data[6]);
 					if (b2!=null){
 						Multiply1_8q1 (data,0, J,JJ + 8*info[i].m, lambda,ofs[i], info[i].m);
 						int cf2 = 8*b2.tag;//double[] cf2 = cforce + 8*b2.tag;
 						//TODO FIXME
 						if (true) throw new UnsupportedOperationException("Fix this!");
-						cforce[cf2+0] += (fb.f2.v[0] = data[0]);
-						cforce[cf2+1] += (fb.f2.v[1] = data[1]);
-						cforce[cf2+2] += (fb.f2.v[2] = data[2]);
-						cforce[cf2+4] += (fb.t2.v[0] = data[4]);
-						cforce[cf2+5] += (fb.t2.v[1] = data[5]);
-						cforce[cf2+6] += (fb.t2.v[2] = data[6]);
+//						cforce[cf2+0] += (fb.f2.v[0] = data[0]);
+//						cforce[cf2+1] += (fb.f2.v[1] = data[1]);
+//						cforce[cf2+2] += (fb.f2.v[2] = data[2]);
+//						cforce[cf2+4] += (fb.t2.v[0] = data[4]);
+//						cforce[cf2+5] += (fb.t2.v[1] = data[5]);
+//						cforce[cf2+6] += (fb.t2.v[2] = data[6]);
 					}
 				}
 				else {
@@ -1161,7 +1161,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			double body_invMass = body[i].invMass;
 			int body_invI = i*12;//double []body_invI = invI + i*12;
 			for (j=0; j<3; j++) body[i].lvel.add(j, body_invMass * cforce[i*8+j] );
-			OdeMath.dMULTIPLYADD0_331 (body[i].avel.v,0,invI,body_invI,cforce,i*8+4);
+			dMULTIPLYADD0_331 (body[i].avel,invI,body_invI,cforce,i*8+4);
 		}
 
 		// update the position and orientation from the new linear/angular velocity
@@ -1189,8 +1189,8 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 		// zero all force accumulators
 		for (i=0; i<nb; i++) {
-			body[i].facc.dSetZero();
-			body[i].tacc.dSetZero();
+			body[i].facc.setZero();
+			body[i].tacc.setZero();
 //			body[i].facc[0] = 0;
 //			body[i].facc[1] = 0;
 //			body[i].facc[2] = 0;
