@@ -523,7 +523,7 @@ class DemoCrash extends dsFunctions {
 			DMatrix3 R2 = new DMatrix3(), R3 = new DMatrix3(), R4 = new DMatrix3();
 			dRFromAxisAndAngle (R2,0,0,1,cannon_angle);
 			dRFromAxisAndAngle (R3,0,1,0,cannon_elevation);
-			dMultiply0 (R4,R2,R3,3,3,3);
+			dMultiply0 (R4,R2,R3);
 			double[] cpos = {CANNON_X,CANNON_Y,1};
 			for (int i=0; i<3; i++) cpos[i] += 3*R4.get(i, 2);//[i*4+2];
 			dBodySetPosition (cannon_ball_body,cpos[0],cpos[1],cpos[2]);
@@ -642,7 +642,7 @@ class DemoCrash extends dsFunctions {
 		DMatrix3 R2 = new DMatrix3(), R3 = new DMatrix3(), R4 = new DMatrix3();
 		dRFromAxisAndAngle (R2,0,0,1,cannon_angle);
 		dRFromAxisAndAngle (R3,0,1,0,cannon_elevation);
-		dMultiply0 (R4,R2,R3,3,3,3);
+		dMultiply0 (R4,R2,R3);
 		DVector3 cpos = new DVector3(CANNON_X,CANNON_Y,1);
 		DVector3 csides = new DVector3(2,2,2);
 		dsDrawBox (cpos,R2,csides);

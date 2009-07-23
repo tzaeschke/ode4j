@@ -184,7 +184,7 @@ class DemoCollision extends dsFunctions {
 			DVector3 ss = new DVector3(0.01,0.01,0.01);
 			for (i=0; i<n; i++) {
 				DContactGeom contact = contacts.get(i);
-				contact.pos.v[2] += Z_OFFSET;
+				contact.pos.add(2, Z_OFFSET );
 				dsDrawBox (contact.pos,RI,ss);
 				DVector3 n2 = new DVector3();
 				//for (j=0; j<3; j++) n[j] = contact[i].pos[j] + 0.1*contact[i].normal[j];
@@ -219,7 +219,7 @@ class DemoCollision extends dsFunctions {
 				dsSetColor (1,1,1);
 				DVector3 origin = new DVector3(),dir=new DVector3();
 				dGeomRayGet ((DRay)g,origin,dir);
-				origin.v[2] += Z_OFFSET;
+				origin.add(2, Z_OFFSET);
 				double length = dGeomRayGetLength ((DRay)g);
 				//for (j=0; j<3; j++) dir[j] = dir[j]*length + origin[j];
 				dir.eqSum(origin, dir, length);
@@ -236,7 +236,7 @@ class DemoCollision extends dsFunctions {
 			if (!(g instanceof DPlane)) {//dGeomGetClass (g) != dPlaneClass) {
 				//memcpy (pos,dGeomGetPosition(g),sizeof(pos));
 				pos.set(dGeomGetPosition(g));
-				pos.v[2] += Z_OFFSET;
+				pos.add(2, Z_OFFSET );
 			}
 
 			switch (g.getClassID()) {
@@ -272,7 +272,7 @@ class DemoCollision extends dsFunctions {
 				dGeomPlaneGetParams ((DPlane)g,n4);
 				dRFromZAxis (R,n4.get0(),n4.get1(),n4.get2());
 				for (j=0; j<3; j++) pos.set(j, n4.get(j)*n4.get3());
-				pos.v[2] += Z_OFFSET;
+				pos.add(2, Z_OFFSET );
 //				sides[0] = 2;
 //				sides[1] = 2;
 //				sides[2] = 0.001;
@@ -309,29 +309,29 @@ class DemoCollision extends dsFunctions {
 		r = dRandReal()+0.1;
 		dGeomSphereSetRadius (sphere,r);
 		dMakeRandomVector (p,1.0);
-		dGeomSetPosition (sphere,p.v[0],p.v[1],p.v[2]);
+		dGeomSetPosition (sphere,p.get0(),p.get1(),p.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (sphere,R);
 
 		// ********** test center point has depth r
 
-		if (dFabs(dGeomSpherePointDepth (sphere,p.v[0],p.v[1],p.v[2]) - r) > tol) if (testFAILED()) return false;
+		if (dFabs(dGeomSpherePointDepth (sphere,p.get0(),p.get1(),p.get2()) - r) > tol) if (testFAILED()) return false;
 
 		// ********** test point on surface has depth 0
 
-		for (j=0; j<3; j++) q.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) q.set(j, dRandReal()-0.5 );
 		dNormalize3 (q);
-		for (j=0; j<3; j++) q.v[j] = q.v[j]*r + p.v[j];
-		if (dFabs(dGeomSpherePointDepth (sphere,q.v[0],q.v[1],q.v[2])) > tol) if (testFAILED()) return false;
+		for (j=0; j<3; j++) q.set(j, q.get(j)*r + p.get(j) );
+		if (dFabs(dGeomSpherePointDepth (sphere,q.get0(),q.get1(),q.get2())) > tol) if (testFAILED()) return false;
 
 		// ********** test point at random depth
 
 		d = (dRandReal()*2-1) * r;
-		for (j=0; j<3; j++) q.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) q.set(j, dRandReal()-0.5 );
 		dNormalize3 (q);
-		for (j=0; j<3; j++) q.v[j] = q.v[j]*(r-d) + p.v[j];
-		if (dFabs(dGeomSpherePointDepth (sphere,q.v[0],q.v[1],q.v[2])-d) > tol) if (testFAILED()) return false;
+		for (j=0; j<3; j++) q.set(j, q.get(j)*(r-d) + p.get(j) );
+		if (dFabs(dGeomSpherePointDepth (sphere,q.get0(),q.get1(),q.get2())-d) > tol) if (testFAILED()) return false;
 
 		return retPASSED();
 	}
@@ -351,9 +351,9 @@ class DemoCollision extends dsFunctions {
 		// ********** make a random box
 
 		for (j=0; j<3; j++) s.set(j, dRandReal() + 0.1);
-		dGeomBoxSetLengths (box,s.v[0],s.v[1],s.v[2]);
+		dGeomBoxSetLengths (box,s.get0(),s.get1(),s.get2());
 		dMakeRandomVector (p,1.0);
-		dGeomSetPosition (box,p.v[0],p.v[1],p.v[2]);
+		dGeomSetPosition (box,p.get0(),p.get1(),p.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (box,R);
@@ -362,46 +362,46 @@ class DemoCollision extends dsFunctions {
 
 		ss = 1e9;
 		for (j=0; j<3; j++) if (s.get(j) < ss) ss = s.get(j);
-		if (dFabs(dGeomBoxPointDepth (box,p.v[0],p.v[1],p.v[2]) - 0.5*ss) > tol)
+		if (dFabs(dGeomBoxPointDepth (box,p.get0(),p.get1(),p.get2()) - 0.5*ss) > tol)
 			if (testFAILED()) return false;
 
 		// ********** test point on surface has depth 0
 
 		for (j=0; j<3; j++) q.set(j, (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
-		if (dRandReal() > 0.5) q.v[i] = 0.5*s.v[i]; else q.v[i] = -0.5*s.v[i];
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
+		if (dRandReal() > 0.5) q.set(i, 0.5*s.get(i) ); else q.set(i, -0.5*s.get(i) );
+		dMultiply0 (q2,dGeomGetRotation(box),q);
 		//for (j=0; j<3; j++) q2[j] += p[j];
 		q2.add(p);
-		if (dFabs(dGeomBoxPointDepth (box,q2.v[0],q2.v[1],q2.v[2])) > tol) if (testFAILED()) return false;
+		if (dFabs(dGeomBoxPointDepth (box,q2.get0(),q2.get1(),q2.get2())) > tol) if (testFAILED()) return false;
 
 		// ********** test points outside box have -ve depth
 
 		for (j=0; j<3; j++) {
-			q.v[j] = 0.5*s.v[j] + dRandReal() + 0.01;
-			if (dRandReal() > 0.5) q.v[j] = -q.v[j];
+			s.set(j, 0.5*s.get(j) + dRandReal() + 0.01 );
+			if (dRandReal() > 0.5) q.set(j, -q.get(j) );
 		}
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
-		for (j=0; j<3; j++) q2.v[j] += p.v[j];
-		if (dGeomBoxPointDepth (box,q2.v[0],q2.v[1],q2.v[2]) >= 0) if (testFAILED()) return false;
+		dMultiply0 (q2,dGeomGetRotation(box),q);
+		for (j=0; j<3; j++) q2.add(j, p.get(j) );
+		if (dGeomBoxPointDepth (box,q2.get0(),q2.get1(),q2.get2()) >= 0) if (testFAILED()) return false;
 
 		// ********** test points inside box have +ve depth
 
-		for (j=0; j<3; j++) q.v[j] = s.v[j] * 0.99 * (dRandReal()-0.5);
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
-		for (j=0; j<3; j++) q2.v[j] += p.v[j];
-		if (dGeomBoxPointDepth (box,q2.v[0],q2.v[1],q2.v[2]) <= 0) if (testFAILED()) return false;
+		for (j=0; j<3; j++) q.set(j, s.get(j) * 0.99 * (dRandReal()-0.5) );
+		dMultiply0 (q2,dGeomGetRotation(box),q);
+		for (j=0; j<3; j++) q2.add(j, p.get(j) );
+		if (dGeomBoxPointDepth (box,q2.get0(),q2.get1(),q2.get2()) <= 0) if (testFAILED()) return false;
 
 		// ********** test random depth of point aligned along axis (up to ss deep)
 
 		i = dRandInt (3);
-		for (j=0; j<3; j++) q.v[j] = 0;
+		for (j=0; j<3; j++) q.set(j, 0);
 		d = (dRandReal()*(ss*0.5+1)-1);
-		q.v[i] = s.v[i]*0.5 - d;
-		if (dRandReal() > 0.5) q.v[i] = -q.v[i];
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
-		for (j=0; j<3; j++) q2.v[j] += p.v[j];
-		if (dFabs(dGeomBoxPointDepth (box,q2.v[0],q2.v[1],q2.v[2]) - d) >= tol) if (testFAILED()) return false;
+		q.set(i, s.get(i)*0.5 - d);
+		if (dRandReal() > 0.5) q.set(i, -q.get(i) );
+		dMultiply0 (q2,dGeomGetRotation(box),q);
+		for (j=0; j<3; j++) q2.add(j, p.get(j) );
+		if (dFabs(dGeomBoxPointDepth (box,q2.get0(),q2.get1(),q2.get2()) - d) >= tol) if (testFAILED()) return false;
 
 		return retPASSED();
 	}
@@ -425,7 +425,7 @@ class DemoCollision extends dsFunctions {
 		l = dRandReal()*1 + 0.01;
 		dGeomCapsuleSetParams (ccyl,r,l);
 		dMakeRandomVector (p,1.0);
-		dGeomSetPosition (ccyl,p.v[0],p.v[1],p.v[2]);
+		dGeomSetPosition (ccyl,p.get0(),p.get1(),p.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (ccyl,R);
@@ -433,8 +433,8 @@ class DemoCollision extends dsFunctions {
 		// ********** test point on axis has depth of 'radius'
 
 		beta = dRandReal()-0.5;
-		for (j=0; j<3; j++) a.v[j] = p.v[j] + l*beta*R.v[j*4+2];
-		if (dFabs(dGeomCapsulePointDepth (ccyl,a.v[0],a.v[1],a.v[2]) - r) >= tol)
+		for (j=0; j<3; j++) a.set(j, p.get(j) + l*beta*R.get(j, 2) );//[j*4+2] );
+		if (dFabs(dGeomCapsulePointDepth (ccyl,a.get0(),a.get1(),a.get2()) - r) >= tol)
 			if (testFAILED()) return false;
 
 		// ********** test point on surface (excluding caps) has depth 0
@@ -443,28 +443,28 @@ class DemoCollision extends dsFunctions {
 		x = r*sin(beta);
 		y = r*cos(beta);
 		beta = dRandReal()-0.5;
-		for (j=0; j<3; j++) a.v[j] = p.v[j] + x*R.v[j*4+0] + y*R.v[j*4+1] + l*beta*R.v[j*4+2];
-		if (dFabs(dGeomCapsulePointDepth (ccyl,a.v[0],a.v[1],a.v[2])) >= tol) if (testFAILED()) return false;
+		for (j=0; j<3; j++) a.set(j, p.get(j) + x*R.get(j, 0) + y*R.get(j, 1) + l*beta*R.get(j, 2) );
+		if (dFabs(dGeomCapsulePointDepth (ccyl,a.get0(),a.get1(),a.get2())) >= tol) if (testFAILED()) return false;
 
 		// ********** test point on surface of caps has depth 0
 
-		for (j=0; j<3; j++) a.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		dNormalize3 (a);
 		if (dDOT14(a,R,2) > 0) {
-			for (j=0; j<3; j++) a.v[j] = p.v[j] + a.v[j]*r + l*0.5*R.v[j*4+2];
+			for (j=0; j<3; j++) a.set(j, p.get(j) + a.get(j)*r + l*0.5*R.get(j, 2) );//v[j*4+2] );
 		}
 		else {
-			for (j=0; j<3; j++) a.v[j] = p.v[j] + a.v[j]*r - l*0.5*R.v[j*4+2];
+			for (j=0; j<3; j++) a.set(j, p.get(j) + a.get(j)*r - l*0.5*R.get(j, 2) );//v[j*4+2] );
 		}
-		if (dFabs(dGeomCapsulePointDepth (ccyl,a.v[0],a.v[1],a.v[2])) >= tol) if (testFAILED()) return false;
+		if (dFabs(dGeomCapsulePointDepth (ccyl,a.get0(),a.get1(),a.get2())) >= tol) if (testFAILED()) return false;
 
 		// ********** test point inside ccyl has positive depth
 
-		for (j=0; j<3; j++) a.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		dNormalize3 (a);
 		beta = dRandReal()-0.5;
-		for (j=0; j<3; j++) a.v[j] = p.v[j] + a.v[j]*r*0.99 + l*beta*R.v[j*4+2];
-		if (dGeomCapsulePointDepth (ccyl,a.v[0],a.v[1],a.v[2]) < 0) if (testFAILED()) return false;
+		for (j=0; j<3; j++) a.set(j, p.get(j) + a.get(j)*r*0.99 + l*beta*R.get(j, 2) );//v[j*4+2] );
+		if (dGeomCapsulePointDepth (ccyl,a.get0(),a.get1(),a.get2()) < 0) if (testFAILED()) return false;
 
 		// ********** test point depth (1)
 
@@ -473,22 +473,22 @@ class DemoCollision extends dsFunctions {
 		x = (r-d)*sin(beta);
 		y = (r-d)*cos(beta);
 		beta = dRandReal()-0.5;
-		for (j=0; j<3; j++) a.v[j] = p.v[j] + x*R.v[j*4+0] + y*R.v[j*4+1] + l*beta*R.v[j*4+2];
-		if (dFabs(dGeomCapsulePointDepth (ccyl,a.v[0],a.v[1],a.v[2]) - d) >= tol)
+		for (j=0; j<3; j++) a.set(j, p.get(j) + x*R.get(j, 0) + y*R.get(j, 1) + l*beta*R.get(j, 2) );
+		if (dFabs(dGeomCapsulePointDepth (ccyl,a.get0(),a.get1(),a.get2()) - d) >= tol)
 			if (testFAILED()) return false;
 
 		// ********** test point depth (2)
 
 		d = (dRandReal()*2-1) * r;
-		for (j=0; j<3; j++) a.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		dNormalize3 (a);
 		if (dDOT14(a,R,2) > 0) {
-			for (j=0; j<3; j++) a.v[j] = p.v[j] + a.v[j]*(r-d) + l*0.5*R.v[j*4+2];
+			for (j=0; j<3; j++) a.set(j, p.get(j) + a.get(j)*(r-d) + l*0.5*R.get(j, 2) );//v[j*4+2] );
 		}
 		else {
-			for (j=0; j<3; j++) a.v[j] = p.v[j] + a.v[j]*(r-d) - l*0.5*R.v[j*4+2];
+			for (j=0; j<3; j++) a.set(j, p.get(j) + a.get(j)*(r-d) - l*0.5*R.get(j, 2) );//v[j*4+2] );
 		}
-		if (dFabs(dGeomCapsulePointDepth (ccyl,a.v[0],a.v[1],a.v[2]) - d) >= tol)
+		if (dFabs(dGeomCapsulePointDepth (ccyl,a.get0(),a.get1(),a.get2()) - d) >= tol)
 			if (testFAILED()) return false;
 
 		return retPASSED();
@@ -509,36 +509,36 @@ class DemoCollision extends dsFunctions {
 
 		// ********** make a random plane
 
-		for (j=0; j<3; j++) n.v[j] = dRandReal() - 0.5;
+		for (j=0; j<3; j++) n.set(j, dRandReal() - 0.5 );
 		dNormalize3 (n);
 		d = dRandReal() - 0.5;
-		dGeomPlaneSetParams (plane,n.v[0],n.v[1],n.v[2],d);
+		dGeomPlaneSetParams (plane,n.get0(),n.get1(),n.get2(),d);
 		dPlaneSpace (n,p,q);
 
 		// ********** test point on plane has depth 0
 
-		a.v[0] = dRandReal() - 0.5;
-		a.v[1] = dRandReal() - 0.5;
-		a.v[2] = 0;
-		for (j=0; j<3; j++) b.v[j] = a.v[0]*p.v[j] + a.v[1]*q.v[j] + (a.v[2]+d)*n.v[j];
-		if (dFabs(dGeomPlanePointDepth (plane,b.v[0],b.v[1],b.v[2])) >= tol) if (testFAILED()) return false;
+		a.set0( dRandReal() - 0.5 );
+		a.set1( dRandReal() - 0.5 );
+		a.set2( 0 );
+		for (j=0; j<3; j++) b.set(j, a.get0()*p.get(j) + a.get1()*q.get(j) + (a.get2()+d)*n.get(j) );
+		if (dFabs(dGeomPlanePointDepth (plane,b.get0(),b.get1(),b.get2())) >= tol) if (testFAILED()) return false;
 
 		// ********** test arbitrary depth point
 
-		a.v[0] = dRandReal() - 0.5;
-		a.v[1] = dRandReal() - 0.5;
-		a.v[2] = dRandReal() - 0.5;
-		for (j=0; j<3; j++) b.v[j] = a.v[0]*p.v[j] + a.v[1]*q.v[j] + (a.v[2]+d)*n.v[j];
-		if (dFabs(dGeomPlanePointDepth (plane,b.v[0],b.v[1],b.v[2]) + a.v[2]) >= tol)
+		a.set0( dRandReal() - 0.5 );
+		a.set1( dRandReal() - 0.5 );
+		a.set2( dRandReal() - 0.5 );
+		for (j=0; j<3; j++) b.set(j, a.get0()*p.get(j) + a.get1()*q.get(j) + (a.get2()+d)*n.get(j) );
+		if (dFabs(dGeomPlanePointDepth (plane,b.get0(),b.get1(),b.get2()) + a.get2()) >= tol)
 			if (testFAILED()) return false;
 
 		// ********** test depth-1 point
 
-		a.v[0] = dRandReal() - 0.5;
-		a.v[1] = dRandReal() - 0.5;
-		a.v[2] = -1;
-		for (j=0; j<3; j++) b.v[j] = a.v[0]*p.v[j] + a.v[1]*q.v[j] + (a.v[2]+d)*n.v[j];
-		if (dFabs(dGeomPlanePointDepth (plane,b.v[0],b.v[1],b.v[2]) - 1) >= tol) if (testFAILED()) return false;
+		a.set0( dRandReal() - 0.5 );
+		a.set1( dRandReal() - 0.5 );
+		a.set2( -1 );
+		for (j=0; j<3; j++) b.set(j, a.get0()*p.get(j) + a.get1()*q.get(j) + (a.get2()+d)*n.get(j) );
+		if (dFabs(dGeomPlanePointDepth (plane,b.get0(),b.get1(),b.get2()) - 1) >= tol) if (testFAILED()) return false;
 
 		return retPASSED();
 	}
@@ -567,7 +567,7 @@ class DemoCollision extends dsFunctions {
 		r = dRandReal()+0.1;
 		dGeomSphereSetRadius (sphere,r);
 		dMakeRandomVector (p,1.0);
-		dGeomSetPosition (sphere,p.v[0],p.v[1],p.v[2]);
+		dGeomSetPosition (sphere,p.get0(),p.get1(),p.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (sphere,R);
@@ -577,8 +577,8 @@ class DemoCollision extends dsFunctions {
 		dGeomRaySetLength (ray,0);
 		dMakeRandomVector (q,1.0);
 		dNormalize3 (q);
-		for (j=0; j<3; j++) q.v[j] = 0.99*r * q.v[j] + p.v[j];
-		dGeomSetPosition (ray,q.v[0],q.v[1],q.v[2]);
+		for (j=0; j<3; j++) q.set(j, 0.99*r * q.get(j) + p.get(j) );
+		dGeomSetPosition (ray,q.get0(),q.get1(),q.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (ray,R);
@@ -589,8 +589,8 @@ class DemoCollision extends dsFunctions {
 		dGeomRaySetLength (ray,0);
 		dMakeRandomVector (q,1.0);
 		dNormalize3 (q);
-		for (j=0; j<3; j++) q.v[j] = 1.01*r * q.v[j] + p.v[j];
-		dGeomSetPosition (ray,q.v[0],q.v[1],q.v[2]);
+		for (j=0; j<3; j++) q.set(j, 1.01*r * q.get(j) + p.get(j) );
+		dGeomSetPosition (ray,q.get0(),q.get1(),q.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (ray,R);
@@ -601,14 +601,14 @@ class DemoCollision extends dsFunctions {
 		dMakeRandomVector (q,1.0);
 		dNormalize3 (q);
 		k = dRandReal();
-		for (j=0; j<3; j++) q.v[j] = k*r*0.99 * q.v[j] + p.v[j];
+		for (j=0; j<3; j++) q.set(j, k*r*0.99 * q.get(j) + p.get(j) );
 		dMakeRandomVector (q2,1.0);
 		dNormalize3 (q2);
 		k = dRandReal();
-		for (j=0; j<3; j++) q2.v[j] = k*r*0.99 * q2.v[j] + p.v[j];
-		for (j=0; j<3; j++) n.v[j] = q2.v[j] - q.v[j];
+		for (j=0; j<3; j++) q2.set(j, k*r*0.99 * q2.get(j) + p.get(j) );
+		for (j=0; j<3; j++) n.set(j, q2.get(j) - q.get(j) );
 		dNormalize3 (n);
-		dGeomRaySet (ray,q.v[0],q.v[1],q.v[2],n.v[0],n.v[1],n.v[2]);
+		dGeomRaySet (ray,q.get0(),q.get1(),q.get2(),n.get0(),n.get1(),n.get2());
 		dGeomRaySetLength (ray,dDISTANCE (q,q2));
 		if (dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
@@ -621,8 +621,8 @@ class DemoCollision extends dsFunctions {
 			dNormalize3 (n);
 		}
 		while (dDOT(n,q) < 0);	// make sure normal goes away from sphere
-		for (j=0; j<3; j++) q.v[j] = 1.01*r * q.v[j] + p.v[j];
-		dGeomRaySet (ray,q.v[0],q.v[1],q.v[2],n.v[0],n.v[1],n.v[2]);
+		for (j=0; j<3; j++) q.set(j, 1.01*r * q.get(j) + p.get(j) );
+		dGeomRaySet (ray,q.get0(),q.get1(),q.get2(),n.get0(),n.get1(),n.get2());
 		dGeomRaySetLength (ray,100);
 		if (dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
@@ -630,9 +630,9 @@ class DemoCollision extends dsFunctions {
 
 		dMakeRandomVector (q,1.0);
 		dNormalize3 (q);
-		for (j=0; j<3; j++) n.v[j] = -q.v[j];
-		for (j=0; j<3; j++) q2.v[j] = 2*r * q.v[j] + p.v[j];
-		dGeomRaySet (ray,q2.v[0],q2.v[1],q2.v[2],n.v[0],n.v[1],n.v[2]);
+		for (j=0; j<3; j++) n.set(j, -q.get(j) );
+		for (j=0; j<3; j++) q2.set(j, 2*r * q.get(j) + p.get(j) );
+		dGeomRaySet (ray,q2.get0(),q2.get1(),q2.get2(),n.get0(),n.get1(),n.get2());
 		dGeomRaySetLength (ray,0.99*r);
 		if (dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
@@ -640,7 +640,7 @@ class DemoCollision extends dsFunctions {
 
 		dGeomRaySetLength (ray,1.01*r);
 		if (dCollide (ray,sphere,1,contacts) != 1) if (testFAILED()) return false;
-		for (j=0; j<3; j++) q2.v[j] = r * q.v[j] + p.v[j];
+		for (j=0; j<3; j++) q2.set(j, r * q.get(j) + p.get(j) );
 		if (dDISTANCE (contacts.get(0).pos,q2) > tol) if (testFAILED()) return false;
 
 		// ********** test contact point distance for random rays
@@ -648,10 +648,10 @@ class DemoCollision extends dsFunctions {
 		dMakeRandomVector (q,1.0);
 		dNormalize3 (q);
 		k = dRandReal()+0.5;
-		for (j=0; j<3; j++) q.v[j] = k*r * q.v[j] + p.v[j];
+		for (j=0; j<3; j++) q.set(j, k*r * q.get(j) + p.get(j) );
 		dMakeRandomVector (n,1.0);
 		dNormalize3 (n);
-		dGeomRaySet (ray,q.v[0],q.v[1],q.v[2],n.v[0],n.v[1],n.v[2]);
+		dGeomRaySet (ray,q.get0(),q.get1(),q.get2(),n.get0(),n.get1(),n.get2());
 		dGeomRaySetLength (ray,100);
 		if (dCollide (ray,sphere,1,contacts)!=0) {
 			DContactGeom contact = contacts.get(0);
@@ -661,7 +661,7 @@ class DemoCollision extends dsFunctions {
 			if (dDOT (n,contact.normal) > 0) if (testFAILED()) return false;
 			// also check depth of contact point
 			if (dFabs (dGeomSpherePointDepth
-					(sphere,contact.pos.v[0],contact.pos.v[1],contact.pos.v[2])) > tol)
+					(sphere,contact.pos.get0(),contact.pos.get1(),contact.pos.get2())) > tol)
 				if (testFAILED()) return false;
 
 			draw_all_objects (space);
@@ -672,9 +672,9 @@ class DemoCollision extends dsFunctions {
 		dMakeRandomVector (q,1.0);
 		dNormalize3 (q);
 		dPlaneSpace (q,n,v1);
-		for (j=0; j<3; j++) q.v[j] = 1.01*r * q.v[j] + p.v[j];
-		for (j=0; j<3; j++) q.v[j] -= n.v[j];
-		dGeomRaySet (ray,q.v[0],q.v[1],q.v[2],n.v[0],n.v[1],n.v[2]);
+		for (j=0; j<3; j++) q.set(j, 1.01*r * q.get(j) + p.get(j) );
+		for (j=0; j<3; j++) q.add(j, -n.get(j) );
+		dGeomRaySet (ray,q.get0(),q.get1(),q.get2(),n.get0(),n.get1(),n.get2());
 		dGeomRaySetLength (ray,2);
 		if (dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
@@ -683,9 +683,9 @@ class DemoCollision extends dsFunctions {
 		dMakeRandomVector (q,1.0);
 		dNormalize3 (q);
 		dPlaneSpace (q,n,v1);
-		for (j=0; j<3; j++) q.v[j] = 0.99*r * q.v[j] + p.v[j];
-		for (j=0; j<3; j++) q.v[j] -= n.v[j];
-		dGeomRaySet (ray,q.v[0],q.v[1],q.v[2],n.v[0],n.v[1],n.v[2]);
+		for (j=0; j<3; j++) q.set(j, 0.99*r * q.get(j) + p.get(j) );
+		for (j=0; j<3; j++) q.add(j, - n.get(j) );
+		dGeomRaySet (ray,q.get0(),q.get1(),q.get2(),n.get0(),n.get1(),n.get2());
 		dGeomRaySetLength (ray,2);
 		if (dCollide (ray,sphere,1,contacts) != 1) if (testFAILED()) return false;
 
@@ -712,10 +712,10 @@ class DemoCollision extends dsFunctions {
 
 		// ********** make a random box
 
-		for (j=0; j<3; j++) s.v[j] = dRandReal() + 0.1;
-		dGeomBoxSetLengths (box,s.v[0],s.v[1],s.v[2]);
+		for (j=0; j<3; j++) s.set(j, dRandReal() + 0.1 );
+		dGeomBoxSetLengths (box,s.get0(),s.get1(),s.get2());
 		dMakeRandomVector (p,1.0);
-		dGeomSetPosition (box,p.v[0],p.v[1],p.v[2]);
+		dGeomSetPosition (box,p.get0(),p.get1(),p.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (box,R);
@@ -723,12 +723,12 @@ class DemoCollision extends dsFunctions {
 		// ********** test zero length ray just inside box
 
 		dGeomRaySetLength (ray,0);
-		for (j=0; j<3; j++) q.v[j] = (dRandReal()-0.5)*s.v[j];
+		for (j=0; j<3; j++) q.set(j, (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
-		if (dRandReal() > 0.5) q.v[i] = 0.99*0.5*s.v[i]; else q.v[i] = -0.99*0.5*s.v[i];
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
-		for (j=0; j<3; j++) q2.v[j] += p.v[j];
-		dGeomSetPosition (ray,q2.v[0],q2.v[1],q2.v[2]);
+		if (dRandReal() > 0.5) q.set(i, 0.99*0.5*s.get(i)); else q.set(i, -0.99*0.5*s.get(i) );
+		dMultiply0 (q2,dGeomGetRotation(box),q);
+		for (j=0; j<3; j++) q2.add(j, + p.get(j) );
+		dGeomSetPosition (ray,q2.get0(),q2.get1(),q2.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (ray,R);
@@ -737,12 +737,12 @@ class DemoCollision extends dsFunctions {
 		// ********** test zero length ray just outside box
 
 		dGeomRaySetLength (ray,0);
-		for (j=0; j<3; j++) q.v[j] = (dRandReal()-0.5)*s.v[j];
+		for (j=0; j<3; j++) q.set(j, (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
-		if (dRandReal() > 0.5) q.v[i] = 1.01*0.5*s.v[i]; else q.v[i] = -1.01*0.5*s.v[i];
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
-		for (j=0; j<3; j++) q2.v[j] += p.v[j];
-		dGeomSetPosition (ray,q2.v[0],q2.v[1],q2.v[2]);
+		if (dRandReal() > 0.5) q.set(i, 1.01*0.5*s.get(i)); else q.set(i, -1.01*0.5*s.get(i) );
+		dMultiply0 (q2,dGeomGetRotation(box),q);
+		for (j=0; j<3; j++) q2.add(j,+ p.get(j) );
+		dGeomSetPosition (ray,q2.get0(),q2.get1(),q2.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (ray,R);
@@ -750,40 +750,40 @@ class DemoCollision extends dsFunctions {
 
 		// ********** test finite length ray totally contained inside the box
 
-		for (j=0; j<3; j++) q.v[j] = (dRandReal()-0.5)*0.99*s.v[j];
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
-		for (j=0; j<3; j++) q2.v[j] += p.v[j];
-		for (j=0; j<3; j++) q3.v[j] = (dRandReal()-0.5)*0.99*s.v[j];
-		dMultiply0 (q4,dGeomGetRotation(box),q3,3,3,1);
-		for (j=0; j<3; j++) q4.v[j] += p.v[j];
-		for (j=0; j<3; j++) n.v[j] = q4.v[j] - q2.v[j];
+		for (j=0; j<3; j++) q.set(j, (dRandReal()-0.5)*0.99*s.get(j) );
+		dMultiply0 (q2,dGeomGetRotation(box),q);
+		for (j=0; j<3; j++) q2.add(j,+ p.get(j) );
+		for (j=0; j<3; j++) q3.set(j, (dRandReal()-0.5)*0.99*s.get(j) );
+		dMultiply0 (q4,dGeomGetRotation(box),q3);
+		for (j=0; j<3; j++) q4.add(j,+ p.get(j) );
+		for (j=0; j<3; j++) n.set(j, q4.get(j) - q2.get(j) );
 		dNormalize3 (n);
-		dGeomRaySet (ray,q2.v[0],q2.v[1],q2.v[2],n.v[0],n.v[1],n.v[2]);
+		dGeomRaySet (ray,q2.get0(),q2.get1(),q2.get2(),n.get0(),n.get1(),n.get2());
 		dGeomRaySetLength (ray,dDISTANCE(q2,q4));
 		if (dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally outside the box
 
-		for (j=0; j<3; j++) q.v[j] = (dRandReal()-0.5)*s.v[j];
+		for (j=0; j<3; j++) q.set(j, (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
-		if (dRandReal() > 0.5) q.v[i] = 1.01*0.5*s.v[i]; else q.v[i] = -1.01*0.5*s.v[i];
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
-		for (j=0; j<3; j++) q3.v[j] = q2.v[j] + p.v[j];
+		if (dRandReal() > 0.5) q.set(i, 1.01*0.5*s.get(i)); else q.set(i, -1.01*0.5*s.get(i) );
+		dMultiply0 (q2,dGeomGetRotation(box),q);
+		for (j=0; j<3; j++) q3.set(j, q2.get(j) + p.get(j) );
 		dNormalize3 (q2);
-		dGeomRaySet (ray,q3.v[0],q3.v[1],q3.v[2],q2.v[0],q2.v[1],q2.v[2]);
+		dGeomRaySet (ray,q3.get0(),q3.get1(),q3.get2(),q2.get0(),q2.get1(),q2.get2());
 		dGeomRaySetLength (ray,10);
 		if (dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray from outside to just above surface
 
-		for (j=0; j<3; j++) q.v[j] = (dRandReal()-0.5)*s.v[j];
+		for (j=0; j<3; j++) q.set(j, (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
-		if (dRandReal() > 0.5) q.v[i] = 1.01*0.5*s.v[i]; else q.v[i] = -1.01*0.5*s.v[i];
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
-		for (j=0; j<3; j++) q3.v[j] = 2*q2.v[j] + p.v[j];
-		k = dSqrt(q2.v[0]*q2.v[0] + q2.v[1]*q2.v[1] + q2.v[2]*q2.v[2]);
-		for (j=0; j<3; j++) q2.v[j] = -q2.v[j];
-		dGeomRaySet (ray,q3.v[0],q3.v[1],q3.v[2],q2.v[0],q2.v[1],q2.v[2]);
+		if (dRandReal() > 0.5) q.set(i, 1.01*0.5*s.get(i)); else q.set(i, -1.01*0.5*s.get(i) );
+		dMultiply0 (q2,dGeomGetRotation(box),q);
+		for (j=0; j<3; j++) q3.set(j, 2*q2.get(j) + p.get(j) );
+		k = dSqrt(q2.get0()*q2.get0() + q2.get1()*q2.get1() + q2.get2()*q2.get2());
+		for (j=0; j<3; j++) q2.set(j, -q2.get(j) );
+		dGeomRaySet (ray,q3.get0(),q3.get1(),q3.get2(),q2.get0(),q2.get1(),q2.get2());
 		dGeomRaySetLength (ray,k*0.99);
 		if (dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
@@ -794,25 +794,25 @@ class DemoCollision extends dsFunctions {
 
 		// ********** test contact point position for random rays
 
-		for (j=0; j<3; j++) q.v[j] = dRandReal()*s.v[j];
-		dMultiply0 (q2,dGeomGetRotation(box),q,3,3,1);
-		for (j=0; j<3; j++) q2.v[j] += p.v[j];
-		for (j=0; j<3; j++) q3.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) q.set(j, dRandReal()*s.get(j) );
+		dMultiply0 (q2,dGeomGetRotation(box),q);
+		for (j=0; j<3; j++) q2.add(j, + p.get(j) );
+		for (j=0; j<3; j++) q3.set(j, dRandReal()-0.5 );
 		dNormalize3 (q3);
-		dGeomRaySet (ray,q2.v[0],q2.v[1],q2.v[2],q3.v[0],q3.v[1],q3.v[2]);
+		dGeomRaySet (ray,q2.get0(),q2.get1(),q2.get2(),q3.get0(),q3.get1(),q3.get2());
 		dGeomRaySetLength (ray,10);
 		if (dCollide (ray,box,1,contacts)!=0) {
 			DContactGeom contact = contacts.get(0);
 			// check depth of contact point
 			if (dFabs (dGeomBoxPointDepth
-					(box,contact.pos.v[0],contact.pos.v[1],contact.pos.v[2])) > tol)
+					(box,contact.pos.get0(),contact.pos.get1(),contact.pos.get2())) > tol)
 				if (testFAILED()) return false;
 			// check position of contact point
-			for (j=0; j<3; j++) contact.pos.v[j] -= p.v[j];
+			for (j=0; j<3; j++) contact.pos.add(j, - p.get(j) );
 			dMultiply1 (q,dGeomGetRotation(box),contact.pos);//,3,3,1); TZ TODO check (?)
-			if ( dFabs(dFabs (q.v[0]) - 0.5*s.v[0]) > tol &&
-					dFabs(dFabs (q.v[1]) - 0.5*s.v[1]) > tol &&
-					dFabs(dFabs (q.v[2]) - 0.5*s.v[2]) > tol) {
+			if ( dFabs(dFabs (q.get0()) - 0.5*s.get0()) > tol &&
+					dFabs(dFabs (q.get1()) - 0.5*s.get1()) > tol &&
+					dFabs(dFabs (q.get2()) - 0.5*s.get2()) > tol) {
 				if (testFAILED()) return false;
 			}
 			// also check normal signs
@@ -846,25 +846,25 @@ class DemoCollision extends dsFunctions {
 		l = dRandReal()*1 + 0.01;
 		dGeomCapsuleSetParams (ccyl,r,l);
 		dMakeRandomVector (p,1.0);
-		dGeomSetPosition (ccyl,p.v[0],p.v[1],p.v[2]);
+		dGeomSetPosition (ccyl,p.get0(),p.get1(),p.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (ccyl,R);
 
 		// ********** test ray completely within ccyl
 
-		for (j=0; j<3; j++) a.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		dNormalize3 (a);
 		k = (dRandReal()-0.5)*l;
-		for (j=0; j<3; j++) a.v[j] = p.v[j] + r*0.99*a.v[j] + k*0.99*R.v[j*4+2];
-		for (j=0; j<3; j++) b.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) a.set(j, p.get(j) + r*0.99*a.get(j) + k*0.99*R.get(j, 2) );//v[j*4+2] );
+		for (j=0; j<3; j++) b.set(j, dRandReal()-0.5 );
 		dNormalize3 (b);
 		k = (dRandReal()-0.5)*l;
-		for (j=0; j<3; j++) b.v[j] = p.v[j] + r*0.99*b.v[j] + k*0.99*R.v[j*4+2];
+		for (j=0; j<3; j++) b.set(j, p.get(j) + r*0.99*b.get(j) + k*0.99*R.get(j, 2) );//v[j*4+2] );
 		dGeomRaySetLength (ray,dDISTANCE(a,b));
-		for (j=0; j<3; j++) b.v[j] -= a.v[j];
+		for (j=0; j<3; j++) b.add(j,-a.get(j) );
 		dNormalize3 (b);
-		dGeomRaySet (ray,a.v[0],a.v[1],a.v[2],b.v[0],b.v[1],b.v[2]);
+		dGeomRaySet (ray,a.get0(),a.get1(),a.get2(),b.get0(),b.get1(),b.get2());
 		if (dCollide (ray,ccyl,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test ray outside ccyl that just misses (between caps)
@@ -872,10 +872,10 @@ class DemoCollision extends dsFunctions {
 		k = dRandReal()*2*M_PI;
 		x = sin(k);
 		y = cos(k);
-		for (j=0; j<3; j++) a.v[j] = x*R.v[j*4+0] + y*R.v[j*4+1];
+		for (j=0; j<3; j++) a.set(j, x*R.get(j, 0) + y*R.get(j, 1) );
 		k = (dRandReal()-0.5)*l;
-		for (j=0; j<3; j++) b.v[j] = -a.v[j]*r*2 + k*R.v[j*4+2] + p.v[j];
-		dGeomRaySet (ray,b.v[0],b.v[1],b.v[2],a.v[0],a.v[1],a.v[2]);
+		for (j=0; j<3; j++) b.set(j, -a.get(j)*r*2 + k*R.get(j, 2) + p.get(j) );
+		dGeomRaySet (ray,b.get0(),b.get1(),b.get2(),a.get0(),a.get1(),a.get2());
 		dGeomRaySetLength (ray,r*0.99);
 		if (dCollide (ray,ccyl,1,contacts) != 0) if (testFAILED()) return false;
 
@@ -885,20 +885,20 @@ class DemoCollision extends dsFunctions {
 		if (dCollide (ray,ccyl,1,contacts) != 1) if (testFAILED()) return false;
 		// check depth of contact point
 		if (dFabs (dGeomCapsulePointDepth
-				(ccyl,contacts.get(0).pos.v[0],contacts.get(0).pos.v[1],contacts.get(0).pos.v[2])) > tol)
+				(ccyl,contacts.get(0).pos.get0(),contacts.get(0).pos.get1(),contacts.get(0).pos.get2())) > tol)
 			if (testFAILED()) return false;
 
 		// ********** test ray outside ccyl that just misses (caps)
 
-		for (j=0; j<3; j++) a.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		dNormalize3 (a);
 		if (dDOT14(a,R,2) < 0) {
-			for (j=0; j<3; j++) b.v[j] = p.v[j] - a.v[j]*2*r + l*0.5*R.v[j*4+2];
+			for (j=0; j<3; j++) b.set(j, p.get(j) - a.get(j)*2*r + l*0.5*R.get(j, 2) );//v[j*4+2] );
 		}
 		else {
-			for (j=0; j<3; j++) b.v[j] = p.v[j] - a.v[j]*2*r - l*0.5*R.v[j*4+2];
+			for (j=0; j<3; j++) b.set(j, p.get(j) - a.get(j)*2*r - l*0.5*R.get(j, 2) );//v[j*4+2] );
 		}
-		dGeomRaySet (ray,b.v[0],b.v[1],b.v[2],a.v[0],a.v[1],a.v[2]);
+		dGeomRaySet (ray,b.get0(),b.get1(),b.get2(),a.get0(),a.get1(),a.get2());
 		dGeomRaySetLength (ray,r*0.99);
 		if (dCollide (ray,ccyl,1,contacts) != 0) if (testFAILED()) return false;
 
@@ -908,21 +908,21 @@ class DemoCollision extends dsFunctions {
 		if (dCollide (ray,ccyl,1,contacts) != 1) if (testFAILED()) return false;
 		// check depth of contact point
 		if (dFabs (dGeomCapsulePointDepth
-				(ccyl,contacts.get(0).pos.v[0],contacts.get(0).pos.v[1],contacts.get(0).pos.v[2])) > tol)
+				(ccyl,contacts.get(0).pos.get0(),contacts.get(0).pos.get1(),contacts.get(0).pos.get2())) > tol)
 			if (testFAILED()) return false;
 
 		// ********** test random rays
 
-		for (j=0; j<3; j++) a.v[j] = dRandReal()-0.5;
-		for (j=0; j<3; j++) n.v[j] = dRandReal()-0.5;
+		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
+		for (j=0; j<3; j++) n.set(j, dRandReal()-0.5 );
 		dNormalize3 (n);
-		dGeomRaySet (ray,a.v[0],a.v[1],a.v[2],n.v[0],n.v[1],n.v[2]);
+		dGeomRaySet (ray,a.get0(),a.get1(),a.get2(),n.get0(),n.get1(),n.get2());
 		dGeomRaySetLength (ray,10);
 
 		if (dCollide (ray,ccyl,1,contacts)!=0) {
 			// check depth of contact point
 			if (dFabs (dGeomCapsulePointDepth
-					(ccyl,contacts.get(0).pos.v[0],contacts.get(0).pos.v[1],contacts.get(0).pos.v[2])) > tol)
+					(ccyl,contacts.get(0).pos.get0(),contacts.get(0).pos.get1(),contacts.get(0).pos.get2())) > tol)
 				if (testFAILED()) return false;
 
 			// check normal signs
@@ -953,20 +953,20 @@ class DemoCollision extends dsFunctions {
 
 		// ********** make a random plane
 
-		for (j=0; j<3; j++) n.v[j] = dRandReal() - 0.5;
+		for (j=0; j<3; j++) n.set(j, dRandReal() - 0.5 );
 		dNormalize3 (n);
 		d = dRandReal() - 0.5;
-		dGeomPlaneSetParams (plane,n.v[0],n.v[1],n.v[2],d);
+		dGeomPlaneSetParams (plane,n.get0(),n.get1(),n.get2(),d);
 		dPlaneSpace (n,p,q);
 
 		// ********** test finite length ray below plane
 
 		dGeomRaySetLength (ray,0.09);
-		a.v[0] = dRandReal()-0.5;
-		a.v[1] = dRandReal()-0.5;
-		a.v[2] = -dRandReal()*0.5 - 0.1;
-		for (j=0; j<3; j++) b.v[j] = a.v[0]*p.v[j] + a.v[1]*q.v[j] + (a.v[2]+d)*n.v[j];
-		dGeomSetPosition (ray,b.v[0],b.v[1],b.v[2]);
+		a.set0( dRandReal()-0.5 );
+		a.set1( dRandReal()-0.5 );
+		a.set2( -dRandReal()*0.5 - 0.1 );
+		for (j=0; j<3; j++) b.set(j, a.get0()*p.get(j) + a.get1()*q.get(j) + (a.get2()+d)*n.get(j) );
+		dGeomSetPosition (ray,b.get0(),b.get1(),b.get2());
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
 				dRandReal()*2-1,dRandReal()*10-5);
 		dGeomSetRotation (ray,R);
@@ -974,31 +974,31 @@ class DemoCollision extends dsFunctions {
 
 		// ********** test finite length ray above plane
 
-		a.v[0] = dRandReal()-0.5;
-		a.v[1] = dRandReal()-0.5;
-		a.v[2] = dRandReal()*0.5 + 0.01;
-		for (j=0; j<3; j++) b.v[j] = a.v[0]*p.v[j] + a.v[1]*q.v[j] + (a.v[2]+d)*n.v[j];
-		g.v[0] = dRandReal()-0.5;
-		g.v[1] = dRandReal()-0.5;
-		g.v[2] = dRandReal() + 0.01;
-		for (j=0; j<3; j++) h.v[j] = g.v[0]*p.v[j] + g.v[1]*q.v[j] + g.v[2]*n.v[j];
+		a.set0( dRandReal()-0.5 );
+		a.set1( dRandReal()-0.5 );
+		a.set2( dRandReal()*0.5 + 0.01 );
+		for (j=0; j<3; j++) b.set(j, a.get0()*p.get(j) + a.get1()*q.get(j) + (a.get2()+d)*n.get(j) );
+		g.set0( dRandReal()-0.5 );
+		g.set1( dRandReal()-0.5 );
+		g.set2( dRandReal() + 0.01 );
+		for (j=0; j<3; j++) h.set(j, g.get0()*p.get(j) + g.get1()*q.get(j) + g.get2()*n.get(j) );
 		dNormalize3 (h);
-		dGeomRaySet (ray,b.v[0],b.v[1],b.v[2],h.v[0],h.v[1],h.v[2]);
+		dGeomRaySet (ray,b.get0(),b.get1(),b.get2(),h.get0(),h.get1(),h.get2());
 		dGeomRaySetLength (ray,10);
 		if (dCollide (ray,plane,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray that intersects plane
 
-		a.v[0] = dRandReal()-0.5;
-		a.v[1] = dRandReal()-0.5;
-		a.v[2] = dRandReal()-0.5;
-		for (j=0; j<3; j++) b.v[j] = a.v[0]*p.v[j] + a.v[1]*q.v[j] + (a.v[2]+d)*n.v[j];
-		g.v[0] = dRandReal()-0.5;
-		g.v[1] = dRandReal()-0.5;
-		g.v[2] = dRandReal()-0.5;
-		for (j=0; j<3; j++) h.v[j] = g.v[0]*p.v[j] + g.v[1]*q.v[j] + g.v[2]*n.v[j];
+		a.set0( dRandReal()-0.5 );
+		a.set1( dRandReal()-0.5 );
+		a.set2( dRandReal()-0.5 );
+		for (j=0; j<3; j++) b.set(j, a.get0()*p.get(j) + a.get1()*q.get(j) + (a.get2()+d)*n.get(j) );
+		g.set0( dRandReal()-0.5 );
+		g.set1( dRandReal()-0.5 );
+		g.set2( dRandReal()-0.5 );
+		for (j=0; j<3; j++) h.set(j, g.get0()*p.get(j) + g.get1()*q.get(j) + g.get2()*n.get(j) );
 		dNormalize3 (h);
-		dGeomRaySet (ray,b.v[0],b.v[1],b.v[2],h.v[0],h.v[1],h.v[2]);
+		dGeomRaySet (ray,b.get0(),b.get1(),b.get2(),h.get0(),h.get1(),h.get2());
 		dGeomRaySetLength (ray,10);
 		if (dCollide (ray,plane,1,contacts)!=0) {
 			// test that contact is on plane surface
@@ -1007,7 +1007,7 @@ class DemoCollision extends dsFunctions {
 			if (dDOT (h,contacts.get(0).normal) > 0) if (testFAILED()) return false;
 			// also check contact point depth
 			if (dFabs (dGeomPlanePointDepth
-					(plane,contacts.get(0).pos.v[0],contacts.get(0).pos.v[1],contacts.get(0).pos.v[2])) > tol)
+					(plane,contacts.get(0).pos.get0(),contacts.get(0).pos.get1(),contacts.get(0).pos.get2())) > tol)
 				if (testFAILED()) return false;
 
 			draw_all_objects (space);
@@ -1015,9 +1015,9 @@ class DemoCollision extends dsFunctions {
 
 		// ********** test ray that just misses
 
-		for (j=0; j<3; j++) b.v[j] = (1+d)*n.v[j];
-		for (j=0; j<3; j++) h.v[j] = -n.v[j];
-		dGeomRaySet (ray,b.v[0],b.v[1],b.v[2],h.v[0],h.v[1],h.v[2]);
+		for (j=0; j<3; j++) b.set(j, (1+d)*n.get(j) );
+		for (j=0; j<3; j++) h.set(j, -n.get(j) );
+		dGeomRaySet (ray,b.get0(),b.get1(),b.get2(),h.get0(),h.get1(),h.get2());
 		dGeomRaySetLength (ray,0.99);
 		if (dCollide (ray,plane,1,contacts) != 0) if (testFAILED()) return false;
 
@@ -1029,17 +1029,17 @@ class DemoCollision extends dsFunctions {
 		// ********** test polarity with typical ground plane
 
 		dGeomPlaneSetParams (plane,0,0,1,0);
-		for (j=0; j<3; j++) a.v[j] = 0.1;
-		for (j=0; j<3; j++) b.v[j] = 0;
-		a.v[2] = 1;
-		b.v[2] = -1;
-		dGeomRaySet (ray,a.v[0],a.v[1],a.v[2],b.v[0],b.v[1],b.v[2]);
+		for (j=0; j<3; j++) a.set(j, 0.1);
+		for (j=0; j<3; j++) b.set(j, 0);
+		a.set2(1);
+		b.set2(-1);
+		dGeomRaySet (ray,a.get0(),a.get1(),a.get2(),b.get0(),b.get1(),b.get2());
 		dGeomRaySetLength (ray,2);
 		if (dCollide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
 		if (dFabs (contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
-		a.v[2] = -1;
-		b.v[2] = 1;
-		dGeomRaySet (ray,a.v[0],a.v[1],a.v[2],b.v[0],b.v[1],b.v[2]);
+		a.set2(-1);
+		b.set2(1);
+		dGeomRaySet (ray,a.get0(),a.get1(),a.get2(),b.get0(),b.get1(),b.get2());
 		if (dCollide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
 		if (dFabs (contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
 
@@ -1099,16 +1099,16 @@ class DemoCollision extends dsFunctions {
 			for (int j=-1; j<=1; j+=2) {
 				for (int k=-1; k<=1; k+=2) {
 					DVector3 v=new DVector3(),vv=new DVector3();
-					v.v[0] = i*0.5*side1.v[0];
-					v.v[1] = j*0.5*side1.v[1];
-					v.v[2] = k*0.5*side1.v[2];
+					v.set0( i*0.5*side1.get0() );
+					v.set1( j*0.5*side1.get1() );
+					v.set2( k*0.5*side1.get2() );
 					dMULTIPLY0_331 (vv,R1,v);
-					vv.v[0] += p1.v[0] - p2.v[0];
-					vv.v[1] += p1.v[1] - p2.v[1];
-					vv.v[2] += p1.v[2] - p2.v[2];
+					vv.add(0, p1.get0() - p2.get0() );
+					vv.add(1, p1.get1() - p2.get1() );
+					vv.add(2, p1.get2() - p2.get2() );
 					for (int axis=0; axis < 3; axis++) {
 						double z = dDOT14(vv,R2,axis);
-						if (z < (-side2.v[axis]*0.5) || z > (side2.v[axis]*0.5)) return false;
+						if (z < (-side2.get(axis)*0.5) || z > (side2.get(axis)*0.5)) return false;
 					}
 				}
 			}
@@ -1139,16 +1139,16 @@ class DemoCollision extends dsFunctions {
 				k=0;
 				for (j1=-1; j1<=1; j1+=2) {
 					for (j2=-1; j2<=1; j2+=2) {
-						fp[k].v[k1] = j1;
-						fp[k].v[k2] = j2;
-						fp[k].v[fd] = fo*2-1;
+						fp[k].set(k1, j1 );
+						fp[k].set(k2, j2 );
+						fp[k].set(fd, fo*2-1 );
 						k++;
 					}
 				}
 				for (j=0; j<4; j++) {
-					for (k=0; k<3; k++) fp[j].v[k] *= 0.5*side2.v[k];
+					for (k=0; k<3; k++) fp[j].scale(k, 0.5*side2.get(k) );
 					dMULTIPLY0_331 (tmp,R2,fp[j]);
-					for (k=0; k<3; k++) fp[j].v[k] = tmp.v[k] + p2.v[k];
+					for (k=0; k<3; k++) fp[j].set(k, tmp.get(k) + p2.get(k) );
 				}
 
 				// for 8 vertices
@@ -1161,8 +1161,8 @@ class DemoCollision extends dsFunctions {
 								if (v1[ei] < 0) {
 									// get vertex1 -> vertex2 = an edge from box 1
 									DVector3 vv1=new DVector3(),vv2=new DVector3();
-									for (k=0; k<3; k++) vv1.v[k] = v1[k] * 0.5*side1.v[k];
-									for (k=0; k<3; k++) vv2.v[k] = (v1[k] + (k==ei?1:0)*2)*0.5*side1.v[k];
+									for (k=0; k<3; k++) vv1.set(k, v1[k] * 0.5*side1.get(k) );
+									for (k=0; k<3; k++) vv2.set(k, (v1[k] + (k==ei?1:0)*2)*0.5*side1.get(k) );
 									DVector3 vertex1=new DVector3(),vertex2=new DVector3();
 									dMULTIPLY0_331 (vertex1,R1,vv1);
 									dMULTIPLY0_331 (vertex2,R1,vv2);
@@ -1207,18 +1207,18 @@ class DemoCollision extends dsFunctions {
 
 		dMakeRandomVector (p1,0.5);
 		dMakeRandomVector (p2,0.5);
-		for (k=0; k<3; k++) side1.v[k] = dRandReal() + 0.01;
-		for (k=0; k<3; k++) side2.v[k] = dRandReal() + 0.01;
+		for (k=0; k<3; k++) side1.set(k, dRandReal() + 0.01 );
+		for (k=0; k<3; k++) side2.set(k, dRandReal() + 0.01 );
 		dRFromAxisAndAngle (R1,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 				dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
 		dRFromAxisAndAngle (R2,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 				dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
 
-		dGeomBoxSetLengths (box1,side1.v[0],side1.v[1],side1.v[2]);
-		dGeomBoxSetLengths (box2,side2.v[0],side2.v[1],side2.v[2]);
-		dGeomSetPosition (box1,p1.v[0],p1.v[1],p1.v[2]);
+		dGeomBoxSetLengths (box1,side1.get0(),side1.get1(),side1.get2());
+		dGeomBoxSetLengths (box2,side2.get0(),side2.get1(),side2.get2());
+		dGeomSetPosition (box1,p1.get0(),p1.get1(),p1.get2());
 		dGeomSetRotation (box1,R1);
-		dGeomSetPosition (box2,p2.v[0],p2.v[1],p2.v[2]);
+		dGeomSetPosition (box2,p2.get0(),p2.get1(),p2.get2());
 		dGeomSetRotation (box2,R2);
 		draw_all_objects (space);
 
@@ -1265,8 +1265,8 @@ class DemoCollision extends dsFunctions {
 
 		dMakeRandomVector (p1,0.5);
 		dMakeRandomVector (p2,0.5);
-		for (k=0; k<3; k++) side1.v[k] = dRandReal() + 0.01;
-		for (k=0; k<3; k++) side2.v[k] = dRandReal() + 0.01;
+		for (k=0; k<3; k++) side1.set(k, dRandReal() + 0.01 );
+		for (k=0; k<3; k++) side2.set(k, dRandReal() + 0.01 );
 
 		dRFromAxisAndAngle (R1,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 				dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
@@ -1276,11 +1276,11 @@ class DemoCollision extends dsFunctions {
 		// dRSetIdentity (R1);	// we can also try this
 		// dRSetIdentity (R2);
 
-		dGeomBoxSetLengths (box1,side1.v[0],side1.v[1],side1.v[2]);
-		dGeomBoxSetLengths (box2,side2.v[0],side2.v[1],side2.v[2]);
-		dGeomSetPosition (box1,p1.v[0],p1.v[1],p1.v[2]);
+		dGeomBoxSetLengths (box1,side1.get0(),side1.get1(),side1.get2());
+		dGeomBoxSetLengths (box2,side2.get0(),side2.get1(),side2.get2());
+		dGeomSetPosition (box1,p1.get0(),p1.get1(),p1.get2());
 		dGeomSetRotation (box1,R1);
-		dGeomSetPosition (box2,p2.v[0],p2.v[1],p2.v[2]);
+		dGeomSetPosition (box2,p2.get0(),p2.get1(),p2.get2());
 		dGeomSetRotation (box2,R2);
 
 		code.set(0); //= 0;
@@ -1288,9 +1288,9 @@ class DemoCollision extends dsFunctions {
 		bt = dBoxBox (p1,R1,side1,p2,R2,side2,normal,depth,code,8,contacts);
 				//sizeof(dContactGeom));
 		if (bt==1) {
-			p2.v[0] += normal.v[0] * 0.96 * depth.get();
-			p2.v[1] += normal.v[1] * 0.96 * depth.get();
-			p2.v[2] += normal.v[2] * 0.96 * depth.get();
+			p2.add(0, normal.get0() * 0.96 * depth.get() );
+			p2.add(1, normal.get1() * 0.96 * depth.get() );
+			p2.add(2, normal.get2() * 0.96 * depth.get() );
 			bt = dBoxBox (p1,R1,side1,p2,R2,side2,normal2,depth2,code,8,contacts);
 					//sizeof(dContactGeom));
 
@@ -1301,13 +1301,13 @@ class DemoCollision extends dsFunctions {
 
 			if (bt != 1) {
 				if (testFAILED()) return false;
-				dGeomSetPosition (box2,p2.v[0],p2.v[1],p2.v[2]);
+				dGeomSetPosition (box2,p2.get0(),p2.get1(),p2.get2());
 				draw_all_objects (space);
 			}
 
-			p2.v[0] += normal.v[0] * 0.08 * depth.get();
-			p2.v[1] += normal.v[1] * 0.08 * depth.get();
-			p2.v[2] += normal.v[2] * 0.08 * depth.get();
+			p2.add(0, normal.get0() * 0.08 * depth.get() );
+			p2.add(1, normal.get1() * 0.08 * depth.get() );
+			p2.add(2, normal.get2() * 0.08 * depth.get() );
 			bt = dBoxBox (p1,R1,side1,p2,R2,side2,normal2,depth2,code,8,contacts);
 					//sizeof(dContactGeom));
 			if (bt != 0) if (testFAILED()) return false;

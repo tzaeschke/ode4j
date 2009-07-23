@@ -125,7 +125,7 @@ public class DemoJoints extends dsFunctions {
 	private double cmpIdentity (final DMatrix3C A)
 	{
 		DMatrix3 I = new DMatrix3();
-		I.dSetZero();//dSetZero (I,12);
+		I.setZero();//dSetZero (I,12);
 //		I.v[0] = 1;
 //		I.v[5] = 1;
 //		I.v[10] = 1;

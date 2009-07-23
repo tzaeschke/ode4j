@@ -9,6 +9,30 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
+
+2009-Jul-22 Tilmann Zäschke
+		* Copied javadoc for CppMath API.
+		* More API changes in the MATH area.
+		  Array, Vector, Martrix and 'v' are not public anymore.
+
+2009-Jul-21 Tilmann Zäschke
+		* API changes !!!!!!!!!!!!!!!
+		  - DVector3 does not extend DVector anymore
+		  - DMatrix3C.get(i) removed
+		  - Removed following method:
+		  	Matrix.dMultiply0 (DVector3 A, final DMatrix3C B, 
+			final DVector3C C, int p, int q, int r)
+			-> last arguments removed, assumed to be always 3,3,1.
+		  - Matrix.dMultiply0 (DMatrix3 A, final DMatrix3C B, 
+			final DMatrix3C C, int p, int q, int r)
+		  
+
+
+2009-Jul-20 Tilmann Zäschke
+		* Minor updates
+		* released 0.11.1-j1.0 ***********************************************
+
+
 2009-Jul-07 Tilmann Zäschke
 		* Fixed Test harness errors and failures
 		* Fixed DemoBuggy

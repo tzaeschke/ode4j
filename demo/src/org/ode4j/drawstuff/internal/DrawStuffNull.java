@@ -142,8 +142,8 @@ public class DrawStuffNull implements DrawStuffApi {
 				System.out.println(fps + " frames in " + (float) (timeUsed / 1000f) + " seconds = "
 						+ (fps / (timeUsed / 1000f)));
 				fps = 0;
-				loops++;
-				if (loops >=5) break;
+//				loops++;
+//				if (loops >=5) break;
 			}
 			//    glFlush();
 			//    glXSwapBuffers (display,win);

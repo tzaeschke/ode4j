@@ -47,9 +47,9 @@ class DemoOde {
 	//#define _A(i,j) A[(i)*4+(j)]
 	//#define _I(i,j) I[(i)*4+(j)]
 	//#define _R(i,j) R[(i)*4+(j)]
-	private final int _A(int i, int j) { return i*4+j; }
-	private final int _I(int i, int j) { return i*4+j; }
-	private final int _R(int i, int j) { return i*4+j; }
+//	private final int _A(int i, int j) { return i*4+j; }
+//	private final int _I(int i, int j) { return i*4+j; }
+//	private final int _R(int i, int j) { return i*4+j; }
 
 	//****************************************************************************
 	// tolerances
@@ -159,9 +159,9 @@ class DemoOde {
 	boolean cmpIdentityMat3 (DMatrix3 A)
 	{
 		return
-		(cmp(A.v[_A(0,0)],1.0) && cmp(A.v[_A(0,1)],0.0) && cmp(A.v[_A(0,2)],0.0) &&
-				cmp(A.v[_A(1,0)],0.0) && cmp(A.v[_A(1,1)],1.0) && cmp(A.v[_A(1,2)],0.0) &&
-				cmp(A.v[_A(2,0)],0.0) && cmp(A.v[_A(2,1)],0.0) && cmp(A.v[_A(2,2)],1.0));
+		(cmp(A.get00(),1.0) && cmp(A.get01(),0.0) && cmp(A.get02(),0.0) &&
+				cmp(A.get10(),0.0) && cmp(A.get11(),1.0) && cmp(A.get12(),0.0) &&
+				cmp(A.get20(),0.0) && cmp(A.get21(),0.0) && cmp(A.get22(),1.0));
 	}
 
 
@@ -169,10 +169,11 @@ class DemoOde {
 
 	void transpose3x3 (DMatrix3 A)
 	{
-		double tmp;
-		tmp=A.v[4]; A.v[4]=A.v[1]; A.v[1]=tmp;
-		tmp=A.v[8]; A.v[8]=A.v[2]; A.v[2]=tmp;
-		tmp=A.v[9]; A.v[9]=A.v[6]; A.v[6]=tmp;
+		A.eqTranspose();
+//		double tmp;
+//		tmp=A.v[4]; A.v[4]=A.v[1]; A.v[1]=tmp;
+//		tmp=A.v[8]; A.v[8]=A.v[2]; A.v[2]=tmp;
+//		tmp=A.v[9]; A.v[9]=A.v[6]; A.v[6]=tmp;
 	}
 
 	//****************************************************************************
@@ -213,16 +214,16 @@ class DemoOde {
 		DVector3 a1 = new DVector3(),a2 = new DVector3();
 		DVector3 b = new DVector3(),c = new DVector3();
 		DMatrix3 B = new DMatrix3();
-		dMakeRandomVector (b.v,3,1.0);
-		dMakeRandomVector (c.v,3,1.0);
+		dMakeRandomVector (b,1.0);
+		dMakeRandomVector (c,1.0);
 
 		dCROSS (a1,OP.EQ,b,c);
 
-		B.dSetZero();//dSetZero (B,12);
+		//B.dSetZero();//dSetZero (B,12);
 		dCROSSMAT (B,b,4,+1,-1);
-		dMultiply0 (a2.v,B.v,c.v,3,3,1);
+		dMultiply0 (a2,B,c);
 
-		double diff = dMaxDifference(a1.v,a2.v,3,1);
+		double diff = dMaxDifference(a1,a2);
 		printf ("\t%s\n", diff > tol ? "FAILED" : "passed");
 	}
 
@@ -247,13 +248,13 @@ class DemoOde {
 		int i,j,bad=0;
 		DVector3 n1 = new DVector3(),n2 = new DVector3();
 		for (i=0; i<1000; i++) {
-			dMakeRandomVector (n1.v,3,1.0);
-			for (j=0; j<3; j++) n2.v[j]=n1.v[j];
+			dMakeRandomVector (n1,1.0);
+			for (j=0; j<3; j++) n2.set(j, n1.get(j));
 			dNormalize3 (n2);
 			if (dFabs(dDOT(n2,n2) - 1.0) > tol) bad |= 1;
-			if (dFabs(n2.v[0]/n1.v[0] - n2.v[1]/n1.v[1]) > tol) bad |= 2;
-			if (dFabs(n2.v[0]/n1.v[0] - n2.v[2]/n1.v[2]) > tol) bad |= 4;
-			if (dFabs(n2.v[1]/n1.v[1] - n2.v[2]/n1.v[2]) > tol) bad |= 8;
+			if (dFabs(n2.get0()/n1.get0() - n2.get1()/n1.get1()) > tol) bad |= 2;
+			if (dFabs(n2.get0()/n1.get0() - n2.get2()/n1.get2()) > tol) bad |= 4;
+			if (dFabs(n2.get1()/n1.get1() - n2.get2()/n1.get2()) > tol) bad |= 8;
 			if (dFabs(dDOT(n2,n1) - dSqrt(dDOT(n1,n1))) > tol) bad |= 16;
 			if (bad != 0) {
 				printf ("\tFAILED (code=%x)\n",bad);
@@ -283,7 +284,7 @@ void testReorthonormalize()
 		DVector3 n = new DVector3(),p = new DVector3(),q = new DVector3();
 		int bad = 0;
 		for (int i=0; i<1000; i++) {
-			dMakeRandomVector (n.v,3,1.0);
+			dMakeRandomVector (n,1.0);
 			dNormalize3 (n);
 			dPlaneSpace (n,p,q);
 			if (Math.abs(dDOT(n,p)) > tol) bad = 1;
@@ -345,45 +346,45 @@ void testReorthonormalize()
 		DVector3 a = new DVector3(),a2 = new DVector3(),x = new DVector3();
 
 		HEADER();
-		dMakeRandomMatrix (A.v,3,3,1.0);
-		dMakeRandomMatrix (B.v,3,3,1.0);
-		dMakeRandomMatrix (C.v,3,3,1.0);
-		dMakeRandomMatrix (x.v,3,1,1.0);
+		dMakeRandomMatrix (A,1.0);
+		dMakeRandomMatrix (B,1.0);
+		dMakeRandomMatrix (C,1.0);
+		dMakeRandomVector (x,1.0);
 
 		// dMULTIPLY0_331()
 		dMULTIPLY0_331 (a,B,x);
-		dMultiply0 (a2.v,B.v,x.v,3,3,1);
-		printf ("\t%s (1)\n",(dMaxDifference (a.v,a2.v,3,1) > tol) ? "FAILED" :
+		dMultiply0 (a2,B,x);
+		printf ("\t%s (1)\n",(dMaxDifference (a,a2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY1_331()
 		dMULTIPLY1_331 (a,B,x);
-		dMultiply1 (a2.v,B.v,x.v,3,3,1);
-		printf ("\t%s (2)\n",(dMaxDifference (a.v,a2.v,3,1) > tol) ? "FAILED" :
+		dMultiply1 (a2,B,x);
+		printf ("\t%s (2)\n",(dMaxDifference (a,a2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY0_133
 		dMULTIPLY0_133 (a,x,B);
-		dMultiply0 (a2.v,x.v,B.v,1,3,3);
-		printf ("\t%s (3)\n",(dMaxDifference (a.v,a2.v,1,3) > tol) ? "FAILED" :
+		dMultiply0 (a2,x,B);
+		printf ("\t%s (3)\n",(dMaxDifference (a,a2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY0_333()
 		dMULTIPLY0_333 (A,B,C);
-		dMultiply0 (A2.v,B.v,C.v,3,3,3);
-		printf ("\t%s (4)\n",(dMaxDifference (A.v,A2.v,3,3) > tol) ? "FAILED" :
+		dMultiply0 (A2,B,C);
+		printf ("\t%s (4)\n",(dMaxDifference (A,A2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY1_333()
 		dMULTIPLY1_333 (A,B,C);
-		dMultiply1 (A2.v,B.v,C.v,3,3,3);
-		printf ("\t%s (5)\n",(dMaxDifference (A.v,A2.v,3,3) > tol) ? "FAILED" :
+		dMultiply1 (A2,B,C);
+		printf ("\t%s (5)\n",(dMaxDifference (A,A2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY2_333()
 		dMULTIPLY2_333 (A,B,C);
-		dMultiply2 (A2.v,B.v,C.v,3,3,3);
-		printf ("\t%s (6)\n",(dMaxDifference (A.v,A2.v,3,3) > tol) ? "FAILED" :
+		dMultiply2 (A2,B,C);
+		printf ("\t%s (6)\n",(dMaxDifference (A,A2) > tol) ? "FAILED" :
 		"passed");
 	}
 
@@ -695,24 +696,24 @@ void testReorthonormalize()
 	// compute the mass parameters of a particle set
 
 	//void computeMassParams (dMass *m, dReal q[NUMP][3], dReal pm[NUMP])
-	void computeMassParams (DMass m, double[][] q, double[] pm) {
+	void computeMassParams (DMass m, DVector3[] q, double[] pm) {
 		//TODO assertTrue(q.length==NUMP && q[0].length==3 && pm.length==NUMP);
-		dIASSERT(q.length==NUMP && q[0].length==3 && pm.length==NUMP);
+		dIASSERT(q.length==NUMP && pm.length==NUMP);
 
-		int i,j;
+		int i;
 		dMassSetZero (m);
 		for (i=0; i<NUMP; i++) {
 			m.setMass( m.getMass() + pm[i]);// += pm[i];
 			//for (j=0; j<3; j++) m.getC().v[j] += pm[i]*q[i][j];
 			DVector3 cTmp = new DVector3(m.getC()); 
-			m.setC( cTmp.add(pm[i]*q[i][0], pm[i]*q[i][1], pm[i]*q[i][2]) );
+			m.setC( cTmp.add(pm[i]*q[i].get0(), pm[i]*q[i].get1(), pm[i]*q[i].get2()) );
 			DMatrix3 I = new DMatrix3(m.getI());
-			I.add(0,0, pm[i]*(q[i][1]*q[i][1] + q[i][2]*q[i][2]) );
-			I.add(1,1, pm[i]*(q[i][0]*q[i][0] + q[i][2]*q[i][2]) );
-			I.add(2,2, pm[i]*(q[i][0]*q[i][0] + q[i][1]*q[i][1]) );
-			I.add(0,1, -pm[i]*(q[i][0]*q[i][1]) );
-			I.add(0,2, -pm[i]*(q[i][0]*q[i][2]) );
-			I.add(1,2, -pm[i]*(q[i][1]*q[i][2]) );
+			I.add(0,0, pm[i]*(q[i].get1()*q[i].get1() + q[i].get2()*q[i].get2()) );
+			I.add(1,1, pm[i]*(q[i].get0()*q[i].get0() + q[i].get2()*q[i].get2()) );
+			I.add(2,2, pm[i]*(q[i].get0()*q[i].get0() + q[i].get1()*q[i].get1()) );
+			I.add(0,1, -pm[i]*(q[i].get0()*q[i].get1()) );
+			I.add(0,2, -pm[i]*(q[i].get0()*q[i].get2()) );
+			I.add(1,2, -pm[i]*(q[i].get1()*q[i].get2()) );
 			m.setI(I);
 		}
 		//for (j=0; j<3; j++) m.getC().v[j] /= m.getMass();
@@ -731,7 +732,7 @@ void testReorthonormalize()
 		DMass m = new DxMass();
 		int i,j;
 		//  double q[NUMP][3];		// particle positions
-		double[][] q = new double[NUMP][3];		// particle positions
+		DVector3[] q = new DVector3[NUMP];		// particle positions
 		//  double pm[NUMP];		// particle masses
 		double[] pm = new double[NUMP];		// particle masses
 		DMass m1 = new DxMass(),m2 = new DxMass();
@@ -762,31 +763,31 @@ void testReorthonormalize()
 				" passed (2)\n" , " FAILED (2)\n");
 		DMatrix3 I =(DMatrix3) m.getI();
 		if (m.getMass()==10 && m.getC().get0()==0.1 && m.getC().get1()==0.2 &&
-				m.getC().get2()==0.15 && I.v[_I(0,0)]==3 && I.v[_I(1,1)]==5 && I.v[_I(2,2)]==14 &&
-				I.v[_I(0,1)]==3.1 && I.v[_I(0,2)]==3.2 && I.v[_I(1,2)]==4 &&
-				I.v[_I(1,0)]==3.1 && I.v[_I(2,0)]==3.2 && I.v[_I(2,1)]==4)
+				m.getC().get2()==0.15 && I.get00()==3 && I.get11()==5 && I.get22()==14 &&
+				I.get01()==3.1 && I.get02()==3.2 && I.get12()==4 &&
+				I.get10()==3.1 && I.get20()==3.2 && I.get21()==4)
 			printf ("\tpassed (3)\n"); else printf ("\tFAILED (3)\n");
 
 		dMassSetZero (m);
 		dMassSetSphere (m,1.4, 0.86);
 		I = (DMatrix3)m.getI();
 		if (cmp(m.getMass(),3.73002719949386) && m.getC().get0()==0 && m.getC().get1()==0 && m.getC().get2()==0 &&
-				cmp(I.v[_I(0,0)],1.10349124669826) &&
-				cmp(I.v[_I(1,1)],1.10349124669826) &&
-				cmp(I.v[_I(2,2)],1.10349124669826) &&
-				I.v[_I(0,1)]==0 && I.v[_I(0,2)]==0 && I.v[_I(1,2)]==0 &&
-				I.v[_I(1,0)]==0 && I.v[_I(2,0)]==0 && I.v[_I(2,1)]==0)
+				cmp(I.get00(),1.10349124669826) &&
+				cmp(I.get11(),1.10349124669826) &&
+				cmp(I.get22(),1.10349124669826) &&
+				I.get01()==0 && I.get02()==0 && I.get12()==0 &&
+				I.get10()==0 && I.get20()==0 && I.get21()==0)
 			printf ("\tpassed (4)\n"); else printf ("\tFAILED (4)\n");
 
 		dMassSetZero (m);
 		dMassSetCapsule (m,1.3,1,0.76,1.53);
 		I = (DMatrix3)m.getI();
 		if (cmp(m.getMass(),5.99961928996029) && m.getC().get0()==0 && m.getC().get1()==0 && m.getC().get2()==0 &&
-				cmp(I.v[_I(0,0)],1.59461986077384) &&
-				cmp(I.v[_I(1,1)],4.21878433864904) &&
-				cmp(I.v[_I(2,2)],4.21878433864904) &&
-				I.v[_I(0,1)]==0 && I.v[_I(0,2)]==0 && I.v[_I(1,2)]==0 &&
-				I.v[_I(1,0)]==0 && I.v[_I(2,0)]==0 && I.v[_I(2,1)]==0)
+				cmp(I.get00(),1.59461986077384) &&
+				cmp(I.get11(),4.21878433864904) &&
+				cmp(I.get22(),4.21878433864904) &&
+				I.get01()==0 && I.get02()==0 && I.get12()==0 &&
+				I.get10()==0 && I.get20()==0 && I.get21()==0)
 			printf ("\tpassed (5)\n"); 
 		else {
 			printf ("\tFAILED (5)\n");
@@ -796,9 +797,9 @@ void testReorthonormalize()
 		dMassSetBox (m,0.27,3,4,5);
 		I = (DMatrix3)m.getI();
 		if (cmp(m.getMass(),16.2) && m.getC().get0()==0 && m.getC().get1()==0 && m.getC().get2()==0 &&
-				cmp(I.v[_I(0,0)],55.35) && cmp(I.v[_I(1,1)],45.9) && cmp(I.v[_I(2,2)],33.75) &&
-				I.v[_I(0,1)]==0 && I.v[_I(0,2)]==0 && I.v[_I(1,2)]==0 &&
-				I.v[_I(1,0)]==0 && I.v[_I(2,0)]==0 && I.v[_I(2,1)]==0)
+				cmp(I.get00(),55.35) && cmp(I.get11(),45.9) && cmp(I.get22(),33.75) &&
+				I.get01()==0 && I.get02()==0 && I.get12()==0 &&
+				I.get10()==0 && I.get20()==0 && I.get21()==0)
 			printf ("\tpassed (6)\n"); else printf ("\tFAILED (6)\n");
 
 		// test dMassAdjust?
@@ -807,8 +808,9 @@ void testReorthonormalize()
 		// translate and repeat.
 		for (i=0; i<NUMP; i++) {
 			pm[i] = dRandReal()+0.5;
+			q[i] = new DVector3();
 			for (j=0; j<3; j++) {
-				q[i][j] = 2.0*(dRandReal()-0.5);
+				q[i].set(j, 2.0*(dRandReal()-0.5) );
 			}
 		}
 		computeMassParams (m1,q,pm);
@@ -821,31 +823,33 @@ void testReorthonormalize()
 		m2.setMass( m1.getMass() );
 		dMassTranslate (m2,1,2,-3);
 		for (i=0; i<NUMP; i++) {
-			q[i][0] += 1;
-			q[i][1] += 2;
-			q[i][2] -= 3;
+//			q[i][0] += 1;
+//			q[i][1] += 2;
+//			q[i][2] -= 3;
+			q[i].add(1, 2, -3);
 		}
 		computeMassParams (m1,q,pm);
 		compareMassParams (m1,m2,"7");
 
 		// rotate the masses
-		R.v[_R(0,0)] = -0.87919618797635;
-		R.v[_R(0,1)] = 0.15278881840384;
-		R.v[_R(0,2)] = -0.45129772879842;
-		R.v[_R(1,0)] = -0.47307856232664;
-		R.v[_R(1,1)] = -0.39258064912909;
-		R.v[_R(1,2)] = 0.78871864932708;
-		R.v[_R(2,0)] = -0.05666336483842;
-		R.v[_R(2,1)] = 0.90693771059546;
-		R.v[_R(2,2)] = 0.41743652473765;
+		R.set00( -0.87919618797635 );
+		R.set01( 0.15278881840384 );
+		R.set02( -0.45129772879842 );
+		R.set10( -0.47307856232664 );
+		R.set11( -0.39258064912909 );
+		R.set12( 0.78871864932708 );
+		R.set20( -0.05666336483842 );
+		R.set21( 0.90693771059546 );
+		R.set22( 0.41743652473765 );
 		dMassRotate (m2,R);
 		for (i=0; i<NUMP; i++) {
-			double[] a = new double[3];
+			DVector3 a = new DVector3();
 //			dMultiply0 (a,_R(0,0),q[i][0],3,3,1);
-			dMultiply0 (a,R.v,q[i],3,3,1);
-			q[i][0] = a[0];
-			q[i][1] = a[1];
-			q[i][2] = a[2];
+			dMultiply0 (a,R,q[i]);
+//			q[i][0] = a[0];
+//			q[i][1] = a[1];
+//			q[i][2] = a[2];
+			q[i].set(a);
 		}
 		computeMassParams (m1,q,pm);
 		compareMassParams (m1,m2,"8");
@@ -857,20 +861,21 @@ void testReorthonormalize()
 	void makeRandomRotation (DMatrix3 R)
 	{
 		//double *u1 = R, *u2=R+4, *u3=R+8;
-		DVector3 u1 = new DVector3(R.v[0], R.v[1], R.v[2], R.v[3]); //TZ
-		DVector3 u2 = new DVector3(R.v[4], R.v[5], R.v[6], R.v[7]); //TZ
-		DVector3 u3 = new DVector3(R.v[8], R.v[9], R.v[10], R.v[11]); //TZ
+		DVector3 u1 = new DVector3(R.get00(), R.get01(), R.get02());//, R.v[3]); //TZ
+		DVector3 u2 = new DVector3(R.get10(), R.get11(), R.get12());//, R.v[7]); //TZ
+		DVector3 u3 = new DVector3(R.get20(), R.get21(), R.get22());//, R.v[11]); //TZ
 		//dMakeRandomVector (u1P,3,1.0);
-		dMakeRandomVector (u1.v, 3,1.0);
+		dMakeRandomVector (u1,1.0);
 		dNormalize3 (u1);
-		dMakeRandomVector (u2.v,3,1.0);
+		dMakeRandomVector (u2,1.0);
 		double d = dDOT(u1,u2);
 		//		u2[0] -= d*u1[0];
 		//		u2[1] -= d*u1[1];
 		//		u2[2] -= d*u1[2];
-		u2.v[0] -= d*u1.v[0];
-		u2.v[1] -= d*u1.v[1];
-		u2.v[2] -= d*u1.v[2];
+//		u2.v[0] -= d*u1.v[0];
+//		u2.v[1] -= d*u1.v[1];
+//		u2.v[2] -= d*u1.v[2];
+		u2.eqSum(u2, u1, -d);
 		dNormalize3 (u2);
 		dCROSS (u3,OP.EQ,u1,u2);
 		//TZ back to R
@@ -889,17 +894,17 @@ void testReorthonormalize()
 
 		// test makeRandomRotation()
 		makeRandomRotation (R);
-		dMultiply2 (I.v,R.v,R.v,3,3,3);
+		dMultiply2 (I,R,R);
 		printf ("\tmakeRandomRotation() - %s (1)\n",
 				cmpIdentityMat3(I) ? "passed" : "FAILED");
 
 		// test QtoR() on random normalized quaternions
 		int ok = 1;
 		for (i=0; i<100; i++) {
-			dMakeRandomVector (q.v,4,1.0);
+			dMakeRandomVector (q,1.0);
 			dNormalize4 (q);
 			dQtoR (q,R);
-			dMultiply2 (I.v,R.v,R.v,3,3,3);
+			dMultiply2 (I,R,R);
 			if (cmpIdentityMat3(I)==false) ok = 0;
 		}
 		printf ("\tQtoR() orthonormality %s (2)\n", ok!=0 ? "passed" : "FAILED");
@@ -910,7 +915,7 @@ void testReorthonormalize()
 			makeRandomRotation (R);
 			dRtoQ (R,q);
 			dQtoR (q,R2);
-			double diff = dMaxDifference (R.v,R2.v,3,3);
+			double diff = dMaxDifference (R,R2);
 			if (diff > maxdiff) maxdiff = diff;
 		}
 		printf ("\tmaximum difference = %e - %s (3)\n",maxdiff,
@@ -932,29 +937,29 @@ void testReorthonormalize()
 			dRtoQ (RB,qb);
 			dRtoQ (RC,qc);
 
-			dMultiply0 (RA.v,RB.v,RC.v,3,3,3);
+			dMultiply0 (RA,RB,RC);
 			dQMultiply0 (qa,qb,qc);
 			dQtoR (qa,Rtest);
-			diff = dMaxDifference (Rtest.v,RA.v,3,3);
+			diff = dMaxDifference (Rtest,RA);
 			if (diff > maxdiff) maxdiff = diff;
 
-			dMultiply1 (RA.v,RB.v,RC.v,3,3,3);
+			dMultiply1 (RA,RB,RC);
 			dQMultiply1 (qa,qb,qc);
 			dQtoR (qa,Rtest);
-			diff = dMaxDifference (Rtest.v,RA.v,3,3);
+			diff = dMaxDifference (Rtest,RA);
 			if (diff > maxdiff) maxdiff = diff;
 
-			dMultiply2 (RA.v,RB.v,RC.v,3,3,3);
+			dMultiply2 (RA,RB,RC);
 			dQMultiply2 (qa,qb,qc);
 			dQtoR (qa,Rtest);
-			diff = dMaxDifference (Rtest.v,RA.v,3,3);
+			diff = dMaxDifference (Rtest,RA);
 			if (diff > maxdiff) maxdiff = diff;
 
-			dMultiply0 (RA.v,RC.v,RB.v,3,3,3);
+			dMultiply0 (RA,RC,RB);
 			transpose3x3 (RA);
 			dQMultiply3 (qa,qb,qc);
 			dQtoR (qa,Rtest);
-			diff = dMaxDifference (Rtest.v,RA.v,3,3);
+			diff = dMaxDifference (Rtest,RA);
 			if (diff > maxdiff) maxdiff = diff;
 		}
 		printf ("\tmaximum difference = %e - %s\n",maxdiff,
@@ -968,7 +973,7 @@ void testReorthonormalize()
 		HEADER();
 
 		printf ("\tdRSetIdentity - ");
-		dMakeRandomMatrix (R1.v,3,3,1.0);
+		dMakeRandomMatrix (R1,1.0);
 		dRSetIdentity (R1);
 		if (cmpIdentityMat3(R1)) printf ("passed\n"); else printf ("FAILED\n");
 
@@ -1052,7 +1057,7 @@ void testReorthonormalize()
 
 				//va_list ap;
 				//va_start (ap,name);
-				Ref<String> r = new Ref();
+				Ref<String> r = new Ref<String>();
 				vsprintf (r,name,objects);
 				mi.name = r.get();
 				
@@ -1073,7 +1078,7 @@ void testReorthonormalize()
 				dMatInfo mi = new dMatInfo();
 				//va_list ap;
 				//va_start (ap,name);
-				Ref<String> r = new Ref();
+				Ref<String> r = new Ref<String>();
 				vsprintf (r,name,objects);
 				mi.name = r.get();
 

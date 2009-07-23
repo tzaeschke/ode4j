@@ -23,7 +23,6 @@ package org.ode4j.democpp;
 
 import org.ode4j.drawstuff.DrawStuff;
 import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DMatrixN;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
@@ -96,7 +95,7 @@ class DemoI extends dsFunctions {
 //	}
 
 	//void computeMassParams (dMass *m, dReal q[NUM][3], dReal pm[NUM])
-	private static void computeMassParams (DMass m, DMatrixN q, DVectorN pm)
+	private static void computeMassParams (DMass m, DVector3[] q, DVectorN pm)
 	{
 		int i,j;
 		double pmi, q0, q1, q2;
@@ -106,10 +105,10 @@ class DemoI extends dsFunctions {
 		for (i=0; i<NUM; i++) {
 			pmi = pm.get(i);
 			m.setMass(m.getMass() + pmi);// += pmi;
-			for (j=0; j<3; j++) C.add(j, pmi*q.get(i,j));
-			q0 = q.get(i, 0);
-			q1 = q.get(i, 1);
-			q2 = q.get(i, 2);
+			for (j=0; j<3; j++) C.add(j, pmi*q[i].get(j));
+			q0 = q[i].get0();
+			q1 = q[i].get1();
+			q2 = q[i].get2();
 			I.add(0,0, pmi*(q1*q1 + q2*q2));
 			I.add(1,1, pmi*(q0*q0 + q2*q2));
 			I.add(2,2, pmi*(q0*q0 + q1*q1));
@@ -131,7 +130,7 @@ class DemoI extends dsFunctions {
 		int i;
 		DMass m = dMassCreate(),anchor_m=dMassCreate();
 		//float q[NUM][3], pm[NUM];	// particle positions and masses
-		DMatrixN q = new DMatrixN(NUM, 3);  //TODO use 4???
+		DVector3[] q = new DVector3[NUM];
 		DVectorN pm = new DVectorN(NUM);
 		float[] pos1 = {1,0,1};	// point of reference (POR)
 		float[] pos2 = {-1,0,1};	// point of reference (POR)
@@ -139,17 +138,18 @@ class DemoI extends dsFunctions {
 		// make random particle positions (relative to POR) and masses
 		for (i=0; i<NUM; i++) {
 			pm.set(i, dRandReal()+0.1);
-			q.set(i,0, dRandReal()-0.5);
-			q.set(i,1, dRandReal()-0.5);
-			q.set(i,2, dRandReal()-0.5);
+			q[i] = new DVector3();
+			q[i].set(0, dRandReal()-0.5);
+			q[i].set(1, dRandReal()-0.5);
+			q[i].set(2, dRandReal()-0.5);
 		}
 
 		// adjust particle positions so centor of mass = POR
 		computeMassParams (m,q,pm);
 		for (i=0; i<NUM; i++) {
-			q.sub(i,0, m.getC().get(0));
-			q.sub(i,1, m.getC().get(1));
-			q.sub(i,2, m.getC().get(2));
+			q[i].add(0, -m.getC().get(0));
+			q[i].add(1, -m.getC().get(1));
+			q[i].add(2, -m.getC().get(2));
 		}
 
 		if (world!=null) dWorldDestroy (world);
@@ -164,9 +164,9 @@ class DemoI extends dsFunctions {
 		for (i=0; i<NUM; i++) {
 			particle[i] = dBodyCreate (world);
 			dBodySetPosition (particle[i],
-					pos1[0]+ q.get(i, 0),
-					pos1[1]+ q.get(i, 1), 
-					pos1[2]+ q.get(i, 2));
+					pos1[0]+ q[i].get0(),
+					pos1[1]+ q[i].get1(), 
+					pos1[2]+ q[i].get2());
 			dMassSetBox (m,1,SIDE,SIDE,SIDE);
 			dMassAdjust (m,pm.get(i));
 			dBodySetMass (particle[i],m);
@@ -201,7 +201,7 @@ class DemoI extends dsFunctions {
 		for (i=0; i<NUM; i++) {
 			DVector3 v = new DVector3();
 //			dMultiply0 (v,R,q[i][0],3,3,1);
-			Matrix.dMultiply0 (v.v,R.v,q.v,i*3,3,3,1);
+			Matrix.dMultiply0 (v,R,q[i]);
 			dBodySetPosition (particle[i],pos1[0]+v.get0(),pos1[1]+v.get1(),pos1[2]+v.get2());
 		}
 

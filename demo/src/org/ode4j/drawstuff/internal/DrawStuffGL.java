@@ -412,21 +412,21 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	{
 		//GLdouble
 		double[] matrix=new double[16];
-		matrix[0]=R.get(0);
-		matrix[1]=R.get(4);
-		matrix[2]=R.get(8);
+		matrix[0]=R.get00();
+		matrix[1]=R.get10();
+		matrix[2]=R.get20();
 		matrix[3]=0;
-		matrix[4]=R.get(1);
-		matrix[5]=R.get(5);
-		matrix[6]=R.get(9);
+		matrix[4]=R.get01();
+		matrix[5]=R.get11();
+		matrix[6]=R.get21();
 		matrix[7]=0;
-		matrix[8]=R.get(2);
-		matrix[9]=R.get(6);
-		matrix[10]=R.get(10);
+		matrix[8]=R.get02();
+		matrix[9]=R.get12();
+		matrix[10]=R.get22();
 		matrix[11]=0;
-		matrix[12]=pos.get(0);
-		matrix[13]=pos.get(1);
-		matrix[14]=pos.get(2);
+		matrix[12]=pos.get0();
+		matrix[13]=pos.get1();
+		matrix[14]=pos.get2();
 		matrix[15]=1;
 		GL11.glPushMatrix();
 		GL11.glMultMatrix (DoubleBuffer.wrap(matrix));
@@ -1744,11 +1744,9 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	public void dsDrawBox (DVector3C pos, DMatrix3C R,
 			DVector3C sides)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12],fsides=new float[3];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
-		for (i=0; i<3; i++) fsides[i]=(float)sides.get(i);
+		float[] pos2=pos.toFloatArray4();
+		float[] R2=R.toFloatArray12();
+		float[] fsides=sides.toFloatArray4();
 		dsDrawBox (pos2,R2,fsides);
 	}
 
@@ -1790,10 +1788,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	 */
 	public void dsDrawSphere (final DVector3C pos, final DMatrix3C R, float radius)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
+		float[] pos2=pos.toFloatArray4();
+		float[] R2=R.toFloatArray12();
 		dsDrawSphere (pos2,R2,radius);
 	}
 
@@ -1822,10 +1818,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 			final DVector3C v0, final DVector3C v1,
 			final DVector3C v2, boolean solid)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
+		float[] pos2 = pos.toFloatArray4();
+		float[] R2 = R.toFloatArray12();
 
 		setupDrawingMode();
 		GL11.glShadeModel (GL11.GL_FLAT);
@@ -1843,10 +1837,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	public void dsDrawCylinder (final DVector3C pos, final DMatrix3C R,
 			float length, float radius)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
+		float[] pos2=pos.toFloatArray4();
+		float[] R2=R.toFloatArray12();
 		dsDrawCylinder (pos2,R2,length,radius);
 	}
 
@@ -1859,10 +1851,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	public void dsDrawCapsule (final DVector3C pos, final DMatrix3C R,
 			float length, float radius)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
+		float[] pos2=pos.toFloatArray4();
+		float[] R2=R.toFloatArray12();
 		dsDrawCapsule (pos2,R2,length,radius);
 	}
 
@@ -1873,10 +1863,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	 */
 	public void dsDrawLine (final DVector3C _pos1, final DVector3C _pos2)
 	{
-		int i;
-		float[] pos1=new float[3],pos2=new float[3];
-		for (i=0; i<3; i++) pos1[i]=(float)_pos1.get(i);
-		for (i=0; i<3; i++) pos2[i]=(float)_pos2.get(i);
+		float[] pos1=_pos1.toFloatArray4();
+		float[] pos2=_pos2.toFloatArray4();
 		dsDrawLine (pos1,pos2);
 	}
 

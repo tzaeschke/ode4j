@@ -22,6 +22,7 @@
 package org.ode4j.tests.math;
 
 import org.junit.Test;
+import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 
 public class TestDVector3 extends OdeTestCase {
@@ -86,8 +87,8 @@ public class TestDVector3 extends OdeTestCase {
 		x.set( new double[]{ 8, 9, 11, 0} );
 		assertTrue(x.get0()==8 && x.get1()==9 && x.get2()==11);
 
-		x.setValues(2.5);
-		assertTrue(x.get0()==2.5 && x.get1()==2.5 && x.get2()==2.5);
+//		x.setValues(2.5);
+//		assertTrue(x.get0()==2.5 && x.get1()==2.5 && x.get2()==2.5);
 
 		assertFalse(x.isEq(x2));
 		assertFalse(x.isEq(y));
@@ -210,12 +211,16 @@ public class TestDVector3 extends OdeTestCase {
 		DVector3 y = new DVector3(4, 8, -1);
 		DVector3 t = new DVector3();
 
-		//TODO remove dSafeNormalize3()?
-		t.set(0, 0, 0).dSafeNormalize3();
+		try {
+			t.set(0, 0, 0).normalize();
+			fail();
+		} catch (IllegalStateException e) {
+			//Good!
+		}
 		assertEquals(new DVector3(1, 0, 0), t);
 
 		t.set(3, 4, -18);
-		t.dSafeNormalize3();
+		t.normalize();
 		assertEquals(new DVector3(0.16058631827165676, 0.21411509102887566, -0.9635179096299405), t);
 
 		try {
@@ -280,5 +285,57 @@ public class TestDVector3 extends OdeTestCase {
 		assertTrue(t.isEq(x));
 		t.sub(-3, -6, 4);
 		assertTrue(t.isEq(y));
-	}		
+	}
+
+	
+	@Test
+	public void testDots() {
+		DVector3 x = new DVector3(21, 22, 23);
+		DVector3 y = new DVector3(31, 32, 33);
+		DMatrix3 m = new DMatrix3(11, 12, 13, 14, 15, 16, 17, 18, 19);
+		
+		double d, ex;
+		
+		//check dot
+		d = x.dot(y);
+		ex = 21*31 + 22*32 + 23*33;
+		assertEquals(ex, d);
+		
+		//check dotCol
+		d = x.dotCol(m, 0);
+		ex = 21*11 + 22*14 + 23*17;
+		assertEquals(ex, d);
+		
+		d = x.dotCol(m, 1);
+		ex = 21*12 + 22*15 + 23*18;
+		assertEquals(ex, d);
+		
+		d = x.dotCol(m, 2);
+		ex = 21*13 + 22*16 + 23*19;
+		assertEquals(ex, d);
+
+		//check illegal arguments
+		try {
+			d = x.dotCol(m, -1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = x.dotCol(m, 3);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		
+		
+		//Check col/row views
+		d = x.dot(m.viewCol(0));
+		ex = 21*11 + 22*14 + 23*17;
+		assertEquals(ex, d);
+		
+		d = x.dot(m.viewRowT(0));
+		ex = 21*11 + 22*12 + 23*13;
+		assertEquals(ex, d);
+	}
 }

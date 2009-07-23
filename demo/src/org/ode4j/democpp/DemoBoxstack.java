@@ -499,9 +499,9 @@ class DemoBoxstack extends dsFunctions {
 			final DMatrix3C rot = dGeomGetRotation(obj[selected].geom[0]);
 			printf("POSITION:\n\t[%f,%f,%f]\n\n",pos.get(0),pos.get(1),pos.get(2));
 			printf("ROTATION:\n\t[%f,%f,%f,%f]\n\t[%f,%f,%f,%f]\n\t[%f,%f,%f,%f]\n\n",
-					rot.get(0),rot.get(1),rot.get(2),rot.get(3),
-					rot.get(4),rot.get(5),rot.get(6),rot.get(7),
-					rot.get(8),rot.get(9),rot.get(10),rot.get(11));
+					rot.get00(),rot.get01(),rot.get02(),//rot.get(3),
+					rot.get10(),rot.get11(),rot.get12(),//rot.get(7),
+					rot.get20(),rot.get21(),rot.get22());//,rot.get(11));
 		}
 		else if (cmd == 'f' && selected >= 0 && selected < num) {
 			if (dBodyIsEnabled(obj[selected].body))

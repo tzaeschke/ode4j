@@ -30,7 +30,6 @@ import static org.ode4j.ode.OdeMath.*;
 public class TestOdeMath {
 
 	@Test public void test_dNormalization3() {
-		//TODO !?!?!?!
 		//		TEST();
 		//	}
 		//	
@@ -40,108 +39,108 @@ public class TestOdeMath {
 		final DVector3 y = new DVector3(0,1,0);
 		final DVector3 z = new DVector3(0,0,1);
 		DVector3 v3 = new DVector3();
-		double[] v = v3.v;
+		//double[] v = v3.v;
 
 		// Check when value in first component (i.e. [0])
-		v[0] = 1.0; v[1] = 0.0; v[2] = 0.0;
+		v3.set( 1.0, 0.0, 0.0 );
 		v3.normalize();
-		CHECK_ARRAY_CLOSE(x.v, v, 3, 1e-6);
+		CHECK_ARRAY_CLOSE(x, v3, 3, 1e-6);
 		CHECK_EQUAL(v3.length(), 1.0);
 
-		v[0] = 0.1; v[1] = 0.0; v[2] = 0.0;
+		v3.set( 0.1, 0.0, 0.0 );
 		v3.normalize();
-		CHECK_ARRAY_CLOSE(x.v, v, 3, 1e-6);
+		CHECK_ARRAY_CLOSE(x, v3, 3, 1e-6);
 		CHECK_EQUAL(v3.length(), 1.0);
 
-		v[0] = 1e-20; v[1] = 0.0; v[2] = 0.0;
+		v3.set( 1e-20, 0.0, 0.0 );
 		v3.normalize();
-		CHECK_ARRAY_CLOSE(x.v, v, 3, 1e-6);
-		CHECK_EQUAL(v3.length(), 1.0);
-
-
-		// Check when value in first component (i.e. [0])
-		v[0] = 0.0; v[1] = 1.0; v[2] = 0.0;
-		v3.normalize();
-		CHECK_ARRAY_CLOSE(y.v, v, 3, 1e-6);
-		CHECK_EQUAL(v3.length(), 1.0);
-
-		v[0] = 0.0; v[1] = 0.1; v[2] = 0.0;
-		v3.normalize();
-		CHECK_ARRAY_CLOSE(y.v, v, 3, 1e-6);
-		CHECK_EQUAL(v3.length(), 1.0);
-
-		v[0] = 0.0; v[1] = 1e-20; v[2] = 0.0;
-		v3.normalize();
-		CHECK_ARRAY_CLOSE(y.v, v, 3, 1e-6);
+		CHECK_ARRAY_CLOSE(x, v3, 3, 1e-6);
 		CHECK_EQUAL(v3.length(), 1.0);
 
 
 		// Check when value in first component (i.e. [0])
-		v[0] = 0.0; v[1] = 0.0; v[2] = 1.0;
+		v3.set( 0.0, 1.0, 0.0 );
 		v3.normalize();
-		CHECK_ARRAY_CLOSE(z.v, v, 3, 1e-6);
+		CHECK_ARRAY_CLOSE(y, v3, 3, 1e-6);
 		CHECK_EQUAL(v3.length(), 1.0);
 
-		v[0] = 0.0; v[1] = 0.0; v[2] = 0.1;
+		v3.set( 0.0, 0.1, 0.0);
 		v3.normalize();
-		CHECK_ARRAY_CLOSE(z.v, v, 3, 1e-6);
+		CHECK_ARRAY_CLOSE(y, v3, 3, 1e-6);
 		CHECK_EQUAL(v3.length(), 1.0);
 
-		v[0] = 0.0; v[1] = 0.0; v[2] = 1e-20;
+		v3.set( 0.0, 1e-20, 0.0 );
 		v3.normalize();
-		CHECK_ARRAY_CLOSE(z.v, v, 3, 1e-6);
+		CHECK_ARRAY_CLOSE(y, v3, 3, 1e-6);
+		CHECK_EQUAL(v3.length(), 1.0);
+
+
+		// Check when value in first component (i.e. [0])
+		v3.set( 0.0, 0.0, 1.0 );
+		v3.normalize();
+		CHECK_ARRAY_CLOSE(z, v3, 3, 1e-6);
+		CHECK_EQUAL(v3.length(), 1.0);
+
+		v3.set( 0.0, 0.0, 0.1 );
+		v3.normalize();
+		CHECK_ARRAY_CLOSE(z, v3, 3, 1e-6);
+		CHECK_EQUAL(v3.length(), 1.0);
+
+		v3.set( 0.0, 0.0, 1e-20);
+		v3.normalize();
+		CHECK_ARRAY_CLOSE(z, v3, 3, 1e-6);
 		CHECK_EQUAL(v3.length(), 1.0);
 
 
 		// Check negative
 		// Check when value in first component (i.e. [0])
-		v[0] = -1.0; v[1] = 0.0; v[2] = 0.0;
+		v3.set( -1.0, 0.0, 0.0 );
 		v3.normalize();
 		CHECK_EQUAL(v3.length(), 1.0);
 
-		v[0] = -0.1; v[1] = 0.0; v[2] = 0.0;
+		v3.set( -0.1, 0.0, 0.0 );
 		v3.normalize();
 		CHECK_EQUAL(v3.length(), 1.0);
 
-		v[0] = -1e-20; v[1] = 0.0; v[2] = 0.0;
-		v3.normalize();
-		CHECK_EQUAL(v3.length(), 1.0);
-
-
-		// Check when value in first component (i.e. [0])
-		v[0] = 0.0; v[1] = -1.0; v[2] = 0.0;
-		v3.normalize();
-		CHECK_EQUAL(v3.length(), 1.0);
-
-		v[0] = 0.0; v[1] = -0.1; v[2] = 0.0;
-		v3.normalize();
-		CHECK_EQUAL(v3.length(), 1.0);
-
-		v[0] = 0.0; v[1] = -1e-20; v[2] = 0.0;
+		v3.set( -1e-20, 0.0, 0.0 );
 		v3.normalize();
 		CHECK_EQUAL(v3.length(), 1.0);
 
 
 		// Check when value in first component (i.e. [0])
-		v[0] = 0.0; v[1] = 0.0; v[2] = -1.0;
+		v3.set( 0.0, -1.0, 0.0 );
 		v3.normalize();
 		CHECK_EQUAL(v3.length(), 1.0);
 
-		v[0] = 0.0; v[1] = 0.0; v[2] = -0.1;
+		v3.set( 0.0, -0.1, 0.0 );
 		v3.normalize();
 		CHECK_EQUAL(v3.length(), 1.0);
 
-		v[0] = 0.0; v[1] = 0.0; v[2] = -1e-20;
-		v3.normalize();
-		CHECK_EQUAL(v3.length(), 1.0);
-
-
-		v[0] = 9999999999.0; v[1] = 0.0; v[2] = 1e-20;
+		v3.set( 0.0, -1e-20, 0.0 );
 		v3.normalize();
 		CHECK_EQUAL(v3.length(), 1.0);
 
 
-		v[0] = 9999999999.0; v[1] = 9999.0; v[2] = 9.0;
+		// Check when value in first component (i.e. [0])
+		v3.set( 0.0, 0.0, -1.0 );
+		v3.normalize();
+		CHECK_EQUAL(v3.length(), 1.0);
+
+		v3.set( 0.0, 0.0, -0.1 );
+		v3.normalize();
+		CHECK_EQUAL(v3.length(), 1.0);
+
+		v3.set( 0.0, 0.0, -1e-20 );
+		v3.normalize();
+		CHECK_EQUAL(v3.length(), 1.0);
+
+
+		v3.set( 9999999999.0, 0.0, 1e-20 );
+		v3.normalize();
+		CHECK_EQUAL(v3.length(), 1.0);
+
+
+		v3.set( 9999999999.0, 9999.0, 9.0 );
 		v3.normalize();
 		CHECK_EQUAL(v3.length(), 1.0);
 

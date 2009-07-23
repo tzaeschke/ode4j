@@ -186,7 +186,7 @@ class DemoI extends dsFunctions {
 			DVector3 v = new DVector3();
 //			dMultiply0 (v,R,q[i][0],3,3,1);
 //			dMultiply0 (v.v,R.v,q.v,i*3,3,3,1);
-			dMultiply0 (v,R,q[i],3,3,1);
+			dMultiply0 (v,R,q[i]);
 			particle[i].setPosition ( v.add (pos1) );
 		}
 
