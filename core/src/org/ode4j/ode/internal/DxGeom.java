@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -142,7 +141,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 	// information used by spaces
 	//TODO use linked list, seems simpler.
-	private List<DxGeom> _list = new LinkedList<DxGeom>();
+	//private List<DxGeom> _list = new LinkedList<DxGeom>();
 	//dxGeom next;		// next geom in linked list of geoms
 //	private final Ref<dxGeom> next = new Ref<dxGeom>();
 	/** 'tome' is pointer to a pointer to (this).
@@ -318,6 +317,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 
 	//	dxGeom::~dxGeom()
+	@Override
 	public void DESTRUCTOR() {
 		if (parent_space != null) parent_space.dSpaceRemove (this);
 		//	if ((gflags & GEOM_PLACEABLE) && (!body || (body && offset_posr)))
@@ -632,7 +632,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 			// move body such that body+offset = rotation
 			dxPosR new_final_posr = new dxPosR();
 			dxPosR new_body_posr = new dxPosR();
-			dQtoR (quat, new_final_posr.R);
+			dRfromQ (new_final_posr.R, quat);
 			//memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 			new_final_posr.pos.set(g._final_posr.pos);
 			
@@ -645,7 +645,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 			g.body.dBodySetQuaternion (quat);
 		}
 		else {
-			dQtoR (quat, g._final_posr.R);
+			dRfromQ (g._final_posr.R, quat);
 			g.dGeomMoved ();
 		}
 	}
@@ -1563,6 +1563,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		callback.call (data,g1,g2);
 	}
 
+	@Override
 	public String toString() {
 		return super.toString() + " body=" + body;  
 	}

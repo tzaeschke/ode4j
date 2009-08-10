@@ -87,6 +87,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	}
 
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -133,6 +134,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	}
 	
 	
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
@@ -398,6 +400,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	}
 
 
+	@Override
 	void setRelativeValues()
 	{
 	    DVector3 anchor = new DVector3();
@@ -439,45 +442,47 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	// ****************************
 	// API dHinge2Joint
 	// ****************************
-	
-	  public void setAnchor (double x, double y, double z)
-	    { dJointSetHinge2Anchor (x, y, z); }
-	  public void setAnchor (final DVector3C a)
-	    { dJointSetHinge2Anchor(a); }
-	  public void setAxis1 (double x, double y, double z)
-	    { dJointSetHinge2Axis1 (x, y, z); }
-	  public void setAxis1 (final DVector3C a)
-	  //TODO use dVector3
-	    { setAxis1 (a.get0(), a.get1(), a.get2()); }
-	  public void setAxis2 (double x, double y, double z)
-	    { dJointSetHinge2Axis2 (x, y, z); }
-	  public void setAxis2 (final DVector3C a)
-	  //TODO use dVector3
-	  { setAxis2 (a.get0(), a.get1(), a.get2()); }
 
-	  public void getAnchor (DVector3 result)
-	    { dJointGetHinge2Anchor (result); }
-	  public void getAnchor2 (DVector3 result)
-	    { dJointGetHinge2Anchor2 (result); }
-	  public void getAxis1 (DVector3 result)
-	    { dJointGetHinge2Axis1 (result); }
-	  public void getAxis2 (DVector3 result)
-	    { dJointGetHinge2Axis2 (result); }
+	public void setAnchor (double x, double y, double z)
+	{ dJointSetHinge2Anchor (x, y, z); }
+	public void setAnchor (final DVector3C a)
+	{ dJointSetHinge2Anchor(a); }
+	public void setAxis1 (double x, double y, double z)
+	{ dJointSetHinge2Axis1 (x, y, z); }
+	public void setAxis1 (final DVector3C a)
+	//TODO use dVector3
+	{ setAxis1 (a.get0(), a.get1(), a.get2()); }
+	public void setAxis2 (double x, double y, double z)
+	{ dJointSetHinge2Axis2 (x, y, z); }
+	public void setAxis2 (final DVector3C a)
+	//TODO use dVector3
+	{ setAxis2 (a.get0(), a.get1(), a.get2()); }
 
-	  public double getAngle1()
-	    { return dJointGetHinge2Angle1 (); }
-	  public double getAngle1Rate()
-	    { return dJointGetHinge2Angle1Rate (); }
-	  public double getAngle2Rate()
-	    { return dJointGetHinge2Angle2Rate (); }
+	public void getAnchor (DVector3 result)
+	{ dJointGetHinge2Anchor (result); }
+	public void getAnchor2 (DVector3 result)
+	{ dJointGetHinge2Anchor2 (result); }
+	public void getAxis1 (DVector3 result)
+	{ dJointGetHinge2Axis1 (result); }
+	public void getAxis2 (DVector3 result)
+	{ dJointGetHinge2Axis2 (result); }
 
-	  public void setParam (PARAM_N parameter, double value)
-	    { dJointSetHinge2Param (parameter, value); }
-	  public double getParam (PARAM_N parameter)
-	    { return dJointGetHinge2Param (parameter); }
+	public double getAngle1()
+	{ return dJointGetHinge2Angle1 (); }
+	public double getAngle1Rate()
+	{ return dJointGetHinge2Angle1Rate (); }
+	public double getAngle2Rate()
+	{ return dJointGetHinge2Angle2Rate (); }
 
-	  public void addTorques(double torque1, double torque2)
-		{ dJointAddHinge2Torques(torque1, torque2); }
+	@Override
+	public void setParam (PARAM_N parameter, double value)
+	{ dJointSetHinge2Param (parameter, value); }
+	@Override
+	public double getParam (PARAM_N parameter)
+	{ return dJointGetHinge2Param (parameter); }
+
+	public void addTorques(double torque1, double torque2)
+	{ dJointAddHinge2Torques(torque1, torque2); }
 
 
 	@Override

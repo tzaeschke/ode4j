@@ -65,6 +65,7 @@ public class DxBox extends DxGeom implements DBox {
 	}
 
 
+	@Override
 	void computeAABB()
 	{
 		//	  final dMatrix3& R = final_posr.R;

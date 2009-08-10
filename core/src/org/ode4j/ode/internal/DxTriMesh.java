@@ -48,6 +48,7 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 	abstract void ClearTCCache();
 
 	abstract boolean AABBTest(DAABB aabb);
+	@Override
 	abstract void computeAABB();
 
 

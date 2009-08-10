@@ -276,6 +276,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	}
 
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -308,6 +309,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	}
 
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
@@ -738,6 +740,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	}
 
 
+	@Override
 	void setRelativeValues()
 	{
 	    DVector3 anchor = new DVector3();
@@ -800,8 +803,10 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	public void getAxis2 (DVector3 result)
 	{ dJointGetUniversalAxis2 (result); }
 
+	@Override
 	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetUniversalParam (parameter, value); }
+	@Override
 	public double getParam (PARAM_N parameter)
 	{ return dJointGetUniversalParam (parameter); }
 

@@ -66,6 +66,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	}
 
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -89,6 +90,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	}
 
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
@@ -348,6 +350,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 			node[1].body.dBodyAddTorque( axis.reScale(-1) );
 	}
 
+	@Override
 	void setRelativeValues()
 	{
 	    DVector3 vec = new DVector3();
@@ -414,8 +417,10 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	public double getAngleRate()
 	{ return dJointGetHingeAngleRate (); }
 
+	@Override
 	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetHingeParam (parameter, value); }
+	@Override
 	public double getParam (PARAM_N parameter)
 	{ return dJointGetHingeParam (parameter); }
 

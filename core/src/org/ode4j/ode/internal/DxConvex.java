@@ -253,6 +253,7 @@ public class DxConvex extends DxGeom implements DConvex {
 			}
 
 
+	@Override
 	void computeAABB()
 	{
 		// this can, and should be optimized

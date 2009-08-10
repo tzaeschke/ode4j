@@ -78,6 +78,7 @@ class dMatrixComparison {
 		reset();
 	}
 
+	@Override
 	public void finalize()
 	{
 		DESTRUCTOR();

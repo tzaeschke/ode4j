@@ -23,7 +23,6 @@ package org.ode4j.ode.internal;
 
 import org.cpp4j.java.RefInt;
 import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector4;
@@ -46,7 +45,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 	// Must be divisible by 4.
 	private static final int nCYLINDER_SEGMENT		 = 8;
 
-	//TODO check with actual definition
+	//check with actual definition
 	//#define MAX_FLOAT	dInfinity
 
 	// Data that passed through the collider's functions
@@ -59,7 +58,9 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			m_gCylinder = cylinder;
 			m_gContact = contacts;
 			m_iFlags = flags;
-			m_iSkip = skip;
+			//TZ not used m_iSkip = skip;
+			if (skip != 1) throw new IllegalArgumentException(
+					"'skip' should be 1, but is: " + skip);
 			m_nContacts = 0;
 		}
 
@@ -106,7 +107,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 		//dContactGeom*		m_gContact;
 		private DContactGeomBuffer		m_gContact;
 		private int					m_iFlags;
-		private int					m_iSkip;
+		//TZ not used private int					m_iSkip;
 		private int					m_nContacts;
 
 		//	};
@@ -117,8 +118,9 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 		private void _cldInitCylinderBox() 
 		{
 			// get cylinder position, orientation
-			final DMatrix3C pRotCyc = m_gCylinder.dGeomGetRotation();//m_gCylinder); 
-			dMatrix3Copy(pRotCyc,m_mCylinderRot);
+//			final DMatrix3C pRotCyc = m_gCylinder.dGeomGetRotation();//m_gCylinder); 
+//			dMatrix3Copy(pRotCyc,m_mCylinderRot);
+			m_mCylinderRot.set(m_gCylinder.dGeomGetRotation());
 
 			final DVector3C pPosCyc = m_gCylinder.dGeomGetPosition();//m_gCylinder);
 			dVector3Copy(pPosCyc,m_vCylinderPos);
@@ -131,10 +133,12 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			m_fCylinderSize = m_gCylinder.getLength();
 
 			// get box position, orientation, size
-			final DMatrix3C pRotBox = m_gBox.dGeomGetRotation();//m_gBox);
-			dMatrix3Copy(pRotBox,m_mBoxRot);
-			final DVector3C pPosBox = m_gBox.dGeomGetPosition();//m_gBox);
-			dVector3Copy(pPosBox,m_vBoxPos);
+//			final DMatrix3C pRotBox = m_gBox.dGeomGetRotation();//m_gBox);
+//			dMatrix3Copy(pRotBox,m_mBoxRot);
+			m_mBoxRot.set(m_gBox.dGeomGetRotation());
+//			final DVector3C pPosBox = m_gBox.dGeomGetPosition();//m_gBox);
+//			dVector3Copy(pPosBox,m_vBoxPos);
+			m_vBoxPos.set(m_gBox.dGeomGetPosition());
 
 			m_gBox.dGeomBoxGetLengths(m_vBoxHalfSize);
 //			m_vBoxHalfSize[0] *= (0.5);

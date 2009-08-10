@@ -49,6 +49,7 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	}
 
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -57,6 +58,7 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	}
 
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
@@ -142,6 +144,7 @@ public class DxJointBall extends DxJoint implements DBallJoint
 		return get( parameter );
 	}
 
+	@Override
 	void setRelativeValues()
 	{
 	    DVector3 anchor = new DVector3();
@@ -166,12 +169,14 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	{ dJointGetBallAnchor (result); }
 	public final void getAnchor2 (DVector3 result)
 	{ dJointGetBallAnchor2 (result); }
+	@Override
 	public final void setParam (PARAM_N parameter, double value)
 	{ 
 		if (!parameter.isGroup1()) 
 		throw new IllegalArgumentException("Only Group #1 allowed, but got: " + parameter.name());
 		dJointSetBallParam (parameter.toSUB(), value); 
 	}
+	@Override
 	public final double getParam (PARAM_N parameter)
 	{ 	
 		if (!parameter.isGroup1()) 

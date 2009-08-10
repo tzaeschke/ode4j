@@ -81,12 +81,10 @@ public class DMatrixN {
 
 	/**
 	 * This returns a new Matrix containing a transposed of this matrix.
-	 * TODO Creates new matrix. Could wrap an existing 'v' with a transposed
-	 * view on it?!?
+	 * Creates new matrix.
 	 * @return New transposed matrix.
-	 * @deprecated As warning that this creates new Matrix.
 	 */
-	public DMatrixN transposeNew() {
+	public DMatrixN reTranspose() {
 		DMatrixN r = new DMatrixN(MAX_I,MAX_J);
 		for (int i=0; i<MAX_I; i++) {
 			for (int j=0; j<MAX_J; j++) r.v[j*MAX_I+i] = v[i*MAX_J + j];
@@ -97,15 +95,13 @@ public class DMatrixN {
 	/**
 	 * This returns a new Matrix containing a copy of the selected
 	 * sub-matrix.
-	 * TODO Creates new matrix.
 	 * @param np
 	 * @param p
 	 * @param nq
 	 * @param q
 	 * @return New sub-matrix.
-	 * @deprecated As warning that this creates new Matrix.
 	 */
-	public DMatrixN selectNew (int np, int []p, int nq, int []q)
+	public DMatrixN newSubMatrix (int np, int []p, int nq, int []q)
 	{
 		if (np < 1 || nq < 1) dDebug (0,"Matrix select, bad index array sizes");
 		DMatrixN r = new DMatrixN (np,nq);

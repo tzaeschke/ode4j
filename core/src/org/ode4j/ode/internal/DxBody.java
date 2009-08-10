@@ -1003,7 +1003,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		}
 		// end of angular velocity cap
 
-		int j;
+		//int j;
 
 		// handle linear velocity
 		//for (j=0; j<3; j++) _posr.pos.v[j] += h * lvel.v[j];
@@ -1061,7 +1061,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 			// do the infitesimal rotation if required
 			if ((flags & dxBodyFlagFiniteRotationAxis) != 0) {
 				DQuaternion dq = new DQuaternion();
-				dWtoDQ (irv,_q,dq);
+				dDQfromW (dq,irv,_q);
 				//for (j=0; j<4; j++) _q.v[j] += h * dq[j];
 				_q.sum( _q, dq, h);
 			}
@@ -1069,14 +1069,14 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		else {
 			// the normal way - do an infitesimal rotation
 			DQuaternion dq = new DQuaternion();
-			dWtoDQ (avel,_q,dq);
+			dDQfromW (dq,avel,_q);
 			//for (j=0; j<4; j++) _q.v[j] += h * dq[j];
 			_q.sum( _q, dq, h);
 		}
 
 		// normalize the quaternion and convert it to a rotation matrix
 		dNormalize4 (_q);
-		dQtoR (_q,_posr.R);
+		dRfromQ (_posr.R,_q);
 
 
 		// notify all attached geoms that this body has moved
@@ -1107,6 +1107,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		}
 	}
 
+	@Override
 	public Object clone() {
 		try {
 			return super.clone();
@@ -1116,6 +1117,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	}
 
 
+	@Override
 	public String toString() {
 		return super.toString();  
 	}
@@ -1125,7 +1127,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	// ******************************************************
 
 	//~dBody()
-	//	  @Override
+	@Override
 	//	  public void DESTRUCTOR()
 	//	    { dBodyDestroy (); super.DESTRUCTOR(); }
 	public void DESTRUCTOR() { super.DESTRUCTOR(); };

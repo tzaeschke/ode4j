@@ -165,6 +165,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 	}
 
 
+	@Override
 	void cleanGeoms()
 	{
 		// compute the AABBs of all dirty geoms, and clear the dirty flags

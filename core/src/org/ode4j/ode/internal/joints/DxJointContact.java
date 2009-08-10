@@ -44,6 +44,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 	}
 
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -71,6 +72,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 	}
 
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{

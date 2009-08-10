@@ -67,6 +67,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 	}
 
 
+	@Override
 	public void
 	getInfo1 ( Info1 info )
 	{
@@ -75,6 +76,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 	}
 
 
+	@Override
 	public void
 	getInfo2 ( Info2 info )
 	{
@@ -232,9 +234,11 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 	public void set()
 	{ dJointSetFixed (); }
 
+	@Override
 	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetFixedParam (parameter, value); }
 
+	@Override
 	public double getParam (PARAM_N parameter)
 	{ return dJointGetFixedParam (parameter); }
 

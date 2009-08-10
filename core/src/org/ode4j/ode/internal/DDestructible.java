@@ -86,6 +86,7 @@ public abstract class DDestructible {
 		}
 	}
 	
+	@Override
 	public String toString() {
 		return "ID=" + _id + " (" + getClass().getName() + ")";
 	}

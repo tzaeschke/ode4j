@@ -95,6 +95,7 @@ public class DQuaternion implements DQuaternionC {
 		return get0()==q.get0() && get1()==q.get1() && get2()==q.get2() && get3()==q.get3();
 	}
 
+	@Override
 	public boolean equals(Object q) {
 		return false;
 	}
@@ -197,5 +198,9 @@ public class DQuaternion implements DQuaternionC {
 	{
 		if (!safeNormalize4()) throw new IllegalStateException(
 				"Normalization failed: " + this);
+	}
+
+	public void setIdentity() {
+		set(1, 0, 0, 0);
 	}
 }

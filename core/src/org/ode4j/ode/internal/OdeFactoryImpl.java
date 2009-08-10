@@ -1804,10 +1804,3 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 		return false;
 	}
 }
-
-// Local Variables:
-// c-basic-offset:4
-// End:
-
-
-

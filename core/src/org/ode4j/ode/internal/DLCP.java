@@ -465,7 +465,7 @@ class DLCP_FAST extends DLCP {
 	private int indexC (int i) { return i; }
 	private int indexN (int i) { return i+nC; }
 	private double Aii (int i) { return AROW(i,i); }
-	private double AiC_times_qC (int i, double[] q) { return FastDot.dDot (A, AROWp(i),q,nC); }
+	private double AiC_times_qC (int i, double[] q) { return FastDot.dDot (A, AROWp(i),q,0,nC); }
 	private double AiN_times_qN (int i, double[] q) { return FastDot.dDot (A, AROWp(i)+nC,q,nC,nN); }
 	//  void pN_equals_ANC_times_qC (dReal *p, dReal *q);
 	//  void pN_plusequals_ANi (dReal *p, int i, int sign=1);
@@ -688,7 +688,7 @@ printf ("\n");
 		// but i tried it and it actually made things slower on random 100x100
 		// problems because of the overhead involved. so we'll stick with the
 		// simple method for now.
-		for (int i=0; i<nN; i++) p[i+nC] = FastDot.dDot (A, AROWp(i+nC),q,nC);
+		for (int i=0; i<nN; i++) p[i+nC] = FastDot.dDot (A, AROWp(i+nC),q,0,nC);
 	}
 
 
@@ -1336,7 +1336,7 @@ printf ("\n");
 				A1.set(j, i, AROW(i,j));
 			}
 		}
-		DMatrixN A2 = A1.selectNew (nC,C,nC,C);
+		DMatrixN A2 = A1.newSubMatrix (nC,C,nC,C);
 
 		// printf ("A1=\n"); A1.print(); printf ("\n");
 		// printf ("A2=\n"); A2.print(); printf ("\n");
@@ -1349,7 +1349,7 @@ printf ("\n");
 		L.clearUpperTriangle();
 		for (i=0; i<nC; i++) L.set(i, i, 1);//L(i,i) = 1;
 		//TODO is this correct? dMatrixN A3 = L * D * L.transpose();
-		DMatrixN A3 = L.mulNew( D.mulNew( L.transposeNew() ));
+		DMatrixN A3 = L.mulNew( D.mulNew( L.reTranspose() ));
 //		dMatrixN A3 = L.mulNew(D).mulNew( L.transposeNew() );
 
 

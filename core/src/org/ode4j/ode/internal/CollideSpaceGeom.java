@@ -21,12 +21,9 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.internal.Objects_H.dxPosR;
 import org.ode4j.ode.DColliderFn;
 
 public class CollideSpaceGeom implements DColliderFn {

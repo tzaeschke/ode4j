@@ -218,6 +218,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 	//TODO check super class?!?
 	//dxSAPSpace::~dxSAPSpace()
+	@Override
 	public void DESTRUCTOR()
 	{
 		CHECK_NOT_LOCKED(this);
@@ -238,6 +239,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	}
 
 	//dxGeom* dxSAPSpace::getGeom( int i )
+	@Override
 	public DxGeom getGeom( int i )
 	{
 		dUASSERT( i >= 0 && i < count, "index out of range" );
@@ -249,6 +251,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	}
 
 	//void dxSAPSpace::add( dxGeom* g )
+	@Override
 	void add( DxGeom g )
 	{
 		CHECK_NOT_LOCKED (this);
@@ -269,6 +272,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	}
 
 	//void dxSAPSpace::remove( dxGeom* g )
+	@Override
 	void remove( DxGeom g )
 	{
 		CHECK_NOT_LOCKED(this);
@@ -311,6 +315,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	}
 
 	//void dxSAPSpace::dirty( dxGeom* g )
+	@Override
 	void dirty( DxGeom g )
 	{
 		dAASSERT(g);
@@ -339,12 +344,14 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	}
 
 	//void dxSAPSpace::computeAABB()
+	@Override
 	void computeAABB()
 	{
 		// TODO?
 	}
 
 	//void dxSAPSpace::cleanGeoms()
+	@Override
 	void cleanGeoms()
 	{
 		int dirtySize = DirtyList.size();
@@ -377,6 +384,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	}
 
 	//void dxSAPSpace::collide( void *data, dNearCallback *callback )
+	@Override
 	public void collide( Object data, DNearCallback callback )
 	{
 		dAASSERT (callback);
@@ -457,6 +465,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	}
 
 	//void dxSAPSpace::collide2( void *data, dxGeom *geom, dNearCallback *callback )
+	@Override
 	void collide2( Object data, DxGeom geom, DNearCallback callback )
 	{
 		dAASSERT (geom!=null && callback!=null);

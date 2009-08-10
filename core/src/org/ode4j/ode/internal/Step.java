@@ -64,9 +64,9 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 	//
 	//#define ALLOCA(t,v,s)                           \
 	//  Auto<t> v( dALLOCA16(s) );
-	private static void ALLOCA(Class cls) {
-		throw new UnsupportedOperationException();
-	}
+//	private static void ALLOCA(Class cls) {
+//		throw new UnsupportedOperationException();
+//	}
 	//
 	//#endif
 

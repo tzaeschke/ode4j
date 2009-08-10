@@ -250,8 +250,8 @@ public class Common extends ErrorHandler {
 	 * These types are mainly just used in headers. 
 	 * @deprecated TZ: Do we really need this class??? 
 	 */
-	public static class dMatrix4 { 
-		public dMatrix4(double d, double e, double f, double g, double h,
+	public static class DMatrix4 { 
+		public DMatrix4(double d, double e, double f, double g, double h,
 				double i, double j, double k, double l, double m, double n,
 				double o, double p, double q, double r, double s) {
 			v[0] = d; v[1] = e; v[2] = f; v[3] = g; 
@@ -262,7 +262,7 @@ public class Common extends ErrorHandler {
 
 		public double[] v = new double[4*4]; 
 	}
-	private static class dMatrix6 { public double[] v = new double[8*6]; }
+	//private static class dMatrix6 { public double[] v = new double[8*6]; }
 	//typedef dReal dVector3[4];
 	//typedef dReal dVector4[4];
 	//typedef dReal dMatrix3[4*3];

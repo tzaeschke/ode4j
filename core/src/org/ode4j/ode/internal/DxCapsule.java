@@ -56,6 +56,7 @@ public class DxCapsule extends DxGeom implements DCapsule {
 	}
 
 
+	@Override
 	public void computeAABB()
 	{
 		final DMatrix3 R = _final_posr.R;

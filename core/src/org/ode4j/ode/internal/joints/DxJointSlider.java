@@ -120,6 +120,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	}
 
 
+	@Override
 	public void
 	getInfo1 ( DxJoint.Info1 info )
 	{
@@ -153,6 +154,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	}
 
 
+	@Override
 	public void
 	getInfo2 ( DxJoint.Info2 info )
 	{
@@ -344,6 +346,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	}
 
 
+	@Override
 	void setRelativeValues()
 	{
 	    computeOffset();
@@ -416,8 +419,10 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	public double getPositionRate()
 	{ return dJointGetSliderPositionRate (); }
 
+	@Override
 	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetSliderParam (parameter, value); }
+	@Override
 	public double getParam (PARAM_N parameter)
 	{ return dJointGetSliderParam (parameter); }
 	// TODO: expose params through methods

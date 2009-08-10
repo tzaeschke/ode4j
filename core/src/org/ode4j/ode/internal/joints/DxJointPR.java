@@ -235,6 +235,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	}
 
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -273,6 +274,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
@@ -619,6 +621,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	}
 
 
+	@Override
 	void setRelativeValues()
 	{
 	    DVector3 anchor = new DVector3();
@@ -677,8 +680,10 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	public double getPositionRate()
 	{ return dJointGetPRPositionRate (); }
 
+	@Override
 	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetPRParam (parameter, value); }
+	@Override
 	public double getParam (PARAM_N parameter)
 	{ return dJointGetPRParam (parameter); }
 

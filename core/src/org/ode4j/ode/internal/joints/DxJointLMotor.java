@@ -82,6 +82,7 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 		}
 	}
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -96,6 +97,7 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 		}
 	}
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
@@ -224,8 +226,10 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 	public void getAxis (int anum, DVector3 result)
 	{ dJointGetLMotorAxis (anum, result); }
 
+	@Override
 	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetLMotorParam (parameter, value); }
+	@Override
 	public double getParam (PARAM_N parameter)
 	{ return dJointGetLMotorParam (parameter); }
 

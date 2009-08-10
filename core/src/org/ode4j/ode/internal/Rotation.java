@@ -185,7 +185,7 @@ public class Rotation extends Matrix {
 	public static void dQSetIdentity (DQuaternion q)
 	{
 		//dAASSERT (q);
-		q.set(1, 0, 0, 0);
+		q.setIdentity();
 	}
 
 

@@ -20,6 +20,7 @@ public class DVectorN {
 		System.arraycopy(data, 0, v, 0, v.length);
 	}
 
+	@Override
 	public DVectorN clone() {
 		return new DVectorN(this);
 	}

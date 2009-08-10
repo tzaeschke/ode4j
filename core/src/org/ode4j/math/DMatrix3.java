@@ -70,6 +70,7 @@ public final class DMatrix3 implements DMatrix3C {
 	/**
 	 * @deprecated Use set(..) instead
 	 */
+	@Override
 	public DMatrix3 clone() {
 		return new DMatrix3(this);
 	}

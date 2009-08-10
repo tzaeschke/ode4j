@@ -369,7 +369,7 @@ public abstract class DLCPSlow {
 				A1.set(j, i, AROW(i,j));
 			}
 		}
-		DMatrixN A2 = A1.selectNew (nC,C,nC,C);
+		DMatrixN A2 = A1.newSubMatrix (nC,C,nC,C);
 
 		// printf ("A1=\n"); A1.print(); printf ("\n");
 		// printf ("A2=\n"); A2.print(); printf ("\n");
@@ -382,7 +382,7 @@ public abstract class DLCPSlow {
 		L.clearUpperTriangle();
 		for (i=0; i<nC; i++) L.set(i, i, 1);//L(i,i) = 1;
 		//TODO is this correct? dMatrixN A3 = L * D * L.transpose();
-		DMatrixN A3 = L.mulNew( D.mulNew( L.transposeNew() ));
+		DMatrixN A3 = L.mulNew( D.mulNew( L.reTranspose() ));
 //		dMatrixN A3 = L.mulNew(D).mulNew( L.transposeNew() );
 
 

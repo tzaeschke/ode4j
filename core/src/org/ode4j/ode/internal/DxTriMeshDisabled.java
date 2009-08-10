@@ -24,7 +24,7 @@ package org.ode4j.ode.internal;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DTriMeshData;
-import org.ode4j.ode.internal.Common.dMatrix4;
+import org.ode4j.ode.internal.Common.DMatrix4;
 
 class DxTriMeshDisabled extends DxTriMesh {
 
@@ -76,16 +76,18 @@ class DxTriMeshDisabled extends DxTriMesh {
 	//dxTriMesh::~dxTriMesh(){}
 
 	//int dxTriMesh::AABBTest(dxGeom* g, dReal aabb[6]) { return 0; }
+	@Override
 	boolean AABBTest(DAABB aabb) {
 		return false;
 	}
 	//void dxTriMesh::computeAABB() { dSetZero (aabb,6); }
+	@Override
 	void computeAABB() {
 		_aabb.setZero();
 	}
 
 	//TODO TZ report: identity IS NOT an indentity matrix!
-	private static final dMatrix4 identity = new dMatrix4 (
+	private static final DMatrix4 identity = new DMatrix4 (
 			( 0.0 ), ( 0.0 ), ( 0.0 ), ( 0.0 ),
 			( 0.0 ), ( 0.0 ), ( 0.0 ), ( 0.0 ),
 			( 0.0 ), ( 0.0 ), ( 0.0 ), ( 0.0 ),
@@ -100,10 +102,10 @@ class DxTriMeshDisabled extends DxTriMesh {
 	public Object dGeomTriMeshDataGet(DTriMeshData g, int data_id) { return null; }
 
 	//ODE_API 
-	void dGeomTriMeshSetLastTransform( DGeom g, dMatrix4 last_trans ) {}
+	void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {}
 	//ODE_API 
 	//dReal* dGeomTriMeshGetLastTransform( dGeom g ) { return identity; }
-	dMatrix4 dGeomTriMeshGetLastTransform( DGeom g ) { return identity; }
+	DMatrix4 dGeomTriMeshGetLastTransform( DGeom g ) { return identity; }
 
 	void dGeomTriMeshSetData(DGeom g, DTriMeshData Data) {}
 	DTriMeshData dGeomTriMeshGetData(DGeom g) { return null; }

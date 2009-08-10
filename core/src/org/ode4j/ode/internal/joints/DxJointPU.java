@@ -268,6 +268,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -314,6 +315,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
@@ -826,6 +828,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		//return 0;
 	}
 
+	@Override
 	void setRelativeValues()
 	{
 	    DVector3 anchor = new DVector3();
@@ -859,15 +862,20 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	// API PUJoint
 	// **********************************
 
+	@Override
 	public final void setAnchor (double x, double y, double z)
 	{ dJointSetPUAnchor (x, y, z); }
+	@Override
 	public final void setAnchor (DVector3C a)
 	{ dJointSetPUAnchor (a); }
+	@Override
 	public final void setAxis1 (double x, double y, double z)
 	{ dJointSetPUAxis1 (x, y, z); }
+	@Override
 	public final void setAxis1 (DVector3C a)
 	//TODO use dVector3
 	{ setAxis1(a.get0(), a.get1(), a.get2()); }
+	@Override
 	public final void setAxis2 (double x, double y, double z)
 	{ dJointSetPUAxis2 (x, y, z); }
 	public final void setAxis3 (double x, double y, double z)
@@ -882,10 +890,13 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	{ setAxisP(a.get0(), a.get1(), a.get2()); }
 
 	//TZ not final: 'virtual'
+	@Override
 	public void getAnchor (DVector3 result)
 	{ dJointGetPUAnchor (result); }
+	@Override
 	public final void getAxis1 (DVector3 result)
 	{ dJointGetPUAxis1 (result); }
+	@Override
 	public final void getAxis2 (DVector3 result)
 	{ dJointGetPUAxis2 (result); }
 	public final void getAxis3 (DVector3 result)
@@ -894,13 +905,17 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	{ dJointGetPUAxis3 (result); }
 
 	/** TZ Take care to call getAngle1Internal() from dx-classes.*/
+	@Override
 	public final double getAngle1()
 	{ return dJointGetPUAngle1 (); }
+	@Override
 	public final double getAngle1Rate()
 	{ return dJointGetPUAngle1Rate (); }
 	/** TZ Take care to call getAngle2Internal() from dx-classes.*/
+	@Override
 	public final double getAngle2()
 	{ return dJointGetPUAngle2 (); }
+	@Override
 	public final double getAngle2Rate()
 	{ return dJointGetPUAngle2Rate (); }
 
@@ -909,8 +924,10 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	public final double getPositionRate()
 	{ return dJointGetPUPositionRate (); }
 
+	@Override
 	public final void setParam (PARAM_N parameter, double value)
 	{ dJointSetPUParam (parameter, value); }
+	@Override
 	public final double getParam (PARAM_N parameter)
 	{ return dJointGetPUParam (parameter); }
 

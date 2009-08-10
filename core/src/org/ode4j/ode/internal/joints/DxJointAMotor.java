@@ -25,7 +25,6 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAMotorJoint;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.DJoint.PARAM_N;
 
 import static org.ode4j.ode.OdeMath.*;
 
@@ -220,6 +219,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	}
 
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -246,6 +246,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	}
 
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
@@ -564,8 +565,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	public double getAngleRate (int anum)
 	{ return dJointGetAMotorAngleRate (anum); }
 
+	@Override
 	public void setParam (PARAM_N parameter, double value)
 	{ dJointSetAMotorParam (parameter, value); }
+	@Override
 	public double getParam (PARAM_N parameter)
 	{ return dJointGetAMotorParam (parameter); }
 

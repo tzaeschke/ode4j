@@ -205,6 +205,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 
 	// compute axis aligned bounding box
+	@Override
 	void computeAABB()
 	{
 		final DxHeightfieldData d = m_p_data;

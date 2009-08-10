@@ -231,6 +231,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	}
 
 
+	@Override
 	public void
 	getInfo1 ( DxJoint.Info1 info )
 	{
@@ -270,6 +271,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	}
 
 
+	@Override
 	public void
 	getInfo2 ( DxJoint.Info2 info )
 	{
@@ -708,6 +710,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	}
 
 
+	@Override
 	void setRelativeValues()
 	{
 	    DVector3 vec = new DVector3();
@@ -769,8 +772,10 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	public double getPositionRate()
 	{ return dJointGetPistonPositionRate (); }
 
+	@Override
 	public void setParam (PARAM_N parameter, double value)
 		  { dJointSetPistonParam (parameter, value); }
+	@Override
 	public double getParam (PARAM_N parameter)
 		    { return dJointGetPistonParam (parameter); }
 

@@ -59,6 +59,7 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 
 
 	//dxGeomTransform::~dxGeomTransform()
+	@Override
 	public void DESTRUCTOR()
 	{
 		if (obj!=null && cleanup) obj.DESTRUCTOR();//delete obj;
@@ -66,6 +67,7 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 	}
 
 
+	@Override
 	void computeAABB()
 	{
 		if (obj==null) {

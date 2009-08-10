@@ -65,6 +65,7 @@ public class DVector3 implements DVector3I, DVector3C {
 		return this;
 	}
 	
+	@Override
 	public DVector3 clone() {
 		return new DVector3(this);
 	}

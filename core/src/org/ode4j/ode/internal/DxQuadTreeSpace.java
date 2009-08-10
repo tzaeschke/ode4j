@@ -453,6 +453,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	}
 
 	//dxGeom* dxQuadTreeSpace::getGeom(int Index){
+	@Override
 	public DxGeom getGeom(int Index) {
 		Common.dUASSERT(Index >= 0 && Index < count, "index out of range");
 
@@ -527,6 +528,7 @@ PARENTRECURSE:
 	}
 
 	//void dxQuadTreeSpace::add(dxGeom* g){
+	@Override
 	void add(DxGeom g){
 		CHECK_NOT_LOCKED (this);
 		Common.dAASSERT(g);
@@ -548,6 +550,7 @@ PARENTRECURSE:
 	}
 
 	//void dxQuadTreeSpace::remove(dxGeom* g){
+	@Override
 	void remove(DxGeom g){
 		CHECK_NOT_LOCKED(this);
 		Common.dAASSERT(g);
@@ -580,16 +583,19 @@ PARENTRECURSE:
 	}
 
 	//void dxQuadTreeSpace::dirty(dxGeom* g){
+	@Override
 	void dirty(DxGeom g){
 		DirtyList.push(g);
 	}
 
 	//void dxQuadTreeSpace::computeAABB(){
+	@Override
 	void computeAABB(){
 		//
 	}
 
 	//void dxQuadTreeSpace::cleanGeoms(){
+	@Override
 	void cleanGeoms(){
 		// compute the AABBs of all dirty geoms, and clear the dirty flags
 		lock_count++;
@@ -611,6 +617,7 @@ PARENTRECURSE:
 	}
 
 	//void dxQuadTreeSpace::collide(void* UserData, dNearCallback* Callback){
+	@Override
 	public void collide(Object UserData, DNearCallback Callback){
 		dAASSERT(Callback);
 
@@ -661,6 +668,7 @@ PARENTRECURSE:
 
 	//void dxQuadTreeSpace::collide2(void* UserData, dxGeom* g2, 
 	//dNearCallback* Callback){
+	@Override
 	void collide2(Object UserData, DxGeom g2, DNearCallback Callback){
 		dAASSERT(g2, Callback);
 

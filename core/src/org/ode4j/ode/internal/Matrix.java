@@ -863,7 +863,7 @@ public class Matrix extends FastDot {
 				t[i] = L[r * nskip + i] / d[i];
 			for (i = 0; i < (n2 - r); i++)
 				// a[i] = O_M.dDot(L+(r+i)*nskip,t,r) - GETA(A, p[r+i],p[r]);
-				a[i] = F_DOT.dDot(L, (r + i) * nskip, t, r)
+				a[i] = FastDot.dDot(L, (r + i) * nskip, t, 0, r)
 						- GETA(A, p[r + i], p[r], nskip);
 			a[0] += 1.0;
 			// dLDLTAddTL (L + r*nskip+r, d + r, a, n2-r, nskip);
@@ -875,8 +875,6 @@ public class Matrix extends FastDot {
 		if (r < (n2 - 1))
 			memmove(d, r, d, r + 1, (n2 - r - 1));// *sizeof(double));
 	}
-
-	private static final FastDot F_DOT = new FastDot();
 
 	/**
 	 * Given an n*n matrix A (with leading dimension nskip), remove the r'th row
@@ -1235,7 +1233,7 @@ public class Matrix extends FastDot {
 		int exP;
 		// final double[] ell;
 		int ellP;
-		int lskip2, lskip3, i, j;
+		int lskip2, i, j;//lskip3, i, j;
 		/* special handling for L and B because we're solving L1 *transpose* */
 		// L = L + (n-1)*(lskip1+1);
 		// B = B + n-1;
@@ -1246,7 +1244,7 @@ public class Matrix extends FastDot {
 		lskip1 = -lskip1;
 		/* compute lskip values */
 		lskip2 = 2 * lskip1;
-		lskip3 = 3 * lskip1;
+		//lskip3 = 3 * lskip1;
 		/* compute all 4 x 1 blocks of X */
 		for (i = 0; i <= n - 4; i += 4) {
 			/* compute all 4 x 1 block of X, from rows i..i+4-1 */

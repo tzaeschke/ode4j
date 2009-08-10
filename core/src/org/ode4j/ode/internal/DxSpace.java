@@ -298,6 +298,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 
 
 		//				dxSpace::~dxSpace()
+	@Override
 	public void DESTRUCTOR() {
 		CHECK_NOT_LOCKED ();
 		if (cleanup) {
@@ -324,12 +325,13 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	}
 
 
+	@Override
 	void computeAABB()
 	{
 		//if (_first != null) {
 		if (!_geoms.isEmpty()) {
-			int i;
-			double[] a = new double[6];
+//			int i;
+//			double[] a = new double[6];
 			DAABB aabb = new DAABB();
 			aabb.set( dInfinity, -dInfinity,
 					dInfinity, -dInfinity,

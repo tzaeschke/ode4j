@@ -30,7 +30,7 @@ public abstract class DObject extends DBase {
 	//to by `first'.
 
 	//static void addObjectToList (dObject *obj, dObject **first)
-	public static <T extends DObject>void addObjectToList (T obj, 
+	public static <T extends DObject> void addObjectToList (T obj, 
 			Ref<T> first)
 	{
 //		System.err.println("ADDING OBJ: " + obj.getClass().getName());

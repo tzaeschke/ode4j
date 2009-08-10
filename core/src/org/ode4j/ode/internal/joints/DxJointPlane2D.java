@@ -78,6 +78,7 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 
 
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -94,6 +95,7 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 
 
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{

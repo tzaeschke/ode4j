@@ -39,6 +39,7 @@ public class DxJointNull extends DxJoint implements DNullJoint
 		super(w);
 	}
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -47,6 +48,7 @@ public class DxJointNull extends DxJoint implements DNullJoint
 	}
 
 
+	@Override
 	public void
 	getInfo2( DxJoint.Info2 info )
 	{
