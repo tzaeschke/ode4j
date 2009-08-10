@@ -13,6 +13,7 @@ the rules for this file:
 2009-Aug-10 Tilmann Zäschke
 		* Reduced warnings
 		* Added @Override labels
+		* Javadoc & API for DWorld completed
 
 2009-Jul-22 Tilmann Zäschke
 		* Copied javadoc for CppMath API.
