@@ -834,11 +834,11 @@ public class DxBody extends DObject implements DBody, Cloneable {
 			flags &= ~dxBodyAutoDisable;
 			// (mg) we should also reset the IsDisabled state to correspond to the DoDisabling flag
 			flags &= ~dxBodyDisabled;
-			adis.idle_steps = world.dWorldGetAutoDisableSteps(world);
-			adis.idle_time = world.dWorldGetAutoDisableTime(world);
+			adis.idle_steps = world.getAutoDisableSteps();
+			adis.idle_time = world.getAutoDisableTime();
 			// resetting the average calculations too
 			dBodySetAutoDisableAverageSamplesCount( 
-					world.dWorldGetAutoDisableAverageSamplesCount(world) );
+					world.getAutoDisableAverageSamplesCount() );
 		}
 		else
 		{

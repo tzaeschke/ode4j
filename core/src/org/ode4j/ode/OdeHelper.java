@@ -228,6 +228,11 @@ public abstract class OdeHelper {
 
 
 	// World
+	/**
+	 * @brief Create a new, empty world and return its ID number.
+	 * @return an identifier
+	 * @ingroup world
+	 */
 	public static DWorld createWorld () {
 		return DxWorld.dWorldCreate();
 	}

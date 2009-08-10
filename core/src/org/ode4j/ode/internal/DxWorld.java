@@ -170,9 +170,8 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
-	void dWorldGetGravity (DxWorld w, DVector3 g)
+	private void dWorldGetGravity (DVector3 g)
 	{
-		dAASSERT (w);
 		g.set(gravity);
 		//	  g[0] = w.gravity[0];
 		//	  g[1] = w.gravity[1];
@@ -188,10 +187,9 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
-	double dWorldGetERP (DxWorld w)
+	private double dWorldGetERP ()
 	{
-		dAASSERT (w);
-		return w.global_erp;
+		return global_erp;
 	}
 
 
@@ -203,10 +201,9 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
-	double dWorldGetCFM (DxWorld w)
+	private double dWorldGetCFM ()
 	{
-		dAASSERT (w);
-		return w.global_cfm;
+		return global_cfm;
 	}
 
 
@@ -215,7 +212,7 @@ public class DxWorld extends DBase implements DWorld {
 	{
 		//dUASSERT (w,"bad world argument");
 		dUASSERT (stepsize > 0,"stepsize must be > 0");
-		dxProcessIslands (this,stepsize,Step.INSTANCE);//&dInternalStepIsland);
+		dxProcessIslands (stepsize,Step.INSTANCE);//&dInternalStepIsland);
 	}
 
 
@@ -224,15 +221,14 @@ public class DxWorld extends DBase implements DWorld {
 	{
 		//	  dUASSERT (w,"bad world argument");
 		dUASSERT (stepsize > 0,"stepsize must be > 0");
-		dxProcessIslands (this,stepsize,DxQuickStep.INSTANCE);//dxQuickStepper);
+		dxProcessIslands (stepsize,DxQuickStep.INSTANCE);//dxQuickStepper);
 	}
 
 
-	void dWorldImpulseToForce (DxWorld w, double stepsize,
+	private void dWorldImpulseToForce (double stepsize,
 			double ix, double iy, double iz,
 			DVector3 force)
 	{
-		dAASSERT (w);
 		stepsize = dRecip(stepsize);
 //		force.v[0] = stepsize * ix;
 //		force.v[1] = stepsize * iy;
@@ -244,38 +240,33 @@ public class DxWorld extends DBase implements DWorld {
 
 	// world auto-disable functions
 
-	double dWorldGetAutoDisableLinearThreshold (DxWorld w)
+	private double dWorldGetAutoDisableLinearThreshold ()
 	{
-		dAASSERT(w);
-		return dSqrt (w.adis.linear_average_threshold);
+		return dSqrt (adis.linear_average_threshold);
 	}
 
 
-	void dWorldSetAutoDisableLinearThreshold (DxWorld w, double linear_average_threshold)
+	private void dWorldSetAutoDisableLinearThreshold (double linear_average_threshold)
 	{
-		dAASSERT(w);
-		w.adis.linear_average_threshold = linear_average_threshold * linear_average_threshold;
+		adis.linear_average_threshold = linear_average_threshold * linear_average_threshold;
 	}
 
 
-	double dWorldGetAutoDisableAngularThreshold (DxWorld w)
+	private double dWorldGetAutoDisableAngularThreshold ()
 	{
-		dAASSERT(w);
-		return dSqrt (w.adis.angular_average_threshold);
+		return dSqrt (adis.angular_average_threshold);
 	}
 
 
-	void dWorldSetAutoDisableAngularThreshold (DxWorld w, double angular_average_threshold)
+	private void dWorldSetAutoDisableAngularThreshold (double angular_average_threshold)
 	{
-		dAASSERT(w);
-		w.adis.angular_average_threshold = angular_average_threshold * angular_average_threshold;
+		adis.angular_average_threshold = angular_average_threshold * angular_average_threshold;
 	}
 
 
-	int dWorldGetAutoDisableAverageSamplesCount (DxWorld w)
+	private int dWorldGetAutoDisableAverageSamplesCount ()
 	{
-		dAASSERT(w);
-		return w.adis.average_samples;
+		return adis.average_samples;
 	}
 
 
@@ -289,38 +280,33 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
-	int dWorldGetAutoDisableSteps (DxWorld w)
+	private int dWorldGetAutoDisableSteps ()
 	{
-		dAASSERT(w);
-		return w.adis.idle_steps;
+		return adis.idle_steps;
 	}
 
 
-	void dWorldSetAutoDisableSteps (DxWorld w, int steps)
+	private void dWorldSetAutoDisableSteps (int steps)
 	{
-		dAASSERT(w);
-		w.adis.idle_steps = steps;
+		adis.idle_steps = steps;
 	}
 
 
-	double dWorldGetAutoDisableTime (DxWorld w)
+	private double dWorldGetAutoDisableTime ()
 	{
-		dAASSERT(w);
-		return w.adis.idle_time;
+		return adis.idle_time;
 	}
 
 
-	void dWorldSetAutoDisableTime (DxWorld w, double time)
+	private void dWorldSetAutoDisableTime (double time)
 	{
-		dAASSERT(w);
-		w.adis.idle_time = time;
+		adis.idle_time = time;
 	}
 
 
-	int dWorldGetAutoDisableFlag (DxWorld w)
+	private boolean dWorldGetAutoDisableFlag ()
 	{
-		dAASSERT(w);
-		return w.body_flags & DxBody.dxBodyAutoDisable;
+		return (body_flags & DxBody.dxBodyAutoDisable) != 0;
 	}
 
 
@@ -337,34 +323,29 @@ public class DxWorld extends DBase implements DWorld {
 
 	// world damping functions
 
-	double dWorldGetLinearDampingThreshold(DxWorld w)
+	private double dWorldGetLinearDampingThreshold()
 	{
-		dAASSERT(w);
-		return dSqrt(w.dampingp.linear_threshold);
+		return dSqrt(dampingp.linear_threshold);
 	}
 
-	void dWorldSetLinearDampingThreshold(DxWorld w, double threshold)
+	private void dWorldSetLinearDampingThreshold(double threshold)
 	{
-		dAASSERT(w);
-		w.dampingp.linear_threshold = threshold*threshold;
+		dampingp.linear_threshold = threshold*threshold;
 	}
 
-	double dWorldGetAngularDampingThreshold(DxWorld w)
+	private double dWorldGetAngularDampingThreshold()
 	{
-		dAASSERT(w);
-		return dSqrt(w.dampingp.angular_threshold);
+		return dSqrt(dampingp.angular_threshold);
 	}
 
-	void dWorldSetAngularDampingThreshold(DxWorld w, double threshold)
+	private void dWorldSetAngularDampingThreshold(double threshold)
 	{
-		dAASSERT(w);
-		w.dampingp.angular_threshold = threshold*threshold;
+		dampingp.angular_threshold = threshold*threshold;
 	}
 
-	double dWorldGetLinearDamping(DxWorld w)
+	private double dWorldGetLinearDamping()
 	{
-		dAASSERT(w);
-		return w.dampingp.linear_scale;
+		return dampingp.linear_scale;
 	}
 
 	public void dWorldSetLinearDamping(double scale)
@@ -395,17 +376,15 @@ public class DxWorld extends DBase implements DWorld {
 		dampingp.angular_scale = scale;
 	}
 
-	void dWorldSetDamping(DxWorld w, double linear_scale, double angular_scale)
+	private void dWorldSetDamping(double linear_scale, double angular_scale)
 	{
-		dAASSERT(w);
-		w.dWorldSetLinearDamping(linear_scale);
-		w.dWorldSetAngularDamping(angular_scale);
+		dWorldSetLinearDamping(linear_scale);
+		dWorldSetAngularDamping(angular_scale);
 	}
 
-	double dWorldGetMaxAngularSpeed(DxWorld w)
+	private double dWorldGetMaxAngularSpeed()
 	{
-		dAASSERT(w);
-		return w.max_angular_speed;
+		return max_angular_speed;
 	}
 
 //	public void dWorldSetMaxAngularSpeed(dxWorld w, double max_speed)
@@ -428,24 +407,21 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
-	int dWorldGetQuickStepNumIterations (DxWorld w)
+	private int dWorldGetQuickStepNumIterations ()
 	{
-		dAASSERT(w);
-		return w.qs.num_iterations;
+		return qs.num_iterations;
 	}
 
 
-	void dWorldSetQuickStepW (DxWorld w, double param)
+	private void dWorldSetQuickStepW (double param)
 	{
-		dAASSERT(w);
-		w.qs.w = param;
+		qs.w = param;
 	}
 
 
-	double dWorldGetQuickStepW (DxWorld w)
+	private double dWorldGetQuickStepW ()
 	{
-		dAASSERT(w);
-		return w.qs.w;
+		return qs.w;
 	}
 
 
@@ -457,10 +433,9 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
-	double dWorldGetContactMaxCorrectingVel (DxWorld w)
+	private double dWorldGetContactMaxCorrectingVel ()
 	{
-		dAASSERT(w);
-		return w.contactp.max_vel;
+		return contactp.max_vel;
 	}
 
 
@@ -472,10 +447,9 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
-	double dWorldGetContactSurfaceLayer (DxWorld w)
+	private double dWorldGetContactSurfaceLayer ()
 	{
-		dAASSERT(w);
-		return w.contactp.min_depth;
+		return contactp.min_depth;
 	}
 
 	//**** FROM util.cpp TZ
@@ -502,7 +476,7 @@ public class DxWorld extends DBase implements DWorld {
 	// re-enabled if they are found to be part of an active island.
 
 	//	void dxProcessIslands (dxWorld *world, dReal stepsize, dstepper_fn_t stepper)
-	void dxProcessIslands (DxWorld world, double stepsize, dstepper_fn_t stepper)
+	void dxProcessIslands (double stepsize, dstepper_fn_t stepper)
 	{
 		//		  dxBody *b,*bb,**body;
 		//		  dxJoint *j,**joint;
@@ -510,30 +484,30 @@ public class DxWorld extends DBase implements DWorld {
 		DxJoint j,joint[];
 
 		// nothing to do if no bodies
-		if (world.nb <= 0) return;
+		if (nb <= 0) return;
 
 		// handle auto-disabling of bodies
-		dInternalHandleAutoDisabling (world,stepsize);
+		dInternalHandleAutoDisabling (stepsize);
 
 		// make arrays for body and joint lists (for a single island) to go into
-		body = new DxBody[world.nb];//(dxBody**) ALLOCA (world.nb * sizeof(dxBody*));
-		joint = new DxJoint[world.nj];//(dxJoint**) ALLOCA (world.nj * sizeof(dxJoint*));
+		body = new DxBody[nb];//(dxBody**) ALLOCA (world.nb * sizeof(dxBody*));
+		joint = new DxJoint[nj];//(dxJoint**) ALLOCA (world.nj * sizeof(dxJoint*));
 		int bcount = 0;	// number of bodies in `body'
 		int jcount = 0;	// number of joints in `joint'
 
 		// set all body/joint tags to 0
-		for (b=world.firstbody.get(); b!=null; b=(DxBody)b.getNext()) b.tag = 0;
-		for (j=world.firstjoint.get(); j!=null; j=(DxJoint)j.getNext()) j.tag = 0;
+		for (b=firstbody.get(); b!=null; b=(DxBody)b.getNext()) b.tag = 0;
+		for (j=firstjoint.get(); j!=null; j=(DxJoint)j.getNext()) j.tag = 0;
 
 		// allocate a stack of unvisited bodies in the island. the maximum size of
 		// the stack can be the lesser of the number of bodies or joints, because
 		// new bodies are only ever added to the stack by going through untagged
 		// joints. all the bodies in the stack must be tagged!
-		int stackalloc = (world.nj < world.nb) ? world.nj : world.nb;
+		int stackalloc = (nj < nb) ? nj : nb;
 		//	  dxBody **stack = (dxBody**) ALLOCA (stackalloc * sizeof(dxBody*));
 		DxBody[] stack = new DxBody[stackalloc];//**) ALLOCA (stackalloc * sizeof(dxBody*));
 
-		for (bb=world.firstbody.get(); bb!=null; bb=(DxBody)bb.getNext()) {
+		for (bb=firstbody.get(); bb!=null; bb=(DxBody)bb.getNext()) {
 			// get bb = the next enabled, untagged body, and tag it
 			if (bb.tag!=0 || ((bb.flags & DxBody.dxBodyDisabled)!=0)) continue;
 			bb.tag = 1;
@@ -565,12 +539,12 @@ public class DxWorld extends DBase implements DWorld {
 						}
 					}
 				}
-				dIASSERT(stacksize <= world.nb);
-				dIASSERT(stacksize <= world.nj);
+				dIASSERT(stacksize <= nb);
+				dIASSERT(stacksize <= nj);
 			}
 
 			// now do something with body and joint lists
-			stepper.run (world,body,bcount,joint,jcount,stepsize);
+			stepper.run (this,body,bcount,joint,jcount,stepsize);
 
 			// what we've just done may have altered the body/joint tag values.
 			// we must make sure that these tags are nonzero.
@@ -587,7 +561,7 @@ public class DxWorld extends DBase implements DWorld {
 		// unconnected joints, and joints that are connected to disabled bodies)
 		// were tagged.
 		if (!dNODEBUG) {//# ifndef dNODEBUG
-			for (b=world.firstbody.get(); b != null; b=(DxBody)b.getNext()) {
+			for (b=firstbody.get(); b != null; b=(DxBody)b.getNext()) {
 				if ((b.flags & DxBody.dxBodyDisabled) != 0) {
 					if (b.tag!=0) dDebug (0,"disabled body tagged");
 				}
@@ -595,7 +569,7 @@ public class DxWorld extends DBase implements DWorld {
 					if (b.tag==0) dDebug (0,"enabled body not tagged");
 				}
 			}
-			for (j=world.firstjoint.get(); j != null; j=(DxJoint)j.getNext()) {
+			for (j=firstjoint.get(); j != null; j=(DxJoint)j.getNext()) {
 				if ( ((j.node[0].body!=null && (j.node[0].body.flags & DxBody.dxBodyDisabled)==0) ||
 						(j.node[1].body!=null && (j.node[1].body.flags & DxBody.dxBodyDisabled)==0)) 
 					&& j.isEnabledAndDynamic() ){
@@ -612,10 +586,10 @@ public class DxWorld extends DBase implements DWorld {
 	//****************************************************************************
 	// Auto disabling
 
-	void dInternalHandleAutoDisabling (DxWorld world, double stepsize)
+	void dInternalHandleAutoDisabling (double stepsize)
 	{
 		DxBody bb;
-		for ( bb=world.firstbody.get(); bb!=null; bb=(DxBody)bb.getNext() )
+		for ( bb=firstbody.get(); bb!=null; bb=(DxBody)bb.getNext() )
 		{
 			// don't freeze objects mid-air (patch 1586738)
 			if ( bb.firstjoint.get() == null ) continue;
@@ -763,56 +737,43 @@ public class DxWorld extends DBase implements DWorld {
 	// API dWorld
 	// ************************************************************
 	
-	// intentionally undefined, don't use these
-	//		  dWorld (const dWorld &);
-	//		  void operator= (const dWorld &);
-//
-//	public dWorld()
-//	{ _id = dxWorld.dWorldCreate(); }
 	//~dWorld()
 	@Override
 	public void DESTRUCTOR()
 //	{ dWorldDestroy (); super.DESTRUCTOR(); }
 	{ super.DESTRUCTOR(); }
 
-//	public dWorld id() 
-//	{ return _id; }
-	//TZ 		  operator dWorld() const
-	//		    { return _id; }
 
 	public void setGravity (double x, double y, double z)
 	{ dWorldSetGravity (x,y,z); }
 	public void setGravity (DVector3C g)
 	{ setGravity (g.get0(), g.get1(), g.get2()); }
 	public void getGravity (DVector3 g) 
-	{ dWorldGetGravity (this,g); }
+	{ dWorldGetGravity (g); }
 
 	public void setERP (double erp)
 	{ dWorldSetERP(erp); }
 	public double getERP() 
-	{ return dWorldGetERP(this); }
+	{ return dWorldGetERP(); }
 
 	public void setCFM (double cfm)
 	{ dWorldSetCFM(cfm); }
 	public double getCFM() 
-	{ return dWorldGetCFM(this); }
+	{ return dWorldGetCFM(); }
 
 	public void step (double stepsize)
 	{ dWorldStep (stepsize); }
 
-	public void stepFast1 (double stepsize, int maxiterations)
-	{ //TODO dWorldStepFast1 (this,stepsize,maxiterations); 
-		throw new UnsupportedOperationException();
+	public void stepFast1 (double stepsize, int maxiterations) {
+		throw new UnsupportedOperationException("Not implemented in ode4j.");
 	}
 	//TZ TODO report:		  void setAutoEnableDepthSF1(dWorld, int depth)
-	public void setAutoEnableDepthSF1(int depth)
-	{ //TODO dWorldSetAutoEnableDepthSF1 (this, depth); }
-		throw new UnsupportedOperationException();
+	public void setAutoEnableDepthSF1(int depth) {
+		throw new UnsupportedOperationException("Not implemented in ODE.");
 	}
 	//TZ TODO report:		  int getAutoEnableDepthSF1(dWorld) 
-	public int getAutoEnableDepthSF1() 
-	{ //TODO return dWorldGetAutoEnableDepthSF1 (this); }
-		throw new UnsupportedOperationException();
+	public int getAutoEnableDepthSF1() {
+		throw new UnsupportedOperationException("Not implemented in ODE.");
 	}
 
 	public void quickStep(double stepsize)
@@ -820,43 +781,43 @@ public class DxWorld extends DBase implements DWorld {
 	public void setQuickStepNumIterations(int num)
 	{ dWorldSetQuickStepNumIterations (num); }
 	public int getQuickStepNumIterations() 
-	{ return dWorldGetQuickStepNumIterations (this); }
+	{ return dWorldGetQuickStepNumIterations (); }
 	public void setQuickStepW(double over_relaxation)
-	{ dWorldSetQuickStepW (this, over_relaxation); }
+	{ dWorldSetQuickStepW (over_relaxation); }
 	public double getQuickStepW() 
-	{ return dWorldGetQuickStepW (this); }
+	{ return dWorldGetQuickStepW (); }
 
 	public void  setAutoDisableLinearThreshold (double threshold) 
-	{ dWorldSetAutoDisableLinearThreshold (this,threshold); }
+	{ dWorldSetAutoDisableLinearThreshold (threshold); }
 	public double getAutoDisableLinearThreshold()
-	{ return dWorldGetAutoDisableLinearThreshold (this); }
+	{ return dWorldGetAutoDisableLinearThreshold (); }
 	public void setAutoDisableAngularThreshold (double threshold)
-	{ dWorldSetAutoDisableAngularThreshold (this,threshold); }
+	{ dWorldSetAutoDisableAngularThreshold (threshold); }
 	public double getAutoDisableAngularThreshold()
-	{ return dWorldGetAutoDisableAngularThreshold (this); }
+	{ return dWorldGetAutoDisableAngularThreshold (); }
 	public void setAutoDisableSteps (int steps)
-	{ dWorldSetAutoDisableSteps (this,steps); }
+	{ dWorldSetAutoDisableSteps (steps); }
 	public int getAutoDisableSteps()
-	{ return dWorldGetAutoDisableSteps (this); }
+	{ return dWorldGetAutoDisableSteps (); }
 	public void setAutoDisableTime (double time)
-	{ dWorldSetAutoDisableTime (this,time); }
+	{ dWorldSetAutoDisableTime (time); }
 	public double getAutoDisableTime() 
-	{ return dWorldGetAutoDisableTime (this); }
+	{ return dWorldGetAutoDisableTime (); }
 	public void setAutoDisableFlag (boolean do_auto_disable)
 	{ dWorldSetAutoDisableFlag (do_auto_disable); }
-	public int getAutoDisableFlag() 
-	{ return dWorldGetAutoDisableFlag (this); }
+	public boolean getAutoDisableFlag() 
+	{ return dWorldGetAutoDisableFlag (); }
 
 	public double getLinearDampingThreshold() 
-	{ return dWorldGetLinearDampingThreshold(this); }
+	{ return dWorldGetLinearDampingThreshold(); }
 	public void setLinearDampingThreshold(double threshold)
-	{ dWorldSetLinearDampingThreshold(this, threshold); }
+	{ dWorldSetLinearDampingThreshold(threshold); }
 	public double getAngularDampingThreshold() 
-	{ return dWorldGetAngularDampingThreshold(this); }
+	{ return dWorldGetAngularDampingThreshold(); }
 	public void setAngularDampingThreshold(double threshold)
-	{ dWorldSetAngularDampingThreshold(this, threshold); }
+	{ dWorldSetAngularDampingThreshold(threshold); }
 	public double getLinearDamping() 
-	{ return dWorldGetLinearDamping(this); }
+	{ return dWorldGetLinearDamping(); }
 	public void setLinearDamping(double scale)
 	{ dWorldSetLinearDamping(scale); }
 	public double getAngularDamping() 
@@ -864,21 +825,21 @@ public class DxWorld extends DBase implements DWorld {
 	public void setAngularDamping(double scale)
 	{ dWorldSetAngularDamping(scale); }
 	public void setDamping(double linear_scale, double angular_scale)
-	{ dWorldSetDamping(this, linear_scale, angular_scale); }
+	{ dWorldSetDamping(linear_scale, angular_scale); }
 
 	public 	double getMaxAngularSpeed() 
-	{ return dWorldGetMaxAngularSpeed(this); }
+	{ return dWorldGetMaxAngularSpeed(); }
 	public void setMaxAngularSpeed(double max_speed)
 	{ dWorldSetMaxAngularSpeed(max_speed); }
 
 	public void setContactSurfaceLayer(double depth)
 	{ dWorldSetContactSurfaceLayer (depth); }
 	public double getContactSurfaceLayer() 
-	{ return dWorldGetContactSurfaceLayer (this); }
+	{ return dWorldGetContactSurfaceLayer (); }
 
 	public void impulseToForce (double stepsize, double ix, double iy, double iz,
 			DVector3 force)
-	{ dWorldImpulseToForce (this,stepsize,ix,iy,iz,force); }
+	{ dWorldImpulseToForce (stepsize,ix,iy,iz,force); }
 
 
 	@Override
@@ -896,5 +857,43 @@ public class DxWorld extends DBase implements DWorld {
 	@Override
 	public void destroy() {
 		dWorldDestroy();
+	}
+
+
+	@Override
+	public double getAutoDisableAngularAverageThreshold() {
+		throw new UnsupportedOperationException("Not implemented in ODE.");
+	}
+
+
+	@Override
+	public int getAutoDisableAverageSamplesCount() {
+		return dWorldGetAutoDisableAverageSamplesCount();
+	}
+
+
+	@Override
+	public double getAutoDisableLinearAverageThreshold() {
+		throw new UnsupportedOperationException("Not implemented in ODE.");
+	}
+
+
+	@Override
+	public double getContactMaxCorrectingVel() {
+		return dWorldGetContactMaxCorrectingVel();
+	}
+
+
+	@Override
+	public void setAutoDisableAngularAverageThreshold(
+			double angularAverageThreshold) {
+		throw new UnsupportedOperationException("Not implemented in ODE.");
+	}
+
+
+	@Override
+	public void setAutoDisableLinearAverageThreshold(
+			double linearAverageThreshold) {
+		throw new UnsupportedOperationException("Not implemented in ODE.");
 	}
 }
