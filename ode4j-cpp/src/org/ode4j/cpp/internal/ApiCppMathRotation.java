@@ -24,7 +24,6 @@ package org.ode4j.cpp.internal;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.Rotation;
 
 
@@ -59,7 +58,7 @@ public abstract class ApiCppMathRotation extends ApiCppMathMisc {
 
 	//ODE_API 
 	public static void dQSetIdentity (DQuaternion q) {
-		Rotation.dQSetIdentity(q);
+		q.setIdentity();
 	}
 
 	//ODE_API 

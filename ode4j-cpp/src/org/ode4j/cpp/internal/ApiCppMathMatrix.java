@@ -58,10 +58,10 @@ public abstract class ApiCppMathMatrix extends ApiCppMathRotation {
 		return a.dot(b);
 	}
 	public static double dDot (final double[] a, final double[] b, int n) {
-		return FastDot.dDot(a, 0, b, n);
+		return FastDot.dDot(a, 0, b, 0, n);
 	}
 	public static double dDot (final double[] a, int aPos, final double[] b, int n) {
-		return FastDot.dDot(a, aPos, b, n);
+		return FastDot.dDot(a, aPos, b, 0, n);
 	}
 	public static double dDot (final double[] a, int aPos, 
 			final double[] b, int bPos, int n) {

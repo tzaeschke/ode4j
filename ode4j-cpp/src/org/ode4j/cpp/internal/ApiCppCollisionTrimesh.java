@@ -85,7 +85,7 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * It is stored per geom instance, rather than per dTriMeshData.
 	 */
 	//ODE_API 
-	void dGeomTriMeshSetLastTransform( DGeom g, dMatrix4 last_trans ) {
+	void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {
 		throw new UnsupportedOperationException();
 	}
 	public static void dGeomTriMeshSetLastTransform( DGeom g, DoubleArray last_trans ) {
