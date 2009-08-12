@@ -41,6 +41,7 @@ import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.DHeightfield;
 import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DRay;
@@ -52,9 +53,6 @@ import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 import org.ode4j.ode.internal.DxCollisionUtil;
 import org.ode4j.ode.internal.DxBox;
 
-
-//// Include odeinit.h for backward compatibility as some of initialization APIs
-//// were initally declared in current header.
 
 /**
  * @defgroup collide Collision Detection
@@ -1648,8 +1646,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomHeightfieldSetHeightfieldData( DGeom g, DHeightfieldData d ) {
-		throw new UnsupportedOperationException();
+	public static void dGeomHeightfieldSetHeightfieldData( DHeightfield g, DHeightfieldData d ) {
+		g.setHeightfieldData(d);
 	}
 
 
@@ -1663,8 +1661,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	DHeightfieldData dGeomHeightfieldGetHeightfieldData( DGeom g ) {
-		throw new UnsupportedOperationException();
+	public static DHeightfieldData dGeomHeightfieldGetHeightfieldData( DHeightfield g ) {
+		return g.getHeightfieldData();
 	}
 
 
@@ -1788,7 +1786,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 	//ODE_API 
 	// void dSetColliderOverride (int i, int j, dColliderFn *fn) {
-	void dSetColliderOverride (int i, int j, DColliderFn fn) {
-		throw new UnsupportedOperationException();
+	public static void dSetColliderOverride (int i, int j, DColliderFn fn) {
+		OdeHelper.setColliderOverride(i, j, fn);
 	}
 }

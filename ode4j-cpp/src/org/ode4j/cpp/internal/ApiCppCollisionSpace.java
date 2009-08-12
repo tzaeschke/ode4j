@@ -21,6 +21,7 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
+import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHashSpace;
@@ -75,13 +76,14 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	}
 
 	//ODE_API 
-	void dHashSpaceSetLevels (DSpace space, int minlevel, int maxlevel) {
-		throw new UnsupportedOperationException();
+	public static void dHashSpaceSetLevels (DHashSpace space, int minlevel, int maxlevel) {
+		space.setLevels(minlevel, maxlevel);
 	}
 	//ODE_API 
 	// void dHashSpaceGetLevels (dSpace space, int *minlevel, int *maxlevel) {
-	void dHashSpaceGetLevels (DSpace space, int []minlevel, int []maxlevel) {
-		throw new UnsupportedOperationException();
+	public static void dHashSpaceGetLevels (DHashSpace space, RefInt minlevel, RefInt maxlevel) {
+		minlevel.set( space.getLevelMin() );
+		maxlevel.set( space.getLevelMax() );
 	}
 
 	//ODE_API 
@@ -89,8 +91,8 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 		space.setCleanup(mode);
 	}
 	//ODE_API 
-	int dSpaceGetCleanup (DSpace space) {
-		throw new UnsupportedOperationException();
+	public static boolean dSpaceGetCleanup (DSpace space) {
+		return space.getCleanup();
 	}
 
 	/**
@@ -105,7 +107,7 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * zero sublevel.
 	 *
 	 * @note
-	 * The space sublevel @e IS @e NOT automatically updated when one space is inserted
+	 * The space sublevel <b> IS NOT </b> automatically updated when one space is inserted
 	 * into another or removed from one. It is a client's responsibility to update sublevel
 	 * value if necessary.
 	 *
@@ -116,8 +118,8 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * @see dSpaceCollide2
 	 */
 	//ODE_API 
-	void dSpaceSetSublevel (DSpace space, int sublevel) {
-		throw new UnsupportedOperationException();
+	public static void dSpaceSetSublevel (DSpace space, int sublevel) {
+		space.setSublevel(sublevel);
 	}
 
 	/**
@@ -133,8 +135,8 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * @see dSpaceCollide2
 	 */
 	//ODE_API 
-	int dSpaceGetSublevel (DSpace space) {
-		throw new UnsupportedOperationException();
+	public static int dSpaceGetSublevel (DSpace space) {
+		return space.getSublevel();
 	}
 
 
@@ -181,16 +183,16 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 		s.add(g);
 	}
 	//ODE_API 
-	void dSpaceRemove (DSpace s, DGeom g) {
-		throw new UnsupportedOperationException();
+	public static void dSpaceRemove (DSpace s, DGeom g) {
+		s.remove(g);
 	}
 	//ODE_API 
-	int dSpaceQuery (DSpace s, DGeom g) {
-		throw new UnsupportedOperationException();
+	public static boolean dSpaceQuery (DSpace s, DGeom g) {
+		return s.query(g);
 	}
 	//ODE_API 
-	void dSpaceClean (DSpace s) {
-		throw new UnsupportedOperationException();
+	public static void dSpaceClean (DSpace s) {
+		s.cleanGeoms();
 	}
 	//ODE_API 
 	public static int dSpaceGetNumGeoms (DSpace s) {
@@ -203,18 +205,18 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 
 	/**
 	 * @brief Given a space, this returns its class.
-	 *
+	 * <p>
 	 * The ODE classes are:
-	 *  @li dSimpleSpaceClass
-	 *  @li dHashSpaceClass
-	 *  @li dSweepAndPruneSpaceClass
-	 *  @li dQuadTreeSpaceClass
-	 *  @li dFirstUserClass
-	 *  @li dLastUserClass
-	 *
+	 *  <li> dSimpleSpaceClass </li>
+	 *  <li> dHashSpaceClass </li>
+	 *  <li> dSweepAndPruneSpaceClass </li>
+	 *  <li> dQuadTreeSpaceClass </li>
+	 *  <li> dFirstUserClass </li>
+	 *  <li> dLastUserClass </li>
+	 * <p>
 	 * The class id not defined by the user should be between
 	 * dFirstSpaceClass and dLastSpaceClass.
-	 *
+	 * <p>
 	 * User-defined class will return their own number.
 	 *
 	 * @param space the space to query
