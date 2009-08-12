@@ -16,6 +16,7 @@ the rules for this file:
 		* Javadoc & API for DGeom and sub-classes completed
 		* Fixed and reduced dependencies to .cpp and .internal
 		* Fixed Bug#2836288 in DxConvex
+		* Javadoc & API for DJoint and sub-classes completed
 
 2009-Aug-10 Tilmann Zäschke
 		* Reduced warnings
