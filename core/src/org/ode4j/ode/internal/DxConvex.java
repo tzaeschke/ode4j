@@ -405,9 +405,9 @@ public class DxConvex extends DxGeom implements DConvex {
 		//this.planes = planes;
 //		this.planesV = planesV;
 //		this.planesD = planesD;
-		planesV = new DVector3[planes.length];
-		planesD = new double[planes.length];
-		for (int i = 0; i < planes.length; i++) {
+		planesV = new DVector3[planecount];
+		planesD = new double[planecount];
+		for (int i = 0; i < planecount; i++) {
 			planesV[i] = new DVector3(planes[i*4], planes[i*4+1], planes[i*4+2]);
 			planesD[i] = planes[i*4+3];
 		}
