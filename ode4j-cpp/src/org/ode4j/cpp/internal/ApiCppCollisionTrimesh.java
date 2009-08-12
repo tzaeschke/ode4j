@@ -32,6 +32,7 @@ import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DTriMesh.dTriArrayCallback;
 import org.ode4j.ode.DTriMesh.dTriCallback;
 import org.ode4j.ode.DTriMesh.dTriRayCallback;
+import org.ode4j.ode.internal.Common.DMatrix4;
 
 
 /**

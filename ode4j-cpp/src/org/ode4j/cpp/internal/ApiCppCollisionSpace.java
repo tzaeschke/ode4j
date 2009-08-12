@@ -21,34 +21,29 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
-import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHashSpace;
 import org.ode4j.ode.DQuadTreeSpace;
 import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DSpace;
-import org.ode4j.ode.internal.DxGeom;
-import org.ode4j.ode.internal.DxHashSpace;
-import org.ode4j.ode.internal.DxQuadTreeSpace;
-import org.ode4j.ode.internal.DxSAPSpace;
-import org.ode4j.ode.internal.DxSimpleSpace;
-import org.ode4j.ode.internal.DxSpace;
+import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.DSapSpace.AXES;
 
 public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 
 	//ODE_API 
 	public static DSimpleSpace dSimpleSpaceCreate (DSpace space) {
-		return DxSimpleSpace.dSimpleSpaceCreate((DxSpace) space);
+		return OdeHelper.createSimpleSpace(space);
 	}
 	//ODE_API 
 	public static DHashSpace dHashSpaceCreate (DSpace space) {
-		return DxHashSpace.dHashSpaceCreate((DxSpace)space);
+		return OdeHelper.createHashSpace(space);
 	}
 	//ODE_API 
 	public static  DQuadTreeSpace dQuadTreeSpaceCreate (DSpace space, 
 			DVector3C Center, DVector3C Extents, int Depth) {
-		return DxQuadTreeSpace.dQuadTreeSpaceCreate((DxSpace) space, 
+		return OdeHelper.createQuadTreeSpace(space, 
 				Center, Extents, Depth);
 	}
 
@@ -69,14 +64,14 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	public static final int dSAP_AXES_ZYX = ((2)|(1<<2)|(0<<4));
 
 	//ODE_API 
-	public static DSpace dSweepAndPruneSpaceCreate( DSpace space, int axisorder ) {
-		return DxSAPSpace.dSweepAndPruneSpaceCreate((DxSpace)space, axisorder);
+	public static DSpace dSweepAndPruneSpaceCreate( DSpace space, AXES axisorder ) {
+		return OdeHelper.createSapSpace(space, axisorder);
 	}
 
 
 	//ODE_API 
 	public static void dSpaceDestroy (DSpace s) {
-		((DxSpace)s).dSpaceDestroy();
+		s.destroy();
 	}
 
 	//ODE_API 
@@ -91,7 +86,7 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 
 	//ODE_API 
 	public static void dSpaceSetCleanup (DSpace space, boolean mode) {
-		((DxSpace)space).dSpaceSetCleanup(mode);
+		space.setCleanup(mode);
 	}
 	//ODE_API 
 	int dSpaceGetCleanup (DSpace space) {
@@ -183,7 +178,7 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 
 	//ODE_API 
 	public static void dSpaceAdd (DSpace s, DGeom g) {
-		((DxSpace)s).dSpaceAdd((DxGeom) g);
+		s.add(g);
 	}
 	//ODE_API 
 	void dSpaceRemove (DSpace s, DGeom g) {
@@ -199,11 +194,11 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	}
 	//ODE_API 
 	public static int dSpaceGetNumGeoms (DSpace s) {
-		return ((DxSpace)s).dSpaceGetNumGeoms();
+		return s.getNumGeoms();
 	}
 	//ODE_API 
 	public static DGeom dSpaceGetGeom (DSpace s, int i) {
-		return ((DxSpace)s).dSpaceGetGeom(i);
+		return s.getGeom(i);
 	}
 
 	/**

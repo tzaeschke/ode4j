@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
-import org.ode4j.ode.internal.OdeInit;
+import org.ode4j.ode.OdeHelper;
 
 
 /**
@@ -78,13 +78,14 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 *     dAllocateODEDataForThread(dAllocateMaskAll);
 	 * @endcode
 	 *
-	 * @see dInitODE2
-	 * @see dAllocateODEDataForThread
+	 * @see #dInitODE2(int)
+	 * @see #dAllocateODEDataForThread
 	 * @ingroup init
+	 * @deprecated Please use dInitOde2() instead.
 	 */
 	//ODE_API 
 	public static void dInitODE() {
-		OdeInit.dInitODE();
+		OdeHelper.initODE();
 	}
 
 	/**
@@ -99,14 +100,14 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * The @a uiInitFlags parameter specifies initialization options to be used. These
 	 * can be combination of zero or more @c dInitODEFlags flags.
 	 *
-	 * @see dInitODEFlags
-	 * @see dCloseODE
+	 * @see #dInitODEFlags
+	 * @see #dCloseODE()
 	 * @ingroup init
 	 */
 	//ODE_API 
 	//int dInitODE2(unsigned int uiInitFlags/*=0*/) {
 	public static int dInitODE2(int uiInitFlags/*=0*/) {
-		return OdeInit.dInitODE2(uiInitFlags);
+		return OdeHelper.initODE2(uiInitFlags);
 	}
 
 // TODO remove ? TZ disabled for now, may not be required at all.
@@ -161,15 +162,15 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * data has been allocated. The client may retry allocation attempt with the same
 	 * flags when more system resources are available.
 	 *
-	 * @see dAllocateODEDataFlags
-	 * @see dCleanupODEAllDataForThread
+	 * @see #dAllocateODEDataFlags
+	 * @see #dCleanupODEAllDataForThread
 	 * @ingroup init
 	 * @deprecated TZ I guess this can be removed?
 	 */
 	//ODE_API 
 	//	int dAllocateODEDataForThread(unsigned int uiAllocateFlags) {
 	public static int dAllocateODEDataForThread(int uiAllocateFlags) {
-		return OdeInit.dAllocateODEDataForThread(uiAllocateFlags);
+		return OdeHelper.allocateODEDataForThread(uiAllocateFlags);
 	}
 
 //	/**
@@ -219,12 +220,12 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * before calling @c dCloseODE. In particular it is not allowed to call
 	 * @c dCleanupODEAllDataForThread after @c dCloseODE.
 	 *
-	 * @see dInitODE2
-	 * @see dCleanupODEAllDataForThread
+	 * @see #dInitODE2(int)
+	 * @see #dCleanupODEAllDataForThread
 	 * @ingroup init
 	 */
 	//ODE_API 
 	public static void dCloseODE() {
-		OdeInit.dCloseODE();
+		OdeHelper.closeODE();
 	}
 }

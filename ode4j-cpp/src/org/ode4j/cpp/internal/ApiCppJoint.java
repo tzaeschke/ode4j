@@ -41,10 +41,10 @@ import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DAMotorJoint.AMotorMode;
 import org.ode4j.ode.DJoint.PARAM;
 import org.ode4j.ode.DJoint.PARAM_N;
-import org.ode4j.ode.internal.joints.DxJointGroup;
 import org.ode4j.math.DVector3;
 
 public abstract class ApiCppJoint extends ApiCppOther {
@@ -157,7 +157,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DBallJoint dJointCreateBall (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateBall(w, g);
+		return OdeHelper.createBallJoint(w, g);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DHingeJoint dJointCreateHinge (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateHinge(w, g);
+		return OdeHelper.createHingeJoint(w, g);
 	}
 
 
@@ -180,7 +180,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DSliderJoint dJointCreateSlider (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateSlider(w, g);
+		return OdeHelper.createSliderJoint(w, g);
 	}
 
 
@@ -193,7 +193,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	//ODE_API 
 	//	dJoint dJointCreateContact (dWorld, dJointGroup, const dContact *);
 	public static DContactJoint dJointCreateContact (DWorld w, DJointGroup g, final DContact c) {
-		return ODE.dJointCreateContact(w, g, c);
+		return OdeHelper.createContactJoint(w, g, c);
 	}
 
 	/**
@@ -212,7 +212,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DHinge2Joint dJointCreateHinge2 (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateHinge2(w, g);
+		return OdeHelper.createHinge2Joint(w, g);
 	}
 
 
@@ -224,7 +224,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DUniversalJoint dJointCreateUniversal (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateUniversal(w, g);
+		return OdeHelper.createUniversalJoint(w, g);
 	}
 
 
@@ -236,7 +236,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DPRJoint dJointCreatePR (DWorld w, DJointGroup g) {
-		return ODE.dJointCreatePR(w, g);
+		return OdeHelper.createPRJoint(w, g);
 	}
 
 
@@ -248,7 +248,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DPUJoint dJointCreatePU (DWorld w, DJointGroup g) {
-		return ODE.dJointCreatePU(w, g);
+		return OdeHelper.createPUJoint(w, g);
 	}
 
 
@@ -261,7 +261,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DPistonJoint dJointCreatePiston (DWorld w, DJointGroup g) {
-		return ODE.dJointCreatePiston(w, g);
+		return OdeHelper.createPistonJoint(w, g);
 	}
 
 
@@ -273,13 +273,13 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DFixedJoint dJointCreateFixed (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateFixed(w, g);
+		return OdeHelper.createFixedJoint(w, g);
 	}
 
 
 	//ODE_API 
 	public static DNullJoint dJointCreateNull (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateNull(w, g);
+		return OdeHelper.createNullJoint(w, g);
 	}
 
 
@@ -291,7 +291,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DAMotorJoint dJointCreateAMotor (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateAMotor(w, g);
+		return OdeHelper.createAMotorJoint(w, g);
 	}
 
 
@@ -303,7 +303,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DLMotorJoint dJointCreateLMotor (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateLMotor(w, g);
+		return OdeHelper.createLMotorJoint(w, g);
 	}
 
 
@@ -315,7 +315,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DPlane2DJoint dJointCreatePlane2D (DWorld w, DJointGroup g) {
-		return ODE.dJointCreatePlane2D(w, g);
+		return OdeHelper.createPlane2DJoint(w, g);
 	}
 
 
@@ -341,7 +341,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DJointGroup dJointGroupCreate (int max_size) {
-		return DxJointGroup.dJointGroupCreate(max_size);
+		return OdeHelper.createJointGroup();
 	}
 
 
@@ -1478,7 +1478,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return the point on body 1.  If the joint is perfectly satisfied,
+	 * Return the point on body 1.  If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
 	 */
@@ -1564,7 +1564,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return the point on body 1. If the joint is perfectly satisfied,
+	 * Return the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
 	 */
@@ -1576,7 +1576,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return This returns the point on body 2.
+	 * Return the point on body 2.
 	 * @remarks
 	 * You can think of the ball and socket part of a universal joint as
 	 * trying to keep the result of dJointGetBallAnchor() and
@@ -1637,10 +1637,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	//	void dJointGetUniversalAngles (dJoint j, double *angle1, double *angle2);
-	public static void dJointGetUniversalAngles (DUniversalJoint j, 
+	public static void dJointGetUniversalAngles (DUniversalJoint joint, 
 			RefDouble angle1, RefDouble angle2) {
-		angle1.d = j.getAngle1();
-		angle2.d = j.getAngle2();
+		angle1.d = joint.getAngle1();
+		angle2.d = joint.getAngle2();
 	}
 
 
@@ -1688,7 +1688,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return the point on body 1. If the joint is perfectly satisfied, 
+	 * Return the point on body 1. If the joint is perfectly satisfied, 
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
 	 */
@@ -1784,7 +1784,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return the point on body 1. If the joint is perfectly satisfied,
+	 * Return the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
 	 */
@@ -1881,9 +1881,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	//	  void dJointGetPUAngles (dJoint j, double *angle1, double *angle2);
-	public static void dJointGetPUAngles (DPUJoint j, RefDouble angle1, RefDouble angle2) {
-		angle1.d = j.getAngle1();
-		angle2.d = j.getAngle2();
+	public static void dJointGetPUAngles (DPUJoint joint, RefDouble angle1, RefDouble angle2) {
+		angle1.d = joint.getAngle1();
+		angle2.d = joint.getAngle2();
 	}
 
 
@@ -2058,10 +2058,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Get the AMotor axes.
 	 * @param anum selects the axis to change (0,1 or 2).
-	 * @param rel Each axis can have one of three ``relative orientation'' modes.
-	 * <li> 0: The axis is anchored to the global frame.
-	 * <li> 1: The axis is anchored to the first body.
-	 * <li> 2: The axis is anchored to the second body.
+	 * <li> 0: The axis is anchored to the global frame. </li>
+	 * <li> 1: The axis is anchored to the first body. </li>
+	 * <li> 2: The axis is anchored to the second body. </li>
+	 * @param result Each axis can have one of three ``relative orientation'' modes.
 	 * @ingroup joints
 	 */
 	//ODE_API 
@@ -2080,10 +2080,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 *
 	 * For dAMotorEuler mode:
 	 * <li>	Only axes 0 and 2 need to be set. Axis 1 will be determined
-		automatically at each time step.
-	 * <li>	Axes 0 and 2 must be perpendicular to each other.
+		automatically at each time step. </li>
+	 * <li>	Axes 0 and 2 must be perpendicular to each other. </li>
 	 * <li>	Axis 0 must be anchored to the first body, axis 2 must be anchored
-		to the second body.
+		to the second body. </li>
 	 * @ingroup joints
 	 */
 	//ODE_API 
@@ -2132,13 +2132,13 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Get the angular motor mode.
-	 * @param mode must be one of the following constants:
+	 * Mode must be one of the following constants:
 	 * <li> dAMotorUser The AMotor axes and joint angle settings are entirely
-	 * controlled by the user.  This is the default mode.
+	 * controlled by the user.  This is the default mode.</li>
 	 * <li> dAMotorEuler Euler angles are automatically computed.
 	 * The axis a1 is also automatically computed.
 	 * The AMotor axes must be set correctly when in this mode,
-	 * as described below.
+	 * as described below.</li>
 	 * When this mode is initially set the current relative orientations
 	 * of the bodies will correspond to all euler angles at zero.
 	 * @ingroup joints

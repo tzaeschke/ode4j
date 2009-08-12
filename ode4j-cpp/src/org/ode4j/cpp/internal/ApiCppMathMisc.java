@@ -23,19 +23,18 @@ package org.ode4j.cpp.internal;
 
 import org.cpp4j.Cstdio;
 import org.cpp4j.FILE;
-import org.ode4j.ode.internal.Common;
-import org.ode4j.ode.internal.Misc;
+import org.ode4j.ode.OdeMath;
 
 
 /** 
  * miscellaneous math functions. these are mostly useful for testing 
  */
-public abstract class ApiCppMathMisc extends Common {
+public abstract class ApiCppMathMisc {
 
 	/** return 1 if the random number generator is working. */
 	//ODE_API 
 	public static boolean dTestRand() {
-		return Misc.dTestRand();
+		return OdeMath.dTestRand();
 	}
 
 	/** return next 32 bit random number. this uses a not-very-random linear
@@ -43,18 +42,18 @@ public abstract class ApiCppMathMisc extends Common {
 	 */
 	//ODE_API unsigned 
 	public static long dRand() {
-		return Misc.dRand();
+		return OdeMath.dRand();
 	}
 
 	/** get and set the current random number seed. */
 	//ODE_API unsigned 
 	public static long  dRandGetSeed() {
-		return Misc.dRandGetSeed();
+		return OdeMath.dRandGetSeed();
 	}
 	//ODE_API 
 	//	void dRandSetSeed (unsigned long s);
 	public static void dRandSetSeed (long s) {
-		Misc.dRandSetSeed(s);
+		OdeMath.dRandSetSeed(s);
 	}
 
 	/** return a random integer between 0..n-1. the distribution will get worse
@@ -62,13 +61,13 @@ public abstract class ApiCppMathMisc extends Common {
 	 */
 	//ODE_API 
 	public static int dRandInt (int n) {
-		return Misc.dRandInt(n);
+		return OdeMath.dRandInt(n);
 	}
 
 	/** return a random real number between 0..1 */
 	//ODE_API dReal double dRandReal(void);
 	public static double dRandReal() {
-		return Misc.dRandReal();
+		return OdeMath.dRandReal();
 	}
 
 	/** print out a matrix */
@@ -89,28 +88,28 @@ public abstract class ApiCppMathMisc extends Common {
 	//ODE_API 
 	//	void dMakeRandomVector (dReal *A, int n, dReal range);
 	public static void dMakeRandomVector (double []A, int n, double range) {
-		Misc.dMakeRandomVector(A, n, range);
+		OdeMath.dMakeRandomVector(A, n, range);
 	}
 
 	/** make a random matrix with entries between +/- range. A has size n*m. */
 	//ODE_API 
 	//	void dMakeRandomMatrix (dReal *A, int n, int m, dReal range);
 	public static void dMakeRandomMatrix (double []A, int n, int m, double range) {
-		Misc.dMakeRandomMatrix(A, n, m, range);
+		OdeMath.dMakeRandomMatrix(A, n, m, range);
 	}
 
 	/** clear the upper triangle of a square matrix */
 	//ODE_API 
 	//	void dClearUpperTriangle (dReal *A, int n);
 	public static void dClearUpperTriangle (double []A, int n) {
-		Misc.dClearUpperTriangle(A, n);
+		OdeMath.dClearUpperTriangle(A, n);
 	}
 
 	/** return the maximum element difference between the two n*m matrices */
 	//ODE_API 
 	//	dReal dMaxDifference (const dReal *A, const dReal *B, int n, int m);
 	public static double dMaxDifference (final double []A, final double []B, int n, int m) {
-		return Misc.dMaxDifference(A, B, n, m);
+		return OdeMath.dMaxDifference(A, B, n, m);
 	}
 
 	/** return the maximum element difference between the lower triangle of two
@@ -118,7 +117,7 @@ public abstract class ApiCppMathMisc extends Common {
 	//ODE_API 
 	//	dReal dMaxDifferenceLowerTriangle (const dReal *A, const dReal *B, int n);
 	public static double dMaxDifferenceLowerTriangle (final double []A, final double []B, int n) {
-		return Misc.dMaxDifferenceLowerTriangle(A, B, n);
+		return OdeMath.dMaxDifferenceLowerTriangle(A, B, n);
 	}
 
 }

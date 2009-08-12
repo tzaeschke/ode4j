@@ -51,8 +51,6 @@ import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 import org.ode4j.ode.internal.DxCollisionUtil;
 import org.ode4j.ode.internal.DxBox;
-import org.ode4j.ode.internal.DxGeom;
-import org.ode4j.ode.internal.DxSpace;
 
 
 //// Include odeinit.h for backward compatibility as some of initialization APIs
@@ -897,7 +895,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	// void dSpaceCollide2 (dGeom space1, dGeom space2, void *data, dNearCallback *callback) {
 	public static void dSpaceCollide2 (DGeom space1, DGeom space2, Object data, DNearCallback callback) {
-		DxSpace.dSpaceCollide2((DxGeom)space1, (DxGeom)space2, data, callback);
+		OdeHelper.spaceCollide2(space1, space2, data, callback);
 	}
 
 

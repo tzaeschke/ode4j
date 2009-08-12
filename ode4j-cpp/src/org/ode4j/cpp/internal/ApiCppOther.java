@@ -23,11 +23,9 @@ package org.ode4j.cpp.internal;
 
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DJoint;
-import org.ode4j.ode.internal.OdeFactoryImpl;
+import org.ode4j.ode.OdeHelper;
 
 public abstract class ApiCppOther extends ApiCppMass {
-
-	protected static final OdeFactoryImpl ODE = new OdeFactoryImpl();
 	
 	/**
 	 * @ingroup joints
@@ -46,7 +44,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	 */
 	//ODE_API 
 	public static boolean dAreConnected (DBody b1, DBody b2) {
-		return ODE.areConnected((DBody)b1, (DBody)b2);
+		return OdeHelper.areConnected((DBody)b1, (DBody)b2);
 	}
 
 	/**
@@ -65,7 +63,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	//ODE_API 
 	public static boolean dAreConnectedExcluding (DBody body1, DBody body2, 
 			Class<? extends DJoint> ... joint_type) {
-		return ODE._dAreConnectedExcluding((DBody)body1, (DBody)body2, joint_type);
+		return OdeHelper.areConnectedExcluding((DBody)body1, (DBody)body2, joint_type);
 	}
 
 }

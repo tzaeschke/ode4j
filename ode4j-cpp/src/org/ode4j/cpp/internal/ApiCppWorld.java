@@ -426,7 +426,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * @brief Set auto disable angular threshold for newly created bodies.
-	 * @param linear_threshold default is 0.01
+	 * @param angular_threshold default is 0.01
 	 * @ingroup disable
 	 */
 	//ODE_API 
@@ -472,7 +472,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * @brief Set auto disable angular average threshold for newly created bodies.
-	 * @param linear_average_threshold default is 0.01
+	 * @param angular_average_threshold default is 0.01
 	 * @ingroup disable
 	 */
 	//ODE_API 
@@ -721,7 +721,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * @brief Get the default maximum angular speed.
 	 * @ingroup damping
-	 * @see #dBodyGetMaxAngularSpeed()
+	 * @see #dBodyGetMaxAngularSpeed(org.ode4j.ode.DBody)
 	 */
 	//ODE_API 
 	public static double dWorldGetMaxAngularSpeed (DWorld w) {
@@ -733,7 +733,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * @brief Set the default maximum angular speed for new bodies.
 	 * @ingroup damping
-	 * @see #dBodySetMaxAngularSpeed(DWorld)
+	 * @see #dBodySetMaxAngularSpeed(org.ode4j.ode.DBody, double)
 	 */
 	//ODE_API 
 	public static void dWorldSetMaxAngularSpeed (DWorld w, double max_speed) {

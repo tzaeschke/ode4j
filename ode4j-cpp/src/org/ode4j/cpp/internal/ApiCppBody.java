@@ -34,6 +34,7 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DMassC;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.DBody.BodyMoveCallBack;
 
 public abstract class ApiCppBody extends ApiCppJoint {
 
@@ -811,10 +812,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	//	 void dBodySetMovedCallback(dBody b, void (*callback)(dBody body)){
 	void dBodySetMovedCallback(DBody b, BodyMoveCallBack callback){
-		//throw new UnsupportedOperationException();
-		throw new UnsupportedOperationException();
+		b.setMovedCallback(callback);
 	}
 
 
@@ -829,7 +828,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	DGeom dBodyGetFirstGeom (DBody b){
-		throw new UnsupportedOperationException();
+		return b.getFirstGeom();
 	}
 
 
@@ -842,7 +841,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	DGeom dBodyGetNextGeom (DGeom g){
-		throw new UnsupportedOperationException();
+		return g.getBody().getNextGeom(g);
 	}
 
 
