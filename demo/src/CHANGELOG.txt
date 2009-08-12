@@ -12,7 +12,10 @@ the rules for this file:
 
 2009-Aug-12 Tilmann Zäschke
 		* Javadoc & API for DBody completed
+		* Javadoc & API for DSpace and sub-classes completed
+		* Javadoc & API for DGeom and sub-classes completed
 		* Fixed and reduced dependencies to .cpp and .internal
+		* Fixed Bug#2836288 in DxConvex
 
 2009-Aug-10 Tilmann Zäschke
 		* Reduced warnings
