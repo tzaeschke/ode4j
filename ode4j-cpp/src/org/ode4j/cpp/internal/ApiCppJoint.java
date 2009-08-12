@@ -458,20 +458,20 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief Get the type of the joint
 	 * @ingroup joints
 	 * @return the type, being one of these:
-	 * <li> dJointTypeBall
-	 * <li> dJointTypeHinge
-	 * <li> dJointTypeSlider
-	 * <li> dJointTypeContact
-	 * <li> dJointTypeUniversal
-	 * <li> dJointTypeHinge2
-	 * <li> dJointTypeFixed
-	 * <li> dJointTypeNull
-	 * <li> dJointTypeAMotor
-	 * <li> dJointTypeLMotor
-	 * <li> dJointTypePlane2D
-	 * <li> dJointTypePR
-	 * <li> dJointTypePU
-	 * <li> dJointTypePiston
+	 * <li> dJointTypeBall </li>
+	 * <li> dJointTypeHinge </li>
+	 * <li> dJointTypeSlider </li>
+	 * <li> dJointTypeContact </li>
+	 * <li> dJointTypeUniversal </li>
+	 * <li> dJointTypeHinge2 </li>
+	 * <li> dJointTypeFixed </li>
+	 * <li> dJointTypeNull </li>
+	 * <li> dJointTypeAMotor </li>
+	 * <li> dJointTypeLMotor </li>
+	 * <li> dJointTypePlane2D </li>
+	 * <li> dJointTypePR </li>
+	 * <li> dJointTypePU </li>
+	 * <li> dJointTypePiston </li>
 	 */
 	//ODE_API 
 	dJointType dJointGetType (DJoint j) {
@@ -633,8 +633,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddHingeTorque(DHingeJoint joint, double torque) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddHingeTorque(DHingeJoint joint, double torque) {
+		joint.addTorque(torque);
 	}
 
 
@@ -652,8 +652,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetSliderAxisDelta (DSliderJoint j, double x, double y, double z, double ax, double ay, double az) {
-		throw new UnsupportedOperationException();
+	public static void dJointSetSliderAxisDelta (DSliderJoint j, double x, double y, double z, 
+			double ax, double ay, double az) {
+		j.setAxisDelta(x, y, z, ax, ay, az);
 	}
 
 
@@ -728,8 +729,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddHinge2Torques(DUniversalJoint joint, double torque1, double torque2) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddHinge2Torques(DUniversalJoint joint, double torque1, double torque2) {
+		joint.addTorques(torque1, torque2);
 	}
 
 
@@ -864,8 +865,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddUniversalTorques(DUniversalJoint joint, double torque1, double torque2) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddUniversalTorques(DUniversalJoint joint, 
+			double torque1, double torque2) {
+		joint.addTorques(torque1, torque2);
 	}
 
 
@@ -921,8 +923,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddPRTorque (DPRJoint j, double torque) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddPRTorque (DPRJoint j, double torque) {
+		j.addTorque(torque);
 	}
 
 
@@ -1168,7 +1170,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	}
 
 
-	/*
+	/**
 	 * @brief Sets joint parameter
 	 *
 	 * @ingroup joints
@@ -1245,8 +1247,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddAMotorTorques (DAMotorJoint j, double torque1, double torque2, double torque3) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddAMotorTorques (DAMotorJoint j, 
+			double torque1, double torque2, double torque3) {
+		j.addTorques(torque1, torque2, torque3);
 	}
 
 
@@ -1300,7 +1303,6 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @ingroup joints
 	 */
-
 	//ODE_API 
 	public static void dJointSetPlane2DYParam (DPlane2DJoint j, int parameter, double value) {
 		j.setYParam(PARAM.toEnum(parameter), value);
@@ -1311,8 +1313,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetPlane2DAngleParam (DPlane2DJoint j, int parameter, double value) {
-		throw new UnsupportedOperationException();
+	public static void dJointSetPlane2DAngleParam (DPlane2DJoint j, int parameter, double value) {
+		j.setAngleParam(PARAM.toEnum(parameter), value);
 	}
 
 
@@ -1699,7 +1701,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 
 	/**
-	 * @brief Get the PR linear position (i.e. the prismatic's extension)
+	 * @brief Get the PR linear position (i.e. the prismatic's extension).
 	 *
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
@@ -1716,7 +1718,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 
 	/**
-	 * @brief Get the PR linear position's time derivative
+	 * @brief Get the PR linear position's time derivative.
 	 *
 	 * @ingroup joints
 	 */
@@ -1727,12 +1729,12 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 
 	/**
-	   * @brief Get the PR angular position (i.e. the  twist between the 2 bodies)
-	   *
-	   * When the axis is set, the current position of the attached bodies is
-	   * examined and that position will be the zero position.
-	   * @ingroup joints
-	   */
+	 * @brief Get the PR angular position (i.e. the  twist between the 2 bodies)
+	 *
+	 * When the axis is set, the current position of the attached bodies is
+	 * examined and that position will be the zero position.
+	 * @ingroup joints
+	 */
 	//ODE_API
 	public static double dJointGetPRAngle (DPRJoint j) {
 		return j.getAngle();
@@ -2193,7 +2195,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	DJoint dConnectingJoint (DBody b1, DBody b2) {
-		throw new UnsupportedOperationException();
+	public static DJoint dConnectingJoint (DBody b1, DBody b2) {
+		return OdeHelper.connectingJoint(b1, b2);
 	}
 }
