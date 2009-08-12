@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.ode4j.ode.DJoint.PARAM_N;
 
 
 /**

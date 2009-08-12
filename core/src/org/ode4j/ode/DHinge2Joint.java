@@ -23,7 +23,6 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DJoint.PARAM_N;
 
 public interface DHinge2Joint extends DJoint {
 

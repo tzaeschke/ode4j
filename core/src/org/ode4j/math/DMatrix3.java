@@ -322,7 +322,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * //  dir[2] = R[2*4+2];  <br>
   	 * dir.set(R.getColumnView(2));
 	 * </tt>
-	 * @param c The column to return [0, 1, 2].
+	 * @param column The column to return [0, 1, 2].
 	 */
 	public DVector3ColView viewCol(int column) {
 		return new DVector3ColView(column);

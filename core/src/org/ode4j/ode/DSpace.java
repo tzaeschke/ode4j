@@ -57,7 +57,6 @@ public interface DSpace extends DGeom {
 	 * Failure to set manual cleanup flag for a space may lead to some resources 
 	 * remaining leaked until the program exit.
 	 *
-	 * @param space the space to modify
 	 * @param mode 1 for manual cleanup mode and 0 for default cleanup mode
 	 * @ingroup collide
 	 * @see #setManualCleanup(int)
@@ -72,8 +71,7 @@ public interface DSpace extends DGeom {
 	 * Manual cleanup flag marks a space space as eligible for manual thread data cleanup.
 	 * See <tt>setManualCleanup</tt> for more details.
 	 * 
-	 * @param space the space to query
-	 * @returns 1 for manual cleanup mode and 0 for default cleanup mode of the space
+	 * @return 1 for manual cleanup mode and 0 for default cleanup mode of the space
 	 * @ingroup collide
 	 * @see #setManualCleanup(int)
 	 * @see OdeHelper#initODE2(int)
@@ -96,7 +94,6 @@ public interface DSpace extends DGeom {
 	 * into another or removed from one. It is a client's responsibility to update sublevel
 	 * value if necessary.
 	 *
-	 * @param space the space to modify
 	 * @param sublevel the sublevel value to be assigned
 	 * @ingroup collide
 	 * @see #getSublevel()
@@ -110,8 +107,7 @@ public interface DSpace extends DGeom {
 	 * Sublevel affects how the space is handled in spaceCollide2 when it is collided
 	 * with another space. See <tt>setSublevel</tt> for more details.
 	 *
-	 * @param space the space to query
-	 * @returns the sublevel value of the space
+	 * @return the sublevel value of the space
 	 * @ingroup collide
 	 * @see #setSublevel(int)
 	 * @see OdeHelper#spaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)

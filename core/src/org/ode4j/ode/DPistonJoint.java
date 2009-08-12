@@ -23,7 +23,6 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DJoint.PARAM_N;
 
 /**
  * ****************************************************************************
@@ -133,15 +132,13 @@ public interface DPistonJoint extends DJoint {
 	 * dJointSetPistonAnchorOffset(jId, 0, 0, 0, axis[X]*offset, axis[Y]*offset, axis[Z]*offset);  <br>
 	 * // If you request the position you will have: dJointGetPistonPosition(jId) == offset  <br>
 	 * </code>
-	 * @param j The Piston joint for which the anchor point will be set
-	 * @param x The X position of the anchor point in world frame
-	 * @param y The Y position of the anchor point in world frame
-	 * @param z The Z position of the anchor point in world frame
+	 * 
+	 * @param xyz The X, Y and Z position of the anchor point in world frame
 	 * @param dx A delta to be substracted to the X position as if the anchor was set
 	 *           when body1 was at current_position[X] - dx
-	 * @param dx A delta to be substracted to the Y position as if the anchor was set
+	 * @param dy A delta to be substracted to the Y position as if the anchor was set
 	 *           when body1 was at current_position[Y] - dy
-	 * @param dx A delta to be substracted to the Z position as if the anchor was set
+	 * @param dz A delta to be substracted to the Z position as if the anchor was set
 	 *           when body1 was at current_position[Z] - dz
 	 */
 	void setAnchorOffset(DVector3C xyz, double dx, double dy, double dz);

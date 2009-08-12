@@ -191,12 +191,14 @@ public interface DJoint {
 	 */
 	double getParam (PARAM_N type);
 
+	
 	/**
 	 * @brief Manually enable a joint.
-	 * @param dJointID identification of joint.
 	 * @ingroup joints
 	 */
 	void enable();
+	
+	
 	/**
 	 * @brief Manually disable a joint.
 	 * @ingroup joints
@@ -205,6 +207,8 @@ public interface DJoint {
 	 * axes so it can be enabled later.
 	 */
 	void disable();
+	
+	
 	/**
 	 * @brief Check wether a joint is enabled.
 	 * @ingroup joints
@@ -212,6 +216,7 @@ public interface DJoint {
 	 */
 	boolean isEnabled();
 
+	
 	//
 	//// If not implemented it will do nothing as describe in the doc
 	//virtual void setParam (int, dReal) {};

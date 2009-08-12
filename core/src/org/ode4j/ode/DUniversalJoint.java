@@ -23,7 +23,6 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DJoint.PARAM_N;
 
 public interface DUniversalJoint extends DJoint {
 
@@ -173,13 +172,13 @@ public interface DUniversalJoint extends DJoint {
 	 * // If you request the position you will have: dJointGetUniversalAngle2(jId) == 0.17 <br>
 	 * </code>
 	 *
-	 * @param j The Hinge joint ID for which the axis will be set
 	 * @param x The X component of the axis in world frame
 	 * @param y The Y component of the axis in world frame
 	 * @param z The Z component of the axis in world frame
-	 * @param angle The angle for the offset of the relative orientation.
+	 * @param offset1 The angle for the offset of the relative orientation.
 	 *              As if body1 was rotated by angle when the Axis was set (see below).
 	 *              The rotation is around the new Hinge axis.
+	 * @param offset2
 	 *
 	 * @note Usually the function dJointSetHingeAxis set the current position of body1
 	 *       and body2 as the zero angle position. This function set the current position
@@ -212,14 +211,14 @@ public interface DUniversalJoint extends DJoint {
 	 * // If you request the position you will have: dJointGetUniversalAngle1(jId) == 0.2 <br>
 	 * // If you request the position you will have: dJointGetUniversalAngle2(jId) == 0.17 <br>
 	 * </code>
-
-	 * @param j The Hinge joint ID for which the axis will be set
+	 * 
 	 * @param x The X component of the axis in world frame
 	 * @param y The Y component of the axis in world frame
 	 * @param z The Z component of the axis in world frame
-	 * @param angle The angle for the offset of the relative orientation.
+	 * @param offset1 The angle for the offset of the relative orientation.
 	 *              As if body1 was rotated by angle when the Axis was set (see below).
 	 *              The rotation is around the new Hinge axis.
+	 * @param offset2
 	 *
 	 * @note Usually the function dJointSetHingeAxis set the current position of body1
 	 *       and body2 as the zero angle position. This function set the current position

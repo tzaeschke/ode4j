@@ -65,7 +65,7 @@ public interface DBox extends DGeom {
 	/**
 	 * @brief Get the side lengths of a box.
 	 *
-	 * @param result  the returned side lengths
+	 * @return The returned side lengths.
 	 *
 	 * @see #setLengths(DVector3C)
 	 * @ingroup collide_box
@@ -78,7 +78,7 @@ public interface DBox extends DGeom {
 	 *
 	 * @param p    the X, Y and Z coordinates of the point to test.
 	 *
-	 * @returns The depth of the point. Points inside the box will have a
+	 * @return The depth of the point. Points inside the box will have a
 	 * positive depth, points outside it will have a negative depth, and points
 	 * on the surface will have a depth of zero.
 	 */

@@ -52,7 +52,7 @@ public interface DHingeJoint extends DJoint {
 	
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return The point on body 2. If the joint is perfectly satisfied,
+	 * Return the point on body 2. If the joint is perfectly satisfied,
 	 * this will return the same value as dJointGetHingeAnchor().
 	 * If not, this value will be slightly different.
 	 * This can be used, for example, to see how far the joint has come apart.
@@ -96,7 +96,6 @@ public interface DHingeJoint extends DJoint {
 	 * // If you request the position you will have: dJointGetHingeAngle(jId) == 0.23 <br>
 	 * </code>
 
-	 * @param j The Hinge joint ID for which the axis will be set
 	 * @param x The X component of the axis in world frame
 	 * @param y The Y component of the axis in world frame
 	 * @param z The Z component of the axis in world frame

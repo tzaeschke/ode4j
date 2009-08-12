@@ -277,7 +277,7 @@ public interface DWorld {
 	/**
 	 * @brief Get the SOR over-relaxation parameter
 	 * @ingroup world
-	 * @returns the over-relaxation setting
+	 * @return the over-relaxation setting
 	 */
 	double getQuickStepW();
 
@@ -365,6 +365,7 @@ public interface DWorld {
 	 * Set to zero to disable sampling and thus prevent any body from auto-disabling.
 	 */
 	void setAutoDisableAverageSamplesCount (int average_samples_count );
+	
 
 	/**
 	 * @brief Set the depth of the surface layer around all geometry objects.
@@ -378,13 +379,16 @@ public interface DWorld {
 	 * jittering problems due to contacts being repeatedly made and broken.
 	 */
 	void setContactSurfaceLayer(double depth);
+	
+	
 	/**
 	 * @brief Get the depth of the surface layer around all geometry objects.
 	 * @ingroup world
-	 * @returns the depth
+	 * @return the depth
 	 */
 	double getContactSurfaceLayer();
 
+	
 	/**
 	 * @brief Converts an impulse to a force.
 	 * @ingroup world
@@ -402,6 +406,7 @@ public interface DWorld {
 	void impulseToForce (double stepsize, 
 			double ix, double iy, double iz, DVector3 force);
 
+	
 	/**
 	 * @brief Set the maximum correcting velocity that contacts are allowed
 	 * to generate.
@@ -411,6 +416,8 @@ public interface DWorld {
 	 * Reducing this value can help prevent "popping" of deeply embedded objects.
 	 */
 	void setContactMaxCorrectingVel (double vel);
+	
+	
 	/**
 	 * @brief Get the maximum correcting velocity that contacts are allowed
 	 * to generated.
@@ -418,6 +425,7 @@ public interface DWorld {
 	 */
 	//ODE_API 
 	double getContactMaxCorrectingVel();
+	
 	
 	/**
 	 * @brief Destroy a world and everything in it.

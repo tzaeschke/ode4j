@@ -40,7 +40,7 @@ public interface DSphere extends DGeom {
 	/**
 	 * @brief Retrieves the radius of a sphere geom.
 	 *
-	 * @see dGeomSphereSetRadius
+	 * @see #setRadius(double)
 	 * @ingroup collide_sphere
 	 */
 	double getRadius();
@@ -51,7 +51,7 @@ public interface DSphere extends DGeom {
 	 *
 	 * @param p       the X, Y and Z coordinate of the point.
 	 *
-	 * @returns The depth of the point. Points inside the sphere will have a
+	 * @return The depth of the point. Points inside the sphere will have a
 	 * positive depth, points outside it will have a negative depth, and points
 	 * on the surface will have a depth of zero.
 	 *

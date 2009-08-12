@@ -105,9 +105,9 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a joint group
 	 * @ingroup joints
-	 * @param max_size deprecated. Set to 0.
 	 */
 	public static DJointGroup createJointGroup () {
+		 //param max_size deprecated. Set to 0.
 		return DxJointGroup.dJointGroupCreate(-1);
 	}
 	/**
@@ -122,7 +122,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the A-motor type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DAMotorJoint createAMotorJoint (DWorld world, DJointGroup group) {
@@ -131,8 +131,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the A-motor type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
-	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DAMotorJoint createAMotorJoint (DWorld world) {
 		return ODE.dJointCreateAMotor((DxWorld) world, null);
@@ -145,7 +143,7 @@ public abstract class OdeHelper {
 	 * @remarks
 	 * The joint is initially in "limbo" (i.e. it has no effect on the simulation)
 	 * because it does not connect to any bodies.
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DBallJoint createBallJoint (DWorld world, DJointGroup group) {
@@ -157,8 +155,6 @@ public abstract class OdeHelper {
 	 * @remarks
 	 * The joint is initially in "limbo" (i.e. it has no effect on the simulation)
 	 * because it does not connect to any bodies.
-	 * @param DJointGroup set to null to allocate the joint normally.
-	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DBallJoint createBallJoint (DWorld world) {
 		return ODE.dJointCreateBall((DxWorld) world, null);
@@ -168,7 +164,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the contact type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DContactJoint createContactJoint (DWorld world, DJointGroup group, DContact c) {
@@ -177,8 +173,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the contact type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
-	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DContactJoint createContactJoint (DWorld world, DContact c) {
 		return ODE.dJointCreateContact((DxWorld) world, null, c);
@@ -188,7 +182,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the fixed type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DFixedJoint createFixedJoint (DWorld world, DJointGroup group) {
@@ -197,8 +191,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the fixed type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
-	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DFixedJoint createFixedJoint (DWorld world) {
 		return ODE.dJointCreateFixed((DxWorld) world, null);
@@ -208,7 +200,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the hinge type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DHingeJoint createHingeJoint (DWorld world, DJointGroup group) {
@@ -217,8 +209,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the hinge type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
-	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DHingeJoint createHingeJoint (DWorld world) {
 		return ODE.dJointCreateHinge((DxWorld) world, null);
@@ -228,7 +218,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the hinge2 type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DHinge2Joint createHinge2Joint (DWorld world, DJointGroup group) {
@@ -237,8 +227,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the hinge2 type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
-	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DHinge2Joint createHinge2Joint (DWorld world) {
 		return ODE.dJointCreateHinge2((DxWorld) world, null);
@@ -248,7 +236,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the L-motor type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DLMotorJoint createLMotorJoint (DWorld world, DJointGroup group) {
@@ -257,8 +245,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the L-motor type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
-	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DLMotorJoint createLMotorJoint (DWorld world) {
 		return ODE.dJointCreateLMotor((DxWorld) world, null);
@@ -276,7 +262,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the Piston type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 *                      If it is nonzero the joint is allocated in the given
 	 *                      joint group.
 	 */
@@ -286,9 +272,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the Piston type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
-	 *                      If it is nonzero the joint is allocated in the given
-	 *                      joint group.
 	 */
 	public static DPistonJoint createPistonJoint (DWorld world) {
 		return ODE.dJointCreatePiston((DxWorld) world, null);
@@ -298,7 +281,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the plane-2d type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPlane2DJoint createPlane2DJoint (DWorld world, DJointGroup group) {
@@ -307,7 +290,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the plane-2d type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPlane2DJoint createPlane2DJoint (DWorld world) {
@@ -318,7 +300,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the PR (Prismatic and Rotoide) type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPRJoint createPRJoint (DWorld world, DJointGroup group) {
@@ -327,7 +309,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the PR (Prismatic and Rotoide) type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPRJoint createPRJoint (DWorld world) {
@@ -338,7 +319,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the PU (Prismatic and Universal) type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPUJoint createPUJoint (DWorld world, DJointGroup group) {
@@ -347,7 +328,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the PU (Prismatic and Universal) type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPUJoint createPUJoint (DWorld world) {
@@ -358,7 +338,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the slider type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DSliderJoint createSliderJoint (DWorld world, DJointGroup group) {
@@ -367,7 +347,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the slider type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DSliderJoint createSliderJoint (DWorld world) {
@@ -378,7 +357,7 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the universal type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
+	 * @param group set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DUniversalJoint createUniversalJoint (DWorld world, DJointGroup group) {
@@ -387,7 +366,6 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a new joint of the universal type.
 	 * @ingroup joints
-	 * @param DJointGroup set to null to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DUniversalJoint createUniversalJoint (DWorld world) {
@@ -462,12 +440,11 @@ public abstract class OdeHelper {
 	/**
 	 * @brief Create a box geom with the provided side lengths.
 	 *
-	 * @param space   a space to contain the new geom. May be null.
 	 * @param lx      the length of the box along the X axis
 	 * @param ly      the length of the box along the Y axis
 	 * @param lz      the length of the box along the Z axis
 	 *
-	 * @returns A new box geom.
+	 * @return A new box geom.
 	 *
 	 * @remarks The point of reference for a box is its center.
 	 *
@@ -487,7 +464,7 @@ public abstract class OdeHelper {
 	 * @param ly      the length of the box along the Y axis
 	 * @param lz      the length of the box along the Z axis
 	 *
-	 * @returns A new box geom.
+	 * @return A new box geom.
 	 *
 	 * @remarks The point of reference for a box is its center.
 	 *
@@ -548,7 +525,7 @@ public abstract class OdeHelper {
 	 *
 	 * @param radius  the radius of the sphere.
 	 *
-	 * @returns A new sphere geom.
+	 * @return A new sphere geom.
 	 *
 	 * @remarks The point of reference for a sphere is its center.
 	 *
@@ -565,7 +542,7 @@ public abstract class OdeHelper {
 	 * @param space   a space to contain the new geom. May be null.
 	 * @param radius  the radius of the sphere.
 	 *
-	 * @returns A new sphere geom.
+	 * @return A new sphere geom.
 	 *
 	 * @remarks The point of reference for a sphere is its center.
 	 *
@@ -583,10 +560,10 @@ public abstract class OdeHelper {
 	 * <tt>dInitODE</tt> is obsolete. <tt>dInitODE2</tt> is to be used for library initialization.
 	 *
 	 * A call to <tt>dInitODE</tt> is equal to the following initialization sequence <p>
-	 * @code
+	 * <code><br>
 	 *     initODE2(0); <br>
 	 *     allocateODEDataForThread(dAllocateMaskAll); <br>
-	 * @endcode
+	 * </code>
 	 *
 	 * @see #initODE2(int)
 	 * @see #allocateODEDataForThread(int)
@@ -675,7 +652,7 @@ public abstract class OdeHelper {
 	 * points to a normal (C-style) array. It is an error for skip to be smaller
 	 * than sizeof(dContactGeom).
 	 *
-	 * @returns If the geoms intersect, this function returns the number of contact
+	 * @return If the geoms intersect, this function returns the number of contact
 	 * points generated (and updates the contact array), otherwise it returns 0
 	 * (and the contact array is not touched).
 	 *
@@ -901,7 +878,7 @@ public abstract class OdeHelper {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @see #spaceCollide2(DGeom, DGeom, Object, DNearCallback)
+	 * @see OdeHelper#spaceCollide2(DGeom, DGeom, Object, DNearCallback)
 	 * @ingroup collide
 	 */
 	public static void spaceCollide (DSpace space, Object data, DNearCallback callback) {
@@ -944,8 +921,8 @@ public abstract class OdeHelper {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @see #spaceCollide(DSpace, Object, DNearCallback)
-	 * @see #spaceSetSublevel()
+	 * @see OdeHelper#spaceCollide(DSpace, Object, DNearCallback)
+	 * @see DSpace#setSublevel(int)
 	 * @ingroup collide
 	 */
 	public static void spaceCollide2(DGeom space1, DGeom space2, Object data,
