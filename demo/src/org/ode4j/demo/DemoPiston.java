@@ -48,7 +48,6 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DJoint.PARAM_N;
 
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.*;
@@ -396,10 +395,10 @@ class DemoPiston extends dsFunctions {
 				((DSliderJoint) joint).addForce(-1);
 			break;
 	    case '8' :
-	        dJointAttach(joint, body[0], null);
+	        joint.attach(body[0], null);
 	        break;
 	    case '9' :
-	        dJointAttach(joint, null, body[0]);
+	        joint.attach(null, body[0]);
 	        break;
 
 	    case 'i':

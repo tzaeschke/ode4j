@@ -10,6 +10,10 @@ the rules for this file:
 ------------------------------------------------------------------------------
 
 
+2009-Aug-12 Tilmann Zäschke
+		* Javadoc & API for DBody completed
+		* Fixed and reduced dependencies to .cpp and .internal
+
 2009-Aug-10 Tilmann Zäschke
 		* Reduced warnings
 		* Added @Override labels

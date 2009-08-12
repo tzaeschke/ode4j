@@ -43,8 +43,8 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.cpp.OdeCppMath.*;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
+import static org.ode4j.ode.OdeMath.*;
 
 ////////////////////////////////////////////////////////////////////////////////
 // This file create unit test for some of the functions found in:
@@ -58,6 +58,7 @@ import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 
 @RunWith(Enclosed.class)
 public class JointTest {
+
 
 	////////////////////////////////////////////////////////////////////////////////
 	// Testing the Hinge2 Joint

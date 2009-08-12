@@ -42,6 +42,7 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DSapSpace.AXES;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
@@ -294,7 +295,7 @@ class DemoCrash extends dsFunctions {
 
 		//  space = dHashSpaceCreate( null );
 		//	space = dSimpleSpaceCreate( null );
-		space = dSweepAndPruneSpaceCreate( null, dSAP_AXES_XYZ );
+		space = dSweepAndPruneSpaceCreate( null, AXES.XYZ );//dSAP_AXES_XYZ );
 		
 		m = OdeHelper.createMass();
 

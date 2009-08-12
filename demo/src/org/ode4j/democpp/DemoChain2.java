@@ -42,6 +42,7 @@ import org.ode4j.ode.DGeom.DNearCallback;
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.OdeMath.*;
 
 
 class DemoChain2 extends dsFunctions {
