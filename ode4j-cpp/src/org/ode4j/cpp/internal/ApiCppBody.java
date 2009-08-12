@@ -869,7 +869,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 * @remarks From now on the body will not use the world's linear damping
 	 * scale until dBodySetDampingDefaults() is called.
-	 * @see dBodySetDampingDefaults()
+	 * @see #dBodySetDampingDefaults()
 	 */
 	//ODE_API 
 	public static void dBodySetLinearDamping(DBody b, double scale){
@@ -905,7 +905,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param linear_scale The linear damping scale. Should be in the interval [0, 1].
 	 * @param angular_scale The angular damping scale. Should be in the interval [0, 1].
 	 * @ingroup bodies damping
-	 * @see dBodySetLinearDamping() dBodySetAngularDamping()
+	 * @see #dBodySetLinearDamping() #dBodySetAngularDamping()
 	 */
 	//ODE_API 
 	public static void dBodySetDamping(DBody b, double linear_scale, double angular_scale){
@@ -955,7 +955,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * @brief Get the body's maximum angular speed.
 	 * @ingroup damping bodies
-	 * @see dWorldGetMaxAngularSpeed()
+	 * @see #dWorldGetMaxAngularSpeed()
 	 */
 	//ODE_API 
 	public static double dBodyGetMaxAngularSpeed (DBody b){
@@ -965,7 +965,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * @brief Set the body's maximum angular speed.
 	 * @ingroup damping bodies
-	 * @see dWorldSetMaxAngularSpeed() dBodyResetMaxAngularSpeed()
+	 * @see #dWorldSetMaxAngularSpeed() 
+	 * @see #dBodyResetMaxAngularSpeed()
 	 * The default value is dInfinity, but it's a good idea to limit
 	 * it at less than 500 if the body has the gyroscopic term
 	 * enabled.
