@@ -352,7 +352,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 	//void dxSAPSpace::cleanGeoms()
 	@Override
-	void cleanGeoms()
+	public void cleanGeoms()
 	{
 		int dirtySize = DirtyList.size();
 		if( dirtySize==0 )

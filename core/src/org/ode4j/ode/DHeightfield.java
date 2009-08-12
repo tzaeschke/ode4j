@@ -24,7 +24,7 @@ package org.ode4j.ode;
 public interface DHeightfield extends DGeom {
 	/**
 	 * @brief Callback prototype
-	 *
+	 * <p>
 	 * Used by the callback heightfield data type to sample a height for a
 	 * given cell position.
 	 *
@@ -34,7 +34,7 @@ public interface DHeightfield extends DGeom {
 	public static interface DHeightfieldGetHeight {
 		/**
 		 * @brief Callback prototype
-		 *
+		 * <p>
 		 * Used by the callback heightfield data type to sample a height for a
 		 * given cell position.
 		 *
@@ -51,4 +51,27 @@ public interface DHeightfield extends DGeom {
 		 */
 		public double call( Object[] pUserData, int x, int z );
 	}
+	
+	/**
+	 * @brief Assigns a dHeightfieldData to a heightfield geom.
+	 * <p>
+	 * Associates the given dHeightfieldData with a heightfield geom.
+	 * This is done without affecting the GEOM_PLACEABLE flag.
+	 *
+	 * @param d A dHeightfieldData created by dGeomHeightfieldDataCreate
+	 * @ingroup collide
+	 */
+	void setHeightfieldData( DHeightfieldData d );
+
+
+	/**
+	 * @brief Gets the dHeightfieldData bound to a heightfield geom.
+	 * <p>
+	 * Returns the dHeightfieldData associated with a heightfield geom.
+	 *
+	 * @return The dHeightfieldData which may be NULL if none was assigned.
+	 * @ingroup collide
+	 */
+	DHeightfieldData getHeightfieldData();
+
 }

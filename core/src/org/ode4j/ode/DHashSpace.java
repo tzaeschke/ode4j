@@ -22,6 +22,11 @@
 package org.ode4j.ode;
 
 public interface DHashSpace extends DSpace {
+	
+	int getLevelMin ();
+	int getLevelMax ();
+	void setLevels(int minlevel, int maxlevel);
+
 //	// intentionally undefined, don't use these
 //	dHashSpace (dHashSpace &);
 //	void operator= (dHashSpace &);

@@ -343,6 +343,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 	// dxHeightfield destructor
 	//dxHeightfield::~dxHeightfield()
+	@Override
 	public void DESTRUCTOR()
 	{
 		resetTriangleBuffer();
@@ -1643,5 +1644,17 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				DContactGeomBuffer contacts) {
 			return dCollideHeightfield((DxHeightfield)o1, (DxGeom)o2, flags, contacts, 1);
 		}
+	}
+
+
+	@Override
+	public DHeightfieldData getHeightfieldData() {
+		return dGeomHeightfieldGetHeightfieldData();
+	}
+	
+	
+	@Override
+	public void setHeightfieldData(DHeightfieldData d) {
+		dGeomHeightfieldSetHeightfieldData(d);
 	}
 }

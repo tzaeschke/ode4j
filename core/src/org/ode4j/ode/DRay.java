@@ -33,6 +33,11 @@ public interface DRay extends DGeom {
 	  void set (DVector3C p, DVector3C d);
 	  void get (DVector3 start, DVector3 dir);
 
+	  /**
+	   * Set/get ray flags that influence ray collision detection.
+	   * These flags are currently only noticed by the trimesh collider, because
+	   * they can make a major differences there.
+	   */
 	  void setParams (boolean firstContact, boolean backfaceCull);
 	  boolean getFirstContact();
 	  boolean getBackfaceCull();

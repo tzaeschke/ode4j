@@ -552,7 +552,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 
 //	public dxBody dGeomGetBody (dxGeom g)
-	public DxBody dGeomGetBody ()
+	private DxBody dGeomGetBody ()
 	{
 		//dAASSERT (g);
 		return body;
@@ -560,7 +560,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 
 //	public void dGeomSetPosition (dxGeom g, double x, double y, double z)
-	public void dGeomSetPosition (DVector3C xyz)
+	private void dGeomSetPosition (DVector3C xyz)
 	{
 		//dAASSERT (g);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
@@ -592,7 +592,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 
 //	void dGeomSetRotation (dxGeom g, final dMatrix3 R)
-	public void dGeomSetRotation (final DMatrix3C R)
+	private void dGeomSetRotation (DMatrix3C R)
 	{
 		//dAASSERT (g, R);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
@@ -622,84 +622,60 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 
 
-	void dGeomSetQuaternion (DxGeom g, final DQuaternionC quat)
+	private void dGeomSetQuaternion (DQuaternionC quat)
 	{
-		dAASSERT (g, quat);
-		dUASSERT (g._gflags & GEOM_PLACEABLE,"geom must be placeable");
-		CHECK_NOT_LOCKED (g.parent_space);
-		if (g.offset_posr != null) {
-			g.recomputePosr();
+		//dAASSERT (quat);
+		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
+		CHECK_NOT_LOCKED (parent_space);
+		if (offset_posr != null) {
+			recomputePosr();
 			// move body such that body+offset = rotation
 			dxPosR new_final_posr = new dxPosR();
 			dxPosR new_body_posr = new dxPosR();
 			dRfromQ (new_final_posr.R, quat);
 			//memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
-			new_final_posr.pos.set(g._final_posr.pos);
+			new_final_posr.pos.set(_final_posr.pos);
 			
-			getBodyPosr(g.offset_posr, new_final_posr, new_body_posr);
-			g.body.dBodySetRotation( new_body_posr.R);
-			g.body.dBodySetPosition(new_body_posr.pos);
+			getBodyPosr(offset_posr, new_final_posr, new_body_posr);
+			body.dBodySetRotation( new_body_posr.R);
+			body.dBodySetPosition(new_body_posr.pos);
 		}
-		if (g.body != null) {
+		if (body != null) {
 			// this will call dGeomMoved (g), so we don't have to
-			g.body.dBodySetQuaternion (quat);
+			body.dBodySetQuaternion (quat);
 		}
 		else {
-			dRfromQ (g._final_posr.R, quat);
-			g.dGeomMoved ();
+			dRfromQ (_final_posr.R, quat);
+			dGeomMoved ();
 		}
 	}
 
 
-	public final DVector3C dGeomGetPosition ()
-	//	public final double[] dGeomGetPosition (dxGeom g)
+	DVector3C dGeomGetPosition ()
 	{
-//		dAASSERT (g);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		recomputePosr();
 		return _final_posr.pos;
 	}
 
 
-	void dGeomCopyPosition(DxGeom g, DVector3 pos)
+	private void dGeomCopyPosition(DVector3 pos)
 	{
-		dAASSERT (g);
-		dUASSERT (g._gflags & GEOM_PLACEABLE,"geom must be placeable");
-		g.recomputePosr();
-		//final double[] src = g.final_posr.pos;
-		pos.set(g._final_posr.pos);
-		//	  pos[0] = src[0];
-		//	  pos[1] = src[1];
-		//	  pos[2] = src[2];
+		pos.set(dGeomGetPosition());
 	}
 
 
-//	public final dMatrix3 dGeomGetRotation (dxGeom g)
-	public final DMatrix3C dGeomGetRotation ()
+	DMatrix3C dGeomGetRotation ()
 	{
-//		dAASSERT (g);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		recomputePosr();
 		return _final_posr.R;
 	}
 
 
-	void dGeomCopyRotation(DxGeom g, DMatrix3 R)
+	private void dGeomCopyRotation(DMatrix3 R)
 	{
-		dAASSERT (g);
-		dUASSERT (g._gflags & GEOM_PLACEABLE,"geom must be placeable");
-		g.recomputePosr();
-//		final double[] src = g._final_posr.R.v;
-//		R.v[0]  = src[0];
-//		R.v[1]  = src[1];
-//		R.v[2]  = src[2];
-//		R.v[4]  = src[4];
-//		R.v[5]  = src[5];
-//		R.v[6]  = src[6];
-//		R.v[8]  = src[8];
-//		R.v[9]  = src[9];
-//		R.v[10] = src[10];
-		R.set(g._final_posr.R);
+		R.set(dGeomGetRotation());
 	}
 
 
@@ -760,16 +736,14 @@ public abstract class DxGeom extends DBase implements DGeom {
 //	}
 
 
-	DxSpace dGeomGetSpace (DxGeom g)
+	private DxSpace dGeomGetSpace ()
 	{
-		dAASSERT (g);
-		return g.parent_space;
+		return parent_space;
 	}
 
 	//public int dGeomGetClass (dxGeom g)
 	private int dGeomGetClass ()
 	{
-		//dAASSERT (g);
 		return type;
 	}
 //	public Class<?> dGeomGetClass ()
@@ -779,55 +753,47 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 
 	//	void dGeomSetCategoryBits (dxGeom g, unsigned long bits)
-	public void dGeomSetCategoryBits (long bits)
+	private void dGeomSetCategoryBits (long bits)
 	{
-		//dAASSERT (g);
 		CHECK_NOT_LOCKED (parent_space);
 		category_bits = bits;
 	}
 
 
 	//	void dGeomSetCollideBits (dxGeom g, unsigned long bits)
-	public void dGeomSetCollideBits (long bits)
+	private void dGeomSetCollideBits (long bits)
 	{
-		//dAASSERT (g);
 		CHECK_NOT_LOCKED (parent_space);
 		collide_bits = bits;
 	}
 
 
-	long dGeomGetCategoryBits (DxGeom g)
 	//	unsigned long dGeomGetCategoryBits (dxGeom g)
+	private long dGeomGetCategoryBits ()
 	{
-		dAASSERT (g);
-		return g.category_bits;
+		return category_bits;
 	}
 
 
-	long dGeomGetCollideBits (DxGeom g)
 	//	unsigned long dGeomGetCollideBits (dxGeom g)
+	private long dGeomGetCollideBits ()
 	{
-		dAASSERT (g);
-		return g.collide_bits;
+		return collide_bits;
 	}
 
 
-	void dGeomEnable (DxGeom g)
+	private void dGeomEnable ()
 	{
-		dAASSERT (g);
-		g._gflags |= GEOM_ENABLED;
+		_gflags |= GEOM_ENABLED;
 	}
 
-	void dGeomDisable (DxGeom g)
+	private void dGeomDisable ()
 	{
-		dAASSERT (g);
-		g._gflags &= ~GEOM_ENABLED;
+		_gflags &= ~GEOM_ENABLED;
 	}
 
-//	int dGeomIsEnabled (dxGeom g)
-	boolean dGeomIsEnabled ()
+	private boolean dGeomIsEnabled ()
 	{
-//		dAASSERT (g);
 		return (_gflags & GEOM_ENABLED) != 0;// ? 1 : 0;
 	}
 
@@ -1122,7 +1088,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	private static final DVector3C OFFSET_POSITION_ZERO = new DVector3( 0.0f, 0.0f, 0.0f );
 
 	//	final double * dGeomGetOffsetPosition (dxGeom g)
-	DVector3C dGeomGetOffsetPosition ()
+	private DVector3C dGeomGetOffsetPosition ()
 	{
 		if (offset_posr != null)
 		{
@@ -1131,24 +1097,9 @@ public abstract class DxGeom extends DBase implements DGeom {
 		return OFFSET_POSITION_ZERO;
 	}
 
-	void dGeomCopyOffsetPosition (DxGeom g, DVector3 pos)
+	private void dGeomCopyOffsetPosition (DVector3 pos)
 	{
-		dAASSERT (g);
-		if (g.offset_posr != null)
-		{
-			//final double[] src = g.offset_posr.pos.v;
-			pos.set(g.offset_posr.pos);
-			//	    pos[0] = src[0];
-			//		 pos[1] = src[1];
-			//		 pos[2] = src[2];
-		}
-		else
-		{
-			pos.set(DVector3.ZERO);
-			//	    pos[0] = 0;
-			//		 pos[1] = 0;
-			//		 pos[2] = 0;
-		}
+		pos.set(dGeomGetOffsetPosition());
 	}
 
 	private static final DMatrix3C OFFSET_ROTATION_ZERO = new DMatrix3(
@@ -1157,7 +1108,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 			0.0, 0.0, 1.0);
 
 	//double *
-	DMatrix3C dGeomGetOffsetRotation ()
+	private DMatrix3C dGeomGetOffsetRotation ()
 	{
 		if (offset_posr != null)
 		{
@@ -1166,36 +1117,9 @@ public abstract class DxGeom extends DBase implements DGeom {
 		return OFFSET_ROTATION_ZERO;
 	}
 
-	void dGeomCopyOffsetRotation (DxGeom g, DMatrix3 R)
+	private void dGeomCopyOffsetRotation (DMatrix3 R)
 	{
-		dAASSERT (g);
-		if (g.offset_posr != null)
-		{
-//			final double[] src = g._final_posr.R.v;
-//			R.v[0]  = src[0];
-//			R.v[1]  = src[1];
-//			R.v[2]  = src[2];
-//			R.v[4]  = src[4];
-//			R.v[5]  = src[5];
-//			R.v[6]  = src[6];
-//			R.v[8]  = src[8];
-//			R.v[9]  = src[9];
-//			R.v[10] = src[10];
-			R.set(g._final_posr.R);
-		}
-		else
-		{
-//			R.v[0]  = OFFSET_ROTATION_ZERO.v[0];
-//			R.v[1]  = OFFSET_ROTATION_ZERO.v[1];
-//			R.v[2]  = OFFSET_ROTATION_ZERO.v[2];
-//			R.v[4]  = OFFSET_ROTATION_ZERO.v[4];
-//			R.v[5]  = OFFSET_ROTATION_ZERO.v[5];
-//			R.v[6]  = OFFSET_ROTATION_ZERO.v[6];
-//			R.v[8]  = OFFSET_ROTATION_ZERO.v[8];
-//			R.v[9]  = OFFSET_ROTATION_ZERO.v[9];
-//			R.v[10] = OFFSET_ROTATION_ZERO.v[10];
-			R.set(OFFSET_ROTATION_ZERO);
-		}
+		R.set(dGeomGetOffsetRotation());
 	}
 
 	void dGeomGetOffsetQuaternion (DQuaternion result)
@@ -1437,7 +1361,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		colliders_initialized = false;
 	}
 
-	void dSetColliderOverride (int i, int j, DColliderFn fn)
+	public static void dSetColliderOverride (int i, int j, DColliderFn fn)
 	{
 		dIASSERT( colliders_initialized );
 		dAASSERT( i < dGeomNumClasses );
@@ -1595,7 +1519,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{ return dGeomGetClass (); }
 
 	public DSpace getSpace() //const
-	{ return dGeomGetSpace (this); }
+	{ return dGeomGetSpace (); }
 
 	public void setData (Object data)
 	{ dGeomSetData (data); }
@@ -1622,7 +1546,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{ return dGeomGetRotation (); }
 
 	public void setQuaternion (DQuaternionC quat)
-	{ dGeomSetQuaternion (this,quat); }
+	{ dGeomSetQuaternion (quat); }
 
 //	public int isSpace()
 //	{ return dGeomIsSpace (_id); }
@@ -1633,15 +1557,15 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{ dGeomSetCollideBits (bits); }
 	//unsigned 
 	public long getCategoryBits()
-	{ return dGeomGetCategoryBits (this); }
+	{ return dGeomGetCategoryBits (); }
 	//unsigned 
 	public long getCollideBits()
-	{ return dGeomGetCollideBits (this); }
+	{ return dGeomGetCollideBits (); }
 
 	public void enable()
-	{ dGeomEnable (this); }
+	{ dGeomEnable (); }
 	public void disable()
-	{ dGeomDisable (this); }
+	{ dGeomDisable (); }
 	public boolean isEnabled()
 	{ return dGeomIsEnabled (); }
 
@@ -1710,5 +1634,24 @@ public abstract class DxGeom extends DBase implements DGeom {
 	public void setOffsetWorldRotation(DMatrix3C R) {
 		dGeomSetOffsetRotation(R);
 	}
+	
+	@Override
+	public void copyOffsetPosition(DVector3 pos) {
+		dGeomCopyOffsetPosition(pos);
+	}
 
+	@Override
+	public void copyOffsetRotation(DMatrix3 R) {
+		dGeomCopyOffsetRotation(R);
+	}
+
+	@Override
+	public void copyPosition(DVector3 pos) {
+		dGeomCopyPosition(pos);
+	}
+
+	@Override
+	public void copyRotation(DMatrix3 R) {
+		dGeomCopyRotation(R);
+	}
 }

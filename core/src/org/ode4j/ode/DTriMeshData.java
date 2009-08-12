@@ -21,6 +21,8 @@
  *************************************************************************/
 package org.ode4j.ode;
 
+import org.cpp4j.java.RefInt;
+
 
 /**
  * TriMesh code by Erwin de Vries.
@@ -48,4 +50,70 @@ public interface DTriMeshData {
 			final int[] Indices, int IndexCount, int TriStride);
 
 	void destroy();
+	
+	
+	
+	
+//	/** same again with a normals array (used as trimesh-trimesh optimization) */
+//	//ODE_API 
+//	//	 void dGeomTriMeshDataBuildSingle1(dTriMeshData g,
+//	//                                  final void* Vertices, int VertexStride, int VertexCount, 
+//	//                                  final void* Indices, int IndexCount, int TriStride,
+//	//                                  final void* Normals) {
+//	void buildSingle1(DTriMeshData g,
+//			final double[] Vertices, int VertexStride, int VertexCount, 
+//			final int[] Indices, int IndexCount, int TriStride,
+//			final int[] Normals);
+//	/**
+//	 * Build a TriMesh data object with double precision vertex data.
+//	 */
+//	//ODE_API 
+//	void buildDouble(DTriMeshData g, 
+//			//                                 final void* Vertices,  int VertexStride, int VertexCount, 
+//			//                                 final void* Indices, int IndexCount, int TriStride) {
+//			final double[] Vertices,  int VertexStride, int VertexCount, 
+//			final int[] Indices, int IndexCount, int TriStride);
+//	/** same again with a normals array (used as trimesh-trimesh optimization) */
+//	//ODE_API 
+//	//	 void dGeomTriMeshDataBuildDouble1(dTriMeshData g, 
+//	//                                  final void* Vertices,  int VertexStride, int VertexCount, 
+//	//                                  final void* Indices, int IndexCount, int TriStride,
+//	//                                  final void* Normals) {
+//	void buildDouble1(DTriMeshData g, 
+//			final double[] Vertices,  int VertexStride, int VertexCount, 
+//			final int[] Indices, int IndexCount, int TriStride,
+//			final int[] Normals);
+//
+//	/**
+//	 * Simple build. Single/double precision based on dSINGLE/dDOUBLE!
+//	 */
+//	//ODE_API 
+//	//	 void dGeomTriMeshDataBuildSimple(dTriMeshData g,
+//	//                                 final double* Vertices, int VertexCount,
+//	//                                 final dTriIndex* Indices, int IndexCount) {
+//	void buildSimple(DTriMeshData g,
+//			final double[] Vertices, int VertexCount,
+//			final int[] Indices, int IndexCount);
+//	/** same again with a normals array (used as trimesh-trimesh optimization) */
+//	//ODE_API 
+//	//	 void dGeomTriMeshDataBuildSimple1(dTriMeshData g,
+//	//                                  final double* Vertices, int VertexCount,
+//	//                                  final dTriIndex* Indices, int IndexCount,
+//	//                                  final int* Normals) {
+//	void buildSimple1(DTriMeshData g,
+//			final double[] Vertices, int VertexCount,
+//			final int[] Indices, int IndexCount,
+//			final int[] Normals);
+//
+//	/** Preprocess the trimesh data to remove mark unnecessary edges and vertices */
+//	//ODE_API 
+//	void preprocess(DTriMeshData g);
+//	/** Get and set the internal preprocessed trimesh data buffer, for loading and saving */
+//	//ODE_API 
+//	//void dGeomTriMeshDataGetBuffer(dTriMeshData g, unsigned char** buf, int* bufLen) {
+//	void getBuffer(DTriMeshData g, byte[][] buf, RefInt bufLen);
+//	//ODE_API 
+//	//void dGeomTriMeshDataSetBuffer(dTriMeshData g, unsigned char* buf) {
+//	void setBuffer(DTriMeshData g, byte[] buf);
+
 }

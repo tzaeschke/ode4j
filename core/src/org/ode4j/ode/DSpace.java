@@ -27,56 +27,94 @@ package org.ode4j.ode;
  */
 public interface DSpace extends DGeom {
 
-	public void setCleanup (boolean mode);
-	public boolean getCleanup();
+	void setCleanup (boolean mode);
+	boolean getCleanup();
 
-	public void add (DGeom x);
-	public void remove (DGeom x);
-	public boolean query (DGeom x);
+	/**
+	 * Turn all dirty geoms into clean geoms by computing their AABBs and any
+	 * other space data structures that are required. this should clear the
+	 * GEOM_DIRTY and GEOM_AABB_BAD flags of all geoms.
+	 */
+	void cleanGeoms();
 
-	public int getNumGeoms();
-	public DGeom getGeom (int i);
+	void add (DGeom x);
+	void remove (DGeom x);
+	boolean query (DGeom x);
 
-	public void collide (Object data, DNearCallback callback);
-	public void setManualCleanup(int mode);
-	public int getManualCleanup();
+	int getNumGeoms();
+	DGeom getGeom (int i);
+
+	void collide (Object data, DNearCallback callback);
+	
+	
+	/**
+	 * @brief Sets manual cleanup flag for a space.
+	 * <p>
+	 * Manual cleanup flag marks a space as eligible for manual thread data cleanup.
+	 * This function should be called for every space object right after creation in 
+	 * case if ODE has been initialized with <tt>dInitFlagManualThreadCleanup</tt> flag.
+	 * <p>
+	 * Failure to set manual cleanup flag for a space may lead to some resources 
+	 * remaining leaked until the program exit.
+	 *
+	 * @param space the space to modify
+	 * @param mode 1 for manual cleanup mode and 0 for default cleanup mode
+	 * @ingroup collide
+	 * @see #setManualCleanup(int)
+	 * @see OdeHelper#initODE2(int)
+	 */
+	void setManualCleanup(int mode);
 
 	
-	// intentionally undefined, don't use these
-//	dSpace (dSpace &);
-//	void operator= (dSpace &);
+	/**
+	 * @brief Get manual cleanup flag of a space.
+	 * <p>
+	 * Manual cleanup flag marks a space space as eligible for manual thread data cleanup.
+	 * See <tt>setManualCleanup</tt> for more details.
+	 * 
+	 * @param space the space to query
+	 * @returns 1 for manual cleanup mode and 0 for default cleanup mode of the space
+	 * @ingroup collide
+	 * @see #setManualCleanup(int)
+	 * @see OdeHelper#initODE2(int)
+	 */
+	int getManualCleanup();
 
-//	protected
-//		// the default constructor is protected so that you
-//		// can't instance this class. you must instance one
-//		// of its subclasses instead.
-//		dSpace () { _id = null; }
-//
-//	public
-//	//TODO ?
-////		dSpace id() //const
-////		{ return (dSpace) _id; }
-//	//TODO ?
-////		operator dSpace() const
-////		{ return (dSpace) _id; }
-//
-//		void setCleanup (int mode)
-//		{ dSpaceSetCleanup (id(), mode); }
-//		int getCleanup()
-//		{ return dSpaceGetCleanup (id()); }
-//
-//		void add (dGeom x)
-//		{ dSpaceAdd (id(), x); }
-//		void remove (dGeom x)
-//		{ dSpaceRemove (id(), x); }
-//		int query (dGeom x)
-//		{ return dSpaceQuery (id(),x); }
-//
-//		int getNumGeoms()
-//		{ return dSpaceGetNumGeoms (id()); }
-//		dGeom getGeom (int i)
-//		{ return dSpaceGetGeom (id(),i); }
-//
-//		void collide (Object data, dNearCallback callback)
-//		{ dSpaceCollide (id(),data,callback); }
+	/**
+	 * @brief Sets sublevel value for a space.
+	 * <p>
+	 * Sublevel affects how the space is handled in spaceCollide2 when it is collided
+	 * with another space. If sublevels of both spaces match, the function iterates 
+	 * geometries of both spaces and collides them with each other. If sublevel of one
+	 * space is greater than the sublevel of another one, only the geometries of the 
+	 * space with greater sublevel are iterated, another space is passed into 
+	 * collision callback as a geometry itself. By default all the spaces are assigned
+	 * zero sublevel.
+	 *
+	 * @note
+	 * The space sublevel <b> IS NOT </b> automatically updated when one space is inserted
+	 * into another or removed from one. It is a client's responsibility to update sublevel
+	 * value if necessary.
+	 *
+	 * @param space the space to modify
+	 * @param sublevel the sublevel value to be assigned
+	 * @ingroup collide
+	 * @see #getSublevel()
+	 * @see OdeHelper#spaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
+	 */
+	void setSublevel (int sublevel);
+
+	/**
+	 * @brief Gets sublevel value of a space.
+	 * <p>
+	 * Sublevel affects how the space is handled in spaceCollide2 when it is collided
+	 * with another space. See <tt>setSublevel</tt> for more details.
+	 *
+	 * @param space the space to query
+	 * @returns the sublevel value of the space
+	 * @ingroup collide
+	 * @see #setSublevel(int)
+	 * @see OdeHelper#spaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
+	 */
+	int getSublevel ();
 }

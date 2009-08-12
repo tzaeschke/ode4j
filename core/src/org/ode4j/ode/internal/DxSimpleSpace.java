@@ -52,7 +52,7 @@ public class DxSimpleSpace extends DxSpace implements DSimpleSpace {
 
 
 	@Override
-	void cleanGeoms()
+	public void cleanGeoms()
 	{
 		// compute the AABBs of all dirty geoms, and clear the dirty flags
 		lock_count++;

@@ -289,9 +289,43 @@ public abstract class OdeHelper {
 				Center, Extents, Depth);
 	}
 
+	/**
+	 * @brief Create a box geom with the provided side lengths.
+	 *
+	 * @param space   a space to contain the new geom. May be null.
+	 * @param lx      the length of the box along the X axis
+	 * @param ly      the length of the box along the Y axis
+	 * @param lz      the length of the box along the Z axis
+	 *
+	 * @returns A new box geom.
+	 *
+	 * @remarks The point of reference for a box is its center.
+	 *
+	 * @see DGeom#destroy()
+	 * @see DBox#setLengths(DVector3C)
+	 * @see DBox#setLengths(double, double, double)
+	 * @ingroup collide_box
+	 */
 	public static DBox createBox(double lx, double ly, double lz) {
 		return DxBox.dCreateBox(null, lx, ly, lz);
 	}
+	/**
+	 * @brief Create a box geom with the provided side lengths.
+	 *
+	 * @param space   a space to contain the new geom. May be null.
+	 * @param lx      the length of the box along the X axis
+	 * @param ly      the length of the box along the Y axis
+	 * @param lz      the length of the box along the Z axis
+	 *
+	 * @returns A new box geom.
+	 *
+	 * @remarks The point of reference for a box is its center.
+	 *
+	 * @see DGeom#destroy()
+	 * @see DBox#setLengths(DVector3C)
+	 * @see DBox#setLengths(double, double, double)
+	 * @ingroup collide_box
+	 */
 	public static DBox createBox(DSpace space, double lx, double ly, double lz) {
 		return DxBox.dCreateBox((DxSpace) space, lx, ly, lz);
 	}
@@ -339,9 +373,36 @@ public abstract class OdeHelper {
 		return DxRay.dCreateRay((DxSpace) space, length);
 	}
 	
+	/**
+	 * @brief Create a sphere geom of the given radius, and return its ID.
+	 *
+	 * @param radius  the radius of the sphere.
+	 *
+	 * @returns A new sphere geom.
+	 *
+	 * @remarks The point of reference for a sphere is its center.
+	 *
+	 * @see DGeom#destroy()
+	 * @see DSphere#setRadius(double)
+	 * @ingroup collide_sphere
+	 */
 	public static DSphere createSphere(double radius) {
 		return DxSphere.dCreateSphere(null, radius);
 	}
+	/**
+	 * @brief Create a sphere geom of the given radius, and return its ID.
+	 *
+	 * @param space   a space to contain the new geom. May be null.
+	 * @param radius  the radius of the sphere.
+	 *
+	 * @returns A new sphere geom.
+	 *
+	 * @remarks The point of reference for a sphere is its center.
+	 *
+	 * @see DGeom#destroy()
+	 * @see DSphere#setRadius(double)
+	 * @ingroup collide_sphere
+	 */
 	public static DSphere createSphere(DSpace space, double radius) {
 		return DxSphere.dCreateSphere((DxSpace)space, radius);
 	}
@@ -587,7 +648,7 @@ public abstract class OdeHelper {
 
 	/**
 	 * @brief Creates a heightfield geom.
-	 *
+	 * <p>
 	 * Uses the information in the given dHeightfieldData to construct
 	 * a geom representing a heightfield in a collision space.
 	 *
@@ -612,7 +673,7 @@ public abstract class OdeHelper {
 	
 	/**
 	 * @brief Creates a new empty dHeightfieldData.
-	 *
+	 * <p>
 	 * Allocates a new dHeightfieldData and returns it. You must call
 	 * dGeomHeightfieldDataDestroy to destroy it after the geom has been removed.
 	 * The dHeightfieldData value is used when specifying a data format type.
@@ -720,5 +781,18 @@ public abstract class OdeHelper {
 	public static void spaceCollide2(DGeom space1, DGeom space2, Object data,
 			DNearCallback callback) {
 		DxSpace.dSpaceCollide2((DxGeom)space1, (DxGeom)space2, data, callback);
+	}
+	
+	
+	/**
+	 * @brief Sets a custom collider function for two geom classes.
+	 *
+	 * @param i The first geom class handled by this collider
+	 * @param j The second geom class handled by this collider
+	 * @param fn The collider function to use to determine collisions.
+	 * @ingroup collide
+	 */
+	public static void setColliderOverride (int i, int j, DColliderFn fn) {
+		DxGeom.dSetColliderOverride(i, j, fn);
 	}
 }

@@ -25,26 +25,37 @@ import org.ode4j.math.DVector3C;
 
 public interface DSphere extends DGeom {
 
+	
+	/**
+	 * @brief Set the radius of a sphere geom.
+	 *
+	 * @param radius  the new radius.
+	 *
+	 * @see #getRadius
+	 * @ingroup collide_sphere
+	 */
 	void setRadius (double radius);
+	
+	
+	/**
+	 * @brief Retrieves the radius of a sphere geom.
+	 *
+	 * @see dGeomSphereSetRadius
+	 * @ingroup collide_sphere
+	 */
 	double getRadius();
-	double getPointDepth(DVector3C p);
 
-	//	  // intentionally undefined, don't use these
-	//	  dSphere (dSphere &);
-	//	  void operator= (dSphere &);
-	//
-	//	public:
-	//	  dSphere () { }
-	//	  dSphere (dSpaceID space, dReal radius)
-	//	    { _id = dCreateSphere (space, radius); }
-	//
-	//	  void create (dSpaceID space, dReal radius) {
-	//	    if (_id) dGeomDestroy (_id);
-	//	    _id = dCreateSphere (space, radius);
-	//	  }
-	//
-	//	  void setRadius (dReal radius)
-	//	    { dGeomSphereSetRadius (_id, radius); }
-	//	  dReal getRadius() const
-	//	    { return dGeomSphereGetRadius (_id); }
+	
+	/**
+	 * @brief Calculate the depth of the a given point within a sphere.
+	 *
+	 * @param p       the X, Y and Z coordinate of the point.
+	 *
+	 * @returns The depth of the point. Points inside the sphere will have a
+	 * positive depth, points outside it will have a negative depth, and points
+	 * on the surface will have a depth of zero.
+	 *
+	 * @ingroup collide_sphere
+	 */
+	double getPointDepth(DVector3C p);
 }

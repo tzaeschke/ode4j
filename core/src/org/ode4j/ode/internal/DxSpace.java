@@ -85,10 +85,12 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	// is locked.
 	int lock_count;
 
-	abstract void cleanGeoms();
-	// turn all dirty geoms into clean geoms by computing their AABBs and any
-	// other space data structures that are required. this should clear the
-	// GEOM_DIRTY and GEOM_AABB_BAD flags of all geoms.
+	/**
+	 * Turn all dirty geoms into clean geoms by computing their AABBs and any
+	 * other space data structures that are required. this should clear the
+	 * GEOM_DIRTY and GEOM_AABB_BAD flags of all geoms.
+	 */
+	public abstract void cleanGeoms();
 
 	public abstract void collide (Object data, DNearCallback callback);
 	abstract void collide2 (Object data, DxGeom geom, DNearCallback callback);
@@ -111,24 +113,24 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	}
 
 
-	void dSpaceSetSublevel (int sublevel)
+	private void dSpaceSetSublevel (int sublevel)
 	{
 		setSublevel (sublevel);
 	}
 
 
-	int dSpaceGetSublevel ()
+	private int dSpaceGetSublevel ()
 	{
 		return getSublevel();
 	}
 
 
-	void dSpaceSetManualCleanup (int mode)
+	private void dSpaceSetManualCleanup (int mode)
 	{
 		setManualCleanup(mode);
 	}
 
-	int dSpaceGetManualCleanup ()
+	private int dSpaceGetManualCleanup ()
 	{
 		return getManualCleanup();
 	}
@@ -370,13 +372,13 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	}
 
 
-	void setSublevel(int value)
+	public void setSublevel(int value)
 	{
 		sublevel = value;
 	}
 
 
-	int getSublevel() 
+	public int getSublevel() 
 	{
 		return sublevel;
 	}

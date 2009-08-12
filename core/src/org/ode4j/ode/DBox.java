@@ -26,28 +26,62 @@ import org.ode4j.math.DVector3C;
 
 public interface DBox extends DGeom {
 
+	
+	/**
+	 * @brief Set the side lengths of the given box.
+	 *
+	 * @param lx      the length of the box along the X axis
+	 * @param ly      the length of the box along the Y axis
+	 * @param lz      the length of the box along the Z axis
+	 *
+	 * @see #getLengths()
+	 * @ingroup collide_box
+	 */
 	void setLengths (double lx, double ly, double lz);
+	
+
+	/**
+	 * @brief Get the side lengths of a box.
+	 *
+	 * @param result  the returned side lengths
+	 *
+	 * @see #setLengths(DVector3C)
+	 * @ingroup collide_box
+	 */
 	void getLengths (DVector3 result);
+	
+
+	/**
+	 * @brief Set the side lengths of the given box.
+	 *
+	 * @param sides   the lengths of the box along the X, Y and Z axes
+	 *
+	 * @see #getLengths()
+	 * @ingroup collide_box
+	 */
 	void setLengths (DVector3C sides);
+	
+	
+	/**
+	 * @brief Get the side lengths of a box.
+	 *
+	 * @param result  the returned side lengths
+	 *
+	 * @see #setLengths(DVector3C)
+	 * @ingroup collide_box
+	 */
 	DVector3C getLengths ();
+
+	
+	/**
+	 * @brief Return the depth of a point in a box.
+	 *
+	 * @param p    the X, Y and Z coordinates of the point to test.
+	 *
+	 * @returns The depth of the point. Points inside the box will have a
+	 * positive depth, points outside it will have a negative depth, and points
+	 * on the surface will have a depth of zero.
+	 */
 	double getPointDepth(DVector3C p);
 
-//	  // intentionally undefined, don't use these
-//	  dBox (dBox &);
-//	  void operator= (dBox &);
-//
-//	public:
-//	  dBox () { }
-//	  dBox (dSpace space, dReal lx, dReal ly, dReal lz)
-//	    { _id = dCreateBox (space,lx,ly,lz); }
-//
-//	  void create (dSpace space, dReal lx, dReal ly, dReal lz) {
-//	    if (_id) dGeomDestroy (_id);
-//	    _id = dCreateBox (space,lx,ly,lz);
-//	  }
-//
-//	  void setLengths (dReal lx, dReal ly, dReal lz)
-//	    { dGeomBoxSetLengths (_id, lx, ly, lz); }
-//	  void getLengths (dVector3 result) const
-//	    { dGeomBoxGetLengths (_id,result); }
 }

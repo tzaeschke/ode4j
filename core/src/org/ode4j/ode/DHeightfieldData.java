@@ -28,7 +28,7 @@ public interface DHeightfieldData {
 	/**
 	 * @brief Configures a dHeightfieldData to use a callback to
 	 * retrieve height data.
-	 *
+	 * <p>
 	 * Before a dHeightfieldData can be used by a geom it must be
 	 * configured to specify the format of the height data.
 	 * This call specifies that the heightfield data is computed by
@@ -70,7 +70,7 @@ public interface DHeightfieldData {
 
 	/**
 	 * @brief Destroys a dHeightfieldData.
-	 *
+	 * <p>
 	 * Deallocates a given dHeightfieldData and all managed resources.
 	 *
 	 * @ingroup collide
@@ -79,7 +79,7 @@ public interface DHeightfieldData {
 
 	/**
 	 * @brief Manually set the minimum and maximum height bounds.
-	 *
+	 * <p>
 	 * This call allows you to set explicit min / max values after initial
 	 * creation typically for callback heightfields which default to +/- infinity,
 	 * or those whose data has changed. This must be set prior to binding with a
@@ -97,7 +97,7 @@ public interface DHeightfieldData {
 
 	/**
 	 * @brief Configures a dHeightfieldData to use height data in byte format.
-	 *
+	 * <p>
 	 * Before a dHeightfieldData can be used by a geom it must be
 	 * configured to specify the format of the height data.
 	 * This call specifies that the heightfield data is stored as a rectangular

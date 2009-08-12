@@ -149,7 +149,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 	}
 
 
-	private void setLevels (int minlevel, int maxlevel)
+	public void setLevels (int minlevel, int maxlevel)
 	{
 		dAASSERT (minlevel <= maxlevel);
 		global_minlevel = minlevel;
@@ -158,15 +158,18 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 
 
 	//	void getLevels (int *minlevel, int *maxlevel)
-	void getLevels (RefInt minlevel, RefInt maxlevel)
+	public int getLevelMin ()
 	{
-		if (minlevel != null) minlevel.set( global_minlevel );
-		if (maxlevel != null) maxlevel.set( global_maxlevel );
+		return global_minlevel;
+	}
+	public int getLevelMax ()
+	{
+		return global_maxlevel;
 	}
 
 
 	@Override
-	void cleanGeoms()
+	public void cleanGeoms()
 	{
 		// compute the AABBs of all dirty geoms, and clear the dirty flags
 		lock_count++;
@@ -404,17 +407,6 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		//dUASSERT (space.type == dHashSpaceClass,"argument must be a hash space");
 		//dxHashSpace hspace = (dxHashSpace) space;
 		setLevels (minlevel,maxlevel);
-	}
-
-
-	//TODO change to (dxHashSpace) space
-	//void dHashSpaceGetLevels (dxSpace space, RefInt minlevel, RefInt maxlevel)
-	void dHashSpaceGetLevels (RefInt minlevel, RefInt maxlevel)
-	{
-		//dAASSERT (space);
-		//dUASSERT (space.type == dHashSpaceClass,"argument must be a hash space");
-		//dxHashSpace hspace = (dxHashSpace) space;
-		getLevels (minlevel,maxlevel);
 	}
 
 
