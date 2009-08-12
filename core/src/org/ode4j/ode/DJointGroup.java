@@ -27,43 +27,22 @@ package org.ode4j.ode;
  */
 public interface DJointGroup {
 
+	/**
+	 * @brief Empty a joint group.
+	 * @ingroup joints
+	 *
+	 * All joints in the joint group will be destroyed,
+	 * but the joint group itself will not be destroyed.
+	 */
 	void empty();
 	void clear();
+
+	/**
+	 * @brief Destroy a joint group.
+	 * @ingroup joints
+	 *
+	 * All joints in the joint group will be destroyed.
+	 */
 	void destroy();
 
-	//	//TZ private dJointGroup _id;
-//	private dxJointGroup _id;
-//
-//	// intentionally undefined, don't use these
-//	//  dJointGroup (const dJointGroup &);
-//	//  void operator= (const dJointGroup &);
-//
-//	//public:
-//	//  dJointGroup (int dummy_arg=0)
-//	//  { _id = dJointGroupCreate (0); }
-//	//  dJointGroup (int dummy_arg)
-//	//  { _id = dJointGroupCreate (0); }
-//	public dJointGroup ()
-//	{ _id = dxJointGroup.dJointGroupCreate (0); }
-//
-//	//~dJointGroup()
-//	@Override
-//	protected void DESTRUCTOR()
-//	{ _id.dJointGroupDestroy (); super.DESTRUCTOR(); }
-//	//  void create (int dummy_arg=0) {
-//	public  void create () {
-//		if (_id!=null) _id.dJointGroupDestroy ();
-//		_id = dxJointGroup.dJointGroupCreate (0);
-//	}
-//
-//	public dJointGroup id() //const
-//	{ return _id; }
-//	//TODO 
-//	//  operator dJointGroup() //const
-//	//    { return _id; }
-//
-//	public void empty()
-//	{ dJointGroupEmpty (_id); }
-//	void clear()
-//	{ empty(); }
 }

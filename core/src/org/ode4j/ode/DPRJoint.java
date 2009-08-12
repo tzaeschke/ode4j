@@ -23,6 +23,7 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 /**
  *  Prismatic and Rotoide.
@@ -44,18 +45,90 @@ import org.ode4j.math.DVector3C;
  */
 public interface DPRJoint extends DJoint {
 
+	/**
+	 * @brief set anchor
+	 * @ingroup joints
+	 */
 	void setAnchor (double x, double y, double z);
+
+	
+	/**
+	 * @brief set anchor
+	 * @ingroup joints
+	 */
 	void setAnchor (DVector3C a);
+
+	
+	/**
+	 * @brief set the axis for the prismatic articulation
+	 * @ingroup joints
+	 */
 	void setAxis1 (double x, double y, double z);
+	
+	
+	/**
+	 * @brief set the axis for the prismatic articulation
+	 * @ingroup joints
+	 */
 	void setAxis1 (DVector3C a);
+
+	
+	/**
+	 * @brief set the axis for the rotoide articulation
+	 * @ingroup joints
+	 */
 	void setAxis2 (double x, double y, double z);
+
+	
+	/**
+	 * @brief set the axis for the rotoide articulation
+	 * @ingroup joints
+	 */
 	void setAxis2 (DVector3C a);
 
+
+	/**
+	 * @brief Get the joint anchor point, in world coordinates.
+	 * Return the point on body 1. If the joint is perfectly satisfied, 
+	 * this will be the same as the point on body 2.
+	 * @ingroup joints
+	 */
 	void getAnchor (DVector3 result);
+
+	
+	/**
+	 * @brief Get the prismatic axis
+	 * @ingroup joints
+	 */
 	void getAxis1 (DVector3 result);
+
+	
+	/**
+	 * @brief Get the Rotoide axis
+	 * @ingroup joints
+	 */
 	void getAxis2 (DVector3 result);
 
+
+	/**
+	 * @brief Get the PR linear position (i.e. the prismatic's extension).
+	 * <p>
+	 * When the axis is set, the current position of the attached bodies is
+	 * examined and that position will be the zero position.
+	 * <p>
+	 * The position is the "oriented" length between the
+	 * position = (Prismatic axis) dot_product [(body1 + offset) - (body2 + anchor2)]
+	 *
+	 * @ingroup joints
+	 */
 	double getPosition();
+
+	
+	/**
+	 * @brief Get the PR linear position's time derivative.
+	 *
+	 * @ingroup joints
+	 */
 	double getPositionRate();
 	void setParamLoStop(double d);
 	void setParamHiStop(double d);
@@ -64,54 +137,50 @@ public interface DPRJoint extends DJoint {
 	void setParamVel2(double d);
 	void setParamFMax2(double d);
 
+
+	/**
+	 * @brief Get the PR angular position (i.e. the  twist between the 2 bodies)
+	 *
+	 * When the axis is set, the current position of the attached bodies is
+	 * examined and that position will be the zero position.
+	 * @ingroup joints
+	 */
 	double getAngle();
+
+	
+	/**
+	 * @brief Get the PR angular position's time derivative
+	 *
+	 * @ingroup joints
+	 */
 	double getAngleRate();
 
 
-	//	  dPRJoint (const dPRJoint &);
-	//	  void operator = (const dPRJoint &);
-	//
-	//	public:
-	//	  dPRJoint() { }
-	//	  dPRJoint (dWorld world, dJointGroup group=0)
-	//	    { _id = dJointCreatePR (world, group); }
-	//	  dPRJoint (dWorld& world, dJointGroup group=0)
-	//	    { _id = dJointCreatePR (world.id(), group); }
-	//
-	//	  void create (dWorld world, dJointGroup group=0) {
-	//	    if (_id) dJointDestroy (_id);
-	//	    _id = dJointCreatePR (world, group);
-	//	  }
-	//	  void create (dWorld& world, dJointGroup group=0)
-	//	    { create(world.id(), group); }
-	//
-	//	  void setAnchor (dReal x, dReal y, dReal z)
-	//	    { dJointSetPRAnchor (_id, x, y, z); }
-	//	  void setAnchor (const dVector3 a)
-	//	    { setAnchor (a[0], a[1], a[2]); }
-	//	  void setAxis1 (dReal x, dReal y, dReal z)
-	//	    { dJointSetPRAxis1 (_id, x, y, z); }
-	//	  void setAxis1 (const dVector3 a)
-	//	    { setAxis1(a[0], a[1], a[2]); }
-	//	  void setAxis2 (dReal x, dReal y, dReal z)
-	//	    { dJointSetPRAxis2 (_id, x, y, z); }
-	//	  void setAxis2 (const dVector3 a)
-	//	    { setAxis2(a[0], a[1], a[2]); }
-	//
-	//	  void getAnchor (dVector3 result) const
-	//	    { dJointGetPRAnchor (_id, result); }
-	//	  void getAxis1 (dVector3 result) const
-	//	    { dJointGetPRAxis1 (_id, result); }
-	//	  void getAxis2 (dVector3 result) const
-	//	    { dJointGetPRAxis2 (_id, result); }
-	//
-	//	  dReal getPosition() const
-	//	    { return dJointGetPRPosition (_id); }
-	//	  dReal getPositionRate() const
-	//	    { return dJointGetPRPositionRate (_id); }
-	//
-	//	  virtual void setParam (int parameter, dReal value)
-	//	    { dJointSetPRParam (_id, parameter, value); }
-	//	  virtual dReal getParam (int parameter) const
-	//	    { return dJointGetPRParam (_id, parameter); }
+	/**
+	 * @brief set joint parameter
+	 * @ingroup joints
+	 *
+	 * @note parameterX where X equal 2 refer to parameter for the rotoide articulation
+	 */
+	@Override
+	void setParam (PARAM_N parameter, double value);
+
+
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	double getParam (PARAM_N parameter);
+
+	
+	/**
+	 * @brief Applies the torque about the rotoide axis of the PR joint
+	 * <p>
+	 * That is, it applies a torque with specified magnitude in the direction 
+	 * of the rotoide axis, to body 1, and with the same magnitude but in opposite
+	 * direction to body 2. This function is just a wrapper for dBodyAddTorque()}
+	 * @ingroup joints
+	 */
+	void addTorque(double torque);
 }

@@ -459,4 +459,11 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	public void setParamBounce(double d) {
 		dJointSetSliderParam(PARAM_N.dParamBounce1, d);
 	}
+
+
+	@Override
+	public void setAxisDelta(double x, double y, double z, double dx,
+			double dy, double dz) {
+		dJointSetSliderAxisDelta(x, y, z, dx, dy, dz);
+	}
 }

@@ -23,6 +23,7 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 /**
  * ****************************************************************************
@@ -72,75 +73,162 @@ import org.ode4j.math.DVector3C;
  */
 public interface DPistonJoint extends DJoint {
 
+	/**
+	 * @brief set the joint anchor
+	 * @ingroup joints
+	 */
 	void setAnchor (double x, double y, double z);
+
+	
+	/**
+	 * @brief set the joint anchor
+	 * @ingroup joints
+	 */
 	void setAnchor (DVector3C a);
+
+	
+	/**
+	 * @brief Get the joint anchor
+	 * <p>
+	 * This returns the point on body 1. If the joint is perfectly satisfied,
+	 * this will be the same as the point on body 2 in direction perpendicular
+	 * to the prismatic axis.
+	 *
+	 * @ingroup joints
+	 */
 	void getAnchor (DVector3 result);
+	
+	
+	/**
+	 * @brief Get the joint anchor w.r.t. body 2
+	 * <p>
+	 * This returns the point on body 2. You can think of a Piston
+	 * joint as trying to keep the result of dJointGetPistonAnchor() and
+	 * dJointGetPistonAnchor2() the same in the direction perpendicular to the
+	 * prismatic axis. If the joint is perfectly satisfied,
+	 * this function will return the same value as dJointGetPistonAnchor() to
+	 * within roundoff errors. dJointGetPistonAnchor2() can be used, along with
+	 * dJointGetPistonAnchor(), to see how far the joint has come apart.
+	 *
+	 * @ingroup joints
+	 */
 	void getAnchor2 (DVector3 result);
+
+	
+	/**
+	 * @brief Set the Piston anchor as if the 2 bodies were already at [dx,dy, dz] appart.
+	 * @ingroup joints
+	 * <p>
+	 * This function initialize the anchor and the relative position of each body
+	 * as if the position between body1 and body2 was already the projection of [dx, dy, dz]
+	 * along the Piston axis. (i.e as if the body1 was at its current position - [dx,dy,dy] when the
+	 * axis is set).
+	 * Ex:  <br>
+	 * <code>
+	 * double offset = 3;  <br>
+	 * dVector3 axis;  <br>
+	 * dJointGetPistonAxis(jId, axis);  <br>
+	 * dJointSetPistonAnchor(jId, 0, 0, 0);  <br>
+	 * // If you request the position you will have: dJointGetPistonPosition(jId) == 0  <br>
+	 * dJointSetPistonAnchorOffset(jId, 0, 0, 0, axis[X]*offset, axis[Y]*offset, axis[Z]*offset);  <br>
+	 * // If you request the position you will have: dJointGetPistonPosition(jId) == offset  <br>
+	 * </code>
+	 * @param j The Piston joint for which the anchor point will be set
+	 * @param x The X position of the anchor point in world frame
+	 * @param y The Y position of the anchor point in world frame
+	 * @param z The Z position of the anchor point in world frame
+	 * @param dx A delta to be substracted to the X position as if the anchor was set
+	 *           when body1 was at current_position[X] - dx
+	 * @param dx A delta to be substracted to the Y position as if the anchor was set
+	 *           when body1 was at current_position[Y] - dy
+	 * @param dx A delta to be substracted to the Z position as if the anchor was set
+	 *           when body1 was at current_position[Z] - dz
+	 */
 	void setAnchorOffset(DVector3C xyz, double dx, double dy, double dz);
 
+	/**
+	 * @brief set the joint axis
+	 * @ingroup joints
+	 */
 	void setAxis (double x, double y, double z);
+
+	
+	/**
+	 * @brief set the joint axis
+	 * @ingroup joints
+	 */
 	void setAxis (DVector3C a);
+
+	
+	/**
+	 * @brief Get the prismatic axis (This is also the rotoide axis.
+	 * @ingroup joints
+	 */
 	void getAxis (DVector3 result);
 
+
+	/**
+	 * @brief Get the Piston linear position (i.e. the piston's extension)
+	 * <p>
+	 * When the axis is set, the current position of the attached bodies is
+	 * examined and that position will be the zero position.
+	 * @ingroup joints
+	 */
 	double getPosition();
+
+	
+	/**
+	 * @brief Get the piston linear position's time derivative.
+	 * @ingroup joints
+	 */
 	double getPositionRate();
 
+	/**
+	 * @brief Applies the given force in the slider's direction.
+	 * <p>
+	 * That is, it applies a force with specified magnitude, in the direction of
+	 * prismatic's axis, to body1, and with the same magnitude but opposite
+	 * direction to body2.  This function is just a wrapper for dBodyAddForce().
+	 * @ingroup joints
+	 */
 	void addForce (double force);
 	
 	double getParamLoStop2();
 	double getParamHiStop2();
 	void setParamLoStop2(double d);
 	void setParamHiStop2(double d);
+
+	
+	/**
+	 * @brief Get the Piston angular position (i.e. the  twist between the 2 bodies)
+	 * <p>
+	 * When the axis is set, the current position of the attached bodies is
+	 * examined and that position will be the zero position.
+	 * @ingroup joints
+	 */
 	double getAngle();
+
+	
+	/**
+	 * @brief Get the piston angular position's time derivative.
+	 * @ingroup joints
+	 */
 	double getAngleRate();
 
 
-	//	 // intentionally undefined, don't use these
-	//	  dPistonJoint (const dPistonJoint &);
-	//	  void operator = (const dPistonJoint &);
-	//
-	//	public:
-	//	  dPistonJoint() { }
-	//	  dPistonJoint (dWorld world, dJointGroup group=0)
-	//	    { _id = dJointCreatePiston (world, group); }
-	//	  dPistonJoint (dWorld& world, dJointGroup group=0)
-	//	    { _id = dJointCreatePiston (world, group); }
-	//
-	//	  void create (dWorld world, dJointGroup group=0)
-	//	  {
-	//	    if (_id) dJointDestroy (_id);
-	//	    _id = dJointCreatePiston (world, group);
-	//	  }
-	//	  void create (dWorld& world, dJointGroup group=0)
-	//	    { create(world.id(), group); }
-	//
-	//	  void setAnchor (dReal x, dReal y, dReal z)
-	//	    { dJointSetPistonAnchor (_id, x, y, z); }
-	//	  void setAnchor (const dVector3 a)
-	//	    { setAnchor (a[0], a[1], a[2]); }
-	//	  void getAnchor (dVector3 result) const
-	//	    { dJointGetPistonAnchor (_id, result); }
-	//	  void getAnchor2 (dVector3 result) const
-	//	    { dJointGetPistonAnchor2 (_id, result); }
-	//
-	//	  void setAxis (dReal x, dReal y, dReal z)
-	//	    { dJointSetPistonAxis (_id, x, y, z); }
-	//	  void setAxis (const dVector3 a)
-	//	    { setAxis(a[0], a[1], a[2]); }
-	//	  void getAxis (dVector3 result) const
-	//	    { dJointGetPistonAxis (_id, result); }
-	//
-	//	  dReal getPosition() const
-	//	    { return dJointGetPistonPosition (_id); }
-	//	  dReal getPositionRate() const
-	//	    { return dJointGetPistonPositionRate (_id); }
-	//
-	//	  virtual void setParam (int parameter, dReal value)
-	//	  { dJointSetPistonParam (_id, parameter, value); }
-	//	  virtual dReal getParam (int parameter) const
-	//	    { return dJointGetPistonParam (_id, parameter); }
-	//	  // TODO: expose params through methods
-	//
-	//	  void addForce (dReal force)
-	//	  { dJointAddPistonForce (_id, force); }
+	/**
+	 * @brief set joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	void setParam (PARAM_N parameter, double value);
+	
+	
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	double getParam (PARAM_N parameter);
+
 }

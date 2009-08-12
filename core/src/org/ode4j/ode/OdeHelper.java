@@ -22,12 +22,14 @@
 package org.ode4j.ode;
 
 import java.io.File;
+import java.util.List;
 
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DTriMesh.dTriArrayCallback;
 import org.ode4j.ode.DTriMesh.dTriCallback;
 import org.ode4j.ode.DTriMesh.dTriRayCallback;
 import org.ode4j.ode.internal.joints.DxJointGroup;
+import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.internal.DxHeightfield;
 import org.ode4j.ode.internal.DxHeightfieldData;
@@ -100,7 +102,11 @@ public abstract class OdeHelper {
 	//
 	//	public abstract dJointPlane2D  dJointCreatePlane2D (dWorld w, dJointGroup group);
 
-	// JointGroup
+	/**
+	 * @brief Create a joint group
+	 * @ingroup joints
+	 * @param max_size deprecated. Set to 0.
+	 */
 	public static DJointGroup createJointGroup () {
 		return DxJointGroup.dJointGroupCreate(-1);
 	}
@@ -113,57 +119,147 @@ public abstract class OdeHelper {
 	}
 
 	// AMotorJoint
+	/**
+	 * @brief Create a new joint of the A-motor type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DAMotorJoint createAMotorJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreateAMotor((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the A-motor type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DAMotorJoint createAMotorJoint (DWorld world) {
 		return ODE.dJointCreateAMotor((DxWorld) world, null);
 	}
 
 	// BallJoint
+	/**
+	 * @brief Create a new joint of the ball type.
+	 * @ingroup joints
+	 * @remarks
+	 * The joint is initially in "limbo" (i.e. it has no effect on the simulation)
+	 * because it does not connect to any bodies.
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DBallJoint createBallJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreateBall((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the ball type.
+	 * @ingroup joints
+	 * @remarks
+	 * The joint is initially in "limbo" (i.e. it has no effect on the simulation)
+	 * because it does not connect to any bodies.
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DBallJoint createBallJoint (DWorld world) {
 		return ODE.dJointCreateBall((DxWorld) world, null);
 	}
 
 	// ContactJoint
+	/**
+	 * @brief Create a new joint of the contact type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DContactJoint createContactJoint (DWorld world, DJointGroup group, DContact c) {
 		return ODE.dJointCreateContact((DxWorld) world, group, c);
 	}
+	/**
+	 * @brief Create a new joint of the contact type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DContactJoint createContactJoint (DWorld world, DContact c) {
 		return ODE.dJointCreateContact((DxWorld) world, null, c);
 	}
 
 	// FixedJoint
+	/**
+	 * @brief Create a new joint of the fixed type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DFixedJoint createFixedJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreateFixed((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the fixed type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DFixedJoint createFixedJoint (DWorld world) {
 		return ODE.dJointCreateFixed((DxWorld) world, null);
 	}
 
 	// HingeJoint
+	/**
+	 * @brief Create a new joint of the hinge type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DHingeJoint createHingeJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreateHinge((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the hinge type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DHingeJoint createHingeJoint (DWorld world) {
 		return ODE.dJointCreateHinge((DxWorld) world, null);
 	}
 
 	// Hinge2Joint
+	/**
+	 * @brief Create a new joint of the hinge2 type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DHinge2Joint createHinge2Joint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreateHinge2((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the hinge2 type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DHinge2Joint createHinge2Joint (DWorld world) {
 		return ODE.dJointCreateHinge2((DxWorld) world, null);
 	}
 
 	// LMotorJoint
+	/**
+	 * @brief Create a new joint of the L-motor type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DLMotorJoint createLMotorJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreateLMotor((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the L-motor type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DLMotorJoint createLMotorJoint (DWorld world) {
 		return ODE.dJointCreateLMotor((DxWorld) world, null);
 	}
@@ -177,49 +273,123 @@ public abstract class OdeHelper {
 	}
 
 	// PistonJoint
+	/**
+	 * @brief Create a new joint of the Piston type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 *                      If it is nonzero the joint is allocated in the given
+	 *                      joint group.
+	 */
 	public static DPistonJoint createPistonJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreatePiston((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the Piston type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 *                      If it is nonzero the joint is allocated in the given
+	 *                      joint group.
+	 */
 	public static DPistonJoint createPistonJoint (DWorld world) {
 		return ODE.dJointCreatePiston((DxWorld) world, null);
 	}
 
 	// Plane2DJoint
+	/**
+	 * @brief Create a new joint of the plane-2d type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DPlane2DJoint createPlane2DJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreatePlane2D((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the plane-2d type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DPlane2DJoint createPlane2DJoint (DWorld world) {
 		return ODE.dJointCreatePlane2D((DxWorld) world, null);
 	}
 
 	// PRJoint
+	/**
+	 * @brief Create a new joint of the PR (Prismatic and Rotoide) type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DPRJoint createPRJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreatePR((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the PR (Prismatic and Rotoide) type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DPRJoint createPRJoint (DWorld world) {
 		return ODE.dJointCreatePR((DxWorld) world, null);
 	}
 
 	// PUJoint
+	/**
+	 * @brief Create a new joint of the PU (Prismatic and Universal) type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DPUJoint createPUJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreatePU((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the PU (Prismatic and Universal) type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DPUJoint createPUJoint (DWorld world) {
 		return ODE.dJointCreatePU((DxWorld) world, null);
 	}
 
 	// SliderJoint
+	/**
+	 * @brief Create a new joint of the slider type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DSliderJoint createSliderJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreateSlider((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the slider type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DSliderJoint createSliderJoint (DWorld world) {
 		return ODE.dJointCreateSlider((DxWorld) world, null);
 	}
 
 	// UniversalJoint
+	/**
+	 * @brief Create a new joint of the universal type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DUniversalJoint createUniversalJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreateUniversal((DxWorld) world, group);
 	}
+	/**
+	 * @brief Create a new joint of the universal type.
+	 * @ingroup joints
+	 * @param DJointGroup set to null to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
 	public static DUniversalJoint createUniversalJoint (DWorld world) {
 		return ODE.dJointCreateUniversal((DxWorld) world, null);
 	}
@@ -794,5 +964,21 @@ public abstract class OdeHelper {
 	 */
 	public static void setColliderOverride (int i, int j, DColliderFn fn) {
 		DxGeom.dSetColliderOverride(i, j, fn);
+	}
+
+	
+	/**
+	 * @ingroup joints
+	 */
+	public static DJoint connectingJoint(DBody b1, DBody b2) {
+		return OdeJointsFactoryImpl.dConnectingJoint(b1, b2);
+	}
+	
+	
+	/**
+	 * @ingroup joints
+	 */
+	public static List<DJoint> connectingJointList(DBody b1, DBody b2) {
+		return OdeJointsFactoryImpl.dConnectingJointList((DxBody)b1, (DxBody)b2);
 	}
 }

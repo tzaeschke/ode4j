@@ -26,14 +26,67 @@ import org.ode4j.math.DVector3C;
 
 public interface DLMotorJoint extends DJoint {
 
+	/**
+	 * @brief Set the number of axes that will be controlled by the LMotor.
+	 * @param num can range from 0 (which effectively deactivates the joint) to 3.
+	 * @ingroup joints
+	 */
 	void setNumAxes (int num);
+
+	
+	/**
+	 * @brief Get nr of axes.
+	 * @ingroup joints
+	 */
 	int getNumAxes();
 
+	/**
+	 * @brief Set the AMotor axes.
+	 * @param anum selects the axis to change (0,1 or 2).
+	 * @param rel Each axis can have one of three ``relative orientation'' modes
+	 * <li> 0: The axis is anchored to the global frame.
+	 * <li> 1: The axis is anchored to the first body.
+	 * <li> 2: The axis is anchored to the second body.
+	 * @remarks The axis vector is always specified in global coordinates
+	 * regardless of the setting of rel.
+	 * @ingroup joints
+	 */
 	void setAxis (int anum, int rel, double x, double y, double z);
+
+	
+	/**
+	 * @brief Set the AMotor axes.
+	 * @param anum selects the axis to change (0,1 or 2).
+	 * @param rel Each axis can have one of three ``relative orientation'' modes
+	 * <li> 0: The axis is anchored to the global frame.
+	 * <li> 1: The axis is anchored to the first body.
+	 * <li> 2: The axis is anchored to the second body.
+	 * @remarks The axis vector is always specified in global coordinates
+	 * regardless of the setting of rel.
+	 * @ingroup joints
+	 */
 	void setAxis (int anum, int rel, DVector3C a);
+
+	
+	/**
+	 * @brief Get axis.
+	 * @ingroup joints
+	 */
 	void getAxis (int anum, DVector3 result);
 
+	/**
+	 * @brief set joint parameter
+	 * @ingroup joints
+	 */
+	@Override
 	void setParam (PARAM_N parameter, double value);
+
+	
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
 	double getParam (PARAM_N parameter);
 	
 	double getParamVel();
@@ -50,39 +103,4 @@ public interface DLMotorJoint extends DJoint {
 	void setParamFMax3(double d);
 
 
-	//	  // intentionally undefined, don't use these
-	//	  dLMotorJoint (const dLMotorJoint &);
-	//	  void operator = (const dLMotorJoint &);
-	//
-	//	public:
-	//	  dLMotorJoint() { }
-	//	  dLMotorJoint (dWorld world, dJointGroup group=0)
-	//	    { _id = dJointCreateLMotor (world, group); }
-	//	  dLMotorJoint (dWorld& world, dJointGroup group=0)
-	//	    { _id = dJointCreateLMotor (world.id(), group); }
-	//
-	//	  void create (dWorld world, dJointGroup group=0) {
-	//	    if (_id) dJointDestroy (_id);
-	//	    _id = dJointCreateLMotor (world, group);
-	//	  }
-	//	  void create (dWorld& world, dJointGroup group=0)
-	//	    { create(world.id(), group); }
-	//
-	//	  void setNumAxes (int num)
-	//	    { dJointSetLMotorNumAxes (_id, num); }
-	//	  int getNumAxes() const
-	//	    { return dJointGetLMotorNumAxes (_id); }
-	//
-	//	  void setAxis (int anum, int rel, dReal x, dReal y, dReal z)
-	//	    { dJointSetLMotorAxis (_id, anum, rel, x, y, z); }
-	//	  void setAxis (int anum, int rel, const dVector3 a)
-	//	    { setAxis(anum, rel, a[0], a[1], a[2]); }
-	//	  void getAxis (int anum, dVector3 result) const
-	//	    { dJointGetLMotorAxis (_id, anum, result); }
-	//
-	//	  void setParam (int parameter, dReal value)
-	//	    { dJointSetLMotorParam (_id, parameter, value); }
-	//	  dReal getParam (int parameter) const
-	//	    { return dJointGetLMotorParam (_id, parameter); }
-	//	  // TODO: expose params through methods
 }

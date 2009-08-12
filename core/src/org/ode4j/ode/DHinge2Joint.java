@@ -23,25 +23,115 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 public interface DHinge2Joint extends DJoint {
 
+	/**
+	 * @brief set anchor
+	 * @ingroup joints
+	 */
 	void setAnchor (double x, double y, double z);
+	
+	
+	/**
+	 * @brief set anchor
+	 * @ingroup joints
+	 */
 	void setAnchor (DVector3C a);
+	
+	
+	/**
+	 * @brief set axis
+	 * @ingroup joints
+	 */
 	void setAxis1 (double x, double y, double z);
+	
+	
+	/**
+	 * @brief set axis
+	 * @ingroup joints
+	 */
 	void setAxis1 (DVector3C a);
+	
+	
+	/**
+	 * @brief set axis
+	 * @ingroup joints
+	 */
 	void setAxis2 (double x, double y, double z);
+	
+	
+	/**
+	 * @brief set axis
+	 * @ingroup joints
+	 */
 	void setAxis2 (DVector3C a);
 
+	
+	/**
+	 * @brief Get the joint anchor point, in world coordinates.
+	 * <p>
+	 * Return the point on body 1.  If the joint is perfectly satisfied,
+	 * this will be the same as the point on body 2.
+	 * @ingroup joints
+	 */
 	void getAnchor (DVector3 result);
+
+	
+	/**
+	 * @brief Get the joint anchor point, in world coordinates.
+	 * <p>
+	 * This returns the point on body 2. If the joint is perfectly satisfied,
+	 * this will return the same value as dJointGetHinge2Anchor.
+	 * If not, this value will be slightly different.
+	 * This can be used, for example, to see how far the joint has come apart.
+	 * @ingroup joints
+	 */
 	void getAnchor2 (DVector3 result);
+
+	
+	/**
+	 * @brief Get joint axis
+	 * @ingroup joints
+	 */
 	void getAxis1 (DVector3 result);
+
+	
+	/**
+	 * @brief Get joint axis
+	 * @ingroup joints
+	 */
 	void getAxis2 (DVector3 result);
 
+
+	/**
+	 * @brief Get angle
+	 * @ingroup joints
+	 */
 	double getAngle1();
+
+	
+	/**
+	 * @brief Get time derivative of angle
+	 * @ingroup joints
+	 */
 	double getAngle1Rate();
+
+	
+	/**
+	 * @brief Get time derivative of angle
+	 * @ingroup joints
+	 */
 	double getAngle2Rate();
 
+	
+	/**
+	 * @brief Applies torque1 about the hinge2's axis 1, torque2 about the
+	 * hinge2's axis 2.
+	 * @remarks  This function is just a wrapper for dBodyAddTorque().
+	 * @ingroup joints
+	 */
 	void addTorques(double torque1, double torque2);
 	void setParamVel2(double d);
 	void setParamFMax2(double d);
@@ -53,61 +143,21 @@ public interface DHinge2Joint extends DJoint {
 	void setParamSuspensionERP(double d);
 	void setParamSuspensionCFM(double d);
 
+	
+	
+	/**
+	 * @brief set joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	void setParam (PARAM_N parameter, double value);
 
-	//	  // intentionally undefined, don't use these
-	//	  dHinge2Joint (const dHinge2Joint &);
-	//	  void operator = (const dHinge2Joint &);
-	//
-	//	public:
-	//	  dHinge2Joint() { }
-	//	  dHinge2Joint (dWorld world, dJointGroup group=0)
-	//	    { _id = dJointCreateHinge2 (world, group); }
-	//	  dHinge2Joint (dWorld& world, dJointGroup group=0)
-	//	    { _id = dJointCreateHinge2 (world.id(), group); }
-	//
-	//	  void create (dWorld world, dJointGroup group=0) {
-	//	    if (_id) dJointDestroy (_id);
-	//	    _id = dJointCreateHinge2 (world, group);
-	//	  }
-	//	  void create (dWorld& world, dJointGroup group=0)
-	//	    { create(world.id(), group); }
-	//
-	//	  void setAnchor (dReal x, dReal y, dReal z)
-	//	    { dJointSetHinge2Anchor (_id, x, y, z); }
-	//	  void setAnchor (const dVector3 a)
-	//	    { setAnchor(a[0], a[1], a[2]); }
-	//	  void setAxis1 (dReal x, dReal y, dReal z)
-	//	    { dJointSetHinge2Axis1 (_id, x, y, z); }
-	//	  void setAxis1 (const dVector3 a)
-	//	    { setAxis1 (a[0], a[1], a[2]); }
-	//	  void setAxis2 (dReal x, dReal y, dReal z)
-	//	    { dJointSetHinge2Axis2 (_id, x, y, z); }
-	//	  void setAxis2 (const dVector3 a)
-	//	    { setAxis2 (a[0], a[1], a[2]); }
-	//
-	//	  void getAnchor (dVector3 result) const
-	//	    { dJointGetHinge2Anchor (_id, result); }
-	//	  void getAnchor2 (dVector3 result) const
-	//	    { dJointGetHinge2Anchor2 (_id, result); }
-	//	  void getAxis1 (dVector3 result) const
-	//	    { dJointGetHinge2Axis1 (_id, result); }
-	//	  void getAxis2 (dVector3 result) const
-	//	    { dJointGetHinge2Axis2 (_id, result); }
-	//
-	//	  dReal getAngle1() const
-	//	    { return dJointGetHinge2Angle1 (_id); }
-	//	  dReal getAngle1Rate() const
-	//	    { return dJointGetHinge2Angle1Rate (_id); }
-	//	  dReal getAngle2Rate() const
-	//	    { return dJointGetHinge2Angle2Rate (_id); }
-	//
-	//	  virtual void setParam (int parameter, dReal value)
-	//	    { dJointSetHinge2Param (_id, parameter, value); }
-	//	  virtual dReal getParam (int parameter) const
-	//	    { return dJointGetHinge2Param (_id, parameter); }
-	//	  // TODO: expose params through methods
-	//
-	//	  void addTorques(dReal torque1, dReal torque2)
-	//		{ dJointAddHinge2Torques(_id, torque1, torque2); }
+	
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	double getParam (PARAM_N parameter);
 
 }

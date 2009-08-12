@@ -23,101 +23,249 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 public interface DPUJoint extends DJoint {
 
+	/**
+	 * @brief set anchor
+	 * @ingroup joints
+	 */
 	void setAnchor (double x, double y, double z);
+
+
+	/**
+	 * @brief set anchor
+	 * @ingroup joints
+	 */
 	void setAnchor (DVector3C a);
+
+	
+	/**
+	 * @brief set the axis for the first axis or the universal articulation
+	 * @ingroup joints
+	 */
 	void setAxis1 (double x, double y, double z);
+
+	
+	/**
+	 * @brief set the axis for the first axis or the universal articulation
+	 * @ingroup joints
+	 */
 	void setAxis1 (DVector3C a);
+
+	
+	/**
+	 * @brief set the axis for the second axis or the universal articulation
+	 * @ingroup joints
+	 */
 	void setAxis2 (double x, double y, double z);
+
+	
+	/**
+	 * @brief set the axis for the second axis or the universal articulation
+	 * @ingroup joints
+	 */
+	void setAxis2 (DVector3C a);
+	
+	
+	/**
+	 * @brief set the axis for the prismatic articulation
+	 * @ingroup joints
+	 */
 	void setAxis3 (double x, double y, double z);
+
+	
+	/**
+	 * @brief set the axis for the prismatic articulation
+	 * @ingroup joints
+	 */
 	void setAxis3 (DVector3C a);
+	
+	
+	/**
+	 * @brief set the axis for the prismatic articulation
+	 * @ingroup joints
+	 * @note This function was added for convenience it is the same as
+	 *       dJointSetPUAxis3
+	 */
 	void setAxisP (double x, double y, double z);
+
+
+	/**
+	 * @brief set the axis for the prismatic articulation
+	 * @ingroup joints
+	 * @note This function was added for convenience it is the same as
+	 *       dJointSetPUAxis3
+	 */
 	void setAxisP (DVector3C a);
 
+
+	/**
+	 * @brief Get the joint anchor point, in world coordinates.
+	 * Return the point on body 1. If the joint is perfectly satisfied,
+	 * this will be the same as the point on body 2.
+	 * @ingroup joints
+	 */
 	void getAnchor (DVector3 result);
+
+
+	/**
+	 * @brief Get the first axis of the universal component of the joint
+	 * @ingroup joints
+	 */
 	void getAxis1 (DVector3 result);
+
+
+	/**
+	 * @brief Get the second axis of the Universal component of the joint
+	 * @ingroup joints
+	 */
 	void getAxis2 (DVector3 result);
+
+
+	/**
+	 * @brief Get the prismatic axis
+	 * @ingroup joints
+	 */
 	void getAxis3 (DVector3 result);
+
+
+	/**
+	 * @brief Get the prismatic axis
+	 * @ingroup joints
+	 *
+	 * @note This function was added for convenience it is the same as
+	 *       dJointGetPUAxis3
+	 */
 	void getAxisP (DVector3 result);
 
+
+//	/**
+//	 * @brief Get both angles at the same time.
+//	 * @ingroup joints
+//	 *
+//	 * @param joint   The Prismatic universal joint for which we want to calculate the angles
+//	 * @param angle1  The angle between the body1 and the axis 1
+//	 * @param angle2  The angle between the body2 and the axis 2
+//	 *
+//	 * @note This function combine dJointGetPUAngle1 and dJointGetPUAngle2 together
+//	 *       and try to avoid redundant calculation
+//	 */
+	/**
+	 * @brief Get angle between the body1 and the axis 1
+	 * @ingroup joints
+	 */
 	double getAngle1();
+
+	
+	/**
+	 * @brief Get time derivative of angle1
+	 *
+	 * @ingroup joints
+	 */
 	double getAngle1Rate();
+	
+	
+	/**
+	 * @brief Get angle between the body2 and the axis 2
+	 * @ingroup joints
+	 */
 	double getAngle2();
+	
+	
+	/**
+	 * @brief Get time derivative of angle2
+	 *
+	 * @ingroup joints
+	 */
 	double getAngle2Rate();
 
+
+	/**
+	 * @brief Get the PU linear position (i.e. the prismatic's extension)
+	 * <p>
+	 * When the axis is set, the current position of the attached bodies is
+	 * examined and that position will be the zero position.
+	 * <p>
+	 * The position is the "oriented" length between the
+	 * position = (Prismatic axis) dot_product [(body1 + offset) - (body2 + anchor2)]
+	 *
+	 * @ingroup joints
+	 */
 	double getPosition();
+
+	
+	/**
+	 * @brief Get the PR linear position's time derivative
+	 *
+	 * @ingroup joints
+	 */
 	double getPositionRate();
+
+//	/**
+//	 * @brief Applies the torque about the rotoide axis of the PU joint
+//	 *
+//	 * That is, it applies a torque with specified magnitude in the direction
+//	 * of the rotoide axis, to body 1, and with the same magnitude but in opposite
+//	 * direction to body 2. This function is just a wrapper for dBodyAddTorque()}
+//	 * @ingroup joints
+//	 */
+//  TODO there is no implementation. Use dBodyAddTorque???? Or leave unimplemented?
+//	void addTorque (double torque);
+
+
+	/**
+	 * @brief Set the PU anchor as if the 2 bodies were already at [dx, dy, dz] appart.
+	 * @ingroup joints
+	 * <p>
+	 * This function initialize the anchor and the relative position of each body
+	 * as if the position between body1 and body2 was already the projection of [dx, dy, dz]
+	 * along the Piston axis. (i.e as if the body1 was at its current position - [dx,dy,dy] when the
+	 * axis is set).
+	 * Ex: <br>
+	 * <code> <br>
+	 * dReal offset = 3; <br>
+	 * dVector3 axis; <br>
+	 * dJointGetPUAxis(jId, axis); <br>
+	 * dJointSetPUAnchor(jId, 0, 0, 0); <br>
+	 * // If you request the position you will have: dJointGetPUPosition(jId) == 0 <br>
+	 * dJointSetPUAnchorOffset(jId, 0, 0, 0, axis[X]*offset, axis[Y]*offset, axis[Z]*offset); <br>
+	 * // If you request the position you will have: dJointGetPUPosition(jId) == offset <br>
+	 * </code>
+	 * @param j The PU joint for which the anchor point will be set
+	 * @param x The X position of the anchor point in world frame
+	 * @param y The Y position of the anchor point in world frame
+	 * @param z The Z position of the anchor point in world frame
+	 * @param dx A delta to be substracted to the X position as if the anchor was set
+	 *           when body1 was at current_position[X] - dx
+	 * @param dx A delta to be substracted to the Y position as if the anchor was set
+	 *           when body1 was at current_position[Y] - dy
+	 * @param dx A delta to be substracted to the Z position as if the anchor was set
+	 *           when body1 was at current_position[Z] - dz
+	 */
 	void setAnchorOffset(double x, double y, double z, double dx, double dy,
 			double dz);
 
+
+	/**
+	 * @brief set joint parameter
+	 * @ingroup joints
+	 *
+	 * @note parameterX where X equal 2 refer to parameter for second axis of the
+	 *       universal articulation
+	 * @note parameterX where X equal 3 refer to parameter for prismatic
+	 *       articulation
+	 */
+	@Override
+	void setParam (PARAM_N parameter, double value);
+
 	
-//	  dPUJoint (const dPUJoint &);
-//	  void operator = (const dPUJoint &);
-//
-//	public:
-//	  dPUJoint() { }
-//	  dPUJoint (dWorld world, dJointGroup group=0)
-//	    { _id = dJointCreatePU (world, group); }
-//	  dPUJoint (dWorld& world, dJointGroup group=0)
-//	    { _id = dJointCreatePU (world.id(), group); }
-//
-//	  void create (dWorld world, dJointGroup group=0)
-//	  {
-//	    if (_id) dJointDestroy (_id);
-//	    _id = dJointCreatePU (world, group);
-//	  }
-//	  void create (dWorld& world, dJointGroup group=0)
-//	  { create(world.id(), group); }
-//
-//	  void setAnchor (dReal x, dReal y, dReal z)
-//	    { dJointSetPUAnchor (_id, x, y, z); }
-//	  void setAnchor (const dVector3 a)
-//	    { setAnchor (a[0], a[1], a[2]); }
-//	  void setAxis1 (dReal x, dReal y, dReal z)
-//	    { dJointSetPUAxis1 (_id, x, y, z); }
-//	  void setAxis1 (const dVector3 a)
-//	    { setAxis1(a[0], a[1], a[2]); }
-//	  void setAxis2 (dReal x, dReal y, dReal z)
-//	  { dJointSetPUAxis2 (_id, x, y, z); }
-//	  void setAxis3 (dReal x, dReal y, dReal z)
-//	  { dJointSetPUAxis3 (_id, x, y, z); }
-//	  void setAxis3 (const dVector3 a)
-//	    { setAxis3(a[0], a[1], a[2]); }
-//	  void setAxisP (dReal x, dReal y, dReal z)
-//	  { dJointSetPUAxis3 (_id, x, y, z); }
-//	  void setAxisP (const dVector3 a)
-//	    { setAxisP(a[0], a[1], a[2]); }
-//
-//	  virtual void getAnchor (dVector3 result) const
-//	    { dJointGetPUAnchor (_id, result); }
-//	  void getAxis1 (dVector3 result) const
-//	    { dJointGetPUAxis1 (_id, result); }
-//	  void getAxis2 (dVector3 result) const
-//	    { dJointGetPUAxis2 (_id, result); }
-//	  void getAxis3 (dVector3 result) const
-//	    { dJointGetPUAxis3 (_id, result); }
-//	  void getAxisP (dVector3 result) const
-//	    { dJointGetPUAxis3 (_id, result); }
-//
-//	  dReal getAngle1() const
-//	    { return dJointGetPUAngle1 (_id); }
-//	  dReal getAngle1Rate() const
-//	    { return dJointGetPUAngle1Rate (_id); }
-//	  dReal getAngle2() const
-//	    { return dJointGetPUAngle2 (_id); }
-//	  dReal getAngle2Rate() const
-//	    { return dJointGetPUAngle2Rate (_id); }
-//
-//	  dReal getPosition() const
-//	    { return dJointGetPUPosition (_id); }
-//	  dReal getPositionRate() const
-//	    { return dJointGetPUPositionRate (_id); }
-//
-//	  virtual void setParam (int parameter, dReal value)
-//	  { dJointSetPUParam (_id, parameter, value); }
-//	  virtual dReal getParam (int parameter) const
-//	    { return dJointGetPUParam (_id, parameter); }
-//	  // TODO: expose params through methods
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	double getParam (PARAM_N parameter);
+
 }

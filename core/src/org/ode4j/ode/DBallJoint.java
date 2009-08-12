@@ -27,45 +27,74 @@ import org.ode4j.math.DVector3C;
 
 public interface DBallJoint extends DJoint {
 
+	/**
+	 * @brief Set the joint anchor point.
+	 * @ingroup joints
+	 *
+	 * The joint will try to keep this point on each body
+	 * together. The input is specified in world coordinates.
+	 */
 	void setAnchor (double x, double y, double z);
+	
+	
+	/**
+	 * @brief Set the joint anchor point.
+	 * @ingroup joints
+	 */
 	void setAnchor2(double x, double y, double z);
+	
+	
+	/**
+	 * @brief Set the joint anchor point.
+	 * @ingroup joints
+	 *
+	 * The joint will try to keep this point on each body
+	 * together. The input is specified in world coordinates.
+	 */
 	void setAnchor (DVector3C a);
+	
+	
+	/**
+	 * @brief Set the joint anchor point on body 2.
+	 * @ingroup joints
+	 */
 	void setAnchor2 (DVector3C a);
+	
+	
+	/**
+	 * @brief Get the joint anchor point, in world coordinates.
+	 *
+	 * This returns the point on body 1. If the joint is perfectly satisfied,
+	 * this will be the same as the point on body 2.
+	 */
 	void getAnchor (DVector3 result);
+	
+	
+	/**
+	 * @brief Get the joint anchor point, in world coordinates.
+	 *
+	 * This returns the point on body 2. You can think of a ball and socket
+	 * joint as trying to keep the result of dJointGetBallAnchor() and
+	 * dJointGetBallAnchor2() the same.  If the joint is perfectly satisfied,
+	 * this function will return the same value as dJointGetBallAnchor() to
+	 * within roundoff errors. dJointGetBallAnchor2() can be used, along with
+	 * dJointGetBallAnchor(), to see how far the joint has come apart.
+	 */
 	void getAnchor2 (DVector3 result);
 
 
-	//	private:
-	//		// intentionally undefined, don't use these
-	//		dBallJoint (const dBallJoint &);
-	//void operator= (const dBallJoint &);
-	//
-	//public:
-	//	dBallJoint() { }
-	//dBallJoint (dWorld world, dJointGroup group=0)
-	//{ _id = dJointCreateBall (world, group); }
-	//dBallJoint (dWorld& world, dJointGroup group=0)
-	//{ _id = dJointCreateBall (world.id(), group); }
-	//
-	//void create (dWorld world, dJointGroup group=0) {
-	//	if (_id) dJointDestroy (_id);
-	//	_id = dJointCreateBall (world, group);
-	//}
-	//void create (dWorld& world, dJointGroup group=0)
-	//{ create(world.id(), group); }
-	//
-	//void setAnchor (dReal x, dReal y, dReal z)
-	//{ dJointSetBallAnchor (_id, x, y, z); }
-	//void setAnchor (const dVector3 a)
-	//{ setAnchor (a[0], a[1], a[2]); }
-	//void getAnchor (dVector3 result) const
-	//{ dJointGetBallAnchor (_id, result); }
-	//void getAnchor2 (dVector3 result) const
-	//{ dJointGetBallAnchor2 (_id, result); }
-	//virtual void setParam (int parameter, dReal value)
-	//{ dJointSetBallParam (_id, parameter, value); }
-	//virtual dReal getParam (int parameter) const
-	//{ return dJointGetBallParam (_id, parameter); }
-	//// TODO: expose params through methods
-	//
+	/**
+	 * @brief Param setting for Ball joints
+	 * @ingroup joints
+	 */
+	@Override
+	void setParam(PARAM_N parameter, double value);
+
+	
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	double getParam (PARAM_N parameter);
 }

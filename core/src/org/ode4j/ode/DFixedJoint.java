@@ -21,6 +21,9 @@
  *************************************************************************/
 package org.ode4j.ode;
 
+import org.ode4j.ode.DJoint.PARAM_N;
+
+
 /**
  * From the Wiki: 
  * The fixed joint maintains a fixed relative position and orientation between
@@ -33,33 +36,30 @@ public interface DFixedJoint extends DJoint {
 
 	void set();
 
+
+	/**
+	 * @brief Call this on the fixed joint after it has been attached to
+	 * remember the current desired relative offset and desired relative
+	 * rotation between the bodies.
+	 * @ingroup joints
+	 */
 	void setFixed();
 
-	//	 // intentionally undefined, don't use these
-	//	  dFixedJoint (const dFixedJoint &);
-	//	  void operator = (const dFixedJoint &);
-	//
-	//	public:
-	//	  dFixedJoint() { }
-	//	  dFixedJoint (dWorld world, dJointGroup group=0)
-	//	    { _id = dJointCreateFixed (world, group); }
-	//	  dFixedJoint (dWorld& world, dJointGroup group=0)
-	//	    { _id = dJointCreateFixed (world, group); }
-	//
-	//	  void create (dWorld world, dJointGroup group=0) {
-	//	    if (_id) dJointDestroy (_id);
-	//	    _id = dJointCreateFixed (world, group);
-	//	  }
-	//	  void create (dWorld& world, dJointGroup group=0)
-	//	    { create(world.id(), group); }
-	//
-	//	  void set()
-	//	    { dJointSetFixed (_id); }
-	//
-	//	  virtual void setParam (int parameter, dReal value)
-	//	    { dJointSetFixedParam (_id, parameter, value); }
-	//
-	//	  virtual dReal getParam (int parameter) const
-	//	    { return dJointGetFixedParam (_id, parameter); }
-	//	  // TODO: expose params through methods
+	
+	/**
+	 * @brief Sets joint parameter
+	 *
+	 * @ingroup joints
+	 */
+	@Override
+	void setParam (PARAM_N parameter, double value);
+	
+	
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	double getParam (PARAM_N type);
+
 }

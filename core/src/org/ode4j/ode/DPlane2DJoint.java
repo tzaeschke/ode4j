@@ -51,10 +51,24 @@ public interface DPlane2DJoint extends DJoint {
 	void setYParamFMax(double d);
 	void setYParamVel(double d);
 
+
+	/**
+	 * @ingroup joints
+	 */
 	void setAngleParam(PARAM parameter, double value);
-	/** @deprecated TZ Use above methods instead. */
+	
+	
+	/**
+	 * @ingroup joints
+	 * @deprecated TZ Use above methods instead. 
+	 */
 	void setXParam(PARAM parameter, double value);
-	/** @deprecated TZ Use above methods instead. */
+	
+	
+	/**
+	 * @ingroup joints
+	 * @deprecated TZ Use above methods instead. 
+	 */
 	void setYParam(PARAM parameter, double value);
 
 

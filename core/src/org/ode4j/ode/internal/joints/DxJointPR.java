@@ -722,6 +722,12 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	public void setParamVel2(double d) {
 		dJointSetPRParam(PARAM_N.dParamVel2, d);
 	}
+
+
+	@Override
+	public void addTorque(double torque) {
+		dJointAddPRTorque(torque);
+	}
 }
 
 

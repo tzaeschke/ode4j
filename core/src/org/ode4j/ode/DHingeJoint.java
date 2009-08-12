@@ -26,73 +26,145 @@ import org.ode4j.math.DVector3C;
 
 public interface DHingeJoint extends DJoint {
 
+	/**
+	 * @brief Set hinge anchor parameter.
+	 * @ingroup joints
+	 */
 	void setAnchor (double x, double y, double z);
+	
+	
+	/**
+	 * @brief Set hinge anchor parameter.
+	 * @ingroup joints
+	 */
 	void setAnchor (DVector3C a);
+	
+	
+	/**
+	 * @brief Get the hinge anchor point, in world coordinates.
+	 *
+	 * This returns the point on body 1. If the joint is perfectly satisfied,
+	 * this will be the same as the point on body 2.
+	 * @ingroup joints
+	 */
 	void getAnchor (DVector3 result);
+
+	
+	/**
+	 * @brief Get the joint anchor point, in world coordinates.
+	 * @return The point on body 2. If the joint is perfectly satisfied,
+	 * this will return the same value as dJointGetHingeAnchor().
+	 * If not, this value will be slightly different.
+	 * This can be used, for example, to see how far the joint has come apart.
+	 * @ingroup joints
+	 */
 	void getAnchor2 (DVector3 result);
 
+	
+	/**
+	 * @brief Set hinge axis.
+	 * @ingroup joints
+	 */
 	void setAxis (double x, double y, double z);
+	
+	
+	/**
+	 * @brief Set hinge axis.
+	 * @ingroup joints
+	 */
 	void setAxis (DVector3C a);
+	
+	
+	/**
+	 * @brief get axis
+	 * @ingroup joints
+	 */
 	void getAxis (DVector3 result);
+	
+	
+	/**
+	 * @brief Set the Hinge axis as if the 2 bodies were already at angle appart.
+	 * @ingroup joints
+	 * <p>
+	 * This function initialize the Axis and the relative orientation of each body
+	 * as if body1 was rotated around the axis by the angle value. <br>
+	 * Ex:<br>
+	 * <code>
+	 * dJointSetHingeAxis(jId, 1, 0, 0); <br>
+	 * // If you request the position you will have: dJointGetHingeAngle(jId) == 0 <br>
+	 * dJointSetHingeAxisDelta(jId, 1, 0, 0, 0.23); <br>
+	 * // If you request the position you will have: dJointGetHingeAngle(jId) == 0.23 <br>
+	 * </code>
+
+	 * @param j The Hinge joint ID for which the axis will be set
+	 * @param x The X component of the axis in world frame
+	 * @param y The Y component of the axis in world frame
+	 * @param z The Z component of the axis in world frame
+	 * @param angle The angle for the offset of the relative orientation.
+	 *              As if body1 was rotated by angle when the Axis was set (see below).
+	 *              The rotation is around the new Hinge axis.
+	 *
+	 * @note Usually the function dJointSetHingeAxis set the current position of body1
+	 *       and body2 as the zero angle position. This function set the current position
+	 *       as the if the 2 bodies where \b angle appart.
+	 * @warning Calling dJointSetHingeAnchor or dJointSetHingeAxis will reset the "zero"
+	 *          angle position.
+	 */
 	void setAxisOffset(double x, double y, double z, double angle);
 
+
+	/**
+	 * @brief Get the hinge angle.
+	 * <p>
+	 * The angle is measured between the two bodies, or between the body and
+	 * the static environment.
+	 * The angle will be between -pi..pi.
+	 * Give the relative rotation with respect to the Hinge axis of Body 1 with
+	 * respect to Body 2.
+	 * When the hinge anchor or axis is set, the current position of the attached
+	 * bodies is examined and that position will be the zero angle.
+	 * @ingroup joints
+	 */
 	double getAngle();
+	
+	
+	/**
+	 * @brief Get the hinge angle time derivative.
+	 * @ingroup joints
+	 */
 	double getAngleRate();
 
+	
+	/**
+	 * @brief Applies the torque about the hinge axis.
+	 * <p>
+	 * That is, it applies a torque with specified magnitude in the direction
+	 * of the hinge axis, to body 1, and with the same magnitude but in opposite
+	 * direction to body 2. This function is just a wrapper for dBodyAddTorque()}
+	 * @ingroup joints
+	 */
 	void addTorque (double torque);
+	
+	
 	void setParamFMax(double d);
 	void setParamVel(double cos);
 	void setParamLoStop(double d);
 	void setParamHiStop(double d);
 	void setParamBounce(double d);
 
-
-	//	  // intentionally undefined, don't use these
-	//	  dHingeJoint (const dHingeJoint &);
-	//	  void operator = (const dHingeJoint &);
-	//
-	//	public:
-	//	  dHingeJoint() { }
-	//	  dHingeJoint (dWorld world, dJointGroup group=0)
-	//	    { _id = dJointCreateHinge (world, group); }
-	//	  dHingeJoint (dWorld& world, dJointGroup group=0)
-	//	    { _id = dJointCreateHinge (world.id(), group); }
-	//
-	//	  void create (dWorld world, dJointGroup group=0) {
-	//	    if (_id) dJointDestroy (_id);
-	//	    _id = dJointCreateHinge (world, group);
-	//	  }
-	//	  void create (dWorld& world, dJointGroup group=0)
-	//	    { create(world.id(), group); }
-	//
-	//	  void setAnchor (dReal x, dReal y, dReal z)
-	//	    { dJointSetHingeAnchor (_id, x, y, z); }
-	//	  void setAnchor (const dVector3 a)
-	//	    { setAnchor (a[0], a[1], a[2]); }
-	//	  void getAnchor (dVector3 result) const
-	//	    { dJointGetHingeAnchor (_id, result); }
-	//	  void getAnchor2 (dVector3 result) const
-	//	    { dJointGetHingeAnchor2 (_id, result); }
-	//
-	//	  void setAxis (dReal x, dReal y, dReal z)
-	//	    { dJointSetHingeAxis (_id, x, y, z); }
-	//	  void setAxis (const dVector3 a)
-	//	    { setAxis(a[0], a[1], a[2]); }
-	//	  void getAxis (dVector3 result) const
-	//	    { dJointGetHingeAxis (_id, result); }
-	//
-	//	  dReal getAngle() const
-	//	    { return dJointGetHingeAngle (_id); }
-	//	  dReal getAngleRate() const
-	//	    { return dJointGetHingeAngleRate (_id); }
-	//
-	//	  virtual void setParam (int parameter, dReal value)
-	//	    { dJointSetHingeParam (_id, parameter, value); }
-	//	  virtual dReal getParam (int parameter) const
-	//	    { return dJointGetHingeParam (_id, parameter); }
-	//	  // TODO: expose params through methods
-	//
-	//	  void addTorque (dReal torque)
-	//		{ dJointAddHingeTorque(_id, torque); }
+	/**
+	 * @brief set joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	void setParam (PARAM_N parameter, double value);
+	
+	
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	double getParam (PARAM_N parameter);
 
 }

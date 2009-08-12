@@ -23,6 +23,9 @@ package org.ode4j.ode.internal.joints;
 
 import static org.ode4j.ode.internal.Common.*;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
@@ -343,7 +346,7 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	//
 	//
 	//
-	DJoint dConnectingJoint (DBody in_b1, DBody in_b2)
+	public static DJoint dConnectingJoint (DBody in_b1, DBody in_b2)
 	{
 		dAASSERT (in_b1!=null || in_b2!=null);
 
@@ -368,11 +371,13 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 
 
 
-	int dConnectingJointList (DxBody in_b1, DxBody in_b2, DxJoint[] out_list)
+	//int dConnectingJointList (DxBody in_b1, DxBody in_b2, DxJoint[] out_list)
+	public static List<DJoint> dConnectingJointList (DxBody in_b1, DxBody in_b2)
 	{
 		dAASSERT (in_b1!=null || in_b2!=null);
 
-
+		List<DJoint> out_list = new LinkedList<DJoint>();
+		
 		DxBody b1, b2;
 
 		if (in_b1 == null) {
@@ -385,13 +390,14 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 		}
 
 		// look through b1's neighbour list for b2
-		int numConnectingJoints = 0;
+		//int numConnectingJoints = 0;
 		for (DxJointNode n=b1.firstjoint.get(); n!=null; n=n.next) {
 			if (n.body == b2)
-				out_list[numConnectingJoints++] = n.joint;
+				//out_list[numConnectingJoints++] = n.joint;
+				out_list.add(n.joint);
 		}
 
-		return numConnectingJoints;
+		return out_list;//numConnectingJoints;
 	}
 
 

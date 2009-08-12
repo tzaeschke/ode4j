@@ -23,60 +23,87 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 public interface DSliderJoint extends DJoint {
 
+	/**
+	 * @brief set the joint axis
+	 * @ingroup joints
+	 */
 	void setAxis (double x, double y, double z);
+	
+	
+	/**
+	 * @brief set the joint axis
+	 * @ingroup joints
+	 */
 	void setAxis (DVector3C a);
+
+	
+	/**
+	 * @brief Get the slider axis
+	 * @ingroup joints
+	 */
 	void getAxis (DVector3 result);
 
+	
+	/**
+	 * @brief Get the slider linear position (i.e. the slider's extension).
+	 * <p>
+	 * When the axis is set, the current position of the attached bodies is
+	 * examined and that position will be the zero position.
+	 * <p>
+	 * The position is the distance, with respect to the zero position,
+	 * along the slider axis of body 1 with respect to
+	 * body 2. (A NULL body is replaced by the world).
+	 * @ingroup joints
+	 */
 	double getPosition();
+	
+	
+	/**
+	 * @brief Get the slider linear position's time derivative.
+	 * @ingroup joints
+	 */
 	double getPositionRate();
 
+	
+	/**
+	 * @brief Applies the given force in the slider's direction.
+	 * <p>
+	 * That is, it applies a force with specified magnitude, in the direction of
+	 * slider's axis, to body1, and with the same magnitude but opposite
+	 * direction to body2.  This function is just a wrapper for dBodyAddForce().
+	 * @ingroup joints
+	 */
 	void addForce (double force);
 	void setParamFMax(double d);
 	void setParamLoStop(double d);
 	void setParamHiStop(double d);
 	void setParamVel(double d);
 	void setParamBounce(double d);
+	
+	
+	/**
+	 * @ingroup joints
+	 */
+	void setAxisDelta(double x, double y, double z, 
+			double dx, double dy, double dz);
+
+	/**
+	 * @brief set joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	void setParam (PARAM_N parameter, double value);
 
 	
-//	  // intentionally undefined, don't use these
-//	  dSliderJoint (const dSliderJoint &);
-//	  void operator = (const dSliderJoint &);
-//
-//	public:
-//	  dSliderJoint() { }
-//	  dSliderJoint (dWorld world, dJointGroup group=0)
-//	    { _id = dJointCreateSlider (world, group); }
-//	  dSliderJoint (dWorld& world, dJointGroup group=0)
-//	    { _id = dJointCreateSlider (world.id(), group); }
-//
-//	  void create (dWorld world, dJointGroup group=0) {
-//	    if (_id) dJointDestroy (_id);
-//	    _id = dJointCreateSlider (world, group);
-//	  }
-//	  void create (dWorld& world, dJointGroup group=0)
-//	    { create(world.id(), group); }
-//
-//	  void setAxis (dReal x, dReal y, dReal z)
-//	    { dJointSetSliderAxis (_id, x, y, z); }
-//	  void setAxis (const dVector3 a)
-//	    { setAxis (a[0], a[1], a[2]); }
-//	  void getAxis (dVector3 result) const
-//	    { dJointGetSliderAxis (_id, result); }
-//
-//	  dReal getPosition() const
-//	    { return dJointGetSliderPosition (_id); }
-//	  dReal getPositionRate() const
-//	    { return dJointGetSliderPositionRate (_id); }
-//
-//	  virtual void setParam (int parameter, dReal value)
-//	    { dJointSetSliderParam (_id, parameter, value); }
-//	  virtual dReal getParam (int parameter) const
-//	    { return dJointGetSliderParam (_id, parameter); }
-//	  // TODO: expose params through methods
-//
-//	  void addForce (dReal force)
-//		{ dJointAddSliderForce(_id, force); }
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	double getParam (PARAM_N parameter);
+
 }

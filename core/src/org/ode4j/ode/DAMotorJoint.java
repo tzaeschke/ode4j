@@ -41,24 +41,132 @@ public interface DAMotorJoint extends DJoint {
 	}
 
 
+	/**
+	 * @brief set mode
+	 * @ingroup joints
+	 */
 	void setMode (AMotorMode mode);
+
+	
+	/**
+	 * @brief Get the angular motor mode.
+	 * Mode must be one of the following constants:
+	 * <li> dAMotorUser The AMotor axes and joint angle settings are entirely
+	 * controlled by the user.  This is the default mode.</li>
+	 * <li> dAMotorEuler Euler angles are automatically computed.
+	 * The axis a1 is also automatically computed.
+	 * The AMotor axes must be set correctly when in this mode,
+	 * as described below.</li>
+	 * When this mode is initially set the current relative orientations
+	 * of the bodies will correspond to all euler angles at zero.
+	 * @ingroup joints
+	 */
 	AMotorMode getMode();
 
+	
+	/**
+	 * @brief set the nr of axes
+	 * @param num 0..3
+	 * @ingroup joints
+	 */
 	void setNumAxes (int num);
+
+	
+	/**
+	 * @brief Get the number of angular axes that will be controlled by the
+	 * AMotor. <p>
+	 * Num can range from 0 (which effectively deactivates the joint) to 3.
+	 * This is automatically set to 3 in dAMotorEuler mode.
+	 * @ingroup joints
+	 */
 	int getNumAxes();
 
+	/**
+	 * @brief set axis
+	 * @ingroup joints
+	 */
 	void setAxis (int anum, int rel, double x, double y, double z);
+
+	
+	/**
+	 * @brief set axis
+	 * @ingroup joints
+	 */
 	void setAxis (int anum, int rel, DVector3C a);
+
+	
+	/**
+	 * @brief Get the AMotor axes.
+	 * @param anum selects the axis to change (0,1 or 2).
+	 * <li> 0: The axis is anchored to the global frame. </li>
+	 * <li> 1: The axis is anchored to the first body. </li>
+	 * <li> 2: The axis is anchored to the second body. </li>
+	 * @param result Each axis can have one of three ``relative orientation'' modes.
+	 * @ingroup joints
+	 */
 	void getAxis (int anum, DVector3 result);
+
+	
+	/**
+	 * @brief Get axis
+	 * @remarks
+	 * The axis vector is always specified in global coordinates regardless
+	 * of the setting of rel. <br>
+	 * There are two GetAMotorAxis functions, one to return the axis and one to
+	 * return the relative mode.
+	 * <p>
+	 * For dAMotorEuler mode:
+	 * <li>	Only axes 0 and 2 need to be set. Axis 1 will be determined
+		automatically at each time step. </li>
+	 * <li>	Axes 0 and 2 must be perpendicular to each other. </li>
+	 * <li>	Axis 0 must be anchored to the first body, axis 2 must be anchored
+		to the second body. </li>
+	 * @ingroup joints
+	 */
 	int getAxisRel (int anum);
 
+	/**
+	 * @brief Tell the AMotor what the current angle is along axis anum.
+	 * <p>
+	 * This function should only be called in dAMotorUser mode, because in this
+	 * mode the AMotor has no other way of knowing the joint angles.
+	 * The angle information is needed if stops have been set along the axis,
+	 * but it is not needed for axis motors.
+	 * @ingroup joints
+	 */
 	void setAngle (int anum, double angle);
+
+	
+	/**
+	 * @brief Get the current angle for axis.
+	 * @remarks
+	 * In dAMotorUser mode this is simply the value that was set with
+	 * dJointSetAMotorAngle().
+	 * In dAMotorEuler mode this is the corresponding euler angle.
+	 * @ingroup joints
+	 */
 	double getAngle (int anum);
+	
+	
+	/**
+	 * @brief Get the current angle rate for axis anum.
+	 * @remarks
+	 * In dAMotorUser mode this is always zero, as not enough information is
+	 * available.
+	 * In dAMotorEuler mode this is the corresponding euler angle rate.
+	 * @ingroup joints
+	 */
 	double getAngleRate (int anum);
 
-	void setParam (PARAM_N parameter, double value);
-	double getParam (PARAM_N parameter);
 
+	/**
+	 * @brief Applies torque0 about the AMotor's axis 0, torque1 about the
+	 * AMotor's axis 1, and torque2 about the AMotor's axis 2.
+	 * @remarks
+	 * If the motor has fewer than three axes, the higher torques are ignored.
+	 * This function is just a wrapper for dBodyAddTorque().
+	 * @ingroup joints
+	 */
 	void addTorques(double torque1, double torque2, double torque3);
 	
 	double getParamFMax();
@@ -75,56 +183,18 @@ public interface DAMotorJoint extends DJoint {
 	void setParamVel3(double d);
 
 
-	//	  // intentionally undefined, don't use these
-	//	  dAMotorJoint (const dAMotorJoint &);
-	//	  void operator = (const dAMotorJoint &);
-	//
-	//	public:
-	//	  dAMotorJoint() { }
-	//	  dAMotorJoint (dWorld world, dJointGroup group=0)
-	//	    { _id = dJointCreateAMotor (world, group); }
-	//	  dAMotorJoint (dWorld& world, dJointGroup group=0)
-	//	    { _id = dJointCreateAMotor (world.id(), group); }
-	//
-	//	  void create (dWorld world, dJointGroup group=0) {
-	//	    if (_id) dJointDestroy (_id);
-	//	    _id = dJointCreateAMotor (world, group);
-	//	  }
-	//	  void create (dWorld& world, dJointGroup group=0)
-	//	    { create(world.id(), group); }
-	//
-	//	  void setMode (int mode)
-	//	    { dJointSetAMotorMode (_id, mode); }
-	//	  int getMode() const
-	//	    { return dJointGetAMotorMode (_id); }
-	//
-	//	  void setNumAxes (int num)
-	//	    { dJointSetAMotorNumAxes (_id, num); }
-	//	  int getNumAxes() const
-	//	    { return dJointGetAMotorNumAxes (_id); }
-	//
-	//	  void setAxis (int anum, int rel, dReal x, dReal y, dReal z)
-	//	    { dJointSetAMotorAxis (_id, anum, rel, x, y, z); }
-	//	  void setAxis (int anum, int rel, const dVector3 a)
-	//	    { setAxis(anum, rel, a[0], a[1], a[2]); }
-	//	  void getAxis (int anum, dVector3 result) const
-	//	    { dJointGetAMotorAxis (_id, anum, result); }
-	//	  int getAxisRel (int anum) const
-	//	    { return dJointGetAMotorAxisRel (_id, anum); }
-	//
-	//	  void setAngle (int anum, dReal angle)
-	//	    { dJointSetAMotorAngle (_id, anum, angle); }
-	//	  dReal getAngle (int anum) const
-	//	    { return dJointGetAMotorAngle (_id, anum); }
-	//	  dReal getAngleRate (int anum)
-	//	    { return dJointGetAMotorAngleRate (_id,anum); }
-	//
-	//	  void setParam (int parameter, dReal value)
-	//	    { dJointSetAMotorParam (_id, parameter, value); }
-	//	  dReal getParam (int parameter) const
-	//	    { return dJointGetAMotorParam (_id, parameter); }
-	//	  // TODO: expose params through methods
-	//
-	//	  void addTorques(dReal torque1, dReal torque2, dReal torque3)
-	//		{ dJointAddAMotorTorques(_id, torque1, torque2, torque3); }
+	/**
+	 * @brief set joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	void setParam (PARAM_N parameter, double value);
+
+
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 */
+	@Override
+	double getParam (PARAM_N parameter);
 }

@@ -103,72 +103,115 @@ public interface DJoint {
 	//virtual ~dJoint() // :
 	void DESTRUCTOR();
 
+//	/**
+//	 * @brief Destroy a joint.
+//	 * @ingroup joints
+//	 *
+//	 * disconnects it from its attached bodies and removing it from the world.
+//	 * However, if the joint is a member of a group then this function has no
+//	 * effect - to destroy that joint the group must be emptied or destroyed.
+//	 */
+//	void destroy();
+	
+	/**
+	 * @brief Return the number of bodies attached to the joint
+	 * @ingroup joints
+	 */
 	int getNumBodies();
 
+	
+	/**
+	 * @brief Attach the joint to some new bodies.
+	 * @ingroup joints
+	 *
+	 * If the joint is already attached, it will be detached from the old bodies
+	 * first.
+	 * To attach this joint to only one body, set body1 or body2 to zero - a zero
+	 * body refers to the static environment.
+	 * Setting both bodies to zero puts the joint into "limbo", i.e. it will
+	 * have no effect on the simulation.
+	 * @remarks
+	 * Some joints, like hinge-2 need to be attached to two bodies to work.
+	 */
 	void attach (DBody body1, DBody body2);
+	
 
+	/**
+	 * @brief Set the user-data pointer
+	 * @ingroup joints
+	 */
 	void setData (Object data);
+	
+	
+	/**
+	 * @brief Get the user-data pointer
+	 * @ingroup joints
+	 */
 	Object getData();
 
 	//public dJointType getType();
 
+	/**
+	 * @brief Return the bodies that this joint connects.
+	 * @ingroup joints
+	 * @param index return the first (0) or second (1) body.
+	 * @remarks
+	 * If one of these returned body IDs is zero, the joint connects the other body
+	 * to the static environment.
+	 * If both body IDs are zero, the joint is in ``limbo'' and has no effect on
+	 * the simulation.
+	 */
 	DBody getBody (int index);
+	
 
+	/**
+	 * @brief Sets the datastructure that is to receive the feedback.
+	 * <p>
+	 * The feedback can be used by the user, so that it is known how
+	 * much force an individual joint exerts.
+	 * @ingroup joints
+	 */
 	void setFeedback(DJoint.DJointFeedback fb);
+	
+	
+	/**
+	 * @brief Gets the datastructure that is to receive the feedback.
+	 * @ingroup joints
+	 */
 	DJoint.DJointFeedback getFeedback();
 
 	/** If not implemented it will do nothing as describe in the doc. */
 	void setParam (PARAM_N type, double value);
-	/** If not implemented it will do nothing as describe in the doc. */
+	
+	
+	/**
+	 * @brief get joint parameter
+	 * @ingroup joints
+	 * If not implemented it will do nothing as describe in the doc. 
+	 */
 	double getParam (PARAM_N type);
 
+	/**
+	 * @brief Manually enable a joint.
+	 * @param dJointID identification of joint.
+	 * @ingroup joints
+	 */
 	void enable();
+	/**
+	 * @brief Manually disable a joint.
+	 * @ingroup joints
+	 * @remarks
+	 * A disabled joint will not affect the simulation, but will maintain the anchors and
+	 * axes so it can be enabled later.
+	 */
 	void disable();
+	/**
+	 * @brief Check wether a joint is enabled.
+	 * @ingroup joints
+	 * @return 1 if a joint is currently enabled or 0 if it is disabled.
+	 */
 	boolean isEnabled();
 
-	//	private:
-	//		// intentionally undefined, don't use these
-	//		dJoint (const dJoint &) ;
-	//void operator= (const dJoint &);
-	//
-	//protected:
-	//	dJoint _id;
-	//
-	//dJoint() // don't let user construct pure dJoint objects
-	//{ _id = 0; }
-	//
-	//public:
-	//	virtual ~dJoint() // :( Destructor must be virtual to suppress compiler warning "class XXX has virtual functions but non-virtual destructor"
-	//	{ if (_id) dJointDestroy (_id); }
-	//
-	//dJoint id() const
-	//{ return _id; }
-	//operator dJoint() const
-	//{ return _id; }
-	//
-	//int getNumBodies() const
-	//{ return dJointGetNumBodies(_id); }
-	//
-	//void attach (dBody body1, dBody body2)
-	//{ dJointAttach (_id, body1, body2); }
-	//void attach (dBody& body1, dBody& body2)
-	//{ attach(body1.id(), body2.id()); }
-	//
-	//void setData (void *data)
-	//{ dJointSetData (_id, data); }
-	//void *getData() const
-	//{ return dJointGetData (_id); }
-	//
-	//dJointType getType() const
-	//{ return dJointGetType (_id); }
-	//
-	//dBody getBody (int index) const
-	//{ return dJointGetBody (_id, index); }
-	//
-	//void setFeedback(dJointFeedback *fb)
-	//{ dJointSetFeedback(_id, fb); }
-	//dJointFeedback *getFeedback() const
-	//{ return dJointGetFeedback(_id); }
 	//
 	//// If not implemented it will do nothing as describe in the doc
 	//virtual void setParam (int, dReal) {};

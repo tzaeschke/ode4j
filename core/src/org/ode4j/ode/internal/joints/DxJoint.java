@@ -943,6 +943,10 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	// dJoint API
 	// *************************************
 	
+	public void destroy() {
+		//Nothing to do at the moment
+	}
+	
 	public final int getNumBodies()
 	{ return dJointGetNumBodies(); }
 
