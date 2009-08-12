@@ -1079,7 +1079,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			if ( m_iBestAxis == 0 ) 
 			{
 				// this should not happen (we should already exit in that case)
-				dIASSERT(0);
+				dIASSERT(false);
 				// do nothing
 				return 0;
 			}

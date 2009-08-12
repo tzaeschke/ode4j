@@ -35,8 +35,6 @@ public interface DHeightfieldData {
 	 * the user and it should use the given callback when determining
 	 * the height of a given element of it's shape.
 	 *
-	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
-	 *
 	 * @param width Specifies the total 'width' of the heightfield along
 	 * the geom's local x axis.
 	 * @param depth Specifies the total 'depth' of the heightfield along
@@ -75,7 +73,6 @@ public interface DHeightfieldData {
 	 *
 	 * Deallocates a given dHeightfieldData and all managed resources.
 	 *
-	 * @param d A dHeightfieldData created by dGeomHeightfieldDataCreate
 	 * @ingroup collide
 	 */
 	void destroy();
@@ -92,7 +89,6 @@ public interface DHeightfieldData {
 	 * for the heightfield which is used for early rejection of collisions.
 	 * A close fit will yield a more efficient collision check.
 	 *
-	 * @param d A dHeightfieldData created by dGeomHeightfieldDataCreate
 	 * @param minHeight The new minimum height value. Scale, offset and thickness is then applied.
 	 * @param maxHeight The new maximum height value. Scale and offset is then applied.
 	 * @ingroup collide
@@ -106,8 +102,6 @@ public interface DHeightfieldData {
 	 * configured to specify the format of the height data.
 	 * This call specifies that the heightfield data is stored as a rectangular
 	 * array of bytes (8 bit unsigned) representing the height at each sample point.
-	 *
-	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
 	 *
 	 * @param pHeightData A pointer to the height data.
 	 * @param bCopyHeightData When non-zero the height data is copied to an

@@ -802,7 +802,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 			//	#endif // dTRIMESH_ENABLED
 
 		default:
-			dIASSERT(0);	// Shouldn't ever get here.
+			dIASSERT(false);	// Shouldn't ever get here.
 		break;
 
 		}

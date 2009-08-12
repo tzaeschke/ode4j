@@ -243,7 +243,7 @@ public class DAABB implements DAABBC {
 
 	/**
 	 * Expand this AABB to include the given point.
-	 * @param tmp
+	 * @param point
 	 */
 	public void expand(DVector3C point) {
 		if (point.get0() < _min.get0()) _min.set0(point.get0());
@@ -256,7 +256,7 @@ public class DAABB implements DAABBC {
 
 	/**
 	 * Expand this AABB to include the given AABB.
-	 * @param tmp
+	 * @param aabb
 	 */
 	public void expand(DAABBC aabb) {
 		if (aabb.getMin0() < _min.get0()) _min.set0(aabb.getMin0());

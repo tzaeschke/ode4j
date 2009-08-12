@@ -38,6 +38,7 @@ import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
+import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DMassC;
@@ -100,11 +101,10 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//  unsigned int average_counter;      // counter/index to fill the average-buffers
 	DVector3[] average_lvel_buffer;      // buffer for the linear average velocity calculation
 	DVector3[] average_avel_buffer;      // buffer for the angular average velocity calculation
-	//TODO check unsigned
+	//unsigned
 	int average_counter;      // counter/index to fill the average-buffers
 	int average_ready;            // indicates ( with = 1 ), if the Body's buffers are ready for average-calculations
 
-	//TODO void (*moved_callback)(dxBody*); // let the user know the body moved
 	BodyMoveCallBack moved_callback; // let the user know the body moved
 	dxDampingParameters dampingp; // damping parameters, depends on flags
 	double max_angular_speed;      // limit the angular velocity to this magnitude
@@ -280,7 +280,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//		void dBodySetQuaternion (dxBody b, final dQuaternion q)
 	public void dBodySetQuaternion (DQuaternionC q)
 	{
-		dAASSERT (q);
+		//dAASSERT (q);
 		//			_q.v[0] = q.v[0];
 		//			_q.v[1] = q.v[1];
 		//			_q.v[2] = q.v[2];
@@ -953,7 +953,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//TODO check calls for invalid geom (not of this body)
 	DxGeom dBodyGetNextGeom(DxGeom geom)
 	{
-		dAASSERT(geom);
+		//dAASSERT(geom);
 		return geom.dGeomGetBodyNext();
 	}
 
@@ -1379,6 +1379,27 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	@Override
 	public void setAutoDisableDefaults() {
 		dBodySetAutoDisableDefaults();
+	}
+
+	/** @deprecated */
+	@Override
+	public DGeom getFirstGeom() {
+		return dBodyGetFirstGeom();
+	}
+
+
+	/** @deprecated */
+	@Override
+	public DGeom getNextGeom(DGeom geom) {
+		return dBodyGetNextGeom((DxGeom) geom);
+	}
+
+
+	/** @deprecated */
+	@Override
+	public void setMovedCallback(BodyMoveCallBack callback) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

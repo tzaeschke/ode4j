@@ -24,8 +24,6 @@ package org.ode4j.ode.internal;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.ode4j.ode.DBody;
-
 
 /**
  * configuration stuff.
@@ -119,12 +117,6 @@ public class Common extends ErrorHandler {
 			new RuntimeException().printStackTrace();
 		}
 	}
-	public static void dIASSERT(int i) {
-		if (i == 0) {
-			dDebug(d_ERR_IASSERT, "assertion failed");
-			new RuntimeException().printStackTrace();
-		}
-	}
 
 	public static void dUASSERT(Object  a, String msg) {
 		if (a == null) {
@@ -140,53 +132,17 @@ public class Common extends ErrorHandler {
 		dMessage (d_ERR_UASSERT, msg2);
 	}
 
+	/** Assert 'not-null'. */
 	public static void dAASSERT(Object ... aa) {
 		for (Object a: aa)
 			dUASSERT(a, "Bad argument(s)");
 	}
 
+	/** Assert 'true'. */
 	public static void dAASSERT(boolean b) {
 		if (!b)
 			dUASSERT(null, "Bad argument(s)");
 	}
-
-	// #ifndef dNODEBUG
-	// #ifdef __GNUC__
-	//  #define dIASSERT(a) if (!(a)) dDebug (d_ERR_IASSERT,
-	//  "assertion \"" #a "\" failed in %s() [%s]",__FUNCTION__,__FILE__);
-	//  #define dUASSERT(a,msg) if (!(a)) dDebug (d_ERR_UASSERT,
-	//  msg " in %s()", __FUNCTION__);
-	////  #define dDEBUGMSG(msg) dMessage (d_ERR_UASSERT,				\
-	////  msg " in %s() File %s Line %d", __FUNCTION__, __FILE__,__LINE__);
-	//// #else
-	////  #define dIASSERT(a) if (!(a)) dDebug (d_ERR_IASSERT, \
-	////  "assertion \"" #a "\" failed in %s:%d",__FILE__,__LINE__);
-	////  #define dUASSERT(a,msg) if (!(a)) dDebug (d_ERR_UASSERT, \
-	////  msg " (%s:%d)", __FILE__,__LINE__);
-	////  #define dDEBUGMSG(msg) dMessage (d_ERR_UASSERT, \
-	////  msg " (%s:%d)", __FILE__,__LINE__);
-	//// #endif
-	//#else
-	// #define dIASSERT(a) ;
-	// #define dUASSERT(a,msg) ;
-	// #define dDEBUGMSG(msg) ;
-	//#endif
-	//#define dAASSERT(a) dUASSERT(a,"Bad argument(s)")
-
-	// Macro used to suppress unused variable warning
-	//TODO #define dVARIABLEUSED(a) ((void)a)
-	public static void dVARIABLEUSED(Object a) {
-		//Nothing
-	}
-
-	 /**
-	  * @author Tilmann Zaeschke
-	  * @deprecated TODO remove?
-	  */
-	 public interface BodyMoveCallBack {
-		 void run(DBody b);
-	 }
-
 
 
 	/* floating point data type, vector, matrix and quaternion types */

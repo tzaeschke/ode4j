@@ -776,7 +776,6 @@ public class OdeMath extends Rotation {
 	{
 		boolean bNormalizationResult = _dSafeNormalize3(a);
 		dIASSERT(bNormalizationResult);
-		dVARIABLEUSED(bNormalizationResult);
 	}
 
 	//static __inline void _dNormalize4(dVector4 a)

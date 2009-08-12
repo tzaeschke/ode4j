@@ -141,7 +141,6 @@ public interface DWorld {
 	 * @brief Set the global ERP value, that controls how much error
 	 * correction is performed in each time step.
 	 * @ingroup world
-	 * @param w the identifier of the world.
 	 * @param erp Typical values are in the range 0.1--0.8. The default is 0.2.
 	 */
 	void setERP (double erp);
@@ -230,16 +229,16 @@ public interface DWorld {
 	 * sitting on the ground may be near-singular.
 	 * @remarks
 	 * There are ways to help overcome QuickStep's inaccuracy problems:
-	 * \li Increase CFM.
-	 * \li Reduce the number of contacts in your system (e.g. use the minimum
-	 *     number of contacts for the feet of a robot or creature).
-	 * \li Don't use excessive friction in the contacts.
-	 * \li Use contact slip if appropriate
-	 * \li Avoid kinematic loops (however, kinematic loops are inevitable in
-	 *     legged creatures).
-	 * \li Don't use excessive motor strength.
-	 * \liUse force-based motors instead of velocity-based motors.
-	 *
+	 * <li> Increase CFM. </li>
+	 * <li> Reduce the number of contacts in your system (e.g. use the minimum
+	 *     number of contacts for the feet of a robot or creature). </li>
+	 * <li> Don't use excessive friction in the contacts. </li>
+	 * <li> Use contact slip if appropriate </li>
+	 * <li> Avoid kinematic loops (however, kinematic loops are inevitable in
+	 *     legged creatures). </li>
+	 * <li> Don't use excessive motor strength. </li>
+	 * <li> Use force-based motors instead of velocity-based motors. </li>
+	 * <p>
 	 * Increasing the number of QuickStep iterations may help a little bit, but
 	 * it is not going to help much if your system is really near singular.
 	 */
@@ -285,7 +284,7 @@ public interface DWorld {
 	
 	/**
 	 * @brief Set auto disable linear threshold for newly created bodies.
-	 * @param linear_threshold default is 0.01
+	 * @param threshold default is 0.01
 	 * @ingroup disable
 	 */
 	void  setAutoDisableLinearThreshold (double threshold);
@@ -301,7 +300,7 @@ public interface DWorld {
 	
 	/**
 	 * @brief Set auto disable angular threshold for newly created bodies.
-	 * @param linear_threshold default is 0.01
+	 * @param threshold default is 0.01
 	 * @ingroup disable
 	 */
 	void setAutoDisableAngularThreshold (double threshold);
@@ -344,7 +343,7 @@ public interface DWorld {
 
 	/**
 	 * @brief Set auto disable angular average threshold for newly created bodies.
-	 * @param linear_average_threshold default is 0.01
+	 * @param angular_average_threshold default is 0.01
 	 * @ingroup disable
 	 * @deprecated Not implemented in ODE.
 	 */
@@ -427,7 +426,6 @@ public interface DWorld {
 	 * group. Joints that are part of a joint group will be deactivated, and
 	 * can be destroyed by calling, for example, dJointGroupEmpty().
 	 * @ingroup world
-	 * @param world the identifier for the world the be destroyed.
 	 */
 	void destroy();
 
@@ -566,7 +564,7 @@ public interface DWorld {
 	/**
 	 * @brief Get the default maximum angular speed.
 	 * @ingroup damping
-	 * @see #dBodyGetMaxAngularSpeed()
+	 * @see DBody#getMaxAngularSpeed()
 	 */
 	double getMaxAngularSpeed ();
 
@@ -574,7 +572,7 @@ public interface DWorld {
 	/**
 	 * @brief Set the default maximum angular speed for new bodies.
 	 * @ingroup damping
-	 * @see #dBodySetMaxAngularSpeed(DWorld)
+	 * @see DBody#setMaxAngularSpeed(double)
 	 */
 	void setMaxAngularSpeed (double max_speed);
 }

@@ -348,18 +348,19 @@ public abstract class OdeHelper {
 
 	/**
 	 * @brief Initializes ODE library.
+	 * <p>
+	 * <tt>dInitODE</tt> is obsolete. <tt>dInitODE2</tt> is to be used for library initialization.
 	 *
-	 * @c dInitODE is obsolete. @c dInitODE2 is to be used for library initialization.
-	 *
-	 * A call to @c dInitODE is equal to the following initialization sequence
+	 * A call to <tt>dInitODE</tt> is equal to the following initialization sequence <p>
 	 * @code
-	 *     initODE2(0);
-	 *     allocateODEDataForThread(dAllocateMaskAll);
+	 *     initODE2(0); <br>
+	 *     allocateODEDataForThread(dAllocateMaskAll); <br>
 	 * @endcode
 	 *
 	 * @see #initODE2(int)
 	 * @see #allocateODEDataForThread(int)
 	 * @ingroup init
+	 * @deprecated Please use initOde2() instead.
 	 */
 	public static void initODE() {
 		OdeInit.dInitODE();
@@ -367,24 +368,24 @@ public abstract class OdeHelper {
 
 	/**
 	 * @brief Initializes ODE library.
-	 * @param uiInitFlags Initialization options bitmask
-	 * @return A nonzero if initialization succeeded and zero otherwise.
-	 *
+	 * <p>
 	 * This function must be called to initialize ODE library before first use. If
 	 * initialization succeeds the function may not be called again until library is
-	 * closed with a call to @c dCloseODE.
-	 *
-	 * The @a uiInitFlags parameter specifies initialization options to be used. These
-	 * can be combination of zero or more @c dInitODEFlags flags.
+	 * closed with a call to <tt>dCloseODE</tt>.
+	 * <p>
+	 * The <tt>uiInitFlags</tt> parameter specifies initialization options to be used. These
+	 * can be combination of zero or more <tt>dInitODEFlags</tt> flags.
 	 *
 	 * @note
-	 * If @c dInitFlagManualThreadCleanup flag is used for initialization, 
-	 * @c dSpaceSetManualCleanup must be called to set manual cleanup mode for every
+	 * If <tt>dInitFlagManualThreadCleanup</tt> flag is used for initialization, 
+	 * <tt>dSpaceSetManualCleanup</tt> must be called to set manual cleanup mode for every
 	 * space object right after creation. Failure to do so may lead to resource leaks.
 	 *
+	 * @param uiInitFlags Initialization options bitmask
+	 * @return A nonzero if initialization succeeded and zero otherwise.
 	 * @see #initODEFlags
 	 * @see #closeODE()
-	 * @see #dSpaceSetManualCleanup
+	 * @see DSpace#setManualCleanup(int)
 	 * @ingroup init
 	 */
 	public static int initODE2(int uiInitFlags/*=0*/) {
@@ -393,19 +394,19 @@ public abstract class OdeHelper {
 	
 	/**
 	 * @brief Close ODE after it is not needed any more.
-	 *
+	 * <p>
 	 * The function is required to be called when program does not need ODE features any more.
-	 * The call to @c dCloseODE releases all the resources allocated for library
+	 * The call to <tt>dCloseODE</tt> releases all the resources allocated for library
 	 * including all the thread local data that might be allocated for all the threads
 	 * that were using ODE.
-	 *
-	 * @c dCloseODE is a paired function for @c dInitODE2 and must only be called
+	 * <p>
+	 * <tt>dCloseODE</tt> is a paired function for <tt>dInitODE2</tt> and must only be called
 	 * after successful library initialization.
 	 *
 	 * @note Important!
 	 * Make sure that all the threads that were using ODE have already terminated
-	 * before calling @c dCloseODE. In particular it is not allowed to call
-	 * @c dCleanupODEAllDataForThread after @c dCloseODE.
+	 * before calling <tt>dCloseODE</tt>. In particular it is not allowed to call
+	 * <tt>dCleanupODEAllDataForThread</tt> after <tt>dCloseODE</tt>.
 	 *
 	 * @see #initODE2(int)
 	 * @see #dCleanupODEAllDataForThread
@@ -419,7 +420,7 @@ public abstract class OdeHelper {
 	 *
 	 * @brief Given two geoms o1 and o2 that potentially intersect,
 	 * generate contact information for them.
-	 *
+	 * <p>
 	 * Internally, this just calls the correct class-specific collision
 	 * functions for o1 and o2.
 	 *
@@ -564,7 +565,8 @@ public abstract class OdeHelper {
 	 * ODE. This function allocates the data that is required for accessing ODE from
 	 * current thread along with optional data required for particular ODE subsystems.
 	 *
-	 * @a uiAllocateFlags parameter can contain zero or more flags from @c dAllocateODEDataFlags
+	 * <tt>uiAllocateFlags</tt> parameter can contain zero or more flags from 
+	 * <tt>dAllocateODEDataFlags</tt>
 	 * enumerated type. Multiple calls with different allocation flags are allowed.
 	 * The flags that are already allocated are ignored in subsequent calls. If zero
 	 * is passed as the parameter, it means to only allocate the set of most important
@@ -712,7 +714,7 @@ public abstract class OdeHelper {
 	 * callback.
 	 *
 	 * @see #spaceCollide(DSpace, Object, DNearCallback)
-	 * @see #spaceSetSublevel
+	 * @see #spaceSetSublevel()
 	 * @ingroup collide
 	 */
 	public static void spaceCollide2(DGeom space1, DGeom space2, Object data,

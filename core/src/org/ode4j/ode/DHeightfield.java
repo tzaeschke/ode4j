@@ -38,7 +38,7 @@ public interface DHeightfield extends DGeom {
 		 * Used by the callback heightfield data type to sample a height for a
 		 * given cell position.
 		 *
-		 * @param pUserDdata User data specified when creating the dHeightfieldData
+		 * @param pUserData User data specified when creating the dHeightfieldData
 		 * @param x The index of a sample in the local x axis. It is a value
 		 * in the range zero to ( nWidthSamples - 1 ).
 		 * @param z The index of a sample in the local z axis. It is a value

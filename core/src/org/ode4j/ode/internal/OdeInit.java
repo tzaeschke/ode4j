@@ -237,10 +237,10 @@ public class OdeInit {
 	public static void dInitODE()
 	{
 		int bInitResult = dInitODE2(0);
-		dIASSERT(bInitResult); dVARIABLEUSED(bInitResult);
+		dIASSERT(bInitResult!=0);
 
 		int ibAllocResult = dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-		dIASSERT(ibAllocResult); dVARIABLEUSED(ibAllocResult);
+		dIASSERT(ibAllocResult!=0);
 	}
 
 	//int dInitODE2(unsigned int uiInitFlags/*=0*/)
