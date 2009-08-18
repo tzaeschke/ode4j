@@ -10,6 +10,9 @@ the rules for this file:
 ------------------------------------------------------------------------------
 
 
+2009-Aug-18 Tilmann Zäschke
+		* Javadoc improvements
+
 2009-Aug-12 Tilmann Zäschke
 		* Javadoc & API for DBody completed
 		* Javadoc & API for DSpace and sub-classes completed
