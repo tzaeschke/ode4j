@@ -152,7 +152,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @remarks
 	 * The joint is initially in "limbo" (i.e. it has no effect on the simulation)
 	 * because it does not connect to any bodies.
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -163,7 +163,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the hinge type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -175,7 +175,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the slider type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -187,7 +187,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the contact type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -207,7 +207,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the hinge2 type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -219,7 +219,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the universal type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -231,7 +231,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the PR (Prismatic and Rotoide) type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -243,7 +243,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the PU (Prismatic and Universal) type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -255,7 +255,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the Piston type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 *                      If it is nonzero the joint is allocated in the given
 	 *                      joint group.
 	 */
@@ -268,7 +268,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the fixed type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -286,7 +286,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the A-motor type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -298,7 +298,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the L-motor type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -310,7 +310,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the plane-2d type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
@@ -401,7 +401,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Manually enable a joint.
-	 * @param dJointID identification of joint.
+	 * @param j identification of joint.
 	 * @ingroup joints
 	 */
 	//ODE_API 
@@ -1371,7 +1371,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return The point on body 2. If the joint is perfectly satisfied,
+	 * Returns the point on body 2. If the joint is perfectly satisfied,
 	 * this will return the same value as dJointGetHingeAnchor().
 	 * If not, this value will be slightly different.
 	 * This can be used, for example, to see how far the joint has come apart.

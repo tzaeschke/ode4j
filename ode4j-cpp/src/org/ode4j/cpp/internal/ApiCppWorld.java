@@ -260,7 +260,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * @brief Get the SOR over-relaxation parameter
 	 * @ingroup world
-	 * @returns the over-relaxation setting
+	 * @return the over-relaxation setting
 	 */
 	//ODE_API 
 	public static double dWorldGetQuickStepW (DWorld w) {
@@ -315,7 +315,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * @brief Get the depth of the surface layer around all geometry objects.
 	 * @ingroup world
-	 * @returns the depth
+	 * @return the depth
 	 */
 	//ODE_API 
 	public static double dWorldGetContactSurfaceLayer (DWorld w) {

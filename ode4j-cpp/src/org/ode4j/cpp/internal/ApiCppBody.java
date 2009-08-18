@@ -51,7 +51,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * @brief Set auto disable linear average threshold.
 	 * @ingroup bodies disable
-	 * @return the threshold
+	 * @param linear_average_threshold the threshold
 	 */
 	//ODE_API 
 	public static void dBodySetAutoDisableLinearThreshold (
@@ -72,7 +72,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * @brief Set auto disable angular average threshold.
 	 * @ingroup bodies disable
-	 * @return the threshold
+	 * @param angular_average_threshold the threshold
 	 */
 	//ODE_API 
 	public static void dBodySetAutoDisableAngularThreshold (
@@ -295,7 +295,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * When getting, the returned values are pointers to internal data structures,
 	 * so the vectors are valid until any changes are made to the rigid body
 	 * system structure.
-	 * @see dBodyCopyPosition
+	 * @see #dBodyCopyPosition(DBody, DVector3)
 	 */
 	//ODE_API 
 	//const 
@@ -309,7 +309,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 * @param body  the body to query
 	 * @param pos   a copy of the body position
-	 * @see dBodyGetPosition
+	 * @see #dBodyGetPosition(DBody)
 	 */
 	//ODE_API 
 	public static void dBodyCopyPosition (DBody body, DVector3 pos){
@@ -332,9 +332,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * @brief Copy the rotation of a body.
 	 * @ingroup bodies
-	 * @param body   the body to query
-	 * @param R      a copy of the rotation matrix
-	 * @see dBodyGetRotation
+	 * @param b		the body to query
+	 * @param R    	a copy of the rotation matrix
+	 * @see #dBodyGetRotation(DBody)
 	 */
 	//ODE_API 
 	public static void dBodyCopyRotation (DBody b, DMatrix3 R){
@@ -359,7 +359,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 * @param body  the body to query
 	 * @param quat  a copy of the orientation quaternion
-	 * @see dBodyGetQuaternion
+	 * @see #dBodyGetQuaternion(DBody)
 	 */
 	//ODE_API 
 	public static void dBodyCopyQuaternion(DBody body, DQuaternion quat){
@@ -708,7 +708,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 	/**
 	 * @brief Set rigid body to dynamic state (default).
-	 * @param dBodyID identification of body.
+	 * @param body identification of body.
 	 * @ingroup bodies
 	 */
 	//ODE_API
@@ -725,7 +725,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @note A kinematic body has infinite mass. If you set its mass
 	 * to something else, it loses the kinematic state and behaves
 	 * as a normal dynamic body.
-	 * @param dBodyID identification of body.
+	 * @param body identification of body.
 	 * @ingroup bodies
 	 */
 	//ODE_API
@@ -745,7 +745,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 	/**
 	 * @brief Manually enable a body.
-	 * @param DBody identification of body.
+	 * @param body identification of body.
 	 * @ingroup bodies
 	 */
 	//ODE_API 
@@ -869,7 +869,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 * @remarks From now on the body will not use the world's linear damping
 	 * scale until dBodySetDampingDefaults() is called.
-	 * @see #dBodySetDampingDefaults()
+	 * @see #dBodySetDampingDefaults(DBody)
 	 */
 	//ODE_API 
 	public static void dBodySetLinearDamping(DBody b, double scale){
@@ -893,7 +893,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 * @remarks From now on the body will not use the world's angular damping
 	 * scale until dBodyResetAngularDamping() is called.
-	 * @see dBodyResetAngularDamping()
+	 * @see #dBodyResetAngularDamping()
 	 */
 	//ODE_API 
 	public static void dBodySetAngularDamping(DBody b, double scale){
@@ -905,7 +905,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param linear_scale The linear damping scale. Should be in the interval [0, 1].
 	 * @param angular_scale The angular damping scale. Should be in the interval [0, 1].
 	 * @ingroup bodies damping
-	 * @see #dBodySetLinearDamping() #dBodySetAngularDamping()
+	 * @see #dBodySetLinearDamping(DBody, double) 
+	 * @see #dBodySetAngularDamping(DBody, double)
 	 */
 	//ODE_API 
 	public static void dBodySetDamping(DBody b, double linear_scale, double angular_scale){
@@ -955,7 +956,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * @brief Get the body's maximum angular speed.
 	 * @ingroup damping bodies
-	 * @see #dWorldGetMaxAngularSpeed()
+	 * @see ApiCppWorld#dWorldGetMaxAngularSpeed(DWorld)
 	 */
 	//ODE_API 
 	public static double dBodyGetMaxAngularSpeed (DBody b){
@@ -965,7 +966,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * @brief Set the body's maximum angular speed.
 	 * @ingroup damping bodies
-	 * @see #dWorldSetMaxAngularSpeed() 
+	 * @see ApiCppWorld#dWorldSetMaxAngularSpeed(DWorld, double) 
 	 * @see #dBodyResetMaxAngularSpeed()
 	 * The default value is dInfinity, but it's a good idea to limit
 	 * it at less than 500 if the body has the gyroscopic term

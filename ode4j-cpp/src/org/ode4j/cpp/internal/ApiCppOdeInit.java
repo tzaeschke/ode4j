@@ -70,13 +70,13 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	/**
 	 * @brief Initializes ODE library.
 	 *
-	 * @c dInitODE is obsolete. @c dInitODE2 is to be used for library initialization.
+	 * {@code dInitODE} is obsolete. {@code dInitODE2} is to be used for library initialization.
 	 *
-	 * A call to @c dInitODE is equal to the following initialization sequence
-	 * @code
-	 *     dInitODE2(0);
-	 *     dAllocateODEDataForThread(dAllocateMaskAll);
-	 * @endcode
+	 * A call to {@code dInitODE} is equal to the following initialization sequence
+	 * <p><code>
+	 *     dInitODE2(0);  <br>
+	 *     dAllocateODEDataForThread(dAllocateMaskAll);  <br>
+	 * </code>
 	 *
 	 * @see #dInitODE2(int)
 	 * @see #dAllocateODEDataForThread
@@ -152,7 +152,7 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * ODE. This function allocates the data that is required for accessing ODE from
 	 * current thread along with optional data required for particular ODE subsystems.
 	 *
-	 * @a uiAllocateFlags parameter can contain zero or more flags from @c dAllocateODEDataFlags
+	 * {@code uiAllocateFlags} parameter can contain zero or more flags from {@code dAllocateODEDataFlags}
 	 * enumerated type. Multiple calls with different allocation flags are allowed.
 	 * The flags that are already allocated are ignored in subsequent calls. If zero
 	 * is passed as the parameter, it means to only allocate the set of most important
@@ -208,17 +208,17 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * @brief Close ODE after it is not needed any more.
 	 *
 	 * The function is required to be called when program does not need ODE features any more.
-	 * The call to @c dCloseODE releases all the resources allocated for library
+	 * The call to {@code dCloseODE} releases all the resources allocated for library
 	 * including all the thread local data that might be allocated for all the threads
 	 * that were using ODE.
 	 *
-	 * @c dCloseODE is a paired function for @c dInitODE2 and must only be called
+	 * {@code dCloseODE} is a paired function for {@code dInitODE2} and must only be called
 	 * after successful library initialization.
 	 *
 	 * @note Important!
 	 * Make sure that all the threads that were using ODE have already terminated
-	 * before calling @c dCloseODE. In particular it is not allowed to call
-	 * @c dCleanupODEAllDataForThread after @c dCloseODE.
+	 * before calling {@code dCloseODE}. In particular it is not allowed to call
+	 * {@code dCleanupODEAllDataForThread} after {@code dCloseODE}.
 	 *
 	 * @see #dInitODE2(int)
 	 * @see #dCleanupODEAllDataForThread

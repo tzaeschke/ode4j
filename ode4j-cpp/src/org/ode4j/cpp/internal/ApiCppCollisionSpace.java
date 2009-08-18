@@ -114,8 +114,8 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * @param space the space to modify
 	 * @param sublevel the sublevel value to be assigned
 	 * @ingroup collide
-	 * @see dSpaceGetSublevel
-	 * @see dSpaceCollide2
+	 * @see #dSpaceGetSublevel(DSpace)
+	 * @see ApiCppCollision#dSpaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
 	 */
 	//ODE_API 
 	public static void dSpaceSetSublevel (DSpace space, int sublevel) {
@@ -129,10 +129,10 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * with another space. See @c dSpaceSetSublevel for more details.
 	 *
 	 * @param space the space to query
-	 * @returns the sublevel value of the space
+	 * @return the sublevel value of the space
 	 * @ingroup collide
-	 * @see dSpaceSetSublevel
-	 * @see dSpaceCollide2
+	 * @see #dSpaceSetSublevel(DSpace, int)
+	 * @see ApiCppCollision#dSpaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
 	 */
 	//ODE_API 
 	public static int dSpaceGetSublevel (DSpace space) {
@@ -153,8 +153,8 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * @param space the space to modify
 	 * @param mode 1 for manual cleanup mode and 0 for default cleanup mode
 	 * @ingroup collide
-	 * @see dSpaceGetManualCleanup
-	 * @see dInitODE2
+	 * @see #dSpaceGetManualCleanup(DSpace)
+	 * @see ApiCppOdeInit#dInitODE2(int)
 	 */
 	//ODE_API 
 	public static void dSpaceSetManualCleanup (DSpace space, int mode) {
@@ -168,10 +168,10 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * See @c dSpaceSetManualCleanup for more details.
 	 * 
 	 * @param space the space to query
-	 * @returns 1 for manual cleanup mode and 0 for default cleanup mode of the space
+	 * @return 1 for manual cleanup mode and 0 for default cleanup mode of the space
 	 * @ingroup collide
-	 * @see dSpaceSetManualCleanup
-	 * @see dInitODE2
+	 * @see #dSpaceSetManualCleanup(DSpace, int)
+	 * @see ApiCppOdeInit#dInitODE2(int)
 	 */
 	//ODE_API 
 	public static int dSpaceGetManualCleanup (DSpace space) {
