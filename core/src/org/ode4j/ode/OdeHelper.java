@@ -878,7 +878,7 @@ public abstract class OdeHelper {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @see OdeHelper#spaceCollide2(DGeom, DGeom, Object, DNearCallback)
+	 * @see #spaceCollide2(DGeom, DGeom, Object, DNearCallback)
 	 * @ingroup collide
 	 */
 	public static void spaceCollide (DSpace space, Object data, DNearCallback callback) {
@@ -921,7 +921,7 @@ public abstract class OdeHelper {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @see OdeHelper#spaceCollide(DSpace, Object, DNearCallback)
+	 * @see #spaceCollide(DSpace, Object, DNearCallback)
 	 * @see DSpace#setSublevel(int)
 	 * @ingroup collide
 	 */
