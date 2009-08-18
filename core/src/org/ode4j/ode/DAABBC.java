@@ -26,7 +26,10 @@ import org.ode4j.math.DVector3;
 /**
  * Immutable interface for AABBs (Axis-aligned bounding boxes),
  * as defined in DAABB.
+ * <p>
+ * Axes are numbered from 0 to 2.
  *
+ * @see DAABB
  * @author Tilmann Zaeschke
  */
 public interface DAABBC {
@@ -43,8 +46,29 @@ public interface DAABBC {
 	double len0();
 	double len1();
 	double len2();
-	double getMax(int i);
-	double getMin(int i);
+	
+	/** 
+	 * Get maximum extension of <tt>axis</tt>
+	 * @param i The axis (0, 1 or 2)
+	 */
+	double getMax(int axis);
+
+	
+	/** 
+	 * Get minimum extension of <tt>axis</tt>
+	 * @param i The axis (0, 1 or 2)
+	 */
+	double getMin(int axis);
+	
+	
+	/** 
+	 * @return the lengths of this AABB as a vector.
+	 */
 	DVector3 getLengths();
+
+	
+	/** 
+	 * @return the center of this AABB.
+	 */
 	DVector3 getCenter();
 }

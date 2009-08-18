@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 
 /**
- * @brief A set of dContact objects (TZ).
+ * @brief A collection of DContact objects.
  *
  * @ingroup collide
  */

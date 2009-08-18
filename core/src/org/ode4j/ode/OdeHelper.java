@@ -55,6 +55,15 @@ import org.ode4j.ode.internal.DxSpace;
 import org.ode4j.ode.internal.DxSphere;
 import org.ode4j.ode.internal.DxWorld;
 
+/**
+ * This is the general helper class for ode4j.
+ * <p>
+ * It provides: <br>
+ * <li> Factory methods for most of the classes in ode4j </li>
+ * <li> Initialisation methods ({@code initOde2()} </li>
+ * <li> Collision methods </li>   
+ * <li> Other helper methods </li>   
+ */
 public abstract class OdeHelper {
 
 	private static final OdeFactoryImpl ODE = new OdeFactoryImpl(); 

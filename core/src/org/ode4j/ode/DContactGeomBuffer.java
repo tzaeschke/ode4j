@@ -4,7 +4,7 @@ import org.ode4j.ode.internal.DxGeom;
 
 
 /**
- * @brief A set of DContactGeom objects (TZ).
+ * @brief A collection of DContactGeom objects.
  *
  * @ingroup collide
  */

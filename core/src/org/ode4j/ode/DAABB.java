@@ -26,6 +26,9 @@ import org.ode4j.math.DVector3C;
 
 /**
  * Convenience class for operations on AABB (Axis-aligned bounding boxes).
+ * <p>
+ * Axes are numbered from 0 to 2.
+ * @see DAABBC
  *
  * @author Tilmann Zaeschke
  */
