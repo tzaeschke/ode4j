@@ -10,6 +10,9 @@ the rules for this file:
 ------------------------------------------------------------------------------
 
 
+2009-Nov-12 Tilmann Zäschke
+		* Frixed crash for DemoCyl in drawstuff
+
 2009-Aug-18 Tilmann Zäschke
 		* Javadoc improvements
 

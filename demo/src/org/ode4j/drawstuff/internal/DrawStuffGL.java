@@ -408,7 +408,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	
 	
 //	static void setTransformD (final double pos[3], final double R[12])
-	private static void setTransformD (final DVector3C pos, final DMatrix3C R)
+	private static void setTransform (final DVector3C pos, final DMatrix3C R)
 	{
 		//GLdouble
 		double[] matrix=new double[16];
@@ -1656,7 +1656,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		if (current_state != 2) dsError ("drawing function called outside simulation loop");
 		setupDrawingMode();
 		GL11.glShadeModel (GL11.GL_FLAT);
-		setTransform (pos.toFloatArray(),R.toFloatArray());
+		setTransform (pos,R);
 		drawTriangle (vAll, v0, v1, v2, solid);
 		GL11.glPopMatrix();
 	}
@@ -1768,13 +1768,13 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		if (current_state != 2) dsError ("drawing function called outside simulation loop");
 		setupDrawingMode();
 		GL11.glShadeModel (GL11.GL_FLAT);
-		setTransformD (pos,R);
+		setTransform (pos,R);
 		drawConvexD(_planes,_planecount,_points,_pointcount,_polygons);
 		GL11.glPopMatrix();
 		if (use_shadows) {
 			setShadowDrawingMode();
 			setShadowTransform();
-			setTransformD (pos,R);
+			setTransform (pos,R);
 			drawConvexD(_planes,_planecount,_points,_pointcount,_polygons);
 			GL11.glPopMatrix();
 			GL11.glPopMatrix();
@@ -1818,12 +1818,9 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 			final DVector3C v0, final DVector3C v1,
 			final DVector3C v2, boolean solid)
 	{
-		float[] pos2 = pos.toFloatArray4();
-		float[] R2 = R.toFloatArray12();
-
 		setupDrawingMode();
 		GL11.glShadeModel (GL11.GL_FLAT);
-		setTransform (pos2,R2);
+		setTransform (pos,R);
 		drawTriangle (v0, v1, v2, solid);
 		GL11.glPopMatrix();
 	}
