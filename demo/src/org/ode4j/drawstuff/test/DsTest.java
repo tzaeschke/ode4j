@@ -35,6 +35,7 @@ import static org.ode4j.drawstuff.DrawStuff.*;
 
 public class DsTest extends dsFunctions {
 
+	@Override
 	public void start()
 	{
 		// adjust the starting viewpoint a bit
@@ -46,9 +47,9 @@ public class DsTest extends dsFunctions {
 		dsSetViewpoint (xyz,hpr);
 	}
 
-	private static float a = 0;
+	private float a = 0;
 
-	void simLoop (boolean pause)
+	private void simLoop (boolean pause)
 	{
 		float[] pos = new float[3];
 		float[] R = new float[12];
@@ -104,10 +105,11 @@ public class DsTest extends dsFunctions {
 		R[4] = 0; R[5] = ca; R[6] = sa;
 		R[8] = 1; R[9] = 0;  R[10] = 0;
 		dsSetColor (1,0.9f,0.2f);
-		dsDrawCappedCylinder (pos,R,0.8f,0.2f);
+		dsDrawCapsule (pos,R,0.8f,0.2f);
 	}
 
 
+	@Override
 	public void command (char cmd)
 	{
 		dsPrint ("received command %d (`%c')\n",cmd,cmd);
