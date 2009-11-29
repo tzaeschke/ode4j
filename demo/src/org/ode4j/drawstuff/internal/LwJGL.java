@@ -50,6 +50,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	//   by dsPlatformSimLoop(). 
 	static {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
 			public void run() {
 //				Display.destroy();
 			}
@@ -506,6 +507,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	//void dsPlatformSimLoop (int window_width, int window_height, dsFunctions *fn,
 	//			int initial_pause)
 	private static boolean firsttime=true;
+	@Override
 	void dsPlatformSimLoop (int window_width, int window_height, dsFunctions fn,
 			boolean initial_pause)
 	{
