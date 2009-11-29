@@ -199,18 +199,8 @@ public class DemoGyroscopic extends dsFunctions {
 
 	private void demo(String[] args)
 	{
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-		//	    fn.start = &start;
-		//	    fn.step = &simLoop;
-		//	    fn.command = &command;
-		//	    fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-
-
 		// create world
-		OdeHelper.initODE();
+		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();
 		world.setGravity(0,0,-0.5f);
 		world.setCFM(1e-5f);

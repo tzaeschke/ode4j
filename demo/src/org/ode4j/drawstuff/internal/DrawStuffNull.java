@@ -107,7 +107,7 @@ public class DrawStuffNull implements DrawStuffApi {
 
 		long startTime = System.currentTimeMillis() + 5000;
 		long fps = 0;
-		int loops = 0;
+//		int loops = 0;
 		_run = true;
 		while (_run) {
 			//  while (run) {

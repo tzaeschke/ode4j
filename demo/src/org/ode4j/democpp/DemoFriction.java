@@ -125,6 +125,7 @@ class DemoFriction extends dsFunctions {
 	private static float[] xyz = {1.7772f,-0.7924f,2.7600f};
 	private static float[] hpr = {90.0000f,-54.0000f,0.0000f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -165,17 +166,21 @@ class DemoFriction extends dsFunctions {
 
 
 	public static void main(String[] args) {
+		new DemoFriction().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		int i,j;
 		DMass m = OdeHelper.createMass();
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoFriction();
-		fn.version = DS_VERSION;
+		//dsFunctions fn = new DemoFriction();
+		//fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = 0;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		// create world
 		dInitODE2(0);
@@ -200,7 +205,7 @@ class DemoFriction extends dsFunctions {
 		}
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);

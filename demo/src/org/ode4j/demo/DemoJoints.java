@@ -1090,21 +1090,12 @@ public class DemoJoints extends dsFunctions {
 			return;
 		}
 
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-//		fn.start = &start;
-//		fn.step = &simLoop;
-//		fn.command = 0;
-//		fn.stop = 0;
 		if (cmd_path_to_textures != null)
-			fn.path_to_textures = cmd_path_to_textures;
-		else
-			fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+			dsSetPathToTextures( cmd_path_to_textures );
 
 		// run simulation
 		if (cmd_graphics) {
-			dsSimulationLoop (args,352,288,fn);
+			dsSimulationLoop (args,352,288,this);
 			//dsSimulationLoop (args,288,288,fn);
 			//dsSimulationLoop (args,400,400,fn);
 		}

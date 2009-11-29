@@ -235,15 +235,16 @@ class DemoI extends dsFunctions {
 
 
 	public static void main(String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoI();
-
+		new DemoI().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		OdeHelper.initODE2(0);
 		dRandSetSeed (System.currentTimeMillis());
 		reset_test();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		world.destroy ();
 		OdeHelper.closeODE();

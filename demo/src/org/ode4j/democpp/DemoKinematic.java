@@ -229,16 +229,16 @@ public class DemoKinematic extends dsFunctions {
 	
 	private void demo(String[] args)
 	{
-	    dInitODE();
+	    dInitODE2(0);
 
 	    // setup pointers to drawstuff callback functions
-	    dsFunctions fn = this;
-	    fn.version = DS_VERSION;
+//	    dsFunctions fn = this;
+//	    fn.version = DS_VERSION;
 //	    fn.start = 0;
 //	    fn.step = &simLoop;
 //	    fn.command = &command;
 //	    fn.stop = 0;
-	    fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+//	    fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 	    
 	    System.out.println("*** Press SPACE to drop boxes **");
 	    
@@ -272,7 +272,7 @@ public class DemoKinematic extends dsFunctions {
 	    hinge.setAnchor(kx, ky, kz+1);
 	    hinge.setAxis(0, 0, 1);
 	    
-	    dsSimulationLoop (args, 640, 480, fn);
+	    dsSimulationLoop (args, 640, 480, this);
 	    
 	    dCloseODE();
 	}

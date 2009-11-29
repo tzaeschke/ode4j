@@ -241,10 +241,12 @@ class DemoPlane2d extends dsFunctions {
 	/******************/
 	public static void main(String[] args)
 	{
+		new DemoPlane2d().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		int         b;
-		dsFunctions drawstuff_functions = new DemoPlane2d();
-
-
+		
 		dInitODE2(0);
 
 		// dynamic world
@@ -326,14 +328,14 @@ class DemoPlane2d extends dsFunctions {
 
 		{
 			// simulation loop (by drawstuff lib)
-			drawstuff_functions.setVersion(DS_VERSION);
+			//drawstuff_functions.setVersion(DS_VERSION);
 			//		drawstuff_functions.start = &cb_start;
 			//		drawstuff_functions.step = &cb_sim_step;
 			//		drawstuff_functions.command = 0;
 			//		drawstuff_functions.stop = 0;
-			drawstuff_functions.setPathToTextures(DRAWSTUFF_TEXTURE_PATH);
+			//drawstuff_functions.setPathToTextures(DRAWSTUFF_TEXTURE_PATH);
 
-			dsSimulationLoop (args, 352,288,drawstuff_functions);
+			dsSimulationLoop (args, 352,288,this);
 		}
 
 		dCloseODE();

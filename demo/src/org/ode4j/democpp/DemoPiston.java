@@ -605,13 +605,13 @@ class DemoPiston extends dsFunctions {
 		boolean fixed  = true;
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
+		//dsFunctions fn = this;
 		//  fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = &command;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		//DVector3 offset = new DVector3();
 		//dSetZero (offset, 4);
@@ -636,7 +636,7 @@ class DemoPiston extends dsFunctions {
 								args[j].charAt(0) == '-' ) // We should have a path not a command line
 							Help (args);
 						else
-							fn.path_to_textures = args[++i]; // Increase i since we use this argument
+							dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
 					}
 				}
 
@@ -759,7 +759,7 @@ class DemoPiston extends dsFunctions {
 
 
 		// run simulation
-		dsSimulationLoop (args,400,300,fn);
+		dsSimulationLoop (args,400,300,this);
 
 		//delete joint;
 		dJointGroupDestroy (contactgroup);

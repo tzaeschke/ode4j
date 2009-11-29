@@ -164,11 +164,12 @@ class DemoFriction extends dsFunctions {
 
 
 	public static void main(String[] args) {
+		new DemoFriction().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		int i,j;
 		DMass m = OdeHelper.createMass();
-
-		// setup pointers to drawstuff callback functions
-		DemoFriction fn = new DemoFriction();
 
 		// create world
 		OdeHelper.initODE2(0);
@@ -193,7 +194,7 @@ class DemoFriction extends dsFunctions {
 		}
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy();
 		space.destroy();

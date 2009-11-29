@@ -22,7 +22,6 @@
 package org.ode4j.democpp;
 
 import org.cpp4j.FILE;
-import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
@@ -131,6 +130,7 @@ class DemoBuggy extends dsFunctions {
 	private static float[] xyz = {0.8317f,-0.9817f,0.8000f};
 	private static float[] hpr = {121.0000f,-27.5000f,0.0000f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -149,6 +149,7 @@ class DemoBuggy extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) {
@@ -243,13 +244,13 @@ class DemoBuggy extends dsFunctions {
 		DMass m = dMassCreate();
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
+		//dsFunctions fn = this;
+		//fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = &command;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		// create world
 		dInitODE2(0);
@@ -337,7 +338,7 @@ class DemoBuggy extends dsFunctions {
 		dGeomSetRotation (ground_box,R);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dGeomDestroy (box[0]);
 		dGeomDestroy (sphere[0]);

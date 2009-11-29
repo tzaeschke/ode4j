@@ -57,6 +57,7 @@ class DemoSlider extends dsFunctions {
 
 	private static float[] xyz= {1.0382f,-1.0811f,1.4700f};
 	private static float[] hpr= {135.0000f,-19.5000f,0.0000f};
+	@Override
 	public void start()
 	{
 		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -70,6 +71,7 @@ class DemoSlider extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		if (cmd == 'e' || cmd == 'E') {
@@ -145,9 +147,10 @@ class DemoSlider extends dsFunctions {
 
 	public static void main (String[] args)
 	{
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoSlider();
-
+		new DemoSlider().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();
@@ -170,7 +173,7 @@ class DemoSlider extends dsFunctions {
 		slider.setAxis (1,1,1);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		world.destroy ();
 		OdeHelper.closeODE();

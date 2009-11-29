@@ -118,19 +118,12 @@ public class DsTest extends dsFunctions {
 
 	public static void main (String[] args)
 	{
-		// setup pointers to callback functions
-		dsFunctions fn = new DsTest();
-		//  fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = command;
-		//  fn.stop = 0;
-		//  fn.path_to_textures = 0;	// uses default
-		fn.setVersion(DS_VERSION);
-		fn.setPathToTextures(null);
-
+		new DsTest().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// run simulation
-		dsSimulationLoop (args,400,400,fn);
+		dsSimulationLoop (args,400,400,this);
 	}
 
 

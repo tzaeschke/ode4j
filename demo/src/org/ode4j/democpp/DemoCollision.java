@@ -1388,17 +1388,17 @@ class DemoCollision extends dsFunctions {
 			printf ("performing test: %s\n",testslot[graphical_test].name);
 
 			// setup pointers to drawstuff callback functions
-			dsFunctions fn = this;
-			fn.version = DS_VERSION;
+			//dsFunctions fn = this;
+			//fn.version = DS_VERSION;
 			//    fn.start = &start;
 			//    fn.step = &simLoop;
 			//    fn.command = &command;
 			//    fn.stop = 0;
-			fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+			//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 			dsSetSphereQuality (3);
 			dsSetCapsuleQuality (8);
-			dsSimulationLoop (args,1280,900,fn);
+			dsSimulationLoop (args,1280,900,this);
 		}
 		else {
 			// do all tests noninteractively

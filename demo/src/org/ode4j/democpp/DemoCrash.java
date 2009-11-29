@@ -663,13 +663,13 @@ class DemoCrash extends dsFunctions {
 		doFast = true;
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
+		//dsFunctions fn = this;
+		//fn.version = DS_VERSION;
 		//	fn.start = &start;
 		//	fn.step = &simLoop;
 		//	fn.command = &command;
 		//	fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		dInitODE2(0);
 
@@ -681,7 +681,7 @@ class DemoCrash extends dsFunctions {
 		resetSimulation();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);

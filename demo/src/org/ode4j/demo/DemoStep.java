@@ -127,6 +127,7 @@ class DemoStep extends dsFunctions {
 	private static float[] xyz = {2.6117f,-1.4433f,2.3700f};
 	private static float[] hpr = {151.5000f,-30.5000f,0.0000f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -137,6 +138,7 @@ class DemoStep extends dsFunctions {
 
 	// simulation loop
 
+	@Override
 	public void step (boolean pause)
 	{
 		if (!pause) {
@@ -167,15 +169,16 @@ class DemoStep extends dsFunctions {
 
 
 	public static void main(String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoStep();
-
+		new DemoStep().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		OdeHelper.initODE2(0);
 		dRandSetSeed (System.currentTimeMillis()/1000);
 		createTest();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		world.destroy();
 		OdeHelper.closeODE();

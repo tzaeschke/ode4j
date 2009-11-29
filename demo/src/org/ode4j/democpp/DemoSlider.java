@@ -149,14 +149,18 @@ class DemoSlider extends dsFunctions {
 
 	public static void main (String[] args)
 	{
+		new DemoSlider().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoSlider();
-		fn.version = DS_VERSION;
+		//dsFunctions fn = new DemoSlider();
+		//fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = &command;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		// create world
 		dInitODE2(0);
@@ -180,7 +184,7 @@ class DemoSlider extends dsFunctions {
 		dJointSetSliderAxis (slider,1,1,1);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dWorldDestroy (world);
 		dCloseODE();

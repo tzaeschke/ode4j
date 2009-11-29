@@ -254,22 +254,26 @@ class DemoI extends dsFunctions {
 
 
 	public static void main(String[] args) {
+		new DemoI().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoI();
-		fn.version = DrawStuff.DS_VERSION;
+		//dsFunctions fn = new DemoI();
+		//fn.version = DrawStuff.DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = 0;
 		//  fn.stop = 0;
 		//  fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		fn.setPathToTextures(DrawStuff.DRAWSTUFF_TEXTURE_PATH);
+		//fn.setPathToTextures(DrawStuff.DRAWSTUFF_TEXTURE_PATH);
 
 		dInitODE2(0);
 		dRandSetSeed (time(null).seconds);
 		reset_test();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dWorldDestroy (world);
 		dCloseODE();

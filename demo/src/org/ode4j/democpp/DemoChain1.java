@@ -102,6 +102,7 @@ class DemoChain1 extends dsFunctions {
 	/**
 	 *  start simulation - set viewpoint 
 	 */
+	@Override
 	public void start()
 	{
 
@@ -135,18 +136,22 @@ class DemoChain1 extends dsFunctions {
 
 
 	public static void main(String[] args) {
+		new DemoChain1().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		int i;
 		double k;
 		DMass m;
 
 		/* setup pointers to drawstuff callback functions */
-		dsFunctions fn = new DemoChain1();
-		fn.version = DS_VERSION;
+		//dsFunctions fn = new DemoChain1();
+		//fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = 0;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		/* create world */
 		dInitODE2(0);
@@ -176,7 +181,7 @@ class DemoChain1 extends dsFunctions {
 		}
 
 		/* run simulation */
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);

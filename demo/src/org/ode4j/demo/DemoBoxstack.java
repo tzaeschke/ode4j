@@ -660,9 +660,10 @@ class DemoBoxstack extends dsFunctions {
 
 	public static void main (String[] args)
 	{
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoBoxstack();
-
+		new DemoBoxstack().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();
@@ -687,7 +688,7 @@ class DemoBoxstack extends dsFunctions {
 		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy ();
 		space.destroy ();

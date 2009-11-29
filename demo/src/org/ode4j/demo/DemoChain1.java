@@ -133,12 +133,13 @@ class DemoChain1 extends dsFunctions {
 
 
 	public static void main(String[] args) {
+		new DemoChain1().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		int i;
 		double k;
 		DMass m;
-
-		/* setup pointers to drawstuff callback functions */
-		dsFunctions fn = new DemoChain1();
 
 		/* create world */
 		OdeHelper.initODE2(0);
@@ -168,7 +169,7 @@ class DemoChain1 extends dsFunctions {
 		}
 
 		/* run simulation */
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy();
 		space.destroy();

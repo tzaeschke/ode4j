@@ -136,9 +136,10 @@ class DemoChain2 extends dsFunctions {
 
 
 	public static void main(String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoChain2();
-
+		new DemoChain2().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// create world
 		OdeHelper.initODE2(0);
 
@@ -171,7 +172,7 @@ class DemoChain2 extends dsFunctions {
 		}
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		OdeHelper.closeODE();
 	}

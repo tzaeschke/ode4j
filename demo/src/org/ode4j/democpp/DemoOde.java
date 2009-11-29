@@ -1283,7 +1283,7 @@ void testReorthonormalize()
 
 	private int runAllTests()
 	{
-		dInitODE();
+		dInitODE2(0);
 		testRandomNumberGenerator();
 		testInfinity();
 		testPad();

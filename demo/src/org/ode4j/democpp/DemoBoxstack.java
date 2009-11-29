@@ -23,8 +23,6 @@ package org.ode4j.democpp;
 
 import org.cpp4j.FILE;
 import org.cpp4j.java.RefDouble;
-import org.ode4j.drawstuff.DrawStuff;
-import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -673,13 +671,13 @@ class DemoBoxstack extends dsFunctions {
 	public static void main (String[] args)
 	{
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoBoxstack();
-		fn.version = DrawStuff.DS_VERSION;
+		//dsFunctions fn = new DemoBoxstack();
+		//fn.version = DrawStuff.DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = &command;
 		//  fn.stop = 0;
-		fn.path_to_textures = DrawStuff.DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DrawStuff.DRAWSTUFF_TEXTURE_PATH;
 
 		// create world
 		dInitODE2(0);
@@ -705,7 +703,7 @@ class DemoBoxstack extends dsFunctions {
 		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,new DemoBoxstack());
 
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);

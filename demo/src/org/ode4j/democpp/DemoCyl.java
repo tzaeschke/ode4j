@@ -266,13 +266,13 @@ class DemoCyl extends dsFunctions {
 		DMatrix3 R = new DMatrix3();
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoCyl();
-		fn.version = DS_VERSION;
+		//dsFunctions fn = new DemoCyl();
+		//fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = &command;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		// create world
 		dInitODE2(0);
@@ -334,7 +334,7 @@ class DemoCyl extends dsFunctions {
 		reset_state();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dJointGroupEmpty (contactgroup);
 		dJointGroupDestroy (contactgroup);

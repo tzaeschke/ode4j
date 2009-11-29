@@ -23,6 +23,7 @@ package org.ode4j.drawstuff;
 
 
 import static org.cpp4j.Cstdio.*;
+import static org.ode4j.drawstuff.DrawStuff.DRAWSTUFF_TEXTURE_PATH;
 
 import org.ode4j.drawstuff.internal.DrawStuffApi;
 import org.ode4j.drawstuff.internal.DrawStuffGL;
@@ -114,7 +115,7 @@ public class DrawStuff {
 //		  const char *path_to_textures;	/* if nonzero, path to texture files */
 //		} dsFunctions;
 	  public abstract static class dsFunctions { 
-		  public int version = DS_VERSION;			/* put DS_VERSION here */
+		  private final int version = DS_VERSION;			/* put DS_VERSION here */
 		  /* version 1 data */
 		  public abstract void start();		/* called before sim loop starts */
 		  public abstract void step (boolean pause);	/* called before every frame */
@@ -122,18 +123,30 @@ public class DrawStuff {
 		  public abstract void stop();		/* called after sim loop exits */
 		  /* version 2 data */
 		  /* if nonzero, path to texture files */
-		  public String path_to_textures = DRAWSTUFF_TEXTURE_PATH;	
-		  public void setVersion(int ds_version) {
-			  version = ds_version;
-		  }
-		  public void setPathToTextures(String drawstuff_texture_path) {
+		  private String path_to_textures = DRAWSTUFF_TEXTURE_PATH;	
+//		  public void setVersion(int ds_version) {
+//			  version = ds_version;
+//		  }
+		  /** @deprecated */
+		  public void dsSetPathToTextures(String drawstuff_texture_path) {
 			  path_to_textures = drawstuff_texture_path;
 		  }
-		  public String getPathToTextures() {
+		  public String dsGetPathToTextures() {
 			  return path_to_textures;
 		  }
-		  public int getVersion() {
+		  public int dsGetVersion() {
 			  return version;
+		  }
+		  public void dsPrintHelp() {
+//				System.out.println(argv[0]);
+//			  * the following command line flags can be used (typically under unix)
+				System.out.println(" -help                   : Print this help.");
+				System.out.println(" -notex                  : Do not use any textures.");
+				System.out.println(" -noshadow[s]            : Do not draw any shadows.");
+				System.out.println(" -pause                  : Start the simulation paused.");
+				System.out.println(" -texturepath <path>     : Set an alternative path for the textures.");
+				System.out.println("                           Default = " + DRAWSTUFF_TEXTURE_PATH);
+				System.out.println("--------------------------------------------------");
 		  }
 	  }
 //	} dsFunctions;
@@ -301,7 +314,7 @@ public class DrawStuff {
 	public static  void dsDrawBox (final float[] pos, final float[] R, final float sides[]) {
 		get().dsDrawBox(pos, R, sides);
 	}
-	public static  void dsDrawBox (final DVector3C pos, final DMatrix3C R, final DVector3C sides) {
+	public static  void dsDrawBox (DVector3C pos, DMatrix3C R, DVector3C sides) {
 		get().dsDrawBox(pos, R, sides);
 	}
 
@@ -318,7 +331,7 @@ public class DrawStuff {
 			float radius) {
 		get().dsDrawSphere(pos, R, radius);
 	}
-	public static  void dsDrawSphere (final DVector3C pos, final DMatrix3C R, 
+	public static  void dsDrawSphere (DVector3C pos, DMatrix3C R, 
 			double radius) {
 		get().dsDrawSphere(pos, R, (float) radius);
 	}
@@ -341,8 +354,8 @@ public class DrawStuff {
 		throw new UnsupportedOperationException();
 	}
 
-	public static  void dsDrawTriangle (final DVector3C pos, final DMatrix3C R,
-		     final DVector3C v0, final DVector3C v1, final DVector3C v2, boolean solid) {
+	public static  void dsDrawTriangle (DVector3C pos, DMatrix3C R,
+		     DVector3C v0, DVector3C v1, DVector3C v2, boolean solid) {
 		get().dsDrawTriangle(pos, R, v0, v1, v2, solid);
 	}
 
@@ -362,7 +375,7 @@ public class DrawStuff {
 		     float length, float radius) {
 	get().dsDrawCylinder(pos, R, length, radius);
 }
-	public static  void dsDrawCylinder (final DVector3C pos, final DMatrix3C R,
+	public static  void dsDrawCylinder (DVector3C pos, DMatrix3C R,
 		     double length, double radius) {
 	get().dsDrawCylinder(pos, R, (float)length, (float)radius);
 }
@@ -379,7 +392,7 @@ public class DrawStuff {
 		    float length, float radius) {
 	get().dsDrawCapsule(pos, R, length, radius);
 }
-	public static  void dsDrawCapsule (final DVector3C pos, final DMatrix3C R,
+	public static  void dsDrawCapsule (DVector3C pos, DMatrix3C R,
 		    double length, double radius) {
 	get().dsDrawCapsule(pos, R, (float)length, (float)radius);
 }
@@ -394,7 +407,7 @@ public class DrawStuff {
 	public static  void dsDrawLine (final float[] pos1, final float[] pos2) {
 		get().dsDrawLine(pos1, pos2);
 	}
-	public static  void dsDrawLine (final DVector3C pos1, final DVector3C pos2) {
+	public static  void dsDrawLine (DVector3C pos1, DVector3C pos2) {
 		get().dsDrawLine(pos1, pos2);
 	}
 
@@ -418,7 +431,7 @@ public class DrawStuff {
 			  int[] _polygons) {
 		throw new UnsupportedOperationException();
 	}
-	public static  void dsDrawConvex(final DVector3C pos, final DMatrix3C R,
+	public static  void dsDrawConvex(DVector3C pos, DMatrix3C R,
 			  double[] _planes,
 			  int _planecount,
 			  double[] _points,
@@ -431,7 +444,7 @@ public class DrawStuff {
 	//DS_API 
 //	public static  void dsDrawSphereD (final double pos[3], final double R[12],
 //		    final float radius) {
-	public static void dsDrawSphere (final DVector3C pos, final DMatrix3C R,
+	public static void dsDrawSphere (DVector3C pos, DMatrix3C R,
 			    final float radius) {
 		get().dsDrawSphere(pos, R, radius);
 	}
@@ -500,19 +513,19 @@ public class DrawStuff {
 //	#define dsDrawCappedCylinder dsDrawCapsule
 //	#define dsDrawCappedCylinderD dsDrawCapsuleD
 //	#define dsSetCappedCylinderQuality dsSetCapsuleQuality
-	/** @deprecated */
-	public static void dsDrawCappedCylinder(final float pos[], final float[] R,
-		    float length, float radius) {
-		dsDrawCapsule(pos, R, length, radius);
-	}
-	/** @deprecated */
-	public static void dsDrawCappedCylinder(final DVector3C pos, 
-			final DMatrix3C R,
-		     float length, float radius) {
-		dsDrawCapsule(pos, R, length, radius);
-	}
-	/** @deprecated */
-	public static void dsSetCappedCylinderQuality(int n) { 
-		dsSetCapsuleQuality(n);
-	}
+//	/** @deprecated Please use dsDrawCapsule() instead. */
+//	public static void dsDrawCappedCylinder(final float pos[], final float[] R,
+//		    float length, float radius) {
+//		dsDrawCapsule(pos, R, length, radius);
+//	}
+//	/** @deprecated Please use dsDrawCapsule() instead. */
+//	public static void dsDrawCappedCylinder(final DVector3C pos, 
+//			final DMatrix3C R,
+//		     float length, float radius) {
+//		dsDrawCapsule(pos, R, length, radius);
+//	}
+//	/** @deprecated Please use dsSetCapsuleQuality() instead. */
+//	public static void dsSetCappedCylinderQuality(int n) { 
+//		dsSetCapsuleQuality(n);
+//	}
 }

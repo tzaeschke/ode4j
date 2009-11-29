@@ -393,19 +393,19 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 
 	private void demo(String[] args) {
 		// setup pointers to callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
+		//dsFunctions fn = this;
+		//fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = command;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;	// uses default
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;	// uses default
 		world = dWorldCreate();
 		space = dHashSpaceCreate (null);
 		contactgroup = dJointGroupCreate (0);
 
 		// run simulation
-		dsSimulationLoop (args,400,400,fn);
+		dsSimulationLoop (args,400,400,this);
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);
 		dWorldDestroy (world);

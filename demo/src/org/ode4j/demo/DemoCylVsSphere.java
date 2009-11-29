@@ -184,10 +184,11 @@ class DemoCylVsSphere extends dsFunctions {
 
 
 	public static void main(String[] args) {
+		new DemoCylVsSphere().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		DMass m = OdeHelper.createMass();
-
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoCylVsSphere();
 
 		// create world
 		OdeHelper.initODE2(0);
@@ -224,7 +225,7 @@ class DemoCylVsSphere extends dsFunctions {
 		space.add (sphgeom);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.empty();
 		contactgroup.destroy();

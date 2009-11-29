@@ -227,10 +227,11 @@ class DemoFeedback extends dsFunctions {
 
 
 	public static void main(String[] args) {
+		new DemoFeedback().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		DMass m = OdeHelper.createMass();
-
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoFeedback();
 
 		// create world
 		OdeHelper.initODE2(0);
@@ -299,7 +300,7 @@ class DemoFeedback extends dsFunctions {
 			colours[i]=0.0;
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.empty();
 		contactgroup.destroy();

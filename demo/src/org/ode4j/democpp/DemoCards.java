@@ -43,15 +43,6 @@ import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
-//#include <vector>
-//#include <ode/ode.h>
-//#include <drawstuff/drawstuff.h>
-//#include "texturepath.h"
-//
-//#ifdef dDOUBLE
-//#define dsDrawBox dsDrawBoxD
-//#endif
-
 public class DemoCards extends dsFunctions {
 
 	private static int levels = 5;
@@ -164,6 +155,7 @@ public class DemoCards extends dsFunctions {
 	}
 
 
+	@Override
 	public void start()
 	{
 		System.out.println("Controls:");
@@ -243,16 +235,16 @@ public class DemoCards extends dsFunctions {
 	}
 
 	private void demo(String[] args) {
-		dInitODE();
+		dInitODE2(0);
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
+		//dsFunctions fn = this;
+		//fn.version = DS_VERSION;
 		//    fn.start = &start;
 		//    fn.step = &simLoop;
 		//    fn.command = &command;
 		//    fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 
 		world = dWorldCreate();
@@ -266,7 +258,7 @@ public class DemoCards extends dsFunctions {
 		place_cards();
 
 		// run simulation
-		dsSimulationLoop (args, 640, 480, fn);
+		dsSimulationLoop (args, 640, 480, this);
 
 		levels = 0;
 		place_cards();

@@ -620,7 +620,7 @@ class DemoPiston extends dsFunctions {
 								args[j].charAt(0) == '-' ) // We should have a path not a command line
 							Help (args);
 						else
-							this.path_to_textures = args[++i]; // Increase i since we use this argument
+							dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
 					}
 				}
 

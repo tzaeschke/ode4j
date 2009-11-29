@@ -329,15 +329,10 @@ class DemoJointPR extends dsFunctions {
 	}
 
 	public static void main(String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoJointPR();
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-
+		new DemoJointPR().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		if (args.length >= 2 )
 		{
 			for (int i=1; i < args.length; ++i)
@@ -359,7 +354,7 @@ class DemoJointPR extends dsFunctions {
 							args[j].charAt(0) == '-' ) // We should have a path not a command line
 						Help(args);
 					else
-						fn.path_to_textures = args[++i]; // Increase i since we use this argument
+						dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
 				}
 			}
 		}
@@ -450,7 +445,7 @@ class DemoJointPR extends dsFunctions {
 		box1_space.add(box1);
 
 		// run simulation
-		dsSimulationLoop (args,400,300,fn);
+		dsSimulationLoop (args,400,300,this);
 		contactgroup.destroy ();
 		space.destroy ();
 		world.destroy ();

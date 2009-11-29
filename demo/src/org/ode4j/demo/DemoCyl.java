@@ -255,9 +255,6 @@ class DemoCyl extends dsFunctions {
 		DMass m = OdeHelper.createMass();
 		DMatrix3 R = new DMatrix3();
 
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoCyl();
-
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld ();
@@ -317,7 +314,7 @@ class DemoCyl extends dsFunctions {
 		reset_state();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.empty();
 		contactgroup.destroy();
