@@ -127,12 +127,12 @@ class DArray<T> {//extends dArrayBase<T> {
 		return _data.size();
 	}
 	
-	static int roundUpToPowerOfTwo (int x)
-	{
-		int i = 1;
-		while (i < x) i <<= 1;
-		return i;
-	}
+//	static int roundUpToPowerOfTwo (int x)
+//	{
+//		int i = 1;
+//		while (i < x) i <<= 1;
+//		return i;
+//	}
 
 	public void set(int index, T element) {
 		if (index == size()) {
