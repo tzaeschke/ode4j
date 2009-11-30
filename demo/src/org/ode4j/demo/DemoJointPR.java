@@ -308,19 +308,16 @@ class DemoJointPR extends dsFunctions {
 		}
 	}
 
-
-	private static void Help(String [] argv)
+	@Override
+	public void dsPrintHelp()
 	{
-		System.out.println(argv[0]);
-		System.out.println(" -h | --help : print this help");
-		System.out.println(" -b | --both : Display how the complete joint works");
-		System.out.println("               Default behavior");
+		super.dsPrintHelp();
+		System.out.println(" -b | --both :           Display how the complete joint works");
+		System.out.println("                         Default behavior");
 		System.out.println(" -p | --prismatic-only : Display how the prismatic part works");
 		System.out.println("                         The anchor pts is set at the center of body 2");
 		System.out.println(" -r | --rotoide-only   : Display how the rotoide part works");
 		System.out.println("                         The anchor pts is set at the center of body 1");
-		System.out.println(" -t | --texture-path path  : Path to the texture.");
-		System.out.println("                             Default = " + DRAWSTUFF_TEXTURE_PATH);
 		System.out.println("--------------------------------------------------");
 		System.out.println("Hit any key to continue:");
 		//  getchar();
@@ -333,29 +330,16 @@ class DemoJointPR extends dsFunctions {
 	}
 	
 	private void demo(String[] args) {
-		if (args.length >= 2 )
+		for (int i=0; i < args.length; ++i)
 		{
-			for (int i=1; i < args.length; ++i)
-			{
-				if (  "-h".equals(args[i]) || "--help".equals(args[i]) )
-					Help(args);
+			if (flag==0 && ("-p".equals(args[i]) || "--prismatic-only".equals(args[i])) ) {
+				flag = PRISMATIC_ONLY;
+				args[i] = "";
+			}
 
-				if (flag==0 && ("-p".equals(args[i]) || "--prismatic-only".equals(args[i])) )
-					flag = PRISMATIC_ONLY;
-
-				if (flag==0 && ("-r".equals(args[i]) || "--rotoide-only".equals(args[i])) )
-					flag = ROTOIDE_ONLY;
-
-				if ("-t".equals(args[i]) || "--texture-path".equals(args[i]))
-				{
-					int j = i+1;
-					if ( j+1 > args.length      ||  // Check if we have enough arguments
-							args[j].equals('\0') ||  // We should have a path here
-							args[j].charAt(0) == '-' ) // We should have a path not a command line
-						Help(args);
-					else
-						dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
-				}
+			if (flag==0 && ("-r".equals(args[i]) || "--rotoide-only".equals(args[i])) ) {
+				flag = ROTOIDE_ONLY;
+				args[i] = "";
 			}
 		}
 

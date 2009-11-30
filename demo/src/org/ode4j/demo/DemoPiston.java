@@ -563,10 +563,10 @@ class DemoPiston extends dsFunctions {
 	}
 
 
-	private void Help (String[] args)
+	@Override
+	public void dsPrintHelp()
 	{
-		System.out.println (args[0]);
-		System.out.println (" -h | --help   : print this help");
+		super.dsPrintHelp();
 		System.out.println (" -s | --slider : Set the joint as a slider");
 		System.out.println (" -p | --piston : Set the joint as a Piston. (Default joint)");
 		System.out.println (" -1 | --offset1 : Create an offset between the 2 bodies");
@@ -578,13 +578,7 @@ class DemoPiston extends dsFunctions {
 		System.out.println (" -3 | --offset3 : Create an offset between the 2 bodies");
 		System.out.println ("                  Offset one of the body by z=-0.5 and set the anchor");
 		System.out.println ("                  point in the middle of the 2 bodies");
-		System.out.println (" -t | --texture-path path  : Path to the texture.");
-		System.out.println ("                             Default = " + DRAWSTUFF_TEXTURE_PATH);
 		System.out.println (" -n | --notFixed : In free space with no gravity mode");
-		System.out.println ("-notex          : Don't use texture");
-		System.out.println ("-noshadow       : No shadow");
-		System.out.println ("-noshadows      : No shadows");
-		System.out.println ("-pause          : Initial pause");
 		System.out.println ("--------------------------------------------------\n");
 		System.out.println ("Hit any key to continue:");
 		//getchar();
@@ -602,40 +596,35 @@ class DemoPiston extends dsFunctions {
 
 		// Default test case
 
-		if (args.length >= 2 ) {
-			for (int i=1; i < args.length; ++i) {
-				//static int tata = 0;
+		for (int i=0; i < args.length; ++i) {
+			//static int tata = 0;
 
-				if (true) {
-					if ( "-h".equals(args[i]) || "--help".equals(args[i]) )
-						Help (args);
-
-					if ( "-s".equals(args[i]) || "--slider".equals(args[i]) )
-						type = DSliderJoint.class;
-
-					if ( "-t".equals(args[i]) || "--texture-path".equals(args[i]) ) {
-						int j = i+1;
-						if ( j+1 > args.length      ||  // Check if we have enough arguments
-								//TZ ? args[j] == '\0' ||  // We should have a path here
-								args[j].charAt(0) == '-' ) // We should have a path not a command line
-							Help (args);
-						else
-							dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
-					}
+			if (true) {
+				if ( "-s".equals(args[i]) || "--slider".equals(args[i]) ) {
+					type = DSliderJoint.class;
+					args[i] = "";
 				}
+			}
 
 
-				if ( "-1".equals(args[i]) || "--offset1".equals(args[i]) )
-					tc = 1;
+			if ( "-1".equals(args[i]) || "--offset1".equals(args[i]) ) {
+				tc = 1;
+				args[i] = "";
+			}
 
-				if ( "-2".equals(args[i]) || "--offset2".equals(args[i]) )
-					tc = 2;
+			if ( "-2".equals(args[i]) || "--offset2".equals(args[i]) ) {
+				tc = 2;
+				args[i] = "";
+			}
 
-				if ( "-3".equals(args[i]) || "--offset3".equals(args[i]) )
-					tc = 3;
+			if ( "-3".equals(args[i]) || "--offset3".equals(args[i]) ) {
+				tc = 3;
+				args[i] = "";
+			}
 
-				if ( "-n".equals(args[i]) || "--notFixed".equals(args[i]) )
-					fixed = false;
+			if ( "-n".equals(args[i]) || "--notFixed".equals(args[i]) ) {
+				fixed = false;
+				args[i] = "";
 			}
 		}
 

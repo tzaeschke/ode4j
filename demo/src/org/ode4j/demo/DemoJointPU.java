@@ -229,7 +229,7 @@ class DemoJointPU extends dsFunctions {
 		}
 	}
 
-	private static void printKeyBoardShortCut()
+	private void printKeyBoardShortCut()
 	{
 		System.out.println ("Press 'h' for this help.");
 		System.out.println ("Press 'q' to add force on BLUE body along positive x direction.");
@@ -426,7 +426,7 @@ class DemoJointPU extends dsFunctions {
 		}
 	}
 
-	private static void drawBox (DBox id, int R, int G, int B)
+	private void drawBox (DBox id, int R, int G, int B)
 	{
 		if (id==null)
 			return;
@@ -588,14 +588,11 @@ class DemoJointPU extends dsFunctions {
 	}
 
 
-	private static void Help (String[] argv)
+	@Override
+	public void dsPrintHelp()
 	{
-		System.out.println (argv[0]);
-		System.out.println (" -h | --help   : print this help");
+		super.dsPrintHelp();
 		System.out.println (" -p | --PRJoint : Use a PR joint instead of PU joint");
-		System.out.println (" -t | --texture-path path  : Path to the texture.");
-		System.out.println ("                             Default =");
-		System.out.println (DRAWSTUFF_TEXTURE_PATH);
 		System.out.println ("--------------------------------------------------");
 		System.out.println ("Hit any key to continue:");
 		//getchar();
@@ -608,23 +605,10 @@ class DemoJointPU extends dsFunctions {
 	}
 	
 	private void demo(String[] args) {
-		if (args.length >= 2 ) {
-			for (int i=1; i < args.length; ++i) {
-				if ( "-h".equals(args[i]) || "--help".equals(args[i]) )
-					Help (args);
-
-				if ( "-p".equals(args[i]) || "--PRJoint".equals(args[i]) )
-					type = DPRJoint.class;
-
-				if ( "-t".equals(args[i]) || "--texture-path".equals(args[i]) ) {
-					int j = i+1;
-					if ( j+1 > args.length      ||  // Check if we have enough arguments
-							args[j].charAt(0) == '\0' ||  // We should have a path here
-							args[j].charAt(0) == '-' ) // We should have a path not a command line
-						Help (args);
-					else
-						dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
-				}
+		for (int i=0; i < args.length; ++i) {
+			if ( "-p".equals(args[i]) || "--PRJoint".equals(args[i]) ) {
+				type = DPRJoint.class;
+				args[i] = "";
 			}
 		}
 

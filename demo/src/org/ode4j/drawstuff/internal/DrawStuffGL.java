@@ -1394,6 +1394,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	
 	//extern "C" 
 	/**
+	 * If you filter out arguments beforehand, simply set them to "".
 	 * @see org.ode4j.drawstuff.DrawStuff#dsSimulationLoop(java.lang.String[], int, int, org.ode4j.drawstuff.DS_API.dsFunctions)
 	 */
 	public void dsSimulationLoop (String[] args,
@@ -1406,13 +1407,22 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		// look for flags that apply to us
 		boolean initial_pause = false;
 		for (int i=0; i<args.length; i++) {
-			if (args[i].equals("-notex")) use_textures = false;
-			if (args[i].equals("-noshadow")) use_shadows = false;
-			if (args[i].equals("-noshadows")) use_shadows = false;
-			if (args[i].equals("-pause")) initial_pause = true;
-		    if (args[i].equals("-texturepath"))
-		        if (++i < args.length)
-		          fn.dsSetPathToTextures( args[i] );
+			//Ignore empty arguments
+		    if (args[i] == null || args[i].equals("")) continue;
+			if (args[i].equals("-h")) { fn.dsPrintHelp(); continue; }
+			if (args[i].equals("-help")) { fn.dsPrintHelp(); continue; }
+			if (args[i].equals("-notex")) { use_textures = false; continue; }
+			if (args[i].equals("-noshadow")) {use_shadows = false; continue; }
+			if (args[i].equals("-noshadows")) { use_shadows = false; continue; }
+			if (args[i].equals("-pause")) { initial_pause = true; continue; }
+			if (args[i].equals("-texturepath"))
+				if (++i < args.length) {
+					fn.dsSetPathToTextures( args[i] );
+					continue; 
+				}
+		    System.out.println("Argument not understood: \"" + args[i] + "\"");
+		    fn.dsPrintHelp();
+		    return;
 		}
 
 		if (fn.dsGetVersion() > DS_VERSION)

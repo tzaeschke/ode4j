@@ -589,13 +589,14 @@ class DemoJointPU extends dsFunctions {
 	}
 
 
-	private static void Help (String[] argv)
+	@Override
+	public void dsPrintHelp ()
 	{
-		printf ("%s ", argv[0]);
-		printf (" -h | --help   : print this help\n");
+		super.dsPrintHelp();
+		//printf (" -h | --help   : print this help\n");
 		printf (" -p | --PRJoint : Use a PR joint instead of PU joint\n");
-		printf (" -t | --texture-path path  : Path to the texture.\n");
-		printf ("                             Default = %s\n", DRAWSTUFF_TEXTURE_PATH);
+		//printf (" -t | --texture-path path  : Path to the texture.\n");
+		//printf ("                             Default = %s\n", DRAWSTUFF_TEXTURE_PATH);
 		printf ("--------------------------------------------------\n");
 		printf ("Hit any key to continue:");
 		//getchar();
@@ -608,25 +609,27 @@ class DemoJointPU extends dsFunctions {
 	}
 	
 	private void demo(String[] args) {
-		if (args.length >= 2 ) {
-			for (int i=1; i < args.length; ++i) {
-				if (  0 == strcmp ("-h", args[i]) || 0 == strcmp ("--help", args[i]) )
-					Help (args);
+//		if (args.length >= 2 ) {
+			for (int i=0; i < args.length; ++i) {
+//				if (  0 == strcmp ("-h", args[i]) || 0 == strcmp ("--help", args[i]) )
+//					Help (args);
 
-				if (  0 == strcmp ("-p", args[i]) || 0 == strcmp ("--PRJoint", args[i]) )
+				if (  0 == strcmp ("-p", args[i]) || 0 == strcmp ("--PRJoint", args[i]) ) {
 					type = DPRJoint.class;
-
-				if (0 == strcmp ("-t", args[i]) || 0 == strcmp ("--texture-path", args[i]) ) {
-					int j = i+1;
-					if ( j+1 > args.length      ||  // Check if we have enough arguments
-							args[j].charAt(0) == '\0' ||  // We should have a path here
-							args[j].charAt(0) == '-' ) // We should have a path not a command line
-						Help (args);
-					else
-						dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
+					args[i] = "";
 				}
+
+//				if (0 == strcmp ("-t", args[i]) || 0 == strcmp ("--texture-path", args[i]) ) {
+//					int j = i+1;
+//					if ( j+1 > args.length      ||  // Check if we have enough arguments
+//							args[j].charAt(0) == '\0' ||  // We should have a path here
+//							args[j].charAt(0) == '-' ) // We should have a path not a command line
+//						Help (args);
+//					else
+//						dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
+//				}
 			}
-		}
+//		}
 
 		dInitODE2(0);
 

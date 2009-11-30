@@ -23,7 +23,6 @@ package org.ode4j.drawstuff;
 
 
 import static org.cpp4j.Cstdio.*;
-import static org.ode4j.drawstuff.DrawStuff.DRAWSTUFF_TEXTURE_PATH;
 
 import org.ode4j.drawstuff.internal.DrawStuffApi;
 import org.ode4j.drawstuff.internal.DrawStuffGL;
@@ -63,14 +62,14 @@ public class DrawStuff {
 	/**
 	 * Use lwjgl for output.
 	 */
-	public static void setOutputGL() {
+	public static void dsSetOutputGL() {
 		DS = new DrawStuffGL();
 	}
 	
 	/**
 	 * Use no output. This can be useful for benchmarking.
 	 */
-	public static void setOutputNull() {
+	public static void dsSetOutputNull() {
 		DS = new DrawStuffNull();
 	}
 	
@@ -83,14 +82,14 @@ public class DrawStuff {
 	public static int DS_VERSION = 0x0002;
 
 	/* texture numbers */
-	  public static enum DS_TEXTURE_NUMBER
-	  {
-	    DS_NONE, // = 0,       /* uses the current color instead of a texture */
-	    DS_WOOD,
-	    DS_CHECKERED,
-	    DS_GROUND,
-	    DS_SKY;
-	  }
+	public static enum DS_TEXTURE_NUMBER
+	{
+		DS_NONE, // = 0,       /* uses the current color instead of a texture */
+		DS_WOOD,
+		DS_CHECKERED,
+		DS_GROUND,
+		DS_SKY;
+	}
 
 	/* draw modes */
 
@@ -124,10 +123,6 @@ public class DrawStuff {
 		  /* version 2 data */
 		  /* if nonzero, path to texture files */
 		  private String path_to_textures = DRAWSTUFF_TEXTURE_PATH;	
-//		  public void setVersion(int ds_version) {
-//			  version = ds_version;
-//		  }
-		  /** @deprecated */
 		  public void dsSetPathToTextures(String drawstuff_texture_path) {
 			  path_to_textures = drawstuff_texture_path;
 		  }
@@ -137,16 +132,21 @@ public class DrawStuff {
 		  public int dsGetVersion() {
 			  return version;
 		  }
+		  
+		  /**
+		   * Prints command line help.
+		   * Overload this method to print your own help, don't forget
+		   * to call this method via <tt>super.dsPrintHelp();</tt>.
+		   */
 		  public void dsPrintHelp() {
 //				System.out.println(argv[0]);
 //			  * the following command line flags can be used (typically under unix)
-				System.out.println(" -help                   : Print this help.");
+				System.out.println(" -h | -help              : Print this help.");
 				System.out.println(" -notex                  : Do not use any textures.");
 				System.out.println(" -noshadow[s]            : Do not draw any shadows.");
 				System.out.println(" -pause                  : Start the simulation paused.");
 				System.out.println(" -texturepath <path>     : Set an alternative path for the textures.");
 				System.out.println("                           Default = " + DRAWSTUFF_TEXTURE_PATH);
-				System.out.println("--------------------------------------------------");
 		  }
 	  }
 //	} dsFunctions;
@@ -157,6 +157,8 @@ public class DrawStuff {
 	 * @ingroup drawstuff
 	 * This function starts running the simulation, and only exits when the simulation is done.
 	 * Function pointers should be provided for the callbacks.
+	 * If you filter out arguments beforehand, simply set them to "".
+	 * To extend the help, overload dsPrintHelp().
 	 * @param argv supports flags like '-notex' '-noshadow' '-pause'
 	 * @param fn Callback functions.
 	 */

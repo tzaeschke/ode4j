@@ -10,6 +10,10 @@ the rules for this file:
 ------------------------------------------------------------------------------
 
 
+2009-Nov-30 Tilmann Zäschke
+		* Cleaned up argument parsing in demos. 
+		* API change: DrawStuff.setOuputNull() -> dsSetOutputNull()
+
 2009-Nov-29 Tilmann Zäschke
 		* Fixed bug ID: 2905309 -texturepath ignored, 1st argument ignored 
 		* Started cleanup of DrawStuff, mainly regarding setting up

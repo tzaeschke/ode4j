@@ -99,7 +99,7 @@ public class DemoJoints extends dsFunctions {
 	//static int cmd_graphics = 1;
 	private static boolean cmd_interactive = false;
 	private static boolean cmd_graphics = true;
-	private static String cmd_path_to_textures = null;
+//	private static String cmd_path_to_textures = null;
 	private static int cmd_occasional_error = 0;	// perturb occasionally
 
 
@@ -1091,8 +1091,8 @@ public class DemoJoints extends dsFunctions {
 			return;
 		}
 
-		if (cmd_path_to_textures != null)
-			dsSetPathToTextures( cmd_path_to_textures );
+//		if (cmd_path_to_textures != null)
+//			dsSetPathToTextures( cmd_path_to_textures );
 //		else
 //			fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
@@ -1136,7 +1136,7 @@ public class DemoJoints extends dsFunctions {
 
 		// process the command line args. anything that starts with `-' is assumed
 		// to be a drawstuff argument.
-		for (i=1; i<args.length; i++) {
+		for (i=0; i<args.length; i++) {
 			//    if ( args[i][0]=='-' && args[i][1]=='i' && args[i][2]==0) cmd_interactive = true;
 			//	  else if ( args[i][0]=='-' && args[i][1]=='g' && args[i][2]==0) cmd_graphics = false;
 			//else if ( args[i][0]=='-' && args[i][1]=='e' && args[i][2]==0) cmd_graphics = false;
@@ -1145,14 +1145,15 @@ public class DemoJoints extends dsFunctions {
 			//	        long int n = strtol (&(argv[i][2]),&endptr,10);
 			//	  			if (*endptr == 0) cmd_test_num = n;
 			//	  		}
-			if (args[i].equals("-i")) cmd_interactive = true;
-			else if (args[i].equals("-g")) cmd_graphics = false;
-			else if (args[i].equals("-e")) cmd_graphics = false;
-			else if (args[i].startsWith("-n") && Ctype.isdigit(args[i].charAt(2))) {
+			if (args[i].equals("-i")) { cmd_interactive = true; args[i] = ""; }
+			if (args[i].equals("-g")) { cmd_graphics = false; args[i] = ""; }
+			if (args[i].equals("-e")) { cmd_graphics = false; args[i] = ""; }
+			if (args[i].startsWith("-n") && Ctype.isdigit(args[i].charAt(2))) {
 				cmd_test_num = Integer.parseInt(args[i].substring(2));
+				 args[i] = ""; 
 			}
-			else
-				cmd_path_to_textures = args[i];
+//			else
+//				cmd_path_to_textures = args[i];
 		}
 
 		DemoJoints demo = new DemoJoints();

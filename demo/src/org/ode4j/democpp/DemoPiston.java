@@ -232,6 +232,7 @@ class DemoPiston extends dsFunctions {
 
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -332,6 +333,7 @@ class DemoPiston extends dsFunctions {
 
 
 	// called when a key pressed
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) {
@@ -567,10 +569,12 @@ class DemoPiston extends dsFunctions {
 	}
 
 
-	private void Help (String[] args)
+	@Override
+	public void dsPrintHelp ()
 	{
-		printf ("%s ", args[0]);
-		printf (" -h | --help   : print this help\n");
+		super.dsPrintHelp();
+		//printf ("%s ", args[0]);
+//		printf (" -h | --help   : print this help\n");
 		printf (" -s | --slider : Set the joint as a slider\n");
 		printf (" -p | --piston : Set the joint as a Piston. (Default joint)\n");
 		printf (" -1 | --offset1 : Create an offset between the 2 bodies\n");
@@ -582,13 +586,13 @@ class DemoPiston extends dsFunctions {
 		printf (" -3 | --offset3 : Create an offset between the 2 bodies\n");
 		printf ("                  Offset one of the body by z=-0.5 and set the anchor\n");
 		printf ("                  point in the middle of the 2 bodies\n");
-		printf (" -t | --texture-path path  : Path to the texture.\n");
-		printf ("                             Default = %s\n", DRAWSTUFF_TEXTURE_PATH);
+//		printf (" -t | --texture-path path  : Path to the texture.\n");
+//		printf ("                             Default = %s\n", DRAWSTUFF_TEXTURE_PATH);
 		printf (" -n | --notFixed : In free space with no gravity mode");
-		printf ("-notex          : Don't use texture\n");
-		printf ("-noshadow       : No shadow\n");
-		printf ("-noshadows      : No shadows\n");
-		printf ("-pause          : Initial pause\n");
+//		printf ("-notex          : Don't use texture\n");
+//		printf ("-noshadow       : No shadow\n");
+//		printf ("-noshadows      : No shadows\n");
+//		printf ("-pause          : Initial pause\n");
 		printf ("--------------------------------------------------\n");
 		printf ("Hit any key to continue:");
 		getchar();
@@ -618,42 +622,52 @@ class DemoPiston extends dsFunctions {
 
 		// Default test case
 
-		if (args.length >= 2 ) {
-			for (int i=1; i < args.length; ++i) {
+//		if (args.length >= 2 ) {
+			for (int i=0; i < args.length; ++i) {
 				//static int tata = 0;
 
 				if (true) {
-					if ( 0 == strcmp ("-h", args[i]) || 0 == strcmp ("--help", args[i]) )
-						Help (args);
+//					if ( 0 == strcmp ("-h", args[i]) || 0 == strcmp ("--help", args[i]) )
+//						Help (args);
 
-					if ( 0 == strcmp ("-s", args[i]) || 0 == strcmp ("--slider", args[i]) )
+					if ( 0 == strcmp ("-s", args[i]) || 0 == strcmp ("--slider", args[i]) ) {
 						type = DSliderJoint.class;
-
-					if ( 0 == strcmp ("-t", args[i]) || 0 == strcmp ("--texture-path", args[i]) ) {
-						int j = i+1;
-						if ( j+1 > args.length      ||  // Check if we have enough arguments
-								//TZ ? args[j] == '\0' ||  // We should have a path here
-								args[j].charAt(0) == '-' ) // We should have a path not a command line
-							Help (args);
-						else
-							dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
+						 args[i] = ""; 
 					}
+
+//					if ( 0 == strcmp ("-t", args[i]) || 0 == strcmp ("--texture-path", args[i]) ) {
+//						int j = i+1;
+//						if ( j+1 > args.length      ||  // Check if we have enough arguments
+//								//TZ ? args[j] == '\0' ||  // We should have a path here
+//								args[j].charAt(0) == '-' ) // We should have a path not a command line
+//							Help (args);
+//						else
+//							dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
+//					}
 				}
 
 
-				if ( 0 == strcmp ("-1", args[i]) || 0 == strcmp ("--offset1", args[i]) )
+				if ( 0 == strcmp ("-1", args[i]) || 0 == strcmp ("--offset1", args[i]) ) {
 					tc = 1;
+					args[i] = ""; 
+				}
 
-				if ( 0 == strcmp ("-2", args[i]) || 0 == strcmp ("--offset2", args[i]) )
+				if ( 0 == strcmp ("-2", args[i]) || 0 == strcmp ("--offset2", args[i]) ) {
 					tc = 2;
+					args[i] = ""; 
+				}
 
-				if ( 0 == strcmp ("-3", args[i]) || 0 == strcmp ("--offset3", args[i]) )
+				if ( 0 == strcmp ("-3", args[i]) || 0 == strcmp ("--offset3", args[i]) ) {
 					tc = 3;
+					args[i] = ""; 
+				}
 
-				if (0 == strcmp ("-n", args[i]) || 0 == strcmp ("--notFixed", args[i]) )
+				if (0 == strcmp ("-n", args[i]) || 0 == strcmp ("--notFixed", args[i]) ) {
 					fixed = false;
+					args[i] = ""; 
+				}
 			}
-		}
+//		}
 
 		world = OdeHelper.createWorld();
 		world.setERP (0.8);
