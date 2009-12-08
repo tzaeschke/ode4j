@@ -9,6 +9,8 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
+2009-Dec-07 Tilmann Zaschke
+		* Removed @brief tags in javadoc except cpp javadoc.
 
 2009-Nov-30 Tilmann Zäschke
 		* Cleaned up argument parsing in demos. 

@@ -99,8 +99,8 @@ public class DrawStuff {
 	  public static final int DS_WIREFRAME = 1;
 
 	/**
+     * Set of functions to be used as callbacks by the simulation loop.
 	 * @struct dsFunctions
-	 * @brief Set of functions to be used as callbacks by the simulation loop.
 	 * @ingroup drawstuff
 	 */
 //	typedef struct dsFunctions {
@@ -153,7 +153,7 @@ public class DrawStuff {
 
 
 	/**
-	 * @brief Does the complete simulation.
+	 * Does the complete simulation.
 	 * @ingroup drawstuff
 	 * This function starts running the simulation, and only exits when the simulation is done.
 	 * Function pointers should be provided for the callbacks.
@@ -173,7 +173,7 @@ public class DrawStuff {
 	  }
 
 	/**
-	 * @brief exit with error message.
+	 * Exit with error message.
 	 * @ingroup drawstuff
 	 * This function displays an error message then exit.
 	 * @param msg format strin, like printf, without the newline character.
@@ -188,7 +188,7 @@ public class DrawStuff {
 	}
  
 	/**
-	 * @brief exit with error message and core dump.
+	 * Exit with error message and core dump.
 	 * @ingroup drawstuff
 	 * this functions tries to dump core or start the debugger.
 	 * @param msg format strin, like printf, without the newline character.
@@ -203,7 +203,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief print log message
+	 * Print log message.
 	 * @ingroup drawstuff
 	 * @param msg format string, like printf, without the \n.
 	 */
@@ -213,7 +213,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief Sets the viewpoint
+	 * Sets the viewpoint.
 	 * @ingroup drawstuff
 	 * @param xyz camera position.
 	 * @param hpr contains heading, pitch and roll numbers in degrees. heading=0
@@ -228,7 +228,7 @@ public class DrawStuff {
 
 
 	/**
-	 * @brief Gets the viewpoint
+	 * Gets the viewpoint.
 	 * @ingroup drawstuff
 	 * @param xyz position
 	 * @param hpr heading,pitch,roll.
@@ -240,7 +240,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief Stop the simulation loop.
+	 * Stop the simulation loop.
 	 * @ingroup drawstuff
 	 * Calling this from within dsSimulationLoop()
 	 * will cause it to exit and return to the caller. it is the same as if the
@@ -253,7 +253,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief Get the elapsed time (on wall-clock)
+	 * Get the elapsed time (on wall-clock).
 	 * @ingroup drawstuff
 	 * It returns the nr of seconds since the last call to this function.
 	 */
@@ -263,7 +263,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief Toggle the rendering of textures.
+	 * Toggle the rendering of textures.
 	 * @ingroup drawstuff
 	 * It changes the way objects are drawn. these changes will apply to all further
 	 * dsDrawXXX() functions. 
@@ -279,7 +279,7 @@ public class DrawStuff {
 
 
 	/**
-	 * @brief Set the color with which geometry is drawn.
+	 * Set the color with which geometry is drawn.
 	 * @ingroup drawstuff
 	 * @param red Red component from 0 to 1
 	 * @param green Green component from 0 to 1
@@ -291,7 +291,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief Set the color and transparency with which geometry is drawn.
+	 * Set the color and transparency with which geometry is drawn.
 	 * @ingroup drawstuff
 	 * @param alpha Note that alpha transparency is a misnomer: it is alpha opacity.
 	 * 1.0 means fully opaque, and 0.0 means fully transparent.
@@ -302,7 +302,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief Draw a box.
+	 * Draw a box.
 	 * @ingroup drawstuff
 	 * @param pos is the x,y,z of the center of the object.
 	 * @param R is a 3x3 rotation matrix for the object, stored by row like this:
@@ -321,7 +321,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief Draw a sphere.
+	 * Draw a sphere.
 	 * @ingroup drawstuff
 	 * @param pos Position of center.
 	 * @param R orientation.
@@ -339,7 +339,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief Draw a triangle.
+	 * Draw a triangle.
 	 * @ingroup drawstuff
 	 * @param pos Position of center
 	 * @param R orientation
@@ -367,7 +367,7 @@ public class DrawStuff {
 	}
 
 	/**
-	 * @brief Draw a z-aligned cylinder
+	 * Draw a z-aligned cylinder.
 	 * @ingroup drawstuff
 	 */
 	//DS_API 
@@ -384,7 +384,7 @@ public class DrawStuff {
 
 	
 	/**
-	 * @brief Draw a z-aligned capsule
+	 * Draw a z-aligned capsule.
 	 * @ingroup drawstuff
 	 */
 	//DS_API 
@@ -401,7 +401,7 @@ public class DrawStuff {
 
 	
 	/**
-	 * @brief Draw a line.
+	 * Draw a line.
 	 * @ingroup drawstuff
 	 */
 	//DS_API 
@@ -415,7 +415,7 @@ public class DrawStuff {
 
 
 	/**
-	 * @brief Draw a convex shape.
+	 * Draw a convex shape.
 	 * @ingroup drawstuff
 	 */
 	//DS_API 
@@ -483,7 +483,7 @@ public class DrawStuff {
 
 
 	/**
-	 * @brief Set the quality with which curved objects are rendered.
+	 * Set the quality with which curved objects are rendered.
 	 * @ingroup drawstuff
 	 * Higher numbers are higher quality, but slower to draw. 
 	 * This must be set before the first objects are drawn to be effective.
@@ -501,7 +501,7 @@ public class DrawStuff {
 
 
 	/**
-	 * @brief Set Drawmode 0=Polygon Fill,1=Wireframe).
+	 * Set Drawmode (0=Polygon Fill,1=Wireframe).
 	 * Use the DS_POLYFILL and DS_WIREFRAME macros.
 	 * @ingroup drawstuff
 	 */
