@@ -5,7 +5,7 @@ import org.ode4j.ode.internal.DxGeom;
 
 
 /**
- * @brief Describe the contact point between two geoms.
+ * Describe the contact point between two geoms.
  *
  * If two bodies touch, or if a body touches a static feature in its 
  * environment, the contact is represented by one or more "contact 

@@ -28,7 +28,7 @@ import org.ode4j.math.DVector3C;
 public interface DBallJoint extends DJoint {
 
 	/**
-	 * @brief Set the joint anchor point.
+	 * Set the joint anchor point.
 	 * @ingroup joints
 	 *
 	 * The joint will try to keep this point on each body
@@ -38,14 +38,14 @@ public interface DBallJoint extends DJoint {
 	
 	
 	/**
-	 * @brief Set the joint anchor point.
+	 * Set the joint anchor point.
 	 * @ingroup joints
 	 */
 	void setAnchor2(double x, double y, double z);
 	
 	
 	/**
-	 * @brief Set the joint anchor point.
+	 * Set the joint anchor point.
 	 * @ingroup joints
 	 *
 	 * The joint will try to keep this point on each body
@@ -55,14 +55,14 @@ public interface DBallJoint extends DJoint {
 	
 	
 	/**
-	 * @brief Set the joint anchor point on body 2.
+	 * Set the joint anchor point on body 2.
 	 * @ingroup joints
 	 */
 	void setAnchor2 (DVector3C a);
 	
 	
 	/**
-	 * @brief Get the joint anchor point, in world coordinates.
+	 * Get the joint anchor point, in world coordinates.
 	 *
 	 * This returns the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
@@ -71,8 +71,8 @@ public interface DBallJoint extends DJoint {
 	
 	
 	/**
-	 * @brief Get the joint anchor point, in world coordinates.
-	 *
+	 * Get the joint anchor point, in world coordinates.
+	 * <p>
 	 * This returns the point on body 2. You can think of a ball and socket
 	 * joint as trying to keep the result of dJointGetBallAnchor() and
 	 * dJointGetBallAnchor2() the same.  If the joint is perfectly satisfied,
@@ -84,7 +84,7 @@ public interface DBallJoint extends DJoint {
 
 
 	/**
-	 * @brief Param setting for Ball joints
+	 * Param setting for Ball joints
 	 * @ingroup joints
 	 */
 	@Override
@@ -92,7 +92,7 @@ public interface DBallJoint extends DJoint {
 
 	
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override

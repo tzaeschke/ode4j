@@ -42,14 +42,14 @@ public interface DAMotorJoint extends DJoint {
 
 
 	/**
-	 * @brief set mode
+	 * Set mode.
 	 * @ingroup joints
 	 */
 	void setMode (AMotorMode mode);
 
 	
 	/**
-	 * @brief Get the angular motor mode.
+	 * Get the angular motor mode.
 	 * Mode must be one of the following constants:
 	 * <li> dAMotorUser The AMotor axes and joint angle settings are entirely
 	 * controlled by the user.  This is the default mode.</li>
@@ -65,7 +65,7 @@ public interface DAMotorJoint extends DJoint {
 
 	
 	/**
-	 * @brief set the nr of axes
+	 * Set the nr of axes.
 	 * @param num 0..3
 	 * @ingroup joints
 	 */
@@ -73,7 +73,7 @@ public interface DAMotorJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the number of angular axes that will be controlled by the
+	 * Get the number of angular axes that will be controlled by the
 	 * AMotor. <p>
 	 * Num can range from 0 (which effectively deactivates the joint) to 3.
 	 * This is automatically set to 3 in dAMotorEuler mode.
@@ -82,21 +82,21 @@ public interface DAMotorJoint extends DJoint {
 	int getNumAxes();
 
 	/**
-	 * @brief set axis
+	 * Set axis.
 	 * @ingroup joints
 	 */
 	void setAxis (int anum, int rel, double x, double y, double z);
 
 	
 	/**
-	 * @brief set axis
+	 * Set axis.
 	 * @ingroup joints
 	 */
 	void setAxis (int anum, int rel, DVector3C a);
 
 	
 	/**
-	 * @brief Get the AMotor axes.
+	 * Get the AMotor axes.
 	 * @param anum selects the axis to change (0,1 or 2).
 	 * <li> 0: The axis is anchored to the global frame. </li>
 	 * <li> 1: The axis is anchored to the first body. </li>
@@ -108,7 +108,7 @@ public interface DAMotorJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get axis
+	 * Get axis.
 	 * @remarks
 	 * The axis vector is always specified in global coordinates regardless
 	 * of the setting of rel. <br>
@@ -126,7 +126,7 @@ public interface DAMotorJoint extends DJoint {
 	int getAxisRel (int anum);
 
 	/**
-	 * @brief Tell the AMotor what the current angle is along axis anum.
+	 * Tell the AMotor what the current angle is along axis anum.
 	 * <p>
 	 * This function should only be called in dAMotorUser mode, because in this
 	 * mode the AMotor has no other way of knowing the joint angles.
@@ -138,7 +138,7 @@ public interface DAMotorJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the current angle for axis.
+	 * Get the current angle for axis.
 	 * @remarks
 	 * In dAMotorUser mode this is simply the value that was set with
 	 * dJointSetAMotorAngle().
@@ -149,7 +149,7 @@ public interface DAMotorJoint extends DJoint {
 	
 	
 	/**
-	 * @brief Get the current angle rate for axis anum.
+	 * Get the current angle rate for axis anum.
 	 * @remarks
 	 * In dAMotorUser mode this is always zero, as not enough information is
 	 * available.
@@ -160,7 +160,7 @@ public interface DAMotorJoint extends DJoint {
 
 
 	/**
-	 * @brief Applies torque0 about the AMotor's axis 0, torque1 about the
+	 * Applies torque0 about the AMotor's axis 0, torque1 about the
 	 * AMotor's axis 1, and torque2 about the AMotor's axis 2.
 	 * @remarks
 	 * If the motor has fewer than three axes, the higher torques are ignored.
@@ -184,7 +184,7 @@ public interface DAMotorJoint extends DJoint {
 
 
 	/**
-	 * @brief set joint parameter
+	 * Set joint parameter.
 	 * @ingroup joints
 	 */
 	@Override
@@ -192,7 +192,7 @@ public interface DAMotorJoint extends DJoint {
 
 
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override

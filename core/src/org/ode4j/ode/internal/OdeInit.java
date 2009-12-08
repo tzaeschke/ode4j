@@ -351,7 +351,7 @@ public class OdeInit {
 
 	// TODO remove ? TZ disabled for now, may not be required at all.
 //	/**
-//	 * @brief ODE data allocation flags.
+//	 * ODE data allocation flags.
 //	 *
 //	 * These flags are used to indicate which data is to be pre-allocated in call to
 //	 * @c dAllocateODEDataForThread.

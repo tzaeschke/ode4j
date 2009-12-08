@@ -37,7 +37,7 @@ public interface DFixedJoint extends DJoint {
 
 
 	/**
-	 * @brief Call this on the fixed joint after it has been attached to
+	 * Call this on the fixed joint after it has been attached to
 	 * remember the current desired relative offset and desired relative
 	 * rotation between the bodies.
 	 * @ingroup joints
@@ -46,7 +46,7 @@ public interface DFixedJoint extends DJoint {
 
 	
 	/**
-	 * @brief Sets joint parameter
+	 * Sets joint parameter.
 	 *
 	 * @ingroup joints
 	 */
@@ -55,7 +55,7 @@ public interface DFixedJoint extends DJoint {
 	
 	
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override

@@ -45,49 +45,49 @@ import org.ode4j.math.DVector3C;
 public interface DPRJoint extends DJoint {
 
 	/**
-	 * @brief set anchor
+	 * Set anchor.
 	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 
 	
 	/**
-	 * @brief set anchor
+	 * Set anchor.
 	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 
 	
 	/**
-	 * @brief set the axis for the prismatic articulation
+	 * Set the axis for the prismatic articulation.
 	 * @ingroup joints
 	 */
 	void setAxis1 (double x, double y, double z);
 	
 	
 	/**
-	 * @brief set the axis for the prismatic articulation
+	 * Set the axis for the prismatic articulation.
 	 * @ingroup joints
 	 */
 	void setAxis1 (DVector3C a);
 
 	
 	/**
-	 * @brief set the axis for the rotoide articulation
+	 * Set the axis for the rotoide articulation.
 	 * @ingroup joints
 	 */
 	void setAxis2 (double x, double y, double z);
 
 	
 	/**
-	 * @brief set the axis for the rotoide articulation
+	 * Set the axis for the rotoide articulation.
 	 * @ingroup joints
 	 */
 	void setAxis2 (DVector3C a);
 
 
 	/**
-	 * @brief Get the joint anchor point, in world coordinates.
+	 * Get the joint anchor point, in world coordinates.
 	 * Return the point on body 1. If the joint is perfectly satisfied, 
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
@@ -96,21 +96,21 @@ public interface DPRJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the prismatic axis
+	 * Get the prismatic axis.
 	 * @ingroup joints
 	 */
 	void getAxis1 (DVector3 result);
 
 	
 	/**
-	 * @brief Get the Rotoide axis
+	 * Get the Rotoide axis.
 	 * @ingroup joints
 	 */
 	void getAxis2 (DVector3 result);
 
 
 	/**
-	 * @brief Get the PR linear position (i.e. the prismatic's extension).
+	 * Get the PR linear position (i.e. the prismatic's extension).
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
@@ -124,7 +124,7 @@ public interface DPRJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the PR linear position's time derivative.
+	 * Get the PR linear position's time derivative.
 	 *
 	 * @ingroup joints
 	 */
@@ -138,7 +138,7 @@ public interface DPRJoint extends DJoint {
 
 
 	/**
-	 * @brief Get the PR angular position (i.e. the  twist between the 2 bodies)
+	 * Get the PR angular position (i.e. the  twist between the 2 bodies).
 	 *
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
@@ -148,7 +148,7 @@ public interface DPRJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the PR angular position's time derivative
+	 * Get the PR angular position's time derivative.
 	 *
 	 * @ingroup joints
 	 */
@@ -156,7 +156,7 @@ public interface DPRJoint extends DJoint {
 
 
 	/**
-	 * @brief set joint parameter
+	 * Set joint parameter.
 	 * @ingroup joints
 	 *
 	 * @note parameterX where X equal 2 refer to parameter for the rotoide articulation
@@ -166,7 +166,7 @@ public interface DPRJoint extends DJoint {
 
 
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override
@@ -174,7 +174,7 @@ public interface DPRJoint extends DJoint {
 
 	
 	/**
-	 * @brief Applies the torque about the rotoide axis of the PR joint
+	 * Applies the torque about the rotoide axis of the PR joint.
 	 * <p>
 	 * That is, it applies a torque with specified magnitude in the direction 
 	 * of the rotoide axis, to body 1, and with the same magnitude but in opposite

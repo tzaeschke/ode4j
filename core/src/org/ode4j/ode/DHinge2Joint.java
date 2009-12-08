@@ -27,49 +27,49 @@ import org.ode4j.math.DVector3C;
 public interface DHinge2Joint extends DJoint {
 
 	/**
-	 * @brief set anchor
+	 * Set anchor.
 	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 	
 	
 	/**
-	 * @brief set anchor
+	 * Set anchor.
 	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 	
 	
 	/**
-	 * @brief set axis
+	 * Set axis.
 	 * @ingroup joints
 	 */
 	void setAxis1 (double x, double y, double z);
 	
 	
 	/**
-	 * @brief set axis
+	 * Set axis.
 	 * @ingroup joints
 	 */
 	void setAxis1 (DVector3C a);
 	
 	
 	/**
-	 * @brief set axis
+	 * Set axis.
 	 * @ingroup joints
 	 */
 	void setAxis2 (double x, double y, double z);
 	
 	
 	/**
-	 * @brief set axis
+	 * Set axis.
 	 * @ingroup joints
 	 */
 	void setAxis2 (DVector3C a);
 
 	
 	/**
-	 * @brief Get the joint anchor point, in world coordinates.
+	 * Get the joint anchor point, in world coordinates.
 	 * <p>
 	 * Return the point on body 1.  If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
@@ -79,7 +79,7 @@ public interface DHinge2Joint extends DJoint {
 
 	
 	/**
-	 * @brief Get the joint anchor point, in world coordinates.
+	 * Get the joint anchor point, in world coordinates.
 	 * <p>
 	 * This returns the point on body 2. If the joint is perfectly satisfied,
 	 * this will return the same value as dJointGetHinge2Anchor.
@@ -91,42 +91,42 @@ public interface DHinge2Joint extends DJoint {
 
 	
 	/**
-	 * @brief Get joint axis
+	 * Get joint axis.
 	 * @ingroup joints
 	 */
 	void getAxis1 (DVector3 result);
 
 	
 	/**
-	 * @brief Get joint axis
+	 * Get joint axis.
 	 * @ingroup joints
 	 */
 	void getAxis2 (DVector3 result);
 
 
 	/**
-	 * @brief Get angle
+	 * Get angle.
 	 * @ingroup joints
 	 */
 	double getAngle1();
 
 	
 	/**
-	 * @brief Get time derivative of angle
+	 * Get time derivative of angle.
 	 * @ingroup joints
 	 */
 	double getAngle1Rate();
 
 	
 	/**
-	 * @brief Get time derivative of angle
+	 * Get time derivative of angle.
 	 * @ingroup joints
 	 */
 	double getAngle2Rate();
 
 	
 	/**
-	 * @brief Applies torque1 about the hinge2's axis 1, torque2 about the
+	 * Applies torque1 about the hinge2's axis 1, torque2 about the
 	 * hinge2's axis 2.
 	 * @remarks  This function is just a wrapper for dBodyAddTorque().
 	 * @ingroup joints
@@ -145,7 +145,7 @@ public interface DHinge2Joint extends DJoint {
 	
 	
 	/**
-	 * @brief set joint parameter
+	 * Set joint parameter.
 	 * @ingroup joints
 	 */
 	@Override
@@ -153,7 +153,7 @@ public interface DHinge2Joint extends DJoint {
 
 	
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override

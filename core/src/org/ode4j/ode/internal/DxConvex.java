@@ -97,7 +97,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	private Edge[] edges;
 
 	/** 
-	 * @brief A Support mapping function for convex shapes
+	 * A Support mapping function for convex shapes.
 	 * @param dir [IN] direction to find the Support Point for
 	 * @return the index of the support vertex.
 	 */
@@ -284,8 +284,8 @@ public class DxConvex extends DxGeom implements DConvex {
 	}
 
 	/** 
-	 * @brief Populates the edges set, should be called only once whenever
-	 * the polygon array gets updated 
+	 * Populates the edges set, should be called only once whenever
+	 * the polygon array gets updated.
 	 */
 	void FillEdges()
 	{
@@ -422,7 +422,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	//
 
 	/** 
-	 * @brief Returns Whether or not the segment ab intersects plane p
+	 * Returns Whether or not the segment ab intersects plane p.
 	 * @param a origin of the segment
 	 * @param b segment destination
 	 * @param p plane to test for intersection
@@ -466,7 +466,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	}
 
 	/** 
-	 * @brief Returns the Closest Point in Ray 1 to Ray 2
+	 * Returns the Closest Point in Ray 1 to Ray 2.
 	 * @param Origin1 The origin of Ray 1
 	 * @param Direction1 The direction of Ray 1
 	 * @param Origin1 The origin of Ray 2
@@ -505,7 +505,7 @@ public class DxConvex extends DxGeom implements DConvex {
 		return true;
 	}
 
-	/** @brief Clamp n to lie within the range [min, max] */
+	/** Clamp n to lie within the range [min, max]. */
 	private static double Clamp(double n, double min, double max)
 	{
 	    if (n < min) return min;
@@ -513,7 +513,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	    return n;
 	}
 	/** 
-	 * @brief Returns the Closest Points from Segment 1 to Segment 2
+	 * Returns the Closest Points from Segment 1 to Segment 2.
 	 * @param p1 start of segment 1
 	 * @param q1 end of segment 1
 	 * @param p2 start of segment 2
@@ -654,7 +654,7 @@ public class DxConvex extends DxGeom implements DConvex {
 //	#endif
 
 	/** 
-	 * @brief Returns the Ray on which 2 planes intersect if they do.
+	 * Returns the Ray on which 2 planes intersect if they do.
 	 * @param p1 Plane 1
 	 * @param p2 Plane 2
 	 * @param p Contains the origin of the ray upon returning if planes intersect
@@ -716,7 +716,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	//#endif
 
 	/** 
-	 * @brief Finds out if a point lies inside a 2D polygon
+	 * Finds out if a point lies inside a 2D polygon.
 	 * @param p Point to test
 	 * @param polygon a pointer to the start of the convex polygon index buffer
 	 * @param out the closest point in the polygon if the point is not inside
@@ -1249,7 +1249,7 @@ Helper struct
 	};
 
 	/** 
-	 * @brief Does an axis separation test using cvx1 planes on cvx1 and cvx2, 
+	 * Does an axis separation test using cvx1 planes on cvx1 and cvx2, 
 	 * returns true for a collision false for no collision.
 	 * @param cvx1 [IN] First Convex object, its planes are used to do the tests
 	 * @param cvx2 [IN] Second Convex object
@@ -1310,7 +1310,7 @@ Helper struct
 
 
 	/** 
-	 * @brief Does an axis separation test using cvx1 and cvx2 edges, 
+	 * Does an axis separation test using cvx1 and cvx2 edges, 
 	 * returns true for a collision false for no collision.
 	 * @param cvx1 [IN] First Convex object
 	 * @param cvx2 [IN] Second Convex object
@@ -1461,7 +1461,7 @@ Helper struct
 	}
 
 	/** 
-	 * @brief Does an axis separation test between the 2 convex shapes
+	 * Does an axis separation test between the 2 convex shapes
 	 * using faces and edges.
 	 */
 	//int TestConvexIntersection(dxConvex& cvx1,dxConvex& cvx2, int flags,

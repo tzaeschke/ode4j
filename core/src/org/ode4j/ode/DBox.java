@@ -28,7 +28,7 @@ public interface DBox extends DGeom {
 
 	
 	/**
-	 * @brief Set the side lengths of the given box.
+	 * Set the side lengths of the given box.
 	 *
 	 * @param lx      the length of the box along the X axis
 	 * @param ly      the length of the box along the Y axis
@@ -41,7 +41,7 @@ public interface DBox extends DGeom {
 	
 
 	/**
-	 * @brief Get the side lengths of a box.
+	 * Get the side lengths of a box.
 	 *
 	 * @param result  the returned side lengths
 	 *
@@ -52,7 +52,7 @@ public interface DBox extends DGeom {
 	
 
 	/**
-	 * @brief Set the side lengths of the given box.
+	 * Set the side lengths of the given box.
 	 *
 	 * @param sides   the lengths of the box along the X, Y and Z axes
 	 *
@@ -63,7 +63,7 @@ public interface DBox extends DGeom {
 	
 	
 	/**
-	 * @brief Get the side lengths of a box.
+	 * Get the side lengths of a box.
 	 *
 	 * @return The returned side lengths.
 	 *
@@ -74,7 +74,7 @@ public interface DBox extends DGeom {
 
 	
 	/**
-	 * @brief Return the depth of a point in a box.
+	 * Return the depth of a point in a box.
 	 *
 	 * @param p    the X, Y and Z coordinates of the point to test.
 	 *

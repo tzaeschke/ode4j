@@ -27,63 +27,63 @@ import org.ode4j.math.DVector3C;
 public interface DPUJoint extends DJoint {
 
 	/**
-	 * @brief set anchor
+	 * Set anchor.
 	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 
 
 	/**
-	 * @brief set anchor
+	 * Set anchor.
 	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 
 	
 	/**
-	 * @brief set the axis for the first axis or the universal articulation
+	 * Set the axis for the first axis or the universal articulation.
 	 * @ingroup joints
 	 */
 	void setAxis1 (double x, double y, double z);
 
 	
 	/**
-	 * @brief set the axis for the first axis or the universal articulation
+	 * Set the axis for the first axis or the universal articulation.
 	 * @ingroup joints
 	 */
 	void setAxis1 (DVector3C a);
 
 	
 	/**
-	 * @brief set the axis for the second axis or the universal articulation
+	 * Set the axis for the second axis or the universal articulation.
 	 * @ingroup joints
 	 */
 	void setAxis2 (double x, double y, double z);
 
 	
 	/**
-	 * @brief set the axis for the second axis or the universal articulation
+	 * Set the axis for the second axis or the universal articulation.
 	 * @ingroup joints
 	 */
 	void setAxis2 (DVector3C a);
 	
 	
 	/**
-	 * @brief set the axis for the prismatic articulation
+	 * Set the axis for the prismatic articulation.
 	 * @ingroup joints
 	 */
 	void setAxis3 (double x, double y, double z);
 
 	
 	/**
-	 * @brief set the axis for the prismatic articulation
+	 * Set the axis for the prismatic articulation.
 	 * @ingroup joints
 	 */
 	void setAxis3 (DVector3C a);
 	
 	
 	/**
-	 * @brief set the axis for the prismatic articulation
+	 * Set the axis for the prismatic articulation.
 	 * @ingroup joints
 	 * @note This function was added for convenience it is the same as
 	 *       dJointSetPUAxis3
@@ -92,7 +92,7 @@ public interface DPUJoint extends DJoint {
 
 
 	/**
-	 * @brief set the axis for the prismatic articulation
+	 * Set the axis for the prismatic articulation.
 	 * @ingroup joints
 	 * @note This function was added for convenience it is the same as
 	 *       dJointSetPUAxis3
@@ -101,7 +101,7 @@ public interface DPUJoint extends DJoint {
 
 
 	/**
-	 * @brief Get the joint anchor point, in world coordinates.
+	 * Get the joint anchor point, in world coordinates.
 	 * Return the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
@@ -110,28 +110,28 @@ public interface DPUJoint extends DJoint {
 
 
 	/**
-	 * @brief Get the first axis of the universal component of the joint
+	 * Get the first axis of the universal component of the joint.
 	 * @ingroup joints
 	 */
 	void getAxis1 (DVector3 result);
 
 
 	/**
-	 * @brief Get the second axis of the Universal component of the joint
+	 * Get the second axis of the Universal component of the joint.
 	 * @ingroup joints
 	 */
 	void getAxis2 (DVector3 result);
 
 
 	/**
-	 * @brief Get the prismatic axis
+	 * Get the prismatic axis.
 	 * @ingroup joints
 	 */
 	void getAxis3 (DVector3 result);
 
 
 	/**
-	 * @brief Get the prismatic axis
+	 * Get the prismatic axis.
 	 * @ingroup joints
 	 *
 	 * @note This function was added for convenience it is the same as
@@ -141,7 +141,7 @@ public interface DPUJoint extends DJoint {
 
 
 //	/**
-//	 * @brief Get both angles at the same time.
+//	 * Get both angles at the same time.
 //	 * @ingroup joints
 //	 *
 //	 * @param joint   The Prismatic universal joint for which we want to calculate the angles
@@ -152,14 +152,14 @@ public interface DPUJoint extends DJoint {
 //	 *       and try to avoid redundant calculation
 //	 */
 	/**
-	 * @brief Get angle between the body1 and the axis 1
+	 * Get angle between the body1 and the axis 1.
 	 * @ingroup joints
 	 */
 	double getAngle1();
 
 	
 	/**
-	 * @brief Get time derivative of angle1
+	 * Get time derivative of angle1.
 	 *
 	 * @ingroup joints
 	 */
@@ -167,14 +167,14 @@ public interface DPUJoint extends DJoint {
 	
 	
 	/**
-	 * @brief Get angle between the body2 and the axis 2
+	 * Get angle between the body2 and the axis 2.
 	 * @ingroup joints
 	 */
 	double getAngle2();
 	
 	
 	/**
-	 * @brief Get time derivative of angle2
+	 * Get time derivative of angle2.
 	 *
 	 * @ingroup joints
 	 */
@@ -182,7 +182,7 @@ public interface DPUJoint extends DJoint {
 
 
 	/**
-	 * @brief Get the PU linear position (i.e. the prismatic's extension)
+	 * Get the PU linear position (i.e. the prismatic's extension).
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
@@ -196,14 +196,14 @@ public interface DPUJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the PR linear position's time derivative
+	 * Get the PR linear position's time derivative.
 	 *
 	 * @ingroup joints
 	 */
 	double getPositionRate();
 
 //	/**
-//	 * @brief Applies the torque about the rotoide axis of the PU joint
+//	 * Applies the torque about the rotoide axis of the PU joint.
 //	 *
 //	 * That is, it applies a torque with specified magnitude in the direction
 //	 * of the rotoide axis, to body 1, and with the same magnitude but in opposite
@@ -215,7 +215,7 @@ public interface DPUJoint extends DJoint {
 
 
 	/**
-	 * @brief Set the PU anchor as if the 2 bodies were already at [dx, dy, dz] appart.
+	 * Set the PU anchor as if the 2 bodies were already at [dx, dy, dz] apart.
 	 * @ingroup joints
 	 * <p>
 	 * This function initialize the anchor and the relative position of each body
@@ -236,11 +236,11 @@ public interface DPUJoint extends DJoint {
 	 * @param x The X position of the anchor point in world frame
 	 * @param y The Y position of the anchor point in world frame
 	 * @param z The Z position of the anchor point in world frame
-	 * @param dx A delta to be substracted to the X position as if the anchor was set
+	 * @param dx A delta to be subtracted to the X position as if the anchor was set
 	 *           when body1 was at current_position[X] - dx
-	 * @param dy A delta to be substracted to the Y position as if the anchor was set
+	 * @param dy A delta to be subtracted to the Y position as if the anchor was set
 	 *           when body1 was at current_position[Y] - dy
-	 * @param dz A delta to be substracted to the Z position as if the anchor was set
+	 * @param dz A delta to be subtracted to the Z position as if the anchor was set
 	 *           when body1 was at current_position[Z] - dz
 	 */
 	void setAnchorOffset(double x, double y, double z, double dx, double dy,
@@ -248,7 +248,7 @@ public interface DPUJoint extends DJoint {
 
 
 	/**
-	 * @brief set joint parameter
+	 * Set joint parameter.
 	 * @ingroup joints
 	 *
 	 * @note parameterX where X equal 2 refer to parameter for second axis of the
@@ -261,7 +261,7 @@ public interface DPUJoint extends DJoint {
 
 	
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override

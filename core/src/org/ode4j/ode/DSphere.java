@@ -27,7 +27,7 @@ public interface DSphere extends DGeom {
 
 	
 	/**
-	 * @brief Set the radius of a sphere geom.
+	 * Set the radius of a sphere geom.
 	 *
 	 * @param radius  the new radius.
 	 *
@@ -38,7 +38,7 @@ public interface DSphere extends DGeom {
 	
 	
 	/**
-	 * @brief Retrieves the radius of a sphere geom.
+	 * Retrieves the radius of a sphere geom.
 	 *
 	 * @see #setRadius(double)
 	 * @ingroup collide_sphere
@@ -47,7 +47,7 @@ public interface DSphere extends DGeom {
 
 	
 	/**
-	 * @brief Calculate the depth of the a given point within a sphere.
+	 * Calculate the depth of the a given point within a sphere.
 	 *
 	 * @param p       the X, Y and Z coordinate of the point.
 	 *

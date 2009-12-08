@@ -26,7 +26,7 @@ import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 public interface DHeightfieldData {
 	
 	/**
-	 * @brief Configures a dHeightfieldData to use a callback to
+	 * Configures a dHeightfieldData to use a callback to
 	 * retrieve height data.
 	 * <p>
 	 * Before a dHeightfieldData can be used by a geom it must be
@@ -69,7 +69,7 @@ public interface DHeightfieldData {
 				double scale, double offset, double thickness, boolean bWrap );
 
 	/**
-	 * @brief Destroys a dHeightfieldData.
+	 * Destroys a dHeightfieldData.
 	 * <p>
 	 * Deallocates a given dHeightfieldData and all managed resources.
 	 *
@@ -78,7 +78,7 @@ public interface DHeightfieldData {
 	void destroy();
 
 	/**
-	 * @brief Manually set the minimum and maximum height bounds.
+	 * Manually set the minimum and maximum height bounds.
 	 * <p>
 	 * This call allows you to set explicit min / max values after initial
 	 * creation typically for callback heightfields which default to +/- infinity,
@@ -96,7 +96,7 @@ public interface DHeightfieldData {
 	void setBounds( double minHeight, double maxHeight );
 
 	/**
-	 * @brief Configures a dHeightfieldData to use height data in byte format.
+	 * Configures a dHeightfieldData to use height data in byte format.
 	 * <p>
 	 * Before a dHeightfieldData can be used by a geom it must be
 	 * configured to specify the format of the height data.

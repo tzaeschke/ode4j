@@ -25,10 +25,10 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
 /**
- * ****************************************************************************
- * Piston
- *
- * ****************************************************************************
+ * ****************************************************************************<br>
+ * Piston                                                                      <br>
+ *                                                                             <br>
+ * ****************************************************************************<br>
  * Component of a Piston joint
  * <PRE>
  *                              |- Anchor point
@@ -73,21 +73,21 @@ import org.ode4j.math.DVector3C;
 public interface DPistonJoint extends DJoint {
 
 	/**
-	 * @brief set the joint anchor
+	 * Set the joint anchor.
 	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 
 	
 	/**
-	 * @brief set the joint anchor
+	 * Set the joint anchor.
 	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 
 	
 	/**
-	 * @brief Get the joint anchor
+	 * Get the joint anchor.
 	 * <p>
 	 * This returns the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2 in direction perpendicular
@@ -99,7 +99,7 @@ public interface DPistonJoint extends DJoint {
 	
 	
 	/**
-	 * @brief Get the joint anchor w.r.t. body 2
+	 * Get the joint anchor wrt body 2.
 	 * <p>
 	 * This returns the point on body 2. You can think of a Piston
 	 * joint as trying to keep the result of dJointGetPistonAnchor() and
@@ -115,8 +115,7 @@ public interface DPistonJoint extends DJoint {
 
 	
 	/**
-	 * @brief Set the Piston anchor as if the 2 bodies were already at [dx,dy, dz] appart.
-	 * @ingroup joints
+	 * Set the Piston anchor as if the 2 bodies were already at [dx,dy, dz] apart.
 	 * <p>
 	 * This function initialize the anchor and the relative position of each body
 	 * as if the position between body1 and body2 was already the projection of [dx, dy, dz]
@@ -133,6 +132,7 @@ public interface DPistonJoint extends DJoint {
 	 * // If you request the position you will have: dJointGetPistonPosition(jId) == offset  <br>
 	 * </code>
 	 * 
+     * @ingroup joints
 	 * @param xyz The X, Y and Z position of the anchor point in world frame
 	 * @param dx A delta to be substracted to the X position as if the anchor was set
 	 *           when body1 was at current_position[X] - dx
@@ -144,28 +144,28 @@ public interface DPistonJoint extends DJoint {
 	void setAnchorOffset(DVector3C xyz, double dx, double dy, double dz);
 
 	/**
-	 * @brief set the joint axis
+	 * Set the joint axis.
 	 * @ingroup joints
 	 */
 	void setAxis (double x, double y, double z);
 
 	
 	/**
-	 * @brief set the joint axis
+	 * Set the joint axis.
 	 * @ingroup joints
 	 */
 	void setAxis (DVector3C a);
 
 	
 	/**
-	 * @brief Get the prismatic axis (This is also the rotoide axis.
+	 * Get the prismatic axis (This is also the rotoide axis.
 	 * @ingroup joints
 	 */
 	void getAxis (DVector3 result);
 
 
 	/**
-	 * @brief Get the Piston linear position (i.e. the piston's extension)
+	 * Get the Piston linear position (i.e. the piston's extension).
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
@@ -175,13 +175,13 @@ public interface DPistonJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the piston linear position's time derivative.
+	 * Get the piston linear position's time derivative.
 	 * @ingroup joints
 	 */
 	double getPositionRate();
 
 	/**
-	 * @brief Applies the given force in the slider's direction.
+	 * Applies the given force in the slider's direction.
 	 * <p>
 	 * That is, it applies a force with specified magnitude, in the direction of
 	 * prismatic's axis, to body1, and with the same magnitude but opposite
@@ -197,7 +197,7 @@ public interface DPistonJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the Piston angular position (i.e. the  twist between the 2 bodies)
+	 * Get the Piston angular position (i.e. the  twist between the 2 bodies).
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
@@ -207,14 +207,14 @@ public interface DPistonJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the piston angular position's time derivative.
+	 * Get the piston angular position's time derivative.
 	 * @ingroup joints
 	 */
 	double getAngleRate();
 
 
 	/**
-	 * @brief set joint parameter
+	 * Set joint parameter.
 	 * @ingroup joints
 	 */
 	@Override
@@ -222,7 +222,7 @@ public interface DPistonJoint extends DJoint {
 	
 	
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override

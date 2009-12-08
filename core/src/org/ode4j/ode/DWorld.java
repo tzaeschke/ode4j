@@ -109,7 +109,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Set the world's global gravity vector.
+	 * Set the world's global gravity vector.
 	 *
 	 * The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
 	 * assuming that +z is up. The default is no gravity, i.e. (0,0,0).
@@ -120,7 +120,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Set the world's global gravity vector.
+	 * Set the world's global gravity vector.
 	 *
 	 * The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
 	 * assuming that +z is up. The default is no gravity, i.e. (0,0,0).
@@ -131,14 +131,14 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Get the gravity vector for a given world.
+	 * Get the gravity vector for a given world.
 	 * @ingroup world
 	 */
 	void getGravity (DVector3 g) ;
 
 
 	/**
-	 * @brief Set the global ERP value, that controls how much error
+	 * Set the global ERP value, that controls how much error
 	 * correction is performed in each time step.
 	 * @ingroup world
 	 * @param erp Typical values are in the range 0.1--0.8. The default is 0.2.
@@ -147,7 +147,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Get the error reduction parameter.
+	 * Get the error reduction parameter.
 	 * @ingroup world
 	 * @return ERP value
 	 */
@@ -155,7 +155,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Set the global CFM (constraint force mixing) value.
+	 * Set the global CFM (constraint force mixing) value.
 	 * @ingroup world
 	 * @param cfm Typical values are in the range @m{10^{-9}} -- 1.
 	 * The default is 10^-5 if single precision is being used, or 10^-10
@@ -165,7 +165,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Get the constraint force mixing value.
+	 * Get the constraint force mixing value.
 	 * @ingroup world
 	 * @return CFM value
 	 */
@@ -173,7 +173,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Step the world.
+	 * Step the world.
 	 *
 	 * This uses a "big matrix" method that takes time on the order of m^3
 	 * and memory on the order of m^2, where m is the total number of constraint
@@ -186,7 +186,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Step the world using the StepFast1 algorithm.
+	 * Step the world using the StepFast1 algorithm.
 	 * @param stepsize the nr of seconds to advance the simulation.
 	 * @param maxiterations The number of iterations to perform.
 	 * @ingroup world
@@ -196,7 +196,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Set the AutoEnableDepth parameter used by the StepFast1 algorithm.
+	 * Set the AutoEnableDepth parameter used by the StepFast1 algorithm.
 	 * @ingroup disable
 	 * @deprecated Not implemented in ODE.
 	 */
@@ -204,7 +204,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Get the AutoEnableDepth parameter used by the StepFast1 algorithm.
+	 * Get the AutoEnableDepth parameter used by the StepFast1 algorithm.
 	 * @ingroup disable
 	 * @deprecated Not implemented in ODE.
 	 */
@@ -212,7 +212,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Step the world.
+	 * Step the world.
 	 * @ingroup world
 	 * @remarks
 	 * This uses an iterative method that takes time on the order of m*N
@@ -246,7 +246,7 @@ public interface DWorld {
 	
 	
 	/**
-	 * @brief Set the number of iterations that the QuickStep method performs per
+	 * Set the number of iterations that the QuickStep method performs per
 	 *        step.
 	 * @ingroup world
 	 * @remarks
@@ -258,7 +258,7 @@ public interface DWorld {
 	
 	
 	/**
-	 * @brief Get the number of iterations that the QuickStep method performs per
+	 * Get the number of iterations that the QuickStep method performs per
 	 *        step.
 	 * @ingroup world
 	 * @return nr of iterations
@@ -267,7 +267,7 @@ public interface DWorld {
 	
 	
 	/**
-	 * @brief Set the SOR over-relaxation parameter
+	 * Set the SOR over-relaxation parameter
 	 * @ingroup world
 	 * @param over_relaxation value to use by SOR
 	 */
@@ -275,7 +275,7 @@ public interface DWorld {
 	
 	
 	/**
-	 * @brief Get the SOR over-relaxation parameter
+	 * Get the SOR over-relaxation parameter.
 	 * @ingroup world
 	 * @return the over-relaxation setting
 	 */
@@ -283,7 +283,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Set auto disable linear threshold for newly created bodies.
+	 * Set auto disable linear threshold for newly created bodies.
 	 * @param threshold default is 0.01
 	 * @ingroup disable
 	 */
@@ -291,7 +291,7 @@ public interface DWorld {
 	
 	
 	/**
-	 * @brief Get auto disable linear threshold for newly created bodies.
+	 * Get auto disable linear threshold for newly created bodies.
 	 * @ingroup disable
 	 * @return the threshold
 	 */
@@ -299,7 +299,7 @@ public interface DWorld {
 	
 	
 	/**
-	 * @brief Set auto disable angular threshold for newly created bodies.
+	 * Set auto disable angular threshold for newly created bodies.
 	 * @param threshold default is 0.01
 	 * @ingroup disable
 	 */
@@ -307,7 +307,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Get auto disable angular threshold for newly created bodies.
+	 * Get auto disable angular threshold for newly created bodies.
 	 * @ingroup disable
 	 * @return the threshold
 	 */
@@ -315,7 +315,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get auto disable linear average threshold for newly created bodies.
+	 * Get auto disable linear average threshold for newly created bodies.
 	 * @ingroup disable
 	 * @return the threshold
 	 * @deprecated Not implemented in ODE.
@@ -324,7 +324,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Set auto disable linear average threshold for newly created bodies.
+	 * Set auto disable linear average threshold for newly created bodies.
 	 * @param linear_average_threshold default is 0.01
 	 * @ingroup disable
 	 * @deprecated Not implemented in ODE.
@@ -333,7 +333,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get auto disable angular average threshold for newly created bodies.
+	 * Get auto disable angular average threshold for newly created bodies.
 	 * @ingroup disable
 	 * @return the threshold
 	 * @deprecated Not implemented in ODE.
@@ -342,7 +342,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Set auto disable angular average threshold for newly created bodies.
+	 * Set auto disable angular average threshold for newly created bodies.
 	 * @param angular_average_threshold default is 0.01
 	 * @ingroup disable
 	 * @deprecated Not implemented in ODE.
@@ -351,7 +351,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get auto disable sample count for newly created bodies.
+	 * Get auto disable sample count for newly created bodies.
 	 * @ingroup disable
 	 * @return number of samples used
 	 */
@@ -359,7 +359,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Set auto disable average sample count for newly created bodies.
+	 * Set auto disable average sample count for newly created bodies.
 	 * @ingroup disable
 	 * @param average_samples_count Default is 1, meaning only instantaneous velocity is used.
 	 * Set to zero to disable sampling and thus prevent any body from auto-disabling.
@@ -368,7 +368,7 @@ public interface DWorld {
 	
 
 	/**
-	 * @brief Set the depth of the surface layer around all geometry objects.
+	 * Set the depth of the surface layer around all geometry objects.
 	 * @ingroup world
 	 * @remarks
 	 * Contacts are allowed to sink into the surface layer up to the given
@@ -382,7 +382,7 @@ public interface DWorld {
 	
 	
 	/**
-	 * @brief Get the depth of the surface layer around all geometry objects.
+	 * Get the depth of the surface layer around all geometry objects.
 	 * @ingroup world
 	 * @return the depth
 	 */
@@ -390,7 +390,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Converts an impulse to a force.
+	 * Converts an impulse to a force.
 	 * @ingroup world
 	 * @remarks
 	 * If you want to apply a linear or angular impulse to a rigid body,
@@ -408,7 +408,7 @@ public interface DWorld {
 
 	
 	/**
-	 * @brief Set the maximum correcting velocity that contacts are allowed
+	 * Set the maximum correcting velocity that contacts are allowed
 	 * to generate.
 	 * @ingroup world
 	 * @param vel The default value is infinity (i.e. no limit).
@@ -419,7 +419,7 @@ public interface DWorld {
 	
 	
 	/**
-	 * @brief Get the maximum correcting velocity that contacts are allowed
+	 * Get the maximum correcting velocity that contacts are allowed
 	 * to generated.
 	 * @ingroup world
 	 */
@@ -428,7 +428,7 @@ public interface DWorld {
 	
 	
 	/**
-	 * @brief Destroy a world and everything in it.
+	 * Destroy a world and everything in it.
 	 *
 	 * This includes all bodies, and all joints that are not part of a joint
 	 * group. Joints that are part of a joint group will be deactivated, and
@@ -447,7 +447,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get auto disable steps for newly created bodies.
+	 * Get auto disable steps for newly created bodies.
 	 * @ingroup disable
 	 * @return nr of steps
 	 */
@@ -455,7 +455,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Set auto disable steps for newly created bodies.
+	 * Set auto disable steps for newly created bodies.
 	 * @ingroup disable
 	 * @param steps default is 10
 	 */
@@ -463,7 +463,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get auto disable time for newly created bodies.
+	 * Get auto disable time for newly created bodies.
 	 * @ingroup disable
 	 * @return nr of seconds
 	 */
@@ -471,7 +471,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Set auto disable time for newly created bodies.
+	 * Set auto disable time for newly created bodies.
 	 * @ingroup disable
 	 * @param time default is 0 seconds
 	 */
@@ -479,7 +479,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get auto disable flag for newly created bodies.
+	 * Get auto disable flag for newly created bodies.
 	 * @ingroup disable
 	 * @return 0 or 1
 	 */
@@ -487,7 +487,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Set auto disable flag for newly created bodies.
+	 * Set auto disable flag for newly created bodies.
 	 * @ingroup disable
 	 * @param do_auto_disable default is false.
 	 */
@@ -497,14 +497,14 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get the world's linear damping threshold.
+	 * Get the world's linear damping threshold.
 	 * @ingroup damping
 	 */
 	double getLinearDampingThreshold ();
 
 
 	/**
-	 * @brief Set the world's linear damping threshold.
+	 * Set the world's linear damping threshold.
 	 * @param threshold The damping won't be applied if the linear speed is
 	 *        below this threshold. Default is 0.01.
 	 * @ingroup damping
@@ -513,14 +513,14 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get the world's angular damping threshold.
+	 * Get the world's angular damping threshold.
 	 * @ingroup damping
 	 */
 	double getAngularDampingThreshold ();
 
 
 	/**
-	 * @brief Set the world's angular damping threshold.
+	 * Set the world's angular damping threshold.
 	 * @param threshold The damping won't be applied if the angular speed is
 	 *        below this threshold. Default is 0.01.
 	 * @ingroup damping
@@ -529,14 +529,14 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get the world's linear damping scale.
+	 * Get the world's linear damping scale.
 	 * @ingroup damping
 	 */
 	double getLinearDamping ();
 
 
 	/**
-	 * @brief Set the world's linear damping scale.
+	 * Set the world's linear damping scale.
 	 * @param scale The linear damping scale that is to be applied to bodies.
 	 * Default is 0 (no damping). Should be in the interval [0, 1].
 	 * @ingroup damping
@@ -545,14 +545,14 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get the world's angular damping scale.
+	 * Get the world's angular damping scale.
 	 * @ingroup damping
 	 */
 	double getAngularDamping ();
 
 
 	/**
-	 * @brief Set the world's angular damping scale.
+	 * Set the world's angular damping scale.
 	 * @param scale The angular damping scale that is to be applied to bodies.
 	 * Default is 0 (no damping). Should be in the interval [0, 1].
 	 * @ingroup damping
@@ -561,7 +561,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Convenience function to set body linear and angular scales.
+	 * Convenience function to set body linear and angular scales.
 	 * @param linear_scale The linear damping scale that is to be applied to bodies.
 	 * @param angular_scale The angular damping scale that is to be applied to bodies.
 	 * @ingroup damping
@@ -570,7 +570,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Get the default maximum angular speed.
+	 * Get the default maximum angular speed.
 	 * @ingroup damping
 	 * @see DBody#getMaxAngularSpeed()
 	 */
@@ -578,7 +578,7 @@ public interface DWorld {
 
 
 	/**
-	 * @brief Set the default maximum angular speed for new bodies.
+	 * Set the default maximum angular speed for new bodies.
 	 * @ingroup damping
 	 * @see DBody#setMaxAngularSpeed(double)
 	 */

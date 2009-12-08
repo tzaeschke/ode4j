@@ -28,7 +28,7 @@ package org.ode4j.ode;
 public interface DJointGroup {
 
 	/**
-	 * @brief Empty a joint group.
+	 * Empty a joint group.
 	 * @ingroup joints
 	 *
 	 * All joints in the joint group will be destroyed,
@@ -38,7 +38,7 @@ public interface DJointGroup {
 	void clear();
 
 	/**
-	 * @brief Destroy a joint group.
+	 * Destroy a joint group.
 	 * @ingroup joints
 	 *
 	 * All joints in the joint group will be destroyed.

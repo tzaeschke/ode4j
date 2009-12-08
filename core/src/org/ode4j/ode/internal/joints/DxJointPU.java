@@ -70,7 +70,7 @@ import org.ode4j.ode.internal.DxWorld;
 public class DxJointPU extends DxJointUniversal implements DPUJoint
 {
 	/** 
-	 * @brief Axis for the prismatic articulation w.r.t first body.
+	 * Axis for the prismatic articulation w.r.t first body.
 	 * @note This is considered as axis2 from the parameter view
 	 */
 	DVector3 axisP1 = new DVector3();
@@ -790,7 +790,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	}
 
 	/**
-	 * @brief Get the prismatic axis
+	 * Get the prismatic axis.
 	 * @ingroup joints
 	 *
 	 * @note This function was added for convenience it is the same as

@@ -117,7 +117,7 @@ public class DxBox extends DxGeom implements DBox {
 
 
 	/**
-	 * @brief Get the side lengths of a box.
+	 * Get the side lengths of a box.
 	 *
 	 * @param result  the returned side lengths
 	 *

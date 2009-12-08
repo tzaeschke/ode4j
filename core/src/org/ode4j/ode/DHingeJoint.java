@@ -27,21 +27,21 @@ import org.ode4j.math.DVector3C;
 public interface DHingeJoint extends DJoint {
 
 	/**
-	 * @brief Set hinge anchor parameter.
+	 * Set hinge anchor parameter.
 	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 	
 	
 	/**
-	 * @brief Set hinge anchor parameter.
+	 * Set hinge anchor parameter.
 	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 	
 	
 	/**
-	 * @brief Get the hinge anchor point, in world coordinates.
+	 * Get the hinge anchor point, in world coordinates.
 	 *
 	 * This returns the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
@@ -51,7 +51,7 @@ public interface DHingeJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get the joint anchor point, in world coordinates.
+	 * Get the joint anchor point, in world coordinates.
 	 * Return the point on body 2. If the joint is perfectly satisfied,
 	 * this will return the same value as dJointGetHingeAnchor().
 	 * If not, this value will be slightly different.
@@ -62,29 +62,28 @@ public interface DHingeJoint extends DJoint {
 
 	
 	/**
-	 * @brief Set hinge axis.
+	 * Set hinge axis.
 	 * @ingroup joints
 	 */
 	void setAxis (double x, double y, double z);
 	
 	
 	/**
-	 * @brief Set hinge axis.
+	 * Set hinge axis.
 	 * @ingroup joints
 	 */
 	void setAxis (DVector3C a);
 	
 	
 	/**
-	 * @brief get axis
+	 * Get axis.
 	 * @ingroup joints
 	 */
 	void getAxis (DVector3 result);
 	
 	
 	/**
-	 * @brief Set the Hinge axis as if the 2 bodies were already at angle appart.
-	 * @ingroup joints
+	 * Set the Hinge axis as if the 2 bodies were already at angle apart.
 	 * <p>
 	 * This function initialize the Axis and the relative orientation of each body
 	 * as if body1 was rotated around the axis by the angle value. <br>
@@ -105,15 +104,16 @@ public interface DHingeJoint extends DJoint {
 	 *
 	 * @note Usually the function dJointSetHingeAxis set the current position of body1
 	 *       and body2 as the zero angle position. This function set the current position
-	 *       as the if the 2 bodies where \b angle appart.
+	 *       as the if the 2 bodies where \b angle apart.
 	 * @warning Calling dJointSetHingeAnchor or dJointSetHingeAxis will reset the "zero"
 	 *          angle position.
+     * @ingroup joints
 	 */
 	void setAxisOffset(double x, double y, double z, double angle);
 
 
 	/**
-	 * @brief Get the hinge angle.
+	 * Get the hinge angle.
 	 * <p>
 	 * The angle is measured between the two bodies, or between the body and
 	 * the static environment.
@@ -128,14 +128,14 @@ public interface DHingeJoint extends DJoint {
 	
 	
 	/**
-	 * @brief Get the hinge angle time derivative.
+	 * Get the hinge angle time derivative.
 	 * @ingroup joints
 	 */
 	double getAngleRate();
 
 	
 	/**
-	 * @brief Applies the torque about the hinge axis.
+	 * Applies the torque about the hinge axis.
 	 * <p>
 	 * That is, it applies a torque with specified magnitude in the direction
 	 * of the hinge axis, to body 1, and with the same magnitude but in opposite
@@ -152,7 +152,7 @@ public interface DHingeJoint extends DJoint {
 	void setParamBounce(double d);
 
 	/**
-	 * @brief set joint parameter
+	 * Set joint parameter.
 	 * @ingroup joints
 	 */
 	@Override
@@ -160,7 +160,7 @@ public interface DHingeJoint extends DJoint {
 	
 	
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override

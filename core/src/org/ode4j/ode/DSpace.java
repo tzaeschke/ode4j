@@ -48,7 +48,7 @@ public interface DSpace extends DGeom {
 	
 	
 	/**
-	 * @brief Sets manual cleanup flag for a space.
+	 * Sets manual cleanup flag for a space.
 	 * <p>
 	 * Manual cleanup flag marks a space as eligible for manual thread data cleanup.
 	 * This function should be called for every space object right after creation in 
@@ -66,7 +66,7 @@ public interface DSpace extends DGeom {
 
 	
 	/**
-	 * @brief Get manual cleanup flag of a space.
+	 * Get manual cleanup flag of a space.
 	 * <p>
 	 * Manual cleanup flag marks a space space as eligible for manual thread data cleanup.
 	 * See <tt>setManualCleanup</tt> for more details.
@@ -79,7 +79,7 @@ public interface DSpace extends DGeom {
 	int getManualCleanup();
 
 	/**
-	 * @brief Sets sublevel value for a space.
+	 * Sets sublevel value for a space.
 	 * <p>
 	 * Sublevel affects how the space is handled in spaceCollide2 when it is collided
 	 * with another space. If sublevels of both spaces match, the function iterates 
@@ -102,7 +102,7 @@ public interface DSpace extends DGeom {
 	void setSublevel (int sublevel);
 
 	/**
-	 * @brief Gets sublevel value of a space.
+	 * Gets sublevel value of a space.
 	 * <p>
 	 * Sublevel affects how the space is handled in spaceCollide2 when it is collided
 	 * with another space. See <tt>setSublevel</tt> for more details.

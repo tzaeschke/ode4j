@@ -27,7 +27,7 @@ import org.ode4j.math.DVector3C;
 public interface DLMotorJoint extends DJoint {
 
 	/**
-	 * @brief Set the number of axes that will be controlled by the LMotor.
+	 * Set the number of axes that will be controlled by the LMotor.
 	 * @param num can range from 0 (which effectively deactivates the joint) to 3.
 	 * @ingroup joints
 	 */
@@ -35,13 +35,13 @@ public interface DLMotorJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get nr of axes.
+	 * Get nr of axes.
 	 * @ingroup joints
 	 */
 	int getNumAxes();
 
 	/**
-	 * @brief Set the AMotor axes.
+	 * Set the AMotor axes.
 	 * @param anum selects the axis to change (0,1 or 2).
 	 * @param rel Each axis can have one of three ``relative orientation'' modes
 	 * <li> 0: The axis is anchored to the global frame.
@@ -55,7 +55,7 @@ public interface DLMotorJoint extends DJoint {
 
 	
 	/**
-	 * @brief Set the AMotor axes.
+	 * Set the AMotor axes.
 	 * @param anum selects the axis to change (0,1 or 2).
 	 * @param rel Each axis can have one of three ``relative orientation'' modes
 	 * <li> 0: The axis is anchored to the global frame.
@@ -69,13 +69,13 @@ public interface DLMotorJoint extends DJoint {
 
 	
 	/**
-	 * @brief Get axis.
+	 * Get axis.
 	 * @ingroup joints
 	 */
 	void getAxis (int anum, DVector3 result);
 
 	/**
-	 * @brief set joint parameter
+	 * Set joint parameter.
 	 * @ingroup joints
 	 */
 	@Override
@@ -83,7 +83,7 @@ public interface DLMotorJoint extends DJoint {
 
 	
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override

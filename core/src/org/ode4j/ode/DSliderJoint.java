@@ -27,28 +27,28 @@ import org.ode4j.math.DVector3C;
 public interface DSliderJoint extends DJoint {
 
 	/**
-	 * @brief set the joint axis
+	 * Set the joint axis.
 	 * @ingroup joints
 	 */
 	void setAxis (double x, double y, double z);
 	
 	
 	/**
-	 * @brief set the joint axis
+	 * Set the joint axis.
 	 * @ingroup joints
 	 */
 	void setAxis (DVector3C a);
 
 	
 	/**
-	 * @brief Get the slider axis
+	 * Get the slider axis.
 	 * @ingroup joints
 	 */
 	void getAxis (DVector3 result);
 
 	
 	/**
-	 * @brief Get the slider linear position (i.e. the slider's extension).
+	 * Get the slider linear position (i.e. the slider's extension).
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
@@ -62,14 +62,14 @@ public interface DSliderJoint extends DJoint {
 	
 	
 	/**
-	 * @brief Get the slider linear position's time derivative.
+	 * Get the slider linear position's time derivative.
 	 * @ingroup joints
 	 */
 	double getPositionRate();
 
 	
 	/**
-	 * @brief Applies the given force in the slider's direction.
+	 * Applies the given force in the slider's direction.
 	 * <p>
 	 * That is, it applies a force with specified magnitude, in the direction of
 	 * slider's axis, to body1, and with the same magnitude but opposite
@@ -91,7 +91,7 @@ public interface DSliderJoint extends DJoint {
 			double dx, double dy, double dz);
 
 	/**
-	 * @brief set joint parameter
+	 * Set joint parameter.
 	 * @ingroup joints
 	 */
 	@Override
@@ -99,7 +99,7 @@ public interface DSliderJoint extends DJoint {
 
 	
 	/**
-	 * @brief get joint parameter
+	 * Get joint parameter.
 	 * @ingroup joints
 	 */
 	@Override

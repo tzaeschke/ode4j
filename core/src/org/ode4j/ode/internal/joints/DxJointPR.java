@@ -52,7 +52,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 {
 
 	/**
-	 * @brief Position of the rotoide articulation w.r.t second body.
+	 * Position of the rotoide articulation w.r.t second body.
 	 * @note Position of body 2 in world frame + anchor2 in world frame give 
 	 * the position of the rotoide articulation.
 	 */
@@ -77,7 +77,8 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	/** Initial relative rotation body1 -> body2. */ 
 	DQuaternion qrel;
 	
-	/** @brief vector between the body1 and the rotoide articulation.
+	/** 
+	 * Vector between the body1 and the rotoide articulation.
 	 *  
 	 * Going from the first to the second in the frame of body1.
 	 * That should be aligned with body1 center along axisP.

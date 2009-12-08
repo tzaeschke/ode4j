@@ -76,7 +76,7 @@ public interface DGeom {
 	void DESTRUCTOR();
 
 	/**
-	 * @brief Destroy a geom, removing it from any space.
+	 * Destroy a geom, removing it from any space.
 	 * <p>
 	 * Destroy a geom, removing it from any space it is in first. This one
 	 * function destroys a geom of any type, but to create a geom you must call
@@ -91,7 +91,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Given a geom, this returns its class.
+	 * Given a geom, this returns its class.
 	 * <p>
 	 * The ODE classes are:
 	 *  <li> dSphereClass </li>
@@ -117,7 +117,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Query for the space containing a particular geom.
+	 * Query for the space containing a particular geom.
 	 * 
 	 * @return The space that contains the geom, or NULL if the geom is
 	 *          not contained by a space.
@@ -127,7 +127,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Set the user-defined data pointer stored in the geom.
+	 * Set the user-defined data pointer stored in the geom.
 	 *
 	 * @param data the data pointer to be stored
 	 * @ingroup collide
@@ -136,7 +136,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Get the user-defined data pointer stored in the geom.
+	 * Get the user-defined data pointer stored in the geom.
 	 *
 	 * @ingroup collide
 	 */
@@ -144,7 +144,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Set the body associated with a placeable geom.
+	 * Set the body associated with a placeable geom.
 	 * <p>
 	 * Setting a body on a geom automatically combines the position vector and
 	 * rotation matrix of the body and geom, so that setting the position or
@@ -164,7 +164,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Get the body associated with a placeable geom.
+	 * Get the body associated with a placeable geom.
 	 * @see #setBody(DBody)
 	 * @ingroup collide
 	 */
@@ -172,7 +172,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Set the position vector of a placeable geom.
+	 * Set the position vector of a placeable geom.
 	 * <p>
 	 * If the geom is attached to a body, the body's position will also be changed.
 	 * Calling this function on a non-placeable geom results in a runtime error in
@@ -188,7 +188,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Set the position vector of a placeable geom.
+	 * Set the position vector of a placeable geom.
 	 * <p>
 	 * If the geom is attached to a body, the body's position will also be changed.
 	 * Calling this function on a non-placeable geom results in a runtime error in
@@ -202,7 +202,7 @@ public interface DGeom {
 
 
 	/**
-	 * @brief Get the position vector of a placeable geom.
+	 * Get the position vector of a placeable geom.
 	 * <p>
 	 * If the geom is attached to a body, the body's position will be returned.
 	 * <p>
@@ -220,7 +220,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Copy the position of a geom into a vector.
+	 * Copy the position of a geom into a vector.
 	 * @ingroup collide
 	 * @param pos   a copy of the geom position
 	 * @see #getPosition()
@@ -228,7 +228,7 @@ public interface DGeom {
 	void copyPosition (DVector3 pos);
 
 	/**
-	 * @brief Set the rotation matrix of a placeable geom.
+	 * Set the rotation matrix of a placeable geom.
 	 * <p>
 	 * If the geom is attached to a body, the body's rotation will also be changed.
 	 * Calling this function on a non-placeable geom results in a runtime error in
@@ -242,7 +242,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Get the rotation matrix of a placeable geom.
+	 * Get the rotation matrix of a placeable geom.
 	 * <p>
 	 * If the geom is attached to a body, the body's rotation will be returned.
 	 * <p>
@@ -260,7 +260,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Get the rotation matrix of a placeable geom.
+	 * Get the rotation matrix of a placeable geom.
 	 * <p>
 	 * If the geom is attached to a body, the body's rotation will be returned.
 	 * <p>
@@ -275,7 +275,7 @@ public interface DGeom {
 
 
 	/**
-	 * @brief Set the rotation of a placeable geom.
+	 * Set the rotation of a placeable geom.
 	 * <p>
 	 * If the geom is attached to a body, the body's rotation will also be changed.
 	 * <p>
@@ -290,7 +290,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Get the rotation quaternion of a placeable geom.
+	 * Get the rotation quaternion of a placeable geom.
 	 * <p>
 	 * If the geom is attached to a body, the body's quaternion will be returned.
 	 * <p>
@@ -304,7 +304,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Return the axis-aligned bounding box.
+	 * Return the axis-aligned bounding box.
 	 * <p>
 	 * Return in aabb an axis aligned bounding box that surrounds the given geom.
 	 * The aabb array has elements (minx, maxx, miny, maxy, minz, maxz). If the
@@ -321,7 +321,7 @@ public interface DGeom {
 
 	
 //	/**
-//	 * @brief Determing if a geom is a space.
+//	 * Determing if a geom is a space.
 //	 * @param geom the geom to query
 //	 * @return Non-zero if the geom is a space, zero otherwise.
 //	 * @ingroup collide
@@ -330,7 +330,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Set the "category" bitfield for the given geom.
+	 * Set the "category" bitfield for the given geom.
 	 * <p>
 	 * The category bitfield is used by spaces to govern which geoms will
 	 * interact with each other. The bitfield is guaranteed to be at least
@@ -344,7 +344,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Set the "collide" bitfield for the given geom.
+	 * Set the "collide" bitfield for the given geom.
 	 * <p>
 	 * The collide bitfield is used by spaces to govern which geoms will
 	 * interact with each other. The bitfield is guaranteed to be at least
@@ -358,7 +358,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Get the "category" bitfield for the given geom.
+	 * Get the "category" bitfield for the given geom.
 	 *
 	 * @return The bitfield value
 	 * @see #setCategoryBits(long)
@@ -369,7 +369,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Get the "collide" bitfield for the given geom.
+	 * Get the "collide" bitfield for the given geom.
 	 *
 	 * @return The bitfield value
 	 * @see #setCollideBits(long)
@@ -380,7 +380,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Enable a geom.
+	 * Enable a geom.
 	 * <p>
 	 * Disabled geoms are completely ignored by dSpaceCollide and dSpaceCollide2,
 	 * although they can still be members of a space. New geoms are created in
@@ -394,7 +394,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Disable a geom.
+	 * Disable a geom.
 	 * <p>
 	 * Disabled geoms are completely ignored by dSpaceCollide and dSpaceCollide2,
 	 * although they can still be members of a space. New geoms are created in
@@ -408,7 +408,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Check to see if a geom is enabled.
+	 * Check to see if a geom is enabled.
 	 * <p>
 	 * Disabled geoms are completely ignored by dSpaceCollide and dSpaceCollide2,
 	 * although they can still be members of a space. New geoms are created in
@@ -423,11 +423,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief User callback for geom-geom collision testing.
-	 *
-	 * @param data The user data object, as passed to dSpaceCollide.
-	 * @param o1   The first geom being tested.
-	 * @param o2   The second geom being test.
+	 * User callback for geom-geom collision testing.
 	 *
 	 * @remarks The callback function can call dCollide on o1 and o2 to generate
 	 * contact points between each pair. Then these contact points may be added
@@ -439,6 +435,11 @@ public interface DGeom {
 	 */
 	//typedef void dNearCallback (void *data, dGeom o1, dGeom o2);
 	public interface DNearCallback {
+	    /**
+	     * @param data The user data object, as passed to dSpaceCollide.
+	     * @param o1   The first geom being tested.
+	     * @param o2   The second geom being test.
+	     */
 		public void call (Object data, DGeom o1, DGeom o2);
 	}
 
@@ -446,7 +447,7 @@ public interface DGeom {
 
 
 	/**
-	 * @brief Get the offset position vector of a geom.
+	 * Get the offset position vector of a geom.
 	 * <p>
 	 * Returns the positional offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the zero vector.
@@ -461,7 +462,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Copy the offset position vector of a geom.
+	 * Copy the offset position vector of a geom.
 	 * <p>
 	 * Returns the positional offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the zero vector.
@@ -473,7 +474,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Set the local offset position of a geom from its body.
+	 * Set the local offset position of a geom from its body.
 	 * <p>
 	 * Sets the geom's positional offset in local coordinates.
 	 * After this call, the geom will be at a new position determined from the
@@ -490,7 +491,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Get the offset rotation matrix of a geom.
+	 * Get the offset rotation matrix of a geom.
 	 * <p>
 	 * Returns the rotational offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the identity
@@ -506,7 +507,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Copy the offset rotation matrix of a geom.
+	 * Copy the offset rotation matrix of a geom.
 	 * <p>
 	 * Returns the rotational offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the identity
@@ -519,7 +520,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Set the local offset rotation matrix of a geom from its body.
+	 * Set the local offset rotation matrix of a geom from its body.
 	 * <p>
 	 * Sets the geom's rotational offset in local coordinates.
 	 * After this call, the geom will be at a new position determined from the
@@ -534,7 +535,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Get the offset rotation quaternion of a geom.
+	 * Get the offset rotation quaternion of a geom.
 	 *
 	 * Returns the rotation offset of the geom as a quaternion.
 	 * If the geom has no offset, the identity quaternion is returned.
@@ -546,7 +547,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Set the local offset rotation of a geom from its body.
+	 * Set the local offset rotation of a geom from its body.
 	 * <p>
 	 * Sets the geom's rotational offset in local coordinates.
 	 * After this call, the geom will be at a new position determined from the
@@ -561,7 +562,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Set the offset position of a geom from its body.
+	 * Set the offset position of a geom from its body.
 	 * <p>
 	 * Sets the geom's positional offset to move it to the new world
 	 * coordinates.
@@ -579,7 +580,7 @@ public interface DGeom {
 
 	
 	/**
-	 * @brief Set the offset rotation of a geom from its body.
+	 * Set the offset rotation of a geom from its body.
 	 * <p>
 	 * Sets the geom's rotational offset to orient it to the new world
 	 * rotation matrix.
@@ -595,7 +596,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Set the offset rotation of a geom from its body.
+	 * Set the offset rotation of a geom from its body.
 	 * <p>
 	 * Sets the geom's rotational offset to orient it to the new world
 	 * rotation matrix.
@@ -611,7 +612,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Clear any offset from the geom.
+	 * Clear any offset from the geom.
 	 * <p>
 	 * If the geom has an offset, it is eliminated and the geom is
 	 * repositioned at the body's position.  If the geom has no offset,
@@ -626,7 +627,7 @@ public interface DGeom {
 	
 	
 	/**
-	 * @brief Check to see whether the geom has an offset.
+	 * Check to see whether the geom has an offset.
 	 * <p>
 	 * This function will return non-zero if the offset has been created.
 	 * Note that there is a difference between a geom with no offset,
