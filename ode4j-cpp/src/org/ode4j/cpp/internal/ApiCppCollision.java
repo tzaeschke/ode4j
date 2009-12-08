@@ -840,7 +840,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @see dSpaceCollide2(DGeom, DGeom, Object, DNearCallback)
+	 * @see #dSpaceCollide2(DGeom, DGeom, Object, DNearCallback)
 	 * @ingroup collide
 	 */
 	//ODE_API 
