@@ -49,14 +49,14 @@ public interface DAABBC {
 	
 	/** 
 	 * Get maximum extension of <tt>axis</tt>
-	 * @param i The axis (0, 1 or 2)
+	 * @param axis The axis (0, 1 or 2)
 	 */
 	double getMax(int axis);
 
 	
 	/** 
 	 * Get minimum extension of <tt>axis</tt>
-	 * @param i The axis (0, 1 or 2)
+	 * @param axis The axis (0, 1 or 2)
 	 */
 	double getMin(int axis);
 	
