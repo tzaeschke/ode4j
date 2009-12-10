@@ -44,8 +44,8 @@ public class DxJointBall extends DxJoint implements DBallJoint
 		anchor2 = new DVector3();
 		//    MAT.dSetZero( anchor1, 4 );
 		//    MAT.dSetZero( anchor2, 4 );
-		erp = world.global_erp;
-		cfm = world.global_cfm;
+		erp = world.getERP();
+		cfm = world.getCFM();
 	}
 
 

@@ -68,7 +68,7 @@ public final class DMatrix3 implements DMatrix3C {
 	
 	
 	/**
-	 * @deprecated Use set(..) instead
+	 * Returns a clone of this Matrix.
 	 */
 	@Override
 	public DMatrix3 clone() {

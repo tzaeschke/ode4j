@@ -62,8 +62,8 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		//dSetZero ( offset.v, 4 );
 		qrel = new DQuaternion();
 		//dSetZero ( qrel.v, 4 );
-		erp = world.global_erp;
-		cfm = world.global_cfm;
+		erp = world.getERP();
+		cfm = world.getCFM();
 	}
 
 

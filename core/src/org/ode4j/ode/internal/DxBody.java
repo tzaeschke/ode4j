@@ -106,7 +106,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	int average_ready;            // indicates ( with = 1 ), if the Body's buffers are ready for average-calculations
 
 	BodyMoveCallBack moved_callback; // let the user know the body moved
-	dxDampingParameters dampingp; // damping parameters, depends on flags
+	private dxDampingParameters dampingp; // damping parameters, depends on flags
 	double max_angular_speed;      // limit the angular velocity to this magnitude
 
 	protected DxBody(DxWorld w)
@@ -850,7 +850,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodySetAutoDisableDefaults ()
 	{
 		DxWorld w = world;
-		adis = w.adis;
+		adis = w.adis.clone();
 		dBodySetAutoDisableFlag ( (w.body_flags & dxBodyAutoDisable)!=0);
 	}
 
@@ -915,7 +915,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodySetDampingDefaults()
 	{
 		DxWorld w = world;
-		dampingp = w.dampingp;
+		dampingp = w.dampingp.clone();
 		//unsigned
 		final int mask = dxBodyLinearDamping | dxBodyAngularDamping;
 		flags &= ~mask; // zero them

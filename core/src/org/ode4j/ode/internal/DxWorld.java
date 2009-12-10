@@ -44,16 +44,16 @@ public class DxWorld extends DBase implements DWorld {
 	//	List<dxBody> joints = new LinkedList<dxBody>();
 	//	 public dxBody firstbody;		// body linked list
 	//	  dxJoint firstjoint;		// joint linked list
-	public int nb;			// number of bodies and joints in lists
+	int nb;			// number of bodies and joints in lists
 	public int nj;
 	DVector3 gravity;		// gravity vector (m/s/s)
-	public double global_erp;		// global error reduction parameter
-	public double global_cfm;		// global costraint force mixing parameter
-	public dxAutoDisable adis;		// auto-disable parameters
-	public int body_flags;               // flags for new bodies
+	private double global_erp;		// global error reduction parameter
+	private double global_cfm;		// global costraint force mixing parameter
+	dxAutoDisable adis;		// auto-disable parameters
+	int body_flags;               // flags for new bodies
 	dxQuickStepParameters qs;
 	public dxContactParameters contactp;
-	public dxDampingParameters dampingp; // damping parameters
+	dxDampingParameters dampingp; // damping parameters
 	double max_angular_speed;      // limit the angular velocity to this magnitude
 
 	//****************************************************************************

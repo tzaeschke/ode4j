@@ -79,8 +79,8 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		limot2 = new DxJointLimitMotor();
 		limot2.init( world );
 
-		susp_erp = world.global_erp;
-		susp_cfm = world.global_cfm;
+		susp_erp = world.getERP();
+		susp_cfm = world.getCFM();
 
 		//flags |= dJOINT_TWOBODIES;
 		setFlagsTwoBodies();

@@ -57,9 +57,9 @@ public class DxJointLimitMotor {
 		lostop = -dInfinity;
 		histop = dInfinity;
 		fudge_factor = 1;
-		normal_cfm = world.global_cfm;
-		stop_erp = world.global_erp;
-		stop_cfm = world.global_cfm;
+		normal_cfm = world.getCFM();
+		stop_erp = world.getERP();
+		stop_cfm = world.getCFM();
 		bounce = 0;
 		limit = 0;
 		limit_err = 0;

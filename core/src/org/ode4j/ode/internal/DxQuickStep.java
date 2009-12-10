@@ -776,7 +776,7 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			double[] hi = alloc(m);//new double[m];//dRealAllocaArray (hi,m);
 			int[] findex = new int[m];//(int*) ALLOCA (m*sizeof(int));
 //TZ			dSetZero (c,m);
-			dSetValue (cfm,m,world.global_cfm);
+			dSetValue (cfm,m,world.getCFM());
 			dSetValue (lo,m,-dInfinity);
 			dSetValue (hi,m, dInfinity);
 			for (i=0; i<m; i++) findex[i] = -1;
@@ -800,7 +800,7 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			Jinfo.setRowskip(12);
 			Jinfo.setArrays(J, c, cfm, lo, hi, findex);
 			Jinfo.fps = stepsize1;
-			Jinfo.erp = world.global_erp;
+			Jinfo.erp = world.getERP();
 			int mfb = 0; // number of rows of Jacobian we will have to save for joint feedback
 			for (i=0; i<nj; i++) {
 				Jinfo.J1lp = ofs[i]*12;//J + ofs[i]*12;

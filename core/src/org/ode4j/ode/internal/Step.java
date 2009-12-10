@@ -469,7 +469,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			double[] hi = new double[m];//ALLOCA(double,hi,m*sizeof(double));
 			int[] findex = new int[m];// ALLOCA(int,findex,m*sizeof(int));
 			//TZ dSetZero (c,m);
-			dSetValue (cfm,m,world.global_cfm);
+			dSetValue (cfm,m,world.getCFM());
 			dSetValue (lo,m,-dInfinity);
 			dSetValue (hi,m, dInfinity);
 			for (i=0; i<m; i++) findex[i] = -1;
@@ -490,7 +490,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			//TODO set J1l, J1a, J2l, J2a ?!?!?
 			if (true) throw new UnsupportedOperationException();
 			Jinfo.fps = dRecip(stepsize);
-			Jinfo.erp = world.global_erp;
+			Jinfo.erp = world.getERP();
 			for (i=0; i<nj; i++) {
 				//TZ Jinfo.J1l = J + nskip*ofs[i] + 6*joint[i].node[0].body.tag;
 				//TZ Jinfo.J1a = Jinfo.J1l + 3;
@@ -839,7 +839,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			double[] hi = new double[m];//ALLOCA(double,hi,m*sizeof(double));
 			int[] findex = new int[m];//ALLOCA(int,findex,m*sizeof(int));
 			//TZ dSetZero (c,m);
-			dSetValue (cfm,m,world.global_cfm);
+			dSetValue (cfm,m,world.getCFM());
 			dSetValue (lo,m,-dInfinity);
 			dSetValue (hi,m, dInfinity);
 			for (i=0; i<m; i++) findex[i] = -1;
@@ -871,7 +871,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			Jinfo.setRowskip(8);
 			Jinfo.setArrays(J, c, cfm, lo, hi, findex);
 			Jinfo.fps = stepsize1;
-			Jinfo.erp = world.global_erp;
+			Jinfo.erp = world.getERP();
 			for (i=0; i<nj; i++) {
 				Jinfo.J1lp = 2*8*ofs[i];//J + 2*8*ofs[i];
 				Jinfo.J1ap = Jinfo.J1lp + 4;
