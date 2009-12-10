@@ -2,6 +2,7 @@ package org.ode4j.tests;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.ode4j.tests.bugs.BugsTest;
 import org.ode4j.tests.joints.TestJointBall;
 import org.ode4j.tests.joints.TestJointFixed;
 import org.ode4j.tests.joints.TestJointHinge;
@@ -35,7 +36,8 @@ import org.ode4j.tests.math.TestDVector6;
 	TestJointPR.class,
 	TestJointPU.class,
 	TestJointSlider.class,
-	TestJointUniversal.class
+	TestJointUniversal.class,
+	BugsTest.class
 })
 public class AllTests2 {
 	public static void main(String[] args) {

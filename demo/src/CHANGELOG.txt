@@ -9,6 +9,12 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
+2009-Dec-10 Tilmann Zaschke
+		* Fixed bugs where setting a body's dampening or auto-disable 
+		  parameters would set these parameters for all other bodies and the 
+		  associated world as well. -> BUG ID: 2912249
+		* reduced visibility of some public fields in DxWorld and DxBody.
+
 2009-Dec-07 Tilmann Zaschke
 		* Removed @brief tags in javadoc except cpp javadoc.
 
@@ -22,7 +28,7 @@ the rules for this file:
 		  version and texture_path
 
 2009-Nov-12 Tilmann Zäschke
-		* Frixed crash for DemoCyl in drawstuff
+		* Fixed crash for DemoCyl in drawstuff
 
 2009-Aug-18 Tilmann Zäschke
 		* Javadoc improvements
