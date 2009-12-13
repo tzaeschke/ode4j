@@ -40,10 +40,10 @@ public class DxMass implements DMass {
 
 	
 
-//	//#define	SQR(x)			((x)*(x))						//!< Returns x square
-//	private double SQR(double x) {return x * x;}
-//	//#define	CUBE(x)			((x)*(x)*(x))					//!< Returns x cube
-//	private double CUBE(double x) {return x * x * x;}
+	//#define	SQR(x)			((x)*(x))						//!< Returns x square
+	private double SQR(double x) {return x * x;}
+	//#define	CUBE(x)			((x)*(x)*(x))					//!< Returns x cube
+	private double CUBE(double x) {return x * x * x;}
 //
 //	//#define _I(i,j) I[(i)*4+(j)]
 //	private int _I(int i, int j) {return i * 4 + j;}
@@ -264,201 +264,204 @@ public class DxMass implements DMass {
 
 		dMassSetZero ();
 
-		throw new UnsupportedOperationException("Trimesh enabled = " + dTRIMESH_ENABLED);
+//		throw new UnsupportedOperationException("Trimesh enabled = " + dTRIMESH_ENABLED);
 		//TODO only throw when trimesh is enabled?
 		
 		
 //		//#if dTRIMESH_ENABLED
 //		if (dTRIMESH_ENABLED) {
 //
-//		dxTriMesh TriMesh = (dxTriMesh )g;
-//		//unsigned 
-//		int triangles = FetchTriangleCount( TriMesh );
-//
-//		double nx, ny, nz;
-//		//unsigned 
-//		int i, A, B, C;
-//		// face integrals
-//		double Fa, Fb, Fc, Faa, Fbb, Fcc, Faaa, Fbbb, Fccc, Faab, Fbbc, Fcca;
-//
-//		// projection integrals
-//		double P1, Pa, Pb, Paa, Pab, Pbb, Paaa, Paab, Pabb, Pbbb;
-//
-//		double T0 = 0;
-//		double[] T1 = {0., 0., 0.};
-//		double[] T2 = {0., 0., 0.};
-//		double[] TP = {0., 0., 0.};
-//
-//		for( i = 0; i < triangles; i++ )	 	
-//		{
-//			dVector3[] v = {new dVector3(), new dVector3(), new dVector3()};//[3];
-//			FetchTransformedTriangle( TriMesh, i, v);
-//
-//			dVector3 n, a, b;
+		DxTriMesh TriMesh = (DxTriMesh )g;
+		//unsigned 
+		int triangles = TriMesh.FetchTriangleCount();
+
+		double nx, ny, nz;
+		//unsigned 
+		int i, A, B, C;
+		// face integrals
+		double Fa, Fb, Fc, Faa, Fbb, Fcc, Faaa, Fbbb, Fccc, Faab, Fbbc, Fcca;
+
+		// projection integrals
+		double P1, Pa, Pb, Paa, Pab, Pbb, Paaa, Paab, Pabb, Pbbb;
+
+		double T0 = 0;
+		double[] T1 = {0., 0., 0.};
+		double[] T2 = {0., 0., 0.};
+		double[] TP = {0., 0., 0.};
+
+		for( i = 0; i < triangles; i++ )	 	
+		{
+			DVector3[] v = {new DVector3(), new DVector3(), new DVector3()};//[3];
+			TriMesh.FetchTransformedTriangle( i, v);
+
+			DVector3 n = new DVector3(), a = new DVector3(), b = new DVector3();
 //			dOP( a.v, OP.SUB, v[1].v, v[0].v ); 
 //			dOP( b.v, OP.SUB, v[2].v, v[0].v ); 
-//			dCROSS( n, OP.EQ, b, a );
-//			nx = Math.abs(n.v[0]);
-//			ny = Math.abs(n.v[1]);
-//			nz = Math.abs(n.v[2]);
-//
-//			if( nx > ny && nx > nz )
-//				C = 0;
-//			else
-//				C = (ny > nz) ? 1 : 2;
-//
-//			// Even though all triangles might be initially valid, 
-//			// a triangle may degenerate into a segment after applying 
-//			// space transformation.
-//			if (n.v[C] != 0.0)
-//			{
-//				A = (C + 1) % 3;
-//				B = (A + 1) % 3;
-//
-//				// calculate face integrals
-//				{
-//					double w;
-//					double k1, k2, k3, k4;
-//
-//					//compProjectionIntegrals(f);
-//					{
-//						double a0=0, a1=0, da;
-//						double b0=0, b1=0, db;
-//						double a0_2, a0_3, a0_4, b0_2, b0_3, b0_4;
-//						double a1_2, a1_3, b1_2, b1_3;
-//						double C1, Ca, Caa, Caaa, Cb, Cbb, Cbbb;
-//						double Cab, Kab, Caab, Kaab, Cabb, Kabb;
-//
-//						P1 = Pa = Pb = Paa = Pab = Pbb = Paaa = Paab = Pabb = Pbbb = 0.0;
-//
-//						for( int j = 0; j < 3; j++)
-//						{
-//							switch(j)
-//							{
-//							case 0:
-//								a0 = v[0].v[A];
-//								b0 = v[0].v[B];
-//								a1 = v[1].v[A];
-//								b1 = v[1].v[B];
-//								break;
-//							case 1:
-//								a0 = v[1].v[A];
-//								b0 = v[1].v[B];
-//								a1 = v[2].v[A];
-//								b1 = v[2].v[B];
-//								break;
-//							case 2:
-//								a0 = v[2].v[A];
-//								b0 = v[2].v[B];
-//								a1 = v[0].v[A];
-//								b1 = v[0].v[B];
-//								break;
-//							}
-//							da = a1 - a0;
-//							db = b1 - b0;
-//							a0_2 = a0 * a0; a0_3 = a0_2 * a0; a0_4 = a0_3 * a0;
-//							b0_2 = b0 * b0; b0_3 = b0_2 * b0; b0_4 = b0_3 * b0;
-//							a1_2 = a1 * a1; a1_3 = a1_2 * a1; 
-//							b1_2 = b1 * b1; b1_3 = b1_2 * b1;
-//
-//							C1 = a1 + a0;
-//							Ca = a1*C1 + a0_2; Caa = a1*Ca + a0_3; Caaa = a1*Caa + a0_4;
-//							Cb = b1*(b1 + b0) + b0_2; Cbb = b1*Cb + b0_3; Cbbb = b1*Cbb + b0_4;
-//							Cab = 3*a1_2 + 2*a1*a0 + a0_2; Kab = a1_2 + 2*a1*a0 + 3*a0_2;
-//							Caab = a0*Cab + 4*a1_3; Kaab = a1*Kab + 4*a0_3;
-//							Cabb = 4*b1_3 + 3*b1_2*b0 + 2*b1*b0_2 + b0_3;
-//							Kabb = b1_3 + 2*b1_2*b0 + 3*b1*b0_2 + 4*b0_3;
-//
-//							P1 += db*C1;
-//							Pa += db*Ca;
-//							Paa += db*Caa;
-//							Paaa += db*Caaa;
-//							Pb += da*Cb;
-//							Pbb += da*Cbb;
-//							Pbbb += da*Cbbb;
-//							Pab += db*(b1*Cab + b0*Kab);
-//							Paab += db*(b1*Caab + b0*Kaab);
-//							Pabb += da*(a1*Cabb + a0*Kabb);
-//						}
-//
-//						P1 /= 2.0;
-//						Pa /= 6.0;
-//						Paa /= 12.0;
-//						Paaa /= 20.0;
-//						Pb /= -6.0;
-//						Pbb /= -12.0;
-//						Pbbb /= -20.0;
-//						Pab /= 24.0;
-//						Paab /= 60.0;
-//						Pabb /= -60.0;
-//					}			
-//
-//					w = - dDOT(n, v[0]);
-//
-//					k1 = 1 / n.v[C]; k2 = k1 * k1; k3 = k2 * k1; k4 = k3 * k1;
-//
-//					Fa = k1 * Pa;
-//					Fb = k1 * Pb;
-//					Fc = -k2 * (n.v[A]*Pa + n.v[B]*Pb + w*P1);
-//
-//					Faa = k1 * Paa;
-//					Fbb = k1 * Pbb;
-//					Fcc = k3 * (SQR(n.v[A])*Paa + 2*n.v[A]*n.v[B]*Pab + SQR(n.v[B])*Pbb +
-//							w*(2*(n.v[A]*Pa + n.v[B]*Pb) + w*P1));
-//
-//					Faaa = k1 * Paaa;
-//					Fbbb = k1 * Pbbb;
-//					Fccc = -k4 * (CUBE(n.v[A])*Paaa + 3*SQR(n.v[A])*n.v[B]*Paab 
-//							+ 3*n.v[A]*SQR(n.v[B])*Pabb + CUBE(n.v[B])*Pbbb
-//							+ 3*w*(SQR(n.v[A])*Paa + 2*n.v[A]*n.v[B]*Pab + SQR(n.v[B])*Pbb)
-//							+ w*w*(3*(n.v[A]*Pa + n.v[B]*Pb) + w*P1));
-//
-//					Faab = k1 * Paab;
-//					Fbbc = -k2 * (n.v[A]*Pabb + n.v[B]*Pbbb + w*Pbb);
-//					Fcca = k3 * (SQR(n.v[A])*Paaa + 2*n.v[A]*n.v[B]*Paab + SQR(n.v[B])*Pabb
-//							+ w*(2*(n.v[A]*Paa + n.v[B]*Pab) + w*Pa));
-//				}
-//
-//
-//				T0 += n.v[0] * ((A == 0) ? Fa : ((B == 0) ? Fb : Fc));
-//
-//				T1[A] += n.v[A] * Faa;
-//				T1[B] += n.v[B] * Fbb;
-//				T1[C] += n.v[C] * Fcc;
-//				T2[A] += n.v[A] * Faaa;
-//				T2[B] += n.v[B] * Fbbb;
-//				T2[C] += n.v[C] * Fccc;
-//				TP[A] += n.v[A] * Faab;
-//				TP[B] += n.v[B] * Fbbc;
-//				TP[C] += n.v[C] * Fcca;
-//			}
-//		}
-//
-//		T1[0] /= 2; T1[1] /= 2; T1[2] /= 2;
-//		T2[0] /= 3; T2[1] /= 3; T2[2] /= 3;
-//		TP[0] /= 2; TP[1] /= 2; TP[2] /= 2;
-//
-//		m.mass = density * T0;
-//		m.I.v[_I(0,0)] = density * (T2[1] + T2[2]);
-//		m.I.v[_I(1,1)] = density * (T2[2] + T2[0]);
-//		m.I.v[_I(2,2)] = density * (T2[0] + T2[1]);
-//		m.I.v[_I(0,1)] = - density * TP[0];
-//		m.I.v[_I(1,0)] = - density * TP[0];
-//		m.I.v[_I(2,1)] = - density * TP[1];
-//		m.I.v[_I(1,2)] = - density * TP[1];
-//		m.I.v[_I(2,0)] = - density * TP[2];
-//		m.I.v[_I(0,2)] = - density * TP[2];
-//
-//		// Added to address SF bug 1729095
-//		dMassTranslate( m, T1[0] / T0,  T1[1] / T0,  T1[2] / T0 );
-//
-//		//# ifndef dNODEBUG
-//		if (!dNODEBUG) {
-//			dMassCheck (m);
-//		}
-//		//# endif
-//
-//		}
+			a.eqDiff(v[1], v[0]);
+			b.eqDiff(v[2], v[0]);
+			dCROSS( n, OP.EQ, b, a );
+			nx = Math.abs(n.get0());
+			ny = Math.abs(n.get1());
+			nz = Math.abs(n.get2());
+
+			if( nx > ny && nx > nz )
+				C = 0;
+			else
+				C = (ny > nz) ? 1 : 2;
+
+			// Even though all triangles might be initially valid, 
+			// a triangle may degenerate into a segment after applying 
+			// space transformation.
+			if (n.get(C) != 0.0)
+			{
+				A = (C + 1) % 3;
+				B = (A + 1) % 3;
+
+				// calculate face integrals
+				{
+					double w;
+					double k1, k2, k3, k4;
+
+					//compProjectionIntegrals(f);
+					{
+						double a0=0, a1=0, da;
+						double b0=0, b1=0, db;
+						double a0_2, a0_3, a0_4, b0_2, b0_3, b0_4;
+						double a1_2, a1_3, b1_2, b1_3;
+						double C1, Ca, Caa, Caaa, Cb, Cbb, Cbbb;
+						double Cab, Kab, Caab, Kaab, Cabb, Kabb;
+
+						P1 = Pa = Pb = Paa = Pab = Pbb = Paaa = Paab = Pabb = Pbbb = 0.0;
+
+						for( int j = 0; j < 3; j++)
+						{
+							switch(j)
+							{
+							case 0:
+								a0 = v[0].get(A);
+								b0 = v[0].get(B);
+								a1 = v[1].get(A);
+								b1 = v[1].get(B);
+								break;
+							case 1:
+								a0 = v[1].get(A);
+								b0 = v[1].get(B);
+								a1 = v[2].get(A);
+								b1 = v[2].get(B);
+								break;
+							case 2:
+								a0 = v[2].get(A);
+								b0 = v[2].get(B);
+								a1 = v[0].get(A);
+								b1 = v[0].get(B);
+								break;
+							}
+							da = a1 - a0;
+							db = b1 - b0;
+							a0_2 = a0 * a0; a0_3 = a0_2 * a0; a0_4 = a0_3 * a0;
+							b0_2 = b0 * b0; b0_3 = b0_2 * b0; b0_4 = b0_3 * b0;
+							a1_2 = a1 * a1; a1_3 = a1_2 * a1; 
+							b1_2 = b1 * b1; b1_3 = b1_2 * b1;
+
+							C1 = a1 + a0;
+							Ca = a1*C1 + a0_2; Caa = a1*Ca + a0_3; Caaa = a1*Caa + a0_4;
+							Cb = b1*(b1 + b0) + b0_2; Cbb = b1*Cb + b0_3; Cbbb = b1*Cbb + b0_4;
+							Cab = 3*a1_2 + 2*a1*a0 + a0_2; Kab = a1_2 + 2*a1*a0 + 3*a0_2;
+							Caab = a0*Cab + 4*a1_3; Kaab = a1*Kab + 4*a0_3;
+							Cabb = 4*b1_3 + 3*b1_2*b0 + 2*b1*b0_2 + b0_3;
+							Kabb = b1_3 + 2*b1_2*b0 + 3*b1*b0_2 + 4*b0_3;
+
+							P1 += db*C1;
+							Pa += db*Ca;
+							Paa += db*Caa;
+							Paaa += db*Caaa;
+							Pb += da*Cb;
+							Pbb += da*Cbb;
+							Pbbb += da*Cbbb;
+							Pab += db*(b1*Cab + b0*Kab);
+							Paab += db*(b1*Caab + b0*Kaab);
+							Pabb += da*(a1*Cabb + a0*Kabb);
+						}
+
+						P1 /= 2.0;
+						Pa /= 6.0;
+						Paa /= 12.0;
+						Paaa /= 20.0;
+						Pb /= -6.0;
+						Pbb /= -12.0;
+						Pbbb /= -20.0;
+						Pab /= 24.0;
+						Paab /= 60.0;
+						Pabb /= -60.0;
+					}			
+
+					w = - dDOT(n, v[0]);
+
+					k1 = 1 / n.get(C); k2 = k1 * k1; k3 = k2 * k1; k4 = k3 * k1;
+
+					Fa = k1 * Pa;
+					Fb = k1 * Pb;
+					Fc = -k2 * (n.get(A)*Pa + n.get(B)*Pb + w*P1);
+
+					Faa = k1 * Paa;
+					Fbb = k1 * Pbb;
+					Fcc = k3 * (SQR(n.get(A))*Paa + 2*n.get(A)*n.get(B)*Pab + SQR(n.get(B))*Pbb +
+							w*(2*(n.get(A)*Pa + n.get(B)*Pb) + w*P1));
+
+					Faaa = k1 * Paaa;
+					Fbbb = k1 * Pbbb;
+					Fccc = -k4 * (CUBE(n.get(A))*Paaa + 3*SQR(n.get(A))*n.get(B)*Paab 
+							+ 3*n.get(A)*SQR(n.get(B))*Pabb + CUBE(n.get(B))*Pbbb
+							+ 3*w*(SQR(n.get(A))*Paa + 2*n.get(A)*n.get(B)*Pab + SQR(n.get(B))*Pbb)
+							+ w*w*(3*(n.get(A)*Pa + n.get(B)*Pb) + w*P1));
+
+					Faab = k1 * Paab;
+					Fbbc = -k2 * (n.get(A)*Pabb + n.get(B)*Pbbb + w*Pbb);
+					Fcca = k3 * (SQR(n.get(A))*Paaa + 2*n.get(A)*n.get(B)*Paab + SQR(n.get(B))*Pabb
+							+ w*(2*(n.get(A)*Paa + n.get(B)*Pab) + w*Pa));
+				}
+
+
+				T0 += n.get0() * ((A == 0) ? Fa : ((B == 0) ? Fb : Fc));
+
+				T1[A] += n.get(A) * Faa;
+				T1[B] += n.get(B) * Fbb;
+				T1[C] += n.get(C) * Fcc;
+				T2[A] += n.get(A) * Faaa;
+				T2[B] += n.get(B) * Fbbb;
+				T2[C] += n.get(C) * Fccc;
+				TP[A] += n.get(A) * Faab;
+				TP[B] += n.get(B) * Fbbc;
+				TP[C] += n.get(C) * Fcca;
+			}
+		}
+
+		T1[0] /= 2; T1[1] /= 2; T1[2] /= 2;
+		T2[0] /= 3; T2[1] /= 3; T2[2] /= 3;
+		TP[0] /= 2; TP[1] /= 2; TP[2] /= 2;
+
+		_mass = density * T0;
+		_I.set00( density * (T2[1] + T2[2]) );
+		_I.set11( density * (T2[2] + T2[0]) );
+		_I.set22( density * (T2[0] + T2[1]) );
+		_I.set01( - density * TP[0] );
+		_I.set10( - density * TP[0] );
+		_I.set21( - density * TP[1] );
+		_I.set12( - density * TP[1] );
+		_I.set20( - density * TP[2] );
+		_I.set02( - density * TP[2] );
+
+		// Added to address SF bug 1729095
+		//dMassTranslate( T1[0] / T0,  T1[1] / T0,  T1[2] / T0 );
+		DVector3 vT = new DVector3( T1[0] / T0,  T1[1] / T0,  T1[2] / T0 ); 
+		dMassTranslate( vT );
+
+		//# ifndef dNODEBUG
+		if (!dNODEBUG) {
+			dMassCheck ();
+		}
+		//# endif
+
 		//#endif // dTRIMESH_ENABLED
 	}
 

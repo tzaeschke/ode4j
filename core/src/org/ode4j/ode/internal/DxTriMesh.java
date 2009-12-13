@@ -21,6 +21,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import org.ode4j.math.DVector3;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.DTriMesh;
@@ -39,7 +40,7 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 	dTriRayCallback RayCallback;
 
 	// Data types
-	DxTriMeshData _Data;
+	//DxTriMeshData _Data;
 
 	boolean doSphereTC;
 	boolean doBoxTC;
@@ -57,7 +58,7 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 	{ 
 		super(space, true);
 		type = dTriMeshClass;
-		_Data = data;
+//		_Data = data;
 	}
 	//dxTriMesh::~dxTriMesh(){}
 
@@ -78,5 +79,9 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 
 		return Geom;
 	}
+
+	abstract public int FetchTriangleCount();
+
+	abstract public void FetchTransformedTriangle(int i, DVector3[] v);
 }
 

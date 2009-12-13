@@ -21,6 +21,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import org.ode4j.math.DVector3;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DTriMeshData;
@@ -134,6 +135,18 @@ class DxTriMeshDisabled extends DxTriMesh {
 	void ClearTCCache() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void FetchTransformedTriangle(int i, DVector3[] v) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int FetchTriangleCount() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	//#endif // !dTRIMESH_ENABLED
