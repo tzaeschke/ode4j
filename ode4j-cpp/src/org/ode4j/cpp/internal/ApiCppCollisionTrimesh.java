@@ -29,9 +29,10 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.DTriMesh.dTriArrayCallback;
-import org.ode4j.ode.DTriMesh.dTriCallback;
-import org.ode4j.ode.DTriMesh.dTriRayCallback;
+import org.ode4j.ode.DTriMesh.DTriArrayCallback;
+import org.ode4j.ode.DTriMesh.DTriCallback;
+import org.ode4j.ode.DTriMesh.DTriRayCallback;
+import org.ode4j.ode.internal.DxTriMeshData;
 import org.ode4j.ode.internal.Common.DMatrix4;
 
 
@@ -105,16 +106,10 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//             final void* Vertices, int VertexStride, int VertexCount, 
 	//             final void* Indices, int IndexCount, int TriStride);
 	public static void dGeomTriMeshDataBuildSingle(DTriMeshData g,
-			final double[] Vertices, int VertexStride, int VertexCount, 
-			final int[] Indices, int IndexCount, int TriStride) {
-		g.buildSingle(Vertices, VertexStride, VertexCount, 
-				Indices, IndexCount, TriStride);
-	}
-	public static void dGeomTriMeshDataBuildSingle(DTriMeshData g,
 			final float[] Vertices, int VertexStride, int VertexCount, 
 			final int[] Indices, int IndexCount, int TriStride) {
-		g.buildSingle(Vertices, VertexStride, VertexCount, 
-				Indices, IndexCount, TriStride);
+		((DxTriMeshData)g).build(Vertices, //VertexStride, VertexCount, 
+				Indices);//, IndexCount, TriStride);
 	}
 	/** same again with a normals array (used as trimesh-trimesh optimization) */
 	//ODE_API 
@@ -204,11 +199,11 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//		 int call(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
 	//	 }
 	//ODE_API 
-	void dGeomTriMeshSetCallback(DGeom g, dTriCallback Callback) {
+	void dGeomTriMeshSetCallback(DGeom g, DTriCallback Callback) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 
-	dTriCallback dGeomTriMeshGetCallback(DGeom g) {
+	DTriCallback dGeomTriMeshGetCallback(DGeom g) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -221,11 +216,11 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//	void call(dGeom TriMesh, dGeom RefObject, final int[] TriIndices, int TriCount);
 	//}
 	//ODE_API 
-	void dGeomTriMeshSetArrayCallback(DGeom g, dTriArrayCallback ArrayCallback) {
+	void dGeomTriMeshSetArrayCallback(DGeom g, DTriArrayCallback ArrayCallback) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 
-	dTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) {
+	DTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -240,11 +235,11 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//	int call(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
 	//}
 	//ODE_API 
-	void dGeomTriMeshSetRayCallback(DTriMesh g, dTriRayCallback Callback) {
+	void dGeomTriMeshSetRayCallback(DTriMesh g, DTriRayCallback Callback) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 
-	dTriRayCallback dGeomTriMeshGetRayCallback(DTriMesh g) {
+	DTriRayCallback dGeomTriMeshGetRayCallback(DTriMesh g) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -273,8 +268,8 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * Construction. Callbacks are optional.
 	 */
 	//ODE_API 
-	public static DTriMesh dCreateTriMesh(DSpace space, DTriMeshData Data, dTriCallback Callback, 
-			dTriArrayCallback ArrayCallback, dTriRayCallback RayCallback) {
+	public static DTriMesh dCreateTriMesh(DSpace space, DTriMeshData Data, DTriCallback Callback, 
+			DTriArrayCallback ArrayCallback, DTriRayCallback RayCallback) {
 		return OdeHelper.createTriMesh(space, Data, 
 				Callback, ArrayCallback, RayCallback);
 	}
