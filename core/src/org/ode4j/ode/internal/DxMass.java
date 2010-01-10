@@ -259,18 +259,10 @@ public class DxMass implements DMass {
 //	public void dMassSetTrimesh( dxMass m, double density, dxGeom g )
 	public void dMassSetTrimesh( double density, DTriMesh g )
 	{
-		//dAASSERT (m);
 		dUASSERT(g != null, "argument not a trimesh");// && g.type == dTriMeshClass, "argument not a trimesh");
 
 		dMassSetZero ();
 
-//		throw new UnsupportedOperationException("Trimesh enabled = " + dTRIMESH_ENABLED);
-		//TODO only throw when trimesh is enabled?
-		
-		
-//		//#if dTRIMESH_ENABLED
-//		if (dTRIMESH_ENABLED) {
-//
 		DxTriMesh TriMesh = (DxTriMesh )g;
 		//unsigned 
 		int triangles = TriMesh.FetchTriangleCount();
@@ -456,13 +448,9 @@ public class DxMass implements DMass {
 		DVector3 vT = new DVector3( T1[0] / T0,  T1[1] / T0,  T1[2] / T0 ); 
 		dMassTranslate( vT );
 
-		//# ifndef dNODEBUG
-		if (!dNODEBUG) {
+		if (!dNODEBUG) { //# ifndef dNODEBUG
 			dMassCheck ();
-		}
-		//# endif
-
-		//#endif // dTRIMESH_ENABLED
+		} //# endif
 	}
 
 
@@ -477,7 +465,6 @@ public class DxMass implements DMass {
 
 	public void dMassAdjust (double newmass)
 	{
-		//dAASSERT (m);
 		double scale = newmass / _mass;
 		_mass = newmass;
 		//for (int i=0; i<3; i++) for (int j=0; j<3; j++) _I.v[_I(i,j)] *= scale;
@@ -502,8 +489,6 @@ public class DxMass implements DMass {
 		int i,j;
 		DMatrix3 ahat = new DMatrix3(),chat = new DMatrix3();
 		DMatrix3 t1 = new DMatrix3(),t2 = new DMatrix3();
-
-//		dAASSERT (m);
 
 		// adjust inertia matrix
 		//chat.dSetZero();//dSetZero (chat,12);
@@ -551,8 +536,6 @@ public class DxMass implements DMass {
 		//double t2[3];
 		DVector3 t2 = new DVector3();
 
-//		dAASSERT (m);
-
 		// rotate inertia matrix
 		dMULTIPLY2_333 (t1,_I,aR);
 		dMULTIPLY0_333 (_I,aR,t1);
@@ -569,11 +552,9 @@ public class DxMass implements DMass {
 //		_c.v[2] = t2.v[2];
 		_c.set(t2);
 
-		//# ifndef dNODEBUG
-		if (!dNODEBUG) {
+		if (!dNODEBUG) { //# ifndef dNODEBUG
 			dMassCheck ();
-		}
-		//# endif
+		} //# endif
 	}
 
 
@@ -583,8 +564,7 @@ public class DxMass implements DMass {
 		dAASSERT (b);
 		double denom = dRecip (_mass + b.getMass());
 		//for (i=0; i<3; i++) a._c.v[i] = (a._c.v[i]*a._mass + b._c.v[i]*b._mass)*denom;
-		DVector3 b_c = new DVector3(b.getC());
-		_c.scale(_mass).add( b_c.scale(b.getMass()) ).scale(denom);
+		_c.eqSum( _c, _mass, b.getC(), b.getMass() ).scale( denom );
 		
 		_mass += b.getMass();
 		//for (i=0; i<12; i++) a._I.v[i] += b._I.v[i];
@@ -607,7 +587,6 @@ public class DxMass implements DMass {
 		_mass = m.getMass();
 		_c = new DVector3(m.getC());
 		_I = new DMatrix3(m.getI());
-		//TODO complete?
 	}
 	
 	@Override

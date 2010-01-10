@@ -21,9 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.nio.ByteBuffer;
-
-import org.cpp4j.java.RefInt;
 import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.DTriMeshData;
 
@@ -51,46 +48,49 @@ public abstract class DxTriMeshData implements DTriMeshData {
     public static DTriMeshData dGeomTriMeshDataCreate() {
 		switch (OdeConfig.dTRIMESH_TYPE) {
 		case DISABLED: return new DxTriMeshDisabled.dxTriMeshDisabledData();
+		case GIMPACT: return new DxGimpactData();
 		default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
 		}
     }
-	public void dGeomTriMeshDataDestroy() {}
-   
-	public void dGeomTriMeshDataBuildSingle(
-			final double[] Vertices, int VertexStride, int VertexCount, 
-			final int[] Indices, int IndexCount, int TriStride) { }
-	public void dGeomTriMeshDataBuildSingle(
-			final float[] Vertices, int VertexStride, int VertexCount, 
-			final int[] Indices, int IndexCount, int TriStride) { }
-
-	void dGeomTriMeshDataBuildSingle1(DTriMeshData g,
-			final double[] Vertices, int VertexStride, int VertexCount, 
-			final int[] Indices, int IndexCount, int TriStride,
-			final int[] Normals) { }
-
-	void dGeomTriMeshDataBuildDouble(DTriMeshData g, 
-			final double[] Vertices,  int VertexStride, int VertexCount, 
-			final int[] Indices, int IndexCount, int TriStride) { }
-
-	void dGeomTriMeshDataBuildDouble1(DTriMeshData g, 
-			final double[] Vertices,  int VertexStride, int VertexCount, 
-			final int[] Indices, int IndexCount, int TriStride,
-			final int[] Normals) { }
-
-	void dGeomTriMeshDataBuildSimple(DTriMeshData g,
-			final double[] Vertices, int VertexCount,
-			final int[] Indices, int IndexCount) { }
-
-	void dGeomTriMeshDataBuildSimple1(DTriMeshData g,
-			final double[] Vertices, int VertexCount,
-			final int[] Indices, int IndexCount,
-			final int[] Normals) { }
-
-	void dGeomTriMeshDataPreprocess(DTriMeshData g) { }
-
-	//void dGeomTriMeshDataGetBuffer(dTriMeshData g, unsigned char** buf, int* bufLen) { *buf = NULL; *bufLen=0; }
-	//void dGeomTriMeshDataSetBuffer(dTriMeshData g, unsigned char* buf) {}
-	void dGeomTriMeshDataGetBuffer(DTriMeshData g, ByteBuffer buf, RefInt bufLen) { buf.clear(); bufLen.set(0); }
-	void dGeomTriMeshDataSetBuffer(DTriMeshData g, ByteBuffer buf) {}
+//	public abstract void dGeomTriMeshDataDestroy();
+//   
+//	public abstract void dGeomTriMeshDataBuildSingle(
+//			final double[] Vertices, int VertexStride, int VertexCount, 
+//			final int[] Indices, int IndexCount, int TriStride);
+////	public void dGeomTriMeshDataBuildSingle(
+////			final float[] Vertices, int VertexStride, int VertexCount, 
+////			final int[] Indices, int IndexCount, int TriStride) { }
+//	public abstract void dGeomTriMeshDataBuildSingle(
+//			final float[] Vertices, final int[] Indices);
+//
+//	abstract void dGeomTriMeshDataBuildSingle1(
+//			final double[] Vertices, int VertexStride, int VertexCount, 
+//			final int[] Indices, int IndexCount, int TriStride,
+//			final int[] Normals);
+//
+//	abstract void dGeomTriMeshDataBuildDouble(DTriMeshData g, 
+//			final double[] Vertices,  int VertexStride, int VertexCount, 
+//			final int[] Indices, int IndexCount, int TriStride);
+//
+//	abstract void dGeomTriMeshDataBuildDouble1( 
+//			final double[] Vertices,  int VertexStride, int VertexCount, 
+//			final int[] Indices, int IndexCount, int TriStride,
+//			final int[] Normals);
+//
+//	abstract void dGeomTriMeshDataBuildSimple(DTriMeshData g,
+//			final double[] Vertices, int VertexCount,
+//			final int[] Indices, int IndexCount);
+//
+//	abstract void dGeomTriMeshDataBuildSimple1(DTriMeshData g,
+//			final double[] Vertices, int VertexCount,
+//			final int[] Indices, int IndexCount,
+//			final int[] Normals);
+//
+//	abstract void dGeomTriMeshDataPreprocess(DTriMeshData g);
+//
+//	//void dGeomTriMeshDataGetBuffer(dTriMeshData g, unsigned char** buf, int* bufLen) { *buf = NULL; *bufLen=0; }
+//	//void dGeomTriMeshDataSetBuffer(dTriMeshData g, unsigned char* buf) {}
+//	abstract void dGeomTriMeshDataGetBuffer(DTriMeshData g, ByteBuffer buf, RefInt bufLen);
+//	abstract void dGeomTriMeshDataSetBuffer(DTriMeshData g, ByteBuffer buf);
 
 }

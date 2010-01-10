@@ -41,7 +41,7 @@ public interface DTriMesh extends DGeom {
 	 * to determine if a collision should occur.
 	 */
 	//typedef int dTriRayCallback(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
-	interface dTriRayCallback {
+	interface DTriRayCallback {
 		int call(DGeom TriMesh, DGeom Ray, int TriangleIndex, double u, double v);
 	}
 	
@@ -51,7 +51,7 @@ public interface DTriMesh extends DGeom {
 	 * shot. Maybe we should remove this one.
 	 */
 	//typedef void dTriArrayCallback(dGeom TriMesh, dGeom RefObject, final int* TriIndices, int TriCount);
-	interface dTriArrayCallback {
+	interface DTriArrayCallback {
 		void call(DGeom TriMesh, DGeom RefObject, final int[] TriIndices, int TriCount);
 	}
 	
@@ -61,7 +61,7 @@ public interface DTriMesh extends DGeom {
 	 * a particular triangle.
 	 */
 	//typedef int dTriCallback(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
-	interface dTriCallback {
+	interface DTriCallback {
 		int call(DGeom TriMesh, DGeom RefObject, int TriangleIndex);
 	}
 	
@@ -69,11 +69,11 @@ public interface DTriMesh extends DGeom {
 	
 	
 	
-	void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data);
-	Object dGeomTriMeshDataGet(DTriMeshData g, int data_id);
+//	void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data);
+//	Object dGeomTriMeshDataGet(DTriMeshData g, int data_id);
 
 
-
+//The following is not ported to Java because it is not supported by GIMPACT (TZ).
 //	/**
 //	 * We need to set the last transform after each time step for 
 //	 * accurate collision response. These functions get and set that transform.
@@ -137,27 +137,25 @@ public interface DTriMesh extends DGeom {
 //	dTriRayCallback dGeomTriMeshGetRayCallback(DGeom g) {
 //		throw new UnsupportedOperationException();
 //	}
-//
-//	/**
-//	 * Triangle merging callback.
-//	 * Allows the user to generate a fake triangle index for a new contact generated
-//	 * from merging of two other contacts. That index could later be used by the 
-//	 * user to determine attributes of original triangles used as sources for a 
-//	 * merged contact.
-//	 */
-//	//typedef int dTriTriMergeCallback(dGeomID TriMesh, int FirstTriangleIndex, int SecondTriangleIndex);
-//	private interface DTriTriMergeCallback {
-//		int callback(DGeom TriMesh, int FirstTriangleIndex, int SecondTriangleIndex);
-//	}
-//	//ODE_API 
-//	void dGeomTriMeshSetTriMergeCallback(DGeom g, DTriTriMergeCallback Callback) {
-//		throw new UnsupportedOperationException();
-//	}
-//	//ODE_API 
-//	DTriTriMergeCallback dGeomTriMeshGetTriMergeCallback(DGeom g) {
-//		throw new UnsupportedOperationException();
-//	}
-//
+
+	/**
+	 * Triangle merging callback.
+	 * Allows the user to generate a fake triangle index for a new contact generated
+	 * from merging of two other contacts. That index could later be used by the 
+	 * user to determine attributes of original triangles used as sources for a 
+	 * merged contact.
+	 */
+	//typedef int dTriTriMergeCallback(dGeomID TriMesh, int FirstTriangleIndex, int SecondTriangleIndex);
+	interface DTriTriMergeCallback {
+		int call(DGeom TriMesh, int FirstTriangleIndex, int SecondTriangleIndex);
+	}
+	
+	//ODE_API 
+	void setTriMergeCallback(DTriTriMergeCallback Callback);
+	
+	//ODE_API 
+	DTriTriMergeCallback getTriMergeCallback();
+
 //	/**
 //	 * Trimesh class
 //	 * Construction. Callbacks are optional.
@@ -179,26 +177,28 @@ public interface DTriMesh extends DGeom {
 //	}
 //
 //
-//	// enable/disable/check temporal coherence
-//	//ODE_API 
-//	void dGeomTriMeshEnableTC(DGeom g, int geomClass, int enable) {
-//		throw new UnsupportedOperationException();
-//	}
-//	//ODE_API 
-//	int dGeomTriMeshIsTCEnabled(DGeom g, int geomClass) {
-//		throw new UnsupportedOperationException();
-//	}
-//
-//	/**
-//	 * Clears the internal temporal coherence caches. When a geom has its
-//	 * collision checked with a trimesh once, data is stored inside the trimesh.
-//	 * With large worlds with lots of seperate objects this list could get huge.
-//	 * We should be able to do this automagically.
-//	 */
-//	//ODE_API 
-//	void clearTCCache(DTriMesh g);
-//
-//
+	/** Enable/disable temporal coherence. */
+	//ODE_API 
+	//void dGeomTriMeshEnableTC(DGeom g, int geomClass, int enable) {
+	void enableTC(Class<? extends DGeom> cls, boolean b);
+
+
+	/** Check temporal coherence. */
+	//ODE_API 
+	//	int dGeomTriMeshIsTCEnabled(DGeom g, int geomClass) {
+	boolean isTCEnabled(Class<? extends DGeom> cls);
+	
+
+	/**
+	 * Clears the internal temporal coherence caches. When a geom has its
+	 * collision checked with a trimesh once, data is stored inside the trimesh.
+	 * With large worlds with lots of seperate objects this list could get huge.
+	 * We should be able to do this automagically.
+	 */
+	//ODE_API 
+	void clearTCCache(DTriMesh g);
+
+
 //	/**
 //	 * returns the TriMeshDataID
 //	 */

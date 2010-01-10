@@ -28,17 +28,13 @@ import org.ode4j.ode.DTriMesh;
 
 public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 
-	//TODO #if !dTRIMESH_ENABLED
-
-	//#include "collision_util.h"
-	//#include "collision_trimesh_internal.h"
-
 	//TZ from "collision_trimesh_internal.h":
 	// Callbacks
-	dTriCallback Callback;
-	dTriArrayCallback ArrayCallback;
-	dTriRayCallback RayCallback;
-
+	DTriCallback Callback;
+	DTriArrayCallback ArrayCallback;
+	DTriRayCallback RayCallback;
+	DTriTriMergeCallback TriMergeCallback;
+	
 	// Data types
 	//DxTriMeshData _Data;
 
@@ -54,7 +50,7 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 
 
 	//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){ type = dTriMeshClass; }
-	public DxTriMesh(DxSpace space, DxTriMeshData data) //: dxGeom(Space, 1)
+	public DxTriMesh(DxSpace space) //: dxGeom(Space, 1)
 	{ 
 		super(space, true);
 		type = dTriMeshClass;
@@ -64,13 +60,14 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 
 	public static DxTriMesh dCreateTriMesh(DxSpace space, 
 			DxTriMeshData Data,
-			dTriCallback Callback,
-			dTriArrayCallback ArrayCallback,
-			dTriRayCallback RayCallback)
+			DTriCallback Callback,
+			DTriArrayCallback ArrayCallback,
+			DTriRayCallback RayCallback)
 	{
 		DxTriMesh Geom;
 		switch (OdeConfig.dTRIMESH_TYPE) {
 		case DISABLED: Geom = new DxTriMeshDisabled(space, Data); break;
+		case GIMPACT: Geom = new DxGimpact(space, (DxGimpactData) Data); break;
 		default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
 		}
 		Geom.Callback = Callback;

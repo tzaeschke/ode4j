@@ -868,4 +868,10 @@ public class DxRay extends DxGeom implements DRay {
 	{ return dGeomRayGetClosestHit (); }
 
 
+	@Override
+	public DVector3C getDirection() {
+		return _final_posr.R.columnAsNewVector(2);
+	}
+
+
 }

@@ -1286,7 +1286,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 			}
 		}
 
-//TODO		
 		setCollider(dSphereClass, dSphereClass, new DxSphere.CollideSphereSphere());
 		setCollider(dSphereClass, dBoxClass, new DxSphere.CollideSphereBox());
 		setCollider(dSphereClass, dPlaneClass, new DxSphere.CollideSpherePlane());
@@ -1302,13 +1301,13 @@ public abstract class DxGeom extends DBase implements DGeom {
 		setCollider (dRayClass,dPlaneClass, new DxRay.CollideRayPlane());//dCollideRayPlane);
 		setCollider (dRayClass,dCylinderClass, new DxRay.CollideRayCylinder());//dCollideRayCylinder);
 //		if (dTRIMESH_ENABLED) {
-//			setCollider (dTriMeshClass,dSphereClass, dCollideSTL);
-//			setCollider (dTriMeshClass,dBoxClass, dCollideBTL);
-//			setCollider (dTriMeshClass,dRayClass, dCollideRTL);
-//			setCollider (dTriMeshClass,dTriMeshClass, dCollideTTL);
-//			setCollider (dTriMeshClass,dCapsuleClass, dCollideCCTL);
-//			setCollider (dTriMeshClass,dPlaneClass, dCollideTrimeshPlane);
-//			setCollider (dCylinderClass,dTriMeshClass, dCollideCylinderTrimesh);
+			setCollider (dTriMeshClass,dSphereClass, new CollideTrimeshSphere());//.  dCollideSTL);
+			setCollider (dTriMeshClass,dBoxClass, new CollideTrimeshBox());// dCollideBTL);
+			setCollider (dTriMeshClass,dRayClass, new CollideTrimeshRay());// dCollideRTL);
+			setCollider (dTriMeshClass,dTriMeshClass, new CollideTrimeshTrimesh());// dCollideTTL);
+			setCollider (dTriMeshClass,dCapsuleClass, new CollideTrimeshCCylinder());// dCollideCCTL);
+			setCollider (dTriMeshClass,dPlaneClass, new CollideTrimeshPlane());// dCollideTrimeshPlane);
+			setCollider (dCylinderClass,dTriMeshClass, new CollideCylinderTrimesh());// dCollideCylinderTrimesh);
 //		}
 		setCollider (dCylinderClass,dBoxClass, new CollideCylinderBox());//dCollideCylinderBox);
 		setCollider (dCylinderClass,dSphereClass, new CollideCylinderSphere());//dCollideCylinderSphere);
@@ -1332,28 +1331,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 		setCollider (dHeightfieldClass,dCylinderClass, new DxHeightfield.CollideHeightfield());//dCollideHeightfield);
 		setCollider (dHeightfieldClass,dConvexClass, new DxHeightfield.CollideHeightfield());//dCollideHeightfield);
 //		if (dTRIMESH_ENABLED) {
-//			setCollider (dHeightfieldClass,dTriMeshClass, dCollideHeightfield);
+			setCollider (dHeightfieldClass,dTriMeshClass, new DxHeightfield.CollideHeightfield());//dCollideHeightfield);
 //		}
 //		//<-- dHeightfield Collision
 //
 		setAllColliders (dGeomTransformClass, new DxGeomTransform.CollideTransform());//dCollideTransform);
 	}
-
-//	/** @deprecated (TZ) References should be removed, as this is not a valid collider. */
-//	private static class ColliderDummy implements dColliderFn {
-//
-//		@Override
-//		public int dColliderFn(dGeom o1, dGeom o2, int flags,
-//				dContactGeomBuffer contact) {
-//			// TODO
-//			System.err.println("Collider not implemented: " + 
-//					o1.getClass().getName() + " / " + o2.getClass().getName());
-//			throw new RuntimeException();
-//			//return 0;
-//		}
-//		
-//	}
-	
 
 	/*extern */
 	static void dFinitColliders()

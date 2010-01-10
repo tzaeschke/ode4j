@@ -3,8 +3,14 @@ package org.ode4j.math;
 import org.ode4j.math.DMatrix3.DVector3ColView;
 
 /**
- * This class provides functionality for dVector3 math.
- * 
+ * This class provides functionality for DVector3 math.
+ * <p>
+ * Most methods have a prefix indicating whether the (this) object
+ * will be modified or not.
+ * All methods starting with "eq" will write the result into (this).
+ * All methods starting with "re" return a new Object containing the result.
+ * For all other methods the behaviour should be obvious.
+ * <p>
  * Performance considerations:
  * - Each class implements its own strictly typed methods. Using
  *   generic methods in super-classes showed to slow down operations
@@ -47,6 +53,10 @@ public class DVector3 implements DVector3I, DVector3C {
 	public final DVector3 set(double[] v2) {
 		set(v2[0], v2[1], v2[2]);
 		return this;
+	}
+
+	public void set(float[] v2) {
+		set(v2[0], v2[1], v2[2]);
 	}
 	
 	public final DVector3 set(double x, double y, double z) {
@@ -132,38 +142,63 @@ public class DVector3 implements DVector3I, DVector3C {
 		return this;
 	}
 	
-	public final DVector3 eqSum(DVector3 v2, double s1, DVector3 v3, double s2) {
-		set0( v2.get0()*s1 + v3.get0()*s2 ); 
-		set1( v2.get1()*s1 + v3.get1()*s2 ); 
-		set2( v2.get2()*s1 + v3.get2()*s2 );
+	/**
+	 * Convenience function that performs:
+	 * this = v2*s2 + v3*s3
+	 * @return this
+	 */
+	public final DVector3 eqSum(DVector3C v2, double s2, DVector3C v3, double s3) {
+		set0( v2.get0()*s2 + v3.get0()*s3 ); 
+		set1( v2.get1()*s2 + v3.get1()*s3 ); 
+		set2( v2.get2()*s2 + v3.get2()*s3 );
 		return this;
 	}
 	
-	public final DVector3 eqSum(DVector3ColView v2, double s1, DVector3 v3, double s2) {
-		set0( v2.get0()*s1 + v3.get0()*s2 ); 
-		set1( v2.get1()*s1 + v3.get1()*s2 ); 
-		set2( v2.get2()*s1 + v3.get2()*s2 );
+	/**
+	 * Convenience function that performs:
+	 * this = v2*s2 + v3*s3
+	 * @return this
+	 */
+	public final DVector3 eqSum(DVector3ColView v2, double s2, DVector3 v3, double s3) {
+		set0( v2.get0()*s2 + v3.get0()*s3 ); 
+		set1( v2.get1()*s2 + v3.get1()*s3 ); 
+		set2( v2.get2()*s2 + v3.get2()*s3 );
 		return this;
 	}
 	
-	public final DVector3 eqSum(DVector3ColView v2, double s1, DVector3ColView v3, double s2) {
-		set0( v2.get0()*s1 + v3.get0()*s2 ); 
-		set1( v2.get1()*s1 + v3.get1()*s2 ); 
-		set2( v2.get2()*s1 + v3.get2()*s2 );
+	/**
+	 * Convenience function that performs:
+	 * this = v2*s2 + v3*s3
+	 * @return this
+	 */
+	public final DVector3 eqSum(DVector3ColView v2, double s2, DVector3ColView v3, double s3) {
+		set0( v2.get0()*s2 + v3.get0()*s3 ); 
+		set1( v2.get1()*s2 + v3.get1()*s3 ); 
+		set2( v2.get2()*s2 + v3.get2()*s3 );
 		return this;
 	}
 	
-	public final DVector3 eqSum(DVector3C v2, DVector3C v3, double s2) {
-		set0( v2.get0() + v3.get0()*s2 ); 
-		set1( v2.get1() + v3.get1()*s2 ); 
-		set2( v2.get2() + v3.get2()*s2 );
+	/**
+	 * Convenience function that performs:
+	 * this = v2 + v3*s3
+	 * @return this
+	 */
+	public final DVector3 eqSum(DVector3C v2, DVector3C v3, double s3) {
+		set0( v2.get0() + v3.get0()*s3 ); 
+		set1( v2.get1() + v3.get1()*s3 ); 
+		set2( v2.get2() + v3.get2()*s3 );
 		return this;
 	}
 
-	public final DVector3 eqSum(DVector3 v2, DVector3ColView v3, double s2) {
-		set0( v2.get0() + v3.get0()*s2 ); 
-		set1( v2.get1() + v3.get1()*s2 ); 
-		set2( v2.get2() + v3.get2()*s2 );
+	/**
+	 * Convenience function that performs:
+	 * this = v2 + v3*s3
+	 * @return this
+	 */
+	public final DVector3 eqSum(DVector3 v2, DVector3ColView v3, double s3) {
+		set0( v2.get0() + v3.get0()*s3 ); 
+		set1( v2.get1() + v3.get1()*s3 ); 
+		set2( v2.get2() + v3.get2()*s3 );
 		return this;
 	}
 	
@@ -505,6 +540,35 @@ public class DVector3 implements DVector3I, DVector3C {
 		return (int) (Double.doubleToRawLongBits(get0())  * 
 		Double.doubleToRawLongBits(get1()) * 
 		Double.doubleToRawLongBits(get2()));
+	}
+
+	/** 
+	 * Scales the first parameter with the second and then adds the 
+	 * result to the current vector.
+	 */
+	public final DVector3 addScaled(DVector3C v2, double d) {
+		v[0] += v2.get0()*d; v[1] += v2.get1()*d; v[2] += v2.get2()*d;
+		return this;
+	}
+
+	public final void eqCross(DVector3C b, DVector3C c) {
+		set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
+		set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
+		set2( b.get0()*c.get1() - b.get1()*c.get0() );
+	}
+
+	/** 
+	 * Calculates the ordinary matrix product for a 3x3 Matrix and a 3-Vector.
+	 * <pre>
+	 * a0 = m00*v0 + m01*v1 + m02*v2 
+	 * a1 = m10*v0 + m11*v1 + m12*v2 
+	 * a2 = m20*v0 + m21*v1 + m22*v2
+	 * </pre> 
+	 */
+	public final void eqProd(DMatrix3C m, DVector3C v2) {
+	    set0( m.get00()*v2.get0()+  m.get01()*v2.get1()+  m.get02()*v2.get2() );
+	    set1( m.get10()*v2.get0()+  m.get11()*v2.get1()+  m.get12()*v2.get2() );
+	    set2( m.get20()*v2.get0()+  m.get21()*v2.get1()+  m.get22()*v2.get2() );
 	}
 }
 

@@ -26,6 +26,10 @@ public final class DContactGeomBuffer {
 		_ofs = contactBuffer._ofs + ofs;
 	}
 
+	/** 
+	 * 
+	 * @return The first contact.
+	 */
 	public DContactGeom get() {
 		return get(0);
 	}

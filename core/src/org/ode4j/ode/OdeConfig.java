@@ -32,13 +32,14 @@ public class OdeConfig {
 	private static final boolean dDOUBLE = true;
 	
 	public enum TRIMESH {
-		DISABLED;
+		DISABLED,
+		GIMPACT;
 	}
 	
 	
 	/** Do not use directly.
 	 * TZ: For now the only option: DISABLED. */
-	public static final TRIMESH dTRIMESH_TYPE = TRIMESH.DISABLED;
+	public static final TRIMESH dTRIMESH_TYPE = TRIMESH.GIMPACT;
 	
 	/**
 	 * @return Whether double precision is used.

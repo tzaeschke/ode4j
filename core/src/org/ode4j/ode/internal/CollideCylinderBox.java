@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -954,13 +953,13 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 				dMultiplyMat3Vec3(mCylinderInv,vTemp,avPoints[i]);
 			}
 
-			RefInt iTmpCounter1 = new RefInt(0);
-			RefInt iTmpCounter2 = new RefInt(0);
+			int iTmpCounter1 = 0;
+			int iTmpCounter2 = 0;
 			DVector4 plPlane = new DVector4();
 
 			// plane of cylinder that contains circle for intersection
 			dConstructPlane(vCylinderCircleNormal_Rel,(0.0),plPlane);
-			dClipPolyToPlane(avPoints, 4, avTempArray1, iTmpCounter1, plPlane);
+			iTmpCounter1 = dClipPolyToPlane(avPoints, 4, avTempArray1, plPlane);
 
 
 			// Body of base circle of Cylinder
@@ -971,15 +970,15 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 
 				if (0 == (nCircleSegment % 2))
 				{
-					dClipPolyToPlane( avTempArray1 , iTmpCounter1.get() , avTempArray2, iTmpCounter2, plPlane);
+					iTmpCounter2 = dClipPolyToPlane( avTempArray1 , iTmpCounter1 , avTempArray2, plPlane);
 				}
 				else
 				{
-					dClipPolyToPlane( avTempArray2, iTmpCounter2.get(), avTempArray1 , iTmpCounter1 , plPlane );
+					iTmpCounter1 = dClipPolyToPlane( avTempArray2, iTmpCounter2, avTempArray1, plPlane );
 				}
 
-				dIASSERT( iTmpCounter1.get() >= 0 && iTmpCounter1.get() <= MAX_CYLBOX_CLIP_POINTS );
-				dIASSERT( iTmpCounter2.get() >= 0 && iTmpCounter2.get() <= MAX_CYLBOX_CLIP_POINTS );
+				dIASSERT( iTmpCounter1 >= 0 && iTmpCounter1 <= MAX_CYLBOX_CLIP_POINTS );
+				dIASSERT( iTmpCounter2 >= 0 && iTmpCounter2 <= MAX_CYLBOX_CLIP_POINTS );
 			}
 
 			// back transform clipped points to absolute space
@@ -989,7 +988,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 
 			if (nCircleSegment % 2 != 0)
 			{
-				for( i=0; i<iTmpCounter2.get(); i++)
+				for( i=0; i<iTmpCounter2; i++)
 				{
 					dMULTIPLY0_331(vPoint,m_mCylinderRot,avTempArray2[i]);
 //					vPoint[0] += vCylinderCirclePos[0];
@@ -1025,7 +1024,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			}
 			else
 			{
-				for( i=0; i<iTmpCounter1.get(); i++)
+				for( i=0; i<iTmpCounter1; i++)
 				{
 					dMULTIPLY0_331(vPoint,m_mCylinderRot,avTempArray1[i]);
 //					vPoint[0] += vCylinderCirclePos[0];

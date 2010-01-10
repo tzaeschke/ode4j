@@ -18,7 +18,7 @@ package org.ode4j.math;
  *
  * @author Tilmann Zaeschke
  */
-public interface DVector3C {
+public interface DVector4C {
 
 	/**
 	 * @param i The row to return [0, 1, 2].
@@ -27,21 +27,22 @@ public interface DVector3C {
 	public double get0();
 	public double get1();
 	public double get2();
-	public float[] toFloatArray();
-	public DVector3 clone();
+	public double get3();
+//	public float[] toFloatArray();
+//	public DVector3 clone();
 	public double lengthSquared();
 	public double length();
 	/** 
-	 * @see DVector3#dot(DVector3C)
+	 * @see DVector4#dot(DVector4C)
 	 */
-	public double dot(DVector3C b);
-	/** 
-	 * @see DVector3#dot(DVector3C) 
-	 */
-	public double dot(DVector3View b);
-
-	public DVector3 reSub(DVector3C pos);
-	public DVector3 reScale(double s);
-	public float[] toFloatArray4();
-	public double dotCol(DMatrix3C m, int col);
+	public double dot(DVector4C b);
+//	/** 
+//	 * @see DVector3#dot(DVector4C) 
+//	 */
+//	public double dot(DVector3View b);
+//
+//	public DVector3 reSub(DVector4C pos);
+//	public DVector3 reScale(double s);
+//	public float[] toFloatArray4();
+//	public double dotCol(DMatrix3C m, int col);
 }

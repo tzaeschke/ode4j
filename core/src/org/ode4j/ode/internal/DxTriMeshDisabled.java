@@ -24,6 +24,7 @@ package org.ode4j.ode.internal;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.internal.Common.DMatrix4;
 
@@ -40,27 +41,36 @@ class DxTriMeshDisabled extends DxTriMesh {
 			throw new UnsupportedOperationException();
 		}
 
-		@Override
-		public void buildSingle(double[] Vertices,
-				int VertexStride, int VertexCount, int[] Indices,
-				int IndexCount, int TriStride) {
-			dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount,
-					Indices, IndexCount, TriStride);
-		}
-
-		@Override
-		public void buildSingle(float[] Vertices,
-				int VertexStride, int VertexCount, int[] Indices,
-				int IndexCount, int TriStride) {
-			dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount,
-					Indices, IndexCount, TriStride);
-		}
+//		@Override
+//		public void buildSingle(double[] Vertices,
+//				int VertexStride, int VertexCount, int[] Indices,
+//				int IndexCount, int TriStride) {
+//			dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount,
+//					Indices, IndexCount, TriStride);
+//		}
+//
+//		@Override
+////		public void buildSingle(float[] Vertices,
+////				int VertexStride, int VertexCount, int[] Indices,
+////				int IndexCount, int TriStride) {
+////			dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount,
+////					Indices, IndexCount, TriStride);
+////		}
+//		public void buildSingle(float[] Vertices,
+//				int[] Indices
+//				) {
+//			dGeomTriMeshDataBuildSingle(Vertices, Indices);
+//		}
 
 		@Override
 		public void destroy() {
 			//
 		}
-		
+
+		@Override
+		public void build(float[] Vertices, int[] Indices) {
+			//dGeomTriMeshDataBuildSingle(Vertices, Indices);
+		}
 	}
 	
 	//TODO #if !dTRIMESH_ENABLED
@@ -71,7 +81,7 @@ class DxTriMeshDisabled extends DxTriMesh {
 	//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){ type = dTriMeshClass; }
 	public DxTriMeshDisabled(DxSpace space, DxTriMeshData data) //: dxGeom(Space, 1)
 	{ 
-		super(space, data);
+		super(space);
 		type = dTriMeshClass;
 	}
 	//dxTriMesh::~dxTriMesh(){}
@@ -112,14 +122,14 @@ class DxTriMeshDisabled extends DxTriMesh {
 	DTriMeshData dGeomTriMeshGetData(DGeom g) { return null; }
 
 
-	void dGeomTriMeshSetCallback(DGeom g, dTriCallback Callback) { }
-	dTriCallback dGeomTriMeshGetCallback(DGeom g) { return null; }
+	void dGeomTriMeshSetCallback(DGeom g, DTriCallback Callback) { }
+	DTriCallback dGeomTriMeshGetCallback(DGeom g) { return null; }
 
-	void dGeomTriMeshSetArrayCallback(DGeom g, dTriArrayCallback ArrayCallback) { }
-	dTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) { return null; }
+	void dGeomTriMeshSetArrayCallback(DGeom g, DTriArrayCallback ArrayCallback) { }
+	DTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) { return null; }
 
-	void dGeomTriMeshSetRayCallback(DGeom g, dTriRayCallback Callback) { }
-	dTriRayCallback dGeomTriMeshGetRayCallback(DGeom g) { return null; }
+	void dGeomTriMeshSetRayCallback(DGeom g, DTriRayCallback Callback) { }
+	DTriRayCallback dGeomTriMeshGetRayCallback(DGeom g) { return null; }
 
 
 	void dGeomTriMeshEnableTC(DGeom g, int geomClass, int enable) {}
@@ -147,6 +157,35 @@ class DxTriMeshDisabled extends DxTriMesh {
 	public int FetchTriangleCount() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void enableTC(Class<? extends DGeom> cls, boolean b) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public boolean isTCEnabled(Class<? extends DGeom> cls) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void clearTCCache(DTriMesh g) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public DTriTriMergeCallback getTriMergeCallback() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setTriMergeCallback(DTriTriMergeCallback Callback) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	//#endif // !dTRIMESH_ENABLED

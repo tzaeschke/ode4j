@@ -25,9 +25,9 @@ import java.io.File;
 import java.util.List;
 
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DTriMesh.dTriArrayCallback;
-import org.ode4j.ode.DTriMesh.dTriCallback;
-import org.ode4j.ode.DTriMesh.dTriRayCallback;
+import org.ode4j.ode.DTriMesh.DTriArrayCallback;
+import org.ode4j.ode.DTriMesh.DTriCallback;
+import org.ode4j.ode.DTriMesh.DTriRayCallback;
 import org.ode4j.ode.internal.joints.DxJointGroup;
 import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
 import org.ode4j.math.DVector3C;
@@ -758,7 +758,7 @@ public abstract class OdeHelper {
 	 * @return The version String.
 	 */
 	public static String getVersion() {
-		return "0.11.1-j1.0";
+		return "0.11.1-j1.1";
 	}
 	
 	
@@ -848,8 +848,8 @@ public abstract class OdeHelper {
 	 * Trimesh class
 	 * Construction. Callbacks are optional.
 	 */
-	public static DTriMesh createTriMesh(DSpace space, DTriMeshData Data, dTriCallback Callback, 
-			 dTriArrayCallback ArrayCallback, dTriRayCallback RayCallback) {
+	public static DTriMesh createTriMesh(DSpace space, DTriMeshData Data, DTriCallback Callback, 
+			 DTriArrayCallback ArrayCallback, DTriRayCallback RayCallback) {
 		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)Data, 
 				Callback, ArrayCallback, RayCallback);
 	}

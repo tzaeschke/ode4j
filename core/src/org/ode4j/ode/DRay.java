@@ -29,9 +29,15 @@ public interface DRay extends DGeom {
 	  void setLength (double length);
 	  double getLength();
 
+	  /** Set origin and direction. Origin is the same as setPosition(). */
 	  void set (double px, double py, double pz, double dx, double dy, double dz);
+	  /** Set origin and direction. Origin is the same as setPosition(). */
 	  void set (DVector3C p, DVector3C d);
+	  /** Get origin and direction. Origin is the same as getPosition(). 
+	   * Direction is the same as getDirection(). */
 	  void get (DVector3 start, DVector3 dir);
+	  /** Get direction. Direction is the same as the 2nd parameter in get(). */ 
+	  DVector3C getDirection();
 
 	  /**
 	   * Set/get ray flags that influence ray collision detection.

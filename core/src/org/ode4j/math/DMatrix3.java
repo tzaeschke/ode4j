@@ -24,6 +24,23 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 	
 	
+	/**
+	 * Create new Matrix of the form:
+	 * <pre>
+	 * d, e, f
+	 * g, h, i
+	 * j, k, l
+	 * </pre>
+	 * @param d 0,0
+	 * @param e 0,1
+	 * @param f 0,2
+	 * @param g 1,0
+	 * @param h 1,1
+	 * @param i 1,2
+	 * @param j 2,0
+	 * @param k 2,1
+	 * @param l 2,2
+	 */
 	public DMatrix3(double d, double e, double f, double g, double h, double i,
 			double j, double k, double l) {
 		this();
@@ -58,12 +75,13 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 	
 	
-	public void set(DMatrix3C m) {
+	public DMatrix3 set(DMatrix3C m) {
 //		System.arraycopy(((DMatrix3)m3).v, 0, v, 0, v.length);
 //		//v[0] = v3.v[0]; v[1] = v3.v[1]; v[2] = v3.v[2]; v[3] = v3.v[3];
 		set00( m.get00() ); set01( m.get01() ); set02( m.get02() );
 		set10( m.get10() ); set11( m.get11() ); set12( m.get12() );
 		set20( m.get20() ); set21( m.get21() ); set22( m.get22() );
+		return this;
 	}
 	
 	
@@ -613,6 +631,11 @@ public final class DMatrix3 implements DMatrix3C {
 				(float)get20(), (float)get21(), (float)get22() };
 	}
 	
+	
+	/**
+	 * Transpose this matrix.
+	 * @return This matrix.
+	 */
 	public final DMatrix3 eqTranspose() {
 		double t;
 		t = get01(); set01( get10() ); set10( t );
@@ -620,6 +643,19 @@ public final class DMatrix3 implements DMatrix3C {
 		t = get21(); set21( get12() ); set12( t );
 		return this;
 	}
+	
+	
+	/**
+	 * Create a new transposed version of this matrix.
+	 * @return The transposed copy of this matrix.
+	 */
+	public final DMatrix3 reTranspose() {
+		return new DMatrix3(
+				get00(), get10(), get20(),
+				get01(), get11(), get21(),
+				get02(), get12(), get22());
+	}
+	
 	
 	/**
 	 * Calculates the dot product of the the specified column of this matrix

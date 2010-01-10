@@ -77,7 +77,7 @@ public class DxCollisionUtil {
 
 	//Some vector math
 	//inline void dVector3Subtract(const dVector3& a,const dVector3& b,dVector3& c)
-	void dVector3Subtract(final DVector3 a,final DVector3 b,DVector3 c)
+	static void dVector3Subtract(final DVector3C a,final DVector3C b,DVector3 c)
 	{
 		c.eqDiff(a, b);
 		//		c.v[0] = a.v[0] - b.v[0];
@@ -105,7 +105,7 @@ public class DxCollisionUtil {
 	}
 
 	//inline void dVector3Copy(final dVector3& a,dVector3& c)
-	void dVector3Copy(final DVector3C a,DVector3 c)
+	static void dVector3Copy(final DVector3C a,DVector3 c)
 	{
 		//		c.v[0] = a.v[0];
 		//		c.v[1] = a.v[1];
@@ -124,7 +124,7 @@ public class DxCollisionUtil {
 	//	}
 
 	//inline void dVector3Cross(final dVector3& a,final dVector3& b,dVector3& c)
-	static void dVector3Cross(final DVector3 a,final DVector3 b,DVector3 c)
+	static void dVector3Cross(final DVector3C a,final DVector3C b,DVector3 c)
 	{
 		dCROSS(c,OP.EQ,a,b);
 	}
@@ -143,7 +143,7 @@ public class DxCollisionUtil {
 	}
 
 	//inline void dVector3Inv(dVector3& a)
-	void dVector3Inv(DVector3 a)
+	static void dVector3Inv(DVector3 a)
 	{
 		//		a.v[0] = -a.v[0];
 		//		a.v[1] = -a.v[1];
@@ -159,7 +159,7 @@ public class DxCollisionUtil {
 	}
 
 	//inline void dMat3GetCol(final dMatrix3& m,final int col, dVector3& v)
-	void dMat3GetCol(final DMatrix3 m,final int col, DVector3 v)
+	static void dMat3GetCol(final DMatrix3 m,final int col, DVector3 v)
 	{
 //		v.set0( m.v[col + 0] );
 //		v.set1( m.v[col + 4] );
@@ -233,13 +233,13 @@ public class DxCollisionUtil {
 	}
 
 	//inline dReal dPointPlaneDistance(final dVector3& point,final dVector4& plane)
-	double dPointPlaneDistance(final DVector3 point,final DVector4 plane)
+	static double dPointPlaneDistance(final DVector3 point,final DVector4 plane)
 	{
 		return (plane.get0()*point.get0() + plane.get1()*point.get1() + plane.get2()*point.get2() + plane.get3());
 	}
 
 	//inline void dConstructPlane(final dVector3& normal,final dReal& distance, dVector4& plane)
-	void dConstructPlane(final DVector3 normal,final double distance, DVector4 plane)
+	static void dConstructPlane(final DVector3 normal,final double distance, DVector4 plane)
 	{
 		plane.set( normal.get0(),
 			normal.get1(),
@@ -249,7 +249,7 @@ public class DxCollisionUtil {
 
 	//inline void dMatrix3Copy(final double* source,dMatrix3& dest)
 	/** @deprecated TZ Use dVector instead */
-	void dMatrix3Copy(final DMatrix3C source,DMatrix3 dest)
+	static void dMatrix3Copy(final DMatrix3C source,DMatrix3 dest)
 	{
 		//		dest.v[0]	=	source[0];
 		//		dest.v[1]	=	source[1];
@@ -306,7 +306,7 @@ public class DxCollisionUtil {
 	}
 
 	//inline void dQuatTransform(final dQuaternion& quat,final dVector3& source,dVector3& dest)
-	void dQuatTransform(final DQuaternion quat,final DVector3 source,DVector3 dest)
+	static void dQuatTransform(final DQuaternion quat,final DVector3 source,DVector3 dest)
 	{
 
 		// Nguyen Binh : this code seem to be the fastest.
@@ -411,7 +411,7 @@ public class DxCollisionUtil {
 	}
 
 	//inline void dQuatInv(final dQuaternion& source, dQuaternion& dest)
-	void dQuatInv(final DQuaternion source, DQuaternion dest)
+	static void dQuatInv(final DQuaternion source, DQuaternion dest)
 	{
 		double norm = source.get0()*source.get0() + source.get1()*source.get1() + source.get2()*source.get2() + source.get3()*source.get3();
 
@@ -926,7 +926,7 @@ public class DxCollisionUtil {
 	// Helpers for Croteam's collider - by Nguyen Binh
 
 	//int dClipEdgeToPlane( dVector3 &vEpnt0, dVector3 &vEpnt1, final dVector4& plPlane)
-	boolean dClipEdgeToPlane( DVector3 vEpnt0, DVector3 vEpnt1, final DVector4 plPlane)
+	static boolean dClipEdgeToPlane( DVector3 vEpnt0, DVector3 vEpnt1, final DVector4 plPlane)
 	{
 		// calculate distance of edge points to plane
 		double fDistance0 = dPointPlaneDistance(  vEpnt0 ,plPlane );
@@ -974,12 +974,12 @@ public class DxCollisionUtil {
 	//void		 dClipPolyToPlane( final dVector3 avArrayIn[], final int ctIn, 
 	//							  dVector3 avArrayOut[], int &ctOut, 
 	//							  final dVector4 &plPlane )
-	void		 dClipPolyToPlane( final DVector3 avArrayIn[], final int ctIn, 
-			DVector3 avArrayOut[], RefInt ctOut, 
+	static int dClipPolyToPlane( final DVector3 avArrayIn[], final int ctIn, 
+			DVector3 avArrayOut[],
 			final DVector4 plPlane )
 	{
 		// start with no output points
-		ctOut.set(0);
+		int ctOut = 0;
 
 		int i0 = ctIn-1;
 
@@ -997,8 +997,8 @@ public class DxCollisionUtil {
 				//				avArrayOut[ctOut.get()].v[0] = avArrayIn[i0].get0();
 				//				avArrayOut[ctOut.get()].v[1] = avArrayIn[i0].get1();
 				//				avArrayOut[ctOut.get()].v[2] = avArrayIn[i0].get2();
-				avArrayOut[ctOut.get()].set( avArrayIn[i0] );
-				ctOut.inc();
+				avArrayOut[ctOut].set( avArrayIn[i0] );
+				ctOut++;
 			}
 
 			// if points are on different sides
@@ -1017,11 +1017,11 @@ public class DxCollisionUtil {
 				//				avArrayOut[ctOut.get()].v[0] = vIntersectionPoint.get0();
 				//				avArrayOut[ctOut.get()].v[1] = vIntersectionPoint.get1();
 				//				avArrayOut[ctOut.get()].v[2] = vIntersectionPoint.get2();
-				avArrayOut[ctOut.get()].set( vIntersectionPoint );
-				ctOut.inc();
+				avArrayOut[ctOut].set( vIntersectionPoint );
+				ctOut++;
 			}
 		}
-
+		return ctOut;
 	}
 
 	//void		 dClipPolyToCircle(final dVector3 avArrayIn[], final int ctIn, 

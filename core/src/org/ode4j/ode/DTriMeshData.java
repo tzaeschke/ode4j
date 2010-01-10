@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.cpp4j.java.RefInt;
 
 
 /**
@@ -36,21 +35,49 @@ import org.cpp4j.java.RefInt;
  */
 public interface DTriMeshData {
 
+//	/**
+//	 * Build a TriMesh data object with single precision vertex data.
+//	 */
+//	void buildSingle(
+//			final double[] Vertices, int VertexStride, int VertexCount, 
+//			final int[] Indices, int IndexCount, int TriStride);
 	/**
 	 * Build a TriMesh data object with single precision vertex data.
+	 * In Java, the number of vertices and indices are derived from
+	 * the length of the arrays. Strides can not be set because
+	 * GIMPACT assumes strides to be 3.
 	 */
-	void buildSingle(
-			final double[] Vertices, int VertexStride, int VertexCount, 
-			final int[] Indices, int IndexCount, int TriStride);
-	/**
-	 * Build a TriMesh data object with single precision vertex data.
-	 */
-	void buildSingle(
-			final float[] Vertices, int VertexStride, int VertexCount, 
-			final int[] Indices, int IndexCount, int TriStride);
+	//void buildSingle(
+	void build(
+//			final float[] Vertices, int VertexStride, int VertexCount, 
+//			final int[] Indices, int IndexCount, int TriStride);
+		final float[] vertices,  
+		final int[] indices);
 
-	void destroy();
+	//GIMPACT does not support normals.
+//	/**
+//	 * Build a TriMesh data object with single precision vertex data.
+//	 * In Java, the number of vertices and indices are derived from
+//	 * the length of the arrays. Strides can not be set because
+//	 * GIMPACT assumes strides to be 3.
+//	 * 
+//	 * Same again with a normals array (used as trimesh-trimesh optimization).
+//	 */
+//	void build(
+////			final float[] Vertices, int VertexStride, int VertexCount, 
+////			final int[] Indices, int IndexCount, int TriStride);
+//		final float[] vertices,  
+//		final int[] indices,
+//		final int[] normals);
+
 	
+	void destroy();
+
+	//Not available in GIMPACT
+//	void set(int data_id, Object in_data);
+//	Object get(int data_id);
+//	void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data);
+//	Object dGeomTriMeshDataGet(DTriMeshData g, int data_id);
 	
 	
 	
