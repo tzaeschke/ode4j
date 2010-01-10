@@ -1651,6 +1651,18 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	}
 
 
+	public void dsDrawTriangle (final DVector3C pos, final DMatrix3C R,
+			final float[] v0, final float[] v1, final float[] v2, boolean solid)
+	{
+		if (current_state != 2) dsError ("drawing function called outside simulation loop");
+		setupDrawingMode();
+		GL11.glShadeModel (GL11.GL_FLAT);
+		setTransform (pos,R);
+		drawTriangle (v0, v1, v2, solid);
+		GL11.glPopMatrix();
+	}
+
+	
 	//extern "C" 
 //	void dsDrawCylinder (final float pos[3], final float R[12],
 //			float length, float radius)

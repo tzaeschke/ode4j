@@ -24,6 +24,8 @@ package org.ode4j.tests.math;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
+import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.OdeMath.OP;
 
 public class TestDVector3 extends OdeTestCase {
 
@@ -132,6 +134,42 @@ public class TestDVector3 extends OdeTestCase {
 		t.add1(6);
 		t.add2(-4);
 		assertTrue(t.isEq(y));
+	}		
+	
+	@Test
+	public void testAddScale(){
+		DVector3 x = new DVector3(1, 2, 3);
+		DVector3 y = new DVector3(1.5, 3, 4.5);
+		DVector3 t = new DVector3();
+		assertFalse(x.isEq(y));
+		
+		t.addScaled(x, 1);
+		assertTrue(t.isEq(x));
+		
+		t.setZero();
+		t.addScaled(x, -5);
+		t.addScaled(x,  6);
+		assertTrue(t.isEq(x));
+		t.addScaled(x,  0);
+		assertTrue(t.isEq(x));
+
+		t.setZero();
+		t.addScaled(x, 1.5);
+		assertTrue(t.isEq(y));
+	}		
+	
+	@Test
+	public void testCross(){
+		DVector3 x = new DVector3(1, 2, 3);
+		DVector3 y = new DVector3(1.5, 3, 4.5);
+		DVector3 t = new DVector3();
+		assertFalse(x.isEq(y));
+		
+		
+		t.eqCross(x, y);
+		DVector3 t2 = new DVector3();
+		OdeMath.dCROSS(t2, OP.EQ, x, y);
+		assertEquals(t2, t);
 	}		
 	
 	@Test

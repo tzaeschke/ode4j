@@ -332,6 +332,24 @@ public class TestDMatrix3 extends OdeTestCase {
 		assertEquals(RES, T);
 	}
 	
+	@Test
+	public void testTrans(){
+		DMatrix3 T = new DMatrix3();
+		
+		DMatrix3 B = new DMatrix3(0.10, 0.11, 0.12,   1.10, 1.11, 1.12,  2.10, 2.11, 2.12);
+		DMatrix3 B2 = new DMatrix3(0.10, 0.11, 0.12,   1.10, 1.11, 1.12,  2.10, 2.11, 2.12);
+		DMatrix3 BT = new DMatrix3(0.10, 1.10, 2.10,   0.11, 1.11, 2.11,  0.12, 1.12, 2.12);
+		
+		T.set(B);
+		T.eqTranspose();
+		assertEquals(BT, T);
+		
+		T = B.reTranspose();
+		assertEquals(BT, T);
+		//B should not change!
+		assertEquals(B2, B);
+	}
+	
 	private DMatrix3 newM3() {
 		DMatrix3 m = new DMatrix3();
 		for (int i = 0; i < 3; i++) {

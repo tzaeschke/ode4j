@@ -366,6 +366,11 @@ public class DrawStuff {
 		get().dsDrawTriangle(pos, rot, v, i, j, k, solid);
 	}
 
+	public static void dsDrawTriangle(DVector3C pos, DMatrix3C rot,
+			float[] v0, float[] v1, float[] v2, boolean solid) {
+		get().dsDrawTriangle(pos, rot, v0, v1, v2, solid);
+	}
+
 	/**
 	 * Draw a z-aligned cylinder.
 	 * @ingroup drawstuff

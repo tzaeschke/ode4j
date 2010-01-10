@@ -230,4 +230,10 @@ public class DrawStuffNull implements DrawStuffApi {
 			DVector3C v1, DVector3C v2, boolean solid) {
 		// Nothing
 	}
+
+	@Override
+	public void dsDrawTriangle(DVector3C pos, DMatrix3C R, float[] v0,
+			float[] v1, float[] v2, boolean solid) {
+		// Nothing
+	}
 }

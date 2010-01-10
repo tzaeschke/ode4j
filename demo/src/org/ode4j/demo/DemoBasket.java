@@ -25,13 +25,9 @@ import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
-import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DCylinder;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DGeom;
@@ -39,50 +35,47 @@ import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
+import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.OdeHelper;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.demo.WorldGeom3.*;
-
+import static org.ode4j.demo.BasketGeom.*;
 
 /**
- * Test for non-capped cylinder, by Bram Stolk.
+ * Basket ball demo.
+ * Serves as a test for the sphere vs trimesh collider
+ * By Bram Stolk.
+ * Press the spacebar to reset the position of the ball.
  */
-class DemoCyl extends dsFunctions {
-
-
-	private static final boolean BOX = true;
-	private static final boolean CYL = true;
+public class DemoBasket extends dsFunctions {
 
 	// some constants
 
-	private static final float RADIUS = 0.22f;	// wheel radius
-	private static final float WMASS = 0.2f;	// wheel mass
-	private static final float WHEELW = 0.2f;	// wheel width
-	private static final float BOXSZ = 0.4f;	// box size
-	private static boolean CYL_GEOM_OFFSET = false;   // rotate cylinder using geom offset
+	private static final double RADIUS = 0.14;
 
 	// dynamics and collision objects (chassis, 3 wheels, environment)
 
 	private static DWorld world;
 	private static DSpace space;
-	private static DBody boxbody;
-	private static DBox boxgeom;
-	private static DBody cylbody;
-	private static DCylinder cylgeom;
+
+	private static DBody sphbody;
+	private static DGeom sphgeom;
+
 	private static DJointGroup contactgroup;
-	private static DGeom world_mesh;
+	private static DTriMesh world_mesh;
 
 
-	private DNearCallback nearCallback = new DNearCallback() {
+	private DGeom.DNearCallback nearCallback = new DGeom.DNearCallback() {
 		@Override
 		public void call(Object data, DGeom o1, DGeom o2) {
 			nearCallback(data, o1, o2);
 		}
 	};
+
 
 	// this is called by dSpaceCollide when two objects in space are
 	// potentially colliding.
@@ -92,9 +85,10 @@ class DemoCyl extends dsFunctions {
 		assert(o1!=null);
 		assert(o2!=null);
 
-		if ( o1 instanceof DSpace || o2 instanceof DSpace )
+		if (o1 instanceof DSpace || o2 instanceof DSpace)
 		{
-			System.out.println("testing space " + o1 + "  " + o2);
+			//fprintf(stderr,"testing space %p %p\n", o1,o2);
+			System.err.println("testing space " + o1 + " " + o2);
 			// colliding a space with something
 			OdeHelper.spaceCollide2(o1,o2,data,nearCallback);
 			// Note we do not want to test intersections within a space,
@@ -102,16 +96,20 @@ class DemoCyl extends dsFunctions {
 			return;
 		}
 
-		//  System.out.println("testing geoms " + o1 + "  " + o2);
+		//  fprintf(stderr,"testing geoms %p %p\n", o1, o2);
 
 		final int N = 32;
 		DContactBuffer contacts = new DContactBuffer(N);
-		int n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//[0].geom),sizeof(dContact));
+		int n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());
 		if (n > 0) 
 		{
 			for (int i=0; i<n; i++) 
 			{
 				DContact contact = contacts.get(i);
+				// Paranoia  <-- not working for some people, temporarily removed for 0.6
+				//dIASSERT(dVALIDVEC3(contact[i].geom.pos));
+				//dIASSERT(dVALIDVEC3(contact[i].geom.normal));
+				//dIASSERT(!dIsNan(contact[i].geom.depth));
 				contact.surface.slip1 = 0.7;
 				contact.surface.slip2 = 0.7;
 				contact.surface.mode = dContactSoftERP | dContactSoftCFM | dContactApprox1 | dContactSlip1 | dContactSlip2;
@@ -119,43 +117,41 @@ class DemoCyl extends dsFunctions {
 				contact.surface.soft_erp = 0.96;
 				contact.surface.soft_cfm = 0.04;
 				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contact);
-				c.attach (contact.geom.g1.getBody(), contact.geom.g2.getBody());
+				c.attach( contact.geom.g1.getBody(),
+						contact.geom.g2.getBody());
 			}
 		}
 	}
 
 
-	private static float[] xyz = {-8,-9,3};
-	private static float[] hpr = {45.0000f,-27.5000f,0.0000f};
-
 	// start simulation - set viewpoint
+
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 	}
+	private float[] xyz = {-8,0,5};
+	private float[] hpr = {0.0f,-29.5000f,0.0000f};
 
 
 
-	private void reset_state()
+	private void reset_ball()
 	{
-		float sx=-4, sy=-4, sz=2;
+		float sx=0.0f, sy=3.40f, sz=7.05f;
+
+		//#if defined(_MSC_VER) && defined(dDOUBLE) //TODO !!!
+		sy -= 0.01; // Cheat, to make it score under win32/double
+		//#endif
+
 		DQuaternion q = new DQuaternion();
-		dQFromAxisAndAngle (q,1,0,0,M_PI*0.5);
-		if (BOX) {
-			boxbody.setPosition (sx, sy+1, sz);
-			boxbody.setLinearVel (0,0,0);
-			boxbody.setAngularVel (0,0,0);
-			boxbody.setQuaternion (q);
-		}
-		if (CYL) {
-			cylbody.setPosition (sx, sy, sz);
-			cylbody.setLinearVel (0,0,0);
-			cylbody.setAngularVel (0,0,0);
-			cylbody.setQuaternion (q);
-		}
+		q.setIdentity();
+		sphbody.setPosition (sx, sy, sz);
+		sphbody.setQuaternion(q);
+		sphbody.setLinearVel (0,0,0);
+		sphbody.setAngularVel (0,0,0);
 	}
 
 
@@ -167,149 +163,116 @@ class DemoCyl extends dsFunctions {
 		switch (cmd) 
 		{
 		case ' ':
-			reset_state();
+			reset_ball();
 			break;
 		}
 	}
 
 
-
 	// simulation loop
 
-	private void simLoop (boolean pause)
+	@Override
+	public void step (boolean pause)
 	{
-		double simstep = 0.005; // 5ms simulation steps
+		double simstep = 0.001; // 1ms simulation steps
 		double dt = dsElapsedTime();
+
 		int nrofsteps = (int) Math.ceil(dt/simstep);
+		//  fprintf(stderr, "dt=%f, nr of steps = %d\n", dt, nrofsteps);
+
 		for (int i=0; i<nrofsteps && !pause; i++)
 		{
-			space.collide (null,nearCallback);
+			OdeHelper.spaceCollide (space,0,nearCallback);
 			world.quickStep (simstep);
-			contactgroup.empty ();
+			contactgroup.empty();
 		}
 
 		dsSetColor (1,1,1);
-		if (BOX) {
-			DVector3C BPos = boxbody.getPosition();
-			DMatrix3C BRot = boxbody.getRotation();
-			DVector3 sides = new DVector3(BOXSZ, BOXSZ, BOXSZ);
-			dsDrawBox( BPos, BRot, sides );
-		}
-		if (CYL) {
-			dsDrawCylinder( cylbody.getPosition(), cylbody.getRotation(),
-					WHEELW, RADIUS );
-		}
+		DVector3C spos = sphbody.getPosition();
+		DMatrix3C srot = sphbody.getRotation();
+		dsDrawSphere ( spos, srot, RADIUS );
 
 		// draw world trimesh
-		dsSetColor(0.7f,0.7f,0.4f);
+		dsSetColor(0.4f,0.7f,0.9f);
 		dsSetTexture (DS_TEXTURE_NUMBER.DS_NONE);
 
-		final DVector3C Pos = world_mesh.getPosition();
+		DVector3C pos = world_mesh.getPosition();
+		//dIASSERT(dVALIDVEC3(Pos));
 
-		final DMatrix3C Rot = world_mesh.getRotation();
+		DMatrix3C rot = world_mesh.getRotation();
+		//dIASSERT(dVALIDMAT3(Rot));
 
-		int numi = world_indices.length;
+		int numi = world_indices.length;;
 
-		for (int i=0; i<numi/3; i++)
+		for (int i=0; i<numi; i+=3)
 		{
-			int i0 = world_indices[i*3+0] * 3;
-			int i1 = world_indices[i*3+1] * 3;
-			int i2 = world_indices[i*3+2] * 3;
-			dsDrawTriangle(Pos, Rot, world_vertices, i0, i1, i2, true); // single precision draw
+			int i0 = world_indices[i+0]*3;
+			int i1 = world_indices[i+1]*3;
+			int i2 = world_indices[i+2]*3;
+			dsDrawTriangle(pos, rot, world_vertices, i0, i1, i2, true); // single precision draw
 		}
 	}
 
 
 	public static void main(String[] args) {
-		new DemoCyl().demo(args);
+		new DemoBasket().demo(args);
 	}
 
-	private void demo(String [] args) {
+	private void demo(String[] args)
+	{
 		DMass m = OdeHelper.createMass();
 		DMatrix3 R = new DMatrix3();
 
 		// create world
 		OdeHelper.initODE2(0);
-		world = OdeHelper.createWorld ();
-		space = OdeHelper.createHashSpace (null);
-		contactgroup = OdeHelper.createJointGroup ();
-		world.setGravity (0,0,-9.8);
-		world.setQuickStepNumIterations (12);
+		world = OdeHelper.createWorld();
+		space = OdeHelper.createHashSpace(null);
 
+		contactgroup = OdeHelper.createJointGroup();
+		world.setGravity (0,0,-9.8);
+		world.setQuickStepNumIterations (64);
 
 		// Create a static world using a triangle mesh that we can collide with.
-		int numv = world_vertices.length;
-		int numi = world_indices.length;
+		int numv = world_vertices.length/3;//)/(3);//*sizeof(float)); //TODO TZ?
+		int numi = world_indices.length;//)/ sizeof(dTriIndex);
 		System.out.println("numv=" + numv + ", numi=" + numi);
-		DTriMeshData data = OdeHelper.createTriMeshData();
+		DTriMeshData Data = OdeHelper.createTriMeshData();
 
-		data.build
-		(
-				world_vertices, 
-				//3,// * sizeof(float), 
-				//numv, 
-				world_indices//, 
-				//numi, 
-				//3// * sizeof(dTriIndex)
-		);
+		//  fprintf(stderr,"Building Single Precision Mesh\n");
 
-		world_mesh = OdeHelper.createTriMesh(space, data, null, null, null);
+		Data.build( world_vertices, world_indices );
+
+		world_mesh = OdeHelper.createTriMesh(space, Data, null, null, null);
+		world_mesh.enableTC(DSphere.class, false);
+		world_mesh.enableTC(DBox.class, false);
 		world_mesh.setPosition(0, 0, 0.5);
-		dRFromAxisAndAngle (R, 0,1,0, 0.0);
+		R.setIdentity();
+		//dIASSERT(dVALIDMAT3(R));
+
 		world_mesh.setRotation (R);
 
-
-		if (BOX) {
-			boxbody = OdeHelper.createBody (world);
-			m.setBox (1, BOXSZ, BOXSZ, BOXSZ);
-			m.adjust (1);
-			boxbody.setMass (m);
-			boxgeom = OdeHelper.createBox (null, BOXSZ, BOXSZ, BOXSZ);
-			boxgeom.setBody (boxbody);
-			space.add (boxgeom);
-		}
-		if (CYL) {
-			cylbody = OdeHelper.createBody (world);
-			m.setSphere (1,RADIUS);
-			m.adjust (WMASS);
-			cylbody.setMass (m);
-			cylgeom = OdeHelper.createCylinder(null, RADIUS, WHEELW);
-			cylgeom.setBody (cylbody);
-
-			if (CYL_GEOM_OFFSET) {
-				DMatrix3 mat = new DMatrix3();
-				dRFromAxisAndAngle(mat,1.0f,0.0f,0.0f,M_PI/2.0);
-				cylgeom.setOffsetRotation(mat);
-			}
-
-			space.add (cylgeom);
-		}
-		reset_state();
+		//float sx=0.0, sy=3.40, sz=6.80;
+		sphbody = OdeHelper.createBody(world);
+		m.setSphere (1,RADIUS);
+		sphbody.setMass (m);
+		sphgeom = OdeHelper.createSphere(null, RADIUS);
+		sphgeom.setBody (sphbody);
+		reset_ball();
+		space.add (sphgeom);
 
 		// run simulation
 		dsSimulationLoop (args,352,288,this);
 
-		contactgroup.empty();
-		contactgroup.destroy();
-
-		// First destroy geoms, then space, then the world.
-		if (CYL) {
-			cylgeom.destroy();
-		}
-		if (BOX) {
-			boxgeom.destroy();
-		}
+		// Causes segm violation? Why?
+		// (because dWorldDestroy() destroys body connected to geom; must call first!)
+		sphgeom.destroy();
 		world_mesh.destroy ();
 
+		contactgroup.empty ();
+		contactgroup.destroy ();
 		space.destroy ();
 		world.destroy ();
 		OdeHelper.closeODE();
-	}
-
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
 	}
 
 
@@ -318,5 +281,3 @@ class DemoCyl extends dsFunctions {
 		// Nothing
 	}
 }
-
-
