@@ -90,7 +90,7 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {
 		throw new UnsupportedOperationException();
 	}
-	public static void dGeomTriMeshSetLastTransform( DGeom g, DoubleArray last_trans ) {
+	public static void dGeomTriMeshSetLastTransform( DTriMesh g, DoubleArray last_trans ) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 

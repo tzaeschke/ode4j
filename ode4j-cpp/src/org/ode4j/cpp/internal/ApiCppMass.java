@@ -23,9 +23,9 @@ package org.ode4j.cpp.internal;
 
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DMassC;
+import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.OdeHelper;
 
 
@@ -108,13 +108,13 @@ public abstract class ApiCppMass extends ApiCppOdeInit {
 	}
 
 	//ODE_API 
-	public static void dMassSetTrimesh (DMass m, double density, DGeom g) {
-		throw new UnsupportedOperationException("TRIMESH not supported.");
+	public static void dMassSetTrimesh (DMass m, double density, DTriMesh g) {
+		m.setTrimesh(density, g);
 	}
 
 	//ODE_API 
-	public static void dMassSetTrimeshTotal (DMass m, double total_mass, DGeom g) {
-		throw new UnsupportedOperationException("TRIMESH not supported.");
+	public static void dMassSetTrimeshTotal (DMass m, double total_mass, DTriMesh g) {
+		m.setTrimeshTotal(total_mass, g);
 	}
 
 	//ODE_API 
