@@ -370,9 +370,6 @@ public class DemoMovingTrimesh extends dsFunctions {
 			DVector3 actual_pos = new DVector3();
 			DMatrix3 actual_R = new DMatrix3();
 			dMULTIPLY0_331 (actual_pos,R,pos2);
-			//    actual_pos[0] += pos[0];
-			//    actual_pos[1] += pos[1];
-			//    actual_pos[2] += pos[2];//TODO
 			actual_pos.add(pos);
 			dMULTIPLY0_333 (actual_R,R,R2);
 			drawGeom (g2,actual_pos,actual_R,false);
@@ -466,18 +463,6 @@ public class DemoMovingTrimesh extends dsFunctions {
 						DMatrix3C Rot = obj[i].geom[j].getRotation();
 
 						for (int ii = 0; ii < IndexCount; ii+=3) {
-							//							final double[] v = { // explicit conversion from float to dReal  [9]
-							//									Vertices[Indices[ii * 3 + 0] * 3 + 0],
-							//									Vertices[Indices[ii * 3 + 0] * 3 + 1],
-							//									Vertices[Indices[ii * 3 + 0] * 3 + 2],
-							//									Vertices[Indices[ii * 3 + 1] * 3 + 0],
-							//									Vertices[Indices[ii * 3 + 1] * 3 + 1],
-							//									Vertices[Indices[ii * 3 + 1] * 3 + 2],
-							//									Vertices[Indices[ii * 3 + 2] * 3 + 0],
-							//									Vertices[Indices[ii * 3 + 2] * 3 + 1],
-							//									Vertices[Indices[ii * 3 + 2] * 3 + 2]
-							//							};
-							//							dsDrawTriangle(Pos, Rot, v[0], v[3], v[6], 1);
 							int v0 = Indices[ii + 0] * 3;
 							int v1 = Indices[ii + 1] * 3;
 							int v2 = Indices[ii + 2] * 3;

@@ -56,18 +56,11 @@ import static org.ode4j.demo.BunnyGeom.*;
 
 
 class DemoHeightfield extends dsFunctions {
-	//#include "bunny_geom.h"
-
-
 
 	private static final float DEGTORAD = 0.01745329251994329577f	; //!< PI / 180.0, convert degrees to radians
 
-	private boolean g_allow_trimesh;
-
 	// Our heightfield geom
 	private DGeom gheight;
-
-
 
 	// Heightfield dimensions
 
@@ -91,14 +84,6 @@ class DemoHeightfield extends dsFunctions {
 			0.0f ,0.0f ,-1.0f,0.25f,
 			0.0f ,-1.0f,0.0f ,0.25f,
 			-1.0f,0.0f ,0.0f ,0.25f
-			/*
-    1.0f ,0.0f ,0.0f ,2.0f,
-    0.0f ,1.0f ,0.0f ,1.0f,
-    0.0f ,0.0f ,1.0f ,1.0f,
-    0.0f ,0.0f ,-1.0f,1.0f,
-    0.0f ,-1.0f,0.0f ,1.0f,
-    -1.0f,0.0f ,0.0f ,0.0f
-			 */
 	};
 	private final int planecount=6;
 
@@ -241,6 +226,7 @@ class DemoHeightfield extends dsFunctions {
 	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -253,8 +239,7 @@ class DemoHeightfield extends dsFunctions {
 		System.out.println ("   y for cylinder.");
 		System.out.println ("   v for a convex object.");
 		System.out.println ("   x for a composite object.");
-		if ( g_allow_trimesh )
-			System.out.println ("   m for a trimesh.");
+		System.out.println ("   m for a trimesh.");
 		System.out.println ("To select an object, press space.");
 		System.out.println ("To disable the selected object, press d.");
 		System.out.println ("To enable the selected object, press e.");
@@ -265,15 +250,9 @@ class DemoHeightfield extends dsFunctions {
 	}
 
 
-//	private char locase (char c)
-//	{
-//		if (c >= 'A' && c <= 'Z') return c - ('a'-'A');
-//		else return c;
-//	}
-
-
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		int i;
@@ -281,14 +260,14 @@ class DemoHeightfield extends dsFunctions {
 		double[] sides = new double[3];
 		DMass m = OdeHelper.createMass();
 
-		cmd = Character.toLowerCase(cmd);//locase (cmd);
+		cmd = Character.toLowerCase(cmd);
 
 
 		//
 		// Geom Creation
 		//
 
-		if ( cmd == 'b' || cmd == 's' || cmd == 'c' || ( cmd == 'm' && g_allow_trimesh ) ||
+		if ( cmd == 'b' || cmd == 's' || cmd == 'c' || ( cmd == 'm' ) ||
 				cmd == 'x' || cmd == 'y' || cmd == 'v' )
 		{
 			if ( num < NUM )
@@ -370,25 +349,17 @@ class DemoHeightfield extends dsFunctions {
 				m.setSphere (DENSITY,sides[0]);
 				obj[i].geom[0] = OdeHelper.createSphere (space,sides[0]);
 			}
-			else if (cmd == 'm' && g_allow_trimesh)
+			else if (cmd == 'm')
 			{
 				DTriMeshData new_tmdata = OdeHelper.createTriMeshData();
-//				dGeomTriMeshDataBuildSingle(new_tmdata, Vertices[0], 3,// * sizeof(float), 
-//						VertexCount, 
-//						Indices[0], IndexCount, 3);// * sizeof(dTriIndex));
-//TODO TZ				dGeomTriMeshDataBuildSingle(new_tmdata, Vertices, 3,// * sizeof(float), 
-//TODO TZ						VertexCount, 
-//TODO TZ						Indices, IndexCount, 3);// * sizeof(dTriIndex));
+				new_tmdata.build(Vertices, Indices);
 
 				obj[i].geom[0] = OdeHelper.createTriMesh(space, new_tmdata, null, null, null);
 
 				m.setTrimesh( DENSITY, (DTriMesh)obj[i].geom[0] );
-				DVector3 c = m.getC().clone();
-				System.out.println("mass at " + c);
-				//dGeomSetPosition(obj[i].geom[0], -m.c[0], -m.c[1], -m.c[2]);
-				//dMassTranslate(m, -m.c[0], -m.c[1], -m.c[2]);
+				DVector3 c = new DVector3(m.getC());
 				c.scale(-1);
-				obj[i].geom[0].setPosition(m.getC().clone().scale(-1));
+				obj[i].geom[0].setPosition(c);
 				m.translate(c);
 			}
 			else if (cmd == 'x')
@@ -442,14 +413,14 @@ class DemoHeightfield extends dsFunctions {
 				}
 
 				// move all encapsulated objects so that the center of mass is (0,0,0)
-				DVector3 c = m.getC().clone();
-				c.scale(1);
+				DVector3 c = new DVector3().set(m.getC());
+				c.scale(-1);
 				for (k=0; k<2; k++) {
 //					dGeomSetPosition (g2[k],
 //							dpos[k][0]-m.c[0],
 //							dpos[k][1]-m.c[1],
 //							dpos[k][2]-m.c[2]);
-				g2[k].setPosition(dpos[k].reAdd(c));
+					g2[k].setPosition(dpos[k].reAdd(c));
 				}
 //				dMassTranslate (m,-m.c[0],-m.c[1],-m.c[2]);
 				m.translate(c);
@@ -498,8 +469,6 @@ class DemoHeightfield extends dsFunctions {
 
 	private void drawGeom (DGeom g, DVector3C pos, DMatrix3C R, boolean show_aabb)
 	{
-		int i;
-
 		if (g==null) return;
 		if (pos==null) pos = g.getPosition ();
 		if (R==null) R = g.getRotation ();
@@ -541,9 +510,6 @@ class DemoHeightfield extends dsFunctions {
 			DVector3 actual_pos = new DVector3();
 			DMatrix3 actual_R = new DMatrix3();
 			dMULTIPLY0_331 (actual_pos,R,pos2);
-//			actual_pos[0] += pos[0];
-//			actual_pos[1] += pos[1];
-//			actual_pos[2] += pos[2];
 			actual_pos.add(pos);
 			dMULTIPLY0_333 (actual_R,R,R2);
 			drawGeom (g2,actual_pos,actual_R,false);
@@ -564,7 +530,8 @@ class DemoHeightfield extends dsFunctions {
 
 	// simulation loop
 
-	private void simLoop (boolean pause)
+	@Override
+	public void step (boolean pause)
 	{
 		dsSetColor (0,0,2);
 
@@ -655,31 +622,20 @@ class DemoHeightfield extends dsFunctions {
 					dsSetColor (1,1,0);
 				}
 
-				//if ( obj[i].geom[j]!=null && dGeomGetClass(obj[i].geom[j]) == dTriMeshClass )
 				if ( obj[i].geom[j]!=null && obj[i].geom[j] instanceof DTriMesh )
 				{
-					//dTriIndex* Indices = (dTriIndex*)::Indices;
 					int[] Indices = BunnyGeom.Indices;
 
 					// assume all trimeshes are drawn as bunnies
 					DVector3C Pos = obj[i].geom[j].getPosition();
 					DMatrix3C Rot = obj[i].geom[j].getRotation();
 
-					for (int ii = 0; ii < IndexCount / 3; ii++)
+					for (int ii = 0; ii < IndexCount; ii+=3)
 					{
-						final float[] v = { // explicit conversion from float to dReal
-								Vertices[Indices[ii * 3+0] * 3 + 0],
-								Vertices[Indices[ii * 3+0] * 3 + 1],
-								Vertices[Indices[ii * 3+0] * 3 + 2],
-								Vertices[Indices[ii * 3+1] * 3 + 0],
-								Vertices[Indices[ii * 3+1] * 3 + 1],
-								Vertices[Indices[ii * 3+1] * 3 + 2],
-								Vertices[Indices[ii * 3+2] * 3 + 0],
-								Vertices[Indices[ii * 3+2] * 3 + 1],
-								Vertices[Indices[ii * 3+2] * 3 + 2]
-						};
-						//dsDrawTriangle(Pos, Rot, &v[0], &v[3], &v[6], 1);
-						dsDrawTriangle(Pos, Rot, v, 0, 3, 6, true);
+						int v0 = Indices[ii + 0] * 3;
+						int v1 = Indices[ii + 1] * 3;
+						int v2 = Indices[ii + 2] * 3;
+						dsDrawTriangle(Pos, Rot, Vertices, v0, v1, v2, true);
 					}
 
 					// tell the tri-tri collider the current transform of the trimesh --
@@ -699,13 +655,13 @@ class DemoHeightfield extends dsFunctions {
 //					// Apply the 'other' matrix which is the oldest.
 //					dGeomTriMeshSetLastTransform( obj[i].geom[j], 
 //							*(dMatrix4*)( obj[i].matrix_dblbuff + ( obj[i].last_matrix_index * 16 ) ) );
-					double[] p_matrixA = obj[i].matrix_dblbuff;
-					int of = ( obj[i].last_matrix_index * 16 );
-
-					p_matrixA[ of+0 ] = Rot.get00();	p_matrixA[ of+1 ] = Rot.get01();	p_matrixA[ of+2 ] = Rot.get02();	p_matrixA[ of+3 ] = 0;
-					p_matrixA[ of+4 ] = Rot.get10();	p_matrixA[ of+5 ] = Rot.get11();	p_matrixA[ of+6 ] = Rot.get12();	p_matrixA[ of+7 ] = 0;
-					p_matrixA[ of+8 ] = Rot.get20();	p_matrixA[ of+9 ] = Rot.get21();	p_matrixA[of+10 ] = Rot.get22();	p_matrixA[of+11 ] = 0;
-					p_matrixA[of+12 ] = Pos.get0();	p_matrixA[of+13 ] = Pos.get1();	p_matrixA[of+14 ] = Pos.get2();	p_matrixA[of+15 ] = 1;
+//					double[] p_matrixA = obj[i].matrix_dblbuff;
+//					int of = ( obj[i].last_matrix_index * 16 );
+//
+//					p_matrixA[ of+0 ] = Rot.get00();	p_matrixA[ of+1 ] = Rot.get01();	p_matrixA[ of+2 ] = Rot.get02();	p_matrixA[ of+3 ] = 0;
+//					p_matrixA[ of+4 ] = Rot.get10();	p_matrixA[ of+5 ] = Rot.get11();	p_matrixA[ of+6 ] = Rot.get12();	p_matrixA[ of+7 ] = 0;
+//					p_matrixA[ of+8 ] = Rot.get20();	p_matrixA[ of+9 ] = Rot.get21();	p_matrixA[of+10 ] = Rot.get22();	p_matrixA[of+11 ] = 0;
+//					p_matrixA[of+12 ] = Pos.get0();	p_matrixA[of+13 ] = Pos.get1();	p_matrixA[of+14 ] = Pos.get2();	p_matrixA[of+15 ] = 1;
 					
 										// Flip to other matrix.
 					//obj[i].last_matrix_index = !obj[i].last_matrix_index;
@@ -715,9 +671,8 @@ class DemoHeightfield extends dsFunctions {
 						obj[i].last_matrix_index = 1;
 					
 					// Apply the 'other' matrix which is the oldest.
-//TODO					dGeomTriMeshSetLastTransform( obj[i].geom[j],
-//TODO							new DoubleArray( obj[i].matrix_dblbuff, ( obj[i].last_matrix_index * 16 ) ) );
-					throw new UnsupportedOperationException("TRIMESH not supported");
+//					dGeomTriMeshSetLastTransform( obj[i].geom[j],
+//							new DoubleArray( obj[i].matrix_dblbuff, ( obj[i].last_matrix_index * 16 ) ) );
 				}
 				else
 				{
@@ -746,10 +701,6 @@ class DemoHeightfield extends dsFunctions {
 
 	private void demo(String[] args) {
 		System.out.println("ODE configuration: " + OdeHelper.getConfiguration());
-
-		// Is trimesh support built into this ODE?
-		//TODO g_allow_trimesh = OdeHelper.dCheckConfiguration( "ODE_EXT_trimesh" );
-		g_allow_trimesh = false;
 
 		// create world
 		OdeHelper.initODE2(0);
@@ -810,15 +761,9 @@ class DemoHeightfield extends dsFunctions {
 		world.destroy();
 
 		// destroy heightfield data, because _we_ own it not ODE
-		heightid.destroy();//dGeomHeightfieldDataDestroy( heightid );
+		heightid.destroy();
 
 		OdeHelper.closeODE();
-	}
-
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
 	}
 
 

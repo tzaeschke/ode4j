@@ -41,6 +41,7 @@ import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
+import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
@@ -139,6 +140,7 @@ public class DemoMovingConvex extends dsFunctions {
 
 	// start simulation - set viewpoint
 
+	@Override
 	public void start()
 	{
 		dAllocateODEDataForThread( dAllocateMaskAll );
@@ -159,6 +161,7 @@ public class DemoMovingConvex extends dsFunctions {
 
 
 	// called when a key pressed
+	@Override
 	public void command( char cmd )
 	{
 		int i,j,k;
@@ -247,7 +250,7 @@ public class DemoMovingConvex extends dsFunctions {
 				dGeomTriMeshDataBuildSingle( new_tmdata, Vertices, 3, VertexCount,
                         Indices, IndexCount, 3 );
 
-				DGeom triMesh = dCreateTriMesh( null, new_tmdata, null, null, null );
+				DTriMesh triMesh = dCreateTriMesh( null, new_tmdata, null, null, null );
 
 				dMassSetTrimesh( m, DENSITY, triMesh );
 
@@ -353,8 +356,6 @@ public class DemoMovingConvex extends dsFunctions {
 		dsSetColor( 0,0,2 );
 		dSpaceCollide( space,0,nearCallback );
 
-		//TODO TZ report and remove
-		//if ( !pause ) dWorldStepFast1( world,0.05, 5 );
 		if ( !pause ) dWorldQuickStep( world,0.05 );
 
 		for ( int j = 0; j < dSpaceGetNumGeoms( space ); j++ )

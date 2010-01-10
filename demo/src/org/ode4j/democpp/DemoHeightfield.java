@@ -22,7 +22,6 @@
 package org.ode4j.democpp;
 
 import org.cpp4j.FILE;
-import org.cpp4j.java.DoubleArray;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -54,25 +53,8 @@ import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
-import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
-import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCapsule;
-import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetPosition;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetRotation;
-import static org.ode4j.cpp.internal.ApiCppMass.dMassAdd;
-import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
-import static org.ode4j.cpp.internal.ApiCppMass.dMassRotate;
-import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
-import static org.ode4j.cpp.internal.ApiCppMass.dMassSetCapsule;
-import static org.ode4j.cpp.internal.ApiCppMass.dMassSetSphere;
-import static org.ode4j.cpp.internal.ApiCppMass.dMassSetZero;
-import static org.ode4j.cpp.internal.ApiCppMass.dMassTranslate;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.Misc.dRandReal;
-import static org.ode4j.ode.internal.Rotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.DGeom.*;
 import static org.ode4j.democpp.BunnyGeom.*;
 
@@ -81,12 +63,8 @@ class DemoHeightfield extends dsFunctions {
 
 	private static final float DEGTORAD = 0.01745329251994329577f	; //!< PI / 180.0, convert degrees to radians
 
-	private boolean g_allow_trimesh;
-
 	// Our heightfield geom
 	private DGeom gheight;
-
-
 
 	// Heightfield dimensions
 
@@ -98,8 +76,6 @@ class DemoHeightfield extends dsFunctions {
 
 	private static final float HFIELD_WSAMP =			( HFIELD_WIDTH / ( HFIELD_WSTEP-1 ) );
 	private static final float HFIELD_DSAMP =			( HFIELD_DEPTH / ( HFIELD_DSTEP-1 ) );
-
-
 
 	//<---- Convex Object
 	private double[] planes= // planes for a cube
@@ -272,8 +248,7 @@ class DemoHeightfield extends dsFunctions {
 		printf ("   y for cylinder.\n");
 		printf ("   v for a convex object.\n");
 		printf ("   x for a composite object.\n");
-		if ( g_allow_trimesh )
-			printf ("   m for a trimesh.\n");
+		printf ("   m for a trimesh.\n");
 		printf ("To select an object, press space.\n");
 		printf ("To disable the selected object, press d.\n");
 		printf ("To enable the selected object, press e.\n");
@@ -293,6 +268,7 @@ class DemoHeightfield extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		int i;
@@ -308,7 +284,7 @@ class DemoHeightfield extends dsFunctions {
 		// Geom Creation
 		//
 
-		if ( cmd == 'b' || cmd == 's' || cmd == 'c' || ( cmd == 'm' && g_allow_trimesh ) ||
+		if ( cmd == 'b' || cmd == 's' || cmd == 'c' || ( cmd == 'm' ) ||
 				cmd == 'x' || cmd == 'y' || cmd == 'v' )
 		{
 			setBody = false;
@@ -391,19 +367,19 @@ class DemoHeightfield extends dsFunctions {
 				dMassSetSphere (m,DENSITY,sides[0]);
 				obj[i].geom[0] = dCreateSphere (space,sides[0]);
 			}
-			else if (cmd == 'm' && g_allow_trimesh)
+			else if (cmd == 'm')
 			{
 				DTriMeshData new_tmdata = dGeomTriMeshDataCreate();
 //				dGeomTriMeshDataBuildSingle(new_tmdata, Vertices[0], 3,// * sizeof(float), 
 //						VertexCount, 
 //						Indices[0], IndexCount, 3);// * sizeof(dTriIndex));
-//TODO TZ				dGeomTriMeshDataBuildSingle(new_tmdata, Vertices, 3,// * sizeof(float), 
-//TODO TZ						VertexCount, 
-//TODO TZ						Indices, IndexCount, 3);// * sizeof(dTriIndex));
+				dGeomTriMeshDataBuildSingle(new_tmdata, Vertices, 3,// * sizeof(float), 
+						VertexCount, 
+						Indices, IndexCount, 3);// * sizeof(dTriIndex));
 
 				obj[i].geom[0] = dCreateTriMesh(space, new_tmdata, null, null, null);
 
-				dMassSetTrimesh( m, DENSITY, obj[i].geom[0] );
+				dMassSetTrimesh( m, DENSITY, (DTriMesh)obj[i].geom[0] );
 				DVector3 c = m.getC().clone();
 				printf("mass at %f %f %f\n", c.get0(), c.get1(), c.get2());
 				//dGeomSetPosition(obj[i].geom[0], -m.c[0], -m.c[1], -m.c[2]);
@@ -653,7 +629,6 @@ class DemoHeightfield extends dsFunctions {
 
 		//if (!pause) dWorldStep (world,0.05);
 		if (!pause) dWorldQuickStep (world,0.05);
-		//TODO TZ //if (!pause) dWorldStepFast1 (world,0.05, 5);
 
 
 		if (write_world) {
@@ -796,8 +771,9 @@ class DemoHeightfield extends dsFunctions {
 						obj[i].last_matrix_index = 1;
 					
 					// Apply the 'other' matrix which is the oldest.
-					dGeomTriMeshSetLastTransform( obj[i].geom[j],
-							new DoubleArray( obj[i].matrix_dblbuff, ( obj[i].last_matrix_index * 16 ) ) );
+					//TODO TZ
+//					dGeomTriMeshSetLastTransform( obj[i].geom[j],
+//							new DoubleArray( obj[i].matrix_dblbuff, ( obj[i].last_matrix_index * 16 ) ) );
 				}
 				else
 				{
@@ -829,10 +805,6 @@ class DemoHeightfield extends dsFunctions {
 
 	private void demo(String[] args) {
 		printf("ODE configuration: %s\n", OdeHelper.getConfiguration());
-
-		// Is trimesh support built into this ODE?
-		//TODO g_allow_trimesh = OdeHelper.dCheckConfiguration( "ODE_EXT_trimesh" );
-		g_allow_trimesh = false;
 
 		// setup pointers to drawstuff callback functions
 		//dsFunctions fn = this;
