@@ -160,9 +160,9 @@ public class Common extends ErrorHandler {
 
 	// Detect if we've got both trimesh engines enabled.
 
-	public static final boolean dTRIMESH_ENABLED = false;
+	public static final boolean dTRIMESH_ENABLED = true;
 	public static final boolean dTRIMESH_OPCODE = false;
-	public static final boolean dTRIMESH_GIMPACT = false;
+	public static final boolean dTRIMESH_GIMPACT = true;
 	static {
 		if (dTRIMESH_ENABLED) {
 			if (dTRIMESH_OPCODE && dTRIMESH_GIMPACT) {
