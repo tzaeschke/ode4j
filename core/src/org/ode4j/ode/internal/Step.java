@@ -353,14 +353,14 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			//double[] tmp = new double[12];
 
 			// compute inertia tensor in global frame
-			dMULTIPLY2_333 (tmp,body[i].mass._I,body[i]._posr.R);
+			dMULTIPLY2_333 (tmp,body[i].mass._I,body[i].posr().R());
 			//    dMULTIPLY0_333 (I+i*12,body[i].posr.R,tmp);
-			dMULTIPLY0_333 (I[i],body[i]._posr.R,tmp);
+			dMULTIPLY0_333 (I[i],body[i].posr().R(),tmp);
 
 			// compute inverse inertia tensor in global frame
-			dMULTIPLY2_333 (tmp,body[i].invI,body[i]._posr.R);
+			dMULTIPLY2_333 (tmp,body[i].invI,body[i].posr().R());
 			//dMULTIPLY0_333 (invI+i*12,body[i].posr.R,tmp);
-			dMULTIPLY0_333 (invI[i],body[i]._posr.R,tmp);
+			dMULTIPLY0_333 (invI[i],body[i].posr().R(),tmp);
 
 			// compute rotational force
 			//    dMULTIPLY0_331 (tmp,I+i*12,body[i].avel);
@@ -750,15 +750,15 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			//TZ double[] tmp=new double[12];
 
 			// compute inverse inertia tensor in global frame
-			dMULTIPLY2_333 (tmpM,body[i].invI,body[i]._posr.R);
-			dMULTIPLY0_333 (invI,i*12,body[i]._posr.R,tmpM);
+			dMULTIPLY2_333 (tmpM,body[i].invI,body[i].posr().R());
+			dMULTIPLY0_333 (invI,i*12,body[i].posr().R(),tmpM);
 
 		    if (body[i].isFlagsGyroscopic()) {
 		        //TZ move up for performance 
 		    	//DMatrix3 I = new DMatrix3();
 				// compute inertia tensor in global frame
-				dMULTIPLY2_333 (tmpM,body[i].mass._I,body[i]._posr.R);
-				dMULTIPLY0_333 (tmpI,body[i]._posr.R,tmpM);
+				dMULTIPLY2_333 (tmpM,body[i].mass._I,body[i].posr().R());
+				dMULTIPLY0_333 (tmpI,body[i].posr().R(),tmpM);
 
 				// compute rotational force
 				dMULTIPLY0_331 (tmpV,tmpI,body[i].avel);

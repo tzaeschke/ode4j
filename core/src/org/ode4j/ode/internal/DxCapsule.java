@@ -23,6 +23,7 @@ package org.ode4j.ode.internal;
 
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DCapsule;
@@ -59,8 +60,8 @@ public class DxCapsule extends DxGeom implements DCapsule {
 	@Override
 	public void computeAABB()
 	{
-		final DMatrix3 R = _final_posr.R;
-		final DVector3 pos = _final_posr.pos;
+		final DMatrix3C R = final_posr().R();
+		final DVector3C pos = final_posr().pos();
 
 //		double xrange = dFabs(R.v[2]  * _lz) * (0.5) + _radius;
 //		double yrange = dFabs(R.v[6]  * _lz) * (0.5) + _radius;
@@ -116,8 +117,8 @@ public class DxCapsule extends DxGeom implements DCapsule {
 		recomputePosr();
 		//  dxCapsule *c = (dxCapsule*) g;
 
-		final DMatrix3 R = _final_posr.R;
-		final DVector3 pos = _final_posr.pos;
+		final DMatrix3C R = final_posr().R();
+		final DVector3C pos = final_posr().pos();
 
 		DVector3 a = new DVector3(x, y, z);
 		//  a[0] = x - pos[0];
@@ -131,7 +132,7 @@ public class DxCapsule extends DxGeom implements DCapsule {
 //		a.v[0] = _final_posr.pos.v[0] + beta*R.v[0*4+2];
 //		a.v[1] = _final_posr.pos.v[1] + beta*R.v[1*4+2];
 //		a.v[2] = _final_posr.pos.v[2] + beta*R.v[2*4+2];
-		a.eqSum(_final_posr.pos, R.columnAsNewVector(2), beta);
+		a.eqSum(final_posr().pos(), R.columnAsNewVector(2), beta);
 		return _radius -
 		dSqrt ((x-a.get0())*(x-a.get0()) + (y-a.get1())*(y-a.get1()) + (z-a.get2())*(z-a.get2()));
 	}
@@ -161,9 +162,9 @@ public class DxCapsule extends DxGeom implements DCapsule {
 
 			// find the point on the cylinder axis that is closest to the sphere
 			double alpha = 
-				o1._final_posr.R.get02()  * (o2._final_posr.pos.get0() - o1._final_posr.pos.get0()) +
-				o1._final_posr.R.get12()  * (o2._final_posr.pos.get1() - o1._final_posr.pos.get1()) +
-				o1._final_posr.R.get22() * (o2._final_posr.pos.get2() - o1._final_posr.pos.get2());
+				o1.final_posr().R().get02()  * (o2.final_posr().pos().get0() - o1.final_posr().pos().get0()) +
+				o1.final_posr().R().get12()  * (o2.final_posr().pos().get1() - o1.final_posr().pos().get1()) +
+				o1.final_posr().R().get22() * (o2.final_posr().pos().get2() - o1.final_posr().pos().get2());
 			double lz2 = ccyl._lz * (0.5);
 			if (alpha > lz2) alpha = lz2;
 			if (alpha < -lz2) alpha = -lz2;
@@ -173,8 +174,8 @@ public class DxCapsule extends DxGeom implements DCapsule {
 //			p.v[0] = o1._final_posr.pos.v[0] + alpha * o1._final_posr.R.v[2];
 //			p.v[1] = o1._final_posr.pos.v[1] + alpha * o1._final_posr.R.v[6];
 //			p.v[2] = o1._final_posr.pos.v[2] + alpha * o1._final_posr.R.v[10];
-			p.eqSum( o1._final_posr.pos, o1._final_posr.R.columnAsNewVector(2), alpha);
-			return DxCollisionUtil.dCollideSpheres (p,ccyl._radius,o2._final_posr.pos,sphere.getRadius(),contacts);
+			p.eqSum( o1.final_posr().pos(), o1.final_posr().R().columnAsNewVector(2), alpha);
+			return DxCollisionUtil.dCollideSpheres (p,ccyl._radius,o2.final_posr().pos(),sphere.getRadius(),contacts);
 		}
 
 		@Override
@@ -211,16 +212,16 @@ public class DxCapsule extends DxGeom implements DCapsule {
 //			p1.v[0] = o1._final_posr.pos.v[0] + clen * o1._final_posr.R.v[2];
 //			p1.v[1] = o1._final_posr.pos.v[1] + clen * o1._final_posr.R.v[6];
 //			p1.v[2] = o1._final_posr.pos.v[2] + clen * o1._final_posr.R.v[10];
-			p1.eqSum( o1._final_posr.pos, o1._final_posr.R.columnAsNewVector(2), clen);
+			p1.eqSum( o1.final_posr().pos(), o1.final_posr().R().columnAsNewVector(2), clen);
 //			p2.v[0] = o1._final_posr.pos.v[0] - clen * o1._final_posr.R.v[2];
 //			p2.v[1] = o1._final_posr.pos.v[1] - clen * o1._final_posr.R.v[6];
 //			p2.v[2] = o1._final_posr.pos.v[2] - clen * o1._final_posr.R.v[10];
-			p2.eqSum( o1._final_posr.pos, o1._final_posr.R.columnAsNewVector(2), -clen);
+			p2.eqSum( o1.final_posr().pos(), o1.final_posr().R().columnAsNewVector(2), -clen);
 			double radius = cyl._radius;
 
 			// copy out box center, rotation matrix, and side array
-			DVector3 c = o2._final_posr.pos;
-			DMatrix3 R = o2._final_posr.R;
+			DVector3C c = o2.final_posr().pos();
+			DMatrix3C R = o2.final_posr().R();
 			final DVector3 side = box.side;
 
 			// get the closest point between the cylinder axis and the box
@@ -264,19 +265,19 @@ public class DxCapsule extends DxGeom implements DCapsule {
 			// copy out some variables, for convenience
 			double lz1 = cyl1._lz * (0.5);
 			double lz2 = cyl2._lz * (0.5);
-			DVector3 pos1 = cyl1._final_posr.pos;
-			DVector3 pos2 = cyl2._final_posr.pos;
+			DVector3C pos1 = cyl1.final_posr().pos();
+			DVector3C pos2 = cyl2.final_posr().pos();
 			//DVector3 axis1 = new DVector3(), axis2 = new DVector3();
 			//  axis1[0] = cyl1.final_posr.R[2];
 			//  axis1[1] = cyl1.final_posr.R[6];
 			//  axis1[2] = cyl1.final_posr.R[10]
 			//axis1.set(cyl1._final_posr.R.get(2), cyl1._final_posr.R.get(6), cyl1._final_posr.R.get(10));
-			DVector3 axis1 = cyl1._final_posr.R.columnAsNewVector(2);
+			DVector3C axis1 = cyl1.final_posr().R().columnAsNewVector(2);
 			//  axis2[0] = cyl2.final_posr.R[2];
 			//  axis2[1] = cyl2.final_posr.R[6];
 			//  axis2[2] = cyl2.final_posr.R[10];
 			//axis2.set(cyl2._final_posr.R.get(2), cyl2._final_posr.R.get(6), cyl2._final_posr.R.get(10));
-			DVector3 axis2 = cyl2._final_posr.R.columnAsNewVector(2);
+			DVector3 axis2 = cyl2.final_posr().R().columnAsNewVector(2);
 			
 			// if the cylinder axes are close to parallel, we'll try to detect up to
 			// two contact points along the body of the cylinder. if we can't find any
@@ -359,19 +360,19 @@ public class DxCapsule extends DxGeom implements DCapsule {
 			//  a1[0] = cyl1._final_posr.pos.v[0] + axis1[0]*lz1;
 			//  a1[1] = cyl1._final_posr.pos.v[1] + axis1[1]*lz1;
 			//  a1[2] = cyl1._final_posr.pos.v[2] + axis1[2]*lz1;
-			a1.set(axis1).scale(lz1).add(cyl1._final_posr.pos);
+			a1.set(axis1).scale(lz1).add(cyl1.final_posr().pos());
 			//  a2[0] = cyl1._final_posr.pos.v[0] - axis1[0]*lz1;
 			//  a2[1] = cyl1._final_posr.pos.v[1] - axis1[1]*lz1;
 			//  a2[2] = cyl1._final_posr.pos.v[2] - axis1[2]*lz1;
-			a2.set(axis1).scale(-lz1).add(cyl1._final_posr.pos);
+			a2.set(axis1).scale(-lz1).add(cyl1.final_posr().pos());
 			//  b1[0] = cyl2._final_posr.pos.v[0] + axis2[0]*lz2;
 			//  b1[1] = cyl2._final_posr.pos.v[1] + axis2[1]*lz2;
 			//  b1[2] = cyl2._final_posr.pos.v[2] + axis2[2]*lz2;
-			b1.set(axis2).scale(lz2).add(cyl2._final_posr.pos);
+			b1.set(axis2).scale(lz2).add(cyl2.final_posr().pos());
 			//  b2[0] = cyl2._final_posr.pos.v[0] - axis2[0]*lz2;
 			//  b2[1] = cyl2._final_posr.pos.v[1] - axis2[1]*lz2;
 			//  b2[2] = cyl2._final_posr.pos.v[2] - axis2[2]*lz2;
-			b2.set(axis2).scale(-lz2).add(cyl2._final_posr.pos);
+			b2.set(axis2).scale(-lz2).add(cyl2.final_posr().pos());
 
 			DxCollisionUtil.dClosestLineSegmentPoints (a1,a2,b1,b2,sphere1,sphere2);
 			return DxCollisionUtil.dCollideSpheres (sphere1,cyl1._radius,sphere2,cyl2._radius,contacts);
@@ -403,13 +404,13 @@ public class DxCapsule extends DxGeom implements DCapsule {
 
 			// collide the deepest capping sphere with the plane
 			//double sign = (dDOT14 (plane._p,0,o1._final_posr.R.v,2) > 0) ? (-1.0) : (1.0);
-			double sign = ( planePos.dot( o1._final_posr.R.viewCol(2) ) > 0) ? (-1.0) : (1.0);
+			double sign = ( planePos.dot( o1.final_posr().R().viewCol(2) ) > 0) ? (-1.0) : (1.0);
 			//  p[0] = o1.final_posr.pos[0] + o1.final_posr.R[2]  * ccyl.lz * REAL(0.5) * sign;
 			//  p[1] = o1.final_posr.pos[1] + o1.final_posr.R[6]  * ccyl.lz * REAL(0.5) * sign;
 			//  p[2] = o1.final_posr.pos[2] + o1.final_posr.R[10] * ccyl.lz * REAL(0.5) * sign;
-			DVector3 p = o1._final_posr.R.columnAsNewVector(2);
+			DVector3 p = o1.final_posr().R().columnAsNewVector(2);
 			//  p.set(o1._final_posr.R.get(2), o1._final_posr.R.get(6), o1._final_posr.R.get(10));
-			p.scale(ccyl._lz * 0.5 * sign).add(o1._final_posr.pos);
+			p.scale(ccyl._lz * 0.5 * sign).add(o1.final_posr().pos());
 
 			double k = p.dot( planePos );//dDOT (p.v,plane._p);
 			double depth = plane.getDepth() - k + ccyl._radius;
@@ -431,8 +432,8 @@ public class DxCapsule extends DxGeom implements DCapsule {
 //				p.set(0, o1.final_posr.pos[0] - o1.final_posr.R[2]  * ccyl.lz * REAL(0.5) * sign );
 //				p.set(1, o1.final_posr.pos[1] - o1.final_posr.R[6]  * ccyl.lz * REAL(0.5) * sign );
 //				p.set(2, o1.final_posr.pos[2] - o1.final_posr.R[10] * ccyl.lz * REAL(0.5) * sign );
-				p = o1._final_posr.R.columnAsNewVector(2);
-				p.scale(-ccyl._lz * 0.5 * sign).add(o1._final_posr.pos);
+				p = o1.final_posr().R().columnAsNewVector(2);
+				p.scale(-ccyl._lz * 0.5 * sign).add(o1.final_posr().pos());
 
 				k = p.dot( planePos );//dDOT (p.v,plane._p);
 				depth = plane.getDepth() - k + ccyl._radius;

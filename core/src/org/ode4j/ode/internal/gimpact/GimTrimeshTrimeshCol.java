@@ -363,7 +363,7 @@ public class GimTrimeshTrimeshCol {
 	    //Locks mesh
 	    trimesh.gim_trimesh_locks_work_data();
 	    //Get vertices
-	    int i, vertcount = trimesh.m_transformed_vertex_buffer.m_element_count;
+	    int i, vertcount = trimesh.m_transformed_vertex_buffer.size();//m_element_count;
 	    ObjArray<vec3f> vertices = trimesh.m_transformed_vertex_buffer.GIM_BUFFER_ARRAY_POINTER(0);//vec3f,,0);
 
 	    float dist;

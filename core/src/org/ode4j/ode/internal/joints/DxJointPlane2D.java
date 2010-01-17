@@ -146,7 +146,7 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 		// error correction (against drift):
 
 		// a) linear vz, so that z (== pos[2]) == 0
-		info.setC(0, eps * -node[0].body._posr.pos.get2() );
+		info.setC(0, eps * -node[0].body.posr().pos().get2() );
 
 		//# if 0
 		//    // b) angular correction? -> left to application !!!

@@ -73,7 +73,7 @@ class DxTriMeshDisabled extends DxTriMesh {
 		}
 	}
 	
-	//TODO #if !dTRIMESH_ENABLED
+	// #if !dTRIMESH_ENABLED
 
 	//#include "collision_util.h"
 	//#include "collision_trimesh_internal.h"

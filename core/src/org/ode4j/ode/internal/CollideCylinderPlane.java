@@ -71,7 +71,7 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 		//dGeomCylinderGetParams(cylinder, &radius, &length);
 		radius = cylinder.getRadius();
 		length = cylinder.getLength();
-		DVector3 cylpos = cylinder._final_posr.pos;
+		DVector3C cylpos = cylinder.final_posr().pos();
 		// and the plane
 		//	dVector4 planevec;
 		//	dGeomPlaneGetParams(plane, planevec);
@@ -84,11 +84,12 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 		DContactGeom contact = contacts.get(); 
 		int contactPos = 0;
 
-		DVector3 G1Pos1 = new DVector3(), G1Pos2 = new DVector3(), vDir1;
+		DVector3 G1Pos1 = new DVector3(), G1Pos2 = new DVector3();
+		DVector3C vDir1;
 		//	vDir1[0] = cylinder.final_posr.R[2];
 		//	vDir1[1] = cylinder.final_posr.R[6];
 		//	vDir1[2] = cylinder.final_posr.R[10];
-		vDir1 = cylinder._final_posr.R.columnAsNewVector(2);
+		vDir1 = cylinder.final_posr().R().columnAsNewVector(2);
 
 		double s;
 		s = length * (0.5);

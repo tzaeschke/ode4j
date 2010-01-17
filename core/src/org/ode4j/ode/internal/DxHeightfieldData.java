@@ -303,7 +303,7 @@ public class DxHeightfieldData implements DHeightfieldData {
 			if (pos.get0() < MinX)
 				return false;
 
-			MaxX = (CellCorner.coords[0] + 1) * m_fSampleWidth;
+			MaxX = (CellCorner.coords0 + 1) * m_fSampleWidth;
 			if (pos.get0() >= MaxX)
 				return false;
 
@@ -311,7 +311,7 @@ public class DxHeightfieldData implements DHeightfieldData {
 			if (pos.get2() < MinZ)
 				return false;
 
-			MaxZ = (CellCorner.coords[1] + 1) * m_fSampleDepth;
+			MaxZ = (CellCorner.coords1 + 1) * m_fSampleDepth;
 			if (pos.get2() >= MaxZ)
 				return false;
 
@@ -324,7 +324,7 @@ public class DxHeightfieldData implements DHeightfieldData {
 			if (pos.get0() >= MaxX)
 				return false;
 
-			MinX = (CellCorner.coords[0] - 1) * m_fSampleWidth;
+			MinX = (CellCorner.coords0 - 1) * m_fSampleWidth;
 			if (pos.get0() < MinX)
 				return false;
 
@@ -332,7 +332,7 @@ public class DxHeightfieldData implements DHeightfieldData {
 			if (pos.get2() >= MaxZ)
 				return false;
 
-			MinZ = (CellCorner.coords[1] - 1) * m_fSampleDepth;
+			MinZ = (CellCorner.coords1 - 1) * m_fSampleDepth;
 			if (pos.get2() < MinZ)
 				return false;
 

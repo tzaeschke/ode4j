@@ -66,12 +66,12 @@ public class DxSphere extends DxGeom implements DSphere {
 //		_aabb.v[3] = _final_posr.pos.v[1] + _radius;
 //		_aabb.v[4] = _final_posr.pos.v[2] - _radius;
 //		_aabb.v[5] = _final_posr.pos.v[2] + _radius;
-		_aabb.set(_final_posr.pos.get0() - _radius,
-				_final_posr.pos.get0() + _radius,
-				_final_posr.pos.get1() - _radius,
-				_final_posr.pos.get1() + _radius,
-				_final_posr.pos.get2() - _radius,
-				_final_posr.pos.get2() + _radius);
+		_aabb.set(final_posr().pos().get0() - _radius,
+				final_posr().pos().get0() + _radius,
+				final_posr().pos().get1() - _radius,
+				final_posr().pos().get1() + _radius,
+				final_posr().pos().get2() - _radius,
+				final_posr().pos().get2() + _radius);
 
 	}
 
@@ -116,14 +116,14 @@ public class DxSphere extends DxGeom implements DSphere {
 		//			    (y-pos[1])*(y-pos[1]) +
 		//			    (z-pos[2])*(z-pos[2]));
 		DVector3 pos = new DVector3(x, y, z);
-		pos.sub(_final_posr.pos);
+		pos.sub(final_posr().pos());
 		return _radius - pos.length();
 	}
 	public double dGeomSpherePointDepth (DVector3C xyz)
 	{
 		recomputePosr();
 		DVector3 pos = new DVector3();
-		pos.eqDiff(xyz, _final_posr.pos);
+		pos.eqDiff(xyz, final_posr().pos());
 		return _radius - pos.length();
 	}
 
@@ -152,8 +152,8 @@ public class DxSphere extends DxGeom implements DSphere {
 			contact.side1 = -1;
 			contact.side2 = -1;
 
-			return DxCollisionUtil.dCollideSpheres (sphere1._final_posr.pos, sphere1._radius,
-					sphere2._final_posr.pos, sphere2._radius, contacts);
+			return DxCollisionUtil.dCollideSpheres (sphere1.final_posr().pos(), sphere1._radius,
+					sphere2.final_posr().pos(), sphere2._radius, contacts);
 		}
 
 		@Override
@@ -197,19 +197,19 @@ public class DxSphere extends DxGeom implements DSphere {
 			contact.side2 = -1;
 
 			//p.set(o1._final_posr.pos).sub(o2._final_posr.pos);
-			p.eqDiff(o1._final_posr.pos, o2._final_posr.pos);
+			p.eqDiff(o1.final_posr().pos(), o2.final_posr().pos());
 
 			l[0] = box.side.get0()*(0.5);
-			t[0] = dDOT14(p,o2._final_posr.R,0);
+			t[0] = dDOT14(p,o2.final_posr().R(),0);
 			if (t[0] < -l[0]) { t[0] = -l[0]; onborder = true; }
 			if (t[0] >  l[0]) { t[0] =  l[0]; onborder = true; }
 
 			l[1] = box.side.get1()*(0.5);
-			t[1] = dDOT14(p,o2._final_posr.R,1);
+			t[1] = dDOT14(p,o2.final_posr().R(),1);
 			if (t[1] < -l[1]) { t[1] = -l[1]; onborder = true; }
 			if (t[1] >  l[1]) { t[1] =  l[1]; onborder = true; }
 
-			t[2] = dDOT14(p,o2._final_posr.R,2);
+			t[2] = dDOT14(p,o2.final_posr().R(),2);
 			l[2] = box.side.get2()*(0.5);
 			if (t[2] < -l[2]) { t[2] = -l[2]; onborder = true; }
 			if (t[2] >  l[2]) { t[2] =  l[2]; onborder = true; }
@@ -226,7 +226,7 @@ public class DxSphere extends DxGeom implements DSphere {
 					}
 				}
 				// contact position = sphere center
-				contacts.get(0).pos.set(o1._final_posr.pos);
+				contacts.get(0).pos.set(o1.final_posr().pos());
 
 				// contact normal points to closest face
 				DVector3 tmp = new DVector3();
@@ -234,14 +234,14 @@ public class DxSphere extends DxGeom implements DSphere {
 				//    tmp[1] = 0;
 				//    tmp[2] = 0;
 				tmp.set(mini, (t[mini] > 0) ? (1.0) : (-1.0) );
-				dMULTIPLY0_331 (contacts.get(0).normal,o2._final_posr.R,tmp);
+				dMULTIPLY0_331 (contacts.get(0).normal,o2.final_posr().R(),tmp);
 				// contact depth = distance to wall along normal plus radius
 				contacts.get(0).depth = min_distance + sphere._radius;
 				return 1;
 			}
 
 			//t[3] = 0;			//@@@ hmmm  TODO (TZ) report
-			dMULTIPLY0_331 (q,o2._final_posr.R,new DVector3(t[0], t[1], t[2]));
+			dMULTIPLY0_331 (q,o2.final_posr().R(),new DVector3(t[0], t[1], t[2]));
 			//  r[0] = p[0] - q[0];
 			//  r[1] = p[1] - q[1];
 			//  r[2] = p[2] - q[2];
@@ -251,7 +251,7 @@ public class DxSphere extends DxGeom implements DSphere {
 			//  contact.pos[0] = q[0] + o2.final_posr.pos[0];
 			//  contact.pos[1] = q[1] + o2.final_posr.pos[1];
 			//  contact.pos[2] = q[2] + o2.final_posr.pos[2];
-			contacts.get(0).pos.eqSum(q, o2._final_posr.pos);
+			contacts.get(0).pos.eqSum(q, o2.final_posr().pos());
 			//  contact.normal[0] = r[0];
 			//  contact.normal[1] = r[1];
 			//  contact.normal[2] = r[2];
@@ -290,7 +290,7 @@ public class DxSphere extends DxGeom implements DSphere {
 			contact.side1 = -1;
 			contact.side2 = -1;
 
-			double k = o1._final_posr.pos.dot( plane.getNormal() );//dDOT (o1._final_posr.pos,plane.getPlanePos());
+			double k = o1.final_posr().pos().dot( plane.getNormal() );//dDOT (o1._final_posr.pos,plane.getPlanePos());
 			double depth = plane.getDepth() - k + sphere._radius;
 			if (depth >= 0) {
 				//    contact.normal[0] = plane.p[0];
@@ -301,7 +301,7 @@ public class DxSphere extends DxGeom implements DSphere {
 				//			contact.pos[1] = o1.final_posr.pos[1] - plane.p[1] * sphere._radius;
 				//			contact.pos[2] = o1.final_posr.pos[2] - plane.p[2] * sphere._radius;
 				//contact.pos.set(plane._p).scale(-sphere._radius).add(o1._final_posr.pos);
-				contact.pos.eqSum(o1._final_posr.pos, contact.normal /* == plane._p */, -sphere._radius);
+				contact.pos.eqSum(o1.final_posr().pos(), contact.normal /* == plane._p */, -sphere._radius);
 				contact.depth = depth;
 				return 1;
 			}

@@ -165,8 +165,7 @@ public class GimTrimeshSphereCollision {
 		test_aabb.minZ = center.f[2]-radius;
 		test_aabb.maxZ = center.f[2]+radius;
 
-		GimDynArrayInt collision_result = new GimDynArrayInt();
-		collision_result.GIM_CREATE_BOXQUERY_LIST();
+		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
 		trimesh.m_aabbset.gim_aabbset_box_collision(test_aabb, collision_result);
 

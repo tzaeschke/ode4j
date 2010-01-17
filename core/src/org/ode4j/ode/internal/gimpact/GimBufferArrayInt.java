@@ -100,12 +100,12 @@ public class GimBufferArrayInt implements GimConstants { //formerly GBUFFER_ARRA
 //	  GUINT m_byte_offset;
 //	  GUINT m_element_count;
 //	  final GBUFFER_ID<vec3f> m_buffer_id = new GBUFFER_ID<vec3f>(this);
-	  int[] m_buffer_data; //= {new vec3f()};  //TODO make final ? TZ  //TODO Why init? Was pointer!!??? TZ
+	  private int[] m_buffer_data; //= {new vec3f()};  //TODO make final ? TZ  //TODO Why init? Was pointer!!??? TZ
 		/** @deprecated TZ remove */
-	  int m_byte_stride = 1;
-	  int m_byte_offset = 0;
+	  private final int m_byte_stride = 1;
+	  private final int m_byte_offset = 0;
 	  /** GUINT m_element_count; */
-	  int m_element_count;
+	  private int m_element_count;
 //	};
 	//typedef  struct _GBUFFER_ARRAY GBUFFER_ARRAY;
 
@@ -139,8 +139,8 @@ public class GimBufferArrayInt implements GimConstants { //formerly GBUFFER_ARRA
 		GimBufferArrayInt c = new GimBufferArrayInt();
 		c.m_buffer_data = Arrays.copyOf(m_buffer_data, m_buffer_data.length);
 		c.m_element_count = m_element_count;
-		c.m_byte_offset = m_byte_offset;
-		c.m_byte_stride = m_byte_stride;
+//		c.m_byte_offset = m_byte_offset;
+//		c.m_byte_stride = m_byte_stride;
 		return c;
 	}
 

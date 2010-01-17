@@ -102,7 +102,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 //		c1.v[0] = contact.geom.pos.v[0] - node[0].body._posr.pos.v[0];
 //		c1.v[1] = contact.geom.pos.v[1] - node[0].body._posr.pos.v[1];
 //		c1.v[2] = contact.geom.pos.v[2] - node[0].body._posr.pos.v[2];
-		c1.eqDiff( contact.geom.pos, node[0].body._posr.pos );
+		c1.eqDiff( contact.geom.pos, node[0].body.posr().pos() );
 
 		// set jacobian for normal
 		info._J[info.J1lp+0] = normal.get0();
@@ -114,7 +114,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 //			c2.v[0] = contact.geom.pos.v[0] - node[1].body._posr.pos.v[0];
 //			c2.v[1] = contact.geom.pos.v[1] - node[1].body._posr.pos.v[1];
 //			c2.v[2] = contact.geom.pos.v[2] - node[1].body._posr.pos.v[2];
-			c2.eqDiff( contact.geom.pos, node[1].body._posr.pos );
+			c2.eqDiff( contact.geom.pos, node[1].body.posr().pos() );
 			info._J[info.J2lp+0] = -normal.get0();
 			info._J[info.J2lp+1] = -normal.get1();
 			info._J[info.J2lp+2] = -normal.get2();

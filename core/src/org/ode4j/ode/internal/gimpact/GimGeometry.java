@@ -1458,11 +1458,11 @@ public class GimGeometry extends GimMath {
 	//!Initializes an AABB
 	static final void INVALIDATE_AABB(aabb3f aabb) {
 	    (aabb).minX = G_REAL_INFINITY;
-	    (aabb).maxX = -G_REAL_INFINITY;
+	    (aabb).maxX = G_REAL_INFINITY_N;
 	    (aabb).minY = G_REAL_INFINITY;
-	    (aabb).maxY = -G_REAL_INFINITY;
+	    (aabb).maxY = G_REAL_INFINITY_N;
 	    (aabb).minZ = G_REAL_INFINITY;
-	    (aabb).maxZ = -G_REAL_INFINITY;
+	    (aabb).maxZ = G_REAL_INFINITY_N;
 	}
 
 	static final void AABB_GET_MIN(aabb3f aabb, vec3f vmin) {

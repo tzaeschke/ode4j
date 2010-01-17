@@ -159,7 +159,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * this = v2*s2 + v3*s3
 	 * @return this
 	 */
-	public final DVector3 eqSum(DVector3ColView v2, double s2, DVector3 v3, double s3) {
+	public final DVector3 eqSum(DVector3ColView v2, double s2, DVector3C v3, double s3) {
 		set0( v2.get0()*s2 + v3.get0()*s3 ); 
 		set1( v2.get1()*s2 + v3.get1()*s3 ); 
 		set2( v2.get2()*s2 + v3.get2()*s3 );
@@ -195,7 +195,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * this = v2 + v3*s3
 	 * @return this
 	 */
-	public final DVector3 eqSum(DVector3 v2, DVector3ColView v3, double s3) {
+	public final DVector3 eqSum(DVector3C v2, DVector3ColView v3, double s3) {
 		set0( v2.get0() + v3.get0()*s3 ); 
 		set1( v2.get1() + v3.get1()*s3 ); 
 		set2( v2.get2() + v3.get2()*s3 );

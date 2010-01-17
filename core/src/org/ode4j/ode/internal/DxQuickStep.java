@@ -714,14 +714,14 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			DMatrix3 tmp = new DMatrix3();
 
 			// compute inverse inertia tensor in global frame
-			dMULTIPLY2_333 (tmp,body[i].invI,body[i]._posr.R);
-			dMULTIPLY0_333 (invI,i*12,body[i]._posr.R,tmp);
+			dMULTIPLY2_333 (tmp,body[i].invI,body[i].posr().R());
+			dMULTIPLY0_333 (invI,i*12,body[i].posr().R(),tmp);
 
 			if (body[i].isFlagsGyroscopic()) {
 				DMatrix3 I = new DMatrix3();
 				// compute inertia tensor in global frame
-				dMULTIPLY2_333 (tmp,body[i].mass._I,body[i]._posr.R);
-				dMULTIPLY0_333 (I,body[i]._posr.R,tmp);
+				dMULTIPLY2_333 (tmp,body[i].mass._I,body[i].posr().R());
+				dMULTIPLY0_333 (I,body[i].posr().R(),tmp);
 				// compute rotational force
 				//dMULTIPLY0_331 (tmp.v,0,I.v,0,body[i].avel.v,0);
 				dMULTIPLY0_331 (tmp,I,body[i].avel);

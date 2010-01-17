@@ -100,12 +100,12 @@ public class GimBufferArrayFloat implements GimConstants { //formerly GBUFFER_AR
 //	  GUINT m_byte_offset;
 //	  GUINT m_element_count;
 //	  final GBUFFER_ID<vec3f> m_buffer_id = new GBUFFER_ID<vec3f>(this);
-	  vec3f[] m_buffer_data = {new vec3f()};  //TODO make final ? TZ  //TODO Why init? Was pointer!!??? TZ
+	  private vec3f[] m_buffer_data = {new vec3f()};  //TODO make final ? TZ  //TODO Why init? Was pointer!!??? TZ
 		/** @deprecated TZ remove */
-	  int m_byte_stride = 1;
-	  int m_byte_offset = 0;
+	  private int m_byte_stride = 1;
+	  private int m_byte_offset = 0;
 	  /** GUINT m_element_count; */
-	  int m_element_count;
+	  private int m_element_count;
 //	};
 	//typedef  struct _GBUFFER_ARRAY GBUFFER_ARRAY;
 
@@ -149,7 +149,7 @@ public class GimBufferArrayFloat implements GimConstants { //formerly GBUFFER_AR
 //		_src_array.gim_buffer_array_lock(G_MA_READ_ONLY); 
 //		_dst_array.gim_buffer_array_lock(G_MA_WRITE_ONLY); 
 //	
-	    int _i_, _count_=(_src_array).m_element_count; 
+	    int _count_=_src_array.m_element_count;
 	
 //	    Ref<_src_type> _source_vert_; 
 //	    Ref<_dst_type> _dest_vert_; 
@@ -161,7 +161,7 @@ public class GimBufferArrayFloat implements GimConstants { //formerly GBUFFER_AR
 	
 	        _source_vert_ = _src_array.GIM_BUFFER_ARRAY_POINTER(0); 
 	        _dest_vert_ = _dst_array.GIM_BUFFER_ARRAY_POINTER(0); 
-	        for (_i_ = 0;_i_< _count_; _i_++) 
+	        for (int _i_ = 0;_i_< _count_; _i_++) 
 	        { 
 	            _kernel.run(_uniform_data, _source_vert_.at0(), _dest_vert_.at0()); 
 	            _source_vert_.inc();//++; 
@@ -282,6 +282,11 @@ public class GimBufferArrayFloat implements GimConstants { //formerly GBUFFER_AR
     	c.m_buffer_data = va;
     	c.m_element_count = va.length;
 		return c;
+	}
+
+
+	public int size() {
+		return m_element_count;
 	}
 	
 }

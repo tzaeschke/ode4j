@@ -26,6 +26,7 @@ import org.cpp4j.java.RefDouble;
 import static org.ode4j.ode.OdeMath.*;
 
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPUJoint;
@@ -136,14 +137,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 		DVector3 q = new DVector3();
 		// get the offset in global coordinates
-		dMULTIPLY0_331( q, node[0].body._posr.R, _anchor1 );
+		dMULTIPLY0_331( q, node[0].body.posr().R(), _anchor1 );
 
 		if ( node[1].body!=null )
 		{
 			DVector3 anchor2 = new DVector3();
 
 			// get the anchor2 in global coordinates
-			dMULTIPLY0_331( anchor2, node[1].body._posr.R, _anchor2 );
+			dMULTIPLY0_331( anchor2, node[1].body.posr().R(), _anchor2 );
 
 //			q.v[0] = (( node[0].body._posr.pos.v[0] + q.v[0] ) -
 //					( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
@@ -151,8 +152,8 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 //					( node[1].body._posr.pos.v[1] + anchor2.v[1] ) );
 //			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
 //					( node[1].body._posr.pos.v[2] + anchor2.v[2] ) );
-			q.add( node[0].body._posr.pos );
-			q.sub( node[1].body._posr.pos );
+			q.add( node[0].body.posr().pos() );
+			q.sub( node[1].body.posr().pos() );
 			q.sub( anchor2 );
 		}
 		else
@@ -166,7 +167,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 //					( _anchor2.v[1] ) );
 //			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
 //					( _anchor2.v[2] ) );
-			q.add( node[0].body._posr.pos );
+			q.add( node[0].body.posr().pos() );
 			q.sub( _anchor2 );
 
 	        if ( isFlagsReverse() )
@@ -180,7 +181,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 		DVector3 axP = new DVector3();
 		// get prismatic axis in global coordinates
-		dMULTIPLY0_331( axP, node[0].body._posr.R, axisP1 );
+		dMULTIPLY0_331( axP, node[0].body.posr().R(), axisP1 );
 
 		return dDOT( axP, q );
 	}
@@ -204,7 +205,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			if ( node[1].body!=null )
 			{
 				// Find joint->anchor2 in global coordinates
-				dMULTIPLY0_331( anchor2, node[1].body._posr.R, _anchor2 );
+				dMULTIPLY0_331( anchor2, node[1].body.posr().R(), _anchor2 );
 
 				//				r.v[0] = ( node[0].body._posr.pos.v[0] -
 				//						( anchor2.v[0] + node[1].body._posr.pos.v[0] ) );
@@ -212,7 +213,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 				//						( anchor2.v[1] + node[1].body._posr.pos.v[1] ) );
 				//				r.v[2] = ( node[0].body._posr.pos.v[2] -
 				//						( anchor2.v[2] + node[1].body._posr.pos.v[2] ) );
-				r.eqDiff(node[0].body._posr.pos, node[1].body._posr.pos).sub(anchor2);
+				r.eqDiff(node[0].body.posr().pos(), node[1].body.posr().pos()).sub(anchor2);
 			}
 			else
 			{
@@ -220,7 +221,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 				//     global coordinates
 				// r = joint->node[0].body->posr.pos -  joint->anchor2;
 				//dOP( r.v, OP.SUB, node[0].body._posr.pos.v, _anchor2.v );
-				r.eqDiff(node[0].body._posr.pos, _anchor2);
+				r.eqDiff(node[0].body.posr().pos(), _anchor2);
 			}
 
 			// The body1 can have velocity coming from the rotation of
@@ -239,7 +240,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	        // get axisP1 in global coordinates and get the component
 	        // along this axis only
 	        DVector3 axP1 = new DVector3();
-	        dMULTIPLY0_331( axP1, node[0].body._posr.R, axisP1 );
+	        dMULTIPLY0_331( axP1, node[0].body.posr().R(), axisP1 );
 
 			if ( node[1].body!=null )
 			{
@@ -329,14 +330,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		// vector pos2-pos1.
 
 		//double *pos1, *pos2 = 0, *R1, *R2 = 0;
-		DVector3 pos1 = new DVector3(), pos2 = null;
-		DMatrix3 R1 = new DMatrix3(), R2 = null;
-		pos1 = node[0].body._posr.pos;
-		R1 = node[0].body._posr.R;
+		DVector3C pos1, pos2 = null;
+		DMatrix3C R1, R2 = null;
+		pos1 = node[0].body.posr().pos();
+		R1 = node[0].body.posr().R();
 		if ( node[1].body!=null )
 		{
-			pos2 = node[1].body._posr.pos;
-			R2 = node[1].body._posr.R;
+			pos2 = node[1].body.posr().pos();
+			R2 = node[1].body.posr().R();
 		}
 
 		DVector3 axP = new DVector3(); // Axis of the prismatic joint in global frame

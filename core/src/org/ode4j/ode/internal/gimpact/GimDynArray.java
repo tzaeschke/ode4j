@@ -120,7 +120,6 @@ public class GimDynArray<T> {//extends GimBufferArray<T> {
 	/** Renamed, because it now inserts the element instead of cloning it. TZ */
 	void GIM_DYNARRAY_PUSH_ITEM_TZ(T item)
 	{ 
-//    	System.out.println("Pushing: " + m_size + " " + m_reserve_size); //TODO
 	    if (m_reserve_size <= m_size)
 	    {
 	        GIM_DYNARRAY_RESERVE_SIZE(m_size, m_size + G_ARRAY_GROW_SIZE); 

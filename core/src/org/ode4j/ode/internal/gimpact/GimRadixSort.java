@@ -43,19 +43,19 @@ public class GimRadixSort {
 	{
 //	    GUINT32 m_key;
 //	    GUINT32 m_value;
-	    int m_key;
+		long m_key;
 	    int m_value;
 	};
 	//typedef struct _GIM_RSORT_TOKEN GIM_RSORT_TOKEN;
 
 	//comparator for sorting
 	//#define RSORT_TOKEN_COMPARATOR(x, y) ((int)((x.m_key) - (y.m_key)))
-	private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
+	private static long RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
 	interface GimRSortTokenComparator {
-		int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
+		long run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
 	}
 	static final GimRSortTokenComparator RSORT_TOKEN_COMPARATOR = new GimRSortTokenComparator() {
-		@Override public int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
+		@Override public long run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
 			return RSORT_TOKEN_COMPARATOR(x, y);
 		}
 	};
@@ -64,9 +64,9 @@ public class GimRadixSort {
 //	#define D11_0(x)	(x & 0x7FF)
 //	#define D11_1(x)	(x >> 11 & 0x7FF)
 //	#define D11_2(x)	(x >> 22 )
-	private static int D11_0(int x) { return (x & 0x7FF); }
-	private static int D11_1(int x) { return (x >>> 11 & 0x7FF); }
-	private static int D11_2(int x) { return (x >>> 22 ); }
+	private static int D11_0(long x) { return (int) (x & 0x7FFl); }
+	private static int D11_1(long x) { return (int) (x >>> 11 & 0x7FFl); }
+	private static int D11_2(long x) { return (int) (x >>> 22 ); }
 
 
 	//COMMON FUNCTIONS FOR ACCESSING THE KEY OF AN ELEMENT
@@ -107,7 +107,7 @@ public class GimRadixSort {
 //		{
 //			b0[i] = 0;
 //		}
-		int fi;
+		long fi;
 		int pos;
 		for (i = 0; i < element_count; i++)
 		{
@@ -288,9 +288,9 @@ public class GimRadixSort {
 	//#define GIM_DEF_EXCHANGE_MACRO(type, _array, _i, _j)\
 	private static <T> void GIM_DEF_EXCHANGE_MACRO(T[] _array, final int _i, final int _j)
 	{
-	    T _e_tmp_ =(_array)[(_i)];
-	    (_array)[(_i)]=(_array)[(_j)];
-	    (_array)[(_j)]= _e_tmp_;
+	    T _e_tmp_ = _array[_i];
+	    _array[_i] = _array[_j];
+	    _array[_j] = _e_tmp_;
 	}
 
 	static final GimExchangeMacro GIM_DEF_EXCHANGE_MACRO = new GimExchangeMacro() {

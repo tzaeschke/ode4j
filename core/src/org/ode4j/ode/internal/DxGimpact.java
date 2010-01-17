@@ -254,20 +254,20 @@ public class DxGimpact extends DxTriMesh {
 		// ******************************************************************************************
 
 		//Create trimesh
-		if ( _Data.m_Vertices != null ) {
+		if ( _Data.getDataRef() != null ) {
 			this.m_collision_trimesh = GimTrimesh.gim_trimesh_create_from_data
 			(
 					//this.m_buffer_managers,
 					//this.m_collision_trimesh,		// gimpact mesh
 					//( vec3f *)(&Data.m_Vertices[0]),	// vertices
-					_Data.m_Vertices,//[0],	// vertices
+					_Data.getDataRef(),//[0],	// vertices
 					//_Data.m_VertexCount,		// nr of verts
-					0,					// copy verts?
+					false,					// copy verts?
 					//( GUINT32 *)(&Data.m_Indices[0]),	// indices
-					_Data.m_Indices,//[0],	// indices
+					_Data.getIndexRef(),//[0],	// indices
 					//_Data.m_TriangleCount*3,		// nr of indices
-					0,					// copy indices?
-					1					// transformed reply
+					false,					// copy indices?
+					true				// transformed reply
 			);
 		}
 	}

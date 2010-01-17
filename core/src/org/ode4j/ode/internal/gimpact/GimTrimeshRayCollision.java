@@ -53,8 +53,7 @@ public class GimTrimeshRayCollision {
 	static int gim_trimesh_ray_collision(GimTrimesh trimesh,vec3f origin,vec3f dir, 
 			float tmax, GIM_TRIANGLE_RAY_CONTACT_DATA contact)
 	{
-	    GimDynArrayInt collision_result = new GimDynArrayInt();
-	    collision_result.GIM_CREATE_BOXQUERY_LIST();
+	    GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
 	    trimesh.m_aabbset.gim_aabbset_ray_collision(origin,dir,tmax,collision_result);
 
@@ -119,8 +118,7 @@ public class GimTrimeshRayCollision {
 	static int gim_trimesh_ray_closest_collision(GimTrimesh trimesh,vec3f origin,vec3f dir, 
 			float tmax, GIM_TRIANGLE_RAY_CONTACT_DATA contact)
 	{
-	    GimDynArrayInt collision_result = new GimDynArrayInt();
-	    collision_result.GIM_CREATE_BOXQUERY_LIST();
+	    GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
 		trimesh.m_aabbset.gim_aabbset_ray_collision(origin,dir,tmax,collision_result);
 

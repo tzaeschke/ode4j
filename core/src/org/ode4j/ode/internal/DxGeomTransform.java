@@ -26,7 +26,7 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeomTransform;
-import org.ode4j.ode.internal.Objects_H.dxPosR;
+import org.ode4j.ode.internal.Objects_H.DxPosR;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -43,7 +43,7 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 
 	// cached final object transform (body tx + relative tx). this is set by
 	// computeAABB(), and it is valid while the AABB is valid.
-	private dxPosR transform_posr;
+	private DxPosR transform_posr;
 
 	DxGeomTransform (DxSpace space) //: dxGeom (space,1)
 	{
@@ -52,7 +52,7 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 		obj = null;
 		cleanup = false;
 		infomode = false;
-		transform_posr = new dxPosR();
+		transform_posr = new DxPosR();
 		//  dSetZero (transform_posr.pos,4);
 		//  dRSetIdentity (transform_posr.R);
 	}
@@ -76,7 +76,7 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 		}
 
 		// backup the relative pos and R pointers of the encapsulated geom object
-		dxPosR posr_bak = obj._final_posr;
+		DxPosR posr_bak = obj._final_posr;
 
 		// compute temporary pos and R for the encapsulated geom object
 		computeFinalTx();
@@ -97,12 +97,12 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 
 	private void computeFinalTx()
 	{
-		dMULTIPLY0_331 (transform_posr.pos,_final_posr.R,obj._final_posr.pos);
+		dMULTIPLY0_331 (transform_posr.pos, final_posr().R(), obj.final_posr().pos());
 		//  transform_posr.pos[0] += final_posr.pos[0];
 		//  transform_posr.pos[1] += final_posr.pos[1];
 		//  transform_posr.pos[2] += final_posr.pos[2];
-		transform_posr.pos.add(_final_posr.pos);
-		dMULTIPLY0_333 (transform_posr.R,_final_posr.R,obj._final_posr.R);
+		transform_posr.pos.add(final_posr().pos());
+		dMULTIPLY0_333 (transform_posr.R, final_posr().R(), obj.final_posr().R());
 	}
 
 	//****************************************************************************
@@ -129,7 +129,7 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 	
 			// backup the relative pos and R pointers of the encapsulated geom object,
 			// and the body pointer
-			dxPosR posr_bak = tr.obj._final_posr;
+			DxPosR posr_bak = tr.obj._final_posr;
 			DxBody bodybak = tr.obj.body;
 	
 			// compute temporary pos and R for the encapsulated geom object.

@@ -303,8 +303,7 @@ public class GimTrimeshCapsuleCollision {
 	    aabb3f test_aabb = new aabb3f();
 	    CALC_CAPSULE_AABB(capsule,test_aabb);
 
-		GimDynArrayInt collision_result = new GimDynArrayInt();
-		collision_result.GIM_CREATE_BOXQUERY_LIST();
+		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
 		trimesh.m_aabbset.gim_aabbset_box_collision(test_aabb, collision_result);
 

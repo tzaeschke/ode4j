@@ -181,9 +181,9 @@ public class DxGimpactCollision {
 		m.f[9] = (float) Rotation.get21();//[9];
 		m.f[10] = (float) Rotation.get22();//[10];
 
-		m.f[12] = (float) Position.get0();//[0];
-		m.f[13] = (float) Position.get1();//[1];
-		m.f[14] = (float) Position.get2();//[2];
+		m.f[3] = (float) Position.get0();//[0];
+		m.f[7] = (float) Position.get1();//[1];
+		m.f[11] = (float) Position.get2();//[2];
 
 	}
 

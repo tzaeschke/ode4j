@@ -23,6 +23,7 @@ package org.ode4j.ode.internal;
 
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DContactGeom;
@@ -70,9 +71,9 @@ public class DxRay extends DxGeom implements DRay {
 		//  e[0] = final_posr.pos[0] + final_posr.R[0*4+2]*length;
 		//  e[1] = final_posr.pos[1] + final_posr.R[1*4+2]*length;
 		//  e[2] = final_posr.pos[2] + final_posr.R[2*4+2]*length;
-		e.eqSum(_final_posr.R.viewCol(2), _length, _final_posr.pos, 1);
+		e.eqSum(final_posr().R().viewCol(2), _length, final_posr().pos(), 1);
 
-		_aabb.setMinMax( _final_posr.pos,  e);
+		_aabb.setMinMax( final_posr().pos(),  e);
 //		if (_final_posr.pos.get0() < e.get0()){
 //			_aabb.v[0] = _final_posr.pos.get0();
 //			_aabb.v[1] = e.get0();
@@ -133,8 +134,8 @@ public class DxRay extends DxGeom implements DRay {
 	{
 		//	dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
 		recomputePosr();
-		DMatrix3 rot = _final_posr.R;
-		//  dVector3 pos = _final_posr.pos;
+		DMatrix3C rot = final_posr().R();
+		//  dVector3 pos = final_posr().pos();
 		DVector3 n;
 		//  pos[0] = px;
 		//  pos[1] = py;
@@ -156,7 +157,7 @@ public class DxRay extends DxGeom implements DRay {
 	public void dGeomRaySet (DVector3C p, DVector3C d)
 	{
 		recomputePosr();
-		DMatrix3 rot = _final_posr.R;
+		DMatrix3C rot = final_posr().R();
 		_final_posr.pos.set(p);
 
 		DVector3 n = new DVector3(d);
@@ -174,11 +175,11 @@ public class DxRay extends DxGeom implements DRay {
 		//  start[0] = g.final_posr.pos[0];
 		//  start[1] = g.final_posr.pos[1];
 		//  start[2] = g.final_posr.pos[2];
-		start.set(_final_posr.pos);
+		start.set(final_posr().pos());
 		//  dir[0] = g.final_posr.R[0*4+2];
 		//  dir[1] = g.final_posr.R[1*4+2];
 		//  dir[2] = g.final_posr.R[2*4+2];
-		dir.set(_final_posr.R.viewCol(2));
+		dir.set(final_posr().R().viewCol(2));
 	}
 
 
@@ -242,15 +243,15 @@ public class DxRay extends DxGeom implements DRay {
 
 	//static int ray_sphere_helper (dxRay *ray, dVector3 sphere_pos, dReal radius,
 	//	      dContactGeom *contact, int mode)
-	private static int ray_sphere_helper (DxRay ray, DVector3 sphere_pos, double radius,
+	private static int ray_sphere_helper (DxRay ray, DVector3C sphere_pos, double radius,
 			DContactGeomBuffer contacts, boolean mode)
 	{
 		DVector3 q = new DVector3();
 		//  q[0] = ray.final_posr.pos[0] - sphere_pos[0];
 		//  q[1] = ray.final_posr.pos[1] - sphere_pos[1];
 		//  q[2] = ray.final_posr.pos[2] - sphere_pos[2];
-		q.eqDiff(ray._final_posr.pos, sphere_pos);
-		double B = dDOT14(q,ray._final_posr.R,2);
+		q.eqDiff(ray.final_posr().pos(), sphere_pos);
+		double B = dDOT14(q,ray.final_posr().R(),2);
 		double C = dDOT(q,q) - radius*radius;
 		// note: if C <= 0 then the start of the ray is inside the sphere
 		double k = B*B - C;
@@ -273,7 +274,7 @@ public class DxRay extends DxGeom implements DRay {
 		//  contact.pos[0] = ray.final_posr.pos[0] + alpha*ray.final_posr.R[0*4+2];
 		//  contact.pos[1] = ray.final_posr.pos[1] + alpha*ray.final_posr.R[1*4+2];
 		//  contact.pos[2] = ray.final_posr.pos[2] + alpha*ray.final_posr.R[2*4+2];
-		contact.pos.eqSum(ray._final_posr.pos, ray._final_posr.R.columnAsNewVector(2), alpha);
+		contact.pos.eqSum(ray.final_posr().pos(), ray.final_posr().R().viewCol(2), alpha);
 		double nsign = (C < 0 || mode) ? (-1.0) : (1.0);
 		//  contact.normal[0] = nsign*(contact.pos[0] - sphere_pos[0]);
 		//  contact.normal[1] = nsign*(contact.pos[1] - sphere_pos[1]);
@@ -303,7 +304,7 @@ public class DxRay extends DxGeom implements DRay {
 			contact.g2 = sphere;
 			contact.side1 = -1;
 			contact.side2 = -1;
-			return ray_sphere_helper (ray,sphere._final_posr.pos,sphere.getRadius(),contacts,false);
+			return ray_sphere_helper (ray,sphere.final_posr().pos(),sphere.getRadius(),contacts,false);
 		}
 
 		@Override
@@ -342,13 +343,13 @@ public class DxRay extends DxGeom implements DRay {
 			//		tmp[0] = ray.final_posr.pos[0] - box.final_posr.pos[0];
 			//		tmp[1] = ray.final_posr.pos[1] - box.final_posr.pos[1];
 			//		tmp[2] = ray.final_posr.pos[2] - box.final_posr.pos[2];
-			tmp.eqDiff(ray._final_posr.pos, box._final_posr.pos);
-			dMULTIPLY1_331 (s,box._final_posr.R,tmp);
+			tmp.eqDiff(ray.final_posr().pos(), box.final_posr().pos());
+			dMULTIPLY1_331 (s,box.final_posr().R(),tmp);
 			//		tmp[0] = ray.final_posr.R[0*4+2];
 			//		tmp[1] = ray.final_posr.R[1*4+2];
 			//		tmp[2] = ray.final_posr.R[2*4+2];
-			tmp.set(ray._final_posr.R.viewCol(2));
-			dMULTIPLY1_331 (v,box._final_posr.R,tmp);
+			tmp.set(ray.final_posr().R().viewCol(2));
+			dMULTIPLY1_331 (v,box.final_posr().R(),tmp);
 
 			// mirror the line so that v has all components >= 0
 			DVector3 sign = new DVector3();
@@ -412,11 +413,11 @@ public class DxRay extends DxGeom implements DRay {
 			//		contact.pos[0] = ray.final_posr.pos[0] + alpha*ray.final_posr.R[0*4+2];
 			//		contact.pos[1] = ray.final_posr.pos[1] + alpha*ray.final_posr.R[1*4+2];
 			//		contact.pos[2] = ray.final_posr.pos[2] + alpha*ray.final_posr.R[2*4+2];
-			contact.pos.eqSum(ray._final_posr.pos, ray._final_posr.R.columnAsNewVector(2), alpha);
+			contact.pos.eqSum(ray.final_posr().pos(), ray.final_posr().R().viewCol(2), alpha);
 			//		contact.normal[0] = box.final_posr.R[0*4+n] * sign[n];
 			//		contact.normal[1] = box.final_posr.R[1*4+n] * sign[n];
 			//		contact.normal[2] = box.final_posr.R[2*4+n] * sign[n];
-			contact.normal.set(box._final_posr.R.viewCol(2)).scale(sign.get(n));
+			contact.normal.set(box.final_posr().R().viewCol(2)).scale(sign.get(n));
 			contact.depth = alpha;
 			return 1;
 		}
@@ -456,12 +457,12 @@ public class DxRay extends DxGeom implements DRay {
 			//		cs[0] = ray.final_posr.pos[0] - ccyl.final_posr.pos[0];
 			//		cs[1] = ray.final_posr.pos[1] - ccyl.final_posr.pos[1];
 			//		cs[2] = ray.final_posr.pos[2] - ccyl.final_posr.pos[2];
-			cs.eqDiff(ray._final_posr.pos, ccyl._final_posr.pos);
-			k = dDOT41(ccyl._final_posr.R,2,cs);	// position of ray start along ccyl axis
+			cs.eqDiff(ray.final_posr().pos(), ccyl.final_posr().pos());
+			k = dDOT41(ccyl.final_posr().R(),2,cs);	// position of ray start along ccyl axis
 			//		q[0] = k*ccyl.final_posr.R[0*4+2] - cs[0];
 			//		q[1] = k*ccyl.final_posr.R[1*4+2] - cs[1];
 			//		q[2] = k*ccyl.final_posr.R[2*4+2] - cs[2];
-			q.eqSum( ccyl._final_posr.R.viewCol(2), k, 
+			q.eqSum( ccyl.final_posr().R().viewCol(2), k, 
 					cs, -1);
 			C = dDOT(q,q) - ccyl.getRadius()*ccyl.getRadius();
 			// if C < 0 then ray start position within infinite extension of cylinder
@@ -474,10 +475,10 @@ public class DxRay extends DxGeom implements DRay {
 				//				r[0] = ccyl.final_posr.pos[0] + k*ccyl.final_posr.R[0*4+2];
 				//				r[1] = ccyl.final_posr.pos[1] + k*ccyl.final_posr.R[1*4+2];
 				//				r[2] = ccyl.final_posr.pos[2] + k*ccyl.final_posr.R[2*4+2];
-				r.eqSum(ccyl._final_posr.R.viewCol(2), k, ccyl._final_posr.pos, 1.0);
-				if ((ray._final_posr.pos.get0()-r.get0())*(ray._final_posr.pos.get0()-r.get0()) +
-						(ray._final_posr.pos.get1()-r.get1())*(ray._final_posr.pos.get1()-r.get1()) +
-						(ray._final_posr.pos.get2()-r.get2())*(ray._final_posr.pos.get2()-r.get2()) < 
+				r.eqSum(ccyl.final_posr().R().viewCol(2), k, ccyl.final_posr().pos(), 1.0);
+				if ((ray.final_posr().pos().get0()-r.get0())*(ray.final_posr().pos().get0()-r.get0()) +
+						(ray.final_posr().pos().get1()-r.get1())*(ray.final_posr().pos().get1()-r.get1()) +
+						(ray.final_posr().pos().get2()-r.get2())*(ray.final_posr().pos().get2()-r.get2()) < 
 						ccyl.getRadius()*ccyl.getRadius()) {
 					inside_ccyl = true;
 				}
@@ -491,11 +492,11 @@ public class DxRay extends DxGeom implements DRay {
 				if (k < 0) k = -lz2; else k = lz2;
 			}
 			else {
-				double uv = dDOT44(ccyl._final_posr.R,2,ray._final_posr.R,2);
+				double uv = dDOT44(ccyl.final_posr().R(),2,ray.final_posr().R(),2);
 				//				r[0] = uv*ccyl.final_posr.R[0*4+2] - ray.final_posr.R[0*4+2];
 				//				r[1] = uv*ccyl.final_posr.R[1*4+2] - ray.final_posr.R[1*4+2];
 				//				r[2] = uv*ccyl.final_posr.R[2*4+2] - ray.final_posr.R[2*4+2];
-				r.eqSum(ccyl._final_posr.R.viewCol(2), uv, ray._final_posr.R.viewCol(2), -1);
+				r.eqSum(ccyl.final_posr().R().viewCol(2), uv, ray.final_posr().R().viewCol(2), -1);
 				double A = dDOT(r,r);
 				double B = 2*dDOT(q,r);
 				k = B*B-4*A*C;
@@ -521,12 +522,12 @@ public class DxRay extends DxGeom implements DRay {
 					//					contact.pos[0] = ray.final_posr.pos[0] + alpha*ray.final_posr.R[0*4+2];
 					//					contact.pos[1] = ray.final_posr.pos[1] + alpha*ray.final_posr.R[1*4+2];
 					//					contact.pos[2] = ray.final_posr.pos[2] + alpha*ray.final_posr.R[2*4+2];
-					contact.pos.eqSum( ray._final_posr.R.viewCol(2), alpha, ray._final_posr.pos, 1);
+					contact.pos.eqSum( ray.final_posr().R().viewCol(2), alpha, ray.final_posr().pos(), 1);
 					//					q[0] = contact.pos[0] - ccyl.final_posr.pos[0];
 					//					q[1] = contact.pos[1] - ccyl.final_posr.pos[1];
 					//					q[2] = contact.pos[2] - ccyl.final_posr.pos[2];
-					q.eqDiff(contact.pos, ccyl._final_posr.pos);
-					k = dDOT14(q,ccyl._final_posr.R,2);
+					q.eqDiff(contact.pos, ccyl.final_posr().pos());
+					k = dDOT14(q,ccyl.final_posr().R(),2);
 					double nsign = inside_ccyl ? (-1.0) : (1.0);
 					if (k >= -lz2 && k <= lz2) {
 						//						contact.normal[0] = nsign * (contact.pos[0] -
@@ -535,7 +536,7 @@ public class DxRay extends DxGeom implements DRay {
 						//								(ccyl.final_posr.pos[1] + k*ccyl.final_posr.R[1*4+2]));
 						//						contact.normal[2] = nsign * (contact.pos[2] -
 						//								(ccyl.final_posr.pos[2] + k*ccyl.final_posr.R[2*4+2]));
-						contact.normal.eqSum( ccyl._final_posr.R.viewCol(2), -k, ccyl._final_posr.pos, -1);
+						contact.normal.eqSum( ccyl.final_posr().R().viewCol(2), -k, ccyl.final_posr().pos(), -1);
 						//TODO while scale() if normalized afterwards?
 						contact.normal.add(contact.pos).scale(nsign);
 						//dNormalize3 (contact.normal);
@@ -555,7 +556,7 @@ public class DxRay extends DxGeom implements DRay {
 			//			q[0] = ccyl.final_posr.pos[0] + k*ccyl.final_posr.R[0*4+2];
 			//			q[1] = ccyl.final_posr.pos[1] + k*ccyl.final_posr.R[1*4+2];
 			//			q[2] = ccyl.final_posr.pos[2] + k*ccyl.final_posr.R[2*4+2];
-			q.eqSum( ccyl._final_posr.R.viewCol(2), k, ccyl._final_posr.pos, 1.0 );
+			q.eqSum( ccyl.final_posr().R().viewCol(2), k, ccyl.final_posr().pos(), 1.0 );
 			return ray_sphere_helper (ray,q,ccyl.getRadius(),contacts, inside_ccyl);
 		}
 
@@ -582,11 +583,11 @@ public class DxRay extends DxGeom implements DRay {
 			//  dxPlane *plane = (dxPlane*) o2;
 
 			//double alpha = plane.getD_p[3] - dDOT (plane._p,ray._final_posr.pos.v);
-			double alpha = plane.getDepth() - plane.getNormal().dot (ray._final_posr.pos);
+			double alpha = plane.getDepth() - plane.getNormal().dot (ray.final_posr().pos());
 			// note: if alpha > 0 the starting point is below the plane
 			double nsign = (alpha > 0) ? (-1.0) : (1.0);
 			//double k = dDOT14(plane._p, 0,ray._final_posr.R.v,2);
-			double k = plane.getNormal().dot( ray._final_posr.R.viewCol(2) );
+			double k = plane.getNormal().dot( ray.final_posr().R().viewCol(2) );
 			if (k==0) return 0;		// ray parallel to plane
 			alpha /= k;
 			if (alpha < 0 || alpha > ray._length) return 0;
@@ -594,7 +595,7 @@ public class DxRay extends DxGeom implements DRay {
 			//  contact.pos[0] = ray.final_posr.pos[0] + alpha*ray.final_posr.R[0*4+2];
 			//  contact.pos[1] = ray.final_posr.pos[1] + alpha*ray.final_posr.R[1*4+2];
 			//  contact.pos[2] = ray.final_posr.pos[2] + alpha*ray.final_posr.R[2*4+2];
-			contact.pos.eqSum(ray._final_posr.R.viewCol(2), alpha, ray._final_posr.pos, 1);
+			contact.pos.eqSum(ray.final_posr().R().viewCol(2), alpha, ray.final_posr().pos(), 1);
 			//  contact.normal[0] = nsign*plane.p[0];
 			//  contact.normal[1] = nsign*plane.p[1];
 			//  contact.normal[2] = nsign*plane.p[2];
@@ -648,10 +649,10 @@ public class DxRay extends DxGeom implements DRay {
 			//		r[ 0 ] = ray.final_posr.pos[0] - cyl.final_posr.pos[0];
 			//		r[ 1 ] = ray.final_posr.pos[1] - cyl.final_posr.pos[1];
 			//		r[ 2 ] = ray.final_posr.pos[2] - cyl.final_posr.pos[2];
-			r.eqDiff(ray._final_posr.pos, cyl._final_posr.pos);
+			r.eqDiff(ray.final_posr().pos(), cyl.final_posr().pos());
 
 			// Distance that ray start is along cyl axis ( Z-axis direction )
-			d = dDOT41( cyl._final_posr.R , 2, r );
+			d = dDOT41( cyl.final_posr().R() , 2, r );
 
 			//
 			// Compute vector 'q' representing the shortest line from R to the cylinder z-axis (Cz).
@@ -665,7 +666,7 @@ public class DxRay extends DxGeom implements DRay {
 			//		q[ 0 ] = ( d * cyl.final_posr.R[0*4+2] ) - r[ 0 ];
 			//		q[ 1 ] = ( d * cyl.final_posr.R[1*4+2] ) - r[ 1 ];
 			//		q[ 2 ] = ( d * cyl.final_posr.R[2*4+2] ) - r[ 2 ];
-			q.eqSum(cyl._final_posr.R.viewCol(2), d, r, -1);
+			q.eqSum(cyl.final_posr().R().viewCol(2), d, r, -1);
 
 
 			// Compute square length of 'q'. Subtract from radius squared to
@@ -676,7 +677,7 @@ public class DxRay extends DxGeom implements DRay {
 			C = dDOT( q, q ) - ( cyl.getRadius() * cyl.getRadius() );
 
 			// Compute the projection of ray direction normal onto cylinder direction normal.
-			double uv = dDOT44( cyl._final_posr.R,2, ray._final_posr.R,2 );
+			double uv = dDOT44( cyl.final_posr().R(),2, ray.final_posr().R(),2 );
 
 
 
@@ -688,7 +689,7 @@ public class DxRay extends DxGeom implements DRay {
 			//		r[ 0 ] = ( uv * cyl.final_posr.R[0*4+2] ) - ray.final_posr.R[0*4+2];
 			//		r[ 1 ] = ( uv * cyl.final_posr.R[1*4+2] ) - ray.final_posr.R[1*4+2];
 			//		r[ 2 ] = ( uv * cyl.final_posr.R[2*4+2] ) - ray.final_posr.R[2*4+2];
-			r.eqSum(cyl._final_posr.R.viewCol(2), uv, ray._final_posr.R.viewCol(2), -1);
+			r.eqSum(cyl.final_posr().R().viewCol(2), uv, ray.final_posr().R().viewCol(2), -1);
 
 
 			// Quadratic Formula Magic
@@ -748,13 +749,13 @@ public class DxRay extends DxGeom implements DRay {
 				//			contact.pos[0] = ray.final_posr.pos[0] + ( contact.depth * ray.final_posr.R[0*4+2] );
 				//			contact.pos[1] = ray.final_posr.pos[1] + ( contact.depth * ray.final_posr.R[1*4+2] );
 				//			contact.pos[2] = ray.final_posr.pos[2] + ( contact.depth * ray.final_posr.R[2*4+2] );
-				contact.pos.eqSum(ray._final_posr.R.viewCol(2), contact.depth, ray._final_posr.pos, 1.0);
+				contact.pos.eqSum(ray.final_posr().R().viewCol(2), contact.depth, ray.final_posr().pos(), 1.0);
 
 				// Compute reflected contact normal.
 				//			contact.normal[0] = uvsign * ( cyl.final_posr.R[0*4+2] );
 				//			contact.normal[1] = uvsign * ( cyl.final_posr.R[1*4+2] );
 				//			contact.normal[2] = uvsign * ( cyl.final_posr.R[2*4+2] );
-				contact.normal.set(cyl._final_posr.R.viewCol(2)).scale(uvsign);
+				contact.normal.set(cyl.final_posr().R().viewCol(2)).scale(uvsign);
 
 				// Contact!
 				return 1;
@@ -788,17 +789,17 @@ public class DxRay extends DxGeom implements DRay {
 					//				contact.pos[0] = ray.final_posr.pos[0] + ( alpha * ray.final_posr.R[0*4+2] );
 					//				contact.pos[1] = ray.final_posr.pos[1] + ( alpha * ray.final_posr.R[1*4+2] );
 					//				contact.pos[2] = ray.final_posr.pos[2] + ( alpha * ray.final_posr.R[2*4+2] );
-					contact.pos.eqSum( ray._final_posr.R.viewCol(2), alpha, 
-							ray._final_posr.pos, 1.0) ;
+					contact.pos.eqSum( ray.final_posr().R().viewCol(2), alpha, 
+							ray.final_posr().pos(), 1.0) ;
 
 					// q is the vector from the cylinder centre to the contact point.
 					//				q[0] = contact.pos[0] - cyl.final_posr.pos[0];
 					//				q[1] = contact.pos[1] - cyl.final_posr.pos[1];
 					//				q[2] = contact.pos[2] - cyl.final_posr.pos[2];
-					q.eqDiff(contact.pos, cyl._final_posr.pos);
+					q.eqDiff(contact.pos, cyl.final_posr().pos());
 
 					// Compute the distance along the cylinder axis of this contact point.
-					d = dDOT14( q, cyl._final_posr.R,2 );
+					d = dDOT14( q, cyl.final_posr().R(),2 );
 
 					// Check to see if the intersection point is between the flat end caps
 					if ( d >= -half_length && d <= +half_length )
@@ -810,8 +811,8 @@ public class DxRay extends DxGeom implements DRay {
 						//					contact.normal[0] = nsign * (contact.pos[0] - (cyl.final_posr.pos[0] + d*cyl.final_posr.R[0*4+2]));
 						//					contact.normal[1] = nsign * (contact.pos[1] - (cyl.final_posr.pos[1] + d*cyl.final_posr.R[1*4+2]));
 						//					contact.normal[2] = nsign * (contact.pos[2] - (cyl.final_posr.pos[2] + d*cyl.final_posr.R[2*4+2]));
-						contact.normal.eqSum( cyl._final_posr.R.viewCol(2), -d, 
-								cyl._final_posr.pos, -1 );
+						contact.normal.eqSum( cyl.final_posr().R().viewCol(2), -d, 
+								cyl.final_posr().pos(), -1 );
 						contact.normal.add( contact.pos ).scale(nsign);
 						//dNormalize3( contact.normal );
 						contact.normal.normalize();
@@ -870,7 +871,7 @@ public class DxRay extends DxGeom implements DRay {
 
 	@Override
 	public DVector3C getDirection() {
-		return _final_posr.R.columnAsNewVector(2);
+		return final_posr().R().columnAsNewVector(2);
 	}
 
 

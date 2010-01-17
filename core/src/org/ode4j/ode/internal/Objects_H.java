@@ -22,7 +22,9 @@
 package org.ode4j.ode.internal;
 
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 
 
 /**
@@ -94,7 +96,7 @@ class Objects_H {
 	 * position vector and rotation matrix for geometry objects that are not
 	 * connected to bodies.
 	 */
-	public static class dxPosR {
+	public static class DxPosR implements DxPosRC {
 		public DVector3 pos = new DVector3();
 		public DMatrix3 R = new DMatrix3();
 		public DMatrix3 R() {
@@ -104,9 +106,9 @@ class Objects_H {
 			return pos;
 		}
 		@Override
-		protected dxPosR clone() {
+		protected DxPosR clone() {
 			try {
-				dxPosR p = (dxPosR) super.clone();
+				DxPosR p = (DxPosR) super.clone();
 				p.pos = pos.clone();
 				p.R = R.clone();
 				return p;
@@ -114,6 +116,11 @@ class Objects_H {
 				throw new RuntimeException(e);
 			}
 		}
+	}
+	
+	public interface DxPosRC {
+		DMatrix3C R();
+		DVector3C pos();
 	}
 	
 	private static class CloneableParameter implements Cloneable {

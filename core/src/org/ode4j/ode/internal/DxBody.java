@@ -25,9 +25,10 @@ import org.cpp4j.java.Ref;
 
 import static org.ode4j.ode.OdeMath.*;
 
+import org.ode4j.ode.internal.Objects_H.DxPosRC;
 import org.ode4j.ode.internal.Objects_H.dxAutoDisable;
 import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
-import org.ode4j.ode.internal.Objects_H.dxPosR;
+import org.ode4j.ode.internal.Objects_H.DxPosR;
 import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
@@ -85,7 +86,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	DxMass mass;			// mass parameters about POR
 	DMatrix3 invI;		// inverse of mass.I
 	public double invMass;		// 1 / mass.mass
-	public dxPosR _posr;			// position and orientation of point of reference
+	public DxPosR _posr;			// position and orientation of point of reference
 	public DQuaternion _q;		// orientation quaternion
 	public DVector3 lvel;		// linear and angular velocity of POR
 	public DVector3 avel;
@@ -138,7 +139,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		b.invI.set11( 1 );
 		b.invI.set22( 1 );
 		b.invMass = 1;
-		b._posr = new dxPosR();
+		b._posr = new DxPosR();
 		//MAT.dSetZero (b.posr.pos.v,4);
 		b._q = new DQuaternion();
 		//MAT.dSetZero (b._q.v,4);
@@ -1122,6 +1123,11 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		return super.toString();  
 	}
 
+	public DxPosRC posr() {
+		return _posr;
+	}
+	
+	
 	// ******************************************************
 	// dBody API
 	// ******************************************************

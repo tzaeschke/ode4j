@@ -222,7 +222,7 @@ public class DxJointLimitMotor {
 //				c.v[0] = 0.5 * ( joint.node[1].body._posr.pos.v[0] - joint.node[0].body._posr.pos.v[0] );
 //				c.v[1] = 0.5 * ( joint.node[1].body._posr.pos.v[1] - joint.node[0].body._posr.pos.v[1] );
 //				c.v[2] = 0.5 * ( joint.node[1].body._posr.pos.v[2] - joint.node[0].body._posr.pos.v[2] );
-				c.eqDiff(joint.node[1].body._posr.pos, joint.node[0].body._posr.pos).scale(0.5);
+				c.eqDiff(joint.node[1].body.posr().pos(), joint.node[0].body.posr().pos()).scale(0.5);
 				dCROSS( ltd, OP.EQ , c, ax1 );
 				info._J[info.J1ap+srow+0] = ltd.get0();
 				info._J[info.J1ap+srow+1] = ltd.get1();

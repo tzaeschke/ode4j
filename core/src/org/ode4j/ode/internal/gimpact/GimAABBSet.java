@@ -26,12 +26,16 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.cpp4j.java.RefBoolean;
 import org.cpp4j.java.RefFloat;
 
 import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 
 import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;
+import org.ode4j.ode.internal.gimpact.GimRadixSort.GimRSortTokenComparator;
 
 /** 
  * Tools for find overlapping objects on a scenary. 
@@ -76,7 +80,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	int m_count;
 	aabb3f m_global_bound = new aabb3f();//!< Global calculated bound of all boxes
 	aabb3f[] m_boxes = new aabb3f[0];  //TZ Why init
-	int[] m_maxcoords;//!<Upper corners of the boxes, in integer representation
+	long[] m_maxcoords;//!<Upper corners of the boxes, in integer representation
 	GIM_RSORT_TOKEN[] m_sorted_mincoords;//!< sorted min coords (lower corners), with their coord value as the m_key and m_value as the box index
 	char m_shared;//!< if m_shared == 0 then the memory is allocated and the set must be destroyed, else the pointers are shared and the set should't be destroyed
 	//	};
@@ -92,15 +96,16 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	static GimDynArray<GIM_PAIR> GIM_CREATE_PAIR_SET() { 
 		return GimDynArray.GIM_DYNARRAY_CREATE(GimDynArray.G_ARRAY_GROW_SIZE);  //GIM_PAIR !! TZ TODO ? 
 	}
-	/**
-	 * Function for destroying an overlapping pair set.
-	 * @param dynarray
-	 */
-	//#define GIM_DESTROY_PAIR_SET(dynarray) GIM_DYNARRAY_DESTROY(dynarray)
-	void GIM_DESTROY_PAIR_SET(GimDynArray<GIM_PAIR> dynarray) { dynarray.GIM_DYNARRAY_DESTROY(); }
 
-	//! Allocate memory for all aabb set.
-	//	void gim_aabbset_alloc(GIM_AABB_SET aabbset, GUINT32 count);
+//	/**
+//	 * Function for destroying an overlapping pair set.
+//	 * @param dynarray
+//	 */
+//	//#define GIM_DESTROY_PAIR_SET(dynarray) GIM_DYNARRAY_DESTROY(dynarray)
+//	void GIM_DESTROY_PAIR_SET(GimDynArray<GIM_PAIR> dynarray) { dynarray.GIM_DYNARRAY_DESTROY(); }
+//
+//	//! Allocate memory for all aabb set.
+//	//	void gim_aabbset_alloc(GIM_AABB_SET aabbset, GUINT32 count);
 
 
 
@@ -138,10 +143,10 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 	///Function for create Box collision result set
 
-	//#define GIM_CREATE_BOXQUERY_LIST(dynarray) GIM_DYNARRAY_CREATE(GUINT32,dynarray,G_ARRAY_GROW_SIZE)
-	static GimDynArrayInt GIM_CREATE_BOXQUERY_LIST() {
-		return GimDynArrayInt.GIM_DYNARRAY_CREATE(GimDynArray.G_ARRAY_GROW_SIZE);
-	}
+//	//#define GIM_CREATE_BOXQUERY_LIST(dynarray) GIM_DYNARRAY_CREATE(GUINT32,dynarray,G_ARRAY_GROW_SIZE)
+//	static GimDynArrayInt GIM_CREATE_BOXQUERY_LIST() {
+//		return GimDynArrayInt.GIM_DYNARRAY_CREATE(GimDynArray.G_ARRAY_GROW_SIZE);
+//	}
 
 
 	/*
@@ -171,13 +176,13 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * @param uint_key a GUINT
 	 */
 	//#define GIM_CONVERT_VEC3F_GUINT_XZ(vx,vz,uint_key)\
-	int GIM_CONVERT_VEC3F_GUINT_XZ(float vx, float vz)
+	long GIM_CONVERT_VEC3F_GUINT_XZ(float vx, float vz)
 	{
 		//	    int _z = ((GUINT32)(vz*ERROR_AABB))+32768;
 		//	    uint_key = ((GUINT32)(vx*ERROR_AABB))+32768;
 		//	    uint_key = (uint_key<<16) + _z;
-		int _z = ((int)(vz*ERROR_AABB))+32768;
-		int uint_key = ((int)(vx*ERROR_AABB))+32768;
+		long _z = ((long)(vz*ERROR_AABB))+32768;
+		long uint_key = ((long)(vx*ERROR_AABB))+32768;
 		return (uint_key<<16) + _z;
 	}
 
@@ -188,13 +193,13 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * @param uint_key a GUINT
 	 */
 	//#define GIM_CONVERT_VEC3F_GUINT_XZ_UPPER(vx,vz,uint_key)\
-	int GIM_CONVERT_VEC3F_GUINT_XZ_UPPER(float vx, float vz)
+	long GIM_CONVERT_VEC3F_GUINT_XZ_UPPER(float vx, float vz)
 	{
 		//	    GUINT32 _z = ((GUINT32)ceilf(vz*ERROR_AABB))+32768;
 		//	    uint_key = ((GUINT32)ceilf(vx*ERROR_AABB))+32768;
 		//	    uint_key = (uint_key<<16) + _z;
-		int _z = ((int)Math.ceil(vz*ERROR_AABB))+32768;
-		int uint_key = ((int)Math.ceil(vx*ERROR_AABB))+32768;
+		long _z = ((long)Math.ceil(vz*ERROR_AABB))+32768;
+		long uint_key = ((long)Math.ceil(vx*ERROR_AABB))+32768;
 		return (uint_key<<16) + _z;
 	}
 
@@ -206,7 +211,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * @param uint_key a GUINT
 	 */
 	//#define GIM_CONVERT_VEC3F_GUINT_XZ_CLAMPED(vx,vz,uint_key)\
-	int GIM_CONVERT_VEC3F_GUINT_XZ_CLAMPED(float vx, float vz)
+	long GIM_CONVERT_VEC3F_GUINT_XZ_CLAMPED(float vx, float vz)
 	{
 		//	    GREAL _cx = CLAMP(vx,-MAX_AABB_SIZE,MAX_AABB_SIZE);
 		//	    GREAL _cz = CLAMP(vz,-MAX_AABB_SIZE,MAX_AABB_SIZE);
@@ -215,8 +220,8 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		//	    uint_key = (uint_key<<16) + _z;
 		float _cx = CLAMP(vx,-MAX_AABB_SIZE,MAX_AABB_SIZE);
 		float _cz = CLAMP(vz,-MAX_AABB_SIZE,MAX_AABB_SIZE);
-		int _z = ((int)(_cz*ERROR_AABB))+32768;  //TZ should work, because is always positive!
-		int uint_key = ((int)(_cx*ERROR_AABB))+32768;
+		long _z = ((long)(_cz*ERROR_AABB))+32768;  //TZ should work, because is always positive!
+		long uint_key = ((long)(_cx*ERROR_AABB))+32768;
 		return (uint_key<<16) + _z;
 	}
 
@@ -227,7 +232,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * @param uint_key a GUINT
 	 */
 	//#define GIM_CONVERT_VEC3F_GUINT_XZ_UPPER_CLAMPED(vx,vz,uint_key)\
-	int GIM_CONVERT_VEC3F_GUINT_XZ_UPPER_CLAMPED(float vx, float vz)
+	long GIM_CONVERT_VEC3F_GUINT_XZ_UPPER_CLAMPED(float vx, float vz)
 	{
 		//	    GREAL _cx = CLAMP(vx,-MAX_AABB_SIZE,MAX_AABB_SIZE);
 		//	    GREAL _cz = CLAMP(vz,-MAX_AABB_SIZE,MAX_AABB_SIZE);
@@ -236,8 +241,8 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		//	    uint_key = (uint_key<<16) + _z;
 		float _cx = CLAMP(vx,-MAX_AABB_SIZE,MAX_AABB_SIZE);
 		float _cz = CLAMP(vz,-MAX_AABB_SIZE,MAX_AABB_SIZE);
-		int _z = ((int)Math.ceil(_cz*ERROR_AABB))+32768;
-		int uint_key = ((int)Math.ceil(_cx*ERROR_AABB))+32768;
+		long _z = ((long)Math.ceil(_cz*ERROR_AABB))+32768;
+		long uint_key = ((long)Math.ceil(_cx*ERROR_AABB))+32768;
 		return (uint_key<<16) + _z;
 	}
 
@@ -263,7 +268,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		}
 		else
 		{
-			x.m_maxcoords = new int[x.m_count];//(GUINT32 *)gim_alloc(sizeof(GUINT32)*aabbset.m_count );
+			x.m_maxcoords = new long[x.m_count];//(GUINT32 *)gim_alloc(sizeof(GUINT32)*aabbset.m_count );
 			//m_sorted_mincoords = (GIM_RSORT_TOKEN *)gim_alloc(sizeof(GIM_RSORT_TOKEN)*aabbset.m_count);
 			x.m_sorted_mincoords = new GIM_RSORT_TOKEN[x.m_count];
 			for (int i = 0; i < x.m_count; i++) x.m_sorted_mincoords[i] = new GIM_RSORT_TOKEN(); 
@@ -296,18 +301,24 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	//void gim_aabbset_calc_global_bound(GIM_AABB_SET * aabbset);
 	void gim_aabbset_calc_global_bound()
 	{
-		aabb3f[] paabb = m_boxes;
-		int paabbPos = 0;//TZ
-		aabb3f globalbox = m_global_bound;
-		AABB_COPY(globalbox,paabb[paabbPos]);
+//		aabb3f[] paabb = m_boxes;
+//		int paabbPos = 0;//TZ
+//		aabb3f globalbox = m_global_bound;
+//		AABB_COPY(globalbox,paabb[paabbPos]);
 
-		int count = m_count-1;
-		paabbPos++;
-		while(count!=0)
-		{
-			MERGEBOXES(globalbox,paabb[paabbPos]);
-			paabbPos++;
-			count--;
+//		int count = m_count-1;
+//		paabbPos++;
+//		while(count!=0)
+//		{
+//			MERGEBOXES(globalbox,paabb[paabbPos]);
+//			paabbPos++;
+//			count--;
+//		}
+
+		AABB_COPY(m_global_bound, m_boxes[0]);
+		//check the first one again, but whatever.
+		for (aabb3f aabb: m_boxes) {
+			MERGEBOXES(m_global_bound, aabb);
 		}
 	}
 
@@ -326,16 +337,16 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	{
 		if(m_sorted_mincoords == null)
 		{//allocate
-			m_maxcoords = new int[m_count];//(GUINT32 *)gim_alloc(sizeof(GUINT32)*aabbset.m_count );
+			m_maxcoords = new long[m_count];//(GUINT32 *)gim_alloc(sizeof(GUINT32)*aabbset.m_count );
 			m_sorted_mincoords = new GIM_RSORT_TOKEN[m_count];//(GIM_RSORT_TOKEN *)gim_alloc(sizeof(GIM_RSORT_TOKEN)*aabbset.m_count);
 		}
 
 		int i, count = m_count;
 		aabb3f[] paabb = m_boxes;
-		int[] maxcoords = m_maxcoords;
+		long[] maxcoords = m_maxcoords;
 		GIM_RSORT_TOKEN[] sorted_tokens = m_sorted_mincoords;
 
-		if(count<860)//Calibrated on a Pentium IV
+		if(count<860)//Calibrated on a Pentium IV //TODO TZ verify !?!?!?!
 		{
 			//Sort by quick sort
 			//Calculate keys
@@ -345,6 +356,11 @@ public class GimAABBSet { //Formerly GimBoxPruning
 				sorted_tokens[i].m_key = GIM_CONVERT_VEC3F_GUINT_XZ(paabb[i].minX,paabb[i].minZ);
 				sorted_tokens[i].m_value = i;
 			}
+			System.out.println("Before-Sort1: ");
+			for (long t: m_maxcoords) {
+				System.out.print(" *" + t);//TODO
+			}
+			System.out.println();
 			//GIM_QUICK_SORT_ARRAY(GIM_RSORT_TOKEN , sorted_tokens, count, RSORT_TOKEN_COMPARATOR,GIM_DEF_EXCHANGE_MACRO);
 			GimRadixSort.GIM_QUICK_SORT_ARRAY(sorted_tokens, count, 
 					GimRadixSort.RSORT_TOKEN_COMPARATOR, GimRadixSort.GIM_DEF_EXCHANGE_MACRO);
@@ -357,18 +373,49 @@ public class GimAABBSet { //Formerly GimBoxPruning
 			//Calculate keys
 			for(i=0;i<count;i++)
 			{
-				unsorted[i] = new GIM_RSORT_TOKEN();
+				unsorted[i] = new GIM_RSORT_TOKEN(); //TODO optimize! E.g. use two arrays?
 				maxcoords[i] = GIM_CONVERT_VEC3F_GUINT_XZ_UPPER(paabb[i].maxX,paabb[i].maxZ);
 				unsorted[i].m_key = GIM_CONVERT_VEC3F_GUINT_XZ(paabb[i].minX,paabb[i].minZ);
 				unsorted[i].m_value = i;
 			}
+			System.out.println("Before-Sort2: ");
+//			for (long t: m_maxcoords) {
+//				System.out.print(" *" + t);//TODO
+//			}
+//			System.out.println();
 			GimRadixSort.GIM_RADIX_SORT_RTOKENS(unsorted,sorted_tokens,count);
 			//gim_free(unsorted,0); //TODO remove TZ
+			
 		}
+		
+		Arrays.sort(sorted_tokens, COMPARATOT_TZ); //TODO TZ remove
 
 		if(calc_global_bound) gim_aabbset_calc_global_bound();
+		System.out.println("After-Sort: "+ m_sorted_mincoords.length);
+//		for (GIM_RSORT_TOKEN t: m_sorted_mincoords) {
+//			System.out.print(" *" + t.m_key + "/" + t.m_value);//TODO
+//		}
+		System.out.println();
 	}
 
+	private static final Comparator <GIM_RSORT_TOKEN>COMPARATOT_TZ = new Comparator<GIM_RSORT_TOKEN>() {
+//		private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
+//		interface GimRSortTokenComparator {
+//			int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
+//		}
+//		static final GimRSortTokenComparator RSORT_TOKEN_COMPARATOR = new GimRSortTokenComparator() {
+//			@Override public int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
+//				return RSORT_TOKEN_COMPARATOR(x, y);
+//			}
+//		};
+
+		@Override
+		public int compare(GIM_RSORT_TOKEN o1, GIM_RSORT_TOKEN o2) {
+			return (int) (o1.m_key - o2.m_key);
+		}
+	};
+	
+	
 	//utility macros
 
 	/*#define PUSH_PAIR(i,j,pairset)\
@@ -425,13 +472,13 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	static void FIND_OVERLAPPING_FOWARD(
 			final int curr_index,
 			final int test_count,
-			aabb3f test_aabb,
-			final int max_coord_uint,
-			GIM_RSORT_TOKEN[] sorted_tokensA,
-			int sorted_tokensP,
-			aabb3f[] aabbarray,
-			GimDynArray<GIM_PAIR> pairset,
-			PushPairMacro push_pair_macro)
+			final aabb3f test_aabb,
+			final long max_coord_uint,
+			final GIM_RSORT_TOKEN[] sorted_tokensA,
+			final int sorted_tokensP,
+			final aabb3f[] aabbarray,
+			final GimDynArray<GIM_PAIR> pairset,
+			final PushPairMacro push_pair_macro)
 	{
 		int _i = test_count;
 		boolean _intersected;
@@ -449,65 +496,6 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		}
 	}
 
-	/**
-	 * log(N) Complete box pruning. Returns a list of overlapping pairs of 
-	 * boxes, each box of the pair belongs to the same set.
-	 * @pre aabbset must be allocated and sorted, the boxes must be already set.
-	 * @param aabbset Must be sorted. Global bound isn't required
-	 * @param collision_pairs Array of GIM_PAIR elements. Must be initialized before (Reserve size ~ 100)
-	 */
-	//void gim_aabbset_self_intersections_sorted(GIM_AABB_SET * aabbset, GDYNAMIC_ARRAY * collision_pairs)
-	void gim_aabbset_self_intersections_sorted(GimDynArray<GIM_PAIR> collision_pairs)
-	{
-		collision_pairs.m_size = 0;
-		int count = m_count;
-		aabb3f[] paabb = m_boxes;
-		int[] maxcoords = m_maxcoords;
-		GIM_RSORT_TOKEN[] sorted_tokensA = m_sorted_mincoords;
-		int sorted_tokensP = 0;
-		aabb3f test_aabb = new aabb3f();
-		while(count>1)
-		{
-			///current cache variables
-			int curr_index = sorted_tokensA[sorted_tokensP].m_value;
-			int max_coord_uint = maxcoords[curr_index];
-			AABB_COPY(test_aabb,paabb[curr_index]);
-
-			///next pairs
-			sorted_tokensP++;
-			count--;
-			FIND_OVERLAPPING_FOWARD( curr_index, count, test_aabb, max_coord_uint, 
-					sorted_tokensA, sorted_tokensP, paabb, collision_pairs,PUSH_PAIR);
-		}
-	}
-
-	/**
-	 * NxN Complete box pruning. Returns a list of overlapping pairs of 
-	 * boxes, each box of the pair belongs to the same set.
-	 * @pre aabbset must be allocated, the boxes must be already set.
-	 * @param aabbset Global bound isn't required. Doen't need to be sorted.
-	 * @param collision_pairs Array of GIM_PAIR elements. Must be initialized before (Reserve size ~ 100)
-	 */
-	//void gim_aabbset_self_intersections_brute_force(GIM_AABB_SET * aabbset, GDYNAMIC_ARRAY * collision_pairs)
-	void gim_aabbset_self_intersections_brute_force(GimDynArray<GIM_PAIR> collision_pairs)
-	{
-		collision_pairs.m_size = 0;
-		int i,j;
-		int count = m_count;
-		aabb3f[] paabb = m_boxes;
-		boolean intersected;
-		for (i=0;i< count-1 ;i++ )
-		{
-			for (j=i+1;j<count ;j++ )
-			{
-				intersected = AABBCOLLISION(paabb[i],paabb[j]);
-				if(intersected)
-				{
-					PUSH_PAIR(i,j,collision_pairs);
-				}
-			}
-		}
-	}
 
 	/**
 	 * log(N) Bipartite box pruning. Returns a list of overlapping pairs of 
@@ -517,9 +505,11 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * @param aabbset2 Must be sorted, Global bound is required.
 	 * @param collision_pairs Array of GIM_PAIR elements. Must be initialized before (Reserve size ~ 100)
 	 */
-	//void gim_aabbset_bipartite_intersections_sorted(GIM_AABB_SET * aabbset1, GIM_AABB_SET * aabbset2, GDYNAMIC_ARRAY * collision_pairs)
+	//void gim_aabbset_bipartite_intersections_sorted(GIM_AABB_SET * aabbset1, 
+	//GIM_AABB_SET * aabbset2, GDYNAMIC_ARRAY * collision_pairs)
 	static void gim_aabbset_bipartite_intersections_sorted(
-			GimAABBSet aabbset1, GimAABBSet aabbset2, GimDynArray<GIM_PAIR> collision_pairs)
+			final GimAABBSet aabbset1, final GimAABBSet aabbset2, 
+			final GimDynArray<GIM_PAIR> collision_pairs)
 	{
 		boolean intersected;
 		collision_pairs.m_size = 0;
@@ -529,17 +519,17 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 		int count1 = aabbset1.m_count;
 		aabb3f[] paabb1 = aabbset1.m_boxes;
-		int[] maxcoords1 = aabbset1.m_maxcoords;
+		long[] maxcoords1 = aabbset1.m_maxcoords;
 		GIM_RSORT_TOKEN[] sorted_tokens1 = aabbset1.m_sorted_mincoords;
 
 		int count2 = aabbset2.m_count;
 		aabb3f[] paabb2 = aabbset2.m_boxes;
-		int[] maxcoords2 = aabbset2.m_maxcoords;
+		long[] maxcoords2 = aabbset2.m_maxcoords;
 		GIM_RSORT_TOKEN[] sorted_tokens2 = aabbset2.m_sorted_mincoords;
 
 		int  curr_index;
 
-		int max_coord_uint;
+		long max_coord_uint;
 		aabb3f test_aabb = new aabb3f();
 
 		//Classify boxes
@@ -707,7 +697,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	//void gim_aabbset_update(GIM_AABB_SET * aabbset)
 	void gim_aabbset_update()
 	{
-		if(m_count < GIM_MIN_SORTED_BIPARTITE_PRUNING_BOXES)
+		if(m_count < GIM_MIN_SORTED_BIPARTITE_PRUNING_BOXES)  //TODO TZ check this!!! Performance!
 		{//Brute force approach
 			gim_aabbset_calc_global_bound();
 		}
@@ -719,57 +709,6 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 	///Use these functions for general collision
 
-	/**
-	 * Complete box pruning. Returns a list of overlapping pairs of boxes, 
-	 * each box of the pair belongs to the same set.
-	 * This function sorts the set and then it calls to 
-	 * gim_aabbset_self_intersections_brute_force or 
-	 * gim_aabbset_self_intersections_sorted. This is an example of how to use this function:
-	 * <code>
-	 * //Create contact list
-	 * GDYNAMIC_ARRAY collision_pairs;
-	 * GIM_CREATE_PAIR_SET(collision_pairs);
-	 * //Do collision
-	 * gim_aabbset_self_intersections(&aabbset,&collision_pairs);
-	 * if(collision_pairs.m_size==0)
-	 * {
-	 *     GIM_DYNARRAY_DESTROY(collision_pairs);//
-	 *     return; //no collisioin
-	 * }
-	 * //pair pointer
-	 * GIM_PAIR *pairs = GIM_DYNARRAY_POINTER(GIM_PAIR,collision_pairs);
-	 * GUINT i, ti1,ti2;
-	 * for (i=0;i<collision_pairs.m_size; i++)
-	 * {
-	 *     ti1 = pairs[i].m_index1;
-	 *     ti2 = pairs[i].m_index2;
-	 *     //Do something with the pairs
-	 *     ....
-	 *     ....
-	 *     ...
-	 * }
-	 * //Terminate
-	 * GIM_DYNARRAY_DESTROY(dummycontacts);
-	 * GIM_DYNARRAY_DESTROY(collision_pairs);
-	 * </code>
-	 * @param aabbset Set of boxes. Sorting isn't required.
-	 * @param collision_pairs Array of GIM_PAIR elements. Must be initialized before (Reserve size ~ 100)
-	 * @pre aabbset must be allocated and initialized.
-	 * @post If aabbset->m_count >= GIM_MIN_SORTED_PRUNING_BOXES, then it calls to gim_aabbset_sort and then to gim_aabbset_self_intersections_sorted.
-	 */
-	//void gim_aabbset_self_intersections(GIM_AABB_SET * aabbset, GDYNAMIC_ARRAY * collision_pairs)
-	void gim_aabbset_self_intersections(GimDynArray<GIM_PAIR> collision_pairs)
-	{
-		if(m_count < GIM_MIN_SORTED_PRUNING_BOXES)
-		{//Brute force approach
-			gim_aabbset_self_intersections_brute_force(collision_pairs);
-		}
-		else
-		{//Sorted force approach
-			gim_aabbset_sort(false);//aabbset,0);
-			gim_aabbset_self_intersections_sorted(collision_pairs);
-		}
-	}
 
 	/**
 	 * Collides two sets. Returns a list of overlapping pairs of boxes, each box of the pair belongs to a different set.
@@ -790,6 +729,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		{//Sorted force approach
 			gim_aabbset_bipartite_intersections_sorted(aabbset1,aabbset2,collision_pairs);
 		}
+//		System.out.println("IGNORED!");//TODO fix this!
 	}
 
 	/**

@@ -107,7 +107,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 		DVector3 ax1 = new DVector3();  // length 1 joint axis in global coordinates, from 1st body
 		DVector3 p = new DVector3(), q = new DVector3(); // plane space vectors for ax1
-		dMULTIPLY0_331( ax1, node[0].body._posr.R, _axis1 );
+		dMULTIPLY0_331( ax1, node[0].body.posr().R(), _axis1 );
 		dPlaneSpace( ax1, p, q );
 
 		int s3 = 3 * info.rowskip();
@@ -153,7 +153,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		DVector3 ax2 = new DVector3(), b = new DVector3();
 		if ( node[1].body != null)
 		{
-			dMULTIPLY0_331( ax2, node[1].body._posr.R, _axis2 );
+			dMULTIPLY0_331( ax2, node[1].body.posr().R(), _axis2 );
 		}
 		else
 		{
@@ -200,16 +200,16 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 //			q.v[1] = y - joint.node[0].body._posr.pos.v[1];
 //			q.v[2] = z - joint.node[0].body._posr.pos.v[2];
 			//q[3] = 0;
-			dMULTIPLY1_331( joint.anchor1, joint.node[0].body._posr.R, q );
+			dMULTIPLY1_331( joint.anchor1, joint.node[0].body.posr().R(), q );
 
 			if ( joint.node[1].body != null )
 			{
 //				q.v[0] = x - joint.node[1].body._posr.pos.v[0];
 //				q.v[1] = y - joint.node[1].body._posr.pos.v[1];
 //				q.v[2] = z - joint.node[1].body._posr.pos.v[2];
-				q.set( x, y, z ).sub( joint.node[1].body._posr.pos );
+				q.set( x, y, z ).sub( joint.node[1].body.posr().pos() );
 				//q[3] = 0;
-				dMULTIPLY1_331( joint.anchor2, joint.node[1].body._posr.R, q );
+				dMULTIPLY1_331( joint.anchor2, joint.node[1].body.posr().R(), q );
 			}
 			else
 			{
@@ -320,7 +320,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		if ( node[0].body!=null )
 		{
 			DVector3 axis = new DVector3();
-			dMULTIPLY0_331( axis, node[0].body._posr.R, _axis1 );
+			dMULTIPLY0_331( axis, node[0].body.posr().R(), _axis1 );
 			double rate = dDOT( axis, node[0].body.avel );
 			if ( node[1].body!=null ) rate -= dDOT( axis, node[1].body.avel );
 			if ( isFlagsReverse() ) rate = - rate;

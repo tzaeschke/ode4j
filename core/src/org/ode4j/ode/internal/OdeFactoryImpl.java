@@ -1649,7 +1649,7 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 //	#else
 //		#define REGISTER_EXTENSION( __a )  "__a "
 //	#endif
-	private Object REGISTER_EXTENSION;
+	//private Object REGISTER_EXTENSION;
 	//TODO ?
 //	if (true) {
 //		REGISTER_EXTENSION( __a )  #__a " "

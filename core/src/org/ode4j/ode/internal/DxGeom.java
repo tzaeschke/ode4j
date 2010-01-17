@@ -42,7 +42,8 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.internal.DBase;
 import org.ode4j.ode.internal.DxSpace;
-import org.ode4j.ode.internal.Objects_H.dxPosR;
+import org.ode4j.ode.internal.Objects_H.DxPosRC;
+import org.ode4j.ode.internal.Objects_H.DxPosR;
 import org.ode4j.ode.internal.DxQuadTreeSpace.Block;
 
 /**
@@ -136,8 +137,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 	//	  dBody body;		// dynamics body associated with this object (if any)
 	DxBody body;		// dynamics body associated with this object (if any)
 	DxGeom body_next;	// next geom in body's linked list of associated geoms
-	dxPosR _final_posr;	// final position of the geom in world coordinates
-	dxPosR offset_posr;	// offset from body in local coordinates
+	DxPosR _final_posr;	// final position of the geom in world coordinates
+	private DxPosR offset_posr;	// offset from body in local coordinates
 
 	// information used by spaces
 	//TODO use linked list, seems simpler.
@@ -401,7 +402,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		x = outMat.get21(); outMat.set21( outMat.get12() ); outMat.set12( x );
 	}
 
-	void getBodyPosr(final dxPosR offset_posr, final dxPosR final_posr, dxPosR body_posr)
+	void getBodyPosr(final DxPosR offset_posr, final DxPosR final_posr, DxPosR body_posr)
 	{
 		DMatrix3 inv_offset = new DMatrix3();
 		matrixInvert(offset_posr.R, inv_offset);
@@ -415,18 +416,18 @@ public abstract class DxGeom extends DBase implements DGeom {
 		body_posr.pos.eqDiff( final_posr.pos, world_offset );
 	}
 
-	void getWorldOffsetPosr(final dxPosR body_posr, final dxPosR world_posr, 
-			dxPosR offset_posr)
+	void getWorldOffsetPosr(final DxPosRC body_posr, final DxPosRC world_posr, 
+			DxPosR offset_posr)
 	{
 		DMatrix3 inv_body = new DMatrix3();
-		matrixInvert(body_posr.R, inv_body);
+		matrixInvert(body_posr.R(), inv_body);
 
-		dMULTIPLY0_333(offset_posr.R, inv_body, world_posr.R);
+		dMULTIPLY0_333(offset_posr.R, inv_body, world_posr.R());
 		DVector3 world_offset = new DVector3();
 //		world_offset.v[0] = world_posr.pos.v[0] - body_posr.pos.v[0];
 //		world_offset.v[1] = world_posr.pos.v[1] - body_posr.pos.v[1];
 //		world_offset.v[2] = world_posr.pos.v[2] - body_posr.pos.v[2];
-		world_offset.eqDiff( world_posr.pos, body_posr.pos );
+		world_offset.eqDiff( world_posr.pos(), body_posr.pos() );
 		dMULTIPLY0_331(offset_posr.pos, inv_body, world_offset);
 	}
 
@@ -439,12 +440,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 		dIASSERT(offset_posr != null);
 		dIASSERT(body != null);
 
-		dMULTIPLY0_331 (_final_posr.pos,body._posr.R,offset_posr.pos);
+		dMULTIPLY0_331 (_final_posr.pos,body.posr().R(),offset_posr.pos);
 //		_final_posr.pos.v[0] += body._posr.pos.v[0];
 //		_final_posr.pos.v[1] += body._posr.pos.v[1];
 //		_final_posr.pos.v[2] += body._posr.pos.v[2];
-		_final_posr.pos.add( body._posr.pos );
-		dMULTIPLY0_333 (_final_posr.R,body._posr.R,offset_posr.R);
+		_final_posr.pos.add( body.posr().pos() );
+		dMULTIPLY0_333 (_final_posr.R,body.posr().R(),offset_posr.R);
 	}
 
 	// ************ TZ from collision_kernel.cpp ********************
@@ -536,11 +537,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 				}
 				else
 				{
-					_final_posr = new dxPosR(); //dAllocPosr();
+					_final_posr = new DxPosR(); //dAllocPosr();
 					//	        memcpy (g.final_posr.pos,g.body.posr.pos,sizeof(dVector3));
-					_final_posr.pos.set(body._posr.pos); //,sizeof(dVector3));
+					_final_posr.pos.set(body.posr().pos()); //,sizeof(dVector3));
 					//	        memcpy (g.final_posr.R,g.body.posr.R,sizeof(dMatrix3));
-					_final_posr.R.set(body._posr.R);//,sizeof(dMatrix3));
+					_final_posr.R.set(body.posr().R());//,sizeof(dMatrix3));
 				}
 				bodyRemove();
 			}
@@ -568,7 +569,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		if (offset_posr != null) {
 			// move body such that body+offset = position
 			DVector3 world_offset = new DVector3();
-			dMULTIPLY0_331(world_offset, body._posr.R, offset_posr.pos);
+			dMULTIPLY0_331(world_offset, body.posr().R(), offset_posr.pos);
 			//TZ body could be null...?
 			world_offset.eqDiff(xyz, world_offset);
 //			body.dBodySetPosition(//g.body,
@@ -600,8 +601,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 		if (offset_posr != null) {
 			recomputePosr();
 			// move body such that body+offset = rotation
-			dxPosR new_final_posr = new dxPosR();
-			dxPosR new_body_posr = new dxPosR();
+			DxPosR new_final_posr = new DxPosR();
+			DxPosR new_body_posr = new DxPosR();
 			//	    memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 			//	    memcpy(new_final_posr.R, R, sizeof(dMatrix3));
 			new_final_posr.pos.set(_final_posr.pos);//, sizeof(dVector3));
@@ -630,8 +631,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 		if (offset_posr != null) {
 			recomputePosr();
 			// move body such that body+offset = rotation
-			dxPosR new_final_posr = new dxPosR();
-			dxPosR new_body_posr = new dxPosR();
+			DxPosR new_final_posr = new DxPosR();
+			DxPosR new_body_posr = new DxPosR();
 			dRfromQ (new_final_posr.R, quat);
 			//memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 			new_final_posr.pos.set(_final_posr.pos);
@@ -1031,13 +1032,13 @@ public abstract class DxGeom extends DBase implements DGeom {
 		}
 		recomputePosr();
 
-		dxPosR new_final_posr = new dxPosR();
+		DxPosR new_final_posr = new DxPosR();
 //		memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 		new_final_posr.pos.set(_final_posr.pos);
 //		memcpy(new_final_posr.R, R, sizeof(dMatrix3));
 		new_final_posr.R.set(R);
 
-		getWorldOffsetPosr(body._posr, new_final_posr, offset_posr);
+		getWorldOffsetPosr(body.posr(), new_final_posr, offset_posr);
 		dGeomMoved();
 	}
 
@@ -1053,12 +1054,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 		recomputePosr();
 
-		dxPosR new_final_posr = new dxPosR();
+		DxPosR new_final_posr = new DxPosR();
 //		memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 		new_final_posr.pos.set(_final_posr.pos);
 		dRfromQ (new_final_posr.R, quat);
 
-		getWorldOffsetPosr(body._posr, new_final_posr, offset_posr);
+		getWorldOffsetPosr(body.posr(), new_final_posr, offset_posr);
 		dGeomMoved();
 	}
 
@@ -1137,8 +1138,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 
 
-	private dxPosR dAllocPosr() {
-		return new dxPosR();
+	private DxPosR dAllocPosr() {
+		return new DxPosR();
 	}
 	//	static inline dxPosR* dAllocPosr()
 	//	{
@@ -1161,7 +1162,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 * Frees memory ?
 	 * @deprecated
 	 */
-	private void dFreePosr(dxPosR oldPosR) {
+	private void dFreePosr(DxPosR oldPosR) {
 		//TODO see collision_kernel.h:73
 		//#if dATOMICS_ENABLED
 		//		if (!AtomicCompareExchangePointer(&s_cachedPosR, NULL, (atomicptr)oldPosR))
@@ -1410,6 +1411,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 				count = (ce.fn).dColliderFn (o1,o2,flags,contacts);
 			}
 		}
+		//else System.out.println("Collider not found: " + o1.getClass() + " / " + o2.getClass());//TODO
 		return count;
 	}
 
@@ -1486,6 +1488,14 @@ public abstract class DxGeom extends DBase implements DGeom {
 	void setNextPrevNull() {
 		_next = null;
 		_prev = null;
+	}
+	
+	DxPosRC final_posr() {
+		return _final_posr;
+	}
+	
+	DxPosRC offset_posr() {
+		return offset_posr;
 	}
 	
 	// *********************************************

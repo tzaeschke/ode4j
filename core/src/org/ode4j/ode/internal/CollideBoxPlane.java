@@ -24,7 +24,7 @@ package org.ode4j.ode.internal;
 import org.cpp4j.java.RefDouble;
 import org.cpp4j.java.RefInt;
 import org.ode4j.ode.DColliderFn;
-import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DContactGeom;
@@ -60,7 +60,7 @@ public class CollideBoxPlane implements DColliderFn {
 		//@@@ problem: using 4-vector (plane.p) as 3-vector (normal).
 		//final double *R = o1.final_posr.R;		// rotation of box
 		//final double *n = plane.p;		// normal vector
-		final DMatrix3 R = o1._final_posr.R;		// rotation of box
+		final DMatrix3C R = o1.final_posr().R();		// rotation of box
 		//final double []n = plane._p;		// normal vector
 		DVector3C n = plane.getNormal();
 		
@@ -79,7 +79,7 @@ public class CollideBoxPlane implements DColliderFn {
 
 		// early exit test
 //		double depth = plane._p[3] + (0.5)*(B1+B2+B3) - dDOT(n,o1._final_posr.pos);
-		RefDouble depth = new RefDouble( plane.getDepth() + (0.5)*(B[0]+B[1]+B[2]) - n.dot(o1._final_posr.pos) );
+		RefDouble depth = new RefDouble( plane.getDepth() + (0.5)*(B[0]+B[1]+B[2]) - n.dot(o1.final_posr().pos()) );
 		if (depth.get() < 0) return 0;
 
 		// find number of contacts requested
@@ -92,7 +92,7 @@ public class CollideBoxPlane implements DColliderFn {
 //		p.v[0] = o1._final_posr.pos.v[0];
 //		p.v[1] = o1._final_posr.pos.v[1];
 //		p.v[2] = o1._final_posr.pos.v[2];
-		p.set(o1._final_posr.pos);
+		p.set(o1.final_posr().pos());
 //		#define FOO1(i,op) \
 //		p.v[0] op (0.5)*box.side[i] * R[0+i]; \
 //		p.v[1] op (0.5)*box.side[i] * R[4+i]; \
@@ -249,8 +249,8 @@ public class CollideBoxPlane implements DColliderFn {
 //	CONTACT(contact,i*skip).pos[1] = p[1] op box.side[j] * R[4+j]; \
 //	CONTACT(contact,i*skip).pos[2] = p[2] op box.side[j] * R[8+j];
 	private final void FOO2(int i, int j, int op, DContactGeomBuffer contacts, 
-			int skip, DVector3 p, DMatrix3 R, DVector3 side) {
-		contacts.get(i*skip).pos.eqSum(p, R.columnAsNewVector(j), op*side.get(j));
+			int skip, DVector3 p, DMatrix3C R, DVector3 side) {
+		contacts.get(i*skip).pos.eqSum(p, R.viewCol(j), op*side.get(j));
 	}
 	
 //	#define BAR2(ctact,side,sideinc) \
@@ -262,7 +262,7 @@ public class CollideBoxPlane implements DColliderFn {
 	private final boolean BAR2(int ctact, int side, int sideinc, 
 			RefDouble depth, RefInt ret, DContactGeomBuffer contacts, int skip,
 			double[] A, double[] B, DxGeom o1, DxGeom o2, 
-			DVector3 p, DMatrix3 R, DVector3 boxSide) {
+			DVector3 p, DMatrix3C R, DVector3 boxSide) {
 //		depth -= B ## sideinc; \
 		depth.sub(B[sideinc-1]);
 //		if (depth < 0) goto done; \

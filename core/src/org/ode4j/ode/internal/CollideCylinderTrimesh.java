@@ -1250,8 +1250,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		test_aabb.maxZ = (float) o1._aabb.getMax2();
 
 
-		GimDynArrayInt collision_result = new GimDynArrayInt();
-		collision_result.GIM_CREATE_BOXQUERY_LIST();
+		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
 		Trimesh.m_collision_trimesh.getAabbSet().gim_aabbset_box_collision(test_aabb, collision_result);
 

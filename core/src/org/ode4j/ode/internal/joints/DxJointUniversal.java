@@ -69,11 +69,11 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	getAxes( DVector3 ax1, DVector3 ax2 )
 	{
 		// This says "ax1 = joint->node[0].body->posr.R * joint->axis1"
-		dMULTIPLY0_331( ax1, node[0].body._posr.R, _axis1 );
+		dMULTIPLY0_331( ax1, node[0].body.posr().R(), _axis1 );
 
 		if ( node[1].body != null)
 		{
-			dMULTIPLY0_331( ax2, node[1].body._posr.R, _axis2 );
+			dMULTIPLY0_331( ax2, node[1].body.posr().R(), _axis2 );
 		}
 		else
 		{

@@ -220,25 +220,25 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				// Y-axis
 	            if (d.m_fMinHeight != -dInfinity)
 	            {
-	            	dy[0] = ( _final_posr.R.get01() * d.m_fMinHeight );
-	            	dy[1] = ( _final_posr.R.get11() * d.m_fMinHeight );
-	            	dy[2] = ( _final_posr.R.get21() * d.m_fMinHeight );
+	            	dy[0] = ( final_posr().R().get01() * d.m_fMinHeight );
+	            	dy[1] = ( final_posr().R().get11() * d.m_fMinHeight );
+	            	dy[2] = ( final_posr().R().get21() * d.m_fMinHeight );
 	            } else {
 	                // Multiplication is performed to obtain infinity of correct sign
-	                dy[0] = ( _final_posr.R.get01()!=0 ? _final_posr.R.get01() * -dInfinity : (0.0) );
-	                dy[1] = ( _final_posr.R.get11()!=0 ? _final_posr.R.get11() * -dInfinity : (0.0) );
-	                dy[2] = ( _final_posr.R.get21()!=0 ? _final_posr.R.get21() * -dInfinity : (0.0) );
+	                dy[0] = ( final_posr().R().get01()!=0 ? final_posr().R().get01() * -dInfinity : (0.0) );
+	                dy[1] = ( final_posr().R().get11()!=0 ? final_posr().R().get11() * -dInfinity : (0.0) );
+	                dy[2] = ( final_posr().R().get21()!=0 ? final_posr().R().get21() * -dInfinity : (0.0) );
 	            }
 
 	            if (d.m_fMaxHeight != dInfinity)
 	            {
-				dy[3] = ( _final_posr.R.get01() * d.m_fMaxHeight );
-				dy[4] = ( _final_posr.R.get11() * d.m_fMaxHeight );
-				dy[5] = ( _final_posr.R.get21() * d.m_fMaxHeight );
+				dy[3] = ( final_posr().R().get01() * d.m_fMaxHeight );
+				dy[4] = ( final_posr().R().get11() * d.m_fMaxHeight );
+				dy[5] = ( final_posr().R().get21() * d.m_fMaxHeight );
 	            } else {
-	                dy[3] = ( _final_posr.R.get01()!=0 ? _final_posr.R.get01() * dInfinity : (0.0) );
-	                dy[4] = ( _final_posr.R.get11()!=0 ? _final_posr.R.get11() * dInfinity : (0.0) );
-	                dy[5] = ( _final_posr.R.get21()!=0 ? _final_posr.R.get21() * dInfinity : (0.0) );
+	                dy[3] = ( final_posr().R().get01()!=0 ? final_posr().R().get01() * dInfinity : (0.0) );
+	                dy[4] = ( final_posr().R().get11()!=0 ? final_posr().R().get11() * dInfinity : (0.0) );
+	                dy[5] = ( final_posr().R().get21()!=0 ? final_posr().R().get21() * dInfinity : (0.0) );
 	            }
 
 
@@ -257,39 +257,39 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				//	#else // DHEIGHTFIELD_CORNER_ORIGIN
 
 				// X-axis
-				dx[0] = ( _final_posr.R.get00() * -d.m_fHalfWidth );
-				dx[1] = ( _final_posr.R.get10() * -d.m_fHalfWidth );
-				dx[2] = ( _final_posr.R.get20() * -d.m_fHalfWidth );
-				dx[3] = ( _final_posr.R.get00() * d.m_fHalfWidth );
-				dx[4] = ( _final_posr.R.get10() * d.m_fHalfWidth );
-				dx[5] = ( _final_posr.R.get20() * d.m_fHalfWidth );
+				dx[0] = ( final_posr().R().get00() * -d.m_fHalfWidth );
+				dx[1] = ( final_posr().R().get10() * -d.m_fHalfWidth );
+				dx[2] = ( final_posr().R().get20() * -d.m_fHalfWidth );
+				dx[3] = ( final_posr().R().get00() * d.m_fHalfWidth );
+				dx[4] = ( final_posr().R().get10() * d.m_fHalfWidth );
+				dx[5] = ( final_posr().R().get20() * d.m_fHalfWidth );
 
 				// Z-axis
-				dz[0] = ( _final_posr.R.get02() * -d.m_fHalfDepth );
-				dz[1] = ( _final_posr.R.get12() * -d.m_fHalfDepth );
-				dz[2] = ( _final_posr.R.get22() * -d.m_fHalfDepth );
-				dz[3] = ( _final_posr.R.get02() * d.m_fHalfDepth );
-				dz[4] = ( _final_posr.R.get12() * d.m_fHalfDepth );
-				dz[5] = ( _final_posr.R.get22() * d.m_fHalfDepth );
+				dz[0] = ( final_posr().R().get02() * -d.m_fHalfDepth );
+				dz[1] = ( final_posr().R().get12() * -d.m_fHalfDepth );
+				dz[2] = ( final_posr().R().get22() * -d.m_fHalfDepth );
+				dz[3] = ( final_posr().R().get02() * d.m_fHalfDepth );
+				dz[4] = ( final_posr().R().get12() * d.m_fHalfDepth );
+				dz[5] = ( final_posr().R().get22() * d.m_fHalfDepth );
 
 				//	#endif // DHEIGHTFIELD_CORNER_ORIGIN
 
 				// X extents
-				_aabb.setMin0(_final_posr.pos.get0() +
+				_aabb.setMin0(final_posr().pos().get0() +
 						dMIN3( dMIN( dx[0], dx[3] ), dMIN( dy[0], dy[3] ), dMIN( dz[0], dz[3] ) ) );
-				_aabb.setMax0(_final_posr.pos.get0() +
+				_aabb.setMax0(final_posr().pos().get0() +
 						dMAX3( dMAX( dx[0], dx[3] ), dMAX( dy[0], dy[3] ), dMAX( dz[0], dz[3] ) ) );
 
 				// Y extents
-				_aabb.setMin1(_final_posr.pos.get1() +
+				_aabb.setMin1(final_posr().pos().get1() +
 						dMIN3( dMIN( dx[1], dx[4] ), dMIN( dy[1], dy[4] ), dMIN( dz[1], dz[4] ) ) );
-				_aabb.setMax1(_final_posr.pos.get1() +
+				_aabb.setMax1(final_posr().pos().get1() +
 						dMAX3( dMAX( dx[1], dx[4] ), dMAX( dy[1], dy[4] ), dMAX( dz[1], dz[4] ) ) );
 
 				// Z extents
-				_aabb.setMin2(_final_posr.pos.get2() +
+				_aabb.setMin2(final_posr().pos().get2() +
 						dMIN3( dMIN( dx[2], dx[5] ), dMIN( dy[2], dy[5] ), dMIN( dz[2], dz[5] ) ) );
-				_aabb.setMax2(_final_posr.pos.get2() +
+				_aabb.setMax2(final_posr().pos().get2() +
 						dMAX3( dMAX( dx[2], dx[5] ), dMAX( dy[2], dy[5] ), dMAX( dz[2], dz[5] ) ) );
 			}
 			else
@@ -464,7 +464,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 		DVector3 vertex = new DVector3();
 		//HeightFieldVertexCoords coords;
-		int[] coords = new int[2]; //TODO use c1 & c2 (TZ)
+		//int[] coords = new int[2]; //use c1 & c2 (TZ)
+		int coords0, coords1;
 		boolean state;
 	};
 
@@ -635,7 +636,22 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 //	}
 
 
-
+//	int dCollideRayTrimesh( dxGeom *ray, dxGeom *trimesh, int flags,
+//	dContactGeom *contact, int skip )
+//{
+//// Swapped case, for code that needs it (heightfield initially)
+//// The other ray-geom colliders take geoms in a swapped order to the
+//// dCollideRTL function which is annoying when using function pointers.
+//return dCollideRTL( trimesh, ray, flags, contact, skip );
+//}
+	private static class CollideRayTrimesh implements DColliderFn {
+		CollideTrimeshRay collider = new CollideTrimeshRay();
+		@Override
+		public int dColliderFn(DGeom o1, DGeom o2, int flags,
+				DContactGeomBuffer contacts) {
+			return collider.dCollideRTL((DxTriMesh)o2, (DxRay)o1, flags, contacts, 1);
+		}
+	};
 
 	//	int dxHeightfield::dCollideHeightfieldZone( final int minX, final int maxX, final int minZ, final int maxZ,
 	//            dxGeom* o2, final int numMaxContactsPossible,
@@ -689,8 +705,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 					//					HeightFieldRow.at(z_local).vertex[1] = h;
 					//					HeightFieldRow.at(z_local).vertex[2] = Ypos;
 					HeightFieldRow.at(z_local).vertex.set( c_Xpos, h, Ypos);
-					HeightFieldRow.at(z_local).coords[0] = x;
-					HeightFieldRow.at(z_local).coords[1] = z;
+					HeightFieldRow.at(z_local).coords0 = x;
+					HeightFieldRow.at(z_local).coords1 = z;
 
 					maxY = dMAX(maxY, h);
 					minY = dMIN(minY, h);
@@ -710,7 +726,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				//				pContact.pos[0] = o2._final_posr.pos.get0();
 				//				pContact.pos[1] = minY;
 				//				pContact.pos[2] = o2._final_posr.pos.get2();
-				pContact.pos.set( o2._final_posr.pos.get0(), minY, o2._final_posr.pos.get2() );
+				pContact.pos.set( o2.final_posr().pos().get0(), minY, o2.final_posr().pos().get2() );
 
 				//				pContact.normal[0] = 0;
 				//				pContact.normal[1] = - 1;
@@ -793,12 +809,11 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 			//	#if dTRIMESH_ENABLED
 
 		case dTriMeshClass:
-			throw new UnsupportedOperationException(); //TODO TZ
-			//TODO TZ			geomRayNCollider		= dCollideRayTrimesh;
-			//TODO TZ			geomNPlaneCollider	    = dCollideTrimeshPlane;
-			//TODO TZ			geomNDepthGetter		= null;// TODO: dGeomTrimeshPointDepth;
+			geomRayNCollider		= new CollideRayTrimesh();//dCollideRayTrimesh;
+			geomNPlaneCollider	    = new CollideTrimeshPlane();//dCollideTrimeshPlane;
+			geomNDepthGetter		= null;// TODO: dGeomTrimeshPointDepth;
 			//max_collisionContact    = 3;
-			//TODO TZ			break;
+			break;
 
 			//	#endif // dTRIMESH_ENABLED
 
@@ -1478,8 +1493,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 			if (reComputeAABB)
 			{
 				// Backup original o2 position, rotation and AABB.
-				posbak.set(o2._final_posr.pos);//dVector3Copy( o2._final_posr.pos, posbak );
-				Rbak.set(o2._final_posr.R);//dMatrix3Copy( o2._final_posr.R, Rbak );
+				posbak.set(o2.final_posr().pos());//dVector3Copy( o2._final_posr.pos, posbak );
+				Rbak.set(o2.final_posr().R());//dMatrix3Copy( o2._final_posr.R, Rbak );
 				aabbbak.set(o2._aabb);//memcpy( aabbbak, o2.aabb, sizeof( double ) * 6 );
 				gflagsbak = o2._gflags;
 			}
@@ -1488,9 +1503,9 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 			{
 				// Transform o2 into heightfield space.
 				//dOP( pos0, OP.SUB, o2._final_posr.pos, terrain._final_posr.pos );
-				pos0.eqDiff( o2._final_posr.pos, terrain._final_posr.pos );
-				dMULTIPLY1_331( pos1, terrain._final_posr.R, pos0 );
-				dMULTIPLY1_333( R1, terrain._final_posr.R, o2._final_posr.R );
+				pos0.eqDiff( o2.final_posr().pos(), terrain.final_posr().pos() );
+				dMULTIPLY1_331( pos1, terrain.final_posr().R(), pos0 );
+				dMULTIPLY1_333( R1, terrain.final_posr().R(), o2.final_posr().R() );
 
 				// Update o2 with transformed position and rotation.
 				o2._final_posr.pos.set(pos1);//dVector3Copy( pos1, o2._final_posr.pos );
@@ -1613,14 +1628,14 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 								pos0.add( 2, -terrain.m_p_data.m_fHalfDepth );
 							}//#endif // !DHEIGHTFIELD_CORNER_ORIGIN
 
-							dMULTIPLY0_331( pContact.pos, terrain._final_posr.R, pos0 );
+							dMULTIPLY0_331( pContact.pos, terrain.final_posr().R(), pos0 );
 
 							//dOP( pContact.pos, +, pContact.pos, terrain._final_posr.pos );
-							pContact.pos.add(terrain._final_posr.pos);
+							pContact.pos.add(terrain.final_posr().pos());
 							//dOPE( pos0, =, pContact.normal );
 							pos0.set(pContact.normal);
 
-							dMULTIPLY0_331( pContact.normal, terrain._final_posr.R, pos0 );
+							dMULTIPLY0_331( pContact.normal, terrain.final_posr().R(), pos0 );
 						}
 					} 
 					else

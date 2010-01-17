@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
-import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
@@ -64,17 +63,17 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	{
 		// get axis1 in global coordinates
 		DVector3 ax1 = new DVector3(), q = new DVector3();
-		dMULTIPLY0_331 ( ax1, node[0].body._posr.R, axis1 );
+		dMULTIPLY0_331 ( ax1, node[0].body.posr().R(), axis1 );
 
 		if ( node[1].body!= null )
 		{
 			// get body2 + offset point in global coordinates
-			dMULTIPLY0_331 ( q, node[1].body._posr.R, offset );
+			dMULTIPLY0_331 ( q, node[1].body.posr().R(), offset );
 //			for ( int i = 0; i < 3; i++ )
 //				q.v[i] = node[0].body._posr.pos.v[i]
 //				         - q.v[i] - node[1].body._posr.pos.v[i];
-			q.eqDiff(node[0].body._posr.pos, q);
-			q.sub(node[1].body._posr.pos);
+			q.eqDiff(node[0].body.posr().pos(), q);
+			q.sub(node[1].body.posr().pos());
 
 		}
 		else
@@ -82,7 +81,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 //			q.v[0] = node[0].body._posr.pos.v[0] - offset.v[0];
 //			q.v[1] = node[0].body._posr.pos.v[1] - offset.v[1];
 //			q.v[2] = node[0].body._posr.pos.v[2] - offset.v[2];
-			q.eqDiff(node[0].body._posr.pos, offset);
+			q.eqDiff(node[0].body.posr().pos(), offset);
 
 			if ( isFlagsReverse() )
 			{   // N.B. it could have been simplier to only inverse the sign of
@@ -104,7 +103,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	{
 		// get axis1 in global coordinates
 		DVector3 ax1 = new DVector3();
-		dMULTIPLY0_331 ( ax1, node[0].body._posr.R, axis1 );
+		dMULTIPLY0_331 ( ax1, node[0].body.posr().R(), axis1 );
 
 		if ( node[1].body != null )
 		{
@@ -165,16 +164,16 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 		// vector pos2-pos1.
 
 		//double *pos1, *pos2, *R1, *R2;
-		DVector3 pos1, pos2;
-		DMatrix3C R1 = new DMatrix3();
-		DMatrix3C R2 = new DMatrix3();
+		DVector3C pos1, pos2;
+		DMatrix3C R1;
+		DMatrix3C R2;
 		DVector3 c = new DVector3();
-		pos1 = node[0].body._posr.pos;
-		R1 = node[0].body._posr.R;
+		pos1 = node[0].body.posr().pos();
+		R1 = node[0].body.posr().R();
 		if ( node[1].body!= null )
 		{
-			pos2 = node[1].body._posr.pos;
-			R2 = node[1].body._posr.R;
+			pos2 = node[1].body.posr().pos();
+			R2 = node[1].body.posr().R();
 			c.eqDiff(pos2, pos1);
 		}
 		else
@@ -337,7 +336,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 //			c.v[0] = 0.5 * ( joint.node[1].body._posr.pos.v[0] - joint.node[0].body._posr.pos.v[0] );
 //			c.v[1] = 0.5 * ( joint.node[1].body._posr.pos.v[1] - joint.node[0].body._posr.pos.v[1] );
 //			c.v[2] = 0.5 * ( joint.node[1].body._posr.pos.v[2] - joint.node[0].body._posr.pos.v[2] );
-			c.eqDiff(node[1].body._posr.pos, node[0].body._posr.pos).scale(0.5);
+			c.eqDiff(node[1].body.posr().pos(), node[0].body.posr().pos()).scale(0.5);
 			dCROSS ( ltd, OP.EQ , c, axis );
 
 			node[0].body.dBodyAddTorque ( ltd.get0(), ltd.get1(), ltd.get2() );
@@ -388,16 +387,16 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 //	        c[0] = node[0].body->posr.pos[0] - node[1].body->posr.pos[0];
 //	        c[1] = node[0].body->posr.pos[1] - node[1].body->posr.pos[1];
 //	        c[2] = node[0].body->posr.pos[2] - node[1].body->posr.pos[2];
-	        c.eqDiff( node[0].body._posr.pos, node[1].body._posr.pos );
+	        c.eqDiff( node[0].body.posr().pos(), node[1].body.posr().pos() );
 
-	        dMULTIPLY1_331 ( offset, node[1].body._posr.R, c );
+	        dMULTIPLY1_331 ( offset, node[1].body.posr().R(), c );
 	    }
 	    else if ( node[0].body != null )
 	    {
 //	        offset[0] = node[0].body->posr.pos[0];
 //	        offset[1] = node[0].body->posr.pos[1];
 //	        offset[2] = node[0].body->posr.pos[2];
-	        offset.set( node[0].body._posr.pos );
+	        offset.set( node[0].body.posr().pos() );
 	    }
 	}
 

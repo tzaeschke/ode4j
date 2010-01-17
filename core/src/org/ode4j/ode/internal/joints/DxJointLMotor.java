@@ -63,13 +63,13 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 		{
 			if ( _rel[i] == 1 )
 			{
-				dMULTIPLY0_331( ax[i], node[0].body._posr.R, axis[i] );
+				dMULTIPLY0_331( ax[i], node[0].body.posr().R(), axis[i] );
 			}
 			else if ( _rel[i] == 2 )
 			{
 				if ( node[1].body!= null )   // jds: don't assert, just ignore
 				{
-					dMULTIPLY0_331( ax[i], node[1].body._posr.R, axis[i] );
+					dMULTIPLY0_331( ax[i], node[1].body.posr().R(), axis[i] );
 				}
 			}
 			else
@@ -146,12 +146,12 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 		{
 			if ( rel == 1 )
 			{
-				dMULTIPLY1_331( axis[anum], node[0].body._posr.R, r );
+				dMULTIPLY1_331( axis[anum], node[0].body.posr().R(), r );
 			}
 			else
 			{
 				//second body has to exists thanks to ref 1 line
-				dMULTIPLY1_331( axis[anum], node[1].body._posr.R, r );
+				dMULTIPLY1_331( axis[anum], node[1].body.posr().R(), r );
 			}
 		}
 		else

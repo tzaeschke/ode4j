@@ -29,10 +29,10 @@ import static org.ode4j.ode.internal.Common.*;
 
 public class DxGimpactData extends DxTriMeshData {
 
-	float[] m_Vertices;//const char* m_Vertices;
+	private float[] m_Vertices;//const char* m_Vertices;
 //	int m_VertexStride;   //see docs below, GIMPACT does not support strides other than 3 (TZ)
 //	int m_VertexCount;
-	int[] m_Indices;//const char* m_Indices;
+	private int[] m_Indices;//const char* m_Indices;
 //	int m_TriangleCount;
 //	int m_TriStride;
 //	boolean m_single;
@@ -47,6 +47,15 @@ public class DxGimpactData extends DxTriMeshData {
 //		m_TriStride = 12;
 //		m_single = true;
 	}
+    
+    
+    float[] getDataRef() {
+    	return m_Vertices;
+    }
+
+    int[] getIndexRef() {
+    	return m_Indices;
+    }
 
 //    void Build(const void* Vertices, int VertexStride, int VertexCount,
 //	       const void* Indices, int IndexCount, int TriStride,

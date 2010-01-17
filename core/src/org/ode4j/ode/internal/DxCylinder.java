@@ -21,8 +21,8 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DVector3;
+import org.ode4j.math.DMatrix3C;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DCylinder;
 
 import static org.ode4j.ode.OdeMath.*;
@@ -55,8 +55,8 @@ public class DxCylinder extends DxGeom implements DCylinder {
 	@Override
 	void computeAABB()
 	{
-		final DMatrix3 R = _final_posr.R;
-		final DVector3 pos = _final_posr.pos;
+		final DMatrix3C R = final_posr().R();
+		final DVector3C pos = final_posr().pos();
 
 		double xrange = dFabs (R.get00() * _radius) + dFabs (R.get01() * _radius) + 
 		0.5* dFabs (R.get02() * _lz);

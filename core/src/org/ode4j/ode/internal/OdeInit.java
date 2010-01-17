@@ -22,7 +22,10 @@
 package org.ode4j.ode.internal;
 
 import org.cpp4j.java.RefBoolean;
+import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.OdeConstants;
+import org.ode4j.ode.OdeConfig.TRIMESH;
+import org.ode4j.ode.internal.gimpact.Gimpact;
 
 import static org.ode4j.ode.OdeMath.*;
 
@@ -309,9 +312,10 @@ public class OdeInit {
 			//		}
 			//#endif
 
-			//#if dTRIMESH_ENABLED && dTRIMESH_GIMPACT TODO
-			//		gimpact_init();
-			//#endif
+			//#if dTRIMESH_ENABLED && dTRIMESH_GIMPACT
+			if (OdeConfig.isTrimeshEnabled() && OdeConfig.dTRIMESH_TYPE == TRIMESH.GIMPACT) {
+				Gimpact.gimpact_init();
+			} //#endif
 
 			//TODO put into a different class?
 			DxGeom.dInitColliders();
@@ -443,9 +447,10 @@ public class OdeInit {
 		DxGeom.dFinitUserClasses();
 		DxGeom.dFinitColliders();
 
-		//#if dTRIMESH_ENABLED && dTRIMESH_GIMPACT TODO
-		//	gimpact_terminate();
-		//#endif
+		//#if dTRIMESH_ENABLED && dTRIMESH_GIMPACT
+		if (OdeConfig.isTrimeshEnabled() && OdeConfig.dTRIMESH_TYPE == TRIMESH.GIMPACT) {
+			Gimpact.gimpact_terminate();
+		}  //#endif
 
 		//#if dTRIMESH_ENABLED && dTRIMESH_OPCODE TODO
 		//	extern void opcode_collider_cleanup();

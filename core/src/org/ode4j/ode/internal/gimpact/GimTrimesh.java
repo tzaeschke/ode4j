@@ -501,7 +501,7 @@ public class GimTrimesh implements GimConstants {
 //			GIM_TRIMESH * trimesh, GBUFFER_ARRAY * vertex_array, GBUFFER_ARRAY * triindex_array,char transformed_reply)
 	static GimTrimesh gim_trimesh_create_from_arrays(
 			GimBufferArrayFloat vertex_array, 
-			GimBufferArrayInt triindex_array,final int transformed_reply)
+			GimBufferArrayInt triindex_array,final boolean transformed_reply)
 	{
 		GimTrimesh trimesh = new GimTrimesh();
 	    assert(trimesh!=null);
@@ -514,7 +514,7 @@ public class GimTrimesh implements GimConstants {
 
 	    trimesh.m_mask = GIM_TRIMESH_NEED_UPDATE;//needs update
 	    //Create the transformed vertices
-	    if(transformed_reply==1)
+	    if(transformed_reply)
 	    {
 	        trimesh.m_mask |= GIM_TRIMESH_TRANSFORMED_REPLY;
 //	        GimBufferArrayFloat.gim_buffer_array_copy_value(vertex_array,
@@ -558,8 +558,8 @@ public class GimTrimesh implements GimConstants {
 //			GIM_TRIMESH * trimesh, vec3f * vertex_array, GUINT32 vertex_count,char copy_vertices, 
 //			GUINT32 * triindex_array, GUINT32 index_count,char copy_indices,char transformed_reply)
 	public static GimTrimesh gim_trimesh_create_from_data(
-			float[] vertex_array, int copy_vertices, 
-			int[] triindex_array, int copy_indices,int transformed_reply)
+			float[] vertex_array, boolean copy_vertices, 
+			int[] triindex_array, boolean copy_indices, boolean transformed_reply)
 	{
 		GimTrimesh THIS;
 		
@@ -567,7 +567,7 @@ public class GimTrimesh implements GimConstants {
 		GimBufferArrayInt buffer_triindex_array;// = new GimBufferArrayInt();
 
     	//Create vertices
-	    if(copy_vertices == 1)
+	    if(copy_vertices)
 	    {
 //	        GimBufferArrayFloat.gim_create_common_buffer_from_data(buffer_managers, 
 //				new GPTR<vec3f[]>(vertex_array2), vertex_count,//*sizeof(vec3f), 
@@ -585,7 +585,7 @@ public class GimTrimesh implements GimConstants {
 
 
 	    //Create vertices
-	    if(copy_indices == 1)
+	    if(copy_indices)
 	    {
 //	        GimBufferArray.gim_create_common_buffer_from_data(buffer_managers, 
 //				new GPTR(triindex_array), index_count,//*sizeof(GUINT32), 
@@ -640,7 +640,7 @@ public class GimTrimesh implements GimConstants {
 //			char copy_by_reference, char transformed_reply)
 	static GimTrimesh gim_trimesh_copy(GimTrimesh source_trimesh,
 			//GimTrimesh dest_trimesh, 
-			char copy_by_reference, int transformed_reply)
+			boolean copy_by_reference, boolean transformed_reply)
 	{
 	/* -- trimesh can not be copied by reference until GBUFFER_MANAGER_DATA is rewritten
 		to be thread safe and until it is moved back to global variables.
@@ -650,7 +650,7 @@ public class GimTrimesh implements GimConstants {
 	    }
 	    else
 	*/
-		if (copy_by_reference == 1) { //TZ
+		if (copy_by_reference) { //TZ
 			System.out.println("Copying TRIMESH by ref is not supported.");
 		}
 	    {
@@ -666,7 +666,7 @@ public class GimTrimesh implements GimConstants {
 	        buffer_triindex_array = source_trimesh.m_tri_index_buffer.cloneValues(); 
 
 	        GimTrimesh dest_trimesh = gim_trimesh_create_from_arrays(//dest_buffer_managers,
-				buffer_vertex_array, buffer_triindex_array,transformed_reply);
+				buffer_vertex_array, buffer_triindex_array, transformed_reply);
 
 	        ///always call this after create a buffer_array
 	        buffer_vertex_array.GIM_BUFFER_ARRAY_DESTROY();
@@ -754,7 +754,7 @@ public class GimTrimesh implements GimConstants {
 	    GimBufferArrayFloat ptransformed_vertex_buffer = m_transformed_vertex_buffer;
 	    //Temp transform
 	    mat4f transform = new mat4f();
-	    COPY_MATRIX_4X4(transform,m_transform);
+	    COPY_MATRIX_4X4(transform,m_transform);  //TODO TZ why copy?
 
 	    GimBufferArrayFloat.GIM_PROCESS_BUFFER_ARRAY(transform, psource_vertex_buffer, ptransformed_vertex_buffer,
 	    		MULT_MAT_VEC4_KERNEL);//,vec3f,vec3f);

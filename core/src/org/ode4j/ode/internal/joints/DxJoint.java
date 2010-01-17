@@ -345,7 +345,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		info._J[info.J1lp+0] = 1;
 		info._J[info.J1lp+s+1] = 1;
 		info._J[info.J1lp+2*s+2] = 1;
-		dMULTIPLY0_331( a1, joint.node[0].body._posr.R, anchor1 );
+		dMULTIPLY0_331( a1, joint.node[0].body.posr().R(), anchor1 );
 		//    dCROSSMAT( info.J1a, a1, s, -, + );
 		dCROSSMAT( info._J, info.J1ap, a1, s, -1, +1 );
 		if ( joint.node[1].body != null)
@@ -353,7 +353,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			info._J[info.J2lp+0] = -1;
 			info._J[info.J2lp+s+1] = -1;
 			info._J[info.J2lp+2*s+2] = -1;
-			dMULTIPLY0_331( a2, joint.node[1].body._posr.R, anchor2 );
+			dMULTIPLY0_331( a2, joint.node[1].body.posr().R(), anchor2 );
 			dCROSSMAT( info._J, info.J2ap, a2, s, +1 , -1 );
 		}
 
@@ -366,15 +366,15 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		{
 //			for ( int j = 0; j < 3; j++ )
 //			{
-//				info.setC(j, k * ( a2.v[j] + b1._posr.pos.v[j] -
+//				info.setC(j, k * ( a2.v[j] + b1.posr().pos().v[j] -
 //						a1.v[j] - b0._posr.pos.v[j] ));
 //			}
-			info.setC(0, k * ( a2.get0() + b1._posr.pos.get0() -
-					a1.get0() - b0._posr.pos.get0() ));
-			info.setC(1, k * ( a2.get1() + b1._posr.pos.get1() -
-					a1.get1() - b0._posr.pos.get1() ));
-			info.setC(2, k * ( a2.get2() + b1._posr.pos.get2() -
-					a1.get2() - b0._posr.pos.get2() ));
+			info.setC(0, k * ( a2.get0() + b1.posr().pos().get0() -
+					a1.get0() - b0.posr().pos().get0() ));
+			info.setC(1, k * ( a2.get1() + b1.posr().pos().get1() -
+					a1.get1() - b0.posr().pos().get1() ));
+			info.setC(2, k * ( a2.get2() + b1.posr().pos().get2() -
+					a1.get2() - b0.posr().pos().get2() ));
 		}
 		else
 		{
@@ -384,11 +384,11 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //						b0._posr.pos.v[j] ));
 //			}
 			info.setC(0, k * ( anchor2.get0() - a1.get0() -
-					b0._posr.pos.get0() ));
+					b0.posr().pos().get0() ));
 			info.setC(1, k * ( anchor2.get1() - a1.get1() -
-					b0._posr.pos.get1() ));
+					b0.posr().pos().get1() ));
 			info.setC(2, k * ( anchor2.get2() - a1.get2() -
-					b0._posr.pos.get2() ));
+					b0.posr().pos().get2() ));
 		}
 	}
 
@@ -419,7 +419,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		axis.wrapSet( info._J, info.J1lp );
 		q1.wrapSet( info._J, info.J1lp+s );
 		q2.wrapSet( info._J, info.J1lp+2*s );
-		dMULTIPLY0_331( a1, joint.node[0].body._posr.R, anchor1 );
+		dMULTIPLY0_331( a1, joint.node[0].body.posr().R(), anchor1 );
 		dCROSS( info._J, info.J1ap, OP.EQ , a1, axis );
 		dCROSS( info._J, info.J1ap + s, OP.EQ , a1, q1 );
 		dCROSS( info._J, info.J1ap + 2*s, OP.EQ , a1, q2 );
@@ -431,7 +431,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			axis.wrapSub( info._J, info.J2lp );
 			q1.wrapSub( info._J, info.J2lp+s );
 			q2.wrapSub( info._J, info.J2lp+2*s );
-			dMULTIPLY0_331( a2, joint.node[1].body._posr.R, anchor2 );
+			dMULTIPLY0_331( a2, joint.node[1].body.posr().R(), anchor2 );
 			dCROSS( info._J, info.J2ap, OP.EQ_SUB, a2, axis );
 			dCROSS( info._J, info.J2ap + s, OP.EQ_SUB, a2, q1 );
 			dCROSS( info._J, info.J2ap + 2*s, OP.EQ_SUB, a2, q2 );
@@ -442,11 +442,11 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		double k = info.fps * info.erp;
 
 		//for ( i = 0; i < 3; i++ ) a1.v[i] += joint.node[0].body._posr.pos.v[i];
-		a1.add(joint.node[0].body._posr.pos);
+		a1.add(joint.node[0].body.posr().pos());
 		if ( joint.node[1].body != null)
 		{
 //			for ( i = 0; i < 3; i++ ) a2.v[i] += joint.node[1].body._posr.pos.v[i];
-			a2.add(joint.node[1].body._posr.pos);
+			a2.add(joint.node[1].body.posr().pos());
 			info.setC(0, k1 * ( dDOT( axis, a2 ) - dDOT( axis, a1 ) ));
 			info.setC(1, k * ( dDOT( q1, a2 ) - dDOT( q1, a1 ) ));
 			info.setC(2, k * ( dDOT( q2, a2 ) - dDOT( q2, a1 ) ));
@@ -523,7 +523,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		qerr2.set0( qerr.get1() );
 		qerr2.set1( qerr.get2() );
 		qerr2.set2( qerr.get3() );
-		dMULTIPLY0_331( e, joint.node[0].body._posr.R, qerr2 );  // @@@ bad SIMD padding!
+		dMULTIPLY0_331( e, joint.node[0].body.posr().R(), qerr2 );  // @@@ bad SIMD padding!
 		double k = info.fps * info.erp;
 		info.setC(start_row, 2 * k * e.get0() );
 		info.setC(start_row+1, 2 * k * e.get1() );
@@ -546,16 +546,16 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //			q.v[1] = y - node[0].body._posr.pos.v[1];
 //			q.v[2] = z - node[0].body._posr.pos.v[2];
 //			q.v[3] = 0;
-			q.eqDiff(xyz, node[0].body._posr.pos);
-			dMULTIPLY1_331( anchor1, node[0].body._posr.R(), q );
+			q.eqDiff(xyz, node[0].body.posr().pos());
+			dMULTIPLY1_331( anchor1, node[0].body.posr().R(), q );
 			if ( node[1].body != null )
 			{
 //				q.v[0] = x - node[1].body._posr.pos.v[0];
 //				q.v[1] = y - node[1].body._posr.pos.v[1];
 //				q.v[2] = z - node[1].body._posr.pos.v[2];
 //				q.v[3] = 0;
-				q.eqDiff(xyz, node[1].body._posr.pos);
-				dMULTIPLY1_331( anchor2, node[1].body._posr.R(), q );
+				q.eqDiff(xyz, node[1].body.posr().pos());
+				dMULTIPLY1_331( anchor2, node[1].body.posr().R(), q );
 			}
 			else
 			{
@@ -585,14 +585,14 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			dNormalize3( q );
 			if ( axis1 != null)
 			{
-				dMULTIPLY1_331( axis1, node[0].body._posr.R, q );
+				dMULTIPLY1_331( axis1, node[0].body.posr().R(), q );
 //				axis1.v[3] = 0;
 			}
 			if ( axis2 != null)
 			{
 				if ( node[1].body != null)
 				{
-					dMULTIPLY1_331( axis2, node[1].body._posr.R, q );
+					dMULTIPLY1_331( axis2, node[1].body.posr().R(), q );
 				}
 				else
 				{
@@ -613,13 +613,13 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			dNormalize3( q );
 			if ( axis1 != null)
 			{
-				dMULTIPLY1_331( axis1, node[0].body._posr.R, q );
+				dMULTIPLY1_331( axis1, node[0].body.posr().R(), q );
 			}
 			if ( axis2 != null)
 			{
 				if ( node[1].body != null)
 				{
-					dMULTIPLY1_331( axis2, node[1].body._posr.R, q );
+					dMULTIPLY1_331( axis2, node[1].body.posr().R(), q );
 				}
 				else
 				{
@@ -635,11 +635,11 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	{
 		if ( node[0].body != null)
 		{
-			dMULTIPLY0_331( result, node[0].body._posr.R, anchor1 );
+			dMULTIPLY0_331( result, node[0].body.posr().R(), anchor1 );
 //			result.v[0] += node[0].body._posr.pos.v[0];
 //			result.v[1] += node[0].body._posr.pos.v[1];
 //			result.v[2] += node[0].body._posr.pos.v[2];
-			result.add(node[0].body._posr.pos);
+			result.add(node[0].body.posr().pos());
 		}
 	}
 
@@ -649,11 +649,11 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	{
 		if ( node[1].body != null)
 		{
-			dMULTIPLY0_331( result, node[1].body._posr.R, anchor2 );
+			dMULTIPLY0_331( result, node[1].body.posr().R(), anchor2 );
 //			result.v[0] += node[1].body.posr.pos.v[0];
 //			result.v[1] += node[1].body.posr.pos.v[1];
 //			result.v[2] += node[1].body.posr.pos.v[2];
-			result.add(node[1].body._posr.pos);
+			result.add(node[1].body.posr().pos());
 		}
 		else
 		{
@@ -669,7 +669,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	{
 		if ( node[0].body != null)
 		{
-			dMULTIPLY0_331( result, node[0].body._posr.R, axis1 );
+			dMULTIPLY0_331( result, node[0].body.posr().R(), axis1 );
 		}
 	}
 
@@ -678,7 +678,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	{
 		if ( node[1].body != null )
 		{
-			dMULTIPLY0_331( result, node[1].body._posr.R, axis2 );
+			dMULTIPLY0_331( result, node[1].body.posr().R(), axis2 );
 		}
 		else
 		{

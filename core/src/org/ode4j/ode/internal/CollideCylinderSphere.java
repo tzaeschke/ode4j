@@ -85,7 +85,7 @@ class CollideCylinderSphere extends DxCollisionUtil implements DColliderFn {
 		//dGeomCylinderGetParams(Cylinder, &radius, &length);
 		radius = Cylinder.getRadius();
 		length = Cylinder.getLength();
-		DVector3 cylpos = Cylinder._final_posr.pos;
+		DVector3C cylpos = Cylinder.final_posr().pos();
 		//const dReal* pfRot1 = dGeomGetRotation(Cylinder);
 
 		double radius2;
@@ -95,11 +95,12 @@ class CollideCylinderSphere extends DxCollisionUtil implements DColliderFn {
 		// G1Pos1 is the middle of the first disc
 		// G1Pos2 is the middle of the second disc
 		// vDir1 is the unit direction of the cylinderaxis
-		DVector3 G1Pos1 = new DVector3(), G1Pos2 = new DVector3(), vDir1;
+		DVector3 G1Pos1 = new DVector3(), G1Pos2 = new DVector3();
+		DVector3C vDir1;
 //		vDir1[0] = Cylinder.final_posr.R[2];
 //		vDir1[1] = Cylinder.final_posr.R[6];
 //		vDir1[2] = Cylinder.final_posr.R[10];
-		vDir1 = new DVector3(Cylinder._final_posr.R().columnAsNewVector(2));
+		vDir1 = Cylinder.final_posr().R().columnAsNewVector(2);
 
 		double s;
 		s = length * (0.5); // just a precomputed factor

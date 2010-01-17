@@ -22,6 +22,7 @@
 package org.ode4j.ode.internal.joints;
 
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -128,13 +129,13 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		{
 			DVector3 q = new DVector3();
 			// get the anchor (or offset) in global coordinates
-			dMULTIPLY0_331 ( q, node[0].body._posr.R, anchor1 );
+			dMULTIPLY0_331 ( q, node[0].body.posr().R(), anchor1 );
 
 			if ( node[1].body!=null )
 			{
 				DVector3 anchor2 = new DVector3();
 				// get the anchor2 in global coordinates
-				dMULTIPLY0_331 ( anchor2, node[1].body._posr.R, this.anchor2 );
+				dMULTIPLY0_331 ( anchor2, node[1].body.posr().R(), this.anchor2 );
 
 //				q.v[0] = ( ( node[0].body._posr.pos.v[0] + q.v[0] ) -
 //						( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
@@ -142,8 +143,8 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 //						( node[1].body._posr.pos.v[1] + anchor2.v[1] ) );
 //				q.v[2] = ( ( node[0].body._posr.pos.v[2] + q.v[2] ) -
 //						( node[1].body._posr.pos.v[2] + anchor2.v[2] ) );
-				q.eqSum( node[0].body._posr.pos, q );
-				q.sub( node[1].body._posr.pos);
+				q.eqSum( node[0].body.posr().pos(), q );
+				q.sub( node[1].body.posr().pos());
 				q.sub( anchor2 ) ;
 			}
 			else
@@ -156,7 +157,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 //						( anchor2.v[1] ) );
 //				q.v[2] = ( ( node[0].body._posr.pos.v[2] + q.v[2] ) -
 //				( anchor2.v[2] ) );
-				q.eqSum( node[0].body._posr.pos, q ).sub( anchor2 ) ;
+				q.eqSum( node[0].body.posr().pos(), q ).sub( anchor2 ) ;
 
 				if (isFlagsReverse())
 				{
@@ -169,7 +170,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 			// get axis in global coordinates
 			DVector3 ax = new DVector3();
-			dMULTIPLY0_331 ( ax, node[0].body._posr.R, axis1 );
+			dMULTIPLY0_331 ( ax, node[0].body.posr().R(), axis1 );
 			
 			return dDOT ( ax, q );
 		}
@@ -183,7 +184,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	{
 		// get axis in global coordinates
 		DVector3 ax = new DVector3();
-		dMULTIPLY0_331 ( ax, node[0].body._posr.R, axis1 );
+		dMULTIPLY0_331 ( ax, node[0].body.posr().R(), axis1 );
 
 		// The linear velocity created by the rotation can be discarded since
 		// the rotation is along the prismatic axis and this rotation don't create
@@ -221,7 +222,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		if ( node[0].body!=null )
 		{
 			DVector3 axis = new DVector3();
-			dMULTIPLY0_331 ( axis, node[0].body._posr.R, axis1 );
+			dMULTIPLY0_331 ( axis, node[0].body.posr().R(), axis1 );
 			double rate = dDOT ( axis, node[0].body.avel );
 			if ( node[1].body!=null ) rate -= dDOT ( axis, node[1].body.avel );
 			if ( isFlagsReverse() ) rate = - rate;
@@ -285,20 +286,20 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		// Pull out pos and R for both bodies. also get the `connection'
 		// vector pos2-pos1.
 
-		DMatrix3 R1 = null;//TZ
-		DMatrix3 R2 = null;//TZ
+		DMatrix3C R1 = null;//TZ
+		DMatrix3C R2 = null;//TZ
 		DVector3 dist = new DVector3(); // Current position of body_1  w.r.t "anchor"
 		// 2 bodies anchor is center of body 2
 		// 1 bodies anchor is origin
 		DVector3 lanchor2 = new DVector3(0, 0, 0);
 
-		DVector3C pos1 = node[0].body._posr.pos;
-		R1   = node[0].body._posr.R;
+		DVector3C pos1 = node[0].body.posr().pos();
+		R1   = node[0].body.posr().R();
 
 		if ( node[1].body!=null )
 		{
-			DVector3C pos2 = node[1].body._posr.pos;
-			R2   = node[1].body._posr.R;
+			DVector3C pos2 = node[1].body.posr().pos();
+			R2   = node[1].body.posr().R();
 
 			dMULTIPLY0_331 ( lanchor2, R2, anchor2 );
 //			dist.v[0] = lanchor2.v[0] + pos2[0] - pos1[0];
@@ -361,7 +362,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		// only along p and q that we want the same angular velocity and need to reduce
 		// the error
 		DVector3 ax1 = new DVector3(), p = new DVector3(), q = new DVector3();
-		dMULTIPLY0_331 ( ax1, node[0].body._posr.R, axis1 );
+		dMULTIPLY0_331 ( ax1, node[0].body.posr().R(), axis1 );
 
 		// Find the 2 axis perpendicular to the rotoide axis.
 		dPlaneSpace ( ax1, p, q );
@@ -585,18 +586,18 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 //					node[1].body._posr.pos.v[1] - dy );
 //			c.v[2] = ( node[0].body._posr.pos.v[2] -
 //					node[1].body._posr.pos.v[2] - dz );
-			c.eqDiff(node[0].body._posr.pos, node[1].body._posr.pos).sub(dx, dy, dz);
+			c.eqDiff(node[0].body.posr().pos(), node[1].body.posr().pos()).sub(dx, dy, dz);
 		}
 		else if ( node[0].body!=null )
 		{
 //			c.v[0] = node[0].body._posr.pos.v[0] - dx;
 //			c.v[1] = node[0].body._posr.pos.v[1] - dy;
 //			c.v[2] = node[0].body._posr.pos.v[2] - dz;
-			c.set(node[0].body._posr.pos).sub(dx, dy, dz);
+			c.set(node[0].body.posr().pos()).sub(dx, dy, dz);
 		}
 
 		// Convert into frame of body 1
-		dMULTIPLY1_331 ( anchor1, node[0].body._posr.R, c );
+		dMULTIPLY1_331 ( anchor1, node[0].body.posr().R(), c );
 	}
 
 
@@ -698,12 +699,12 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			// d is the position of the prismatic joint (i.e. elongation)
 			// Since axis1 x axis1 == 0
 			// We can do the following.
-			dMULTIPLY0_331 ( c, node[0].body._posr.R, anchor1 );
+			dMULTIPLY0_331 ( c, node[0].body.posr().R(), anchor1 );
 			dCROSS ( ltd, OP.EQ , c, axis );
 			node[0].body.dBodyAddTorque ( ltd );
 
 
-			dMULTIPLY0_331 ( c, node[1].body._posr.R, anchor2 );
+			dMULTIPLY0_331 ( c, node[1].body.posr().R(), anchor2 );
 			dCROSS ( ltd, OP.EQ , c, axis );
 			node[1].body.dBodyAddTorque ( ltd );
 		}

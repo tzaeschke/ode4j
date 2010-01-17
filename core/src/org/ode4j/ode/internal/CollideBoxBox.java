@@ -53,8 +53,8 @@ public class CollideBoxBox implements DColliderFn {
 		//		 o2.final_posr.pos,o2.final_posr.R,b2.side,
 		//	     normal,&depth,&code,flags,contact,skip);
 		int num = DxBox.dBoxBox (
-				o1._final_posr.pos, o1._final_posr.R,o1.side, 
-				o2._final_posr.pos, o2._final_posr.R,o2.side,
+				o1.final_posr().pos(), o1.final_posr().R(),o1.side, 
+				o2.final_posr().pos(), o2.final_posr().R(),o2.side,
 				normal,depth,code,flags,contacts,skip);
 //		for (int i=0; i<num; i++) {
 //			CONTACT(contact,i*skip).normal[0] = -normal.v[0];

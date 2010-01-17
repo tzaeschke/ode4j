@@ -88,10 +88,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		if ( _mode == AMotorMode.dAMotorEuler )
 		{
 			// special handling for euler mode
-			dMULTIPLY0_331( ax[0], node[0].body._posr.R, axis[0] );
+			dMULTIPLY0_331( ax[0], node[0].body.posr().R(), axis[0] );
 			if ( node[1].body !=null)
 			{
-				dMULTIPLY0_331( ax[2], node[1].body._posr.R, axis[2] );
+				dMULTIPLY0_331( ax[2], node[1].body.posr().R(), axis[2] );
 			}
 			else
 			{
@@ -110,14 +110,14 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 				if ( _rel[i] == 1 )
 				{
 					// relative to b1
-					dMULTIPLY0_331( ax[i], node[0].body._posr.R, axis[i] );
+					dMULTIPLY0_331( ax[i], node[0].body.posr().R(), axis[i] );
 				}
 				else if ( _rel[i] == 2 )
 				{
 					// relative to b2
 					if ( node[1].body != null)   // jds: don't assert, just ignore
 					{
-						dMULTIPLY0_331( ax[i], node[1].body._posr.R, axis[i] );
+						dMULTIPLY0_331( ax[i], node[1].body.posr().R(), axis[i] );
 					}
 				}
 				else
@@ -148,10 +148,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		// calculate references in global frame
 		DVector3 ref1 = new DVector3(), ref2 = new DVector3();
-		dMULTIPLY0_331( ref1, node[0].body._posr.R, reference1 );
+		dMULTIPLY0_331( ref1, node[0].body.posr().R(), reference1 );
 		if ( node[1].body!=null )
 		{
-			dMULTIPLY0_331( ref2, node[1].body._posr.R, reference2 );
+			dMULTIPLY0_331( ref2, node[1].body.posr().R(), reference2 );
 		}
 		else
 		{
@@ -189,10 +189,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		if ( node[0].body != null&& node[1].body != null)
 		{
 			DVector3 r = new DVector3();  // axis[2] and axis[0] in global coordinates
-			dMULTIPLY0_331( r, node[1].body._posr.R, axis[2] );
-			dMULTIPLY1_331( reference1, node[0].body._posr.R, r );
-			dMULTIPLY0_331( r, node[0].body._posr.R, axis[0] );
-			dMULTIPLY1_331( reference2, node[1].body._posr.R, r );
+			dMULTIPLY0_331( r, node[1].body.posr().R(), axis[2] );
+			dMULTIPLY1_331( reference1, node[0].body.posr().R(), r );
+			dMULTIPLY0_331( r, node[0].body.posr().R(), axis[0] );
+			dMULTIPLY1_331( reference2, node[1].body.posr().R(), r );
 		}
 
 		else     // jds
@@ -208,8 +208,8 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 //			r.v[2] = axis[2].v[2];
 //			r.v[3] = axis[2].v[3];
 			r.set(axis[2]);
-			dMULTIPLY1_331( reference1, node[0].body._posr.R, r );
-			dMULTIPLY0_331( r, node[0].body._posr.R, axis[0] );
+			dMULTIPLY1_331( reference1, node[0].body.posr().R(), r );
+			dMULTIPLY0_331( r, node[0].body.posr().R(), axis[0] );
 //			reference2.v[0] += r.v[0];
 //			reference2.v[1] += r.v[1];
 //			reference2.v[2] += r.v[2];
@@ -346,14 +346,14 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		{
 			if ( rel == 1 )
 			{
-				dMULTIPLY1_331( axis[anum], node[0].body._posr.R, r );
+				dMULTIPLY1_331( axis[anum], node[0].body.posr().R(), r );
 			}
 			else
 			{
 				// don't assert; handle the case of attachment to a bodiless geom
 				if ( node[1].body!=null )   // jds
 				{
-					dMULTIPLY1_331( axis[anum], node[1].body._posr.R, r );
+					dMULTIPLY1_331( axis[anum], node[1].body.posr().R(), r );
 				}
 				else
 				{
@@ -428,13 +428,13 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		{
 			if ( _rel[anum] == 1 )
 			{
-				dMULTIPLY0_331( result, node[0].body._posr.R, axis[anum] );
+				dMULTIPLY0_331( result, node[0].body.posr().R(), axis[anum] );
 			}
 			else
 			{
 				if ( node[1].body!=null )   // jds
 				{
-					dMULTIPLY0_331( result, node[1].body._posr.R, axis[anum] );
+					dMULTIPLY0_331( result, node[1].body.posr().R(), axis[anum] );
 				}
 				else
 				{

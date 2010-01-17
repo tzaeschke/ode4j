@@ -137,7 +137,7 @@ public class DxCollisionUtil {
 	}
 
 	//inline dReal dVector3Dot(final dVector3& a,final dVector3& b)
-	double dVector3Dot(final DVector3C a,final DVector3 b)
+	double dVector3Dot(final DVector3C a,final DVector3C b)
 	{
 		return a.dot(b);
 	}
@@ -441,8 +441,8 @@ public class DxCollisionUtil {
 	 */
 	//int dCollideSpheres (dVector3 p1, dReal r1,
 	//		     dVector3 p2, dReal r2, dContactGeom *c)
-	static int dCollideSpheres (DVector3 p1, double r1,
-			DVector3 p2, double r2, DContactGeomBuffer cb)
+	static int dCollideSpheres (DVector3C p1, double r1,
+			DVector3C p2, double r2, DContactGeomBuffer cb)
 	{
 		DContactGeom c = cb.get();
 		// printf ("d=%.2f  (%.2f %.2f %.2f) (%.2f %.2f %.2f) r1=%.2f r2=%.2f\n",
@@ -684,9 +684,9 @@ public class DxCollisionUtil {
 	 *  in a piecewise fashion from t=0 to t=1, stopping at the point where
 	 * d|D(t)|^2/dt crosses from negative to positive.
 	 */
-	static void dClosestLineBoxPoints (final DVector3 p1, final DVector3 p2,
-			final DVector3 c, final DMatrix3 R,
-			final DVector3 side,
+	static void dClosestLineBoxPoints (final DVector3C p1, final DVector3C p2,
+			final DVector3C c, final DMatrix3C R,
+			final DVector3C side,
 			DVector3 lret, DVector3 bret)
 	{
 		int i;
@@ -822,8 +822,9 @@ public class DxCollisionUtil {
 	}
 
 	//TZ
-	private static void answer(double t, DVector3 tmp, DVector3 sign, DVector3 p1, DVector3 s, DMatrix3 R,
-			DVector3 lret, DVector3 h, DVector3 c, DVector3 v, DVector3 bret) {
+	private static void answer(final double t, DVector3 tmp, DVector3C sign, 
+			DVector3C p1, DVector3 s, DMatrix3C R,
+			DVector3 lret, DVector3C h, DVector3C c, DVector3C v, DVector3 bret) {
 		//got_answer:
 
 		// compute closest point on the line

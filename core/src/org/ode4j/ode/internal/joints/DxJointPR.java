@@ -22,6 +22,7 @@
 package org.ode4j.ode.internal.joints;
 
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -131,14 +132,14 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 		DVector3 q = new DVector3();
 		// get the offset in global coordinates
-		dMULTIPLY0_331( q, node[0].body._posr.R, offset );
+		dMULTIPLY0_331( q, node[0].body.posr().R(), offset );
 
 		if ( node[1].body!=null )
 		{
 			DVector3 anchor2 = new DVector3();
 
 			// get the anchor2 in global coordinates
-			dMULTIPLY0_331( anchor2, node[1].body._posr.R, _anchor2 );
+			dMULTIPLY0_331( anchor2, node[1].body.posr().R(), _anchor2 );
 
 //			q.v[0] = (( node[0].body._posr.pos.v[0] + q.v[0] ) -
 //					( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
@@ -146,7 +147,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 //					( node[1].body._posr.pos.v[1] + anchor2.v[1] ) );
 //			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
 //					( node[1].body._posr.pos.v[2] + anchor2.v[2] ) );
-			q.eqSum(node[0].body._posr.pos, q).sub(node[1].body._posr.pos).sub(anchor2);
+			q.eqSum(node[0].body.posr().pos(), q).sub(node[1].body.posr().pos()).sub(anchor2);
 		}
 		else
 		{
@@ -159,7 +160,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 //					( _anchor2.v[1] ) );
 //			q.v[2] = (( node[0].body._posr.pos.v[2] + q.v[2] ) -
 //					( _anchor2.v[2] ) );
-			q.eqSum(node[0].body._posr.pos, q).sub(_anchor2);
+			q.eqSum(node[0].body.posr().pos(), q).sub(_anchor2);
 
 			if ( isFlagsReverse() ) 
 			{
@@ -169,7 +170,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 		DVector3 axP = new DVector3();
 		// get prismatic axis in global coordinates
-		dMULTIPLY0_331( axP, node[0].body._posr.R, axisP1 );
+		dMULTIPLY0_331( axP, node[0].body.posr().R(), axisP1 );
 
 		return dDOT( axP, q );
 	}
@@ -181,7 +182,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		//    checktype( joint, dxJointPR.class );
 		// get axis1 in global coordinates
 		DVector3 ax1 = new DVector3();
-		dMULTIPLY0_331( ax1, node[0].body._posr.R, axisP1 );
+		dMULTIPLY0_331( ax1, node[0].body.posr().R(), axisP1 );
 
 		if ( node[1].body!=null )
 		{
@@ -226,7 +227,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	    if ( node[0].body != null )
 	    {
 	        DVector3 axis = new DVector3();
-	        dMULTIPLY0_331( axis, node[0].body._posr.R, axisR1 );
+	        dMULTIPLY0_331( axis, node[0].body.posr().R(), axisR1 );
 	        double rate = dDOT( axis, node[0].body.avel );
 	        if ( node[1].body != null ) rate -= dDOT( axis, node[1].body.avel );
 	        if ( isFlagsReverse() ) rate = -rate;
@@ -293,14 +294,14 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// vector pos2-pos1.
 
 		//    double *pos1, *pos2 = 0, *R1, *R2 = 0;
-		DVector3 pos1, pos2 = null;
-		DMatrix3 R1 = new DMatrix3(), R2 = null;
-		pos1 = node[0].body._posr.pos;
-		R1 = node[0].body._posr.R;
+		DVector3C pos1, pos2 = null;
+		DMatrix3C R1 = new DMatrix3(), R2 = null;
+		pos1 = node[0].body.posr().pos();
+		R1 = node[0].body.posr().R();
 		if ( node[1].body!=null )
 		{
-			pos2 = node[1].body._posr.pos;
-			R2 = node[1].body._posr.R;
+			pos2 = node[1].body.posr().pos();
+			R2 = node[1].body.posr().R();
 		}
 		else
 		{
@@ -351,7 +352,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// where p and q are unit vectors normal to the rotoide axis, and w1 and w2
 		// are the angular velocity vectors of the two bodies.
 		DVector3 ax1 = new DVector3();
-		dMULTIPLY0_331( ax1, node[0].body._posr.R, axisR1 );
+		dMULTIPLY0_331( ax1, node[0].body.posr().R(), axisR1 );
 		dCROSS( q , OP.EQ , ax1, axP );
 
 		info._J[info.J1ap+0] = axP.get0();

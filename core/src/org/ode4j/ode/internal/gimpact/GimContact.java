@@ -129,7 +129,6 @@ public class GimContact {
 //	    GIM_DYNARRAY_PUSH_EMPTY(GIM_CONTACT,contact_array);
 //	    GimContact _last = GIM_DYNARRAY_POINTER_LAST(GIM_CONTACT,contact_array);
 		GimContact _last = new GimContact();
-		contact_array.GIM_DYNARRAY_PUSH_ITEM_TZ(_last);
 	    VEC_COPY(_last.m_point,point);
 	    VEC_COPY(_last.m_normal,normal);
 	    _last.m_depth = deep;
@@ -137,7 +136,9 @@ public class GimContact {
 	    _last.m_handle2 = handle2;
 	    _last.m_feature1 = feat1;
 	    _last.m_feature2 = feat2;
+		contact_array.GIM_DYNARRAY_PUSH_ITEM_TZ(_last);
 	}
+
 	static void GIM_PUSH_CONTACT(GimDynArray<GimContact> contact_array, vec3f point, 
 			vec4f normal, final float deep, GimTrimesh handle1, GimTrimesh handle2, 
 			final int feat1, final int feat2)
@@ -145,7 +146,6 @@ public class GimContact {
 //	    GIM_DYNARRAY_PUSH_EMPTY(GIM_CONTACT,contact_array);
 //	    GimContact _last = GIM_DYNARRAY_POINTER_LAST(GIM_CONTACT,contact_array);
 		GimContact _last = new GimContact();
-		contact_array.GIM_DYNARRAY_PUSH_ITEM_TZ(_last);
 	    VEC_COPY(_last.m_point,point);
 	    VEC_COPY(_last.m_normal,normal);
 	    _last.m_depth = deep;
@@ -153,6 +153,7 @@ public class GimContact {
 	    _last.m_handle2 = handle2;
 	    _last.m_feature1 = feat1;
 	    _last.m_feature2 = feat2;
+		contact_array.GIM_DYNARRAY_PUSH_ITEM_TZ(_last);
 	}
 
 	///Receive pointer to contacts
@@ -205,7 +206,7 @@ public class GimContact {
 		// Merge contacts
 		GimContact pcontact = null;
 		GimContact scontact = null;
-		int key,last_key=0;
+		long key,last_key=0;
 
 		for(i=0;i<source_contacts.size();i++)
 		{

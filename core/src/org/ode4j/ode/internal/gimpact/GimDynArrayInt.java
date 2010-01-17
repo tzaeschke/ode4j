@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class GimDynArrayInt {
 
-	protected int[] m_pdata = new int[0];
+	protected int[] m_pdata;// = new int[0];
 	protected int G_ARRAY_GROW_SIZE;
 	protected int m_size = 0;
 	protected int m_reserve_size = 0;
@@ -17,17 +17,22 @@ public class GimDynArrayInt {
 	    //(array_data).m_pdata = (char *)gim_alloc((reserve_size) * sizeof(type));
 		a.m_pdata = new int[reserve_size];//gim_alloc((reserve_size));// * sizeof(type));
 	    a.m_size = 0; 
-	    a.m_reserve_size = (reserve_size);
+	    a.m_reserve_size = reserve_size;
 	    return a;
 	} 
 
-	public void GIM_CREATE_BOXQUERY_LIST() {
-		G_ARRAY_GROW_SIZE = GimDynArray.G_ARRAY_GROW_SIZE;
+	public static GimDynArrayInt GIM_CREATE_BOXQUERY_LIST() {
+		GimDynArrayInt a = new GimDynArrayInt();
+		a.G_ARRAY_GROW_SIZE = GimDynArray.G_ARRAY_GROW_SIZE;
+		a.m_reserve_size = a.G_ARRAY_GROW_SIZE;
+		a.m_pdata = new int[a.m_reserve_size];
+		a.m_size = 0;
+		return a;
 	}
 
 	/** Inserts an element at the last position. */
 	//#define GIM_DYNARRAY_PUSH_ITEM(type, array_data, item)\
-	void GIM_DYNARRAY_PUSH_ITEM(int item)
+	void GIM_DYNARRAY_PUSH_ITEM(final int item)
 	{ 
 	    if (m_reserve_size <= m_size)
 	    {
@@ -41,7 +46,7 @@ public class GimDynArrayInt {
 	
 	/** Reserves memory for a dynamic array. */
 	//#define GIM_DYNARRAY_RESERVE_SIZE(type, array_data, old_size, reserve_size) \
-	void GIM_DYNARRAY_RESERVE_SIZE(int old_size, int reserve_size) 
+	void GIM_DYNARRAY_RESERVE_SIZE(final int old_size, final int reserve_size) 
 	{ 
 	    if (reserve_size > m_reserve_size) 
 	    { 
@@ -78,5 +83,10 @@ public class GimDynArrayInt {
 		return m_size;
 	} 
 
-
+	/**
+	 * Sets size to 0. Does not clean any elements.
+	 */
+	public void clear() {
+		m_size = 0;
+	}
 }

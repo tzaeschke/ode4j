@@ -38,7 +38,7 @@ public class Gimpact {
 	 * Call this for initialize GIMPACT system structures.
 	 * @defgroup GIMPACT_INIT
 	 */
-	void XXgimpact_init()
+	public static void gimpact_init()
 	{
 		GimMath.gim_init_math();
 	}
@@ -46,7 +46,7 @@ public class Gimpact {
 	/**
 	 * Call this for clean GIMPACT system structures.
 	 */
-	void XXgimpact_terminate()
+	public static void gimpact_terminate()
 	{
 	}
 

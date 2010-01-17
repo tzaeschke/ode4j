@@ -1484,8 +1484,7 @@ public class CollideTrimeshBox implements DColliderFn {
 		test_aabb.minZ = (float) aabb.getMin2();
 		test_aabb.maxZ = (float) aabb.getMax2();
 
-		GimDynArrayInt collision_result = new GimDynArrayInt();
-		collision_result.GIM_CREATE_BOXQUERY_LIST();
+		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
 		ptrimesh.getAabbSet().gim_aabbset_box_collision(test_aabb, collision_result);
 

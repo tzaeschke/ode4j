@@ -97,7 +97,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		info.setCfm(2, cfm);
 
 		DVector3 ofs = new DVector3();
-		dMULTIPLY0_331 ( ofs, node[0].body._posr.R, offset );
+		dMULTIPLY0_331 ( ofs, node[0].body.posr().R(), offset );
 		if ( node[1].body != null )
 		{
 			dCROSSMAT ( info._J, info.J1ap, ofs, s, +1 , -1 );
@@ -111,13 +111,13 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		if ( node[1].body != null)
 		{
 			for ( int j = 0; j < 3; j++ )
-				info.setC(j, k * ( node[1].body._posr.pos.get(j) -
-						node[0].body._posr.pos.get(j) + ofs.get(j) ));
+				info.setC(j, k * ( node[1].body.posr().pos().get(j) -
+						node[0].body.posr().pos().get(j) + ofs.get(j) ));
 		}
 		else
 		{
 			for ( int j = 0; j < 3; j++ )
-				info.setC(j, k * ( offset.get(j) - node[0].body._posr.pos.get(j) ));
+				info.setC(j, k * ( offset.get(j) - node[0].body.posr().pos().get(j) ));
 		}
 	}
 
@@ -140,16 +140,16 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 //				for ( int i = 0; i < 4; i++ )
 //					ofs.v[i] = node[0].body._posr.pos.v[i] - 
 //					node[1].body._posr.pos.v[i];
-				ofs.eqDiff( node[0].body._posr.pos, node[1].body._posr.pos );
+				ofs.eqDiff( node[0].body.posr().pos(), node[1].body.posr().pos() );
 
-				dMULTIPLY1_331 ( offset, node[0].body._posr.R, ofs );
+				dMULTIPLY1_331 ( offset, node[0].body.posr().R(), ofs );
 			}
 			else
 			{
 				//				offset.v[0] = node[0].body._posr.pos.v[0];
 				//				offset.v[1] = node[0].body._posr.pos.v[1];
 				//				offset.v[2] = node[0].body._posr.pos.v[2];
-				offset.set( node[0].body._posr.pos );
+				offset.set( node[0].body.posr().pos() );
 			}
 		}
 

@@ -23,7 +23,6 @@ package org.ode4j.ode.internal;
 
 import org.cpp4j.java.RefDouble;
 import org.cpp4j.java.RefInt;
-import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -70,8 +69,8 @@ public class DxBox extends DxGeom implements DBox {
 	{
 		//	  final dMatrix3& R = final_posr.R;
 		//	  final dVector3& pos = final_posr.pos;
-		DMatrix3C R = _final_posr.R;
-		DVector3C pos = _final_posr.pos;
+		DMatrix3C R = final_posr().R();
+		DVector3C pos = final_posr().pos();
 
 		double xrange = 0.5 * ( dFabs (R.get00() * side.get0()) +
 				dFabs (R.get01() * side.get1()) + dFabs (R.get02() * side.get2()) );
@@ -146,12 +145,12 @@ public class DxBox extends DxGeom implements DBox {
 //		p.v[0] = x - b._final_posr.pos.v[0];
 //		p.v[1] = y - b._final_posr.pos.v[1];
 //		p.v[2] = z - b._final_posr.pos.v[2];
-		p.set(x, y, z).sub(_final_posr.pos);
+		p.set(x, y, z).sub(final_posr().pos());
 
 		// Rotate p into box's coordinate frame, so we can
 		// treat the OBB as an AABB
 
-		dMULTIPLY1_331 (q,_final_posr.R,p);
+		dMULTIPLY1_331 (q,final_posr().R(),p);
 
 		// Record distance from point to each successive box side, and see
 		// if the point is inside all six sides
@@ -362,7 +361,7 @@ public class DxBox extends DxGeom implements DBox {
 
 
 	//#define TST(expr1,expr2,norm,cc) 
-	private static boolean TST1(double expr1, double expr2, DMatrix3 norm_A, int norm_O, int cc, 
+	private static boolean TST1(double expr1, double expr2, DMatrix3C norm_A, int norm_O, int cc, 
 			TstClass tst1) {
 		double expr1_val = (expr1); /* Avoid duplicate evaluation of expr1 */ 
 		double s2 = dFabs(expr1_val) - (expr2); 
@@ -452,9 +451,9 @@ public class DxBox extends DxGeom implements DBox {
 	//		     const dMatrix3 R2, const dVector3 side2,
 	//		     dVector3 normal, dReal *depth, int *return_code,
 	//		     int flags, dContactGeom *contact, int skip)
-	public static int dBoxBox (final DVector3C p1, final DMatrix3 R1,
+	public static int dBoxBox (final DVector3C p1, final DMatrix3C R1,
 			final DVector3C side1, final DVector3C p2,
-			final DMatrix3 R2, final DVector3C side2,
+			final DMatrix3C R2, final DVector3C side2,
 			DVector3 normal, RefDouble depth, RefInt return_code,
 			int flags, DContactGeomBuffer contacts, int skip)
 	{
@@ -667,7 +666,7 @@ public class DxBox extends DxGeom implements DBox {
 		// the incident face (the closest face of the other box).
 		// Note: Unmodified parameter values are being used here
 		//final double *Ra,*Rb,*pa,*pb,*Sa,*Sb;
-		DMatrix3 Ra, Rb;
+		DMatrix3C Ra, Rb;
 		DVector3C pa, pb, Sa, Sb;
 		if (tst._code <= 3) { // One of the faces of box 1 is the reference face
 			Ra = R1; // Rotation of 'a'
