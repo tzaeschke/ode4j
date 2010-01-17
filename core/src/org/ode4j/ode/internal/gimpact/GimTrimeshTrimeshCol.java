@@ -33,7 +33,6 @@ package org.ode4j.ode.internal.gimpact;
 
 import org.cpp4j.java.ObjArray;
 import org.cpp4j.java.RefFloat;
-import org.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.gimpact.GimAABBSet.GIM_PAIR;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec4f;
@@ -50,19 +49,19 @@ public class GimTrimeshTrimeshCol {
 	// ******************************************************
 	
 	//#define CLASSIFY_TRI_BY_FACE(v1,v2,v3,faceplane,out_of_face)\
-	private static void CLASSIFY_TRI_BY_FACE(vec3f v1, vec3f v2, vec3f v3, vec4f faceplane, RefInt out_of_face,
+	private static boolean CLASSIFY_TRI_BY_FACE(vec3f[] v, vec4f faceplane,
 			final vec3f _distances)
 	{   
-	    _distances.f[0] = DISTANCE_PLANE_POINT(faceplane,v1);
-	    _distances.f[1] =  _distances.f[0] * DISTANCE_PLANE_POINT(faceplane,v2);
-	    _distances.f[2] =  _distances.f[0] * DISTANCE_PLANE_POINT(faceplane,v3); 
+	    _distances.f[0] = DISTANCE_PLANE_POINT(faceplane,v[0]);
+	    _distances.f[1] =  _distances.f[0] * DISTANCE_PLANE_POINT(faceplane,v[1]);
+	    _distances.f[2] =  _distances.f[0] * DISTANCE_PLANE_POINT(faceplane,v[2]); 
 		if(_distances.f[1]>0.0f && _distances.f[2]>0.0f)
 		{
-		    out_of_face.i = 1;
+		    return true;
 		}
 		else
 		{
-		    out_of_face.i = 0;
+		    return false;
 		}
 	}
 
@@ -145,10 +144,10 @@ public class GimTrimeshTrimeshCol {
 //			GIM_TRIANGLE_DATA *tri1,
 //			GIM_TRIANGLE_DATA *tri2,
 //			GIM_TRIANGLE_CONTACT_DATA * contact_data)
-	static int _gim_triangle_triangle_collision(
-			GIM_TRIANGLE_DATA tri1,
-			GIM_TRIANGLE_DATA tri2,
-			GIM_TRIANGLE_CONTACT_DATA contact_data)
+	static boolean _gim_triangle_triangle_collision(
+			final GIM_TRIANGLE_DATA tri1,
+			final GIM_TRIANGLE_DATA tri2,
+			final GIM_TRIANGLE_CONTACT_DATA contact_data)
 	{
 	    //Cache variables for triangle intersection
 	    int[] _max_candidates = new int[MAX_TRI_CLIPPING];
@@ -182,7 +181,7 @@ public class GimTrimeshTrimeshCol {
 
 		if(clipped2_count == 0 )
 		{
-		     return 0;//Reject
+		     return false;//Reject
 		}
 
 		//find most deep interval face1
@@ -195,7 +194,7 @@ public class GimTrimeshTrimeshCol {
 		if(deep2_count==0)
 		{
 //		    *perror = 0.0f;
-		     return 0;//Reject
+		     return false;//Reject
 		}
 
 		//Normal pointing to triangle1
@@ -212,7 +211,7 @@ public class GimTrimeshTrimeshCol {
 		if(clipped2_count == 0 )
 		{
 //		    *perror = 0.0f;
-		     return 0;//Reject
+		     return false;//Reject
 		}
 
 
@@ -227,7 +226,7 @@ public class GimTrimeshTrimeshCol {
 		if(deep1_count==0)
 		{
 //		    *perror = 0.0f;
-		    return 0;
+		    return false;
 		}
 
 		if(dist.d<maxdeep.d)
@@ -256,7 +255,7 @@ public class GimTrimeshTrimeshCol {
 		        VEC_COPY(contact_data.m_points[mostdir] ,deep_points1[mostdir]);
 		    }
 		}
-		return 1;
+		return true;
 	}
 
 
@@ -270,23 +269,22 @@ public class GimTrimeshTrimeshCol {
 //			GIM_TRIANGLE_DATA *tri1,
 //			GIM_TRIANGLE_DATA *tri2,
 //			GIM_TRIANGLE_CONTACT_DATA * contact_data)
-	static int gim_triangle_triangle_collision(
+	static boolean gim_triangle_triangle_collision(
 			GIM_TRIANGLE_DATA tri1,
 			GIM_TRIANGLE_DATA tri2,
 			GIM_TRIANGLE_CONTACT_DATA contact_data)
 	{
 	    vec3f _distances = new vec3f();
-	    RefInt out_of_face=new RefInt(0);//TODO remove TZ
 
-	    CLASSIFY_TRI_BY_FACE(tri1.m_vertices[0],tri1.m_vertices[1],tri1.m_vertices[2],tri2.m_planes.m_planes[0],
-	    		out_of_face,_distances);
-	    if(out_of_face.i==1) return 0;
+	    if (CLASSIFY_TRI_BY_FACE(tri1.m_vertices, tri2.m_planes.m_planes[0], _distances)) {
+	    	return false;
+	    }
 
-	    CLASSIFY_TRI_BY_FACE(tri2.m_vertices[0],tri2.m_vertices[1],tri2.m_vertices[2],tri1.m_planes.m_planes[0],
-	    		out_of_face, _distances);
-	    if(out_of_face.i==1) return 0;
+	    if (CLASSIFY_TRI_BY_FACE(tri2.m_vertices, tri1.m_planes.m_planes[0], _distances)) {
+	    	return false;
+	    }
 
-	    return _gim_triangle_triangle_collision(tri1,tri2,contact_data);
+	    return _gim_triangle_triangle_collision(tri1, tri2, contact_data);
 	}
 
 	//! Trimesh Trimesh Collisions
@@ -335,7 +333,7 @@ public class GimTrimeshTrimeshCol {
 
 
 	    int ti1,ti2,ci;
-	    int colresult;
+	    boolean colresult;
 	    for (int i=0;i<collision_pairs.size(); i++)
 	    {
 	        ti1 = pairs.at(i).m_index1;
@@ -346,7 +344,7 @@ public class GimTrimeshTrimeshCol {
 
 	        //collide triangles
 	        colresult = gim_triangle_triangle_collision(tri1data,tri2data,tri_contact_data);
-	        if(colresult == 1)
+	        if(colresult == true)
 	        {
 	            //Add contacts
 	            for (ci=0;ci<tri_contact_data.m_point_count ;ci++ )
@@ -404,12 +402,12 @@ public class GimTrimeshTrimeshCol {
 	        dist = DISTANCE_PLANE_POINT(plane,vertices.at(i));
 	        if(dist<=0.0f)
 	        {
-	    	    vec4f result_contact = new vec4f();
-	    	    contacts.GIM_DYNARRAY_PUSH_ITEM_TZ(result_contact);
+	        	vec4f result_contact = new vec4f();
+	        	VEC_COPY(result_contact,vertices.at(i));
+	        	result_contact.f[3] = -dist;
+	        	contacts.GIM_DYNARRAY_PUSH_ITEM_TZ(result_contact);
 //	             GIM_DYNARRAY_PUSH_EMPTY(vec4f,(*contacts));
 //	             result_contact = GIM_DYNARRAY_POINTER_LAST(vec4f,(*contacts));
-	             VEC_COPY(result_contact,vertices.at(i));
-	             result_contact.f[3] = -dist;
 	        }
 	    }
 	    trimesh.gim_trimesh_unlocks_work_data();

@@ -119,15 +119,15 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 
 			// 1.compute if, and where contacts are
 			DVector3 P = new DVector3();
-			s = planeDepth - dVector3Dot(planevec, G1Pos1);
+			s = planeDepth - planevec.dot(G1Pos1);
 			double t;
-			t = planeDepth - dVector3Dot(planevec, G1Pos2);
+			t = planeDepth - planevec.dot(G1Pos2);
 			if(s >= t) // s == t does never happen, 
 			{
 				if(s >= 0)
 				{
 					// 1. Disc
-					dVector3Copy(G1Pos1, P);
+					P.set(G1Pos1);//dVector3Copy(G1Pos1, P);
 				}
 				else
 					return GeomCount; // no contacts
@@ -137,7 +137,7 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 				if(t >= 0)
 				{
 					// 2. Disc
-					dVector3Copy(G1Pos2, P);
+					P.set(G1Pos2);//dVector3Copy(G1Pos2, P);
 				}
 				else
 					return GeomCount; // no contacts
@@ -178,7 +178,7 @@ class CollideCylinderPlane extends DxCollisionUtil implements DColliderFn {
 
 			// Potential contact 1
 			dVector3Add(P, V1, contact.pos);
-			contact.depth = planeDepth - dVector3Dot(planevec, contact.pos);
+			contact.depth = planeDepth - planevec.dot(contact.pos);
 			if(contact.depth > 0)
 			{
 				dVector3Copy(PlaneNormal, contact.normal);

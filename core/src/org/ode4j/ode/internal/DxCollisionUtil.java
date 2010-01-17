@@ -108,7 +108,7 @@ public class DxCollisionUtil {
 	}
 
 	//inline void dVector3Copy(final dVector3& a,dVector3& c)
-	static void dVector3Copy(final DVector3C a,DVector3 c)
+	static void dVector3Copy(final DVector3C a, DVector3 c)
 	{
 		//		c.v[0] = a.v[0];
 		//		c.v[1] = a.v[1];

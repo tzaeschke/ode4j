@@ -171,7 +171,7 @@ public class CollideTrimeshRay implements DColliderFn {
 	//int dCollideRTL(dxGeom* g1, dxGeom* RayGeom, int Flags, dContactGeom* Contacts, int Stride)
 	int dCollideRTL(DxTriMesh g1, DxRay RayGeom, int Flags, DContactGeomBuffer Contacts, int Stride)
 	{
-		Common.dIASSERT (Stride >= 1);//(int)sizeof(dContactGeom));
+		Common.dIASSERT (Stride == 1);//(int)sizeof(dContactGeom));
 		//		dIASSERT (g1->type == dTriMeshClass);
 		//		dIASSERT (RayGeom->type == dRayClass);
 		Common.dIASSERT ((Flags & DxGeom.NUMC_MASK) >= 1);

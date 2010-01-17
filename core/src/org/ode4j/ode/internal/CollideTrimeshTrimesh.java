@@ -82,30 +82,32 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 		}
 
 	    DContactGeom pcontact;
+	    GimContact ptrimeshcontact;
 		
 		for (int i=0;i<contactcount;i++)
 		{
 	        pcontact = Contacts.getSafe(Flags, i);//SAFECONTACT(Flags, Contacts, i, Stride);
+	        ptrimeshcontact = ptrimeshcontacts.at(i);
 
 //	        pcontact->pos[0] = ptrimeshcontacts->m_point[0];
 //	        pcontact->pos[1] = ptrimeshcontacts->m_point[1];
 //	        pcontact->pos[2] = ptrimeshcontacts->m_point[2];
 //	        pcontact->pos[3] = 1.0f;   //TODO TZ ?
-	        pcontact.pos.set(ptrimeshcontacts.at0().getPoint().f);
+	        pcontact.pos.set(ptrimeshcontact.getPoint().f);
 
 //	        pcontact->normal[0] = ptrimeshcontacts->m_normal[0];
 //	        pcontact->normal[1] = ptrimeshcontacts->m_normal[1];
 //	        pcontact->normal[2] = ptrimeshcontacts->m_normal[2];
 //	        pcontact->normal[3] = 0;
-	        pcontact.normal.set( ptrimeshcontacts.at0().getNormal().f );
+	        pcontact.normal.set( ptrimeshcontact.getNormal().f );
 
-	        pcontact.depth = ptrimeshcontacts.at0().getDepth();
+	        pcontact.depth = ptrimeshcontact.getDepth();
 	        pcontact.g1 = g1;
 	        pcontact.g2 = g2;
-	        pcontact.side1 = ptrimeshcontacts.at0().getFeature1();
-	        pcontact.side2 = ptrimeshcontacts.at0().getFeature2();
+	        pcontact.side1 = ptrimeshcontact.getFeature1();
+	        pcontact.side2 = ptrimeshcontact.getFeature2();
 
-	        ptrimeshcontacts.inc();//++;
+	        //ptrimeshcontacts.inc();//++;
 		}
 
 		trimeshcontacts.GIM_DYNARRAY_DESTROY();

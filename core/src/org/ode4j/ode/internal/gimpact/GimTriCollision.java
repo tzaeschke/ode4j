@@ -184,7 +184,7 @@ public class GimTriCollision extends GimGeometry {
 	Returns the contact points, the penetration depth and the separating normal of the collision
 	between two triangles. The normal is pointing toward triangle 1 from triangle 2
 	*/
-	int gim_triangle_triangle_collision(
+	boolean gim_triangle_triangle_collision(
 								GIM_TRIANGLE_DATA tri1,
 								GIM_TRIANGLE_DATA tri2,
 								GIM_TRIANGLE_CONTACT_DATA contact_data) {
