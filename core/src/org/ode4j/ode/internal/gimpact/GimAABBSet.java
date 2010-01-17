@@ -725,15 +725,15 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	static void gim_aabbset_bipartite_intersections(GimAABBSet aabbset1, 
 			GimAABBSet aabbset2, GimDynArray<GIM_PAIR> collision_pairs)
 	{
-//		if(aabbset1.m_sorted_mincoords == null||aabbset2.m_sorted_mincoords == null)
-//		{//Brute force approach
+		if(aabbset1.m_sorted_mincoords == null||aabbset2.m_sorted_mincoords == null)
+		{//Brute force approach
 			gim_aabbset_bipartite_intersections_brute_force(aabbset1,aabbset2,collision_pairs);
-//		}
-//		else
-//		{//Sorted force approach
-//			gim_aabbset_bipartite_intersections_sorted(aabbset1,aabbset2,collision_pairs);
-//		}
-		System.out.println("IGNORED!");//TODO fix this!
+		}
+		else
+		{//Sorted force approach
+			gim_aabbset_bipartite_intersections_sorted(aabbset1,aabbset2,collision_pairs);
+		}
+//		System.out.println("IGNORED!");//TODO fix this!
 	}
 
 	/**
