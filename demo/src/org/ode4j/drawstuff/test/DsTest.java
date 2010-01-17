@@ -1,9 +1,9 @@
-package org.ode4j.drawstuff.test;
-
 /*************************************************************************
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -13,23 +13,17 @@ package org.ode4j.drawstuff.test;
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
+package org.ode4j.drawstuff.test;
 
-//#include <stdio.h>
-//#include <math.h>
-//#include <drawstuff/drawstuff.h>
-
-
-//#ifndef M_PI
-//#define M_PI (3.14159265358979323846)
-//#endif
 
 import static org.ode4j.drawstuff.DrawStuff.*;
 
@@ -39,8 +33,6 @@ public class DsTest extends dsFunctions {
 	public void start()
 	{
 		// adjust the starting viewpoint a bit
-//		float xyz[3],hpr[3];
-//		dsGetViewpoint (xyz,hpr);
 		float[] xyz = new float[3], hpr = new float[3];
 		dsGetViewpoint (xyz,hpr);
 		hpr[0] += 7;

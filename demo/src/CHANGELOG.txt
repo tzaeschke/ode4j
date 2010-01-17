@@ -12,6 +12,7 @@ the rules for this file:
 2010-Jan-17 Tilmann Zaschke
 		* Improved version with GIMPACT (still buggy).
 		  DemoBasket and DemoCyl are working now.
+		* Updated copyright information.
 
 2010-Jan-10 Tilmann Zaschke
 		* Added initial version for TRIMESH support via GIMPACT (still buggy).

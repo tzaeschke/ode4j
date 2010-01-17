@@ -1,23 +1,26 @@
+/*************************************************************************
+ *                                                                       *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
+ *                                                                       *
+ * This library is free software; you can redistribute it and/or         *
+ * modify it under the terms of EITHER:                                  *
+ *   (1) The GNU Lesser General Public License as published by the Free  *
+ *       Software Foundation; either version 2.1 of the License, or (at  *
+ *       your option) any later version. The text of the GNU Lesser      *
+ *       General Public License is included with this library in the     *
+ *       file LICENSE.TXT.                                               *
+ *   (2) The BSD-style license that is included with this library in     *
+ *       the file ODE4J-LICENSE-BSD.TXT.                                 *
+ *                                                                       *
+ * This library is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
+ * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
+ *                                                                       *
+ *************************************************************************/
 package org.ode4j.tests.bugs;
 
-
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
@@ -27,32 +30,13 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.internal.DxHashSpace;
-import org.ode4j.ode.internal.Misc;
-import org.ode4j.ode.internal.OdeInit;
-import org.ode4j.ode.internal.Timer;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Test harness to check for multi-thread tolerance in IA numeric and it's
- * sub-packages (SPR 3998).
- * <p>
- * If this test harness does not throw any errors, then it is at least possible 
- * to write multi-threaded code using IA numeric. 
- * However, it does not indicate thread-safety of any tested classes.
- * The command-line version of this test prints out a list of 
- * state-full (=mutable) classes. Instances of classes from this list should
- * not be shared between Threads. All other classes (not printed) are
- * state-less (=immutable) and therefore thread-safe.
- * <p>
- * As a rule of thumb, any object that can be created with 'new' (like Int3d 
- * and MatrixMultiply) should be used in one Thread only. All others (like
- * ArcSin.PROCEDURE) can be used in parallel in multiple Threads.
- * To clarify this, for example Int3d can be process in parallel, as long as the
- * two Threads work on different Int3d arrays.
+ * Test harness for bugs specific ode4j.
  *
  * @author Tilmann Zaeschke
  */

@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,12 +13,13 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.tests.joints;
@@ -34,7 +37,6 @@ import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJointUniversal;
@@ -206,7 +208,7 @@ public class TestJointUniversal
 
 
 			// Try with random axis for the axis of the joints
-			dRSetIdentity(R);
+			R.setIdentity();
 			dBodySetRotation (bId1, R);
 			dBodySetRotation (bId1, R);
 
@@ -326,7 +328,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (ang2, angle2.d, 1e-4);
 
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId1, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -395,7 +397,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (-ang2, angle2.d, 1e-4);
 
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId1, R);
 			dBodySetRotation (bId2, R);
 
@@ -461,7 +463,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (-ang2, angle2.d, 1e-4);
 
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId2, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -588,7 +590,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (ang2, angle2, 1e-4);
 
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId1, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -646,7 +648,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (-ang2, angle2, 1e-4);
 
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId2, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -732,7 +734,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (-ang2, angle2, 1e-4);
 
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId1, R);
 			dBodySetRotation (bId2, R);
 
@@ -944,7 +946,7 @@ public class TestJointUniversal
 
 
 			DMatrix3 I = new DMatrix3();
-			dRSetIdentity(I); // Set the rotation of the body to be the Identity (i.e. zero)
+			I.setIdentity(); // Set the rotation of the body to be the Identity (i.e. zero)
 			dBodySetRotation (bId1, I);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -1141,7 +1143,7 @@ public class TestJointUniversal
 
 
 			DMatrix3 I = new DMatrix3();
-			dRSetIdentity(I); // Set the rotation of the body to be the Identity (i.e. zero)
+			I.setIdentity(); // Set the rotation of the body to be the Identity (i.e. zero)
 			dBodySetRotation (bId2, I);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -1211,7 +1213,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (-ang2, dJointGetUniversalAngle2 (jId), 1e-4);
 
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId2, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle2 (jId), 1e-4);
@@ -1265,7 +1267,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (ang1, dJointGetUniversalAngle1 (jId), 1e-4);
 			CHECK_CLOSE (-ang2, dJointGetUniversalAngle2 (jId), 1e-4);
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId2, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -1526,7 +1528,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (ang1, angle1, 1e-4);
 			CHECK_CLOSE (ang2, angle2, 1e-4);
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId1, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -1588,7 +1590,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (ang1, angle1, 1e-4);
 			CHECK_CLOSE (ang2, angle2, 1e-4);
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId1, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -1650,7 +1652,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (ang1, angle1, 1e-4);
 			CHECK_CLOSE (-ang2, angle2, 1e-4);
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId2, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -1708,7 +1710,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (ang1, angle1, 1e-4);
 			CHECK_CLOSE (-ang2, angle2, 1e-4);
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId2, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -1773,7 +1775,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (-ang2, angle2, 1e-4);
 
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId2, R);
 
 
@@ -1832,7 +1834,7 @@ public class TestJointUniversal
 			CHECK_CLOSE (-ang2, angle2, 1e-4);
 
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId1, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
@@ -1967,7 +1969,7 @@ public class TestJointUniversal
 			dJointSetUniversalAxis1Offset (jId, axis.get0(), axis.get1(), axis.get2(), ang1, 0);
 			CHECK_CLOSE (ang1, dJointGetUniversalAngle1 (jId), 1e-4);
 
-			dRSetIdentity(R); // Set the rotation of the body to be zero
+			R.setIdentity(); // Set the rotation of the body to be zero
 			dBodySetRotation (bId1, R);
 
 			CHECK_CLOSE (0, dJointGetUniversalAngle1 (jId), 1e-4);
