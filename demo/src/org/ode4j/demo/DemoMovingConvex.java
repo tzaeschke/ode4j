@@ -249,10 +249,11 @@ public class DemoMovingConvex extends dsFunctions {
 				triMesh.destroy();
 				new_tmdata.destroy();
 
-				DVector3C mc = m.getC();
+				DVector3 mc = new DVector3( m.getC() );
 				System.out.println( "mass at " + mc );
-				obj[i].geom[0].setPosition( mc.reScale(-1) );
-				m.translate( mc.reScale(-1) );
+				mc.scale( -1 );
+				obj[i].geom[0].setPosition( mc );
+				m.translate( mc );
 			}
 
 			for ( k=0; k < GPB; k++ )

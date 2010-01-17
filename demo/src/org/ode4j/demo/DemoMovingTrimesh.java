@@ -68,10 +68,6 @@ public class DemoMovingTrimesh extends dsFunctions {
 	private static class MyObject {
 		DBody body;			// the body
 		DGeom[] geom = new DGeom[GPB];		// geometries representing this body
-
-		// Trimesh only - double buffered matrices for 'last transform' setup
-		double[] matrix_dblbuff=new double[ 16 * 2 ];
-		int last_matrix_index;
 	};
 
 	private static int num=0;		// number of objects in simulation
@@ -103,16 +99,12 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 	private static void nearCallback (Object data, DGeom o1, DGeom o2)
 	{
-		int i;
-		// if (o1->body && o2->body) return;
-
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
 		if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding (b1,b2,DContactJoint.class)) return;
-		if (o1 instanceof DSphere || o2 instanceof DSphere) System.out.print("X");//TODO
 		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);   // up to MAX_CONTACTS contacts per box-box
-		for (i=0; i<MAX_CONTACTS; i++) {
+		for (int i=0; i<MAX_CONTACTS; i++) {
 			DContact contact = contacts.get(i);
 			contact.surface.mode = OdeConstants.dContactBounce | OdeConstants.dContactSoftCFM;
 			contact.surface.mu = OdeConstants.dInfinity;
@@ -126,7 +118,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 			DMatrix3 RI = new DMatrix3();
 			RI.setIdentity ();
 			DVector3 ss = new DVector3(0.02,0.02,0.02);
-			for (i=0; i<numc; i++) {
+			for (int i=0; i<numc; i++) {
 				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contacts.get(i));
 				c.attach (b1,b2);
 				if (show_contacts) dsDrawBox (contacts.get(i).geom.pos,RI,ss);
@@ -177,10 +169,8 @@ public class DemoMovingTrimesh extends dsFunctions {
 			if (num < NUM) {
 				i = num;
 				num++;
-				System.out.print('.');//TODO
 			}
 			else {
-				System.out.print(':');//TODO
 				i = nextobj;
 				nextobj++;
 				if (nextobj >= num) nextobj = 0;
@@ -191,7 +181,6 @@ public class DemoMovingTrimesh extends dsFunctions {
 					if (obj[i].geom[k]!=null) obj[i].geom[k].destroy ();
 				}
 				obj[i] = new MyObject();
-				System.out.print('x');//TODO
 			}
 
 			obj[i].body = OdeHelper.createBody (world);
@@ -388,25 +377,6 @@ public class DemoMovingTrimesh extends dsFunctions {
 	}
 
 
-	//	// set previous transformation matrix for trimesh
-	//	private void setCurrentTransform(DGeom geom)
-	//	{
-	//		DVector3C Pos = geom.getPosition();
-	//		DMatrix3C Rot = geom.getRotation();
-	//
-	//		DMatrix3 Transform = new DMatrix3//[16] = 
-	//		(
-	//				Rot[0], Rot[4], Rot[8],  0,
-	//				Rot[1], Rot[5], Rot[9],  0,
-	//				Rot[2], Rot[6], Rot[10], 0,
-	//				Pos[0], Pos[1], Pos[2],  1
-	//		);
-	//
-	//		dGeomTriMeshSetLastTransform( geom, *(dMatrix4*)(&Transform) );
-	//		((DTriMesh)geom).setLastTransform();
-	//	}
-
-
 	// simulation loop
 
 	@Override
@@ -415,25 +385,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 		dsSetColor (0,0,2);
 		space.collide (0,nearCallback);
 
-
-		//#if 1
-		// What is this for??? - Bram
-		//		if (!pause) 
-		//		{
-		//			for (int i=0; i<num; i++)
-		//				for (int j=0; j < GPB; j++)
-		//					if (obj[i].geom[j]!=null)
-		//						if (obj[i].geom[j] instanceof DTriMesh)
-		//							setCurrentTransform(obj[i].geom[j]);
-		//
-		//			setCurrentTransform(TriMesh1);
-		//			setCurrentTransform(TriMesh2);
-		//		}
-		//#endif
-
-		//if (!pause) dWorldStep (world,0.05);
-		//if (!pause) world.stepFast1 (0.05, 5);
-		if (!pause) world.quickStep (0.05);
+		if (!pause) world.step (0.05);
 
 		for (int j = 0; j < space.getNumGeoms(); j++) {
 			space.getGeom(j);
@@ -468,24 +420,6 @@ public class DemoMovingTrimesh extends dsFunctions {
 							int v2 = Indices[ii + 2] * 3;
 							dsDrawTriangle(Pos, Rot, Vertices, v0, v1, v2, true);
 						}
-
-						//						// tell the tri-tri collider the current transform of the trimesh --
-						//						// this is fairly important for good results.
-						//
-						//						// Fill in the (4x4) matrix.
-						//						DMatrix4 p_matrix = obj[i].matrix_dblbuff + ( obj[i].last_matrix_index * 16 );
-						//
-						//						p_matrix[ 0 ] = Rot[ 0 ];	p_matrix[ 1 ] = Rot[ 1 ];	p_matrix[ 2 ] = Rot[ 2 ];	p_matrix[ 3 ] = 0;
-						//						p_matrix[ 4 ] = Rot[ 4 ];	p_matrix[ 5 ] = Rot[ 5 ];	p_matrix[ 6 ] = Rot[ 6 ];	p_matrix[ 7 ] = 0;
-						//						p_matrix[ 8 ] = Rot[ 8 ];	p_matrix[ 9 ] = Rot[ 9 ];	p_matrix[10 ] = Rot[10 ];	p_matrix[11 ] = 0;
-						//						p_matrix[12 ] = Pos[ 0 ];	p_matrix[13 ] = Pos[ 1 ];	p_matrix[14 ] = Pos[ 2 ];	p_matrix[15 ] = 1;
-						//
-						//						// Flip to other matrix.
-						//						obj[i].last_matrix_index = !obj[i].last_matrix_index;
-						//
-						//						obj[i].geom[j].setLastTransform(  
-						//								(DMatrix4)( obj[i].matrix_dblbuff + obj[i].last_matrix_index * 16 ) );
-
 					} else {
 						drawGeom (obj[i].geom[j],null,null,show_aabb);
 					}
@@ -493,27 +427,32 @@ public class DemoMovingTrimesh extends dsFunctions {
 			}
 		}
 
-		{
-			DVector3C Pos = TriMesh1.getPosition();
-			DMatrix3C Rot = TriMesh1.getRotation();
+//		{
+//			DVector3C Pos = TriMesh1.getPosition();
+//			DMatrix3C Rot = TriMesh1.getRotation();
+//
+//			DVector3[] v = { new DVector3(), new DVector3(), new DVector3() };
+//			for (int i = 0; i < IndexCount/3; i++) {
+//				((DxGimpact)TriMesh1).FetchTransformedTriangle(i, v);
+//				dsDrawTriangle(Pos, Rot, v[0], v[1], v[2], false);
+//			}}
+		DVector3C Pos1 = TriMesh1.getPosition();
+		DMatrix3C Rot1 = TriMesh1.getRotation();
+		for (int i = 0; i < IndexCount; i+=3) {
+			int v0 = Indices[i + 0] * 3;
+			int v1 = Indices[i + 1] * 3;
+			int v2 = Indices[i + 2] * 3;
+			dsDrawTriangle(Pos1, Rot1, Vertices, v0, v1, v2, false);
+		}
 
-			for (int i = 0; i < IndexCount; i+=3) {
-				int v0 = Indices[i + 0] * 3;
-				int v1 = Indices[i + 1] * 3;
-				int v2 = Indices[i + 2] * 3;
-				dsDrawTriangle(Pos, Rot, Vertices, v0, v1, v2, false);
-			}}
-
-		{
-			DVector3C Pos = TriMesh2.getPosition();
-			DMatrix3C Rot = TriMesh2.getRotation();
-
-			for (int i = 0; i < IndexCount; i+=3) {
-				int v0 = Indices[i + 0] * 3;
-				int v1 = Indices[i + 1] * 3;
-				int v2 = Indices[i + 2] * 3;
-				dsDrawTriangle(Pos, Rot, Vertices, v0, v1, v2, true);
-			}}
+		DVector3C Pos2 = TriMesh2.getPosition();
+		DMatrix3C Rot2 = TriMesh2.getRotation();
+		for (int i = 0; i < IndexCount; i+=3) {
+			int v0 = Indices[i + 0] * 3;
+			int v1 = Indices[i + 1] * 3;
+			int v2 = Indices[i + 2] * 3;
+			dsDrawTriangle(Pos2, Rot2, Vertices, v0, v1, v2, true);
+		}
 	}
 
 
@@ -536,12 +475,8 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 		// note: can't share tridata if intending to trimesh-trimesh collide
 		TriData1 = OdeHelper.createTriMeshData();
-		//dGeomTriMeshDataBuildSingle(TriData1, &Vertices[0], 3 * sizeof(float), VertexCount, 
-		//(dTriIndex*)&Indices[0], IndexCount, 3 * sizeof(dTriIndex));
 		TriData1.build(Vertices, Indices);
 		TriData2 = OdeHelper.createTriMeshData();
-		//dGeomTriMeshDataBuildSingle(TriData2, &Vertices[0], 3 * sizeof(float), VertexCount, 
-		//(dTriIndex*)&Indices[0], IndexCount, 3 * sizeof(dTriIndex));
 		TriData2.build(Vertices, Indices);
 
 		TriMesh1 = OdeHelper.createTriMesh(space, TriData1, null, null, null);

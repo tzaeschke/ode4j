@@ -134,10 +134,6 @@ class DemoTrimesh extends dsFunctions {
 					dsDrawSphere(contact.geom.pos, Rotation, (0.01));
 
 					DVector3 End = new DVector3();
-					//					End[0] = contact.geom.pos[0] + (contact.geom.normal[0] * contact.geom.depth);
-					//					End[1] = contact.geom.pos[1] + (contact.geom.normal[1] * contact.geom.depth);
-					//					End[2] = contact.geom.pos[2] + (contact.geom.normal[2] * contact.geom.depth);
-					//					End[3] = contact.geom.pos[3] + (contact.geom.normal[3] * contact.geom.depth);
 					End.eqSum( contact.geom.pos, contact.geom.normal, contact.geom.depth );
 
 					dsDrawLine(contact.geom.pos, End);
@@ -167,7 +163,7 @@ class DemoTrimesh extends dsFunctions {
 		System.out.println ("   b for box.");
 		System.out.println ("   s for sphere.");
 		System.out.println ("   c for capsule.");
-		System.out.println ("   l for cylinder.");
+		System.out.println ("   y for cylinder.");
 		System.out.println ("   x for a composite object.");
 		System.out.println ("To select an object, press space.");
 		System.out.println ("To disable the selected object, press d.");
@@ -188,7 +184,7 @@ class DemoTrimesh extends dsFunctions {
 		DMass m = OdeHelper.createMass();
 
 		cmd = Character.toLowerCase (cmd);
-		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'l' ) {
+		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'y' ) {
 			if (num < NUM) {
 				i = num;
 				num++;
@@ -237,7 +233,7 @@ class DemoTrimesh extends dsFunctions {
 				m.setCapsule (DENSITY,3,sides[0],sides[1]);
 				obj[i].geom[0] = OdeHelper.createCapsule (space,sides[0],sides[1]);
 			}
-			else if (cmd == 'l') {
+			else if (cmd == 'y') {
 				sides[1] *= 0.5;
 				m.setCylinder(DENSITY,3,sides[0],sides[1]);
 				obj[i].geom[0] = OdeHelper.createCylinder (space,sides[0],sides[1]);
@@ -316,20 +312,15 @@ class DemoTrimesh extends dsFunctions {
 			selected++;
 			if (selected >= num) selected = 0;
 			if (selected < 0) selected = 0;
-		}
-		else if (cmd == 'd' && selected >= 0 && selected < num) {
+		} else if (cmd == 'd' && selected >= 0 && selected < num) {
 			obj[selected].body.disable ();
-		}
-		else if (cmd == 'e' && selected >= 0 && selected < num) {
+		} else if (cmd == 'e' && selected >= 0 && selected < num) {
 			obj[selected].body.enable ();
-		}
-		else if (cmd == 'a') {
+		} else if (cmd == 'a') {
 			show_aabb ^= true;
-		}
-		else if (cmd == 't') {
+		} else if (cmd == 't') {
 			show_contacts ^= true;
-		}
-		else if (cmd == 'r') {
+		} else if (cmd == 'r') {
 			random_pos ^= true;
 		}
 	}
@@ -361,9 +352,6 @@ class DemoTrimesh extends dsFunctions {
 			DVector3 actual_pos = new DVector3();
 			DMatrix3 actual_R = new DMatrix3();
 			dMULTIPLY0_331 (actual_pos,R,pos2);
-			//			actual_pos[0] += pos[0];
-			//			actual_pos[1] += pos[1];
-			//			actual_pos[2] += pos[2];
 			actual_pos.add( pos );
 			dMULTIPLY0_333 (actual_R,R,R2);
 			drawGeom (g2,actual_pos,actual_R,false);
@@ -416,7 +404,7 @@ class DemoTrimesh extends dsFunctions {
     }
   }*/
 
-		{
+		if (TriMesh!=null) {
 			DVector3C Pos = TriMesh.getPosition();
 			DMatrix3C Rot = TriMesh.getRotation();
 			for (int i = 0; i < IndexCount; i+=3){
@@ -427,17 +415,13 @@ class DemoTrimesh extends dsFunctions {
 			}
 		}
 
-		if (Ray!=null){
+		if (Ray!=null) {
 			DVector3C Origin = Ray.getPosition();
 			DVector3C Direction = Ray.getDirection();
 
 			double Length = Ray.getLength();
 
 			DVector3 End = new DVector3();
-			//			End[0] = Origin[0] + (Direction[0] * Length);
-			//			End[1] = Origin[1] + (Direction[1] * Length);
-			//			End[2] = Origin[2] + (Direction[2] * Length);
-			//			End[3] = Origin[3] + (Direction[3] * Length);
 			End.eqSum( Origin, Direction, Length );
 
 			dsDrawLine(Origin, End);
@@ -462,51 +446,21 @@ class DemoTrimesh extends dsFunctions {
 		//memset (obj,0,sizeof(obj));TZ TODO ?
 		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
 
-		//		Size[0] = 5.0f;
-		//		Size[1] = 5.0f;
-		//		Size[2] = 2.5f;
 		Size = new float[]{ 5.0f, 5.0f, 2.5f };
 
-		//		Vertices[0][0] = -Size[0];
-		//		Vertices[0][1] = -Size[1];
-		//		Vertices[0][2] = Size[2];
-		Vertices = new float[]{ -Size[0], -Size[1], Size[2],
-				Size[0], -Size[1], Size[2],
-				Size[0],  Size[1], Size[2],
+		Vertices = new float[]{ 
+				-Size[0], -Size[1], Size[2],
+				 Size[0], -Size[1], Size[2],
+				 Size[0],  Size[1], Size[2],
 				-Size[0],  Size[1], Size[2],
 				0f, 0f, 0f};
 
-		//		Vertices[1][0] = Size[0];
-		//		Vertices[1][1] = -Size[1];
-		//		Vertices[1][2] = Size[2];
-
-		//		Vertices[2][0] = Size[0];
-		//		Vertices[2][1] = Size[1];
-		//		Vertices[2][2] = Size[2];
-
-		//		Vertices[3][0] = -Size[0];
-		//		Vertices[3][1] = Size[1];
-		//		Vertices[3][2] = Size[2];
-
-		//		Vertices[4][0] = 0;
-		//		Vertices[4][1] = 0;
-		//		Vertices[4][2] = 0;
-
-		Indices[0] = 0;
-		Indices[1] = 1;
-		Indices[2] = 4;
-
-		Indices[3] = 1;
-		Indices[4] = 2;
-		Indices[5] = 4;
-
-		Indices[6] = 2;
-		Indices[7] = 3;
-		Indices[8] = 4;
-
-		Indices[9] = 3;
-		Indices[10] = 0;
-		Indices[11] = 4;
+		Indices = new int[] {
+				0, 1, 4,
+				1, 2, 4,
+				2, 3, 4,
+				3, 0, 4
+		};
 
 		DTriMeshData Data = OdeHelper.createTriMeshData();
 
@@ -518,24 +472,15 @@ class DemoTrimesh extends dsFunctions {
 
 		TriMesh = OdeHelper.createTriMesh(space, Data, null, null, null);
 
-		//dGeomSetPosition(TriMesh, 0, 0, 1.0);
+		//TriMesh.setPosition(0, 0, 1.0);
 
 		Ray = OdeHelper.createRay(space, 0.9);
 		DVector3 Origin, Direction;
-		//		Origin[0] = 0.0;
-		//		Origin[1] = 0;
-		//		Origin[2] = 0.5;
-		//		Origin[3] = 0;
 		Origin = new DVector3( 0, 0, 0.5 );
 
-		//		Direction[0] = 0;
-		//		Direction[1] = 1.1f;
-		//		Direction[2] = -1;
-		//		Direction[3] = 0;
 		Direction = new DVector3( 0, 1.1, -1 );
 		Direction.normalize();
 
-		//dGeomRaySet(Ray, Origin[0], Origin[1], Origin[2], Direction[0], Direction[1], Direction[2]);
 		Ray.set(Origin, Direction);
 
 		// run simulation

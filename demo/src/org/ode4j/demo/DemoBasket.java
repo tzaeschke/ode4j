@@ -142,9 +142,10 @@ public class DemoBasket extends dsFunctions {
 	{
 		float sx=0.0f, sy=3.40f, sz=7.05f;
 
-		//#if defined(_MSC_VER) && defined(dDOUBLE) //TODO !!!
-		sy -= 0.01; // Cheat, to make it score under win32/double
+		//#if defined(_MSC_VER) && defined(dDOUBLE) 
+		//sy -= 0.01; // Cheat, to make it score under win32/double
 		//#endif
+		sy += 0.046;  //For 'double' on Linux 64bit. //TODO !!! 
 
 		DQuaternion q = new DQuaternion();
 		q.setIdentity();
@@ -233,9 +234,6 @@ public class DemoBasket extends dsFunctions {
 		world.setQuickStepNumIterations (64);
 
 		// Create a static world using a triangle mesh that we can collide with.
-		int numv = world_vertices.length/3;//)/(3);//*sizeof(float)); //TODO TZ?
-		int numi = world_indices.length;//)/ sizeof(dTriIndex);
-		System.out.println("numv=" + numv + ", numi=" + numi);
 		DTriMeshData Data = OdeHelper.createTriMeshData();
 
 		//  fprintf(stderr,"Building Single Precision Mesh\n");

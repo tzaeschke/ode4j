@@ -22,9 +22,6 @@ public class CollisionTest {
 	//TEST(
 	@Test public void test_collision_trimesh_sphere_exact()
 	{
-		//TODO TZ disabled, because there is no TRIMESH!!
-		System.err.println("WARNING: Test disabled, because there is no TRIMESH: " +
-				"CollisionTest.test_collision_trimesh_sphere_exact()");
 //	    if (dTRIMESH_GIMPACT) {//#ifdef dTRIMESH_GIMPACT
 //	    /*
 //	     * Although GIMPACT is algorithmically able to handle this extreme case,
@@ -33,7 +30,7 @@ public class CollisionTest {
 //	    return;
 //	    }//#endif
 
-	    OdeHelper.initODE();
+	    OdeHelper.initODE2(0);
 
 	    try {
 	        final int VertexCount = 4;
@@ -69,7 +66,8 @@ public class CollisionTest {
 	        // check extreme case
 	        nc = dCollide(trimesh, sphere, 4, cg);//&cg[0], sizeof cg[0]);
 	        CHECK_EQUAL(1, nc);
-	        //TODO CHECK_EQUAL(0, cg.get(0).depth);
+	        //CHECK_EQUAL(0, cg.get(0).depth);
+	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
 	        
 	        // now translate both geoms
 	        dGeomSetPosition(trimesh, 10,30,40);
@@ -77,7 +75,8 @@ public class CollisionTest {
 	        // check extreme case, again
 	        nc = dCollide(trimesh, sphere, 4, cg);//&cg[0], sizeof cg[0]);
 	        CHECK_EQUAL(1, nc);
-	        CHECK_EQUAL(0, cg.get(0).depth);
+	        //CHECK_EQUAL(0, cg.get(0).depth);
+	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
 	        
 	        // and now, let's rotate the trimesh, 90 degrees on X
 	        DMatrix3 rot = new DMatrix3( 1, 0, 0, //0,
@@ -90,7 +89,8 @@ public class CollisionTest {
 	        // check extreme case, again
 	        nc = dCollide(trimesh, sphere, 4, cg);//&cg[0], sizeof cg[0]);
 	        CHECK_EQUAL(1, nc);
-	        CHECK_EQUAL(0, cg.get(0).depth);
+	        //CHECK_EQUAL(0, cg.get(0).depth);
+	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
 	    } finally {
 	    	OdeHelper.closeODE();
 	    }
