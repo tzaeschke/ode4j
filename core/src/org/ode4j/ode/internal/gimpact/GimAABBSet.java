@@ -40,7 +40,6 @@ import org.cpp4j.java.RefFloat;
 import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 
 import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;
-import org.ode4j.ode.internal.gimpact.GimRadixSort.GimRSortTokenComparator;
 
 /** 
  * Tools for find overlapping objects on a scenery. 
