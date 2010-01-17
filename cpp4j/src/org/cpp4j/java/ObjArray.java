@@ -170,4 +170,16 @@ public class ObjArray<T> {
 	public int dataSize() {
 		return _data.length;
 	}
+
+	public void memcpy(int destPos, int srcPos, int len) {
+		if (destPos > srcPos) {
+			for (int i = _ofs+len-1; i >= _ofs; i--) {
+				_data[destPos + i] = _data[srcPos + i];
+			}
+		} else if (destPos < srcPos) {
+			for (int i = _ofs; i < _ofs+len; i++) {
+				_data[destPos + i] = _data[srcPos + i];
+			}
+		}
+	}
 }

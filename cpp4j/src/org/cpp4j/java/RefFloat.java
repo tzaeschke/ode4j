@@ -3,6 +3,10 @@ package org.cpp4j.java;
 public final class RefFloat {
 	public float d;
 
+	public RefFloat() {
+		this.d = 0;
+	}
+	
 	public RefFloat(float d) {
 		this.d = d;
 	}

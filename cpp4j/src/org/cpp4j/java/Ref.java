@@ -1,16 +1,21 @@
 package org.cpp4j.java;
 
+
 final public class Ref<T> {
 	public T r;
 	public Ref() {
 		r = null;
 	}
 	
-	final public T get() {
+	public Ref(T obj) {
+		r = obj;
+	}
+
+	public final T get() {
 		return r;
 	}
 	
-	final public void set(T r) {
+	public final void set(T r) {
 		this.r = r;
 	}
 }

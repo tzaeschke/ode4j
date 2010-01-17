@@ -1,59 +1,59 @@
 package org.cpp4j.java;
 
 /**
- * Class to simulate pointer operations on integer arrays.
+ * Class to simulate pointer operations on float arrays.
  *
  * @author Tilmann Zaeschke
  */
-public class IntArray {
+public class FloatArray {
     
-    private final int[] _data;
+    private final float[] _data;
     private int _ofs;
     
     /**
      * @param size
      */
-    public IntArray(int size) {
-        _data = new int[size];
+    public FloatArray(int size) {
+        _data = new float[size];
         _ofs = 0;
     }
     
     /**
-     * Create a new DoubleArray referencing the given int array.
+     * Create a new FloatArray referencing the given float array.
      * @param array
      */
-    public IntArray(int[] array) {
+    public FloatArray(float[] array) {
         _data = array;
         _ofs = 0;
     }
     
     /**
-     * Create a new DoubleArray referencing the given int array.
+     * Create a new FloatArray referencing the given float array.
      * @param array
      * @param ofs 
      */
-    public IntArray(int[] array, int ofs) {
+    public FloatArray(float[] array, int ofs) {
         _data = array;
         _ofs = ofs;
     }
     
     /**
-     * Create a new DoubleArray referencing the same DoubleArray referenced by
+     * Create a new FloatArray referencing the same FloatArray referenced by
      * the argument.
      * @param array
      */
-    public IntArray(IntArray array) {
+    public FloatArray(FloatArray array) {
         _data = array._data;
         _ofs = array._ofs;
     }
     
     /**
-     * Create a new DoubleArray referencing the same DoubleArray referenced by
+     * Create a new FloatArray referencing the same FloatArray referenced by
      * the argument, starting at the given offset.
      * @param array
      * @param ofs 
      */
-    public IntArray(IntArray array, int ofs) {
+    public FloatArray(FloatArray array, int ofs) {
         _data = array._data;
         _ofs = array._ofs + ofs;
         if (_ofs >= _data.length) {
@@ -63,41 +63,41 @@ public class IntArray {
     }
     
     /**
-     * @return int value at position 0;
+     * @return float value at position 0;
      */
-    public int at0() {
+    public float at0() {
         return _data[_ofs];
     }
     
     /**
      * @param ofs 
-     * @return int value at position ofs;
+     * @return float value at position ofs;
      */
-    public int at(int ofs) {
+    public float at(int ofs) {
         return _data[_ofs + ofs];
     }
     
     /**
-     * Set int value at position 0;
+     * Set float value at position 0;
      * @param d 
      */
-    public void setAt0(int d) {
+    public void setAt0(float d) {
         _data[_ofs] = d;
     }
     
     /**
-     * Set int value at position ofs;
+     * Set float value at position ofs;
      * @param ofs 
      * @param d 
      */
-    public void setAt(int ofs, int d) {
+    public void setAt(int ofs, float d) {
         _data[_ofs + ofs] = d;
     }
     
     /**
      * @param data
      */
-    public void setData(int[] data) {
+    public void setData(float[] data) {
         if (data.length + _ofs >= _data.length) {
             throw new IndexOutOfBoundsException(data.length + " + " + 
                     _ofs + " = " + (data.length + _ofs) + " >= " + _data.length);
@@ -108,8 +108,8 @@ public class IntArray {
     /**
      * @param array
      */
-    public void setData(IntArray array) {
-        int[] data = array._data;
+    public void setData(FloatArray array) {
+    	float[] data = array._data;
         int ofs = array._ofs;
         if (data.length + _ofs + ofs >= _data.length) {
             throw new IndexOutOfBoundsException(data.length + " + " + ofs +
@@ -120,10 +120,10 @@ public class IntArray {
     }
     
     /**
-     * @return cloned int[].
+     * @return cloned float[].
      */
-    public int[] cloneData() {
-        int[] ret = new int[_data.length - _ofs];
+    public float[] cloneData() {
+    	float[] ret = new float[_data.length - _ofs];
         System.arraycopy(_data, _ofs, ret, 0, _data.length - _ofs);
         return ret;
     }
@@ -131,10 +131,10 @@ public class IntArray {
     /**
      * @param ofs
      * @param len
-     * @return cloned int[]
+     * @return cloned float[]
      */
-    public int[] cloneData(int ofs, int len) {
-        int[] ret = new int[len];
+    public float[] cloneData(int ofs, int len) {
+    	float[] ret = new float[len];
         System.arraycopy(_data, _ofs + ofs, ret, 0, len);
         return ret;
     }
@@ -167,14 +167,6 @@ public class IntArray {
      */
     public void inc(int n) {
         _ofs += n;
-    }
-    
-    /**
-     * 
-     * @return The current offset over the referenced array.
-     */
-    public int getOfs() {
-    	return _ofs;
     }
 
 	public int size() {
