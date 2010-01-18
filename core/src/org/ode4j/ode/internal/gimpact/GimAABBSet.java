@@ -39,6 +39,7 @@ import org.cpp4j.java.RefFloat;
 
 import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 
+import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;
 
 /** 
@@ -83,7 +84,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	//	    char m_shared;//!< if m_shared == 0 then the memory is allocated and the set must be destroyed, else the pointers are shared and the set should't be destroyed
 	int m_count;
 	aabb3f m_global_bound = new aabb3f();//!< Global calculated bound of all boxes
-	aabb3f[] m_boxes = new aabb3f[0];  //TZ Why init
+	private final aabb3f[] m_boxes;// = new aabb3f[0];  //TZ Why init
 	long[] m_maxcoords;//!<Upper corners of the boxes, in integer representation
 	GIM_RSORT_TOKEN[] m_sorted_mincoords;//!< sorted min coords (lower corners), with their coord value as the m_key and m_value as the box index
 	char m_shared;//!< if m_shared == 0 then the memory is allocated and the set must be destroyed, else the pointers are shared and the set should't be destroyed
@@ -250,19 +251,20 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		return (uint_key<<16) + _z;
 	}
 
-	private GimAABBSet() {
+	private GimAABBSet(int count) {
 		//private!!
+		m_boxes = new aabb3f[count];
 	}
 
 	/** Allocate memory for all aabb set. */
 	//	void gim_aabbset_alloc(GIM_AABB_SET aabbset, GUINT32 count)
 	static GimAABBSet gim_aabbset_alloc(int count)
 	{
-		GimAABBSet x = new GimAABBSet();
+		GimAABBSet x = new GimAABBSet(count);
 
 		//GimAABBSet aabbset = new GimAABBSet(); //TZ 
 		x.m_count = count;
-		x.m_boxes = new aabb3f[count];//(aabb3f *)gim_alloc(sizeof(aabb3f)*count);
+		//x.m_boxes = new aabb3f[count];//(aabb3f *)gim_alloc(sizeof(aabb3f)*count);
 		for (int i = 0; i < count; i++) x.m_boxes[i] = new aabb3f(); //TZ
 
 		if(count<GIM_MIN_SORTED_BIPARTITE_PRUNING_BOXES)
@@ -293,7 +295,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		//	        gim_free(m_maxcoords,0);
 		//	        gim_free(m_sorted_mincoords,0);
 		//	    }
-		m_boxes = null;
+		//m_boxes = null;
 		m_sorted_mincoords = null;
 		m_maxcoords = null;
 	}
@@ -392,7 +394,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 			
 		}
 		
-		Arrays.sort(sorted_tokens, COMPARATOT_TZ); //TODO TZ remove
+		//Arrays.sort(sorted_tokens, COMPARATOT_TZ); //TODO TZ remove
 
 		if(calc_global_bound) gim_aabbset_calc_global_bound();
 		System.out.println("After-Sort: "+ m_sorted_mincoords.length);
@@ -415,7 +417,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 		@Override
 		public int compare(GIM_RSORT_TOKEN o1, GIM_RSORT_TOKEN o2) {
-			return (int) (o1.m_key - o2.m_key);
+			return (int) -(o1.m_key - o2.m_key);
 		}
 	};
 	
@@ -797,5 +799,10 @@ public class GimAABBSet { //Formerly GimBoxPruning
 				collided.GIM_DYNARRAY_PUSH_ITEM(i);//GUINT32,(collided),i);
 			}
 		}
+	}
+
+
+	public aabb3f at(int i) {
+		return m_boxes[i];
 	}
 }

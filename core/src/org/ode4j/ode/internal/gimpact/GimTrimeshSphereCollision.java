@@ -45,7 +45,7 @@ public class GimTrimeshSphereCollision {
 //								GIM_TRIANGLE_DATA *tri,
 //								vec3f center, GREAL radius,
 //								GIM_TRIANGLE_CONTACT_DATA * contact_data)
-	static int gim_triangle_sphere_collision(
+	static boolean gim_triangle_sphere_collision(
 			GIM_TRIANGLE_DATA tri,
 			vec3f center, float radius,
 			GIM_TRIANGLE_CONTACT_DATA contact_data)
@@ -54,15 +54,15 @@ public class GimTrimeshSphereCollision {
 
 	    //Find Face plane distance
 	    float  dis = DISTANCE_PLANE_POINT(tri.m_planes.m_planes[0],center);
-	    if(dis>radius) return 0; //out
-	    if(dis<-radius) return 0;//Out of triangle
+	    if(dis>radius) return false; //out
+	    if(dis<-radius) return false;//Out of triangle
 	    contact_data.m_penetration_depth = dis;
 
 	    //Find the most edge
 	    int most_edge = 4;//no edge
 	    float max_dis = 0.0f;
 	    dis = DISTANCE_PLANE_POINT(tri.m_planes.m_planes[1],center);
-	    if(dis>radius) return 0;//Out of triangle
+	    if(dis>radius) return false;//Out of triangle
 	    if(dis>0.0f)
 	    {
 	        max_dis = dis;
@@ -70,7 +70,7 @@ public class GimTrimeshSphereCollision {
 	    }
 
 	    dis = DISTANCE_PLANE_POINT(tri.m_planes.m_planes[2],center);
-	    if(dis>radius) return 0;//Out of triangle
+	    if(dis>radius) return false;//Out of triangle
 	    if(dis>max_dis)// && dis>0.0f)
 	    {
 	        max_dis = dis;
@@ -78,7 +78,7 @@ public class GimTrimeshSphereCollision {
 	    }
 
 	    dis = DISTANCE_PLANE_POINT(tri.m_planes.m_planes[3],center);
-	    if(dis>radius) return 0;//Out of triangle
+	    if(dis>radius) return false;//Out of triangle
 	    if(dis>max_dis)// && dis>0.0f)
 	    {
 	        max_dis = dis;
@@ -105,7 +105,7 @@ public class GimTrimeshSphereCollision {
 	        //Scale normal for pointing to triangle
 	        VEC_SCALE(contact_data.m_separating_normal,-1.0f,contact_data.m_separating_normal);
 	        contact_data.m_point_count = 1;
-	        return 1;
+	        return true;
 	    }
 	    //find the edge
 	    vec3f e1 = new vec3f(), e2 = new vec3f();
@@ -116,7 +116,7 @@ public class GimTrimeshSphereCollision {
 	    //find distance
 	    VEC_DIFF(e1,center,contact_data.m_points[0]);
 	    dis = VEC_LENGTH(e1);
-	    if(dis>radius) return 0;
+	    if(dis>radius) return false;
 
 	    contact_data.m_penetration_depth = radius - dis;
 
@@ -137,24 +137,25 @@ public class GimTrimeshSphereCollision {
 	    VEC_SCALE(contact_data.m_separating_normal,-1.0f,contact_data.m_separating_normal);
 
 	    contact_data.m_point_count = 1;
-	    return 1;
+	    return true;
 
 	}
 
-	//! Trimesh Sphere Collisions
-	/*!
-	In each contact
-	<ul>
-	<li> m_handle1 points to trimesh.
-	<li> m_handle2 points to NULL.
-	<li> m_feature1 Is a triangle index of trimesh.
-	</ul>
-
-	\param trimesh
-	\param center
-	\param radius
-	\param contacts A GIM_CONTACT array. Must be initialized
-	*/
+	/**
+	 * Trimesh Sphere Collisions.
+	 * 
+	 * In each contact:
+	 * <ul>
+	 * <li> m_handle1 points to trimesh.
+	 * <li> m_handle2 points to NULL.
+	 * <li> m_feature1 Is a triangle index of trimesh.
+	 * </ul>
+	 * 
+	 * @param trimesh
+	 * @param center
+	 * @param radius
+	 * @param contacts A GIM_CONTACT array. Must be initialized
+	 */
 //	void gim_trimesh_sphere_collision(GIM_TRIMESH * trimesh,vec3f center,GREAL radius, GDYNAMIC_ARRAY * contacts)
 //	{
 	static void gim_trimesh_sphere_collision(final GimTrimesh trimesh, final vec3f center,
@@ -185,7 +186,7 @@ public class GimTrimeshSphereCollision {
 		 //dummy contacts
 	    GimDynArray<GimContact> dummycontacts = GimContact.GIM_CREATE_CONTACT_LIST();
 
-		int cresult;
+		boolean cresult;
 		int i;
 		int[] boxesresult = collision_result.GIM_DYNARRAY_POINTER();
 		GIM_TRIANGLE_CONTACT_DATA tri_contact_data = new GIM_TRIANGLE_CONTACT_DATA();
@@ -195,7 +196,7 @@ public class GimTrimeshSphereCollision {
 		{
 			trimesh.gim_trimesh_get_triangle_data(boxesresult[i],tri_data);
 			cresult = gim_triangle_sphere_collision(tri_data,center,radius,tri_contact_data);
-			if(cresult!=0)
+			if(cresult!=false)
 			{
 				GimContact.GIM_PUSH_CONTACT(dummycontacts,tri_contact_data.m_points[0],
 						tri_contact_data.m_separating_normal,
@@ -213,6 +214,4 @@ public class GimTrimeshSphereCollision {
 	    //Destroy dummy
 	    dummycontacts.GIM_DYNARRAY_DESTROY();
 	}
-
-
 }

@@ -37,20 +37,16 @@ import org.cpp4j.java.RefInt;
 
 /**
  * @author Francisco Le�n N�jera
-*/
+ * Ported to Java by Tilmann Zaeschke
+ */
 public class GimTriCollision extends GimGeometry {
-
-	/*! \addtogroup GEOMETRIC_OPERATIONS
-	*/
-	//! @{
-
 
 	static final int MAX_TRI_CLIPPING = 8;
 
-	//! Clips a polygon by a plane
+	/** Clips a polygon by a plane. */
 	//#define PLANE_CLIP_POLYGON(plane,polygon_points,polygon_point_count,clipped,clipped_count,max_clipped) \
-	static int PLANE_CLIP_POLYGON(vec4f plane, vec3f[] polygon_points, 
-			final int polygon_point_count, vec3f[] clipped, final int max_clipped) 
+	static int PLANE_CLIP_POLYGON(final vec4f plane, final vec3f[] polygon_points, 
+			final int polygon_point_count, final vec3f[] clipped, final int max_clipped) 
 	{ 
 	    int clipped_count = 0; 
 	    int  _vi, _prevclassif=32000; 
@@ -117,7 +113,7 @@ public class GimTriCollision extends GimGeometry {
 	};
 	//typedef struct _GIM_TRIANGLE_DATA GIM_TRIANGLE_DATA;
 
-	//! tri_data is a GIM_TRIANGLE_DATA
+	/** tri_data is a GIM_TRIANGLE_DATA. */
 	//#define GIM_CALC_TRIANGLE_DATA_PLANES(tri_data)\
 	void GIM_CALC_TRIANGLE_DATA_PLANES(GIM_TRIANGLE_DATA tri_data)
 	{
@@ -127,8 +123,8 @@ public class GimTriCollision extends GimGeometry {
 	        EDGE_PLANE((tri_data).m_vertices[2],(tri_data).m_vertices[0],((tri_data).m_planes.m_planes[0]), ((tri_data).m_planes.m_planes[3]));
 	}
 
-	//Structure for collision
-
+	
+	/** Structure for collision. */
 	static class GIM_TRIANGLE_CONTACT_DATA
 	{
 //	    GREAL m_penetration_depth;
@@ -145,6 +141,7 @@ public class GimTriCollision extends GimGeometry {
 	};
 	//typedef struct _GIM_TRIANGLE_CONTACT_DATA GIM_TRIANGLE_CONTACT_DATA;
 
+	/** Structure for collision. */
 	public static class GIM_TRIANGLE_RAY_CONTACT_DATA
 	{
 //	    GREAL u;
@@ -179,11 +176,11 @@ public class GimTriCollision extends GimGeometry {
 //			GIM_TRIANGLE_DATA tri2);
 
 
-	//! Finds the contact points from a collision of two triangles
-	/*!
-	Returns the contact points, the penetration depth and the separating normal of the collision
-	between two triangles. The normal is pointing toward triangle 1 from triangle 2
-	*/
+	/**
+	 * Finds the contact points from a collision of two triangles.
+	 * Returns the contact points, the penetration depth and the separating normal of the collision
+	 * between two triangles. The normal is pointing toward triangle 1 from triangle 2.
+	 */
 	boolean gim_triangle_triangle_collision(
 								GIM_TRIANGLE_DATA tri1,
 								GIM_TRIANGLE_DATA tri2,
@@ -194,8 +191,10 @@ public class GimTriCollision extends GimGeometry {
 	//Ray triangle
 
 
-	/*!
-		Solve the System for u,v parameters:
+	/**
+	 * Ray triagle.
+	 * 
+	 * Solve the System for u,v parameters:
 
 		u*axe1[i1] + v*axe2[i1] = vecproj[i1]
 		u*axe1[i2] + v*axe2[i2] = vecproj[i2]
@@ -221,8 +220,9 @@ public class GimTriCollision extends GimGeometry {
 
 		*/
 	//#define TRIANGLE_GET_UVPARAMETERS(point,vec1,vec2,vec3,tri_plane,u,v,outside)\
-	static void TRIANGLE_GET_UVPARAMETERS(vec3f point, vec3f vec1, vec3f vec2, vec3f vec3, vec4f tri_plane, 
-			RefFloat u, RefFloat v, RefBoolean outside)
+	static void TRIANGLE_GET_UVPARAMETERS(final vec3f point, final vec3f vec1, 
+			final vec3f vec2, final vec3f vec3, final vec4f tri_plane, 
+			final RefFloat u, final RefFloat v, final RefBoolean outside)
 	{
 		vec3f _axe1 = new vec3f(), _axe2 = new vec3f(), _vecproj = new vec3f();
 		VEC_DIFF(_axe1,vec2,vec1);
@@ -267,7 +267,7 @@ public class GimTriCollision extends GimGeometry {
 		}
 	}
 
-	//! Finds the collision of a ray and a triangle.
+	/** Finds the collision of a ray and a triangle. */
 	//#define RAY_TRIANGLE_INTERSECTION(vOrigin,vDir,vec1,vec2,vec3,tri_plane,pout,u,v,tparam,tmax,does_intersect)\
 	static void RAY_TRIANGLE_INTERSECTION(vec3f vOrigin, vec3f vDir, vec3f vec1, vec3f vec2, vec3f vec3,
 			vec4f tri_plane, vec3f pout, RefFloat u, RefFloat v, RefFloat tparam, final float tmax, RefBoolean does_intersect)
@@ -288,9 +288,6 @@ public class GimTriCollision extends GimGeometry {
 	}
 
 
-	//! @}
-	
-	
 
 	//#define FABS(x) (float(fabs(x)))        /* implement as is fastest on your machine */
 	private static float FABS(float x) { return Math.abs(x); }        /* implement as is fastest on your machine */
@@ -335,7 +332,7 @@ public class GimTriCollision extends GimGeometry {
         }
 }
 
-	/* this edge to edge test is based on Franlin Antonio's gem:
+	/** this edge to edge test is based on Franlin Antonio's gem:
 	   "Faster Line Segment Intersection", in Graphics Gems III,
 	   pp. 199-202 */
 	//#define EDGE_EDGE_TEST(V0,U0,U1)                      \
@@ -410,7 +407,7 @@ public class GimTriCollision extends GimGeometry {
 	int coplanar_tri_tri(GIM_TRIANGLE_DATA tri1,
             GIM_TRIANGLE_DATA tri2)
 	{
-	   RefInt i0 = new RefInt(), i1 = new RefInt();
+	   final RefInt i0 = new RefInt(), i1 = new RefInt();
 	   /* first project onto an axis-aligned plane, that maximizes the area */
 	   /* of the triangles, compute indices: i0,i1. */
 	   PLANE_MINOR_AXES(tri1.m_planes.m_planes[0], i0, i1);
@@ -466,7 +463,7 @@ public class GimTriCollision extends GimGeometry {
 
 
 
-	//! Fast Triangle Triangle overlapping test
+	/** Fast Triangle Triangle overlapping test. */
 //	int gim_triangle_triangle_overlap(
 //								GIM_TRIANGLE_DATA *tri1,
 //								GIM_TRIANGLE_DATA *tri2)
@@ -589,6 +586,4 @@ public class GimTriCollision extends GimGeometry {
 	    if(isect1[1]<isect2[0] || isect2[1]<isect1[0]) return 0;
 	    return 1;
 	}
-
-
 }

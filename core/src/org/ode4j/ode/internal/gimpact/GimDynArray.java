@@ -77,8 +77,13 @@ public class GimDynArray<T> {//extends GimBufferArray<T> {
 	    return a;
 	} 
 
-	//! Creates a dynamic array with n = size elements
+	/**
+	 * Creates a dynamic array with n = size elements.
+	 * @deprecated TZ because it won't initialize the array with elements,
+	 * but still sets the 'size' to n.  
+	 */
 	//#define GIM_DYNARRAY_CREATE_SIZED(type, array_data, size) \
+	
 	static <T> GimDynArray<T> GIM_DYNARRAY_CREATE_SIZED(int size) 
 	{ 
 		GimDynArray<T> a = new GimDynArray<T>();

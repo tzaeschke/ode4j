@@ -778,7 +778,7 @@ public class GimTrimesh implements GimConstants {
 	    IntArray triangle_indices = m_tri_index_buffer.GIM_BUFFER_ARRAY_POINTER(0);
 	    assert(triangle_indices!=null);
 	    // box set
-	    aabb3f[] paabb = m_aabbset.m_boxes;
+	    //aabb3f[] paabb = m_aabbset.m_boxes;
 	    int triangle_count = gim_trimesh_get_triangle_count();
 	    //float[] v1,v2,v3;
 	    vec3f v1,v2,v3;
@@ -789,7 +789,7 @@ public class GimTrimesh implements GimConstants {
 //	        v2 = transformed_vertices.at(triangle_indices.at(1));//[0];
 //	        v3 = transformed_vertices.at(triangle_indices.at(2));//[0];
 //	        COMPUTEAABB_FOR_TRIANGLE((paabb[i]),v1,v2,v3);
-	        COMPUTEAABB_FOR_TRIANGLE(paabb[i],	        
+	        COMPUTEAABB_FOR_TRIANGLE(m_aabbset.at(i),//paabb[i],	        
 	        		transformed_vertices.at( triangle_indices.at(0) ),
 	        		transformed_vertices.at( triangle_indices.at(1) ),
 	        		transformed_vertices.at( triangle_indices.at(2) ));
@@ -866,6 +866,7 @@ public class GimTrimesh implements GimConstants {
 	    ObjArray<GIM_TRIPLANES_CACHE> planes = m_planes_cache_buffer.GIM_DYNARRAY_POINTER_V();
 	    planes.inc(triangle_index);
 	    if (planes.at0()==null) planes.setAt0(new GIM_TRIPLANES_CACHE());
+    	GIM_TRIPLANES_CACHE plane = planes.at0();
 
 	    //verify planes cache
 	    boolean bit_eval;
@@ -873,25 +874,25 @@ public class GimTrimesh implements GimConstants {
 	    if(bit_eval == false)// Needs to calc the planes
 	    {
 	        //Calc the face plane
-	        TRIANGLE_PLANE(tri_data.m_vertices[0],tri_data.m_vertices[1],tri_data.m_vertices[2],planes.at0().m_planes[0]);
+	        TRIANGLE_PLANE(tri_data.m_vertices[0], tri_data.m_vertices[1], tri_data.m_vertices[2], plane.m_planes[0]);
 	        //Calc the edge 1
-	        EDGE_PLANE(tri_data.m_vertices[0],tri_data.m_vertices[1],(planes.at0().m_planes[0]),(planes.at0().m_planes[1]));
+	        EDGE_PLANE(tri_data.m_vertices[0], tri_data.m_vertices[1], plane.m_planes[0], plane.m_planes[1] );
 
 	        //Calc the edge 2
-	        EDGE_PLANE(tri_data.m_vertices[1],tri_data.m_vertices[2],(planes.at0().m_planes[0]),(planes.at0().m_planes[2]));
+	        EDGE_PLANE(tri_data.m_vertices[1], tri_data.m_vertices[2], plane.m_planes[0], plane.m_planes[2] );
 
 	        //Calc the edge 3
-	        EDGE_PLANE(tri_data.m_vertices[2],tri_data.m_vertices[0],(planes.at0().m_planes[0]), (planes.at0().m_planes[3]));
+	        EDGE_PLANE(tri_data.m_vertices[2], tri_data.m_vertices[0], plane.m_planes[0], plane.m_planes[3] );
 
 	        //mark
 	        m_planes_cache_bitset.GIM_BITSET_SET(triangle_index);
 	    }
 
 
-	    VEC_COPY_4((tri_data.m_planes.m_planes[0]),(planes.at0().m_planes[0]));//face plane
-	    VEC_COPY_4((tri_data.m_planes.m_planes[1]),(planes.at0().m_planes[1]));//edge1
-	    VEC_COPY_4((tri_data.m_planes.m_planes[2]),(planes.at0().m_planes[2]));//edge2
-	    VEC_COPY_4((tri_data.m_planes.m_planes[3]),(planes.at0().m_planes[3]));//edge3
+	    VEC_COPY_4( tri_data.m_planes.m_planes[0], plane.m_planes[0] );//face plane
+	    VEC_COPY_4( tri_data.m_planes.m_planes[1], plane.m_planes[1] );//edge1
+	    VEC_COPY_4( tri_data.m_planes.m_planes[2], plane.m_planes[2] );//edge2
+	    VEC_COPY_4( tri_data.m_planes.m_planes[3], plane.m_planes[3] );//edge3
 	}
 
 	//! Fetch triangle vertices

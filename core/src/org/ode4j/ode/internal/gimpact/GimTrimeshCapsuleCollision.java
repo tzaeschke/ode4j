@@ -42,11 +42,7 @@ import org.ode4j.ode.internal.gimpact.GimTriCollision.GIM_TRIANGLE_DATA;
 */
 public class GimTrimeshCapsuleCollision {
 
-	/*! \addtogroup GEOMETRIC_OPERATIONS
-	*/
-	//! @{
-
-	//! Capsule struct
+	/** Capsule struct. */
 	public static class GIM_CAPSULE_DATA
 	{
 	    public float m_radius;
@@ -99,15 +95,14 @@ public class GimTrimeshCapsuleCollision {
 //	#endif // GIM_TRI_CAPSULE_COLLISION_H_INCLUDED
 
 	
-	//! Utility function for find the closest point between a segment and a triangle
-	/*!
-
-	\param triangle
-	\param s1
-	\param s2
-	\param contacts Contains the closest points on the segment (1,2), and the normal points to segment, and m_depth contains the distance
-
-	\post The contacts array is not set to 0. It adds additional contacts
+	/**
+	 * Utility function for find the closest point between a segment and a triangle.
+	 * @param triangle
+	 * @param s1
+	 * @param s2
+	 * @param contacts Contains the closest points on the segment (1,2), and the
+	 * normal points to segment, and m_depth contains the distance
+	 * @post The contacts array is not set to 0. It adds additional contacts
 	*/
 	//void gim_closest_point_triangle_segment(GIM_TRIANGLE_DATA * triangle, vec3f s1,vec3f s2, GDYNAMIC_ARRAY * contacts)
 	static void gim_closest_point_triangle_segment(GIM_TRIANGLE_DATA triangle, vec3f s1,vec3f s2, 
@@ -242,15 +237,14 @@ public class GimTrimeshCapsuleCollision {
 	}
 
 
-	//! Utility function for find the closest point between a capsule and a triangle
-	/*!
-
-	\param triangle
-	\param capsule
-	\param contacts Contains the closest points on the capsule, and the normal points to triangle
-	\return 1 if the triangle collides the capsule
-	\post The contacts array is not set to 0. It adds aditional contacts
-	*/
+	/**
+	 * Utility function for find the closest point between a capsule and a triangle
+	 * @param triangle
+	 * @param capsule
+	 * @param contacts Contains the closest points on the capsule, and the normal points to triangle
+	 * @return 1 if the triangle collides the capsule
+	 * @post The contacts array is not set to 0. It adds aditional contacts
+	 */
 	//int gim_triangle_capsule_collision(GIM_TRIANGLE_DATA * triangle, GIM_CAPSULE_DATA * capsule, 
 	//GDYNAMIC_ARRAY * contacts)
 	static int gim_triangle_capsule_collision(GIM_TRIANGLE_DATA triangle, GIM_CAPSULE_DATA capsule, 
@@ -293,14 +287,14 @@ public class GimTrimeshCapsuleCollision {
 	}
 
 
-	//! Trimesh Capsule collision
-	/*!
-	Find the closest primitive collided by the ray
-	\param trimesh
-	\param capsule
-	\param contact
-	\param contacts A GIM_CONTACT array. Must be initialized
-	*/
+	/**
+	 * Trimesh Capsule collision.
+	 * Find the closest primitive collided by the ray.
+	 * @param trimesh
+	 * @param capsule
+	 * @param contact
+	 * @param contacts A GIM_CONTACT array. Must be initialized
+	 */
 	static void gim_trimesh_capsule_collision(GimTrimesh trimesh, GIM_CAPSULE_DATA capsule, GimDynArray<GimContact> contacts)
 	{
 	    contacts.m_size = 0;

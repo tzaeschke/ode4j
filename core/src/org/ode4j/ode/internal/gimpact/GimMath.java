@@ -33,10 +33,7 @@ package org.ode4j.ode.internal.gimpact;
 
 import java.util.Random;
 
-import org.cpp4j.java.RefFloat;
-
 /**
- * @file gim_math.h
  * @author Francisco Le�n
 */
 public class GimMath {
@@ -99,29 +96,29 @@ public class GimMath {
 	*/
 	//! @{
 	//#define G_DEGTORAD(X) ((X)*3.1415926f/180.0f)
-	private static final float G_DEGTORAD(float X) { return ((X)*3.1415926f/180.0f); }
-	//#define G_RADTODEG(X) ((X)*180.0f/3.1415926f)
-	private static final float  G_RADTODEG(float X) { return ((X)*180.0f/3.1415926f); };
-
-	//! Integer representation of a floating-point value.
-	//#define IR(x)					((GUINT32&)(x))
-	/** @deprecated */
-	private static int IR(float x) {return Float.floatToRawIntBits(x);}
-
-	//! Signed integer representation of a floating-point value.
-	//#define SIR(x)					((GINT32&)(x))
-	/** @deprecated */
-	private int SIR(float x) {return Float.floatToIntBits(x);}
-
-	//! Absolute integer representation of a floating-point value
-	//#define AIR(x)					(IR(x)&0x7fffffff)
-	/** @deprecated */
-	private int AIR(float x) {return Float.floatToRawIntBits(x);}
-
-	//! Floating-point representation of an integer value.
-	//#define FR(x)					((float&)(x))
-	/** @deprecated */
-	private float FR(int x) {return Float.intBitsToFloat(x);}
+//	private static final float G_DEGTORAD(float X) { return ((X)*3.1415926f/180.0f); }
+//	//#define G_RADTODEG(X) ((X)*180.0f/3.1415926f)
+//	private static final float  G_RADTODEG(float X) { return ((X)*180.0f/3.1415926f); };
+//
+//	//! Integer representation of a floating-point value.
+//	//#define IR(x)					((GUINT32&)(x))
+//	/** @deprecated */
+//	private static int IR(float x) {return Float.floatToRawIntBits(x);}
+//
+//	//! Signed integer representation of a floating-point value.
+//	//#define SIR(x)					((GINT32&)(x))
+//	/** @deprecated */
+//	private int SIR(float x) {return Float.floatToIntBits(x);}
+//
+//	//! Absolute integer representation of a floating-point value
+//	//#define AIR(x)					(IR(x)&0x7fffffff)
+//	/** @deprecated */
+//	private int AIR(float x) {return Float.floatToRawIntBits(x);}
+//
+//	//! Floating-point representation of an integer value.
+//	//#define FR(x)					((float&)(x))
+//	/** @deprecated */
+//	private float FR(int x) {return Float.intBitsToFloat(x);}
 
 	//#define MAX(a,b) ((a)<(b)?(b):(a))
 	protected static float MAX(float a, float b) { return a<b?b:a ; }
@@ -136,11 +133,11 @@ public class GimMath {
 	//#define IS_ZERO(value) ((value) < G_EPSILON &&  (value) > -G_EPSILON)
 	protected static boolean IS_ZERO(float a) { return a < G_EPSILON && a > -G_EPSILON; }
 
-	//#define IS_NEGATIVE(value) ((value) <= -G_EPSILON)
-	private boolean IS_NEGATIVE(float a) { return a <= -G_EPSILON; }
-
-	//#define IS_POSISITVE(value) ((value) >= G_EPSILON)
-	private boolean IS_POSITIVE(float a) { return a >= G_EPSILON; }
+//	//#define IS_NEGATIVE(value) ((value) <= -G_EPSILON)
+//	private boolean IS_NEGATIVE(float a) { return a <= -G_EPSILON; }
+//
+//	//#define IS_POSISITVE(value) ((value) >= G_EPSILON)
+//	private boolean IS_POSITIVE(float a) { return a >= G_EPSILON; }
 
 	///returns a clamped number
 	//#define CLAMP(number,minval,maxval) ((number)<(minval)?(minval):((number)>(maxval)?(maxval):(number)))
@@ -154,14 +151,14 @@ public class GimMath {
 //	    (b) = (a)-(b); \
 //	    (a) = (a)-(b); \
 //	}\
-	private static final void SWAP_NUMBERS(RefFloat a, RefFloat b){ 
-		a.d = a.d+b.d; 
-		b.d = a.d-b.d; 
-		a.d = a.d-b.d; 
-	}
+//	private static final void SWAP_NUMBERS(final RefFloat a, final RefFloat b){ 
+//		a.d = a.d+b.d; 
+//		b.d = a.d-b.d; 
+//		a.d = a.d-b.d; 
+//	}
 
 	//#define GIM_INV_SQRT(va,isva)\
-	protected static final float GIM_INV_SQRT(float va)
+	protected static final float GIM_INV_SQRT(final float va)
 	{
 		float isva;
 	    if((va)<=0.0000001f)
@@ -181,7 +178,7 @@ public class GimMath {
 	}
 
 	//#define GIM_SQRT(va,sva)\
-	protected static final float GIM_SQRT(float va)
+	protected static final float GIM_SQRT(final float va)
 	{
 //	    GIM_INV_SQRT(va,sva);
 //	    (sva) = 1.0f/(sva);
@@ -191,7 +188,7 @@ public class GimMath {
 
 
 	//! Computes 1.0f / sqrtf(x). Comes from Quake3. See http://www.magic-software.com/3DGEDInvSqrt.html
-	static float gim_inv_sqrt(float f)
+	static float gim_inv_sqrt(final float f)
 	{
 	    return GIM_INV_SQRT(f);
 	}
@@ -200,7 +197,7 @@ public class GimMath {
 	/*!
 	\sa gim_inv_sqrt
 	*/
-	static float gim_sqrt(float f)
+	static float gim_sqrt(final float f)
 	{
 	    return GIM_SQRT(f);
 	}

@@ -298,29 +298,31 @@ public class GimGeometry extends GimMath {
 	static final float VEC_DOT_4(vec4f a, vec4f b) { return ((a).f[0]*(b).f[0] + (a).f[1]*(b).f[1] + (a).f[2]*(b).f[2] + (a).f[3]*(b).f[3]); }
 
 	/// vector impact parameter (squared)
-	static final void VEC_IMPACT_SQ(RefFloat bsq, vec3f direction, vec3f position) {
+	static final void VEC_IMPACT_SQ(final RefFloat bsq, final vec3f direction, 
+			final vec3f position) {
 		   float _llel_ = VEC_DOT(direction, position);
 		   bsq.d = VEC_DOT(position, position) - _llel_*_llel_;
 	}
-	static final float VEC_IMPACT_SQ(vec3f direction, vec3f position) {
+	static final float VEC_IMPACT_SQ(final vec3f direction, final vec3f position) {
 		   float _llel_ = VEC_DOT(direction, position);
 		   return VEC_DOT(position, position) - _llel_*_llel_;
 		}
 
 
 	/// vector impact parameter
-	static final void VEC_IMPACT(RefFloat bsq, vec3f direction, vec3f position)	{
+	static final void VEC_IMPACT(final RefFloat bsq, final vec3f direction, 
+			final vec3f position)	{
 		   VEC_IMPACT_SQ(bsq,direction,position);		
 		   bsq.d = GIM_SQRT(bsq.d);					
 	}
-	static final float VEC_IMPACT(vec3f direction, vec3f position)	{
+	static final float VEC_IMPACT(final vec3f direction, final vec3f position)	{
 		   float bsq = VEC_IMPACT_SQ(direction,position);		
 		   bsq = GIM_SQRT(bsq);
 		   return bsq;
 		}
 
 	/// Vector length
-	static final void VEC_LENGTH_2(vec2f  a, RefFloat l)
+	static final void VEC_LENGTH_2(final vec2f  a, final RefFloat l)
 	{
 	    float _pp = VEC_DOT_2(a,a);
 	    l.d = GIM_SQRT(_pp);
@@ -328,12 +330,12 @@ public class GimGeometry extends GimMath {
 
 
 	/// Vector length
-	static final void VEC_LENGTH(vec3f a, RefFloat l)
+	static final void VEC_LENGTH(final vec3f a, final RefFloat l)
 	{
 	    float _pp = VEC_DOT(a,a);
 	    l.d = GIM_SQRT(_pp);
 	}
-	static final float VEC_LENGTH(vec3f a)
+	static final float VEC_LENGTH(final vec3f a)
 	{
 	    float _pp = VEC_DOT(a,a);
 	    return GIM_SQRT(_pp);
@@ -341,14 +343,14 @@ public class GimGeometry extends GimMath {
 
 
 	/// Vector length
-	static final void VEC_LENGTH_4(vec4f a, RefFloat l)
+	static final void VEC_LENGTH_4(final vec4f a, final RefFloat l)
 	{
 	    float _pp = VEC_DOT_4(a,a);
 	    l.d = GIM_SQRT(_pp);
 	}
 
 	/// Vector inv length
-	static final void VEC_INV_LENGTH_2(vec2f a, RefFloat l)
+	static final void VEC_INV_LENGTH_2(final vec2f a, final RefFloat l)
 	{
 	    float _pp = VEC_DOT_2(a,a);
 	    l.d = GIM_INV_SQRT(_pp);
@@ -356,12 +358,12 @@ public class GimGeometry extends GimMath {
 
 
 	/// Vector inv length
-	static final float VEC_INV_LENGTH(vec3f a)
+	static final float VEC_INV_LENGTH(final vec3f a)
 	{
 	    float _pp = VEC_DOT(a,a);
 	    return GIM_INV_SQRT(_pp);
 	}
-	static final float VEC_INV_LENGTH(vec4f a)
+	static final float VEC_INV_LENGTH(final vec4f a)
 	{
 	    float _pp = VEC_DOT(a,a);
 	    return GIM_INV_SQRT(_pp);
@@ -369,7 +371,7 @@ public class GimGeometry extends GimMath {
 
 
 	/// Vector inv length
-	static final void VEC_INV_LENGTH_4(vec4f a, RefFloat l)
+	static final void VEC_INV_LENGTH_4(final vec4f a, final RefFloat l)
 	{
 	    float _pp = VEC_DOT_4(a,a);
 	    l.d = GIM_INV_SQRT(_pp);
@@ -378,7 +380,8 @@ public class GimGeometry extends GimMath {
 
 
 	/// distance between two points
-	private static final void VEC_DISTANCE(RefFloat _len, vec3f _va, vec3f _vb) {
+	private static final void VEC_DISTANCE(final RefFloat _len, 
+			final vec3f _va, final vec3f _vb) {
 	    vec3f _tmp_ = new vec3f();				
 	    VEC_DIFF(_tmp_, _vb, _va);			
 	    VEC_LENGTH(_tmp_,_len);			
@@ -386,7 +389,7 @@ public class GimGeometry extends GimMath {
 
 
 	/// Vector length
-	static final void VEC_CONJUGATE_LENGTH(vec3f a, RefFloat l)
+	static final void VEC_CONJUGATE_LENGTH(final vec3f a, final RefFloat l)
 	{
 	    float _pp = 1.0f - a.f[0]*a.f[0] - a.f[1]*a.f[1] - a.f[2]*a.f[2];
 	    l.d = GIM_SQRT(_pp);
@@ -414,7 +417,7 @@ public class GimGeometry extends GimMath {
 	}
 
 	/// Set Vector size
-	static final void VEC_RENORMALIZE(vec3f a, float newlen) {	
+	static final void VEC_RENORMALIZE(vec3f a, final float newlen) {	
 	    float len = VEC_INV_LENGTH(a); 
 	    if(len<G_REAL_INFINITY)
 	    {
@@ -593,7 +596,7 @@ public class GimGeometry extends GimMath {
 	}
 
 	/*! matrix rotation  X */
-	static final void ROTX_CS(mat4f m,float cosine, float sine)		
+	static final void ROTX_CS(mat4f m, final float cosine, final float sine)		
 	{					
 	   /* rotation about the x-axis */	
 						
@@ -619,7 +622,7 @@ public class GimGeometry extends GimMath {
 	}
 
 	/*! matrix rotation  Y */
-	static final void ROTY_CS(mat4f m, float cosine, float sine)		
+	static final void ROTY_CS(mat4f m, final float cosine, final float sine)		
 	{					
 	   /* rotation about the y-axis */	
 						
@@ -645,7 +648,7 @@ public class GimGeometry extends GimMath {
 	}
 
 	/*! matrix rotation  Z */
-	static final void ROTZ_CS(mat4f m, float cosine, float sine)		
+	static final void ROTZ_CS(mat4f m, final float cosine, final float sine)		
 	{					
 	   /* rotation about the z-axis */	
 						
@@ -791,7 +794,7 @@ public class GimGeometry extends GimMath {
 
 
 	/*! multiply matrix by scalar */
-	static final void SCALE_MATRIX_2X2(mat2f b, float s, mat2f a)		
+	static final void SCALE_MATRIX_2X2(mat2f b, final float s, mat2f a)		
 	{					
 	   b.f[M(0,0)] = (s) * a.f[M(0,0)];		
 	   b.f[M(0,1)] = (s) * a.f[M(0,1)];		
@@ -802,7 +805,7 @@ public class GimGeometry extends GimMath {
 
 
 	/*! multiply matrix by scalar */
-	static final void SCALE_MATRIX_3X3(mat3f b, float s, mat3f a)		
+	static final void SCALE_MATRIX_3X3(mat3f b, final float s, mat3f a)		
 	{					
 	   b.f[M(0,0)] = (s) * a.f[M(0,0)];		
 	   b.f[M(0,1)] = (s) * a.f[M(0,1)];		
@@ -819,7 +822,7 @@ public class GimGeometry extends GimMath {
 
 
 	/*! multiply matrix by scalar */
-	static final void SCALE_MATRIX_4X4(mat4f b, float s, mat4f a)		
+	static final void SCALE_MATRIX_4X4(mat4f b, final float s, mat4f a)		
 	{					
 	   b.f[M(0,0)] = (s) * a.f[M(0,0)];		
 	   b.f[M(0,1)] = (s) * a.f[M(0,1)];		
@@ -844,7 +847,7 @@ public class GimGeometry extends GimMath {
 
 
 	/*! multiply matrix by scalar */
-	static final void ACCUM_SCALE_MATRIX_2X2(mat2f b, float s, mat2f a)		
+	static final void ACCUM_SCALE_MATRIX_2X2(mat2f b, final float s, mat2f a)		
 	{					
 	   b.f[M(0,0)] += (s) * a.f[M(0,0)];		
 	   b.f[M(0,1)] += (s) * a.f[M(0,1)];		
@@ -855,7 +858,7 @@ public class GimGeometry extends GimMath {
 
 
 	/*! multiply matrix by scalar */
-	static final void ACCUM_SCALE_MATRIX_3X3(mat3f b, float s, mat3f a)		
+	static final void ACCUM_SCALE_MATRIX_3X3(mat3f b, final float s, mat3f a)		
 	{					
 	   b.f[M(0,0)] += (s) * a.f[M(0,0)];		
 	   b.f[M(0,1)] += (s) * a.f[M(0,1)];		
@@ -872,7 +875,7 @@ public class GimGeometry extends GimMath {
 
 
 	/*! multiply matrix by scalar */
-	static final void ACCUM_SCALE_MATRIX_4X4(mat4f b, float s, mat4f a)		
+	static final void ACCUM_SCALE_MATRIX_4X4(mat4f b, final float s, mat4f a)		
 	{					
 	   b.f[M(0,0)] += (s) * a.f[M(0,0)];		
 	   b.f[M(0,1)] += (s) * a.f[M(0,1)];		
@@ -1026,7 +1029,7 @@ public class GimGeometry extends GimMath {
 	 * It will leave normals the wrong length !!!
 	 * See macro below for use on normals.
 	 */
-	static final void INV_TRANSP_MAT_DOT_VEC_2X2(vec2f p, mat2f m, vec2f v)			
+	static final void INV_TRANSP_MAT_DOT_VEC_2X2(final vec2f p, final mat2f m, final vec2f v)			
 	{								
 	   float det;						
 									
@@ -1050,7 +1053,7 @@ public class GimGeometry extends GimMath {
 	 * and multiplies vector v into it, to yeild vector p
 	 * Vector p is then normalized.
 	 */
-	static final void NORM_XFORM_2X2(vec2f p, mat2f m, vec2f v)					
+	static final void NORM_XFORM_2X2(final vec2f p, final mat2f m, final vec2f v)					
 	{								
 	   double len;							
 									
@@ -1075,7 +1078,7 @@ public class GimGeometry extends GimMath {
 	 * The outer product of vector v and vector transpose t yeilds
 	 * dyadic matrix m.
 	 */
-	static final void OUTER_PRODUCT_2X2(mat2f m, vec2f v, vec2f t)				
+	static final void OUTER_PRODUCT_2X2(final mat2f m, final vec2f v, final vec2f t)				
 	{								
 	   m.f[M(0,0)] = v.f[0] * t.f[0];					
 	   m.f[M(0,1)] = v.f[0] * t.f[1];					
@@ -1204,7 +1207,7 @@ public class GimGeometry extends GimMath {
 	 *
 	 * Computes determinant of matrix m, returning d
 	 */
-	static final void DETERMINANT_2X2(RefFloat d, mat2f m)					
+	static final void DETERMINANT_2X2(final RefFloat d, mat2f m)					
 	{								
 	   d.d = m.f[M(0,0)] * m.f[M(1,1)] - m.f[M(0,1)] * m.f[M(1,0)];			
 	}
@@ -1214,7 +1217,7 @@ public class GimGeometry extends GimMath {
 	 *
 	 * Computes determinant of matrix m, returning d
 	 */
-	static final void DETERMINANT_3X3(RefFloat d, mat3f m)					
+	static final void DETERMINANT_3X3(final RefFloat d, mat3f m)					
 	{								
 	   d.d = m.f[M(0,0)] * (m.f[M(1,1)]*m.f[M(2,2)] - m.f[M(1,2)] * m.f[M(2,1)]);		
 	   d.d -= m.f[M(0,1)] * (m.f[M(1,0)]*m.f[M(2,2)] - m.f[M(1,2)] * m.f[M(2,0)]);	
@@ -1225,7 +1228,7 @@ public class GimGeometry extends GimMath {
 	/** i,j,th cofactor of a 4x4 matrix
 	 *
 	 */
-	static final float COFACTOR_4X4_IJ(mat4f m, final int i, final int j) 				
+	static final float COFACTOR_4X4_IJ(final mat4f m, final int i, final int j) 				
 	{			
 		float fac = 0;
 	   int __ii[]=new int[4], __jj[]=new int[4], __k;						
@@ -1254,7 +1257,7 @@ public class GimGeometry extends GimMath {
 	 *
 	 * Computes determinant of matrix m, returning d
 	 */
-	static final void DETERMINANT_4X4(RefFloat d, mat4f m)					
+	static final void DETERMINANT_4X4(final RefFloat d, final mat4f m)					
 	{								
 	   double cofac;						
 	   cofac = COFACTOR_4X4_IJ (m, 0, 0);				
@@ -1303,7 +1306,7 @@ public class GimGeometry extends GimMath {
 	 *
 	 * Computes cofactor of matrix m, returning a
 	 */
-	static final void COFACTOR_4X4(mat4f a, mat4f m)					
+	static final void COFACTOR_4X4(final mat4f a, final mat4f m)					
 	{								
 	   int i,j;							
 									
@@ -1369,7 +1372,7 @@ public class GimGeometry extends GimMath {
 	 *
 	 * Computes adjoint of matrix m, scales it by s, returning a
 	 */
-	static final void SCALE_ADJOINT_2X2(mat2f a, float s, mat2f m)				
+	static final void SCALE_ADJOINT_2X2(mat2f a, final float s, mat2f m)				
 	{								
 	   a.f[M(0,0)] = (s) * m.f[M(1,1)];					
 	   a.f[M(1,0)] = - (s) * m.f[M(1,0)];					
@@ -1382,7 +1385,7 @@ public class GimGeometry extends GimMath {
 	 *
 	 * Computes adjoint of matrix m, scales it by s, returning a
 	 */
-	static final void SCALE_ADJOINT_3X3(mat3f a, float s, mat3f m)				
+	static final void SCALE_ADJOINT_3X3(mat3f a, final float s, mat3f m)				
 	{								
 	   a.f[M(0,0)] = (s) * (m.f[M(1,1)] * m.f[M(2,2)] - m.f[M(1,2)] * m.f[M(2,1)]);	
 	   a.f[M(1,0)] = (s) * (m.f[M(1,2)] * m.f[M(2,0)] - m.f[M(1,0)] * m.f[M(2,2)]);	
@@ -1402,7 +1405,7 @@ public class GimGeometry extends GimMath {
 	 *
 	 * Computes adjoint of matrix m, scales it by s, returning a
 	 */
-	static final void SCALE_ADJOINT_4X4(mat4f a, float s, mat4f m)				
+	static final void SCALE_ADJOINT_4X4(mat4f a, final float s, mat4f m)				
 	{								
 	   char _i_,_j_; 
 	   for (_i_=0; _i_<4; _i_++) {					
@@ -1418,7 +1421,7 @@ public class GimGeometry extends GimMath {
 	 * Compute inverse of matrix a, returning determinant m and
 	 * inverse b
 	 */
-	static final void INVERT_2X2(mat2f b, RefFloat det, mat2f a)			
+	static final void INVERT_2X2(final mat2f b, final RefFloat det, final mat2f a)			
 	{						
 	   float _tmp_;					
 	   DETERMINANT_2X2 (det, a);			
@@ -1432,7 +1435,7 @@ public class GimGeometry extends GimMath {
 	 * Compute inverse of matrix a, returning determinant m and
 	 * inverse b
 	 */
-	static final void INVERT_3X3(mat3f b, RefFloat det, mat3f a)			
+	static final void INVERT_3X3(final mat3f b, final RefFloat det, final mat3f a)			
 	{						
 	   float _tmp_;					
 	   DETERMINANT_3X3 (det, a);			
@@ -1446,7 +1449,7 @@ public class GimGeometry extends GimMath {
 	 * Compute inverse of matrix a, returning determinant m and
 	 * inverse b
 	 */
-	static final void INVERT_4X4(mat4f b, RefFloat det, mat4f a)			
+	static final void INVERT_4X4(final mat4f b, final RefFloat det, final mat4f a)			
 	{						
 	   float _tmp_;					
 	   DETERMINANT_4X4 (det, a);			
@@ -1559,7 +1562,7 @@ public class GimGeometry extends GimMath {
 
 	static final void AXIS_INTERSECT(final float min, final float max, 
 			final float a, final float d, 
-			RefFloat tfirst, RefFloat tlast, RefBoolean is_intersected) {
+			final RefFloat tfirst, final RefFloat tlast, final RefBoolean is_intersected) {
 		if(IS_ZERO(d))
 		{
 	        is_intersected.b = !(a < min || a > max);
@@ -1583,18 +1586,19 @@ public class GimGeometry extends GimMath {
 		}
 	}
 
-	/*! \brief Finds the Ray intersection parameter.
-
-	\param aabb Aligned box
-	\param vorigin A vec3f with the origin of the ray
-	\param vdir A vec3f with the direction of the ray
-	\param tparam Output parameter
-	\param tmax Max lenght of the ray
-	\param is_intersected 1 if the ray collides the box, else false
-
-	*/
-	static final void BOX_INTERSECTS_RAY(aabb3f aabb, vec3f vorigin, vec3f vdir, 
-			RefFloat tparam, final float tmax, RefBoolean is_intersected) { 
+	/**
+	 * Finds the Ray intersection parameter.
+	 * 
+	 * @param aabb Aligned box
+	 * @param vorigin A vec3f with the origin of the ray
+	 * @param vdir A vec3f with the direction of the ray
+	 * @param tparam Output parameter
+	 * @param tmax Max lenght of the ray
+	 * @param is_intersected 1 if the ray collides the box, else false
+ 	 */
+	static final void BOX_INTERSECTS_RAY(final aabb3f aabb, final vec3f vorigin, 
+			final vec3f vdir, final RefFloat tparam, final float tmax, 
+			final RefBoolean is_intersected) { 
 		//float _tfirst = 0.0f, _tlast = tmax;
 		RefFloat _tfirst = new RefFloat(0.0f), _tlast = new RefFloat(tmax);
 		AXIS_INTERSECT(aabb.minX,aabb.maxX,vorigin.f[0], vdir.f[0], _tfirst, _tlast,is_intersected);
@@ -1606,14 +1610,21 @@ public class GimGeometry extends GimMath {
 		{
 	        AXIS_INTERSECT(aabb.minZ,aabb.maxZ,vorigin.f[2], vdir.f[2], _tfirst, _tlast,is_intersected);
 		}
-		tparam = _tfirst;
+		tparam.d = _tfirst.d;
 	}
 
-	static final void AABB_PROJECTION_INTERVAL(aabb3f aabb, vec4f direction, RefFloat vmin, RefFloat vmax)
+	static final void AABB_PROJECTION_INTERVAL(final aabb3f aabb, 
+			final vec4f direction, final RefFloat vmin, final RefFloat vmax)
 	{
-	    float _center[] = {(aabb.minX + aabb.maxX)*0.5f, (aabb.minY + aabb.maxY)*0.5f, (aabb.minZ + aabb.maxZ)*0.5f};
+	    float _center[] = {
+	    		(aabb.minX + aabb.maxX)*0.5f, 
+	    		(aabb.minY + aabb.maxY)*0.5f, 
+	    		(aabb.minZ + aabb.maxZ)*0.5f};
 	    
-	    float _extend[] = {aabb.maxX-_center[0],aabb.maxY-_center[1],aabb.maxZ-_center[2]};
+	    float _extend[] = {
+	    		aabb.maxX-_center[0],
+	    		aabb.maxY-_center[1],
+	    		aabb.maxZ-_center[2]};
 	    float _fOrigin =  VEC_DOT(direction,_center);
 		float _fMaximumExtent = _extend[0]*Math.abs(direction.f[0]) + 
 	                            _extend[1]*Math.abs(direction.f[1]) + 
@@ -1623,15 +1634,16 @@ public class GimGeometry extends GimMath {
 	    vmax.d = _fOrigin + _fMaximumExtent; 
 	}
 
-	/*!
-	classify values:
-	<ol>
-	<li> 0 : In back of plane
-	<li> 1 : Spanning
-	<li> 2 : In front of
-	</ol>
-	*/
-	private static final void PLANE_CLASSIFY_BOX(vec4f plane, aabb3f aabb, RefInt classify)
+	/**
+	 * classify values:
+	 * <ol>
+	 * <li> 0 : In back of plane
+	 * <li> 1 : Spanning
+	 * <li> 2 : In front of
+	 * </ol>
+	 */
+	private static final void PLANE_CLASSIFY_BOX(final vec4f plane, 
+			final aabb3f aabb, final RefInt classify)
 	{
 		RefFloat _fmin = new RefFloat(),_fmax = new RefFloat(); 
 		AABB_PROJECTION_INTERVAL(aabb,plane, _fmin, _fmax); 
@@ -1651,7 +1663,7 @@ public class GimGeometry extends GimMath {
 			} 
 		} 
 	}
-	static final int PLANE_CLASSIFY_BOX(vec4f plane, aabb3f aabb)
+	static final int PLANE_CLASSIFY_BOX(final vec4f plane, final aabb3f aabb)
 	{
 		RefFloat _fmin = new RefFloat(),_fmax = new RefFloat(); 
 		AABB_PROJECTION_INTERVAL(aabb,plane, _fmin, _fmax); 
@@ -1681,7 +1693,8 @@ public class GimGeometry extends GimMath {
 	static final float PLANEDIREPSILON = 0.0000001f;
 	static final float PARALELENORMALS = 0.000001f;
 
-	static final void TRIANGLE_NORMAL(vec3f v1, vec3f v2, vec3f v3, vec4f n){
+	static final void TRIANGLE_NORMAL(final vec3f v1,final  vec3f v2, 
+			final vec3f v3, final vec4f n){
 	    vec3f _dif1 = new vec3f(),_dif2 = new vec3f(); 
 	    VEC_DIFF(_dif1,v2,v1); 
 	    VEC_DIFF(_dif2,v3,v1); 
@@ -1704,7 +1717,9 @@ public class GimGeometry extends GimMath {
 	    plane.f[3] = VEC_DOT(plane,e1);//,plane);
 	}
 
-	static final float DISTANCE_PLANE_POINT(vec4f plane, vec3f point) { return (VEC_DOT(plane,point) - plane.f[3]); }
+	static final float DISTANCE_PLANE_POINT(final vec4f plane, final vec3f point) { 
+		return (VEC_DOT(plane,point) - plane.f[3]); 
+	}
 
 	static final void PROJECT_POINT_PLANE(vec3f point, vec4f plane, vec3f projected) {
 		float _dis;
@@ -1727,7 +1742,8 @@ public class GimGeometry extends GimMath {
 		}while(_i<plane_count&&outside==0);
 		return outside;
 	}
-	static final int POINT_IN_HULL_TZ(vec3f point, vec4f[] planes, final int pos, final int plane_count)
+	static final int POINT_IN_HULL_TZ(final vec3f point, final vec4f[] planes, 
+			final int pos, final int plane_count)
 	{
 		float _dis;
 		int outside = 0;
@@ -1742,7 +1758,8 @@ public class GimGeometry extends GimMath {
 	}
 
 
-	static final void PLANE_CLIP_SEGMENT(vec3f s1, vec3f s2, vec4f plane, vec3f clipped) {
+	static final void PLANE_CLIP_SEGMENT(final vec3f s1, final vec3f s2, 
+			final vec4f plane, final vec3f clipped) {
 		float _dis1,_dis2;
 		_dis1 = DISTANCE_PLANE_POINT(plane,s1);
 		VEC_DIFF(clipped,s2,s1);
@@ -1764,7 +1781,8 @@ public class GimGeometry extends GimMath {
 	</ul>
 	*/
 	//static final void PLANE_CLIP_SEGMENT2(vec3f s1, vec3f s2, vec4f plane, vec3f clipped, RefInt intersection_type) 
-	static final int PLANE_CLIP_SEGMENT2(vec3f s1, vec3f s2, vec4f plane, vec3f clipped)
+	static final int PLANE_CLIP_SEGMENT2(final vec3f s1, final vec3f s2, 
+			final vec4f plane, final vec3f clipped)
 	{
 		int intersection_type;
 		float _dis1,_dis2;
@@ -1809,8 +1827,9 @@ public class GimGeometry extends GimMath {
 	*/
 //	static final void PLANE_CLIP_SEGMENT_CLOSEST(vec3f s1, vec3f s2, vec4f plane, vec3f clipped1,
 //			vec3f clipped2, RefInt intersection_type)
-	static final int PLANE_CLIP_SEGMENT_CLOSEST(vec3f s1, vec3f s2, vec4f plane, vec3f clipped1,
-			vec3f clipped2)
+	static final int PLANE_CLIP_SEGMENT_CLOSEST(final vec3f s1, 
+			final vec3f s2, final vec4f plane, final vec3f clipped1,
+			final vec3f clipped2)
 	{
 		int intersection_type = PLANE_CLIP_SEGMENT2(s1,s2,plane,clipped1);
 		if(intersection_type == 0)
@@ -1846,7 +1865,8 @@ public class GimGeometry extends GimMath {
 
 
 	//! Finds the 2 smallest cartesian coordinates of a plane normal
-	static final void PLANE_MINOR_AXES(vec4f plane, RefInt i0, RefInt i1)
+	static final void PLANE_MINOR_AXES(final vec4f plane, 
+			final RefInt i0, final RefInt i1)
 	{
 	    float A[] = {Math.abs(plane.f[0]),Math.abs(plane.f[1]),Math.abs(plane.f[2])};
 	    if(A[0]>A[1])
@@ -1878,8 +1898,9 @@ public class GimGeometry extends GimMath {
 	}
 
 	//! Ray plane collision
-	static final void RAY_PLANE_COLLISION(vec4f plane, vec3f vDir, vec3f vPoint,
-			vec3f pout, RefFloat tparam, RefBoolean does_intersect)
+	static final void RAY_PLANE_COLLISION(final vec4f plane, final vec3f vDir, 
+			final vec3f vPoint, final vec3f pout, 
+			final RefFloat tparam, final RefBoolean does_intersect)
 	{
 		float _dis,_dotdir;	
 		_dotdir = VEC_DOT(plane,vDir);
@@ -1898,8 +1919,9 @@ public class GimGeometry extends GimMath {
 	}
 
 	//! Bidireccional ray
-	static final void LINE_PLANE_COLLISION(vec4f plane, vec3f vDir, vec3f vPoint,
-			vec3f pout, RefFloat tparam, final float tmin, final float tmax)
+	static final void LINE_PLANE_COLLISION(final vec4f plane, final vec3f vDir, 
+			final vec3f vPoint, final vec3f pout, final RefFloat tparam, 
+			final float tmin, final float tmax)
 	{
 	    tparam.d = -DISTANCE_PLANE_POINT(plane,vPoint);
 		tparam.d /= VEC_DOT(plane,vDir);
@@ -1918,7 +1940,8 @@ public class GimGeometry extends GimMath {
 	  \param dointersect 1 if the planes intersect, 0 if paralell.
 
 	*/
-	private static final void INTERSECT_PLANES(vec3f p1, vec3f p2, vec3f p, vec3f d, RefBoolean dointersect) 
+	private static final void INTERSECT_PLANES(final vec3f p1, final vec3f p2, 
+			final vec3f p, final vec3f d, final RefBoolean dointersect) 
 	{ 
 	  VEC_CROSS(d,p1,p2); 
 	  float denom = VEC_DOT(d, d);
@@ -1944,7 +1967,8 @@ public class GimGeometry extends GimMath {
 
 	/*! Finds the closest point(cp) to (v) on a segment (e1,e2)
 	 */
-	static final void CLOSEST_POINT_ON_SEGMENT(vec3f cp, vec3f v, vec3f e1, vec3f e2)			
+	static final void CLOSEST_POINT_ON_SEGMENT(final vec3f cp, final vec3f v, 
+			final vec3f e1, final vec3f e2)			
 	{ 
 	    vec3f _n = new vec3f();
 	    VEC_DIFF(_n,e2,e1);
@@ -1978,8 +2002,9 @@ public class GimGeometry extends GimMath {
 	\param dointersect  0  if the lines won't intersect, else 1
 
 	*/
-	private static final void LINE_INTERSECTION_PARAMS(vec3f dir1, vec3f point1, 
-			vec3f dir2, vec3f point2, RefFloat t1, RefFloat t2, RefBoolean dointersect) {
+	private static final void LINE_INTERSECTION_PARAMS(final vec3f dir1, 
+			final vec3f point1, final vec3f dir2, final vec3f point2, 
+			final RefFloat t1, final RefFloat t2, final RefBoolean dointersect) {
 	    float det;
 		float e1e1 = VEC_DOT(dir1,dir1);
 		float e1e2 = VEC_DOT(dir1,dir2);
@@ -2002,8 +2027,9 @@ public class GimGeometry extends GimMath {
 	}
 
 	//! Find closest points on segments
-	static final void SEGMENT_COLLISION(vec3f vA1, vec3f vA2, vec3f vB1, vec3f vB2,
-			vec3f vPointA, vec3f vPointB)
+	static final void SEGMENT_COLLISION(final vec3f vA1, final vec3f vA2, 
+			final vec3f vB1, final vec3f vB2,
+			final vec3f vPointA, final vec3f vPointB)
 	{
 	    vec3f _AD = new vec3f(), _BD = new vec3f(), _N = new vec3f();
 	    vec4f _M = new vec4f();
@@ -2022,7 +2048,4 @@ public class GimGeometry extends GimMath {
 	    VEC_SCALE(vPointB,_tp.d,_BD);
 	    VEC_SUM(vPointB,vPointB,vB1);
 	}
-
-	//! @}
-
 }
