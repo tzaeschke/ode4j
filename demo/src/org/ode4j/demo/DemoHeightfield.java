@@ -34,6 +34,7 @@ import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.OdeConstants;
@@ -132,29 +133,26 @@ class DemoHeightfield extends dsFunctions {
 		DGeom[] geom = new DGeom[GPB];		// geometries representing this body
 
 		// Trimesh only - double buffered matrices for 'last transform' setup
-		double[] matrix_dblbuff = new double[ 16 * 2 ];
-		int last_matrix_index;
+		//double[] matrix_dblbuff = new double[ 16 * 2 ];
+		//int last_matrix_index;
 	};
 
-	private static int num=0;		// number of objects in simulation
-	private static int nextobj=0;		// next object to recycle if num==NUM
-	private static DWorld world;
-	private static DSpace space;
-	private static MyObject[] obj = new MyObject[NUM];
-	private static DJointGroup contactgroup;
-	private static int selected = -1;	// selected object
-	private static boolean show_aabb = false;	// show geom AABBs?
-	private static boolean show_contacts = false;	// show contact points?
-	private static boolean random_pos = true;	// drop objects from random position?
-	private static boolean write_world = false;
-
-
+	private int num=0;		// number of objects in simulation
+	private int nextobj=0;		// next object to recycle if num==NUM
+	private DWorld world;
+	private DSpace space;
+	private MyObject[] obj = new MyObject[NUM];
+	private DJointGroup contactgroup;
+	private int selected = -1;	// selected object
+	private boolean show_aabb = false;	// show geom AABBs?
+	private boolean show_contacts = false;	// show contact points?
+	private boolean random_pos = true;	// drop objects from random position?
 
 
 	//============================
 
-	private DGeom TriMesh1;
-	private DGeom TriMesh2;
+	//private DGeom TriMesh1;
+	//private DGeom TriMesh2;
 	//static dTriMeshDataID TriData1, TriData2;  // reusable static trimesh data
 
 	//============================
@@ -249,7 +247,6 @@ class DemoHeightfield extends dsFunctions {
 		System.out.println ("To toggle showing the geom AABBs, press a.");
 		System.out.println ("To toggle showing the contact points, press t.");
 		System.out.println ("To toggle dropping from random position/orientation, press r.");
-		System.out.println ("To save the current state to 'state.dif', press 1.");
 	}
 
 
@@ -462,9 +459,6 @@ class DemoHeightfield extends dsFunctions {
 		else if (cmd == 'r') {
 			random_pos ^= true;
 		}
-		else if (cmd == '1') {
-			write_world = true;
-		}
 	}
 
 
@@ -484,10 +478,8 @@ class DemoHeightfield extends dsFunctions {
 			dsDrawSphere (pos, R, ((DSphere)g).getRadius());
 		}
 		else if (g instanceof DCapsule) {
-			//double radius,length;
-			//dGeomCapsuleGetParams (g,&radius,&length);
 			DCapsule cap = (DCapsule) g; 
-			dsDrawCapsule (pos,R,cap.getLength(),cap.getRadius());
+			dsDrawCapsule (pos, R, cap.getLength(), cap.getRadius());
 		}
 		//<---- Convex Object
 		else if (g instanceof DConvex)
@@ -501,10 +493,8 @@ class DemoHeightfield extends dsFunctions {
 		}
 		//----> Convex Object
 		else if (g instanceof DCylinder) {
-			//double radius,length;
-			//dGeomCylinderGetParams (g,&radius,&length);
 			DCylinder cyl = (DCylinder) g;
-			dsDrawCylinder (pos,R,cyl.getLength(),cyl.getRadius());
+			dsDrawCylinder (pos, R, cyl.getLength(), cyl.getRadius());
 		}
 		else if (g instanceof DGeomTransform) {
 			DGeom g2 = ((DGeomTransform)g).getGeom ();
@@ -518,6 +508,10 @@ class DemoHeightfield extends dsFunctions {
 			drawGeom (g2,actual_pos,actual_R,false);
 		}
 
+		drawAABB(g);
+	}
+	
+	private void drawAABB(DGeom g) {
 		if (show_aabb) {
 			// draw the bounding box for this geom
 			DAABBC aabb = g.getAABB();
@@ -528,7 +522,6 @@ class DemoHeightfield extends dsFunctions {
 			dsSetColorAlpha (1,0,0,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}
-
 	}
 
 	// simulation loop
@@ -538,22 +531,11 @@ class DemoHeightfield extends dsFunctions {
 	{
 		dsSetColor (0,0,2);
 
-		OdeHelper.spaceCollide (space,0,nearCallback);
+		space.collide (null,nearCallback);
 
-		//if (!pause) dWorldStep (world,0.05);
+		//if (!pause) world.step (0.05);
 		if (!pause) world.quickStep (0.05);
-		//TODO TZ //if (!pause) dWorldStepFast1 (world,0.05, 5);
-
-
-		if (write_world) {
-//TODO			FILE f = fopen ("state.dif","wt");
-//			if (f!=null) {
-//				dWorldExportDIF (world,f,"X");
-//				fclose (f);
-//			}
-//			write_world = false;
-		}
-
+		
 		// remove all contact joints
 		contactgroup.empty();
 
@@ -568,42 +550,34 @@ class DemoHeightfield extends dsFunctions {
 		// Set ox and oz to zero for DHEIGHTFIELD_CORNER_ORIGIN mode.
 		int ox = (int) ( -HFIELD_WIDTH/2 );
 		int oz = (int) ( -HFIELD_DEPTH/2 );
+		dsSetColorAlpha (0.5f,1,0.5f,0.5f);
+		dsSetTexture( DS_TEXTURE_NUMBER.DS_WOOD );
+		DVector3 a = new DVector3(), b = new DVector3(), c = new DVector3(), d = new DVector3();
+		for ( int i = 0; i < HFIELD_WSTEP - 1; ++i ) {
+			for ( int j = 0; j < HFIELD_DSTEP - 1; ++j )
+			{
 
-		//	for ( int tx = -1; tx < 2; ++tx )
-		//	for ( int tz = -1; tz < 2; ++tz )
-		{
-			dsSetColorAlpha (0.5f,1,0.5f,0.5f);
-			dsSetTexture( DS_TEXTURE_NUMBER.DS_WOOD );
+				a.set( ox + ( i ) * HFIELD_WSAMP,
+						heightfield_callback( null, i, j ),
+						oz + ( j ) * HFIELD_DSAMP);
 
-			DVector3 a = new DVector3(), b = new DVector3(), c = new DVector3(), d = new DVector3();
-			for ( int i = 0; i < HFIELD_WSTEP - 1; ++i ) {
-				for ( int j = 0; j < HFIELD_DSTEP - 1; ++j )
-				{
+				b.set( ox + ( i + 1 ) * HFIELD_WSAMP,
+						heightfield_callback( null, i + 1, j ),
+						oz + ( j ) * HFIELD_DSAMP);
 
-					a.set( ox + ( i ) * HFIELD_WSAMP,
-							heightfield_callback( null, i, j ),
-							oz + ( j ) * HFIELD_DSAMP);
+				c.set( ox + ( i ) * HFIELD_WSAMP,
+						heightfield_callback( null, i, j + 1 ),
+						oz + ( j + 1 ) * HFIELD_DSAMP);
 
-					b.set( ox + ( i + 1 ) * HFIELD_WSAMP,
-							heightfield_callback( null, i + 1, j ),
-							oz + ( j ) * HFIELD_DSAMP);
+				d.set( ox + ( i + 1 ) * HFIELD_WSAMP,
+						heightfield_callback( null, i + 1, j + 1 ),
+						oz + ( j + 1 ) * HFIELD_DSAMP);
 
-					c.set( ox + ( i ) * HFIELD_WSAMP,
-							heightfield_callback( null, i, j + 1 ),
-							oz + ( j + 1 ) * HFIELD_DSAMP);
-
-					d.set( ox + ( i + 1 ) * HFIELD_WSAMP,
-							heightfield_callback( null, i + 1, j + 1 ),
-							oz + ( j + 1 ) * HFIELD_DSAMP);
-
-					dsDrawTriangle( pReal, RReal, a, c, b, true );
-					dsDrawTriangle( pReal, RReal, b, c, d, true );
-				}
+				dsDrawTriangle( pReal, RReal, a, c, b, true );
+				dsDrawTriangle( pReal, RReal, b, c, d, true );
 			}
 		}
-
-
-
+		drawAABB(gheight);
 
 
 		dsSetColor (1,1,0);
@@ -612,16 +586,11 @@ class DemoHeightfield extends dsFunctions {
 		{
 			for (int j=0; j < GPB; j++)
 			{
-				if (i==selected)
-				{
+				if (i==selected) {
 					dsSetColor (0,0.7f,1);
-				}
-				else if (! obj[i].body.isEnabled() )
-				{
+				} else if (! obj[i].body.isEnabled() ) {
 					dsSetColor (1,0.8f,0);
-				}
-				else 
-				{
+				} else {
 					dsSetColor (1,1,0);
 				}
 
@@ -640,60 +609,13 @@ class DemoHeightfield extends dsFunctions {
 						int v2 = Indices[ii + 2] * 3;
 						dsDrawTriangle(Pos, Rot, Vertices, v0, v1, v2, true);
 					}
-
-					// tell the tri-tri collider the current transform of the trimesh --
-					// this is fairly important for good results.
-
-					// Fill in the (4x4) matrix.
-//					double* p_matrix = obj[i].matrix_dblbuff + ( obj[i].last_matrix_index * 16 );
-//
-//					p_matrix[ 0 ] = Rot[ 0 ];	p_matrix[ 1 ] = Rot[ 1 ];	p_matrix[ 2 ] = Rot[ 2 ];	p_matrix[ 3 ] = 0;
-//					p_matrix[ 4 ] = Rot[ 4 ];	p_matrix[ 5 ] = Rot[ 5 ];	p_matrix[ 6 ] = Rot[ 6 ];	p_matrix[ 7 ] = 0;
-//					p_matrix[ 8 ] = Rot[ 8 ];	p_matrix[ 9 ] = Rot[ 9 ];	p_matrix[10 ] = Rot[10 ];	p_matrix[11 ] = 0;
-//					p_matrix[12 ] = Pos[ 0 ];	p_matrix[13 ] = Pos[ 1 ];	p_matrix[14 ] = Pos[ 2 ];	p_matrix[15 ] = 1;
-//
-//					// Flip to other matrix.
-//					obj[i].last_matrix_index = !obj[i].last_matrix_index;
-//
-//					// Apply the 'other' matrix which is the oldest.
-//					dGeomTriMeshSetLastTransform( obj[i].geom[j], 
-//							*(dMatrix4*)( obj[i].matrix_dblbuff + ( obj[i].last_matrix_index * 16 ) ) );
-//					double[] p_matrixA = obj[i].matrix_dblbuff;
-//					int of = ( obj[i].last_matrix_index * 16 );
-//
-//					p_matrixA[ of+0 ] = Rot.get00();	p_matrixA[ of+1 ] = Rot.get01();	p_matrixA[ of+2 ] = Rot.get02();	p_matrixA[ of+3 ] = 0;
-//					p_matrixA[ of+4 ] = Rot.get10();	p_matrixA[ of+5 ] = Rot.get11();	p_matrixA[ of+6 ] = Rot.get12();	p_matrixA[ of+7 ] = 0;
-//					p_matrixA[ of+8 ] = Rot.get20();	p_matrixA[ of+9 ] = Rot.get21();	p_matrixA[of+10 ] = Rot.get22();	p_matrixA[of+11 ] = 0;
-//					p_matrixA[of+12 ] = Pos.get0();	p_matrixA[of+13 ] = Pos.get1();	p_matrixA[of+14 ] = Pos.get2();	p_matrixA[of+15 ] = 1;
-					
-										// Flip to other matrix.
-					//obj[i].last_matrix_index = !obj[i].last_matrix_index;
-					if (obj[i].last_matrix_index != 0)
-						obj[i].last_matrix_index = 0;
-					else
-						obj[i].last_matrix_index = 1;
-					
-					// Apply the 'other' matrix which is the oldest.
-//					dGeomTriMeshSetLastTransform( obj[i].geom[j],
-//							new DoubleArray( obj[i].matrix_dblbuff, ( obj[i].last_matrix_index * 16 ) ) );
+					drawAABB(obj[i].geom[j]);
 				}
 				else
 				{
 					drawGeom (obj[i].geom[j],null,null,show_aabb);
 				}
 			}
-		}
-
-		if ( show_aabb )
-		{
-			// draw the bounding box for this geom
-			DAABBC aabb = gheight.getAABB();
-			DVector3 bbpos = aabb.getCenter();
-			DVector3 bbsides = aabb.getLengths();
-			DMatrix3 RI = new DMatrix3();
-			RI.setIdentity();
-			dsSetColorAlpha (1,0,0,0.5f);
-			dsDrawBox (bbpos,RI,bbsides);
 		}
 	}
 
@@ -708,7 +630,7 @@ class DemoHeightfield extends dsFunctions {
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld ();
-		space = OdeHelper.createHashSpace (null);
+		space = OdeHelper.createSimpleSpace (null);  //TODO TZ back to hashspace!
 		contactgroup = OdeHelper.createJointGroup ();
 		world.setGravity (0,0,-0.05);
 		world.setCFM (1e-5);

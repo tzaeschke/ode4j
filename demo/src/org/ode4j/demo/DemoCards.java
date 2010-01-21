@@ -154,6 +154,7 @@ public class DemoCards extends dsFunctions {
 	}
 
 
+	@Override
 	public void start()
 	{
 		System.out.println("Controls:");
@@ -180,8 +181,7 @@ public class DemoCards extends dsFunctions {
 		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
 
 		int numc = OdeHelper.collide (o1, o2, MAX_CONTACTS,
-				contacts.getGeomBuffer()
-				);//sizeof(dContact));
+				contacts.getGeomBuffer());
 
 		for (int i=0; i<numc; i++) {
 			contacts.get(i).surface.mode = dContactApprox1;
@@ -191,7 +191,8 @@ public class DemoCards extends dsFunctions {
 		}
 	}
 	
-	private void simLoop(boolean pause)
+	@Override
+	public void step(boolean pause)
 	{
 		if (!pause) {
 			space.collide(null, nearCallback);
@@ -233,7 +234,7 @@ public class DemoCards extends dsFunctions {
 	}
 
 	private void demo(String[] args) {
-		OdeHelper.initODE();
+		OdeHelper.initODE2(0);
 
 		world = OdeHelper.createWorld();
 		world.setGravity(0, 0, -0.5);
@@ -258,11 +259,6 @@ public class DemoCards extends dsFunctions {
 		OdeHelper.closeODE();
 	}
 
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
-	}
 
 	@Override
 	public void stop() {
