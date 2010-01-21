@@ -242,7 +242,8 @@ public class DxGimpact extends DxTriMesh {
 	{
 		this._Data = (DxGimpactData) Data;
 		// I changed my data -- I know nothing about my own AABB anymore.
-		this._gflags |= (GEOM_DIRTY|GEOM_AABB_BAD);
+		//this._gflags |= (GEOM_DIRTY|GEOM_AABB_BAD);
+		setFlagDirtyAndBad();
 
 		// ******************************************************************************************
 		// GIMPACT only supports stride 12, so we need to catch the error early.

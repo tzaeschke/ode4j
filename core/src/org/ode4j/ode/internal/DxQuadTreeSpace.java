@@ -537,7 +537,8 @@ PARENTRECURSE:
 		Common.dUASSERT(g.parent_space == null && g.getNext() == null, 
 		"geom is already in a space");
 
-		g._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
+		//g._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
+		g.setFlagDirtyAndBad();
 		DirtyList.push(g);
 
 		// add
@@ -608,7 +609,8 @@ PARENTRECURSE:
 				((DxSpace)g).cleanGeoms();
 			}
 			g.recomputeAABB();
-			g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
+			//g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
+			g.unsetFlagDirtyAndBad();
 
 			//TZ XXX ((Block)g.tome).Traverse(g);
 			g._qtIdx.Traverse(g);

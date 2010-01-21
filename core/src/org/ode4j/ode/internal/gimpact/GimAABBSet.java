@@ -362,11 +362,6 @@ public class GimAABBSet { //Formerly GimBoxPruning
 				sorted_tokens[i].m_key = GIM_CONVERT_VEC3F_GUINT_XZ(paabb[i].minX,paabb[i].minZ);
 				sorted_tokens[i].m_value = i;
 			}
-			System.out.println("Before-Sort1: ");
-			for (long t: m_maxcoords) {
-				System.out.print(" *" + t);//TODO
-			}
-			System.out.println();
 			//GIM_QUICK_SORT_ARRAY(GIM_RSORT_TOKEN , sorted_tokens, count, RSORT_TOKEN_COMPARATOR,GIM_DEF_EXCHANGE_MACRO);
 			GimRadixSort.GIM_QUICK_SORT_ARRAY(sorted_tokens, count, 
 					GimRadixSort.RSORT_TOKEN_COMPARATOR, GimRadixSort.GIM_DEF_EXCHANGE_MACRO);
@@ -384,11 +379,6 @@ public class GimAABBSet { //Formerly GimBoxPruning
 				unsorted[i].m_key = GIM_CONVERT_VEC3F_GUINT_XZ(paabb[i].minX,paabb[i].minZ);
 				unsorted[i].m_value = i;
 			}
-			System.out.println("Before-Sort2: ");
-//			for (long t: m_maxcoords) {
-//				System.out.print(" *" + t);//TODO
-//			}
-//			System.out.println();
 			GimRadixSort.GIM_RADIX_SORT_RTOKENS(unsorted,sorted_tokens,count);
 			//gim_free(unsorted,0); //TODO remove TZ
 			
@@ -397,11 +387,6 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		//Arrays.sort(sorted_tokens, COMPARATOT_TZ); //TODO TZ remove
 
 		if(calc_global_bound) gim_aabbset_calc_global_bound();
-		System.out.println("After-Sort: "+ m_sorted_mincoords.length);
-//		for (GIM_RSORT_TOKEN t: m_sorted_mincoords) {
-//			System.out.print(" *" + t.m_key + "/" + t.m_value);//TODO
-//		}
-		System.out.println();
 	}
 
 	private static final Comparator <GIM_RSORT_TOKEN>COMPARATOT_TZ = new Comparator<GIM_RSORT_TOKEN>() {

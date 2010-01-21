@@ -169,9 +169,7 @@ public class CollideTrimeshPlane implements DColliderFn {
 	//int dCollideTrimeshPlane( dxGeom *o1, dxGeom *o2, int flags, dContactGeom* contacts, int skip )
 	int dCollideTrimeshPlane( DxGimpact o1, DxPlane o2, int flags, DContactGeomBuffer contacts, int skip )
 	{
-		Common.dIASSERT( skip >= 1);//(int)sizeof( dContactGeom ) );
-		//		dIASSERT( o1->type == dTriMeshClass );
-		//		dIASSERT( o2->type == dPlaneClass );
+		Common.dIASSERT( skip == 1);//(int)sizeof( dContactGeom ) );
 		Common.dIASSERT ((flags & DxGeom.NUMC_MASK) >= 1);
 
 		// Alias pointers to the plane and trimesh
@@ -184,8 +182,7 @@ public class CollideTrimeshPlane implements DColliderFn {
 
 		//Find collision
 
-		GimDynArray<vec4f> collision_result;
-		collision_result = GimTrimesh.GIM_CREATE_TRIMESHPLANE_CONTACTS();
+		GimDynArray<vec4f> collision_result = GimTrimesh.GIM_CREATE_TRIMESHPLANE_CONTACTS();
 
 		DxGimpactCollision.gim_trimesh_plane_collisionODE(trimesh.m_collision_trimesh, plane, collision_result);
 

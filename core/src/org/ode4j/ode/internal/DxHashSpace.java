@@ -179,12 +179,14 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		//for (dxGeom g=_first; (g!= null) && (g.gflags & GEOM_DIRTY) != 0;
 		//g=g.getNext()) {
 		for (DxGeom g: _geoms) {
-			if ((g._gflags & GEOM_DIRTY)==0) break;	
+			//if ((g._gflags & GEOM_DIRTY)==0) break;
+			if (!g.hasFlagDirty()) break;
 			if (g instanceof DxSpace) {
 				((DxSpace)g).cleanGeoms();
 			}
 			g.recomputeAABB();
-			g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
+			//g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
+			g.unsetFlagDirtyAndBad();
 		}
 		lock_count--;
 	}

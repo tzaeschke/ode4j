@@ -31,7 +31,7 @@ import org.ode4j.math.DVector3;
  */
 public class DContact {
 
-	public final dSurfaceParameters surface = new dSurfaceParameters();
+	public final DSurfaceParameters surface = new DSurfaceParameters();
 	public final DContactGeom geom = new DContactGeom();
 	public final DVector3 fdir1 = new DVector3();
 
@@ -39,7 +39,7 @@ public class DContact {
 		// Nothing
 	}
 	
-	public class dSurfaceParameters {
+	public class DSurfaceParameters {
 		/* must always be defined */
 		public int mode;
 		public double mu;

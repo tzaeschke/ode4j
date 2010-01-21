@@ -140,7 +140,8 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 			// because computeFinalTx() will have already been called in
 			// dxGeomTransform::computeAABB()
 	
-			if ((tr._gflags & GEOM_AABB_BAD)!=0) tr.computeFinalTx();
+			//if ((tr._gflags & GEOM_AABB_BAD)!=0) tr.computeFinalTx();
+			if (tr.hasFlagAabbBad()) tr.computeFinalTx();
 			tr.obj._final_posr = tr.transform_posr;
 			tr.obj.body = o1.body;
 	

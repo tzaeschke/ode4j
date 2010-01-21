@@ -47,6 +47,7 @@ public interface DSpace extends DGeom {
 	int getNumGeoms();
 	DGeom getGeom (int i);
 
+	/** This is equivalent to OdeHelper.spaceCollide(...) */
 	void collide (Object data, DNearCallback callback);
 	
 	

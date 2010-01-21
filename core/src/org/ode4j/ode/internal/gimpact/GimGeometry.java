@@ -1616,7 +1616,7 @@ public class GimGeometry extends GimMath {
 	static final void AABB_PROJECTION_INTERVAL(final aabb3f aabb, 
 			final vec4f direction, final RefFloat vmin, final RefFloat vmax)
 	{
-	    float _center[] = {
+	    float _center[] = { //TODO TZ optimize? use primitive variables? Store extent/centre in AABB?
 	    		(aabb.minX + aabb.maxX)*0.5f, 
 	    		(aabb.minY + aabb.maxY)*0.5f, 
 	    		(aabb.minZ + aabb.maxZ)*0.5f};
@@ -1683,6 +1683,27 @@ public class GimGeometry extends GimMath {
 			} 
 		} 
 	}
+	//TODO remove
+	static final int PLANE_CLASSIFY_BOX_TZ(final vec4f plane, final aabb3f aabb)
+	{
+		RefFloat _fmin = new RefFloat(),_fmax = new RefFloat(); 
+		AABB_PROJECTION_INTERVAL(aabb,plane, _fmin, _fmax); 
+		if(plane.f[3] >= _fmax.d) 
+		{ 
+			return 0;/*In back of*/ 
+		} 
+		else 
+		{ 
+			if(plane.f[3]+0.000001f>=_fmin.d) 
+			{ 
+				return 1;/*Spanning*/ 
+			} 
+			else 
+			{ 
+				return 2;/*In front of*/ 
+			} 
+		} 
+	}
 	//! @}
 
 	/*! \defgroup GEOMETRIC_OPERATIONS
@@ -1703,13 +1724,13 @@ public class GimGeometry extends GimMath {
 	}
 
 	/// plane is a vec4f
-	static final void TRIANGLE_PLANE(vec3f v1, vec3f v2, vec3f v3, vec4f plane) {
+	static final void TRIANGLE_PLANE(final vec3f v1, final vec3f v2, final vec3f v3, final vec4f plane) {
 	    TRIANGLE_NORMAL(v1,v2,v3,plane);
 	    plane.f[3] = VEC_DOT(plane,v1);//,plane);
 	}
 
 	/// Calc a plane from an edge an a normal. plane is a vec4f
-	static final void EDGE_PLANE(vec3f e1, vec3f e2, vec4f n, vec4f plane) {
+	static final void EDGE_PLANE(final vec3f e1, final vec3f e2, final vec4f n, final vec4f plane) {
 	    vec3f _dif = new vec3f(); 
 	    VEC_DIFF(_dif,e2,e1); 
 	    VEC_CROSS(plane,_dif,n); 
@@ -1721,7 +1742,7 @@ public class GimGeometry extends GimMath {
 		return (VEC_DOT(plane,point) - plane.f[3]); 
 	}
 
-	static final void PROJECT_POINT_PLANE(vec3f point, vec4f plane, vec3f projected) {
+	static final void PROJECT_POINT_PLANE(final vec3f point, final vec4f plane, final vec3f projected) {
 		float _dis;
 		_dis = DISTANCE_PLANE_POINT(plane,point);
 		VEC_SCALE(projected,-_dis,plane);
@@ -1729,7 +1750,7 @@ public class GimGeometry extends GimMath {
 	}
 
 	//static final void POINT_IN_HULL(vec3f point, vec4f[] planes, final int plane_count, RefInt outside)
-	static final int POINT_IN_HULL(vec3f point, vec4f[] planes, final int plane_count)
+	static final int POINT_IN_HULL(final vec3f point, final vec4f[] planes, final int plane_count)
 	{
 		float _dis;
 		int outside = 0;

@@ -870,6 +870,8 @@ public abstract class OdeHelper {
 	 * Determines which pairs of geoms in a space may potentially intersect,
 	 * and calls the callback function for each candidate pair.
 	 *
+	 * This is equivalent to DSpace.collide(...).
+	 *
 	 * @param space The space to test.
 	 *
 	 * @param data Passed from dSpaceCollide directly to the callback
@@ -891,6 +893,7 @@ public abstract class OdeHelper {
 	 * callback.
 	 *
 	 * @see #spaceCollide2(DGeom, DGeom, Object, DNearCallback)
+	 * @see DSpace#collide(Object, DNearCallback)
 	 * @ingroup collide
 	 */
 	public static void spaceCollide (DSpace space, Object data, DNearCallback callback) {

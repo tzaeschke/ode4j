@@ -24,6 +24,9 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.cpp4j.java.Ref;
 import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector4;
@@ -110,6 +113,8 @@ public class DxGimpactData extends DxTriMeshData {
  		dIASSERT(Indices!=null);
  		m_Vertices = Vertices;
  		m_Indices = Indices;
+ 		//TODO remove?
+ 		check();
   	}
     
 	void GetVertex(int i, DVector4 Out)
@@ -369,6 +374,29 @@ public class DxGimpactData extends DxTriMeshData {
 //	void dGeomTriMeshDataGetBuffer(DTriMeshData g, ByteBuffer buf, RefInt bufLen) { buf.clear(); bufLen.set(0); }
 //	void dGeomTriMeshDataSetBuffer(DTriMeshData g, ByteBuffer buf) {}
 
-
+	public void check() {
+		List<Integer>[] edges = new LinkedList[m_Vertices.length/3];  // n = number of vertices
+		System.out.print("Checking Trimesh (size " + edges.length + " ) ...");
+		for (int i = 0; i < edges.length; i++) edges[i] = new LinkedList<Integer>();
+		int nE = 0;
+		for (int i = 0; i < m_Indices.length; i+=3) {
+			int[] ia = new int[4];
+			ia[0] = m_Indices[i];
+			ia[1] = m_Indices[i+1];
+			ia[2] = m_Indices[i+2];
+			ia[3] = ia[0];
+			for (int j = 0; j < 3; j++) {
+				nE++;
+				List<Integer> l = edges[ia[j]];
+				if (l.contains(ia[j+1])) {
+					System.out.println("WARNING: Reversed edge: " + ia[j] + " / " + ia[j+1]);
+				} else {
+					l.add(ia[j+1]);
+				}
+			}
+			
+		}
+		System.out.println(nE);
+	}
 	
 }

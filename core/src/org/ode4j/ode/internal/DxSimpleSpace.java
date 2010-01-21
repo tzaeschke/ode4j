@@ -61,12 +61,14 @@ public class DxSimpleSpace extends DxSpace implements DSimpleSpace {
 		lock_count++;
 		//for (dxGeom g=_first; g!=null && (g.gflags & GEOM_DIRTY) != 0; g=g.getNext()) {
 		for (DxGeom g: _geoms) {
-			if ((g._gflags & GEOM_DIRTY) == 0) break;
+			//if ((g._gflags & GEOM_DIRTY) == 0) break;
+			if (!g.hasFlagDirty()) break;
 			if (g instanceof DxSpace) {
 				((DxSpace)g).cleanGeoms();
 			}
 			g.recomputeAABB();
-			g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
+			//g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
+			g.unsetFlagDirtyAndBad();
 		}
 		lock_count--;
 	}
@@ -81,7 +83,6 @@ public class DxSimpleSpace extends DxSpace implements DSimpleSpace {
 
 		// intersect all bounding boxes
 		//for (dxGeom g1=_first; g1!=null; g1=g1.getNext()) {
-		//for (dxGeom g1: _geoms) {
 		for (int i = 0; i < _geoms.size(); i++) {
 			DxGeom g1 = _geoms.get(i);
 			if (GEOM_ENABLED(g1)){

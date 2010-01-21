@@ -216,7 +216,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 		if ( d.m_bWrapMode == false )
 		{
 			// Finite
-			if ( (_gflags & GEOM_PLACEABLE)!=0 )
+			//if ( (_gflags & GEOM_PLACEABLE)!=0 )
+			if (hasFlagPlaceable())
 			{
 				double[] dx=new double[6], dy=new double[6], dz=new double[6];
 
@@ -320,7 +321,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 		else
 		{
 			// Infinite
-			if ( (_gflags & GEOM_PLACEABLE)!=0 )
+			//if ( (_gflags & GEOM_PLACEABLE)!=0 )
+			if (hasFlagPlaceable())
 			{
 				//				aabb[0] = -dInfinity;			aabb[1] = +dInfinity;
 				//				aabb[2] = -dInfinity;			aabb[3] = +dInfinity;
@@ -1487,7 +1489,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				reComputeAABB = true;
 			} else {//#else
 				//final boolean reComputeAABB = ( (terrain._gflags & GEOM_PLACEABLE)!=0 ) ? true : false;
-				reComputeAABB = ( (terrain._gflags & GEOM_PLACEABLE)!=0 ) ? true : false;
+				//reComputeAABB = ( (terrain._gflags & GEOM_PLACEABLE)!=0 ) ? true : false;
+				reComputeAABB = terrain.hasFlagPlaceable();
 			}//#endif //DHEIGHTFIELD_CORNER_ORIGIN
 
 			//
@@ -1499,10 +1502,11 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				posbak.set(o2.final_posr().pos());//dVector3Copy( o2._final_posr.pos, posbak );
 				Rbak.set(o2.final_posr().R());//dMatrix3Copy( o2._final_posr.R, Rbak );
 				aabbbak.set(o2._aabb);//memcpy( aabbbak, o2.aabb, sizeof( double ) * 6 );
-				gflagsbak = o2._gflags;
+				gflagsbak = o2.getFlags();//_gflags;
 			}
 
-			if ( (terrain._gflags & GEOM_PLACEABLE)!=0 )
+			//if ( (terrain._gflags & GEOM_PLACEABLE)!=0 )
+			if (terrain.hasFlagPlaceable())
 			{
 				// Transform o2 into heightfield space.
 				//dOP( pos0, OP.SUB, o2._final_posr.pos, terrain._final_posr.pos );
@@ -1613,12 +1617,13 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 					o2._final_posr.R.set(Rbak);
 					//memcpy( o2.aabb, aabbbak, sizeof(double)*6 );
 					o2._aabb.set(aabbbak);
-					o2._gflags = gflagsbak;
+					o2.setFlags(gflagsbak);//_gflags = gflagsbak;
 
 					//
 					// Transform Contacts to World Space
 					//
-					if ( (terrain._gflags & GEOM_PLACEABLE)!=0 )
+					//if ( (terrain._gflags & GEOM_PLACEABLE)!=0 )
+					if ( terrain.hasFlagPlaceable() )
 					{
 						for ( i = 0; i < numTerrainContacts; ++i )
 						{

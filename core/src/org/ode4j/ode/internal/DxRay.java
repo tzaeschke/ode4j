@@ -191,14 +191,14 @@ public class DxRay extends DxGeom implements DRay {
 		//dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
 
 		if (FirstContact){
-			_gflags |= RAY_FIRSTCONTACT;
+			setFlagCustom(RAY_FIRSTCONTACT);//_gflags |= RAY_FIRSTCONTACT;
 		}
-		else _gflags &= ~RAY_FIRSTCONTACT;
+		else unsetFlagCustom(RAY_FIRSTCONTACT);//_gflags &= ~RAY_FIRSTCONTACT;
 
 		if (BackfaceCull){
-			_gflags |= RAY_BACKFACECULL;
+			setFlagCustom(RAY_BACKFACECULL);//_gflags |= RAY_BACKFACECULL;
 		}
-		else _gflags &= ~RAY_BACKFACECULL;
+		else unsetFlagCustom(RAY_BACKFACECULL);//_gflags &= ~RAY_BACKFACECULL;
 	}
 
 
@@ -214,10 +214,10 @@ public class DxRay extends DxGeom implements DRay {
 //	}
 	
 	public boolean getFirstContact() {
-		return (_gflags & RAY_FIRSTCONTACT) != 0;
+		return (getFlags() & RAY_FIRSTCONTACT) != 0;
 	}
 	public boolean getBackfaceCull() {
-		return (_gflags & RAY_BACKFACECULL) != 0;
+		return (getFlags() & RAY_BACKFACECULL) != 0;
 	}
 
 
@@ -226,9 +226,9 @@ public class DxRay extends DxGeom implements DRay {
 	{
 		//dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
 		if (closestHit){
-			_gflags |= RAY_CLOSEST_HIT;
+			setFlagCustom(RAY_CLOSEST_HIT);//_gflags |= RAY_CLOSEST_HIT;
 		}
-		else _gflags &= ~RAY_CLOSEST_HIT;
+		else unsetFlagCustom(RAY_CLOSEST_HIT);//_gflags &= ~RAY_CLOSEST_HIT;
 	}
 
 
@@ -236,7 +236,7 @@ public class DxRay extends DxGeom implements DRay {
 	boolean dGeomRayGetClosestHit ()
 	{
 		//dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
-		return ((_gflags & RAY_CLOSEST_HIT) != 0);
+		return ((getFlags() & RAY_CLOSEST_HIT) != 0);
 	}
 
 
@@ -862,10 +862,10 @@ public class DxRay extends DxGeom implements DRay {
 	public void setClosestHit (boolean closestHit)
 	{ dGeomRaySetClosestHit (closestHit); }
 	public boolean getParamFirstContact () {
-		return (_gflags & RAY_FIRSTCONTACT) != 0;
+		return (getFlags() & RAY_FIRSTCONTACT) != 0;
 	}
 	public boolean getParamBackfaceCull() {
-		return (_gflags & RAY_BACKFACECULL) != 0;
+		return (getFlags() & RAY_BACKFACECULL) != 0;
 	}
 	public boolean getClosestHit()
 	{ return dGeomRayGetClosestHit (); }

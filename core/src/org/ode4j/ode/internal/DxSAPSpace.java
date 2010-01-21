@@ -170,8 +170,8 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	//static void collideGeomsNoAABBs( dxGeom *g1, dxGeom *g2, void *data, dNearCallback *callback )
 	static void collideGeomsNoAABBs( DxGeom g1, DxGeom g2, Object data, DNearCallback callback )
 	{
-		dIASSERT( (g1._gflags & GEOM_AABB_BAD)==0 );
-		dIASSERT( (g2._gflags & GEOM_AABB_BAD)==0 );
+		dIASSERT( !g1.hasFlagAabbBad() );//(g1._gflags & GEOM_AABB_BAD)==0 );
+		dIASSERT( !g2.hasFlagAabbBad() );//(g2._gflags & GEOM_AABB_BAD)==0 );
 
 		// no contacts if both geoms on the same body, and the body is not 0
 		if (g1.body == g2.body && g1.body!=null) return;
@@ -261,7 +261,8 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		dAASSERT(g);
 		dUASSERT(g.parent_space == null && g.getNext() == null, "geom is already in a space");
 
-		g._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
+		//g._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
+		g.setFlagDirtyAndBad();
 
 		// add to dirty list
 		GEOM_SET_DIRTY_IDX( g, DirtyList.size() );
@@ -374,7 +375,8 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 				((DxSpace)g).cleanGeoms();
 			}
 			g.recomputeAABB();
-			g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
+			//g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
+			g.unsetFlagDirtyAndBad();
 			// remove from dirty list, add to geom list
 			GEOM_SET_DIRTY_IDX( g, GEOM_INVALID_IDX );
 			GEOM_SET_GEOM_IDX( g, geomSize + i );

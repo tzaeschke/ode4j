@@ -102,17 +102,15 @@ public class DxPlane extends DxGeom implements DPlane {
 			// normal aligned with x-axis
 			_aabb.setMin0( (_pV.get0() > 0) ? -dInfinity : -_pD );
 			_aabb.setMax0( (_pV.get0() > 0) ? _pD : dInfinity ) ;
-		} else
-			if ( _pV.get0() == 0.0f && _pV.get2() == 0.0f ) {
-				// normal aligned with y-axis
-				_aabb.setMin1( (_pV.get1() > 0) ? -dInfinity : -_pD );
-				_aabb.setMax1( (_pV.get1() > 0) ? _pD : dInfinity );
-			} else
-				if ( _pV.get0() == 0.0f && _pV.get1() == 0.0f ) {
-					// normal aligned with z-axis
-					_aabb.setMin2( (_pV.get2() > 0) ? -dInfinity : -_pD );
-					_aabb.setMax2( (_pV.get2() > 0) ? _pD : dInfinity );
-				}
+		} else if ( _pV.get0() == 0.0f && _pV.get2() == 0.0f ) {
+			// normal aligned with y-axis
+			_aabb.setMin1( (_pV.get1() > 0) ? -dInfinity : -_pD );
+			_aabb.setMax1( (_pV.get1() > 0) ? _pD : dInfinity );
+		} else if ( _pV.get0() == 0.0f && _pV.get1() == 0.0f ) {
+			// normal aligned with z-axis
+			_aabb.setMin2( (_pV.get2() > 0) ? -dInfinity : -_pD );
+			_aabb.setMax2( (_pV.get2() > 0) ? _pD : dInfinity );
+		}
 	}
 
 

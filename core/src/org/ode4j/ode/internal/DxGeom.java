@@ -135,7 +135,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 	//	struct dxGeom : public dBase {
 	public int type;		// geom type number, set by subclass constructor
-	int _gflags;		// flags used by geom and space
+	private int _gflags;		// flags used by geom and space
 	Object _data;		// user-defined data pointer
 	//	  dBody body;		// dynamics body associated with this object (if any)
 	DxBody body;		// dynamics body associated with this object (if any)
@@ -208,6 +208,49 @@ public abstract class DxGeom extends DBase implements DGeom {
 		}
 	}
 
+	/** _gflags |= (GEOM_DIRTY|GEOM_AABB_BAD); */
+	final void setFlagDirtyAndBad() {
+		_gflags |= (GEOM_DIRTY|GEOM_AABB_BAD);
+	}
+	
+	/** _gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD)); */
+	final void unsetFlagDirtyAndBad() {
+		_gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
+	}
+	
+	/** (_gflags & GEOM_DIRTY)!=0; */
+	final boolean hasFlagDirty() {
+		return (_gflags & GEOM_DIRTY)!=0;
+	}
+
+	/** (_gflags & GEOM_AABB_BAD)!=0; */
+	final boolean hasFlagAabbBad() {
+		return (_gflags & GEOM_AABB_BAD)!=0;
+	}
+
+	/** (_gflags & GEOM_PLACEABLE)!=0; */
+	final boolean hasFlagPlaceable() {
+		return 	(_gflags & GEOM_PLACEABLE)!=0;
+	}
+	
+	final int getFlags() {
+		return _gflags;
+	}
+	
+	final void setFlags(int flags) {
+		_gflags = flags;
+	}
+	
+	/** _gflags |= customFlag; */
+	final void setFlagCustom(int customFlag) {
+		_gflags |= customFlag;
+	}
+	
+	/** _gflags &= ~customFlag; */
+	final void unsetFlagCustom(int customFlag) {
+		_gflags &= ~customFlag;
+	}
+	
 	// add and remove this geom from a linked list maintained by a space.
 
 //	void spaceAdd (dxGeom **first_ptr) {
@@ -1190,8 +1233,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 //	void dGeomMoved (dxGeom geom)
 	void dGeomMoved ()
 	{
-		//dAASSERT (geom);
-
 		// if geom is offset, mark it as needing a calculate
 		if (offset_posr != null) {
 			_gflags |= GEOM_POSR_BAD;
@@ -1394,7 +1435,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		int count = 0;
 		if (ce.fn != null) {
 			if (ce.reverse) {
-				count = (ce.fn).dColliderFn (o2,o1,flags,contacts);
+				count = ce.fn.dColliderFn (o2,o1,flags,contacts);
 				for (int i=0; i<count; i++) {
 					//dContactGeom c = CONTACT(contact,skip*i);
 					DContactGeom c = contacts.get(i);
@@ -1409,9 +1450,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 					c.side1 = c.side2;
 					c.side2 = tmpint;
 				}
-			}
-			else {
-				count = (ce.fn).dColliderFn (o1,o2,flags,contacts);
+			} else {
+				count = ce.fn.dColliderFn (o1,o2,flags,contacts);
 			}
 		}
 		//else System.out.println("Collider not found: " + o1.getClass() + " / " + o2.getClass());//TODO
