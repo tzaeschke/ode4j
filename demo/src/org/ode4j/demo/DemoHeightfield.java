@@ -34,7 +34,6 @@ import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DGeomTransform;
-import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.OdeConstants;

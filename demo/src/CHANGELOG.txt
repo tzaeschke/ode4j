@@ -9,6 +9,10 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
+2010-Feb-03 Tilmann Zaschke
+		* Release of ode4j-0.11.1-j1.2
+		   ******************************************************************
+
 2010-Jan-20 Tilmann Zaschke
 		* API change renamed DContact.dSurfaceParameters to DSurfaceParameters
 		   ************ ************ ************ ************ ************
