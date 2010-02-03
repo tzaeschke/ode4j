@@ -46,9 +46,9 @@ public class GimTrimeshSphereCollision {
 //								vec3f center, GREAL radius,
 //								GIM_TRIANGLE_CONTACT_DATA * contact_data)
 	static boolean gim_triangle_sphere_collision(
-			GIM_TRIANGLE_DATA tri,
-			vec3f center, float radius,
-			GIM_TRIANGLE_CONTACT_DATA contact_data)
+			final GIM_TRIANGLE_DATA tri,
+			final vec3f center, final float radius,
+			final GIM_TRIANGLE_CONTACT_DATA contact_data)
 	{
 	    contact_data.m_point_count = 0;
 
@@ -187,12 +187,11 @@ public class GimTrimeshSphereCollision {
 	    GimDynArray<GimContact> dummycontacts = GimContact.GIM_CREATE_CONTACT_LIST();
 
 		boolean cresult;
-		int i;
 		int[] boxesresult = collision_result.GIM_DYNARRAY_POINTER();
 		GIM_TRIANGLE_CONTACT_DATA tri_contact_data = new GIM_TRIANGLE_CONTACT_DATA();
 		GIM_TRIANGLE_DATA tri_data = new GIM_TRIANGLE_DATA();
 
-		for(i=0;i<collision_result.size();i++)
+		for(int i=0;i<collision_result.size();i++)
 		{
 			trimesh.gim_trimesh_get_triangle_data(boxesresult[i],tri_data);
 			cresult = gim_triangle_sphere_collision(tri_data,center,radius,tri_contact_data);

@@ -51,8 +51,8 @@ public class DContactGeom {
 	public DVector3 pos = new DVector3();          ///< contact position
 	public DVector3 normal = new DVector3();       ///< normal vector
 	public double depth;           ///< penetration depth
-	public DxGeom g1;         ///< the colliding geoms
-	public DxGeom g2;
+	public DGeom g1;         ///< the colliding geoms
+	public DGeom g2;
 	public int side1;       ///< (to be documented)
 	public int side2;
 }

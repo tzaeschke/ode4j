@@ -100,20 +100,20 @@ class Objects_H {
 	 * connected to bodies.
 	 */
 	public static class DxPosR implements DxPosRC {
-		public DVector3 pos = new DVector3();
-		public DMatrix3 R = new DMatrix3();
-		public DMatrix3 R() {
+		public final DVector3 pos = new DVector3();
+		public final DMatrix3 R = new DMatrix3();
+		public DMatrix3C R() {
 			return R;
 		}
-		public DVector3 pos() {
+		public DVector3C pos() {
 			return pos;
 		}
 		@Override
 		protected DxPosR clone() {
 			try {
 				DxPosR p = (DxPosR) super.clone();
-				p.pos = pos.clone();
-				p.R = R.clone();
+				p.pos.set( pos );// = pos.clone();
+				p.R.set( R );// = R.clone();
 				return p;
 			} catch (CloneNotSupportedException e) {
 				throw new RuntimeException(e);

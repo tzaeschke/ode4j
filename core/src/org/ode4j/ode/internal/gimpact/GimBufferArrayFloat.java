@@ -243,21 +243,7 @@ public class GimBufferArrayFloat implements GimConstants { //formerly GBUFFER_AR
 		return c;
 	}
 
-	private static vec3f[] float2vec3f(float[] fa) {
-    	System.out.println("XYZZ THis is expensive!");
-    	vec3f[] va = new vec3f[fa.length/3];
-    	for (int i = 0; i < va.length; i++) {
-    		vec3f v = new vec3f();
-    		v.f[0] = fa[i*3];
-    		v.f[1] = fa[i*3+1];
-    		v.f[2] = fa[i*3+2];
-    		va[i] = v;
-    	}
-    	return va;
-	}
-
 	public static GimBufferArrayFloat createCopy(float[] array) {
-    	System.out.println("XYZZ THis is expensive!");
 		GimBufferArrayFloat c = new GimBufferArrayFloat();
 		vec3f[] va = new vec3f[array.length/3];
     	for (int i = 0; i < va.length; i++) {
@@ -273,8 +259,7 @@ public class GimBufferArrayFloat implements GimConstants { //formerly GBUFFER_AR
 	}
 
 	public static GimBufferArrayFloat createRef(float[] array) {
-    	System.out.println("XYZZ THis is expensive!");
-    	System.out.println("WARNING creating ref-copies of float[] is not supported.!");
+    	//System.out.println("WARNING creating ref-copies of float[] is not supported.!");//TODO
 		GimBufferArrayFloat c = new GimBufferArrayFloat();
 		vec3f[] va = new vec3f[array.length/3];
     	for (int i = 0; i < va.length; i++) {

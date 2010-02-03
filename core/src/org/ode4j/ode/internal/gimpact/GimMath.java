@@ -183,7 +183,8 @@ public class GimMath {
 //	    GIM_INV_SQRT(va,sva);
 //	    (sva) = 1.0f/(sva);
 		//return 1.0f/GIM_INV_SQRT(va);  //TODO TZ optimize like this:
-		return va*GIM_INV_SQRT(va);
+		return va*GIM_INV_SQRT(va);  //TODO TZ
+		//return (float) Math.sqrt(va);
 	}
 
 

@@ -150,7 +150,6 @@ public class GimBufferArrayInt implements GimConstants { //formerly GBUFFER_ARRA
 	}
 
 	public static GimBufferArrayInt createCopy(int[] array) {
-    	System.out.println("XYZZ THis is expensive!");
     	GimBufferArrayInt c = new GimBufferArrayInt();
     	c.m_buffer_data = Arrays.copyOf(array, array.length);
     	c.m_element_count = array.length;
@@ -158,7 +157,6 @@ public class GimBufferArrayInt implements GimConstants { //formerly GBUFFER_ARRA
 	}
 
 	public static GimBufferArrayInt createRef(int[] array) {
-    	System.out.println("XYZZ THis is expensive!");
     	GimBufferArrayInt c = new GimBufferArrayInt();
     	c.m_buffer_data = array;
     	c.m_element_count = array.length;

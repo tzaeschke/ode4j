@@ -147,7 +147,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		b._q = new DQuaternion();
 		//MAT.dSetZero (b._q.v,4);
 		b._q.set( 0, 1 );
-		b._posr.R().setIdentity();
+		b._posr.R.setIdentity();
 		b.lvel = new DVector3();
 		//MAT.dSetZero (b.lvel.v,4);
 		b.avel = new DVector3();

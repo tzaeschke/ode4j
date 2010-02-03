@@ -28,6 +28,8 @@ import java.util.List;
 
 
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Rotation.dQfromR;
 
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.math.DMatrix3;
@@ -193,12 +195,77 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 */
 	abstract void computeAABB();
 
+	/** 
+	 * Calculate oriented bounding box.
+	 * @param R Orthogonalized rotation matrix.
+	 */
+	void computeOBB(DMatrix3C R) {
+		throw new UnsupportedOperationException();
+//		//memcpy(b->posr.R, R, sizeof(dMatrix3));
+////		_posr.R.set(R);
+////		 dOrthogonalizeR(_posr.R); //TODO
+////		 DQuaternion q = new DQuaternion();
+////		 dQfromR (q, R);
+////		 dNormalize4 (q);
+//		
+//		 DVector3C pos = _aabb
+//		 DVector3C side = _aabb.getLengths();
+//		 
+//			double xrange = 0.5 * ( dFabs (R.get00() * side.get0()) +
+//					dFabs (R.get01() * side.get1()) + dFabs (R.get02() * side.get2()) );
+//			double yrange = 0.5 * ( dFabs (R.get10() * side.get0()) +
+//					dFabs (R.get11() * side.get1()) + dFabs (R.get12() * side.get2()) );
+//			double zrange = 0.5 * ( dFabs (R.get20() * side.get0()) +
+//					dFabs (R.get21() * side.get1()) + dFabs (R.get22() * side.get2()) );
+////			_aabb.v[0] = pos.v[0] - xrange;
+////			_aabb.v[1] = pos.v[0] + xrange;
+////			_aabb.v[2] = pos.v[1] - yrange;
+////			_aabb.v[3] = pos.v[1] + yrange;
+////			_aabb.v[4] = pos.v[2] - zrange;
+////			_aabb.v[5] = pos.v[2] + zrange;
+//			_aabb.set( pos.get0() - xrange,
+//					pos.get0() + xrange,
+//					pos.get1() - yrange,
+//					pos.get1() + yrange,
+//					pos.get2() - zrange,
+//					pos.get2() + zrange);
+//
+//			
+//			
+//		 
+//		// notify all attached geoms that this body has moved
+//		for (DxGeom geom2 = geom; geom2 != null; geom2 = geom2.dGeomGetBodyNext ()) {
+//			geom2.dGeomMoved ();
+//		}
+//		if (offset_posr != null) {
+//			recomputePosr();
+//			// move body such that body+offset = rotation
+//			DxPosR new_final_posr = new DxPosR();
+//			DxPosR new_body_posr = new DxPosR();
+//			//	    memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
+//			//	    memcpy(new_final_posr.R, R, sizeof(dMatrix3));
+//			new_final_posr.pos.set(_final_posr.pos);//, sizeof(dVector3));
+//			new_final_posr.R.set(R);//, sizeof(dMatrix3));
+//			getBodyPosr(offset_posr, new_final_posr, new_body_posr);
+//			body.dBodySetRotation(new_body_posr.R);
+//			body.dBodySetPosition(new_body_posr.pos);
+//		}
+//		else if (body != null) {
+//			// this will call dGeomMoved (g), so we don't have to
+//			body.dBodySetRotation (R);
+//		}
+//		else {
+//			//memcpy (g.final_posr.R,R,sizeof(dMatrix3));
+//			_final_posr.R.set(R);//,sizeof(dMatrix3));
+//			dGeomMoved ();
+//		}
+
+	}
 
 	// utility functions
 
 	// compute the AABB only if it is not current. this function manipulates
 	// the GEOM_AABB_BAD flag.
-
 	void recomputeAABB() {
 		if ((_gflags & GEOM_AABB_BAD) != 0) {
 			// our aabb functions assume final_posr is up to date
@@ -483,8 +550,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 	void computePosr()
 	{
 		// should only be recalced if we need to - ie offset from a body
-		dIASSERT(offset_posr != null);
-		dIASSERT(body != null);
+//		dIASSERT(offset_posr != null);
+//		dIASSERT(body != null);
 
 		dMULTIPLY0_331 (_final_posr.pos,body.posr().R(),offset_posr.pos);
 //		_final_posr.pos.v[0] += body._posr.pos.v[0];
@@ -1114,7 +1181,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		if (offset_posr != null)
 		{
-			dIASSERT(body != null);
+			//dIASSERT(body != null);
 			// no longer need an offset posr
 			dFreePosr(offset_posr);
 			offset_posr = null;
@@ -1443,7 +1510,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 //					c.normal.v[1] = -c.normal.v[1];
 //					c.normal.v[2] = -c.normal.v[2];
 					c.normal.scale(-1);
-					DxGeom tmp = c.g1;
+					DGeom tmp = c.g1;
 					c.g1 = c.g2;
 					c.g2 = tmp;
 					int tmpint = c.side1;

@@ -31,6 +31,9 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;
@@ -184,13 +187,13 @@ public class GimContact {
 	//! Merges duplicate contacts with minimum depth criterion
 //	void gim_merge_contacts(GDYNAMIC_ARRAY * source_contacts,
 //						GDYNAMIC_ARRAY * dest_contacts)
-	static void gim_merge_contacts(GimDynArray<GimContact> source_contacts,
-			GimDynArray<GimContact> dest_contacts)
+	static void gim_merge_contacts(final GimDynArray<GimContact> source_contacts,
+			final GimDynArray<GimContact> dest_contacts)
 	{
 	    dest_contacts.m_size = 0;
 
 		int source_count = source_contacts.size();
-		ObjArray<GimContact> psource_contacts	= source_contacts.GIM_DYNARRAY_POINTER_V();
+		ObjArray<GimContact> psource_contacts = source_contacts.GIM_DYNARRAY_POINTER_V();
 		//create keys
 		//GIM_RSORT_TOKEN * keycontacts = (GIM_RSORT_TOKEN * )gim_alloc(sizeof(GIM_RSORT_TOKEN)*source_count);
 		GIM_RSORT_TOKEN[] keycontacts = new GIM_RSORT_TOKEN[source_count];
@@ -207,6 +210,7 @@ public class GimContact {
 		//GIM_QUICK_SORT_ARRAY(GIM_RSORT_TOKEN , keycontacts, source_count, RSORT_TOKEN_COMPARATOR,GIM_DEF_EXCHANGE_MACRO);
 		GimRadixSort.GIM_QUICK_SORT_ARRAY(keycontacts, source_count, 
 				GimRadixSort.RSORT_TOKEN_COMPARATOR, GimRadixSort.GIM_DEF_EXCHANGE_MACRO);
+		//Arrays.sort(keycontacts, COMPARATOT_TZ); //TZ //TODO remove
 
 		// Merge contacts
 		GimContact pcontact = null;
@@ -229,14 +233,35 @@ public class GimContact {
 			else
 			{//add new contact
 				//dest_contacts.GIM_DYNARRAY_PUSH_EMPTY();
-				dest_contacts.GIM_DYNARRAY_PUSH_ITEM_TZ(new GimContact());
-	            pcontact = dest_contacts.GIM_DYNARRAY_POINTER_LAST();
-			    GIM_COPY_CONTACTS(pcontact, scontact);
-	        }
+//				dest_contacts.GIM_DYNARRAY_PUSH_ITEM_TZ(new GimContact());
+//	            pcontact = dest_contacts.GIM_DYNARRAY_POINTER_LAST();
+	            pcontact = new GimContact();
+	            GIM_COPY_CONTACTS(pcontact, scontact);
+	            dest_contacts.GIM_DYNARRAY_PUSH_ITEM_TZ(pcontact);
+			}
 			last_key = key;
 		}
 		//TZ GimBufferArray.gim_free(keycontacts,0);
 	}
+	
+	
+	private static final Comparator <GIM_RSORT_TOKEN>COMPARATOT_TZ = new Comparator<GIM_RSORT_TOKEN>() {
+//		private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
+//		interface GimRSortTokenComparator {
+//			int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
+//		}
+//		static final GimRSortTokenComparator RSORT_TOKEN_COMPARATOR = new GimRSortTokenComparator() {
+//			@Override public int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
+//				return RSORT_TOKEN_COMPARATOR(x, y);
+//			}
+//		};
+
+		@Override
+		public int compare(GIM_RSORT_TOKEN o1, GIM_RSORT_TOKEN o2) {
+			return (int) -(o1.m_key - o2.m_key);
+		}
+	};
+	
 
 	//! Merges to an unique contact
 //	void gim_merge_contacts_unique(GDYNAMIC_ARRAY * source_contacts,

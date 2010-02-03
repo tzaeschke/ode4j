@@ -1525,8 +1525,10 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 			}////#endif // DHEIGHTFIELD_CORNER_ORIGIN
 
 			// Rebuild AABB for O2
-			if (reComputeAABB)
+			if (reComputeAABB) {
+				//o2.computePosr();
 				o2.computeAABB();
+			}
 
 			//
 			// Collide
@@ -1618,6 +1620,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 					//memcpy( o2.aabb, aabbbak, sizeof(double)*6 );
 					o2._aabb.set(aabbbak);
 					o2.setFlags(gflagsbak);//_gflags = gflagsbak;
+					if (o2 instanceof DxGimpact)
+						o2.computeAABB();  //TODO TZ
 
 					//
 					// Transform Contacts to World Space
