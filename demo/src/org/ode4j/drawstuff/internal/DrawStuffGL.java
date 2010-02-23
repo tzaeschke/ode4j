@@ -34,6 +34,7 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
@@ -133,20 +134,20 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 		int width();
 
-		byte[] data();
+		ByteBuffer data();
 		
 	}
 	
 	private static class ImageIO implements Image {
 		private int image_width, image_height;
-		private byte[] image_data;
+		private ByteBuffer image_data;
 		//public:
 		//Image (String filename);
 		// load from PPM file
 		//  ~Image();
 		public int width() { return image_width; }
 		public int height() { return image_height; }
-		public byte[] data() { return image_data; }
+		public ByteBuffer data() { return image_data; }
 
 
 
@@ -235,10 +236,15 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 				else f.unread(c);//ungetc (c,f);
 
 				// read in rest of data
-				image_data = new byte [image_width*image_height*3];
-				if (f.read (image_data, 0, image_width*image_height*3 * 1) 
+				//image_data = new byte [image_width*image_height*3];
+				image_data = BufferUtils.createByteBuffer(image_width*image_height*3);
+				//TODO TZ read directly into direct buffer!
+				byte[] buf = new byte [image_width*image_height*3];
+				if (f.read (buf, 0, image_width*image_height*3 * 1) 
 						!= image_width*image_height*3)
 					dsError ("Can not read data from image file `%s'",filename);
+				image_data.put(buf);
+				image_data.flip();
 			} catch (IOException e) {
 				System.err.println("Error reading file: \"" + filename + "\"");
 				e.printStackTrace();
@@ -270,7 +276,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		{
 			image = new ImageIO (filename);
 //			GL11.glGenTextures (1,name);
-			IntBuffer ib = IntBuffer.wrap(new int[]{name});
+			IntBuffer ib = BufferUtils.createIntBuffer(1);
+			ib.put(name).flip();  //Necessary ? TZ
 			GL11.glGenTextures (ib);
 			name = ib.get(0);
 			GL11.glBindTexture (GL11.GL_TEXTURE_2D,name);
@@ -290,7 +297,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 //			GLX.gluBuild2DMipmaps (GL11.GL_TEXTURE_2D, 3, image.width(), image.height(),
 //			GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, image.data());
 			GLU.gluBuild2DMipmaps (GL11.GL_TEXTURE_2D, 3, image.width(), image.height(),
-			GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, ByteBuffer.wrap(image.data()));
+			GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, image.data());
 			
 			// set texture parameters - will these also be bound to the texture???
 			GL11.glTexParameterf (GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
@@ -350,33 +357,24 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 	// sets the material color, not the light color
 
+	private FloatBuffer light_ambient2 = BufferUtils.createFloatBuffer(4);
+	private FloatBuffer light_diffuse2 = BufferUtils.createFloatBuffer(4);
+	private FloatBuffer light_specular2 = BufferUtils.createFloatBuffer(4);
 	private void setColor (float r, float g, float b, float alpha)
 	{
 		//GLfloat light_ambient[4],light_diffuse[4],light_specular[4];
-		float[] light_ambient=new float[4],light_diffuse=new float[4],
-			light_specular=new float[4];
-		light_ambient[0] = r*0.3f;
-		light_ambient[1] = g*0.3f;
-		light_ambient[2] = b*0.3f;
-		light_ambient[3] = alpha;
-		light_diffuse[0] = r*0.7f;
-		light_diffuse[1] = g*0.7f;
-		light_diffuse[2] = b*0.7f;
-		light_diffuse[3] = alpha;
-		light_specular[0] = r*0.2f;
-		light_specular[1] = g*0.2f;
-		light_specular[2] = b*0.2f;
-		light_specular[3] = alpha;
-		GL11.glMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT, 
-				FloatBuffer.wrap(light_ambient));
-		GL11.glMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, 
-				FloatBuffer.wrap( light_diffuse));
-		GL11.glMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_SPECULAR, 
-				FloatBuffer.wrap( light_specular));
+		light_ambient2.put( new float[]{ r*0.3f, g*0.3f, b*0.3f, alpha }).flip();
+		light_diffuse2.put( new float[]{ r*0.7f, g*0.7f, b*0.7f, alpha }).flip();
+		light_specular2.put( new float[]{ r*0.2f, g*0.2f, b*0.2f, alpha }).flip();
+		GL11.glMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT, light_ambient2);
+		GL11.glMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, light_diffuse2);
+		GL11.glMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_SPECULAR, light_specular2);
 		GL11.glMaterialf (GL11.GL_FRONT_AND_BACK, GL11.GL_SHININESS, 5.0f);
 	}
 
 
+	private FloatBuffer matrixF = BufferUtils.createFloatBuffer(16);
+	
 //	static void setTransform (final float pos[3], final float R[12])
 	private void setTransform (final float[] pos, final float[] R)
 	{
@@ -398,10 +396,13 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		matrix[13]=pos[1];
 		matrix[14]=pos[2];
 		matrix[15]=1;
+		matrixF.put(matrix);
+		matrixF.flip();
 		GL11.glPushMatrix();
-		GL11.glMultMatrix (FloatBuffer.wrap(matrix));
+		GL11.glMultMatrix (matrixF);
 	}
 	
+	private DoubleBuffer matrixD = BufferUtils.createDoubleBuffer(16);
 	
 //	static void setTransformD (final double pos[3], final double R[12])
 	private void setTransform (final DVector3C pos, final DMatrix3C R)
@@ -424,13 +425,16 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		matrix[13]=pos.get1();
 		matrix[14]=pos.get2();
 		matrix[15]=1;
+		matrixD.put(matrix);
+		matrixD.flip();
 		GL11.glPushMatrix();
-		GL11.glMultMatrix (DoubleBuffer.wrap(matrix));
+		GL11.glMultMatrix (matrixD);
 	}
 
 
 	// set shadow projection transform
 
+	private FloatBuffer matrixSST = BufferUtils.createFloatBuffer(16);
 	private void setShadowTransform()
 	{
 		//GLfloat
@@ -441,8 +445,16 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		matrix[8]=-LIGHTX;
 		matrix[9]=-LIGHTY;
 		matrix[15]=1;
+		matrixSST.put( matrix );
+//		for (int i=0; i < 16; i++) matrixSST.put(i, 0);
+//		matrixSST.put(0, 1);
+//		matrixSST.put(5, 1);
+//		matrixSST.put(8, -LIGHTX);
+//		matrixSST.put(9, -LIGHTY);
+//		matrixSST.put(15, 1);
+		matrixSST.flip();
 		GL11.glPushMatrix();
-		GL11.glMultMatrix (FloatBuffer.wrap(matrix));
+		GL11.glMultMatrix (matrixSST);
 	}
 
 //	static void drawConvex (float *_planes,unsigned int _planecount,
@@ -1190,18 +1202,18 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	}
 
 
-	private static final FloatBuffer light_ambient = 
-		FloatBuffer.wrap(new float[]{ 0.5f, 0.5f, 0.5f, 1.0f });
-	private static final FloatBuffer light_diffuse = 
-		FloatBuffer.wrap(new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
-	private static final FloatBuffer light_specular = 
-		FloatBuffer.wrap(new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
-//	private static final GLfloat light_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
-//	private static final GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-//	private static final GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 	//static GLfloat 
-	private static final FloatBuffer light_position =  
-		FloatBuffer.wrap(new float[] { LIGHTX, LIGHTY, 1.0f, 0.0f });
+	private static final FloatBuffer light_position =  BufferUtils.createFloatBuffer(4);
+	private static final FloatBuffer light_ambient = BufferUtils.createFloatBuffer(4);
+	private static final FloatBuffer light_diffuse = BufferUtils.createFloatBuffer(4);
+	private static final FloatBuffer light_specular = BufferUtils.createFloatBuffer(4);
+	static {
+		light_position.put(new float[] { LIGHTX, LIGHTY, 1.0f, 0.0f }).flip();
+		light_ambient.put(new float[]{ 0.5f, 0.5f, 0.5f, 1.0f }).flip();
+		light_diffuse.put(new float[] { 1.0f, 1.0f, 1.0f, 1.0f }).flip();
+		light_specular.put(new float[] { 1.0f, 1.0f, 1.0f, 1.0f }).flip();
+	}
+
 	@Override
 	//	void dsDrawFrame (int width, int height, dsFunctions *fn, int pause)
 	void dsDrawFrame (int width, int height, dsFunctions fn, boolean pause)
@@ -1325,10 +1337,12 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	// C interface
 
 	// sets lighting and texture modes, sets current color
-	private static final FloatBuffer s_params_SDM =  
-		FloatBuffer.wrap(new float[]{1.0f,1.0f,0.0f,1});
-	private static final FloatBuffer t_params_SDM =  
-		FloatBuffer.wrap(new float[]{0.817f,-0.817f,0.817f,1});
+	private static final FloatBuffer s_params_SDM = BufferUtils.createFloatBuffer(4);
+	private static final FloatBuffer t_params_SDM = BufferUtils.createFloatBuffer(4);
+	static {
+		s_params_SDM.put(new float[]{1.0f,1.0f,0.0f,1}).flip();
+		t_params_SDM.put(new float[]{0.817f,-0.817f,0.817f,1}).flip();
+	}
 	private void setupDrawingMode()
 	{
 		GL11.glEnable (GL11.GL_LIGHTING);
@@ -1364,10 +1378,12 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	}
 
 
-	private static final FloatBuffer s_params_SSDM =  
-		FloatBuffer.wrap(new float[]{ground_scale,0,0,ground_ofsx});
-	private static final FloatBuffer t_params_SSDM =  
-		FloatBuffer.wrap(new float[]{0,ground_scale,0,ground_ofsy});
+	private static final FloatBuffer s_params_SSDM = BufferUtils.createFloatBuffer(4);
+	private static final FloatBuffer t_params_SSDM = BufferUtils.createFloatBuffer(4);
+	static {
+		s_params_SSDM.put(new float[]{ground_scale,0,0,ground_ofsx}).flip();
+		t_params_SSDM.put(new float[]{0,ground_scale,0,ground_ofsy}).flip();
+	}
 	private void setShadowDrawingMode()
 	{
 		GL11.glDisable (GL11.GL_LIGHTING);
