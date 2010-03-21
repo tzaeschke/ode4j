@@ -462,14 +462,16 @@ public class DrawStuff {
 	//DS_API 
 //	public static  void dsDrawTriangleD (final double pos[3], final double R[12],
 //		      final double *v0, final double *v1, final double *v2, int solid) {
-	public static void dsDrawTriangleD (final double[] pos, final double[] R,
+	/** @deprecated Not implemented */
+	public static void dsDrawTriangle (final double[] pos, final double[] R,
 			      final double[] v0, final double[] v1, final double[] v2, int solid) {
 		throw new UnsupportedOperationException();
 	}
 
 	//DS_API 
 //	public static void dsDrawLineD (final double pos1[3], final double pos2[3]) {
-	public static void dsDrawLineD (final double[] pos1, final double[] pos2) {
+	/** @deprecated Not implemented */
+	public static void dsDrawLine (final double[] pos1, final double[] pos2) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -480,7 +482,8 @@ public class DrawStuff {
 //			  double *_points,
 //			  unsigned int _pointcount,
 //			  unsigned int *_polygons) {
-	public static  void dsDrawConvexD(final double[] pos, final double[] R,
+	/** @deprecated Not implemented */
+	public static  void dsDrawConvex(final double[] pos, final double[] R,
 			  double[] _planes,
 			  int _planecount,
 			  double[] _points,
