@@ -58,12 +58,12 @@ class DemoChain1 extends dsFunctions {
 
 	/* dynamics and collision objects */
 
-	private static DWorld world;
-	private static DSpace space;
-	private static DBody[] body = new DBody[NUM];
-	private static DBallJoint[] joint = new DBallJoint[NUM-1];
-	private static DJointGroup contactgroup;
-	private static DSphere[] sphere=new DSphere[NUM];
+	private DWorld world;
+	private DSpace space;
+	private DBody[] body = new DBody[NUM];
+	private DBallJoint[] joint = new DBallJoint[NUM-1];
+	private DJointGroup contactgroup;
+	private DSphere[] sphere=new DSphere[NUM];
 
 
 	private DNearCallback myNearCallback = new DNearCallback() {
@@ -104,6 +104,7 @@ class DemoChain1 extends dsFunctions {
 	/**
 	 *  start simulation - set viewpoint 
 	 */
+	@Override
 	public void start()
 	{
 		//TODO dAllocateODEDataForThread(dAllocateMaskAll);
@@ -113,6 +114,7 @@ class DemoChain1 extends dsFunctions {
 
 	private static double angle = 0;
 	/* simulation loop */
+	@Override
 	public void step (boolean pause)
 	{
 		int i;

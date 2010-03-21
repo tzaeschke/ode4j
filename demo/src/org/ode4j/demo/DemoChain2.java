@@ -36,7 +36,6 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
-import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
@@ -55,24 +54,24 @@ class DemoChain2 extends dsFunctions {
 	private static int NUM = 10;			// number of boxes
 	private static float SIDE = (0.2f);		// side length of a box
 	private static float MASS = (1.0f);		// mass of a box
-	private static float RADIUS = (0.1732f);	// sphere radius
+	//private static float RADIUS = (0.1732f);	// sphere radius
 
 	//using namespace ode;
 
 	// dynamics and collision objects
 
-	private static DWorld world;
-	private static DSimpleSpace space;
-	private static DBody[] body=new DBody[NUM];
-	private static DBallJoint[] joint=new DBallJoint[NUM-1];
-	private static DJointGroup contactgroup;
-	private static DBox[] box=new DBox[NUM];
+	private DWorld world;
+	private DSimpleSpace space;
+	private DBody[] body=new DBody[NUM];
+	private DBallJoint[] joint=new DBallJoint[NUM-1];
+	private DJointGroup contactgroup;
+	private DBox[] box=new DBox[NUM];
 
 
 	// this is called by space.collide when two objects in space are
 	// potentially colliding.
 
-	private static void nearCallback (Object data, DGeom o1, DGeom o2)
+	private void nearCallback (Object data, DGeom o1, DGeom o2)
 	{
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
@@ -91,7 +90,7 @@ class DemoChain2 extends dsFunctions {
 		}
 	}
 
-	private static DNearCallback nearCallback = new DNearCallback() {
+	private DNearCallback nearCallback = new DNearCallback() {
 		@Override
 		public void call(Object data, DGeom o1, DGeom o2) {
 			nearCallback(data, o1, o2);
@@ -103,6 +102,7 @@ class DemoChain2 extends dsFunctions {
 
 	// start simulation - set viewpoint
 
+	@Override
 	public void start()
 	{
 		//TODO dAllocateODEDataForThread(dAllocateMaskAll);
@@ -112,11 +112,12 @@ class DemoChain2 extends dsFunctions {
 		dsSetViewpoint (xyz,hpr);
 	}
 
-	private static double angle = 0;
+	private double angle = 0;
 
 	// simulation loop
 
-	private static void simLoop (boolean pause)
+	@Override
+	public void step (boolean pause)
 	{
 		if (!pause) {
 			//    static double angle = 0;
@@ -152,7 +153,7 @@ class DemoChain2 extends dsFunctions {
 		world.setGravity (0,0,-0.5);
 		world.setCFM (1e-5);
 		space = OdeHelper.createSimpleSpace(null);
-		DPlane plane = OdeHelper.createPlane(space,0,0,1,0);
+		OdeHelper.createPlane(space,0,0,1,0);
 
 		for (i=0; i<NUM; i++) {
 			body[i] = OdeHelper.createBody(world);//.create (world);
@@ -183,11 +184,6 @@ class DemoChain2 extends dsFunctions {
 	@Override
 	public void command(char cmd) {
 		// Nothing
-	}
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
 	}
 
 	@Override
