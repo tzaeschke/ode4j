@@ -1226,7 +1226,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 			double px, double py, double pz)
 	{ dBodyAddRelForceAtRelPos (new DVector3(fx, fy, fz), new DVector3(px, py, pz)); }
 	public void addRelForceAtRelPos (DVector3C f, DVector3C p)
-	{ addRelForceAtRelPos (f, p); }
+	{ dBodyAddRelForceAtRelPos (f, p); }
 
 	public DVector3C getForce() //const
 	{ return dBodyGetForce(); }
@@ -1263,32 +1263,32 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public void getRelPointPos (double px, double py, double pz, DVector3 result) //const
 	{ dBodyGetRelPointPos (new DVector3(px, py, pz), result); }
 	public void getRelPointPos (DVector3C p, DVector3 result) //const
-	{ getRelPointPos (p, result); }
+	{ dBodyGetRelPointPos (p, result); }
 
 	public void getRelPointVel (double px, double py, double pz, DVector3 result) //const
 	{ dBodyGetRelPointVel (new DVector3(px, py, pz), result); }
 	public void getRelPointVel (DVector3C p, DVector3 result) //const
-	{ getRelPointVel (p, result); }
+	{ dBodyGetRelPointVel (p, result); }
 
 	public void getPointVel (double px, double py, double pz, DVector3 result) //const
 	{ dBodyGetPointVel ( new DVector3(px, py, pz), result); }
 	public void getPointVel (DVector3C p, DVector3 result) //const
-	{ getPointVel (p, result); }
+	{ dBodyGetPointVel (p, result); }
 
 	public void getPosRelPoint (double px, double py, double pz, DVector3 result) //const
 	{ dBodyGetPosRelPoint ( new DVector3(px, py, pz), result); }
 	public void getPosRelPoint (DVector3C p, DVector3 result) //const
-	{ getPosRelPoint (p, result); }
+	{ dBodyGetPosRelPoint (p, result); }
 
 	public void vectorToWorld (double px, double py, double pz, DVector3 result) //const
 	{ dBodyVectorToWorld ( new DVector3(px, py, pz), result); }
 	public void vectorToWorld (DVector3C p, DVector3 result) //const
-	{ vectorToWorld (p, result); }
+	{ dBodyVectorToWorld (p, result); }
 
 	public void vectorFromWorld (double px, double py, double pz, DVector3 result) //const
 	{ dBodyVectorFromWorld (new DVector3(px,py,pz),result); }
 	public void vectorFromWorld (DVector3C p, DVector3 result) //const
-	{ vectorFromWorld (p, result); }
+	{ dBodyVectorFromWorld (p, result); }
 
 	public void setFiniteRotationMode (boolean mode)
 	{ dBodySetFiniteRotationMode (mode); }
@@ -1296,7 +1296,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public void setFiniteRotationAxis (double x, double y, double z)
 	{ dBodySetFiniteRotationAxis( new DVector3(x, y, z)); }
 	public void setFiniteRotationAxis (DVector3C a)
-	{ setFiniteRotationAxis (a); }
+	{ dBodySetFiniteRotationAxis (a); }
 
 	public boolean getFiniteRotationMode() //const
 	{ return dBodyGetFiniteRotationMode (); }
