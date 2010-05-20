@@ -191,7 +191,8 @@ public interface DWorld {
 	 * @param stepsize the nr of seconds to advance the simulation.
 	 * @param maxiterations The number of iterations to perform.
 	 * @ingroup world
-	 * @deprecated Not implemented in ode4j, please use a different stepper.
+	 * @deprecated Not implemented in ode4j, please use a different stepper like
+	 * step() or quickStep().
 	 */
 	void stepFast1 (double stepsize, int maxiterations);
 
