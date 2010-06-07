@@ -1438,7 +1438,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 			final byte[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
 			double scale, double offset, double thickness, boolean bWrap ) {
-		d.buildByte( pHeightData, bCopyHeightData, width, depth, 
+		d.build( pHeightData, bCopyHeightData, width, depth, 
 				widthSamples, depthSamples, scale, offset, thickness, bWrap);
 	}
 
@@ -1491,10 +1491,11 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//				double width, double depth, int widthSamples, int depthSamples,
 	//				double scale, double offset, double thickness, int bWrap ) {
 	void dGeomHeightfieldDataBuildShort( DHeightfieldData d,
-			final short[] pHeightData, int bCopyHeightData,
+			final short[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
-			double scale, double offset, double thickness, int bWrap ) {
-		throw new UnsupportedOperationException();
+			double scale, double offset, double thickness, boolean bWrap ) {
+		d.build( pHeightData, bCopyHeightData, width, depth, 
+				widthSamples, depthSamples, scale, offset, thickness, bWrap);
 	}
 
 	/**
@@ -1548,10 +1549,11 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//				double width, double depth, int widthSamples, int depthSamples,
 	//				double scale, double offset, double thickness, int bWrap ) {
 	void dGeomHeightfieldDataBuildSingle( DHeightfieldData d,
-			final float[] pHeightData, int bCopyHeightData,
+			final float[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
-			double scale, double offset, double thickness, int bWrap ) {
-		throw new UnsupportedOperationException();
+			double scale, double offset, double thickness, boolean bWrap ) {
+		d.build( pHeightData, bCopyHeightData, width, depth, 
+				widthSamples, depthSamples, scale, offset, thickness, bWrap);
 	}
 
 	/**
@@ -1605,10 +1607,11 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//				double width, double depth, int widthSamples, int depthSamples,
 	//				double scale, double offset, double thickness, int bWrap ) {
 	void dGeomHeightfieldDataBuildDouble( DHeightfieldData d,
-			final double[] pHeightData, int bCopyHeightData,
+			final double[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
-			double scale, double offset, double thickness, int bWrap ) {
-		throw new UnsupportedOperationException();
+			double scale, double offset, double thickness, boolean bWrap ) {
+		d.build( pHeightData, bCopyHeightData, width, depth, 
+				widthSamples, depthSamples, scale, offset, thickness, bWrap);
 	}
 
 	/**
