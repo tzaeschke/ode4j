@@ -10,6 +10,14 @@ the rules for this file:
 ------------------------------------------------------------------------------
 
 
+2010-Jun-07 Tilmann Zaschke
+		* Implemented support for building DHeightfieldData from short[], 
+		  float[] and double[].
+		* API CHANGE:
+		  - Changed API of DHeightField and DHeightFieldData to accept Object
+		    instead of Object[] as type of data.
+		   ******************************************************************
+
 2010-May-30 Tilmann Zaschke
 		* Release of ode4j-0.11.1-j1.3
 		   ******************************************************************

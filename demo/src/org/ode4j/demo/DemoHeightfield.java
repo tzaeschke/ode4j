@@ -158,7 +158,7 @@ class DemoHeightfield extends dsFunctions {
 
 	private DHeightfieldGetHeight heightfield_callback = new DHeightfieldGetHeight(){
 		@Override
-		public double call(Object[] pUserData, int x, int z) {
+		public double call(Object pUserData, int x, int z) {
 			return heightfield_callback(pUserData, x, z);
 		}
 	};
@@ -629,14 +629,13 @@ class DemoHeightfield extends dsFunctions {
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld ();
-		space = OdeHelper.createSimpleSpace (null);  //TODO TZ back to hashspace!
+		space = OdeHelper.createHashSpace (null);
 		contactgroup = OdeHelper.createJointGroup ();
 		world.setGravity (0,0,-0.05);
 		world.setCFM (1e-5);
 		world.setAutoDisableFlag (true);
 		world.setContactMaxCorrectingVel (0.1);
 		world.setContactSurfaceLayer (0.001);
-		//memset (obj,0,sizeof(obj));
 		for (int i = 0; i < obj.length; i++) {
 			obj[i] = new MyObject();
 		}

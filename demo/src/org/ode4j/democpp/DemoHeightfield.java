@@ -171,7 +171,7 @@ class DemoHeightfield extends dsFunctions {
 
 	private DHeightfieldGetHeight heightfield_callback = new DHeightfieldGetHeight(){
 		@Override
-		public double call(Object[] pUserData, int x, int z) {
+		public double call(Object pUserData, int x, int z) {
 			return heightfield_callback(pUserData, x, z);
 		}
 	};
