@@ -52,7 +52,7 @@ public interface DHeightfield extends DGeom {
 		 *
 		 * @ingroup collide
 		 */
-		public double call( Object[] pUserData, int x, int z );
+		public double call( Object pUserData, int x, int z );
 	}
 	
 	/**

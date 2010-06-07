@@ -67,7 +67,7 @@ public interface DHeightfieldData {
 	 * @ingroup collide
 	 */
 	void buildCallback(
-				Object[] pUserData, DHeightfieldGetHeight pCallback,
+				Object pUserData, DHeightfieldGetHeight pCallback,
 				double width, double depth, int widthSamples, int depthSamples,
 				double scale, double offset, double thickness, boolean bWrap );
 
@@ -139,8 +139,189 @@ public interface DHeightfieldData {
 	 *
 	 * @ingroup collide
 	 */
+	void build(byte[] pHeightData,
+			boolean bCopyHeightData, double width, double depth,
+			int widthSamples, int depthSamples, double scale, double offset,
+			double thickness, boolean bWrap);
+	/**
+	 * 
+	 * @param pHeightData
+	 * @param bCopyHeightData
+	 * @param width
+	 * @param depth
+	 * @param widthSamples
+	 * @param depthSamples
+	 * @param scale
+	 * @param offset
+	 * @param thickness
+	 * @param bWrap
+	 * @deprecated Please use build(byte[], ...) instead.
+	 */
 	void buildByte(byte[] pHeightData,
 			boolean bCopyHeightData, double width, double depth,
 			int widthSamples, int depthSamples, double scale, double offset,
 			double thickness, boolean bWrap);
+	
+	/**
+	 * @brief Configures a dHeightfieldData to use height data in short format.
+	 *
+	 * Before a dHeightfieldData can be used by a geom it must be
+	 * configured to specify the format of the height data.
+	 * This call specifies that the heightfield data is stored as a rectangular
+	 * array of shorts (16 bit signed) representing the height at each sample point.
+	 *
+	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
+	 *
+	 * @param pHeightData A pointer to the height data.
+	 * @param bCopyHeightData When non-zero the height data is copied to an
+	 * internal store. When zero the height data is accessed by reference and
+	 * so must persist throughout the lifetime of the heightfield.
+	 *
+	 * @param width Specifies the total 'width' of the heightfield along
+	 * the geom's local x axis.
+	 * @param depth Specifies the total 'depth' of the heightfield along
+	 * the geom's local z axis.
+	 *
+	 * @param widthSamples Specifies the number of vertices to sample
+	 * along the width of the heightfield. Each vertex has a corresponding
+	 * height value which forms the overall shape.
+	 * Naturally this value must be at least two or more.
+	 * @param depthSamples Specifies the number of vertices to sample
+	 * along the depth of the heightfield.
+	 *
+	 * @param scale A uniform scale applied to all raw height data.
+	 * @param offset An offset applied to the scaled height data.
+	 *
+	 * @param thickness A value subtracted from the lowest height
+	 * value which in effect adds an additional cuboid to the base of the
+	 * heightfield. This is used to prevent geoms from looping under the
+	 * desired terrain and not registering as a collision. Note that the
+	 * thickness is not affected by the scale or offset parameters.
+	 *
+	 * @param bWrap If non-zero the heightfield will infinitely tile in both
+	 * directions along the local x and z axes. If zero the heightfield is
+	 * bounded from zero to width in the local x axis, and zero to depth in
+	 * the local z axis.
+	 *
+	 * @ingroup collide
+	 */
+	//ODE_API 
+	// void dGeomHeightfieldDataBuildShort( dHeightfieldData d,
+	//				final short* pHeightData, int bCopyHeightData,
+	//				double width, double depth, int widthSamples, int depthSamples,
+	//				double scale, double offset, double thickness, int bWrap ) {
+	void build( final short[] pHeightData, boolean bCopyHeightData,
+			double width, double depth, int widthSamples, int depthSamples,
+			double scale, double offset, double thickness, boolean bWrap );
+
+	/**
+	 * @brief Configures a dHeightfieldData to use height data in
+	 * single precision floating point format.
+	 *
+	 * Before a dHeightfieldData can be used by a geom it must be
+	 * configured to specify the format of the height data.
+	 * This call specifies that the heightfield data is stored as a rectangular
+	 * array of single precision floats representing the height at each
+	 * sample point.
+	 *
+	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
+	 *
+	 * @param pHeightData A pointer to the height data.
+	 * @param bCopyHeightData When non-zero the height data is copied to an
+	 * internal store. When zero the height data is accessed by reference and
+	 * so must persist throughout the lifetime of the heightfield.
+	 *
+	 * @param width Specifies the total 'width' of the heightfield along
+	 * the geom's local x axis.
+	 * @param depth Specifies the total 'depth' of the heightfield along
+	 * the geom's local z axis.
+	 *
+	 * @param widthSamples Specifies the number of vertices to sample
+	 * along the width of the heightfield. Each vertex has a corresponding
+	 * height value which forms the overall shape.
+	 * Naturally this value must be at least two or more.
+	 * @param depthSamples Specifies the number of vertices to sample
+	 * along the depth of the heightfield.
+	 *
+	 * @param scale A uniform scale applied to all raw height data.
+	 * @param offset An offset applied to the scaled height data.
+	 *
+	 * @param thickness A value subtracted from the lowest height
+	 * value which in effect adds an additional cuboid to the base of the
+	 * heightfield. This is used to prevent geoms from looping under the
+	 * desired terrain and not registering as a collision. Note that the
+	 * thickness is not affected by the scale or offset parameters.
+	 *
+	 * @param bWrap If non-zero the heightfield will infinitely tile in both
+	 * directions along the local x and z axes. If zero the heightfield is
+	 * bounded from zero to width in the local x axis, and zero to depth in
+	 * the local z axis.
+	 *
+	 * @ingroup collide
+	 */
+	//ODE_API 
+	// void dGeomHeightfieldDataBuildSingle( dHeightfieldData d,
+	//				final float* pHeightData, int bCopyHeightData,
+	//				double width, double depth, int widthSamples, int depthSamples,
+	//				double scale, double offset, double thickness, int bWrap ) {
+	void build( final float[] pHeightData, boolean bCopyHeightData,
+			double width, double depth, int widthSamples, int depthSamples,
+			double scale, double offset, double thickness, boolean bWrap );
+
+	/**
+	 * @brief Configures a dHeightfieldData to use height data in
+	 * double precision floating point format.
+	 *
+	 * Before a dHeightfieldData can be used by a geom it must be
+	 * configured to specify the format of the height data.
+	 * This call specifies that the heightfield data is stored as a rectangular
+	 * array of double precision floats representing the height at each
+	 * sample point.
+	 *
+	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
+	 *
+	 * @param pHeightData A pointer to the height data.
+	 * @param bCopyHeightData When non-zero the height data is copied to an
+	 * internal store. When zero the height data is accessed by reference and
+	 * so must persist throughout the lifetime of the heightfield.
+	 *
+	 * @param width Specifies the total 'width' of the heightfield along
+	 * the geom's local x axis.
+	 * @param depth Specifies the total 'depth' of the heightfield along
+	 * the geom's local z axis.
+	 *
+	 * @param widthSamples Specifies the number of vertices to sample
+	 * along the width of the heightfield. Each vertex has a corresponding
+	 * height value which forms the overall shape.
+	 * Naturally this value must be at least two or more.
+	 * @param depthSamples Specifies the number of vertices to sample
+	 * along the depth of the heightfield.
+	 *
+	 * @param scale A uniform scale applied to all raw height data.
+	 * @param offset An offset applied to the scaled height data.
+	 *
+	 * @param thickness A value subtracted from the lowest height
+	 * value which in effect adds an additional cuboid to the base of the
+	 * heightfield. This is used to prevent geoms from looping under the
+	 * desired terrain and not registering as a collision. Note that the
+	 * thickness is not affected by the scale or offset parameters.
+	 *
+	 * @param bWrap If non-zero the heightfield will infinitely tile in both
+	 * directions along the local x and z axes. If zero the heightfield is
+	 * bounded from zero to width in the local x axis, and zero to depth in
+	 * the local z axis.
+	 *
+	 * @ingroup collide
+	 */
+	//ODE_API 
+	// void dGeomHeightfieldDataBuildDouble( dHeightfieldData d,
+	//				final double* pHeightData, int bCopyHeightData,
+	//				double width, double depth, int widthSamples, int depthSamples,
+	//				double scale, double offset, double thickness, int bWrap ) {
+	void build( final double[] pHeightData, final boolean bCopyHeightData,
+			final double width, final double depth, 
+			final int widthSamples, final int depthSamples,
+			final double scale, final double offset, 
+			final double thickness, final boolean bWrap );
+
 }
