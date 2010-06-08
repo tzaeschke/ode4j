@@ -105,6 +105,8 @@ public interface DHeightfieldData {
 	 * configured to specify the format of the height data.
 	 * This call specifies that the heightfield data is stored as a rectangular
 	 * array of bytes (8 bit unsigned) representing the height at each sample point.
+	 * <p>
+	 * See build(double[], ...) for example code.
 	 *
 	 * @param pHeightData A pointer to the height data.
 	 * @param bCopyHeightData When non-zero the height data is copied to an
@@ -163,12 +165,14 @@ public interface DHeightfieldData {
 			double thickness, boolean bWrap);
 	
 	/**
-	 * @brief Configures a dHeightfieldData to use height data in short format.
-	 *
+	 * Configures a dHeightfieldData to use height data in short format.
+	 * <p>
 	 * Before a dHeightfieldData can be used by a geom it must be
 	 * configured to specify the format of the height data.
 	 * This call specifies that the heightfield data is stored as a rectangular
 	 * array of shorts (16 bit signed) representing the height at each sample point.
+	 * <p>
+	 * See build(double[], ...) for example code.
 	 *
 	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
 	 *
@@ -215,14 +219,16 @@ public interface DHeightfieldData {
 			double scale, double offset, double thickness, boolean bWrap );
 
 	/**
-	 * @brief Configures a dHeightfieldData to use height data in
+	 * Configures a dHeightfieldData to use height data in
 	 * single precision floating point format.
-	 *
+	 * <p>
 	 * Before a dHeightfieldData can be used by a geom it must be
 	 * configured to specify the format of the height data.
 	 * This call specifies that the heightfield data is stored as a rectangular
 	 * array of single precision floats representing the height at each
 	 * sample point.
+	 * <p>
+	 * See build(double[], ...) for example code.
 	 *
 	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
 	 *
@@ -269,14 +275,27 @@ public interface DHeightfieldData {
 			double scale, double offset, double thickness, boolean bWrap );
 
 	/**
-	 * @brief Configures a dHeightfieldData to use height data in
+	 * Configures a dHeightfieldData to use height data in
 	 * double precision floating point format.
-	 *
+	 * <p>
 	 * Before a dHeightfieldData can be used by a geom it must be
 	 * configured to specify the format of the height data.
 	 * This call specifies that the heightfield data is stored as a rectangular
 	 * array of double precision floats representing the height at each
 	 * sample point.
+	 * <p>
+	 * <pre>
+	 * DHeightfieldData heightData = OdeHelper.createHeightfieldData();
+	 * double[] data = new double[MAX_X*MAX_Z];
+	 * for (int x = 0; x < MAX_X; x++) {
+	 *    for (int z = 0; z < MAX_Z; z++) {
+	 *        data[x+MAX_X*z] = heightfieldFunction(x, z);
+	 *    }
+	 * }
+	 * heightData.build(data, false, X_WIDTH, Z_DEPTH, MAX_X, MAX_Z, 1.0, 0.0, 0.0, false );
+	 * </pre>
+	 * <p>
+	 * See DemoHeightfield for a full example.
 	 *
 	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
 	 *
