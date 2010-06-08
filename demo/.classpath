@@ -3,10 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cpp4j"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ode4j-core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ode4j-cpp"/>
 	<classpathentry kind="lib" path="/home/tille/libs/junit/junit-4.5.jar"/>
-	<classpathentry kind="lib" path="/home/tille/libs/lwjgl/jar/lwjgl.jar">
+	<classpathentry kind="lib" path="/home/tille/libs/lwjgl/jar/lwjgl.jar" sourcepath="/home/tille/libs/lwjgl-2.3/src/src/java">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/home/tille/libs/lwjgl/native/linux"/>
 		</attributes>
@@ -16,5 +15,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/home/tille/libs/lwjgl/native/linux"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/ode4j-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
