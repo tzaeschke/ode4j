@@ -49,7 +49,6 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DSapSpace.AXES;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
@@ -191,10 +190,14 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 			DMatrix3 R = new DMatrix3();
 			if (random_pos) {
-				obj[i].body.setPosition (
-						dRandReal()*2-1,dRandReal()*2-1,dRandReal()+3);
-				dRFromAxisAndAngle (R,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
-						dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
+				//We use the temp wars to achieve the same random numbers as in C++
+				double r1 = dRandReal(), r2 = dRandReal(), r3 = dRandReal(), r4; 
+				obj[i].body.setPosition ( r3*2-1, r2*2-1, r1+3 );
+						//dRandReal()*2-1,dRandReal()*2-1,dRandReal()+3);
+//				dRFromAxisAndAngle (R,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
+//						dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
+				r1 = dRandReal(); r2 = dRandReal(); r3 = dRandReal(); r4 = dRandReal();
+				dRFromAxisAndAngle (R, r4*2.0-1.0, r3*2.0-1.0, r2*2.0-1.0, r1*10.0-5.0);
 			}
 			else {
 				double maxheight = 0;
@@ -469,7 +472,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();
 
-		space = OdeHelper.createSapSpace(AXES.XYZ);//SimpleSpace();
+		space = OdeHelper.createSimpleSpace();
 		contactgroup = OdeHelper.createJointGroup();
 		world.setGravity (0,0,-0.5);
 		world.setCFM (1e-5);
