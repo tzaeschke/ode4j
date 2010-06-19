@@ -618,8 +618,9 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 
 
-	public final void setIdentity() {
+	public final DMatrix3 setIdentity() {
 		eqIdentity();
+		return this;
 	}
 
 	
