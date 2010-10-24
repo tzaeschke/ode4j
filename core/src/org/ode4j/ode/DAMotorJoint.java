@@ -182,7 +182,11 @@ public interface DAMotorJoint extends DJoint {
 	void setParamFMax2(double d);
 	void setParamFMax3(double d);
 	void setParamLoStop(double d);
+	void setParamLoStop2(double d);
+	void setParamLoStop3(double d);
 	void setParamHiStop(double d);
+	void setParamHiStop2(double d);
+	void setParamHiStop3(double d);
 	void setParamVel(double d);
 	void setParamVel2(double d);
 	void setParamVel3(double d);
