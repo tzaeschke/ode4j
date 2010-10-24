@@ -9,7 +9,8 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
-
+2010-Oct-24 Tilmann Zaschke
+		* Added missing Lo/HiStop functions in DAMotorJoint (Bug ID: 3088463)
 
 2010-Jun-19 Tilmann Zaschke
 		* Release of ode4j-0.11.1-j1.4
