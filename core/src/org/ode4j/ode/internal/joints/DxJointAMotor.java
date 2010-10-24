@@ -598,6 +598,18 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 
 	@Override
+	public void setParamHiStop(double d) {
+		dJointSetAMotorParam(PARAM_N.dParamHiStop1, d);
+	}
+
+
+	@Override
+	public void setParamLoStop(double d) {
+		dJointSetAMotorParam(PARAM_N.dParamLoStop1, d);
+	}
+
+
+	@Override
 	public void setParamVel(double d) {
 		dJointSetAMotorParam(PARAM_N.dParamVel1, d);
 	}
