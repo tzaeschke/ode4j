@@ -119,7 +119,7 @@ public class TestDMatrix3 extends OdeTestCase {
 
 		//TODO This ",0" should be removed at some point (?)
 		x = new DMatrix3();
-		x.set12( new double[]{ 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0} , 0);
+		x.set( new double[]{ 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0} , 0);
 		assertEquals(x, x2);
 
 //		x = new DMatrix3();
