@@ -38,21 +38,102 @@ import org.ode4j.math.DMatrix3.DVector3RowTView;
  */
 public interface DMatrix3C {
 
-	public DMatrix3 clone();
+	/**
+	 * Creates a deep copy of this DMatrix3C object.
+	 * 
+	 * @return the new instance.
+	 */
+	DMatrix3 clone();
 
-	public DVector3 columnAsNewVector(int column);
+	/**
+	 * Return a new {@link DVector3C} object containing the values of the
+	 * specified column. For padding=4 this uses the elements c, 4+c, 8+c;
+	 * 
+	 * @param column
+	 *            - the column index.
+	 * @return the new DVector3.
+	 */
+	DVector3C columnAsNewVector(int column);
 
-	public double dotCol(int col, DVector3C b);
+	/**
+	 * Calculates the dot product of the the specified column of this DMatrix3
+	 * with the given {@link DVector3C}.
+	 * 
+	 * @param col
+	 *            - the column index.
+	 * @param v
+	 *            - the DVector3C to dot.
+	 * @return the calculated dot product.
+	 */
+	double dotCol(int col, DVector3C v);
 
-	public double dotColCol(int col, DMatrix3C m2, int col2);
+	/**
+	 * Calculates the dot product of the the specified column of this DMatrix3
+	 * with the specified column of another DMatrix3C.
+	 * 
+	 * @param col
+	 *            - the column index of this DMatrix3.
+	 * @param m2
+	 *            - the other DMatrix3C.
+	 * @param col2
+	 *            - the column index of the other DMatrix3C.
+	 * @return the calculated dot product.
+	 */
+	double dotColCol(int col, DMatrix3C m2, int col2);
 
-	public double dotRow(int row, double[] c, int cOfs);
+	/**
+	 * Calculates the dot product of the the specified row of this DMatrix3 with
+	 * the given double array at the given offset.
+	 * 
+	 * @param row
+	 *            - the row of this DMatrix3.
+	 * @param c
+	 *            - the double array.
+	 * @param arrayOffset
+	 *            - the offset of the double array.
+	 * @return the calculated dot product.
+	 */
+	double dotRow(int row, double[] c, int arrayOffset);
 
-	public double dotRow(int row, DVector3C b);
+	/**
+	 * Calculates the dot product of the the specified row of this DMatrix3 with
+	 * the given {@link DVector3C}.
+	 * 
+	 * @param row
+	 *            - the row index.
+	 * @param v
+	 *            - the DVector3C.
+	 * @return the calculated dot product.
+	 */
+	double dotRow(int row, DVector3C v);
 
-	public double dotRowCol(int row, DMatrix3C m2, int col2);
+	/**
+	 * Calculates the dot product of the the specified row of this DMatrix3 with
+	 * the specified column of another {@link DMatrix3C}.
+	 * 
+	 * @param row
+	 *            - the row index of this DMatrix3.
+	 * @param m2
+	 *            - the other DMatrix3C.
+	 * @param col
+	 *            - the column index of the other DMatrix3C.
+	 * @return the calculated dot product.
+	 */
+	double dotRowCol(int row, DMatrix3C m2, int col);
 
-	public double dotRowRow(int row, DMatrix3C m2, int row2);
+	/**
+	 * Calculates the dot product of the the specified row of this DMatrix3 with
+	 * the specified row of another {@link DMatrix3C}.
+	 * 
+	 * @param row
+	 *            - the row index of this DMatrix3.
+	 * @param m
+	 *            - the other DMatrix3C.
+	 * @param row2
+	 *            - the row index of the other DMatrix3C.
+	 * @return the calculated dot product.
+	 */
+	double dotRowRow(int row, DMatrix3C m, int row2);
 
 	/**
 	 * @param i
@@ -61,31 +142,174 @@ public interface DMatrix3C {
 	 *            column
 	 * @return Value at (i,j).
 	 */
-	public double get(int i, int j);
+	double get(int i, int j);
 
-	public double get00();
+	/**
+	 * Gets the value at index (0, 0).
+	 * 
+	 * @return the value at index (0, 0).
+	 */
+	double get00();
 
-	public double get01();
+	/**
+	 * Gets the value at index (0, 1).
+	 * 
+	 * @return the value at index (0, 1).
+	 */
+	double get01();
 
-	public double get02();
+	/**
+	 * Gets the value at index (0, 2).
+	 * 
+	 * @return the value at index (0, 2).
+	 */
+	double get02();
 
-	public double get10();
+	/**
+	 * Gets the value at index (1, 0).
+	 * 
+	 * @return the value at index (1, 0).
+	 */
+	double get10();
 
-	public double get11();
+	/**
+	 * Gets the value at index (1, 1).
+	 * 
+	 * @return the value at index (1, 1).
+	 */
+	double get11();
 
-	public double get12();
+	/**
+	 * Gets the value at index (1, 2).
+	 * 
+	 * @return the value at index (1, 2).
+	 */
+	double get12();
 
-	public double get20();
+	/**
+	 * Gets the value at index (2, 0).
+	 * 
+	 * @return the value at index (2, 0).
+	 */
+	double get20();
 
-	public double get21();
+	/**
+	 * Gets the value at index (2, 1).
+	 * 
+	 * @return the value at index (2, 1).
+	 */
+	double get21();
 
-	public double get22();
+	/**
+	 * Gets the value at index (2, 2).
+	 * 
+	 * @return the value at index (2, 2).
+	 */
+	double get22();
 
-	public float[] toFloatArray();
+	/**
+	 * Sets the value at index (0, 0).
+	 * 
+	 * @param d
+	 *            - the value to set.
+	 */
+	void set00(double d);
 
-	public float[] toFloatArray12();
+	/**
+	 * Sets the value at index (0, 1).
+	 * 
+	 * @param d
+	 *            - the value to set.
+	 */
+	void set01(double d);
 
-	public DVector3ColView viewCol(int col);
+	/**
+	 * Sets the value at index (0, 2).
+	 * 
+	 * @param d
+	 *            - the value to set.
+	 */
+	void set02(double d);
 
-	public DVector3RowTView viewRowT(int row);
+	/**
+	 * Sets the value at index (1, 0).
+	 * 
+	 * @param d
+	 *            - the value to set.
+	 */
+	void set10(double d);
+
+	/**
+	 * Sets the value at index (1, 1).
+	 * 
+	 * @param d
+	 *            - the value to set.
+	 */
+	void set11(double d);
+
+	/**
+	 * Sets the value at index (1, 2).
+	 * 
+	 * @param d
+	 *            - the value to set.
+	 */
+	void set12(double d);
+
+	/**
+	 * Sets the value at index (2, 0).
+	 * 
+	 * @param d
+	 *            - the value to set.
+	 */
+	void set20(double d);
+
+	/**
+	 * Sets the value at index (2, 1).
+	 * 
+	 * @param d
+	 *            - the value to set.
+	 */
+	void set21(double d);
+
+	/**
+	 * Sets the value at index (2, 2).
+	 * 
+	 * @param d
+	 *            - the value to set.
+	 */
+	void set22(double d);
+
+	/**
+	 * Gets the 3x3 float array representation of this DMatrix3C object.
+	 * 
+	 * @return the float array representation.
+	 */
+	float[] toFloatArray();
+
+	/**
+	 * Gets the 3x4 float array representation of this DMatrix3C object.
+	 * 
+	 * @return the float array representation.
+	 */
+	float[] toFloatArray2();
+
+	/**
+	 * Gets a {@link DVector3ColView} object for the specified column of the
+	 * DMatrix3C.
+	 * 
+	 * @param col
+	 *            - the column index.
+	 * @return the DVector3ColView object.
+	 */
+	DVector3ColView viewCol(int col);
+
+	/**
+	 * Gets a {@link DVector3RowTView} object for the specified column of the
+	 * DMatrix3C.
+	 * 
+	 * @param row
+	 *            - the row index.
+	 * @return the DVector3RowTView object.
+	 */
+	DVector3RowTView viewRowT(int row);
 }

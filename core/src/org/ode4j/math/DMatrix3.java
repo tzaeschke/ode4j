@@ -49,37 +49,37 @@ public final class DMatrix3 implements DMatrix3C {
 
 		@Override
 		public double get(int i) {
-			return v[i * MAX_J + _column];
+			return values[i * MAX_J + _column];
 		}
 
 		@Override
 		public double get0() {
-			return v[_column];
+			return values[_column];
 		}
 
 		@Override
 		public double get1() {
-			return v[1 * MAX_J + _column];
+			return values[1 * MAX_J + _column];
 		}
 
 		@Override
 		public double get2() {
-			return v[2 * MAX_J + _column];
+			return values[2 * MAX_J + _column];
 		}
 
 		@Override
 		public void set0(double d) {
-			v[_column] = d;
+			values[_column] = d;
 		}
 
 		@Override
 		public void set1(double d) {
-			v[1 * MAX_J + _column] = d;
+			values[1 * MAX_J + _column] = d;
 		}
 
 		@Override
 		public void set2(double d) {
-			v[2 * MAX_J + _column] = d;
+			values[2 * MAX_J + _column] = d;
 		}
 
 		@Override
@@ -110,37 +110,37 @@ public final class DMatrix3 implements DMatrix3C {
 
 		@Override
 		public double get(int i) {
-			return v[_ofs + i];
+			return values[_ofs + i];
 		}
 
 		@Override
 		public double get0() {
-			return v[_ofs];
+			return values[_ofs];
 		}
 
 		@Override
 		public double get1() {
-			return v[1 + _ofs];
+			return values[1 + _ofs];
 		}
 
 		@Override
 		public double get2() {
-			return v[2 + _ofs];
+			return values[2 + _ofs];
 		}
 
 		@Override
 		public void set0(double d) {
-			v[_ofs] = d;
+			values[_ofs] = d;
 		}
 
 		@Override
 		public void set1(double d) {
-			v[_ofs + 1] = d;
+			values[_ofs + 1] = d;
 		}
 
 		@Override
 		public void set2(double d) {
-			v[_ofs + 2] = d;
+			values[_ofs + 2] = d;
 		}
 
 		@Override
@@ -160,7 +160,7 @@ public final class DMatrix3 implements DMatrix3C {
 		return new DMatrix3(a);
 	}
 
-	private final double[] v;
+	private final double[] values;
 
 	/**
 	 * The maximum number of rows in a DMatrix3.
@@ -186,7 +186,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Creates a new empty DMatrix3.
 	 */
 	public DMatrix3() {
-		v = new double[MAX_I * MAX_J];
+		values = new double[MAX_I * MAX_J];
 	}
 
 	/**
@@ -232,15 +232,15 @@ public final class DMatrix3 implements DMatrix3C {
 	public DMatrix3(double d, double e, double f, double g, double h, double i,
 			double j, double k, double l) {
 		this();
-		v[0] = d;
-		v[1] = e;
-		v[2] = f;
-		v[4] = g;
-		v[5] = h;
-		v[6] = i;
-		v[8] = j;
-		v[9] = k;
-		v[10] = l;
+		values[0] = d;
+		values[1] = e;
+		values[2] = f;
+		values[4] = g;
+		values[5] = h;
+		values[6] = i;
+		values[8] = j;
+		values[9] = k;
+		values[10] = l;
 	}
 
 	/**
@@ -281,18 +281,18 @@ public final class DMatrix3 implements DMatrix3C {
 	public DMatrix3(double d, double e, double f, double g, double h, double i,
 			double j, double k, double l, double m, double n, double o) {
 		this();
-		v[0] = d;
-		v[1] = e;
-		v[2] = f;
-		v[3] = g;
-		v[4] = h;
-		v[5] = i;
-		v[6] = j;
-		v[7] = k;
-		v[8] = l;
-		v[9] = m;
-		v[10] = n;
-		v[11] = o;
+		values[0] = d;
+		values[1] = e;
+		values[2] = f;
+		values[3] = g;
+		values[4] = h;
+		values[5] = i;
+		values[6] = j;
+		values[7] = k;
+		values[8] = l;
+		values[9] = m;
+		values[10] = n;
+		values[11] = o;
 		if (g != 0 || k != 0 || o != 0) {
 			System.err.println("Warning: 4th column in dMatrix3 != 0 !");
 		}
@@ -304,7 +304,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param a
 	 */
 	private DMatrix3(double[] a) {
-		v = a;
+		values = a;
 	}
 
 	/**
@@ -342,29 +342,19 @@ public final class DMatrix3 implements DMatrix3C {
 	 *            - the value to add.
 	 */
 	public void add(int i, int j, double d) {
-		v[i * MAX_J + j] += d;
+		values[i * MAX_J + j] += d;
 	}
 
-	/**
-	 * Returns a clone of this DMatrix3.
-	 */
 	@Override
 	public DMatrix3 clone() {
 		return new DMatrix3(this);
 	}
 
-	/**
-	 * Return a new dVector containing the specified column. For padding=4 this
-	 * uses the elements c, 4+c, 8+c;
-	 * 
-	 * @param c
-	 *            Column (0, 1, 2)
-	 * @return A new dVector.
-	 */
 	@Override
-	public DVector3 columnAsNewVector(int c) {
+	public DVector3C columnAsNewVector(int column) {
 		// return new dVector3(get(0, c), get(1, c), get(2, c));
-		return new DVector3(v[c], v[c + MAX_J], v[c + 2 * MAX_J]);
+		return new DVector3(values[column], values[column + MAX_J],
+				values[column + 2 * MAX_J]);
 	}
 
 	/**
@@ -403,92 +393,58 @@ public final class DMatrix3 implements DMatrix3C {
 		eqMul(B, C);
 	}
 
-	/**
-	 * Calculates the dot product of the the specified column of this DMatrix3
-	 * with the given {@link DVector3C}.
-	 * 
-	 * @param col
-	 *            - the column index.
-	 * @param v3
-	 *            - the DVector3C to dot.
-	 */
 	@Override
-	public final double dotCol(int col, DVector3C v3) {
+	public final double dotCol(int col, DVector3C v) {
 		if (col == 0) {
-			return get00() * v3.get0() + get10() * v3.get1() + get20()
-					* v3.get2();
+			return get00() * v.get0() + get10() * v.get1() + get20() * v.get2();
 		} else if (col == 1) {
-			return get01() * v3.get0() + get11() * v3.get1() + get21()
-					* v3.get2();
+			return get01() * v.get0() + get11() * v.get1() + get21() * v.get2();
 		} else if (col == 2) {
-			return get02() * v3.get0() + get12() * v3.get1() + get22()
-					* v3.get2();
+			return get02() * v.get0() + get12() * v.get1() + get22() * v.get2();
 		} else {
 			throw new IllegalArgumentException("col=" + col);
 		}
 	}
 
-	/**
-	 * Calculates the dot product of the the specified column of this DMatrix3
-	 * with the specified column of another DMatrix3C.
-	 * 
-	 * @param col
-	 *            - the column index of this DMatrix3.
-	 * @param m2
-	 *            - the other DMatrix3C.
-	 * @param col2
-	 *            - the column index of the other DMatrix3C.
-	 */
 	@Override
-	public final double dotColCol(int col, DMatrix3C m2, int col2) {
+	public final double dotColCol(int col, DMatrix3C m, int col2) {
 		if (col == 0) {
 			if (col2 == 0) {
-				return get00() * m2.get00() + get10() * m2.get10() + get20()
-						* m2.get20();
+				return get00() * m.get00() + get10() * m.get10() + get20()
+						* m.get20();
 			} else if (col2 == 1) {
-				return get00() * m2.get01() + get10() * m2.get11() + get20()
-						* m2.get21();
+				return get00() * m.get01() + get10() * m.get11() + get20()
+						* m.get21();
 			} else if (col2 == 2) {
-				return get00() * m2.get02() + get10() * m2.get12() + get20()
-						* m2.get22();
+				return get00() * m.get02() + get10() * m.get12() + get20()
+						* m.get22();
 			}
 		} else if (col == 1) {
 			if (col2 == 0) {
-				return get01() * m2.get00() + get11() * m2.get10() + get21()
-						* m2.get20();
+				return get01() * m.get00() + get11() * m.get10() + get21()
+						* m.get20();
 			} else if (col2 == 1) {
-				return get01() * m2.get01() + get11() * m2.get11() + get21()
-						* m2.get21();
+				return get01() * m.get01() + get11() * m.get11() + get21()
+						* m.get21();
 			} else if (col2 == 2) {
-				return get01() * m2.get02() + get11() * m2.get12() + get21()
-						* m2.get22();
+				return get01() * m.get02() + get11() * m.get12() + get21()
+						* m.get22();
 			}
 		} else if (col == 2) {
 			if (col2 == 0) {
-				return get02() * m2.get00() + get12() * m2.get10() + get22()
-						* m2.get20();
+				return get02() * m.get00() + get12() * m.get10() + get22()
+						* m.get20();
 			} else if (col2 == 1) {
-				return get02() * m2.get01() + get12() * m2.get11() + get22()
-						* m2.get21();
+				return get02() * m.get01() + get12() * m.get11() + get22()
+						* m.get21();
 			} else if (col2 == 2) {
-				return get02() * m2.get02() + get12() * m2.get12() + get22()
-						* m2.get22();
+				return get02() * m.get02() + get12() * m.get12() + get22()
+						* m.get22();
 			}
 		}
 		throw new IllegalArgumentException("col=" + col + " col2=" + col2);
 	}
 
-	/**
-	 * Calculates the dot product of the the specified row of this DMatrix3 with
-	 * the given double array at the given offset.
-	 * 
-	 * @param row
-	 *            - the row of this DMatrix3.
-	 * @param c
-	 *            - the double array.
-	 * @param arrayOffset
-	 *            - the offset of the double array.
-	 */
 	@Override
 	public final double dotRow(int row, double[] c, int arrayOffset) {
 		if (row == 0) {
@@ -505,26 +461,14 @@ public final class DMatrix3 implements DMatrix3C {
 		}
 	}
 
-	/**
-	 * Calculates the dot product of the the specified row of this DMatrix3 with
-	 * the given {@link DVector3C}.
-	 * 
-	 * @param row
-	 *            - the row index.
-	 * @param v3
-	 *            - the DVector3C.
-	 */
 	@Override
-	public final double dotRow(int row, DVector3C v3) {
+	public final double dotRow(int row, DVector3C v) {
 		if (row == 0) {
-			return get00() * v3.get0() + get01() * v3.get1() + get02()
-					* v3.get2();
+			return get00() * v.get0() + get01() * v.get1() + get02() * v.get2();
 		} else if (row == 1) {
-			return get10() * v3.get0() + get11() * v3.get1() + get12()
-					* v3.get2();
+			return get10() * v.get0() + get11() * v.get1() + get12() * v.get2();
 		} else if (row == 2) {
-			return get20() * v3.get0() + get21() * v3.get1() + get22()
-					* v3.get2();
+			return get20() * v.get0() + get21() * v.get1() + get22() * v.get2();
 		} else {
 			throw new IllegalArgumentException("row=" + row);
 		}
@@ -634,101 +578,79 @@ public final class DMatrix3 implements DMatrix3C {
 	// }
 	// }
 
-	/**
-	 * Calculates the dot product of the the specified row of this DMatrix3 with
-	 * the specified column of another {@link DMatrix3C}.
-	 * 
-	 * @param row
-	 *            - the row index of this DMatrix3.
-	 * @param m2
-	 *            - the other DMatrix3C.
-	 * @param col
-	 *            - the column index of the other DMatrix3C.
-	 */
 	@Override
-	public double dotRowCol(int row, DMatrix3C m2, int col) {
+	public double dotRowCol(int row, DMatrix3C m, int col) {
 		if (row == 0) {
 			if (col == 0) {
-				return get00() * m2.get00() + get01() * m2.get10() + get02()
-						* m2.get20();
+				return get00() * m.get00() + get01() * m.get10() + get02()
+						* m.get20();
 			} else if (col == 1) {
-				return get00() * m2.get01() + get01() * m2.get11() + get02()
-						* m2.get21();
+				return get00() * m.get01() + get01() * m.get11() + get02()
+						* m.get21();
 			} else if (col == 2) {
-				return get00() * m2.get02() + get01() * m2.get12() + get02()
-						* m2.get22();
+				return get00() * m.get02() + get01() * m.get12() + get02()
+						* m.get22();
 			}
 		} else if (row == 1) {
 			if (col == 0) {
-				return get10() * m2.get00() + get11() * m2.get10() + get12()
-						* m2.get20();
+				return get10() * m.get00() + get11() * m.get10() + get12()
+						* m.get20();
 			} else if (col == 1) {
-				return get10() * m2.get01() + get11() * m2.get11() + get12()
-						* m2.get21();
+				return get10() * m.get01() + get11() * m.get11() + get12()
+						* m.get21();
 			} else if (col == 2) {
-				return get10() * m2.get02() + get11() * m2.get12() + get12()
-						* m2.get22();
+				return get10() * m.get02() + get11() * m.get12() + get12()
+						* m.get22();
 			}
 		} else if (row == 2) {
 			if (col == 0) {
-				return get20() * m2.get00() + get21() * m2.get10() + get22()
-						* m2.get20();
+				return get20() * m.get00() + get21() * m.get10() + get22()
+						* m.get20();
 			} else if (col == 1) {
-				return get20() * m2.get01() + get21() * m2.get11() + get22()
-						* m2.get21();
+				return get20() * m.get01() + get21() * m.get11() + get22()
+						* m.get21();
 			} else if (col == 2) {
-				return get20() * m2.get02() + get21() * m2.get12() + get22()
-						* m2.get22();
+				return get20() * m.get02() + get21() * m.get12() + get22()
+						* m.get22();
 			}
 		}
 		throw new IllegalArgumentException("row=" + row + " col2=" + col);
 	}
 
-	/**
-	 * Calculates the dot product of the the specified row of this DMatrix3 with
-	 * the specified row of another {@link DMatrix3C}.
-	 * 
-	 * @param row
-	 *            - the row index of this DMatrix3.
-	 * @param m2
-	 *            - the other DMatrix3C.
-	 * @param row2
-	 *            - the row index of the other DMatrix3C.
-	 */
 	@Override
-	public double dotRowRow(int row, DMatrix3C m2, int row2) {
+	public double dotRowRow(int row, DMatrix3C m, int row2) {
 		if (row == 0) {
 			if (row2 == 0) {
-				return get00() * m2.get00() + get01() * m2.get01() + get02()
-						* m2.get02();
+				return get00() * m.get00() + get01() * m.get01() + get02()
+						* m.get02();
 			} else if (row2 == 1) {
-				return get00() * m2.get10() + get01() * m2.get11() + get02()
-						* m2.get12();
+				return get00() * m.get10() + get01() * m.get11() + get02()
+						* m.get12();
 			} else if (row2 == 2) {
-				return get00() * m2.get20() + get01() * m2.get21() + get02()
-						* m2.get22();
+				return get00() * m.get20() + get01() * m.get21() + get02()
+						* m.get22();
 			}
 		} else if (row == 1) {
 			if (row2 == 0) {
-				return get10() * m2.get00() + get11() * m2.get01() + get12()
-						* m2.get02();
+				return get10() * m.get00() + get11() * m.get01() + get12()
+						* m.get02();
 			} else if (row2 == 1) {
-				return get10() * m2.get10() + get11() * m2.get11() + get12()
-						* m2.get12();
+				return get10() * m.get10() + get11() * m.get11() + get12()
+						* m.get12();
 			} else if (row2 == 2) {
-				return get10() * m2.get20() + get11() * m2.get21() + get12()
-						* m2.get22();
+				return get10() * m.get20() + get11() * m.get21() + get12()
+						* m.get22();
 			}
 		} else if (row == 2) {
 			if (row2 == 0) {
-				return get20() * m2.get00() + get21() * m2.get01() + get22()
-						* m2.get02();
+				return get20() * m.get00() + get21() * m.get01() + get22()
+						* m.get02();
 			} else if (row2 == 1) {
-				return get20() * m2.get10() + get21() * m2.get11() + get22()
-						* m2.get12();
+				return get20() * m.get10() + get21() * m.get11() + get22()
+						* m.get12();
 			} else if (row2 == 2) {
-				return get20() * m2.get20() + get21() * m2.get21() + get22()
-						* m2.get22();
+				return get20() * m.get20() + get21() * m.get21() + get22()
+						* m.get22();
 			}
 		}
 		throw new IllegalArgumentException("row=" + row + " row2=" + row2);
@@ -849,8 +771,8 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Sets all values in this DMatrix3 to zero.
 	 */
 	public final void eqZero() {
-		for (int i = 0; i < v.length; i++) {
-			v[i] = 0;
+		for (int i = 0; i < values.length; i++) {
+			values[i] = 0;
 		}
 	}
 
@@ -863,57 +785,57 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @return the value at the specified index.
 	 */
 	public double get(int i) {
-		return v[i];
+		return values[i];
 	}
 
 	@Override
 	public double get(int i, int j) {
-		return v[i * MAX_J + j];
+		return values[i * MAX_J + j];
 	}
 
 	@Override
 	public final double get00() {
-		return v[0];
+		return values[0];
 	}
 
 	@Override
 	public final double get01() {
-		return v[1];
+		return values[1];
 	}
 
 	@Override
 	public final double get02() {
-		return v[2];
+		return values[2];
 	}
 
 	@Override
 	public final double get10() {
-		return v[1 * MAX_J + 0];
+		return values[1 * MAX_J + 0];
 	}
 
 	@Override
 	public final double get11() {
-		return v[1 * MAX_J + 1];
+		return values[1 * MAX_J + 1];
 	}
 
 	@Override
 	public final double get12() {
-		return v[1 * MAX_J + 2];
+		return values[1 * MAX_J + 2];
 	}
 
 	@Override
 	public final double get20() {
-		return v[2 * MAX_J + 0];
+		return values[2 * MAX_J + 0];
 	}
 
 	@Override
 	public final double get21() {
-		return v[2 * MAX_J + 1];
+		return values[2 * MAX_J + 1];
 	}
 
 	@Override
 	public final double get22() {
-		return v[2 * MAX_J + 2];
+		return values[2 * MAX_J + 2];
 	}
 
 	/**
@@ -951,8 +873,8 @@ public final class DMatrix3 implements DMatrix3C {
 	 *            - the scaling factor.
 	 */
 	public void scale(double scale) {
-		for (int i = 0; i < v.length; i++) {
-			v[i] *= scale;
+		for (int i = 0; i < values.length; i++) {
+			values[i] *= scale;
 		}
 	}
 
@@ -1026,7 +948,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 *            - the offset from which to start copying.
 	 */
 	public void set(double[] da, int da_ofs) {
-		System.arraycopy(da, da_ofs, v, 0, da.length);
+		System.arraycopy(da, da_ofs, values, 0, da.length);
 	}
 
 	/**
@@ -1040,97 +962,52 @@ public final class DMatrix3 implements DMatrix3C {
 	 *            - the value to set.
 	 */
 	public void set(int i, int j, double a) {
-		v[i * MAX_J + j] = a;
+		values[i * MAX_J + j] = a;
 	}
 
-	/**
-	 * Sets the value at index (0, 0).
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
+	@Override
 	public final void set00(double d) {
-		v[0] = d;
+		values[0] = d;
 	}
 
-	/**
-	 * Sets the value at index (0, 1).
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
+	@Override
 	public final void set01(double d) {
-		v[1] = d;
+		values[1] = d;
 	}
 
-	/**
-	 * Sets the value at index (0, 2).
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
+	@Override
 	public final void set02(double d) {
-		v[2] = d;
+		values[2] = d;
 	}
 
-	/**
-	 * Sets the value at index (1, 0).
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
+	@Override
 	public final void set10(double d) {
-		v[1 * MAX_J + 0] = d;
+		values[1 * MAX_J + 0] = d;
 	}
 
-	/**
-	 * Sets the value at index (1, 1).
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
+	@Override
 	public final void set11(double d) {
-		v[1 * MAX_J + 1] = d;
+		values[1 * MAX_J + 1] = d;
 	}
 
-	/**
-	 * Sets the value at index (1, 2).
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
+	@Override
 	public final void set12(double d) {
-		v[1 * MAX_J + 2] = d;
+		values[1 * MAX_J + 2] = d;
 	}
 
-	/**
-	 * Sets the value at index (2, 0).
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
+	@Override
 	public final void set20(double d) {
-		v[2 * MAX_J + 0] = d;
+		values[2 * MAX_J + 0] = d;
 	}
 
-	/**
-	 * Sets the value at index (2, 1).
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
+	@Override
 	public final void set21(double d) {
-		v[2 * MAX_J + 1] = d;
+		values[2 * MAX_J + 1] = d;
 	}
 
-	/**
-	 * Sets the value at index (2, 2).
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
+	@Override
 	public final void set22(double d) {
-		v[2 * MAX_J + 2] = d;
+		values[2 * MAX_J + 2] = d;
 	}
 
 	/**
@@ -1144,9 +1021,9 @@ public final class DMatrix3 implements DMatrix3C {
 	 */
 	public void setCol(int i, DVector3C v3) {
 		int ofs = i * 4;
-		v[ofs] = v3.get0();
-		v[ofs + 1] = v3.get1();
-		v[ofs + 2] = v3.get2(); // v[ofs+3] = 0;//v3.v[3];
+		values[ofs] = v3.get0();
+		values[ofs + 1] = v3.get1();
+		values[ofs + 2] = v3.get2(); // v[ofs+3] = 0;//v3.v[3];
 	}
 
 	/**
@@ -1170,9 +1047,9 @@ public final class DMatrix3 implements DMatrix3C {
 	 *            - the DVector3C object.
 	 */
 	public void setOfs(int ofs, DVector3C v3) {
-		v[ofs] = v3.get0();
-		v[ofs + 1] = v3.get1();
-		v[ofs + 2] = v3.get2(); // v[ofs+3] = 0;//v3.v[3];
+		values[ofs] = v3.get0();
+		values[ofs + 1] = v3.get1();
+		values[ofs + 2] = v3.get2(); // v[ofs+3] = 0;//v3.v[3];
 	}
 
 	/**
@@ -1193,7 +1070,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 *            - the value to subtract.
 	 */
 	public void sub(int i, int j, double d) {
-		v[i * MAX_J + j] -= d;
+		values[i * MAX_J + j] -= d;
 	}
 
 	@Override
@@ -1204,7 +1081,7 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 
 	@Override
-	public final float[] toFloatArray12() {
+	public final float[] toFloatArray2() {
 		return new float[] { (float) get00(), (float) get01(), (float) get02(),
 				0.0f, (float) get10(), (float) get11(), (float) get12(), 0.0f,
 				(float) get20(), (float) get21(), (float) get22(), 0.0f };
