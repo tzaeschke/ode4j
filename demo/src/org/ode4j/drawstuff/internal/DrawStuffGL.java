@@ -1765,7 +1765,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 			DVector3C sides)
 	{
 		float[] pos2=pos.toFloatArray4();
-		float[] R2=R.toFloatArray12();
+		float[] R2=R.toFloatArray2();
 		float[] fsides=sides.toFloatArray4();
 		dsDrawBox (pos2,R2,fsides);
 	}
@@ -1809,7 +1809,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	public void dsDrawSphere (final DVector3C pos, final DMatrix3C R, float radius)
 	{
 		float[] pos2=pos.toFloatArray4();
-		float[] R2=R.toFloatArray12();
+		float[] R2=R.toFloatArray2();
 		dsDrawSphere (pos2,R2,radius);
 	}
 
@@ -1855,7 +1855,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 			float length, float radius)
 	{
 		float[] pos2=pos.toFloatArray4();
-		float[] R2=R.toFloatArray12();
+		float[] R2=R.toFloatArray2();
 		dsDrawCylinder (pos2,R2,length,radius);
 	}
 
@@ -1869,7 +1869,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 			float length, float radius)
 	{
 		float[] pos2=pos.toFloatArray4();
-		float[] R2=R.toFloatArray12();
+		float[] R2=R.toFloatArray2();
 		dsDrawCapsule (pos2,R2,length,radius);
 	}
 
