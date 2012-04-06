@@ -22,63 +22,21 @@
 package org.ode4j.math;
 
 /**
- * This interface is should not be used externally. It is only provided to
- * enforce compatible method naming in sub-classes.
- * 
+ * This interface is  should not be used externally. It is only
+ * provided to enforce compatible method naming in sub-classes.
+ *
  * @author Tilmann Zaeschke
  */
 interface DVector3I {
+
 	/**
-	 * Gets the value of the DVector3I at the specified index.
-	 * 
-	 * @param i
-	 *            - the index whose value to get.
-	 * @return the value at the specified index.
+	 * @param i The row to return [0, 1, 2].
 	 */
 	double get(int i);
-
-	/**
-	 * Gets the value at index 0.
-	 * 
-	 * @return the value at index 0.
-	 */
 	double get0();
-
-	/**
-	 * Gets the value at index 1.
-	 * 
-	 * @return the value at index 1.
-	 */
 	double get1();
-
-	/**
-	 * Gets the value at index 2.
-	 * 
-	 * @return the value at index 2.
-	 */
 	double get2();
-
-	/**
-	 * Sets the value at index 0.
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
 	void set0(double d);
-
-	/**
-	 * Sets the value at index 1.
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
 	void set1(double d);
-
-	/**
-	 * Sets the value at index 2.
-	 * 
-	 * @param d
-	 *            - the value to set.
-	 */
 	void set2(double d);
 }
