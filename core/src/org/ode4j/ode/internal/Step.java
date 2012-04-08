@@ -24,16 +24,38 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.ode4j.ode.DJoint;
-import org.ode4j.ode.OdeMath.OP;
-import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.internal.joints.DxJointNode;
+import static org.cpp4j.Cstdio.printf;
+import static org.cpp4j.Cstdio.stdout;
+import static org.cpp4j.Cstring.memcpy;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dMultiply0_133;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply0_333;
+import static org.ode4j.ode.OdeMath.dMultiply2_333;
+import static org.ode4j.ode.OdeMath.dMultiplyAdd0_331;
+import static org.ode4j.ode.OdeMath.dSubtractVectorCross3;
+import static org.ode4j.ode.internal.Common.dAASSERT;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dPAD;
+import static org.ode4j.ode.internal.Common.dRecip;
+import static org.ode4j.ode.internal.ErrorHandler.dDebug;
+import static org.ode4j.ode.internal.Matrix.dFactorCholesky;
+import static org.ode4j.ode.internal.Matrix.dMultiply0;
+import static org.ode4j.ode.internal.Matrix.dMultiply1;
+import static org.ode4j.ode.internal.Matrix.dMultiply2;
+import static org.ode4j.ode.internal.Matrix.dSetValue;
+import static org.ode4j.ode.internal.Matrix.dSolveCholesky;
+import static org.ode4j.ode.internal.Timer.dTimerEnd;
+import static org.ode4j.ode.internal.Timer.dTimerNow;
+import static org.ode4j.ode.internal.Timer.dTimerReport;
+import static org.ode4j.ode.internal.Timer.dTimerStart;
+
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
-
-import static org.cpp4j.Cstdio.*;
-import static org.ode4j.ode.internal.Timer.*;
-import static org.ode4j.ode.OdeMath.*;
+import org.ode4j.ode.DJoint;
+import org.ode4j.ode.internal.joints.DxJoint;
+import org.ode4j.ode.internal.joints.DxJointNode;
 
 
 class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
@@ -356,19 +378,19 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			//double[] tmp = new double[12];
 
 			// compute inertia tensor in global frame
-			dMULTIPLY2_333 (tmp,body[i].mass._I,body[i].posr().R());
+			dMultiply2_333 (tmp,body[i].mass._I,body[i].posr().R());
 			//    dMULTIPLY0_333 (I+i*12,body[i].posr.R,tmp);
-			dMULTIPLY0_333 (I[i],body[i].posr().R(),tmp);
+			dMultiply0_333 (I[i],body[i].posr().R(),tmp);
 
 			// compute inverse inertia tensor in global frame
-			dMULTIPLY2_333 (tmp,body[i].invI,body[i].posr().R());
+			dMultiply2_333 (tmp,body[i].invI,body[i].posr().R());
 			//dMULTIPLY0_333 (invI+i*12,body[i].posr.R,tmp);
-			dMULTIPLY0_333 (invI[i],body[i].posr().R(),tmp);
+			dMultiply0_333 (invI[i],body[i].posr().R(),tmp);
 
 			// compute rotational force
 			//    dMULTIPLY0_331 (tmp,I+i*12,body[i].avel);
-			dMULTIPLY0_331 (tmpV,I[i],body[i].avel);
-			dCROSS (body[i].tacc,OP.SUB_EQ,body[i].avel,tmpV);
+			dMultiply0_331 (tmpV,I[i],body[i].avel);
+			dSubtractVectorCross3 (body[i].tacc,body[i].avel,tmpV);
 		}
 
 		// add the gravity force to all bodies
@@ -753,19 +775,19 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			//TZ double[] tmp=new double[12];
 
 			// compute inverse inertia tensor in global frame
-			dMULTIPLY2_333 (tmpM,body[i].invI,body[i].posr().R());
-			dMULTIPLY0_333 (invI,i*12,body[i].posr().R(),tmpM);
+			dMultiply2_333 (tmpM,body[i].invI,body[i].posr().R());
+			dMultiply0_333 (invI,i*12,body[i].posr().R(),tmpM);
 
 		    if (body[i].isFlagsGyroscopic()) {
 		        //TZ move up for performance 
 		    	//DMatrix3 I = new DMatrix3();
 				// compute inertia tensor in global frame
-				dMULTIPLY2_333 (tmpM,body[i].mass._I,body[i].posr().R());
-				dMULTIPLY0_333 (tmpI,body[i].posr().R(),tmpM);
+				dMultiply2_333 (tmpM,body[i].mass._I,body[i].posr().R());
+				dMultiply0_333 (tmpI,body[i].posr().R(),tmpM);
 
 				// compute rotational force
-				dMULTIPLY0_331 (tmpV,tmpI,body[i].avel);
-				dCROSS (body[i].tacc,OP.SUB_EQ,body[i].avel,tmpV);
+				dMultiply0_331 (tmpV,tmpI,body[i].avel);
+				dSubtractVectorCross3 (body[i].tacc,body[i].avel,tmpV);
 			}
 		}
 
@@ -916,7 +938,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 				for (j=info[i].m-1; j>=0; j--) {
 					//for (k=0; k<3; k++) Jdst[k] = Jsrc[k] * body_invMass;
 					for (k=0; k<3; k++) JinvM[Jdst+k] = J[Jsrc+k] * body_invMass;
-					dMULTIPLY0_133 (JinvM,Jdst+4,J,Jsrc+4,invI,body_invI);
+					dMultiply0_133 (JinvM,Jdst+4,J,Jsrc+4,invI,body_invI);
 					Jsrc += 8;
 					Jdst += 8;
 				}
@@ -927,7 +949,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 					for (j=info[i].m-1; j>=0; j--) {
 						//for (k=0; k<3; k++) Jdst[k] = Jsrc[k] * body_invMass;
 						for (k=0; k<3; k++) JinvM[Jdst+k] = J[Jsrc+k] * body_invMass;
-						dMULTIPLY0_133 (JinvM,Jdst+4,J,Jsrc+4,invI,body_invI);
+						dMultiply0_133 (JinvM,Jdst+4,J,Jsrc+4,invI,body_invI);
 						Jsrc += 8;
 						Jdst += 8;
 					}
@@ -1024,7 +1046,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 				for (j=0; j<3; j++) tmp1[i*8+j] = 
 					body[i].facc.get(j) * body_invMass +
 					body[i].lvel.get(j) * stepsize1;
-				dMULTIPLY0_331 (tmp1 , i*8 + 4,invI,body_invI,body[i].tacc);
+				dMultiply0_331 (tmp1 , i*8 + 4,invI,body_invI,body[i].tacc);
 				for (j=0; j<3; j++) tmp1[i*8+4+j] += body[i].avel.get(j) * stepsize1;
 			}
 			// put J*tmp1 into rhs
@@ -1164,7 +1186,7 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			double body_invMass = body[i].invMass;
 			int body_invI = i*12;//double []body_invI = invI + i*12;
 			for (j=0; j<3; j++) body[i].lvel.add(j, body_invMass * cforce[i*8+j] );
-			dMULTIPLYADD0_331 (body[i].avel,invI,body_invI,cforce,i*8+4);
+			dMultiplyAdd0_331 (body[i].avel,invI,body_invI,cforce,i*8+4);
 		}
 
 		// update the position and orientation from the new linear/angular velocity

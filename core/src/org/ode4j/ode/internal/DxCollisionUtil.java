@@ -129,7 +129,7 @@ public class DxCollisionUtil {
 	//inline void dVector3Cross(final dVector3& a,final dVector3& b,dVector3& c)
 	static void dVector3Cross(final DVector3C a,final DVector3C b,DVector3 c)
 	{
-		dCROSS(c,OP.EQ,a,b);
+	    dCalcVectorCross3(c, a, b);
 	}
 
 	//inline dReal dVector3Length(final dVector3& a)
@@ -232,7 +232,7 @@ public class DxCollisionUtil {
 	//inline void dMultiplyMat3Vec3(final dMatrix3& m,final dVector3& v, dVector3& r)
 	void dMultiplyMat3Vec3(final DMatrix3 m,final DVector3 v, DVector3 r)
 	{
-		dMULTIPLY0_331(r,m,v);
+		dMultiply0_331(r,m,v);
 	}
 
 	//inline dReal dPointPlaneDistance(final dVector3& point,final dVector4& plane)
@@ -451,7 +451,7 @@ public class DxCollisionUtil {
 		// printf ("d=%.2f  (%.2f %.2f %.2f) (%.2f %.2f %.2f) r1=%.2f r2=%.2f\n",
 		//	  d,p1[0],p1[1],p1[2],p2[0],p2[1],p2[2],r1,r2);
 
-		double d = dDISTANCE (p1,p2);
+		double d = p1.distance(p2);
 		if (d > (r1 + r2)) return 0;
 		if (d <= 0) {
 //			c.pos.v[0] = p1.get0();
@@ -499,9 +499,9 @@ public class DxCollisionUtil {
 //		p.v[1] = pb.get1() - pa.get1();
 //		p.v[2] = pb.get2() - pa.get2();
 		p.eqDiff( pb, pa );
-		double uaub = dDOT(ua,ub);
-		double q1 =  dDOT(ua,p);
-		double q2 = -dDOT(ub,p);
+		double uaub = dCalcVectorDot3(ua,ub);
+		double q1 =  dCalcVectorDot3(ua,p);
+		double q2 = -dCalcVectorDot3(ub,p);
 		double d = 1-uaub*uaub;
 		if (d <= (0.0001)) {
 			// @@@ this needs to be made more robust
@@ -555,8 +555,8 @@ public class DxCollisionUtil {
 		SET3 (a1a2,a2,OP.SUB,a1);
 		SET3 (b1b2,b2,OP.SUB,b1);
 		SET3 (a1b1,b1,OP.SUB,a1);
-		da1 = dDOT(a1a2,a1b1);
-		db1 = dDOT(b1b2,a1b1);
+		da1 = dCalcVectorDot3(a1a2,a1b1);
+		db1 = dCalcVectorDot3(b1b2,a1b1);
 		if (da1 <= 0 && db1 >= 0) {
 			SET2 (cp1,a1);
 			SET2 (cp2,b1);
@@ -564,8 +564,8 @@ public class DxCollisionUtil {
 		}
 
 		SET3 (a1b2,b2,OP.SUB,a1);
-		da2 = dDOT(a1a2,a1b2);
-		db2 = dDOT(b1b2,a1b2);
+		da2 = dCalcVectorDot3(a1a2,a1b2);
+		db2 = dCalcVectorDot3(b1b2,a1b2);
 		if (da2 <= 0 && db2 <= 0) {
 			SET2 (cp1,a1);
 			SET2 (cp2,b2);
@@ -573,8 +573,8 @@ public class DxCollisionUtil {
 		}
 
 		SET3 (a2b1,b1,OP.SUB,a2);
-		da3 = dDOT(a1a2,a2b1);
-		db3 = dDOT(b1b2,a2b1);
+		da3 = dCalcVectorDot3(a1a2,a2b1);
+		db3 = dCalcVectorDot3(b1b2,a2b1);
 		if (da3 >= 0 && db3 >= 0) {
 			SET2 (cp1,a2);
 			SET2 (cp2,b1);
@@ -582,8 +582,8 @@ public class DxCollisionUtil {
 		}
 
 		SET3 (a2b2,b2,OP.SUB,a2);
-		da4 = dDOT(a1a2,a2b2);
-		db4 = dDOT(b1b2,a2b2);
+		da4 = dCalcVectorDot3(a1a2,a2b2);
+		db4 = dCalcVectorDot3(b1b2,a2b2);
 		if (da4 >= 0 && db4 <= 0) {
 			SET2 (cp1,a2);
 			SET2 (cp2,b2);
@@ -594,11 +594,11 @@ public class DxCollisionUtil {
 		// if one or both of the lines has zero length, we will never get to here,
 		// so we do not have to worry about the following divisions by zero.
 
-		la = dDOT(a1a2,a1a2);
+		la = dCalcVectorDot3(a1a2,a1a2);
 		if (da1 >= 0 && da3 <= 0) {
 			k = da1 / la;
 			SET3 (n,1,a1b1,OP.SUB,k,a1a2);
-			if (dDOT(b1b2,n) >= 0) {
+			if (dCalcVectorDot3(b1b2,n) >= 0) {
 				SET3 (cp1,1,a1,OP.ADD,k,a1a2);
 				SET2 (cp2,b1);
 				return;
@@ -608,18 +608,18 @@ public class DxCollisionUtil {
 		if (da2 >= 0 && da4 <= 0) {
 			k = da2 / la;
 			SET3 (n,1,a1b2,OP.SUB,k,a1a2);
-			if (dDOT(b1b2,n) <= 0) {
+			if (dCalcVectorDot3(b1b2,n) <= 0) {
 				SET3 (cp1,1,a1,OP.ADD,k,a1a2);
 				SET2 (cp2,b2);
 				return;
 			}
 		}
 
-		lb = dDOT(b1b2,b1b2);
+		lb = dCalcVectorDot3(b1b2,b1b2);
 		if (db1 <= 0 && db2 >= 0) {
 			k = -db1 / lb;
 			SET3 (n,-1,a1b1,OP.SUB,k,b1b2);
-			if (dDOT(a1a2,n) >= 0) {
+			if (dCalcVectorDot3(a1a2,n) >= 0) {
 				SET2 (cp1,a1);
 				SET3 (cp2,1,b1,OP.ADD,k,b1b2);
 				return;
@@ -629,7 +629,7 @@ public class DxCollisionUtil {
 		if (db3 <= 0 && db4 >= 0) {
 			k = -db3 / lb;
 			SET3 (n,-1,a2b1,OP.SUB,k,b1b2);
-			if (dDOT(a1a2,n) <= 0) {
+			if (dCalcVectorDot3(a1a2,n) <= 0) {
 				SET2 (cp1,a2);
 				SET3 (cp2,1,b1,OP.ADD,k,b1b2);
 				return;
@@ -638,7 +638,7 @@ public class DxCollisionUtil {
 
 		// it must be edge-edge
 
-		k = dDOT(a1a2,b1b2);
+		k = dCalcVectorDot3(a1a2,b1b2);
 		det = la*lb - k*k;
 		if (det <= 0) {
 			// this should never happen, but just in case...
@@ -702,12 +702,12 @@ public class DxCollisionUtil {
 //		tmp.v[1] = p1.get1() - c.get1();
 //		tmp.v[2] = p1.get2() - c.get2();
 		tmp.eqDiff( p1, c );
-		dMULTIPLY1_331 (s,R,tmp);
+		dMultiply1_331 (s,R,tmp);
 //		tmp.v[0] = p2.get0() - p1.get0();
 //		tmp.v[1] = p2.get1() - p1.get1();
 //		tmp.v[2] = p2.get2() - p1.get2();
 		tmp.eqDiff( p2, p1 );
-		dMULTIPLY1_331 (v,R,tmp);
+		dMultiply1_331 (v,R,tmp);
 
 		// mirror the line so that v has all components >= 0
 		DVector3 sign=new DVector3();
@@ -838,7 +838,7 @@ public class DxCollisionUtil {
 			if (tmp.get(i) < -h.get(i)) tmp.set(i, -h.get(i) );
 			else if (tmp.get(i) > h.get(i)) tmp.set(i, h.get(i) );
 		}
-		dMULTIPLY0_331 (s,R,tmp);
+		dMultiply0_331 (s,R,tmp);
 		//for (int i=0; i<3; i++) bret.v[i] = s.v[i] + c.v[i];
 		bret.eqSum(s, c);
 	}
@@ -868,7 +868,7 @@ public class DxCollisionUtil {
 		//		p.v[1] = p2.get1() - p1.get1();
 		//		p.v[2] = p2.get2() - p1.get2();
 		p.eqDiff(p2, p1);
-		dMULTIPLY1_331 (pp,R1,p);		// get pp = p relative to body 1
+		dMultiply1_331 (pp,R1,p);		// get pp = p relative to body 1
 
 		// get side lengths / 2
 		A1 = side1.get0()*(0.5); A2 = side1.get1()*(0.5); A3 = side1.get2()*(0.5);
@@ -879,20 +879,20 @@ public class DxCollisionUtil {
 		// notation: R1=[u1 u2 u3], R2=[v1 v2 v3]
 
 		// separating axis = u1,u2,u3
-		R11 = dDOT44(R1,0,R2,0); R12 = dDOT44(R1,0,R2,1); R13 = dDOT44(R1,0,R2,2);
+		R11 = dCalcVectorDot3_44(R1,0,R2,0); R12 = dCalcVectorDot3_44(R1,0,R2,1); R13 = dCalcVectorDot3_44(R1,0,R2,2);
 		Q11 = dFabs(R11); Q12 = dFabs(R12); Q13 = dFabs(R13);
 		if (dFabs(pp.get0()) > (A1 + B1*Q11 + B2*Q12 + B3*Q13)) return false;
-		R21 = dDOT44(R1,1,R2,0); R22 = dDOT44(R1,1,R2,1); R23 = dDOT44(R1,1,R2,2);
+		R21 = dCalcVectorDot3_44(R1,1,R2,0); R22 = dCalcVectorDot3_44(R1,1,R2,1); R23 = dCalcVectorDot3_44(R1,1,R2,2);
 		Q21 = dFabs(R21); Q22 = dFabs(R22); Q23 = dFabs(R23);
 		if (dFabs(pp.get1()) > (A2 + B1*Q21 + B2*Q22 + B3*Q23)) return false;
-		R31 = dDOT44(R1,2,R2,0); R32 = dDOT44(R1,2,R2,1); R33 = dDOT44(R1,2,R2,2);
+		R31 = dCalcVectorDot3_44(R1,2,R2,0); R32 = dCalcVectorDot3_44(R1,2,R2,1); R33 = dCalcVectorDot3_44(R1,2,R2,2);
 		Q31 = dFabs(R31); Q32 = dFabs(R32); Q33 = dFabs(R33);
 		if (dFabs(pp.get2()) > (A3 + B1*Q31 + B2*Q32 + B3*Q33)) return false;
 
 		// separating axis = v1,v2,v3
-		if (dFabs(dDOT41(R2,0,p)) > (A1*Q11 + A2*Q21 + A3*Q31 + B1)) return false;
-		if (dFabs(dDOT41(R2,1,p)) > (A1*Q12 + A2*Q22 + A3*Q32 + B2)) return false;
-		if (dFabs(dDOT41(R2,2,p)) > (A1*Q13 + A2*Q23 + A3*Q33 + B3)) return false;
+		if (dFabs(dCalcVectorDot3_41(R2,0,p)) > (A1*Q11 + A2*Q21 + A3*Q31 + B1)) return false;
+		if (dFabs(dCalcVectorDot3_41(R2,1,p)) > (A1*Q12 + A2*Q22 + A3*Q32 + B2)) return false;
+		if (dFabs(dCalcVectorDot3_41(R2,2,p)) > (A1*Q13 + A2*Q23 + A3*Q33 + B3)) return false;
 
 		// separating axis = u1 x (v1,v2,v3)
 		if (dFabs(pp.get2()*R21-pp.get1()*R31) > A2*Q31 + A3*Q21 + B2*Q13 + B3*Q12) return false;

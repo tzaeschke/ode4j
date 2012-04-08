@@ -100,10 +100,10 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		info.setCfm(2, cfm);
 
 		DVector3 ofs = new DVector3();
-		dMULTIPLY0_331 ( ofs, node[0].body.posr().R(), offset );
+		dMultiply0_331 ( ofs, node[0].body.posr().R(), offset );
 		if ( node[1].body != null )
 		{
-			dCROSSMAT ( info._J, info.J1ap, ofs, s, +1 , -1 );
+		    dSetCrossMatrixPlus ( info._J, info.J1ap, ofs, s);
 			info._J[info.J2lp+0] = -1;
 			info._J[info.J2lp+s+1] = -1;
 			info._J[info.J2lp+2*s+2] = -1;
@@ -145,7 +145,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 //					node[1].body._posr.pos.v[i];
 				ofs.eqDiff( node[0].body.posr().pos(), node[1].body.posr().pos() );
 
-				dMULTIPLY1_331 ( offset, node[0].body.posr().R(), ofs );
+				dMultiply1_331 ( offset, node[0].body.posr().R(), ofs );
 			}
 			else
 			{

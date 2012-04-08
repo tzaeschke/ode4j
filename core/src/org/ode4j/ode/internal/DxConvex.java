@@ -24,6 +24,25 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.cpp4j.Cmath.fabs;
+import static org.cpp4j.Cstdio.fprintf;
+import static org.cpp4j.Cstdio.stdout;
+import static org.ode4j.ode.OdeConstants.CONTACTS_UNIMPORTANT;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.internal.Common.dAASSERT;
+import static org.ode4j.ode.internal.Common.dEpsilon;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dNODEBUG;
+import static org.ode4j.ode.internal.Common.dSqrt;
+
+import org.cpp4j.java.RefDouble;
+import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DColliderFn;
@@ -31,12 +50,6 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DGeom;
-import org.cpp4j.java.RefDouble;
-import org.cpp4j.java.RefInt;
-
-import static org.cpp4j.Cstdio.*;
-import static org.cpp4j.Cmath.*;
-import static org.ode4j.ode.OdeMath.*;
 
 /**
  * Code for Convex Collision Detection
@@ -111,12 +124,12 @@ public class DxConvex extends DxGeom implements DConvex {
 		DVector3 rdir = new DVector3();
 		//unsigned 
 		int index=0;
-		dMULTIPLY1_331 (rdir,final_posr().R(),dir);
-		double max = dDOT(points,0,rdir);
+		dMultiply1_331 (rdir,final_posr().R(),dir);
+		double max = dCalcVectorDot3(points,0,rdir);
 		double tmp;
 		for (int i = 1; i < pointcount; ++i)
 		{
-			tmp = dDOT(points,(i*3),rdir);
+			tmp = dCalcVectorDot3(points,(i*3),rdir);
 			if (tmp > max)
 			{
 				index=i;
@@ -262,7 +275,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	{
 		// this can, and should be optimized
 		DVector3 point = new DVector3();
-		dMULTIPLY0_331 (point, final_posr().R(), points,0);
+		dMultiply0_331 (point, final_posr().R(), points,0);
 //		_aabb.v[0] = point.v[0]+_final_posr.pos.v[0];
 //		_aabb.v[1] = point.v[0]+_final_posr.pos.v[0];
 //		_aabb.v[2] = point.v[1]+_final_posr.pos.v[1];
@@ -274,7 +287,7 @@ public class DxConvex extends DxGeom implements DConvex {
 		_aabb.shiftPos( point );
 		for(int i=3;i<(pointcount*3);i+=3)
 		{
-			dMULTIPLY0_331 (point, final_posr().R(), points,i);
+			dMultiply0_331 (point, final_posr().R(), points,i);
 //			_aabb.v[0] = dMIN(_aabb.v[0],point.v[0]+_final_posr.pos.v[0]);
 //			_aabb.v[1] = dMAX(_aabb.v[1],point.v[0]+_final_posr.pos.v[0]);
 //			_aabb.v[2] = dMIN(_aabb.v[2],point.v[1]+_final_posr.pos.v[1]);
@@ -454,7 +467,7 @@ public class DxConvex extends DxGeom implements DConvex {
 		ab.eqDiff(b, a);
 
 //		t.set( (p.v[3] - dDOT(pV,a)) / dDOT(pV,ab)  );
-		t.set( (pD - dDOT(pV,a)) / dDOT(pV,ab)  );
+		t.set( (pD - dCalcVectorDot3(pV,a)) / dCalcVectorDot3(pV,ab)  );
 
 		// If t in [0..1] compute and return intersection point
 		if (t.get() >= 0.0 && t.get() <= 1.0) 
@@ -495,11 +508,11 @@ public class DxConvex extends DxGeom implements DConvex {
 		//				Origin1[2]-Origin2[2]};
 		DVector3 w = new DVector3();
 		w.eqDiff(Origin1, Origin2);
-		double a = dDOT(Direction1 , Direction1);
-		double b = dDOT(Direction1 , Direction2);
-		double c = dDOT(Direction2 , Direction2);
-		double d = dDOT(Direction1 , w);
-		double e = dDOT(Direction2 , w);
+		double a = dCalcVectorDot3(Direction1 , Direction1);
+		double b = dCalcVectorDot3(Direction1 , Direction2);
+		double c = dCalcVectorDot3(Direction2 , Direction2);
+		double d = dCalcVectorDot3(Direction1 , w);
+		double e = dCalcVectorDot3(Direction2 , w);
 		double denominator = (a*c)-(b*b);
 		if(denominator==0.0f)
 		{
@@ -573,7 +586,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	    }
 	    else
 	    {
-	        double c = dDOT(d1, r);
+	        double c = dCalcVectorDot3(d1, r);
 	        if (e <= dEpsilon)
 	        {
 	            // Second segment degenerates into a point
@@ -583,7 +596,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	        else
 	        {
 	            // The general non degenerate case starts here
-	            double b = dDOT(d1, d2);
+	            double b = dCalcVectorDot3(d1, d2);
 	            double denom = a*e-b*b; // Always nonnegative
 
 	            // If segments not parallel, compute closest point on L1 to L2, and
@@ -668,10 +681,10 @@ public class DxConvex extends DxGeom implements DConvex {
 	private boolean IntersectPlanes(final DVector3 p1, double p13, final DVector3 p2, double p23,DVector3 p, DVector3 d)
 	{
 		// Compute direction of intersection line
-		dCROSS(d,OP.EQ,p1,p2);  
+	    dCalcVectorCross3(d,p1,p2);  
 		// If d is (near) zero, the planes are parallel (and separated)
 		// or coincident, so they're not considered intersecting
-		double denom = dDOT(d, d);
+		double denom = d.dot(d);
 		if (denom < dEpsilon) return false;
 		DVector3 n=new DVector3();
 		//  n[0]=p1[3]*p2[0] - p2[3]*p1[0];
@@ -679,7 +692,7 @@ public class DxConvex extends DxGeom implements DConvex {
 		//  n[2]=p1[3]*p2[2] - p2[3]*p1[2];
 		n.eqSum(p2, p13, p1, -p23);
 		// Compute point on intersection line
-		dCROSS(p,OP.EQ,n,d);
+		dCalcVectorCross3(p,n,d);
 		//  p[0]/=denom;
 		//  p[1]/=denom;
 		//  p[2]/=denom;
@@ -759,20 +772,20 @@ public class DxConvex extends DxGeom implements DConvex {
 		//for(size_t i=0;i<pointcount;++i)
 		for(int i=0;i<pointcount;++i)
 		{
-			dMULTIPLY0_331 (a,convex.final_posr().R(),convex.points,(polygonA[i+polyPos]*3));
+			dMultiply0_331 (a,convex.final_posr().R(),convex.points,(polygonA[i+polyPos]*3));
 			//      a[0]=convex.final_posr.pos[0]+a[0];
 			//      a[1]=convex.final_posr.pos[1]+a[1];
 			//      a[2]=convex.final_posr.pos[2]+a[2];
 			a.eqSum(convex.final_posr().pos(), a);
 
-			dMULTIPLY0_331 (b,convex.final_posr().R(),
+			dMultiply0_331 (b,convex.final_posr().R(),
 					convex.points,(polygonA[(polyPos+i+1)%pointcount]*3));
 			//      b[0]=convex.final_posr.pos[0]+b[0];
 			//      b[1]=convex.final_posr.pos[1]+b[1];
 			//      b[2]=convex.final_posr.pos[2]+b[2];
 			b.eqSum(convex.final_posr().pos(), b);
 
-			dMULTIPLY0_331 (c,convex.final_posr().R(),
+			dMultiply0_331 (c,convex.final_posr().R(),
 					convex.points, (polygonA[(polyPos+i+2)%pointcount]*3));
 			//      c[0]=convex.final_posr.pos[0]+c[0];
 			//      c[1]=convex.final_posr.pos[1]+c[1];
@@ -791,8 +804,8 @@ public class DxConvex extends DxGeom implements DConvex {
 			//      ap[1] = p[1] - a[1];
 			//      ap[2] = p[2] - a[2];
 			ap.eqDiff(p, a);
-			d1 = dDOT(ab,ap);
-			d2 = dDOT(ac,ap);
+			d1 = dCalcVectorDot3(ab,ap);
+			d2 = dCalcVectorDot3(ac,ap);
 			if (d1 <= 0.0 && d2 <= 0.0)
 			{
 				//	  out[0]=a[0];
@@ -805,8 +818,8 @@ public class DxConvex extends DxGeom implements DConvex {
 			//      bp[1] = p[1] - b[1];
 			//      bp[2] = p[2] - b[2];
 			bp.eqDiff(p, b);
-			d3 = dDOT(ab,bp);
-			d4 = dDOT(ac,bp);
+			d3 = dCalcVectorDot3(ab,bp);
+			d4 = dCalcVectorDot3(ac,bp);
 			if (d3 >= 0.0f && d4 <= d3)
 			{
 				//	  out[0]=b[0];
@@ -860,7 +873,7 @@ public class DxConvex extends DxGeom implements DConvex {
 			int totalsign = 0;
 			for(int i=0;i<Convex.pointcount;++i)
 			{
-				dMULTIPLY0_331 (v2,Convex.final_posr().R(),Convex.points,i*3);//[(i*3)]);
+				dMultiply0_331 (v2,Convex.final_posr().R(),Convex.points,i*3);//[(i*3)]);
 				v2.add(Convex.final_posr().pos());//dVector3Add(Convex._final_posr.pos, v2, v2);
 	
 				//unsigned 
@@ -948,7 +961,7 @@ public class DxConvex extends DxGeom implements DConvex {
 			for(int i=0;i<convex.planecount;++i)
 			{
 				// apply rotation to the plane
-				dMULTIPLY0_331(planeV,convex.final_posr().R(),convex.planesV[i]);//convex.planes[(i*4)]);
+				dMultiply0_331(planeV,convex.final_posr().R(),convex.planesV[i]);//convex.planes[(i*4)]);
 				planeD=convex.planesD[i];//(convex.planes[(i*4)])[3];
 				// Get the distance from the sphere origin to the plane
 				dist = planeV.dot(offsetpos) - planeD; // Ax + By + Cz - D
@@ -1039,7 +1052,7 @@ public class DxConvex extends DxGeom implements DConvex {
 			{
 				// if the center of the sphere is inside 
 				// the Convex, we need to pop it out
-				dMULTIPLY0_331(contact.normal,
+				dMultiply0_331(contact.normal,
 						convex.final_posr().R(),
 						//convex.planes[(closestplane*4)]);
 						convex.planesV[closestplane]);
@@ -1119,23 +1132,23 @@ public class DxConvex extends DxGeom implements DConvex {
 		DVector3 point=new DVector3();
 		double value;
 		//fprintf(stdout,"Compute Interval Axis %f,%f,%f\n",axis[0],axis[1],axis[2]);
-		dMULTIPLY0_331(point, cvx.final_posr().R(), cvx.points,0);
+		dMultiply0_331(point, cvx.final_posr().R(), cvx.points,0);
 		//fprintf(stdout,"initial point %f,%f,%f\n",point[0],point[1],point[2]);
 		//    point[0]+=cvx.final_posr.pos[0];
 		//    point[1]+=cvx.final_posr.pos[1];
 		//    point[2]+=cvx.final_posr.pos[2];
 		point.add(cvx.final_posr().pos());
 		//    max = min = dDOT(point,axis)-axis[3];//(*)
-		min.set( dDOT(point,axis)-axisD );//[3];//(*)
+		min.set( dCalcVectorDot3(point,axis)-axisD );//[3];//(*)
 		max.set(min.get());// = min;//(*)
 		for (int i = 1; i < cvx.pointcount; ++i) 
 		{
-			dMULTIPLY0_331(point,cvx.final_posr().R(),cvx.points,(i*3));
+			dMultiply0_331(point,cvx.final_posr().R(),cvx.points,(i*3));
 //			point[0]+=cvx.final_posr.pos[0];
 //			point[1]+=cvx.final_posr.pos[1];
 //			point[2]+=cvx.final_posr.pos[2];
 			point.add( cvx.final_posr().pos() );
-			value=dDOT(point,axis)-axisD;//[3];//(*)
+			value=dCalcVectorDot3(point,axis)-axisD;//[3];//(*)
 			if(value<min.get())
 			{
 				min.set(value);
@@ -1165,14 +1178,14 @@ public class DxConvex extends DxGeom implements DConvex {
 		for(int i = 0;i<cvx1.edgecount;++i)
 		{
 			// Rotate
-			dMULTIPLY0_331(e1,cvx1.final_posr().R(),cvx1.points,(cvx1.edges[i].first*3));
+			dMultiply0_331(e1,cvx1.final_posr().R(),cvx1.points,(cvx1.edges[i].first*3));
 			// translate
 //			e1[0]+=cvx1.final_posr.pos[0];
 //			e1[1]+=cvx1.final_posr.pos[1];
 //			e1[2]+=cvx1.final_posr.pos[2];
 			e1.add( cvx1.final_posr().pos() );
 			// Rotate
-			dMULTIPLY0_331(e2,cvx1.final_posr().R(),cvx1.points,(cvx1.edges[i].second*3));
+			dMultiply0_331(e2,cvx1.final_posr().R(),cvx1.points,(cvx1.edges[i].second*3));
 			// translate
 //			e2[0]+=cvx1.final_posr.pos[0];
 //			e2[1]+=cvx1.final_posr.pos[1];
@@ -1184,7 +1197,7 @@ public class DxConvex extends DxGeom implements DConvex {
 			for(int j=0;j<cvx2.planecount;++j)
 			{
 				// Rotate
-				dMULTIPLY0_331(planeV,cvx2.final_posr().R(),cvx2.planesV[i]);//+(j*4));
+				dMultiply0_331(planeV,cvx2.final_posr().R(),cvx2.planesV[i]);//+(j*4));
 				dNormalize3(planeV);
 				// Translate
 				planeD = //plane[3]=
@@ -1206,7 +1219,7 @@ public class DxConvex extends DxGeom implements DConvex {
 						{
 							if(k==j) continue; // we're already at 0 depth on this plane
 							// Rotate
-							dMULTIPLY0_331(depthplaneV,cvx2.final_posr().R(),cvx2.planesV[k]);//*4));
+							dMultiply0_331(depthplaneV,cvx2.final_posr().R(),cvx2.planesV[k]);//*4));
 							dNormalize3(depthplaneV);
 							// Translate
 							depthplaneD = //depthplane[3]=
@@ -1280,7 +1293,7 @@ Helper struct
 		{
 			// -- Apply Transforms --
 			// Rotate
-			dMULTIPLY0_331(planeV, cvx1.final_posr().R(), cvx1.planesV[i]);
+			dMultiply0_331(planeV, cvx1.final_posr().R(), cvx1.planesV[i]);
 			dNormalize3(planeV);
 			// Translate
 			planeD = //plane[3]=
@@ -1350,8 +1363,8 @@ Helper struct
 			// Skip edge if it doesn't contain the extremal vertex
 			if((cvx1.edges[i].first!=s1)&&(cvx1.edges[i].second!=s1)) continue;
 			// we only need to apply rotation here
-			dMULTIPLY0_331(e1a,cvx1.final_posr().R(),cvx1.points,(cvx1.edges[i].first*3));
-			dMULTIPLY0_331(e1b,cvx1.final_posr().R(),cvx1.points,(cvx1.edges[i].second*3));
+			dMultiply0_331(e1a,cvx1.final_posr().R(),cvx1.points,(cvx1.edges[i].first*3));
+			dMultiply0_331(e1b,cvx1.final_posr().R(),cvx1.points,(cvx1.edges[i].second*3));
 //			e1[0]=e1b[0]-e1a[0];
 //			e1[1]=e1b[1]-e1a[1];
 //			e1[2]=e1b[2]-e1a[2];
@@ -1361,14 +1374,14 @@ Helper struct
 				// Skip edge if it doesn't contain the extremal vertex
 				if((cvx2.edges[j].first!=s2)&&(cvx2.edges[j].second!=s2)) continue;
 				// we only need to apply rotation here
-				dMULTIPLY0_331 (e2a,cvx2.final_posr().R(),cvx2.points,(cvx2.edges[j].first*3));
-				dMULTIPLY0_331 (e2b,cvx2.final_posr().R(),cvx2.points,(cvx2.edges[j].second*3));
+				dMultiply0_331 (e2a,cvx2.final_posr().R(),cvx2.points,(cvx2.edges[j].first*3));
+				dMultiply0_331 (e2b,cvx2.final_posr().R(),cvx2.points,(cvx2.edges[j].second*3));
 //				e2[0]=e2b[0]-e2a[0];
 //				e2[1]=e2b[1]-e2a[1];
 //				e2[2]=e2b[2]-e2a[2];
 				e2.eqDiff(e2b, e2a);
-				dCROSS(planeV,OP.EQ,e1,e2);
-				if(dDOT(planeV,planeV)<dEpsilon) /* edges are parallel */ continue;
+				dCalcVectorCross3(planeV,e1,e2);
+				if(planeV.dot(planeV) < dEpsilon) /* edges are parallel */ continue;
 				dNormalize3(planeV);
 				planeD = 0;//plane[3]=0;
 				ComputeInterval(cvx1,planeV,planeD,min1,max1);
@@ -1450,11 +1463,11 @@ Helper struct
 		//dVector3Copy(dir,tmp);
 		tmp.set(dir);
 		dNormalize3(tmp);
-		dMULTIPLY1_331(dics,cvx.final_posr().R(),tmp);
-		SavedDot = dDOT(dics,cvx.planesV[0]);
+		dMultiply1_331(dics,cvx.final_posr().R(),tmp);
+		SavedDot = dics.dot(cvx.planesV[0]);
 		for(int i=1;i<cvx.planecount;++i)
 		{
-			Dot = dDOT(dics,cvx.planesV[i]);//+(i*4));
+			Dot = dCalcVectorDot3(dics,cvx.planesV[i]);//+(i*4));
 			if(Dot>SavedDot)
 			{
 				SavedDot=Dot;
@@ -1538,7 +1551,7 @@ Helper struct
 			int[] incPolys = cvx2.polygons;
 			// Get Reference plane (We may not have to apply transforms Optimization Oportunity)
 			// Rotate
-			dMULTIPLY0_331(rplaneV,cvx1.final_posr().R(),cvx1.planesV[reference_side]);//+(reference_side*4));
+			dMultiply0_331(rplaneV,cvx1.final_posr().R(),cvx1.planesV[reference_side]);//+(reference_side*4));
 			dNormalize3(rplaneV);
 			// Translate
 			rplaneD = //[3]=
@@ -1560,19 +1573,19 @@ Helper struct
 			}
 			pIncidentPointsPos = pIncidentPolyPos+1;//pIncidentPoly+1;
 			// Get the first point of the incident face
-			dMULTIPLY0_331(i2,cvx2.final_posr().R(),cvx2.points,(incPolys[pIncidentPointsPos]*3));
+			dMultiply0_331(i2,cvx2.final_posr().R(),cvx2.points,(incPolys[pIncidentPointsPos]*3));
 			i2.add(cvx2.final_posr().pos());//dVector3Add(i2,cvx2._final_posr.pos,i2);
 			// Get the same point in the reference convex space
 			r2.set(i2);//dVector3Copy(i2,r2);
 			r2.sub(cvx1.final_posr().pos());//dVector3Subtract(r2,cvx1._final_posr.pos,r2);
 			tmp.set(r2);//dVector3Copy(r2,tmp);
-			dMULTIPLY1_331(r2,cvx1.final_posr().R(),tmp);
+			dMultiply1_331(r2,cvx1.final_posr().R(),tmp);
 			for(int i=0;i<cvx2.polygons[pIncidentPolyPos];++i)
 			{
 				// Move i2 to i1, r2 to r1
 				i1.set(i2);//dVector3Copy(i2,i1);
 				r1.set(r2);//dVector3Copy(r2,r1);
-				dMULTIPLY0_331(i2,cvx2.final_posr().R(),
+				dMultiply0_331(i2,cvx2.final_posr().R(),
 						//cvx2.points, (pIncidentPoints[(i+1)%pIncidentPoly[0]]*3) );
 						cvx2.points, incPolys[pIncidentPointsPos + (i+1)%incPolys[pIncidentPolyPos]]*3) ;
 				i2.add(cvx2.final_posr().pos());//dVector3Add(i2,cvx2._final_posr.pos,i2);
@@ -1580,7 +1593,7 @@ Helper struct
 				r2.set(i1);//dVector3Copy(i2,r2);
 				r2.sub(cvx1.final_posr().pos());//dVector3Subtract(r2,cvx1._final_posr.pos,r2);
 				tmp.set(r2);//dVector3Copy(r2,tmp);
-				dMULTIPLY1_331(r2,cvx1.final_posr().R(),tmp);
+				dMultiply1_331(r2,cvx1.final_posr().R(),tmp);
 				outside=false;
 				for(int j=0;j<cvx1.planecount;++j)
 				{
@@ -1633,7 +1646,7 @@ Helper struct
 								// The commented out piece of code is likelly to
 								// produce less operations than this one, but
 								// this way we know we are getting the right data
-								dMULTIPLY0_331(tmp,cvx1.final_posr().R(),p);
+								dMultiply0_331(tmp,cvx1.final_posr().R(),p);
 								p.eqSum(tmp, cvx1.final_posr().pos());//dVector3Add(tmp,cvx1._final_posr.pos,p);
 							} //#endif // #if 0
 							// get p's distance to reference plane
@@ -1696,7 +1709,7 @@ Helper struct
 
 			// Get Incident plane, we need it for projection
 			// Rotate
-			dMULTIPLY0_331(iplaneV,cvx2.final_posr().R(),cvx2.planesV[incident_side]);//+(incident_side*4));
+			dMultiply0_331(iplaneV,cvx2.final_posr().R(),cvx2.planesV[incident_side]);//+(incident_side*4));
 			dNormalize3(iplaneV);
 			// Translate
 //			iplane[3]=
@@ -1717,7 +1730,7 @@ Helper struct
 			for(int i=0;i<refPolys[pReferencePolyPos];++i)
 			{
 				//dMULTIPLY0_331(i1.v,0,cvx1._final_posr.R.v,0,cvx1.points, (pReferencePoints[i]*3) );
-				dMULTIPLY0_331(i1,cvx1.final_posr().R(),cvx1.points, refPolys[pReferencePointsPos+i]*3 );
+				dMultiply0_331(i1,cvx1.final_posr().R(),cvx1.points, refPolys[pReferencePointsPos+i]*3 );
 				i1.add(cvx1.final_posr().pos());//dVector3Add(cvx1._final_posr.pos,i1,i1);
 				// Project onto Incident face plane      
 //				t = -(i1[0]*iplane[0]+
@@ -1733,7 +1746,7 @@ Helper struct
 				r1.set(i1);//dVector3Copy(i1,r1);
 				r1.sub(cvx2.final_posr().pos());//dVector3Subtract(r1,cvx2._final_posr.pos,r1);
 				tmp.set(r1);//dVector3Copy(r1,tmp);
-				dMULTIPLY1_331(r1,cvx2.final_posr().R(),tmp);
+				dMultiply1_331(r1,cvx2.final_posr().R(),tmp);
 				// Check if it is outside the incident convex
 				out = false;
 				for(int j=0;j<cvx2.planecount;++j)
@@ -1965,7 +1978,7 @@ Helper struct
 	
 				// If alpha >= 0 then start point is outside of plane.
 				//alpha = dDOT( convex.planes, planePos, ray._final_posr.pos.v, 0 ) - convex.planes[planePos+3];//] - plane[3];
-				alpha = dDOT( convex.planesV[planePos], ray.final_posr().pos() ) - convex.planesD[planePos];//] - plane[3];
+				alpha = dCalcVectorDot3( convex.planesV[planePos], ray.final_posr().pos() ) - convex.planesD[planePos];//] - plane[3];
 	
 				// If any alpha is positive, then
 				// the ray start is _outside_ of the hull
@@ -1995,7 +2008,7 @@ Helper struct
 	
 				// If alpha >= 0 then point is outside of plane.
 				//alpha = nsign * ( dDOT( plane, ray.final_posr.pos ) - plane[3] );
-				alpha = nsign * ( dDOT( convex.planesV[planePos], ray.final_posr().pos() ) - convex.planesD[planePos] );
+				alpha = nsign * ( dCalcVectorDot3( convex.planesV[planePos], ray.final_posr().pos() ) - convex.planesD[planePos] );
 	
 				// Compute [ plane-normal DOT ray-normal ], (/flip)
 				//beta = dDOT13( convex.planes, planePos, ray._final_posr.R.v,2 ) * nsign;
@@ -2031,7 +2044,7 @@ Helper struct
 						//beta = dDOT( planej, contact.pos ) - plane[3];
 						//TODO use planePos+3 or planePosJ+3 ???
 						//beta = dDOT( convex.planesV[planePosJ], contact.pos) - convex.planesD[planePosJ];
-						beta = dDOT( convex.planesV[planePosJ], contact.pos) - convex.planesD[planePos];
+						beta = dCalcVectorDot3( convex.planesV[planePosJ], contact.pos) - convex.planesD[planePos];
 	
 						// If any beta is positive, then the contact point
 						// is not on the surface of the convex hull - it's just

@@ -24,12 +24,19 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.Common.dAtan2;
+
 import org.cpp4j.java.RefDouble;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.internal.DxWorld;
-import static org.ode4j.ode.OdeMath.*;
 
 
 /**
@@ -53,10 +60,10 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	{
 		DVector3 a1 = new DVector3(), a2 = new DVector3();
 
-		dMULTIPLY0_331( a1, node[1].body.posr().R(), _axis2 );
-		dMULTIPLY1_331( a2, node[0].body.posr().R(), a1 );
-		double x = dDOT( v1, a2 );
-		double y = dDOT( v2, a2 );
+		dMultiply0_331( a1, node[1].body.posr().R(), _axis2 );
+		dMultiply1_331( a2, node[0].body.posr().R(), a1 );
+		double x = v1.dot( a2 );
+		double y = v2.dot( a2 );
 		return -dAtan2( y, x );
 	}
 
@@ -129,9 +136,9 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	private void getAxisInfo(DVector3 ax1, DVector3 ax2, DVector3 axCross,
 	                           RefDouble sin_angle, RefDouble cos_angle)
 	{
-	    dMULTIPLY0_331 (ax1, node[0].body.posr().R(), _axis1);
-	    dMULTIPLY0_331 (ax2, node[1].body.posr().R(), _axis2);
-	    dCROSS (axCross,OP.EQ,ax1,ax2);
+	    dMultiply0_331 (ax1, node[0].body.posr().R(), _axis1);
+	    dMultiply0_331 (ax2, node[1].body.posr().R(), _axis2);
+	    dCalcVectorCross3 (axCross ,ax1, ax2);
 	    sin_angle.d = axCross.length();//dSqrt (axCross[0]*axCross[0] + axCross[1]*axCross[1] + axCross[2]*axCross[2]);
 	    cos_angle.d = ax1.dot(ax2);//dDOT (ax1,ax2);
 	}
@@ -206,8 +213,8 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		{
 			// get axis 1 and 2 in global coords
 			DVector3 ax1 = new DVector3(), ax2 = new DVector3(), v = new DVector3();
-			dMULTIPLY0_331( ax1, node[0].body.posr().R(), _axis1 );
-			dMULTIPLY0_331( ax2, node[1].body.posr().R(), _axis2 );
+			dMultiply0_331( ax1, node[0].body.posr().R(), _axis1 );
+			dMultiply0_331( ax2, node[1].body.posr().R(), _axis2 );
 
 			// don't do anything if the axis1 or axis2 vectors are zero or the same
 			if (( ax1.get0() == 0 && ax1.get1() == 0 && ax1.get2() == 0 ) ||
@@ -215,15 +222,15 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 					( ax1.get0() == ax2.get0() && ax1.get1() == ax2.get1() && ax1.get2() == ax2.get2() ) ) return;
 
 			// modify axis 2 so it's perpendicular to axis 1
-			double k = dDOT( ax1, ax2 );
+			double k = ax1.dot( ax2 );
 			//for ( int i = 0; i < 3; i++ ) ax2.v[i] -= k * ax1.v[i];
 			ax2.eqSum( ax2, ax1, -k);
 			dNormalize3( ax2 );
 
 			// make v1 = modified axis2, v2 = axis1 x (modified axis2)
-			dCROSS( v, OP.EQ , ax1, ax2 );
-			dMULTIPLY1_331( v1, node[0].body.posr().R(), ax2 );
-			dMULTIPLY1_331( v2, node[0].body.posr().R(), v );
+			dCalcVectorCross3( v, ax1, ax2 );
+			dMultiply1_331( v1, node[0].body.posr().R(), ax2 );
+			dMultiply1_331( v2, node[0].body.posr().R(), v );
 		}
 	}
 
@@ -317,7 +324,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	{
 		if ( node[0].body != null)
 		{
-			dMULTIPLY0_331( result, node[0].body.posr().R(), _axis1 );
+			dMultiply0_331( result, node[0].body.posr().R(), _axis1 );
 		}
 	}
 
@@ -327,7 +334,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	{
 		if ( node[1].body!= null )
 		{
-			dMULTIPLY0_331( result, node[1].body.posr().R(), _axis2 );
+			dMultiply0_331( result, node[1].body.posr().R(), _axis2 );
 		}
 	}
 
@@ -360,10 +367,10 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		if ( node[0].body != null )
 		{
 			DVector3 axis = new DVector3();
-			dMULTIPLY0_331( axis, node[0].body.posr().R(), _axis1 );
-			double rate = dDOT( axis, node[0].body.avel );
+			dMultiply0_331( axis, node[0].body.posr().R(), _axis1 );
+			double rate = dCalcVectorDot3( axis, node[0].body.avel );
 			if ( node[1].body != null )
-				rate -= dDOT( axis, node[1].body.avel );
+				rate -= dCalcVectorDot3( axis, node[1].body.avel );
 			return rate;
 		}
 		else return 0;
@@ -375,10 +382,10 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		if ( node[0].body != null && node[1].body != null )
 		{
 			DVector3 axis = new DVector3();
-			dMULTIPLY0_331( axis, node[1].body.posr().R(), _axis2 );
-			double rate = dDOT( axis, node[0].body.avel );
+			dMultiply0_331( axis, node[1].body.posr().R(), _axis2 );
+			double rate = dCalcVectorDot3( axis, node[0].body.avel );
 			if ( node[1].body != null )
-				rate -= dDOT( axis, node[1].body.avel );
+				rate -= dCalcVectorDot3( axis, node[1].body.avel );
 			return rate;
 		}
 		else return 0;
@@ -391,8 +398,8 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		if ( node[0].body != null && node[1].body != null)
 		{
 			DVector3 axis1 = new DVector3(), axis2 = new DVector3();
-			dMULTIPLY0_331( axis1, node[0].body.posr().R(), _axis1 );
-			dMULTIPLY0_331( axis2, node[1].body.posr().R(), _axis2 );
+			dMultiply0_331( axis1, node[0].body.posr().R(), _axis1 );
+			dMultiply0_331( axis2, node[1].body.posr().R(), _axis2 );
 //			axis1.v[0] = axis1.v[0] * torque1 + axis2.v[0] * torque2;
 //			axis1.v[1] = axis1.v[1] * torque1 + axis2.v[1] * torque2;
 //			axis1.v[2] = axis1.v[2] * torque1 + axis2.v[2] * torque2;

@@ -25,16 +25,20 @@
 package org.ode4j.ode;
 
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3.DVector3RowTView;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector3View;
 import org.ode4j.math.DVector4;
-import org.ode4j.math.DMatrix3.DVector3ColView;
-import org.ode4j.math.DMatrix3.DVector3RowTView;
 import org.ode4j.ode.internal.Rotation;
 
+/**
+ * ODE math functions.
+ *
+ * @author Tilmann Zaeschke
+ */
 public class OdeMath extends Rotation {
 
 	private OdeMath() {
@@ -81,6 +85,120 @@ public class OdeMath extends Rotation {
 //	}
 
 
+	// Some vector math
+//	PURE_INLINE void dAddVectors3(dReal *res, const dReal *a, const dReal *b)
+//	{
+//	  dReal res_0, res_1, res_2;
+//	  res_0 = a[0] + b[0];
+//	  res_1 = a[1] + b[1];
+//	  res_2 = a[2] + b[2];
+//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
+//	}
+//
+//	PURE_INLINE void dSubtractVectors3(dReal *res, const dReal *a, const dReal *b)
+//	{
+//	  dReal res_0, res_1, res_2;
+//	  res_0 = a[0] - b[0];
+//	  res_1 = a[1] - b[1];
+//	  res_2 = a[2] - b[2];
+//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
+//	}
+//
+//	PURE_INLINE void dAddScaledVectors3(dReal *res, const dReal *a, const dReal *b, dReal a_scale, dReal b_scale)
+//	{
+//	  dReal res_0, res_1, res_2;
+//	  res_0 = a_scale * a[0] + b_scale * b[0];
+//	  res_1 = a_scale * a[1] + b_scale * b[1];
+//	  res_2 = a_scale * a[2] + b_scale * b[2];
+//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
+//	}
+//
+//	PURE_INLINE void dScaleVector3(dReal *res, dReal nScale)
+//	{
+//	  res[0] *= nScale ;
+//	  res[1] *= nScale ;
+//	  res[2] *= nScale ;
+//	}
+//
+//	PURE_INLINE void dNegateVector3(dReal *res)
+//	{
+//	  res[0] = -res[0];
+//	  res[1] = -res[1];
+//	  res[2] = -res[2];
+//	}
+
+	public static void dCopyVector3(double[] a, int ofs, final DVector3C b) {
+        a[0+ofs] = b.get0(); 
+        a[1+ofs] = b.get1(); 
+        a[2+ofs] = b.get2();
+//	  dReal res_0, res_1, res_2;
+//	  res_0 = a[0];
+//	  res_1 = a[1];
+//	  res_2 = a[2];
+//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
+	}
+
+//	PURE_INLINE void dCopyScaledVector3(dReal *res, const dReal *a, dReal nScale)
+//	{
+//	  dReal res_0, res_1, res_2;
+//	  res_0 = a[0] * nScale;
+//	  res_1 = a[1] * nScale;
+//	  res_2 = a[2] * nScale;
+//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
+//	}
+
+	public static void dCopyNegatedVector3(double[] a, int ofs, DVector3C b) {
+        a[0+ofs] = -b.get0(); 
+        a[1+ofs] = -b.get1(); 
+        a[2+ofs] = -b.get2();
+//	  dReal res_0, res_1, res_2;
+//	  res_0 = -a[0];
+//	  res_1 = -a[1];
+//	  res_2 = -a[2];
+//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
+	}
+
+//	PURE_INLINE void dCopyVector4(dReal *res, const dReal *a)
+//	{
+//	  dReal res_0, res_1, res_2, res_3;
+//	  res_0 = a[0];
+//	  res_1 = a[1];
+//	  res_2 = a[2];
+//	  res_3 = a[3];
+//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+//	  res[0] = res_0; res[1] = res_1; res[2] = res_2; res[3] = res_3;
+//	}
+//
+//	PURE_INLINE void dCopyMatrix4x4(dReal *res, const dReal *a)
+//	{
+//	  dCopyVector4(res + 0, a + 0);
+//	  dCopyVector4(res + 4, a + 4);
+//	  dCopyVector4(res + 8, a + 8);
+//	}
+//
+//	PURE_INLINE void dCopyMatrix4x3(dReal *res, const dReal *a)
+//	{
+//	  dCopyVector3(res + 0, a + 0);
+//	  dCopyVector3(res + 4, a + 4);
+//	  dCopyVector3(res + 8, a + 8);
+//	}
+//
+//	PURE_INLINE void dGetMatrixColumn3(dReal *res, const dReal *a, unsigned n)
+//	{
+//	  dReal res_0, res_1, res_2;
+//	  res_0 = a[n + 0];
+//	  res_1 = a[n + 4];
+//	  res_2 = a[n + 8];
+//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
+//	}
+	
 	public enum OP { ADD, SUB, MUL, DIV, EQ, /** += */ ADD_EQ, /** =- */ EQ_SUB, 
 		/** *= */ MUL_EQ, /** -= */ SUB_EQ; }
 	
@@ -104,80 +222,80 @@ public class OdeMath extends Rotation {
 	//    (a)[0] op (c); \
 	//    (a)[1] op (c); \
 	//    (a)[2] op (c);
-	public static void dOP(double[] a, OP op, double[] b, double[] c) {
-		switch (op) {
-		case ADD: dOPadd(a, b, c); return;
-		case SUB: dOPsub(a, b, c); return;
-		case MUL: dOPmul(a, b, c); return;
-		case DIV: dOPdiv(a, b, c); return;
-		}
-		throw new UnsupportedOperationException(op.name());
-	}
+//	public static void dOP(double[] a, OP op, double[] b, double[] c) {
+//		switch (op) {
+//		case ADD: dOPadd(a, b, c); return;
+//		case SUB: dOPsub(a, b, c); return;
+//		case MUL: dOPmul(a, b, c); return;
+//		case DIV: dOPdiv(a, b, c); return;
+//		}
+//		throw new UnsupportedOperationException(op.name());
+//	}
+//
+//	public static void dOPE(double[] a, int ofs, OP op, double[] b) {
+//		if (op == OP.EQ) {
+//			a[0+ofs] = b[0]; 
+//			a[1+ofs] = b[1]; 
+//			a[2+ofs] = b[2];
+//		} else if (op == OP.ADD_EQ) {
+//			a[0+ofs] += b[0]; 
+//			a[1+ofs] += b[1]; 
+//			a[2+ofs] += b[2];
+//		} else if (op == OP.EQ_SUB) {
+//			a[0+ofs] = -b[0]; 
+//			a[1+ofs] = -b[1]; 
+//			a[2+ofs] = -b[2];
+//		} else {
+//			throw new UnsupportedOperationException(op.name());
+//		}
+//	}
+//
+//	public static void dOPE(double[] a, int ofs, OP op, DVector3C b) {
+//		if (op == OP.EQ) {
+//			a[0+ofs] = b.get0(); 
+//			a[1+ofs] = b.get1(); 
+//			a[2+ofs] = b.get2();
+//		} else if (op == OP.ADD_EQ) {
+//			a[0+ofs] += b.get0(); 
+//			a[1+ofs] += b.get1(); 
+//			a[2+ofs] += b.get2();
+//		} else if (op == OP.EQ_SUB) {
+//			a[0+ofs] = -b.get0(); 
+//			a[1+ofs] = -b.get1(); 
+//			a[2+ofs] = -b.get2();
+//		} else {
+//			throw new UnsupportedOperationException(op.name());
+//		}
+//	}
 
-	public static void dOPE(double[] a, int ofs, OP op, double[] b) {
-		if (op == OP.EQ) {
-			a[0+ofs] = b[0]; 
-			a[1+ofs] = b[1]; 
-			a[2+ofs] = b[2];
-		} else if (op == OP.ADD_EQ) {
-			a[0+ofs] += b[0]; 
-			a[1+ofs] += b[1]; 
-			a[2+ofs] += b[2];
-		} else if (op == OP.EQ_SUB) {
-			a[0+ofs] = -b[0]; 
-			a[1+ofs] = -b[1]; 
-			a[2+ofs] = -b[2];
-		} else {
-			throw new UnsupportedOperationException(op.name());
-		}
-	}
-
-	public static void dOPE(double[] a, int ofs, OP op, DVector3C b) {
-		if (op == OP.EQ) {
-			a[0+ofs] = b.get0(); 
-			a[1+ofs] = b.get1(); 
-			a[2+ofs] = b.get2();
-		} else if (op == OP.ADD_EQ) {
-			a[0+ofs] += b.get0(); 
-			a[1+ofs] += b.get1(); 
-			a[2+ofs] += b.get2();
-		} else if (op == OP.EQ_SUB) {
-			a[0+ofs] = -b.get0(); 
-			a[1+ofs] = -b.get1(); 
-			a[2+ofs] = -b.get2();
-		} else {
-			throw new UnsupportedOperationException(op.name());
-		}
-	}
-
-	private static void dOPadd(double[] a, double[] b, double[] c) {
-		a[0] = ((b)[0]) + ((c)[0]); 
-		a[1] = ((b)[1]) + ((c)[1]); 
-		a[2] = ((b)[2]) + ((c)[2]);
-	}
-	private static void dOPsub(double[] a, double[] b, double[] c) {
-		a[0] = ((b)[0]) - ((c)[0]); 
-		a[1] = ((b)[1]) - ((c)[1]); 
-		a[2] = ((b)[2]) - ((c)[2]);
-	}
-	private static void dOPmul(double[] a, double[] b, double[] c) {
-		a[0] = ((b)[0]) * ((c)[0]); 
-		a[1] = ((b)[1]) * ((c)[1]); 
-		a[2] = ((b)[2]) * ((c)[2]);
-	}
-	private static void dOPdiv(double[] a, double[] b, double[] c) {
-		a[0] = ((b)[0]) / ((c)[0]); 
-		a[1] = ((b)[1]) / ((c)[1]); 
-		a[2] = ((b)[2]) / ((c)[2]);
-	}
-
-	/** @deprecated Use dVector3.scale(c) instead (TZ). */
-	public static void dOPEC(double[] a, OP op, double c) {
-		switch (op) {
-		case MUL_EQ: for (int i = 0; i < a.length; i++) a[i] *= c; return;
-		}
-		throw new UnsupportedOperationException(op.name());
-	}
+//	private static void dOPadd(double[] a, double[] b, double[] c) {
+//		a[0] = ((b)[0]) + ((c)[0]); 
+//		a[1] = ((b)[1]) + ((c)[1]); 
+//		a[2] = ((b)[2]) + ((c)[2]);
+//	}
+//	private static void dOPsub(double[] a, double[] b, double[] c) {
+//		a[0] = ((b)[0]) - ((c)[0]); 
+//		a[1] = ((b)[1]) - ((c)[1]); 
+//		a[2] = ((b)[2]) - ((c)[2]);
+//	}
+//	private static void dOPmul(double[] a, double[] b, double[] c) {
+//		a[0] = ((b)[0]) * ((c)[0]); 
+//		a[1] = ((b)[1]) * ((c)[1]); 
+//		a[2] = ((b)[2]) * ((c)[2]);
+//	}
+//	private static void dOPdiv(double[] a, double[] b, double[] c) {
+//		a[0] = ((b)[0]) / ((c)[0]); 
+//		a[1] = ((b)[1]) / ((c)[1]); 
+//		a[2] = ((b)[2]) / ((c)[2]);
+//	}
+//
+//	/** @deprecated Use dVector3.scale(c) instead (TZ). */
+//	public static void dOPEC(double[] a, OP op, double c) {
+//		switch (op) {
+//		case MUL_EQ: for (int i = 0; i < a.length; i++) a[i] *= c; return;
+//		}
+//		throw new UnsupportedOperationException(op.name());
+//	}
 
 	//#define dOPC(a,op,b,c) \
 	//(a)[0] = ((b)[0]) op (c); \
@@ -292,35 +410,57 @@ public class OdeMath extends Rotation {
 	//#define dDOT41(a,b) dDOTpq(a,b,4,1)
 	//#define dDOT44(a,b) dDOTpq(a,b,4,4)
 
-	public static double dDOT(DVector3C a, DVector3C b) {
-		return a.get0()*b.get0() + a.get1()*b.get1() + a.get2()*b.get2();
+	@Deprecated
+	public static double dDOT(DVector3C a, DVector3C b) { return a.dot(b); }
+	/**
+	 * Instead, please use a.dot(b).
+	 * @param a
+	 * @param b
+	 * @return dot product
+	 */
+	public static double dCalcVectorDot3(DVector3C a, DVector3C b) {
+		return a.dot(b);
 	}
-	public static double dDOT(double[] a, int o1, DVector3C b) { return dDOTpq(a,o1,b); }
-	public static double dDOT(DVector3C a, double[] b, int o2) { return dDOTpq(a,b,o2,1); }
-	public static double dDOT(double[] a, double[] b) { return dDOTpq(a,b,1,1); }
-	public static double dDOT(double[] a, int o1, double[] b, int o2) { return dDOTpq(a,o1,b,o2,1,1); }
+	public static double dCalcVectorDot3(double[] a, int o1, DVector3C b) { return dDOTpq(a,o1,b); }
+	public static double dCalcVectorDot3(DVector3C a, double[] b, int o2) { return dDOTpq(a,b,o2,1); }
+	public static double dCalcVectorDot3(double[] a, double[] b) { return dDOTpq(a,b,1,1); }
+	public static double dCalcVectorDot3(double[] a, int o1, double[] b, int o2) { return dDOTpq(a,o1,b,o2,1,1); }
 	//public static double dDOT13(double[] a, int o1, double[] b, int o2) { return dDOTpq(a,o1,b,o2,1,3); }
 	//public static double dDOT13(DVector3C a, double[] b, int o2) { return dDOTpq(a,b,o2,3); }
-	public static double dDOT13(DVector3C a, DVector3ColView b) { return a.dot(b); }
+	//public static double dDOT13(DVector3C a, DVector3ColView b) { return a.dot(b); }
 	//Used? public double dDOT14(dVector3 a, dVector3 b) { return dDOTpq(a,b,1,4); }
 	//public static double dDOT14(DVector3 a, DMatrix3 b, int o2) { return dDOTpq(a,b.v,o2,4); }
-	public static double dDOT14(DVector3C a, DMatrix3C b, int o2) { return a.dotCol(b, o2); } 
+	public static double dCalcVectorDot3_14(DVector3C a, DMatrix3C b, int o2) { return a.dotCol(b, o2); } 
 		//return dDOTpq(a,((DMatrix3)b).v,o2,4); }
 	//public static double dDOT41(DMatrix3 a, int o1, DVector3C b) { return dDOTpq(a.v,o1,b,4,1); }
-	public static double dDOT41(DMatrix3C a, int o1, DVector3C b) { return a.dotCol(o1, b); }
+	public static double dCalcVectorDot3_41(DMatrix3C a, int o1, DVector3C b) { return a.dotCol(o1, b); }
 	//		return dDOTpq(((DMatrix3)a).v,o1,b,4,1); }
 	//public static double dDOT44(DMatrix3 a, int o1, DMatrix3 b, int o2) { return dDOTpq(a.v,o1,b.v,o2,4,4); }
-	public static double dDOT44(DMatrix3C a, int o1, DMatrix3C b, int o2) { return a.dotColCol(o1, b, o2); }
+	public static double dCalcVectorDot3_44(DMatrix3C a, int o1, DMatrix3C b, int o2) { return a.dotColCol(o1, b, o2); }
 		//return dDOTpq(((DMatrix3)a).v,o1,((DMatrix3)b).v,o2,4,4); }
 	//private double dDOT(dMatrix3 a, int o1, dVector3 b, int o2) { return dDOTpq(a.v, o1, b.v, o2, 1,1); }
-	public static double dDOT14(double[] a, int o1, double[] b, int o2) { return dDOTpq(a,o1,b,o2,1,4); }
-	public static double dDOT14(DVector3C a, double[] b, int o2) { return dDOTpq(a,b,o2,4); }
+	public static double dCalcVectorDot3_14(double[] a, int o1, double[] b, int o2) { return dDOTpq(a,o1,b,o2,1,4); }
+	public static double dCalcVectorDot3_14(DVector3C a, double[] b, int o2) { return dDOTpq(a,b,o2,4); }
 	//private static double dDOT41(double[] a, int o1, double[] b, int o2) { return dDOTpq(a,o1,b,o2,4,1); }
 //	private static double dDOT41(double[] a, int o1, DVector3C b) { return dDOTpq(a,o1,4, b); }
 //	private static double dDOT44(double[] a, int o1, double[] b, int o2) { return dDOTpq(a,o1,b,o2,4,4); }
 
 	//#endif /* __cplusplus */
 
+	
+//	public static double dCalcVectorLength3(final DVector3C a) {
+//	    return dSqrt(a.get0() * a.get0() + a.get1() * a.get1() + a.get2() * a.get2());
+//	}
+//
+//	public static double dCalcVectorLengthSquare3(final DVector3C a) {
+//	    return (a.get0() * a.get0() + a.get1() * a.get1() + a.get2() * a.get2());
+//	}
+//
+//	public static double dCalcPointDepth3(const dReal *test_p, const dReal *plane_p, const dReal *plane_n)
+//	{
+//	    return (plane_p[0] - test_p[0]) * plane_n[0] + (plane_p[1] - test_p[1]) * plane_n[1] + (plane_p[2] - test_p[2]) * plane_n[2];
+//	}
+	
 
 	/*
 	 * cross product, set a = b x c. dCROSSpqr means that elements of `a', `b'
@@ -341,79 +481,129 @@ public class OdeMath extends Rotation {
 	//  (a)[  p] op ((b)[2*q]*(c)[  0] - (b)[  0]*(c)[2*r]); \
 	//  (a)[2*p] op ((b)[  0]*(c)[  r] - (b)[  q]*(c)[  0]); \
 	//} while(0)
-	public static void dCROSS(DVector3 a, OP op, DVector3C b, DVector3C c) {
-		if (op == OP.EQ) {
-			a.set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
-			a.set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
-			a.set2( b.get0()*c.get1() - b.get1()*c.get0() );
-		} else if (op == OP.ADD_EQ) {
-			a.add0( b.get1()*c.get2() - b.get2()*c.get1() ); 
-			a.add1( b.get2()*c.get0() - b.get0()*c.get2() ); 
-			a.add2( b.get0()*c.get1() - b.get1()*c.get0() );
-		} else if (op == OP.SUB_EQ) {
-			a.add0( -b.get1()*c.get2() + b.get2()*c.get1() ); 
-			a.add1( -b.get2()*c.get0() + b.get0()*c.get2() ); 
-			a.add2( -b.get0()*c.get1() + b.get1()*c.get0() );
-		} else {
-			throw new UnsupportedOperationException(op.name());
-		}
+	/**
+	 * @deprecated Use dCalcVetorCross3, dAddVectorCross3 or  dSubtractVectorCross3.
+	 */
+    public static void dCROSS(DVector3 a, OP op, DVector3C b, DVector3C c) {
+        if (op == OP.EQ) {
+            dCalcVectorCross3(a, b, c);
+        } else if (op == OP.ADD_EQ) {
+            dAddVectorCross3(a, b, c);
+        } else if (op == OP.SUB_EQ) {
+            dSubtractVectorCross3(a, b, c);
+        } else {
+            throw new UnsupportedOperationException(op.name());
+        }
+    }
+    /**
+     * Cross product, set a = b x c.
+     */
+    public static void dCalcVectorCross3(DVector3 a, DVector3C b, DVector3C c) {
+        a.set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
+        a.set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
+        a.set2( b.get0()*c.get1() - b.get1()*c.get0() );
+    }
+    /**
+     * Cross product, set a += b x c.
+     */
+    public static void dAddVectorCross3(DVector3 a, DVector3C b, DVector3C c) {
+        a.add0( b.get1()*c.get2() - b.get2()*c.get1() ); 
+        a.add1( b.get2()*c.get0() - b.get0()*c.get2() ); 
+        a.add2( b.get0()*c.get1() - b.get1()*c.get0() );
+    }
+    /**
+     * Cross product, set a -= b x c.
+     */
+    public static void dSubtractVectorCross3(DVector3 a, DVector3C b, DVector3C c) {
+        a.add0( -b.get1()*c.get2() + b.get2()*c.get1() ); 
+        a.add1( -b.get2()*c.get0() + b.get0()*c.get2() ); 
+        a.add2( -b.get0()*c.get1() + b.get1()*c.get0() );
+    }
+
+//	public static void dCROSS(float[] a, OP op, float[] b, float[] c) {
+//		if (op == OP.EQ) {
+//			a[0] = ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
+//			a[1] = ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
+//			a[2] = ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
+//		} else if (op == OP.ADD_EQ) {
+//			a[0] += ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
+//			a[1] += ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
+//			a[2] += ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
+//		} else if (op == OP.SUB_EQ) {
+//			a[0] -= ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
+//			a[1] -= ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
+//			a[2] -= ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
+//		} else {
+//			throw new UnsupportedOperationException(op.name());
+//		}
+//	}
+    /**
+     * Cross product, set a = b x c.
+     */
+	public static void dCalcVectorCross3(float[] a, float[] b, float[] c) {
+	    a[0] = ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
+	    a[1] = ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
+	    a[2] = ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
+	}
+//	public static void dAddVectorCross3(float[] a, float[] b, float[] c) {
+//	    a[0] += ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
+//	    a[1] += ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
+//	    a[2] += ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
+//	}
+//	public static void dSubtractVectorCross3(float[] a, float[] b, float[] c) {
+//	    a[0] -= ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
+//	    a[1] -= ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
+//	    a[2] -= ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
+//	}
+
+//	public static void dCROSS(double[] a, int ofs, OP op, DVector3C b, DVector3C c) {
+//		if (op == OP.EQ) {
+//			a[0+ofs] = (b.get1()*c.get2() - b.get2()*c.get1()); 
+//			a[1+ofs] = (b.get2()*c.get0() - b.get0()*c.get2()); 
+//			a[2+ofs] = (b.get0()*c.get1() - b.get1()*c.get0());
+//		} else if (op == OP.EQ_SUB) {
+//			a[0+ofs] = -(b.get1()*c.get2() - b.get2()*c.get1()); 
+//			a[1+ofs] = -(b.get2()*c.get0() - b.get0()*c.get2()); 
+//			a[2+ofs] = -(b.get0()*c.get1() - b.get1()*c.get0());
+//		} else {
+//			throw new UnsupportedOperationException(op.name());
+//		}
+//	}
+	public static void dCalcVectorCross3(double[] a, int ofs, DVector3C b, DVector3C c) {
+	    a[0+ofs] = (b.get1()*c.get2() - b.get2()*c.get1()); 
+	    a[1+ofs] = (b.get2()*c.get0() - b.get0()*c.get2()); 
+	    a[2+ofs] = (b.get0()*c.get1() - b.get1()*c.get0());
+	}
+	public static void dSubtractVectorCross3(double[] a, int ofs, DVector3C b, DVector3C c) {
+	    a[0+ofs] = -(b.get1()*c.get2() - b.get2()*c.get1()); 
+	    a[1+ofs] = -(b.get2()*c.get0() - b.get0()*c.get2()); 
+	    a[2+ofs] = -(b.get0()*c.get1() - b.get1()*c.get0());
+    }
+
+	public static void dCalcVectorCross3(DVector3View a, DVector3View b, DVector3View c) {
+		a.set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
+		a.set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
+		a.set2( b.get0()*c.get1() - b.get1()*c.get0() );
 	}
 
-	public static void dCROSS(float[] a, OP op, float[] b, float[] c) {
-		if (op == OP.EQ) {
-			a[0] = ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
-			a[1] = ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
-			a[2] = ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
-		} else if (op == OP.ADD_EQ) {
-			a[0] += ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
-			a[1] += ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
-			a[2] += ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
-		} else if (op == OP.SUB_EQ) {
-			a[0] -= ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
-			a[1] -= ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
-			a[2] -= ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
-		} else {
-			throw new UnsupportedOperationException(op.name());
-		}
+	public static void dSubtractVectorCross3(DVector3 a, DVector3C b, DMatrix3C c) {
+        a.add0( - (b.get1()*c.get02() - b.get2()*c.get01()) ); 
+        a.add1( - (b.get2()*c.get00() - b.get0()*c.get02()) ); 
+        a.add2( - (b.get0()*c.get01() - b.get1()*c.get00()) );
 	}
-
-	public static void dCROSS(double[] a, int ofs, OP op, DVector3C b, DVector3C c) {
-		if (op == OP.EQ) {
-			a[0+ofs] = (b.get1()*c.get2() - b.get2()*c.get1()); 
-			a[1+ofs] = (b.get2()*c.get0() - b.get0()*c.get2()); 
-			a[2+ofs] = (b.get0()*c.get1() - b.get1()*c.get0());
-		} else if (op == OP.EQ_SUB) {
-			a[0+ofs] = -(b.get1()*c.get2() - b.get2()*c.get1()); 
-			a[1+ofs] = -(b.get2()*c.get0() - b.get0()*c.get2()); 
-			a[2+ofs] = -(b.get0()*c.get1() - b.get1()*c.get0());
-		} else {
-			throw new UnsupportedOperationException(op.name());
-		}
-	}
-
-	public static void dCROSS(DVector3View a, OP op, DVector3View b, DVector3View c) {
-		if (op == OP.EQ) {
-			a.set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
-			a.set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
-			a.set2( b.get0()*c.get1() - b.get1()*c.get0() );
-		} else {
-			throw new UnsupportedOperationException(op.name());
-		}
-	}
-
-	public static void dCROSS(DVector3 a, OP op, DVector3C b, DMatrix3C c) {
-		if (op == OP.EQ) {
-			a.set0( b.get1()*c.get02() - b.get2()*c.get01()); 
-			a.set1( b.get2()*c.get00() - b.get0()*c.get02()); 
-			a.set2( b.get0()*c.get01() - b.get1()*c.get00());
-		} else if (op == OP.SUB_EQ) {
-			a.add0( - (b.get1()*c.get02() - b.get2()*c.get01()) ); 
-			a.add1( - (b.get2()*c.get00() - b.get0()*c.get02()) ); 
-			a.add2( - (b.get0()*c.get01() - b.get1()*c.get00()) );
-		} else {
-			throw new UnsupportedOperationException(op.name());
-		}
-	}
+//	public static void dCROSS(DVector3 a, OP op, DVector3C b, DMatrix3C c) {
+//		if (op == OP.EQ) {
+//			a.set0( b.get1()*c.get02() - b.get2()*c.get01()); 
+//			a.set1( b.get2()*c.get00() - b.get0()*c.get02()); 
+//			a.set2( b.get0()*c.get01() - b.get1()*c.get00());
+//		} else if (op == OP.SUB_EQ) {
+//			a.add0( - (b.get1()*c.get02() - b.get2()*c.get01()) ); 
+//			a.add1( - (b.get2()*c.get00() - b.get0()*c.get02()) ); 
+//			a.add2( - (b.get0()*c.get01() - b.get1()*c.get00()) );
+//		} else {
+//			throw new UnsupportedOperationException(op.name());
+//		}
+//	}
 
 
 //	private void dCROSSpqr(DVector3 a, OP op, DVector3 b, DVector3 c, 
@@ -446,14 +636,62 @@ public class OdeMath extends Rotation {
 //	}
 
 
-	/*
+	/**
+	 * Set a 3x3 submatrix of A to a matrix such that submatrix(A)*b = a x b.
+	 * The matrix is assumed to be already zero, so this does not write zero elements!
+     * A positive version will be written.
+	 */
+	public static void dSetCrossMatrixPlus(DMatrix3 A, DVector3C a) {
+        A.set01( -a.get2() ); 
+        A.set02( +a.get1() ); 
+        A.set10( +a.get2() ); 
+        A.set12( -a.get0() ); 
+        A.set20( -a.get1() ); 
+        A.set21( +a.get0() ); 
+	}
+
+    /**
+     * Set a 3x3 submatrix of A to a matrix such that submatrix(A)*b = a x b.
+     * The matrix is assumed to be already zero, so this does not write zero elements!
+     * A negative version will be written.
+     */
+	public static void dSetCrossMatrixMinus(DMatrix3 A, DVector3C a) {
+        A.set01( +a.get2() ); 
+        A.set02( -a.get1() ); 
+        A.set10( -a.get2() ); 
+        A.set12( +a.get0() ); 
+        A.set20( +a.get1() ); 
+        A.set21( -a.get0() ); 
+	}
+	/**
 	 * set a 3x3 submatrix of A to a matrix such that submatrix(A)*b = a x b.
 	 * A is stored by rows, and has `skip' elements per row. the matrix is
 	 * assumed to be already zero, so this does not write zero elements!
-	 * if (plus,minus) is (+,-) then a positive version will be written.
-	 * if (plus,minus) is (-,+) then a negative version will be written.
+	 * A positive version will be written.
 	 */
-
+    public static void dSetCrossMatrixPlus(double[] A, int ofs, DVector3C a, int skip) {
+        A[ofs+1] = -a.get2(); 
+        A[ofs+2] = +a.get1(); 
+        A[ofs+skip+0] = +a.get2(); 
+        A[ofs+skip+2] = -a.get0(); 
+        A[ofs+2*skip+0] = -a.get1(); 
+        A[ofs+2*skip+1] = +a.get0(); 
+    }
+    /**
+     * Set a 3x3 submatrix of A to a matrix such that submatrix(A)*b = a x b.
+     * A is stored by rows, and has `skip' elements per row. the matrix is
+     * assumed to be already zero, so this does not write zero elements!
+     * A negative version will be written.
+     */
+    public static void dSetCrossMatrixMinus(double[] A, int ofs, DVector3C a, int skip) {
+        A[ofs+1] = +a.get2(); 
+        A[ofs+2] = -a.get1(); 
+        A[ofs+skip+0] = -a.get2(); 
+        A[ofs+skip+2] = +a.get0(); 
+        A[ofs+2*skip+0] = +a.get1(); 
+        A[ofs+2*skip+1] = -a.get0(); 
+    }
+	
 	//#define dCROSSMAT(A,a,skip,plus,minus) \
 	//do { \
 	//  (A)[1] = minus (a)[2]; \
@@ -463,6 +701,10 @@ public class OdeMath extends Rotation {
 	//  (A)[2*(skip)+0] = minus (a)[1]; \
 	//  (A)[2*(skip)+1] = plus (a)[0]; \
 	//} while(0)
+    /**
+     * For +1/-1 use dSetCrossMatrixPlus(), for -1/+1 use dSetCrossMatrixMinus().
+     * @deprecated
+     */
 	public static void dCROSSMAT(DMatrix3 A, DVector3C a, int skip, int plus, int minus) {
 		A.set01( minus * a.get2() ); 
 		A.set02( plus  * a.get1() ); 
@@ -471,14 +713,10 @@ public class OdeMath extends Rotation {
 		A.set20( minus * a.get1() ); 
 		A.set21( plus  * a.get0() ); 
 	}
-//	public static void dCROSSMAT(DMatrix3 A, DVector4 a, int skip, int plus, int minus) {
-//		(A).v[1] = minus * (a).v[2]; 
-//		(A).v[2] = plus * (a).v[1]; 
-//		(A).v[(skip)+0] = plus * (a).v[2]; 
-//		(A).v[(skip)+2] = minus * (a).v[0]; 
-//		(A).v[2*(skip)+0] = minus * (a).v[1]; 
-//		(A).v[2*(skip)+1] = plus * (a).v[0]; 
-//	}
+    /**
+     * For +1/-1 use dSetCrossMatrixPlus(), for -1/+1 use dSetCrossMatrixMinus().
+     * @deprecated
+     */
 	public static void dCROSSMAT(double[] A, int ofs, DVector3C a, int skip, int plus, int minus) {
 		A[ofs+1] = minus * a.get2(); 
 		A[ofs+2] = plus * a.get1(); 
@@ -489,19 +727,31 @@ public class OdeMath extends Rotation {
 	}
 
 
-	/*
-	 * compute the distance between two 3D-vectors
-	 */
 
 	//#ifdef __cplusplus
 	//PURE_INLINE dReal dDISTANCE (const dVector3 a, const dVector3 b)
 	//	{ return dSqrt( (a[0]-b[0])*(a[0]-b[0]) + (a[1]-b[1])*(a[1]-b[1]) + (a[2]-b[2])*(a[2]-b[2]) ); }
-	public static double dDISTANCE (final DVector3C a, final DVector3C b)
-	{ 
-		return dSqrt( (a.get0()-b.get0())*(a.get0()-b.get0()) + 
-				(a.get1()-b.get1())*(a.get1()-b.get1()) + 
-				(a.get2()-b.get2())*(a.get2()-b.get2()) ); 
+    /**
+     * Compute the distance between two 3D-vectors.
+     * Please use a.distance(b) instead.
+     * @param a 
+     * @param b 
+     * @return distance
+     * @Deprecated
+     */
+	public static double dCalcPointsDistance3 (final DVector3C a, final DVector3C b) {
+	   return a.distance(b);
 	}
+    /**
+     * Compute the distance between two 3D-vectors.
+     * @param a 
+     * @param b 
+     * @return distance
+     */
+	@Deprecated
+    public static double dDISTANCE (final DVector3C a, final DVector3C b) {
+        return a.distance(b);
+    }
 	//#else
 	//#define dDISTANCE(a,b) \
 	//	(dSqrt( ((a)[0]-(b)[0])*((a)[0]-(b)[0]) + ((a)[1]-(b)[1])*((a)[1]-(b)[1]) + ((a)[2]-(b)[2])*((a)[2]-(b)[2]) ))
@@ -561,16 +811,16 @@ public class OdeMath extends Rotation {
 	//TZ
 	private static void dMULTIPLYOP0_331(double[] A, int a, double[] B, int b,
 			double[] C, int c) {
-		A[0+a] = dDOT(B, 0+b, C, c); 
-		A[1+a] = dDOT(B, 4+b, C, c);
-		A[2+a] = dDOT(B, 8+b, C, c);
+		A[0+a] = dCalcVectorDot3(B, 0+b, C, c); 
+		A[1+a] = dCalcVectorDot3(B, 4+b, C, c);
+		A[2+a] = dCalcVectorDot3(B, 8+b, C, c);
 	}
 	//TZ
 	private static void dMULTIPLYOP0_331(double[] A, int a, double[] B, int b,
 			DVector3C C) {
-		A[0+a] = dDOT(B, 0+b, C); 
-		A[1+a] = dDOT(B, 4+b, C);
-		A[2+a] = dDOT(B, 8+b, C);
+		A[0+a] = dCalcVectorDot3(B, 0+b, C); 
+		A[1+a] = dCalcVectorDot3(B, 4+b, C);
+		A[2+a] = dCalcVectorDot3(B, 8+b, C);
 	}
 	private static void dMULTIPLYOP1_331(DVector3 A, DMatrix3C B, DVector3C C) {
 //		A.set0( dDOT41(B.v, 0, C) ); 
@@ -613,15 +863,15 @@ public class OdeMath extends Rotation {
 		A.set22( B.dotRowCol(2, C, 2) );//(A).v[10] = dDOT14(B.v,8,C.v,2); 
 	} 
 	private static void dMULTIPLYOP1_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) {
-		A.set00( dDOT44(B,0,C,0) ); 
-		A.set01( dDOT44(B,0,C,1) ); 
-		A.set02( dDOT44(B,0,C,2) ); 
-		A.set10( dDOT44(B,1,C,0) ); 
-		A.set11( dDOT44(B,1,C,1) ); 
-		A.set12( dDOT44(B,1,C,2) ); 
-		A.set20( dDOT44(B,2,C,0) ); 
-		A.set21( dDOT44(B,2,C,1) ); 
-		A.set22( dDOT44(B,2,C,2) ); 
+		A.set00( dCalcVectorDot3_44(B,0,C,0) ); 
+		A.set01( dCalcVectorDot3_44(B,0,C,1) ); 
+		A.set02( dCalcVectorDot3_44(B,0,C,2) ); 
+		A.set10( dCalcVectorDot3_44(B,1,C,0) ); 
+		A.set11( dCalcVectorDot3_44(B,1,C,1) ); 
+		A.set12( dCalcVectorDot3_44(B,1,C,2) ); 
+		A.set20( dCalcVectorDot3_44(B,2,C,0) ); 
+		A.set21( dCalcVectorDot3_44(B,2,C,1) ); 
+		A.set22( dCalcVectorDot3_44(B,2,C,2) ); 
 	} 
 	private static void dMULTIPLYOP2_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) {
 //		A.v[0] = dDOT(B.v, 0, C.v, 0); 
@@ -686,39 +936,83 @@ public class OdeMath extends Rotation {
 	//#define dMULTIPLY0_333(A,B,C) dMULTIPLYOP0_333(A,=,B,C)
 	//#define dMULTIPLY1_333(A,B,C) dMULTIPLYOP1_333(A,=,B,C)
 	//#define dMULTIPLY2_333(A,B,C) dMULTIPLYOP2_333(A,=,B,C)
-	public static void dMULTIPLY0_331(DVector3 A, DMatrix3C B, DVector3C C) { 
+	public static void dMultiply0_331(DVector3 A, DMatrix3C B, DVector3C C) { 
 		dMULTIPLYOP0_331(A,B,C); }
-	public static void dMULTIPLY0_331(DMatrix3 A, DMatrix3C B, DVector3C C) { 
+	public static void dMultiply0_331(DMatrix3 A, DMatrix3C B, DVector3C C) { 
 		dMULTIPLYOP0_331(A,B,C); }
 //	public static void dMULTIPLY0_331(DVector3 A, DMatrix3 B, DVector4 C) {
 //		dMULTIPLYOP0_331(A,B,C); } //TZ
-	public static void dMULTIPLY0_331(DVector3 A, DMatrix3C B, double[] C, int c) {
+	public static void dMultiply0_331(DVector3 A, DMatrix3C B, double[] C, int c) {
 		dMULTIPLYOP0_331(A, B, C, c); //TZ
 	}
-	public static void dMULTIPLY0_331(double[] A, int a, double[] B, int b,
+	public static void dMultiply0_331(double[] A, int a, double[] B, int b,
 			DVector3C C) {
 		dMULTIPLYOP0_331(A, a, B, b, C); //TZ
 	}
 
-	public static void dMULTIPLY0_331(double[] A, int a, double[] B, int b,
+	public static void dMultiply0_331(double[] A, int a, double[] B, int b,
 			double[] C, int c) {
 		dMULTIPLYOP0_331(A, a, B, b, C, c); //TZ
 	}
-
-	public static void dMULTIPLY1_331(DVector3 A, DMatrix3C B, DVector3C C) { 
-		dMULTIPLYOP1_331(A,B,C); }
-	public static void dMULTIPLY0_133(DVector3 A, DVector3C B, DMatrix3C C) { 
-		dMULTIPLYOP0_133(A,B,C); }
-	public static void dMULTIPLY0_133(double[] A, int a, double[] B, int b, 
-			double[] C, int c) {		
-		A[0+a] = dDOT14(B, b, C, 0 + c); 
-		A[1+a] = dDOT14(B, b, C, 1 + c); 
-		A[2+a] = dDOT14(B, b, C, 2 + c); 
+	@Deprecated
+	public static void dMULTIPLY0_331(DVector3 A, DMatrix3C B, DVector3C C) {
+	    dMultiply0_331(A, B, C);
 	}
-	public static void dMULTIPLY0_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) { 
+	@Deprecated
+	public static void dMULTIPLY0_331(DMatrix3 A, DMatrix3C B, DVector3C C) {
+	    dMultiply0_331(A, B, C);
+	}
+	@Deprecated
+	public static void dMULTIPLY0_331(DVector3 A, DMatrix3C B, double[] C, int c) {
+	    dMultiply0_331(A, B, C, c);
+	}
+	@Deprecated
+	public static void dMULTIPLY0_331(double[] A, int a, double[] B, int b,
+	        DVector3C C) {
+	    dMultiply0_331(A, a, B, b, C);
+	}
+	@Deprecated
+	public static void dMULTIPLY0_331(double[] A, int a, double[] B, int b,
+	        double[] C, int c) {
+	    dMultiply0_331(A, a, B, b, C, c);
+	}
+
+	public static void dMultiply1_331(DVector3 A, DMatrix3C B, DVector3C C) { 
+		dMULTIPLYOP1_331(A,B,C); }
+	public static void dMultiply0_133(DVector3 A, DVector3C B, DMatrix3C C) { 
+		dMULTIPLYOP0_133(A,B,C); }
+	public static void dMultiply0_133(double[] A, int a, double[] B, int b, 
+			double[] C, int c) {		
+		A[0+a] = dCalcVectorDot3_14(B, b, C, 0 + c); 
+		A[1+a] = dCalcVectorDot3_14(B, b, C, 1 + c); 
+		A[2+a] = dCalcVectorDot3_14(B, b, C, 2 + c); 
+	}
+	public static void dMultiply0_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) { 
 		dMULTIPLYOP0_333(A,B,C); }
-	public static void dMULTIPLY0_333(double[] A, int a, DMatrix3C B, DMatrix3C C) { 
+	public static void dMultiply0_333(double[] A, int a, DMatrix3C B, DMatrix3C C) { 
 		dMULTIPLYOP0_333(A,a,B,C); }
+	@Deprecated
+    public static void dMULTIPLY1_331(DVector3 A, DMatrix3C B, DVector3C C) {
+	    dMultiply1_331(A, B, C);
+	}	
+	@Deprecated
+	public static void dMULTIPLY0_133(DVector3 A, DVector3C B, DMatrix3C C) { 
+	    dMultiply0_133(A, B, C);
+	}
+	@Deprecated
+	public static void dMULTIPLY0_133(double[] A, int a, double[] B, int b, 
+	        double[] C, int c) {
+	    dMultiply0_133(A, a, B, b, C, c);
+	}
+	@Deprecated
+	public static void dMULTIPLY0_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) {
+	    dMultiply0_333(A, B, C);
+	}
+	@Deprecated
+	public static void dMULTIPLY0_333(double[] A, int a, DMatrix3C B, DMatrix3C C) {
+	    dMultiply0_333(A, a, B, C);
+	}
+
 //	public static void dMULTIPLY0_333(double[] A, int a, double[] B, int b,
 //			double[] C, int c) {
 //		A[0+a] =  dDOT14(B,0+b,C,0+c); 
@@ -731,10 +1025,18 @@ public class OdeMath extends Rotation {
 //		A[9+a] =  dDOT14(B,8+b,C,1+c); 
 //		A[10+a] = dDOT14(B,8+b,C,2+c); 
 //	}
-	public static void dMULTIPLY1_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) { 
+	public static void dMultiply1_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) { 
 		dMULTIPLYOP1_333(A,B,C); }
-	public static void dMULTIPLY2_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) { 
+	public static void dMultiply2_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) { 
 		dMULTIPLYOP2_333(A,B,C); }
+	@Deprecated
+    public static void dMULTIPLY1_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) {
+	    dMultiply1_333(A, B, C);
+	}
+	@Deprecated
+    public static void dMULTIPLY2_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) {
+        dMultiply2_333(A, B, C);
+    }
 	//
 	//#define dMULTIPLYADD0_331(A,B,C) dMULTIPLYOP0_331(A,+=,B,C)
 //	public static void dMULTIPLYADD0_331(double[] A, int a, double[] B, int b, double[] C, int c) {
@@ -742,16 +1044,26 @@ public class OdeMath extends Rotation {
 //		A[1+a] += dDOT(B, b+4, C, c);
 //		A[2+a] += dDOT(B, b+8, C, c);
 //	}
+	public static void dMultiplyAdd0_331(DVector3 A, double[] B, int b, DVector3C C) {
+		A.add0( dCalcVectorDot3(B, b+0, C) ); 
+		A.add1( dCalcVectorDot3(B, b+4, C) );
+		A.add2( dCalcVectorDot3(B, b+8, C) );
+	}
+	public static void dMultiplyAdd0_331(DVector3 A, double[] B, int b, double[] C, int c) {
+		A.add0( dCalcVectorDot3(B, b+0, C, c) ); 
+		A.add1( dCalcVectorDot3(B, b+4, C, c) );
+		A.add2( dCalcVectorDot3(B, b+8, C, c) );
+	}
+	@Deprecated
 	public static void dMULTIPLYADD0_331(DVector3 A, double[] B, int b, DVector3C C) {
-		A.add0( dDOT(B, b+0, C) ); 
-		A.add1( dDOT(B, b+4, C) );
-		A.add2( dDOT(B, b+8, C) );
+	    dMultiplyAdd0_331(A, B, b, C);
 	}
-	public static void dMULTIPLYADD0_331(DVector3 A, double[] B, int b, double[] C, int c) {
-		A.add0( dDOT(B, b+0, C, c) ); 
-		A.add1( dDOT(B, b+4, C, c) );
-		A.add2( dDOT(B, b+8, C, c) );
+
+	@Deprecated
+    public static void dMULTIPLYADD0_331(DVector3 A, double[] B, int b, double[] C, int c) {
+	    dMultiplyAdd0_331(A, B, b, C, c);
 	}
+
 	//#define dMULTIPLYADD1_331(A,B,C) dMULTIPLYOP1_331(A,+=,B,C)
 	//#define dMULTIPLYADD0_133(A,B,C) dMULTIPLYOP0_133(A,+=,B,C)
 	//#define dMULTIPLYADD0_333(A,B,C) dMULTIPLYOP0_333(A,+=,B,C)
@@ -933,17 +1245,26 @@ else {
 }
 	 */
 
+	/**
+	 * Normalize 3x1 vectors (i.e. scale them to unit length).
+	 */
 	public static boolean  dSafeNormalize3 (DVector3 a)
 	{
 		return _dSafeNormalize3(a);
 	}
 
+    /**
+     * Normalize 3x1 vectors (i.e. scale them to unit length).
+     */
 	public static boolean  dSafeNormalize3 (DVector3View a)
 	{
 		return _dSafeNormalize3(a);
 	}
 
-	/** Potentially asserts on zero vec. */
+    /**
+     * normalize 3x1 vectors (i.e. scale them to unit length).
+     * Potentially asserts on zero vec. 
+     */
 	public static void dNormalize3(DVector3 a)
 	{
 		_dNormalize3(a);
@@ -1119,7 +1440,7 @@ else {
 		//dCROSS(m+8, =, m, m+4);
 		//dCROSS(m, 8, OP.EQ, m, 0, m, 4);
 		DVector3View row2 = m.viewRowT(2);
-		dCROSS(row2, OP.EQ, row0, row1);
+		dCalcVectorCross3(row2, row0, row1);
 		//TZ m[3] = m[4+3] = m[8+3] = 0;
 	}
 }

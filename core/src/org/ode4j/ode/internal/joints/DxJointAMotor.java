@@ -91,10 +91,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		if ( _mode == AMotorMode.dAMotorEuler )
 		{
 			// special handling for euler mode
-			dMULTIPLY0_331( ax[0], node[0].body.posr().R(), axis[0] );
+			dMultiply0_331( ax[0], node[0].body.posr().R(), axis[0] );
 			if ( node[1].body !=null)
 			{
-				dMULTIPLY0_331( ax[2], node[1].body.posr().R(), axis[2] );
+				dMultiply0_331( ax[2], node[1].body.posr().R(), axis[2] );
 			}
 			else
 			{
@@ -103,7 +103,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 //				ax[2].v[2] = axis[2].v[2];
 				ax[2].set( axis[2] );
 			}
-			dCROSS( ax[1], OP.EQ , ax[2], ax[0] );
+			dCalcVectorCross3( ax[1], ax[2], ax[0] );
 			dNormalize3( ax[1] );
 		}
 		else
@@ -113,14 +113,14 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 				if ( _rel[i] == 1 )
 				{
 					// relative to b1
-					dMULTIPLY0_331( ax[i], node[0].body.posr().R(), axis[i] );
+					dMultiply0_331( ax[i], node[0].body.posr().R(), axis[i] );
 				}
 				else if ( _rel[i] == 2 )
 				{
 					// relative to b2
 					if ( node[1].body != null)   // jds: don't assert, just ignore
 					{
-						dMULTIPLY0_331( ax[i], node[1].body.posr().R(), axis[i] );
+						dMultiply0_331( ax[i], node[1].body.posr().R(), axis[i] );
 					}
 				}
 				else
@@ -151,10 +151,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		// calculate references in global frame
 		DVector3 ref1 = new DVector3(), ref2 = new DVector3();
-		dMULTIPLY0_331( ref1, node[0].body.posr().R(), reference1 );
+		dMultiply0_331( ref1, node[0].body.posr().R(), reference1 );
 		if ( node[1].body!=null )
 		{
-			dMULTIPLY0_331( ref2, node[1].body.posr().R(), reference2 );
+			dMultiply0_331( ref2, node[1].body.posr().R(), reference2 );
 		}
 		else
 		{
@@ -166,16 +166,16 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		// get q perpendicular to both ax[0] and ref1, get first euler angle
 		DVector3 q = new DVector3();
-		dCROSS( q, OP.EQ , ax[0], ref1 );
-		angle[0] = -dAtan2( dDOT( ax[2], q ), dDOT( ax[2], ref1 ) );
+		dCalcVectorCross3( q, ax[0], ref1 );
+		angle[0] = -dAtan2( dCalcVectorDot3( ax[2], q ), dCalcVectorDot3( ax[2], ref1 ) );
 
 		// get q perpendicular to both ax[0] and ax[1], get second euler angle
-		dCROSS( q, OP.EQ , ax[0], ax[1] );
-		angle[1] = -dAtan2( dDOT( ax[2], ax[0] ), dDOT( ax[2], q ) );
+		dCalcVectorCross3( q, ax[0], ax[1] );
+		angle[1] = -dAtan2( dCalcVectorDot3( ax[2], ax[0] ), dCalcVectorDot3( ax[2], q ) );
 
 		// get q perpendicular to both ax[1] and ax[2], get third euler angle
-		dCROSS( q, OP.EQ , ax[1], ax[2] );
-		angle[2] = -dAtan2( dDOT( ref2, ax[1] ), dDOT( ref2, q ) );
+		dCalcVectorCross3( q, ax[1], ax[2] );
+		angle[2] = -dAtan2( dCalcVectorDot3( ref2, ax[1] ), dCalcVectorDot3( ref2, q ) );
 	}
 
 
@@ -192,10 +192,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		if ( node[0].body != null&& node[1].body != null)
 		{
 			DVector3 r = new DVector3();  // axis[2] and axis[0] in global coordinates
-			dMULTIPLY0_331( r, node[1].body.posr().R(), axis[2] );
-			dMULTIPLY1_331( reference1, node[0].body.posr().R(), r );
-			dMULTIPLY0_331( r, node[0].body.posr().R(), axis[0] );
-			dMULTIPLY1_331( reference2, node[1].body.posr().R(), r );
+			dMultiply0_331( r, node[1].body.posr().R(), axis[2] );
+			dMultiply1_331( reference1, node[0].body.posr().R(), r );
+			dMultiply0_331( r, node[0].body.posr().R(), axis[0] );
+			dMultiply1_331( reference2, node[1].body.posr().R(), r );
 		}
 
 		else     // jds
@@ -211,8 +211,8 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 //			r.v[2] = axis[2].v[2];
 //			r.v[3] = axis[2].v[3];
 			r.set(axis[2]);
-			dMULTIPLY1_331( reference1, node[0].body.posr().R(), r );
-			dMULTIPLY0_331( r, node[0].body.posr().R(), axis[0] );
+			dMultiply1_331( reference1, node[0].body.posr().R(), r );
+			dMultiply0_331( r, node[0].body.posr().R(), axis[0] );
 //			reference2.v[0] += r.v[0];
 //			reference2.v[1] += r.v[1];
 //			reference2.v[2] += r.v[2];
@@ -285,10 +285,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		DVector3 ax1_cross_ax2 = new DVector3();
 		if ( _mode == AMotorMode.dAMotorEuler )
 		{
-			dCROSS( ax0_cross_ax1, OP.EQ , ax[0], ax[1] );
+		    dCalcVectorCross3( ax0_cross_ax1, ax[0], ax[1] );
 			//        axptr[2] = &ax0_cross_ax1;
 			axptr[2] = ax0_cross_ax1;
-			dCROSS( ax1_cross_ax2, OP.EQ , ax[1], ax[2] );
+			dCalcVectorCross3( ax1_cross_ax2, ax[1], ax[2] );
 			//        axptr[0] = &ax1_cross_ax2;
 			axptr[0] = ax1_cross_ax2;
 		}
@@ -349,14 +349,14 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		{
 			if ( rel == 1 )
 			{
-				dMULTIPLY1_331( axis[anum], node[0].body.posr().R(), r );
+				dMultiply1_331( axis[anum], node[0].body.posr().R(), r );
 			}
 			else
 			{
 				// don't assert; handle the case of attachment to a bodiless geom
 				if ( node[1].body!=null )   // jds
 				{
-					dMULTIPLY1_331( axis[anum], node[1].body.posr().R(), r );
+					dMultiply1_331( axis[anum], node[1].body.posr().R(), r );
 				}
 				else
 				{
@@ -431,13 +431,13 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		{
 			if ( _rel[anum] == 1 )
 			{
-				dMULTIPLY0_331( result, node[0].body.posr().R(), axis[anum] );
+				dMultiply0_331( result, node[0].body.posr().R(), axis[anum] );
 			}
 			else
 			{
 				if ( node[1].body!=null )   // jds
 				{
-					dMULTIPLY0_331( result, node[1].body.posr().R(), axis[anum] );
+					dMultiply0_331( result, node[1].body.posr().R(), axis[anum] );
 				}
 				else
 				{

@@ -993,7 +993,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			{
 				for( i=0; i<iTmpCounter2; i++)
 				{
-					dMULTIPLY0_331(vPoint,m_mCylinderRot,avTempArray2[i]);
+					dMultiply0_331(vPoint,m_mCylinderRot,avTempArray2[i]);
 //					vPoint[0] += vCylinderCirclePos[0];
 //					vPoint[1] += vCylinderCirclePos[1];
 //					vPoint[2] += vCylinderCirclePos[2];
@@ -1029,7 +1029,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			{
 				for( i=0; i<iTmpCounter1; i++)
 				{
-					dMULTIPLY0_331(vPoint,m_mCylinderRot,avTempArray1[i]);
+					dMultiply0_331(vPoint,m_mCylinderRot,avTempArray1[i]);
 //					vPoint[0] += vCylinderCirclePos[0];
 //					vPoint[1] += vCylinderCirclePos[1];
 //					vPoint[2] += vCylinderCirclePos[2];

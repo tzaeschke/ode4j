@@ -24,6 +24,19 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply0_333;
+import static org.ode4j.ode.OdeMath.dMultiply2_333;
+import static org.ode4j.ode.OdeMath.dSetCrossMatrixPlus;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.Common.dAASSERT;
+import static org.ode4j.ode.internal.Common.dDEBUGMSG;
+import static org.ode4j.ode.internal.Common.dNODEBUG;
+import static org.ode4j.ode.internal.Common.dRecip;
+import static org.ode4j.ode.internal.Common.dUASSERT;
+import static org.ode4j.ode.internal.Matrix.dIsPositiveDefinite;
+
 import org.cpp4j.java.FormattedStringBuilder;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -33,8 +46,11 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DMassC;
 import org.ode4j.ode.DTriMesh;
 
-import static org.ode4j.ode.OdeMath.*;
-
+/**
+ * DxMass.
+ *
+ * @author Tilmann Zaeschke
+ */
 public class DxMass implements DMass {
 
 	double _mass;
@@ -87,8 +103,8 @@ public class DxMass implements DMass {
 		DMatrix3 I2 = new DMatrix3(),chat = new DMatrix3();
 		//chat.setZero();//dSetZero (chat,12);
 		//dCROSSMAT (chat,m.c,4,+,-);
-		dCROSSMAT (chat,_c,4,+1,-1);
-		dMULTIPLY0_333 (I2,chat,chat);
+		dSetCrossMatrixPlus (chat,_c);
+		dMultiply0_333 (I2,chat,chat);
 //		for (i=0; i<3; i++)  I2.v[i] = _I.v[i] + _mass*I2.v[i];
 //		for (i=4; i<7; i++)  I2.v[i] = _I.v[i] + _mass*I2.v[i];
 //		for (i=8; i<11; i++) I2.v[i] = _I.v[i] + _mass*I2.v[i];
@@ -294,7 +310,7 @@ public class DxMass implements DMass {
 //			dOP( b.v, OP.SUB, v[2].v, v[0].v ); 
 			a.eqDiff(v[1], v[0]);
 			b.eqDiff(v[2], v[0]);
-			dCROSS( n, OP.EQ, b, a );
+			dCalcVectorCross3( n, b, a );
 			nx = Math.abs(n.get0());
 			ny = Math.abs(n.get1());
 			nz = Math.abs(n.get2());
@@ -390,7 +406,7 @@ public class DxMass implements DMass {
 						Pabb /= -60.0;
 					}			
 
-					w = - dDOT(n, v[0]);
+					w = - n.dot(v[0]);
 
 					k1 = 1 / n.get(C); k2 = k1 * k1; k3 = k2 * k1; k4 = k3 * k1;
 
@@ -495,7 +511,7 @@ public class DxMass implements DMass {
 
 		// adjust inertia matrix
 		//chat.dSetZero();//dSetZero (chat,12);
-		dCROSSMAT (chat,_c,4,+1,-1);
+		dSetCrossMatrixPlus (chat,_c);
 		//double a[3];
 		DVector3 a = new DVector3(xyz);
 		a.add(_c);
@@ -503,9 +519,9 @@ public class DxMass implements DMass {
 //		a.v[1] = y + _c.v[1];
 //		a.v[2] = z + _c.v[2];
 		//ahat.dSetZero();//dSetZero (ahat,12);
-		dCROSSMAT (ahat,a,4,+1,-1);
-		dMULTIPLY0_333 (t1,ahat,ahat);
-		dMULTIPLY0_333 (t2,chat,chat);
+		dSetCrossMatrixPlus (ahat,a);
+		dMultiply0_333 (t1,ahat,ahat);
+		dMultiply0_333 (t2,chat,chat);
 		for (i=0; i<3; i++) for (j=0; j<3; j++)
 			_I.add(i, j, _mass * (t2.get(i, j)-t1.get(i, j)) );
 
@@ -540,8 +556,8 @@ public class DxMass implements DMass {
 		DVector3 t2 = new DVector3();
 
 		// rotate inertia matrix
-		dMULTIPLY2_333 (t1,_I,aR);
-		dMULTIPLY0_333 (_I,aR,t1);
+		dMultiply2_333 (t1,_I,aR);
+		dMultiply0_333 (_I,aR,t1);
 
 		// ensure perfect symmetry
 		_I.set10( _I.get01() );//v[_I(1,0)] = _I.v[_I(0,1)];
@@ -549,7 +565,7 @@ public class DxMass implements DMass {
 		_I.set21( _I.get12() );//v[_I(2,1)] = _I.v[_I(1,2)];
 
 		// rotate center of mass
-		dMULTIPLY0_331 (t2,aR,_c);
+		dMultiply0_331 (t2,aR,_c);
 //		_c.v[0] = t2.v[0];
 //		_c.v[1] = t2.v[1];
 //		_c.v[2] = t2.v[2];

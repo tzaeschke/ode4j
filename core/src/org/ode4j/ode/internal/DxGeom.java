@@ -520,9 +520,9 @@ public abstract class DxGeom extends DBase implements DGeom {
 		DMatrix3 inv_offset = new DMatrix3();
 		matrixInvert(offset_posr.R, inv_offset);
 
-		dMULTIPLY0_333(body_posr.R, final_posr.R, inv_offset);
+		dMultiply0_333(body_posr.R, final_posr.R, inv_offset);
 		DVector3 world_offset = new DVector3();  //TZ
-		dMULTIPLY0_331(world_offset, body_posr.R, offset_posr.pos);
+		dMultiply0_331(world_offset, body_posr.R, offset_posr.pos);
 //		body_posr.pos.v[0] = final_posr.pos.v[0] - world_offset.v[0];
 //		body_posr.pos.v[1] = final_posr.pos.v[1] - world_offset.v[1];
 //		body_posr.pos.v[2] = final_posr.pos.v[2] - world_offset.v[2];
@@ -535,13 +535,13 @@ public abstract class DxGeom extends DBase implements DGeom {
 		DMatrix3 inv_body = new DMatrix3();
 		matrixInvert(body_posr.R(), inv_body);
 
-		dMULTIPLY0_333(offset_posr.R, inv_body, world_posr.R());
+		dMultiply0_333(offset_posr.R, inv_body, world_posr.R());
 		DVector3 world_offset = new DVector3();
 //		world_offset.v[0] = world_posr.pos.v[0] - body_posr.pos.v[0];
 //		world_offset.v[1] = world_posr.pos.v[1] - body_posr.pos.v[1];
 //		world_offset.v[2] = world_posr.pos.v[2] - body_posr.pos.v[2];
 		world_offset.eqDiff( world_posr.pos(), body_posr.pos() );
-		dMULTIPLY0_331(offset_posr.pos, inv_body, world_offset);
+		dMultiply0_331(offset_posr.pos, inv_body, world_offset);
 	}
 
 	/**
@@ -553,12 +553,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 //		dIASSERT(offset_posr != null);
 //		dIASSERT(body != null);
 
-		dMULTIPLY0_331 (_final_posr.pos,body.posr().R(),offset_posr.pos);
+		dMultiply0_331 (_final_posr.pos,body.posr().R(),offset_posr.pos);
 //		_final_posr.pos.v[0] += body._posr.pos.v[0];
 //		_final_posr.pos.v[1] += body._posr.pos.v[1];
 //		_final_posr.pos.v[2] += body._posr.pos.v[2];
 		_final_posr.pos.add( body.posr().pos() );
-		dMULTIPLY0_333 (_final_posr.R,body.posr().R(),offset_posr.R);
+		dMultiply0_333 (_final_posr.R,body.posr().R(),offset_posr.R);
 	}
 
 	// ************ TZ from collision_kernel.cpp ********************
@@ -682,7 +682,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		if (offset_posr != null) {
 			// move body such that body+offset = position
 			DVector3 world_offset = new DVector3();
-			dMULTIPLY0_331(world_offset, body.posr().R(), offset_posr.pos);
+			dMultiply0_331(world_offset, body.posr().R(), offset_posr.pos);
 			//TZ body could be null...?
 			world_offset.eqDiff(xyz, world_offset);
 //			body.dBodySetPosition(//g.body,

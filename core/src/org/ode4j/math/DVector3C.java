@@ -53,6 +53,11 @@ public interface DVector3C {
 	public double lengthSquared();
 	public double length();
 	/** 
+	 * @return Distance between this vector and b).
+	 * @See DVector3#distance(DVector3C) 
+	 */
+	public double distance(DVector3C a);
+	/** 
 	 * @see DVector3#dot(DVector3C)
 	 */
 	public double dot(DVector3C b);

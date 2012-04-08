@@ -24,17 +24,30 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.OdeMath.dAddVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.OdeMath.dNormalize4;
+import static org.ode4j.ode.OdeMath.dOrthogonalizeR;
+import static org.ode4j.ode.internal.Common.DBL_EPSILON;
+import static org.ode4j.ode.internal.Common.dAASSERT;
+import static org.ode4j.ode.internal.Common.dCos;
+import static org.ode4j.ode.internal.Common.dDEBUGMSG;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dRecip;
+import static org.ode4j.ode.internal.Common.dSin;
+import static org.ode4j.ode.internal.Common.dSqrt;
+import static org.ode4j.ode.internal.Common.dUASSERT;
+import static org.ode4j.ode.internal.Matrix.dInvertPDMatrix;
+import static org.ode4j.ode.internal.Rotation.dDQfromW;
+import static org.ode4j.ode.internal.Rotation.dQMultiply0;
+import static org.ode4j.ode.internal.Rotation.dQfromR;
+import static org.ode4j.ode.internal.Rotation.dRfromQ;
+
 import org.cpp4j.java.Ref;
-
-import static org.ode4j.ode.OdeMath.*;
-
-import org.ode4j.ode.internal.Objects_H.DxPosRC;
-import org.ode4j.ode.internal.Objects_H.dxAutoDisable;
-import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
-import org.ode4j.ode.internal.Objects_H.DxPosR;
-import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
-import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -46,6 +59,13 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DMassC;
+import org.ode4j.ode.internal.Objects_H.DxPosR;
+import org.ode4j.ode.internal.Objects_H.DxPosRC;
+import org.ode4j.ode.internal.Objects_H.dxAutoDisable;
+import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
+import org.ode4j.ode.internal.joints.DxJoint;
+import org.ode4j.ode.internal.joints.DxJointNode;
+import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
 
 /**
  * rigid body (dynamics object).
@@ -451,7 +471,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodyAddRelForce (DVector3C f)
 	{
 		DVector3 t2 = new DVector3();
-		dMULTIPLY0_331 (t2,_posr.R,f);
+		dMultiply0_331 (t2,_posr.R,f);
 		facc.add(t2);
 	}
 
@@ -460,7 +480,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public void dBodyAddRelTorque (DVector3C f)
 	{
 		DVector3 t2 = new DVector3();
-		dMULTIPLY0_331 (t2,_posr.R,f);
+		dMultiply0_331 (t2,_posr.R,f);
 		tacc.add(t2);
 	}
 
@@ -469,26 +489,26 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	{
 		facc.add(f);
 		DVector3 q = p.reSub(_posr.pos);
-		dCROSS (tacc,OP.ADD_EQ,q,f);
+		dAddVectorCross3 (tacc,q,f);
 	}
 
 
 	void dBodyAddForceAtRelPos (DVector3C f, DVector3C prel)
 	{
 		DVector3 p = new DVector3();
-		dMULTIPLY0_331 (p,_posr.R,prel);
+		dMultiply0_331 (p,_posr.R,prel);
 		facc.add(f);
-		dCROSS (tacc,OP.ADD_EQ,p,f);
+		dAddVectorCross3 (tacc,p,f);
 	}
 
 
 	void dBodyAddRelForceAtPos (DVector3C frel, DVector3C p)
 	{
 		DVector3 f = new DVector3();
-		dMULTIPLY0_331 (f,_posr.R,frel);
+		dMultiply0_331 (f,_posr.R,frel);
 		facc.add(f);
 		DVector3 q = p.reSub(_posr.pos);
-		dCROSS (tacc,OP.ADD_EQ,q,f);
+		dAddVectorCross3 (tacc,q,f);
 	}
 
 
@@ -508,13 +528,13 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		//		prel.v[1] = py;
 		//		prel.v[2] = pz;
 		//		prel.v[3] = 0;
-		dMULTIPLY0_331 (f,_posr.R,fRel);
-		dMULTIPLY0_331 (p,_posr.R,pRel);
+		dMultiply0_331 (f,_posr.R,fRel);
+		dMultiply0_331 (p,_posr.R,pRel);
 		//		b.facc.v[0] += f.v[0];
 		//		b.facc.v[1] += f.v[1];
 		//		b.facc.v[2] += f.v[2];
 		facc.add(f);
-		dCROSS (tacc,OP.ADD_EQ,p,f);
+		dAddVectorCross3 (tacc,p,f);
 	}
 
 
@@ -566,7 +586,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		//		result.v[1] = p.v[1] + b._posr.pos.v[1];
 		//		result.v[2] = p.v[2] + b._posr.pos.v[2];
 		//		result.sum(p, b._posr.pos);
-		dMULTIPLY0_331 (result,_posr.R,prel);
+		dMultiply0_331 (result,_posr.R,prel);
 		result.add( _posr.pos );
 	}
 
@@ -577,9 +597,9 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	{
 		//dVector3 prel = new dVector3(px, py, pz);
 		DVector3 p = new DVector3();
-		dMULTIPLY0_331 (p,_posr.R,prel);
+		dMultiply0_331 (p,_posr.R,prel);
 		result.set(lvel);
-		dCROSS (result,OP.ADD_EQ,avel,p);
+		dAddVectorCross3 (result,avel,p);
 	}
 
 
@@ -589,7 +609,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	{
 		DVector3 p = new DVector3(prel).sub(_posr.pos);
 		result.set(lvel);
-		dCROSS (result,OP.ADD_EQ,avel,p);
+		dAddVectorCross3 (result,avel,p);
 	}
 
 
@@ -598,7 +618,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodyGetPosRelPoint (DVector3C p, DVector3 result)
 	{
 		DVector3 prel = p.reSub(_posr.pos);
-		dMULTIPLY1_331 (result,_posr.R,prel);
+		dMultiply1_331 (result,_posr.R,prel);
 	}
 
 
@@ -606,7 +626,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//			dVector3 result)
 	void dBodyVectorToWorld (DVector3C p, DVector3 result)
 	{
-		dMULTIPLY0_331 (result,_posr.R,p);
+		dMultiply0_331 (result,_posr.R,p);
 	}
 
 
@@ -614,7 +634,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//			dVector3 result)
 	void dBodyVectorFromWorld (DVector3C p, DVector3 result)
 	{
-		dMULTIPLY1_331 (result,_posr.R,p);
+		dMultiply1_331 (result,_posr.R,p);
 	}
 
 
@@ -999,7 +1019,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		// cap the angular velocity
 		if ((flags & dxBodyMaxAngularSpeed) != 0) {
 			final double max_ang_speed = max_angular_speed;
-			final double aspeed = dDOT( avel, avel );
+			final double aspeed = dCalcVectorDot3( avel, avel );
 			if (aspeed > max_ang_speed*max_ang_speed) {
 				final double coef = max_ang_speed/dSqrt(aspeed);
 				avel.scale(coef);//dOPEC(avel.v, OP.MUL_EQ /* *= */, coef);
@@ -1021,7 +1041,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 				// split the angular velocity vector into a component along the finite
 				// rotation axis, and a component orthogonal to it.
 				DVector3 frv = new DVector3();		// finite rotation vector
-				double k = dDOT (finite_rot_axis,avel);
+				double k = dCalcVectorDot3 (finite_rot_axis,avel);
 				//				frv.v[0] = finite_rot_axis.v[0] * k;
 				//				frv.v[1] = finite_rot_axis.v[1] * k;
 				//				frv.v[2] = finite_rot_axis.v[2] * k;
@@ -1095,7 +1115,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		// damping
 		if ((flags & dxBodyLinearDamping)!=0) {
 			final double lin_threshold = dampingp.linear_threshold;
-			final double lin_speed = dDOT( lvel, lvel );
+			final double lin_speed = dCalcVectorDot3( lvel, lvel );
 			if ( lin_speed > lin_threshold) {
 				final double k = 1 - dampingp.linear_scale;
 				lvel.scale(k);//dOPEC(lvel.v, OP.MUL_EQ, k);
@@ -1103,7 +1123,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		}
 		if ((flags & dxBodyAngularDamping)!=0) {
 			final double ang_threshold = dampingp.angular_threshold;
-			final double ang_speed = dDOT( avel, avel );
+			final double ang_speed = dCalcVectorDot3( avel, avel );
 			if ( ang_speed > ang_threshold) {
 				final double k = 1 - dampingp.angular_scale;
 				avel.scale(k);//dOPEC(avel.v, OP.MUL_EQ, k);

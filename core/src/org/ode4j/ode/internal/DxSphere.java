@@ -203,16 +203,16 @@ public class DxSphere extends DxGeom implements DSphere {
 			p.eqDiff(o1.final_posr().pos(), o2.final_posr().pos());
 
 			l[0] = box.side.get0()*(0.5);
-			t[0] = dDOT14(p,o2.final_posr().R(),0);
+			t[0] = dCalcVectorDot3_14(p,o2.final_posr().R(),0);
 			if (t[0] < -l[0]) { t[0] = -l[0]; onborder = true; }
 			if (t[0] >  l[0]) { t[0] =  l[0]; onborder = true; }
 
 			l[1] = box.side.get1()*(0.5);
-			t[1] = dDOT14(p,o2.final_posr().R(),1);
+			t[1] = dCalcVectorDot3_14(p,o2.final_posr().R(),1);
 			if (t[1] < -l[1]) { t[1] = -l[1]; onborder = true; }
 			if (t[1] >  l[1]) { t[1] =  l[1]; onborder = true; }
 
-			t[2] = dDOT14(p,o2.final_posr().R(),2);
+			t[2] = dCalcVectorDot3_14(p,o2.final_posr().R(),2);
 			l[2] = box.side.get2()*(0.5);
 			if (t[2] < -l[2]) { t[2] = -l[2]; onborder = true; }
 			if (t[2] >  l[2]) { t[2] =  l[2]; onborder = true; }
@@ -237,19 +237,19 @@ public class DxSphere extends DxGeom implements DSphere {
 				//    tmp[1] = 0;
 				//    tmp[2] = 0;
 				tmp.set(mini, (t[mini] > 0) ? (1.0) : (-1.0) );
-				dMULTIPLY0_331 (contacts.get(0).normal,o2.final_posr().R(),tmp);
+				dMultiply0_331 (contacts.get(0).normal,o2.final_posr().R(),tmp);
 				// contact depth = distance to wall along normal plus radius
 				contacts.get(0).depth = min_distance + sphere._radius;
 				return 1;
 			}
 
 			//t[3] = 0;			//@@@ hmmm  TODO (TZ) report
-			dMULTIPLY0_331 (q,o2.final_posr().R(),new DVector3(t[0], t[1], t[2]));
+			dMultiply0_331 (q,o2.final_posr().R(),new DVector3(t[0], t[1], t[2]));
 			//  r[0] = p[0] - q[0];
 			//  r[1] = p[1] - q[1];
 			//  r[2] = p[2] - q[2];
 			r.eqDiff(p, q);
-			depth = sphere._radius - dSqrt(dDOT(r,r));
+			depth = sphere._radius - dSqrt(r.dot(r));
 			if (depth < 0) return 0;
 			//  contact.pos[0] = q[0] + o2.final_posr.pos[0];
 			//  contact.pos[1] = q[1] + o2.final_posr.pos[1];

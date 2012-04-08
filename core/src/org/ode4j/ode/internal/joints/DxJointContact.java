@@ -24,11 +24,28 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
+import static org.ode4j.ode.OdeConstants.dContactApprox1_1;
+import static org.ode4j.ode.OdeConstants.dContactApprox1_2;
+import static org.ode4j.ode.OdeConstants.dContactBounce;
+import static org.ode4j.ode.OdeConstants.dContactFDir1;
+import static org.ode4j.ode.OdeConstants.dContactMotion1;
+import static org.ode4j.ode.OdeConstants.dContactMotion2;
+import static org.ode4j.ode.OdeConstants.dContactMotionN;
+import static org.ode4j.ode.OdeConstants.dContactMu2;
+import static org.ode4j.ode.OdeConstants.dContactSlip1;
+import static org.ode4j.ode.OdeConstants.dContactSlip2;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dContactSoftERP;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.OdeMath.dSubtractVectorCross3;
+
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.internal.DxWorld;
-import static org.ode4j.ode.OdeMath.*;
 
 
 /** 
@@ -111,7 +128,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		info._J[info.J1lp+0] = normal.get0();
 		info._J[info.J1lp+1] = normal.get1();
 		info._J[info.J1lp+2] = normal.get2();
-		dCROSS( info._J, info.J1ap, OP.EQ , c1, normal );
+		dCalcVectorCross3( info._J, info.J1ap, c1, normal );
 		if ( node[1].body != null)
 		{
 //			c2.v[0] = contact.geom.pos.v[0] - node[1].body._posr.pos.v[0];
@@ -121,7 +138,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 			info._J[info.J2lp+0] = -normal.get0();
 			info._J[info.J2lp+1] = -normal.get1();
 			info._J[info.J2lp+2] = -normal.get2();
-			dCROSS( info._J, info.J2ap, OP.EQ_SUB, c2, normal );
+			dSubtractVectorCross3( info._J, info.J2ap, c2, normal );
 		}
 
 		// set right hand side and cfm value for normal
@@ -153,13 +170,13 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		{
 			// calculate outgoing velocity (-ve for incoming contact)
 			double outgoing = 
-				dDOT( info._J, info.J1lp, node[0].body.lvel )
-				+ dDOT( info._J, info.J1ap, node[0].body.avel );
+				dCalcVectorDot3( info._J, info.J1lp, node[0].body.lvel )
+				+ dCalcVectorDot3( info._J, info.J1ap, node[0].body.avel );
 			if ( node[1].body != null)
 			{
 				outgoing += 
-					dDOT( info._J, info.J2lp, node[1].body.lvel )
-					+ dDOT( info._J, info.J2ap, node[1].body.avel );
+					dCalcVectorDot3( info._J, info.J2lp, node[1].body.lvel )
+					+ dCalcVectorDot3( info._J, info.J2ap, node[1].body.avel );
 			}
 			outgoing -= motionN;
 			// only apply bounce if the outgoing velocity is greater than the
@@ -188,7 +205,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 //				t1.v[1] = contact.fdir1.v[1];
 //				t1.v[2] = contact.fdir1.v[2];
 				t1.set( contact.fdir1 );
-				dCROSS( t2, OP.EQ , normal, t1 );
+				dCalcVectorCross3( t2, normal, t1 );
 			}
 			else
 			{
@@ -197,13 +214,13 @@ public class DxJointContact extends DxJoint implements DContactJoint
 			info._J[info.J1lp+s+0] = t1.get0();
 			info._J[info.J1lp+s+1] = t1.get1();
 			info._J[info.J1lp+s+2] = t1.get2();
-			dCROSS( info._J, info.J1ap + s, OP.EQ , c1, t1 );
+			dCalcVectorCross3( info._J, info.J1ap + s, c1, t1 );
 			if ( node[1].body != null)
 			{
 				info._J[info.J2lp+s+0] = -t1.get0();
 				info._J[info.J2lp+s+1] = -t1.get1();
 				info._J[info.J2lp+s+2] = -t1.get2();
-				dCROSS( info._J, info.J2ap + s, OP.EQ_SUB, c2, t1 );
+				dSubtractVectorCross3( info._J, info.J2ap + s, c2, t1 );
 			}
 			// set right hand side
 			if (( contact.surface.mode & dContactMotion1) != 0)
@@ -229,13 +246,13 @@ public class DxJointContact extends DxJoint implements DContactJoint
 			info._J[info.J1lp+s2+0] = t2.get0();
 			info._J[info.J1lp+s2+1] = t2.get1();
 			info._J[info.J1lp+s2+2] = t2.get2();
-			dCROSS( info._J, info.J1ap + s2, OP.EQ , c1, t2 );
+			dCalcVectorCross3( info._J, info.J1ap + s2, c1, t2 );
 			if ( node[1].body != null)
 			{
 				info._J[info.J2lp+s2+0] = -t2.get0();
 				info._J[info.J2lp+s2+1] = -t2.get1();
 				info._J[info.J2lp+s2+2] = -t2.get2();
-				dCROSS( info._J, info.J2ap + s2, OP.EQ_SUB, c2, t2 );
+				dSubtractVectorCross3( info._J, info.J2ap + s2, c2, t2 );
 			}
 			// set right hand side
 			if (( contact.surface.mode & dContactMotion2) != 0)

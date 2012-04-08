@@ -690,14 +690,14 @@ public class DxWorld extends DBase implements DWorld {
 
 				// threshold test
 				double av_lspeed, av_aspeed;
-				av_lspeed = dDOT( average_lvel, average_lvel );
+				av_lspeed = dCalcVectorDot3( average_lvel, average_lvel );
 				if ( av_lspeed > bb.adis.linear_average_threshold )
 				{
 					idle = false; // average linear velocity is too high for idle
 				}
 				else
 				{
-					av_aspeed = dDOT( average_avel, average_avel );
+					av_aspeed = dCalcVectorDot3( average_avel, average_avel );
 					if ( av_aspeed > bb.adis.angular_average_threshold )
 					{
 						idle = false; // average angular velocity is too high for idle

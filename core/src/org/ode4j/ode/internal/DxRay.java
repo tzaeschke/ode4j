@@ -253,8 +253,8 @@ public class DxRay extends DxGeom implements DRay {
 		//  q[1] = ray.final_posr.pos[1] - sphere_pos[1];
 		//  q[2] = ray.final_posr.pos[2] - sphere_pos[2];
 		q.eqDiff(ray.final_posr().pos(), sphere_pos);
-		double B = dDOT14(q,ray.final_posr().R(),2);
-		double C = dDOT(q,q) - radius*radius;
+		double B = dCalcVectorDot3_14(q,ray.final_posr().R(),2);
+		double C = q.dot(q) - radius*radius;
 		// note: if C <= 0 then the start of the ray is inside the sphere
 		double k = B*B - C;
 		if (k < 0) return 0;
@@ -346,12 +346,12 @@ public class DxRay extends DxGeom implements DRay {
 			//		tmp[1] = ray.final_posr.pos[1] - box.final_posr.pos[1];
 			//		tmp[2] = ray.final_posr.pos[2] - box.final_posr.pos[2];
 			tmp.eqDiff(ray.final_posr().pos(), box.final_posr().pos());
-			dMULTIPLY1_331 (s,box.final_posr().R(),tmp);
+			dMultiply1_331 (s,box.final_posr().R(),tmp);
 			//		tmp[0] = ray.final_posr.R[0*4+2];
 			//		tmp[1] = ray.final_posr.R[1*4+2];
 			//		tmp[2] = ray.final_posr.R[2*4+2];
 			tmp.set(ray.final_posr().R().viewCol(2));
-			dMULTIPLY1_331 (v,box.final_posr().R(),tmp);
+			dMultiply1_331 (v,box.final_posr().R(),tmp);
 
 			// mirror the line so that v has all components >= 0
 			DVector3 sign = new DVector3();
@@ -460,13 +460,13 @@ public class DxRay extends DxGeom implements DRay {
 			//		cs[1] = ray.final_posr.pos[1] - ccyl.final_posr.pos[1];
 			//		cs[2] = ray.final_posr.pos[2] - ccyl.final_posr.pos[2];
 			cs.eqDiff(ray.final_posr().pos(), ccyl.final_posr().pos());
-			k = dDOT41(ccyl.final_posr().R(),2,cs);	// position of ray start along ccyl axis
+			k = dCalcVectorDot3_41(ccyl.final_posr().R(),2,cs);	// position of ray start along ccyl axis
 			//		q[0] = k*ccyl.final_posr.R[0*4+2] - cs[0];
 			//		q[1] = k*ccyl.final_posr.R[1*4+2] - cs[1];
 			//		q[2] = k*ccyl.final_posr.R[2*4+2] - cs[2];
 			q.eqSum( ccyl.final_posr().R().viewCol(2), k, 
 					cs, -1);
-			C = dDOT(q,q) - ccyl.getRadius()*ccyl.getRadius();
+			C = dCalcVectorDot3(q,q) - ccyl.getRadius()*ccyl.getRadius();
 			// if C < 0 then ray start position within infinite extension of cylinder
 
 			// see if ray start position is inside the capped cylinder
@@ -494,13 +494,13 @@ public class DxRay extends DxGeom implements DRay {
 				if (k < 0) k = -lz2; else k = lz2;
 			}
 			else {
-				double uv = dDOT44(ccyl.final_posr().R(),2,ray.final_posr().R(),2);
+				double uv = dCalcVectorDot3_44(ccyl.final_posr().R(),2,ray.final_posr().R(),2);
 				//				r[0] = uv*ccyl.final_posr.R[0*4+2] - ray.final_posr.R[0*4+2];
 				//				r[1] = uv*ccyl.final_posr.R[1*4+2] - ray.final_posr.R[1*4+2];
 				//				r[2] = uv*ccyl.final_posr.R[2*4+2] - ray.final_posr.R[2*4+2];
 				r.eqSum(ccyl.final_posr().R().viewCol(2), uv, ray.final_posr().R().viewCol(2), -1);
-				double A = dDOT(r,r);
-				double B = 2*dDOT(q,r);
+				double A = dCalcVectorDot3(r,r);
+				double B = 2*dCalcVectorDot3(q,r);
 				k = B*B-4*A*C;
 				if (k < 0) {
 					// the ray does not intersect the infinite cylinder, but if the ray is
@@ -529,7 +529,7 @@ public class DxRay extends DxGeom implements DRay {
 					//					q[1] = contact.pos[1] - ccyl.final_posr.pos[1];
 					//					q[2] = contact.pos[2] - ccyl.final_posr.pos[2];
 					q.eqDiff(contact.pos, ccyl.final_posr().pos());
-					k = dDOT14(q,ccyl.final_posr().R(),2);
+					k = dCalcVectorDot3_14(q,ccyl.final_posr().R(),2);
 					double nsign = inside_ccyl ? (-1.0) : (1.0);
 					if (k >= -lz2 && k <= lz2) {
 						//						contact.normal[0] = nsign * (contact.pos[0] -
@@ -654,7 +654,7 @@ public class DxRay extends DxGeom implements DRay {
 			r.eqDiff(ray.final_posr().pos(), cyl.final_posr().pos());
 
 			// Distance that ray start is along cyl axis ( Z-axis direction )
-			d = dDOT41( cyl.final_posr().R() , 2, r );
+			d = dCalcVectorDot3_41( cyl.final_posr().R() , 2, r );
 
 			//
 			// Compute vector 'q' representing the shortest line from R to the cylinder z-axis (Cz).
@@ -676,10 +676,10 @@ public class DxRay extends DxGeom implements DRay {
 
 			// if C < 0 then ray start position is within infinite extension of cylinder
 
-			C = dDOT( q, q ) - ( cyl.getRadius() * cyl.getRadius() );
+			C = dCalcVectorDot3( q, q ) - ( cyl.getRadius() * cyl.getRadius() );
 
 			// Compute the projection of ray direction normal onto cylinder direction normal.
-			double uv = dDOT44( cyl.final_posr().R(),2, ray.final_posr().R(),2 );
+			double uv = dCalcVectorDot3_44( cyl.final_posr().R(),2, ray.final_posr().R(),2 );
 
 
 
@@ -701,8 +701,8 @@ public class DxRay extends DxGeom implements DRay {
 			// k = 0 : Tangent
 			// k > 0 : Intersection
 
-			double A = dDOT( r, r );
-			double B = 2 * dDOT( q, r );
+			double A = dCalcVectorDot3( r, r );
+			double B = 2 * dCalcVectorDot3( q, r );
 
 			k = B*B - 4*A*C;
 
@@ -801,7 +801,7 @@ public class DxRay extends DxGeom implements DRay {
 					q.eqDiff(contact.pos, cyl.final_posr().pos());
 
 					// Compute the distance along the cylinder axis of this contact point.
-					d = dDOT14( q, cyl.final_posr().R(),2 );
+					d = dCalcVectorDot3_14( q, cyl.final_posr().R(),2 );
 
 					// Check to see if the intersection point is between the flat end caps
 					if ( d >= -half_length && d <= +half_length )

@@ -369,6 +369,18 @@ public class DVector3 implements DVector3I, DVector3C {
 				"Normalization failed: " + this);
 	}
 
+	/**
+	 * Distance between this vector and a.
+	 * @param a
+	 * @return distance
+	 */
+	public final double distance(DVector3C a) {
+	    double r1 = get0()-a.get0();
+	    double r2 = get1()-a.get1();
+	    double r3 = get2()-a.get2();
+	    return Math.sqrt(r1*r1 + r2*r2 + r3*r3);
+	}
+	
 	public final boolean isEq(DVector3 a) {
 		return get0()==a.get0() && get1()==a.get1() && get2()==a.get2();
 	}
@@ -572,6 +584,11 @@ public class DVector3 implements DVector3I, DVector3C {
 		return this;
 	}
 
+	/**
+	 * Set this vector = b x c.
+	 * @param b
+	 * @param c
+	 */
 	public final void eqCross(DVector3C b, DVector3C c) {
 		set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
 		set1( b.get2()*c.get0() - b.get0()*c.get2() ); 

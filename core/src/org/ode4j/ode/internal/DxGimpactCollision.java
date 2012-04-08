@@ -329,7 +329,7 @@ public class DxGimpactCollision {
 			DMatrix3C orientation, DVector3C position, 
 			DVector3 out )
 	{
-		OdeMath.dMULTIPLY0_331( out, orientation, in );
+		OdeMath.dMultiply0_331( out, orientation, in );
 //		out[0] += position[0];
 //		out[1] += position[1];
 //		out[2] += position[2];

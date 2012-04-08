@@ -127,7 +127,7 @@ public class DxCapsule extends DxGeom implements DCapsule {
 		//  a[1] = y - pos[1];
 		//  a[2] = z - pos[2];
 		a.sub(pos);
-		double beta = dDOT14(a,R,2);
+		double beta = dCalcVectorDot3_14(a,R,2);
 		double lz2 = _lz*(0.5);
 		if (beta < -lz2) beta = -lz2;
 		else if (beta > lz2) beta = lz2;
@@ -289,7 +289,7 @@ public class DxCapsule extends DxGeom implements DCapsule {
 			// algorithm is robust in all casts, but it can return only one contact.
 
 			DVector3 sphere1 = new DVector3(), sphere2 = new DVector3();
-			double a1a2 = dDOT (axis1,axis2);
+			double a1a2 = dCalcVectorDot3 (axis1,axis2);
 			double det = (1.0)-a1a2*a1a2;
 			if (det < tolerance) {
 				// the cylinder axes (almost) parallel, so we will generate up to two
@@ -306,7 +306,7 @@ public class DxCapsule extends DxGeom implements DCapsule {
 				DVector3 q = new DVector3();
 				//for (i=0; i<3; i++) q[i] = pos1[i]-pos2[i];
 				q.set(pos1).sub(pos2);
-				double k = dDOT (axis1,q);
+				double k = dCalcVectorDot3 (axis1,q);
 				double a1lo = -lz1;
 				double a1hi = lz1;
 				double a2lo = -lz2 - k;

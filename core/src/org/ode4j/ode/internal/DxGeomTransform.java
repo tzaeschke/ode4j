@@ -100,12 +100,12 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 
 	private void computeFinalTx()
 	{
-		dMULTIPLY0_331 (transform_posr.pos, final_posr().R(), obj.final_posr().pos());
+		dMultiply0_331 (transform_posr.pos, final_posr().R(), obj.final_posr().pos());
 		//  transform_posr.pos[0] += final_posr.pos[0];
 		//  transform_posr.pos[1] += final_posr.pos[1];
 		//  transform_posr.pos[2] += final_posr.pos[2];
 		transform_posr.pos.add(final_posr().pos());
-		dMULTIPLY0_333 (transform_posr.R, final_posr().R(), obj.final_posr().R());
+		dMultiply0_333 (transform_posr.R, final_posr().R(), obj.final_posr().R());
 	}
 
 	//****************************************************************************

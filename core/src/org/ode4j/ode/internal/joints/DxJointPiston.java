@@ -24,13 +24,23 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dCopyNegatedVector3;
+import static org.ode4j.ode.OdeMath.dCopyVector3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.internal.Common.dDEBUGMSG;
+import static org.ode4j.ode.internal.Rotation.dQMultiply1;
+
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPistonJoint;
 import org.ode4j.ode.internal.DxWorld;
-import static org.ode4j.ode.OdeMath.*;
 
 
 /**
@@ -131,13 +141,13 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		{
 			DVector3 q = new DVector3();
 			// get the anchor (or offset) in global coordinates
-			dMULTIPLY0_331 ( q, node[0].body.posr().R(), anchor1 );
+			dMultiply0_331 ( q, node[0].body.posr().R(), anchor1 );
 
 			if ( node[1].body!=null )
 			{
 				DVector3 anchor2 = new DVector3();
 				// get the anchor2 in global coordinates
-				dMULTIPLY0_331 ( anchor2, node[1].body.posr().R(), this.anchor2 );
+				dMultiply0_331 ( anchor2, node[1].body.posr().R(), this.anchor2 );
 
 //				q.v[0] = ( ( node[0].body._posr.pos.v[0] + q.v[0] ) -
 //						( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
@@ -172,9 +182,9 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 			// get axis in global coordinates
 			DVector3 ax = new DVector3();
-			dMULTIPLY0_331 ( ax, node[0].body.posr().R(), axis1 );
+			dMultiply0_331 ( ax, node[0].body.posr().R(), axis1 );
 			
-			return dDOT ( ax, q );
+			return dCalcVectorDot3 ( ax, q );
 		}
 
 		dDEBUGMSG ( "The function always return 0 since no body are attached" );
@@ -186,19 +196,19 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	{
 		// get axis in global coordinates
 		DVector3 ax = new DVector3();
-		dMULTIPLY0_331 ( ax, node[0].body.posr().R(), axis1 );
+		dMultiply0_331 ( ax, node[0].body.posr().R(), axis1 );
 
 		// The linear velocity created by the rotation can be discarded since
 		// the rotation is along the prismatic axis and this rotation don't create
 		// linear velocity in the direction of the prismatic axis.
 		if ( node[1].body!=null )
 		{
-			return ( dDOT ( ax, node[0].body.lvel ) -
-					dDOT ( ax, node[1].body.lvel ) );
+			return ( dCalcVectorDot3 ( ax, node[0].body.lvel ) -
+					dCalcVectorDot3 ( ax, node[1].body.lvel ) );
 		}
 		else
 		{
-			double rate = dDOT ( ax, node[0].body.lvel );
+			double rate = dCalcVectorDot3 ( ax, node[0].body.lvel );
 			return isFlagsReverse() ? -rate : rate;
 		}
 	}
@@ -224,9 +234,9 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		if ( node[0].body!=null )
 		{
 			DVector3 axis = new DVector3();
-			dMULTIPLY0_331 ( axis, node[0].body.posr().R(), axis1 );
-			double rate = dDOT ( axis, node[0].body.avel );
-			if ( node[1].body!=null ) rate -= dDOT ( axis, node[1].body.avel );
+			dMultiply0_331 ( axis, node[0].body.posr().R(), axis1 );
+			double rate = dCalcVectorDot3 ( axis, node[0].body.avel );
+			if ( node[1].body!=null ) rate -= dCalcVectorDot3 ( axis, node[1].body.avel );
 			if ( isFlagsReverse() ) rate = - rate;
 			return rate;
 		}
@@ -303,7 +313,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			DVector3C pos2 = node[1].body.posr().pos();
 			R2   = node[1].body.posr().R();
 
-			dMULTIPLY0_331 ( lanchor2, R2, anchor2 );
+			dMultiply0_331 ( lanchor2, R2, anchor2 );
 //			dist.v[0] = lanchor2.v[0] + pos2[0] - pos1[0];
 //			dist.v[1] = lanchor2.v[1] + pos2[1] - pos1[1];
 //			dist.v[2] = lanchor2.v[2] + pos2[2] - pos1[2];
@@ -364,38 +374,38 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		// only along p and q that we want the same angular velocity and need to reduce
 		// the error
 		DVector3 ax1 = new DVector3(), p = new DVector3(), q = new DVector3();
-		dMULTIPLY0_331 ( ax1, node[0].body.posr().R(), axis1 );
+		dMultiply0_331 ( ax1, node[0].body.posr().R(), axis1 );
 
 		// Find the 2 axis perpendicular to the rotoide axis.
 		dPlaneSpace ( ax1, p, q );
 
 		// LHS
-		dOPE ( info._J, ( info.J1ap ) + s0, OP.EQ , p );
-		dOPE ( info._J, ( info.J1ap ) + s1, OP.EQ , q );
+		dCopyVector3 ( info._J, ( info.J1ap ) + s0, p );
+		dCopyVector3 ( info._J, ( info.J1ap ) + s1, q );
 
 		DVector3 b = new DVector3();
 		if ( node[1].body !=null)
 		{
 			// LHS
 			//  info.J2a[s0+i] = -p[i]
-			dOPE ( info._J, ( info.J2ap ) + s0, OP.EQ_SUB, p );
-			dOPE ( info._J, ( info.J2ap ) + s1, OP.EQ_SUB, q );
+		    dCopyNegatedVector3 ( info._J, ( info.J2ap ) + s0, p );
+		    dCopyNegatedVector3 ( info._J, ( info.J2ap ) + s1, q );
 
 
 			// Some math for the RHS
 			DVector3 ax2 = new DVector3();
-			dMULTIPLY0_331 ( ax2, R2, axis2 );
-			dCROSS ( b, OP.EQ , ax1, ax2 );
+			dMultiply0_331 ( ax2, R2, axis2 );
+			dCalcVectorCross3 ( b, ax1, ax2 );
 		}
 		else
 		{
 			// Some math for the RHS
-			dCROSS ( b, OP.EQ , ax1, axis2 );
+		    dCalcVectorCross3 ( b, ax1, axis2 );
 		}
 
 		// RHS
-		info.setC(0, k * dDOT ( p, b ) );
-		info.setC(1, k * dDOT ( q, b ) );
+		info.setC(0, k * dCalcVectorDot3 ( p, b ) );
+		info.setC(1, k * dCalcVectorDot3 ( q, b ) );
 
 		// ======================================================================
 		// Work on the linear part (i.e row 2,3)
@@ -424,24 +434,24 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		// Coeff for 1er line of: J1a => dist x p, J2a => p x anchor2
 		// Coeff for 2er line of: J1a => dist x q, J2a => q x anchor2
 
-		dCROSS ( info._J, info.J1ap + s2, OP.EQ , dist, p );
+		dCalcVectorCross3 ( info._J, info.J1ap + s2, dist, p );
 
-		dCROSS ( info._J, ( info.J1ap ) + s3, OP.EQ , dist, q );
+		dCalcVectorCross3 ( info._J, ( info.J1ap ) + s3, dist, q );
 
-		dOPE ( info._J, ( info.J1lp ) + s2, OP.EQ , p );
-		dOPE ( info._J, ( info.J1lp ) + s3, OP.EQ , q );
+		dCopyVector3 ( info._J, ( info.J1lp ) + s2 , p );
+		dCopyVector3 ( info._J, ( info.J1lp ) + s3, q );
 
 		if ( node[1].body!=null )
 		{
 			// q x anchor2 instead of anchor2 x q since we want the negative value
-			dCROSS ( info._J, ( info.J2ap ) + s2, OP.EQ , p, lanchor2 );
+		    dCalcVectorCross3 ( info._J, ( info.J2ap ) + s2, p, lanchor2 );
 
 			// The cross product is in reverse order since we want the negative value
-			dCROSS ( info._J, ( info.J2ap ) + s3, OP.EQ , q, lanchor2 );
+		    dCalcVectorCross3 ( info._J, ( info.J2ap ) + s3, q, lanchor2 );
 
 			// info.J2l[s2+i] = -p[i];
-			dOPE ( info._J, ( info.J2lp ) + s2, OP.EQ_SUB, p );
-			dOPE ( info._J, ( info.J2lp ) + s3, OP.EQ_SUB, q );
+		    dCopyNegatedVector3 ( info._J, ( info.J2lp ) + s2, p );
+		    dCopyNegatedVector3 ( info._J, ( info.J2lp ) + s3, q );
 		}
 
 
@@ -453,13 +463,13 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		//
 		// Compute the RHS of rows 2 and 3
 		DVector3 err = new DVector3();
-		dMULTIPLY0_331 ( err, R1, anchor1 );
+		dMultiply0_331 ( err, R1, anchor1 );
 		//TZ dOPE2 ( err, OP.EQ , dist, -,  err );
 		//dOP ( err.v, OP.SUB, dist.v, err.v );
 		err.eqDiff(dist, err);
 
-		info.setC(2, k * dDOT ( p, err ) );
-		info.setC(3, k * dDOT ( q, err ) );
+		info.setC(2, k * dCalcVectorDot3 ( p, err ) );
+		info.setC(3, k * dCalcVectorDot3 ( q, err ) );
 
 
 	    int row = 4;
@@ -599,7 +609,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		}
 
 		// Convert into frame of body 1
-		dMULTIPLY1_331 ( anchor1, node[0].body.posr().R(), c );
+		dMultiply1_331 ( anchor1, node[0].body.posr().R(), c );
 	}
 
 
@@ -701,13 +711,13 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 			// d is the position of the prismatic joint (i.e. elongation)
 			// Since axis1 x axis1 == 0
 			// We can do the following.
-			dMULTIPLY0_331 ( c, node[0].body.posr().R(), anchor1 );
-			dCROSS ( ltd, OP.EQ , c, axis );
+			dMultiply0_331 ( c, node[0].body.posr().R(), anchor1 );
+			dCalcVectorCross3( ltd, c, axis );
 			node[0].body.dBodyAddTorque ( ltd );
 
 
-			dMULTIPLY0_331 ( c, node[1].body.posr().R(), anchor2 );
-			dCROSS ( ltd, OP.EQ , c, axis );
+			dMultiply0_331 ( c, node[1].body.posr().R(), anchor2 );
+			dCalcVectorCross3 ( ltd, c, axis );
 			node[1].body.dBodyAddTorque ( ltd );
 		}
 	}

@@ -24,6 +24,19 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.DxCollisionUtil.dClipEdgeToPlane;
+import static org.ode4j.ode.internal.DxCollisionUtil.dClipPolyToPlane;
+import static org.ode4j.ode.internal.DxCollisionUtil.dConstructPlane;
+import static org.ode4j.ode.internal.DxCollisionUtil.dMat3GetCol;
+import static org.ode4j.ode.internal.DxCollisionUtil.dMatrix3Copy;
+import static org.ode4j.ode.internal.DxCollisionUtil.dPointPlaneDistance;
+import static org.ode4j.ode.internal.DxCollisionUtil.dQuatInv;
+import static org.ode4j.ode.internal.DxCollisionUtil.dQuatTransform;
+import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Copy;
+import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Cross;
+import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Inv;
+import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Subtract;
+
 import org.cpp4j.java.RefBoolean;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -38,13 +51,10 @@ import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.OdeMath.OP;
 import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
-import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
-
-import static org.ode4j.ode.internal.DxCollisionUtil.*;
+import org.ode4j.ode.internal.gimpact.GimTrimesh;
 
 /**
  * Cylinder-trimesh collider by Alen Ladavac
@@ -462,8 +472,8 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		DVector3 t2 = new DVector3();
 
 		t1.eqDiff(v1, v2);//dVector3Subtract(v1,v2,t1);
-		OdeMath.dCROSS(t2,OP.EQ,t1,v3);//dVector3Cross(t1,v3,t2);
-		OdeMath.dCROSS(r,OP.EQ,t2,v3);//dVector3Cross(t2,v3,r);
+		OdeMath.dCalcVectorCross3(t2,t1,v3);//dVector3Cross(t1,v3,t2);
+		OdeMath.dCalcVectorCross3(r,t2,v3);//dVector3Cross(t2,v3,r);
 	}
 
 //	boolean sCylinderTrimeshColliderData::_cldTestSeparatingAxes(

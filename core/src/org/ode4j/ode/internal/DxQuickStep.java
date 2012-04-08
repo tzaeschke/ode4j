@@ -24,15 +24,30 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.cpp4j.Cstdio.stdout;
+import static org.cpp4j.Cstring.memcpy;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply0_333;
+import static org.ode4j.ode.OdeMath.dMultiply2_333;
+import static org.ode4j.ode.OdeMath.dMultiplyAdd0_331;
+import static org.ode4j.ode.OdeMath.dSubtractVectorCross3;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dRecip;
+import static org.ode4j.ode.internal.Matrix.dSetValue;
+import static org.ode4j.ode.internal.Matrix.dSetZero;
+import static org.ode4j.ode.internal.Misc.dRandInt;
+import static org.ode4j.ode.internal.Timer.dTimerEnd;
+import static org.ode4j.ode.internal.Timer.dTimerNow;
+import static org.ode4j.ode.internal.Timer.dTimerReport;
+import static org.ode4j.ode.internal.Timer.dTimerStart;
+
+import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DVector3;
-
-import static org.cpp4j.Cstdio.*;
-import static org.ode4j.ode.internal.Timer.*;
-import static org.ode4j.ode.OdeMath.*;
 
 class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 	
@@ -181,13 +196,13 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 //TZ			for (j=0; j<3; j++) iMJ_ptr[j] = k*J_ptr[j];
 			for (j=0; j<3; j++) iMJ[j + iMJ_ofs] = k*J[j + J_ofs];
 //			dMULTIPLY0_331 (iMJ_ptr + 3, invI + 12*b1, J_ptr + 3);
-			dMULTIPLY0_331 (iMJ, iMJ_ofs + 3, invI, 12*b1, J,J_ofs + 3);
+			dMultiply0_331 (iMJ, iMJ_ofs + 3, invI, 12*b1, J,J_ofs + 3);
 			if (b2 >= 0) {
 				k = body[b2].invMass;
 				//for (j=0; j<3; j++) iMJ_ptr[j+6] = k*J_ptr[j+6];
 				for (j=0; j<3; j++) iMJ[j+6+iMJ_ofs] = k*J[j+6+J_ofs];
 				//dMULTIPLY0_331 (iMJ_ptr + 9, invI + 12*b2, J_ptr + 9);
-				dMULTIPLY0_331 (iMJ, iMJ_ofs + 9, invI, 12*b2, J, J_ofs + 9);
+				dMultiply0_331 (iMJ, iMJ_ofs + 9, invI, 12*b2, J, J_ofs + 9);
 			}
 			J_ofs +=12;//J_ptr += 12;
 			iMJ_ofs += 12;//iMJ_ptr += 12;
@@ -717,18 +732,18 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			DMatrix3 tmp = new DMatrix3();
 
 			// compute inverse inertia tensor in global frame
-			dMULTIPLY2_333 (tmp,body[i].invI,body[i].posr().R());
-			dMULTIPLY0_333 (invI,i*12,body[i].posr().R(),tmp);
+			dMultiply2_333 (tmp,body[i].invI,body[i].posr().R());
+			dMultiply0_333 (invI,i*12,body[i].posr().R(),tmp);
 
 			if (body[i].isFlagsGyroscopic()) {
 				DMatrix3 I = new DMatrix3();
 				// compute inertia tensor in global frame
-				dMULTIPLY2_333 (tmp,body[i].mass._I,body[i].posr().R());
-				dMULTIPLY0_333 (I,body[i].posr().R(),tmp);
+				dMultiply2_333 (tmp,body[i].mass._I,body[i].posr().R());
+				dMultiply0_333 (I,body[i].posr().R(),tmp);
 				// compute rotational force
 				//dMULTIPLY0_331 (tmp.v,0,I.v,0,body[i].avel.v,0);
-				dMULTIPLY0_331 (tmp,I,body[i].avel);
-				dCROSS (body[i].tacc,OP.SUB_EQ,body[i].avel,tmp);
+				dMultiply0_331 (tmp,I,body[i].avel);
+				dSubtractVectorCross3(body[i].tacc, body[i].avel, tmp);
 			}//#endif
 		}
 
@@ -864,7 +879,7 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 				for (j=0; j<3; j++) tmp1[i*6+j] = body[i].facc.get(j) * body_invMass + 
 					body[i].lvel.get(j) * stepsize1;
 				//dMULTIPLY0_331 (tmp1, i*6 + 3,invI, i*12,body[i].tacc.v, 0);
-				dMULTIPLY0_331 (tmp1, i*6 + 3,invI, i*12,body[i].tacc);
+				dMultiply0_331 (tmp1, i*6 + 3,invI, i*12,body[i].tacc);
 				for (j=0; j<3; j++) tmp1[i*6+3+j] += body[i].avel.get(j) * stepsize1;
 			}
 
@@ -973,7 +988,7 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			//for (j=0; j<3; j++) body[i].tacc.v[j] *= stepsize;
 			body[i].tacc.scale( stepsize );
 			//dMULTIPLYADD0_331 (body[i].avel.v,0,invI, i*12,body[i].tacc.v,0);
-			dMULTIPLYADD0_331 (body[i].avel,invI, i*12,body[i].tacc);
+			dMultiplyAdd0_331 (body[i].avel,invI, i*12,body[i].tacc);
 		}
 
 		//#if 0

@@ -68,9 +68,9 @@ public class CollideBoxPlane implements DColliderFn {
 		DVector3C n = plane.getNormal();
 		
 		// project sides lengths along normal vector, get absolute values
-		double Q1 = dDOT14(n,R,0);
-		double Q2 = dDOT14(n,R,1);
-		double Q3 = dDOT14(n,R,2);
+		double Q1 = dCalcVectorDot3_14(n,R,0);
+		double Q2 = dCalcVectorDot3_14(n,R,1);
+		double Q3 = dCalcVectorDot3_14(n,R,2);
 //		double A1 = box.side.v[0] * Q1;
 //		double A2 = box.side.v[1] * Q2;
 //		double A3 = box.side.v[2] * Q3;

@@ -24,10 +24,16 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dCopyNegatedVector3;
+import static org.ode4j.ode.OdeMath.dCopyVector3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.internal.Common.M_PI;
+
 import org.cpp4j.java.RefDouble;
-
-import static org.ode4j.ode.OdeMath.*;
-
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -139,14 +145,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 		DVector3 q = new DVector3();
 		// get the offset in global coordinates
-		dMULTIPLY0_331( q, node[0].body.posr().R(), _anchor1 );
+		dMultiply0_331( q, node[0].body.posr().R(), _anchor1 );
 
 		if ( node[1].body!=null )
 		{
 			DVector3 anchor2 = new DVector3();
 
 			// get the anchor2 in global coordinates
-			dMULTIPLY0_331( anchor2, node[1].body.posr().R(), _anchor2 );
+			dMultiply0_331( anchor2, node[1].body.posr().R(), _anchor2 );
 
 //			q.v[0] = (( node[0].body._posr.pos.v[0] + q.v[0] ) -
 //					( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
@@ -183,9 +189,9 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 		DVector3 axP = new DVector3();
 		// get prismatic axis in global coordinates
-		dMULTIPLY0_331( axP, node[0].body.posr().R(), axisP1 );
+		dMultiply0_331( axP, node[0].body.posr().R(), axisP1 );
 
-		return dDOT( axP, q );
+		return dCalcVectorDot3( axP, q );
 	}
 
 
@@ -207,7 +213,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			if ( node[1].body!=null )
 			{
 				// Find joint->anchor2 in global coordinates
-				dMULTIPLY0_331( anchor2, node[1].body.posr().R(), _anchor2 );
+				dMultiply0_331( anchor2, node[1].body.posr().R(), _anchor2 );
 
 				//				r.v[0] = ( node[0].body._posr.pos.v[0] -
 				//						( anchor2.v[0] + node[1].body._posr.pos.v[0] ) );
@@ -232,7 +238,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			// N.B. We do vel = r X w instead of vel = w x r to have vel negative
 			//      since we want to remove it from the linear velocity of the body
 			DVector3 lvel1 = new DVector3();
-			dCROSS( lvel1, OP.EQ , r, node[0].body.avel );
+			dCalcVectorCross3( lvel1, r, node[0].body.avel );
 
 			// lvel1 += joint->node[0].body->lvel;
 			//dOPE( lvel1.v, 0, OP.ADD_EQ , node[0].body.lvel.v );
@@ -242,7 +248,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	        // get axisP1 in global coordinates and get the component
 	        // along this axis only
 	        DVector3 axP1 = new DVector3();
-	        dMULTIPLY0_331( axP1, node[0].body.posr().R(), axisP1 );
+	        dMultiply0_331( axP1, node[0].body.posr().R(), axisP1 );
 
 			if ( node[1].body!=null )
 			{
@@ -250,14 +256,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 				// N.B. We do vel = r X w instead of vel = w x r to have vel negative
 				//      since we want to remove it from the linear velocity of the body
 				DVector3 lvel2 = new DVector3();
-				dCROSS( lvel2, OP.EQ , anchor2, node[1].body.avel );
+				dCalcVectorCross3( lvel2, anchor2, node[1].body.avel );
 
 				// lvel1 -=  lvel2 + joint->node[1].body->lvel;
 				//dOPE2( lvel1.v, OP.SUB_EQ , lvel2.v, OP.ADD , node[1].body.lvel.v );
 				lvel1.sub( lvel2 );
 				lvel1.sub( node[1].body.lvel );
 
-	            return dDOT( axP1, lvel1 );
+	            return dCalcVectorDot3( axP1, lvel1 );
 	        }
 	        else
 	        {
@@ -343,7 +349,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		}
 
 		DVector3 axP = new DVector3(); // Axis of the prismatic joint in global frame
-		dMULTIPLY0_331( axP, R1, axisP1 );
+		dMultiply0_331( axP, R1, axisP1 );
 
 		// distance between the body1 and the anchor2 in global frame
 		// Calculated in the same way as the offset
@@ -351,7 +357,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		DVector3 wanchor2 = new DVector3(0,0,0);
 		if ( node[1].body!=null )
 		{
-			dMULTIPLY0_331( wanchor2, R2, _anchor2 );
+			dMultiply0_331( wanchor2, R2, _anchor2 );
 //			dist.v[0] = wanchor2.v[0] + pos2.v[0] - pos1.v[0];
 //			dist.v[1] = wanchor2.v[1] + pos2.v[1] - pos1.v[1];
 //			dist.v[2] = wanchor2.v[2] + pos2.v[2] - pos1.v[2];
@@ -391,23 +397,23 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		// and w1 and w2 are the angular velocity vectors of the two bodies.
 		DVector3 ax1 = new DVector3(), ax2 = new DVector3();
 		getAxes( ax1, ax2 );
-		double val = dDOT( ax1, ax2 );
+		double val = dCalcVectorDot3( ax1, ax2 );
 //		q.v[0] = ax2.v[0] - val * ax1.v[0];
 //		q.v[1] = ax2.v[1] - val * ax1.v[1];
 //		q.v[2] = ax2.v[2] - val * ax1.v[2];
 		q.eqSum(ax2, ax1, -val);
 
 		DVector3 p = new DVector3();
-		dCROSS( p, OP.EQ , ax1, q );
+		dCalcVectorCross3( p, ax1, q );
 		dNormalize3( p );
 
 		//   info->J1a[s0+i] = p[i];
-		dOPE(info._J, ( info.J1ap ) + s0, OP.EQ , p );
+		dCopyVector3(info._J, ( info.J1ap ) + s0, p );
 
 		if ( node[1].body!=null )
 		{
 			//   info->J2a[s0+i] = -p[i];
-			dOPE(info._J, ( info.J2ap ) + s0, OP.EQ_SUB, p );
+		    dCopyNegatedVector3(info._J, ( info.J2ap ) + s0, p );
 		}
 
 		// compute the right hand side of the constraint equation. Set relative
@@ -455,33 +461,33 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		// e1 and e2 are perpendicular to axP
 		// so e1 = ax1 and e2 = ax1 x axP
 		// N.B. ax2 is not always perpendicular to axP since it is attached to body 2
-		dCROSS( q , OP.EQ , ax1, axP );
+		dCalcVectorCross3( q, ax1, axP );
 
-		dMULTIPLY0_331( axP, R1, axisP1 );
+		dMultiply0_331( axP, R1, axisP1 );
 
-		dCROSS( info._J, ( info.J1ap ) + s1, OP.EQ , dist, ax1 );
-		dCROSS(info._J, ( info.J1ap ) + s2, OP.EQ , dist, q );
+		dCalcVectorCross3( info._J, ( info.J1ap ) + s1, dist, ax1 );
+		dCalcVectorCross3(info._J, ( info.J1ap ) + s2, dist, q );
 
 		// info->J1l[s1+i] = ax[i];
-		dOPE(info._J, ( info.J1lp ) + s1, OP.EQ , ax1 );
+		dCopyVector3(info._J, ( info.J1lp ) + s1, ax1 );
 
 		// info->J1l[s2+i] = q[i];
-		dOPE(info._J, ( info.J1lp ) + s2, OP.EQ , q);
+		dCopyVector3(info._J, ( info.J1lp ) + s2, q);
 
 		if ( node[1].body!=null )
 		{
 			// Calculate anchor2 in world coordinate
 
 			// q x anchor2 instead of anchor2 x q since we want the negative value
-			dCROSS(info._J, ( info.J2ap ) + s1, OP.EQ , ax1, wanchor2 );
+		    dCalcVectorCross3(info._J, ( info.J2ap ) + s1, ax1, wanchor2 );
 			// The cross product is in reverse order since we want the negative value
-			dCROSS(info._J, ( info.J2ap ) + s2, OP.EQ , q, wanchor2 );
+		    dCalcVectorCross3(info._J, ( info.J2ap ) + s2, q, wanchor2 );
 
 
 			// info->J2l[s1+i] = -ax1[i];
-			dOPE(info._J, ( info.J2lp ) + s1, OP.EQ_SUB, ax1 );
+		    dCopyNegatedVector3(info._J, ( info.J2lp ) + s1, ax1 );
 			// info->J2l[s2+i] = -ax1[i];
-			dOPE(info._J, ( info.J2lp ) + s2, OP.EQ_SUB, q );
+		    dCopyNegatedVector3(info._J, ( info.J2lp ) + s2, q );
 
 		}
 
@@ -493,13 +499,13 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		// We want to align the offset point (in body 2's frame) with the center of body 1.
 		// The position should be the same when we are not along the prismatic axis
 		DVector3 err = new DVector3();
-		dMULTIPLY0_331( err, R1, _anchor1 );
+		dMultiply0_331( err, R1, _anchor1 );
 		// err[i] = dist[i] - err[i];
 		//TZ dOPE2( err, OP.EQ , dist, OP.SUB, err );
 		//dOP( err.v, OP.SUB , dist.v, err.v );
 		err.eqDiff(dist, err);
-		info.setC(1, k * dDOT( ax1, err ) );
-		info.setC(2, k * dDOT( q, err ) );
+		info.setC(1, k * dCalcVectorDot3( ax1, err ) );
+		info.setC(2, k * dCalcVectorDot3( q, err ) );
 
 		int row = 3 + limot1.addLimot( this, info, 3, ax1, true );
 //		row += limot2.addLimot( this, info, row, ax2, true );
@@ -718,8 +724,8 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			else
 				getAxis( axis, _axis1 );
 
-			double rate = dDOT( axis, node[0].body.avel );
-			if ( node[1].body!=null ) rate -= dDOT( axis, node[1].body.avel );
+			double rate = dCalcVectorDot3( axis, node[0].body.avel );
+			if ( node[1].body!=null ) rate -= dCalcVectorDot3( axis, node[1].body.avel );
 			return rate;
 		}
 		return 0;
@@ -737,8 +743,8 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			else
 				getAxis2( axis, _axis2 );
 
-			double rate = dDOT( axis, node[0].body.avel );
-			if ( node[1].body!=null ) rate -= dDOT( axis, node[1].body.avel );
+			double rate = dCalcVectorDot3( axis, node[0].body.avel );
+			if ( node[1].body!=null ) rate -= dCalcVectorDot3( axis, node[1].body.avel );
 			return rate;
 		}
 		return 0;

@@ -24,6 +24,13 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.Rotation.dQMultiply1;
+
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -31,7 +38,6 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.internal.DxWorld;
-import static org.ode4j.ode.OdeMath.*;
 
 
 /**
@@ -135,14 +141,14 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 		DVector3 q = new DVector3();
 		// get the offset in global coordinates
-		dMULTIPLY0_331( q, node[0].body.posr().R(), offset );
+		dMultiply0_331( q, node[0].body.posr().R(), offset );
 
 		if ( node[1].body!=null )
 		{
 			DVector3 anchor2 = new DVector3();
 
 			// get the anchor2 in global coordinates
-			dMULTIPLY0_331( anchor2, node[1].body.posr().R(), _anchor2 );
+			dMultiply0_331( anchor2, node[1].body.posr().R(), _anchor2 );
 
 //			q.v[0] = (( node[0].body._posr.pos.v[0] + q.v[0] ) -
 //					( node[1].body._posr.pos.v[0] + anchor2.v[0] ) );
@@ -173,9 +179,9 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 		DVector3 axP = new DVector3();
 		// get prismatic axis in global coordinates
-		dMULTIPLY0_331( axP, node[0].body.posr().R(), axisP1 );
+		dMultiply0_331( axP, node[0].body.posr().R(), axisP1 );
 
-		return dDOT( axP, q );
+		return dCalcVectorDot3( axP, q );
 	}
 
 	public double dJointGetPRPositionRate( )
@@ -185,13 +191,13 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		//    checktype( joint, dxJointPR.class );
 		// get axis1 in global coordinates
 		DVector3 ax1 = new DVector3();
-		dMULTIPLY0_331( ax1, node[0].body.posr().R(), axisP1 );
+		dMultiply0_331( ax1, node[0].body.posr().R(), axisP1 );
 
 		if ( node[1].body!=null )
 		{
 			DVector3 lv2 = new DVector3();
 			node[1].body.dBodyGetRelPointVel( _anchor2, lv2 );
-			return dDOT( ax1, node[0].body.lvel ) - dDOT( ax1, lv2 );
+			return dCalcVectorDot3( ax1, node[0].body.lvel ) - dCalcVectorDot3( ax1, lv2 );
 		}
 		else
 	    {
@@ -230,9 +236,9 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	    if ( node[0].body != null )
 	    {
 	        DVector3 axis = new DVector3();
-	        dMULTIPLY0_331( axis, node[0].body.posr().R(), axisR1 );
-	        double rate = dDOT( axis, node[0].body.avel );
-	        if ( node[1].body != null ) rate -= dDOT( axis, node[1].body.avel );
+	        dMultiply0_331( axis, node[0].body.posr().R(), axisR1 );
+	        double rate = dCalcVectorDot3( axis, node[0].body.avel );
+	        if ( node[1].body != null ) rate -= dCalcVectorDot3( axis, node[1].body.avel );
 	        if ( isFlagsReverse() ) rate = -rate;
 	        return rate;
 	    }
@@ -314,7 +320,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 
 		DVector3 axP = new DVector3(); // Axis of the prismatic joint in global frame
-		dMULTIPLY0_331( axP, R1, axisP1 );
+		dMultiply0_331( axP, R1, axisP1 );
 
 		// distance between the body1 and the anchor2 in global frame
 		// Calculated in the same way as the offset
@@ -323,7 +329,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		if ( node[1].body!=null )
 		{
 			// Calculate anchor2 in world coordinate
-			dMULTIPLY0_331( wanchor2, R2, _anchor2 );
+			dMultiply0_331( wanchor2, R2, _anchor2 );
 //			dist.v[0] = wanchor2.v[0] + pos2.v[0] - pos1.v[0];
 //			dist.v[1] = wanchor2.v[1] + pos2.v[1] - pos1.v[1];
 //			dist.v[2] = wanchor2.v[2] + pos2.v[2] - pos1.v[2];
@@ -355,8 +361,8 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// where p and q are unit vectors normal to the rotoide axis, and w1 and w2
 		// are the angular velocity vectors of the two bodies.
 		DVector3 ax1 = new DVector3();
-		dMULTIPLY0_331( ax1, node[0].body.posr().R(), axisR1 );
-		dCROSS( q , OP.EQ , ax1, axP );
+		dMultiply0_331( ax1, node[0].body.posr().R(), axisR1 );
+		dCalcVectorCross3( q, ax1, axP );
 
 		info._J[info.J1ap+0] = axP.get0();
 		info._J[info.J1ap+1] = axP.get1();
@@ -395,7 +401,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		DVector3 ax2 = new DVector3();
 		if ( node[1].body!=null )
 		{
-			dMULTIPLY0_331( ax2, R2, axisR2 );
+			dMultiply0_331( ax2, R2, axisR2 );
 		}
 		else
 		{
@@ -406,9 +412,9 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		}
 
 		DVector3 b = new DVector3();
-		dCROSS( b, OP.EQ , ax1, ax2 );
-		info.setC(0, k * dDOT( b, axP ) );
-		info.setC(1, k * dDOT( b, q ) );
+		dCalcVectorCross3( b, ax1, ax2 );
+		info.setC(0, k * dCalcVectorDot3( b, axP ) );
+		info.setC(1, k * dCalcVectorDot3( b, q ) );
 
 
 
@@ -440,9 +446,9 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// Coeff for 2er line of: J1a => dist x q,   J2a => - anchor2 x q
 
 
-		dCROSS(info._J, ( info.J1ap ) + s2, OP.EQ , dist, ax1 );
+		dCalcVectorCross3(info._J, ( info.J1ap ) + s2, dist, ax1 );
 
-		dCROSS(info._J, ( info.J1ap ) + s3, OP.EQ , dist, q );
+		dCalcVectorCross3(info._J, ( info.J1ap ) + s3, dist, q );
 
 
 		info._J[info.J1lp+s2+0] = ax1.get0();
@@ -456,10 +462,10 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		if ( node[1].body!=null )
 		{
 			// ax2 x anchor2 instead of anchor2 x ax2 since we want the negative value
-			dCROSS(info._J, ( info.J2ap ) + s2, OP.EQ , ax2, wanchor2 );   // since ax1 == ax2
+		    dCalcVectorCross3(info._J, ( info.J2ap ) + s2, ax2, wanchor2 );   // since ax1 == ax2
 
 			// The cross product is in reverse order since we want the negative value
-			dCROSS(info._J, ( info.J2ap ) + s3, OP.EQ , q, wanchor2 );
+		    dCalcVectorCross3(info._J, ( info.J2ap ) + s3, q, wanchor2 );
 
 			info._J[info.J2lp+s2+0] = -ax1.get0();
 			info._J[info.J2lp+s2+1] = -ax1.get1();
@@ -478,13 +484,13 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// we want to align the offset point (in body 2's frame) with the center of body 1.
 		// The position should be the same when we are not along the prismatic axis
 		DVector3 err = new DVector3();
-		dMULTIPLY0_331( err, R1, offset );
+		dMultiply0_331( err, R1, offset );
 //		err.v[0] = dist.v[0] - err.v[0];
 //		err.v[1] = dist.v[1] - err.v[1];
 //		err.v[2] = dist.v[2] - err.v[2];
 		err.eqDiff(dist, err);
-		info.setC(2, k * dDOT( ax1, err ) );
-		info.setC(3, k * dDOT( q, err ) );
+		info.setC(2, k * dCalcVectorDot3( ax1, err ) );
+		info.setC(3, k * dCalcVectorDot3( q, err ) );
 
 	    int row = 4;
 	    //if (  node[1].body || !(flags & dJOINT_REVERSE) )

@@ -24,6 +24,19 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.Common.dRecip;
+import static org.ode4j.ode.internal.Rotation.dQFromAxisAndAngle;
+import static org.ode4j.ode.internal.Rotation.dQMultiply0;
+import static org.ode4j.ode.internal.Rotation.dQMultiply1;
+import static org.ode4j.ode.internal.Rotation.dQMultiply2;
+import static org.ode4j.ode.internal.Rotation.dQfromR;
+import static org.ode4j.ode.internal.Rotation.dRFrom2Axes;
+
 import org.cpp4j.java.RefDouble;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
@@ -31,7 +44,6 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.internal.DxWorld;
-import static org.ode4j.ode.OdeMath.*;
 
 
 /** 
@@ -72,11 +84,11 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	getAxes( DVector3 ax1, DVector3 ax2 )
 	{
 		// This says "ax1 = joint->node[0].body->posr.R * joint->axis1"
-		dMULTIPLY0_331( ax1, node[0].body.posr().R(), _axis1 );
+		dMultiply0_331( ax1, node[0].body.posr().R(), _axis1 );
 
 		if ( node[1].body != null)
 		{
-			dMULTIPLY0_331( ax2, node[1].body.posr().R(), _axis2 );
+			dMultiply0_331( ax2, node[1].body.posr().R(), _axis2 );
 		}
 		else
 		{
@@ -338,12 +350,12 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 		// we find a axis2_tmp which is really perpendicular to axis1
 		// and in the plane of axis1 and axis2
 		getAxes( ax1, ax2 );
-		k = dDOT( ax1, ax2 );
+		k = ax1.dot( ax2 );
 //		ax2_temp.v[0] = ax2.v[0] - k * ax1.v[0];
 //		ax2_temp.v[1] = ax2.v[1] - k * ax1.v[1];
 //		ax2_temp.v[2] = ax2.v[2] - k * ax1.v[2];
 		ax2_temp.eqSum(ax2, ax1, -k);
-		dCROSS( p, OP.EQ , ax1, ax2_temp );
+		dCalcVectorCross3( p, ax1, ax2_temp );
 		dNormalize3( p );
 
 		int s3 = 3 * info.rowskip();
@@ -689,9 +701,9 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 			else
 				getAxis( axis, _axis1 );
 
-			double rate = dDOT( axis, node[0].body.avel );
+			double rate = dCalcVectorDot3( axis, node[0].body.avel );
 			if ( node[1].body != null)
-				rate -= dDOT( axis, node[1].body.avel );
+				rate -= dCalcVectorDot3( axis, node[1].body.avel );
 			return rate;
 		}
 		return 0;
@@ -709,9 +721,9 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 			else
 				getAxis2( axis, _axis2 );
 
-			double rate = dDOT( axis, node[0].body.avel );
+			double rate = dCalcVectorDot3( axis, node[0].body.avel );
 			if ( node[1].body != null) 
-				rate -= dDOT( axis, node[1].body.avel );
+				rate -= dCalcVectorDot3( axis, node[1].body.avel );
 			return rate;
 		}
 		return 0;

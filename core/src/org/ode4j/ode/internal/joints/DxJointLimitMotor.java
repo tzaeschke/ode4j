@@ -24,12 +24,14 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
-import org.ode4j.ode.DJoint.PARAM;
-import org.ode4j.ode.internal.joints.DxJoint.Info2;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DJoint.PARAM;
 import org.ode4j.ode.internal.DxWorld;
-import static org.ode4j.ode.OdeMath.*;
+import org.ode4j.ode.internal.joints.DxJoint.Info2;
 
 /**
  * common limit and motor information for a single joint axis of movement
@@ -226,7 +228,7 @@ public class DxJointLimitMotor {
 //				c.v[1] = 0.5 * ( joint.node[1].body._posr.pos.v[1] - joint.node[0].body._posr.pos.v[1] );
 //				c.v[2] = 0.5 * ( joint.node[1].body._posr.pos.v[2] - joint.node[0].body._posr.pos.v[2] );
 				c.eqDiff(joint.node[1].body.posr().pos(), joint.node[0].body.posr().pos()).scale(0.5);
-				dCROSS( ltd, OP.EQ , c, ax1 );
+				dCalcVectorCross3( ltd, c, ax1 );
 				info._J[info.J1ap+srow+0] = ltd.get0();
 				info._J[info.J1ap+srow+1] = ltd.get1();
 				info._J[info.J1ap+srow+2] = ltd.get2();

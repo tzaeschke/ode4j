@@ -24,14 +24,21 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.internal.Common.dUASSERT;
+import static org.ode4j.ode.internal.Rotation.dQMultiply1;
+
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.internal.DxWorld;
-
-import static org.ode4j.ode.OdeMath.*;
 
 
 /** 
@@ -66,12 +73,12 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	{
 		// get axis1 in global coordinates
 		DVector3 ax1 = new DVector3(), q = new DVector3();
-		dMULTIPLY0_331 ( ax1, node[0].body.posr().R(), axis1 );
+		dMultiply0_331 ( ax1, node[0].body.posr().R(), axis1 );
 
 		if ( node[1].body!= null )
 		{
 			// get body2 + offset point in global coordinates
-			dMULTIPLY0_331 ( q, node[1].body.posr().R(), offset );
+			dMultiply0_331 ( q, node[1].body.posr().R(), offset );
 //			for ( int i = 0; i < 3; i++ )
 //				q.v[i] = node[0].body._posr.pos.v[i]
 //				         - q.v[i] - node[1].body._posr.pos.v[i];
@@ -97,7 +104,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 			}
 		}
 
-		return dDOT ( ax1, q );
+		return dCalcVectorDot3 ( ax1, q );
 	}
 
 
@@ -106,16 +113,16 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	{
 		// get axis1 in global coordinates
 		DVector3 ax1 = new DVector3();
-		dMULTIPLY0_331 ( ax1, node[0].body.posr().R(), axis1 );
+		dMultiply0_331 ( ax1, node[0].body.posr().R(), axis1 );
 
 		if ( node[1].body != null )
 		{
-			return dDOT ( ax1, node[0].body.lvel ) -
-			dDOT ( ax1, node[1].body.lvel );
+			return dCalcVectorDot3 ( ax1, node[0].body.lvel ) -
+			dCalcVectorDot3 ( ax1, node[1].body.lvel );
 		}
 		else
 		{
-			double rate = dDOT ( ax1, node[0].body.lvel );
+			double rate = dCalcVectorDot3 ( ax1, node[0].body.lvel );
 			if ( isFlagsReverse() ) rate = - rate;
 			return rate;
 		}
@@ -195,20 +202,20 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 
 		DVector3 ax1 = new DVector3(); // joint axis in global coordinates (unit length)
 		DVector3 p = new DVector3(), q = new DVector3(); // plane space of ax1
-		dMULTIPLY0_331 ( ax1, R1, axis1 );
+		dMultiply0_331 ( ax1, R1, axis1 );
 		dPlaneSpace ( ax1, p, q );
 		if ( node[1].body!= null )
 		{
 			DVector3 tmp = new DVector3();
 			//dCROSS ( tmp, =  0.5 * , c, p );
-			dCROSS ( tmp, OP.EQ , c, p );
+			dCalcVectorCross3 ( tmp, c, p );
 			//for (int k = 0; k < 3; k++) tmp.v[k] = tmp.v[k] * 0.5;
 			tmp.scale(0.5);
 
 			for ( i = 0; i < 3; i++ ) info._J[info.J1ap+s3+i] = tmp.get(i);
 			for ( i = 0; i < 3; i++ ) info._J[info.J2ap+s3+i] = tmp.get(i);
 			//dCROSS ( tmp, = 0.5 * , c, q );
-			dCROSS ( tmp, OP.EQ , c, p );
+			dCalcVectorCross3 ( tmp, c, p );
 			//for (int k = 0; k < 3; k++) tmp.v[k] = tmp.v[k] * 0.5;
 			tmp.scale(0.5);
 
@@ -226,19 +233,19 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 		if ( node[1].body != null)
 		{
 			DVector3 ofs = new DVector3();  // offset point in global coordinates
-			dMULTIPLY0_331 ( ofs, R2, offset );
+			dMultiply0_331 ( ofs, R2, offset );
 			//for ( i = 0; i < 3; i++ ) c.v[i] += ofs.v[i];
 			c.add(ofs);
-			info.setC(3, k * dDOT ( p, c ) );
-			info.setC(4, k * dDOT ( q, c ) );
+			info.setC(3, k * dCalcVectorDot3 ( p, c ) );
+			info.setC(4, k * dCalcVectorDot3 ( q, c ) );
 		}
 		else
 		{
 			DVector3 ofs = new DVector3();  // offset point in global coordinates
 			//for ( i = 0; i < 3; i++ ) ofs.v[i] = offset.v[i] - pos1[i];
 			ofs.eqDiff(offset, pos1);
-			info.setC(3, k * dDOT ( p, ofs ) );
-			info.setC(4, k * dDOT ( q, ofs ) );
+			info.setC(3, k * dCalcVectorDot3 ( p, ofs ) );
+			info.setC(4, k * dCalcVectorDot3 ( q, ofs ) );
 
 	        if ( isFlagsReverse() )
 	            ax1.scale( -1 );
@@ -340,7 +347,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 //			c.v[1] = 0.5 * ( joint.node[1].body._posr.pos.v[1] - joint.node[0].body._posr.pos.v[1] );
 //			c.v[2] = 0.5 * ( joint.node[1].body._posr.pos.v[2] - joint.node[0].body._posr.pos.v[2] );
 			c.eqDiff(node[1].body.posr().pos(), node[0].body.posr().pos()).scale(0.5);
-			dCROSS ( ltd, OP.EQ , c, axis );
+			dCalcVectorCross3 ( ltd, c, axis );
 
 			node[0].body.dBodyAddTorque ( ltd.get0(), ltd.get1(), ltd.get2() );
 			node[1].body.dBodyAddTorque ( ltd.get0(), ltd.get1(), ltd.get2() );
@@ -392,7 +399,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 //	        c[2] = node[0].body->posr.pos[2] - node[1].body->posr.pos[2];
 	        c.eqDiff( node[0].body.posr().pos(), node[1].body.posr().pos() );
 
-	        dMULTIPLY1_331 ( offset, node[1].body.posr().R(), c );
+	        dMultiply1_331 ( offset, node[1].body.posr().R(), c );
 	    }
 	    else if ( node[0].body != null )
 	    {

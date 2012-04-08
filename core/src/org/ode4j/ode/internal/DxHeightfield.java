@@ -24,6 +24,15 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_333;
+import static org.ode4j.ode.internal.Common.dEpsilon;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dFloor;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+
 import org.cpp4j.java.ObjArray;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
@@ -35,8 +44,6 @@ import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHeightfield;
 import org.ode4j.ode.DHeightfieldData;
-
-import static org.ode4j.ode.OdeMath.*;
 
 public class DxHeightfield extends DxGeom implements DHeightfield {
 
@@ -1141,7 +1148,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				triplaneV.scale(dinvlength);
 				// get distance to origin from plane
 				//triplane[3] = dVector3Dot(triplane, itTriangle.vertices[0].vertex);
-				triplaneD = dDOT(triplaneV, itTriangle.vertices[0].vertex);
+				triplaneD = triplaneV.dot(itTriangle.vertices[0].vertex);
 
 				// saves normal for collision check (planes, triangles, vertices and edges.)
 				//dVector3Copy(triplane, itTriangle.planeDef);
@@ -1511,8 +1518,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				// Transform o2 into heightfield space.
 				//dOP( pos0, OP.SUB, o2._final_posr.pos, terrain._final_posr.pos );
 				pos0.eqDiff( o2.final_posr().pos(), terrain.final_posr().pos() );
-				dMULTIPLY1_331( pos1, terrain.final_posr().R(), pos0 );
-				dMULTIPLY1_333( R1, terrain.final_posr().R(), o2.final_posr().R() );
+				dMultiply1_331( pos1, terrain.final_posr().R(), pos0 );
+				dMultiply1_333( R1, terrain.final_posr().R(), o2.final_posr().R() );
 
 				// Update o2 with transformed position and rotation.
 				o2._final_posr.pos.set(pos1);//dVector3Copy( pos1, o2._final_posr.pos );
@@ -1640,14 +1647,14 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 								pos0.add( 2, -terrain.m_p_data.m_fHalfDepth );
 							}//#endif // !DHEIGHTFIELD_CORNER_ORIGIN
 
-							dMULTIPLY0_331( pContact.pos, terrain.final_posr().R(), pos0 );
+							dMultiply0_331( pContact.pos, terrain.final_posr().R(), pos0 );
 
 							//dOP( pContact.pos, +, pContact.pos, terrain._final_posr.pos );
 							pContact.pos.add(terrain.final_posr().pos());
 							//dOPE( pos0, =, pContact.normal );
 							pos0.set(pContact.normal);
 
-							dMULTIPLY0_331( pContact.normal, terrain.final_posr().R(), pos0 );
+							dMultiply0_331( pContact.normal, terrain.final_posr().R(), pos0 );
 						}
 					} 
 					else
