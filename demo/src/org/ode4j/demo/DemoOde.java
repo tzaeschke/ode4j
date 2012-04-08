@@ -24,6 +24,52 @@
  *************************************************************************/
 package org.ode4j.demo;
 
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dMultiply0_133;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply0_333;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_333;
+import static org.ode4j.ode.OdeMath.dMultiply2_333;
+import static org.ode4j.ode.OdeMath.dNormalize4;
+import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.OdeMath.dSetCrossMatrixPlus;
+import static org.ode4j.ode.internal.Common.dDOUBLE;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dPAD;
+import static org.ode4j.ode.internal.ErrorHandler.dDebug;
+import static org.ode4j.ode.internal.ErrorHandler.dGetDebugHandler;
+import static org.ode4j.ode.internal.ErrorHandler.dSetDebugHandler;
+import static org.ode4j.ode.internal.ErrorHandler.dSetMessageHandler;
+import static org.ode4j.ode.internal.Matrix.dFactorCholesky;
+import static org.ode4j.ode.internal.Matrix.dFactorLDLT;
+import static org.ode4j.ode.internal.Matrix.dInvertPDMatrix;
+import static org.ode4j.ode.internal.Matrix.dIsPositiveDefinite;
+import static org.ode4j.ode.internal.Matrix.dLDLTAddTL;
+import static org.ode4j.ode.internal.Matrix.dLDLTRemove;
+import static org.ode4j.ode.internal.Matrix.dMultiply0;
+import static org.ode4j.ode.internal.Matrix.dMultiply1;
+import static org.ode4j.ode.internal.Matrix.dMultiply2;
+import static org.ode4j.ode.internal.Matrix.dRemoveRowCol;
+import static org.ode4j.ode.internal.Matrix.dSetZero;
+import static org.ode4j.ode.internal.Matrix.dSolveCholesky;
+import static org.ode4j.ode.internal.Matrix.dSolveLDLT;
+import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
+import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
+import static org.ode4j.ode.internal.Misc.dMakeRandomVector;
+import static org.ode4j.ode.internal.Misc.dMaxDifference;
+import static org.ode4j.ode.internal.Misc.dMaxDifferenceLowerTriangle;
+import static org.ode4j.ode.internal.Misc.dRandGetSeed;
+import static org.ode4j.ode.internal.Misc.dRandReal;
+import static org.ode4j.ode.internal.Misc.dRandSetSeed;
+import static org.ode4j.ode.internal.Misc.dTestRand;
+import static org.ode4j.ode.internal.Rotation.dQMultiply0;
+import static org.ode4j.ode.internal.Rotation.dQMultiply1;
+import static org.ode4j.ode.internal.Rotation.dQMultiply2;
+import static org.ode4j.ode.internal.Rotation.dQMultiply3;
+import static org.ode4j.ode.internal.Rotation.dQfromR;
+import static org.ode4j.ode.internal.Rotation.dRfromQ;
+
 import java.util.ArrayList;
 
 import org.ode4j.math.DMatrix3;
@@ -31,13 +77,10 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.OdeMath.OP;
 import org.ode4j.ode.internal.DLCP;
 import org.ode4j.ode.internal.DxMass;
+import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
 import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
-
-import static org.cpp4j.Cstdio.printf;
-import static org.ode4j.ode.OdeMath.*;
 
 class DemoOde {
 
@@ -205,10 +248,10 @@ class DemoOde {
 		dMakeRandomVector (b,1.0);
 		dMakeRandomVector (c,1.0);
 
-		dCROSS (a1,OP.EQ,b,c);
+		a1.eqCross(b,c);
 
 		//B.dSetZero();//dSetZero (B,12);
-		dCROSSMAT (B,b,4,+1,-1);
+		dSetCrossMatrixPlus (B,b);
 		dMultiply0 (a2,B,c);
 
 		double diff = dMaxDifference(a1,a2);
@@ -340,32 +383,32 @@ void testReorthonormalize()
 		dMakeRandomVector (x,1.0);
 
 		// dMULTIPLY0_331()
-		dMULTIPLY0_331 (a,B,x);
+		dMultiply0_331 (a,B,x);
 		dMultiply0 (a2,B,x);
 		println ("\t",(dMaxDifference (a,a2) > tol) ? "FAILED" : "passed", " (1)");
 
 		// dMULTIPLY1_331()
-		dMULTIPLY1_331 (a,B,x);
+		dMultiply1_331 (a,B,x);
 		dMultiply1 (a2,B,x);
 		println ("\t",(dMaxDifference (a,a2) > tol) ? "FAILED" : "passed", " (2)");
 
 		// dMULTIPLY0_133
-		dMULTIPLY0_133 (a,x,B);
+		dMultiply0_133 (a,x,B);
 		dMultiply0 (a2,x,B);
 		println ("\t",(dMaxDifference (a,a2) > tol) ? "FAILED" : "passed", " (3)");
 
 		// dMULTIPLY0_333()
-		dMULTIPLY0_333 (A,B,C);
+		dMultiply0_333 (A,B,C);
 		dMultiply0 (A2,B,C);
 		println ("\t",(dMaxDifference (A,A2) > tol) ? "FAILED" : "passed", " (4)");
 
 		// dMULTIPLY1_333()
-		dMULTIPLY1_333 (A,B,C);
+		dMultiply1_333 (A,B,C);
 		dMultiply1 (A2,B,C);
 		println ("\t",(dMaxDifference (A,A2) > tol) ? "FAILED" : "passed", " (5)");
 		
 		// dMULTIPLY2_333()
-		dMULTIPLY2_333 (A,B,C);
+		dMultiply2_333 (A,B,C);
 		dMultiply2 (A2,B,C);
 		println ("\t",(dMaxDifference (A,A2) > tol) ? "FAILED" : "passed", " (6)");
 	}
@@ -460,8 +503,8 @@ void testReorthonormalize()
 		x.set(b);
 
 		// factor L
-		if (dFactorCholesky (L)) printf ("\tpassed (1)\n");
-		else printf ("\tFAILED (1)\n");
+		if (dFactorCholesky (L)) System.out.printf ("\tpassed (1)\n");
+		else System.out.printf ("\tFAILED (1)\n");
 		dClearUpperTriangle (L);
 
 		// solve A*x = b
@@ -470,7 +513,7 @@ void testReorthonormalize()
 		// compute A*x and compare it with b
 		dMultiply2 (btest,A,x);
 		diff = dMaxDifference(b,btest);
-		printf ("\tmaximum difference = %.6e - %s (2)\n",diff,
+		System.out.printf ("\tmaximum difference = %.6e - %s (2)\n",diff,
 				diff > tol ? "FAILED" : "passed");
 	}
 
@@ -947,7 +990,7 @@ void testReorthonormalize()
 		//		u2[2] -= d*u1[2];
 		u2.eqSum( u2, u1, -d );
 		u2.normalize();
-		dCROSS (u3,OP.EQ,u1,u2);
+		u3.eqCross(u1,u2);
 		//TZ back to R
 		R.setCol(0, u1);
 		R.setCol(1, u2);

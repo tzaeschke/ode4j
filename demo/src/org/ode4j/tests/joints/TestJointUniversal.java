@@ -24,8 +24,38 @@
  *************************************************************************/
 package org.ode4j.tests.joints;
 
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetQuaternion;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetRotation;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateUniversal;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAnchor2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngles;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAxis1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAxis2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAxis1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAxis1Offset;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAxis2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAxis2Offset;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetGravity;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.Rotation.dRFromAxisAndAngle;
+import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
 import org.cpp4j.java.RefDouble;
 import org.junit.AfterClass;
@@ -40,8 +70,6 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJointUniversal;
-
-import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 
 
 /**
@@ -223,7 +251,7 @@ public class TestJointUniversal
 			dNormalize3(axis2);
 
 			DVector3 cross = new DVector3();
-			dCROSS(cross, OP.EQ, axis1, axis2);
+			dCalcVectorCross3(cross, axis1, axis2);
 			dJointSetUniversalAxis1(jId, axis1.get0(), axis1.get1(), axis1.get2());
 			dJointSetUniversalAxis2(jId, cross.get0(), cross.get1(), cross.get2());
 
@@ -2062,7 +2090,7 @@ public class TestJointUniversal
 					-(0.33));
 
 			DVector3 axis2 = new DVector3();
-			dCROSS(axis2, OP.EQ, axis1, axis);
+			dCalcVectorCross3(axis2, axis1, axis);
 
 			dJointSetUniversalAxis1(jId, axis1.get0(), axis1.get1(), axis1.get2());
 			dJointSetUniversalAxis2(jId, axis2.get0(), axis2.get1(), axis2.get2());

@@ -585,7 +585,7 @@ public class DemoJoints extends dsFunctions {
 			DVector3C p2 = body[1].getPosition();
 			//    for (int i=0; i<3; i++) p.v[i] = p2.v[i] - p1.v[i];
 			p.eqDiff(p2, p1);
-			OdeMath.dMULTIPLY1_331 (pp,R1,p);
+			OdeMath.dMultiply1_331 (pp,R1,p);
 			//    pp.v[0] += 0.5;
 			//    pp.v[1] += 0.5;
 			pp.add(0.5, 0.5, 0);
@@ -620,7 +620,7 @@ public class DemoJoints extends dsFunctions {
 			DVector3C p2 = body[1].getPosition();
 			//    for (int i=0; i<3; i++) p.v[i] = p2.v[i] - p1.v[i];
 			p.eqDiff(p2, p1);
-			dMULTIPLY1_331 (pp,R1,p);
+			dMultiply1_331 (pp,R1,p);
 			//    pp.v[0] += 0.5;
 			//    pp.v[1] += 0.5;
 			pp.add(0.5, 0.5, 0);
@@ -819,7 +819,7 @@ public class DemoJoints extends dsFunctions {
 			dampRotationalMotion (0.1);
 			jointUniversal.getAxis1(ax1);
 			jointUniversal.getAxis2(ax2);
-			return Math.abs(10*OdeMath.dDOT(ax1, ax2));
+			return Math.abs(10*ax1.dot(ax2));
 		}
 
 		case 701: {		// 2 body: angle 1 rate
@@ -858,7 +858,7 @@ public class DemoJoints extends dsFunctions {
 			dampRotationalMotion (0.1);
 			jointUniversal.getAxis1(ax1);
 			jointUniversal.getAxis2(ax2);
-			return Math.abs(10*dDOT(ax1, ax2));
+			return Math.abs(10*ax1.dot(ax2));
 		}
 
 		case 721: {		// universal transmit torque test: angle1 rate
@@ -895,7 +895,7 @@ public class DemoJoints extends dsFunctions {
 			jointUniversal.getAxis2(ax2);
 			addOscillatingTorqueAbout (0.1, ax1);
 			dampRotationalMotion (0.1);
-			return Math.abs(10*dDOT(ax1, ax2));
+			return Math.abs(10*ax1.dot(ax2));
 		}
 
 		case 731:{
@@ -936,7 +936,7 @@ public class DemoJoints extends dsFunctions {
 			jointUniversal.getAxis2(ax2);
 			addOscillatingTorqueAbout (0.1, ax2);
 			dampRotationalMotion (0.1);
-			return Math.abs(10*dDOT(ax1, ax2));
+			return Math.abs(10*ax1.dot(ax2));
 		}
 
 		case 741:{

@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.OdeMath.OP;
 
 public class TestDVector3 extends OdeTestCase {
 
@@ -168,7 +167,7 @@ public class TestDVector3 extends OdeTestCase {
 		
 		t.eqCross(x, y);
 		DVector3 t2 = new DVector3();
-		OdeMath.dCROSS(t2, OP.EQ, x, y);
+		OdeMath.dCalcVectorCross3(t2, x, y);
 		assertEquals(t2, t);
 	}		
 	

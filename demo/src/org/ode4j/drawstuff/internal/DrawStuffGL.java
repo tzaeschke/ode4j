@@ -709,7 +709,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		v[0] = vAll[v2] - vAll[v0];//v2[0] - v0[0];
 		v[1] = vAll[v2+1] - vAll[v0+1];//v2[1] - v0[1];
 		v[2] = vAll[v2+2] - vAll[v0+2];//v2[2] - v0[2];
-		OdeMath.dCROSS (normal,OP.EQ,u,v);
+		OdeMath.dCalcVectorCross3(normal,u,v);
 		normalizeVector3 (normal);
 
 		GL11.glBegin(solid ? GL11.GL_TRIANGLES : GL11.GL_LINE_STRIP);
@@ -730,7 +730,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		v[0] = v2[0] - v0[0];
 		v[1] = v2[1] - v0[1];
 		v[2] = v2[2] - v0[2];
-		OdeMath.dCROSS (normal,OP.EQ,u,v);
+		OdeMath.dCalcVectorCross3 (normal,u,v);
 		normalizeVector3 (normal);
 
 		GL11.glBegin(solid ? GL11.GL_TRIANGLES : GL11.GL_LINE_STRIP);
@@ -772,7 +772,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		v[0] = (float) ( v2.get0() - v0.get0() );
 		v[1] = (float) ( v2.get1() - v0.get1() );
 		v[2] = (float) ( v2.get2() - v0.get2() );
-		OdeMath.dCROSS (normal,OP.EQ,u,v);
+		OdeMath.dCalcVectorCross3 (normal,u,v);
 		normalizeVector3 (normal);
 
 		GL11.glBegin(solid ? GL11.GL_TRIANGLES : GL11.GL_LINE_STRIP);

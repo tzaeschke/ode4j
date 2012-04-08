@@ -177,9 +177,9 @@ public class DemoMotion extends dsFunctions {
 		if (contact.geom.g1 == platform)
 			inv = -1;
 
-		contact.surface.motion1 = dDOT(mov2_vel, motiondir1);
-		contact.surface.motion2 = inv * dDOT(mov2_vel, motiondir2);
-		contact.surface.motionN = inv * dDOT(mov2_vel, contact.geom.normal);
+		contact.surface.motion1 = mov2_vel.dot(motiondir1);
+		contact.surface.motion2 = inv * mov2_vel.dot(motiondir2);
+		contact.surface.motionN = inv * mov2_vel.dot(contact.geom.normal);
 
 	}
 
@@ -397,12 +397,12 @@ public class DemoMotion extends dsFunctions {
 			DMatrix3C R2 = g2.getRotation ();
 			DVector3 actual_pos = new DVector3();
 			DMatrix3 actual_R = new DMatrix3();
-			dMULTIPLY0_331 (actual_pos,R,pos2);
+			dMultiply0_331 (actual_pos,R,pos2);
 			//        actual_pos.v[0] += pos[0];
 			//        actual_pos.v[1] += pos[1];
 			//        actual_pos.v[2] += pos[2];
 			actual_pos.add(pos);
-			dMULTIPLY0_333 (actual_R,R,R2);
+			dMultiply0_333 (actual_R,R,R2);
 			drawGeom (g2,actual_pos,actual_R,false);
 		}
 		if (show_body) {

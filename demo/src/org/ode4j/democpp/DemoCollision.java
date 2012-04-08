@@ -24,6 +24,83 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.cpp4j.Cmath.cos;
+import static org.cpp4j.Cmath.sin;
+import static org.cpp4j.Cstdio.printf;
+import static org.cpp4j.Cstdlib.atoi;
+import static org.ode4j.cpp.internal.ApiCppCollision.dBoxBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dBoxTouchesBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCapsule;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateRay;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxPointDepth;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxSetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCapsuleGetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCapsulePointDepth;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCapsuleSetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomPlaneGetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomPlanePointDepth;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomPlaneSetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomRayGet;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomRayGetLength;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomRaySet;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomRaySetLength;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSphereGetRadius;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSpherePointDepth;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSphereSetRadius;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceAdd;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceGetGeom;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceGetNumGeoms;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dAllocateODEDataForThread;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawLine;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsSetCapsuleQuality;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
+import static org.ode4j.drawstuff.DrawStuff.dsSetSphereQuality;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DGeom.dBoxClass;
+import static org.ode4j.ode.DGeom.dCapsuleClass;
+import static org.ode4j.ode.DGeom.dPlaneClass;
+import static org.ode4j.ode.DGeom.dSphereClass;
+import static org.ode4j.ode.OdeMath.dCalcPointsDistance3;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3_14;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dSqrt;
+import static org.ode4j.ode.internal.ErrorHandler.dDebug;
+import static org.ode4j.ode.internal.ErrorHandler.dError;
+import static org.ode4j.ode.internal.Matrix.dMultiply0;
+import static org.ode4j.ode.internal.Matrix.dMultiply1;
+import static org.ode4j.ode.internal.Misc.dMakeRandomVector;
+import static org.ode4j.ode.internal.Misc.dRandGetSeed;
+import static org.ode4j.ode.internal.Misc.dRandInt;
+import static org.ode4j.ode.internal.Misc.dRandReal;
+import static org.ode4j.ode.internal.Misc.dRandSetSeed;
+import static org.ode4j.ode.internal.Rotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.internal.Rotation.dRFromZAxis;
+import static org.ode4j.ode.internal.Rotation.dRSetIdentity;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -38,20 +115,13 @@ import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DRay;
 import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeMath.OP;
-import org.ode4j.ode.DGeom.DNearCallback;
-
-import static org.cpp4j.C_All.*;
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.DGeom.*;
 
 /**
  * collision tests. if this program is run without any arguments it will
@@ -453,7 +523,7 @@ class DemoCollision extends dsFunctions {
 
 		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		dNormalize3 (a);
-		if (dDOT14(a,R,2) > 0) {
+		if (dCalcVectorDot3_14(a,R,2) > 0) {
 			for (j=0; j<3; j++) a.set(j, p.get(j) + a.get(j)*r + l*0.5*R.get(j, 2) );//v[j*4+2] );
 		}
 		else {
@@ -485,7 +555,7 @@ class DemoCollision extends dsFunctions {
 		d = (dRandReal()*2-1) * r;
 		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		dNormalize3 (a);
-		if (dDOT14(a,R,2) > 0) {
+		if (dCalcVectorDot3_14(a,R,2) > 0) {
 			for (j=0; j<3; j++) a.set(j, p.get(j) + a.get(j)*(r-d) + l*0.5*R.get(j, 2) );//v[j*4+2] );
 		}
 		else {
@@ -612,7 +682,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) n.set(j, q2.get(j) - q.get(j) );
 		dNormalize3 (n);
 		dGeomRaySet (ray,q.get0(),q.get1(),q.get2(),n.get0(),n.get1(),n.get2());
-		dGeomRaySetLength (ray,dDISTANCE (q,q2));
+		dGeomRaySetLength (ray,dCalcPointsDistance3 (q,q2));
 		if (dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally outside the sphere
@@ -623,7 +693,7 @@ class DemoCollision extends dsFunctions {
 			dMakeRandomVector (n,1.0);
 			dNormalize3 (n);
 		}
-		while (dDOT(n,q) < 0);	// make sure normal goes away from sphere
+		while (dCalcVectorDot3(n,q) < 0);	// make sure normal goes away from sphere
 		for (j=0; j<3; j++) q.set(j, 1.01*r * q.get(j) + p.get(j) );
 		dGeomRaySet (ray,q.get0(),q.get1(),q.get2(),n.get0(),n.get1(),n.get2());
 		dGeomRaySetLength (ray,100);
@@ -644,7 +714,7 @@ class DemoCollision extends dsFunctions {
 		dGeomRaySetLength (ray,1.01*r);
 		if (dCollide (ray,sphere,1,contacts) != 1) if (testFAILED()) return false;
 		for (j=0; j<3; j++) q2.set(j, r * q.get(j) + p.get(j) );
-		if (dDISTANCE (contacts.get(0).pos,q2) > tol) if (testFAILED()) return false;
+		if (dCalcPointsDistance3 (contacts.get(0).pos,q2) > tol) if (testFAILED()) return false;
 
 		// ********** test contact point distance for random rays
 
@@ -658,10 +728,10 @@ class DemoCollision extends dsFunctions {
 		dGeomRaySetLength (ray,100);
 		if (dCollide (ray,sphere,1,contacts)!=0) {
 			DContactGeom contact = contacts.get(0);
-			k = dDISTANCE (contacts.get(0).pos,dGeomGetPosition(sphere));
+			k = dCalcPointsDistance3 (contacts.get(0).pos,dGeomGetPosition(sphere));
 			if (dFabs(k - r) > tol) if (testFAILED()) return false;
 			// also check normal signs
-			if (dDOT (n,contact.normal) > 0) if (testFAILED()) return false;
+			if (dCalcVectorDot3 (n,contact.normal) > 0) if (testFAILED()) return false;
 			// also check depth of contact point
 			if (dFabs (dGeomSpherePointDepth
 					(sphere,contact.pos.get0(),contact.pos.get1(),contact.pos.get2())) > tol)
@@ -762,7 +832,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) n.set(j, q4.get(j) - q2.get(j) );
 		dNormalize3 (n);
 		dGeomRaySet (ray,q2.get0(),q2.get1(),q2.get2(),n.get0(),n.get1(),n.get2());
-		dGeomRaySetLength (ray,dDISTANCE(q2,q4));
+		dGeomRaySetLength (ray,dCalcPointsDistance3(q2,q4));
 		if (dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally outside the box
@@ -819,7 +889,7 @@ class DemoCollision extends dsFunctions {
 				if (testFAILED()) return false;
 			}
 			// also check normal signs
-			if (dDOT (q3,contact.normal) > 0) if (testFAILED()) return false;
+			if (dCalcVectorDot3 (q3,contact.normal) > 0) if (testFAILED()) return false;
 
 			draw_all_objects (space);
 		}
@@ -864,7 +934,7 @@ class DemoCollision extends dsFunctions {
 		dNormalize3 (b);
 		k = (dRandReal()-0.5)*l;
 		for (j=0; j<3; j++) b.set(j, p.get(j) + r*0.99*b.get(j) + k*0.99*R.get(j, 2) );//v[j*4+2] );
-		dGeomRaySetLength (ray,dDISTANCE(a,b));
+		dGeomRaySetLength (ray,dCalcPointsDistance3(a,b));
 		for (j=0; j<3; j++) b.add(j,-a.get(j) );
 		dNormalize3 (b);
 		dGeomRaySet (ray,a.get0(),a.get1(),a.get2(),b.get0(),b.get1(),b.get2());
@@ -895,7 +965,7 @@ class DemoCollision extends dsFunctions {
 
 		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		dNormalize3 (a);
-		if (dDOT14(a,R,2) < 0) {
+		if (dCalcVectorDot3_14(a,R,2) < 0) {
 			for (j=0; j<3; j++) b.set(j, p.get(j) - a.get(j)*2*r + l*0.5*R.get(j, 2) );//v[j*4+2] );
 		}
 		else {
@@ -929,7 +999,7 @@ class DemoCollision extends dsFunctions {
 				if (testFAILED()) return false;
 
 			// check normal signs
-			if (dDOT (n,contacts.get(0).normal) > 0) if (testFAILED()) return false;
+			if (dCalcVectorDot3 (n,contacts.get(0).normal) > 0) if (testFAILED()) return false;
 
 			draw_all_objects (space);
 		}
@@ -1005,9 +1075,9 @@ class DemoCollision extends dsFunctions {
 		dGeomRaySetLength (ray,10);
 		if (dCollide (ray,plane,1,contacts)!=0) {
 			// test that contact is on plane surface
-			if (dFabs (dDOT(contacts.get(0).pos,n) - d) > tol) if (testFAILED()) return false;
+			if (dFabs (dCalcVectorDot3(contacts.get(0).pos,n) - d) > tol) if (testFAILED()) return false;
 			// also check normal signs
-			if (dDOT (h,contacts.get(0).normal) > 0) if (testFAILED()) return false;
+			if (dCalcVectorDot3 (h,contacts.get(0).normal) > 0) if (testFAILED()) return false;
 			// also check contact point depth
 			if (dFabs (dGeomPlanePointDepth
 					(plane,contacts.get(0).pos.get0(),contacts.get(0).pos.get1(),contacts.get(0).pos.get2())) > tol)
@@ -1064,29 +1134,29 @@ class DemoCollision extends dsFunctions {
 		u1.eqDiff(p3, p1);
 		//for (k=0; k<3; k++) u2[k] = p2[k]-p1[k];
 		u2.eqDiff(p2, p1);
-		double d1 = dSqrt(dDOT(u1,u1));
-		double d2 = dSqrt(dDOT(u2,u2));
+		double d1 = dSqrt(dCalcVectorDot3(u1,u1));
+		double d2 = dSqrt(dCalcVectorDot3(u2,u2));
 		dNormalize3 (u1);
 		dNormalize3 (u2);
-		if (dFabs(dDOT(u1,u2)) > 1e-6) dDebug (0,"bad u1/u2");
-		dCROSS (n,OP.EQ,u1,u2);
+		if (dFabs(dCalcVectorDot3(u1,u2)) > 1e-6) dDebug (0,"bad u1/u2");
+		dCalcVectorCross3 (n,u1,u2);
 		//for (k=0; k<3; k++) tmp[k] = v2[k]-v1[k];
 		tmp.eqDiff(v2, v1);
-		double d = -dDOT(n,p1);
-		if (dFabs(dDOT(n,p1)+d) > 1e-8) dDebug (0,"bad n wrt p1");
-		if (dFabs(dDOT(n,p2)+d) > 1e-8) dDebug (0,"bad n wrt p2");
-		if (dFabs(dDOT(n,p3)+d) > 1e-8) dDebug (0,"bad n wrt p3");
-		double alpha = -(d+dDOT(n,v1))/dDOT(n,tmp);
+		double d = -dCalcVectorDot3(n,p1);
+		if (dFabs(dCalcVectorDot3(n,p1)+d) > 1e-8) dDebug (0,"bad n wrt p1");
+		if (dFabs(dCalcVectorDot3(n,p2)+d) > 1e-8) dDebug (0,"bad n wrt p2");
+		if (dFabs(dCalcVectorDot3(n,p3)+d) > 1e-8) dDebug (0,"bad n wrt p3");
+		double alpha = -(d+dCalcVectorDot3(n,v1))/dCalcVectorDot3(n,tmp);
 		//for (k=0; k<3; k++) tmp[k] = v1[k]+alpha*(v2[k]-v1[k]);
 		tmp.eqDiff(v2, v1);
 		tmp.eqSum(v1, tmp.scale(alpha));
-		if (dFabs(dDOT(n,tmp)+d) > 1e-6) dDebug (0,"bad tmp");
+		if (dFabs(dCalcVectorDot3(n,tmp)+d) > 1e-6) dDebug (0,"bad tmp");
 		if (alpha < 0) return false;
 		if (alpha > 1) return false;
 		//for (k=0; k<3; k++) tmp[k] -= p1[k];
 		tmp.set(p1).scale(-1);
-		double a1 = dDOT(u1,tmp);
-		double a2 = dDOT(u2,tmp);
+		double a1 = dCalcVectorDot3(u1,tmp);
+		double a2 = dCalcVectorDot3(u2,tmp);
 		if (a1<0 || a2<0 || a1>d1 || a2>d2) return false;
 		return true;
 	}
@@ -1105,12 +1175,12 @@ class DemoCollision extends dsFunctions {
 					v.set0( i*0.5*side1.get0() );
 					v.set1( j*0.5*side1.get1() );
 					v.set2( k*0.5*side1.get2() );
-					dMULTIPLY0_331 (vv,R1,v);
+					dMultiply0_331 (vv,R1,v);
 					vv.add(0, p1.get0() - p2.get0() );
 					vv.add(1, p1.get1() - p2.get1() );
 					vv.add(2, p1.get2() - p2.get2() );
 					for (int axis=0; axis < 3; axis++) {
-						double z = dDOT14(vv,R2,axis);
+						double z = dCalcVectorDot3_14(vv,R2,axis);
 						if (z < (-side2.get(axis)*0.5) || z > (side2.get(axis)*0.5)) return false;
 					}
 				}
@@ -1150,7 +1220,7 @@ class DemoCollision extends dsFunctions {
 				}
 				for (j=0; j<4; j++) {
 					for (k=0; k<3; k++) fp[j].scale(k, 0.5*side2.get(k) );
-					dMULTIPLY0_331 (tmp,R2,fp[j]);
+					dMultiply0_331 (tmp,R2,fp[j]);
 					for (k=0; k<3; k++) fp[j].set(k, tmp.get(k) + p2.get(k) );
 				}
 
@@ -1167,8 +1237,8 @@ class DemoCollision extends dsFunctions {
 									for (k=0; k<3; k++) vv1.set(k, v1[k] * 0.5*side1.get(k) );
 									for (k=0; k<3; k++) vv2.set(k, (v1[k] + (k==ei?1:0)*2)*0.5*side1.get(k) );
 									DVector3 vertex1=new DVector3(),vertex2=new DVector3();
-									dMULTIPLY0_331 (vertex1,R1,vv1);
-									dMULTIPLY0_331 (vertex2,R1,vv2);
+									dMultiply0_331 (vertex1,R1,vv1);
+									dMultiply0_331 (vertex2,R1,vv2);
 									//for (k=0; k<3; k++) vertex1[k] += p1[k];
 									vertex1.add(p1);
 									//for (k=0; k<3; k++) vertex2[k] += p1[k];

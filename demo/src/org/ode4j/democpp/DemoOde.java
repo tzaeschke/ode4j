@@ -24,8 +24,78 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.cpp4j.Csetjmp.longjmp;
+import static org.cpp4j.Csetjmp.setjmp;
+import static org.cpp4j.Cstdio.printf;
+import static org.cpp4j.Cstdio.sprintf;
+import static org.cpp4j.Cstdio.vprintf;
+import static org.cpp4j.Cstdio.vsprintf;
+import static org.cpp4j.Cstring.memcpy;
+import static org.cpp4j.Cstring.strcmp;
+import static org.cpp4j.Cstring.strlen;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassRotate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetCapsule;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetParameters;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetSphere;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetZero;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassTranslate;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dMultiply0_133;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply0_333;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_333;
+import static org.ode4j.ode.OdeMath.dMultiply2_333;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.OdeMath.dNormalize4;
+import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.OdeMath.dSetCrossMatrixPlus;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dPAD;
+import static org.ode4j.ode.internal.Common.dSqrt;
+import static org.ode4j.ode.internal.ErrorHandler.dDebug;
+import static org.ode4j.ode.internal.ErrorHandler.dGetDebugHandler;
+import static org.ode4j.ode.internal.ErrorHandler.dSetDebugHandler;
+import static org.ode4j.ode.internal.ErrorHandler.dSetMessageHandler;
+import static org.ode4j.ode.internal.Matrix.dFactorCholesky;
+import static org.ode4j.ode.internal.Matrix.dFactorLDLT;
+import static org.ode4j.ode.internal.Matrix.dInvertPDMatrix;
+import static org.ode4j.ode.internal.Matrix.dIsPositiveDefinite;
+import static org.ode4j.ode.internal.Matrix.dLDLTAddTL;
+import static org.ode4j.ode.internal.Matrix.dLDLTRemove;
+import static org.ode4j.ode.internal.Matrix.dMultiply0;
+import static org.ode4j.ode.internal.Matrix.dMultiply1;
+import static org.ode4j.ode.internal.Matrix.dMultiply2;
+import static org.ode4j.ode.internal.Matrix.dRemoveRowCol;
+import static org.ode4j.ode.internal.Matrix.dSetZero;
+import static org.ode4j.ode.internal.Matrix.dSolveCholesky;
+import static org.ode4j.ode.internal.Matrix.dSolveLDLT;
+import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
+import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
+import static org.ode4j.ode.internal.Misc.dMakeRandomVector;
+import static org.ode4j.ode.internal.Misc.dMaxDifference;
+import static org.ode4j.ode.internal.Misc.dMaxDifferenceLowerTriangle;
+import static org.ode4j.ode.internal.Misc.dRandGetSeed;
+import static org.ode4j.ode.internal.Misc.dRandReal;
+import static org.ode4j.ode.internal.Misc.dRandSetSeed;
+import static org.ode4j.ode.internal.Misc.dTestRand;
+import static org.ode4j.ode.internal.Rotation.dQMultiply0;
+import static org.ode4j.ode.internal.Rotation.dQMultiply1;
+import static org.ode4j.ode.internal.Rotation.dQMultiply2;
+import static org.ode4j.ode.internal.Rotation.dQMultiply3;
+import static org.ode4j.ode.internal.Rotation.dQtoR;
+import static org.ode4j.ode.internal.Rotation.dRSetIdentity;
+import static org.ode4j.ode.internal.Rotation.dRtoQ;
+
 import java.util.ArrayList;
 
+import org.cpp4j.Csetjmp.jmp_buf;
 import org.cpp4j.java.CppLongJump;
 import org.cpp4j.java.Ref;
 import org.ode4j.math.DMatrix3;
@@ -33,14 +103,10 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DMass;
-import org.ode4j.ode.OdeMath.OP;
 import org.ode4j.ode.internal.DLCP;
 import org.ode4j.ode.internal.DxMass;
+import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
 import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
-
-import static org.cpp4j.C_All.*;
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.ode.OdeMath.*;
 
 class DemoOde {
 
@@ -220,10 +286,10 @@ class DemoOde {
 		dMakeRandomVector (b,1.0);
 		dMakeRandomVector (c,1.0);
 
-		dCROSS (a1,OP.EQ,b,c);
+		dCalcVectorCross3 (a1,b,c);
 
 		//B.dSetZero();//dSetZero (B,12);
-		dCROSSMAT (B,b,4,+1,-1);
+		dSetCrossMatrixPlus (B,b);
 		dMultiply0 (a2,B,c);
 
 		double diff = dMaxDifference(a1,a2);
@@ -254,11 +320,11 @@ class DemoOde {
 			dMakeRandomVector (n1,1.0);
 			for (j=0; j<3; j++) n2.set(j, n1.get(j));
 			dNormalize3 (n2);
-			if (dFabs(dDOT(n2,n2) - 1.0) > tol) bad |= 1;
+			if (dFabs(dCalcVectorDot3(n2,n2) - 1.0) > tol) bad |= 1;
 			if (dFabs(n2.get0()/n1.get0() - n2.get1()/n1.get1()) > tol) bad |= 2;
 			if (dFabs(n2.get0()/n1.get0() - n2.get2()/n1.get2()) > tol) bad |= 4;
 			if (dFabs(n2.get1()/n1.get1() - n2.get2()/n1.get2()) > tol) bad |= 8;
-			if (dFabs(dDOT(n2,n1) - dSqrt(dDOT(n1,n1))) > tol) bad |= 16;
+			if (dFabs(dCalcVectorDot3(n2,n1) - dSqrt(dCalcVectorDot3(n1,n1))) > tol) bad |= 16;
 			if (bad != 0) {
 				printf ("\tFAILED (code=%x)\n",bad);
 				return;
@@ -290,11 +356,11 @@ void testReorthonormalize()
 			dMakeRandomVector (n,1.0);
 			dNormalize3 (n);
 			dPlaneSpace (n,p,q);
-			if (Math.abs(dDOT(n,p)) > tol) bad = 1;
-			if (Math.abs(dDOT(n,q)) > tol) bad = 1;
-			if (Math.abs(dDOT(p,q)) > tol) bad = 1;
-			if (Math.abs(dDOT(p,p)-1) > tol) bad = 1;
-			if (Math.abs(dDOT(q,q)-1) > tol) bad = 1;
+			if (Math.abs(dCalcVectorDot3(n,p)) > tol) bad = 1;
+			if (Math.abs(dCalcVectorDot3(n,q)) > tol) bad = 1;
+			if (Math.abs(dCalcVectorDot3(p,q)) > tol) bad = 1;
+			if (Math.abs(dCalcVectorDot3(p,p)-1) > tol) bad = 1;
+			if (Math.abs(dCalcVectorDot3(q,q)-1) > tol) bad = 1;
 		}
 		printf ("\t%s\n", bad != 0 ? "FAILED" : "passed");
 	}
@@ -355,37 +421,37 @@ void testReorthonormalize()
 		dMakeRandomVector (x,1.0);
 
 		// dMULTIPLY0_331()
-		dMULTIPLY0_331 (a,B,x);
+		dMultiply0_331 (a,B,x);
 		dMultiply0 (a2,B,x);
 		printf ("\t%s (1)\n",(dMaxDifference (a,a2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY1_331()
-		dMULTIPLY1_331 (a,B,x);
+		dMultiply1_331 (a,B,x);
 		dMultiply1 (a2,B,x);
 		printf ("\t%s (2)\n",(dMaxDifference (a,a2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY0_133
-		dMULTIPLY0_133 (a,x,B);
+		dMultiply0_133 (a,x,B);
 		dMultiply0 (a2,x,B);
 		printf ("\t%s (3)\n",(dMaxDifference (a,a2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY0_333()
-		dMULTIPLY0_333 (A,B,C);
+		dMultiply0_333 (A,B,C);
 		dMultiply0 (A2,B,C);
 		printf ("\t%s (4)\n",(dMaxDifference (A,A2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY1_333()
-		dMULTIPLY1_333 (A,B,C);
+		dMultiply1_333 (A,B,C);
 		dMultiply1 (A2,B,C);
 		printf ("\t%s (5)\n",(dMaxDifference (A,A2) > tol) ? "FAILED" :
 		"passed");
 
 		// dMULTIPLY2_333()
-		dMULTIPLY2_333 (A,B,C);
+		dMultiply2_333 (A,B,C);
 		dMultiply2 (A2,B,C);
 		printf ("\t%s (6)\n",(dMaxDifference (A,A2) > tol) ? "FAILED" :
 		"passed");
@@ -871,7 +937,7 @@ void testReorthonormalize()
 		dMakeRandomVector (u1,1.0);
 		dNormalize3 (u1);
 		dMakeRandomVector (u2,1.0);
-		double d = dDOT(u1,u2);
+		double d = dCalcVectorDot3(u1,u2);
 		//		u2[0] -= d*u1[0];
 		//		u2[1] -= d*u1[1];
 		//		u2[2] -= d*u1[2];
@@ -880,7 +946,7 @@ void testReorthonormalize()
 //		u2.v[2] -= d*u1.v[2];
 		u2.eqSum(u2, u1, -d);
 		dNormalize3 (u2);
-		dCROSS (u3,OP.EQ,u1,u2);
+		dCalcVectorCross3 (u3,u1,u2);
 		//TZ back to R
 		R.setCol(0, u1);
 		R.setCol(1, u2);

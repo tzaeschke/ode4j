@@ -558,12 +558,12 @@ class DemoBoxstack extends dsFunctions {
 			final DMatrix3C R2 = g2.getRotation();
 			DVector3 actual_pos = new DVector3();
 			DMatrix3 actual_R = new DMatrix3();
-			dMULTIPLY0_331 (actual_pos,R,pos2);
+			dMultiply0_331 (actual_pos,R,pos2);
 			//    actual_pos[0] += pos[0];
 			//    actual_pos[1] += pos[1];
 			//    actual_pos[2] += pos[2];
 			actual_pos.add(pos);
-			dMULTIPLY0_333 (actual_R,R,R2);
+			dMultiply0_333 (actual_R,R,R2);
 			drawGeom (g2,actual_pos,actual_R,false);
 		}
 		if (show_body) {
