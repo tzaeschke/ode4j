@@ -323,21 +323,6 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	}
 
 
-	/* StepFast1 functions */
-
-	/**
-	 * @brief Step the world using the StepFast1 algorithm.
-	 * @param stepsize the nr of seconds to advance the simulation.
-	 * @param maxiterations The number of iterations to perform.
-	 * @ingroup world
-	 */
-	//ODE_API 
-	public static void dWorldStepFast1(DWorld w, double stepsize, int maxiterations) {
-		w.stepFast1(stepsize, maxiterations);
-	}
-
-
-
 	/**
 	 * @defgroup disable Automatic Enabling and Disabling
 	 * @ingroup world bodies
@@ -369,26 +354,6 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 *
 	 * Newly created bodies get these parameters from world.
 	 */
-
-	/**
-	 * @brief Set the AutoEnableDepth parameter used by the StepFast1 algorithm.
-	 * @ingroup disable
-	 */
-	//ODE_API 
-	public static void dWorldSetAutoEnableDepthSF1(DWorld w, int autoEnableDepth) {
-		w.setAutoEnableDepthSF1(autoEnableDepth);
-	}
-
-
-	/**
-	 * @brief Get the AutoEnableDepth parameter used by the StepFast1 algorithm.
-	 * @ingroup disable
-	 */
-	//ODE_API 
-	public static int dWorldGetAutoEnableDepthSF1(DWorld w) {
-		return w.getAutoEnableDepthSF1();
-	}
-
 
 	/**
 	 * @brief Get auto disable linear threshold for newly created bodies.
