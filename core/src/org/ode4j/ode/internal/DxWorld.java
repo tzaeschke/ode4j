@@ -51,7 +51,7 @@ public class DxWorld extends DBase implements DWorld {
 	public int nj;
 	DVector3 gravity;		// gravity vector (m/s/s)
 	private double global_erp;		// global error reduction parameter
-	private double global_cfm;		// global costraint force mixing parameter
+	double global_cfm;		// global costraint force mixing parameter
 	dxAutoDisable adis;		// auto-disable parameters
 	int body_flags;               // flags for new bodies
 	dxQuickStepParameters qs;
@@ -220,11 +220,24 @@ public class DxWorld extends DBase implements DWorld {
 
 
 	//	public void dWorldQuickStep (dxWorld w, double stepsize)
-	public void dWorldQuickStep (double stepsize)
+	boolean dWorldQuickStep (double stepsize)
 	{
 		//	  dUASSERT (w,"bad world argument");
 		dUASSERT (stepsize > 0,"stepsize must be > 0");
+
+		boolean result = false;
+		//TODO
+//		  dxWorldProcessIslandsInfo islandsinfo;
+//		  if (dxReallocateWorldProcessContext (w, islandsinfo, stepsize, &dxEstimateQuickStepMemoryRequirements))
+//		  {
+        //TODO
 		dxProcessIslands (stepsize,DxQuickStep.INSTANCE);//dxQuickStepper);
+		result = true;
+        //TODO
+	//}
+		//dxCleanupWorldProcessContext (w);
+        //TODO
+		return result;
 	}
 
 
@@ -460,7 +473,8 @@ public class DxWorld extends DBase implements DWorld {
 	//	typedef void (*dstepper_fn_t) (dxWorld *world, dxBody * const *body, int nb,
 			//	        dxJoint * const *_joint, int nj, dReal stepsize);
 	public interface dstepper_fn_t {
-		public void run(DxWorld world, DxBody[]body, int nb,
+		public void run(DxWorldProcessMemArena memarena, 
+		        DxWorld world, DxBody[]body, int nb,
 				DxJoint []_joint, int nj, double stepsize);
 	}
 
@@ -546,8 +560,12 @@ public class DxWorld extends DBase implements DWorld {
 				dIASSERT(stacksize <= nj);
 			}
 
+			//TODO
+			DxWorldProcessMemArena memarena = new DxWorldProcessMemArena();
+			//TODO
+			
 			// now do something with body and joint lists
-			stepper.run (this,body,bcount,joint,jcount,stepsize);
+			stepper.run (memarena,this,body,bcount,joint,jcount,stepsize);
 
 			// what we've just done may have altered the body/joint tag values.
 			// we must make sure that these tags are nonzero.
@@ -779,8 +797,8 @@ public class DxWorld extends DBase implements DWorld {
 		throw new UnsupportedOperationException("Not implemented in ODE.");
 	}
 
-	public void quickStep(double stepsize)
-	{ dWorldQuickStep (stepsize); }
+	public boolean quickStep(double stepsize)
+	{ return dWorldQuickStep (stepsize); }
 	public void setQuickStepNumIterations(int num)
 	{ dWorldSetQuickStepNumIterations (num); }
 	public int getQuickStepNumIterations() 
@@ -899,4 +917,32 @@ public class DxWorld extends DBase implements DWorld {
 			double linearAverageThreshold) {
 		throw new UnsupportedOperationException("Not implemented in ODE.");
 	}
+
+
+    @Override
+    public int useSharedWorkingMemory(DWorld from_world) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+
+    @Override
+    public void dWorldCleanupWorkingMemory() {
+        // TODO Auto-generated method stub
+        
+    }
+
+
+    @Override
+    public int setStepMemoryReservationPolicy(DWorldStepReserveInfo policyinfo) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+
+    @Override
+    public int setStepMemoryManager(DWorldStepMemoryFunctionsInfo memfuncs) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

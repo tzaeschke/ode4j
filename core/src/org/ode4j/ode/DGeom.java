@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode;
 
+import org.cpp4j.java.RefInt;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -453,6 +454,105 @@ public interface DGeom {
 	void collide2 (DGeom g, Object data, DNearCallback callback);
 
 
+	
+
+	enum CONTROL_CLASS {
+	    dGeomCommonControlClass,// = 0,
+	    dGeomColliderControlClass;// = 1
+	}
+
+	enum CONTROL_CODE {
+	    dGeomCommonAnyControlCode,// = 0,
+	    dGeomColliderSetMergeSphereContactsControlCode,// = 1,
+	    dGeomColliderGetMergeSphereContactsControlCode;// = 2
+	}
+
+	enum COLLIDER_MERGE_CONTACTS_VALUE {
+	    dGeomColliderMergeContactsValue__Default,// = 0, // Used with Set... to restore default value
+	    dGeomColliderMergeContactsValue_None,// = 1,
+	    dGeomColliderMergeContactsValue_Normals,// = 2,
+	    dGeomColliderMergeContactsValue_Full;// = 3
+	}
+
+	/**
+	 * Execute low level control operation for geometry.
+	 *
+	 * The variable the dataSize points to must be initialized before the call.
+	 * If the size does not match the one expected for the control class/code function
+	 * changes it to the size expected and returns failure. This implies the function 
+	 * can be called with NULL data and zero size to test if control class/code is supported
+	 * and obtain required data size for it.
+	 *
+	 * dGeomCommonAnyControlCode applies to any control class and returns success if 
+	 * at least one control code is available for the given class with given geom.
+	 *
+	 * Currently there are the folliwing control classes supported:
+	 *  @li dGeomColliderControlClass
+	 *
+	 * For dGeomColliderControlClass there are the following codes available:
+	 *  @li dGeomColliderSetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)
+	 *  @li dGeomColliderGetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)
+	 *
+	 * @param geom   the geom to control
+	 * @param controlClass   the control class
+	 * @param controlCode   the control code for the class
+	 * @param dataValue   the control argument pointer
+	 * @param dataSize   the control argument size provided or expected
+	 * @returns Boolean execution status
+	 * @ingroup collide
+	 */
+	boolean lowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
+	        Object[][][] dataValue, RefInt dataSize);
+
+
+	/**
+	 * Get world position of a relative point on geom.
+	 *
+	 * Calling this function on a non-placeable geom results in the same point being
+	 * returned.
+	 *
+	 * @ingroup collide
+	 * @param result will contain the result.
+	 */
+	void getRelPointPos(double px, double py, double pz, DVector3 result);
+
+	/**
+	 * Takes a point in global coordinates and returns
+	 * the point's position in geom-relative coordinates.
+	 *
+	 * Calling this function on a non-placeable geom results in the same point being
+	 * returned.
+	 *
+	 * @remarks
+	 * This is the inverse of dGeomGetRelPointPos()
+	 * @ingroup collide
+	 * @param result will contain the result.
+	 */
+	void getPosRelPoint(double px, double py, double pz, DVector3 result);
+
+	/**
+	 * Convert from geom-local to world coordinates.
+	 *
+	 * Calling this function on a non-placeable geom results in the same vector being
+	 * returned.
+	 *
+	 * @ingroup collide
+	 * @param result will contain the result.
+	 */
+	void vectorToWorld(double px, double py, double pz, DVector3 result);
+
+	/**
+	 * Convert from world to geom-local coordinates.
+	 *
+	 * Calling this function on a non-placeable geom results in the same vector being
+	 * returned.
+	 *
+	 * @ingroup collide
+	 * @param result will contain the result.
+	 */
+	void vectorFromWorld(double px, double py, double pz, DVector3 result);
+
+	
 	/**
 	 * Get the offset position vector of a geom.
 	 * <p>

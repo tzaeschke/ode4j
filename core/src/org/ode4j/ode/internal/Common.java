@@ -295,7 +295,21 @@ public class Common extends ErrorHandler {
 		//return Math.fmod(x);
 	}
 	//#define dFloor(x) floor(x) //TODO replace
-	public static final double dFloor(double x) { return Math.floor(x); };
+	public static final double dFloor(double x) { return Math.floor(x); }
+	
+	//#define dCeil(x) ceilf(x)          /* floor */
+	public static final double dCeil(double x) { return Math.ceil(x); }
+	
+	//#define dCopySign(a,b) ((dReal)copysignf(a,b)) /* copy value sign */
+    public static final double dCopysign(double magnitude, double sign) { 
+        return Math.copySign(magnitude, sign); 
+    }
+
+    //#define dNextAfter(x, y) nextafterf(x, y) /* next value after */
+    public static final double dNextafter(double start, double direction) { 
+        return Math.nextAfter(start, direction); 
+    }
+
 
 	//#ifdef HAVE___ISNAN
 	//#define dIsNan(x) (__isnan(x))

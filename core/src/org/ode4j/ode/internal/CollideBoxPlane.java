@@ -88,7 +88,7 @@ public class CollideBoxPlane implements DColliderFn {
 		// find number of contacts requested
 		int maxc = flags & DxGeom.NUMC_MASK;
 		// if (maxc < 1) maxc = 1; // an assertion is made on entry
-		if (maxc > 3) maxc = 3;	// not more than 3 contacts per box allowed
+		if (maxc > 4) maxc = 4;	// not more than 4 contacts per box allowed
 
 		// find deepest point
 		DVector3 p = new DVector3();
@@ -106,12 +106,7 @@ public class CollideBoxPlane implements DColliderFn {
 //		BAR1(2,3);
 //		#undef FOO
 //		#undef BAR
-//		if (A[0] > 0) p.sum(p, R.columnAsNewVector(0), -0.5*box.side.get(0));
-//		else p.sum(p, R.columnAsNewVector(0), +0.5*box.side.get(0));
-//		if (A[1] > 0) p.sum(p, R.columnAsNewVector(1), -0.5*box.side.get(1));
-//		else p.sum(p, R.columnAsNewVector(1), +0.5*box.side.get(1));
-//		if (A[2] > 0) p.sum(p, R.columnAsNewVector(2), -0.5*box.side.get(2));
-//		else p.sum(p, R.columnAsNewVector(2), +0.5*box.side.get(2));
+		//substitute for FOO and BAR above (TZ)
 		for (int i = 0; i < 3; i++) {
 			if (A[i] > 0) 	p.eqSum(p, R.columnAsNewVector(i), -0.5*box.side.get(i));
 			else 			p.eqSum(p, R.columnAsNewVector(i), +0.5*box.side.get(i));
@@ -122,17 +117,13 @@ public class CollideBoxPlane implements DColliderFn {
 //		contact.pos[1] = p[1];
 //		contact.pos[2] = p[2];
 		contact.pos.set(p);
-//		contact.normal[0] = n[0];
-//		contact.normal[1] = n[1];
-//		contact.normal[2] = n[2];
-		contact.normal.set(n);
 		contact.depth = depth.get();
 		ret.set(1);//ret = 1;		// ret is number of contact points found so far
 		//TZ 
 		do {
 			if (maxc == 1) {
 				//goto done;
-				done(ret.get(), contacts, skip, o1, o2);
+				done(ret, contacts, skip, o1, o2, maxc, depth.get(), p);
 				return ret.get();
 			}
 
@@ -150,17 +141,6 @@ public class CollideBoxPlane implements DColliderFn {
 //			if (A ## sideinc > 0) { FOO(ctact,side,+); } else { FOO2(ctact,side,-); } \
 //			CONTACT(contact,ctact*skip).depth = depth; \
 //			ret++;
-
-//			CONTACT(contact,skip).normal[0] = n[0];
-//			CONTACT(contact,skip).normal[1] = n[1];
-//			CONTACT(contact,skip).normal[2] = n[2];
-			contacts.get(skip).normal.set(n);
-			if (maxc == 3) {
-//				CONTACT(contact,2*skip).normal[0] = n[0];
-//				CONTACT(contact,2*skip).normal[1] = n[1];
-//				CONTACT(contact,2*skip).normal[2] = n[2];
-				contacts.get(2*skip).normal.set(n);
-			}
 
 			int p1, p2, p3, go;
 //			if (B[0] < B[1]) {
@@ -210,7 +190,7 @@ public class CollideBoxPlane implements DColliderFn {
 				}
 			}
 			
-			BAR2(p1, p2, p3, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side);
+			BAR2(p1, p2, p3, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc);
 			//TODO improve  (e.g. make depth a primitive int, reduce arguments, ...
 //			BAR2_(p1, p2, depth, ret, contacts, skip, A[p2], B[p2], o1, o2, p, R, box.side);
 			
@@ -218,13 +198,13 @@ public class CollideBoxPlane implements DColliderFn {
 				break;
 			} else {
 				if (go == 21) {
-					if (!BAR2(2, 0, 1, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side)) return ret.get();
+					if (!BAR2(2, 0, 1, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc)) return ret.get();
 					break;
 				} else if (go == 22) {
-					if (!BAR2(2, 1, 2, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side)) return ret.get();
+					if (!BAR2(2, 1, 2, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc)) return ret.get();
 					break;
 				} else if (go == 23) {
-					if (!BAR2(2, 2, 3, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side)) return ret.get();
+					if (!BAR2(2, 2, 3, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc)) return ret.get();
 					break;
 				} else {
 					throw new IllegalStateException("go=" + go);
@@ -243,7 +223,7 @@ public class CollideBoxPlane implements DColliderFn {
 //				CONTACT(contact,i*skip).g1 = o1;
 //				CONTACT(contact,i*skip).g2 = o2;
 //			}
-		done(ret.get(), contacts, skip, o1, o2);
+		done(ret, contacts, skip, o1, o2, maxc, depth.get(), p);
 		return ret.get();
 	}
 
@@ -256,39 +236,84 @@ public class CollideBoxPlane implements DColliderFn {
 		contacts.get(i*skip).pos.eqSum(p, R.viewCol(j), op*side.get(j));
 	}
 	
-//	#define BAR2(ctact,side,sideinc) \
-//	depth -= B ## sideinc; \
-//	if (depth < 0) goto done; \
-//	if (A ## sideinc > 0) { FOO2(ctact,side,+); } else { FOO2(ctact,side,-); } \
-//	CONTACT(contact,ctact*skip).depth = depth; \
-//	ret++;
-	private final boolean BAR2(int ctact, int side, int sideinc, 
-			RefDouble depth, RefInt ret, DContactGeomBuffer contacts, int skip,
-			double[] A, double[] B, DxGeom o1, DxGeom o2, 
-			DVector3 p, DMatrix3C R, DVector3 boxSide) {
-//		depth -= B ## sideinc; \
-		depth.sub(B[sideinc-1]);
-//		if (depth < 0) goto done; \
-		if (depth.get() < 0) {
-			done(ret.get(), contacts, skip, o1, o2);
-			return false;
-		}
-//		if (A ## sideinc > 0) { FOO(ctact,side,+); } else { FOO2(ctact,side,-); } \
-		if (A[sideinc-1] > 0) {
-			FOO2(ctact,side, +1, contacts, skip, p, R, boxSide);
-		} else {
-			FOO2(ctact,side, -1, contacts, skip, p, R, boxSide);
-		}
-//		CONTACT(contact,ctact*skip).depth = depth; \
-		contacts.get(ctact*skip).depth = depth.get();
-//		ret++;
-		ret.inc();
-		return true;
-	}
-	
-	private final void done(int ret, DContactGeomBuffer contacts, int skip, DxGeom o1, DxGeom o2) {
+//  #define BAR2(ctact,side,sideinc) \
+//  if (depth - B ## sideinc < 0) goto done; \
+//  if (A ## sideinc > 0) { FOO2(ctact,side,+); } else { FOO2(ctact,side,-); } \
+//  CONTACT(contact,ctact*skip).depth = depth; \
+//  ret++;
+    private final boolean BAR2(int ctact, int side, int sideinc, 
+            RefDouble depth, RefInt ret, DContactGeomBuffer contacts, int skip,
+            double[] A, double[] B, DxGeom o1, DxGeom o2, 
+            DVector3 p, DMatrix3C R, DVector3 boxSide, final int maxc) {
+    //  if (depth - B ## sideinc < 0) goto done; \
+        if (depth.get()-B[sideinc-1] < 0) {
+            done(ret, contacts, skip, o1, o2, maxc, depth.get(), p);
+            return false;
+        }
+//      if (A ## sideinc > 0) { FOO(ctact,side,+); } else { FOO2(ctact,side,-); } \
+        if (A[sideinc-1] > 0) {
+            FOO2(ctact,side, +1, contacts, skip, p, R, boxSide);
+        } else {
+            FOO2(ctact,side, -1, contacts, skip, p, R, boxSide);
+        }
+//      CONTACT(contact,ctact*skip).depth = depth; \
+        contacts.get(ctact*skip).depth = depth.get() - B[sideinc-1];
+//      ret++;
+        ret.inc();
+        return true;
+    }
+    
+//  #define BAR2(ctact,side,sideinc) \
+//  depth -= B ## sideinc; \
+//  if (depth < 0) goto done; \
+//  if (A ## sideinc > 0) { FOO2(ctact,side,+); } else { FOO2(ctact,side,-); } \
+//  CONTACT(contact,ctact*skip).depth = depth; \
+//  ret++;
+//    private final boolean BAR2_OLD(int ctact, int side, int sideinc, 
+//            RefDouble depth, RefInt ret, DContactGeomBuffer contacts, int skip,
+//            double[] A, double[] B, DxGeom o1, DxGeom o2, 
+//            DVector3 p, DMatrix3C R, DVector3 boxSide) {
+////      depth -= B ## sideinc; \
+//        depth.sub(B[sideinc-1]);
+////      if (depth < 0) goto done; \
+//        if (depth.get() < 0) {
+//            done(ret.get(), contacts, skip, o1, o2, maxc);
+//            return false;
+//        }
+////      if (A ## sideinc > 0) { FOO(ctact,side,+); } else { FOO2(ctact,side,-); } \
+//        if (A[sideinc-1] > 0) {
+//            FOO2(ctact,side, +1, contacts, skip, p, R, boxSide);
+//        } else {
+//            FOO2(ctact,side, -1, contacts, skip, p, R, boxSide);
+//        }
+////      CONTACT(contact,ctact*skip).depth = depth; \
+//        contacts.get(ctact*skip).depth = depth.get();
+////      ret++;
+//        ret.inc();
+//        return true;
+//    }
+    
+	private final void done(RefInt ret, DContactGeomBuffer contacts, int skip, DxGeom o1, DxGeom o2,
+	        final int maxc, final double depth, DVector3C p) {
 		//done:
-		for (int i=0; i<ret; i++) {
+	    if (maxc == 4 && ret.get() == 3) { // If user requested 4 contacts, and the first 3 were created...
+	        // Combine contacts 2 and 3 (vectorial sum) and get the fourth one
+	        // Result: if a box face is completely inside a plane, contacts are created for all the 4 vertices
+	        //double d4 = CONTACT(contact,1*skip).depth + CONTACT(contact,2*skip).depth - depth;  // depth is the depth for first contact
+	        double d4 = contacts.get(1*skip).depth + contacts.get(2*skip).depth - depth;
+	        if (d4 > 0) {
+//	            CONTACT(contact,3*skip)->pos[0] = CONTACT(contact,1*skip).pos[0] + CONTACT(contact,2*skip).pos[0] - p[0]; // p is the position of first contact
+//	            CONTACT(contact,3*skip)->pos[1] = CONTACT(contact,1*skip).pos[1] + CONTACT(contact,2*skip).pos[1] - p[1];
+//	            CONTACT(contact,3*skip)->pos[2] = CONTACT(contact,1*skip).pos[2] + CONTACT(contact,2*skip).pos[2] - p[2];
+//	            CONTACT(contact,3*skip)->depth  = d4;
+	            DContactGeom c3 = contacts.get(3*skip);
+	            c3.pos.set( contacts.get(1*skip).pos ).add( contacts.get(2*skip).pos).sub(p);
+	            c3.depth = d4;
+	            ret.inc();
+	        }
+	      }
+
+		for (int i=0; i<ret.get(); i++) {
 //			CONTACT(contact,i*skip).g1 = o1;
 //			CONTACT(contact,i*skip).g2 = o2;
 			DContactGeom contact = contacts.get(i*skip);

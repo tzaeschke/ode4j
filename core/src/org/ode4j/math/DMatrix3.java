@@ -22,7 +22,12 @@
 package org.ode4j.math;
 
 
-
+/**
+ * 3x3 matrix class.
+ * Internally this uses a 4x3 matrix for compatibility.
+ *
+ * @author Tilmann Zaeschke
+ */
 public final class DMatrix3 implements DMatrix3C {
 	
 	private final double[] v;
@@ -154,8 +159,8 @@ public final class DMatrix3 implements DMatrix3C {
 		set20( o ); set21( p ); set22( q );
 	}
 	/** 
-	 * Initialises this matrix from a 3*4 double [], ignoring the 
-	 * 4th, 8th and 12th field. This is useful when using padded arrays.
+	 * Initialises this matrix from a 3*4 double [] with 12 fields, ignoring 
+	 * the 4th, 8th and 12th field. This is useful when using padded arrays.
 	 */
 	public void set12(double[] da, int da_ofs) {
 		System.arraycopy(da, da_ofs, v, 0, da.length);

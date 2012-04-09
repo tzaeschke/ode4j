@@ -159,9 +159,9 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //		public dVector3 c = new dVector3();//double[] c;  //TZ: [4] ? 0,1,2,3
 //		public dVector3 cfm = new dVector3();  //TZ: [3] ?
 		protected double[] _cA;
-		protected int _cP;
+		int _cP;
 		protected double[] _cfmA;
-		protected int _cfmP;
+		int _cfmP;
 		public void setC(int i, double d) {
 			_cA[_cP+i] = d;
 		}
@@ -179,9 +179,9 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //		public dVector3 lo = new dVector3();//double[] lo;  //TZ: [3] ?
 //		public dVector3 hi = new dVector3();//double[] hi;  //TZ: [3] ?
 		private double[] _loA;
-		private int _loP;
+		int _loP;
 		private double[] _hiA;
-		private int _hiP;
+		int _hiP;
 		public void setLo(int i, double d) {
 			_loA[_loP+i] = d;
 		}

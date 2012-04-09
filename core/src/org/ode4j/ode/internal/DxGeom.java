@@ -31,6 +31,7 @@ import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Rotation.dQfromR;
 
+import org.cpp4j.java.RefInt;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -50,6 +51,8 @@ import org.ode4j.ode.internal.DxSpace;
 import org.ode4j.ode.internal.Objects_H.DxPosRC;
 import org.ode4j.ode.internal.Objects_H.DxPosR;
 import org.ode4j.ode.internal.DxQuadTreeSpace.Block;
+
+import com.sun.corba.se.impl.copyobject.ReferenceObjectCopierImpl;
 
 /**
  * geometry (collision object).
@@ -561,6 +564,16 @@ public abstract class DxGeom extends DBase implements DGeom {
 		dMultiply0_333 (_final_posr.R,body.posr().R(),offset_posr.R);
 	}
 
+	boolean controlGeometry(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
+	        Object[][] dataValue, RefInt dataSize) {
+	    throw new IllegalArgumentException("Control class/code is not supported for current geom");
+//	   dAASSERT(false && "Control class/code is not supported for current geom");
+//
+//	   //*dataSize = 0;
+//	   dataSize.set(0);
+//	   return false;
+	 }
+	
 	// ************ TZ from collision_kernel.cpp ********************
 
 	//****************************************************************************
@@ -909,6 +922,80 @@ public abstract class DxGeom extends DBase implements DGeom {
 	private boolean dGeomIsEnabled ()
 	{
 		return (_gflags & GEOM_ENABLED) != 0;// ? 1 : 0;
+	}
+
+	void dGeomGetRelPointPos (double px, double py, double pz,
+	        DVector3 result) {
+	    if ((_gflags & GEOM_PLACEABLE) == 0) {
+	        result.set(px, py, pz);
+	        return;
+	    }
+
+	    recomputePosr();
+
+	    DVector3 prel,p = new DVector3();
+	    prel = new DVector3(px, py, pz);
+	    dMultiply0_331 (p,_final_posr.R,prel);
+	    result.eqSum(p, _final_posr.pos);
+	}
+
+
+	void dGeomGetPosRelPoint(double px, double py, double pz, DVector3 result) {
+	    if ((_gflags & GEOM_PLACEABLE) == 0) {
+	        result.set(px, py, pz);
+	        return;
+	    }
+
+	    recomputePosr();
+
+	    DVector3 prel = new DVector3(px, py, pz);
+	    prel.sub(_final_posr.pos);
+//	    prel[0] = px - g->final_posr->pos[0];
+//	    prel[1] = py - g->final_posr->pos[1];
+//	    prel[2] = pz - g->final_posr->pos[2];
+//	    prel[3] = 0;
+	    dMultiply1_331 (result,_final_posr.R,prel);
+	}
+
+
+	void dGeomVectorToWorld(double px, double py, double pz, DVector3 result) {
+	    if ((_gflags & GEOM_PLACEABLE) == 0) {
+	        result.set(px, py, pz);
+	        return;
+	    }
+
+	    recomputePosr();
+
+	    DVector3 p = new DVector3(px, py, pz);
+	    dMultiply0_331 (result,_final_posr.R,p);
+	}
+
+
+	void dGeomVectorFromWorld(double px, double py, double pz, DVector3 result) {
+	    if ((_gflags & GEOM_PLACEABLE) == 0) {
+	        result.set(px, py, pz);
+	        return;
+	    }
+
+	    recomputePosr();
+
+	    DVector3 p = new DVector3(px, py, pz);
+	    dMultiply1_331 (result,_final_posr.R,p);
+	}
+
+
+
+	boolean dGeomLowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
+	        Object[][] dataValue, RefInt dataSize) {
+	    dAASSERT (dataSize);
+
+	    //if (!dataSize) {
+	    if (dataSize == null) {
+	        return false;
+	    }
+
+	    boolean result = controlGeometry(controlClass, controlCode, dataValue, dataSize);
+	    return result;
 	}
 
 
@@ -1757,4 +1844,32 @@ public abstract class DxGeom extends DBase implements DGeom {
 	public void copyRotation(DMatrix3 R) {
 		dGeomCopyRotation(R);
 	}
+
+    @Override
+    public boolean lowLevelControl(CONTROL_CLASS controlClass,
+            CONTROL_CODE controlCode, Object[][][] dataValue, RefInt dataSize) {
+        return dGeomLowLevelControl(controlClass, controlCode, dataValue, dataSize);
+    }
+
+    @Override
+    public void getRelPointPos(double px, double py, double pz, DVector3 result) {
+        dGeomGetRelPointPos(px, py, pz, result);
+    }
+
+    @Override
+    public void getPosRelPoint(double px, double py, double pz, DVector3 result) {
+        dGeomGetPosRelPoint(px, py, pz, result);
+    }
+
+    @Override
+    public void vectorToWorld(double px, double py, double pz, DVector3 result) {
+        dGeomVectorToWorld(px, py, pz, result);
+    }
+
+    @Override
+    public void vectorFromWorld(double px, double py, double pz, DVector3 result) {
+        dGeomVectorFromWorld(px, py, pz, result);
+    }
+	
+	
 }

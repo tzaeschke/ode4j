@@ -1239,7 +1239,8 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 	//void dInternalStepIsland (dxWorld *world, dxBody * const *body, int nb,
 	//			  dxJoint * const *joint, int nj, double stepsize)
-	void dInternalStepIsland (DxWorld world, DxBody[] body, int nb,
+	void dInternalStepIsland (DxWorldProcessMemArena memarena, 
+	        DxWorld world, DxBody[] body, int nb,
 			DxJoint[] joint, int nj, double stepsize)
 	{
 
@@ -1305,9 +1306,9 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 	}
 
 
-	public void run(DxWorld world, DxBody[] body, int nb, DxJoint[] _joint, 
+	public void run(DxWorldProcessMemArena memarena, DxWorld world, DxBody[] body, int nb, DxJoint[] _joint, 
 			int nj, double stepsize) {
-		dInternalStepIsland(world, body, nb, _joint, nj, stepsize);
+		dInternalStepIsland(memarena, world, body, nb, _joint, nj, stepsize);
 	}
 }
 
