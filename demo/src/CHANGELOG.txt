@@ -16,7 +16,14 @@ SUMMARY of changes for ode-0.12
 - Clean-up of demos
 - Bug fixes
 
-2012-Apr-00 Tilmann Zaschke
+TODO
+- Fix DemoBoxStack
+
+2012-Apr-10 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Fixed all joint-files.
+
+2012-Apr-09 Tilmann Zaschke
 		* Migration to ode-0.12:
 		  - 'finnished' include-files for now
 		  - migrated DxBox and quickstep.
