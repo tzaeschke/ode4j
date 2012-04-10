@@ -86,6 +86,12 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 	}
 
 	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = num;
+	}
+
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{

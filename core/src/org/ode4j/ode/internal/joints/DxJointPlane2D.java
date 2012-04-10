@@ -80,6 +80,12 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	}
 
 
+	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = 6;
+	}
+
 
 	@Override
 	public void

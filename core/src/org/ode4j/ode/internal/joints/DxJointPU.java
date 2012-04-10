@@ -259,7 +259,9 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 				dCalcVectorCross3( lvel2, anchor2, node[1].body.avel );
 
 				// lvel1 -=  lvel2 + joint->node[1].body->lvel;
-				//dOPE2( lvel1.v, OP.SUB_EQ , lvel2.v, OP.ADD , node[1].body.lvel.v );
+				//  dVector3 tmp;
+				//  dAddVectors3( tmp, lvel2, joint->node[1].body->lvel );
+				//  dSubtractVectors3( lvel1, lvel1, tmp );
 				lvel1.sub( lvel2 );
 				lvel1.sub( node[1].body.lvel );
 
@@ -275,6 +277,12 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		return 0.0;
 	}
 
+
+	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = 6;
+	}
 
 
 	@Override
@@ -413,7 +421,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		if ( node[1].body!=null )
 		{
 			//   info->J2a[s0+i] = -p[i];
-		    dCopyNegatedVector3(info._J, ( info.J2ap ) + s0, p );
+		    dCopyNegatedVector3(info._J, info.J2ap + s0, p );
 		}
 
 		// compute the right hand side of the constraint equation. Set relative
@@ -466,28 +474,28 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		dMultiply0_331( axP, R1, axisP1 );
 
 		dCalcVectorCross3( info._J, ( info.J1ap ) + s1, dist, ax1 );
-		dCalcVectorCross3(info._J, ( info.J1ap ) + s2, dist, q );
+		dCalcVectorCross3( info._J, ( info.J1ap ) + s2, dist, q );
 
 		// info->J1l[s1+i] = ax[i];
-		dCopyVector3(info._J, ( info.J1lp ) + s1, ax1 );
+		dCopyVector3( info._J, ( info.J1lp ) + s1, ax1 );
 
 		// info->J1l[s2+i] = q[i];
-		dCopyVector3(info._J, ( info.J1lp ) + s2, q);
+		dCopyVector3( info._J, ( info.J1lp ) + s2, q);
 
 		if ( node[1].body!=null )
 		{
 			// Calculate anchor2 in world coordinate
 
 			// q x anchor2 instead of anchor2 x q since we want the negative value
-		    dCalcVectorCross3(info._J, ( info.J2ap ) + s1, ax1, wanchor2 );
+		    dCalcVectorCross3( info._J, ( info.J2ap ) + s1, ax1, wanchor2 );
 			// The cross product is in reverse order since we want the negative value
-		    dCalcVectorCross3(info._J, ( info.J2ap ) + s2, q, wanchor2 );
+		    dCalcVectorCross3( info._J, ( info.J2ap ) + s2, q, wanchor2 );
 
 
 			// info->J2l[s1+i] = -ax1[i];
-		    dCopyNegatedVector3(info._J, ( info.J2lp ) + s1, ax1 );
+		    dCopyNegatedVector3( info._J, ( info.J2lp ) + s1, ax1 );
 			// info->J2l[s2+i] = -ax1[i];
-		    dCopyNegatedVector3(info._J, ( info.J2lp ) + s2, q );
+		    dCopyNegatedVector3( info._J, ( info.J2lp ) + s2, q );
 
 		}
 
@@ -508,8 +516,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		info.setC(2, k * dCalcVectorDot3( q, err ) );
 
 		int row = 3 + limot1.addLimot( this, info, 3, ax1, true );
-//		row += limot2.addLimot( this, info, row, ax2, true );
-//		limotP.addLimot( this, info, row, axP, false );
+	    row += limot2.addLimot( this, info, row, ax2, true );
 
 	    if (  node[1].body!=null || !isFlagsReverse() )
 	        limotP.addLimot( this, info, row, axP, false );
@@ -777,7 +784,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		else
 		{
 			// result[i] = joint->anchor2[i];
-			//dOPE( result.v, 0, OP.EQ , _anchor2.v );
+			//dCopyVector3( result, joint->anchor2 );
 			result.set( _anchor2 );
 		}
 	}

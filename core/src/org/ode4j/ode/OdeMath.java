@@ -129,6 +129,11 @@ public class OdeMath extends Rotation {
 //	  res[1] = -res[1];
 //	  res[2] = -res[2];
 //	}
+	public static void dNegateVector3(double[] a, int ofs) {
+	    a[ofs+0] = -a[ofs+0];
+	    a[ofs+1] = -a[ofs+1];
+	    a[ofs+2] = -a[ofs+2];
+	}
 
 	public static void dCopyVector3(double[] a, int ofs, final DVector3C b) {
         a[0+ofs] = b.get0(); 
@@ -574,11 +579,11 @@ public class OdeMath extends Rotation {
 	    a[1+ofs] = (b.get2()*c.get0() - b.get0()*c.get2()); 
 	    a[2+ofs] = (b.get0()*c.get1() - b.get1()*c.get0());
 	}
-	public static void dSubtractVectorCross3(double[] a, int ofs, DVector3C b, DVector3C c) {
-	    a[0+ofs] = -(b.get1()*c.get2() - b.get2()*c.get1()); 
-	    a[1+ofs] = -(b.get2()*c.get0() - b.get0()*c.get2()); 
-	    a[2+ofs] = -(b.get0()*c.get1() - b.get1()*c.get0());
-    }
+//	public static void dSubtractVectorCross3(double[] a, int ofs, DVector3C b, DVector3C c) {
+//	    a[0+ofs] = -(b.get1()*c.get2() - b.get2()*c.get1()); 
+//	    a[1+ofs] = -(b.get2()*c.get0() - b.get0()*c.get2()); 
+//	    a[2+ofs] = -(b.get0()*c.get1() - b.get1()*c.get0());
+//    }
 
 	public static void dCalcVectorCross3(DVector3View a, DVector3View b, DVector3View c) {
 		a.set0( b.get1()*c.get2() - b.get2()*c.get1() ); 

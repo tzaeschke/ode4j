@@ -79,6 +79,13 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 
 	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = 6;
+	}
+
+
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{

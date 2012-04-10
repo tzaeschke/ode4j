@@ -43,6 +43,13 @@ public class DxJointNull extends DxJoint implements DNullJoint
 	}
 
 	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = 0;
+	}
+
+
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{

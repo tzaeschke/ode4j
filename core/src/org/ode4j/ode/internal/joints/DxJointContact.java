@@ -40,7 +40,7 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
 import static org.ode4j.ode.OdeMath.dPlaneSpace;
-import static org.ode4j.ode.OdeMath.dSubtractVectorCross3;
+import static org.ode4j.ode.OdeMath.dNegateVector3;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DContact;
@@ -61,6 +61,12 @@ public class DxJointContact extends DxJoint implements DContactJoint
 	//        dxJoint( w )
 	{
 		super (w);
+	}
+
+	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = 3; // ...as the actual m is very likely to hit the maximum
 	}
 
 
@@ -138,7 +144,8 @@ public class DxJointContact extends DxJoint implements DContactJoint
 			info._J[info.J2lp+0] = -normal.get0();
 			info._J[info.J2lp+1] = -normal.get1();
 			info._J[info.J2lp+2] = -normal.get2();
-			dSubtractVectorCross3( info._J, info.J2ap, c2, normal );
+	        dCalcVectorCross3( info._J, info.J2ap, c2, normal );
+	        dNegateVector3( info._J, info.J2ap );
 		}
 
 		// set right hand side and cfm value for normal
@@ -220,7 +227,11 @@ public class DxJointContact extends DxJoint implements DContactJoint
 				info._J[info.J2lp+s+0] = -t1.get0();
 				info._J[info.J2lp+s+1] = -t1.get1();
 				info._J[info.J2lp+s+2] = -t1.get2();
-				dSubtractVectorCross3( info._J, info.J2ap + s, c2, t1 );
+//			    dReal *J2a_plus_s = info->J2a + s;
+//	            dCalcVectorCross3( J2a_plus_s, c2, t1 );
+//	            dNegateVector3( J2a_plus_s );
+	            dCalcVectorCross3( info._J, info.J2ap+s, c2, t1 );
+	            dNegateVector3( info._J, info.J2ap+s );
 			}
 			// set right hand side
 			if (( contact.surface.mode & dContactMotion1) != 0)
@@ -252,7 +263,11 @@ public class DxJointContact extends DxJoint implements DContactJoint
 				info._J[info.J2lp+s2+0] = -t2.get0();
 				info._J[info.J2lp+s2+1] = -t2.get1();
 				info._J[info.J2lp+s2+2] = -t2.get2();
-				dSubtractVectorCross3( info._J, info.J2ap + s2, c2, t2 );
+//				dReal *J2a_plus_s2 = info->J2a + s2;
+//				dCalcVectorCross3( J2a_plus_s2, c2, t2 );
+//				dNegateVector3( J2a_plus_s2 );
+				dCalcVectorCross3( info._J, info.J2ap+s2, c2, t2 );
+				dNegateVector3( info._J, info.J2ap+s2 );
 			}
 			// set right hand side
 			if (( contact.surface.mode & dContactMotion2) != 0)

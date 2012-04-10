@@ -95,7 +95,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 
 			if ( isFlagsReverse() )
 			{   // N.B. it could have been simplier to only inverse the sign of
-				//      the dDot result but this case is exceptional and doing
+				//      the dCalcVectorDot3 result but this case is exceptional and doing
 				//      the check for all case can decrease the performance.
 //				ax1.v[0] = -ax1.v[0];
 //				ax1.v[1] = -ax1.v[1];
@@ -126,6 +126,13 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 			if ( isFlagsReverse() ) rate = - rate;
 			return rate;
 		}
+	}
+
+
+	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = 6;
 	}
 
 
@@ -207,16 +214,14 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 		if ( node[1].body!= null )
 		{
 			DVector3 tmp = new DVector3();
-			//dCROSS ( tmp, =  0.5 * , c, p );
+			//dCalcVectorCross3 ( tmp, =  0.5 * , c, p );
 			dCalcVectorCross3 ( tmp, c, p );
-			//for (int k = 0; k < 3; k++) tmp.v[k] = tmp.v[k] * 0.5;
 			tmp.scale(0.5);
 
 			for ( i = 0; i < 3; i++ ) info._J[info.J1ap+s3+i] = tmp.get(i);
 			for ( i = 0; i < 3; i++ ) info._J[info.J2ap+s3+i] = tmp.get(i);
-			//dCROSS ( tmp, = 0.5 * , c, q );
+			//dCalcVectorCross3 ( tmp, = 0.5 * , c, q );
 			dCalcVectorCross3 ( tmp, c, p );
-			//for (int k = 0; k < 3; k++) tmp.v[k] = tmp.v[k] * 0.5;
 			tmp.scale(0.5);
 
 			for ( i = 0; i < 3; i++ ) info._J[info.J1ap+s4+i] = tmp.get(i);

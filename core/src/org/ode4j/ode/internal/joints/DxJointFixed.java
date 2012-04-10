@@ -71,6 +71,13 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 
 
 	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = 6;
+	}
+
+
+	@Override
 	public void
 	getInfo1 ( Info1 info )
 	{

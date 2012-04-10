@@ -51,6 +51,11 @@ public class DxJointBall extends DxJoint implements DBallJoint
 		cfm = world.getCFM();
 	}
 
+	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = 3;
+	}
 
 	@Override
 	public void

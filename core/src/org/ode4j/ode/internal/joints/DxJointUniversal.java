@@ -292,6 +292,13 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 
 	@Override
+	void getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = 6;
+	}
+
+
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{

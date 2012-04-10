@@ -201,8 +201,8 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		else     // jds
 		{
 			// else if (j->node[0].body) {
-			// dMULTIPLY1_331 (j->reference1,j->node[0].body->posr.R,j->axis[2]);
-			// dMULTIPLY0_331 (j->reference2,j->node[0].body->posr.R,j->axis[0]);
+			// dMultiply1_331 (j->reference1,j->node[0].body->posr.R,j->axis[2]);
+			// dMultiply0_331 (j->reference2,j->node[0].body->posr.R,j->axis[0]);
 
 			// We want to handle angular motors attached to passive geoms
 			DVector3 r = new DVector3();  // axis[2] and axis[0] in global coordinates
@@ -221,15 +221,23 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		}
 	}
 
+	
+	@Override
+	void 
+	getSureMaxInfo( SureMaxInfo info )
+	{
+	    info.max_m = _num;
+	}
+
 
 	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
-		info.setM(0);
+		info.setM((byte)0);
 		info.setNub(0);
 
-		// compute the axes and angles, if in euler mode
+		// compute the axes and angles, if in Euler mode
 		if ( _mode == AMotorMode.dAMotorEuler )
 		{
 			DVector3[] ax = {new DVector3(), new DVector3(), new DVector3()};//new dVector3[3];
