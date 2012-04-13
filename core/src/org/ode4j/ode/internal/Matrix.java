@@ -178,7 +178,7 @@ public class Matrix extends FastDot {
 	 * @param q
 	 * @param r
 	 */
-	public static void dMultiply0(double[] A, final double[] B,
+	public static void dMultiply0_OLD(double[] A, final double[] B,
 			final double[] C, int p, int q, int r) {
 		int i, j, k, qskip, rskip, rpad;
 		// dAASSERT (A, B, C);
@@ -211,6 +211,29 @@ public class Matrix extends FastDot {
 			// bb += qskip;
 			bbPos += qskip;
 		}
+	}
+
+	public static void dMultiply0 (double[] A, final double[] B, final double[] C, int p, int q, int r)
+	{
+	  dAASSERT (p>0 && q>0 && r>0);
+	  final int qskip = dPAD(q);
+	  final int rskip = dPAD(r);
+	  int aa=0; //dReal *aa = A;
+	  int bb=0;//const dReal *bb = B;
+	  //TODO for (int i=p; i; aa+=rskip, bb+=qskip, --i) {
+	  for (int i=p; i!=0; aa+=rskip, bb+=qskip, --i) {
+	    int a = 0;//dReal *a = aa;
+	    int cc = 0, ccend = r;//const dReal *cc = C, *ccend = C + r;
+	    for (; cc != ccend; ++a, ++cc) {
+	      double sum = 0.0;//dReal sum = REAL(0.0);
+	      int c = cc;//final dReal *c = cc;
+	      int b = bb, bend = bb+q;//final dReal *b = bb, *bend = bb + q;
+	      for (; b != bend; c+=rskip, ++b) {
+	        sum += B[b]*C[c];//(*b)*(*c);
+	      }
+	      A[a] = sum;//(*a) = sum; 
+	    }
+	  }
 	}
 
 
@@ -247,19 +270,20 @@ public class Matrix extends FastDot {
 	public static void dMultiply1(DMatrix3 A, final DMatrix3C B,
 			final DMatrix3C C) {
 		// dMultiply1(A.v, ((DMatrix3)B).v, ((DMatrix3)C).v, 3, 3, 3);
-		int i, j, k;
-		double sum;
-		// dAASSERT (A , B, C);
-		for (i = 0; i < 3; i++) {
-			for (j = 0; j < 3; j++) {
-				sum = 0;
-				// for (k=0; k<q; k++) sum += B[i+k*pskip] * C[j+k*rskip];
-				for (k = 0; k < 3; k++)
-					sum += B.get(k, i) * C.get(k, j);
-				// A[i*rskip+j] = sum;
-				A.set(i, j, sum);
-			}
-		}
+        dMultiply0(A, B.clone().eqTranspose(), C);
+//		int i, j, k;
+//		double sum;
+//		// dAASSERT (A , B, C);
+//		for (i = 0; i < 3; i++) {
+//			for (j = 0; j < 3; j++) {
+//				sum = 0;
+//				// for (k=0; k<q; k++) sum += B[i+k*pskip] * C[j+k*rskip];
+//				for (k = 0; k < 3; k++)
+//					sum += B.get(k, i) * C.get(k, j);
+//				// A[i*rskip+j] = sum;
+//				A.set(i, j, sum);
+//			}
+//		}
 	}
 
 	/**
@@ -273,19 +297,23 @@ public class Matrix extends FastDot {
 	 */
 	public static void dMultiply1(double[] A, final double[] B,
 			final double[] C, int p, int q, int r) {
-		int i, j, k, pskip, rskip;
-		double sum;
 		// dAASSERT (A , B, C);
 		dAASSERT(p > 0 && q > 0 && r > 0);
-		pskip = dPAD(p);
-		rskip = dPAD(r);
-		for (i = 0; i < p; i++) {
-			for (j = 0; j < r; j++) {
-				sum = 0;
-				for (k = 0; k < q; k++)
-					sum += B[i + k * pskip] * C[j + k * rskip];
-				A[i * rskip + j] = sum;
-			}
+		final int pskip = dPAD(p);
+		final int rskip = dPAD(r);
+		int aa = 0;//dReal *aa = A;
+		int bb = 0, bbend = p;//const dReal *bb = B, *bbend = B + p;
+		for (; bb != bbend; aa += rskip, ++bb) {
+		    int a = aa;//dReal *a = aa;
+		    int cc = 0, ccend = r;//const dReal *cc = C, *ccend = C + r;
+		    for (; cc != ccend; ++a, ++cc) {
+		        double sum = 0.0;
+		        int b = bb, c = cc;//const dReal *b = bb, *c = cc;
+		        for (int k=q; k!=0; b+=pskip, c+=rskip, --k) {
+		            sum += B[b]*C[c];//(*b)*(*c);
+		        }
+		        A[a] = sum;//(*a) = sum;
+		    }
 		}
 	}
 
@@ -338,36 +366,54 @@ public class Matrix extends FastDot {
 	 */
 	public static void dMultiply2(double[] A, final double[] B,
 			final double[] C, int p, int q, int r) {
-		int i, j, k, z, rpad, qskip;
-		double sum;
-		// final double[] bb,cc;
-		// TZ:
-		int aPos = 0, bPos, cPos;
-		// dAASSERT (A, B , C);
-		dAASSERT(p > 0 && q > 0 && r > 0);
-		rpad = dPAD(r) - r;
-		qskip = dPAD(q);
-		// bb = B;
-		bPos = 0;
-		for (i = p; i > 0; i--) {
-			// cc = C;
-			cPos = 0;
-			for (j = r; j > 0; j--) {
-				z = 0;
-				sum = 0;
-				// for (k=q; k>0; k--,z++) sum += bb[z] * cc[z];
-				for (k = q; k > 0; k--, z++)
-					sum += B[bPos + z] * C[cPos + z];
-				// *(A++) = sum;
-				A[aPos++] = sum;
-				// cc += qskip;
-				cPos += qskip;
-			}
-			// A += rpad;
-			aPos += rpad;
-			// bb += qskip;
-			bPos += qskip;
-		}
+        dAASSERT(p > 0 && q > 0 && r > 0);
+	    final int rskip = dPAD(r);
+	    final int qskip = dPAD(q);
+	    int aa = 0;//dReal *aa = A;
+	    int bb = 0;//const dReal *bb = B;
+	    for (int i=p; i!=0; aa+=rskip, bb+=qskip, --i) {
+	      int a = aa, aend = r;//dReal *a = aa, *aend = aa + r;
+	      int cc = 0;//const dReal *cc = C;
+	      for (; a != aend; cc+=qskip, ++a) {
+	        double sum = 0.0;
+	        int b = bb, c = cc, cend = q;//const dReal *b = bb, *c = cc, *cend = cc + q;
+	        for (; c != cend; ++b, ++c) {
+	          sum += B[b]*C[c];//(*b)*(*c);
+	        }
+	        A[a] = sum;//(*a) = sum; 
+	      }
+	    }
+	    //TODO remove is from 0.11.1
+//		int i, j, k, z, rpad, qskip;
+//		double sum;
+//		// final double[] bb,cc;
+//		// TZ:
+//		int aPos = 0, bPos, cPos;
+//		// dAASSERT (A, B , C);
+//		dAASSERT(p > 0 && q > 0 && r > 0);
+//		rpad = dPAD(r) - r;
+//		qskip = dPAD(q);
+//		// bb = B;
+//		bPos = 0;
+//		for (i = p; i > 0; i--) {
+//			// cc = C;
+//			cPos = 0;
+//			for (j = r; j > 0; j--) {
+//				z = 0;
+//				sum = 0;
+//				// for (k=q; k>0; k--,z++) sum += bb[z] * cc[z];
+//				for (k = q; k > 0; k--, z++)
+//					sum += B[bPos + z] * C[cPos + z];
+//				// *(A++) = sum;
+//				A[aPos++] = sum;
+//				// cc += qskip;
+//				cPos += qskip;
+//			}
+//			// A += rpad;
+//			aPos += rpad;
+//			// bb += qskip;
+//			bPos += qskip;
+//		}
 	}
 
 	/**
@@ -838,7 +884,7 @@ public class Matrix extends FastDot {
 	// void dLDLTRemove (double [][]A, final int []p, double []L, double []d,
 	// int n1, int n2, int r, int nskip)
 	public static void dLDLTRemove(double[] A, final int[] p, double[] L,
-			double[] d, int n1, int n2, int r, int nskip) {
+			double[] d, int n1, int n2, int r, int nskip, Object[][] tmpbuf) {
 		int i;
 		// dAASSERT(A, p, L, d);
 		dAASSERT(n1 > 0 && n2 > 0 && r >= 0 && r < n2 && n1 >= n2
@@ -1458,5 +1504,45 @@ public class Matrix extends FastDot {
 	public static void dFactorLDLT(double[] A, double[] d, int n, int nskip1) {
 		D_LDLT.dFactorLDLT(A, d, n, nskip1);
 	}
+	
+	private static final int _dEstimateFactorCholeskyTmpbufSize(int n)
+	{
+	  return dPAD(n) * 8;//sizeof(dReal);
+	}
+
+	private static final int _dEstimateSolveCholeskyTmpbufSize(int n)
+	{
+	  return dPAD(n) * 8;//sizeof(dReal);
+	}
+
+	private static final int _dEstimateInvertPDMatrixTmpbufSize(int n)
+	{
+	  int FactorCholesky_size = _dEstimateFactorCholeskyTmpbufSize(n);
+	  int SolveCholesky_size = _dEstimateSolveCholeskyTmpbufSize(n);
+	  int MaxCholesky_size = FactorCholesky_size > SolveCholesky_size ? FactorCholesky_size : SolveCholesky_size;
+	  return dPAD(n) * (n + 1) * 8 /* sizeof(dReal) */ + MaxCholesky_size;
+	}
+
+	private static final int _dEstimateIsPositiveDefiniteTmpbufSize(int n)
+	{
+	  return dPAD(n) * n * 8 /* sizeof(dReal) */ + _dEstimateFactorCholeskyTmpbufSize(n);
+	}
+
+	private static final int _dEstimateLDLTAddTLTmpbufSize(int nskip)
+	{
+	  return nskip * 2 * 8 /* sizeof(dReal) */;
+	}
+
+	private static final int _dEstimateLDLTRemoveTmpbufSize(int n2, int nskip)
+	{
+	  return n2 * 8 /* sizeof(dReal) */ + _dEstimateLDLTAddTLTmpbufSize(nskip);
+	}
+
+	public static final int dEstimateFactorCholeskyTmpbufSize(int n) { return _dEstimateFactorCholeskyTmpbufSize(n); }
+	public static final int dEstimateSolveCholeskyTmpbufSize(int n) { return _dEstimateSolveCholeskyTmpbufSize(n); }
+	public static final int dEstimateInvertPDMatrixTmpbufSize(int n) { return _dEstimateInvertPDMatrixTmpbufSize(n); }
+	public static final int dEstimateIsPositiveDefiniteTmpbufSize(int n) { return _dEstimateIsPositiveDefiniteTmpbufSize(n); }
+	public static final int dEstimateLDLTAddTLTmpbufSize(int nskip) { return _dEstimateLDLTAddTLTmpbufSize(nskip); }
+	public static final int dEstimateLDLTRemoveTmpbufSize(int n2, int nskip) { return _dEstimateLDLTRemoveTmpbufSize(n2, nskip); }
 
 }

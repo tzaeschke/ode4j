@@ -24,17 +24,19 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-public class DxWorldProcessMemArena {
+import org.ode4j.ode.internal.DxWorldProcessMemArena.DxStateSave;
+
+public final class DxWorldProcessMemArena {
 
     public static class DxStateSave {
         
     }
     
-    public double[] AllocateArrayDReal(int size) {
+    public final double[] AllocateArrayDReal(int size) {
         return new double[size];
     }
 
-    public int[] AllocateArrayInt(int size) {
+    public final int[] AllocateArrayInt(int size) {
        return new int[size];
     }
 
@@ -43,18 +45,49 @@ public class DxWorldProcessMemArena {
         
     }
 
-    public void ShrinkArrayDJointWithInfo1(DxQuickStep.DJointWithInfo1[] jointiinfos,
+    public final void ShrinkArrayDJointWithInfo1(DxQuickStep.DJointWithInfo1[] jointiinfos,
             int _nj, int njXXX) {
         // TODO Auto-generated method stub
         
     }
 
-    public DxStateSave saveState() {
+    public final DxStateSave saveState() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public void restoreState(DxStateSave state) {
+    public final void restoreState(DxStateSave state) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public final double[][] AllocateArrayDRealDReal(int n) {
+        return new double[n][];
+    }
+
+    public final boolean[] AllocateArrayBool(int n) {
+        return new boolean[n];
+    }
+
+    public DxStateSave BEGIN_STATE_SAVE() {
+        return saveState();
+    }
+
+    public void END_STATE_SAVE(DxStateSave saveInner) {
+        restoreState(saveInner);
+    }
+
+    public Object[][] PeekBufferRemainder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static DxWorldProcessMemArena allocateTemporary(int memreq,
+            Object object, Object object2) {
+        return new DxWorldProcessMemArena();
+    }
+
+    public static void freeTemporary(DxWorldProcessMemArena arena) {
         // TODO Auto-generated method stub
         
     }
