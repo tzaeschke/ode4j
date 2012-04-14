@@ -24,14 +24,16 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.cpp4j.Cstring.memcpy;
+import static org.cpp4j.Cstring.memmove;
+
 import java.util.Arrays;
 
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-
-import static org.cpp4j.Cstdio.*;
+import org.ode4j.ode.internal.DxUtil.BlockPointer;
 
 public class Matrix extends FastDot {
 
@@ -422,46 +424,83 @@ public class Matrix extends FastDot {
 	 * triangle will be such that L*L'=A. return 1 on success and 0 on failure
 	 * (on failure the matrix is not positive definite).
 	 */
-	public static boolean dFactorCholesky(double[] A, int n) {
-		int i, j, k, nskip;
-		double sum;
-		// double[] a,b,aa,bb;
-		int aPos, bPos, aaPos, bbPos;
-		// double[] cc;
-		int ccPos = 0; // TZ
-		double[] recip;
-		dAASSERT(n > 0);
-		// dAASSERT(A);
-		nskip = dPAD(n);
-		recip = new double[n]; // TZ (double*) ALLOCA (n * sizeof(double));
-		// TZaa = A;
-		aaPos = 0;
-		for (i = 0; i < n; i++) {
-			bbPos = 0;// bb = A;
-			ccPos = i * nskip;// cc = A + i*nskip;
-			for (j = 0; j < i; j++) {
-				sum = A[ccPos]; // TZsum = *cc;
-				aPos = aaPos;// a = aa;
-				bPos = bbPos;// b = bb;
-				// for (k=j; k > 0; k--) sum -= (*(a++))*(*(b++));
-				for (k = j; k > 0; k--)
-					sum -= (A[aPos++]) * (A[bPos++]);
-				A[ccPos] = sum * recip[j];// *cc = sum * recip[j];
-				bbPos += nskip;// bb += nskip;
-				ccPos++;// cc++;
-			}
-			sum = A[ccPos];// sum = *cc;
-			aPos = aaPos;// a = aa;
-			// for (k=i; k > 0; k--, a++) sum -= (*a)*(*a);
-			for (k = i; k > 0; k--, aPos++)
-				sum -= A[aPos] * A[aPos];
-			if (sum <= 0.0)
-				return false;
-			A[ccPos] = dSqrt(sum);// *cc = COM.dSqrt(sum);
-			recip[i] = dRecip(A[ccPos]);// recip[i] = COM.dRecip (*cc);
-			aaPos += nskip;// aa += nskip;
-		}
-		return true;
+	public static boolean dFactorCholesky(double[] A, int n, double[] tmpbuf) {
+	    //dAASSERT (n > 0 && A);
+	    boolean failure = false;
+	    final int nskip = dPAD (n);
+	    //dReal *recip = tmpbuf ? (dReal *)tmpbuf : (dReal*) ALLOCA (n * sizeof(dReal));
+	    double[] recip = tmpbuf!=null ? tmpbuf : new double[n];
+	    int aa = 0;//dReal *aa = A;
+	    for (int i=0; i<n; aa+=nskip, ++i) {
+	        int cc = aa;//dReal *cc = aa;
+	        {
+	            int bb = 0;//const dReal *bb = A;
+	            for (int j=0; j<i; bb+=nskip, ++cc, ++j) {
+	                double sum = A[cc];//dReal sum = *cc;
+	                int a = aa, b = bb, bend = bb + j;//const dReal *a = aa, *b = bb, *bend = bb + j;
+	                for (; b != bend; ++a, ++b) {
+	                    sum -= A[a]*A[b];//(*a)*(*b);
+	                }
+	                A[cc] = sum*recip[j];//*cc = sum * recip[j];
+	            }
+	        }
+	        {
+	            double sum = A[cc];//dReal sum = *cc;
+	            int a = aa, aend = aa+i;//dReal *a = aa, *aend = aa + i;
+	            for (; a != aend; ++a) {
+	                sum -= A[a]*A[a];//(*a)*(*a);
+	            }
+	            if (sum <= 0.0) {
+	                failure = true;
+	                break;
+	            }
+	            double sumsqrt = dSqrt(sum);
+	            A[cc] = sumsqrt;
+	            recip[i] = dRecip (sumsqrt);
+	        }
+	    }
+	    return !failure;//failure ? 0 : 1;
+
+	    //TODO rmeove, is from 0.11.1
+//	    int i, j, k, nskip;
+//		double sum;
+//		// double[] a,b,aa,bb;
+//		int aPos, bPos, aaPos, bbPos;
+//		// double[] cc;
+//		int ccPos = 0; // TZ
+//		double[] recip;
+//		dAASSERT(n > 0);
+//		// dAASSERT(A);
+//		nskip = dPAD(n);
+//		recip = new double[n]; // TZ (double*) ALLOCA (n * sizeof(double));
+//		// TZaa = A;
+//		aaPos = 0;
+//		for (i = 0; i < n; i++) {
+//			bbPos = 0;// bb = A;
+//			ccPos = i * nskip;// cc = A + i*nskip;
+//			for (j = 0; j < i; j++) {
+//				sum = A[ccPos]; // TZsum = *cc;
+//				aPos = aaPos;// a = aa;
+//				bPos = bbPos;// b = bb;
+//				// for (k=j; k > 0; k--) sum -= (*(a++))*(*(b++));
+//				for (k = j; k > 0; k--)
+//					sum -= (A[aPos++]) * (A[bPos++]);
+//				A[ccPos] = sum * recip[j];// *cc = sum * recip[j];
+//				bbPos += nskip;// bb += nskip;
+//				ccPos++;// cc++;
+//			}
+//			sum = A[ccPos];// sum = *cc;
+//			aPos = aaPos;// a = aa;
+//			// for (k=i; k > 0; k--, a++) sum -= (*a)*(*a);
+//			for (k = i; k > 0; k--, aPos++)
+//				sum -= A[aPos] * A[aPos];
+//			if (sum <= 0.0)
+//				return false;
+//			A[ccPos] = dSqrt(sum);// *cc = COM.dSqrt(sum);
+//			recip[i] = dRecip(A[ccPos]);// recip[i] = COM.dRecip (*cc);
+//			aaPos += nskip;// aa += nskip;
+//		}
+//		return true;
 	}
 
 	/**
@@ -472,7 +511,50 @@ public class Matrix extends FastDot {
 	 */
 	public static boolean dFactorCholesky (DMatrix3 A)
 	{
-		double sum, recip0, recip1;
+	    //port from 0.12
+//        //dAASSERT (n > 0 && A);
+//        double recip0;
+//        double recip1;
+//        double sum, sumsqrt;
+//
+//        //round 1
+//        sum = A.get00();//[cc];//dReal sum = *cc;
+//        if (sum <= 0.0) {
+//            return false;
+//        }
+//        sumsqrt = dSqrt(sum);
+//        A.set00( sumsqrt );
+//        recip0 = dRecip (sumsqrt);
+//
+//        //round 2
+//        sum = A.get11() - A.get10()*A.get10();//[a]*A[a];//(*a)*(*a);
+//        if (sum <= 0.0) {
+//            return false;
+//        }
+//        sumsqrt = dSqrt(sum);
+//        A.set11( sumsqrt );
+//        recip1 = dRecip (sumsqrt);
+//
+//        //round 3
+//        sum = A.get20();//dReal sum = *cc;
+//        A.set20( sum*recip0 );//*cc = sum * recip[j];
+//
+//        sum = A.get21() - A.get20()*A.get10();//[a]*A[b];//(*a)*(*b);
+//        A.set21( sum*recip1 );//*cc = sum * recip[j];
+//
+//        sum = A.get22() - A.get20()*A.get20() - A.get21()*A.get21();
+//        if (sum <= 0.0) {
+//            return false;
+//        }
+//        sumsqrt = dSqrt(sum);
+//        A.set22( sumsqrt );
+//        return true;
+
+	    
+	    
+	    
+	    
+	    double sum, recip0, recip1;
 		//********************
 		//i=0; aaPos = 0; bbPos = 0; ccPos = 0
 		sum = A.get00();
@@ -498,98 +580,32 @@ public class Matrix extends FastDot {
 	}
 
 
-	public static boolean dFactorCholesky2(double[] A, int n) {
-		System.out.println("CholeskyTZ: " + n + " " + Arrays.toString(A));
-		// int i,j,k,nskip;
-		// double sum;
-		// //double[] a,b,aa,bb;
-		// int aPos,bPos,aaPos,bbPos;
-		// //double[] cc;
-		// int ccPos = 0; //TZ
-		// double[] recip;
-		// dAASSERT (n > 0);
-		// dAASSERT(A);
-		// nskip = dPAD (n);
-		// recip = new double[n]; //TZ (double*) ALLOCA (n * sizeof(double));
-		// //TZaa = A;
-		// aaPos = 0;
-		// for (i=0; i<n; i++) {
-		// bbPos = 0;//bb = A;
-		// ccPos = i*nskip;//cc = A + i*nskip;
-		// for (j=0; j<i; j++) {
-		// sum = A[ccPos]; //TZsum = *cc;
-		// aPos = aaPos;//a = aa;
-		// bPos = bbPos;//b = bb;
-		// //for (k=j; k > 0; k--) sum -= (*(a++))*(*(b++));
-		// for (k=j; k > 0; k--) sum -= (A[aPos++])*(A[bPos++]);
-		// A[ccPos] = sum * recip[j];//*cc = sum * recip[j];
-		// bbPos += nskip;//bb += nskip;
-		// ccPos++;//cc++;
-		// }
-		// sum = A[ccPos];//sum = *cc;
-		// aPos = aaPos;//a = aa;
-		// //for (k=i; k > 0; k--, a++) sum -= (*a)*(*a);
-		// for (k=i; k > 0; k--, aPos++) sum -= A[aPos]*A[aPos];
-		// if (sum <= 0.0) {
-		// System.out.println("SUM=" + sum);
-		// }
-		// if (sum <= 0.0) return false;
-		// A[ccPos] = dSqrt(sum);//*cc = COM.dSqrt(sum);
-		// recip[i] = dRecip(A[ccPos]);//recip[i] = COM.dRecip (*cc);
-		// aaPos += nskip;//aa += nskip;
-		// }
-		// return true;
-
-		int nskip = dPAD(n);
-		double sum = 0;
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < i - 1; j++) {
-				sum = A[i * nskip + j];// a(i, j);
-				for (int k = 0; k < j - 1; k++) {
-					sum -= A[i * nskip + k] * A[j * nskip + k];// a(i, k) * a(j,
-																// k)
-				}// Next k
-				A[i * nskip + j] = sum / A[j * nskip + j];// a(i, j) = Summe /
-															// a(j, j)
-			}// Next j
-			sum = A[i * nskip + i];// a(i, i)
-			for (int k = 0; k < i - 1; k++) {
-				sum -= A[i * nskip + k] * A[i * nskip + k];// a(i, k) * a(i, k)
-			} // Next k
-			if (sum <= 0) {
-				System.out.println("Sum=" + sum);
-				return false;// EXIT // A ist nicht positiv definit
-			} else {
-				// a(i, i) = Sqrt(Summe) // Summe ist positiv
-				A[i * nskip + i] = dSqrt(sum);
-			}
-		} // i
-		return true;
-	}
-
 	/**
 	 * solve for x: L*L'*x = b, and put the result back into x. L is size n*n, b
 	 * is size n*1. only the lower triangle of L is considered.
 	 */
-	public static void dSolveCholesky(final double[] L, double[] b, int n) {
-		int i, k, nskip;
-		double sum, y[];
+	public static void dSolveCholesky(final double[] L, double[] b, int n, double[] tmpbuf) {
+		int nskip = dPAD(n);
+		double[] y = (tmpbuf != null?tmpbuf : new double[n]);
 		dAASSERT(n > 0);
 		// dAASSERT(L, b);
-		nskip = dPAD(n);
-		y = new double[n]; // TZ (double*) ALLOCA (n*sizeof(double));
-		for (i = 0; i < n; i++) {
-			sum = 0;
-			for (k = 0; k < i; k++)
-				sum += L[i * nskip + k] * y[k];
-			y[i] = (b[i] - sum) / L[i * nskip + i];
+		int ll = 0;
+		for (int i = 0; i < n; ll+=nskip, ++i) {
+			double sum = 0;
+			for (int k = 0; k < i; ++k)
+				sum += L[ll + k] * y[k];
+			y[i] = (b[i] - sum) / L[ll + i];
 		}
-		for (i = n - 1; i >= 0; i--) {
-			sum = 0;
-			for (k = i + 1; k < n; k++)
-				sum += L[k * nskip + i] * b[k];
-			b[i] = (y[i] - sum) / L[i * nskip + i];
-		}
+	    ll = (n - 1) * (nskip + 1);
+	    for (int i=n-1; i>=0; ll-=nskip+1, --i) {
+	        double sum = 0.0;
+	        int l = ll + nskip;
+	        for (int k=i+1; k<n; l+=nskip, ++k) {
+	            sum += L[l]*b[k];
+	        }
+	        //dIASSERT(*ll != dReal(0.0));
+	        b[i] = (y[i]-sum)/L[ll];//(*ll);
+	    }
 	}
 
 	/**
@@ -669,9 +685,9 @@ public class Matrix extends FastDot {
 	 * Ainv. this is not especially fast. this returns 1 on success (A was
 	 * positive definite) or 0 on failure (not PD).
 	 */
-	public static boolean dInvertPDMatrix(final double[] A, double[] Ainv, int n) {
-		int i, j, nskip;
-		double[] L, x;
+	public static boolean dInvertPDMatrix(final double[] A, double[] Ainv, int n, double[] tmpbuf) {
+		int nskip;
+		double[] L, X;
 		dAASSERT(n > 0);
 		// dAASSERT(A, Ainv);
 		nskip = dPAD(n);
@@ -679,17 +695,19 @@ public class Matrix extends FastDot {
 									// (nskip*n*sizeof(double));
 		//memcpy(L, A, nskip * n);// *sizeof(double));
 		System.arraycopy(A, 0, L, 0, nskip * n);
-		x = new double[n]; // TZ (double*) ALLOCA (n*sizeof(double));
-		if (!dFactorCholesky(L, n))
+		X = new double[n]; // TZ (double*) ALLOCA (n*sizeof(double));
+		if (!dFactorCholesky(L, n, tmpbuf))
 			return false;
 		dSetZero(Ainv, n * nskip); // make sure all padding elements set to 0
-		for (i = 0; i < n; i++) {
-			for (j = 0; j < n; j++)
-				x[j] = 0;
-			x[i] = 1;
-			dSolveCholesky(L, x, n);
-			for (j = 0; j < n; j++)
-				Ainv[j * nskip + i] = x[j];
+		int aa = 0;
+		for (int xi = 0; xi < n; ++aa, xi++) {
+			for (int j = 0; j < n; j++)
+				X[j] = 0;
+			X[xi] = 1;
+			dSolveCholesky(L, X, n, tmpbuf);
+			int a = aa;
+			for (int x = 0; x < n; a += nskip, x++)
+				Ainv[a] = X[x];
 		}
 		return true;
 	}
@@ -700,15 +718,16 @@ public class Matrix extends FastDot {
 	 * cholesky decomposition of A. if the decomposition fails then the matrix
 	 * is not positive definite. A is stored by rows. A is not altered.
 	 */
-	public static boolean dIsPositiveDefinite(final double[] A, int n) {
+	public static boolean dIsPositiveDefinite(final double[] A, int n, double[] tmpbuf) {
 		double[] Acopy;
 		dAASSERT(n > 0);
 		int nskip = dPAD(n);
+		//TODO tmpbuf
 		Acopy = new double[nskip * n]; // TZ (double*) ALLOCA (nskip*n *
 										// sizeof(double));
 		//memcpy(Acopy, A, nskip * n);// * sizeof(double));
 		System.arraycopy(A, 0, Acopy, 0, nskip * n);
-		return dFactorCholesky(Acopy, n);// != false;
+		return dFactorCholesky(Acopy, n, tmpbuf);// != false;
 	}
 
 	/**
@@ -731,8 +750,9 @@ public class Matrix extends FastDot {
 	/** in matlab syntax: a(1:n) = a(1:n) .* d(1:n) */
 	private static void dVectorScale(double[] a, final double[] d, int n) {
 		// dAASSERT (a != null, d != null, n >= 0);
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++) {
 			a[i] *= d[i];
+		}
 	}
 
 	/**
@@ -764,7 +784,7 @@ public class Matrix extends FastDot {
 	 */
 	public static void dLDLTAddTL(double[] L, double[] d, final double[] a,
 			int n, int nskip) {
-		dLDLTAddTL(L, 0, d, 0, a, n, nskip);
+		dLDLTAddTL(L, 0, d, 0, a, n, nskip, null);
 	}
 
 	/**
@@ -780,72 +800,79 @@ public class Matrix extends FastDot {
 	 * and d[0] are not actually modified. see ldltaddTL.m for further comments.
 	 */
 	public static void dLDLTAddTL(double[] L, int lOfs, double[] d, int dOfs,
-			final double[] a, int n, int nskip) {
-		int j, p;
-		double[] W1, W2;
-		double W11, W21, alpha1, alpha2, alphanew, gamma1, gamma2, k1, k2, Wp, ell, dee;
+			final double[] a, int n, int nskip, double[]tmpbuf) {
 		// dAASSERT (L, d, a);
 		dAASSERT(n > 0 && nskip >= n);
 
 		if (n < 2)
 			return;
-		W1 = new double[n]; // (double*) ALLOCA (n*sizeof(double));
-		W2 = new double[n]; // (double*) ALLOCA (n*sizeof(double));
+		//TODO tmpbuf
+		double[] W1 = new double[n]; // (double*) ALLOCA (n*sizeof(double));
+		double[] W2 = new double[n]; // (double*) ALLOCA (n*sizeof(double));
 
 		W1[0] = 0;
 		W2[0] = 0;
-		for (j = 1; j < n; j++)
-			W1[j] = W2[j] = (double) (a[j] * M_SQRT1_2);
-		W11 = (double) ((0.5 * a[0] + 1) * M_SQRT1_2);
-		W21 = (double) ((0.5 * a[0] - 1) * M_SQRT1_2);
+		for (int j = 1; j < n; j++)
+			W1[j] = W2[j] = (a[j] * M_SQRT1_2);
+		double W11 = ((0.5 * a[0] + 1) * M_SQRT1_2);
+		double W21 = ((0.5 * a[0] - 1) * M_SQRT1_2);
 
-		alpha1 = 1;
-		alpha2 = 1;
+		double alpha1 = 1;
+		double alpha2 = 1;
 
-		dee = d[dOfs + 0];
-		alphanew = alpha1 + (W11 * W11) * dee;
-		dee /= alphanew;
-		gamma1 = W11 * dee;
-		dee *= alpha1;
-		alpha1 = alphanew;
-		alphanew = alpha2 - (W21 * W21) * dee;
-		dee /= alphanew;
-		gamma2 = W21 * dee;
-		alpha2 = alphanew;
-		k1 = 1.0 - W21 * gamma1;
-		k2 = W21 * gamma1 * W11 - W21;
-		for (p = 1; p < n; p++) {
-			Wp = W1[p];
-			ell = L[lOfs + p * nskip];
-			W1[p] = Wp - W11 * ell;
-			W2[p] = k1 * Wp + k2 * ell;
+		{
+		    double dee = d[dOfs + 0];
+		    double alphanew = alpha1 + (W11 * W11) * dee;
+		    //dIASSERT(alphanew != dReal(0.0));
+		    dee /= alphanew;
+		    double gamma1 = W11 * dee;
+		    dee *= alpha1;
+		    alpha1 = alphanew;
+		    alphanew = alpha2 - (W21 * W21) * dee;
+		    dee /= alphanew;
+		    //gamma2 = W21 * dee;
+		    alpha2 = alphanew;
+		    double k1 = 1.0 - W21 * gamma1;
+		    double k2 = W21 * gamma1 * W11 - W21;
+		    int ll = nskip + lOfs;
+		    for (int p = 1; p < n; ll+=nskip, p++) {
+		        double Wp = W1[p];
+		        double ell = L[ll];//Ofs + p * nskip];
+		        W1[p] = Wp - W11 * ell;
+		        W2[p] = k1 * Wp + k2 * ell;
+		    }
 		}
 
-		for (j = 1; j < n; j++) {
-			dee = d[dOfs + j];
-			alphanew = alpha1 + (W1[j] * W1[j]) * dee;
+		int ll = lOfs + nskip + 1;
+		for (int j = 1; j < n; ll+=nskip+1, j++) {
+            double k1 = W1[j];
+            double k2 = W2[j];
+			double dee = d[dOfs + j];
+			double alphanew = alpha1 + (k1*k1) * dee;
+			//dIASSERT(alphanew != dReal(0.0));
 			dee /= alphanew;
-			gamma1 = W1[j] * dee;
+			double gamma1 =k1 * dee;
 			dee *= alpha1;
 			alpha1 = alphanew;
-			alphanew = alpha2 - (W2[j] * W2[j]) * dee;
+			alphanew = alpha2 - (k2*k2) * dee;
 			dee /= alphanew;
-			gamma2 = W2[j] * dee;
+			double gamma2 = k2 * dee;
 			dee *= alpha2;
 			d[dOfs + j] = dee;
 			alpha2 = alphanew;
 
-			k1 = W1[j];
-			k2 = W2[j];
-			for (p = j + 1; p < n; p++) {
-				ell = L[lOfs + p * nskip + j];
-				Wp = W1[p] - k1 * ell;
+			int l = ll + nskip;
+			for (int p = j + 1; p < n; l+=nskip, p++) {
+			    //TODO this part has changed in 0.12 .....
+				double ell = L[l];//lOfs + p * nskip + j];
+				double Wp = W1[p] - k1 * ell;
 				ell += gamma1 * Wp;
 				W1[p] = Wp;
 				Wp = W2[p] - k2 * ell;
 				ell -= gamma2 * Wp;
 				W2[p] = Wp;
-				L[lOfs + p * nskip + j] = ell;
+				//L[lOfs + p * nskip + j] = ell;
+				L[l] = ell;
 			}
 		}
 	}
@@ -884,40 +911,64 @@ public class Matrix extends FastDot {
 	// void dLDLTRemove (double [][]A, final int []p, double []L, double []d,
 	// int n1, int n2, int r, int nskip)
 	public static void dLDLTRemove(double[] A, final int[] p, double[] L,
-			double[] d, int n1, int n2, int r, int nskip, Object[][] tmpbuf) {
-		int i;
+			double[] d, int n1, int n2, int r, int nskip, BlockPointer tmpbuf) {
 		// dAASSERT(A, p, L, d);
 		dAASSERT(n1 > 0 && n2 > 0 && r >= 0 && r < n2 && n1 >= n2
 				&& nskip >= n1);
 		if (!dNODEBUG) {// #ifndef dNODEBUG
-			for (i = 0; i < n2; i++)
+			for (int i = 0; i < n2; i++)
 				dIASSERT(p[i] >= 0 && p[i] < n1);
 		}// #endif
 
 		if (r == n2 - 1) {
 			return; // deleting last row/col is easy
-		} else if (r == 0) {
-			double[] a = new double[n2]; // TZ (double*) ALLOCA (n2 *
-											// sizeof(double));
-			for (i = 0; i < n2; i++)
-				a[i] = -GETA(A, p[i], p[0], nskip);
-			a[0] += 1.0;
-			dLDLTAddTL(L, d, a, n2, nskip);
 		} else {
-			double[] t = new double[r]; // TZ (double*) ALLOCA (r *
-										// sizeof(double));
-			double[] a = new double[n2 - r]; // TZ (double*) ALLOCA ((n2-r) *
-												// sizeof(double));
-			for (i = 0; i < r; i++)
-				t[i] = L[r * nskip + i] / d[i];
-			for (i = 0; i < (n2 - r); i++)
-				// a[i] = O_M.dDot(L+(r+i)*nskip,t,r) - GETA(A, p[r+i],p[r]);
-				a[i] = FastDot.dDot(L, (r + i) * nskip, t, 0, r)
-						- GETA(A, p[r + i], p[r], nskip);
-			a[0] += 1.0;
-			// dLDLTAddTL (L + r*nskip+r, d + r, a, n2-r, nskip);
-			dLDLTAddTL(L, r * nskip + r, d, r, a, n2 - r, nskip);
+		//TODO use tmpbuf?
+//		    int LDLTAddTL_size = _dEstimateLDLTAddTLTmpbufSize(nskip);
+//		    dIASSERT(LDLTAddTL_size % 8 /*sizeof(dReal)*/ == 0);
+//		    double[] tmp = tmpbuf!=null ? tmpbuf : new double[LDLTAddTL_size + n2];
+		    if (r == 0) {
+		        double[] a = new double[n2]; // TZ (double*) ALLOCA (n2 *
+		        // sizeof(double));
+		        final int p_0 = p[0];
+		        for (int i = 0; i < n2; i++)
+		            a[i] = -GETA(A, p[i], p_0, nskip);
+		        a[0] += 1.0;
+		        dLDLTAddTL(L, d, a, n2, nskip);
+		    } else {
+		        double[] t = new double[r]; // TZ (double*) ALLOCA (r * sizeof(double));
+		        {
+		            int Lcurr = r*nskip;
+		            for (int i=0; i<r; ++Lcurr, ++i) {
+		                dIASSERT(d[i] != 0.0);
+		                t[i] = L[Lcurr] / d[i];
+		            }
+		        }
+		        double[] a = new double[n2 - r]; //dReal *a = t + r;
+		        {
+		            int Lcurr = r*nskip;//dReal *Lcurr = L + r*nskip;
+		            //const int *pp_r = p + r, p_r = *pp_r;
+		            int pp_rP = r, p_rP = r; 
+		            final int n2_minus_r = n2-r;
+		            for (int i=0; i<n2_minus_r; Lcurr+=nskip,++i) {
+		                a[i] = dDot(L, Lcurr,t, 0,r) - GETA(A, p[pp_rP+i],p[p_rP], nskip);
+		            }
+		        }
+		        a[0] += (1.0);
+		        dLDLTAddTL (L,r*nskip+r, d,r, a, n2-r, nskip, null);
+		    }
 		}
+//		        double[] a = new double[n2 - r]; // TZ (double*) ALLOCA ((n2-r) * sizeof(double));
+//		        for (int i = 0; i < r; i++)
+//		            t[i] = L[r * nskip + i] / d[i];
+//		        for (int i = 0; i < (n2 - r); i++)
+//		            // a[i] = O_M.dDot(L+(r+i)*nskip,t,r) - GETA(A, p[r+i],p[r]);
+//		            a[i] = FastDot.dDot(L, (r + i) * nskip, t, 0, r)
+//		            - GETA(A, p[r + i], p[r], nskip);
+//		        a[0] += 1.0;
+//		        // dLDLTAddTL (L + r*nskip+r, d + r, a, n2-r, nskip);
+//		        dLDLTAddTL(L, r * nskip + r, d, r, a, n2 - r, nskip, null);
+//		    }
 
 		// snip out row/column r from L and d
 		dRemoveRowCol(L, n2, nskip, r);
@@ -931,18 +982,46 @@ public class Matrix extends FastDot {
 	 * dimension. the last row and column of A are untouched on exit.
 	 */
 	public static void dRemoveRowCol(double[] A, int n, int nskip, int r) {
-		int i;
 		dAASSERT((A != null) && n > 0 && nskip >= n && r >= 0 && r < n);
 		if (r >= n - 1)
-			return;
+		    return;
 		if (r > 0) {
-			for (i = 0; i < r; i++)
-				memmove(A, i * nskip + r, A, i * nskip + r + 1, (n - r - 1));// *sizeof(double));
-			for (i = r; i < (n - 1); i++)
-				memcpy(A, i * nskip, A, i * nskip + nskip, r);// *sizeof(double));
+		    {
+		        final int move_size = (n-r-1);//*sizeof(dReal);
+		        int Adst = r;//dReal *Adst = A + r;
+		        for (int i=0; i<r; Adst+=nskip,++i) {
+		            int Asrc = Adst + 1;//dReal *Asrc = Adst + 1;
+		            memmove (A,Adst,A,Asrc,move_size);
+		        }
+		    }
+		    {
+		        final int cpy_size = r;//*sizeof(dReal);
+		        int Adst = r*nskip;//dReal *Adst = A + r * nskip;
+		        for (int i=r; i<(n-1); ++i) {
+		            int Asrc = Adst + nskip;//dReal *Asrc = Adst + nskip;
+		            memcpy (A,Adst,A,Asrc,cpy_size);
+		            Adst = Asrc;
+		        }
+		    }
 		}
-		for (i = r; i < (n - 1); i++)
-			memcpy(A, i * nskip + r, A, i * nskip + nskip + r + 1, (n - r - 1));// *sizeof(double));
+		{
+		    final int cpy_size = (n-r-1);//*sizeof(dReal);
+		    int Adst = r * (nskip+1);//dReal *Adst = A + r * (nskip + 1);
+		    for (int i=r; i<(n-1); ++i) {
+		        int Asrc = Adst + (nskip + 1);//dReal *Asrc = Adst + (nskip + 1);
+		        memcpy (A,Adst,A,Asrc,cpy_size);
+		        Adst = Asrc - 1;
+		    }
+		}
+		//TODO remove, is from 0.11.1
+//		if (r > 0) {
+//		    for (i = 0; i < r; i++)
+//		        memmove(A, i * nskip + r, A, i * nskip + r + 1, (n - r - 1));// *sizeof(double));
+//		    for (i = r; i < (n - 1); i++)
+//		        memcpy(A, i * nskip, A, i * nskip + nskip, r);// *sizeof(double));
+//		}
+//		for (i = r; i < (n - 1); i++)
+//		    memcpy(A, i * nskip + r, A, i * nskip + nskip + r + 1, (n - r - 1));// *sizeof(double));
 	}
 
 	/**

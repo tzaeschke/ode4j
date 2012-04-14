@@ -28,6 +28,8 @@ import org.cpp4j.java.Ref;
 
 import static org.ode4j.ode.OdeMath.*;
 
+import org.ode4j.ode.internal.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
+import org.ode4j.ode.internal.DxWorldProcessMemArena.DxStateSave;
 import org.ode4j.ode.internal.Objects_H.dxAutoDisable;
 import org.ode4j.ode.internal.Objects_H.dxContactParameters;
 import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
@@ -51,9 +53,11 @@ public class DxWorld extends DBase implements DWorld {
 	public int nj;
 	DVector3 gravity;		// gravity vector (m/s/s)
 	private double global_erp;		// global error reduction parameter
-	double global_cfm;		// global costraint force mixing parameter
+	double global_cfm;		// global constraint force mixing parameter
 	dxAutoDisable adis;		// auto-disable parameters
 	int body_flags;               // flags for new bodies
+	private DxStepWorkingMemory wmem; // Working memory object for dWorldStep/dWorldQuickStep
+
 	dxQuickStepParameters qs;
 	public dxContactParameters contactp;
 	dxDampingParameters dampingp; // damping parameters
@@ -90,6 +94,8 @@ public class DxWorld extends DBase implements DWorld {
 		//	#endif
 
 		w.body_flags = 0; // everything disabled
+		
+		w.wmem = null;
 
 		w.adis = new dxAutoDisable();
 		w.adis.idle_steps = 10;
@@ -124,17 +130,6 @@ public class DxWorld extends DBase implements DWorld {
 		DxBody nextb, b = firstbody.get();
 		while (b != null) {
 			nextb = (DxBody) b.getNext();
-			// TODO: remove those 2 ifs
-			if(b.average_lvel_buffer != null)
-			{
-//TZ				delete[] (b.average_lvel_buffer);
-				b.average_lvel_buffer = null;
-			}
-			if(b.average_avel_buffer != null)
-			{
-//TZ				delete[] (b.average_avel_buffer);
-				b.average_avel_buffer = null;
-			}
 			b.dBodyDestroy(); // calling here dBodyDestroy for correct destroying! (i.e. the average buffers)
 			b = nextb;
 		}
@@ -151,12 +146,18 @@ public class DxWorld extends DBase implements DWorld {
 				dMessage (0,"warning: destroying world containing grouped joints");
 			}
 			else {
+		        // TODO: shouldn't we call dJointDestroy()?
 				//TZ size_t sz = j.size();
 				j.DESTRUCTOR();
 				//TZ dFree (j,sz);
 			}
 			j = nextj;
 		}
+
+		if (wmem!=null) {
+		    wmem.Release();
+		}
+
 //		delete w;
 		DESTRUCTOR();
 	}
@@ -210,37 +211,212 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
-//	void dWorldStep (dxWorld w, double stepsize)
-	public void dWorldStep (double stepsize)
+	//TODO remove this, it's from 0.11.1
+////	void dWorldStep (dxWorld w, double stepsize)
+//	public void dWorldStep (double stepsize)
+//	{
+//		//dUASSERT (w,"bad world argument");
+//		dUASSERT (stepsize > 0,"stepsize must be > 0");
+//		dxProcessIslands (stepsize,Step.INSTANCE);//&dInternalStepIsland);
+//	}
+//
+//
+//	//	public void dWorldQuickStep (dxWorld w, double stepsize)
+//	boolean dWorldQuickStep (double stepsize)
+//	{
+//		//	  dUASSERT (w,"bad world argument");
+//		dUASSERT (stepsize > 0,"stepsize must be > 0");
+//
+//		boolean result = false;
+//		//TODO
+////		  dxWorldProcessIslandsInfo islandsinfo;
+////		  if (dxReallocateWorldProcessContext (w, islandsinfo, stepsize, &dxEstimateQuickStepMemoryRequirements))
+////		  {
+//        //TODO
+//		dxProcessIslands (stepsize,DxQuickStep.INSTANCE);//dxQuickStepper);
+//		result = true;
+//        //TODO
+//	//}
+//		//dxCleanupWorldProcessContext (w);
+//        //TODO
+//		return result;
+//	}
+
+
+	boolean dWorldUseSharedWorkingMemory(DxWorld from_world)
 	{
-		//dUASSERT (w,"bad world argument");
-		dUASSERT (stepsize > 0,"stepsize must be > 0");
-		dxProcessIslands (stepsize,Step.INSTANCE);//&dInternalStepIsland);
+	    boolean result = false;
+
+	    if (from_world!=null)
+	    {
+	        dUASSERT (this.wmem==null, "world does already have working memory allocated"); // Prevent replacement of one memory object with another to avoid cases when smaller buffer replaces a larger one or memory manager changes.
+
+	        //(TZ)DxStepWorkingMemory wmem = AllocateOnDemand(from_world.wmem);
+	        if (from_world.wmem == null) {
+	            from_world.wmem = new DxStepWorkingMemory();
+	        }
+            DxStepWorkingMemory wmem = this.wmem;
+
+	        if (wmem!=null)
+	        {
+	            // Even though there is an assertion check on entry still release existing
+	            // memory object for extra safety.
+	            if (this.wmem!=null)
+	            {
+	                this.wmem.Release();
+	                this.wmem = null;
+	            }
+
+	            wmem.Addref();
+	            this.wmem = wmem;
+
+	            result = true;
+	        }
+	    }
+	    else
+	    {
+	        DxStepWorkingMemory wmem = this.wmem;
+
+	        if (wmem != null)
+	        {
+	            wmem.Release();
+	            this.wmem = null;
+	        }
+
+	        result = true;
+	    }
+
+	    return result;
+	}
+
+	void dWorldCleanupWorkingMemory()
+	{
+	    if (wmem!=null)
+	    {
+	        wmem.CleanupMemory();
+	    }
+	}
+
+	boolean dWorldSetStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo)
+	{
+	    dUASSERT (policyinfo==null || (policyinfo.struct_size >= DxUtil.sizeof(policyinfo) && policyinfo.reserve_factor >= 1.0f), "Bad policy info");
+
+	    boolean result = false;
+
+	    //(TZ) DxStepWorkingMemory wmem = policyinfo!=null ? AllocateOnDemand(this.wmem) : this.wmem;
+        DxStepWorkingMemory wmem;
+        if (policyinfo!=null) {
+            if (this.wmem == null) {
+                this.wmem = new DxStepWorkingMemory();
+            }
+            wmem = this.wmem;
+        } else {
+            wmem = this.wmem;
+        }
+
+	    if (wmem!=null)
+	    {
+	        if (policyinfo!=null)
+	        {
+	            wmem.SetMemoryReserveInfo(policyinfo.reserve_factor, policyinfo.reserve_minimum);
+	            result = wmem.GetMemoryReserveInfo() != null;
+	        }
+	        else
+	        {
+	            wmem.ResetMemoryReserveInfoToDefault();
+	            result = true;
+	        }
+	    }
+	    else if (policyinfo==null)
+	    {
+	        result = true;
+	    }
+
+	    return result;
+	}
+
+	boolean dWorldSetStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs)
+	{
+	    dUASSERT (memfuncs==null || memfuncs.struct_size >= DxUtil.sizeof(memfuncs), "Bad functions info");
+
+	    boolean result = false;
+
+	    //(TZ) DxStepWorkingMemory wmem = memfuncs!=null ? AllocateOnDemand(this.wmem) : this.wmem;
+	    DxStepWorkingMemory wmem;
+	    if (memfuncs!=null) {
+	        if (this.wmem == null) {
+	            this.wmem = new DxStepWorkingMemory();
+	        }
+	        wmem = this.wmem;
+	    } else {
+	        wmem = this.wmem;
+	    }
+
+	    
+	    if (wmem!=null)
+	    {
+	        if (memfuncs!=null)
+	        {
+	            wmem.SetMemoryManager(memfuncs.alloc_block, memfuncs.shrink_block, memfuncs.free_block);
+	            result = wmem.GetMemoryManager() != null;
+	        }
+	        else
+	        {
+	            wmem.ResetMemoryManagerToDefault();
+	            result = true;
+	        }
+	    }
+	    else if (memfuncs==null)
+	    {
+	        result = true;
+	    }
+
+	    return result;
 	}
 
 
-	//	public void dWorldQuickStep (dxWorld w, double stepsize)
+	boolean dWorldStep (double stepsize)
+	{
+	    dUASSERT (stepsize > 0,"stepsize must be > 0");
+
+	    boolean result = false;
+
+	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
+        //TODO fix context stuff
+//	    if (dxReallocateWorldProcessContext (this, islandsinfo, stepsize, dxEstimateStepMemoryRequirements))
+	    {
+	        dxProcessIslands (islandsinfo, stepsize, Step.INSTANCE);//dInternalStepIsland);
+
+	        result = true;
+	    }
+
+	    dxCleanupWorldProcessContext ();
+
+	    return result;
+	}
+
 	boolean dWorldQuickStep (double stepsize)
 	{
-		//	  dUASSERT (w,"bad world argument");
-		dUASSERT (stepsize > 0,"stepsize must be > 0");
+	    dUASSERT (stepsize > 0,"stepsize must be > 0");
 
-		boolean result = false;
-		//TODO
-//		  dxWorldProcessIslandsInfo islandsinfo;
-//		  if (dxReallocateWorldProcessContext (w, islandsinfo, stepsize, &dxEstimateQuickStepMemoryRequirements))
-//		  {
-        //TODO
-		dxProcessIslands (stepsize,DxQuickStep.INSTANCE);//dxQuickStepper);
-		result = true;
-        //TODO
-	//}
-		//dxCleanupWorldProcessContext (w);
-        //TODO
-		return result;
+	    boolean result = false;
+
+	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
+	    //TODO fix context stuff
+	    if (dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
+	            DxQuickStep.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
+	    {
+	        dxProcessIslands (islandsinfo, stepsize, DxQuickStep.INSTANCE);
+
+	        result = true;
+	    }
+
+	    dxCleanupWorldProcessContext ();
+
+	    return result;
 	}
 
-
+	
 	private void dWorldImpulseToForce (double stepsize,
 			double ix, double iy, double iz,
 			DVector3 force)
@@ -474,10 +650,119 @@ public class DxWorld extends DBase implements DWorld {
 			//	        dxJoint * const *_joint, int nj, dReal stepsize);
 	public interface dstepper_fn_t {
 		public void run(DxWorldProcessMemArena memarena, 
-		        DxWorld world, DxBody[]body, int nb,
-				DxJoint []_joint, int nj, double stepsize);
+		        DxWorld world, DxBody[]body, int bodyOfs, int nb,
+				DxJoint []_joint, int jointOfs, int nj, double stepsize);
 	}
 
+//	      bool dxReallocateWorldProcessContext (dxWorld *world, dxWorldProcessIslandsInfo &islandsinfo, 
+//	        dReal stepsize, dmemestimate_fn_t stepperestimate);
+//	      void dxCleanupWorldProcessContext (dxWorld *world);
+	public static boolean dxReallocateWorldProcessContext (DxWorld world, 
+	        DxWorldProcessIslandsInfo islandsinfo, 
+	        double stepsize, dmemestimate_fn_t stepperestimate)
+	{
+	    //TZ DxStepWorkingMemory wmem = DxWorld.AllocateOnDemand(world.wmem);
+	    if (world.wmem == null) {
+	        world.wmem = new DxStepWorkingMemory();
+	    }
+	    DxStepWorkingMemory wmem = world.wmem;
+
+	    if (wmem == null) return false;
+
+	    DxWorldProcessContext context = wmem.SureGetWorldProcessingContext();
+	    if (context == null) return false;
+	    Common.dIASSERT (context.IsStructureValid());
+
+	    final DxWorldProcessMemoryReserveInfo reserveinfo = wmem.SureGetMemoryReserveInfo();
+	    final DxWorldProcessMemoryManager memmgr = wmem.SureGetMemoryManager();
+
+	    int islandsreq = world.EstimateIslandsProcessingMemoryRequirements();
+	    Common.dIASSERT(islandsreq == DxUtil.dEFFICIENT_SIZE(islandsreq));
+
+	    DxWorldProcessMemArena stepperarena = null;
+	    DxWorldProcessMemArena islandsarena = context.ReallocateIslandsMemArena(
+	            islandsreq, memmgr, 1.0f, reserveinfo.m_uiReserveMinimum);
+
+	    if (islandsarena != null)
+	    {
+	        int stepperreq = 
+	            DxWorldProcessIslandsInfo.BuildIslandsAndEstimateStepperMemoryRequirements(
+	                    islandsinfo, islandsarena, world, stepsize, stepperestimate);
+	        Common.dIASSERT(stepperreq == DxUtil.dEFFICIENT_SIZE(stepperreq));
+
+	        stepperarena = context.ReallocateStepperMemArena(stepperreq, 
+	                memmgr, reserveinfo.m_fReserveFactor, reserveinfo.m_uiReserveMinimum);
+	    }
+
+	    return stepperarena != null;
+	}
+
+	public void dxCleanupWorldProcessContext ()
+	{
+	    DxStepWorkingMemory wmem = this.wmem;
+	    if (wmem != null)
+	    {
+            DxWorldProcessContext context = wmem.GetWorldProcessingContext();
+            if (context != null)
+            {
+                context.CleanupContext();
+                Common.dIASSERT(context.IsStructureValid());
+            }
+        }
+    }
+
+
+
+//	dxWorldProcessMemArena *dxAllocateTemporaryWorldProcessMemArena(
+//	        size_t memreq, const dxWorldProcessMemoryManager *memmgr/*=NULL*/, const dxWorldProcessMemoryReserveInfo *reserveinfo/*=NULL*/);
+//	      void dxFreeTemporaryWorldProcessMemArena(dxWorldProcessMemArena *arena);
+	public static DxWorldProcessMemArena dxAllocateTemporaryWorldProcessMemArena(
+	        int memreq, final DxWorldProcessMemoryManager memmgr/*=NULL*/, 
+	        final DxWorldProcessMemoryReserveInfo reserveinfo/*=NULL*/) {       throw new UnsupportedOperationException();
+	}
+	public static void dxFreeTemporaryWorldProcessMemArena(
+	        DxWorldProcessMemArena arena) {}
+
+
+
+//	      template<class ClassType>
+//	      inline ClassType *AllocateOnDemand(ClassType *&pctStorage)
+	//(TZ) renamed, because this is not possible!
+	public static <T> T AllocateOnDemandX(T pctStorage)
+	{
+	    throw new UnsupportedOperationException();
+//	    T pctCurrentInstance = pctStorage;
+//
+//	    if (pctCurrentInstance == null)
+//	    {
+//	        //TODO TZ obviously this will fail...
+//	        pctCurrentInstance = (T) new Object();
+//	        pctStorage = pctCurrentInstance;
+//	    }
+//
+//	    return pctCurrentInstance;
+	}
+
+	// This estimates dynamic memory requirements for dxProcessIslands
+	static int EstimateIslandsProcessingMemoryRequirements()
+	{
+	    //          int res = 0;
+	    //
+	    //          int islandcounts = dEFFICIENT_SIZE((size_t)(int)nb * 2 * sizeof(int));
+	    //          res += islandcounts;
+	    //
+	    //          size_t bodiessize = dEFFICIENT_SIZE((size_t)(unsigned)world->nb * sizeof(dxBody*));
+	    //          size_t jointssize = dEFFICIENT_SIZE((size_t)(unsigned)world->nj * sizeof(dxJoint*));
+	    //          res += bodiessize + jointssize;
+	    //
+	    //          size_t sesize = (bodiessize < jointssize) ? bodiessize : jointssize;
+	    //          res += sesize;
+	    //
+	    //          return res;
+	    return -1;
+	}
+
+	
 	//****************************************************************************
 	// island processing
 
@@ -493,114 +778,153 @@ public class DxWorld extends DBase implements DWorld {
 	// re-enabled if they are found to be part of an active island.
 
 	//	void dxProcessIslands (dxWorld *world, dReal stepsize, dstepper_fn_t stepper)
-	void dxProcessIslands (double stepsize, dstepper_fn_t stepper)
+	void dxProcessIslands (DxWorldProcessIslandsInfo islandsinfo, 
+	        double stepsize, dstepper_fn_t stepper)
 	{
-		//		  dxBody *b,*bb,**body;
-		//		  dxJoint *j,**joint;
-		DxBody b,bb,body[];
-		DxJoint j,joint[];
+	    final int sizeelements = 2;
 
-		// nothing to do if no bodies
-		if (nb <= 0) return;
+	    DxStepWorkingMemory wmem = this.wmem;
+	    dIASSERT(wmem != null);
 
-		// handle auto-disabling of bodies
-		dInternalHandleAutoDisabling (stepsize);
+	    DxWorldProcessContext context = wmem.GetWorldProcessingContext(); 
+	    dIASSERT(context != null);
 
-		// make arrays for body and joint lists (for a single island) to go into
-		body = new DxBody[nb];//(dxBody**) ALLOCA (world.nb * sizeof(dxBody*));
-		joint = new DxJoint[nj];//(dxJoint**) ALLOCA (world.nj * sizeof(dxJoint*));
-		int bcount = 0;	// number of bodies in `body'
-		int jcount = 0;	// number of joints in `joint'
+	    int islandcount = islandsinfo.GetIslandsCount();
+	    int[] islandsizes = islandsinfo.GetIslandSizes();
+	    DxBody[]  body = islandsinfo.GetBodiesArray();
+	    DxJoint[] joint = islandsinfo.GetJointsArray();
 
-		// set all body/joint tags to 0
-		for (b=firstbody.get(); b!=null; b=(DxBody)b.getNext()) b.tag = 0;
-		for (j=firstjoint.get(); j!=null; j=(DxJoint)j.getNext()) j.tag = 0;
+	    DxWorldProcessMemArena stepperarena = context.GetStepperMemArena();
 
-		// allocate a stack of unvisited bodies in the island. the maximum size of
-		// the stack can be the lesser of the number of bodies or joints, because
-		// new bodies are only ever added to the stack by going through untagged
-		// joints. all the bodies in the stack must be tagged!
-		int stackalloc = (nj < nb) ? nj : nb;
-		//	  dxBody **stack = (dxBody**) ALLOCA (stackalloc * sizeof(dxBody*));
-		DxBody[] stack = new DxBody[stackalloc];//**) ALLOCA (stackalloc * sizeof(dxBody*));
+	    int bodystart = 0;//body;
+	    int jointstart = 0;//joint;
 
-		for (bb=firstbody.get(); bb!=null; bb=(DxBody)bb.getNext()) {
-			// get bb = the next enabled, untagged body, and tag it
-			if (bb.tag!=0 || ((bb.flags & DxBody.dxBodyDisabled)!=0)) continue;
-			bb.tag = 1;
+	    int sizesend = islandcount * sizeelements;
+	    for (int sizescurr = 0; sizescurr != sizesend; sizescurr += sizeelements) {
+	        int bcount = islandsizes[sizescurr+0];
+	        int jcount = islandsizes[sizescurr+1];
 
-			// tag all bodies and joints starting from bb.
-			int stacksize = 0;
-			b = bb;
-			body[0] = bb;
-			bcount = 1;
-			jcount = 0;
-			//TZ goto quickstart;
-			boolean firstRound = true;
-			while (stacksize > 0 || firstRound) {
-				if (!firstRound) {
-					b = stack[--stacksize];	// pop body off stack
-					body[bcount++] = b;	// put body on body list
-				}
-				firstRound = false;//quickstart:
+	        //BEGIN_STATE_SAVE(stepperarena, stepperstate) 
+            DxStateSave stepperstate = stepperarena.BEGIN_STATE_SAVE();
+            {
+	            // now do something with body and joint lists
+	            stepper.run (stepperarena,this,body,bodystart,bcount,
+	                    joint,jointstart,jcount,stepsize);
+	        } //END_STATE_SAVE(stepperarena, stepperstate);
+	        stepperarena.END_STATE_SAVE(stepperstate);
 
-				// traverse and tag all body's joints, add untagged connected bodies
-				// to stack
-				for (DxJointNode n=b.firstjoint.get(); n!=null; n=n.next) {
-					if (n.joint.tag==0 && n.joint.isEnabledAndDynamic()) {
-						n.joint.tag = 1;
-						joint[jcount++] = n.joint;
-						if (n.body!=null && (n.body.tag==0)) {
-							n.body.tag = 1;
-							stack[stacksize++] = n.body;
-						}
-					}
-				}
-				dIASSERT(stacksize <= nb);
-				dIASSERT(stacksize <= nj);
-			}
+	        bodystart += bcount;
+	        jointstart += jcount;
+	    }
 
-			//TODO
-			DxWorldProcessMemArena memarena = new DxWorldProcessMemArena();
-			//TODO
-			
-			// now do something with body and joint lists
-			stepper.run (memarena,this,body,bcount,joint,jcount,stepsize);
-
-			// what we've just done may have altered the body/joint tag values.
-			// we must make sure that these tags are nonzero.
-			// also make sure all bodies are in the enabled state.
-			int i;
-			for (i=0; i<bcount; i++) {
-				body[i].tag = 1;
-				body[i].flags &= ~DxBody.dxBodyDisabled;
-			}
-			for (i=0; i<jcount; i++) joint[i].tag = 1;
-		}
-
-		// if debugging, check that all objects (except for disabled bodies,
-		// unconnected joints, and joints that are connected to disabled bodies)
-		// were tagged.
-		if (!dNODEBUG) {//# ifndef dNODEBUG
-			for (b=firstbody.get(); b != null; b=(DxBody)b.getNext()) {
-				if ((b.flags & DxBody.dxBodyDisabled) != 0) {
-					if (b.tag!=0) dDebug (0,"disabled body tagged");
-				}
-				else {
-					if (b.tag==0) dDebug (0,"enabled body not tagged");
-				}
-			}
-			for (j=firstjoint.get(); j != null; j=(DxJoint)j.getNext()) {
-				if ( ((j.node[0].body!=null && (j.node[0].body.flags & DxBody.dxBodyDisabled)==0) ||
-						(j.node[1].body!=null && (j.node[1].body.flags & DxBody.dxBodyDisabled)==0)) 
-					&& j.isEnabledAndDynamic() ){
-					if (j.tag==0) dDebug (0,"attached enabled joint not tagged");
-				}
-				else {
-					if (j.tag!=0) dDebug (0,"unattached or disabled joint tagged");
-				}
-			}
-		}//dNoDEBUG # endif
+	    
+//TODO remove, is from 0.11.1	    
+//		//		  dxBody *b,*bb,**body;
+//		//		  dxJoint *j,**joint;
+//		DxBody b,bb,body[];
+//		DxJoint j,joint[];
+//
+//		// nothing to do if no bodies
+//		if (nb <= 0) return;
+//
+//		// handle auto-disabling of bodies
+//		dInternalHandleAutoDisabling (stepsize);
+//
+//		// make arrays for body and joint lists (for a single island) to go into
+//		body = new DxBody[nb];//(dxBody**) ALLOCA (world.nb * sizeof(dxBody*));
+//		joint = new DxJoint[nj];//(dxJoint**) ALLOCA (world.nj * sizeof(dxJoint*));
+//		int bcount = 0;	// number of bodies in `body'
+//		int jcount = 0;	// number of joints in `joint'
+//
+//		// set all body/joint tags to 0
+//		for (b=firstbody.get(); b!=null; b=(DxBody)b.getNext()) b.tag = 0;
+//		for (j=firstjoint.get(); j!=null; j=(DxJoint)j.getNext()) j.tag = 0;
+//
+//		// allocate a stack of unvisited bodies in the island. the maximum size of
+//		// the stack can be the lesser of the number of bodies or joints, because
+//		// new bodies are only ever added to the stack by going through untagged
+//		// joints. all the bodies in the stack must be tagged!
+//		int stackalloc = (nj < nb) ? nj : nb;
+//		//	  dxBody **stack = (dxBody**) ALLOCA (stackalloc * sizeof(dxBody*));
+//		DxBody[] stack = new DxBody[stackalloc];//**) ALLOCA (stackalloc * sizeof(dxBody*));
+//
+//		for (bb=firstbody.get(); bb!=null; bb=(DxBody)bb.getNext()) {
+//			// get bb = the next enabled, untagged body, and tag it
+//			if (bb.tag!=0 || ((bb.flags & DxBody.dxBodyDisabled)!=0)) continue;
+//			bb.tag = 1;
+//
+//			// tag all bodies and joints starting from bb.
+//			int stacksize = 0;
+//			b = bb;
+//			body[0] = bb;
+//			bcount = 1;
+//			jcount = 0;
+//			//TZ goto quickstart;
+//			boolean firstRound = true;
+//			while (stacksize > 0 || firstRound) {
+//				if (!firstRound) {
+//					b = stack[--stacksize];	// pop body off stack
+//					body[bcount++] = b;	// put body on body list
+//				}
+//				firstRound = false;//quickstart:
+//
+//				// traverse and tag all body's joints, add untagged connected bodies
+//				// to stack
+//				for (DxJointNode n=b.firstjoint.get(); n!=null; n=n.next) {
+//					if (n.joint.tag==0 && n.joint.isEnabledAndDynamic()) {
+//						n.joint.tag = 1;
+//						joint[jcount++] = n.joint;
+//						if (n.body!=null && (n.body.tag==0)) {
+//							n.body.tag = 1;
+//							stack[stacksize++] = n.body;
+//						}
+//					}
+//				}
+//				dIASSERT(stacksize <= nb);
+//				dIASSERT(stacksize <= nj);
+//			}
+//
+//			//TODO
+//			DxWorldProcessMemArena memarena = new DxWorldProcessMemArena();
+//			//TODO
+//			
+//			// now do something with body and joint lists
+//			stepper.run (memarena,this,body,bcount,joint,jcount,stepsize);
+//
+//			// what we've just done may have altered the body/joint tag values.
+//			// we must make sure that these tags are nonzero.
+//			// also make sure all bodies are in the enabled state.
+//			int i;
+//			for (i=0; i<bcount; i++) {
+//				body[i].tag = 1;
+//				body[i].flags &= ~DxBody.dxBodyDisabled;
+//			}
+//			for (i=0; i<jcount; i++) joint[i].tag = 1;
+//		}
+//
+//		// if debugging, check that all objects (except for disabled bodies,
+//		// unconnected joints, and joints that are connected to disabled bodies)
+//		// were tagged.
+//		if (!dNODEBUG) {//# ifndef dNODEBUG
+//			for (b=firstbody.get(); b != null; b=(DxBody)b.getNext()) {
+//				if ((b.flags & DxBody.dxBodyDisabled) != 0) {
+//					if (b.tag!=0) dDebug (0,"disabled body tagged");
+//				}
+//				else {
+//					if (b.tag==0) dDebug (0,"enabled body not tagged");
+//				}
+//			}
+//			for (j=firstjoint.get(); j != null; j=(DxJoint)j.getNext()) {
+//				if ( ((j.node[0].body!=null && (j.node[0].body.flags & DxBody.dxBodyDisabled)==0) ||
+//						(j.node[1].body!=null && (j.node[1].body.flags & DxBody.dxBodyDisabled)==0)) 
+//					&& j.isEnabledAndDynamic() ){
+//					if (j.tag==0) dDebug (0,"attached enabled joint not tagged");
+//				}
+//				else {
+//					if (j.tag!=0) dDebug (0,"unattached or disabled joint tagged");
+//				}
+//			}
+//		}//dNoDEBUG # endif
 	}
 
 
@@ -920,29 +1244,25 @@ public class DxWorld extends DBase implements DWorld {
 
 
     @Override
-    public int useSharedWorkingMemory(DWorld from_world) {
-        // TODO Auto-generated method stub
-        return 0;
+    public boolean useSharedWorkingMemory(DWorld from_world) {
+        return dWorldUseSharedWorkingMemory((DxWorld) from_world);
     }
 
 
     @Override
-    public void dWorldCleanupWorkingMemory() {
-        // TODO Auto-generated method stub
-        
+    public void cleanupWorkingMemory() {
+        dWorldCleanupWorkingMemory();
     }
 
 
     @Override
-    public int setStepMemoryReservationPolicy(DWorldStepReserveInfo policyinfo) {
-        // TODO Auto-generated method stub
-        return 0;
+    public boolean setStepMemoryReservationPolicy(DWorldStepReserveInfo policyinfo) {
+        return dWorldSetStepMemoryReservationPolicy(policyinfo);
     }
 
 
     @Override
-    public int setStepMemoryManager(DWorldStepMemoryFunctionsInfo memfuncs) {
-        // TODO Auto-generated method stub
-        return 0;
+    public boolean setStepMemoryManager(DWorldStepMemoryFunctionsInfo memfuncs) {
+        return dWorldSetStepMemoryManager(memfuncs);
     }
 }

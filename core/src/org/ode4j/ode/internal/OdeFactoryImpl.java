@@ -1673,10 +1673,6 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 //		REGISTER_EXTENSION( ODE_EXT_no_debug )
 //	#endif // dNODEBUG
 //
-//	#ifdef dUSE_MALLOC_FOR_ALLOCA
-//	REGISTER_EXTENSION( ODE_EXT_malloc_not_alloca )
-//	#endif
-//
 //	#if dTRIMESH_ENABLED
 //	REGISTER_EXTENSION( ODE_EXT_trimesh )
 //

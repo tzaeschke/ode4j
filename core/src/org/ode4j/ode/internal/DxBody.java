@@ -1027,8 +1027,6 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		}
 		// end of angular velocity cap
 
-		//int j;
-
 		// handle linear velocity
 		//for (j=0; j<3; j++) _posr.pos.v[j] += h * lvel.v[j];
 		_posr.pos.eqSum(_posr.pos, lvel, h);

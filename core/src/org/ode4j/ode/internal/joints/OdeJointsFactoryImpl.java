@@ -406,7 +406,7 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 
 	public boolean _dAreConnected (DBody b1, DBody b2)
 	{
-		dAASSERT (b1!=null && b2!=null);
+		dAASSERT (b1!=null);// b2 can be null
 		// look through b1's neighbour list for b2
 		for (DxJointNode n=((DxBody)b1).firstjoint.get(); n!=null; n=n.next) {
 			if (n.body == b2) return true;
@@ -417,7 +417,7 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 
 	public boolean _dAreConnectedExcluding (DBody b1, DBody b2, Class<? extends DJoint> [] jointType)
 	{
-		dAASSERT (b1!=null && b2!=null);
+		dAASSERT (b1!=null);// b2 can be null
 		// look through b1's neighbour list for b2
 		for (DxJointNode n=((DxBody)b1).firstjoint.get(); n!=null; n=n.next) {
 			if ( n.body == b2) {

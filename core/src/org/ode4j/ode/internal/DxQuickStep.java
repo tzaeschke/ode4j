@@ -46,11 +46,13 @@ import static org.ode4j.ode.internal.Timer.dTimerStart;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.internal.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 import org.ode4j.ode.internal.DxWorldProcessMemArena.DxStateSave;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.joints.DxJoint;
 
-class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
+class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t,
+dmemestimate_fn_t {
 	
     //TZ where is this defined???
     private static final boolean CHECK_VELOCITY_OBEYS_CONSTRAINT = false;
@@ -1237,9 +1239,10 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 //
 //	//	size_t dxEstimateQuickStepMemoryRequirements (
 //	//	  dxBody * const *body, unsigned int nb, dxJoint * const *_joint, unsigned int _nj)
-//	int dxEstimateQuickStepMemoryRequirements (
-//	        DxBody body, int nb, DxJoint[] _joint, int _nj)
-//	{
+	public int dxEstimateMemoryRequirements (
+	        DxBody[] body, int bodyOfs, int nb, 
+	        DxJoint[] _joint, int jointOfs, int _nj)
+	{
 //	    int nj, m, mfb;
 //
 //	    {
@@ -1315,12 +1318,17 @@ class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t {
 //	  }
 //
 //	  return res;
-//	}
+	    return -1;
+	}
 
 		
 	public void run(DxWorldProcessMemArena memarena, 
-	        DxWorld world, DxBody[] body, int nb, DxJoint[] joint, int nj,
+	        DxWorld world, DxBody[] body, int bodyOfs, int nb, 
+	        DxJoint[] joint, int jointOfs, int nj,
 			double stepsize) {
+	    if (bodyOfs!=0 || jointOfs!=0) {
+	        throw new UnsupportedOperationException("bo="+bodyOfs + " jo="+jointOfs);
+	    }
 		dxQuickStepper(memarena, world, body, nb, joint, nj, stepsize);
 	}
 }

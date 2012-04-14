@@ -32,6 +32,8 @@ import org.ode4j.math.DMatrixN;
 import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DStopwatch;
+import org.ode4j.ode.internal.DxUtil.BlockPointer;
+import org.ode4j.ode.internal.DxWorldProcessMemArena.DxStateSave;
 
 
 
@@ -531,7 +533,7 @@ public class DLCP {
 	}
 
 
-	void transfer_i_from_C_to_N (int i, Object[][] tmpbuf)
+	void transfer_i_from_C_to_N (int i, BlockPointer tmpbuf)
 	{
 	    {
 	        int[] C = m_C;
@@ -954,7 +956,7 @@ public class DLCP {
 			        lcp.pN_plusequals_s_times_qN (w, s, delta_w);
 			        w[i] += s * delta_w[i];
 
-			        Object[][] tmpbuf;
+			        BlockPointer tmpbuf;
 			        // switch indexes between sets if necessary
 			        switch (cmd) {
 			        case 1:     // done

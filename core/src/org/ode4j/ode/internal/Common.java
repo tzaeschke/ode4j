@@ -114,7 +114,7 @@ public class Common extends ErrorHandler {
 	public static final double DBL_EPSILON = 2.2204460492503131e-016;
 	
 	/** Internal assertion */
-	public static void dIASSERT(boolean b) {
+	public static final void dIASSERT(boolean b) {
 		if (!b) {
 			dDebug(d_ERR_IASSERT, "assertion failed ");
 			new RuntimeException().printStackTrace();

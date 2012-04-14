@@ -26,6 +26,7 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.internal.DxUtil;
 
 /**
  * The world object is a container for rigid bodies and joints. Objects in
@@ -209,7 +210,7 @@ public interface DWorld {
 	 * @see dWorldSetStepMemoryReservationPolicy
 	 * @see dWorldSetStepMemoryManager
 	 */
-	int useSharedWorkingMemory(DWorld from_world/*=NULL*/);
+	boolean useSharedWorkingMemory(DWorld from_world/*=NULL*/);
 
 	/**
 	 * @brief Release internal working memory allocated for world
@@ -232,7 +233,7 @@ public interface DWorld {
 	 * @see dWorldSetStepMemoryReservationPolicy
 	 * @see dWorldSetStepMemoryManager
 	 */
-	void dWorldCleanupWorkingMemory();
+	void cleanupWorkingMemory();
 
 	public static final double dWORLDSTEP_RESERVEFACTOR_DEFAULT = 1.2f;
 	public static final int dWORLDSTEP_RESERVESIZE_DEFAULT = 65536;
@@ -252,10 +253,10 @@ public interface DWorld {
 	 * @ingroup world
 	 * @see dWorldSetStepMemoryReservationPolicy
 	 */
-	class DWorldStepReserveInfo	{
-	  int struct_size;
-	  double reserve_factor; // Use float as precision does not matter here
-	  int reserve_minimum;
+	public class DWorldStepReserveInfo	{
+	    public int struct_size;
+	    public double reserve_factor; // Use float as precision does not matter here
+	    public int reserve_minimum;
 	};
 
 	/**
@@ -283,7 +284,7 @@ public interface DWorld {
 	 * @ingroup world
 	 * @see dWorldUseSharedWorkingMemory
 	 */
-	int setStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo/*=NULL*/);
+	boolean setStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo/*=NULL*/);
 
 	/**
 	* World stepping memory manager descriptor structure
@@ -303,14 +304,19 @@ public interface DWorld {
 	*
 	* @ingroup init
 	* @see dWorldSetStepMemoryManager
+	* @deprecated Do not use ! (TZ)
 	*/
-	class DWorldStepMemoryFunctionsInfo 
+	@Deprecated
+	public class DWorldStepMemoryFunctionsInfo 
 	{
-	  int struct_size;
-	  void *(*alloc_block)(size_t block_size);
-	  void *(*shrink_block)(void *block_pointer, size_t block_current_size, size_t block_smaller_size);
-	  void (*free_block)(void *block_pointer, size_t block_current_size);
-
+	    public int struct_size;
+	    //TODO, already in DxUtil (TZ) -> Should not be public in Java.
+	    //	  void *(*alloc_block)(size_t block_size);
+	    public DxUtil.alloc_block_fn_t alloc_block;
+	    //	  void *(*shrink_block)(void *block_pointer, size_t block_current_size, size_t block_smaller_size);
+	    public DxUtil.shrink_block_fn_t shrink_block;
+	    //	  void (*free_block)(void *block_pointer, size_t block_current_size);
+	    public DxUtil.free_block_fn_t free_block;
 	};
 
 	/**
@@ -337,7 +343,7 @@ public interface DWorld {
 	* @ingroup world
 	* @see dWorldUseSharedWorkingMemory
 	*/
-	int setStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs);
+	boolean setStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs);
 
 	/**
 	 * Step the world.
