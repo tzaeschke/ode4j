@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.internal.Matrix;
 
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 import static org.ode4j.ode.OdeMath.*;
@@ -217,4 +218,72 @@ public class OdeMathTZ {
 
 		}
 	}
+	
+	@Test
+	public void testFactorCholesky() {
+        DMatrix3 r1 = new DMatrix3( 
+                1, 2, 3, //0,
+                0, 1, 0, //0,
+                0, 0, 1 //0
+        );
+        DMatrix3 r2 = new DMatrix3( 
+                4, 5, 6, 0,
+                7, 8, 9, 0,
+                10, 11, 12, 0
+        );
+        double[] r1a = { 
+                1, 2, 3, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0
+        };
+        double[] r2a = { 
+                4, 5, 6, 0,
+                7, 8, 9, 0,
+                10, 11, 12, 0
+        };
+        DVector3 v1 = new DVector3(7, 8, 9);
+        double[] v1a = {7, 8, 9};
+        
+        assertTrue(Matrix.dFactorCholesky(r1));
+        assertTrue(Matrix.dFactorCholesky(r1a, 3, null));
+        CHECK_ARRAY_CLOSE(r1, r1a, 12, 0.00000);
+        
+        assertFalse(Matrix.dFactorCholesky(r2));
+        assertFalse(Matrix.dFactorCholesky(r2a, 3, null));
+        CHECK_ARRAY_CLOSE(r2, r2a, 12, 0.00000);
+	}
+    
+    @Test
+    public void testSolveCholesky() {
+        DMatrix3 r1 = new DMatrix3( 
+                1, 2, 3, //0,
+                0, 1, 0, //0,
+                0, 0, 1 //0
+        );
+        DMatrix3 r2 = new DMatrix3( 
+                4, 5, 6, 0,
+                7, 8, 9, 0,
+                10, 11, 12, 0
+        );
+        double[] r1a = { 
+                1, 2, 3, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0
+        };
+        double[] r2a = { 
+                4, 5, 6, 0,
+                7, 8, 9, 0,
+                10, 11, 12, 0
+        };
+        DVector3 v1 = new DVector3(7, 8, 9);
+        double[] v1a = {7, 8, 9};
+        
+        Matrix.dSolveCholesky(r1, v1);
+        Matrix.dSolveCholesky(r1a, v1a, 3, null);
+        CHECK_ARRAY_CLOSE(r1, r1a, 12, 0.00000);
+        
+        Matrix.dSolveCholesky(r2, v1);
+        Matrix.dSolveCholesky(r2a, v1a, 3, null);
+        CHECK_ARRAY_CLOSE(r2, r2a, 12, 0.00000);
+    }
 }

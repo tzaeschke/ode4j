@@ -19,6 +19,10 @@ SUMMARY of changes for ode-0.12
 TODO
 - Fix DemoBoxStack
 
+2012-Apr-14 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Migrated matrix.cpp, fast*.c, objects.h, util.*, ode.cpp.
+
 2012-Apr-13 Tilmann Zaschke
 		* Migration to ode-0.12:
 		  - Migrated QuickStep, LCP and parts of Matrix.

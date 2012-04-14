@@ -139,10 +139,10 @@ public class CheckMacros extends TestCase {
 	//                    "Unhandled exception in CHECK_ARRAY_EQUAL(" #expected ", " #actual ")"); \
 	//        } \
 	//    } while (0)
-	public static void CHECK_ARRAY_EQUAL(DMatrix3C expected, DMatrix3C actual, int count) {
-		assertEquals(12, count);
-		assertEquals(expected, actual);
-	}
+    public static void CHECK_ARRAY_EQUAL(DMatrix3C expected, DMatrix3C actual, int count) {
+        assertEquals(12, count);
+        assertEquals(expected, actual);
+    }
 	public static void CHECK_ARRAY_EQUAL(Object expected, Object actual, int count) {
 		assertEquals(expected, actual);
 //		try { 
@@ -179,6 +179,17 @@ public class CheckMacros extends TestCase {
 					Math.abs(actual.get(i)-expected.get(i)) <= tolerance);
 		}
 	}
+    public static void CHECK_ARRAY_CLOSE(DMatrix3C expected, double[] actual, int count, double tolerance) {
+        assertEquals(12, count);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                int pos = i*4 + j;
+                assertTrue("Expected: " + expected.get(i, j) + "  actual: " + actual[pos] +
+                        "   tolerance: " + tolerance, 
+                        Math.abs(actual[pos]-expected.get(i, j)) <= tolerance);
+            }
+        }
+    }
 
 	//#define CHECK_ARRAY2D_CLOSE(expected, actual, rows, columns, tolerance) \
 	//    do \

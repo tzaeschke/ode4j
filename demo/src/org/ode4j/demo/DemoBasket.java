@@ -143,7 +143,7 @@ public class DemoBasket extends dsFunctions {
 
 	private void reset_ball()
 	{
-		float sx=0.0f, sy=3.40f, sz=7.05f;
+		float sx=0.0f, sy=3.40f, sz=7.15f;
 
 		//#if defined(_MSC_VER) && defined(dDOUBLE) 
 		//sy -= 0.01; // Cheat, to make it score under win32/double
