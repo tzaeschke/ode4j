@@ -46,12 +46,13 @@ import static org.ode4j.ode.internal.Timer.dTimerStart;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint;
-import org.ode4j.ode.internal.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
-import org.ode4j.ode.internal.DxWorldProcessMemArena.DxStateSave;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.joints.DxJoint;
+import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
+import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
+import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 
-class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t,
+public class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t,
 dmemestimate_fn_t {
 	
     //TZ where is this defined???
@@ -859,7 +860,7 @@ dmemestimate_fn_t {
 		        int mlocal = m;
 		        final int jelements = mlocal*12;
 		        J = memarena.AllocateArrayDReal(jelements);
-		        dSetZero (J,jelements);
+		        dSetZero (J);//,jelements);
 		    
 		        // create a constraint equation right hand side vector `c', a constraint
 		        // force mixing vector `cfm', and LCP low and high bound vectors, and an
@@ -885,7 +886,7 @@ dmemestimate_fn_t {
             }
 
 		    //BEGIN_STATE_SAVE(memarena, cstate);
-		    DxStateSave cstate = memarena.saveState();
+		    BlockPointer cstate = memarena.BEGIN_STATE_SAVE();
 		    {
 		        double[] c = memarena.AllocateArrayDReal (m);
 		        dSetZero (c, m);
@@ -997,7 +998,7 @@ dmemestimate_fn_t {
 		            dIASSERT (jb_ofs == 2*m);//(jb_ptr == jb+2*m);
 		        }
     			
-		        DxStateSave tmp1state = memarena.saveState(); {
+		        BlockPointer tmp1state = memarena.BEGIN_STATE_SAVE(); {
 		            if (TIMING) dTimerNow ("compute rhs");
 		        
 		            // compute the right hand side `rhs'
@@ -1021,7 +1022,7 @@ dmemestimate_fn_t {
 		            // put J*tmp1 into rhs
 		            multiply_J (m,J,jb,tmp1,rhs);
 		        }
-		        memarena.restoreState(tmp1state);
+		        memarena.END_STATE_SAVE(tmp1state);
 
     			// complete rhs
     			for (int i=0; i<m; i++) rhs[i] = c[i]*stepsize1 - rhs[i];
@@ -1030,7 +1031,7 @@ dmemestimate_fn_t {
     			for (int j=0; j<m; j++) cfm[j] *= stepsize1;
 
 		    }
-		    memarena.restoreState(cstate);
+		    memarena.END_STATE_SAVE(cstate);
     			
 			// load lambda from the value saved on the previous iteration
 			double[] lambda = memarena.AllocateArrayDReal(m);//new double[m];//dRealAllocaArray (lambda,m);
@@ -1048,12 +1049,13 @@ dmemestimate_fn_t {
 //			}//#endif
 
 			double[] cforce = memarena.AllocateArrayDReal(nb*6);
-			DxStateSave lcpstate = memarena.saveState(); 
+			BlockPointer lcpstate = memarena.BEGIN_STATE_SAVE(); 
 			{
 	            if (TIMING) dTimerNow ("solving LCP problem");
 	            // solve the LCP problem and get lambda and invM*constraint_force
 	            SOR_LCP (memarena,m,nb,J,jb,body,invI,lambda,cforce,rhs,lo,hi,cfm,findex,world.qs);
 			}
+			memarena.END_STATE_SAVE(lcpstate);
 			    
 //			System.err.println("SOR_LCP m=" + m + " nb=" + nb + " ");
 //			System.err.println("SOR_LCP J=" + Arrays.toString(J));

@@ -1,13 +1,35 @@
-/*
- * Created on Apr 14, 2012
+/*************************************************************************
+ *                                                                       *
+ * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
+ * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2012 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
+ *                                                                       *
+ * This library is free software; you can redistribute it and/or         *
+ * modify it under the terms of EITHER:                                  *
+ *   (1) The GNU Lesser General Public License as published by the Free  *
+ *       Software Foundation; either version 2.1 of the License, or (at  *
+ *       your option) any later version. The text of the GNU Lesser      *
+ *       General Public License is included with this library in the     *
+ *       file LICENSE.TXT.                                               *
+ *   (2) The BSD-style license that is included with this library in     *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
+ *                                                                       *
+ * This library is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
+ *                                                                       *
+ *************************************************************************/
+package org.ode4j.ode.internal.processmem;
+
+
+/**
+ * From util.cpp and util.h.
  *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * @author Tilmann Zaeschke
  */
-package org.ode4j.ode.internal;
-
-import org.ode4j.ode.internal.DxUtil.BlockPointer;
-
 public class DxUtil {
 
     //****************************************************************************
@@ -21,8 +43,8 @@ public class DxUtil {
                     @Override
                     public BlockPointer run(int block_size) {
                         System.err.println("FIXME: alloc_block_fn_t");
-                        //return new BlockPointer(-1);
-                        return null;
+                        return new BlockPointer(-1);
+                        //return null;
                     }
                 },
                 null,//dRealloc, 
@@ -41,7 +63,7 @@ public class DxUtil {
         return -1;
     }
     
-    static final int sizeof(Object o) {
+    public static final int sizeof(Object o) {
         if (o instanceof Class) {
             return sizeof((Class<?>)o);
         }
@@ -59,7 +81,7 @@ public class DxUtil {
     static final BlockPointer dEFFICIENT_PTR(BlockPointer p) {
         return new BlockPointer(dEFFICIENT_SIZE(p.toInt()));
     }
-    public static BlockPointer dEFFICIENT_PTR(Object obj, int i) {
+    static BlockPointer dEFFICIENT_PTR(Object obj, int i) {
         System.out.println("dEFFICIENT_PTR(Object obj, int i)");
         return new BlockPointer(i);
     }
@@ -91,9 +113,10 @@ public class DxUtil {
     }
     
 
-    //TZ replacemnent for void*
-    static class BlockPointer {
+    //TZ replacement for void*
+    public static class BlockPointer {
         private final int pointer;
+        private Object o = null;
         public BlockPointer(int pointer) {
             this.pointer = pointer;
         }
@@ -103,6 +126,12 @@ public class DxUtil {
         public Object getObject() {
             // TODO Auto-generated method stub
             return null;
+        }
+        public DxWorldProcessMemArena asDxWorldProcessMemArena() {
+            if (o == null) {
+                o = new DxWorldProcessMemArena();
+            }
+            return (DxWorldProcessMemArena) o;
         }
         
     }

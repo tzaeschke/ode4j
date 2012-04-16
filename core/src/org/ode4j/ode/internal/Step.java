@@ -56,6 +56,7 @@ import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
+import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 
 
 class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {

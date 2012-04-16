@@ -91,7 +91,7 @@ public abstract class DObject extends DBase {
 		return world;
 	}
 	
-	protected DObject getNext() {
+	public DObject getNext() {
 		return _next;
 	}
 	

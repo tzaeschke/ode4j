@@ -38,7 +38,6 @@ import org.cpp4j.java.IntArray;
 /**
  * @defgroup BUFFER_ARRAYS
  * 
- * @brief
  * Buffered Arrays, for manip elements on a buffer and treat it as an array.
  * <ul>
  * <li> Before using buffer arrays you must initializes GIMPACT buffer managers by calling gimpact_init.
@@ -49,7 +48,7 @@ import org.cpp4j.java.IntArray;
  * </ul>
  * The following example shows how Buffer arrays can be used:
  *
- * @code
+ * <code>
 int main()
 {
     //init gimpact
@@ -91,8 +90,8 @@ int main()
     //terminate gimpact
     gimpact_terminate();
 }
- * @endcode
- * @sa BUFFERS
+ * </code>
+ * @see BUFFERS
  */
 public class GimBufferArrayInt implements GimConstants { //formerly GBUFFER_ARRAY
 

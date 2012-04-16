@@ -22,19 +22,14 @@
  * details.                                                              *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.ode.internal;
+package org.ode4j.ode.internal.processmem;
 
-import org.ode4j.ode.internal.DxUtil.BlockPointer;
-import org.ode4j.ode.internal.DxWorldProcessMemArena.DxStateSave;
+import org.ode4j.ode.internal.Common;
+import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.joints.DxJoint;
+import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 
 public final class DxWorldProcessMemArena {
-
-
-
-    public static class DxStateSave {
-
-    }
 
     //   public:
         //TODO        #define BUFFER_TO_ARENA_EXTRA (EFFICIENT_ALIGNMENT + dEFFICIENT_SIZE(sizeof(dxWorldProcessMemArena)))
@@ -89,7 +84,7 @@ public final class DxWorldProcessMemArena {
         m_pAllocCurrent = m_pAllocBegin;
     }
 
-    BlockPointer PeekBufferRemainder() //const
+    public BlockPointer PeekBufferRemainder() //const
     {
         return m_pAllocCurrent;
     }
@@ -177,7 +172,7 @@ public final class DxWorldProcessMemArena {
                     break;
                 }
 
-                arena = (DxWorldProcessMemArena)DxUtil.dEFFICIENT_PTR(pNewArenaBuffer).getObject();
+                arena = (DxWorldProcessMemArena)DxUtil.dEFFICIENT_PTR(pNewArenaBuffer).asDxWorldProcessMemArena();
 
                 BlockPointer blockbegin = DxUtil.dEFFICIENT_PTR(arena, 1);
                 BlockPointer blockend = DxUtil.dOFFSET_EFFICIENTLY(blockbegin, memreq_with_reserve);
@@ -252,23 +247,18 @@ public final class DxWorldProcessMemArena {
         return new int[size];
     }
 
-    public final void dummy() {
+    /**
+     * Reminder function. At the place where it is called, something needs to 
+     * be implemented with respect to ProcessMemManagement.
+     */
+    public final static void dummy() {
         // TODO Auto-generated method stub
 
     }
 
-    public final void ShrinkArrayDJointWithInfo1(DxQuickStep.DJointWithInfo1[] jointiinfos,
+    public final void ShrinkArrayDJointWithInfo1(
+            Object[] jointiinfos,
             int _nj, int njXXX) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public final DxStateSave saveState() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public final void restoreState(DxStateSave state) {
         // TODO Auto-generated method stub
 
     }
@@ -281,12 +271,12 @@ public final class DxWorldProcessMemArena {
         return new boolean[n];
     }
 
-    public DxStateSave BEGIN_STATE_SAVE() {
-        return saveState();
+    public BlockPointer BEGIN_STATE_SAVE() {
+        return SaveState();
     }
 
-    public void END_STATE_SAVE(DxStateSave saveInner) {
-        restoreState(saveInner);
+    public void END_STATE_SAVE(BlockPointer saveInner) {
+        RestoreState(saveInner);
     }
 
     public static DxWorldProcessMemArena allocateTemporary(int memreq,

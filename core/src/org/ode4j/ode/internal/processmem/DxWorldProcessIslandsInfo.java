@@ -1,14 +1,35 @@
-/*
- * Created on Apr 14, 2012
- *
- * TODO To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
- */
-package org.ode4j.ode.internal;
+/*************************************************************************
+ *                                                                       *
+ * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
+ * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
+ *                                                                       *
+ * This library is free software; you can redistribute it and/or         *
+ * modify it under the terms of EITHER:                                  *
+ *   (1) The GNU Lesser General Public License as published by the Free  *
+ *       Software Foundation; either version 2.1 of the License, or (at  *
+ *       your option) any later version. The text of the GNU Lesser      *
+ *       General Public License is included with this library in the     *
+ *       file LICENSE.TXT.                                               *
+ *   (2) The BSD-style license that is included with this library in     *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
+ *                                                                       *
+ * This library is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
+ *                                                                       *
+ *************************************************************************/
+package org.ode4j.ode.internal.processmem;
 
-import org.ode4j.ode.internal.DxWorldProcessMemArena.DxStateSave;
+import org.ode4j.ode.internal.Common;
+import org.ode4j.ode.internal.DxBody;
+import org.ode4j.ode.internal.DxWorld;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
+import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 
 public class DxWorldProcessIslandsInfo {
 
@@ -20,10 +41,10 @@ public class DxWorldProcessIslandsInfo {
         m_pJoints = joints;
     }
 
-    int GetIslandsCount() { return m_IslandCount; }
-    int[] GetIslandSizes() { return m_pIslandSizes; }
-    DxBody[] GetBodiesArray() { return m_pBodies; }
-    DxJoint[] GetJointsArray() { return m_pJoints; }
+    public int GetIslandsCount() { return m_IslandCount; }
+    public int[] GetIslandSizes() { return m_pIslandSizes; }
+    public DxBody[] GetBodiesArray() { return m_pBodies; }
+    public DxJoint[] GetJointsArray() { return m_pJoints; }
 
     //private:
     private int m_IslandCount;
@@ -62,7 +83,7 @@ public class DxWorldProcessIslandsInfo {
         DxBody[] body = memarena.AllocateArrayDxBody(nb);
         DxJoint[] joint = memarena.AllocateArrayDxJoint(nj);
 
-        DxStateSave stackstate = memarena.BEGIN_STATE_SAVE();
+        BlockPointer stackstate = memarena.BEGIN_STATE_SAVE();
         {
             // allocate a stack of unvisited bodies in the island. the maximum size of
             // the stack can be the lesser of the number of bodies or joints, because
@@ -83,7 +104,7 @@ public class DxWorldProcessIslandsInfo {
             for (DxBody bb=world.firstbody.get(); bb!=null; bb=(DxBody) bb.getNext()) {
                 // get bb = the next enabled, untagged body, and tag it
                 if (bb.tag==0) {
-                    if ((bb.flags & DxBody.dxBodyDisabled)==0) {
+                    if (bb.dBodyIsEnabled()) {
                         bb.tag = 1;
 
                         int bodycurr = bodystart;
@@ -112,7 +133,8 @@ public class DxWorldProcessIslandsInfo {
                                         if (nbody!=null && nbody.tag <= 0) {
                                             nbody.tag = 1;
                                             // Make sure all bodies are in the enabled state.
-                                            nbody.flags &= ~DxBody.dxBodyDisabled;
+                                            nbody.dBodyEnable_noAdis();
+                                            //nbody.flags &= ~DxBody.dxBodyDisabled;
                                             stack[stacksize++] = nbody;
                                         }
                                     } else {
@@ -140,7 +162,8 @@ public class DxWorldProcessIslandsInfo {
                         islandsizes[sizescurrP+1] = jcount;
                         sizescurrP += sizeelements;
 
-                        int islandreq = stepperestimate.dxEstimateMemoryRequirements(body, bodystart, bcount, joint, jointstart, jcount);
+                        int islandreq = stepperestimate.dxEstimateMemoryRequirements(
+                                body, bodystart, bcount, joint, jointstart, jcount);
                         maxreq = (maxreq > islandreq) ? maxreq : islandreq;
 
                         bodystart = bodycurr;
@@ -159,7 +182,7 @@ public class DxWorldProcessIslandsInfo {
             // were tagged.
             {
                 for (DxBody b=world.firstbody.get(); b!=null; b=(DxBody)b.getNext()) {
-                    if ((b.flags & DxBody.dxBodyDisabled)!=0) {
+                    if (!b.isEnabled()) {
                         if (b.tag > 0) Common.dDebug (0,"disabled body tagged");
                     }
                     else {
@@ -167,8 +190,8 @@ public class DxWorldProcessIslandsInfo {
                     }
                 }
                 for (DxJoint j=world.firstjoint.get(); j!=null; j=(DxJoint)j.getNext()) {
-                    if ( (( j.node[0].body!=null && (j.node[0].body.flags & DxBody.dxBodyDisabled)==0 ) ||
-                            (j.node[1].body!=null && (j.node[1].body.flags & DxBody.dxBodyDisabled)==0) )
+                    if ( (( j.node[0].body!=null && j.node[0].body.isEnabled() ) ||
+                            (j.node[1].body!=null && j.node[1].body.isEnabled() ))
                             && 
                             j.isEnabled() ) {
                         if (j.tag <= 0) Common.dDebug (0,"attached enabled joint not tagged");

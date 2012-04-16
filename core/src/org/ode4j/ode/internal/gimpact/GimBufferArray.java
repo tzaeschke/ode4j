@@ -36,7 +36,6 @@ package org.ode4j.ode.internal.gimpact;
 /**
  * @defgroup BUFFER_ARRAYS
  * 
- * @brief
  * Buffered Arrays, for manip elements on a buffer and treat it as an array.
  * <ul>
  * <li> Before using buffer arrays you must initializes GIMPACT buffer managers by calling gimpact_init.
@@ -47,7 +46,7 @@ package org.ode4j.ode.internal.gimpact;
  * </ul>
  * The following example shows how Buffer arrays can be used:
  *
- * @code
+ * <code>
 int main()
 {
     //init gimpact
@@ -89,8 +88,8 @@ int main()
     //terminate gimpact
     gimpact_terminate();
 }
- * @endcode
- * @sa BUFFERS
+ * </code>
+ * @see BUFFERS
  */
 public class GimBufferArray<T> implements GimConstants { //formerly GBUFFER_ARRAY
 

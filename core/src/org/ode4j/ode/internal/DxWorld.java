@@ -24,21 +24,33 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.internal.Common.dDOUBLE;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dNODEBUG;
+import static org.ode4j.ode.internal.Common.dRecip;
+import static org.ode4j.ode.internal.Common.dSqrt;
+import static org.ode4j.ode.internal.Common.dUASSERT;
+import static org.ode4j.ode.internal.ErrorHandler.dMessage;
+
 import org.cpp4j.java.Ref;
-
-import static org.ode4j.ode.OdeMath.*;
-
-import org.ode4j.ode.internal.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
-import org.ode4j.ode.internal.DxWorldProcessMemArena.DxStateSave;
+import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.Objects_H.dxAutoDisable;
 import org.ode4j.ode.internal.Objects_H.dxContactParameters;
 import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.internal.joints.DxJointNode;
-import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DWorld;
+import org.ode4j.ode.internal.processmem.DxStepWorkingMemory;
+import org.ode4j.ode.internal.processmem.DxUtil;
+import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
+import org.ode4j.ode.internal.processmem.DxWorldProcessContext;
+import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo;
+import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
+import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryManager;
+import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryReserveInfo;
 
 public class DxWorld extends DBase implements DWorld {
 
@@ -49,14 +61,14 @@ public class DxWorld extends DBase implements DWorld {
 	//	List<dxBody> joints = new LinkedList<dxBody>();
 	//	 public dxBody firstbody;		// body linked list
 	//	  dxJoint firstjoint;		// joint linked list
-	int nb;			// number of bodies and joints in lists
+	public int nb;			// number of bodies and joints in lists
 	public int nj;
 	DVector3 gravity;		// gravity vector (m/s/s)
 	private double global_erp;		// global error reduction parameter
 	double global_cfm;		// global constraint force mixing parameter
 	dxAutoDisable adis;		// auto-disable parameters
 	int body_flags;               // flags for new bodies
-	private DxStepWorkingMemory wmem; // Working memory object for dWorldStep/dWorldQuickStep
+	public DxStepWorkingMemory wmem; // Working memory object for dWorldStep/dWorldQuickStep
 
 	dxQuickStepParameters qs;
 	public dxContactParameters contactp;
@@ -390,7 +402,7 @@ public class DxWorld extends DBase implements DWorld {
 	        result = true;
 	    }
 
-	    dxCleanupWorldProcessContext ();
+	    DxWorldProcessContext.dxCleanupWorldProcessContext (this);
 
 	    return result;
 	}
@@ -403,15 +415,19 @@ public class DxWorld extends DBase implements DWorld {
 
 	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
 	    //TODO fix context stuff
-	    if (dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
+	    if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
 	            DxQuickStep.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
 	    {
+	        //TODO hack by TZ begin
+//	        this.wmem = new DxStepWorkingMemory();
+//	        this.wmem.SureGetWorldProcessingContext();
+	        //TODO hack by TZ end
 	        dxProcessIslands (islandsinfo, stepsize, DxQuickStep.INSTANCE);
 
 	        result = true;
 	    }
 
-	    dxCleanupWorldProcessContext ();
+	    DxWorldProcessContext.dxCleanupWorldProcessContext (this);
 
 	    return result;
 	}
@@ -654,63 +670,6 @@ public class DxWorld extends DBase implements DWorld {
 				DxJoint []_joint, int jointOfs, int nj, double stepsize);
 	}
 
-//	      bool dxReallocateWorldProcessContext (dxWorld *world, dxWorldProcessIslandsInfo &islandsinfo, 
-//	        dReal stepsize, dmemestimate_fn_t stepperestimate);
-//	      void dxCleanupWorldProcessContext (dxWorld *world);
-	public static boolean dxReallocateWorldProcessContext (DxWorld world, 
-	        DxWorldProcessIslandsInfo islandsinfo, 
-	        double stepsize, dmemestimate_fn_t stepperestimate)
-	{
-	    //TZ DxStepWorkingMemory wmem = DxWorld.AllocateOnDemand(world.wmem);
-	    if (world.wmem == null) {
-	        world.wmem = new DxStepWorkingMemory();
-	    }
-	    DxStepWorkingMemory wmem = world.wmem;
-
-	    if (wmem == null) return false;
-
-	    DxWorldProcessContext context = wmem.SureGetWorldProcessingContext();
-	    if (context == null) return false;
-	    Common.dIASSERT (context.IsStructureValid());
-
-	    final DxWorldProcessMemoryReserveInfo reserveinfo = wmem.SureGetMemoryReserveInfo();
-	    final DxWorldProcessMemoryManager memmgr = wmem.SureGetMemoryManager();
-
-	    int islandsreq = world.EstimateIslandsProcessingMemoryRequirements();
-	    Common.dIASSERT(islandsreq == DxUtil.dEFFICIENT_SIZE(islandsreq));
-
-	    DxWorldProcessMemArena stepperarena = null;
-	    DxWorldProcessMemArena islandsarena = context.ReallocateIslandsMemArena(
-	            islandsreq, memmgr, 1.0f, reserveinfo.m_uiReserveMinimum);
-
-	    if (islandsarena != null)
-	    {
-	        int stepperreq = 
-	            DxWorldProcessIslandsInfo.BuildIslandsAndEstimateStepperMemoryRequirements(
-	                    islandsinfo, islandsarena, world, stepsize, stepperestimate);
-	        Common.dIASSERT(stepperreq == DxUtil.dEFFICIENT_SIZE(stepperreq));
-
-	        stepperarena = context.ReallocateStepperMemArena(stepperreq, 
-	                memmgr, reserveinfo.m_fReserveFactor, reserveinfo.m_uiReserveMinimum);
-	    }
-
-	    return stepperarena != null;
-	}
-
-	public void dxCleanupWorldProcessContext ()
-	{
-	    DxStepWorkingMemory wmem = this.wmem;
-	    if (wmem != null)
-	    {
-            DxWorldProcessContext context = wmem.GetWorldProcessingContext();
-            if (context != null)
-            {
-                context.CleanupContext();
-                Common.dIASSERT(context.IsStructureValid());
-            }
-        }
-    }
-
 
 
 //	dxWorldProcessMemArena *dxAllocateTemporaryWorldProcessMemArena(
@@ -744,7 +703,7 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 	// This estimates dynamic memory requirements for dxProcessIslands
-	static int EstimateIslandsProcessingMemoryRequirements()
+	public int EstimateIslandsProcessingMemoryRequirements()
 	{
 	    //          int res = 0;
 	    //
@@ -805,7 +764,7 @@ public class DxWorld extends DBase implements DWorld {
 	        int jcount = islandsizes[sizescurr+1];
 
 	        //BEGIN_STATE_SAVE(stepperarena, stepperstate) 
-            DxStateSave stepperstate = stepperarena.BEGIN_STATE_SAVE();
+            BlockPointer stepperstate = stepperarena.BEGIN_STATE_SAVE();
             {
 	            // now do something with body and joint lists
 	            stepper.run (stepperarena,this,body,bodystart,bcount,
@@ -931,7 +890,7 @@ public class DxWorld extends DBase implements DWorld {
 	//****************************************************************************
 	// Auto disabling
 
-	void dInternalHandleAutoDisabling (double stepsize)
+	public void dInternalHandleAutoDisabling (double stepsize)
 	{
 		DxBody bb;
 		for ( bb=firstbody.get(); bb!=null; bb=(DxBody)bb.getNext() )

@@ -338,22 +338,22 @@ public class DxGimpactCollision {
 
 	//------------------------------------------------------------------------------
 	/**
-  @brief Check for intersection between triangle and capsule.
-
-  @param dist [out] Shortest distance squared between the triangle and 
-                    the capsule segment (central axis).
-  @param t    [out] t value of point on segment that's the shortest distance 
-                    away from the triangle, the coordinates of this point 
-                    can be found by (cap.seg.end - cap.seg.start) * t,
-                    or cap.seg.ipol(t).
-  @param u    [out] Barycentric coord on triangle.
-  @param v    [out] Barycentric coord on triangle.
-  @return True if intersection exists.
-
-  The third Barycentric coord is implicit, ie. w = 1.0 - u - v
-  The Barycentric coords give the location of the point on the triangle
-  closest to the capsule (where the distance between the two shapes
-  is the shortest).
+	 * Check for intersection between triangle and capsule.
+	 * 
+	 * @param dist [out] Shortest distance squared between the triangle and 
+	 *                   the capsule segment (central axis).
+	 * @param t    [out] t value of point on segment that's the shortest distance 
+	 *                   away from the triangle, the coordinates of this point 
+	 *                   can be found by (cap.seg.end - cap.seg.start) * t,
+	 *                   or cap.seg.ipol(t).
+	 * @param u    [out] Barycentric coord on triangle.
+	 * @param v    [out] Barycentric coord on triangle.
+	 * @return True if intersection exists.
+	 * 
+	 * The third Barycentric coord is implicit, ie. w = 1.0 - u - v
+	 * The Barycentric coords give the location of the point on the triangle
+	 * closest to the capsule (where the distance between the two shapes
+	 * is the shortest).
 	 */
 	//inline
 	//bool IntersectCapsuleTri( const dVector3 segOrigin, const dVector3 segEnd, 

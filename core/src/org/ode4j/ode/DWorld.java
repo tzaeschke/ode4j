@@ -26,7 +26,7 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.internal.DxUtil;
+import org.ode4j.ode.internal.processmem.DxUtil;
 
 /**
  * The world object is a container for rigid bodies and joints. Objects in
@@ -178,12 +178,12 @@ public interface DWorld {
 	 * Set the world to use shared working memory along with another world.
 	 *
 	 * The worlds allocate working memory internally for simulation stepping. This
-	 * memory is cached among the calls to @c dWordStep and @c dWorldQuickStep. 
+	 * memory is cached among the calls to <code>dWordStep</code> and <code>dWorldQuickStep</code>. 
 	 * Similarly, several worlds can be set up to share this memory caches thus 
 	 * reducing overall memory usage by cost of making worlds inappropriate for 
 	 * simultaneous simulation in multiple threads.
 	 *
-	 * If null value is passed for @a from_world parameter the world is detached from 
+	 * If null value is passed for <code>from_world</code> parameter the world is detached from 
 	 * sharing and returns to defaults for working memory, reservation policy and 
 	 * memory manager as if just created. This can also be used to enable use of shared 
 	 * memory for a world that has already had working memory allocated privately.
@@ -191,7 +191,7 @@ public interface DWorld {
 	 * is prohibited.
 	 *
 	 * Allocation policy used can only increase world's internal reserved memory size
-	 * and never decreases it. @c dWorldCleanupWorkingMemory can be used to release 
+	 * and never decreases it. <code>dWorldCleanupWorkingMemory</code> can be used to release 
 	 * working memory for a world in case if number of objects/joint decreases 
 	 * significantly in it.
 	 *
@@ -213,7 +213,7 @@ public interface DWorld {
 	boolean useSharedWorkingMemory(DWorld from_world/*=NULL*/);
 
 	/**
-	 * @brief Release internal working memory allocated for world
+	 * Release internal working memory allocated for world
 	 *
 	 * The worlds allocate working memory internally for simulation stepping. This 
 	 * function can be used to free world's internal memory cache in case if number of
@@ -260,7 +260,7 @@ public interface DWorld {
 	};
 
 	/**
-	 * @brief Set memory reservation policy for world to be used with simulation stepping functions
+	 * Set memory reservation policy for world to be used with simulation stepping functions
 	 *
 	 * The function allows to customize reservation policy to be used for internal
 	 * memory which is allocated to aid simulation for a world. By default, values
@@ -320,15 +320,16 @@ public interface DWorld {
 	};
 
 	/**
-	* @brief Set memory manager for world to be used with simulation stepping functions
+	* Set memory manager for world to be used with simulation stepping functions
 	*
 	* The function allows to customize memory manager to be used for internal
-	* memory allocation during simulation for a world. By default, @c dAlloc/@c dRealloc/@c dFree
+	* memory allocation during simulation for a world. By default, 
+	* <code> dAlloc dRealloc dFree</code>
 	* based memory manager is used.
 	*
-	* Passing @a memfuncs argument as NULL results in memory manager being
+	* Passing <code>memfuncs</code> argument as NULL results in memory manager being
 	* reset to default one as if the world has been just created. The content of 
-	* @a memfuncs structure is copied internally and does not need to remain valid
+	* <code>memfuncs</code> structure is copied internally and does not need to remain valid
 	* after the call returns.
 	*
 	* If the world uses working memory sharing, changing memory manager

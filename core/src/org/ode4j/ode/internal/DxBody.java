@@ -716,13 +716,22 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	}
 
 	//	void dBodyEnable (dxBody b)
-	public void dBodyEnable ()
-	{
-		flags &= ~dxBodyDisabled;
-		adis_stepsleft = adis.idle_steps;
-		adis_timeleft = adis.idle_time;
-		// no code for average-processing needed here
-	}
+    public void dBodyEnable ()
+    {
+        flags &= ~dxBodyDisabled;
+        adis_stepsleft = adis.idle_steps;
+        adis_timeleft = adis.idle_time;
+        // no code for average-processing needed here
+    }
+
+    /**
+     * flags &= ~dxBodyDisabled.
+     */
+    //(TZ)
+    public void dBodyEnable_noAdis ()
+    {
+        flags &= ~dxBodyDisabled;
+    }
 
 
 	//	void dBodyDisable (dxBody b)
@@ -732,6 +741,9 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	}
 
 
+	/**
+	 * @return (flags & dxBodyDisabled) == 0
+	 */
 	//	public boolean dBodyIsEnabled (dxBody b)
 	public boolean dBodyIsEnabled ()
 	{

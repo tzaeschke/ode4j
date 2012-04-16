@@ -25,15 +25,34 @@
 package org.ode4j.ode.internal;
 
 
-import static org.cpp4j.Cstdio.*;
-import static org.ode4j.ode.OdeMath.*;
+import static org.cpp4j.Cstdio.printf;
+import static org.cpp4j.Cstring.memcpy;
+import static org.cpp4j.Cstring.memmove;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.internal.Common.dAASSERT;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dNODEBUG;
+import static org.ode4j.ode.internal.Common.dPAD;
+import static org.ode4j.ode.internal.Common.dRecip;
+import static org.ode4j.ode.internal.Common.d_ERR_LCP;
+import static org.ode4j.ode.internal.ErrorHandler.dDebug;
+import static org.ode4j.ode.internal.ErrorHandler.dMessage;
+import static org.ode4j.ode.internal.FastDot.dDot;
+import static org.ode4j.ode.internal.Matrix.dFactorLDLT;
+import static org.ode4j.ode.internal.Matrix.dSetZero;
+import static org.ode4j.ode.internal.Matrix.dSolveLDLT;
+import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
+import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
+import static org.ode4j.ode.internal.Misc.dMaxDifference;
+import static org.ode4j.ode.internal.Misc.dRandReal;
 
 import org.ode4j.math.DMatrixN;
+import org.ode4j.ode.DStopwatch;
 import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.DStopwatch;
-import org.ode4j.ode.internal.DxUtil.BlockPointer;
-import org.ode4j.ode.internal.DxWorldProcessMemArena.DxStateSave;
+import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
+import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 
 
 
@@ -726,7 +745,7 @@ public class DLCP {
 		// and return
 		if (nub >= n) {
 		    double[] d = memarena.AllocateArrayDReal(n);
-		    dSetZero (d, n);
+		    dSetZero (d);//, n);
 
 		    int nskip = dPAD(n);
 			Matrix.dFactorLDLT (A,d,n,nskip);		// use w for d
@@ -1112,8 +1131,7 @@ public class DLCP {
 
         double total_time = 0;
         for (int count=0; count < 1000; count++) {
-            DxWorldProcessMemArena.DxStateSave saveInner = 
-                arena.BEGIN_STATE_SAVE(); 
+            BlockPointer saveInner = arena.BEGIN_STATE_SAVE(); 
             {
 
             // form (A,b) = a random positive definite LCP problem

@@ -33,7 +33,8 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.internal.DxUtil.BlockPointer;
+import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
+import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 
 public class Matrix extends FastDot {
 
@@ -222,7 +223,6 @@ public class Matrix extends FastDot {
 	  final int rskip = dPAD(r);
 	  int aa=0; //dReal *aa = A;
 	  int bb=0;//const dReal *bb = B;
-	  //TODO for (int i=p; i; aa+=rskip, bb+=qskip, --i) {
 	  for (int i=p; i!=0; aa+=rskip, bb+=qskip, --i) {
 	    int a = 0;//dReal *a = aa;
 	    int cc = 0, ccend = r;//const dReal *cc = C, *ccend = C + r;
@@ -461,7 +461,7 @@ public class Matrix extends FastDot {
 	    }
 	    return !failure;//failure ? 0 : 1;
 
-	    //TODO rmeove, is from 0.11.1
+	    //TODO remove, is from 0.11.1
 //	    int i, j, k, nskip;
 //		double sum;
 //		// double[] a,b,aa,bb;
@@ -722,14 +722,17 @@ public class Matrix extends FastDot {
 		double[] Acopy;
 		dAASSERT(n > 0);
 		int nskip = dPAD(n);
-		//TODO tmpbuf
+		DxWorldProcessMemArena.dummy();//tmpbuf
 		Acopy = new double[nskip * n]; // TZ (double*) ALLOCA (nskip*n *
 										// sizeof(double));
 		//memcpy(Acopy, A, nskip * n);// * sizeof(double));
 		System.arraycopy(A, 0, Acopy, 0, nskip * n);
 		return dFactorCholesky(Acopy, n, tmpbuf);// != false;
 	}
-
+    public static boolean dIsPositiveDefinite(final double[] A, int n) {
+        return dIsPositiveDefinite(A, n, null);
+    }
+    
 	/**
 	 * check whether an n*n matrix A is positive definite, return 1/0 (yes/no).
 	 * positive definite means that x'*A*x > 0 for any x. this performs a
@@ -800,13 +803,13 @@ public class Matrix extends FastDot {
 	 * and d[0] are not actually modified. see ldltaddTL.m for further comments.
 	 */
 	public static void dLDLTAddTL(double[] L, int lOfs, double[] d, int dOfs,
-			final double[] a, int n, int nskip, double[]tmpbuf) {
+			final double[] a, int n, int nskip, double[] tmpbuf) {
 		// dAASSERT (L, d, a);
 		dAASSERT(n > 0 && nskip >= n);
 
 		if (n < 2)
 			return;
-		//TODO tmpbuf
+		DxWorldProcessMemArena.dummy();
 		double[] W1 = new double[n]; // (double*) ALLOCA (n*sizeof(double));
 		double[] W2 = new double[n]; // (double*) ALLOCA (n*sizeof(double));
 
@@ -923,7 +926,7 @@ public class Matrix extends FastDot {
 		if (r == n2 - 1) {
 			return; // deleting last row/col is easy
 		} else {
-		//TODO use tmpbuf?
+		DxWorldProcessMemArena.dummy();
 //		    int LDLTAddTL_size = _dEstimateLDLTAddTLTmpbufSize(nskip);
 //		    dIASSERT(LDLTAddTL_size % 8 /*sizeof(dReal)*/ == 0);
 //		    double[] tmp = tmpbuf!=null ? tmpbuf : new double[LDLTAddTL_size + n2];
