@@ -615,7 +615,7 @@ void testReorthonormalize()
 		dClearUpperTriangle (L,MSIZE);
 		for (i=0; i<MSIZE; i++) L[i*MSIZE4+i] = 1.0;
 
-		dSetZero (DL,MSIZE4*MSIZE);
+		dSetZero (DL);//,MSIZE4*MSIZE);
 		for (i=0; i<MSIZE; i++) {
 			for (j=0; j<MSIZE; j++) DL[i*MSIZE4+j] = L[i*MSIZE4+j] / d[j];
 		}
