@@ -16,8 +16,10 @@ SUMMARY of changes for ode-0.12
 - Clean-up of demos
 - Bug fixes
 
-TODO
-- Fix DemoBoxStack
+2012-Apr-14 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - collision_kernel.*
+		  - Fixed QuickStep/DemoBoxStack
 
 2012-Apr-14 Tilmann Zaschke
 		* Migration to ode-0.12:
