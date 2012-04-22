@@ -123,7 +123,7 @@ public class CollideBoxPlane implements DColliderFn {
 		do {
 			if (maxc == 1) {
 				//goto done;
-				done(ret, contacts, skip, o1, o2, maxc, depth.get(), p);
+				done(ret, contacts, skip, o1, o2, maxc, depth.get(), p, n);
 				return ret.get();
 			}
 
@@ -190,7 +190,7 @@ public class CollideBoxPlane implements DColliderFn {
 				}
 			}
 			
-			BAR2(p1, p2, p3, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc);
+			BAR2(p1, p2, p3, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc,n);
 			//TODO improve  (e.g. make depth a primitive int, reduce arguments, ...
 //			BAR2_(p1, p2, depth, ret, contacts, skip, A[p2], B[p2], o1, o2, p, R, box.side);
 			
@@ -198,13 +198,13 @@ public class CollideBoxPlane implements DColliderFn {
 				break;
 			} else {
 				if (go == 21) {
-					if (!BAR2(2, 0, 1, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc)) return ret.get();
+					if (!BAR2(2, 0, 1, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc, n)) return ret.get();
 					break;
 				} else if (go == 22) {
-					if (!BAR2(2, 1, 2, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc)) return ret.get();
+					if (!BAR2(2, 1, 2, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc, n)) return ret.get();
 					break;
 				} else if (go == 23) {
-					if (!BAR2(2, 2, 3, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc)) return ret.get();
+					if (!BAR2(2, 2, 3, depth, ret, contacts, skip, A, B, o1, o2, p, R, box.side, maxc, n)) return ret.get();
 					break;
 				} else {
 					throw new IllegalStateException("go=" + go);
@@ -223,7 +223,7 @@ public class CollideBoxPlane implements DColliderFn {
 //				CONTACT(contact,i*skip).g1 = o1;
 //				CONTACT(contact,i*skip).g2 = o2;
 //			}
-		done(ret, contacts, skip, o1, o2, maxc, depth.get(), p);
+		done(ret, contacts, skip, o1, o2, maxc, depth.get(), p, n);
 		return ret.get();
 	}
 
@@ -241,13 +241,14 @@ public class CollideBoxPlane implements DColliderFn {
 //  if (A ## sideinc > 0) { FOO2(ctact,side,+); } else { FOO2(ctact,side,-); } \
 //  CONTACT(contact,ctact*skip).depth = depth; \
 //  ret++;
-    private final boolean BAR2(int ctact, int side, int sideinc, 
-            RefDouble depth, RefInt ret, DContactGeomBuffer contacts, int skip,
+    private final boolean BAR2(final int ctact, final int side, final int sideinc, 
+            RefDouble depth, RefInt ret, DContactGeomBuffer contacts, final int skip,
             double[] A, double[] B, DxGeom o1, DxGeom o2, 
-            DVector3 p, DMatrix3C R, DVector3 boxSide, final int maxc) {
+            DVector3 p, DMatrix3C R, DVector3 boxSide, final int maxc, 
+            DVector3C n) {
     //  if (depth - B ## sideinc < 0) goto done; \
         if (depth.get()-B[sideinc-1] < 0) {
-            done(ret, contacts, skip, o1, o2, maxc, depth.get(), p);
+            done(ret, contacts, skip, o1, o2, maxc, depth.get(), p, n);
             return false;
         }
 //      if (A ## sideinc > 0) { FOO(ctact,side,+); } else { FOO2(ctact,side,-); } \
@@ -294,7 +295,7 @@ public class CollideBoxPlane implements DColliderFn {
 //    }
     
 	private final void done(RefInt ret, DContactGeomBuffer contacts, int skip, DxGeom o1, DxGeom o2,
-	        final int maxc, final double depth, DVector3C p) {
+	        final int maxc, final double depth, DVector3C p, DVector3C n) {
 		//done:
 	    if (maxc == 4 && ret.get() == 3) { // If user requested 4 contacts, and the first 3 were created...
 	        // Combine contacts 2 and 3 (vectorial sum) and get the fourth one
@@ -311,7 +312,7 @@ public class CollideBoxPlane implements DColliderFn {
 	            c3.depth = d4;
 	            ret.inc();
 	        }
-	      }
+	    }
 
 		for (int i=0; i<ret.get(); i++) {
 //			CONTACT(contact,i*skip).g1 = o1;
@@ -321,6 +322,8 @@ public class CollideBoxPlane implements DColliderFn {
 			contact.g2 = o2;
 			contact.side1 = -1;
 			contact.side2 = -1;
+			
+			contact.normal.set(n);
 		}
 	}
 	

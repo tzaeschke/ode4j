@@ -190,7 +190,7 @@ dmemestimate_fn_t {
 	//	dxBody * const *body, dRealPtr invI)
 	private static void compute_invM_JT (final int m, final double[] J, final double[] iMJ, 
 	        final int[]jb,
-			final DxBody[]body, final double[] invI)
+			final DxBody[]bodyP, final int bodyOfs, final double[] invI)
 	{
 		int i,j;
 		//dRealMutablePtr iMJ_ptr = iMJ;
@@ -200,13 +200,13 @@ dmemestimate_fn_t {
 		for (i=0; i<m; J_ofs +=12, iMJ_ofs += 12, i++) {
 			int b1 = jb[i*2];
 			int b2 = jb[i*2+1];
-			double k1 = body[b1].invMass;
+			double k1 = bodyP[b1+bodyOfs].invMass;
 //TZ			for (j=0; j<3; j++) iMJ_ptr[j] = k*J_ptr[j];
 			for (j=0; j<3; j++) iMJ[j + iMJ_ofs] = k1*J[j + J_ofs];
 //			dMULTIPLY0_331 (iMJ_ptr + 3, invI + 12*b1, J_ptr + 3);
 			dMultiply0_331 (iMJ, iMJ_ofs + 3, invI, 12*b1, J,J_ofs + 3);
 			if (b2 != -1) {
-				double k2 = body[b2].invMass;
+				double k2 = bodyP[b2+bodyOfs].invMass;
 				//for (j=0; j<3; j++) iMJ_ptr[j+6] = k*J_ptr[j+6];
 				for (j=0; j<3; j++) iMJ[j+6+iMJ_ofs] = k2*J[j+6+J_ofs];
 				//dMULTIPLY0_331 (iMJ_ptr + 9, invI + 12*b2, J_ptr + 9);
@@ -470,7 +470,8 @@ dmemestimate_fn_t {
 	//		dRealMutablePtr lo, dRealMutablePtr hi, dRealPtr cfm, int *findex,
 	//		dxQuickStepParameters *qs)
 	private static void SOR_LCP (DxWorldProcessMemArena memarena,
-	        final int m, final int nb, double[] J, int[] jb, final DxBody []body,
+	        final int m, final int nb, double[] J, int[] jb, final DxBody []bodyP,
+	        final int bodyOfs,
 			final double[] invI, double[] lambda, double[] fc, double[] b,
 			final double[] lo, final double[] hi, final double[] cfm, final int []findex,
 			dxQuickStepParameters qs)
@@ -487,7 +488,7 @@ dmemestimate_fn_t {
 		// precompute iMJ = inv(M)*J'
 		//double[] iMJ = new double[m*12];//dRealAllocaArray (iMJ,m*12);
 		double[] iMJ = memarena.AllocateArrayDReal (m*12);
-		compute_invM_JT (m,J,iMJ,jb,body,invI);
+		compute_invM_JT (m,J,iMJ,jb,bodyP,bodyOfs,invI);
 
 		// compute fc=(inv(M)*J')*lambda. we will incrementally maintain fc
 		// as we change lambda.
@@ -496,6 +497,7 @@ dmemestimate_fn_t {
 //			throw new UnsupportedOperationException();
 //			//multiply_invM_JT (m,nb,iMJ,jb,lambda,fc);
 //		} else {//#else
+		//TODO (TZ) should not be necessary (is created just before given to this method)
 			dSetZero (fc,nb*6);
 //		}//#endif
 
@@ -524,7 +526,7 @@ dmemestimate_fn_t {
             for (int i=0; i<m; J_ofs += 12, i++) {
                 double Ad_i = Ad[i];
                 for (int j=0; j<12; j++) {
-                    J[J_ofs] *= Ad_i;//J_ptr[0] *= Ad[i];
+                    J[J_ofs+j] *= Ad_i;//J_ptr[0] *= Ad[i];
                 }
                 b[i] *= Ad_i;
 
@@ -626,7 +628,7 @@ dmemestimate_fn_t {
 				int fc_ofs1;//dRealMutablePtr fc_ptr1;
 				int fc_ofs2;//dRealMutablePtr fc_ptr2;
 				double delta;
-				final int NULL = -1;
+				final int NULL = 0;
 				
 				{
 				    int b1 = jb[index*2];
@@ -705,7 +707,7 @@ dmemestimate_fn_t {
 				    int iMJ_ofs = 0+index*12; //dRealPtr iMJ_ptr = iMJ + (size_t)index*12;
     				// update fc.
     				// @@@ potential optimization: SIMD for this and the b2 >= 0 case
-    				fc[fc_ofs1 + 0] += delta * iMJ[iMJ_ofs + 0];//fc_ptr[0] += delta * iMJ_ptr[0];
+				    fc[fc_ofs1 + 0] += delta * iMJ[iMJ_ofs + 0];//fc_ptr[0] += delta * iMJ_ptr[0];
     				fc[fc_ofs1 + 1] += delta * iMJ[iMJ_ofs + 1];//fc_ptr[1] += delta * iMJ_ptr[1];
     				fc[fc_ofs1 + 2] += delta * iMJ[iMJ_ofs + 2];//fc_ptr[2] += delta * iMJ_ptr[2];
     				fc[fc_ofs1 + 3] += delta * iMJ[iMJ_ofs + 3];//fc_ptr[3] += delta * iMJ_ptr[3];
@@ -735,15 +737,15 @@ dmemestimate_fn_t {
 	//void dxQuickStepper (dxWorld *world, dxBody * const *body, int nb,
 	//	     dxJoint * const *_joint, int nj, dReal stepsize)
 	private static void dxQuickStepper (DxWorldProcessMemArena memarena,
-	        DxWorld world, DxBody[]body, final int nb,
-			DxJoint[] _joint, final int _nj, double stepsize)
+	        DxWorld world, DxBody[] bodyP, final int bodyOfs, final int nb,
+			DxJoint[] _jointP, final int _jointOfs, final int _nj, double stepsize)
 	{
 		if (TIMING) dTimerStart("preprocessing");
 
 		double stepsize1 = dRecip(stepsize);
 
 		// number all bodies in the body list - set their tag values
-		for (int i=0; i<nb; i++) body[i].tag = i;
+		for (int i=0; i<nb; i++) bodyP[i+bodyOfs].tag = i;
 
 		// for all bodies, compute the inertia tensor and its inverse in the global
 		// frame, and compute the rotational force and add it to the torque
@@ -754,7 +756,7 @@ dmemestimate_fn_t {
 		    
     		for (int i=0; i<nb; invIrowP += 12, i++) {
     			DMatrix3 tmp = new DMatrix3();
-    			DxBody b = body[i];
+    			DxBody b = bodyP[i+bodyOfs];
     
     			// compute inverse inertia tensor in global frame
     			dMultiply2_333 (tmp,b.invI,b.posr().R());
@@ -780,7 +782,7 @@ dmemestimate_fn_t {
 		    double gravity_x = world.gravity.get0();
 		    if (gravity_x != 0) {
 		        for (int i=0; i<nb; i++) {
-		            DxBody b = body[i];
+		            DxBody b = bodyP[i+bodyOfs];
 		            if ((b.flags & DxBody.dxBodyNoGravity)==0) {
 		                b.facc.add(0, b.mass._mass * gravity_x);
 		            }
@@ -789,7 +791,7 @@ dmemestimate_fn_t {
 		    double gravity_y = world.gravity.get1();
 		    if (gravity_y != 0) {
 		        for (int i=0; i<nb; i++) {
-		            DxBody b = body[i];
+		            DxBody b = bodyP[i+bodyOfs];
 		            if ((b.flags & DxBody.dxBodyNoGravity)==0) {
 		                b.facc.add(1, b.mass._mass * gravity_y);
 		            }
@@ -798,7 +800,7 @@ dmemestimate_fn_t {
 		    double gravity_z = world.gravity.get2();
 		    if (gravity_z != 0) {
 		        for (int i=0; i<nb; i++) {
-		            DxBody b = body[i];
+		            DxBody b = bodyP[i+bodyOfs];
 		            if ((b.flags & DxBody.dxBodyNoGravity)==0) {
 		                b.facc.add(2, b.mass._mass * gravity_z);
 		            }
@@ -816,7 +818,7 @@ dmemestimate_fn_t {
 		    int jicurrP=0; //jicurr = 0;
 		    DJointWithInfo1 jicurrO = new DJointWithInfo1();
 		    for (int i=0; i<_nj; i++) {	// i=dest, j=src
-			    DxJoint j = _joint[i];
+			    DxJoint j = _jointP[i+_jointOfs];
                 //DxJoint.Info1 jicurr = new DxJoint.Info1(); //TZ  TODO necessary?
 			    j.getInfo1(jicurrO.info);
 			    dIASSERT (jicurrO.info.m >= 0 && jicurrO.info.m <= 6 && jicurrO.info.nub >= 0 && jicurrO.info.nub <= jicurrO.info.m);
@@ -1007,7 +1009,7 @@ dmemestimate_fn_t {
 		            int tmp1currP = 0;//tmp1;
 		            int invIrowP = 0; //invI
 		            for (int i=0; i<nb; tmp1currP+=6, invIrowP+=12, i++) {
-		                DxBody b = body[i];
+		                DxBody b = bodyP[i+bodyOfs];
 		                double body_invMass = b.invMass;
 		                for (int j=0; j<3; j++) {
 		                    tmp1[tmp1currP+j] = 
@@ -1053,7 +1055,7 @@ dmemestimate_fn_t {
 			{
 	            if (TIMING) dTimerNow ("solving LCP problem");
 	            // solve the LCP problem and get lambda and invM*constraint_force
-	            SOR_LCP (memarena,m,nb,J,jb,body,invI,lambda,cforce,rhs,lo,hi,cfm,findex,world.qs);
+	            SOR_LCP (memarena,m,nb,J,jb,bodyP,bodyOfs,invI,lambda,cforce,rhs,lo,hi,cfm,findex,world.qs);
 			}
 			memarena.END_STATE_SAVE(lcpstate);
 			    
@@ -1094,7 +1096,7 @@ dmemestimate_fn_t {
 			    // add stepsize * cforce to the body velocity
 			    int cforcecurrP = 0; //cforce
 			    for (int i=0; i<nb; cforcecurrP+=6, i++) {
-			        DxBody b = body[i];
+			        DxBody b = bodyP[i+bodyOfs];
 			        for (int j=0; j<3; j++) {
 			            b.lvel.add(j, stepsize * cforce[cforcecurrP+j] );
 			            b.avel.add(j, stepsize * cforce[cforcecurrP+3+j] );
@@ -1149,7 +1151,7 @@ dmemestimate_fn_t {
 		    // add stepsize * invM * fe to the body velocity
 		    int invIrowP = 0;//invI
 		    for (int i=0; i<nb; invIrowP += 12, i++) {
-		        DxBody b = body[i]; 
+		        DxBody b = bodyP[i+bodyOfs]; 
 		        double body_invMass_mul_stepsize = stepsize * b.invMass;
 		        for (int j=0; j<3; j++) {
 		            b.lvel.add(j, body_invMass_mul_stepsize * b.facc.get(j) );
@@ -1189,7 +1191,7 @@ dmemestimate_fn_t {
     		// (over the given timestep)
 		    if (TIMING) dTimerNow ("update position");
 		    for (int i=0; i<nb; i++) {
-		        body[i].dxStepBody (stepsize);
+		        bodyP[i+bodyOfs].dxStepBody (stepsize);
 		    }
 		}
 		
@@ -1198,7 +1200,7 @@ dmemestimate_fn_t {
     
     		// zero all force accumulators
     		for (int i=0; i<nb; i++) {
-    		    DxBody b = body[i];
+    		    DxBody b = bodyP[i+bodyOfs];
     			b.facc.setZero();//dSetZero (body[i].facc,3);
     			b.tacc.setZero();//dSetZero (body[i].tacc,3);
     		}
@@ -1328,9 +1330,6 @@ dmemestimate_fn_t {
 	        DxWorld world, DxBody[] body, int bodyOfs, int nb, 
 	        DxJoint[] joint, int jointOfs, int nj,
 			double stepsize) {
-	    if (bodyOfs!=0 || jointOfs!=0) {
-	        throw new UnsupportedOperationException("bo="+bodyOfs + " jo="+jointOfs);
-	    }
-		dxQuickStepper(memarena, world, body, nb, joint, nj, stepsize);
+		dxQuickStepper(memarena, world, body, bodyOfs, nb, joint, jointOfs, nj, stepsize);
 	}
 }

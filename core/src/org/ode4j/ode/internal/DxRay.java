@@ -112,7 +112,7 @@ public class DxRay extends DxGeom implements DRay {
 
 
 	//void dGeomRaySetLength (dxGeom g, double length)
-	public void dGeomRaySetLength (double length)
+	private void dGeomRaySetLength (double length)
 	{
 		//	dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
 		//  dxRay *r = (dxRay*) g;
@@ -122,7 +122,7 @@ public class DxRay extends DxGeom implements DRay {
 
 
 	//double dGeomRayGetLength (dxGeom g)
-	public double dGeomRayGetLength ()
+	private double dGeomRayGetLength ()
 	{
 		//dUASSERT (type == dRayClass,"argument not a ray");
 		return _length;
@@ -131,7 +131,7 @@ public class DxRay extends DxGeom implements DRay {
 
 	//void dGeomRaySet (dxGeom g, double px, double py, double pz,
 	//		  double dx, double dy, double dz)
-	public void dGeomRaySet (double px, double py, double pz,
+	private void dGeomRaySet (double px, double py, double pz,
 			double dx, double dy, double dz)
 	{
 		//	dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
@@ -156,7 +156,7 @@ public class DxRay extends DxGeom implements DRay {
 		rot.viewCol(2).set(n);
 		dGeomMoved ();
 	}
-	public void dGeomRaySet (DVector3C p, DVector3C d)
+	private void dGeomRaySet (DVector3C p, DVector3C d)
 	{
 		recomputePosr();
 		DMatrix3C rot = final_posr().R();
@@ -170,7 +170,7 @@ public class DxRay extends DxGeom implements DRay {
 
 
 	//void dGeomRayGet (dxGeom g, dVector3 start, dVector3 dir)
-	public void dGeomRayGet (DVector3 start, DVector3 dir)
+	private void dGeomRayGet (DVector3 start, DVector3 dir)
 	{
 		//	dUASSERT (type == dRayClass,"argument not a ray");
 		recomputePosr();

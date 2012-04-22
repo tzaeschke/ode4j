@@ -32,6 +32,8 @@ import org.ode4j.math.DVector3C;
 
 /**
  *  object, body, and world structs.
+ *  
+ *  @author Tilmann Zäschke
  */
 class Objects_H {
 

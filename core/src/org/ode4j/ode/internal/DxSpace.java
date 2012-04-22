@@ -492,9 +492,13 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		geom.spaceAdd (_first1, this, _geoms);
 	}
 
-	public void CHECK_NOT_LOCKED() {
-		dUASSERT (lock_count==0, "invalid operation for locked space");
-	}
+    public void CHECK_NOT_LOCKED() {
+        dUASSERT (lock_count==0, "invalid operation for locked space");
+    }
+
+    public static void CHECK_NOT_LOCKED(DxSpace s) {
+        dUASSERT (s == null || s.lock_count==0, "invalid operation for locked space");
+    }
 
 	public void setFirst(DxGeom dxGeom) {
 		_first1 = dxGeom;

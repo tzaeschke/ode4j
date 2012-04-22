@@ -121,7 +121,10 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 	{
 		int r = level*1000 + x*100 + y*10 + z;
 		//TODO remove check ?!?
-		if (r>=Integer.MAX_VALUE) throw new IllegalArgumentException("level: " + level);
+		if (r>=Integer.MAX_VALUE) {
+		    throw new IllegalArgumentException("level: " + level + " x=" + x + 
+		            " y=" + y + " z="+ z);
+		}
 		return Math.abs(r);
 		//return level*1000 + x*100 + y*10 + z;
 	}

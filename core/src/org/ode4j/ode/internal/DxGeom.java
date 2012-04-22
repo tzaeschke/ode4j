@@ -31,6 +31,7 @@ import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Rotation.dQfromR;
 
+import org.cpp4j.java.Ref;
 import org.cpp4j.java.RefInt;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.math.DMatrix3;
@@ -525,11 +526,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 		dMultiply0_333(body_posr.R, final_posr.R, inv_offset);
 		DVector3 world_offset = new DVector3();  //TZ
-		dMultiply0_331(world_offset, body_posr.R, offset_posr.pos);
+		dMultiply0_331(world_offset, body_posr.R, offset_posr.pos());
 //		body_posr.pos.v[0] = final_posr.pos.v[0] - world_offset.v[0];
 //		body_posr.pos.v[1] = final_posr.pos.v[1] - world_offset.v[1];
 //		body_posr.pos.v[2] = final_posr.pos.v[2] - world_offset.v[2];
-		body_posr.pos.eqDiff( final_posr.pos, world_offset );
+		body_posr.pos.eqDiff( final_posr.pos(), world_offset );
 	}
 
 	void getWorldOffsetPosr(final DxPosRC body_posr, final DxPosRC world_posr, 
@@ -556,13 +557,26 @@ public abstract class DxGeom extends DBase implements DGeom {
 //		dIASSERT(offset_posr != null);
 //		dIASSERT(body != null);
 
-		dMultiply0_331 (_final_posr.pos,body.posr().R(),offset_posr.pos);
+		dMultiply0_331 (_final_posr.pos,body.posr().R(),offset_posr.pos());
 //		_final_posr.pos.v[0] += body._posr.pos.v[0];
 //		_final_posr.pos.v[1] += body._posr.pos.v[1];
 //		_final_posr.pos.v[2] += body._posr.pos.v[2];
 		_final_posr.pos.add( body.posr().pos() );
 		dMultiply0_333 (_final_posr.R,body.posr().R(),offset_posr.R);
 	}
+
+//	boolean checkControlValueSizeValidity(void *dataValue, int *dataSize, 
+//	        int iRequiresSize) {
+    boolean checkControlValueSizeValidity(Ref<?> dataValue, RefInt dataSize, 
+            int iRequiresSize) {
+	    // Here it is the intent to return true for 0 required size in any case
+        //return (*dataSize == iRequiresSize && dataValue != 0) ? true : !(*dataSize = iRequiresSize);
+        if (dataSize.get() == iRequiresSize && dataValue.get() != null) {
+            return true;
+        }
+        dataSize.set(iRequiresSize);
+        return iRequiresSize == 0;
+	} 
 
 	boolean controlGeometry(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
 	        Object[][] dataValue, RefInt dataSize) {
@@ -596,15 +610,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 	//****************************************************************************
 	// public API for geometry objects
 
-	//	#define CHECK_NOT_LOCKED(space) \
-	//	  dUASSERT (!(space && space->lock_count), \
-	//		    "invalid operation for geom in locked space");
-	//TODO remove, this is already in dxSpace.
-	protected void CHECK_NOT_LOCKED(DxSpace space) {
-		dUASSERT (!(space != null && space.lock_count != 0), 
-		"invalid operation for geom in locked space");
-	}
-
 
 //	public void dGeomDestroy (dxGeom g)
 	public void dGeomDestroy ()
@@ -637,7 +642,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		//dAASSERT (g);
 		dUASSERT (b == null || (_gflags & GEOM_PLACEABLE) == 0,
 		"geom must be placeable");
-		CHECK_NOT_LOCKED (parent_space);
+		parent_space.CHECK_NOT_LOCKED ();
 
 		if (b != null) {
 			if (body == null) dFreePosr(_final_posr);
@@ -691,11 +696,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		//dAASSERT (g);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		if (offset_posr != null) {
 			// move body such that body+offset = position
 			DVector3 world_offset = new DVector3();
-			dMultiply0_331(world_offset, body.posr().R(), offset_posr.pos);
+			dMultiply0_331(world_offset, body.posr().R(), offset_posr.pos());
 			//TZ body could be null...?
 			world_offset.eqDiff(xyz, world_offset);
 //			body.dBodySetPosition(//g.body,
@@ -723,7 +728,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		//dAASSERT (g, R);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		if (offset_posr != null) {
 			recomputePosr();
 			// move body such that body+offset = rotation
@@ -731,11 +736,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 			DxPosR new_body_posr = new DxPosR();
 			//	    memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 			//	    memcpy(new_final_posr.R, R, sizeof(dMatrix3));
-			new_final_posr.pos.set(_final_posr.pos);//, sizeof(dVector3));
+			new_final_posr.pos.set(_final_posr.pos());//, sizeof(dVector3));
 			new_final_posr.R.set(R);//, sizeof(dMatrix3));
 			getBodyPosr(offset_posr, new_final_posr, new_body_posr);
 			body.dBodySetRotation(new_body_posr.R);
-			body.dBodySetPosition(new_body_posr.pos);
+			body.dBodySetPosition(new_body_posr.pos());
 		}
 		else if (body != null) {
 			// this will call dGeomMoved (g), so we don't have to
@@ -753,7 +758,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		//dAASSERT (quat);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		if (offset_posr != null) {
 			recomputePosr();
 			// move body such that body+offset = rotation
@@ -761,11 +766,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 			DxPosR new_body_posr = new DxPosR();
 			dRfromQ (new_final_posr.R, quat);
 			//memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
-			new_final_posr.pos.set(_final_posr.pos);
+			new_final_posr.pos.set(_final_posr.pos());
 			
 			getBodyPosr(offset_posr, new_final_posr, new_body_posr);
 			body.dBodySetRotation( new_body_posr.R);
-			body.dBodySetPosition(new_body_posr.pos);
+			body.dBodySetPosition(new_body_posr.pos());
 		}
 		if (body != null) {
 			// this will call dGeomMoved (g), so we don't have to
@@ -782,7 +787,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		recomputePosr();
-		return _final_posr.pos;
+		return _final_posr.pos();
 	}
 
 
@@ -882,7 +887,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	//	void dGeomSetCategoryBits (dxGeom g, unsigned long bits)
 	private void dGeomSetCategoryBits (long bits)
 	{
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		category_bits = bits;
 	}
 
@@ -890,7 +895,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	//	void dGeomSetCollideBits (dxGeom g, unsigned long bits)
 	private void dGeomSetCollideBits (long bits)
 	{
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		collide_bits = bits;
 	}
 
@@ -936,7 +941,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	    DVector3 prel,p = new DVector3();
 	    prel = new DVector3(px, py, pz);
 	    dMultiply0_331 (p,_final_posr.R,prel);
-	    result.eqSum(p, _final_posr.pos);
+	    result.eqSum(p, _final_posr.pos());
 	}
 
 
@@ -949,7 +954,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	    recomputePosr();
 
 	    DVector3 prel = new DVector3(px, py, pz);
-	    prel.sub(_final_posr.pos);
+	    prel.sub(_final_posr.pos());
 //	    prel[0] = px - g->final_posr->pos[0];
 //	    prel[1] = py - g->final_posr->pos[1];
 //	    prel[2] = pz - g->final_posr->pos[2];
@@ -1167,7 +1172,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		//dAASSERT (g);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset();
@@ -1185,7 +1190,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		//dAASSERT (g, R);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset ();
@@ -1199,7 +1204,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset ();
@@ -1212,7 +1217,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset();
@@ -1225,7 +1230,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset ();
@@ -1234,7 +1239,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 		DxPosR new_final_posr = new DxPosR();
 //		memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
-		new_final_posr.pos.set(_final_posr.pos);
+		new_final_posr.pos.set(_final_posr.pos());
 //		memcpy(new_final_posr.R, R, sizeof(dMatrix3));
 		new_final_posr.R.set(R);
 
@@ -1246,7 +1251,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-		CHECK_NOT_LOCKED (parent_space);
+        parent_space.CHECK_NOT_LOCKED ();
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset ();
@@ -1256,7 +1261,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 		DxPosR new_final_posr = new DxPosR();
 //		memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
-		new_final_posr.pos.set(_final_posr.pos);
+		new_final_posr.pos.set(_final_posr.pos());
 		dRfromQ (new_final_posr.R, quat);
 
 		getWorldOffsetPosr(body.posr(), new_final_posr, offset_posr);
@@ -1293,7 +1298,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		if (offset_posr != null)
 		{
-			return offset_posr.pos;
+			return offset_posr.pos();
 		}
 		return OFFSET_POSITION_ZERO;
 	}
@@ -1398,7 +1403,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 		DxGeom geom = this;
 		while (parent != null && (geom._gflags & GEOM_DIRTY)==0) {
-			CHECK_NOT_LOCKED (parent);
+			parent.CHECK_NOT_LOCKED ();
 			geom._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
 			parent.dirty (geom);
 			geom = parent;
@@ -1409,7 +1414,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		// ensure that their AABBs get recomputed
 		while (geom != null) {
 			geom._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
-			CHECK_NOT_LOCKED (geom.parent_space);
+			DxSpace.CHECK_NOT_LOCKED (geom.parent_space);
 			geom = geom.parent_space;
 		}
 	}
@@ -1433,6 +1438,23 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 	private static final dColliderEntry[][] colliders = new dColliderEntry[dGeomNumClasses][dGeomNumClasses];
 	private static boolean colliders_initialized = false;
+
+	private static boolean LIBCCD = false; 
+    private static boolean dLIBCCD_BOX_CYL = LIBCCD;
+
+    private static boolean dLIBCCD_CYL_CYL = LIBCCD;
+
+    private static boolean dLIBCCD_CAP_CYL = LIBCCD;
+
+    private static boolean dLIBCCD_CONVEX_BOX = LIBCCD;
+
+    private static boolean dLIBCCD_CONVEX_CAP = LIBCCD;
+
+    private static boolean dLIBCCD_CONVEX_CYL = LIBCCD;
+
+    private static boolean dLIBCCD_CONVEX_SPHERE = LIBCCD;
+
+    private static boolean dLIBCCD_CONVEX_CONVEX = LIBCCD;
 
 
 	// setCollider() will refuse to write over a collider entry once it has
@@ -1508,17 +1530,69 @@ public abstract class DxGeom extends DBase implements DGeom {
 			setCollider (dTriMeshClass,dPlaneClass, new CollideTrimeshPlane());// dCollideTrimeshPlane);
 			setCollider (dCylinderClass,dTriMeshClass, new CollideCylinderTrimesh());// dCollideCylinderTrimesh);
 //		}
-		setCollider (dCylinderClass,dBoxClass, new CollideCylinderBox());//dCollideCylinderBox);
+
+		if (dLIBCCD_BOX_CYL) {//#ifdef dLIBCCD_BOX_CYL
+		    throw new UnsupportedOperationException();
+			  //setCollider (dBoxClass,dCylinderClass,&dCollideBoxCylinderCCD);
+		} else {//#else
+            setCollider (dCylinderClass,dBoxClass, new CollideCylinderBox());//dCollideCylinderBox);
+		} //#endif
 		setCollider (dCylinderClass,dSphereClass, new CollideCylinderSphere());//dCollideCylinderSphere);
 		setCollider (dCylinderClass,dPlaneClass, new CollideCylinderPlane());//dCollideCylinderPlane);
-//		//setCollider (dCylinderClass,dCylinderClass, dCollideCylinderCylinder);
-//
-//		//--> Convex Collision
-		setCollider (dConvexClass,dPlaneClass, new DxConvex.CollideConvexPlane());//dCollideConvexPlane);
-		setCollider (dSphereClass,dConvexClass, new DxConvex.CollideSphereConvex());//dCollideSphereConvex);
-		setCollider (dConvexClass,dBoxClass, new DxConvex.CollideConvexBox());//dCollideConvexBox);
-		setCollider (dConvexClass,dCapsuleClass, new DxConvex.CollideConvexCapsule());//dCollideConvexCapsule);
-		setCollider (dConvexClass,dConvexClass, new DxConvex.CollideConvexConvex());//dCollideConvexConvex);
+
+		if (dLIBCCD_CYL_CYL) {
+		    throw new UnsupportedOperationException();
+		    //setCollider (dCylinderClass, dCylinderClass, &dCollideCylinderCylinder);
+		}
+		if (dLIBCCD_CAP_CYL) {
+		    throw new UnsupportedOperationException();
+            //setCollider (dCapsuleClass, dCylinderClass, &dCollideCapsuleCylinder);
+		}
+
+		//--> Convex Collision
+		if (dLIBCCD_CONVEX_BOX) {
+		    throw new UnsupportedOperationException();
+		    //setCollider (dConvexClass, dBoxClass, &dCollideConvexBoxCCD);
+		} else {
+		    setCollider (dConvexClass,dBoxClass,new DxConvex.CollideConvexBox());
+		}
+
+		if (dLIBCCD_CONVEX_CAP) {
+		    throw new UnsupportedOperationException();
+		    //setCollider (dConvexClass,dCapsuleClass,&dCollideConvexCapsuleCCD);
+		} else {
+		    setCollider (dConvexClass,dCapsuleClass,new DxConvex.CollideConvexCapsule());
+		}
+
+		if (dLIBCCD_CONVEX_CYL) {
+		    throw new UnsupportedOperationException();
+		    //setCollider (dConvexClass,dCylinderClass,&dCollideConvexCylinderCCD);
+		}
+
+		if (dLIBCCD_CONVEX_SPHERE) {
+		    throw new UnsupportedOperationException();
+		    //setCollider (dConvexClass,dSphereClass,&dCollideConvexSphereCCD);
+		} else {
+		    setCollider (dSphereClass,dConvexClass,new DxConvex.CollideSphereConvex());
+		}
+
+		if (dLIBCCD_CONVEX_CONVEX) {
+		    throw new UnsupportedOperationException();
+		    //setCollider (dConvexClass,dConvexClass,&dCollideConvexConvexCCD);
+		} else {
+		    setCollider (dConvexClass,dConvexClass,new DxConvex.CollideConvexConvex());
+		}
+
+		setCollider (dConvexClass,dPlaneClass,new DxConvex.CollideConvexPlane());
+//		
+//		//		//setCollider (dCylinderClass,dCylinderClass, dCollideCylinderCylinder);
+////
+////		//--> Convex Collision
+//		setCollider (dConvexClass,dPlaneClass, new DxConvex.CollideConvexPlane());//dCollideConvexPlane);
+//		setCollider (dSphereClass,dConvexClass, new DxConvex.CollideSphereConvex());//dCollideSphereConvex);
+//		setCollider (dConvexClass,dBoxClass, new DxConvex.CollideConvexBox());//dCollideConvexBox);
+//		setCollider (dConvexClass,dCapsuleClass, new DxConvex.CollideConvexCapsule());//dCollideConvexCapsule);
+//		setCollider (dConvexClass,dConvexClass, new DxConvex.CollideConvexConvex());//dCollideConvexConvex);
 		setCollider (dRayClass,dConvexClass, new DxConvex.CollideRayConvex());//dCollideRayConvex);
 //		//<-- Convex Collision
 //

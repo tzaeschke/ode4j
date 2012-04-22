@@ -488,7 +488,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodyAddForceAtPos (DVector3C f, DVector3C p)
 	{
 		facc.add(f);
-		DVector3 q = p.reSub(_posr.pos);
+		DVector3 q = p.reSub(_posr.pos());
 		dAddVectorCross3 (tacc,q,f);
 	}
 
@@ -507,7 +507,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		DVector3 f = new DVector3();
 		dMultiply0_331 (f,_posr.R,frel);
 		facc.add(f);
-		DVector3 q = p.reSub(_posr.pos);
+		DVector3 q = p.reSub(_posr.pos());
 		dAddVectorCross3 (tacc,q,f);
 	}
 
@@ -587,7 +587,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		//		result.v[2] = p.v[2] + b._posr.pos.v[2];
 		//		result.sum(p, b._posr.pos);
 		dMultiply0_331 (result,_posr.R,prel);
-		result.add( _posr.pos );
+		result.add( _posr.pos() );
 	}
 
 
@@ -607,7 +607,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//			dVector3 result)
 	void dBodyGetPointVel (DVector3C prel, DVector3 result)
 	{
-		DVector3 p = new DVector3(prel).sub(_posr.pos);
+		DVector3 p = new DVector3(prel).sub(_posr.pos());
 		result.set(lvel);
 		dAddVectorCross3 (result,avel,p);
 	}
@@ -617,7 +617,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//			dVector3 result)
 	void dBodyGetPosRelPoint (DVector3C p, DVector3 result)
 	{
-		DVector3 prel = p.reSub(_posr.pos);
+		DVector3 prel = p.reSub(_posr.pos());
 		dMultiply1_331 (result,_posr.R,prel);
 	}
 
@@ -1041,7 +1041,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 
 		// handle linear velocity
 		//for (j=0; j<3; j++) _posr.pos.v[j] += h * lvel.v[j];
-		_posr.pos.eqSum(_posr.pos, lvel, h);
+		_posr.pos.eqSum(_posr.pos(), lvel, h);
 
 		if ((flags & dxBodyFlagFiniteRotation) != 0) {
 			DVector3 irv = new DVector3();	// infitesimal rotation vector
