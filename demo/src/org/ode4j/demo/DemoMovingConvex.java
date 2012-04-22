@@ -37,6 +37,7 @@ import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DConvex;
+import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
@@ -166,7 +167,7 @@ public class DemoMovingConvex extends dsFunctions {
 		DMass m = OdeHelper.createMass();
 
 		cmd = Character.toLowerCase( cmd );
-		if ( cmd == 'v' || cmd == 'b' || cmd == 'c' || cmd == 's' )
+		if ( cmd == 'v' || cmd == 'b' || cmd == 'c' || cmd == 's' || cmd == 'y')
 		{
 			if ( num < NUM )
 			{
@@ -224,6 +225,10 @@ public class DemoMovingConvex extends dsFunctions {
 				m.setCapsule( DENSITY,3,sides[0],sides[1] );
 				obj[i].geom[0] = OdeHelper.createCapsule( space,sides[0],sides[1] );
 			}
+	        else if (cmd == 'y') {
+	            m.setCylinder (DENSITY,3,sides[0],sides[1]);
+	            obj[i].geom[0] = OdeHelper.createCylinder (space,sides[0],sides[1]);
+	        }
 			else if ( cmd == 's' )
 			{
 				sides[0] *= 0.5;
@@ -312,6 +317,11 @@ public class DemoMovingConvex extends dsFunctions {
 		{
 			dsDrawSphere( pos,R, ((DSphere)g).getRadius() );
 		}
+	    else if ( g instanceof DCylinder) {
+	        double radius = ((DCylinder)g).getRadius();
+	        double length = ((DCylinder)g).getLength();
+	        dsDrawCylinder (pos,R,length,radius);
+	    }
 		else if ( g instanceof DCapsule )
 		{
 			double radius = ((DCapsule)g).getRadius();

@@ -50,6 +50,9 @@ import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
+/**
+ *
+ */
 public class DemoKinematic extends dsFunctions {
 
 	private DWorld world;
@@ -73,7 +76,7 @@ public class DemoKinematic extends dsFunctions {
 	    	body = OdeHelper.createBody(world);
 	        geom = OdeHelper.createBox(space, 0.2, 0.2, 0.2);
 	        DMass mass = OdeHelper.createMass();
-	        mass.setBox(1, 0.2, 0.2, 0.2);
+	        mass.setBox(10, 0.2, 0.2, 0.2);
 	        body.setMass(mass);
 	        geom.setData(this);
 	        geom.setBody(body);
@@ -102,7 +105,7 @@ public class DemoKinematic extends dsFunctions {
 	    
 	    double px = (rand() / ((float)RAND_MAX)) * 2 - 1;
 	    double py = (rand() / ((float)RAND_MAX)) * 2 - 1;
-	    double pz = 3;
+	    double pz = 2.5;
 	    box.body.setPosition(px, py, pz);
 	    
 	    boxes.add(box);
@@ -166,22 +169,22 @@ public class DemoKinematic extends dsFunctions {
 	}
 
     private static float t=0;
-	public void simLoop(boolean pause)
+	private void simLoop(boolean pause)
 	{
 	    if (!pause) {
-	        final double timestep = 0.005;
+	        final double timestep = 0.04;
 
 	        // this does a hard-coded circular motion animation
 //	        static float t=0;
 	        t += timestep/4;
 	        if (t > 2*M_PI)
 	            t = 0;
-	        double px = cos(t);
-	        double py = sin(t);
-	        double vx = -sin(t)/4;
-	        double vy = cos(t)/4;
-	        kbody.setPosition(px, py, .5);
-	        kbody.setLinearVel(vx, vy, 0);
+	        DVector3 next_pos = new DVector3( Math.cos(t), Math.sin(t), 0.5 );
+	        DVector3 vel = new DVector3();
+	        // vel = (next_pos - cur_pos) / timestep
+	        vel.eqDiff(next_pos, kbody.getPosition());
+	        vel.scale(1/timestep);
+	        kbody.setLinearVel(vel);
 	        // end of hard-coded animation
 	        
 	        space.collide(0, nearCallback);

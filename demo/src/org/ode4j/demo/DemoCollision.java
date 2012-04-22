@@ -183,7 +183,6 @@ class DemoCollision extends dsFunctions {
 	     dVector3 normal, dReal *depth, int *code,
 	     int maxc, dContactGeom *contact, int skip); */
 
-	//TODO
 	//void dLineClosestApproach (final dVector3 pa, final dVector3 ua,
 	//			   final dVector3 pb, final dVector3 ub,
 	//			   double *alpha, double *beta);
@@ -1043,7 +1042,6 @@ class DemoCollision extends dsFunctions {
 		if (OdeHelper.collide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
 
 		// ********** test polarity with typical ground plane
-//TODO plane.setParams vs ray.set() ?!?!?!?!?!
 		plane.setParams (0,0,1,0);
 		a.set( 0.1, 1, 0.1 );
 		b.set( 0,  -1, 0   );

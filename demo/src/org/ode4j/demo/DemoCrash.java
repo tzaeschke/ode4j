@@ -57,15 +57,6 @@ import static org.ode4j.ode.OdeMath.*;
  */
 class DemoCrash extends dsFunctions {
 
-	// select the method you want to test here (only uncomment *one* line)
-	//#define QUICKSTEP 1
-	////#define STEPFAST 1
-	private enum STEP {
-		QUICKSTEP,
-		STEPFAST;
-	}
-	private static final STEP STEPPER = STEP.QUICKSTEP;
-
 	// some constants
 
 	private static final float LENGTH = 3.5f;		// chassis length
@@ -200,8 +191,6 @@ class DemoCrash extends dsFunctions {
 				"\t'2' to lower the cannon.\n" +
 				"\t'x' to shoot from the cannon.\n" +
 				"\t'f' to toggle fast step mode.\n" +
-				"\t'+' to increase AutoEnableDepth.\n" +
-				"\t'-' to decrease AutoEnableDepth.\n" +
 		"\t'r' to reset simulation.\n");
 	}
 
@@ -503,12 +492,6 @@ class DemoCrash extends dsFunctions {
 		case 'f': case 'F':
 			doFast = !doFast;
 			break;
-		case '+':
-			//TODO TZ			dWorldSetAutoEnableDepthSF1 (world, dWorldGetAutoEnableDepthSF1 (world) + 1);
-			break;
-		case '-':
-			//TODO	TZ		dWorldSetAutoEnableDepthSF1 (world, dWorldGetAutoEnableDepthSF1 (world) - 1);
-			break;
 		case 'r': case 'R':
 			resetSimulation();
 			break;
@@ -550,11 +533,10 @@ class DemoCrash extends dsFunctions {
 		dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
 
 		if (!pause) {
-			if (BOX) {//#ifdef BOX
+			if (BOX) {
 				//dBodyAddForce(body[bodies-1],lspeed,0,0);
-				//TODO report, this did not compile
 				body[bodies-1].addForce(speed,0,0);
-			}//#endif
+			}
 			for (j = 0; j < joints; j++)
 			{
 				DHinge2Joint j2 = joint[j];
@@ -570,11 +552,7 @@ class DemoCrash extends dsFunctions {
 			if (doFast)
 			{
 				space.collide (null,nearCallback);
-				if (STEPPER == STEP.QUICKSTEP) {//#if defined(QUICKSTEP)
-					world.quickStep (0.05);
-				} else { //#elif defined(STEPFAST)
-					//TODO TZ					dWorldStepFast1 (world,0.05,ITERS);
-				}//#endif
+				world.quickStep (0.05);
 				contactgroup.empty ();
 			}
 			else

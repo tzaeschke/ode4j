@@ -55,6 +55,9 @@ import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.demo.BunnyGeom.*;
 
 
+/**
+ *
+ */
 public class DemoMovingTrimesh extends dsFunctions {
 
 	// some constants
@@ -382,6 +385,23 @@ public class DemoMovingTrimesh extends dsFunctions {
 		}
 	}
 
+	// set previous transformation matrix for trimesh
+	void setCurrentTransform(DGeom geom)
+	{
+	    DVector3C Pos = geom.getPosition();
+	    DMatrix3C Rot = geom.getRotation();
+
+	    const dReal Transform[16] = 
+	    {
+	            Rot[0], Rot[4], Rot[8],  0,
+	            Rot[1], Rot[5], Rot[9],  0,
+	            Rot[2], Rot[6], Rot[10], 0,
+	            Pos[0], Pos[1], Pos[2],  1
+	    };
+
+	    dGeomTriMeshSetLastTransform( geom, *(dMatrix4*)(&Transform) );
+
+	}
 
 	// simulation loop
 
@@ -391,7 +411,22 @@ public class DemoMovingTrimesh extends dsFunctions {
 		dsSetColor (0,0,2);
 		space.collide (0,nearCallback);
 
-		if (!pause) world.step (0.05);
+		//#if 1
+		// What is this for??? - Bram
+		if (!pause) 
+		{
+		    for (int i=0; i<num; i++)
+		        for (int j=0; j < GPB; j++)
+		            if (obj[i].geom[j] != null)
+		                if (obj[i].geom[j] instanceof DTriMesh)
+		                    setCurrentTransform(obj[i].geom[j]);
+
+		    setCurrentTransform(TriMesh1);
+		    setCurrentTransform(TriMesh2);
+		}
+		//#endif
+
+		if (!pause) world.quickStep(0.05);
 
 		for (int j = 0; j < space.getNumGeoms(); j++) {
 			space.getGeom(j);

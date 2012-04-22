@@ -49,6 +49,7 @@ import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
+import org.ode4j.ode.DSapSpace;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
@@ -289,9 +290,13 @@ public class DemoMotion extends dsFunctions {
 				if (nextobj >= num) nextobj = 0;
 
 				// destroy the body and geoms for slot i
-				dBodyDestroy (obj[i].body);
+				if (obj[i].body!=null) {
+				    dBodyDestroy (obj[i].body);
+				}
 				for (k=0; k < GPB; k++) {
-					if (obj[i].geom[k]!= null) dGeomDestroy (obj[i].geom[k]);
+					if (obj[i].geom[k]!= null) {
+					    dGeomDestroy (obj[i].geom[k]);
+					}
 				}
 				//memset (obj[i],0);//,sizeof(obj[i]));
 				obj[i] = null;
@@ -347,7 +352,9 @@ public class DemoMotion extends dsFunctions {
 
 			if (!setBody)
 				for (k=0; k < GPB; k++) {
-					if (obj[i].geom[k] != null) dGeomSetBody (obj[i].geom[k], obj[i].body);
+					if (obj[i].geom[k] != null) {
+					    dGeomSetBody (obj[i].geom[k], obj[i].body);
+					}
 				}
 
 			dBodySetMass (obj[i].body,m);
@@ -527,10 +534,18 @@ public class DemoMotion extends dsFunctions {
 		// create world
 		dInitODE2(0);
 		world = dWorldCreate();
-		//space = dHashSpaceCreate (0);
-		DVector3 center = new DVector3(0,0,0), extents = new DVector3( 100, 100, 100);
-		space = dQuadTreeSpaceCreate(null, center, extents, 5);
-
+		
+		//#if 1
+	    space = dHashSpaceCreate (null);
+	    //#elif 0
+	    //DVector3 center = new DVector3(0,0,0), extents = new DVector3( 100, 100, 100);
+        //space = dQuadTreeSpaceCreate(null, center, extents, 5);
+	    //#elif 0
+	    //space = dSweepAndPruneSpaceCreate (null, DSapSpace.AXES.XYZ);
+	    //#else
+	    //space = dSimpleSpaceCreate(null);
+	    //#endif
+	    
 		contactgroup = dJointGroupCreate (0);
 		dWorldSetGravity (world, 0,0,-0.5);
 		dWorldSetCFM (world, 1e-5);

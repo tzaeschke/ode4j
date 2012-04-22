@@ -166,9 +166,9 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 		boxes[1]=dCreateBox(space,0.5,0.5,0.5);
 		geoms=convex;
 
-		DMatrix3 m1 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
-		DMatrix3 m2 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
-		//		#if 0
+        //      #if 0
+		//		DMatrix3 m1 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
+		//		DMatrix3 m2 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
 		//		dGeomSetPosition (convex[0],
 		//				0.0,
 		//				0.0,
@@ -299,7 +299,6 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 	{
 		// note: 0.0174532925 radians = 1 degree
 		DQuaternion q = new DQuaternion();
-		DMatrix3 m;
 		boolean changed = false;
 		switch(cmd)
 		{

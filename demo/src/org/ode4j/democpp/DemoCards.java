@@ -46,6 +46,9 @@ import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
+/**
+ *
+ */
 public class DemoCards extends dsFunctions {
 
 	private static int levels = 5;
@@ -232,7 +235,10 @@ public class DemoCards extends dsFunctions {
 		}
 	}
 
-	public static void main(String[] args)
+	/**
+	 * @param args
+	 */
+	public static void main(final String[] args)
 	{
 		new DemoCards().demo(args);
 	}
@@ -268,6 +274,7 @@ public class DemoCards extends dsFunctions {
 
 		dJointGroupDestroy(contactgroup);
 		dWorldDestroy(world);
+		dGeomDestroy(ground);
 		dSpaceDestroy(space);
 
 		dCloseODE();
