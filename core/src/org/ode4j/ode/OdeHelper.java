@@ -420,10 +420,19 @@ public abstract class OdeHelper {
 	public static DSimpleSpace createSimpleSpace (DSpace space) {
 		return DxSimpleSpace.dSimpleSpaceCreate((DxSpace) space);
 	}
+	/**
+	 * @param axes DSapSpace.AXES
+	 * @return SAP Space
+	 */
 	//ODE_API 
 	public static DSapSpace createSapSpace (DSapSpace.AXES axes) {
 		return DxSAPSpace.dSweepAndPruneSpaceCreate(null, axes.getCode());
 	}
+	/**
+	 * @param space
+     * @param axes DSapSpace.AXES
+	 * @return SAP space
+	 */
 	//ODE_API 
 	public static DSapSpace createSapSpace (DSpace space, DSapSpace.AXES axes) {
 		return DxSAPSpace.dSweepAndPruneSpaceCreate((DxSpace) space, axes.getCode());

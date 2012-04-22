@@ -50,6 +50,9 @@ public interface DSapSpace extends DSpace {
 		AXES(int i) {
 			_code = i;
 		}
+		/**
+		 * @return axis code
+		 */
 		public int getCode() {
 			return _code;
 		}
