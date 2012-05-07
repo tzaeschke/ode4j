@@ -24,6 +24,7 @@ package org.ode4j.cpp.internal;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DMatrix;
 import org.ode4j.ode.OdeMath;
 
 
@@ -114,7 +115,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	//ODE_API 
 	public static boolean dFactorCholesky (double[] A, int n) {
-		return OdeMath.dFactorCholesky(A, n);
+		return DMatrix.dFactorCholesky(A, n);
 	}
 
 
@@ -125,7 +126,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//ODE_API 
 	//	 void dSolveCholesky (final double *L, double *b, int n) {
 	public static void dSolveCholesky (final double[] L, double[] b, int n) {
-		OdeMath.dSolveCholesky(L, b, n);
+		DMatrix.dSolveCholesky(L, b, n);
 	}
 
 
@@ -136,7 +137,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	//ODE_API 
 	public static boolean dInvertPDMatrix (final double[] A, double[] Ainv, int n) {
-		return OdeMath.dInvertPDMatrix(A, Ainv, n);
+		return DMatrix.dInvertPDMatrix(A, Ainv, n);
 	}
 
 
@@ -251,7 +252,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//	 void dLDLTRemove (double **A, final int *p, double *L, double *d,
 	public static void dLDLTRemove (double[] A, final int [] p, double[] L, 
 			double[] d, int n1, int n2, int r, int nskip) {
-		OdeMath.dLDLTRemove(A, p, L, d, n1, n2, r, nskip);
+	    DMatrix.dLDLTRemove(A, p, L, d, n1, n2, r, nskip);
 	}
 
 
