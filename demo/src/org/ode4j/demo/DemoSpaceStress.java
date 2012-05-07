@@ -34,6 +34,7 @@ import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.DSapSpace.AXES;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
@@ -59,7 +60,8 @@ class DemoSpaceStress extends dsFunctions {
 	private static final float DENSITY = 5.0f;		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 4;		// maximum number of contact points per body
-	private static final int WORLD_SIZE = 100;
+    private static final int WORLD_SIZE = 20;
+    private static final int WORLD_HEIGHT = 20;
 
 
 	// dynamics and collision objects
@@ -125,7 +127,7 @@ class DemoSpaceStress extends dsFunctions {
 	}
 
 
-	private static float[] xyz = {2.1640f,-1.3079f,1.7600f};
+	private static float[] xyz = {2.1640f,-1.3079f,3.7600f};
 	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
 	// start simulation - set viewpoint
 	public void start()
@@ -390,6 +392,7 @@ class DemoSpaceStress extends dsFunctions {
 		dsSetColor (0,0,2);
 		OdeHelper.spaceCollide (space,0,nearCallback);
 		//if (!pause) dWorldStep (world,0.05);
+		if (!pause) world.quickStep (0.05);
 		//if (!pause) dWorldStepFast (world,0.05, 1);
 
 		// remove all contact joints
@@ -420,17 +423,23 @@ class DemoSpaceStress extends dsFunctions {
 
 	private void demo(String[] args) {
 
+	    dsSetSphereQuality(0);
+
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();
 
-
-		DVector3 Center = new DVector3();//{0, 0, 0, 0};
-		DVector3 Extents = new DVector3(WORLD_SIZE * 0.55, WORLD_SIZE * 0.55, WORLD_SIZE * 0.55);//, 0};
-
-		//space = dSimpleSpaceCreate(0);
-		//space = dHashSpaceCreate (0);
-		space = OdeHelper.createQuadTreeSpace (null, Center, Extents, 6);
+        DVector3 Center = new DVector3(0, 0, 0);
+        DVector3 Extents = new DVector3(WORLD_SIZE * 0.55, WORLD_SIZE * 0.55, WORLD_SIZE * 0.55);
+		if (false) {//#if 0
+		  space = OdeHelper.createQuadTreeSpace(Center, Extents, 6);
+		} else if (true) {//#elif 1
+		  space = OdeHelper.createHashSpace();
+		} else if (false) { //#elif 0
+		  space = OdeHelper.createSapSpace(AXES.XYZ);
+		} else { //#else
+		  space = OdeHelper.createSimpleSpace();
+		}//#endif
 
 		contactgroup = OdeHelper.createJointGroup();
 		world.setGravity (0,0,-0.5);

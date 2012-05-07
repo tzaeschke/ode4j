@@ -502,7 +502,7 @@ public class DrawStuff {
 	 */
 	//DS_API 
 	public static  void dsSetSphereQuality (int n) {		/* default = 1 */
-		throw new UnsupportedOperationException();
+	    get().dsSetSphereQuality(n);
 	}
 
 	//DS_API 

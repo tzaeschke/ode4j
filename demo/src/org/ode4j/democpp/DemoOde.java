@@ -63,32 +63,32 @@ import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 import static org.ode4j.ode.internal.ErrorHandler.dGetDebugHandler;
 import static org.ode4j.ode.internal.ErrorHandler.dSetDebugHandler;
 import static org.ode4j.ode.internal.ErrorHandler.dSetMessageHandler;
-import static org.ode4j.ode.internal.Matrix.dFactorCholesky;
-import static org.ode4j.ode.internal.Matrix.dFactorLDLT;
-import static org.ode4j.ode.internal.Matrix.dInvertPDMatrix;
-import static org.ode4j.ode.internal.Matrix.dIsPositiveDefinite;
-import static org.ode4j.ode.internal.Matrix.dLDLTAddTL;
-import static org.ode4j.ode.internal.Matrix.dLDLTRemove;
-import static org.ode4j.ode.internal.Matrix.dMultiply0;
-import static org.ode4j.ode.internal.Matrix.dMultiply1;
-import static org.ode4j.ode.internal.Matrix.dMultiply2;
-import static org.ode4j.ode.internal.Matrix.dRemoveRowCol;
-import static org.ode4j.ode.internal.Matrix.dSetZero;
-import static org.ode4j.ode.internal.Matrix.dSolveCholesky;
-import static org.ode4j.ode.internal.Matrix.dSolveLDLT;
-import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
-import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
-import static org.ode4j.ode.internal.Misc.dMakeRandomVector;
-import static org.ode4j.ode.internal.Misc.dMaxDifference;
-import static org.ode4j.ode.internal.Misc.dMaxDifferenceLowerTriangle;
-import static org.ode4j.ode.internal.Misc.dRandGetSeed;
-import static org.ode4j.ode.internal.Misc.dRandReal;
-import static org.ode4j.ode.internal.Misc.dRandSetSeed;
-import static org.ode4j.ode.internal.Misc.dTestRand;
-import static org.ode4j.ode.internal.Rotation.dQMultiply0;
-import static org.ode4j.ode.internal.Rotation.dQMultiply1;
-import static org.ode4j.ode.internal.Rotation.dQMultiply2;
-import static org.ode4j.ode.internal.Rotation.dQMultiply3;
+import static org.ode4j.ode.DMatrix.dFactorCholesky;
+import static org.ode4j.ode.DMatrix.dFactorLDLT;
+import static org.ode4j.ode.DMatrix.dInvertPDMatrix;
+import static org.ode4j.ode.DMatrix.dIsPositiveDefinite;
+import static org.ode4j.ode.DMatrix.dLDLTAddTL;
+import static org.ode4j.ode.DMatrix.dLDLTRemove;
+import static org.ode4j.ode.DMatrix.dMultiply0;
+import static org.ode4j.ode.DMatrix.dMultiply1;
+import static org.ode4j.ode.DMatrix.dMultiply2;
+import static org.ode4j.ode.DMatrix.dRemoveRowCol;
+import static org.ode4j.ode.DMatrix.dSetZero;
+import static org.ode4j.ode.DMatrix.dSolveCholesky;
+import static org.ode4j.ode.DMatrix.dSolveLDLT;
+import static org.ode4j.ode.DMisc.dClearUpperTriangle;
+import static org.ode4j.ode.DMisc.dMakeRandomMatrix;
+import static org.ode4j.ode.DMisc.dMakeRandomVector;
+import static org.ode4j.ode.DMisc.dMaxDifference;
+import static org.ode4j.ode.DMisc.dMaxDifferenceLowerTriangle;
+import static org.ode4j.ode.DMisc.dRandGetSeed;
+import static org.ode4j.ode.DMisc.dRandReal;
+import static org.ode4j.ode.DMisc.dRandSetSeed;
+import static org.ode4j.ode.DMisc.dTestRand;
+import static org.ode4j.ode.DRotation.dQMultiply0;
+import static org.ode4j.ode.DRotation.dQMultiply1;
+import static org.ode4j.ode.DRotation.dQMultiply2;
+import static org.ode4j.ode.DRotation.dQMultiply3;
 import static org.ode4j.ode.internal.Rotation.dQtoR;
 import static org.ode4j.ode.internal.Rotation.dRSetIdentity;
 import static org.ode4j.ode.internal.Rotation.dRtoQ;
@@ -302,7 +302,7 @@ class DemoOde {
 		HEADER();
 		double[] a = new double[100];
 		dMakeRandomVector (a,100,1.0);
-		dSetZero (a,100);
+		dSetZero (a);
 		for (int i=0; i<100; i++) if (a[i] != 0.0) {
 			printf ("\tFAILED\n");
 			return;
@@ -382,13 +382,13 @@ void testReorthonormalize()
 		int i;
 
 		HEADER();
-		dSetZero (A,8);
+		dSetZero (A);
 		for (i=0; i<3; i++) A[i] = i+2;
 		for (i=0; i<3; i++) A[i+4] = i+3+2;
 		for (i=0; i<12; i++) B[i] = i+8;
-		dSetZero (A2,12);
+		dSetZero (A2);
 		for (i=0; i<6; i++) A2[i+2*(i/2)] = A[i+i/3];
-		dSetZero (B2,16);
+		dSetZero (B2);
 		for (i=0; i<12; i++) B2[i+i/3] = B[i];
 
 		dMultiply0 (C,A,B,2,3,4);
@@ -519,7 +519,7 @@ void testReorthonormalize()
 		dMakeRandomMatrix (A,MSIZE,MSIZE,1.0);
 		dMultiply2 (Ainv,A,A,MSIZE,MSIZE,MSIZE);
 		memcpy (A,Ainv,MSIZE4*MSIZE);//*sizeof(double));
-		dSetZero (Ainv,MSIZE4*MSIZE);
+		dSetZero (Ainv);
 
 		if (dInvertPDMatrix (A,Ainv,MSIZE))
 			printf ("\tpassed (1)\n"); else printf ("\tFAILED (1)\n");
@@ -565,7 +565,7 @@ void testReorthonormalize()
 		dClearUpperTriangle (L,MSIZE);
 		for (i=0; i<MSIZE; i++) L[i*MSIZE4+i] = 1.0;
 
-		dSetZero (DL,MSIZE4*MSIZE);
+		dSetZero (DL);
 		for (i=0; i<MSIZE; i++) {
 			for (j=0; j<MSIZE; j++) DL[i*MSIZE4+j] = L[i*MSIZE4+j] / d[j];
 		}
@@ -625,7 +625,7 @@ void testReorthonormalize()
 		// get modified L*D*L'
 		dClearUpperTriangle (L,MSIZE);
 		for (i=0; i<MSIZE; i++) L[i*MSIZE4+i] = 1.0;
-		dSetZero (DL,MSIZE4*MSIZE);
+		dSetZero (DL);
 		for (i=0; i<MSIZE; i++) {
 			for (j=0; j<MSIZE; j++) DL[i*MSIZE4+j] = L[i*MSIZE4+j] / d[j];
 		}
@@ -706,7 +706,7 @@ void testReorthonormalize()
 			for (i=0; i<(MSIZE-1); i++) L2[i*MSIZE4+i] = 1.0;
 			for (i=0; i<MSIZE; i++) L2[(MSIZE-1)*MSIZE4+i] = 0;
 			d2[MSIZE-1] = 1;
-			dSetZero (DL2,MSIZE4*MSIZE);
+			dSetZero (DL2);
 			for (i=0; i<(MSIZE-1); i++) {
 				for (j=0; j<MSIZE-1; j++) DL2[i*MSIZE4+j] = L2[i*MSIZE4+j] / d2[j];
 			}

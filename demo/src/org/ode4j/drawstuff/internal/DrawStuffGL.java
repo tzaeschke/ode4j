@@ -1886,7 +1886,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	}
 
 
-	void dsSetSphereQuality (int n)
+	@Override
+	public void dsSetSphereQuality (int n)
 	{
 		sphere_quality = n;
 	}

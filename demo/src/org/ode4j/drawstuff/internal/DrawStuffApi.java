@@ -88,4 +88,6 @@ public interface DrawStuffApi {
 
 	public void dsDrawTriangle (final DVector3C pos, final DMatrix3C R,
 			final float[] v0, final float[] v1, final float[] v2, boolean solid);
+
+    public void dsSetSphereQuality(int n);
 }

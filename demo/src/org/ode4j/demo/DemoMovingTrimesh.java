@@ -386,22 +386,30 @@ public class DemoMovingTrimesh extends dsFunctions {
 	}
 
 	// set previous transformation matrix for trimesh
-	void setCurrentTransform(DGeom geom)
-	{
-	    DVector3C Pos = geom.getPosition();
-	    DMatrix3C Rot = geom.getRotation();
-
-	    const dReal Transform[16] = 
-	    {
-	            Rot[0], Rot[4], Rot[8],  0,
-	            Rot[1], Rot[5], Rot[9],  0,
-	            Rot[2], Rot[6], Rot[10], 0,
-	            Pos[0], Pos[1], Pos[2],  1
-	    };
-
-	    dGeomTriMeshSetLastTransform( geom, *(dMatrix4*)(&Transform) );
-
-	}
+//	void setCurrentTransform(DGeom geom)
+//	{
+//	    DVector3C Pos = geom.getPosition();
+//	    DMatrix3C Rot = geom.getRotation();
+//
+//	    DMatrix4 Transform = new DMatrix4(
+//	            Rot.get00(), Rot.get10(), Rot.get20(),  0.,
+//              Rot.get01(), Rot.get11(), Rot.get21(),  0.,
+//              Rot.get02(), Rot.get12(), Rot.get22(), 0.,
+//              Pos.get0(), Pos.get1(), Pos.get2(),  1.);
+//	    
+//	    ((DTriMesh)geom).setLastTransform(Transform);
+//	    
+////	    const dReal Transform[16] = 
+////	    {
+////	            Rot[0], Rot[4], Rot[8],  0,
+////	            Rot[1], Rot[5], Rot[9],  0,
+////	            Rot[2], Rot[6], Rot[10], 0,
+////	            Pos[0], Pos[1], Pos[2],  1
+////	    };
+////
+////	    dGeomTriMeshSetLastTransform( geom, *(dMatrix4*)(&Transform) );
+//
+//	}
 
 	// simulation loop
 
@@ -413,17 +421,17 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 		//#if 1
 		// What is this for??? - Bram
-		if (!pause) 
-		{
-		    for (int i=0; i<num; i++)
-		        for (int j=0; j < GPB; j++)
-		            if (obj[i].geom[j] != null)
-		                if (obj[i].geom[j] instanceof DTriMesh)
-		                    setCurrentTransform(obj[i].geom[j]);
-
-		    setCurrentTransform(TriMesh1);
-		    setCurrentTransform(TriMesh2);
-		}
+//		if (!pause) 
+//		{
+//		    for (int i=0; i<num; i++)
+//		        for (int j=0; j < GPB; j++)
+//		            if (obj[i].geom[j] != null)
+//		                if (obj[i].geom[j] instanceof DTriMesh)
+//		                    setCurrentTransform(obj[i].geom[j]);
+//
+//		    setCurrentTransform(TriMesh1);
+//		    setCurrentTransform(TriMesh2);
+//		}
 		//#endif
 
 		if (!pause) world.quickStep(0.05);

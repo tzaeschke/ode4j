@@ -31,6 +31,12 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.OdeHelper;
 
+/**
+ * Empty implementation of DrawStuff. Does not draw and is therefore suitable
+ * for measuring computation performance of demos.
+ *
+ * @author Tilmann Zaeschke
+ */
 public class DrawStuffNull implements DrawStuffApi {
 
 	private static volatile boolean _run = true;
@@ -257,4 +263,9 @@ public class DrawStuffNull implements DrawStuffApi {
 			float[] v1, float[] v2, boolean solid) {
 		// Nothing
 	}
+
+    @Override
+    public void dsSetSphereQuality(int n) {
+        // Nothing
+    }
 }

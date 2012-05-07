@@ -16,6 +16,17 @@ SUMMARY of changes for ode-0.12
 - Clean-up of demos
 - Bug fixes
 
+=============
+TODO include DMatrix, DRoation, DMisc into OdeMath i.o. internal Rotation/Matrix?!
+=============
+
+2012-May-07 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Migrated APIs for DMatrix, DMisc and DRotation
+		  - Migrated remaining demos
+		  - Started migration of DrawStuff.
+		  - Fixed some bugs in new Matrix multiplication.
+
 2012-Apr-22 Tilmann Zaschke
 		* Migration to ode-0.12:
 		  - collision_kernel.*
