@@ -36,24 +36,28 @@ import java.util.Iterator;
  */
 public class DContactBuffer implements Iterable<DContact> {
 	
-	private ArrayList<DContact> _buf = new ArrayList<DContact>();
+	private ArrayList<DContact> buf = new ArrayList<DContact>();
 
 	public DContactBuffer(int size) {
 		for (int i = 0; i < size; i++) {
-			_buf.add(new DContact());
+			buf.add(new DContact());
 		}
 	}
 	
-	public DContact get(int i) {
-		return _buf.get(i);
-	}
-	
+    public DContact get(int i) {
+        return buf.get(i);
+    }
+    
+    public void set(int i, DContact c) {
+        buf.set(i, c);
+    }
+    
 	public DContactGeomBuffer getGeomBuffer() {
 		return new DContactGeomBuffer(this);
 	}
 
 	@Override
 	public Iterator<DContact> iterator() {
-		return Collections.unmodifiableList(_buf).iterator();
+		return Collections.unmodifiableList(buf).iterator();
 	}
 }

@@ -224,7 +224,7 @@ public class Matrix extends FastDot {
 	  int aa=0; //dReal *aa = A;
 	  int bb=0;//const dReal *bb = B;
 	  for (int i=p; i!=0; aa+=rskip, bb+=qskip, --i) {
-	    int a = 0;//dReal *a = aa;
+	    int a = aa;//dReal *a = aa;
 	    int cc = 0, ccend = r;//const dReal *cc = C, *ccend = C + r;
 	    for (; cc != ccend; ++a, ++cc) {
 	      double sum = 0.0;//dReal sum = REAL(0.0);
@@ -368,22 +368,22 @@ public class Matrix extends FastDot {
 	 */
 	public static void dMultiply2(double[] A, final double[] B,
 			final double[] C, int p, int q, int r) {
-        dAASSERT(p > 0 && q > 0 && r > 0);
+	    dAASSERT(p > 0 && q > 0 && r > 0);
 	    final int rskip = dPAD(r);
 	    final int qskip = dPAD(q);
 	    int aa = 0;//dReal *aa = A;
 	    int bb = 0;//const dReal *bb = B;
 	    for (int i=p; i!=0; aa+=rskip, bb+=qskip, --i) {
-	      int a = aa, aend = r;//dReal *a = aa, *aend = aa + r;
-	      int cc = 0;//const dReal *cc = C;
-	      for (; a != aend; cc+=qskip, ++a) {
-	        double sum = 0.0;
-	        int b = bb, c = cc, cend = q;//const dReal *b = bb, *c = cc, *cend = cc + q;
-	        for (; c != cend; ++b, ++c) {
-	          sum += B[b]*C[c];//(*b)*(*c);
+	        int a = aa, aend = aa+r;//dReal *a = aa, *aend = aa + r;
+	        int cc = 0;//const dReal *cc = C;
+	        for (; a != aend; cc+=qskip, ++a) {
+	            double sum = 0.0;
+	            int b = bb, c = cc, cend = cc+q;//const dReal *b = bb, *c = cc, *cend = cc + q;
+	            for (; c != cend; ++b, ++c) {
+	                sum += B[b]*C[c];//(*b)*(*c);
+	            }
+	            A[a] = sum;//(*a) = sum; 
 	        }
-	        A[a] = sum;//(*a) = sum; 
-	      }
 	    }
 	    //TODO remove is from 0.11.1
 //		int i, j, k, z, rpad, qskip;

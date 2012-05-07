@@ -105,17 +105,18 @@ public class OdeMath extends Rotation {
 //	  // Only assign after all the calculations are over to avoid incurring memory aliasing
 //	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
 //	}
-//
-//	PURE_INLINE void dAddScaledVectors3(dReal *res, const dReal *a, const dReal *b, dReal a_scale, dReal b_scale)
-//	{
-//	  dReal res_0, res_1, res_2;
-//	  res_0 = a_scale * a[0] + b_scale * b[0];
-//	  res_1 = a_scale * a[1] + b_scale * b[1];
-//	  res_2 = a_scale * a[2] + b_scale * b[2];
-//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
-//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
-//	}
-//
+
+	public static void dAddScaledVectors3(DVector3 res, DVector3C a, DVector3C b, 
+	        double a_scale, double b_scale)
+	{
+	  double res_0, res_1, res_2;
+	  res_0 = a_scale * a.get0() + b_scale * b.get0();
+	  res_1 = a_scale * a.get1() + b_scale * b.get1();
+	  res_2 = a_scale * a.get2() + b_scale * b.get2();
+	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+	  res.set( res_0, res_1, res_2 );
+	}
+
 //	PURE_INLINE void dScaleVector3(dReal *res, dReal nScale)
 //	{
 //	  res[0] *= nScale ;
@@ -146,7 +147,12 @@ public class OdeMath extends Rotation {
 //	  // Only assign after all the calculations are over to avoid incurring memory aliasing
 //	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
 	}
-
+    public static void dCopyVector3(float[] a, int ofs, final DVector3C b) {
+        a[0+ofs] = (float) b.get0(); 
+        a[1+ofs] = (float) b.get1(); 
+        a[2+ofs] = (float) b.get2();
+    }
+    
 //	PURE_INLINE void dCopyScaledVector3(dReal *res, const dReal *a, dReal nScale)
 //	{
 //	  dReal res_0, res_1, res_2;

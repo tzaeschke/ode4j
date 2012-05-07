@@ -1136,25 +1136,33 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 
 					Multiply1_8q1 (data,0, J,JJ, lambda,ofs[i], info[i].m);
 					int cf1 = 8*b1.tag;//double[] cf1 = cforce + 8*b1.tag;
-					//TODO FIXME
-					if (true) throw new UnsupportedOperationException("Fix this!");
-//					cforce[cf1+0] += (fb.f1.v[0] = data[0]);
-//					cforce[cf1+1] += (fb.f1.v[1] = data[1]);
-//					cforce[cf1+2] += (fb.f1.v[2] = data[2]);
-//					cforce[cf1+4] += (fb.t1.v[0] = data[4]);
-//					cforce[cf1+5] += (fb.t1.v[1] = data[5]);
-//					cforce[cf1+6] += (fb.t1.v[2] = data[6]);
+					fb.f1.set(0,data[0]);
+                    fb.f1.set(1,data[1]);
+                    fb.f1.set(2,data[2]);
+                    fb.t1.set(0,data[4]);
+                    fb.t1.set(1,data[5]);
+                    fb.t1.set(2,data[6]);
+                    cforce[cf1+0] += data[0];
+                    cforce[cf1+1] += data[1];
+                    cforce[cf1+2] += data[2];
+                    cforce[cf1+4] += data[4];
+                    cforce[cf1+5] += data[5];
+                    cforce[cf1+6] += data[6]; 
 					if (b2!=null){
 						Multiply1_8q1 (data,0, J,JJ + 8*info[i].m, lambda,ofs[i], info[i].m);
 						int cf2 = 8*b2.tag;//double[] cf2 = cforce + 8*b2.tag;
-						//TODO FIXME
-						if (true) throw new UnsupportedOperationException("Fix this!");
-//						cforce[cf2+0] += (fb.f2.v[0] = data[0]);
-//						cforce[cf2+1] += (fb.f2.v[1] = data[1]);
-//						cforce[cf2+2] += (fb.f2.v[2] = data[2]);
-//						cforce[cf2+4] += (fb.t2.v[0] = data[4]);
-//						cforce[cf2+5] += (fb.t2.v[1] = data[5]);
-//						cforce[cf2+6] += (fb.t2.v[2] = data[6]);
+	                    fb.f2.set(0,data[0]);
+	                    fb.f2.set(1,data[1]);
+	                    fb.f2.set(2,data[2]);
+	                    fb.t2.set(0,data[4]);
+	                    fb.t2.set(1,data[5]);
+	                    fb.t2.set(2,data[6]);
+	                    cforce[cf2+0] += data[0];
+	                    cforce[cf2+1] += data[1];
+	                    cforce[cf2+2] += data[2];
+	                    cforce[cf2+4] += data[4];
+	                    cforce[cf2+5] += data[5];
+	                    cforce[cf2+6] += data[6]; 
 					}
 				}
 				else {

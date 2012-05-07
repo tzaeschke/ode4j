@@ -151,11 +151,22 @@ public class DVector3 implements DVector3I, DVector3C {
 		return this;
 	}
 	
+	/**
+	 * Adds v2 to the current vector.
+	 * @param v2
+	 * @return Current vector.
+	 */
 	public final DVector3 add(DVector3C v2) {
 		v[0] += v2.get0(); v[1] += v2.get1(); v[2] += v2.get2();
 		return this;
 	}
 	
+	/**
+	 * Sets current vector = v2 + v3.
+	 * @param v2
+	 * @param v3
+	 * @return Current vector.
+	 */
 	public final DVector3 eqSum(DVector3C v2, DVector3C v3) {
 		set0( v2.get0() + v3.get0() ); 
 		set1( v2.get1() + v3.get1() ); 
