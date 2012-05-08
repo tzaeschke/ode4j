@@ -27,8 +27,10 @@ package org.ode4j.ode;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
+import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.Misc;
 
 /**
@@ -36,7 +38,7 @@ import org.ode4j.ode.internal.Misc;
  *
  * @author Tilmann Zaeschke
  */
-public class DMisc {
+class DMisc extends Common {
     /** 
      * @return 'true' if the random number generator is working. 
      */
@@ -146,6 +148,12 @@ public class DMisc {
      */
     public static double dMaxDifference (DVector3C A, DVector3C B) {
         return Misc.dMaxDifference(A, B);
+    }
+    /**
+     * @return the maximum element difference between the two n*m matrices 
+     */
+    public static double dMaxDifference (DQuaternionC A, DQuaternionC B, int n, int m) {
+        return Misc.dMaxDifference(A, B, n, m);
     }
     /**
      * @return the maximum element difference between the two n*m matrices 

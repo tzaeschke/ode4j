@@ -28,6 +28,7 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.internal.Rotation;
 
 /**
@@ -35,25 +36,41 @@ import org.ode4j.ode.internal.Rotation;
  *
  * @author Tilmann Zaeschke
  */
-public class DRotation {
-//    public static void dRSetIdentity (dMatrix3 R);
+class DRotation extends DMatrix {
+
+    public static void dRSetIdentity (DMatrix3 R) {
+        R.setIdentity();
+    }
 
     public static void dRFromAxisAndAngle (DMatrix3 R, double ax, double ay, double az,
             double angle) {
         Rotation.dRFromAxisAndAngle(R, ax, ay, az, angle);
     }
+    public static void dRFromAxisAndAngle (DMatrix3 R, DVector3C a, double angle) {
+        Rotation.dRFromAxisAndAngle(R, a, angle);
+    }
 
-//    public static void dRFromEulerAngles (dMatrix3 R, dReal phi, dReal theta, dReal psi);
-//
+    public static void dRFromEulerAngles (DMatrix3 R, double phi, double theta, 
+            double psi) {
+        Rotation.dRFromEulerAngles(R, phi, theta, psi);
+    }
+
 //    public static void dRFrom2Axes (dMatrix3 R, dReal ax, dReal ay, dReal az,
 //              dReal bx, dReal by, dReal bz);
 //
-//    public static void dRFromZAxis (dMatrix3 R, dReal ax, dReal ay, dReal az);
-//
+//    public static void dRFromZAxis (DMatrix3 R, double ax, double ay, double az) {
+//        Rotation.dRFromZAxis(R, ax, ay, az);
+//    }
+    public static void dRFromZAxis (DMatrix3 R, DVector3C a) {
+        Rotation.dRFromZAxis(R, a);
+    }
+
 //    public static void dQSetIdentity (dQuaternion q);
 //
-//    public static void dQFromAxisAndAngle (dQuaternion q, dReal ax, dReal ay, dReal az,
-//                 dReal angle);
+    public static void dQFromAxisAndAngle (DQuaternion q, double ax, double ay, 
+            double az, double angle) {
+        Rotation.dQFromAxisAndAngle(q, ax, ay, az, angle);
+    }
 
     /**
      * Quaternion multiplication, analogous to the matrix multiplication routines. 

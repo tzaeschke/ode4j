@@ -50,7 +50,6 @@ import static org.ode4j.ode.internal.Misc.dRandReal;
 import org.ode4j.math.DMatrixN;
 import org.ode4j.ode.DStopwatch;
 import org.ode4j.ode.OdeConfig;
-import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 
@@ -357,7 +356,7 @@ public class DLCP {
 	    m_p = _p;
 	    m_C = _C;
 
-	    OdeMath.dSetZero (m_x, m_n);
+	    Matrix.dSetZero (m_x, m_n);
 
 		if (ROWPTRS) {//# ifdef ROWPTRS
 			// make matrix row pointers

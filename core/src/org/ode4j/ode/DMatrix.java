@@ -37,7 +37,7 @@ import org.ode4j.ode.internal.Matrix;
  *
  * @author Tilmann Zaeschke
  */
-public class DMatrix {
+class DMatrix extends DMisc {
     
     // from matrix.h
     
@@ -48,12 +48,6 @@ public class DMatrix {
         Arrays.fill(a,0);
     }
     /** 
-     * Set a vector/matrix to all zeros. 
-     */
-    public static void dSetZero (DVector3 a) {
-        a.setZero();
-    }
-    /** 
      * Set a vector/matrix to a specific value. 
      */
     public static void dSetValue (DVector3 a, double value) {
@@ -61,13 +55,13 @@ public class DMatrix {
     }
 
 
-    /** 
-     * Get the dot product of two n*1 vectors. if n <= 0 then
-     * zero will be returned (in which case a and b need not be valid).
-     */
-    public static double dDot (DVector3C a, DVector3C b, int n) {
-        return a.dot(b);
-    }
+//    /** 
+//     * Get the dot product of two n*1 vectors. if n <= 0 then
+//     * zero will be returned (in which case a and b need not be valid).
+//     */
+//    public static double dDot (DVector3C a, DVector3C b, int n) {
+//        return a.dot(b);
+//    }
 
 
 //    /** 

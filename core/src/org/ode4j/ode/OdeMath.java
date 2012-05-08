@@ -32,14 +32,14 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector3View;
 import org.ode4j.math.DVector4;
-import org.ode4j.ode.internal.Rotation;
+import org.ode4j.ode.internal.Common;
 
 /**
  * ODE math functions.
  *
  * @author Tilmann Zaeschke
  */
-public class OdeMath extends Rotation {
+public class OdeMath extends DRotation {
 
 	private OdeMath() {
 		//private
@@ -1101,7 +1101,7 @@ public class OdeMath extends Rotation {
 	private static void _dNormalize3(DVector3 a)
 	{
 		boolean bNormalizationResult = _dSafeNormalize3(a);
-		dIASSERT(bNormalizationResult);
+		Common.dIASSERT(bNormalizationResult);
 	}
 
 	//static __inline void _dNormalize4(dVector4 a)
@@ -1160,9 +1160,9 @@ public class OdeMath extends Rotation {
 	static boolean _dSafeNormalize3 (DVector3 a)
 	{
 		double s;
-		double aa0 = dFabs(a.get0());
-		double aa1 = dFabs(a.get1());
-		double aa2 = dFabs(a.get2());
+		double aa0 = Math.abs(a.get0());
+		double aa1 = Math.abs(a.get1());
+		double aa2 = Math.abs(a.get2());
 		if (aa1 > aa0) {
 			if (aa2 > aa1) { // aa[2] is largest
 				s = aa2;
@@ -1203,9 +1203,9 @@ public class OdeMath extends Rotation {
 	static boolean _dSafeNormalize3 (DVector3View a)
 	{
 		double s;
-		double aa0 = dFabs(a.get0());
-		double aa1 = dFabs(a.get1());
-		double aa2 = dFabs(a.get2());
+		double aa0 = Math.abs(a.get0());
+		double aa1 = Math.abs(a.get1());
+		double aa2 = Math.abs(a.get2());
 		if (aa1 > aa0) {
 			if (aa2 > aa1) { // aa[2] is largest
 				s = aa2;
@@ -1383,11 +1383,11 @@ else {
 	//ODE_API void dPlaneSpace (const dVector3 n, dVector3 p, dVector3 q);
 	public static void dPlaneSpace (DVector3C n, DVector3 p, DVector3 q)
 	{
-		dAASSERT (n, p, q);
-		if (dFabs(n.get2()) > M_SQRT1_2) {
+	    Common.dAASSERT (n, p, q);
+		if (Math.abs(n.get2()) > Common.M_SQRT1_2) {
 			// choose p in y-z plane
 			double a = n.get1()*n.get1() + n.get2()*n.get2();
-			double k = dRecipSqrt (a);
+			double k = Common.dRecipSqrt (a);
 //			p.v[0] = 0;
 //			p.v[1] = -n.v[2]*k;
 //			p.v[2] = n.v[1]*k;
@@ -1400,7 +1400,7 @@ else {
 		else {
 			// choose p in x-y plane
 			double a = n.get0()*n.get0() + n.get1()*n.get1();
-			double k = dRecipSqrt (a);
+			double k = Common.dRecipSqrt (a);
 			p.set0( -n.get1()*k );
 			p.set1( n.get0()*k );
 			p.set2( 0 );

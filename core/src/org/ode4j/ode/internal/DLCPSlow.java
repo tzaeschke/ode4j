@@ -30,7 +30,6 @@ import static org.ode4j.ode.OdeMath.*;
 
 import org.ode4j.math.DMatrixN;
 import org.ode4j.ode.OdeConfig;
-import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DStopwatch;
 
 
@@ -803,12 +802,12 @@ public abstract class DLCPSlow {
 			else {
 				for (;;) {
 					// compute: delta_x(C) = -A(C,C)\A(C,i)
-					OdeMath.dSetZero (delta_x,n);
+					Matrix.dSetZero (delta_x,n);
 					lcp.solve1 (delta_x,i);
 					delta_x[i] = 1;
 
 					// compute: delta_w = A*delta_x
-					OdeMath.dSetZero (delta_w,n);
+					Matrix.dSetZero (delta_w,n);
 					lcp.pN_equals_ANC_times_qC (delta_w,delta_x);
 					lcp.pN_plusequals_ANi (delta_w,i);
 					delta_w[i] = lcp.AiC_times_qC (i,delta_x) + lcp.Aii(i);
@@ -925,7 +924,7 @@ public abstract class DLCPSlow {
 			Matrix.dSolveLDLT (A,w,b,n,nskip);
 			memcpy (x,b,n);//*sizeof(dReal));
 			//TODO necessary?
-			OdeMath.dSetZero (w,n);
+			Matrix.dSetZero (w,n);
 
 			return;
 		}
