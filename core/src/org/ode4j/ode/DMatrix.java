@@ -37,7 +37,7 @@ import org.ode4j.ode.internal.Matrix;
  *
  * @author Tilmann Zaeschke
  */
-class DMatrix extends DMisc {
+public class DMatrix extends DMisc {
     
     // from matrix.h
     

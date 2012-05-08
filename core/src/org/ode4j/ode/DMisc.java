@@ -38,7 +38,7 @@ import org.ode4j.ode.internal.Misc;
  *
  * @author Tilmann Zaeschke
  */
-class DMisc extends Common {
+public class DMisc extends Common {
     /** 
      * @return 'true' if the random number generator is working. 
      */

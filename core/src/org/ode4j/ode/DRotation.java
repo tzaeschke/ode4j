@@ -36,7 +36,7 @@ import org.ode4j.ode.internal.Rotation;
  *
  * @author Tilmann Zaeschke
  */
-class DRotation extends DMatrix {
+public class DRotation extends DMatrix {
 
     public static void dRSetIdentity (DMatrix3 R) {
         R.setIdentity();
