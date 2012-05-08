@@ -261,7 +261,7 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 		dsSetDrawMode(DS_POLYFILL);
 		/*if (show_contacts) */
 		DMatrix3 RI = new DMatrix3();
-		dRSetIdentity (RI);
+		RI.setIdentity();
 		dsSetColor (1.0f,0,0);
 		for(int i=0;i<contactcount;++i)
 		{

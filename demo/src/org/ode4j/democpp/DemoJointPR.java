@@ -393,7 +393,7 @@ class DemoJointPR extends dsFunctions {
 
 		//set the initial positions of body1 and body2
 		DMatrix3 R = new DMatrix3();
-		OdeMath.dRSetIdentity(R);
+		R.setIdentity();
 		dBodySetPosition (box1_body[0],0,0,BOX1_HEIGHT/2.0);
 		dBodySetRotation (box1_body[0], R);
 

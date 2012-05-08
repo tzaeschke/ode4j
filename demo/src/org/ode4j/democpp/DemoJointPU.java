@@ -526,7 +526,7 @@ class DemoJointPU extends dsFunctions {
 				DQuaternion qq = new DQuaternion();
 				dQMultiply1 (qq, qAng, q);
 				DMatrix3 R = new DMatrix3();
-				dQtoR (qq,R);
+				dRfromQ (R,qq);
 
 
 				dGeomCylinderGetParams (
@@ -553,7 +553,7 @@ class DemoJointPU extends dsFunctions {
 
 
 				DMatrix3 R = new DMatrix3();
-				dQtoR (qq1,R);
+				dRfromQ (R,qq1);
 
 
 				dGeomCylinderGetParams (

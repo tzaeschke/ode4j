@@ -199,7 +199,7 @@ class DemoI extends dsFunctions {
 		dBodySetQuaternion (anchor_body,qrot);
 		dBodySetQuaternion (test_body,qrot);
 		DMatrix3 R = new DMatrix3();
-		dQtoR (qrot,R);
+		dRfromQ (R,qrot);
 		for (i=0; i<NUM; i++) {
 			DVector3 v = new DVector3();
 //			dMultiply0 (v,R,q[i][0],3,3,1);

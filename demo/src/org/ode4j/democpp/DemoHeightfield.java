@@ -225,7 +225,7 @@ class DemoHeightfield extends dsFunctions {
 		int numc = dCollide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());
 		if (numc!=0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			final DVector3 ss = new DVector3(0.02,0.02,0.02);
 			for (i=0; i<numc; i++) {
 				DJoint c = dJointCreateContact (world,contactgroup,contacts.get(i));
@@ -615,7 +615,7 @@ class DemoHeightfield extends dsFunctions {
 			DVector3 bbsides = new DVector3();
 			for (i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i) );
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			dsSetColorAlpha (1,0,0,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}
@@ -795,7 +795,7 @@ class DemoHeightfield extends dsFunctions {
 			DVector3 bbsides = new DVector3();
 			for (int i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i) );
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			dsSetColorAlpha (1,0,0,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}
@@ -862,7 +862,7 @@ class DemoHeightfield extends dsFunctions {
 
 		// Rotate so Z is up, not Y (which is the default orientation)
 		DMatrix3 R = new DMatrix3();
-		dRSetIdentity( R );
+		R.setIdentity();
 		dRFromAxisAndAngle( R, 1, 0, 0, DEGTORAD * 90 );
 
 		// Place it.

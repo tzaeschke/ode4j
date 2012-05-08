@@ -203,7 +203,7 @@ public class DemoMotion extends dsFunctions {
 		int numc = dCollide (o1, o2, MAX_CONTACTS, contacts.getGeomBuffer());
 
 		if (numc != 0)
-			dRSetIdentity(RI);
+			RI.setIdentity();
 
 		boolean isplatform = (o1 == platform) || (o2 == platform);
 
@@ -325,7 +325,7 @@ public class DemoMotion extends dsFunctions {
 						platpos.get0(),
 						platpos.get1(),
 						platpos.get2()+2);
-				dRSetIdentity (R);
+				R.setIdentity();
 			}
 			dBodySetRotation (obj[i].body,R);
 			//            obj[i].body.dBodySetData (obj[i].body,(void*) i);
@@ -444,7 +444,7 @@ public class DemoMotion extends dsFunctions {
 			DVector3 bbsides = aabb.getLengths();
 			//for (i=0; i<3; i++) bbsides.v[i] = aabb.v[i*2+1] - aabb.v[i*2];
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			dsSetColorAlpha (1f,0f,0f,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}

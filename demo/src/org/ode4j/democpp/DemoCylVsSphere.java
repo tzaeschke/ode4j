@@ -117,7 +117,7 @@ class DemoCylVsSphere extends dsFunctions {
 				if (show_contacts) 
 				{
 					DMatrix3 RI = new DMatrix3();
-					dRSetIdentity (RI);
+					RI.setIdentity();
 					final DVector3 ss = new DVector3(0.12,0.12,0.12);
 					dsSetColorAlpha (0f,0f,1f,0.5f);
 					dsDrawBox (contact.geom.pos,RI,ss);

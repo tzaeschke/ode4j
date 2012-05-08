@@ -193,7 +193,7 @@ class DemoBoxstack extends dsFunctions {
 		int numc = dCollide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());//, sizeof(dContact));
 		if (numc!=0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			final DVector3 ss = new DVector3(0.02,0.02,0.02);
 			for (i=0; i<numc; i++) {
 				DJoint c = dJointCreateContact (world,contactgroup,contacts.get(i));
@@ -304,7 +304,7 @@ class DemoBoxstack extends dsFunctions {
 					if (pos.get(2) > maxheight) maxheight = pos.get(2);
 				}
 				dBodySetPosition (obj[i].body, 0,0,maxheight+1);
-				dRSetIdentity (R);
+				R.setIdentity();
 				//dRFromAxisAndAngle (R,0,0,1,/*dRandReal()*10.0-5.0*/0);
 			}
 			dBodySetRotation (obj[i].body,R);
@@ -593,7 +593,7 @@ class DemoBoxstack extends dsFunctions {
 			DVector3 bbsides = new DVector3();
 			for (i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i));
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			dsSetColorAlpha (1,0,0,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}
