@@ -42,6 +42,7 @@ import static org.cpp4j.Cstdio.*;
 
 /**
  * Main window and event handling for LWJGL.
+ * Ported from x11.cpp.
  */
 abstract class LwJGL extends Internal implements DrawStuffApi {
 
@@ -575,6 +576,8 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 			handleKeyboard(fn);
 			handleMouse();
 
+			//processDrawFrame: This was not move into separate method for convenience
+			
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 			dsDrawFrame (width,height,fn,pause && !singlestep);

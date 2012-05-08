@@ -11,18 +11,23 @@ the rules for this file:
 
 SUMMARY of changes for ode-0.12
 - Refactoring of OdeMath method names
+- Refactoring of OdeMath super-classes Matrix->DMatrix, ...
 - new functions in DGeom
 - Quickstep refactored and sped up
 - Clean-up of demos
+- New TrackDemo
 - Bug fixes
 
 =============
-TODO include DMatrix, DRoation, DMisc into OdeMath i.o. internal Rotation/Matrix?!
+TODO 
+- include DMatrix, DRoation, DMisc into OdeMath i.o. internal Rotation/Matrix?!
+- Remove OdeMath.OP
 =============
 
-2012-May-07 Tilmann Zaschke
+2012-May-08 Tilmann Zaschke
 		* Migration to ode-0.12:
 		  - Included DMatrix/DRotation/DMisc in OdeMath.
+		  - Checked drawstuff
 
 2012-May-07 Tilmann Zaschke
 		* Migration to ode-0.12:

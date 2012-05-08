@@ -40,8 +40,6 @@ import org.lwjgl.util.glu.GLU;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.OdeMath.OP;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
 
@@ -125,6 +123,17 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		}
 	}
 	
+	private static void crossProduct3(float[] res, float[] a, float[] b)
+	{
+	  float res_0 = a[1]*b[2] - a[2]*b[1];
+	  float res_1 = a[2]*b[0] - a[0]*b[2];
+	  float res_2 = a[0]*b[1] - a[1]*b[0];
+	  // Only assign after all the calculations are over to avoid incurring memory aliasing
+	  res[0] = res_0;
+	  res[1] = res_1;
+	  res[2] = res_2;
+	}
+
 	//***************************************************************************
 	// PPM image object
 
@@ -202,7 +211,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 				InputStream is = getClass().getResourceAsStream(filename); 
 				if (is == null) throw new IllegalArgumentException("File not found: " + filename);
 				f = new PushbackInputStream( new BufferedInputStream( is )); 
-				if (f == null) dsError ("Can't open image file `%s'",filename);
+				//if (f == null) dsError ("Can't open image file `%s'",filename);
 
 				// read in header
 				//if (fgetcC(f) != 'P' || fgetcC(f) != '6')
@@ -709,7 +718,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		v[0] = vAll[v2] - vAll[v0];//v2[0] - v0[0];
 		v[1] = vAll[v2+1] - vAll[v0+1];//v2[1] - v0[1];
 		v[2] = vAll[v2+2] - vAll[v0+2];//v2[2] - v0[2];
-		OdeMath.dCalcVectorCross3(normal,u,v);
+		crossProduct3(normal,u,v);
 		normalizeVector3 (normal);
 
 		GL11.glBegin(solid ? GL11.GL_TRIANGLES : GL11.GL_LINE_STRIP);
@@ -730,7 +739,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		v[0] = v2[0] - v0[0];
 		v[1] = v2[1] - v0[1];
 		v[2] = v2[2] - v0[2];
-		OdeMath.dCalcVectorCross3 (normal,u,v);
+		crossProduct3 (normal,u,v);
 		normalizeVector3 (normal);
 
 		GL11.glBegin(solid ? GL11.GL_TRIANGLES : GL11.GL_LINE_STRIP);
@@ -772,7 +781,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		v[0] = (float) ( v2.get0() - v0.get0() );
 		v[1] = (float) ( v2.get1() - v0.get1() );
 		v[2] = (float) ( v2.get2() - v0.get2() );
-		OdeMath.dCalcVectorCross3 (normal,u,v);
+		crossProduct3 (normal,u,v);
 		normalizeVector3 (normal);
 
 		GL11.glBegin(solid ? GL11.GL_TRIANGLES : GL11.GL_LINE_STRIP);
@@ -1644,7 +1653,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	}
 
 
-	public void dsDrawTriangle (final float[] pos, final float[] R,
+	void dsDrawTriangle (final float[] pos, final float[] R,
 			final float[] vAll, final int v0, final int v1,
 			final int v2, boolean solid)
 	{
