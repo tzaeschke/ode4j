@@ -551,11 +551,6 @@ public class OdeMath extends DRotation {
     /**
      * Cross product, set a = b x c.
      */
-	public static void dCalcVectorCross3(float[] a, float[] b, float[] c) {
-	    a[0] = ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
-	    a[1] = ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
-	    a[2] = ((b)[0]*(c)[1] - (b)[1]*(c)[0]);
-	}
 //	public static void dAddVectorCross3(float[] a, float[] b, float[] c) {
 //	    a[0] += ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
 //	    a[1] += ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
