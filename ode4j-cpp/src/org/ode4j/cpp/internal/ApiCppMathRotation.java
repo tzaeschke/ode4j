@@ -25,6 +25,8 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.internal.Matrix;
+import org.ode4j.ode.internal.Rotation;
 
 
 public abstract class ApiCppMathRotation extends ApiCppMathMisc {
@@ -48,12 +50,12 @@ public abstract class ApiCppMathRotation extends ApiCppMathMisc {
 	//ODE_API 
 	public static void dRFrom2Axes (DMatrix3 R, double ax, double ay, double az,
 			double bx, double by, double bz) {
-		OdeMath.dRFrom2Axes(R, ax, ay, az, bx, by, bz);
+		Rotation.dRFrom2Axes(R, ax, ay, az, bx, by, bz);
 	}
 
 	//ODE_API 
 	public static void dRFromZAxis (DMatrix3 R, double ax, double ay, double az) {
-		OdeMath.dRFromZAxis(R, ax, ay, az);
+	    Rotation.dRFromZAxis(R, ax, ay, az);
 	}
 
 	//ODE_API 
@@ -107,6 +109,6 @@ public abstract class ApiCppMathRotation extends ApiCppMathMisc {
 	//ODE_API 
 	// void dDQfromW (double dq[4], final dVector3 w, final dQuaternion q);
 	public static void dDQfromW (DQuaternion dq, final DVector3 w, final DQuaternion q) {
-		OdeMath.dDQfromW(dq, w, q);
+		Rotation.dDQfromW(dq, w, q);
 	}
 }

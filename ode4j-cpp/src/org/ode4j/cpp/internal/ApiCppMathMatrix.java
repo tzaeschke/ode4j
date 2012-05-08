@@ -24,8 +24,8 @@ package org.ode4j.cpp.internal;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DMatrix;
 import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.internal.Matrix;
 
 
 /** 
@@ -38,12 +38,12 @@ public abstract class ApiCppMathMatrix extends ApiCppMathRotation {
 	//ODE_API 
 	//	void dSetZero (double *a, int n);
 	public static void dSetZero (double[] a, int n) { 
-		OdeMath.dSetZero(a, n); 
+		Matrix.dSetZero(a, n); 
 	}
 	//ODE_API 
 	//	 void dSetValue (double *a, int n, double value);
 	public static void dSetValue (double[] a, int n, double value) {
-		OdeMath.dSetValue(a, n, value);
+	    Matrix.dSetValue(a, n, value);
 	}
 
 
@@ -58,14 +58,14 @@ public abstract class ApiCppMathMatrix extends ApiCppMathRotation {
 		return a.dot(b);
 	}
 	public static double dDot (final double[] a, final double[] b, int n) {
-		return OdeMath.dDot(a, 0, b, 0, n);
+		return Matrix.dDot(a, 0, b, 0, n);
 	}
 	public static double dDot (final double[] a, int aPos, final double[] b, int n) {
-		return OdeMath.dDot(a, aPos, b, 0, n);
+		return Matrix.dDot(a, aPos, b, 0, n);
 	}
 	public static double dDot (final double[] a, int aPos, 
 			final double[] b, int bPos, int n) {
-		return OdeMath.dDot(a, aPos, b, bPos, n);
+		return Matrix.dDot(a, aPos, b, bPos, n);
 	}
 
 
@@ -115,7 +115,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	//ODE_API 
 	public static boolean dFactorCholesky (double[] A, int n) {
-		return DMatrix.dFactorCholesky(A, n);
+		return OdeMath.dFactorCholesky(A, n);
 	}
 
 
@@ -126,7 +126,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//ODE_API 
 	//	 void dSolveCholesky (final double *L, double *b, int n) {
 	public static void dSolveCholesky (final double[] L, double[] b, int n) {
-		DMatrix.dSolveCholesky(L, b, n);
+	    OdeMath.dSolveCholesky(L, b, n);
 	}
 
 
@@ -137,7 +137,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	//ODE_API 
 	public static boolean dInvertPDMatrix (final double[] A, double[] Ainv, int n) {
-		return DMatrix.dInvertPDMatrix(A, Ainv, n);
+		return OdeMath.dInvertPDMatrix(A, Ainv, n);
 	}
 
 
@@ -252,7 +252,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//	 void dLDLTRemove (double **A, final int *p, double *L, double *d,
 	public static void dLDLTRemove (double[] A, final int [] p, double[] L, 
 			double[] d, int n1, int n2, int r, int nskip) {
-	    DMatrix.dLDLTRemove(A, p, L, d, n1, n2, r, nskip);
+	    OdeMath.dLDLTRemove(A, p, L, d, n1, n2, r, nskip);
 	}
 
 
