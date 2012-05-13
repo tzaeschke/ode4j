@@ -26,6 +26,7 @@ package org.ode4j.tests;
 
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DVector3;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
@@ -37,6 +38,11 @@ import org.ode4j.ode.OdeHelper;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 
+/**
+ * Tests from collision.cpp.
+ *
+ * @author Tilmann Zaeschke
+ */
 public class CollisionTest {
 
     /**
@@ -60,6 +66,16 @@ public class CollisionTest {
 	        final int VertexCount = 4;
 	        final int IndexCount = 2*3;
 	        // this is a square on the XY plane
+	        /*
+	           3    2
+	           +----+
+	           |   /|
+	           |  / |
+	           | /  |
+	           |/   |
+	           +----+
+	           0    1
+	         */
 	        float[] vertices = {//[VertexCount * 3] = {
 	            -1,-1,0,
 	            1,-1,0,
@@ -82,25 +98,38 @@ public class CollisionTest {
 	        DGeom trimesh = dCreateTriMesh(null, data, null, null, null);
 	        final double radius = 4;
 	        DGeom sphere = dCreateSphere(null, radius);
-	        dGeomSetPosition(sphere, 0,0,radius);
 	        //dContactGeom cg[4];
 	        DContactGeomBuffer cg = new DContactGeomBuffer(4);
 	        int nc;
+	        DVector3 trinormal = new DVector3( 0, 0, -1 );
 
-	        // check extreme case
+	        // Test case: sphere touches the diagonal edge
+	        dGeomSetPosition(sphere, 0,0,radius);
 	        nc = dCollide(trimesh, sphere, 4, cg);//&cg[0], sizeof cg[0]);
-	        CHECK_EQUAL(1, nc);
-	        //CHECK_EQUAL(0, cg.get(0).depth);
-	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
+	        CHECK_EQUAL(2, nc);
+	        for (int i=0; i<nc; ++i) {
+	            CHECK_EQUAL(0, cg.get(i).depth);
+	            CHECK_ARRAY_EQUAL(trinormal, cg.get(i).normal, 3);
+	        }
+	        //TODO remove tz
+//	        CHECK_EQUAL(1, nc);
+//	        //CHECK_EQUAL(0, cg.get(0).depth);
+//	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
 	        
 	        // now translate both geoms
 	        dGeomSetPosition(trimesh, 10,30,40);
 	        dGeomSetPosition(sphere, 10,30,40+radius);
 	        // check extreme case, again
 	        nc = dCollide(trimesh, sphere, 4, cg);//&cg[0], sizeof cg[0]);
-	        CHECK_EQUAL(1, nc);
-	        //CHECK_EQUAL(0, cg.get(0).depth);
-	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
+	        CHECK_EQUAL(2, nc);
+	        for (int i=0; i<nc; ++i) {
+	            CHECK_EQUAL(0, cg.get(i).depth);
+	            CHECK_ARRAY_EQUAL(trinormal, cg.get(i).normal, 3);
+	        }
+	        //TODO removbe tz
+//	        CHECK_EQUAL(1, nc);
+//	        //CHECK_EQUAL(0, cg.get(0).depth);
+//	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
 	        
 	        // and now, let's rotate the trimesh, 90 degrees on X
 	        DMatrix3 rot = new DMatrix3( 1, 0, 0, //0,
@@ -112,9 +141,16 @@ public class CollisionTest {
 	        dGeomSetPosition(sphere, 10,30-radius,40);
 	        // check extreme case, again
 	        nc = dCollide(trimesh, sphere, 4, cg);//&cg[0], sizeof cg[0]);
-	        CHECK_EQUAL(1, nc);
-	        //CHECK_EQUAL(0, cg.get(0).depth);
-	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
+	        CHECK_EQUAL(2, nc);
+	        DVector3 rtrinormal = new DVector3( 0, 1, 0 );
+	        for (int i=0; i<nc; ++i) {
+	            CHECK_EQUAL(0, cg.get(i).depth);
+	            CHECK_ARRAY_EQUAL(rtrinormal, cg.get(i).normal, 3);
+	        }
+	        //TODO remove tz
+//	        CHECK_EQUAL(1, nc);
+//	        //CHECK_EQUAL(0, cg.get(0).depth);
+//	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
 	    } finally {
 	    	OdeHelper.closeODE();
 	    }
@@ -145,7 +181,7 @@ public class CollisionTest {
 	        //DContact contactBuf[10];
 	        DContactBuffer contactBuf = new DContactBuffer(10);
 
-	        // Crash!
+	        // Make sure it does not crash!
 	        dCollide(ray, height, 10, contactBuf.getGeomBuffer());//&(contactBuf[0].geom), sizeof(dContact));
 
 	        dGeomDestroy(height);

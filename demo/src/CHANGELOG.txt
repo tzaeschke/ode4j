@@ -22,7 +22,14 @@ SUMMARY of changes for ode-0.12
 TODO 
 - include DMatrix, DRoation, DMisc into OdeMath i.o. internal Rotation/Matrix?!
 - Remove OdeMath.OP
+- Run tests!
 =============
+
+2012-May-13 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Test harnesses. Don't run yet...
+		  - Fixed and cleaned up concurrency test and fixed modest reported problems
+		  - Removed Testing.java
 
 2012-May-08 Tilmann Zaschke
 		* Migration to ode-0.12:

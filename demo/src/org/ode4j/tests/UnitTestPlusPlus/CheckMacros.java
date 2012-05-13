@@ -29,7 +29,7 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
 //#ifndef UNITTEST_CHECKMACROS_H 
 //#define UNITTEST_CHECKMACROS_H
@@ -44,7 +44,10 @@ import junit.framework.TestCase;
 //#endif
 //
 
-public class CheckMacros extends TestCase {
+/**
+ * Test macros.
+ */
+public class CheckMacros {
 
 	public interface Expr {
 		public void run();

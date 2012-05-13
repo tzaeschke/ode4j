@@ -1,6 +1,6 @@
 /*************************************************************************
  *                                                                       *
- * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann ZÃ¤schke      *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2012 Tilmann Zäschke      *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
@@ -28,22 +28,26 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.internal.DDestructible;
 import org.ode4j.ode.internal.DxGeom;
 import org.ode4j.ode.internal.DxHashSpace;
+import org.ode4j.ode.internal.ErrorHdl;
 import org.ode4j.ode.internal.Misc;
+import org.ode4j.ode.internal.OdeFactoryImpl;
 import org.ode4j.ode.internal.OdeInit;
 import org.ode4j.ode.internal.Timer;
+import org.ode4j.ode.internal.gimpact.GimMath;
+import org.ode4j.ode.internal.stuff.Performator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -72,11 +76,10 @@ import junit.framework.TestSuite;
 public class JavaMultiThreadTest extends TestCase {
 
     //The following two designate the package to test. 
-    private static final String PACKAGE_TO_TEST = "org.ode4j.ode";
-    //TODO also test "org.ode4j.ode" !!
+    private static final String PACKAGE_TO_TEST = "org.ode4j";
     private static final Class<?> REFERENCE_CLASS = OdeHelper.class;
     
-    private static boolean _verbose = false;
+    private static boolean _verbose = true;
     
     private int _nFieldStaticFinalPrimitive = 0;
     private int _nClassHasState = 0;
@@ -124,46 +127,36 @@ public class JavaMultiThreadTest extends TestCase {
         //  the reference to the outermost array can be made 'final'.
         //- Collections, e.g. 
         //  "static final Map xyz = Collections.unmodifyableMap(aMap)";
-        //  The map 'xyz' is obviously immutable, but that this tool can not 
+        //  The map 'xyz' is obviously immutable, but this test can not 
         //  realize this only via reflection.
         try {
-            //This is an unmodifiableMap
-//TODO            _ignoreFields.add(DataFormatter.class.getDeclaredField("_systemFormats"));
-            //This array is never modified
-//TODO            _ignoreFields.add(DataFormatter.class.getDeclaredField("_systemLayout"));
-            //This array is never modified
-//TODO            _ignoreFields.add(AbstractArrayData.class.getDeclaredField("RESIZER"));
-            //This array is never modified
-//TODO            _ignoreFields.add(
-//                    AbstractGaussianQuadrature.class.getDeclaredField("_cof"));
+            _ignoreFields.add(DDestructible.class.getDeclaredField("counter"));
+            _ignoreFields.add(ErrorHdl.class.getDeclaredField("error_function"));
+            _ignoreFields.add(ErrorHdl.class.getDeclaredField("debug_function"));
+            _ignoreFields.add(ErrorHdl.class.getDeclaredField("message_function"));
+            _ignoreFields.add(OdeFactoryImpl.class.getDeclaredField("ode_configuration"));
+            _ignoreFields.add(OdeFactoryImpl.class.getDeclaredField("g_world_check_tag_generator"));
             _ignoreFields.add(Misc.class.getDeclaredField("seed"));
             _ignoreFields.add(DxHashSpace.class.getDeclaredField("prime"));
             _ignoreFields.add(OdeInit.class.getDeclaredField("g_bODEInitialized"));
-//            //This array is empty and never modified
-//            _ignoreFieldNames.add("_empty_array");
             _ignoreFields.add(DxGeom.class.getDeclaredField("colliders_initialized")); //TODO fix this properly
             _ignoreFields.add(DxGeom.class.getDeclaredField("colliders")); //TODO fix this properly
-//            //This array is empty and never modified
-//            _ignoreFieldNames.add("_empty_re");
-//            //This array is empty and never modified
-//            _ignoreFieldNames.add("_empty_im");
-            //These arrays are never modified
+            _ignoreFields.add(GimMath.class.getDeclaredField("random"));
+            _ignoreFields.add(Performator.class.getDeclaredField("data"));
+//            _ignoreClasses.add(dMatrixComparison.class);
             _ignoreClasses.add(Timer.class);
             _ignoreClasses.add(Throwable.class);
             _ignoreClasses.add(TestCase.class);
-//TODO            _ignoreClasses.add(ConfiguredTestCase.class);
         } catch (SecurityException e) {
             throw new RuntimeException(e);
         } catch (NoSuchFieldException e) {
             throw new RuntimeException(e);
-//        } catch (ClassNotFoundException e) {
-//            throw new RuntimeException(e);
         }
     }
 
     private class ClassInfo {
-        List<Field> _fields = new LinkedList<Field>();
-        List<Class<?>> _subClasses = new LinkedList<Class<?>>();
+        ArrayList<Field> _fields = new ArrayList<Field>();
+        ArrayList<Class<?>> _subClasses = new ArrayList<Class<?>>();
         Class<?> _cls;
         boolean _hasBeenChecked = false;
         ClassInfo _superInfo = null;
@@ -246,15 +239,25 @@ public class JavaMultiThreadTest extends TestCase {
         ProtectionDomain pDomain = REFERENCE_CLASS.getProtectionDomain();
         CodeSource cSource = pDomain.getCodeSource();
         URL loc = cSource.getLocation();  // file:/c:/almanac14/examples/
+        String locPath = loc.getPath();
 
         String c = File.separator;
-        String pkgStr = PACKAGE_TO_TEST.replaceAll("\\.", c);
-        println("Loading from: " + loc.getPath() + pkgStr);
-        File fIaNum = new File(loc.getPath() + pkgStr);
+        
+        if (c.equals("\\")) {
+            //windows
+            locPath = locPath.substring(1); //remove '/' at beginning
+            locPath = locPath.replace("/", "\\");
+            locPath = locPath.replace("%20", " ");
+        }
+        
+        //String pkgStr = PACKAGE_TO_TEST.replaceAll("\\.", c);
+        String pkgStr = PACKAGE_TO_TEST.replace(".", c);
+        println("Loading from: " + locPath + pkgStr);
+        File fIaNum = new File(locPath + pkgStr);
 
         println("[Finding class names]");
         findClasses(fIaNum, _classNames);
-
+        
         println("[Loading classes]");
         loadClasses(_classNames, _classes);
 
@@ -265,13 +268,14 @@ public class JavaMultiThreadTest extends TestCase {
         int nStateful = 0;
         println("The following classes have a state:");
         println("-----------------------------------");
-        for (ClassInfo clsInfo: _classes.values()) {
-            if (clsInfo._hasState && 
-                    clsInfo._cls.getName().startsWith(PACKAGE_TO_TEST)) {
-                println(clsInfo._cls.getName());
-                nStateful++;
-            }
-        }
+        println("  -- COMMENT OUT FOR LIST -- ");
+//        for (ClassInfo clsInfo: _classes.values()) {
+//            if (clsInfo._hasState && 
+//                    clsInfo._cls.getName().startsWith(PACKAGE_TO_TEST)) {
+//                println(clsInfo._cls.getName());
+//                nStateful++;
+//            }
+//        }
 
         println("[Summary]");
         println("Class names found: " + _classNames.size());
@@ -284,6 +288,7 @@ public class JavaMultiThreadTest extends TestCase {
         println("Warnings: " + _nWarnings);
         println("");
         println("[Done]");
+        assertEquals(0, _nErrors);
     }
 
     private void checkClassFields(Class<?> cls) {
@@ -299,11 +304,12 @@ public class JavaMultiThreadTest extends TestCase {
             checkClassFields(superInfo._cls);
         }
 
-        LinkedList<Field> staticSelfReferences = new LinkedList<Field>();
+        ArrayList<Field> staticSelfReferences = new ArrayList<Field>();
 
         for (Field f: info._fields) {
             if (_ignoreFields.contains(f)) continue;
             if (_ignoreFieldNames.contains(f.getName())) continue;
+            if (f.isEnumConstant()) continue;
 
             Class<?> type = f.getType();
             int mod = f.getModifiers();
@@ -316,12 +322,14 @@ public class JavaMultiThreadTest extends TestCase {
             boolean isStatic = Modifier.isStatic(mod);
 
             if (isFinal) {  //static or non-static
-                if (_stateLessPrims.contains(type)) {
+                if (type.isPrimitive() || _stateLessPrims.contains(type)) {
                     _nFieldStaticFinalPrimitive++;
                     //Static final primitives are all right
                     continue;
                 }
-            } else if (isFinal && isStatic) {
+            } 
+
+            if (isFinal && isStatic) {
                 if (!_classes.containsKey(type)) {
                     println("WARNING: Unknown Type in " + cls + 
                             ":   " + type + "." + f);
@@ -335,19 +343,17 @@ public class JavaMultiThreadTest extends TestCase {
                             continue;
                         }
 
-                        //Hopefully we don't get circular here
-                        if (_circularStack.contains(type)) {
-                            String msg = ("ERROR: Circular problem in " + cls + 
-                                    ":   " + type + "." + f + "            " +
-                                    _circularStack);
-                            throw new RuntimeException(msg);
+                        //avoid circularity with backward-forward references
+                        if (!_circularStack.contains(type)) {
+                            _circularStack.add(type);
+                            checkClassFields(type);
+                            _circularStack.remove(type);
+                        } else {
+                            continue;
                         }
-                        _circularStack.add(type);
-                        checkClassFields(type);
-                        _circularStack.remove(type);
                     }
                     if (typeInfo._hasState) {
-                        println("ERROR: Stateful static final " +
+                        fail("ERROR: Stateful static final " +
                                 "field in " + cls + ":   " + type + "." + f);
                         _nErrors++;
                     }
@@ -367,7 +373,8 @@ public class JavaMultiThreadTest extends TestCase {
             int mod = f.getModifiers();
             if (Modifier.isStatic(mod)) {
                 if (info._hasState) {
-                    println("ERROR: Stateful static final " +
+                    _nErrors++;
+                    fail("ERROR: Stateful static final " +
                             "field in " + cls + ":   " + f);
                 }
             }
@@ -382,6 +389,10 @@ public class JavaMultiThreadTest extends TestCase {
         if (path.getName().equals("test")) {
             return;
         }
+        String fs = File.separator;
+        if (fs.equals("\\")) {
+            fs = "\\\\";
+        }
         for (File fSub: path.listFiles()) {
             if (fSub.isDirectory()) {
                 //println("Entering sub directory: " + fSub.toString());
@@ -390,7 +401,7 @@ public class JavaMultiThreadTest extends TestCase {
             if (fSub.getName().endsWith(".class") && 
                     !fSub.getName().endsWith("$py.class")) {
                 String name = fSub.getPath().replaceAll("\\\\", ".");
-                name = fSub.getPath().replaceAll("/", ".");
+                name = fSub.getPath().replaceAll(fs, ".");
                 int in = name.indexOf(PACKAGE_TO_TEST + ".");
                 name = name.substring(in, name.length()-6);
                 //println("File: " + name);
@@ -406,6 +417,11 @@ public class JavaMultiThreadTest extends TestCase {
                 Class<?> cls = Class.forName(name);
                 if (!classes.containsKey(cls)) {
                     classes.put(cls, new ClassInfo(cls));
+                }
+                for (Class<?> inner: cls.getDeclaredClasses()) {
+                    if (!classes.containsKey(inner)) {
+                        classes.put(inner, new ClassInfo(inner));
+                    }
                 }
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);

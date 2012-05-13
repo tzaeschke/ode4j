@@ -32,7 +32,13 @@ import org.ode4j.ode.internal.Matrix;
 
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.junit.Assert.*;
 
+/**
+ * Additional tests for Java math classes.
+ *
+ * @author Tilmann Zaeschke
+ */
 public class OdeMathTZ {
 
 	@Test public void main() {
