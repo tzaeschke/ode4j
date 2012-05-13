@@ -27,6 +27,10 @@ package org.ode4j.ode.internal;
 import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
 
 
+/**
+ *
+ * Error handlers.
+ */
 public class ErrorHdl {
 
 	/**

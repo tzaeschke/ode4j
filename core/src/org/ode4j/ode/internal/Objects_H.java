@@ -35,7 +35,7 @@ import org.ode4j.math.DVector3C;
  *  
  *  @author Tilmann Zäschke
  */
-class Objects_H {
+public class Objects_H {
 
 
 	/** auto disable parameters. */

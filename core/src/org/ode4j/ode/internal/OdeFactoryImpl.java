@@ -150,7 +150,7 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 
 	// check the validity of the world data structures
 
-	static int g_world_check_tag_generator = 0;
+	private static int g_world_check_tag_generator = 0;
 
 	static int generateWorldCheckTag()
 	{
@@ -1664,7 +1664,7 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 	}
 
 	//  String[] ?!?!?
-	static String ode_configuration = "ODE ";
+	private static String ode_configuration = "ODE ";
 
 		// EXTENSION LIST BEGIN
 		//**********************************

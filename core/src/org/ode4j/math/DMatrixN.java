@@ -24,6 +24,10 @@ package org.ode4j.math;
 import org.ode4j.ode.internal.Misc;
 
 
+/**
+ *
+ * @author Tilmann Zaeschke
+ */
 public class DMatrixN {
 
 	private final double[] v;

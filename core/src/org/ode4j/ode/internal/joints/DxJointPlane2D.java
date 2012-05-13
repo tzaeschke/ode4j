@@ -25,6 +25,7 @@
 package org.ode4j.ode.internal.joints;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.internal.DxWorld;
 
@@ -65,9 +66,9 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	//    {   0,  1,  0   },
 	//    {   0,  0,  1,  }
 	//}
-	private static final DVector3 Midentity0 = new DVector3( 1,  0,  0 );
-	private static final DVector3 Midentity1 = new DVector3( 0,  1,  0 );
-	private static final DVector3 Midentity2 = new DVector3( 0,  0,  1 );
+	private static final DVector3C Midentity0 = new DVector3( 1,  0,  0 );
+	private static final DVector3C Midentity1 = new DVector3( 0,  1,  0 );
+	private static final DVector3C Midentity2 = new DVector3( 0,  0,  1 );
 
 
 	DxJointPlane2D( DxWorld w )// :

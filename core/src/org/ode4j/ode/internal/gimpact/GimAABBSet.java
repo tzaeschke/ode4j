@@ -31,7 +31,6 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
-import java.util.Arrays;
 import java.util.Comparator;
 
 import org.cpp4j.java.RefBoolean;
@@ -389,22 +388,24 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		if(calc_global_bound) gim_aabbset_calc_global_bound();
 	}
 
-	private static final Comparator <GIM_RSORT_TOKEN>COMPARATOT_TZ = new Comparator<GIM_RSORT_TOKEN>() {
-//		private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
-//		interface GimRSortTokenComparator {
-//			int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
-//		}
-//		static final GimRSortTokenComparator RSORT_TOKEN_COMPARATOR = new GimRSortTokenComparator() {
-//			@Override public int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
-//				return RSORT_TOKEN_COMPARATOR(x, y);
-//			}
-//		};
+	
+    private static final ComparatorTZ COMPARATOT_TZ = new ComparatorTZ();
+    private static final class ComparatorTZ implements Comparator<GIM_RSORT_TOKEN> {
+//      private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
+//      interface GimRSortTokenComparator {
+//          int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
+//      }
+//      static final GimRSortTokenComparator RSORT_TOKEN_COMPARATOR = new GimRSortTokenComparator() {
+//          @Override public int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
+//              return RSORT_TOKEN_COMPARATOR(x, y);
+//          }
+//      };
 
-		@Override
-		public int compare(GIM_RSORT_TOKEN o1, GIM_RSORT_TOKEN o2) {
-			return (int) -(o1.m_key - o2.m_key);
-		}
-	};
+        @Override
+        public int compare(GIM_RSORT_TOKEN o1, GIM_RSORT_TOKEN o2) {
+            return (int) -(o1.m_key - o2.m_key);
+        }
+    };
 	
 	
 	//utility macros
@@ -418,12 +419,12 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	private interface PushPairMacro {
 		void run(final int i, final int j, GimDynArray<GIM_PAIR> pairset);
 	}
-	private static PushPairMacro PUSH_PAIR = new PushPairMacro() {
+	private static final PushPairMacro PUSH_PAIR = new PushPairMacro() {
 		@Override public void run(int i, int j, GimDynArray<GIM_PAIR> pairset) {
 			PUSH_PAIR(i, j, pairset);
 		}
 	};
-	private static PushPairMacro PUSH_PAIR_INV = new PushPairMacro() {
+	private static final PushPairMacro PUSH_PAIR_INV = new PushPairMacro() {
 		@Override public void run(int i, int j, GimDynArray<GIM_PAIR> pairset) {
 			PUSH_PAIR_INV(i, j, pairset);
 		}

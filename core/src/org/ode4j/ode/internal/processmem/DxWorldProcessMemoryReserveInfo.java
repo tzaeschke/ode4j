@@ -24,21 +24,26 @@
  *************************************************************************/
 package org.ode4j.ode.internal.processmem;
 
+/**
+ *
+ */
 public class DxWorldProcessMemoryReserveInfo {
 
     DxWorldProcessMemoryReserveInfo(double fReserveFactor, int uiReserveMinimum)
     {
-        Assign(fReserveFactor, uiReserveMinimum);
-    }
-
-    void Assign(double fReserveFactor, int uiReserveMinimum)
-    {
         m_fReserveFactor = fReserveFactor;
         m_uiReserveMinimum = uiReserveMinimum;
+//        Assign(fReserveFactor, uiReserveMinimum);
     }
 
-    double m_fReserveFactor; // Use float as precision does not matter here
-    int m_uiReserveMinimum;
+//    void Assign(double fReserveFactor, int uiReserveMinimum)
+//    {
+//        m_fReserveFactor = fReserveFactor;
+//        m_uiReserveMinimum = uiReserveMinimum;
+//    }
+
+    final double m_fReserveFactor; // Use float as precision does not matter here
+    final int m_uiReserveMinimum;
 
     void DESTRUCTOR() {
         // nothing

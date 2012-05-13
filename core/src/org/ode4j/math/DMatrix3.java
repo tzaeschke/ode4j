@@ -34,7 +34,7 @@ public final class DMatrix3 implements DMatrix3C {
 	public static final int MAX_I = 3;
 	public static final int MAX_J = 4;
 	public static final int LEN = MAX_I*MAX_J;
-	public static final DMatrix3 ZERO = new DMatrix3();
+	public static final DMatrix3C ZERO = new DMatrix3();
 
 	/** @deprecated */
 	public DMatrix3(double d, double e, double f,

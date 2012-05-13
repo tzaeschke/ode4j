@@ -46,7 +46,7 @@ public class DVector3 implements DVector3I, DVector3C {
 //public class DVector3 implements DVector3I, DVector3C {
 	private final double[] v;
 	private static final int LEN = 4;  //TODO 3 ?
-	public static final DVector3 ZERO = new DVector3(0, 0, 0);
+    public static final DVector3C ZERO = new DVector3();
 	public static final int CURRENT_LENGTH = 4;
 
 	//private static int COUNT = 0;
@@ -305,7 +305,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	}
 	
 	/**
-	 * Return a new vector v0 = v(this) - v3.
+	 * Return a new vector v0 = v(this) - v2.
 	 * @param v2
 	 */
 	public final DVector3 reSub(DVector3C v2) {

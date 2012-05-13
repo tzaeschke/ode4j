@@ -21,10 +21,14 @@
  *************************************************************************/
 package org.ode4j.math;
 
+/**
+ * An arbitrary length vector.
+ *
+ * @author Tilmann Zaeschke
+ */
 public class DVectorN {
 	
 	private final double[] v;
-	public static final DVector3 ZERO = new DVector3(0, 0, 0);
 	public static final int CURRENT_LENGTH = 4;
 
 	public DVectorN(int len) { 

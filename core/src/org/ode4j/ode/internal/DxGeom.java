@@ -28,7 +28,6 @@ import java.util.List;
 
 
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Rotation.dQfromR;
 
 import org.cpp4j.java.Ref;
@@ -52,8 +51,6 @@ import org.ode4j.ode.internal.DxSpace;
 import org.ode4j.ode.internal.Objects_H.DxPosRC;
 import org.ode4j.ode.internal.Objects_H.DxPosR;
 import org.ode4j.ode.internal.DxQuadTreeSpace.Block;
-
-import com.sun.corba.se.impl.copyobject.ReferenceObjectCopierImpl;
 
 /**
  * geometry (collision object).
@@ -696,7 +693,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		//dAASSERT (g);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
-        parent_space.CHECK_NOT_LOCKED ();
+		DxSpace.CHECK_NOT_LOCKED (parent_space);
 		if (offset_posr != null) {
 			// move body such that body+offset = position
 			DVector3 world_offset = new DVector3();
@@ -1439,22 +1436,22 @@ public abstract class DxGeom extends DBase implements DGeom {
 	private static final dColliderEntry[][] colliders = new dColliderEntry[dGeomNumClasses][dGeomNumClasses];
 	private static boolean colliders_initialized = false;
 
-	private static boolean LIBCCD = false; 
-    private static boolean dLIBCCD_BOX_CYL = LIBCCD;
+	private static final boolean LIBCCD = false; 
+    private static final boolean dLIBCCD_BOX_CYL = LIBCCD;
 
-    private static boolean dLIBCCD_CYL_CYL = LIBCCD;
+    private static final boolean dLIBCCD_CYL_CYL = LIBCCD;
 
-    private static boolean dLIBCCD_CAP_CYL = LIBCCD;
+    private static final boolean dLIBCCD_CAP_CYL = LIBCCD;
 
-    private static boolean dLIBCCD_CONVEX_BOX = LIBCCD;
+    private static final boolean dLIBCCD_CONVEX_BOX = LIBCCD;
 
-    private static boolean dLIBCCD_CONVEX_CAP = LIBCCD;
+    private static final boolean dLIBCCD_CONVEX_CAP = LIBCCD;
 
-    private static boolean dLIBCCD_CONVEX_CYL = LIBCCD;
+    private static final boolean dLIBCCD_CONVEX_CYL = LIBCCD;
 
-    private static boolean dLIBCCD_CONVEX_SPHERE = LIBCCD;
+    private static final boolean dLIBCCD_CONVEX_SPHERE = LIBCCD;
 
-    private static boolean dLIBCCD_CONVEX_CONVEX = LIBCCD;
+    private static final boolean dLIBCCD_CONVEX_CONVEX = LIBCCD;
 
 
 	// setCollider() will refuse to write over a collider entry once it has

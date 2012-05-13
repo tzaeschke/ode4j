@@ -57,9 +57,11 @@ import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
+import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 
 
-class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
+class Step extends AbstractStepper implements DxWorld.dstepper_fn_t,
+dmemestimate_fn_t {
 
 	public static final Step INSTANCE = new Step();
 
@@ -1319,5 +1321,22 @@ class Step extends AbstractStepper implements DxWorld.dstepper_fn_t {
 			int nj, double stepsize) {
 		dInternalStepIsland(memarena, world, body, nb, _joint, nj, stepsize);
 	}
+
+
+    @Override
+    public int dxEstimateMemoryRequirements(DxBody[] body, int bodyOfs, int nb,
+            DxJoint[] _joint, int jointOfs, int _nj) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+
+    @Override
+    public void run(DxWorldProcessMemArena memarena, DxWorld world,
+            DxBody[] body, int bodyOfs, int nb, DxJoint[] _joint, int jointOfs,
+            int nj, double stepsize) {
+        // TODO Auto-generated method stub
+        
+    }
 }
 

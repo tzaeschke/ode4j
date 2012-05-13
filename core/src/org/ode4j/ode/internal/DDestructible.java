@@ -24,7 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * This base class should be extended by all classes that implement
@@ -46,12 +45,12 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public abstract class DDestructible {
 	
-	private static final boolean DEBUG_FINALIZE = false; 
-	private volatile boolean _isDestructed = false;  //TZ to assure timely destruction
+//	private static final boolean DEBUG_FINALIZE = false; 
+	private volatile boolean isDestructed = false;  //TZ to assure timely destruction
 	
 	//TODO use this for debugging:
-	private static final AtomicLong _counter = new AtomicLong();
-	private long _id = _counter.incrementAndGet();
+	private static volatile long counter = 0;
+	private long id = ++counter;
 //	private RuntimeException creator;
 	protected DDestructible() {
 //		creator = new RuntimeException();
@@ -65,11 +64,11 @@ public abstract class DDestructible {
 	 * should be called 
 	 */
 	protected void DESTRUCTOR() {
-		if (_isDestructed) {
+		if (isDestructed) {
 			System.err.println("WARNING Object was already destructed.");
 			new RuntimeException().printStackTrace();
 		}
-		_isDestructed = true;
+		isDestructed = true;
 		//System.err.println("CCC");
 	}
 	
@@ -91,6 +90,6 @@ public abstract class DDestructible {
 	
 	@Override
 	public String toString() {
-		return "ID=" + _id + " (" + getClass().getName() + ")";
+		return "ID=" + id + " (" + getClass().getName() + ")";
 	}
 }

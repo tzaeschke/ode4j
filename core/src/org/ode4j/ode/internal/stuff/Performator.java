@@ -22,28 +22,27 @@
 package org.ode4j.ode.internal.stuff;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Tilmann Zaeschke
  */
 public final class Performator {
 
-    private static final Map<String, Entry> _data = 
-        Collections.synchronizedMap(new HashMap<String, Entry>());
+    private static final ConcurrentHashMap<String, Entry> data = 
+        new ConcurrentHashMap<String, Performator.Entry>();
 
     /**
      * Start time measurement.
      * @param key
      */
     public static final void begin(String key) {
-        Entry e = _data.get(key);
+        Entry e = data.get(key);
         if (e == null) {
             e = new Entry();
-            _data.put(key, e);
+            data.put(key, e);
         }
         e.begin();
     }
@@ -53,7 +52,7 @@ public final class Performator {
      * @param key
      */
     public static final void end(String key) {
-        _data.get(key).end();
+        data.get(key).end();
     }
 
     /**
@@ -61,10 +60,10 @@ public final class Performator {
      */
     public static final void print() {
         List<String> keys = new LinkedList<String>();
-        keys.addAll(_data.keySet());
+        keys.addAll(data.keySet());
         Collections.sort(keys);
         for (String key: keys) {
-            System.out.println(_data.get(key).print() + " :: " + key);
+            System.out.println(data.get(key).print() + " :: " + key);
         }
     }
 
@@ -106,6 +105,6 @@ public final class Performator {
      * 
      */
     public static final void reset() {
-        _data.clear();
+        data.clear();
     }
 }

@@ -33,7 +33,6 @@ import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.ode.OdeMath.dPlaneSpace;
 import static org.ode4j.ode.OdeMath.dSetCrossMatrixMinus;
 import static org.ode4j.ode.OdeMath.dSetCrossMatrixPlus;
-import static org.ode4j.ode.OdeMath.dSubtractVectorCross3;
 import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.ode.internal.Common.dAtan2;
 import static org.ode4j.ode.internal.Common.dIASSERT;

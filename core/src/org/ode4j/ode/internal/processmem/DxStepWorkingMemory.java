@@ -94,7 +94,9 @@ public class DxStepWorkingMemory {
     public void SetMemoryReserveInfo(double fReserveFactor, int uiReserveMinimum)
     {
         if (m_priReserveInfo!=null) { 
-            m_priReserveInfo.Assign(fReserveFactor, uiReserveMinimum); 
+            //TZ use only constructor to allow fields to be final for concurrency tests.
+            //m_priReserveInfo.Assign(fReserveFactor, uiReserveMinimum); 
+            m_priReserveInfo = new DxWorldProcessMemoryReserveInfo(fReserveFactor, uiReserveMinimum); 
         }
         else { 
             m_priReserveInfo = new DxWorldProcessMemoryReserveInfo(fReserveFactor, uiReserveMinimum); 
@@ -121,7 +123,9 @@ public class DxStepWorkingMemory {
             DxUtil.free_block_fn_t fnFree) 
     {
         if (m_pmmMemoryManager!=null) { 
-            m_pmmMemoryManager.Assign(fnAlloc, fnShrink, fnFree); 
+            //m_pmmMemoryManager.Assign(fnAlloc, fnShrink, fnFree);
+            //TZ for concurrency tests and MemManager final fields
+            m_pmmMemoryManager = new DxWorldProcessMemoryManager(fnAlloc, fnShrink, fnFree); 
         }
         else { 
             m_pmmMemoryManager = new DxWorldProcessMemoryManager(fnAlloc, fnShrink, fnFree); 

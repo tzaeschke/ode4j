@@ -36,7 +36,7 @@ public class DxUtil {
     // Malloc based world stepping memory manager
 
     /*extern */
-    static DxWorldProcessMemoryManager g_WorldProcessMallocMemoryManager = 
+    static final DxWorldProcessMemoryManager g_WorldProcessMallocMemoryManager = 
         new DxWorldProcessMemoryManager(
                 //null,//dAlloc, 
                 new alloc_block_fn_t() {
@@ -50,7 +50,7 @@ public class DxUtil {
                 null,//dRealloc, 
                 null);//dFree);
     /*extern */
-    static DxWorldProcessMemoryReserveInfo g_WorldProcessDefaultReserveInfo = 
+    static final DxWorldProcessMemoryReserveInfo g_WorldProcessDefaultReserveInfo = 
         new DxWorldProcessMemoryReserveInfo(
                 1.2f, //dWORLDSTEP_RESERVEFACTOR_DEFAULT, 
                 65536);// dWORLDSTEP_RESERVESIZE_DEFAULT);
@@ -81,7 +81,7 @@ public class DxUtil {
     static final BlockPointer dEFFICIENT_PTR(BlockPointer p) {
         return new BlockPointer(dEFFICIENT_SIZE(p.toInt()));
     }
-    static BlockPointer dEFFICIENT_PTR(Object obj, int i) {
+    static final BlockPointer dEFFICIENT_PTR(Object obj, int i) {
         System.out.println("dEFFICIENT_PTR(Object obj, int i)");
         return new BlockPointer(i);
     }

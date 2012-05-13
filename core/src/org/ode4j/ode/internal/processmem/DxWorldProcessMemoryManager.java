@@ -25,27 +25,34 @@
 package org.ode4j.ode.internal.processmem;
 
 
+/**
+ *
+ */
 public class DxWorldProcessMemoryManager {
-    //TODO extends dBase
 
     DxWorldProcessMemoryManager(DxUtil.alloc_block_fn_t fnAlloc, 
-            DxUtil.shrink_block_fn_t fnShrink, DxUtil.free_block_fn_t fnFree)
-            {
-        Assign(fnAlloc, fnShrink, fnFree);
-            }
-
-    void Assign(DxUtil.alloc_block_fn_t fnAlloc, 
-            DxUtil.shrink_block_fn_t fnShrink, DxUtil.free_block_fn_t fnFree)
-    {
+            DxUtil.shrink_block_fn_t fnShrink, DxUtil.free_block_fn_t fnFree) {
         m_fnAlloc = fnAlloc;
         m_fnShrink = fnShrink;
         m_fnFree = fnFree;
+        //        Assign(fnAlloc, fnShrink, fnFree);
     }
 
-    DxUtil.alloc_block_fn_t m_fnAlloc;
-    DxUtil.shrink_block_fn_t m_fnShrink;
-    DxUtil.free_block_fn_t m_fnFree;
+    //    void Assign(DxUtil.alloc_block_fn_t fnAlloc, 
+    //            DxUtil.shrink_block_fn_t fnShrink, DxUtil.free_block_fn_t fnFree)
+    //    {
+    //        m_fnAlloc = fnAlloc;
+    //        m_fnShrink = fnShrink;
+    //        m_fnFree = fnFree;
+    //    }
 
+    final DxUtil.alloc_block_fn_t m_fnAlloc;
+    final DxUtil.shrink_block_fn_t m_fnShrink;
+    final DxUtil.free_block_fn_t m_fnFree;
+
+    /**
+     * Destructor.
+     */
     public void DESTRUCTOR() {
         // Nothing to do
     }

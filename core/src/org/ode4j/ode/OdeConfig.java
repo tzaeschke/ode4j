@@ -34,7 +34,7 @@ public class OdeConfig {
 
 	private static final boolean dDOUBLE = true;
 	
-	public enum TRIMESH {
+	public static enum TRIMESH {
 		DISABLED,
 		GIMPACT;
 	}

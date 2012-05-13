@@ -396,7 +396,9 @@ public class DxWorld extends DBase implements DWorld {
 	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
         //TODO fix context stuff
 //	    if (dxReallocateWorldProcessContext (this, islandsinfo, stepsize, dxEstimateStepMemoryRequirements))
-	    {
+        if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
+                Step.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
+        {
 	        dxProcessIslands (islandsinfo, stepsize, Step.INSTANCE);//dInternalStepIsland);
 
 	        result = true;

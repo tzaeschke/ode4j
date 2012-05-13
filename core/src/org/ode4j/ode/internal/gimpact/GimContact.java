@@ -31,7 +31,6 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
-import java.util.Arrays;
 import java.util.Comparator;
 
 import org.cpp4j.java.ObjArray;
@@ -245,7 +244,8 @@ public class GimContact {
 	}
 	
 	
-	private static final Comparator <GIM_RSORT_TOKEN>COMPARATOT_TZ = new Comparator<GIM_RSORT_TOKEN>() {
+    private static final ComparatorTZ COMPARATOT_TZ = new ComparatorTZ();
+    private static final class ComparatorTZ implements Comparator<GIM_RSORT_TOKEN> {
 //		private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
 //		interface GimRSortTokenComparator {
 //			int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
