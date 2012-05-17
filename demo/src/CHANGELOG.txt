@@ -25,6 +25,10 @@ TODO
 - Run tests!
 =============
 
+2012-May-17 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Migration of remaining core files until ode.cpp.
+
 2012-May-13 Tilmann Zaschke
 		* Migration to ode-0.12:
 		  - Test harnesses. Don't run yet...
