@@ -28,6 +28,7 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dMultiply0_331;
 import static org.ode4j.ode.OdeMath.dMultiply1_331;
 import static org.ode4j.ode.OdeMath.dMultiply1_333;
+import static org.ode4j.ode.internal.Common.dCeil;
 import static org.ode4j.ode.internal.Common.dEpsilon;
 import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Common.dFloor;
@@ -45,6 +46,10 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHeightfield;
 import org.ode4j.ode.DHeightfieldData;
 
+/**
+ *
+ * @author Tilmann Zaeschke
+ */
 public class DxHeightfield extends DxGeom implements DHeightfield {
 
 	static final int HEIGHTFIELDMAXCONTACTPERCELL = 10;
@@ -1546,18 +1551,13 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 			//  aabb[6] is (minx, maxx, miny, maxy, minz, maxz)
 			final boolean wrapped = terrain.m_p_data.m_bWrapMode != false;
 
-			int nMinX;
-			int nMaxX;
-			int nMinZ;
-			int nMaxZ;
-
 			//TZ
 			boolean dCollideHeightfieldExit = false;
 
 			if ( !wrapped )
 			{
 				if (    o2._aabb.getMin0() > terrain.m_p_data.m_fWidth //MinX
-						||  o2._aabb.getMin2() > terrain.m_p_data.m_fDepth) {//MinZ
+						||  o2._aabb.getMin2() > terrain.m_p_data.m_fDepth) { //MinZ
 					//goto dCollideHeightfieldExit;
 					dCollideHeightfieldExit = true;
 				}
@@ -1572,36 +1572,36 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 			DContactGeom pContact;
 			if (!dCollideHeightfieldExit) {
-				nMinX = (int) (dFloor(o2._aabb.getMin0() * terrain.m_p_data.m_fInvSampleWidth));
-				nMaxX = (int) (dFloor(o2._aabb.getMax0() * terrain.m_p_data.m_fInvSampleWidth)) + 1;
-				nMinZ = (int) (dFloor(o2._aabb.getMin2() * terrain.m_p_data.m_fInvSampleDepth));
-				nMaxZ = (int) (dFloor(o2._aabb.getMax2() * terrain.m_p_data.m_fInvSampleDepth)) + 1;
+			    {
+			        // To narrow scope of following variables
+			        final double fInvSampleWidth = terrain.m_p_data.m_fInvSampleWidth;
+			        int nMinX = (int)dFloor(Common.dNextAfter(o2._aabb.getMin0() * fInvSampleWidth, -dInfinity));
+			        int nMaxX = (int)dCeil(Common.dNextAfter(o2._aabb.getMax0() * fInvSampleWidth, dInfinity));
+			        final double fInvSampleDepth = terrain.m_p_data.m_fInvSampleDepth;
+			        int nMinZ = (int)dFloor(Common.dNextAfter(o2._aabb.getMin2() * fInvSampleDepth, -dInfinity));
+			        int nMaxZ = (int)dCeil(Common.dNextAfter(o2._aabb.getMax2() * fInvSampleDepth, dInfinity));
 
-				if ( !wrapped )
-				{
-					nMinX = (int) dMAX( nMinX, 0 );
-					nMaxX = (int) dMIN( nMaxX, terrain.m_p_data.m_nWidthSamples - 1 );
-					nMinZ = (int) dMAX( nMinZ, 0 );
-					nMaxZ = (int) dMIN( nMaxZ, terrain.m_p_data.m_nDepthSamples - 1 );
+			        if ( !wrapped )
+			        {
+			            nMinX = (int) dMAX( nMinX, 0 );
+			            nMaxX = (int) dMIN( nMaxX, terrain.m_p_data.m_nWidthSamples - 1 );
+			            nMinZ = (int) dMAX( nMinZ, 0 );
+			            nMaxZ = (int) dMIN( nMaxZ, terrain.m_p_data.m_nDepthSamples - 1 );
 
-					dIASSERT ((nMinX < nMaxX) && (nMinZ < nMaxZ));
-				}
+			            dIASSERT ((nMinX < nMaxX) && (nMinZ < nMaxZ));
+			        }
 
 
-
-				numTerrainOrigContacts = numTerrainContacts;
-				//			numTerrainContacts  += terrain.dCollideHeightfieldZone(
-				//					nMinX,nMaxX,nMinZ,nMaxZ,o2,numMaxTerrainContacts - numTerrainContacts,
-				//					flags,CONTACT(contact,numTerrainContacts*skip),skip	);
-				numTerrainContacts  += terrain.dCollideHeightfieldZone(
-						nMinX,nMaxX,nMinZ,nMaxZ,o2,numMaxTerrainContacts - numTerrainContacts,
-						flags,
-						//CONTACT(contact,numTerrainContacts*skip),
-						contacts.createView(numTerrainContacts*skip),
-						skip	);
-
-				dIASSERT( numTerrainContacts <= numMaxTerrainContacts );
-
+			        numTerrainOrigContacts = numTerrainContacts;
+			        numTerrainContacts += terrain.dCollideHeightfieldZone(
+			                nMinX,nMaxX,nMinZ,nMaxZ,o2,numMaxTerrainContacts - numTerrainContacts,
+			                flags,
+			                //CONTACT(contact,numTerrainContacts*skip),
+			                contacts.createView(numTerrainContacts*skip),
+			                skip );
+			        dIASSERT( numTerrainContacts <= numMaxTerrainContacts );
+			    }
+			    
 				for ( i = numTerrainOrigContacts; i != numTerrainContacts; ++i )
 				{
 					pContact = contacts.get(i*skip);//CONTACT(contact,i*skip);

@@ -24,16 +24,18 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.ode4j.math.DVector3;
+import static org.cpp4j.Cmath.pow;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.internal.Common.dAASSERT;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dNextAfter;
+
+import org.cpp4j.java.ObjArray;
+import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAABBC;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DQuadTreeSpace;
-import org.cpp4j.java.ObjArray;
-import org.cpp4j.java.RefInt;
-
-import static org.cpp4j.C_All.*;
-import static org.ode4j.ode.internal.Common.*;
 
 
 /**
@@ -67,16 +69,16 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 
 	class Block {
 		//public:
-		double MinX, MaxX;
-		double MinZ, MaxZ;
+		double mMinX, mMaxX;
+		double mMinZ, mMaxZ;
 
-		DxGeom First;
-		int GeomCount;
+		DxGeom mFirst;
+		int mGeomCount;
 
 		//	Block* Parent;
 		//	Block* Children;
-		Block Parent;
-		ObjArray<Block> Children;
+		Block mParent;
+		ObjArray<Block> mChildren;
 
 		//#ifdef DRAWBLOCKS
 		//#include "..\..\Include\drawstuff\\drawstuff.h"
@@ -87,37 +89,37 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 			//TODO?
 			//	if (!DRAWBLOCKS) return;
 			//	dVector3 v[8];
-			//	v[0][AXIS0] = Block->MinX;
+			//	v[0][AXIS0] = Block->mMinX;
 			//	v[0][UP] = REAL(-1.0);
-			//	v[0][AXIS1] = Block->MinZ;
+			//	v[0][AXIS1] = Block->mMinZ;
 			//	
-			//	v[1][AXIS0] = Block->MinX;
+			//	v[1][AXIS0] = Block->mMinX;
 			//	v[1][UP] = REAL(-1.0);
-			//	v[1][AXIS1] = Block->MaxZ;
+			//	v[1][AXIS1] = Block->mMaxZ;
 			//	
-			//	v[2][AXIS0] = Block->MaxX;
+			//	v[2][AXIS0] = Block->mMaxX;
 			//	v[2][UP] = REAL(-1.0);
-			//	v[2][AXIS1] = Block->MinZ;
+			//	v[2][AXIS1] = Block->mMinZ;
 			//	
-			//	v[3][AXIS0] = Block->MaxX;
+			//	v[3][AXIS0] = Block->mMaxX;
 			//	v[3][UP] = REAL(-1.0);
-			//	v[3][AXIS1] = Block->MaxZ;
+			//	v[3][AXIS1] = Block->mMaxZ;
 			//	
-			//	v[4][AXIS0] = Block->MinX;
+			//	v[4][AXIS0] = Block->mMinX;
 			//	v[4][UP] = REAL(1.0);
-			//	v[4][AXIS1] = Block->MinZ;
+			//	v[4][AXIS1] = Block->mMinZ;
 			//	
-			//	v[5][AXIS0] = Block->MinX;
+			//	v[5][AXIS0] = Block->mMinX;
 			//	v[5][UP] = REAL(1.0);
-			//	v[5][AXIS1] = Block->MaxZ;
+			//	v[5][AXIS1] = Block->mMaxZ;
 			//	
-			//	v[6][AXIS0] = Block->MaxX;
+			//	v[6][AXIS0] = Block->mMaxX;
 			//	v[6][UP] = REAL(1.0);
-			//	v[6][AXIS1] = Block->MinZ;
+			//	v[6][AXIS1] = Block->mMinZ;
 			//	
-			//	v[7][AXIS0] = Block->MaxX;
+			//	v[7][AXIS0] = Block->mMaxX;
 			//	v[7][UP] = REAL(1.0);
-			//	v[7][AXIS1] = Block->MaxZ;
+			//	v[7][AXIS1] = Block->mMaxZ;
 			//	
 			//	// Bottom
 			//	dsDrawLine(v[0], v[1]);
@@ -142,41 +144,47 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 
 		//void Block::Create(const dVector3 Center, const dVector3 Extents, 
 		//Block* Parent, int Depth, Block*& Blocks){
-		void Create(DVector3C Center, DVector3C Extents, 
+		void Create(final double MinX, final double MaxX,
+		        final double MinZ, final double MaxZ,
 				Block Parent, int Depth, Block[] BlocksA, RefInt BlocksP){
-			GeomCount = 0;
-			First = null;
+		    dIASSERT(MinX <= MaxX);
+		    dIASSERT(MinZ <= MaxZ);
+			mGeomCount = 0;
+			mFirst = null;
 
-			MinX = Center.get(AXIS0) - Extents.get(AXIS0);
-			MaxX = Center.get(AXIS0) + Extents.get(AXIS0);
-
-			MinZ = Center.get(AXIS1) - Extents.get(AXIS1);
-			MaxZ = Center.get(AXIS1) + Extents.get(AXIS1);
-
-			this.Parent = Parent;
+			mMinX = MinX;
+			mMaxX = MaxX;
+			
+			mMinZ = MinZ;
+			mMaxZ = MaxZ;
+			
+			this.mParent = Parent;
 			if (Depth > 0){
-				Children = new ObjArray<Block>(Blocks, BlocksP.get());
+				mChildren = new ObjArray<Block>(Blocks, BlocksP.get());
 				BlocksP.add( SPLITS );
 
-				DVector3 ChildExtents = new DVector3();
-				ChildExtents.set(AXIS0, Extents.get(AXIS0) / SPLITAXIS );
-				ChildExtents.set(AXIS1, Extents.get(AXIS1) / SPLITAXIS );
-				ChildExtents.set(UP, Extents.get(UP) );
+		        final double ChildExtentX = (MaxX - MinX) / SPLITAXIS;
+		        final double ChildExtentZ = (MaxZ - MinZ) / SPLITAXIS;
 
+		        final int ChildDepth = Depth - 1;
+		        int Index = 0;
+
+		        double ChildRightX = MinX;
 				for (int i = 0; i < SPLITAXIS; i++){
-					for (int j = 0; j < SPLITAXIS; j++){
-						int Index = i * SPLITAXIS + j;
+		            final double ChildLeftX = ChildRightX;
+		            ChildRightX = (i != SPLITAXIS - 1) ? ChildLeftX + ChildExtentX : MaxX;
 
-						DVector3 ChildCenter = new DVector3();
-						ChildCenter.set(AXIS0, Center.get(AXIS0) - Extents.get(AXIS0) + ChildExtents.get(AXIS0) + i * (ChildExtents.get(AXIS0) * 2) );
-						ChildCenter.set(AXIS1, Center.get(AXIS1) - Extents.get(AXIS1) + ChildExtents.get(AXIS1) + j * (ChildExtents.get(AXIS1) * 2) );
-						ChildCenter.set(UP, Center.get(UP) );
+		            double ChildRightZ = MinZ;
+		            for (int j = 0; j < SPLITAXIS; j++){
+		                final double ChildLeftZ = ChildRightZ;
+		                ChildRightZ = (j != SPLITAXIS - 1) ? ChildLeftZ + ChildExtentZ : MaxZ;
 
-						Children.at(Index).Create(ChildCenter, ChildExtents, this, Depth - 1, BlocksA, BlocksP);
-					}
+		                mChildren.at(Index).Create(ChildLeftX, ChildRightX, ChildLeftZ, ChildRightZ, this, ChildDepth, BlocksA, BlocksP);
+		                ++Index;
+		            }
 				}
 			}
-			else Children = null;
+			else mChildren = null;
 		}
 
 		//void Block::Collide(void* UserData, dNearCallback* Callback){
@@ -185,7 +193,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 				DrawBlock(this);
 			}//#endif
 			// Collide the local list
-			DxGeom g = First;
+			DxGeom g = mFirst;
 			while (g != null){
 				if (GEOM_ENABLED(g)){
 					Collide(g, g.getNext(), UserData, Callback);
@@ -194,12 +202,13 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 			}
 
 			// Recurse for children
-			if (Children!=null){
+			if (mChildren!=null){
 				for (int i = 0; i < SPLITS; i++){
-					if (Children.at(i).GeomCount <= 1){	// Early out
-						continue;
-					}
-					Children.at(i).Collide(UserData, Callback);
+	                Block CurrentChild = mChildren.at(i);
+	                if (CurrentChild.mGeomCount <= 1){  // Early out
+	                    continue;
+	                }
+	                CurrentChild.Collide(UserData, Callback);
 				}
 			}
 		}
@@ -221,16 +230,17 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 			}
 
 			// Collide against children
-			if (Children!=null){
+			if (mChildren!=null){
 				for (int i = 0; i < SPLITS; i++){
+		            Block CurrentChild = mChildren.at(i);
 					// Early out for empty blocks
-					if (Children.at(i).GeomCount == 0){
+					if (CurrentChild.mGeomCount == 0){
 						continue;
 					}
 
 					// Does the geom's AABB collide with the block?
-					// Dont do AABB tests for single geom blocks.
-					if (Children.at(i).GeomCount == 1 && Children.at(i).First!=null){
+					// Don't do AABB tests for single geom blocks.
+					if (CurrentChild.mGeomCount == 1){
 						//
 					}
 					else if (true){
@@ -238,12 +248,12 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 //								g1._aabb.get(AXIS0 * 2 + 1) < Children.at(i).MinX ||
 //								g1._aabb.get(AXIS1 * 2 + 0) > Children.at(i).MaxZ ||
 //								g1._aabb.get(AXIS1 * 2 + 1) < Children.at(i).MinZ) continue;
-						if (g1._aabb.getMin(AXIS0) > Children.at(i).MaxX ||
-								g1._aabb.getMax(AXIS0) < Children.at(i).MinX ||
-								g1._aabb.getMin(AXIS1) > Children.at(i).MaxZ ||
-								g1._aabb.getMax(AXIS1) < Children.at(i).MinZ) continue;
+						if (g1._aabb.getMin(AXIS0) >= CurrentChild.mMaxX ||
+								g1._aabb.getMax(AXIS0) < CurrentChild.mMinX ||
+								g1._aabb.getMin(AXIS1) >= CurrentChild.mMaxZ ||
+								g1._aabb.getMax(AXIS1) < CurrentChild.mMinZ) continue;
 					}
-					Children.at(i).Collide(g1, Children.at(i).First, UserData, Callback);
+					CurrentChild.Collide(g1, CurrentChild.mFirst, UserData, Callback);
 				}
 			}
 		}
@@ -253,7 +263,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		void CollideLocal(DxGeom g2, Object userData, 
 				DNearCallback callback){
 			// Collide against local list
-			DxGeom g1 = First;
+			DxGeom g1 = mFirst;
 			while (g1!=null){
 				if (GEOM_ENABLED(g1)){
 					collideAABBs (g1, g2, userData, callback);
@@ -265,16 +275,16 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		//void Block::AddObject(dGeom Object){
 		void AddObject(DxGeom aObject){
 			// Add the geom
-			aObject._next = First;
-			First = aObject;
+			aObject._next = mFirst;
+			mFirst = aObject;
 			//XXX TZ aObject.tome = (dxGeom**)this;
 			aObject._qtIdx = this;
 
 			// Now traverse upwards to tell that we have a geom
 			Block Block = this;
 			do{
-				Block.GeomCount++;
-				Block = Block.Parent;
+				Block.mGeomCount++;
+				Block = Block.mParent;
 			}
 			while (Block!=null);
 		}
@@ -282,14 +292,14 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		//void Block::DelObject(dGeom Object){
 		void DelObject(DxGeom aObject){
 			// Del the geom
-			DxGeom g = First;
+			DxGeom g = mFirst;
 			DxGeom Last = null;
 			while (g!=null){
 				if (g == aObject){
 					if (Last!=null){
 						Last._next = g._next;
 					}
-					else First = g.getNext();
+					else mFirst = g.getNext();
 
 					break;
 				}
@@ -304,8 +314,8 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 			// Now traverse upwards to tell that we have lost a geom
 			Block Block = this;
 			do{
-				Block.GeomCount--;
-				Block = Block.Parent;
+				Block.mGeomCount--;
+				Block = Block.mParent;
 			}
 			while (Block!=null);
 		}
@@ -328,10 +338,10 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 //			&& AABB.get(AXIS0 * 2 + 1) <= MaxX 
 //			&& AABB.get(AXIS1 * 2 + 0) >= MinZ 
 //			&& AABB.get(AXIS1 * 2 + 1) <= MaxZ;
-			return AABB.getMin(AXIS0) >= MinX 
-			&& AABB.getMax(AXIS0) <= MaxX 
-			&& AABB.getMin(AXIS1) >= MinZ 
-			&& AABB.getMax(AXIS1) <= MaxZ;
+			return AABB.getMin(AXIS0) >= mMinX 
+			&& AABB.getMax(AXIS0) < mMaxX 
+			&& AABB.getMin(AXIS1) >= mMinZ 
+			&& AABB.getMax(AXIS1) < mMaxZ;
 		}
 
 		//Block* Block::GetBlock(const dReal* AABB){
@@ -339,18 +349,19 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 			if (Inside(AABB)){
 				return GetBlockChild(AABB);	// Child or this will have a good block
 			}
-			else if (Parent!=null){
-				return Parent.GetBlock(AABB);	// Parent has a good block
+			else if (mParent!=null){
+				return mParent.GetBlock(AABB);	// Parent has a good block
 			}
 			else return this;	// We are at the root, so we have little choice
 		}
 
 		//Block* Block::GetBlockChild(final double[] AABB){
 		Block GetBlockChild(DAABBC AABB){
-			if (Children!=null){
+			if (mChildren!=null){
 				for (int i = 0; i < SPLITS; i++){
-					if (Children.at(i).Inside(AABB)){
-						return Children.at(i).GetBlockChild(AABB);	// Child will have good block
+		            Block CurrentChild = mChildren.at(i);
+					if (CurrentChild.Inside(AABB)){
+						return CurrentChild.GetBlockChild(AABB);	// Child will have good block
 					}
 				}
 			}
@@ -413,8 +424,12 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		Block[] BlocksA = this.Blocks;	// This pointer gets modified!
 		RefInt BlocksP = new RefInt(1);
 
-		this.Blocks[0].Create(Center, Extents, null, Depth, BlocksA, BlocksP);
-
+	    double MinX = Center.get(AXIS0) - Extents.get(AXIS0);
+	    double MaxX = dNextAfter((Center.get(AXIS0) + Extents.get(AXIS0)), (double)dInfinity);
+	    double MinZ = Center.get(AXIS1) - Extents.get(AXIS1);
+	    double MaxZ = dNextAfter((Center.get(AXIS1) + Extents.get(AXIS1)), (double)dInfinity);
+	    this.Blocks[0].Create(MinX, MaxX, MinZ, MaxZ, null, Depth, BlocksA, BlocksP);
+	    
 		CurrentBlock = null;
 		CurrentChild = new int[Depth+1];//(int*)dAlloc((Depth + 1) * sizeof(int));
 		CurrentLevel = 0;
@@ -437,9 +452,9 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		int Depth = 0;
 		//Block* Current = &Blocks[0];
 		Block Current = Blocks[0];
-		while (Current!=null && Current.Children != null){
+		while (Current!=null && Current.mChildren != null){
 			Depth++;
-			Current = Current.Children.at(0);//Current.Children;
+			Current = Current.mChildren.at(0);//Current.Children;
 		}
 
 		int BlockCount = 0;
@@ -687,16 +702,16 @@ PARENTRECURSE:
 
 			// Collide against block and its children
 			DataCallback dc = new DataCallback(UserData, Callback);
-			CurrentBlock.Collide(g2, CurrentBlock.First, dc, swap_callback);
+			CurrentBlock.Collide(g2, CurrentBlock.mFirst, dc, swap_callback);
 
 			// Collide against parents
-			while ((CurrentBlock = CurrentBlock.Parent) != null)
+			while ((CurrentBlock = CurrentBlock.mParent) != null)
 				CurrentBlock.CollideLocal(g2, UserData, Callback);
 
 		}
 		else {
 			DataCallback dc = new DataCallback(UserData, Callback);
-			Blocks[0].Collide(g2, Blocks[0].First, dc, swap_callback);
+			Blocks[0].Collide(g2, Blocks[0].mFirst, dc, swap_callback);
 		}
 
 		lock_count--;

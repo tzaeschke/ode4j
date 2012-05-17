@@ -42,6 +42,11 @@ import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.gimpact.GimGeometry.mat4f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 
+/**
+ * 
+ *
+ * @author Tilmann Zaeschke
+ */
 public class DxGimpact extends DxTriMesh {
 
 	DxGimpactData _Data;
@@ -135,6 +140,12 @@ public class DxGimpact extends DxTriMesh {
 	void ClearTCCache(){
 
 	}
+
+
+//	boolean dxTriMesh::controlGeometry(int controlClass, int controlCode, void *dataValue, int *dataSize)
+//	{
+//	    return dxGeom::controlGeometry(controlClass, controlCode, dataValue, dataSize);
+//	}
 
 
 	@Override

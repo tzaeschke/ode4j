@@ -904,7 +904,7 @@ public class DxConvex extends DxGeom implements DConvex {
 				// Take new sign into account
 				totalsign |= distance2sign;
 				// Check if contacts are full and both signs have been already found
-				if ((contacts ^ maxc | totalsign) == BOTH_SIGNS) // harder to comprehend but requires one register less
+				if (((contacts ^ maxc) | totalsign) == BOTH_SIGNS) // harder to comprehend but requires one register less
 				{
 					break; // Nothing can be changed any more
 				}

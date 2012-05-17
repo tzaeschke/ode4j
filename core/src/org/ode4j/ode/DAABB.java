@@ -177,26 +177,44 @@ public class DAABB implements DAABBC {
 		_max.set2(d);
 	}
 	
+	/**
+	 * get[0].
+	 */
 	public double getMin0() {
 		return _min.get0();
 	}
 	
+    /**
+     * get[2].
+     */
 	public double getMin1() {
 		return _min.get1();
 	}
 	
+    /**
+     * get[4].
+     */
 	public double getMin2() {
 		return _min.get2();
 	}
 	
+    /**
+     * get[1].
+     */
 	public double getMax0() {
 		return _max.get0();
 	}
 	
+    /**
+     * get[3].
+     */
 	public double getMax1() {
 		return _max.get1();
 	}
 	
+    /**
+     * get[5].
+     */
 	public double getMax2() {
 		return _max.get2();
 	}

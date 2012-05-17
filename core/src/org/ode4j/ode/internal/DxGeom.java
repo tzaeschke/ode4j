@@ -130,6 +130,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 	protected final static int GEOM_ENABLE_TEST_MASK = GEOM_ENABLED | GEOM_ZERO_SIZED;
 	protected final static int GEOM_ENABLE_TEST_VALUE = GEOM_ENABLED;
 
+	enum dxContactMergeOptions {
+	    DONT_MERGE_CONTACTS,
+	    MERGE_CONTACT_NORMALS,
+	    MERGE_CONTACTS_FULLY,
+	};
+
 
 	// geometry object base class. pos and R will either point to a separately
 	// allocated buffer (if body is 0 - pos points to the dxPosR object) or to
@@ -1581,15 +1587,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 		}
 
 		setCollider (dConvexClass,dPlaneClass,new DxConvex.CollideConvexPlane());
-//		
-//		//		//setCollider (dCylinderClass,dCylinderClass, dCollideCylinderCylinder);
-////
-////		//--> Convex Collision
-//		setCollider (dConvexClass,dPlaneClass, new DxConvex.CollideConvexPlane());//dCollideConvexPlane);
-//		setCollider (dSphereClass,dConvexClass, new DxConvex.CollideSphereConvex());//dCollideSphereConvex);
-//		setCollider (dConvexClass,dBoxClass, new DxConvex.CollideConvexBox());//dCollideConvexBox);
-//		setCollider (dConvexClass,dCapsuleClass, new DxConvex.CollideConvexCapsule());//dCollideConvexCapsule);
-//		setCollider (dConvexClass,dConvexClass, new DxConvex.CollideConvexConvex());//dCollideConvexConvex);
 		setCollider (dRayClass,dConvexClass, new DxConvex.CollideRayConvex());//dCollideRayConvex);
 //		//<-- Convex Collision
 //

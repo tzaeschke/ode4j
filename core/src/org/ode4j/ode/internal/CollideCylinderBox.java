@@ -423,7 +423,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			// axis CxA0
 			//vAxis = ( vCylinderAxis cross mthGetColM33f( mBoxRot, 0 ));
 			dVector3CrossMat3Col(m_mBoxRot, 0 ,m_vCylinderAxis, vAxis);
-			if(dVector3Length2( vAxis ) > fEpsilon ) 
+			if(dVector3LengthSquare( vAxis ) > fEpsilon ) 
 			{
 				if (!_cldTestAxis( vAxis, 5 ))
 				{
@@ -434,7 +434,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			// axis CxA1
 			//vAxis = ( vCylinderAxis cross mthGetColM33f( mBoxRot, 1 ));
 			dVector3CrossMat3Col(m_mBoxRot, 1 ,m_vCylinderAxis, vAxis);
-			if(dVector3Length2( vAxis ) > fEpsilon ) 
+			if(dVector3LengthSquare( vAxis ) > fEpsilon ) 
 			{
 				if (!_cldTestAxis( vAxis, 6 )) 
 				{
@@ -445,7 +445,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			// axis CxA2
 			//vAxis = ( vCylinderAxis cross mthGetColM33f( mBoxRot, 2 ));
 			dVector3CrossMat3Col(m_mBoxRot, 2 ,m_vCylinderAxis, vAxis);
-			if(dVector3Length2( vAxis ) > fEpsilon ) 
+			if(dVector3LengthSquare( vAxis ) > fEpsilon ) 
 			{
 				if (!_cldTestAxis( vAxis, 7 ))
 				{
@@ -464,7 +464,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 				dVector3Cross(m_vCylinderAxis,vTemp1,vTemp2);
 				//vAxis = ( vCylinderAxis cross vAxis );
 				dVector3Cross(m_vCylinderAxis,vTemp2,vAxis);
-				if(dVector3Length2( vAxis ) > fEpsilon ) 
+				if(dVector3LengthSquare( vAxis ) > fEpsilon ) 
 				{
 					if (!_cldTestAxis( vAxis, 8 + i ))
 					{

@@ -70,15 +70,6 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 
 public class CollideTrimeshCCylinder implements DColliderFn {
 
-
-//	#include <ode/collision.h>
-//	#include <ode/matrix.h>
-//	#include <ode/rotation.h>
-//	#include <ode/odemath.h>
-//	#include "collision_util.h"
-//	#include "collision_trimesh_internal.h"
-//	#include "util.h"
-//
 //	#if dTRIMESH_ENABLED
 
 	// OPCODE version

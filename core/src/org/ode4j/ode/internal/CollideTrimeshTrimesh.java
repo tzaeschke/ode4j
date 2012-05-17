@@ -32,6 +32,10 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 
+/**
+ *
+ * @author Tilmann Zaeschke
+ */
 public class CollideTrimeshTrimesh implements DColliderFn {
 
 	@Override

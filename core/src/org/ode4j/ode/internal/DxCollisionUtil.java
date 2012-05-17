@@ -155,7 +155,7 @@ public class DxCollisionUtil {
 	}
 
 	//   inline dReal dVector3Length2(final dVector3& a)
-	double dVector3Length2(final DVector3 a)
+	double dVector3LengthSquare(final DVector3 a)
 	{
 		//return (a.get0()*a.get0()+a.v[1]*a.v[1]+a.v[2]*a.v[2]);
 		return a.lengthSquared();
@@ -1049,7 +1049,7 @@ public class DxCollisionUtil {
 			if( fDistance0 >= 0 ) 
 			{
 				// emit point
-				if (dVector3Length2(avArrayIn[i0]) <= fRadius*fRadius)
+				if (dVector3LengthSquare(avArrayIn[i0]) <= fRadius*fRadius)
 				{
 					//					avArrayOut[ctOut.get()].v[0] = avArrayIn[i0].get0();
 					//					avArrayOut[ctOut.get()].v[1] = avArrayIn[i0].get1();
@@ -1073,7 +1073,7 @@ public class DxCollisionUtil {
 						(avArrayIn[i0].get2()-avArrayIn[i1].get2())*fDistance0/(fDistance0-fDistance1) );
 
 				// emit intersection point
-				if (dVector3Length2(avArrayIn[i0]) <= fRadius*fRadius)
+				if (dVector3LengthSquare(avArrayIn[i0]) <= fRadius*fRadius)
 				{
 					//					avArrayOut[ctOut.get()].v[0] = vIntersectionPoint.get0();
 					//					avArrayOut[ctOut.get()].v[1] = vIntersectionPoint.get1();

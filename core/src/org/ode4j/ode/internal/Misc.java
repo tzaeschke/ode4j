@@ -116,6 +116,12 @@ public class Misc extends Common {
 		//  final unsigned long un = n;
 		//  unsigned long r = dRand();
 		final long un = n;
+		//TZ the following is unnecessary In Java because each method call has
+		//its own context.
+//		// Since there is no memory barrier macro in ODE assign via volatile variable 
+//		// to prevent compiler reusing seed as value of `r'
+//		volatile long raw_r = dRand();
+//		long r = raw_r;
 		long r = dRand();
 
 		// note: probably more aggressive than it needs to be -- might be
@@ -135,20 +141,44 @@ public class Misc extends Common {
 //				}
 //			}
 //		}
-		if (un <= 0x00010000L) {
-			r ^= (r >> 16);
-			if (un <= 0x00000100L) {
-				r ^= (r >> 8);
-				if (un <= 0x00000010L) {
-					r ^= (r >> 4);
-					if (un <= 0x00000004L) {
-						r ^= (r >> 2);
-						if (un <= 0x00000002L) {
-							r ^= (r >> 1);
-						}
-					}
-				}
-			}
+		//Java version (TZ)
+//		if (un <= 0x00010000L) {
+//			r ^= (r >> 16);
+//			if (un <= 0x00000100L) {
+//				r ^= (r >> 8);
+//				if (un <= 0x00000010L) {
+//					r ^= (r >> 4);
+//					if (un <= 0x00000004L) {
+//						r ^= (r >> 2);
+//						if (un <= 0x00000002L) {
+//							r ^= (r >> 1);
+//						}
+//					}
+//				}
+//			}
+//		}
+		// Optimized version of above
+		if (un <= 0x00000010L) {
+		    r ^= (r >> 16);
+		    r ^= (r >> 8);
+		    r ^= (r >> 4);
+		    if (un <= 0x00000002L) {
+		        r ^= (r >> 2);
+		        r ^= (r >> 1);
+		    } else {
+		        if (un <= 0x00000004L) {
+		            r ^= (r >> 2);
+		        }
+		    }
+		} else {
+		    if (un <= 0x00000100L) {
+		        r ^= (r >> 16);
+		        r ^= (r >> 8);
+		    } else {
+		        if (un <= 0x00010000L) {
+		            r ^= (r >> 16);
+		        }
+		    }
 		}
 
 		return (int) (r % un);    
@@ -168,11 +198,12 @@ public class Misc extends Common {
 //	void dPrintMatrix (final double []A, int n, int m, char []fmt, FILE f)
 	void dPrintMatrix (final double []A, int n, int m, String fmt, FILE f)
 	{
-		int skip = dPAD(m);
-		for (int i=0; i<n; i++) {
-			for (int j=0; j<m; j++) fprintf (f,fmt,A[i*skip+j]);
-			fprintf (f,"\n");
-		}
+	    int skip = dPAD(m);
+	    int Arowp = 0;//A;
+	    for (int i=0; i<n; Arowp+=skip, ++i) {
+	        for (int j=0; j<m; ++j) fprintf (f,fmt,A[Arowp+j]);
+	        fprintf (f,"\n");
+	    }
 	}
 
 
@@ -201,9 +232,10 @@ public class Misc extends Common {
 	public static void dMakeRandomMatrix (double[]A, int n, int m, double range)
 	{
 		int skip = dPAD(m);
-		Matrix.dSetZero (A,n*skip);
-		for (int i=0; i<n; i++) {
-			for (int j=0; j<m; j++) A[i*skip+j] = (dRandReal()*2.0-1.0)*range;
+		//Matrix.dSetZero (A,n*skip);
+		int ArowP = 0;//A;
+		for (int i=0; i<n; ArowP+=skip, ++i) {
+		    for (int j=0; j<m; ++j) A[ArowP+j] = (dRandReal()*2.0-1.0)*range;
 		}
 	}
 
@@ -211,9 +243,10 @@ public class Misc extends Common {
 	/** clear the upper triangle of a square matrix */
 	public static void dClearUpperTriangle (double[]A, int n)
 	{
-		int skip = dPAD(n);
-		for (int i=0; i<n; i++) {
-			for (int j=i+1; j<n; j++) A[i*skip+j] = 0;
+	    int skip = dPAD(n);
+	    int ArowP = 0;//A;
+	    for (int i=0; i<n; ArowP+=skip, ++i) {
+	      for (int j=i+1; j<n; ++j) A[ArowP+j] = 0;
 		}
 	}
 
@@ -230,17 +263,15 @@ public class Misc extends Common {
 	/** return the maximum element difference between the two n*m matrices */
 	public static double dMaxDifference (final double[]A, final double[]B, int n, int m)
 	{
-		int skip = dPAD(m);
-		double diff,max;
-		max = 0;
-		for (int i=0; i<n; i++) {
-			for (int j=0; j<m; j++) {
-				diff = dFabs(A[i*skip+j] - B[i*skip+j]);
-				if (diff > max) {
-					max = diff;
-				}
-			}
-		}
+	    int skip = dPAD(m);
+	    double max = 0.0;
+	    int Arow = 0, Brow = 0;//A, *Brow = B;
+	    for (int i=0; i<n; Arow+=skip, Brow +=skip, ++i) {
+	      for (int j=0; j<m; ++j) {
+	        double diff = dFabs(A[Arow+j] - B[Brow+j]);
+	        if (diff > max) max = diff;
+	      }
+	    }
 		return max;
 	}
 	/** return the maximum element difference between the two 3*3 matrices */
@@ -248,6 +279,7 @@ public class Misc extends Common {
 	{
 		double diff,max;
 		max = 0;
+		
 		for (int i=0; i<3; i++) {
 			for (int j=0; j<3; j++) {
 				diff = Math.abs(A.get(i,j) - B.get(i,j));
@@ -287,13 +319,13 @@ public class Misc extends Common {
 	public static double dMaxDifferenceLowerTriangle (final double[]A, final double[]B, int n)
 	{
 		int skip = dPAD(n);
-		double diff,max;
-		max = 0;
-		for (int i=0; i<n; i++) {
-			for (int j=0; j<=i; j++) {
-				diff = dFabs(A[i*skip+j] - B[i*skip+j]);
-				if (diff > max) max = diff;
-			}
+		double max = 0.0;
+		int Arow = 0, Brow = 0;//A, *Brow = B;
+		for (int i=0; i<n; Arow+=skip, Brow+=skip, ++i) {
+		    for (int j=0; j<=i; ++j) {
+		        double diff = dFabs(A[Arow+j] - B[Brow+j]);
+		        if (diff > max) max = diff;
+		    }
 		}
 		return max;
 	}

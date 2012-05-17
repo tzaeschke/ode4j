@@ -134,7 +134,9 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 //	private RaixSortContext sortContext = new RaixSortContext();
 	//};
 
-	// Creation
+	/**
+	 * Creation.
+	 */
 	public static DxSAPSpace dSweepAndPruneSpaceCreate( DxSpace space, int axisorder ) {
 		return new DxSAPSpace( space, axisorder );
 	}
@@ -288,8 +290,8 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		int geomIdx = GEOM_GET_GEOM_IDX(g);
 		// must be in one list, not in both
 		dUASSERT(
-				dirtyIdx==GEOM_INVALID_IDX && geomIdx>=0 && geomIdx<GeomList.size() ||
-				geomIdx==GEOM_INVALID_IDX && dirtyIdx>=0 && dirtyIdx<DirtyList.size(),
+				(dirtyIdx==GEOM_INVALID_IDX && geomIdx>=0 && geomIdx<GeomList.size()) ||
+				(geomIdx==GEOM_INVALID_IDX && dirtyIdx>=0 && dirtyIdx<DirtyList.size()),
 		"geom indices messed up" );
 		if( dirtyIdx != GEOM_INVALID_IDX ) {
 			// we're in dirty list, remove

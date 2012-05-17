@@ -306,7 +306,7 @@ public class Common extends ErrorHandler {
     }
 
     //#define dNextAfter(x, y) nextafterf(x, y) /* next value after */
-    public static final double dNextafter(double start, double direction) { 
+    public static final double dNextAfter(double start, double direction) { 
         return Math.nextAfter(start, direction); 
     }
 

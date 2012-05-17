@@ -491,7 +491,6 @@ public class CollideTrimeshBox implements DColliderFn {
 		}
 
 
-		//TZ TODO
 		private final double dDOT(DVector3C a, DVector3C b) {
 			return a.dot(b);
 		}
@@ -547,10 +546,10 @@ public class CollideTrimeshBox implements DColliderFn {
 			// ************************************************
 			// Axis 1 - Triangle Normal
 			SET(vL,m_vN);
-			fp0  = dDOT(vL,vD);
+			fp0  = vL.dot(vD);
 			fp1  = fp0;
 			fp2  = fp0;
-			fR=fa0*dFabs( dDOT(m_vN,vA0) ) + fa1 * dFabs( dDOT(m_vN,vA1) ) + fa2 * dFabs( dDOT(m_vN,vA2) );
+			fR=fa0*dFabs( m_vN.dot(vA0) ) + fa1 * dFabs( m_vN.dot(vA1) ) + fa2 * dFabs( m_vN.dot(vA2) );
 
 			if (!_cldTestNormal(fp0, fR, vL, 1)) {
 				m_iExitAxis=1;
@@ -563,10 +562,10 @@ public class CollideTrimeshBox implements DColliderFn {
 			// ************************************************
 			// Axis 2 - Box X-Axis
 			SET(vL,vA0);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
-			fp1 = fp0 + dDOT(vA0,m_vE0);
-			fp2 = fp0 + dDOT(vA0,m_vE1);
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
+			fp1 = fp0 + vA0.dot(m_vE0);
+			fp2 = fp0 + vA0.dot(m_vE1);
 			fR  = fa0;
 
 			if (!_cldTestFace(fp0, fp1, fp2, fR, fD, vL, 2)) {
@@ -578,10 +577,10 @@ public class CollideTrimeshBox implements DColliderFn {
 			// ************************************************
 			// Axis 3 - Box Y-Axis
 			SET(vL,vA1);
-			fD = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
-			fp1 = fp0 + dDOT(vA1,m_vE0);
-			fp2 = fp0 + dDOT(vA1,m_vE1);
+			fD = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
+			fp1 = fp0 + vA1.dot(m_vE0);
+			fp2 = fp0 + vA1.dot(m_vE1);
 			fR  = fa1;
 
 			if (!_cldTestFace(fp0, fp1, fp2, fR, fD, vL, 3)) {
@@ -594,10 +593,10 @@ public class CollideTrimeshBox implements DColliderFn {
 			// ************************************************
 			// Axis 4 - Box Z-Axis
 			SET(vL,vA2);
-			fD = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
-			fp1 = fp0 + dDOT(vA2,m_vE0);
-			fp2 = fp0 + dDOT(vA2,m_vE1);
+			fD = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
+			fp1 = fp0 + vA2.dot(m_vE0);
+			fp2 = fp0 + vA2.dot(m_vE1);
 			fR  = fa2;
 
 			if (!_cldTestFace(fp0, fp1, fp2, fR, fD, vL, 4)) {
@@ -612,11 +611,11 @@ public class CollideTrimeshBox implements DColliderFn {
 			// Axis 5 - Box X-Axis cross Edge0
 			//dCROSS(vL,=,vA0,m_vE0);
 			vL.eqCross(vA0, m_vE0);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
 			fp1 = fp0;
-			fp2 = fp0 + dDOT(vA0,m_vN);
-			fR  = fa1 * dFabs(dDOT(vA2,m_vE0)) + fa2 * dFabs(dDOT(vA1,m_vE0));
+			fp2 = fp0 + vA0.dot(m_vN);
+			fR  = fa1 * dFabs(vA2.dot(m_vE0)) + fa2 * dFabs(vA1.dot(m_vE0));
 
 			if (!_cldTestEdge(fp1, fp2, fR, fD, vL, 5)) {
 				m_iExitAxis=5;
@@ -628,11 +627,11 @@ public class CollideTrimeshBox implements DColliderFn {
 			// Axis 6 - Box X-Axis cross Edge1
 			//dCROSS(vL,=,vA0,m_vE1);
 			vL.eqCross(vA0, m_vE1);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
-			fp1 = fp0 - dDOT(vA0,m_vN);
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
+			fp1 = fp0 - vA0.dot(m_vN);
 			fp2 = fp0;
-			fR  = fa1 * dFabs(dDOT(vA2,m_vE1)) + fa2 * dFabs(dDOT(vA1,m_vE1));
+			fR  = fa1 * dFabs(vA2.dot(m_vE1)) + fa2 * dFabs(vA1.dot(m_vE1));
 
 			if (!_cldTestEdge(fp0, fp1, fR, fD, vL, 6)) {
 				m_iExitAxis=6;
@@ -644,11 +643,11 @@ public class CollideTrimeshBox implements DColliderFn {
 			// Axis 7 - Box X-Axis cross Edge2
 			//dCROSS(vL,=,vA0,m_vE2);
 			vL.eqCross(vA0, m_vE2);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
-			fp1 = fp0 - dDOT(vA0,m_vN);
-			fp2 = fp0 - dDOT(vA0,m_vN);
-			fR  = fa1 * dFabs(dDOT(vA2,m_vE2)) + fa2 * dFabs(dDOT(vA1,m_vE2));
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
+			fp1 = fp0 - vA0.dot(m_vN);
+			fp2 = fp0 - vA0.dot(m_vN);
+			fR  = fa1 * dFabs(vA2.dot(m_vE2)) + fa2 * dFabs(vA1.dot(m_vE2));
 
 			if (!_cldTestEdge(fp0, fp1, fR, fD, vL, 7)) {
 				m_iExitAxis=7;
@@ -661,11 +660,11 @@ public class CollideTrimeshBox implements DColliderFn {
 			// Axis 8 - Box Y-Axis cross Edge0
 			//dCROSS(vL,=,vA1,m_vE0);
 			vL.eqCross(vA1, m_vE0);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
 			fp1 = fp0;
-			fp2 = fp0 + dDOT(vA1,m_vN);
-			fR  = fa0 * dFabs(dDOT(vA2,m_vE0)) + fa2 * dFabs(dDOT(vA0,m_vE0));
+			fp2 = fp0 + vA1.dot(m_vN);
+			fR  = fa0 * dFabs(vA2.dot(m_vE0)) + fa2 * dFabs(vA0.dot(m_vE0));
 
 			if (!_cldTestEdge(fp0, fp2, fR, fD, vL, 8)) {
 				m_iExitAxis=8;
@@ -678,11 +677,11 @@ public class CollideTrimeshBox implements DColliderFn {
 			// Axis 9 - Box Y-Axis cross Edge1
 			//dCROSS(vL,=,vA1,m_vE1);
 			vL.eqCross(vA1, m_vE1);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
-			fp1 = fp0 - dDOT(vA1,m_vN);
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
+			fp1 = fp0 - vA1.dot(m_vN);
 			fp2 = fp0;
-			fR  = fa0 * dFabs(dDOT(vA2,m_vE1)) + fa2 * dFabs(dDOT(vA0,m_vE1));
+			fR  = fa0 * dFabs(vA2.dot(m_vE1)) + fa2 * dFabs(vA0.dot(m_vE1));
 
 			if (!_cldTestEdge(fp0, fp1, fR, fD, vL, 9)) {
 				m_iExitAxis=9;
@@ -695,11 +694,11 @@ public class CollideTrimeshBox implements DColliderFn {
 			// Axis 10 - Box Y-Axis cross Edge2
 			//dCROSS(vL,=,vA1,m_vE2);
 			vL.eqCross(vA1, m_vE2);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
-			fp1 = fp0 - dDOT(vA1,m_vN);
-			fp2 = fp0 - dDOT(vA1,m_vN);
-			fR  = fa0 * dFabs(dDOT(vA2,m_vE2)) + fa2 * dFabs(dDOT(vA0,m_vE2));
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
+			fp1 = fp0 - vA1.dot(m_vN);
+			fp2 = fp0 - vA1.dot(m_vN);
+			fR  = fa0 * dFabs(vA2.dot(m_vE2)) + fa2 * dFabs(vA0.dot(m_vE2));
 
 			if (!_cldTestEdge(fp0, fp1, fR, fD, vL, 10)) {
 				m_iExitAxis=10;
@@ -712,11 +711,11 @@ public class CollideTrimeshBox implements DColliderFn {
 			// Axis 11 - Box Z-Axis cross Edge0
 			//dCROSS(vL,=,vA2,m_vE0);
 			vL.eqCross(vA2, m_vE0);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
 			fp1 = fp0;
-			fp2 = fp0 + dDOT(vA2,m_vN);
-			fR  = fa0 * dFabs(dDOT(vA1,m_vE0)) + fa1 * dFabs(dDOT(vA0,m_vE0));
+			fp2 = fp0 + vA2.dot(m_vN);
+			fR  = fa0 * dFabs(vA1.dot(m_vE0)) + fa1 * dFabs(vA0.dot(m_vE0));
 
 			if (!_cldTestEdge(fp0, fp2, fR, fD, vL, 11)) {
 				m_iExitAxis=11;
@@ -728,11 +727,11 @@ public class CollideTrimeshBox implements DColliderFn {
 			// Axis 12 - Box Z-Axis cross Edge1
 			//dCROSS(vL,=,vA2,m_vE1);
 			vL.eqCross(vA2, m_vE1);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
-			fp1 = fp0 - dDOT(vA2,m_vN);
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
+			fp1 = fp0 - vA2.dot(m_vN);
 			fp2 = fp0;
-			fR  = fa0 * dFabs(dDOT(vA1,m_vE1)) + fa1 * dFabs(dDOT(vA0,m_vE1));
+			fR  = fa0 * dFabs(vA1.dot(m_vE1)) + fa1 * dFabs(vA0.dot(m_vE1));
 
 			if (!_cldTestEdge(fp0, fp1, fR, fD, vL, 12)) {
 				m_iExitAxis=12;
@@ -744,11 +743,11 @@ public class CollideTrimeshBox implements DColliderFn {
 			// Axis 13 - Box Z-Axis cross Edge2
 			//	  OdeMath.dCROSS(vL,OP.EQ,vA2,m_vE2);
 			vL.eqCross(vA2, m_vE2);
-			fD  = dDOT(vL,m_vN)/fNLen;
-			fp0 = dDOT(vL,vD);
-			fp1 = fp0 - dDOT(vA2,m_vN);
-			fp2 = fp0 - dDOT(vA2,m_vN);
-			fR  = fa0 * dFabs(dDOT(vA1,m_vE2)) + fa1 * dFabs(dDOT(vA0,m_vE2));
+			fD  = vL.dot(m_vN)/fNLen;
+			fp0 = vL.dot(vD);
+			fp1 = fp0 - vA2.dot(m_vN);
+			fp2 = fp0 - vA2.dot(m_vN);
+			fR  = fa0 * dFabs(vA1.dot(m_vE2)) + fa1 * dFabs(vA0.dot(m_vE2));
 
 			if (!_cldTestEdge(fp0, fp1, fR, fD, vL, 13)) {
 				m_iExitAxis=13;
@@ -774,9 +773,9 @@ public class CollideTrimeshBox implements DColliderFn {
 			// calculate denominator
 			DVector3 vp = new DVector3();
 			SUBTRACT(vPoint2,vPoint1,vp);
-			double fuaub  = dDOT(vLenVec1,vLenVec2);
-			double fq1    = dDOT(vLenVec1,vp);
-			double fq2    = -dDOT(vLenVec2,vp);
+			double fuaub  = vLenVec1.dot(vLenVec2);
+			double fq1    = vLenVec1.dot(vp);
+			double fq2    = -vLenVec2.dot(vp);
 			double fd     = 1.0f - fuaub * fuaub;
 
 			// if denominator is positive
@@ -814,7 +813,7 @@ public class CollideTrimeshBox implements DColliderFn {
 				for( int i=0; i<3; i++) {
 					DVector3 vRotCol = new DVector3();
 					GETCOL(m_mHullBoxRot,i,vRotCol);
-					double fSign = dDOT(m_vBestNormal,vRotCol) > 0 ? 1.0f : -1.0f;
+					double fSign = m_vBestNormal.dot(vRotCol) > 0 ? 1.0f : -1.0f;
 
 					//	      vPa[0] += fSign * m_vBoxHalfSize[i] * vRotCol[0];
 					//	      vPa[1] += fSign * m_vBoxHalfSize[i] * vRotCol[1];
@@ -1032,7 +1031,7 @@ public class CollideTrimeshBox implements DColliderFn {
 				//dNormalize3(vTemp);
 				vTemp.normalize();
 				SUBTRACT(v0,v2,vTemp2);
-				CONSTRUCTPLANE(plPlane,vTemp,dDOT(vTemp2,vTemp));
+				CONSTRUCTPLANE(plPlane,vTemp,vTemp2.dot(vTemp));
 
 				_cldClipPolyToPlane( avTempArray2, iTempCnt2.i, avTempArray1, iTempCnt1, plPlane  );
 
@@ -1051,7 +1050,7 @@ public class CollideTrimeshBox implements DColliderFn {
 				// for each generated contact point
 				for ( int i=0; i<iTempCnt2.i; i++ ) {
 					// calculate depth
-					double fTempDepth = dDOT(vNormal2,avTempArray2[i]);
+					double fTempDepth = vNormal2.dot(avTempArray2[i]);
 
 					// clamp depth to zero
 					if (fTempDepth > 0) {
@@ -1179,7 +1178,7 @@ public class CollideTrimeshBox implements DColliderFn {
 				// for each generated contact point
 				for ( int i=0; i<iTempCnt1.i; i++ ) {
 					// calculate depth
-					double fTempDepth = dDOT(vNormal2,avTempArray1[i])-m_vBoxHalfSize.get(iA0);
+					double fTempDepth = vNormal2.dot(avTempArray1[i])-m_vBoxHalfSize.get(iA0);
 
 					// clamp depth to zero
 					if (fTempDepth > 0) {
@@ -1584,7 +1583,7 @@ public class CollideTrimeshBox implements DColliderFn {
 					if (diff.dot(diff) < dEpsilon)
 					{
 						// same normal?
-						if (Math.abs(in_Normal.dot(Contact.normal)) > ((1.0)-dEpsilon))
+	                    if (1.0 - dFabs(in_Normal.dot(Contact.normal)) < dEpsilon)
 						{
 							if (in_Depth > Contact.depth)
 								Contact.depth = in_Depth;
