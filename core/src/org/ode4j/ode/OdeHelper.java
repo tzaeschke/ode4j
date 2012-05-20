@@ -618,7 +618,7 @@ public abstract class OdeHelper {
 	 * @ingroup init
 	 */
 	public static int initODE2(int uiInitFlags/*=0*/) {
-		return OdeInit.dInitODE2(uiInitFlags);
+		return OdeInit.dInitODE2(uiInitFlags) ? 1 : 0;
 	}
 	
 	/**
@@ -811,7 +811,7 @@ public abstract class OdeHelper {
 	 * @deprecated TZ I guess this can be removed?
 	 */
 	public static int allocateODEDataForThread(int uiAllocateFlags) {
-		return OdeInit.dAllocateODEDataForThread(uiAllocateFlags);
+		return OdeInit.dAllocateODEDataForThread(uiAllocateFlags) ? 1 : 0;
 	}
 
 	/**

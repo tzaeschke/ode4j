@@ -759,6 +759,9 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	}
 
 
+	/**
+	 * @return (flags & dxBodyNoGravity) == 0
+	 */
 	boolean dBodyGetGravityMode ()
 	{
 		return (flags & dxBodyNoGravity) == 0;
@@ -1340,6 +1343,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 
 	public void setGravityMode (boolean mode)
 	{ dBodySetGravityMode (mode); }
+	/** @see DxBody#dBodyGetGravityMode() */
 	public boolean getGravityMode() 
 	{ return dBodyGetGravityMode (); }
 

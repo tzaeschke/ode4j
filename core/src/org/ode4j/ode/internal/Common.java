@@ -113,6 +113,10 @@ public class Common extends ErrorHandler {
 	//public static final double DBL_EPSILON = 2.22045e-16;
 	public static final double DBL_EPSILON = 2.2204460492503131e-016;
 	
+	public static final void dIVERIFY(boolean a) {
+	    dIASSERT(a);
+	}
+
 	/** Internal assertion */
 	public static final void dIASSERT(boolean b) {
 		if (!b) {

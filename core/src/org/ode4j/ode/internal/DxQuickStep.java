@@ -461,10 +461,6 @@ dmemestimate_fn_t {
 	//#endif
 
 	
-	private static final double[] alloc(int n) {
-		return new double[n];
-	}
-
 	//static void SOR_LCP (int m, int nb, dRealMutablePtr J, int *jb, dxBody * const *body,
 	//		dRealPtr invI, dRealMutablePtr lambda, dRealMutablePtr fc, dRealMutablePtr b,
 	//		dRealMutablePtr lo, dRealMutablePtr hi, dRealPtr cfm, int *findex,

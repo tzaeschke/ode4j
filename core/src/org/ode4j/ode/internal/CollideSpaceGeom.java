@@ -47,8 +47,8 @@ public class CollideSpaceGeom implements DColliderFn {
 //	
 //	//TODO is this the right place for this method?
 //	/** @deprecated TZ: Is this still required? */
-//	/*extern */static void dClearPosrCache()
-//	{
+	public static void dClearPosrCache()
+	{
 //		if (Common.dATOMICS_ENABLED) {
 //			// No threads should be accessing ODE at this time already,
 //			// hence variable may be read directly.
@@ -62,7 +62,7 @@ public class CollideSpaceGeom implements DColliderFn {
 //				s_cachedPosR.set(null);// = 0;
 //			}
 //		}
-//	}
+	}
 
 	private class SpaceGeomColliderData {
 		int flags;			// space left in contacts array
