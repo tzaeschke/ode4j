@@ -23,7 +23,14 @@ TODO
 - include DMatrix, DRoation, DMisc into OdeMath i.o. internal Rotation/Matrix?!
 - Remove OdeMath.OP
 - Run tests!
+- DemoCrash: dofast = true;
+- Step: clean-up
 =============
+
+2012-May-18 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Initial version of migrated Step.java, still buggy
+		  - Finished migration of all other files.
 
 2012-May-17 Tilmann Zaschke
 		* Migration to ode-0.12:
