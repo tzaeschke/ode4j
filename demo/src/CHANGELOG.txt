@@ -27,6 +27,10 @@ TODO
 - Step: clean-up
 =============
 
+2012-May-26 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Fixed Step.java, all test work now, except one.
+
 2012-May-18 Tilmann Zaschke
 		* Migration to ode-0.12:
 		  - Initial version of migrated Step.java, still buggy

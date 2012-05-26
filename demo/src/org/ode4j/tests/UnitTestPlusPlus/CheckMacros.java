@@ -116,7 +116,7 @@ public class CheckMacros {
 	//    } while (0)
 	//
 	public static void CHECK_CLOSE(double expected, double actual, double tolerance) {
-		assertTrue("Expected" + expected + " / actual=" + actual + " / tolerance=" + tolerance, 
+		assertTrue("Expected=" + expected + " / actual=" + actual + " / tolerance=" + tolerance, 
 				tolerance >= Math.abs(expected - actual));
 		//    try { 
 		//        UnitTest::CheckClose(testResults_, expected, actual, tolerance, UnitTest.TestDetails(m_details, __LINE__)); 
@@ -127,7 +127,7 @@ public class CheckMacros {
 		//    } 
 	}
 	public static void CHECK_CLOSE(double expected, RefDouble actual, double tolerance) {
-		assertTrue("Expected" + expected + " / actual=" + actual + " / tolerance=" + tolerance, 
+		assertTrue("Expected=" + expected + " / actual=" + actual + " / tolerance=" + tolerance, 
 				tolerance >= Math.abs(expected - actual.d));
 	}
 
