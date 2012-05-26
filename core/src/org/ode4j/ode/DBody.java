@@ -64,7 +64,10 @@ import org.ode4j.math.DVector3C;
 public interface DBody {
 
 	 /**
-	  * @deprecated 
+	  * Whenever a body has its position or rotation changed during the
+	  * timestep, the callback will be called (with body as the argument).
+	  * Use it to know which body may need an update in an external
+	  * structure (like a 3D engine).
 	  */
 	 public interface BodyMoveCallBack {
 		 void run(DBody b);
@@ -784,7 +787,6 @@ public interface DBody {
 	 * @param callback the callback to be invoked when the body moves. Set to zero
 	 * to disable.
 	 * @ingroup bodies
-	 * @deprecated
 	 */
 	void setMovedCallback(BodyMoveCallBack callback);
 

@@ -121,7 +121,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 	//Code is not guaranteed and I didn't find the need to add that as 
 	//colliding planes triangles and edge triangles seems enough.
 	//#define _HEIGHTFIELDEDGECOLLIDING
-	private static final boolean _HEIGHTFIELDEDGECOLLIDING = false;  //DO NOT ENABLE without uncommenting code!!
+	//private static final boolean _HEIGHTFIELDEDGECOLLIDING = false;  //DO NOT ENABLE without uncommenting code!!
 
 
 	private static final boolean NO_CONTACT_CULLING_BY_ISONHEIGHTFIELD2 = false;
@@ -1237,13 +1237,13 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 				remaining and HEIGHTFIELDMAXCONTACTPERCELL.
 				 */
 				planeTestFlags = (flags & ~NUMC_MASK) | HEIGHTFIELDMAXCONTACTPERCELL;
-				dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
+				//dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
 			} else {//#else // if defined(NO_CONTACT_CULLING_BY_ISONHEIGHTFIELD2)
 				//				int numMaxContactsPerPlane = dMIN(numMaxContactsPossible - numTerrainContacts, HEIGHTFIELDMAXCONTACTPERCELL);
 				//				int planeTestFlags = (flags & ~NUMC_MASK) | numMaxContactsPerPlane;
 				numMaxContactsPerPlane = (int) dMIN(numMaxContactsPossible - numTerrainContacts, HEIGHTFIELDMAXCONTACTPERCELL);
 				planeTestFlags = (flags & ~NUMC_MASK) | numMaxContactsPerPlane;
-				dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
+				//dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
 			}//#endif
 
 			for (int k = 0; k < numPlanes; k++)
@@ -1294,7 +1294,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 						 */
 						numMaxContactsPerPlane = (int) dMIN(numMaxContactsPossible - numTerrainContacts, HEIGHTFIELDMAXCONTACTPERCELL);
 						planeTestFlags = (flags & ~NUMC_MASK) | numMaxContactsPerPlane;
-						dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
+						//dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
 					}//#endif
 					for (int b = 0; planeTriListSize > b; b++)
 					{
@@ -1327,7 +1327,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 			// Only one contact is necessary for ray test
 			int rayTestFlags = (flags & ~NUMC_MASK) | 1;
-			dIASSERT((1 & ~NUMC_MASK) == 0);
+			//dIASSERT((1 & ~NUMC_MASK) == 0);
 			//
 			// Find Contact Penetration Depth of each vertices
 			//

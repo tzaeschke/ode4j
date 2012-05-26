@@ -33,7 +33,7 @@ import org.ode4j.math.DVector3C;
 /**
  *  object, body, and world structs.
  *  
- *  @author Tilmann Zäschke
+ *  @author Tilmann Zï¿½schke
  */
 public class Objects_H {
 
@@ -104,9 +104,11 @@ public class Objects_H {
 	public static class DxPosR implements DxPosRC {
 		public final DVector3 pos = new DVector3();
 		public final DMatrix3 R = new DMatrix3();
+		@Override
 		public DMatrix3C R() {
 			return R;
 		}
+		@Override
 		public DVector3C pos() {
 			return pos;
 		}

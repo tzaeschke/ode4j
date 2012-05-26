@@ -867,7 +867,7 @@ public class DxConvex extends DxGeom implements DConvex {
 			final int LTEQ_ZERO = 0x10000000;
 			final int GTEQ_ZERO = 0x20000000;
 			final int BOTH_SIGNS = (LTEQ_ZERO | GTEQ_ZERO);
-			dIASSERT((BOTH_SIGNS & NUMC_MASK) == 0); // used in conditional operator later
+			//dIASSERT((BOTH_SIGNS & NUMC_MASK) == 0); // used in conditional operator later
 	
 			//unsigned 
 			int totalsign = 0;

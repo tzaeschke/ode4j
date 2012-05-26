@@ -1767,73 +1767,96 @@ public abstract class DxGeom extends DBase implements DGeom {
 	// dGeom API
 	// *********************************************
 	
+	@Override
 	public void destroy() {
 		//if (_id!=null) dGeomDestroy (_id);
 		//_id = null;
 		dGeomDestroy();
 	}
 
+	@Override
 	public int getClassID()// const
 	{ return dGeomGetClass (); }
 
+	@Override
 	public DSpace getSpace() //const
 	{ return dGeomGetSpace (); }
 
+	@Override
 	public void setData (Object data)
 	{ dGeomSetData (data); }
+	@Override
 	public Object getData() //const
 	{ return dGeomGetData (); }
 
+	@Override
 	public void setBody (DBody b)
 	{ dGeomSetBody ((DxBody)b); }
+	@Override
 	public DBody getBody() //const
 	{ return dGeomGetBody (); }
 
+	@Override
 	public void setPosition (double x, double y, double z)
 	{ dGeomSetPosition (new DVector3(x,y,z)); }
+	@Override
 	public void setPosition (DVector3C xyz)
 	{ dGeomSetPosition (xyz); }
 	//const dReal * getPosition() const
+	@Override
 	public DVector3C getPosition()
 	{ return dGeomGetPosition (); }
 
+	@Override
 	public void setRotation (DMatrix3C R)
 	{ dGeomSetRotation (R); }
 	//const dReal * getRotation() const
+	@Override
 	public DMatrix3C getRotation()
 	{ return dGeomGetRotation (); }
 
+	@Override
 	public void setQuaternion (DQuaternionC quat)
 	{ dGeomSetQuaternion (quat); }
 
 //	public int isSpace()
 //	{ return dGeomIsSpace (_id); }
 
+	@Override
 	public void setCategoryBits (long bits)//unsigned long bits)
 	{ dGeomSetCategoryBits (bits); }
+	@Override
 	public void setCollideBits (long bits)//unsigned long bits)
 	{ dGeomSetCollideBits (bits); }
 	//unsigned 
+	@Override
 	public long getCategoryBits()
 	{ return dGeomGetCategoryBits (); }
 	//unsigned 
+	@Override
 	public long getCollideBits()
 	{ return dGeomGetCollideBits (); }
 
+	@Override
 	public void enable()
 	{ dGeomEnable (); }
+	@Override
 	public void disable()
 	{ dGeomDisable (); }
+	@Override
 	public boolean isEnabled()
 	{ return dGeomIsEnabled (); }
 
+	@Override
 	public void collide2 (DGeom g, Object data, DNearCallback callback)
 	{ DxSpace.dSpaceCollide2 (this,(DxGeom)g,data,callback); }
 
+	@Override
 	public void setOffsetPosition(double x, double y, double z) {
 		dGeomSetOffsetPosition(x, y, z);
 	}
 
+	@Override
 	public void setOffsetRotation(DMatrix3C R) {
 		dGeomSetOffsetRotation(R);
 	}

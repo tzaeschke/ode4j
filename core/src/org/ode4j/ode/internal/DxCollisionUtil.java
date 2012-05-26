@@ -518,14 +518,14 @@ public class DxCollisionUtil {
 
 	//private static void SET2(DVector3 a, DVector3 b) { a.v[0]=b.get0(); a.v[1]=b.get1(); a.v[2]=b.get2();}
 	private static void SET2(DVector3 a, DVector3 b) { a.set( b );}
-	private static void SET3(DVector3 a, DVector3 b, OP op, DVector3 c) {
-		SET3(a, 1, b, op, 1, c);
+	private static void SET3_SUB(DVector3 a, DVector3 b, DVector3 c) {
+		SET3_SUB(a, 1, b, 1, c);
 	}
-	private static void SET3(DVector3 a, double f1, DVector3 b, OP op, double f2, DVector3 c) {
-		switch (op) {
-		case ADD: a.set0(b.get0()*f1 + c.get0()*f2); a.set1(b.get1()*f1 + c.get1()*f2); a.set2(b.get2()*f1 + c.get2()*f2); return;
-		case SUB: a.set0(b.get0()*f1 - c.get0()*f2); a.set1(b.get1()*f1 - c.get1()*f2); a.set2(b.get2()*f1 - c.get2()*f2); return;
-		default: throw new UnsupportedOperationException(); }
+	private static void SET3_SUB(DVector3 a, double f1, DVector3 b, double f2, DVector3 c) {
+		a.set0(b.get0()*f1 - c.get0()*f2); a.set1(b.get1()*f1 - c.get1()*f2); a.set2(b.get2()*f1 - c.get2()*f2);
+	}
+	private static void SET3_ADD(DVector3 a, double f1, DVector3 b, double f2, DVector3 c) {
+		a.set0(b.get0()*f1 + c.get0()*f2); a.set1(b.get1()*f1 + c.get1()*f2); a.set2(b.get2()*f1 + c.get2()*f2);
 	}
 	// given two line segments A and B with endpoints a1-a2 and b1-b2, return the
 	// points on A and B that are closest to each other (in cp1 and cp2).
@@ -552,9 +552,9 @@ public class DxCollisionUtil {
 
 		// check vertex-vertex features
 
-		SET3 (a1a2,a2,OP.SUB,a1);
-		SET3 (b1b2,b2,OP.SUB,b1);
-		SET3 (a1b1,b1,OP.SUB,a1);
+		SET3_SUB (a1a2,a2,a1);
+		SET3_SUB (b1b2,b2,b1);
+		SET3_SUB (a1b1,b1,a1);
 		da1 = dCalcVectorDot3(a1a2,a1b1);
 		db1 = dCalcVectorDot3(b1b2,a1b1);
 		if (da1 <= 0 && db1 >= 0) {
@@ -563,7 +563,7 @@ public class DxCollisionUtil {
 			return;
 		}
 
-		SET3 (a1b2,b2,OP.SUB,a1);
+		SET3_SUB (a1b2,b2,a1);
 		da2 = dCalcVectorDot3(a1a2,a1b2);
 		db2 = dCalcVectorDot3(b1b2,a1b2);
 		if (da2 <= 0 && db2 <= 0) {
@@ -572,7 +572,7 @@ public class DxCollisionUtil {
 			return;
 		}
 
-		SET3 (a2b1,b1,OP.SUB,a2);
+		SET3_SUB (a2b1,b1,a2);
 		da3 = dCalcVectorDot3(a1a2,a2b1);
 		db3 = dCalcVectorDot3(b1b2,a2b1);
 		if (da3 >= 0 && db3 >= 0) {
@@ -581,7 +581,7 @@ public class DxCollisionUtil {
 			return;
 		}
 
-		SET3 (a2b2,b2,OP.SUB,a2);
+		SET3_SUB (a2b2,b2,a2);
 		da4 = dCalcVectorDot3(a1a2,a2b2);
 		db4 = dCalcVectorDot3(b1b2,a2b2);
 		if (da4 >= 0 && db4 <= 0) {
@@ -597,9 +597,9 @@ public class DxCollisionUtil {
 		la = dCalcVectorDot3(a1a2,a1a2);
 		if (da1 >= 0 && da3 <= 0) {
 			k = da1 / la;
-			SET3 (n,1,a1b1,OP.SUB,k,a1a2);
+			SET3_SUB (n,1,a1b1,k,a1a2);
 			if (dCalcVectorDot3(b1b2,n) >= 0) {
-				SET3 (cp1,1,a1,OP.ADD,k,a1a2);
+				SET3_ADD (cp1,1,a1,k,a1a2);
 				SET2 (cp2,b1);
 				return;
 			}
@@ -607,9 +607,9 @@ public class DxCollisionUtil {
 
 		if (da2 >= 0 && da4 <= 0) {
 			k = da2 / la;
-			SET3 (n,1,a1b2,OP.SUB,k,a1a2);
+			SET3_SUB (n,1,a1b2,k,a1a2);
 			if (dCalcVectorDot3(b1b2,n) <= 0) {
-				SET3 (cp1,1,a1,OP.ADD,k,a1a2);
+				SET3_ADD (cp1,1,a1,k,a1a2);
 				SET2 (cp2,b2);
 				return;
 			}
@@ -618,20 +618,20 @@ public class DxCollisionUtil {
 		lb = dCalcVectorDot3(b1b2,b1b2);
 		if (db1 <= 0 && db2 >= 0) {
 			k = -db1 / lb;
-			SET3 (n,-1,a1b1,OP.SUB,k,b1b2);
+			SET3_SUB (n,-1,a1b1,k,b1b2);
 			if (dCalcVectorDot3(a1a2,n) >= 0) {
 				SET2 (cp1,a1);
-				SET3 (cp2,1,b1,OP.ADD,k,b1b2);
+				SET3_ADD (cp2,1,b1,k,b1b2);
 				return;
 			}
 		}
 
 		if (db3 <= 0 && db4 >= 0) {
 			k = -db3 / lb;
-			SET3 (n,-1,a2b1,OP.SUB,k,b1b2);
+			SET3_SUB (n,-1,a2b1,k,b1b2);
 			if (dCalcVectorDot3(a1a2,n) <= 0) {
 				SET2 (cp1,a2);
-				SET3 (cp2,1,b1,OP.ADD,k,b1b2);
+				SET3_ADD (cp2,1,b1,k,b1b2);
 				return;
 			}
 		}
@@ -649,8 +649,8 @@ public class DxCollisionUtil {
 		det = dRecip (det);
 		double alpha = (lb*da1 -  k*db1) * det;
 		double beta  = ( k*da1 - la*db1) * det;
-		SET3 (cp1,1,a1,OP.ADD,alpha,a1a2);
-		SET3 (cp2,1,b1,OP.ADD,beta,b1b2);
+		SET3_ADD (cp1,1,a1,alpha,a1a2);
+		SET3_ADD (cp2,1,b1,beta,b1b2);
 
 		//# undef SET2
 		//# undef SET3

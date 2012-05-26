@@ -894,13 +894,17 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	@Override
 	public final void setAxis2 (double x, double y, double z)
 	{ dJointSetPUAxis2 (x, y, z); }
+	@Override
 	public final void setAxis3 (double x, double y, double z)
 	{ dJointSetPUAxis3 (x, y, z); }
+	@Override
 	public final void setAxis3 (DVector3C a)
 	//TODO use dVector3
 	{ setAxis3(a.get0(), a.get1(), a.get2()); }
+	@Override
 	public final void setAxisP (double x, double y, double z)
 	{ dJointSetPUAxis3 (x, y, z); }
+	@Override
 	public final void setAxisP (DVector3C a)
 	//TODO use dVector3
 	{ setAxisP(a.get0(), a.get1(), a.get2()); }
@@ -915,8 +919,10 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	@Override
 	public final void getAxis2 (DVector3 result)
 	{ dJointGetPUAxis2 (result); }
+	@Override
 	public final void getAxis3 (DVector3 result)
 	{ dJointGetPUAxis3 (result); }
+	@Override
 	public final void getAxisP (DVector3 result)
 	{ dJointGetPUAxis3 (result); }
 
@@ -935,8 +941,10 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	public final double getAngle2Rate()
 	{ return dJointGetPUAngle2Rate (); }
 
+	@Override
 	public final double getPosition()
 	{ return dJointGetPUPosition (); }
+	@Override
 	public final double getPositionRate()
 	{ return dJointGetPUPositionRate (); }
 

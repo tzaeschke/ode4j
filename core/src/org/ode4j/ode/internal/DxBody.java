@@ -343,7 +343,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//		public final double[] dBodyGetPosition (dxBody b)
 	public DVector3C dBodyGetPosition ()
 	{
-		return _posr.pos;
+		return _posr.pos();
 	}
 
 
@@ -354,14 +354,14 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		//			pos.v[0] = src[0];
 		//			pos.v[1] = src[1];
 		//			pos.v[2] = src[2];
-		pos.set(b._posr.pos);
+		pos.set(b._posr.pos());
 	}
 
 
 	//		public final double[] dBodyGetRotation (dxBody b)
 	public DMatrix3C dBodyGetRotation ()
 	{
-		return _posr.R;
+		return _posr.R();
 	}
 
 
@@ -382,7 +382,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		//			R.v[10] = src[10];
 		//			R.v[11] = src[11];
 		//TODO clean up commented code and other TODO below (add(f), e.t.c) 
-		R.set(b._posr.R);
+		R.set(b._posr.R());
 	}
 
 
@@ -1175,38 +1175,53 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public void DESTRUCTOR() { super.DESTRUCTOR(); };
 
 	//void setData (void *data)
+	@Override
 	public void setData (Object data)
 	{ dBodySetData (data); }
 	//void *getData() 
+	@Override
 	public Object getData() 
 	{ return dBodyGetData (); }
 
+	@Override
 	public void setPosition (double x, double y, double z)
 	{ dBodySetPosition (x,y,z); }
+	@Override
 	public void setPosition (DVector3C p)
 	{ dBodySetPosition(p); }
 
+	@Override
 	public void setRotation (DMatrix3C R)
 	{ dBodySetRotation (R); }
+	@Override
 	public void setQuaternion (DQuaternionC q)
 	{ dBodySetQuaternion (q); }
+	@Override
 	public void setLinearVel (double x, double y, double z)
 	{ dBodySetLinearVel (x,y,z); }
+	@Override
 	public void setLinearVel (DVector3C v)
 	{ dBodySetLinearVel(v); }
+	@Override
 	public void setAngularVel (double x, double y, double z)
 	{ dBodySetAngularVel (x,y,z); }
+	@Override
 	public void setAngularVel (DVector3C v)
 	{ dBodySetAngularVel (v); }
 
+	@Override
 	public DVector3C getPosition() 
 	{ return dBodyGetPosition (); }
+	@Override
 	public DMatrix3C getRotation() //const
 	{ return dBodyGetRotation (); }
+	@Override
 	public DQuaternionC getQuaternion() //const
 	{ return dBodyGetQuaternion (); }
+	@Override
 	public DVector3C getLinearVel() //const
 	{ return dBodyGetLinearVel (); }
+	@Override
 	public DVector3C getAngularVel() //const
 	{ return dBodyGetAngularVel (); }
 
@@ -1214,77 +1229,107 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//  { dBodySetMass (_id,mass); }
 	//void setMass (final dMass &mass)
 	//  { setMass (&mass); }
+	@Override
 	public void setMass (DMassC mass)
 	{ dBodySetMass ((DxMass) mass); }
+	@Override
 	public DMass getMass () //const
 	{ DMass mass = new DxMass(); dBodyGetMass ((DxMass) mass); return mass; }
 
+	@Override
 	public void addForce (double fx, double fy, double fz)
 	{ dBodyAddForce (fx, fy, fz); }
+	@Override
 	public void addForce (DVector3C f)
 	{ dBodyAddForce (f); }
+	@Override
 	public void addTorque (double fx, double fy, double fz)
 	{ dBodyAddTorque (fx, fy, fz); }
+	@Override
 	public void addTorque (DVector3C t)
 	{ dBodyAddTorque(t); }
 
+	@Override
 	public void addRelForce (double fx, double fy, double fz)
 	{ dBodyAddRelForce ( new DVector3(fx, fy, fz)); }
+	@Override
 	public void addRelForce (DVector3C f)
 	{ dBodyAddRelForce (f); }
+	@Override
 	public void addRelTorque (double fx, double fy, double fz)
 	{ dBodyAddRelTorque (new DVector3(fx, fy, fz)); }
+	@Override
 	public void addRelTorque (DVector3C t)
 	{ dBodyAddRelTorque (t); }
 
+	@Override
 	public void addForceAtPos (double fx, double fy, double fz,
 			double px, double py, double pz)
 	{ dBodyAddForceAtPos (new DVector3(fx, fy, fz), new DVector3(px, py, pz)); }
+	@Override
 	public void addForceAtPos (DVector3C f, DVector3C p)
 	{ dBodyAddForceAtPos (f,p); }
 
+	@Override
 	public void addForceAtRelPos (double fx, double fy, double fz,
 			double px, double py, double pz)
 	{ dBodyAddForceAtRelPos (new DVector3(fx, fy, fz), new DVector3(px, py, pz)); }
+	@Override
 	public void addForceAtRelPos (DVector3C f, DVector3C p)
 	{ dBodyAddForceAtRelPos (f, p); }
 
+	@Override
 	public void addRelForceAtPos (double fx, double fy, double fz,
 			double px, double py, double pz)
 	{ dBodyAddRelForceAtPos (new DVector3(fx, fy, fz), new DVector3(px, py, pz)); }
+	@Override
 	public void addRelForceAtPos (DVector3C f, DVector3C p)
 	{ dBodyAddRelForceAtPos (f, p); }
 
+	@Override
 	public void addRelForceAtRelPos (double fx, double fy, double fz,
 			double px, double py, double pz)
 	{ dBodyAddRelForceAtRelPos (new DVector3(fx, fy, fz), new DVector3(px, py, pz)); }
+	@Override
 	public void addRelForceAtRelPos (DVector3C f, DVector3C p)
 	{ dBodyAddRelForceAtRelPos (f, p); }
 
+	@Override
 	public DVector3C getForce() //const
 	{ return dBodyGetForce(); }
+	@Override
 	public DVector3C getTorque() //const
 	{ return dBodyGetTorque(); }
+	@Override
 	public void setForce (double x, double y, double z)
 	{ dBodySetForce (x,y,z); }
+	@Override
 	public void setForce (DVector3C f)
 	{ dBodySetForce (f); }
+	@Override
 	public void setTorque (double x, double y, double z)
 	{ dBodySetTorque (x,y,z); }
+	@Override
 	public void setTorque (DVector3C t)
 	{ dBodySetTorque (t); }
 
+	@Override
 	public void setDynamic()
 	{ dBodySetDynamic (); }
+	@Override
 	public void setKinematic()
 	{ dBodySetKinematic (); }
+	@Override
 	public boolean isKinematic()
 	{ return dBodyIsKinematic (); }
 
+	@Override
 	public void enable()
 	{ dBodyEnable (); }
+	@Override
 	public void disable()
 	{ dBodyDisable (); }
+	@Override
 	public boolean isEnabled() //const
 	{ return dBodyIsEnabled (); }
 
@@ -1293,115 +1338,162 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		return (flags & dxBodyGyroscopic) != 0;
 	}
 
+	@Override
 	public void getRelPointPos (double px, double py, double pz, DVector3 result) //const
 	{ dBodyGetRelPointPos (new DVector3(px, py, pz), result); }
+	@Override
 	public void getRelPointPos (DVector3C p, DVector3 result) //const
 	{ dBodyGetRelPointPos (p, result); }
 
+	@Override
 	public void getRelPointVel (double px, double py, double pz, DVector3 result) //const
 	{ dBodyGetRelPointVel (new DVector3(px, py, pz), result); }
+	@Override
 	public void getRelPointVel (DVector3C p, DVector3 result) //const
 	{ dBodyGetRelPointVel (p, result); }
 
+	@Override
 	public void getPointVel (double px, double py, double pz, DVector3 result) //const
 	{ dBodyGetPointVel ( new DVector3(px, py, pz), result); }
+	@Override
 	public void getPointVel (DVector3C p, DVector3 result) //const
 	{ dBodyGetPointVel (p, result); }
 
+	@Override
 	public void getPosRelPoint (double px, double py, double pz, DVector3 result) //const
 	{ dBodyGetPosRelPoint ( new DVector3(px, py, pz), result); }
+	@Override
 	public void getPosRelPoint (DVector3C p, DVector3 result) //const
 	{ dBodyGetPosRelPoint (p, result); }
 
+	@Override
 	public void vectorToWorld (double px, double py, double pz, DVector3 result) //const
 	{ dBodyVectorToWorld ( new DVector3(px, py, pz), result); }
+	@Override
 	public void vectorToWorld (DVector3C p, DVector3 result) //const
 	{ dBodyVectorToWorld (p, result); }
 
+	@Override
 	public void vectorFromWorld (double px, double py, double pz, DVector3 result) //const
 	{ dBodyVectorFromWorld (new DVector3(px,py,pz),result); }
+	@Override
 	public void vectorFromWorld (DVector3C p, DVector3 result) //const
 	{ dBodyVectorFromWorld (p, result); }
 
+	@Override
 	public void setFiniteRotationMode (boolean mode)
 	{ dBodySetFiniteRotationMode (mode); }
 
+	@Override
 	public void setFiniteRotationAxis (double x, double y, double z)
 	{ dBodySetFiniteRotationAxis( new DVector3(x, y, z)); }
+	@Override
 	public void setFiniteRotationAxis (DVector3C a)
 	{ dBodySetFiniteRotationAxis (a); }
 
+	@Override
 	public boolean getFiniteRotationMode() //const
 	{ return dBodyGetFiniteRotationMode (); }
+	@Override
 	public void getFiniteRotationAxis (DVector3 result) //const
 	{ dBodyGetFiniteRotationAxis ( result); }
 
+	@Override
 	public int getNumJoints() //const
 	{ return dBodyGetNumJoints (); }
+	@Override
 	public DJoint getJoint (int index) //const
 	{ return dBodyGetJoint ( index); }
 
+	@Override
 	public void setGravityMode (boolean mode)
 	{ dBodySetGravityMode (mode); }
 	/** @see DxBody#dBodyGetGravityMode() */
+	@Override
 	public boolean getGravityMode() 
 	{ return dBodyGetGravityMode (); }
 
+	@Override
 	public void setGyroscopicMode (boolean mode)
 	{ dBodySetGyroscopicMode(mode); }
+	@Override
 	public boolean getGyroscopicMode() 
 	{ return dBodyGetGyroscopicMode (); }
 
+	@Override
 	public boolean isConnectedTo (DBody body) //const
 	{ return OdeJointsFactoryImpl.areConnected (this, body); }
 
+	@Override
 	public void  setAutoDisableLinearThreshold (double threshold)
 	{ dBodySetAutoDisableLinearThreshold (threshold); }
+	@Override
 	public double getAutoDisableLinearThreshold() //const
 	{ return dBodyGetAutoDisableLinearThreshold (); }
+	@Override
 	public void setAutoDisableAngularThreshold (double threshold)
 	{ dBodySetAutoDisableAngularThreshold (threshold); }
+	@Override
 	public double getAutoDisableAngularThreshold() //const
 	{ return dBodyGetAutoDisableAngularThreshold (); }
+	@Override
 	public void setAutoDisableSteps (int steps)
 	{ dBodySetAutoDisableSteps (steps); }
+	@Override
 	public int getAutoDisableSteps() 
 	{ return dBodyGetAutoDisableSteps (); }
+	@Override
 	public void setAutoDisableTime (double time)
 	{ dBodySetAutoDisableTime (time); }
+	@Override
 	public double getAutoDisableTime() 
 	{ return dBodyGetAutoDisableTime (); }
+	@Override
 	public void setAutoDisableFlag (boolean do_auto_disable)
 	{ dBodySetAutoDisableFlag ( do_auto_disable); }
+	@Override
 	public boolean getAutoDisableFlag() 
 	{ return dBodyGetAutoDisableFlag (); }
 
+	@Override
 	public double getLinearDamping()
 	{ return dBodyGetLinearDamping(); }
+	@Override
 	public void setLinearDamping(double scale)
 	{ dBodySetLinearDamping(scale); }
+	@Override
 	public double getAngularDamping()
 	{ return dBodyGetAngularDamping(); }
+	@Override
 	public void setAngularDamping(double scale)
 	{ dBodySetAngularDamping( scale); }
+	@Override
 	public void setDamping(double linear_scale, double angular_scale)
 	{ dBodySetDamping(linear_scale, angular_scale); }
+	@Override
 	public double getLinearDampingThreshold()
 	{ return dBodyGetLinearDampingThreshold(); }
+	@Override
 	public void setLinearDampingThreshold(double threshold)
 	{ dBodySetLinearDampingThreshold(threshold); }
+	@Override
 	public double getAngularDampingThreshold()
 	{ return dBodyGetAngularDampingThreshold(); }
+	@Override
 	public void setAngularDampingThreshold(double threshold)
 	{ dBodySetAngularDampingThreshold(threshold); }
+	@Override
 	public void setDampingDefaults()
 	{ dBodySetDampingDefaults(); }
 
+	@Override
 	public double getMaxAngularSpeed()
 	{ return dBodyGetMaxAngularSpeed(); }
+	@Override
 	public void setMaxAngularSpeed(double max_speed)
 	{ dBodySetMaxAngularSpeed(max_speed); }
 
+	@Override
 	public void destroy() {
 		dBodyDestroy();
 	}
@@ -1437,12 +1529,9 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		return dBodyGetNextGeom((DxGeom) geom);
 	}
 
-
-	/** @deprecated */
 	@Override
 	public void setMovedCallback(BodyMoveCallBack callback) {
-		// TODO Auto-generated method stub
-		
+		dBodySetMovedCallback(callback);
 	}
 
 }

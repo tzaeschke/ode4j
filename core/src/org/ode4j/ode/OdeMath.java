@@ -210,6 +210,7 @@ public class OdeMath extends DRotation {
 //	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
 //	}
 	
+	@Deprecated
 	public enum OP { ADD, SUB, MUL, DIV, EQ, /** += */ ADD_EQ, /** =- */ EQ_SUB, 
 		/** *= */ MUL_EQ, /** -= */ SUB_EQ; }
 	

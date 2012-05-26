@@ -220,27 +220,27 @@ dmemestimate_fn_t {
 	//#if WARM_STARTING
 	//static void multiply_invM_JT (int m, int nb, dRealMutablePtr iMJ, int[] *jb,
 	//		dRealMutablePtr in, dRealMutablePtr out)
-	private static void multiply_invM_JT (int m, int nb, double[] iMJ, int[] jb,
-			double[] in, double[] out)
-	{
-		dSetZero (out,6*nb);
-		int iMJ_ofs = 0;//final double[] iMJ_ptr = iMJ;
-		for (int i=0; i<m; i++) {
-			int b1 = jb[i*2];
-			int b2 = jb[i*2+1];
-			final double in_i = in[i];
-			int out_ofs = b1*6;//double[] out_ptr = out + b1*6;
-			//for (j=0; j<6; j++) out_ptr[j] += iMJ_ptr[j] * in[i];
-			for (int j=0; j<6; j++) out[j + out_ofs] += iMJ[j + iMJ_ofs] * in_i;
-			iMJ_ofs +=6;//iMJ_ptr += 6;
-			if (b2 != -1) {
-				out_ofs = b2*6;//out_ptr = out + b2*6;
-				//for (j=0; j<6; j++) out_ptr[j] += iMJ_ptr[j] * in[i];
-				for (int j=0; j<6; j++) out[j + out_ofs] += iMJ[j + iMJ_ofs] * in_i;
-			}
-			iMJ_ofs +=6;//iMJ_ptr += 6;
-		}
-	}
+//	private static void multiply_invM_JT (int m, int nb, double[] iMJ, int[] jb,
+//			double[] in, double[] out)
+//	{
+//		dSetZero (out,6*nb);
+//		int iMJ_ofs = 0;//final double[] iMJ_ptr = iMJ;
+//		for (int i=0; i<m; i++) {
+//			int b1 = jb[i*2];
+//			int b2 = jb[i*2+1];
+//			final double in_i = in[i];
+//			int out_ofs = b1*6;//double[] out_ptr = out + b1*6;
+//			//for (j=0; j<6; j++) out_ptr[j] += iMJ_ptr[j] * in[i];
+//			for (int j=0; j<6; j++) out[j + out_ofs] += iMJ[j + iMJ_ofs] * in_i;
+//			iMJ_ofs +=6;//iMJ_ptr += 6;
+//			if (b2 != -1) {
+//				out_ofs = b2*6;//out_ptr = out + b2*6;
+//				//for (j=0; j<6; j++) out_ptr[j] += iMJ_ptr[j] * in[i];
+//				for (int j=0; j<6; j++) out[j + out_ofs] += iMJ[j + iMJ_ofs] * in_i;
+//			}
+//			iMJ_ofs +=6;//iMJ_ptr += 6;
+//		}
+//	}
 	//#endif
 
 	/** 
@@ -282,16 +282,16 @@ dmemestimate_fn_t {
 	//#if WARM_STARTING
 	//static void multiply_J_invM_JT (int m, int nb, dRealMutablePtr J, dRealMutablePtr iMJ, int *jb,
 	//		dRealPtr cfm, dRealMutablePtr z, dRealMutablePtr in, dRealMutablePtr out)
-	private static void multiply_J_invM_JT (int m, int nb, final double[] J, final double[] iMJ, 
-			final int []jb,
-			final double[] cfm, final double[] z, final double[] in, final double[] out)
-	{
-		multiply_invM_JT (m,nb,iMJ,jb,in,z);
-		multiply_J (m,J,jb,z,out);
-
-		// add cfm
-		for (int i=0; i<m; i++) out[i] += cfm[i] * in[i];
-	}
+//	private static void multiply_J_invM_JT (int m, int nb, final double[] J, final double[] iMJ, 
+//			final int []jb,
+//			final double[] cfm, final double[] z, final double[] in, final double[] out)
+//	{
+//		multiply_invM_JT (m,nb,iMJ,jb,in,z);
+//		multiply_J (m,J,jb,z,out);
+//
+//		// add cfm
+//		for (int i=0; i<m; i++) out[i] += cfm[i] * in[i];
+//	}
 	//#endif
 
 	//***************************************************************************
@@ -418,8 +418,8 @@ dmemestimate_fn_t {
 
 
 	private static class IndexError {
-		double error;		// error to sort on
-		int findex;
+//		double error;		// error to sort on
+//		int findex;
 		int index;		// row index
 	}
 
@@ -624,7 +624,7 @@ dmemestimate_fn_t {
 				int fc_ofs1;//dRealMutablePtr fc_ptr1;
 				int fc_ofs2;//dRealMutablePtr fc_ptr2;
 				double delta;
-				final int NULL = 0;
+				final int NULL = -1;
 				
 				{
 				    int b1 = jb[index*2];
@@ -807,7 +807,7 @@ dmemestimate_fn_t {
 		// get joint information (m = total constraint dimension, nub = number of unbounded variables).
 		// joints with m=0 are inactive and are removed from the joints array
 		// entirely, so that the code that follows does not consider them.
-		memarena.dummy();  //see next line
+		DxWorldProcessMemArena.dummy();  //see next line
 		DJointWithInfo1[] jointiinfos = new DJointWithInfo1[_nj]; //ALLOCA (nj*sizeof(dxJoint::Info1));
 		int njXXX;
 		{
@@ -912,7 +912,7 @@ dmemestimate_fn_t {
 		            
 		            int JcopyrowP = 0;//double[] Jcopyrow = Jcopy;
 		            int ofsi = 0;
-		            int ss = 0; // const dJointWithInfo1 *jicurr = jointiinfos;
+		            // const dJointWithInfo1 *jicurr = jointiinfos;
 		            for (int i = 0; i < njXXX; i++) {
 		                DJointWithInfo1 jicurr = jointiinfos[i];
 		                int JrowP = 0 + ofsi * 12;		                
@@ -1107,7 +1107,7 @@ dmemestimate_fn_t {
 			    //double[] data = new double[6];
 			    int lambdacurrP = 0;//lambda;
 			    int JcopyrowP = 0;//Jcopy;
-			    int jicurrP = 0;//jointiinfos;
+			    //int jicurrP = 0;//jointiinfos;
 				//mfb = 0;
 				for (int i=0; i<njXXX; i++) {
 				    DxJoint joint = jointiinfos[i].joint;
@@ -1216,15 +1216,15 @@ dmemestimate_fn_t {
 //	    #endif
 //	}
 
-	private static final int sizeof(Class<?> c) {
-	    if (c == double.class) {
-	        return 8;
-	    } else if (c == int.class) {
-	        return 4;
-	    } else {
-	        throw new IllegalArgumentException(c.getName());
-	    }
-	}
+//	private static final int sizeof(Class<?> c) {
+//	    if (c == double.class) {
+//	        return 8;
+//	    } else if (c == int.class) {
+//	        return 4;
+//	    } else {
+//	        throw new IllegalArgumentException(c.getName());
+//	    }
+//	}
 	
 //	static int EstimateSOR_LCPMemoryRequirements(int m)
 //	{
@@ -1239,6 +1239,7 @@ dmemestimate_fn_t {
 //
 //	//	size_t dxEstimateQuickStepMemoryRequirements (
 //	//	  dxBody * const *body, unsigned int nb, dxJoint * const *_joint, unsigned int _nj)
+	@Override
 	public int dxEstimateMemoryRequirements (
 	        DxBody[] body, int bodyOfs, int nb, 
 	        DxJoint[] _joint, int jointOfs, int _nj)
@@ -1321,7 +1322,8 @@ dmemestimate_fn_t {
 	    return -1;
 	}
 
-		
+
+	@Override
 	public void run(DxWorldProcessMemArena memarena, 
 	        DxWorld world, DxBody[] body, int bodyOfs, int nb, 
 	        DxJoint[] joint, int jointOfs, int nj,
