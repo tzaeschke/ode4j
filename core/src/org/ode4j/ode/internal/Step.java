@@ -24,9 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import static org.cpp4j.Cstdio.printf;
 import static org.cpp4j.Cstdio.stdout;
-import static org.cpp4j.Cstring.memcpy;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dMultiply0_133;
 import static org.ode4j.ode.OdeMath.dMultiply0_331;
@@ -34,18 +32,10 @@ import static org.ode4j.ode.OdeMath.dMultiply0_333;
 import static org.ode4j.ode.OdeMath.dMultiply2_333;
 import static org.ode4j.ode.OdeMath.dMultiplyAdd0_331;
 import static org.ode4j.ode.OdeMath.dSubtractVectorCross3;
-import static org.ode4j.ode.internal.Common.dAASSERT;
-import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dPAD;
 import static org.ode4j.ode.internal.Common.dRecip;
-import static org.ode4j.ode.internal.ErrorHandler.dDebug;
-import static org.ode4j.ode.internal.Matrix.dFactorCholesky;
-import static org.ode4j.ode.internal.Matrix.dMultiply0;
-import static org.ode4j.ode.internal.Matrix.dMultiply1;
-import static org.ode4j.ode.internal.Matrix.dMultiply2;
 import static org.ode4j.ode.internal.Matrix.dSetValue;
-import static org.ode4j.ode.internal.Matrix.dSolveCholesky;
 import static org.ode4j.ode.internal.Timer.dTimerEnd;
 import static org.ode4j.ode.internal.Timer.dTimerNow;
 import static org.ode4j.ode.internal.Timer.dTimerReport;
@@ -53,14 +43,12 @@ import static org.ode4j.ode.internal.Timer.dTimerStart;
 
 import org.cpp4j.FILE;
 import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DVector3;
-import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DJoint.DJointFeedback;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
-import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
+import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 
 
 class Step extends AbstractStepper implements DxWorld.dstepper_fn_t,
@@ -109,7 +97,7 @@ dmemestimate_fn_t {
 			int p, int r, int Askip)
 	{
 		dIASSERT (p>0 && r>0);
-		dAASSERT(A, B, C);
+//		dAASSERT(A, B, C);
 		final int Askip_munus_r = Askip - r;
 		int aa = APos;//dReal *aa = A;
 		int bb = BPos;//const dReal *bb = B;
@@ -139,7 +127,7 @@ dmemestimate_fn_t {
 			int p, int r, int Askip)
 	{
 		dIASSERT (p>0 && r>0);
-		dAASSERT(A, B, C);
+//		dAASSERT(A, B, C);
 		final int Askip_munus_r = Askip - r;
 		dIASSERT(Askip >= r);
 		int aa = APos;//  dReal *aa = A;
@@ -169,7 +157,7 @@ dmemestimate_fn_t {
 			double[] B, final int BPos, double[] C, final int CPos, int p)
 	{
 		dIASSERT (p>0);
-		dAASSERT(A, B, C);
+//		dAASSERT(A, B, C);
 		int aa = APos;//dReal *aa = A;
 		int bb = BPos;//const dReal *bb = B;
 		for (int i = p; i != 0; --i) {
@@ -192,11 +180,11 @@ dmemestimate_fn_t {
 			double[] B, int BPos, double[] C, int CPos, int q)
 	{
 	    dIASSERT (q>0);
-	    dAASSERT(A, B, C);
+//	    dAASSERT(A, B, C);
 	    int bb = BPos;//const dReal *bb = B;
 	    double sum0 = 0, sum1 = 0, sum2 = 0, sum4=0, sum5 = 0, sum6 = 0;
 	    for (int k = 0; k < q; ++k) {
-	        final double C_k = C[k];
+	        final double C_k = C[k+CPos];
 	        sum0 += B[bb+0] * C_k;
 	        sum1 += B[bb+1] * C_k;
 	        sum2 += B[bb+2] * C_k;
@@ -205,12 +193,12 @@ dmemestimate_fn_t {
 	        sum6 += B[bb+6] * C_k;
 	        bb += 8;
 	    }
-	    A[0] += sum0;
-	    A[1] += sum1;
-	    A[2] += sum2;
-	    A[4] += sum4;
-	    A[5] += sum5;
-	    A[6] += sum6;
+	    A[0+APos] += sum0;
+	    A[1+APos] += sum1;
+	    A[2+APos] += sum2;
+	    A[4+APos] += sum4;
+	    A[5+APos] += sum5;
+	    A[6+APos] += sum6;
 	}
 
 
@@ -222,7 +210,7 @@ dmemestimate_fn_t {
 	    int bb = BPos;//const dReal *bb = B;
 	    double sum0 = 0, sum1 = 0, sum2 = 0, sum4=0, sum5 = 0, sum6 = 0;
 	    for (int k = 0; k < q; ++k) {
-	      final double C_k = C[k];
+	      final double C_k = C[k+CPos];
 	      sum0 += B[bb+0] * C_k;
 	      sum1 += B[bb+1] * C_k;
 	      sum2 += B[bb+2] * C_k;
@@ -231,12 +219,12 @@ dmemestimate_fn_t {
 	      sum6 += B[bb+6] * C_k;
 	      bb += 8;
 	    }
-	    A[0] = sum0;
-	    A[1] = sum1;
-	    A[2] = sum2;
-	    A[4] = sum4;
-	    A[5] = sum5;
-	    A[6] = sum6;
+	    A[0+APos] = sum0;
+	    A[1+APos] = sum1;
+	    A[2+APos] = sum2;
+	    A[4+APos] = sum4;
+	    A[5+APos] = sum5;
+	    A[6+APos] = sum6;
 	}
 
 	//****************************************************************************
@@ -359,7 +347,7 @@ dmemestimate_fn_t {
 //	      dJointWithInfo1 *jicurr = jointiinfos + lcp_end;
 //	      dxJoint *const *const _jend = _joint + _nj;
 //	      dxJoint *const *_jcurr = _joint;
-	        dJointWithInfo1 jicurrO = jointiinfosA[lcp_end+jiP];
+	        dJointWithInfo1 jicurrO = jointiinfosA.length > 0 ? jointiinfosA[lcp_end+jiP] : null;
 	        int jicurrP = lcp_end;
 	        final int _jend = _nj; 
 	        int _jcurrP = 0;
@@ -369,7 +357,7 @@ dmemestimate_fn_t {
 	            // Switch to growing array forward
 	            {
 	                boolean fwd_end_reached = false;
-	                dJointWithInfo1 jimixendO = jointiinfosA[mix_end+jiP];
+	                dJointWithInfo1 jimixendO = jointiinfosA.length > 0 ? jointiinfosA[mix_end+jiP] : null;
 	                int jimixendP = mix_end;
 	                while (true) {  // jicurr=dest, _jcurr=src
 	                    if (_jcurrP == _jend) {
@@ -385,7 +373,7 @@ dmemestimate_fn_t {
 	                        if (jicurrO.info.nub == 0) { // A lcp info - a correct guess!!!
 	                            jicurrO.joint = j;
 	                            ++jicurrP;
-	                            jicurrO = jointiinfosA[jicurrP+jiP];//TZ
+	                            jicurrO = (jicurrP+jiP) < jointiinfosA.length ? jointiinfosA[jicurrP+jiP] : null;//TZ
 	                        } else if (jicurrO.info.nub < jicurrO.info.m) { // A mixed case
 	                            if (unb_start == mix_start) { // no unbounded infos yet - just move to opposite side of mixed-s
 	                                unb_start = mix_start = mix_start - 1;
@@ -416,12 +404,12 @@ dmemestimate_fn_t {
 	                            lcp_end = jicurrP;// - jointiinfos;
 	                            mix_end = jimixendP;// - jointiinfos;
 	                            jicurrP = jiunbstartP - 1;
-//	                            if (jicurrP >= 0) {
+	                            if (jicurrP >= 0) {
 	                                jicurrO = jointiinfosA[jicurrP+jiP];//TZ
-//	                            } else {
-//	                                //TODO TZ is this good??
-//	                                jicurrO = null;
-//	                            }
+	                            } else {
+	                                //TODO TZ is this good??
+	                                jicurrO = null;
+	                            }
 	                            break;
 	                        }
 	                    } else {
@@ -514,7 +502,7 @@ dmemestimate_fn_t {
 
 	    {
 	        int mcurr = 0;
-	        dJointWithInfo1 jicurrO = jointiinfosA[jiP];
+	        dJointWithInfo1 jicurrO = null;//jointiinfosA[jiP];
             int jicurrP = 0;
 	        int jiend = jicurrP + nj;
 	        for (int i = 0; jicurrP != jiend; i++, ++jicurrP) {
@@ -927,7 +915,7 @@ dmemestimate_fn_t {
                             cforce[cf2+4] += data[4];
                             cforce[cf2+5] += data[5];
                             cforce[cf2+6] += data[6]; 
-                        }
+                       }
                     }
                     else {
                         // no feedback is required, let's compute cforce the faster way
@@ -939,7 +927,7 @@ dmemestimate_fn_t {
                         if (b2!=null) {
                             int cf2 = 8*b2.tag;//cforce + 
                             MultiplyAdd1_8q1 (cforce, cf2, J,JJ + 8*infom, lambda,lambdarow, infom);
-                        }
+                       }
                     }
 
                     ofsi += infom;
