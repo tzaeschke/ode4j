@@ -35,6 +35,8 @@ public class DxUtil {
     //****************************************************************************
     // Malloc based world stepping memory manager
 
+	public static final BlockPointer NULL_BP = new BlockPointer(-1);
+	
     /*extern */
     static final DxWorldProcessMemoryManager g_WorldProcessMallocMemoryManager = 
         new DxWorldProcessMemoryManager(
@@ -42,8 +44,10 @@ public class DxUtil {
                 new alloc_block_fn_t() {
                     @Override
                     public BlockPointer run(int block_size) {
-                        System.err.println("FIXME: alloc_block_fn_t");
-                        return new BlockPointer(-1);
+                    	//TODO this is not really nice, is it?
+                        //System.err.println("FIXME: alloc_block_fn_t");
+                        //return new BlockPointer(-1);
+                        return NULL_BP;
                         //return null;
                     }
                 },
@@ -82,8 +86,10 @@ public class DxUtil {
         return new BlockPointer(dEFFICIENT_SIZE(p.toInt()));
     }
     static final BlockPointer dEFFICIENT_PTR(Object obj, int i) {
-        System.out.println("dEFFICIENT_PTR(Object obj, int i)");
-        return new BlockPointer(i);
+        //System.out.println("dEFFICIENT_PTR(Object obj, int i)");
+    	//TODO arghhh!!!
+    	return NULL_BP;
+        //return new BlockPointer(i);
     }
 //  #define dOFFSET_EFFICIENTLY(p, b) ((void *)((size_t)(p) + dEFFICIENT_SIZE(b)))
     static final BlockPointer dOFFSET_EFFICIENTLY(BlockPointer p, int b) {
