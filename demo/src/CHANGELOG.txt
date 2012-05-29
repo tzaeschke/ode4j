@@ -27,6 +27,7 @@ TODO
 2012-May-29 Tilmann Zaschke
 		* Migration to ode-0.12:
 		  - Fixed NPE in Step.java (e.g. DemoChain1)
+		  - Fixed explosion in DemoCrash and DemoBuggy -> Step was faulty.
 
 2012-May-26 Tilmann Zaschke
 		* Migration to ode-0.12:

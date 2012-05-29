@@ -135,6 +135,7 @@ class DemoCylVsSphere extends dsFunctions {
 	static float[] xyz = {-8,-9,3};
 	static float[] hpr = {45.0000f,-27.5000f,0.0000f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -145,6 +146,7 @@ class DemoCylVsSphere extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) 

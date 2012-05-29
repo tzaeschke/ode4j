@@ -123,6 +123,7 @@ class DemoFeedback extends dsFunctions {
 	private static float[] xyz = { -6, 8, 6};
 	private static float[] hpr = { -65.0f, -27.0f, 0.0f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -133,6 +134,7 @@ class DemoFeedback extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 	}
