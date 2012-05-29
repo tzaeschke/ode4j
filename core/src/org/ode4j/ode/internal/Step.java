@@ -231,7 +231,7 @@ dmemestimate_fn_t {
 	private static class dJointWithInfo1
 	{
 	  DxJoint joint;
-	  DxJoint.Info1 info = new DxJoint.Info1();
+	  final DxJoint.Info1 info = new DxJoint.Info1();
 	};
 
 	//void dInternalStepIsland_x1 (dxWorld *world, dxBody * const *body, int nb,
@@ -378,13 +378,13 @@ dmemestimate_fn_t {
 	                            if (unb_start == mix_start) { // no unbounded infos yet - just move to opposite side of mixed-s
 	                                unb_start = mix_start = mix_start - 1;
 	                                dJointWithInfo1 jimixstart = jointiinfosA[mix_start+jiP];
-	                                jimixstart.info = jicurrO.info;
+	                                jimixstart.info.set( jicurrO.info);
 	                                jimixstart.joint = j;
 	                            } else if (jimixendP != jicurrP) { // have to swap to the tail of mixed-s
 	                                DxJoint.Info1 tmp_info = jicurrO.info;
 	                                jicurrP = jimixendP;
 	                                jicurrO = jointiinfosA[jicurrP+jiP];//TZ
-	                                jimixendO.info = tmp_info;
+	                                jimixendO.info.set(tmp_info);
 	                                jimixendO.joint = j;
 	                                ++jimixendP; ++jicurrP;
 	                                jicurrO = jointiinfosA[jicurrP+jiP];//TZ
@@ -399,7 +399,7 @@ dmemestimate_fn_t {
 	                            unb_start = unb_start - 1;
 	                            dJointWithInfo1 jiunbstartO = jointiinfosA[unb_start+jiP];
 	                            int jiunbstartP = unb_start;
-	                            jiunbstartO.info = jicurrO.info;
+	                            jiunbstartO.info.set( jicurrO.info);
 	                            jiunbstartO.joint = j;
 	                            lcp_end = jicurrP;// - jointiinfos;
 	                            mix_end = jimixendP;// - jointiinfos;
@@ -450,14 +450,14 @@ dmemestimate_fn_t {
 	                            if (mix_end == lcp_end) { // no lcp infos yet - just move to opposite side of mixed-s
 	                                dJointWithInfo1 jimixend = jointiinfosA[mix_end+jiP];
 	                                lcp_end = mix_end = mix_end + 1;
-	                                jimixend.info = jicurrO.info;
+	                                jimixend.info.set( jicurrO.info);
 	                                jimixend.joint = j;
 	                            } else if (jimixstartP != jicurrP) { // have to swap to the head of mixed-s
 	                                DxJoint.Info1 tmp_info = jicurrO.info;
 	                                //*jicurr = *jimixstart;
 	                                jicurrP = jimixstartP;
 	                                jicurrO = jointiinfosA[jicurrP+jiP]; //TZ
-	                                jimixstartO.info = tmp_info;
+	                                jimixstartO.info.set( tmp_info);
 	                                jimixstartO.joint = j;
 	                                --jimixstartP; --jicurrP;
 	                                jicurrO = jointiinfosA[jicurrP+jiP]; //TZ
@@ -472,7 +472,7 @@ dmemestimate_fn_t {
 	                            dJointWithInfo1 jilcpendO = jointiinfosA[lcp_end+jiP];
 	                            int jilcpendP = lcp_end;
 	                            lcp_end = lcp_end + 1;
-	                            jilcpendO.info = jicurrO.info;
+	                            jilcpendO.info.set( jicurrO.info);
 	                            jilcpendO.joint = j;
 	                            unb_start = (jicurrP + 1);// - jointiinfos;
 	                            mix_start = (jimixstartP + 1);// - jointiinfos;

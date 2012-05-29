@@ -108,7 +108,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	 * i.e. that is the total number of rows in the jacobian. `nub' is the
 	 * number of unbounded variables (which have lo,hi = -/+ infinity).
 	 */
-	public static class Info1
+	public static final class Info1
 	{
         // Structure size should not exceed sizeof(pointer) bytes to have 
         // to have good memory pattern in dxQuickStepper()
@@ -121,6 +121,11 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		public void setM(int m) { this.m = m; }
 		public int getNub() { return nub; }
 		public void setNub(int nub) { this.nub = nub; }
+		
+		public final void set(Info1 i) {
+			this.m = i.m;
+			this.nub = i.nub;
+		}
 	}
 
 	/**
@@ -909,18 +914,21 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	}
 	
 	//void dJointEnable ()
+	@Override
 	public void enable()
 	{
 		flags &= ~dJOINT_DISABLED;
 	}
 
 	//void dJointDisable ()
+	@Override
 	public void disable()
 	{
 		flags |= dJOINT_DISABLED;
 	}
 
 //	boolean dJointIsEnabled ()
+	@Override
 	public boolean isEnabled()
 	{
 	  return (flags & dJOINT_DISABLED) == 0;
@@ -1013,26 +1021,35 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		//Nothing to do at the moment
 	}
 	
+	@Override
 	public final int getNumBodies()
 	{ return dJointGetNumBodies(); }
 
+	@Override
 	public final void attach (DBody body1, DBody body2)
 	{ dJointAttach (body1, body2); }
 
+	@Override
 	public final void setData (Object data)
 	{ dJointSetData (data); }
+	@Override
 	public Object getData()
 	{ return dJointGetData (); }
 
+	@Override
 	public final DBody getBody (int index)
 	{ return dJointGetBody (index); }
 
+	@Override
 	public final void setFeedback(DJoint.DJointFeedback fb)
 	{ dJointSetFeedback(fb); }
+	@Override
 	public final DJoint.DJointFeedback getFeedback()
 	{ return dJointGetFeedback(); }
 
 	// If not implemented it will do nothing as describe in the doc
+	@Override
 	public abstract void setParam (PARAM_N parameter, double value);
+	@Override
 	public abstract double getParam (PARAM_N parameter);
 }
