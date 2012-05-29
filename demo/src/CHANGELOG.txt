@@ -24,6 +24,10 @@ TODO
 - DemoCrash: dofast = true;
 =============
 
+2012-May-29 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Fixed NPE in Step.java (e.g. DemoChain1)
+
 2012-May-26 Tilmann Zaschke
 		* Migration to ode-0.12:
 		  - Fixed Step.java, all test work now, except one.
