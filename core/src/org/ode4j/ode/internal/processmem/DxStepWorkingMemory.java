@@ -25,9 +25,6 @@
 package org.ode4j.ode.internal.processmem;
 
 import org.ode4j.ode.internal.Common;
-import org.ode4j.ode.internal.processmem.DxUtil.alloc_block_fn_t;
-import org.ode4j.ode.internal.processmem.DxUtil.free_block_fn_t;
-import org.ode4j.ode.internal.processmem.DxUtil.shrink_block_fn_t;
 
 public class DxStepWorkingMemory {
     //public:
