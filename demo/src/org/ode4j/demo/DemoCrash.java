@@ -643,7 +643,7 @@ class DemoCrash extends dsFunctions {
 	}
 
 	private void demo(String[] args) {
-		doFast = false;
+		doFast = true;
 
 		OdeHelper.initODE2(0);
 
