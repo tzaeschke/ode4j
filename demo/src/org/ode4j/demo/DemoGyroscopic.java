@@ -46,7 +46,7 @@ import static org.ode4j.drawstuff.DrawStuff.*;
 
 public class DemoGyroscopic extends dsFunctions {
 
-	private boolean write_world = false;
+	//private boolean write_world = false;
 	private boolean show_contacts = false;
 	private DWorld world;
 	private DBody top1, top2;
@@ -57,7 +57,7 @@ public class DemoGyroscopic extends dsFunctions {
 	private final double pinlength = 1.5f;
 	private final double topradius = 1.0f;
 	private final double toplength = 0.25f;
-	private final double topmass = 1.0f;
+	//private final double topmass = 1.0f;
 
 	private static final int MAX_CONTACTS = 4;
 
@@ -97,6 +97,7 @@ public class DemoGyroscopic extends dsFunctions {
 	private static float[] hpr = {153.0f, -14.5f, 0.0f};
 	// start simulation - set viewpoint
 
+	@Override
 	public void start()
 	{
 		dsSetViewpoint (xyz,hpr);
@@ -109,6 +110,7 @@ public class DemoGyroscopic extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		cmd = Character.toLowerCase (cmd);
@@ -122,9 +124,9 @@ public class DemoGyroscopic extends dsFunctions {
 		else if (cmd == 't') {
 			show_contacts = !show_contacts;
 		}
-		else if (cmd == '1') {
-			write_world = true;
-		}
+//		else if (cmd == '1') {
+//			write_world = true;
+//		}
 	}
 
 	// simulation loop
