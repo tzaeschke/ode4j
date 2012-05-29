@@ -441,7 +441,11 @@ dmemestimate_fn_t {
 	                        if (jicurrO.info.nub == jicurrO.info.m) { // An unbounded info - a correct guess!!!
 	                            jicurrO.joint = j;
 	                            --jicurrP;
-	                            //_jcurrO = _jointA[jOfs+_jcurrP]; //TZ TODO?
+	                            if (jicurrP +jiP >=0) {
+	                            	jicurrO = jointiinfosA[jicurrP+jiP]; //TZ
+	                            } else {
+	                            	jicurrO = null;
+	                            }
 	                        } else if (jicurrO.info.nub > 0) { // A mixed case
 	                            if (mix_end == lcp_end) { // no lcp infos yet - just move to opposite side of mixed-s
 	                                dJointWithInfo1 jimixend = jointiinfosA[mix_end+jiP];
