@@ -241,6 +241,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 	// API dFixedJoint
 	// **********************************
 
+	@Override
 	public void set()
 	{ dJointSetFixed (); }
 

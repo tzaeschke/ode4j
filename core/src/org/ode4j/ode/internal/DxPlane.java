@@ -163,9 +163,11 @@ public class DxPlane extends DxGeom implements DPlane {
 	}
 
 	//TZ 
+	@Override
 	public DVector3C getNormal() {
 		return _pV;
 	}
+	@Override
 	public double getDepth() {
 		return _pD;
 	}
@@ -174,8 +176,10 @@ public class DxPlane extends DxGeom implements DPlane {
 	// API dPlane
 	// **********************************
 
+	@Override
 	public void setParams (double a, double b, double c, double d)
 	{ dGeomPlaneSetParams (a, b, c, d); }
+	@Override
 	public void setParams (DVector3C abc, double d)
 	{ dGeomPlaneSetParams (abc.get0(), abc.get1(), abc.get2(), d); }
 	public void getParams (DVector4 result) 

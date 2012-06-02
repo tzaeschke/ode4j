@@ -412,27 +412,36 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	// API dHingeJoint
 	// ***********************************
 
+	@Override
 	public void setAnchor (double x, double y, double z)
 	{ dJointSetHingeAnchor (x, y, z); }
+	@Override
 	public void setAnchor (DVector3C a)
 	{ dJointSetHingeAnchor (a); }
+	@Override
 	public void getAnchor (DVector3 result)
 	{ dJointGetHingeAnchor (result); }
+	@Override
 	public void getAnchor2 (DVector3 result)
 	{ dJointGetHingeAnchor2 (result); }
 
+	@Override
 	public void setAxis (double x, double y, double z)
 	{ dJointSetHingeAxis (x, y, z); }
+	@Override
 	public void setAxis (DVector3C a)
 	{ setAxis(a.get0(), a.get1(), a.get2()); }
+	@Override
 	public void getAxis (DVector3 result)
 	{ dJointGetHingeAxis (result); }
 	@Override
 	public void setAxisOffset(double x, double y, double z, double angle) {
 		dJointSetHingeAxisOffset(x, y, z, angle); }
 
+	@Override
 	public double getAngle()
 	{ return dJointGetHingeAngle (); }
+	@Override
 	public double getAngleRate()
 	{ return dJointGetHingeAngleRate (); }
 
@@ -443,6 +452,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	public double getParam (PARAM_N parameter)
 	{ return dJointGetHingeParam (parameter); }
 
+	@Override
 	public void addTorque (double torque)
 	{ dJointAddHingeTorque(torque); }
 	

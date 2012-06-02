@@ -420,16 +420,21 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	// API dSliderJoint
 	// ***********************************
 
+	@Override
 	public void setAxis (double x, double y, double z)
 	{ dJointSetSliderAxis (x, y, z); }
+	@Override
 	public void setAxis (DVector3C a)
 	//TODO use dVector3
 	{ dJointSetSliderAxis (a.get0(), a.get1(), a.get2()); }
+	@Override
 	public void getAxis (DVector3 result)
 	{ dJointGetSliderAxis (result); }
 
+	@Override
 	public double getPosition()
 	{ return dJointGetSliderPosition (); }
+	@Override
 	public double getPositionRate()
 	{ return dJointGetSliderPositionRate (); }
 
@@ -441,6 +446,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	{ return dJointGetSliderParam (parameter); }
 	// TODO: expose params through methods
 
+	@Override
 	public void addForce (double force)
 	{ dJointAddSliderForce(force); }
 

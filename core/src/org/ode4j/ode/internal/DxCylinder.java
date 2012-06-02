@@ -106,14 +106,17 @@ public class DxCylinder extends DxGeom implements DCylinder {
 //		length.set(_lz);
 //	}
 
+	@Override
 	public double getRadius() {
 		return _radius;
 	}
 
+	@Override
 	public double getLength() {
 		return _lz;
 	}
 
+	@Override
 	public void setParams (double radius, double length)
 	{ dGeomCylinderSetParams (radius, length); }
 }

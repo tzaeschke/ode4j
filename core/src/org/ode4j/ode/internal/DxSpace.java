@@ -93,9 +93,11 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	 * other space data structures that are required. this should clear the
 	 * GEOM_DIRTY and GEOM_AABB_BAD flags of all geoms.
 	 */
+	@Override
 	public abstract void cleanGeoms();
 
 	/** This is equivalent to OdeHelper.spaceCollide(...) */
+	@Override
 	public abstract void collide (Object data, DNearCallback callback);
 	abstract void collide2 (Object data, DxGeom geom, DNearCallback callback);
 
@@ -117,27 +119,27 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	}
 
 
-	private void dSpaceSetSublevel (int sublevel)
-	{
-		setSublevel (sublevel);
-	}
-
-
-	private int dSpaceGetSublevel ()
-	{
-		return getSublevel();
-	}
-
-
-	private void dSpaceSetManualCleanup (int mode)
-	{
-		setManualCleanup(mode);
-	}
-
-	private int dSpaceGetManualCleanup ()
-	{
-		return getManualCleanup();
-	}
+//	private void dSpaceSetSublevel (int sublevel)
+//	{
+//		setSublevel (sublevel);
+//	}
+//
+//
+//	private int dSpaceGetSublevel ()
+//	{
+//		return getSublevel();
+//	}
+//
+//
+//	private void dSpaceSetManualCleanup (int mode)
+//	{
+//		setManualCleanup(mode);
+//	}
+//
+//	private int dSpaceGetManualCleanup ()
+//	{
+//		return getManualCleanup();
+//	}
 
 
 	public void dSpaceAdd (DxGeom g)
@@ -364,35 +366,41 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	}
 
 
+	@Override
 	public void setCleanup (boolean mode)
 	{
 		cleanup = mode;//(mode != 0);
 	}
 
 
+	@Override
 	public boolean getCleanup()
 	{
 		return cleanup;
 	}
 
 
+	@Override
 	public void setSublevel(int value)
 	{
 		sublevel = value;
 	}
 
 
+	@Override
 	public int getSublevel() 
 	{
 		return sublevel;
 	}
 
 	
+	@Override
 	public void setManualCleanup(int value) { 
 		tls_kind = (value != 0 ? dSPACE_TLS_KIND_MANUAL_VALUE : dSPACE_TLS_KIND_INIT_VALUE); 
 	}
 	
 	
+	@Override
 	public int getManualCleanup() { 
 		return (tls_kind == dSPACE_TLS_KIND_MANUAL_VALUE) ? 1 : 0; 
 	}
@@ -405,6 +413,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	}
 
 
+	@Override
 	public int getNumGeoms()
 	{
 		return count;
@@ -413,6 +422,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 
 	// the dirty geoms are numbered 0..k, the clean geoms are numbered k+1..count-1
 
+	@Override
 	public DGeom getGeom (int i)
 	{
 		dUASSERT (i >= 0 && i < count,"index out of range");
@@ -513,10 +523,13 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 //	public int getCleanup()
 //	{ return dSpaceGetCleanup (id()); }
 
+	@Override
 	public void add (DGeom x)
 	{ dSpaceAdd ((DxGeom) x); }
+	@Override
 	public void remove (DGeom x)
 	{ dSpaceRemove ((DxGeom) x); }
+	@Override
 	public boolean query (DGeom x)
 	{ return dSpaceQuery ((DxGeom) x); }
 

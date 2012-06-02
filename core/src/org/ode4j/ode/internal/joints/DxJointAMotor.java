@@ -550,29 +550,40 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	// API dAMotorJoint
 	// **********************************
 
+	@Override
 	public void setMode (AMotorMode mode)
 	{ dJointSetAMotorMode (mode); }
+	@Override
 	public AMotorMode getMode()
 	{ return dJointGetAMotorMode (); }
 
+	@Override
 	public void setNumAxes (int num)
 	{ dJointSetAMotorNumAxes (num); }
+	@Override
 	public int getNumAxes()
 	{ return dJointGetAMotorNumAxes (); }
 
+	@Override
 	public void setAxis (int anum, int rel, double x, double y, double z)
 	{ dJointSetAMotorAxis (anum, rel, x, y, z); }
+	@Override
 	public void setAxis (int anum, int rel, DVector3C a)
 	{ dJointSetAMotorAxis (anum, rel, a); }
+	@Override
 	public void getAxis (int anum, DVector3 result)
 	{ dJointGetAMotorAxis (anum, result); }
+	@Override
 	public int getAxisRel (int anum)
 	{ return dJointGetAMotorAxisRel (anum); }
 
+	@Override
 	public void setAngle (int anum, double angle)
 	{ dJointSetAMotorAngle (anum, angle); }
+	@Override
 	public double getAngle (int anum)
 	{ return dJointGetAMotorAngle (anum); }
+	@Override
 	public double getAngleRate (int anum)
 	{ return dJointGetAMotorAngleRate (anum); }
 
@@ -583,6 +594,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	public double getParam (PARAM_N parameter)
 	{ return dJointGetAMotorParam (parameter); }
 
+	@Override
 	public void addTorques(double torque1, double torque2, double torque3)
 	{ dJointAddAMotorTorques(torque1, torque2, torque3); }
 

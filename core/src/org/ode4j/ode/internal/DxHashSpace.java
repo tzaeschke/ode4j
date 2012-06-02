@@ -155,6 +155,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 	}
 
 
+	@Override
 	public void setLevels (int minlevel, int maxlevel)
 	{
 		dAASSERT (minlevel <= maxlevel);
@@ -164,10 +165,12 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 
 
 	//	void getLevels (int *minlevel, int *maxlevel)
+	@Override
 	public int getLevelMin ()
 	{
 		return global_minlevel;
 	}
+	@Override
 	public int getLevelMax ()
 	{
 		return global_maxlevel;

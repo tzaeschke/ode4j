@@ -68,9 +68,12 @@ public interface DMass extends DMassC {
 	void add (DMassC b);
 
 	//by TZ
+	@Override
 	double getMass();
 	void setMass(double d);
+	@Override
 	DVector3C getC();
+	@Override
 	DMatrix3C getI();
 	void setC(DVector3C c);
 	void setI(DMatrix3C I);
@@ -81,6 +84,7 @@ public interface DMass extends DMassC {
 	 *
 	 * @return <tt>true</tt> if both condition are met
 	 */
+	@Override
 	public boolean check();
 
 

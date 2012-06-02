@@ -394,8 +394,6 @@ public class DxWorld extends DBase implements DWorld {
 	    boolean result = false;
 
 	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
-        //TODO fix context stuff
-//	    if (dxReallocateWorldProcessContext (this, islandsinfo, stepsize, dxEstimateStepMemoryRequirements))
         if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
         		Step.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
         {
@@ -416,14 +414,9 @@ public class DxWorld extends DBase implements DWorld {
 	    boolean result = false;
 
 	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
-	    //TODO fix context stuff
 	    if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
 	            DxQuickStep.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
 	    {
-	        //TODO hack by TZ begin
-//	        this.wmem = new DxStepWorkingMemory();
-//	        this.wmem.SureGetWorldProcessingContext();
-	        //TODO hack by TZ end
 	        dxProcessIslands (islandsinfo, stepsize, DxQuickStep.INSTANCE);
 
 	        result = true;
@@ -1050,99 +1043,124 @@ public class DxWorld extends DBase implements DWorld {
 	{ super.DESTRUCTOR(); }
 
 
+	@Override
 	public void setGravity (double x, double y, double z)
 	{ dWorldSetGravity (x,y,z); }
+	@Override
 	public void setGravity (DVector3C g)
 	{ setGravity (g.get0(), g.get1(), g.get2()); }
+	@Override
 	public void getGravity (DVector3 g) 
 	{ dWorldGetGravity (g); }
 
+	@Override
 	public void setERP (double erp)
 	{ dWorldSetERP(erp); }
+	@Override
 	public double getERP() 
 	{ return dWorldGetERP(); }
 
+	@Override
 	public void setCFM (double cfm)
 	{ dWorldSetCFM(cfm); }
+	@Override
 	public double getCFM() 
 	{ return dWorldGetCFM(); }
 
+	@Override
 	public void step (double stepsize)
 	{ dWorldStep (stepsize); }
 
-	public void stepFast1 (double stepsize, int maxiterations) {
-		throw new UnsupportedOperationException("Not implemented in ode4j.");
-	}
-	//TZ TODO report:		  void setAutoEnableDepthSF1(dWorld, int depth)
-	public void setAutoEnableDepthSF1(int depth) {
-		throw new UnsupportedOperationException("Not implemented in ODE.");
-	}
-	//TZ TODO report:		  int getAutoEnableDepthSF1(dWorld) 
-	public int getAutoEnableDepthSF1() {
-		throw new UnsupportedOperationException("Not implemented in ODE.");
-	}
-
+	@Override
 	public boolean quickStep(double stepsize)
 	{ return dWorldQuickStep (stepsize); }
+	@Override
 	public void setQuickStepNumIterations(int num)
 	{ dWorldSetQuickStepNumIterations (num); }
+	@Override
 	public int getQuickStepNumIterations() 
 	{ return dWorldGetQuickStepNumIterations (); }
+	@Override
 	public void setQuickStepW(double over_relaxation)
 	{ dWorldSetQuickStepW (over_relaxation); }
+	@Override
 	public double getQuickStepW() 
 	{ return dWorldGetQuickStepW (); }
 
+	@Override
 	public void  setAutoDisableLinearThreshold (double threshold) 
 	{ dWorldSetAutoDisableLinearThreshold (threshold); }
+	@Override
 	public double getAutoDisableLinearThreshold()
 	{ return dWorldGetAutoDisableLinearThreshold (); }
+	@Override
 	public void setAutoDisableAngularThreshold (double threshold)
 	{ dWorldSetAutoDisableAngularThreshold (threshold); }
+	@Override
 	public double getAutoDisableAngularThreshold()
 	{ return dWorldGetAutoDisableAngularThreshold (); }
+	@Override
 	public void setAutoDisableSteps (int steps)
 	{ dWorldSetAutoDisableSteps (steps); }
+	@Override
 	public int getAutoDisableSteps()
 	{ return dWorldGetAutoDisableSteps (); }
+	@Override
 	public void setAutoDisableTime (double time)
 	{ dWorldSetAutoDisableTime (time); }
+	@Override
 	public double getAutoDisableTime() 
 	{ return dWorldGetAutoDisableTime (); }
+	@Override
 	public void setAutoDisableFlag (boolean do_auto_disable)
 	{ dWorldSetAutoDisableFlag (do_auto_disable); }
+	@Override
 	public boolean getAutoDisableFlag() 
 	{ return dWorldGetAutoDisableFlag (); }
 
+	@Override
 	public double getLinearDampingThreshold() 
 	{ return dWorldGetLinearDampingThreshold(); }
+	@Override
 	public void setLinearDampingThreshold(double threshold)
 	{ dWorldSetLinearDampingThreshold(threshold); }
+	@Override
 	public double getAngularDampingThreshold() 
 	{ return dWorldGetAngularDampingThreshold(); }
+	@Override
 	public void setAngularDampingThreshold(double threshold)
 	{ dWorldSetAngularDampingThreshold(threshold); }
+	@Override
 	public double getLinearDamping() 
 	{ return dWorldGetLinearDamping(); }
+	@Override
 	public void setLinearDamping(double scale)
 	{ dWorldSetLinearDamping(scale); }
+	@Override
 	public double getAngularDamping() 
 	{ return dWorldGetAngularDamping(); }
+	@Override
 	public void setAngularDamping(double scale)
 	{ dWorldSetAngularDamping(scale); }
+	@Override
 	public void setDamping(double linear_scale, double angular_scale)
 	{ dWorldSetDamping(linear_scale, angular_scale); }
 
+	@Override
 	public 	double getMaxAngularSpeed() 
 	{ return dWorldGetMaxAngularSpeed(); }
+	@Override
 	public void setMaxAngularSpeed(double max_speed)
 	{ dWorldSetMaxAngularSpeed(max_speed); }
 
+	@Override
 	public void setContactSurfaceLayer(double depth)
 	{ dWorldSetContactSurfaceLayer (depth); }
+	@Override
 	public double getContactSurfaceLayer() 
 	{ return dWorldGetContactSurfaceLayer (); }
 
+	@Override
 	public void impulseToForce (double stepsize, double ix, double iy, double iz,
 			DVector3 force)
 	{ dWorldImpulseToForce (stepsize,ix,iy,iz,force); }

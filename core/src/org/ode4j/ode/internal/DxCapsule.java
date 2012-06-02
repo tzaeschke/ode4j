@@ -512,11 +512,14 @@ static class CollideCapsuleBox implements DColliderFn {
 	// *****************************************
 	
 	
+	@Override
 	public void setParams (double radius, double length)
 	{ dGeomCapsuleSetParams (radius, length); }
+	@Override
 	public double getRadius() {
 		return _radius;
 	}
+	@Override
 	public double getLength() {
 		return _lz;
 	}

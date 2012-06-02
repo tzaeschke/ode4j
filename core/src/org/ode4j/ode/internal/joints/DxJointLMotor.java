@@ -223,15 +223,20 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 	// API dLMotorJoint
 	// ******************************
 
+	@Override
 	public void setNumAxes (int num)
 	{ dJointSetLMotorNumAxes (num); }
+	@Override
 	public int getNumAxes()
 	{ return dJointGetLMotorNumAxes (); }
 
+	@Override
 	public void setAxis (int anum, int rel, double x, double y, double z)
 	{ dJointSetLMotorAxis (anum, rel, x, y, z); }
+	@Override
 	public void setAxis (int anum, int rel, DVector3C a)
 	{ dJointSetLMotorAxis (anum, rel, a); }
+	@Override
 	public void getAxis (int anum, DVector3 result)
 	{ dJointGetLMotorAxis (anum, result); }
 

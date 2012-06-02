@@ -24,7 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;

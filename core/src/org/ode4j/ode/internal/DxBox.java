@@ -890,12 +890,16 @@ public class DxBox extends DxGeom implements DBox {
 	// dBox API
 	// ****************************************
 
+	@Override
 	public void setLengths (double lx, double ly, double lz)
 	    { dGeomBoxSetLengths (new DVector3(lx, ly, lz)); }
+	@Override
 	public void getLengths (DVector3 result) 
     { dGeomBoxGetLengths (result); }
+	@Override
 	public void setLengths (DVector3C sides)
     { dGeomBoxSetLengths (sides); }
+	@Override
 	public DVector3C getLengths () 
     { return side; }
 

@@ -323,8 +323,10 @@ public class DxSphere extends DxGeom implements DSphere {
 	// ******************************************
 
 
+	@Override
 	public void setRadius (double radius)
 	{ dGeomSphereSetRadius (radius); }
+	@Override
 	public double getRadius()
 	{ return dGeomSphereGetRadius (); }
 

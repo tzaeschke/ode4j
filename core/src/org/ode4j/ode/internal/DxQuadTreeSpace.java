@@ -51,7 +51,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	//#define UP 2
 	private static final int AXIS0 = 0;
 	private static final int AXIS1 = 1;
-	private static final int UP = 2;
+//	private static final int UP = 2;
 
 	//#define DRAWBLOCKS
 	private static final boolean DRAWBLOCKS = false; 

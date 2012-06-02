@@ -122,26 +122,32 @@ public class DVector3 implements DVector3I, DVector3C {
 //		}		
 //	}
 	
+	@Override
 	public final void set0(double d) {
 		v[0] = d;
 	}
 	
+	@Override
 	public final void set1(double d) {
 		v[1] = d;
 	}
 	
+	@Override
 	public final void set2(double d) {
 		v[2] = d;
 	}
 	
+	@Override
 	public final double get0() {
 		return v[0];
 	}
 	
+	@Override
 	public final double get1() {
 		return v[1];
 	}
 	
+	@Override
 	public final double get2() {
 		return v[2];
 	}
@@ -265,6 +271,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param b 
 	 * @return (this) * b
 	 */
+	@Override
 	public final double dot(DVector3C b) {
 		return get0()*b.get0() + get1()*b.get1() + get2()*b.get2();
 	}
@@ -275,6 +282,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param b 
 	 * @return (this) * b
 	 */
+	@Override
 	public final double dot(DVector3View b) {
 		return get0()*b.get0() + get1()*b.get1() + get2()*b.get2();
 	}
@@ -308,6 +316,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * Return a new vector v0 = v(this) - v2.
 	 * @param v2
 	 */
+	@Override
 	public final DVector3 reSub(DVector3C v2) {
 		return new DVector3(
 				get0() - v2.get0(),
@@ -385,6 +394,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param a
 	 * @return distance
 	 */
+	@Override
 	public final double distance(DVector3C a) {
 	    double r1 = get0()-a.get0();
 	    double r2 = get1()-a.get1();
@@ -490,6 +500,7 @@ public class DVector3 implements DVector3I, DVector3C {
 		array[pos + 2] -= get2();
 	}
 
+	@Override
 	public final DVector3 reScale(double d) {
 		return new DVector3(this).scale(d);
 	}
@@ -518,14 +529,17 @@ public class DVector3 implements DVector3I, DVector3C {
 	/**
 	 * @return The geometric length of this vector.
 	 */
+	@Override
 	public final double length() {
 		return Math.sqrt( get0()*get0() + get1()*get1() + get2()*get2() ) ;
 	}
 
+	@Override
 	public final double lengthSquared() {
 		return get0()*get0() + get1()*get1() + get2()*get2();
 	}
 	
+	@Override
 	public final double get(int i) {
 		return v[i];
 	}
@@ -553,6 +567,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param m
 	 * @param col
 	 */
+	@Override
 	public final double dotCol(DMatrix3C m, int col) {
 		if (col == 0) {
 			return get0()*m.get00() + get1()*m.get10() + get2()*m.get20();

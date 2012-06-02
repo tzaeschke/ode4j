@@ -176,6 +176,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param c Column (0, 1, 2)
 	 * @return A new dVector.
 	 */
+	@Override
 	public DVector3 columnAsNewVector(int c) {
 //		return new dVector3(get(0, c), get(1, c), get(2, c));
 		return new DVector3(v[c], v[c + MAX_J], v[c + 2*MAX_J]);
@@ -368,6 +369,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * </tt>
 	 * @param column The column to return [0, 1, 2].
 	 */
+	@Override
 	public DVector3ColView viewCol(int column) {
 		return new DVector3ColView(column);
 	}
@@ -690,6 +692,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param col
 	 * @param v3
 	 */
+	@Override
 	public final double dotCol(int col, DVector3C v3) {
 		if (col == 0) {
 			return get00()*v3.get0() + get10()*v3.get1() + get20()*v3.get2();
@@ -708,6 +711,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param row
 	 * @param v3
 	 */
+	@Override
 	public final double dotRow(int row, DVector3C v3) {
 		if (row == 0) {
 			return get00()*v3.get0() + get01()*v3.get1() + get02()*v3.get2();
@@ -728,6 +732,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param m2
 	 * @param col2
 	 */
+	@Override
 	public final double dotColCol(int col, DMatrix3C m2, int col2) {
 		if (col == 0) {
 			if (col2 == 0) {
@@ -766,6 +771,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param m2
 	 * @param col2
 	 */
+	@Override
 	public double dotRowCol(int row, DMatrix3C m2, int col2) {
 		if (row == 0) {
 			if (col2 == 0) {
@@ -803,6 +809,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param c 	The array.
 	 * @param cOfs The offset in c.
 	 */
+	@Override
 	public final double dotRow(int row, double[] c, int cOfs) {
 		if (row == 0) {
 			return get00()*c[cOfs+0] + get01()*c[cOfs+1] + get02()*c[cOfs+2];
@@ -824,6 +831,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param m2
 	 * @param row2
 	 */
+	@Override
 	public double dotRowRow(int row, DMatrix3C m2, int row2) {
 		if (row == 0) {
 			if (row2 == 0) {

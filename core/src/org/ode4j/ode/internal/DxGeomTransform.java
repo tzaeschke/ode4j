@@ -243,18 +243,24 @@ public class DxGeomTransform extends DxGeom implements DGeomTransform {
 	
 	
 	
+	@Override
 	public void setGeom (DGeom geom)
 	    { dGeomTransformSetGeom ((DxGeom) geom); }
+	@Override
 	public DGeom getGeom() 
 	    { return dGeomTransformGetGeom (); }
 
+	@Override
 	public void setCleanup (boolean mode)
 	    { dGeomTransformSetCleanup (mode); }
+	@Override
 	public boolean getCleanup ()
 	    { return dGeomTransformGetCleanup (); }
 
+	@Override
 	public void setInfo (boolean mode)
 	    { dGeomTransformSetInfo (mode); }
+	@Override
 	public boolean getInfo()
 	    { return dGeomTransformGetInfo (); }
 

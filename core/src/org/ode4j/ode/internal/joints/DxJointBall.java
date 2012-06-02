@@ -165,16 +165,22 @@ public class DxJointBall extends DxJoint implements DBallJoint
 	// API dBallJoint
 	// *******************************
 
+	@Override
 	public final void setAnchor (double x, double y, double z)
 	{ dJointSetBallAnchor (new DVector3(x, y, z)); }
+	@Override
 	public final void setAnchor (DVector3C a)
 	{ dJointSetBallAnchor (a); }
+	@Override
 	public final void setAnchor2 (double x, double y, double z)
 	{ dJointSetBallAnchor2 (new DVector3(x, y, z)); }
+	@Override
 	public final void setAnchor2 (DVector3C a)
 	{ dJointSetBallAnchor2 (a); }
+	@Override
 	public final void getAnchor (DVector3 result)
 	{ dJointGetBallAnchor (result); }
+	@Override
 	public final void getAnchor2 (DVector3 result)
 	{ dJointGetBallAnchor2 (result); }
 	@Override

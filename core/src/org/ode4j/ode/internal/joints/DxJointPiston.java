@@ -770,25 +770,34 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	// API dPistinJoint
 	// *********************************
 
+	@Override
 	public void setAnchor (double x, double y, double z)
 	{ dJointSetPistonAnchor (new DVector3(x, y, z)); }
+	@Override
 	public void setAnchor (DVector3C a)
 	{ dJointSetPistonAnchor (a); }
+	@Override
 	public void getAnchor (DVector3 result)
 	{ dJointGetPistonAnchor (result); }
+	@Override
 	public void getAnchor2 (DVector3 result)
 	{ dJointGetPistonAnchor2 (result); }
 
+	@Override
 	public void setAxis (double x, double y, double z)
 	{ dJointSetPistonAxis (x, y, z); }
+	@Override
 	public void setAxis (DVector3C a)
 	//TODO use dVector3
 	{ dJointSetPistonAxis(a.get0(), a.get1(), a.get2()); }
+	@Override
 	public void getAxis (DVector3 result)
 	{ dJointGetPistonAxis (result); }
 
+	@Override
 	public double getPosition()
 	{ return dJointGetPistonPosition (); }
+	@Override
 	public double getPositionRate()
 	{ return dJointGetPistonPositionRate (); }
 
@@ -800,6 +809,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		    { return dJointGetPistonParam (parameter); }
 
 	
+	@Override
 	public void addForce (double force)
 	{ dJointAddPistonForce (force); }
 

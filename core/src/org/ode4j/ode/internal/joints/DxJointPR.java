@@ -661,25 +661,34 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	// API dPRJoint
 	// ******************************
 
+	@Override
 	public void setAnchor (double x, double y, double z)
 	{ dJointSetPRAnchor (x, y, z); }
+	@Override
 	public void setAnchor (DVector3C a)
 	{ dJointSetPRAnchor (a); }
+	@Override
 	public void setAxis1 (double x, double y, double z)
 	{ dJointSetPRAxis1 (x, y, z); }
+	@Override
 	public void setAxis1 (DVector3C a)
 	//TODO use dVector3
 	{ setAxis1(a.get0(), a.get1(), a.get2()); }
+	@Override
 	public void setAxis2 (double x, double y, double z)
 	{ dJointSetPRAxis2 (x, y, z); }
+	@Override
 	public void setAxis2 (DVector3C a)
 	//TODO use dVector3
 	{ setAxis2(a.get0(), a.get1(), a.get2()); }
 
+	@Override
 	public void getAnchor (DVector3 result)
 	{ dJointGetPRAnchor (result); }
+	@Override
 	public void getAxis1 (DVector3 result)
 	{ dJointGetPRAxis1 (result); }
+	@Override
 	public void getAxis2 (DVector3 result)
 	{ dJointGetPRAxis2 (result); }
 
@@ -693,8 +702,10 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		return dJointGetPRAngleRate();
 	}
 
+	@Override
 	public double getPosition()
 	{ return dJointGetPRPosition (); }
+	@Override
 	public double getPositionRate()
 	{ return dJointGetPRPositionRate (); }
 

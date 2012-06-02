@@ -54,18 +54,22 @@ public class DVector4 implements DVector4C {
 		return b.toString();
 	}
 
+	@Override
 	public double get0() {
 		return v[0];
 	}
 
+	@Override
 	public double get1() {
 		return v[1];
 	}
 
+	@Override
 	public double get2() {
 		return v[2];
 	}
 
+	@Override
 	public double get3() {
 		return v[3];
 	}
@@ -79,14 +83,17 @@ public class DVector4 implements DVector4C {
 		return this;
 	}
 
+	@Override
 	public double lengthSquared() {
 		return get0()*get0() + get1()*get1() + get2()*get2() + get3()*get3();
 	}
 
+	@Override
 	public double length() {
 		return Math.sqrt(lengthSquared());
 	}
 
+	@Override
 	public double get(int i) {
 		return v[i];
 	}
@@ -163,6 +170,7 @@ public class DVector4 implements DVector4C {
 	 * @param b 
 	 * @return (this) * b
 	 */
+	@Override
 	public final double dot(DVector4C b) {
 		return get0()*b.get0() + get1()*b.get1() + get2()*b.get2() + get3()*b.get3();
 	}

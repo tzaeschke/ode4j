@@ -115,8 +115,10 @@ public class DxJointGroup extends DBase implements DJointGroup
     // API dJointGroup
     // ********************************************
     
+	@Override
 	public void empty()
 	{ dJointGroupEmpty (); }
+	@Override
 	public void clear()
 	{ empty(); }
 

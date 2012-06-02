@@ -122,11 +122,11 @@ public class DxRay extends DxGeom implements DRay {
 
 
 	//double dGeomRayGetLength (dxGeom g)
-	private double dGeomRayGetLength ()
-	{
-		//dUASSERT (type == dRayClass,"argument not a ray");
-		return _length;
-	}
+//	private double dGeomRayGetLength ()
+//	{
+//		//dUASSERT (type == dRayClass,"argument not a ray");
+//		return _length;
+//	}
 
 
 	//void dGeomRaySet (dxGeom g, double px, double py, double pz,
@@ -213,9 +213,11 @@ public class DxRay extends DxGeom implements DRay {
 //		BackfaceCull.set((_gflags & RAY_BACKFACECULL) != 0);
 //	}
 	
+	@Override
 	public boolean getFirstContact() {
 		return (getFlags() & RAY_FIRSTCONTACT) != 0;
 	}
+	@Override
 	public boolean getBackfaceCull() {
 		return (getFlags() & RAY_BACKFACECULL) != 0;
 	}
@@ -843,30 +845,39 @@ public class DxRay extends DxGeom implements DRay {
 	// dRay API
 	// *****************************
 
+	@Override
 	public void setLength (double length)
 	{ dGeomRaySetLength (length); }
+	@Override
 	public double getLength()
 	{ return _length; }
 
+	@Override
 	public void set (double px, double py, double pz, double dx, double dy, double dz)
 	{ dGeomRaySet (px, py, pz, dx, dy, dz); }
 	@Override
 	public void set(DVector3C p, DVector3C d) {
 		dGeomRaySet(p, d);
 	}
+	@Override
 	public void get (DVector3 start, DVector3 dir)
 	{ dGeomRayGet (start, dir); }
 
+	@Override
 	public void setParams (boolean firstContact, boolean backfaceCull)
 	{ dGeomRaySetParams (firstContact, backfaceCull); }
+	@Override
 	public void setClosestHit (boolean closestHit)
 	{ dGeomRaySetClosestHit (closestHit); }
+	@Override
 	public boolean getParamFirstContact () {
 		return (getFlags() & RAY_FIRSTCONTACT) != 0;
 	}
+	@Override
 	public boolean getParamBackfaceCull() {
 		return (getFlags() & RAY_BACKFACECULL) != 0;
 	}
+	@Override
 	public boolean getClosestHit()
 	{ return dGeomRayGetClosestHit (); }
 

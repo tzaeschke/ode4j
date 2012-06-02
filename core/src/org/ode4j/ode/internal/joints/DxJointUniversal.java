@@ -801,27 +801,37 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	// API dUniversalJoint
 	// ***********************************
 	
+	@Override
 	public void setAnchor (double x, double y, double z)
 	{ dJointSetUniversalAnchor (x, y, z); }
+	@Override
 	public void setAnchor (DVector3C a)
 	{ dJointSetUniversalAnchor(a); }
+	@Override
 	public void setAxis1 (double x, double y, double z)
 	{ dJointSetUniversalAxis1 (x, y, z); }
+	@Override
 	public void setAxis1 (DVector3C a)
 	//TODO use dVector3
 	{ setAxis1 (a.get0(), a.get1(), a.get2()); }
+	@Override
 	public void setAxis2 (double x, double y, double z)
 	{ dJointSetUniversalAxis2 (x, y, z); }
+	@Override
 	public void setAxis2 (DVector3C a)
 	//TODO use dVector3
 	{ setAxis2 (a.get0(), a.get1(), a.get2()); }
 
+	@Override
 	public void getAnchor (DVector3 result)
 	{ dJointGetUniversalAnchor (result); }
+	@Override
 	public void getAnchor2 (DVector3 result)
 	{ dJointGetUniversalAnchor2 (result); }
+	@Override
 	public void getAxis1 (DVector3 result)
 	{ dJointGetUniversalAxis1 (result); }
+	@Override
 	public void getAxis2 (DVector3 result)
 	{ dJointGetUniversalAxis2 (result); }
 
@@ -836,16 +846,21 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 	//	    { dJointGetUniversalAngles (angle1, angle2); }
 
 	/** TZ Take care to call getAngle1Internal() from dx-classes.*/
+	@Override
 	public double getAngle1()
 	{ return dJointGetUniversalAngle1 (); }
+	@Override
 	public double getAngle1Rate()
 	{ return dJointGetUniversalAngle1Rate (); }
 	/** TZ Take care to call getAngle2Internal() from dx-classes.*/
+	@Override
 	public double getAngle2()
 	{ return dJointGetUniversalAngle2 (); }
+	@Override
 	public double getAngle2Rate()
 	{ return dJointGetUniversalAngle2Rate (); }
 
+	@Override
 	public void addTorques (double torque1, double torque2)
 	{ dJointAddUniversalTorques(torque1, torque2); }
 

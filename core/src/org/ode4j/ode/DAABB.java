@@ -68,14 +68,17 @@ public class DAABB implements DAABBC {
 		_max.add(pos);
 	}
 
+	@Override
 	public double len0() {
 		return getMax0() - getMin0();
 	}
 
+	@Override
 	public double len1() {
 		return getMax1() - getMin1();
 	}
 
+	@Override
 	public double len2() {
 		return getMax2() - getMin2();
 	}
@@ -96,6 +99,7 @@ public class DAABB implements DAABBC {
 	 * 
 	 * @return <tt>false</tt> is any of the values is NaN.
 	 */
+	@Override
 	public boolean isValid() {
 		if (Double.isNaN(getMin0()) || Double.isNaN(getMax0()) ||
 				Double.isNaN(getMin1()) || Double.isNaN(getMax1()) ||
@@ -110,6 +114,7 @@ public class DAABB implements DAABBC {
 	 * @param aabb2
 	 * @return <tt>false</tt> if the two AABBs overlap.
 	 */
+	@Override
 	public boolean isDisjoint(DAABBC aabb2) {
 		if (getMin0() > aabb2.getMax0() ||
 				getMax0() < aabb2.getMin0() ||
@@ -180,6 +185,7 @@ public class DAABB implements DAABBC {
 	/**
 	 * get[0].
 	 */
+	@Override
 	public double getMin0() {
 		return _min.get0();
 	}
@@ -187,6 +193,7 @@ public class DAABB implements DAABBC {
     /**
      * get[2].
      */
+	@Override
 	public double getMin1() {
 		return _min.get1();
 	}
@@ -194,6 +201,7 @@ public class DAABB implements DAABBC {
     /**
      * get[4].
      */
+	@Override
 	public double getMin2() {
 		return _min.get2();
 	}
@@ -201,6 +209,7 @@ public class DAABB implements DAABBC {
     /**
      * get[1].
      */
+	@Override
 	public double getMax0() {
 		return _max.get0();
 	}
@@ -208,6 +217,7 @@ public class DAABB implements DAABBC {
     /**
      * get[3].
      */
+	@Override
 	public double getMax1() {
 		return _max.get1();
 	}
@@ -215,6 +225,7 @@ public class DAABB implements DAABBC {
     /**
      * get[5].
      */
+	@Override
 	public double getMax2() {
 		return _max.get2();
 	}
@@ -229,10 +240,12 @@ public class DAABB implements DAABBC {
 		return _min.get(i);
 	}
 
+	@Override
 	public DVector3 getLengths() {
 		return new DVector3(len0(), len1(), len2());
 	}
 
+	@Override
 	public DVector3 getCenter() {
 		return new DVector3(avg0(), avg1(), avg2());
 	}

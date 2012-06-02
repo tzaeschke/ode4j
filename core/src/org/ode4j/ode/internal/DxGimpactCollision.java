@@ -249,20 +249,20 @@ public class DxGimpactCollision {
 		else return true;
 	}
 
-	// Some utilities
-//	template<class T> const T& dcMAX(const T& x, const T& y){
-//		return x > y ? x : y;
+//	// Some utilities
+////	template<class T> const T& dcMAX(const T& x, const T& y){
+////		return x > y ? x : y;
+////	}
+//	private Object dcMAX(double x, double y) {
+//		return x > y ? x : y; //TODO return ref? TZ
 //	}
-	private Object dcMAX(double x, double y) {
-		return x > y ? x : y; //TODO return ref? TZ
-	}
-
-//	template<class T> const T& dcMIN(const T& x, const T& y){
-//		return x < y ? x : y;
+//
+////	template<class T> const T& dcMIN(const T& x, const T& y){
+////		return x < y ? x : y;
+////	}
+//	private Object dcMIN(double x, double y) {
+//		return x > y ? x : y; //TODO return ref? TZ
 //	}
-	private Object dcMIN(double x, double y) {
-		return x > y ? x : y; //TODO return ref? TZ
-	}
 
 	//TZ TODO
 //	dReal SqrDistancePointTri( DVector3C p, DVector3C triOrigin, 

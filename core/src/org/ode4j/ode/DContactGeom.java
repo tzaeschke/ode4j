@@ -25,7 +25,6 @@
 package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.internal.DxGeom;
 
 
 /**
