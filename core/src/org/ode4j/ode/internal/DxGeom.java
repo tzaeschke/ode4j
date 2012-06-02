@@ -582,7 +582,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	} 
 
 	boolean controlGeometry(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
-	        Object[][] dataValue, RefInt dataSize) {
+			DataValue dataValue, RefInt dataSize) {
 	    throw new IllegalArgumentException("Control class/code is not supported for current geom");
 //	   dAASSERT(false && "Control class/code is not supported for current geom");
 //
@@ -994,7 +994,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 
 	boolean dGeomLowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
-	        Object[][] dataValue, RefInt dataSize) {
+			DataValue dataValue, RefInt dataSize) {
 	    dAASSERT (dataSize);
 
 	    //if (!dataSize) {
@@ -1938,7 +1938,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
     @Override
     public boolean lowLevelControl(CONTROL_CLASS controlClass,
-            CONTROL_CODE controlCode, Object[][][] dataValue, RefInt dataSize) {
+            CONTROL_CODE controlCode, DataValue dataValue, RefInt dataSize) {
         return dGeomLowLevelControl(controlClass, controlCode, dataValue, dataSize);
     }
 

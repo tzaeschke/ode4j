@@ -475,6 +475,14 @@ public interface DGeom {
 	}
 
 	/**
+	 * 
+	 *
+	 * @author Tilmann Zaeschke
+	 * @deprecated not implemented yet.
+	 */
+	static interface DataValue {};
+	
+	/**
 	 * Execute low level control operation for geometry.
 	 *
 	 * The variable the dataSize points to must be initialized before the call.
@@ -482,27 +490,26 @@ public interface DGeom {
 	 * changes it to the size expected and returns failure. This implies the function 
 	 * can be called with NULL data and zero size to test if control class/code is supported
 	 * and obtain required data size for it.
-	 *
+	 * <p>
 	 * dGeomCommonAnyControlCode applies to any control class and returns success if 
 	 * at least one control code is available for the given class with given geom.
-	 *
-	 * Currently there are the folliwing control classes supported:
-	 *  @li dGeomColliderControlClass
-	 *
-	 * For dGeomColliderControlClass there are the following codes available:
-	 *  @li dGeomColliderSetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)
-	 *  @li dGeomColliderGetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)
-	 *
-	 * @param geom   the geom to control
+	 * <br>
+	 * Currently there are the folliwing control classes supported:<br>
+	 * <li> dGeomColliderControlClass</li>
+	 * <p>
+	 * For dGeomColliderControlClass there are the following codes available:<br>
+	 *  <li> dGeomColliderSetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)</li>
+	 *  <li> dGeomColliderGetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)</li>
+	 * 
 	 * @param controlClass   the control class
 	 * @param controlCode   the control code for the class
 	 * @param dataValue   the control argument pointer
 	 * @param dataSize   the control argument size provided or expected
-	 * @returns Boolean execution status
+	 * @return Boolean execution status
 	 * @ingroup collide
 	 */
 	boolean lowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
-	        Object[][][] dataValue, RefInt dataSize);
+			DataValue dataValue, RefInt dataSize);
 
 
 	/**

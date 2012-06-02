@@ -201,14 +201,13 @@ public interface DWorld {
 	 *
 	 * Failure result status means a memory allocation failure.
 	 *
-	 * @param w The world to use the shared memory with.
 	 * @param from_world Null or the world the shared memory is to be used from.
 	 * @return 1 for success and 0 for failure.
 	 *
 	 * @ingroup world
-	 * @see dWorldCleanupWorkingMemory
-	 * @see dWorldSetStepMemoryReservationPolicy
-	 * @see dWorldSetStepMemoryManager
+	 * @see #cleanupWorkingMemory()
+	 * @see #setStepMemoryReservationPolicy(DWorldStepReserveInfo)
+	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	 */
 	boolean useSharedWorkingMemory(DWorld from_world/*=NULL*/);
 
@@ -226,12 +225,10 @@ public interface DWorld {
 	 *
 	 * The function call does affect neither memory reservation policy nor memory manager.
 	 *
-	 * @param w The world to release working memory for.
-	 *
 	 * @ingroup world
-	 * @see dWorldUseSharedWorkingMemory
-	 * @see dWorldSetStepMemoryReservationPolicy
-	 * @see dWorldSetStepMemoryManager
+	 * @see #useSharedWorkingMemory(DWorld)
+	 * @see #setStepMemoryReservationPolicy(DWorldStepReserveInfo)
+	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	 */
 	void cleanupWorkingMemory();
 
@@ -251,7 +248,7 @@ public interface DWorld {
 	 * reallocations as number of bodies/joints grows.
 	 *
 	 * @ingroup world
-	 * @see dWorldSetStepMemoryReservationPolicy
+	 * @see DWorld#setStepMemoryReservationPolicy(DWorldStepReserveInfo)
 	 */
 	public class DWorldStepReserveInfo	{
 	    public int struct_size;
@@ -277,12 +274,11 @@ public interface DWorld {
 	 *
 	 * Failure result status means a memory allocation failure.
 	 *
-	 * @param w The world to change memory reservation policy for.
 	 * @param policyinfo Null or a pointer to policy descriptor structure.
 	 * @return 1 for success and 0 for failure.
 	 *
 	 * @ingroup world
-	 * @see dWorldUseSharedWorkingMemory
+	 * @see #useSharedWorkingMemory(DWorld)
 	 */
 	boolean setStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo/*=NULL*/);
 
@@ -303,7 +299,7 @@ public interface DWorld {
 	* <code>free_block</code> is a function to delete existing memory block.
 	*
 	* @ingroup init
-	* @see dWorldSetStepMemoryManager
+	* @see DWorld#setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	* @deprecated Do not use ! (TZ)
 	*/
 	@Deprecated
@@ -337,12 +333,11 @@ public interface DWorld {
 	*
 	* Failure result status means a memory allocation failure.
 	*
-	* @param w The world to change memory reservation policy for.
 	* @param memfuncs Null or a pointer to memory manager descriptor structure.
 	* @return 1 for success and 0 for failure.
 	*
 	* @ingroup world
-	* @see dWorldUseSharedWorkingMemory
+	* @see #useSharedWorkingMemory(DWorld)
 	*/
 	boolean setStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs);
 
@@ -358,9 +353,8 @@ public interface DWorld {
 	 * In such a case all the objects remain in unchanged state and simulation can be
 	 * retried as soon as more memory is available.
 	 *
-	 * @param w The world to be stepped
 	 * @param stepsize The number of seconds that the simulation has to advance.
-	 * @returns 1 for success and 0 for failure
+	 * @return 1 for success and 0 for failure
 	 * 
 	 * @ingroup world
 	 */
@@ -402,7 +396,6 @@ public interface DWorld {
 	 * In such a case all the objects remain in unchanged state and simulation can be
 	 * retried as soon as more memory is available.
 	 *
-	 * @param w The world to be stepped
 	 * @param stepsize The number of seconds that the simulation has to advance.
 	 * @return 1 for success and 0 for failure
 	 *

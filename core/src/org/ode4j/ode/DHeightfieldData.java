@@ -174,8 +174,6 @@ public interface DHeightfieldData {
 	 * <p>
 	 * See build(double[], ...) for example code.
 	 *
-	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
-	 *
 	 * @param pHeightData A pointer to the height data.
 	 * @param bCopyHeightData When non-zero the height data is copied to an
 	 * internal store. When zero the height data is accessed by reference and
@@ -229,8 +227,6 @@ public interface DHeightfieldData {
 	 * sample point.
 	 * <p>
 	 * See build(double[], ...) for example code.
-	 *
-	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
 	 *
 	 * @param pHeightData A pointer to the height data.
 	 * @param bCopyHeightData When non-zero the height data is copied to an
@@ -296,8 +292,6 @@ public interface DHeightfieldData {
 	 * </pre>
 	 * <p>
 	 * See DemoHeightfield for a full example.
-	 *
-	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
 	 *
 	 * @param pHeightData A pointer to the height data.
 	 * @param bCopyHeightData When non-zero the height data is copied to an

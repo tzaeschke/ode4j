@@ -54,7 +54,7 @@ public interface DVector3C {
 	public double length();
 	/** 
 	 * @return Distance between this vector and b).
-	 * @See DVector3#distance(DVector3C) 
+	 * @see DVector3#distance(DVector3C) 
 	 */
 	public double distance(DVector3C a);
 	/** 

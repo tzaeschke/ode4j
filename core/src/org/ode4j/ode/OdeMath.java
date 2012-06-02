@@ -744,7 +744,7 @@ public class OdeMath extends DRotation {
      * @param a 
      * @param b 
      * @return distance
-     * @Deprecated
+     * @deprecated
      */
 	public static double dCalcPointsDistance3 (final DVector3C a, final DVector3C b) {
 	   return a.distance(b);

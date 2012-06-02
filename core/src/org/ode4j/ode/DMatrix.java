@@ -90,55 +90,55 @@ public class DMatrix extends DMisc {
         Matrix.dMultiply0(a, b, C);
     }
     /** 
-     * @see DMatrix#dMultiply0()
+     * @see DMatrix#dMultiply0(DVector3, DVector3C, DMatrix3C)
      */
     public static void dMultiply0 (DVector3 a, DMatrix3C B, DVector3C c) {
         Matrix.dMultiply0(a, B, c);
     }
     /** 
-     * @see DMatrix#dMultiply0()
+     * @see DMatrix#dMultiply0(DVector3, DVector3C, DMatrix3C)
      */
     public static void dMultiply0 (DMatrix3 A, DMatrix3C B, DMatrix3C C) {
         Matrix.dMultiply0(A, B, C);
     }
     /** 
-     * @see DMatrix#dMultiply0()
+     * @see DMatrix#dMultiply0(DVector3, DVector3C, DMatrix3C)
      */
     public static void dMultiply0 (double[] A, final double[] B, final double[] C, int p, int q, int r) {
         Matrix.dMultiply0(A, B, C, p, q, r);
     }
     /** 
-     * @see DMatrix#dMultiply0()
+     * @see DMatrix#dMultiply0(DVector3, DVector3C, DMatrix3C)
      */
     public static void dMultiply1 (DVector3 a, DMatrix3C B, DVector3C c) {
         Matrix.dMultiply1(a, B, c);
     }
     /** 
-     * @see DMatrix#dMultiply0()
+     * @see DMatrix#dMultiply0(DVector3, DVector3C, DMatrix3C)
      */
     public static void dMultiply1 (DMatrix3 A, DMatrix3C B, DMatrix3C C) {
         Matrix.dMultiply1(A, B, C);
     }
     /** 
-     * @see DMatrix#dMultiply0()
+     * @see DMatrix#dMultiply0(DVector3, DVector3C, DMatrix3C)
      */
     public static void dMultiply1 (double[] A, final double[] B, final double[] C, int p, int q, int r) {
         Matrix.dMultiply1(A, B, C, p, q, r);
     }
     /** 
-     * @see DMatrix#dMultiply0()
+     * @see DMatrix#dMultiply0(DVector3, DVector3C, DMatrix3C)
      */
     public static void dMultiply2 (DVector3 a, DMatrix3C B, DVector3C c) {
         Matrix.dMultiply2(a, B, c);
     }
     /** 
-     * @see DMatrix#dMultiply0()
+     * @see DMatrix#dMultiply0(DVector3, DVector3C, DMatrix3C)
      */
     public static void dMultiply2 (DMatrix3 A, DMatrix3C B, DMatrix3C C) {
         Matrix.dMultiply2(A, B, C);
     }
     /** 
-     * @see DMatrix#dMultiply0()
+     * @see DMatrix#dMultiply0(DVector3, DVector3C, DMatrix3C)
      */
     public static void dMultiply2 (double[] A, final double[] B, final double[] C, int p, int q, int r) {
         Matrix.dMultiply2(A, B, C, p, q, r);
