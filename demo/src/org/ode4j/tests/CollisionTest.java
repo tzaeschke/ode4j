@@ -106,6 +106,8 @@ public class CollisionTest {
 	        // Test case: sphere touches the diagonal edge
 	        dGeomSetPosition(sphere, 0,0,radius);
 	        nc = dCollide(trimesh, sphere, 4, cg);//&cg[0], sizeof cg[0]);
+	        //TODO TZ In C++: This fails for GIMPACT but works for OPCODE.
+	        //In ode4j there is onlt gimpact, therefore it fails.
 	        CHECK_EQUAL(2, nc);
 	        for (int i=0; i<nc; ++i) {
 	            CHECK_EQUAL(0, cg.get(i).depth);

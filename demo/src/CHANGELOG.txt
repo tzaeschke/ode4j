@@ -5,24 +5,28 @@ the rules for this file:
   * entries are sorted newest-first.
   * summarise sets of changes.
   * don't ever delete anything.
-  * keep the format consistent (79 char width, YYYY-MM-DD date format).
+  * keep the format consistent (79 char width, YYYY-MMM-DD date format).
 
 ------------------------------------------------------------------------------
 
-SUMMARY of changes for ode-0.12
-- Refactoring of OdeMath method names
-- Refactoring of OdeMath super-classes Matrix->DMatrix, ...
-- new functions in DGeom
-- Quickstep refactored and sped up
-- Clean-up of demos
-- New TrackDemo
-- Bug fixes
+		   ******************************************************************
 
-=============
-TODO 
-- include DMatrix, DRoation, DMisc into OdeMath i.o. internal Rotation/Matrix?!
-- DemoCrash: dofast = true;
-=============
+2012-Jun-02 Tilmann Zaschke
+		* Release of ode4j-0.12.0-j1.0
+		   ******************************************************************
+
+2012-Jun-02 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Identified failing test (is because of GIMPACT)
+		SUMMARY of changes for ode-0.12
+		- Refactoring of OdeMath method names
+		- Refactoring of OdeMath super-classes Matrix->DMatrix, ...
+		- new functions in DGeom
+		- Quickstep refactored and sped up
+		- Clean-up of demos
+		- New TrackDemo
+		- Bug fixes
+
 
 2012-May-29 Tilmann Zaschke
 		* Migration to ode-0.12:

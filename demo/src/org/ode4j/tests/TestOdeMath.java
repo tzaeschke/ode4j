@@ -150,6 +150,7 @@ public class TestOdeMath {
 	}
 
 
+	@SuppressWarnings("deprecation")
 	@Test public void test_dOrthogonalizeR() {
 		//	TEST(test_dOrthogonalizeR)
 		{

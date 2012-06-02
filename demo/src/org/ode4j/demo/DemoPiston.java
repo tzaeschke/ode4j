@@ -234,6 +234,7 @@ class DemoPiston extends dsFunctions {
 
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -293,11 +294,7 @@ class DemoPiston extends dsFunctions {
 			break;
 		}
 
-		final DMatrix3 R = new DMatrix3(
-				1,0,0,0,
-				0,1,0,0,
-				0,0,1,0
-		);
+		final DMatrix3 R = new DMatrix3().setIdentity();
 
 		if (body[BODY1]!=null) {
 			body[BODY1].setPosition(pos1.get(X), pos1.get(Y), pos1.get(Z));
@@ -334,6 +331,7 @@ class DemoPiston extends dsFunctions {
 
 
 	// called when a key pressed
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) {

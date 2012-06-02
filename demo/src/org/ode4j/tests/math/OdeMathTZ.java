@@ -158,6 +158,7 @@ public class OdeMathTZ {
 
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Test public void test_dOrthogonalizeR() {
 		//	TEST(test_dOrthogonalizeR)
 		{
@@ -232,7 +233,8 @@ public class OdeMathTZ {
                 0, 1, 0, //0,
                 0, 0, 1 //0
         );
-        DMatrix3 r2 = new DMatrix3( 
+        @SuppressWarnings("deprecation")
+		DMatrix3 r2 = new DMatrix3( 
                 4, 5, 6, 0,
                 7, 8, 9, 0,
                 10, 11, 12, 0
@@ -247,8 +249,6 @@ public class OdeMathTZ {
                 7, 8, 9, 0,
                 10, 11, 12, 0
         };
-        DVector3 v1 = new DVector3(7, 8, 9);
-        double[] v1a = {7, 8, 9};
         
         assertTrue(Matrix.dFactorCholesky(r1));
         assertTrue(Matrix.dFactorCholesky(r1a, 3, null));
@@ -266,7 +266,8 @@ public class OdeMathTZ {
                 0, 1, 0, //0,
                 0, 0, 1 //0
         );
-        DMatrix3 r2 = new DMatrix3( 
+        @SuppressWarnings("deprecation")
+		DMatrix3 r2 = new DMatrix3( 
                 4, 5, 6, 0,
                 7, 8, 9, 0,
                 10, 11, 12, 0
