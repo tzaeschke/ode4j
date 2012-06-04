@@ -2092,4 +2092,12 @@ Helper struct
 			int pointCount, int[] polygons) {
 		dGeomSetConvex(planes, planeCount, points, pointCount, polygons);
 	}
+
+	public double[] getPoints() {
+		return points;
+	}
+
+	public int getPointcount() {
+		return pointcount;
+	}
 }

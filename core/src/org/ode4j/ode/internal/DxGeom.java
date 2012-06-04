@@ -46,11 +46,14 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSpace;
+import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.internal.DBase;
 import org.ode4j.ode.internal.DxSpace;
 import org.ode4j.ode.internal.Objects_H.DxPosRC;
 import org.ode4j.ode.internal.Objects_H.DxPosR;
 import org.ode4j.ode.internal.DxQuadTreeSpace.Block;
+
+import static org.ode4j.ode.internal.CollisionLibccd.*;
 
 /**
  * geometry (collision object).
@@ -1442,7 +1445,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	private static final dColliderEntry[][] colliders = new dColliderEntry[dGeomNumClasses][dGeomNumClasses];
 	private static boolean colliders_initialized = false;
 
-	private static final boolean LIBCCD = false; 
+	private static final boolean LIBCCD = OdeConfig.isLibCCDEndabled(); 
     private static final boolean dLIBCCD_BOX_CYL = LIBCCD;
 
     private static final boolean dLIBCCD_CYL_CYL = LIBCCD;
@@ -1535,8 +1538,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 //		}
 
 		if (dLIBCCD_BOX_CYL) {//#ifdef dLIBCCD_BOX_CYL
-		    throw new UnsupportedOperationException();
-			  //setCollider (dBoxClass,dCylinderClass,&dCollideBoxCylinderCCD);
+		    setCollider (dBoxClass,dCylinderClass, new CollideBoxCylinderCCD());
 		} else {//#else
             setCollider (dCylinderClass,dBoxClass, new CollideCylinderBox());//dCollideCylinderBox);
 		} //#endif
@@ -1544,49 +1546,42 @@ public abstract class DxGeom extends DBase implements DGeom {
 		setCollider (dCylinderClass,dPlaneClass, new CollideCylinderPlane());//dCollideCylinderPlane);
 
 		if (dLIBCCD_CYL_CYL) {
-		    throw new UnsupportedOperationException();
-		    //setCollider (dCylinderClass, dCylinderClass, &dCollideCylinderCylinder);
+		    setCollider (dCylinderClass, dCylinderClass, new CollideCylinderCylinder());
 		}
 		if (dLIBCCD_CAP_CYL) {
-		    throw new UnsupportedOperationException();
-            //setCollider (dCapsuleClass, dCylinderClass, &dCollideCapsuleCylinder);
+		    setCollider (dCapsuleClass, dCylinderClass, new CollideCapsuleCylinder());
 		}
 
 		//--> Convex Collision
 		if (dLIBCCD_CONVEX_BOX) {
-		    throw new UnsupportedOperationException();
-		    //setCollider (dConvexClass, dBoxClass, &dCollideConvexBoxCCD);
+		    setCollider (dConvexClass, dBoxClass, new CollideConvexBoxCCD());
 		} else {
-		    setCollider (dConvexClass,dBoxClass,new DxConvex.CollideConvexBox());
+		    setCollider (dConvexClass,dBoxClass, new DxConvex.CollideConvexBox());
 		}
 
 		if (dLIBCCD_CONVEX_CAP) {
-		    throw new UnsupportedOperationException();
-		    //setCollider (dConvexClass,dCapsuleClass,&dCollideConvexCapsuleCCD);
+		    setCollider (dConvexClass,dCapsuleClass, new CollideConvexCapsuleCCD());
 		} else {
-		    setCollider (dConvexClass,dCapsuleClass,new DxConvex.CollideConvexCapsule());
+		    setCollider (dConvexClass,dCapsuleClass, new DxConvex.CollideConvexCapsule());
 		}
 
 		if (dLIBCCD_CONVEX_CYL) {
-		    throw new UnsupportedOperationException();
-		    //setCollider (dConvexClass,dCylinderClass,&dCollideConvexCylinderCCD);
+		    setCollider (dConvexClass,dCylinderClass, new CollideConvexCylinderCCD());
 		}
 
 		if (dLIBCCD_CONVEX_SPHERE) {
-		    throw new UnsupportedOperationException();
-		    //setCollider (dConvexClass,dSphereClass,&dCollideConvexSphereCCD);
+		    setCollider (dConvexClass,dSphereClass, new CollideConvexSphereCCD());
 		} else {
 		    setCollider (dSphereClass,dConvexClass,new DxConvex.CollideSphereConvex());
 		}
 
 		if (dLIBCCD_CONVEX_CONVEX) {
-		    throw new UnsupportedOperationException();
-		    //setCollider (dConvexClass,dConvexClass,&dCollideConvexConvexCCD);
+		    setCollider (dConvexClass,dConvexClass, new CollideConvexConvexCCD());
 		} else {
-		    setCollider (dConvexClass,dConvexClass,new DxConvex.CollideConvexConvex());
+		    setCollider (dConvexClass,dConvexClass, new DxConvex.CollideConvexConvex());
 		}
 
-		setCollider (dConvexClass,dPlaneClass,new DxConvex.CollideConvexPlane());
+		setCollider (dConvexClass,dPlaneClass, new DxConvex.CollideConvexPlane());
 		setCollider (dRayClass,dConvexClass, new DxConvex.CollideRayConvex());//dCollideRayConvex);
 //		//<-- Convex Collision
 //

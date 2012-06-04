@@ -33,6 +33,7 @@ package org.ode4j.ode;
 public class OdeConfig {
 
 	private static final boolean dDOUBLE = true;
+	private static boolean dLIBCCD = false;
 	
 	public static enum TRIMESH {
 		DISABLED,
@@ -56,6 +57,21 @@ public class OdeConfig {
 	 */
 	public static boolean isTrimeshEnabled() {
 		return dTRIMESH_TYPE != TRIMESH.DISABLED;
+	}
+	
+	/**
+	 * @return Whether LIBCCD colliders are is enabled.
+	 */
+	public static boolean isLibCCDEndabled() {
+		return dLIBCCD;
+	}
+	
+	/**
+	 * Enable or disable LIBCCD colliders.
+	 * @param enable
+	 */
+	public static void setLibCCDEndabled(boolean enable) {
+		dLIBCCD = enable;
 	}
 	
 /* Pull in the standard headers */
