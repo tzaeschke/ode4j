@@ -28,9 +28,9 @@ public class CCDTestSupport {
 	 * Some support() functions for some convex shapes.
 	 */
 
-	private static final int CCD_OBJ_BOX = 1;
+	static final int CCD_OBJ_BOX = 1;
 	private static final int CCD_OBJ_SPHERE = 2;
-	private static final int CCD_OBJ_CYL = 3;
+	static final int CCD_OBJ_CYL = 3;
 
 //	#define __CCD_OBJ__ \
 //	    int type; \
