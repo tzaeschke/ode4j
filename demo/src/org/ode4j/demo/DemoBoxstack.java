@@ -107,26 +107,7 @@ class DemoBoxstack extends dsFunctions {
 	};
 	//----> Convex Object
 
-	// select correct drawing functions
-
-	//#ifdef dDOUBLE
-	//#define dsDrawBox dsDrawBoxD
-	//#define dsDrawSphere dsDrawSphereD
-	//#define dsDrawCylinder dsDrawCylinderD
-	//#define dsDrawCapsule dsDrawCapsuleD
-	//#define dsDrawConvex dsDrawConvexD
-	//#endif
-
-
 	// some constants
-
-	//#define NUM 100			// max number of objects
-	//#define DENSITY (5.0)		// density of all objects
-	//#define GPB 3			// maximum number of geometries per body
-	//#define MAX_CONTACTS 8          // maximum number of contact points per body
-	//#define MAX_FEEDBACKNUM 20
-	//#define GRAVITY         REAL(0.5)
-	//#define USE_GEOM_OFFSET 1
 	private static final int NUM = 100;			// max number of objects
 	private static final double DENSITY =(5.0);		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
