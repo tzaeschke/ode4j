@@ -70,6 +70,10 @@ public class CCDVec3 {
 		public double get2() {
 			return v[2];
 		}
+
+		public void add(int pos, double d) {
+			v[pos] += d;
+		}
 	};
 
 

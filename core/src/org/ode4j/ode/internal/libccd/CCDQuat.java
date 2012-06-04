@@ -29,6 +29,18 @@ public class CCDQuat {
 	    	q[2] = z;
 	    	q[3] = w;
 	    }
+		public Object get0() {
+			return q[0];
+		}
+		public Object get1() {
+			return q[1];
+		}
+		public Object get2() {
+			return q[2];
+		}
+		public Object get3() {
+			return q[3];
+		}
 	};
 
 
