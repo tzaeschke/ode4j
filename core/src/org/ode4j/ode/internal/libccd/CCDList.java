@@ -19,11 +19,12 @@ package org.ode4j.ode.internal.libccd;
 
 import java.util.Iterator;
 
+
 public class CCDList {
 
 	static final class ccd_list_t<T> implements Iterable<T> {
-	    ccd_list_t<T> next;
-	    ccd_list_t<T> prev;
+	    private ccd_list_t<T> next = this;
+	    private ccd_list_t<T> prev = this;
 	    final T o; 
 	    public ccd_list_t(T obj) {
 	    	this.o = obj;
@@ -45,7 +46,7 @@ public class CCDList {
 				@Override
 				public void remove() {
 					// TODO Auto-generated method stub
-					
+					throw new UnsupportedOperationException();
 				}
 				
 			};
@@ -53,24 +54,32 @@ public class CCDList {
 	};
 
 	//TZ
-	static final class ccd_iter_t<T> {
-		private ccd_list_t<T> next;
-		ccd_iter_t(ccd_list_t<T> start) {
-			next = start;
+	private static final class ccd_iter_t<T> {
+//	    for (pos = ccdListEntry((head).next, postype, member), n = ccdListEntry(pos.member.next, postype, member);	
+//	     pos.member != (head); 					
+//	     pos = n, n = ccdListEntry(n.member.next, ntype, member));
+		private ccd_list_t<T> pos;
+		private ccd_list_t<T> n;
+		private final ccd_list_t<T> head;
+		ccd_iter_t(ccd_list_t<T> head) {
+			this.head = head;
+			this.pos = head.next;
+			this.n = pos.next;
 		}
 		boolean hasNext() {
-			return next != null;
+			return pos != head;
 		}
 		T next() {
-			T ret = next.o;
-			next = next.next;
-			return ret;
+			T prevPos = pos.o;
+			pos = n;
+			n = n.next;
+			return prevPos;
 		}
 	}
 	
-	static final <T> ccd_iter_t<T> ccd_iter(ccd_list_t<T> list) {
-		return new ccd_iter_t<T>(list);
-	}
+//	static final <T> ccd_iter_t<T> ccd_iter(ccd_list_t<T> list) {
+//		return new ccd_iter_t<T>(list);
+//	}
 	
 
 //	/**
@@ -160,17 +169,17 @@ public class CCDList {
 	/**
 	 * Returns true if list is empty.
 	 */
-	@SuppressWarnings("rawtypes")
-	static final boolean ccdListEmpty(final ccd_list_t head)
+	//@SuppressWarnings("rawtypes")
+	static final <T> boolean ccdListEmpty(final ccd_list_t<T> head)
 	{
-	    //return head.next == head;
-		return head.next == null;
+	    return head.next == head;
 	}
 
 	/**
 	 * Appends item to end of the list l.
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	//static final <T> void ccdListAppend(ccd_list_t<T> l, ccd_list_t<T> newccd)
 	static final void ccdListAppend(ccd_list_t l, ccd_list_t newccd)
 	{
 	    newccd.prev = l.prev;
@@ -182,12 +191,12 @@ public class CCDList {
 	/**
 	 * Removes item from list.
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	static final void ccdListDel(ccd_list_t item)
+	//@SuppressWarnings({ "rawtypes", "unchecked" })
+	static final <T> void ccdListDel(ccd_list_t<T> item)
 	{
 	    item.next.prev = item.prev;
 	    item.prev.next = item.next;
-	    item.next = null;//item;
-	    item.prev = null;//item;
+	    item.next = item;
+	    item.prev = item;
 	}
 }

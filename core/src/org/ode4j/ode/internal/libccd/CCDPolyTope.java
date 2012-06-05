@@ -17,8 +17,6 @@
  */
 package org.ode4j.ode.internal.libccd;
 
-import java.util.ArrayList;
-
 import org.cpp4j.Cstdio;
 import org.cpp4j.FILE;
 import org.ode4j.ode.internal.libccd.CCDList.ccd_list_t;
@@ -30,11 +28,9 @@ import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 
 public class CCDPolyTope {
 
-	private static final ccd_pt_el_t NULL = null;
-	
-	static final int CCD_PT_VERTEX = 1;
-	static final int CCD_PT_EDGE = 2;
-	private static final int CCD_PT_FACE = 3;
+	public static final int CCD_PT_VERTEX = 1;
+	public static final int CCD_PT_EDGE = 2;
+	public static final int CCD_PT_FACE = 3;
 
 
 	//#define __CCD_PT_EL
@@ -49,32 +45,42 @@ public class CCDPolyTope {
 	 * General polytope element.
 	 * Could be vertex, edge or triangle.
 	 */
-	static class ccd_pt_el_t {
+	public static class ccd_pt_el_t {
 //	    __CCD_PT_EL
 	    int type;           /*! type of element */ 
 	    double dist;        /*! distance from origin */ 
-	    ccd_vec3_t witness; /*! witness point of projection of origin */ 
-	    ccd_list_t list;    /*! list of elements of same type */
-	};
+	    final ccd_vec3_t witness = new ccd_vec3_t(); /*! witness point of projection of origin */ 
+	    final ccd_list_t list = new ccd_list_t(this);    /*! list of elements of same type */
 
-//	struct _ccd_pt_edge_t;
-//	struct _ccd_pt_face_t;
+		public double dist() {
+			return dist;
+		}
+		public int type() {
+			return type;
+		}
+		public ccd_vec3_t witness() {
+			return witness;
+		}
+	};
 
 	/**
 	 * Polytope's vertex.
 	 */
-	static final class ccd_pt_vertex_t extends ccd_pt_el_t {
+	public static final class ccd_pt_vertex_t extends ccd_pt_el_t {
 //	    __CCD_PT_EL
 
 	    int id;
-	    ccd_support_t v;
-	    ccd_list_t<ccd_pt_edge_t> edges; //!< List of edges
+	    final ccd_support_t v = new ccd_support_t();
+	    ccd_list_t<ccd_pt_edge_t> edges = new ccd_list_t<ccd_pt_edge_t>(null); //!< List of edges
+		public ccd_support_t v() {
+			return v;
+		}
 	};
 
 	/**
 	 * Polytope's edge.
 	 */
-	static final class ccd_pt_edge_t extends ccd_pt_el_t {
+	public static final class ccd_pt_edge_t extends ccd_pt_el_t {
 //	    __CCD_PT_EL
 
 	    final ccd_pt_vertex_t[] vertex = new ccd_pt_vertex_t[2]; //!< Reference to vertices
@@ -82,12 +88,16 @@ public class CCDPolyTope {
 
 	    @SuppressWarnings("unchecked")
 		final ccd_list_t<ccd_pt_vertex_t>[] vertex_list = new ccd_list_t[2]; //!< List items in vertices' lists
+		{
+			vertex_list[0] = new ccd_list_t<ccd_pt_vertex_t>(null);
+			vertex_list[1] = new ccd_list_t<ccd_pt_vertex_t>(null);
+		}
 	};
 
 	/**
 	 * Polytope's triangle faces.
 	 */
-	static final class ccd_pt_face_t extends ccd_pt_el_t {
+	public static final class ccd_pt_face_t extends ccd_pt_el_t {
 //	    __CCD_PT_EL
 
 	    final ccd_pt_edge_t[] edge = new ccd_pt_edge_t[3]; //!< Reference to surrounding edges
@@ -97,13 +107,10 @@ public class CCDPolyTope {
 	/**
 	 * Struct containing polytope.
 	 */
-	static final class ccd_pt_t {
-//	    ccd_list_t<ccd_pt_vertex_t> vertices = new ccd_list_t<CCDPolyTope.ccd_pt_vertex_t>(null); //!< List of vertices
-//	    ccd_list_t<ccd_pt_edge_t> edges = new ccd_list_t<CCDPolyTope.ccd_pt_edge_t>(null); //!< List of edges
-//	    ccd_list_t<ccd_pt_face_t> faces = new ccd_list_t<CCDPolyTope.ccd_pt_face_t>(null); //!< List of faces
-	    final ArrayList<ccd_pt_vertex_t> vertices = new ArrayList<ccd_pt_vertex_t>(); //!< List of vertices
-	    final ArrayList<ccd_pt_edge_t> edges = new ArrayList<ccd_pt_edge_t>(); //!< List of edges
-	    final ArrayList<ccd_pt_face_t> faces = new ArrayList<ccd_pt_face_t>(); //!< List of faces
+	public static final class ccd_pt_t {
+	    ccd_list_t<ccd_pt_vertex_t> vertices = new ccd_list_t<ccd_pt_vertex_t>(null); //!< List of vertices
+	    ccd_list_t<ccd_pt_edge_t> edges = new ccd_list_t<ccd_pt_edge_t>(null); //!< List of edges
+	    ccd_list_t<ccd_pt_face_t> faces = new ccd_list_t<ccd_pt_face_t>(null); //!< List of faces
 
 	    ccd_pt_el_t nearest;
 	    double nearest_dist;
@@ -112,7 +119,7 @@ public class CCDPolyTope {
 
 
 	/**** INLINES ****/
-	static final ccd_pt_vertex_t ccdPtAddVertexCoords(ccd_pt_t pt,
+	public static final ccd_pt_vertex_t ccdPtAddVertexCoords(ccd_pt_t pt,
 	                                                  double x, double y, double z)
 	{
 	    ccd_support_t s = new ccd_support_t();
@@ -124,7 +131,7 @@ public class CCDPolyTope {
 	 * Deletes vertex from polytope.
 	 * Returns 0 on success, -1 otherwise.
 	 */
-	static final int ccdPtDelVertex(ccd_pt_t pt, ccd_pt_vertex_t v)
+	public static final int ccdPtDelVertex(ccd_pt_t pt, ccd_pt_vertex_t v)
 	{
 	    // test if any edge is connected to this vertex
 	    if (!ccdListEmpty(v.edges))
@@ -134,18 +141,18 @@ public class CCDPolyTope {
 	    ccdListDel(v.list);
 
 	    if (pt.nearest == v){
-	        pt.nearest = NULL;
+	        pt.nearest = null;
 	    }
 
 	    //free(v);
 	    return 0;
 	}
 
-	static final int ccdPtDelEdge(ccd_pt_t pt, ccd_pt_edge_t e)
+	public static final int ccdPtDelEdge(ccd_pt_t pt, ccd_pt_edge_t e)
 	{
 	    // text if any face is connected to this edge (faces[] is always
 	    // aligned to lower indices)
-	    if (e.faces[0] != NULL)
+	    if (e.faces[0] != null)
 	        return -1;
 
 	    // disconnect edge from lists of edges in vertex struct
@@ -156,14 +163,14 @@ public class CCDPolyTope {
 	    ccdListDel(e.list);
 
 	    if (pt.nearest == e){
-	        pt.nearest = NULL;
+	        pt.nearest = null;
 	    }
 
 	    //free(e);
 	    return 0;
 	}
 
-	static final int ccdPtDelFace(final ccd_pt_t pt, ccd_pt_face_t f)
+	public static final int ccdPtDelFace(final ccd_pt_t pt, ccd_pt_face_t f)
 	{
 	    ccd_pt_edge_t e;
 	    int i;
@@ -181,7 +188,7 @@ public class CCDPolyTope {
 	    ccdListDel(f.list);
 
 	    if (pt.nearest == f){
-	        pt.nearest = NULL;
+	        pt.nearest = null;
 	    }
 
 	    //free(f);
@@ -323,10 +330,12 @@ public class CCDPolyTope {
 
 	    pt.nearest_dist = CCD_REAL_MAX;
 	    pt.nearest_type = 3;
-	    pt.nearest = NULL;
+	    pt.nearest = null;
 
 	    //ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
+    	System.err.println("xxx1");
 	    for (ccd_pt_el_t v: pt.vertices) {
+	    	System.err.println("xxx2");
 	        _ccdPtNearestUpdate(pt, (ccd_pt_el_t)v);
 	    }
 
@@ -343,18 +352,18 @@ public class CCDPolyTope {
 
 
 
-	static final void ccdPtInit(ccd_pt_t pt)
+	public static final void ccdPtInit(ccd_pt_t pt)
 	{
 //	    ccdListInit(pt.vertices);
 //	    ccdListInit(pt.edges);
 //	    ccdListInit(pt.faces);
 
-	    pt.nearest = NULL;
+	    pt.nearest = null;
 	    pt.nearest_dist = CCD_REAL_MAX;
 	    pt.nearest_type = 3;
 	}
 
-	static final void ccdPtDestroy(ccd_pt_t pt)
+	public static final void ccdPtDestroy(ccd_pt_t pt)
 	{
 	    //ccd_pt_face_t f, f2;
 	    //ccd_pt_edge_t e, e2;
@@ -397,8 +406,7 @@ public class CCDPolyTope {
 	    ccdListInit(vert.edges);
 
 	    // add vertex to list
-	    //ccdListAppend(pt.vertices, vert.list);
-	    pt.vertices.add(vert);
+	    ccdListAppend(pt.vertices, vert.list);
 
 	    // update position in .nearest array
 	    _ccdPtNearestUpdate(pt, (ccd_pt_el_t)vert);
@@ -409,7 +417,7 @@ public class CCDPolyTope {
 	/**
 	 * Adds edge to polytope.
 	 */
-	static final ccd_pt_edge_t ccdPtAddEdge(ccd_pt_t pt, ccd_pt_vertex_t v1,
+	public static final ccd_pt_edge_t ccdPtAddEdge(ccd_pt_t pt, ccd_pt_vertex_t v1,
 	                                          ccd_pt_vertex_t v2)
 	{
 	    final ccd_vec3_t a, b;
@@ -425,11 +433,11 @@ public class CCDPolyTope {
 	    b = edge.vertex[1].v.v;
 	    edge.dist = ccdVec3PointSegmentDist2(ccd_vec3_origin, a, b, edge.witness);
 
+	    //TZ TODO this is weird, adding vertices to the edge-list????
 	    ccdListAppend(edge.vertex[0].edges, edge.vertex_list[0]);
 	    ccdListAppend(edge.vertex[1].edges, edge.vertex_list[1]);
 
-	    //ccdListAppend(pt.edges, edge.list);
-	    pt.edges.add(edge);
+	    ccdListAppend(pt.edges, edge.list);
 
 	    // update position in .nearest array
 	    _ccdPtNearestUpdate(pt, (ccd_pt_el_t )edge);
@@ -440,7 +448,7 @@ public class CCDPolyTope {
 	/**
 	 * Adds face to polytope.
 	 */
-	static final ccd_pt_face_t ccdPtAddFace(ccd_pt_t pt, ccd_pt_edge_t e1,
+	public static final ccd_pt_face_t ccdPtAddFace(ccd_pt_t pt, ccd_pt_edge_t e1,
 	                                          ccd_pt_edge_t e2,
 	                                          ccd_pt_edge_t e3)
 	{
@@ -469,15 +477,14 @@ public class CCDPolyTope {
 
 
 	    for (i = 0; i < 3; i++){
-	        if (face.edge[i].faces[0] == NULL){
+	        if (face.edge[i].faces[0] == null){
 	            face.edge[i].faces[0] = face;
 	        }else{
 	            face.edge[i].faces[1] = face;
 	        }
 	    }
 
-	    //ccdListAppend(pt.faces, face.list);
-	    pt.faces.add(face);
+	    ccdListAppend(pt.faces, face.list);
 
 	    // update position in .nearest array
 	    _ccdPtNearestUpdate(pt, (ccd_pt_el_t )face);
@@ -533,7 +540,7 @@ public class CCDPolyTope {
 	/**
 	 * Returns nearest element to origin.
 	 */
-	static final ccd_pt_el_t ccdPtNearest(ccd_pt_t pt)
+	public static final ccd_pt_el_t ccdPtNearest(ccd_pt_t pt)
 	{
 	    if (pt.nearest==null){
 	        _ccdPtNearestRenew(pt);

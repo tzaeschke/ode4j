@@ -177,11 +177,11 @@ public class CCD {
 //			it.next();
 //			len++;
 //		}
-//		for (ccd_pt_vertex_t v: pt.vertices) {
-//			//TODO
-//			len++;
-//		}
-		len = pt.vertices.size();
+		for (ccd_pt_vertex_t v: pt.vertices) {
+			//TODO
+			len++;
+		}
+//		len = pt.vertices.size();
 //		ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
 //			len++;
 //		}
