@@ -1,0 +1,699 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta name="google-site-verification"
+      content="dAjKqKTPDfTJBoFcbK2q23LKv1KTRF1sMQE0_RHFhFQ">
+    <meta content="text/html; charset=ISO-8859-1"
+      http-equiv="content-type">
+    <title>ode4j - A Java port of the ODE 3D physics engine and library</title>
+    <meta content="Tilmann Z&auml;schke" name="author">
+    <meta name="description" content="ode4j - A Java port of the ODE 3D
+      physics engine and library">
+  </head>
+  <body>
+    <br>
+    <div style="text-align: center;"><big><big style="font-weight:
+          bold;"><big>ode4j
+            -
+            A Java 3D Physics Engine &amp; Library</big></big></big><br>
+    </div>
+    <br>
+    <hr style="width: 100%; height: 2px;">
+    <div style="text-align: center;">The ode4j project aims to provide a
+      continuous Java port of the <a href="http://www.ode.org/"
+        target="_blank">ODE physics engine</a>.<br>
+      <br>
+      About the ODE physics engine (cited from their home page):<br>
+      <span style="font-style: italic;">ODE is an open
+        source, high performance library for simulating rigid body
+        dynamics.
+        It is fully featured, stable, mature and platform independent
+        with an
+        easy to use C/C++ API.
+        It has advanced joint types and integrated collision detection
+        with
+        friction.
+        ODE is useful for simulating vehicles, objects in virtual
+        reality
+        environments and virtual creatures. It is currently used in many
+        computer games, 3D authoring tools and simulation tools.</span><br>
+    </div>
+    <hr style="width: 100%; height: 2px;">
+    <div style="text-align: center;"><a
+        href="http://ode4j.sourceforge.net/">Home</a>&nbsp;&nbsp;
+      <a
+        href="https://sourceforge.net/project/showfiles.php?group_id=257951">Download</a>&nbsp;&nbsp;
+      <a href="https://sourceforge.net/projects/ode4j/forums">Forums</a>&nbsp;&nbsp;
+      <a
+        href="https://sourceforge.net/tracker/?group_id=257951&amp;atid=1141138">Bugs</a>&nbsp;&nbsp;
+      <a href="#mozTocId979502">Contact</a>&nbsp;&nbsp; <a
+        href="http://www.ode.org/" target="_blank">ODE</a><br>
+    </div>
+    <hr style="width: 100%; height: 2px;"><br>
+    <br>
+    <big style="font-weight: bold;">Content</big><br>
+    <ul id="mozToc">
+      <!--mozToc h3 1 h5 5 h6 6-->
+      <li><a href="#mozTocId137424">News </a></li>
+      <li><a href="#mozTocId365970">Features &amp; Screenshots<br>
+        </a></li>
+      <li><a href="#mozTocId885869">Status </a></li>
+      <li><a href="#mozTocId594998">Performance &amp; Multi-Threading<br>
+        </a></li>
+      <li><a href="#mozTocId509706">Differences to ODE for C/C++ </a></li>
+      <li><a href="#mozTocId55302">Migration Guide</a></li>
+      <li><a href="#mozTocId259113">Documentation</a></li>
+      <li><a href="#mozTocId262835">Source Code</a></li>
+      <li><a href="#mozTocId437671">Dependencies</a></li>
+      <li><a href="#mozTocId375279">License &amp; Copyright </a></li>
+      <li><a href="#mozTocId979502">Contact / Contributors </a></li>
+    </ul>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId137424"></a>News<br>
+    </h3>
+    <ul>
+      <li>2nd June 2012<br>
+        Released '1.0' of the <a
+          href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.12.0</a>
+        Java physics engine.</li>
+      <ul>
+        <li><span style="font-weight: bold;">API-Change:</span>
+          Refactoring of OdeMath method names</li>
+        <li><span style="font-weight: bold;">API-Change:</span>
+          Refactoring of OdeMath super-classes Matrix-&gt;DMatrix, ...</li>
+        <li>new functions in DGeom</li>
+        <li>Quickstep refactoring and speed up</li>
+        <li>Clean-up of demos</li>
+        <li>New TrackDemo</li>
+        <li>Bug fixes</li>
+        <li>libccd has NOT been ported</li>
+      </ul>
+      <li>16th July 2011<br>
+        Checked library compatibility. ode4j still works with latest
+        Java
+        (1.6.0_26) and lwjgl (2.7.1)<br>
+      </li>
+      <li>19th June 2010<br>
+        Released '1.4' of the <a
+          href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1</a>
+        Java physics engine.</li>
+      <ul>
+        <li>Updated javadoc for DHeightfieldData build(...) methods.</li>
+        <li>Implemented support for building DHeightfieldData from
+          short[],
+          float[] and double[].</li>
+        <li><span style="font-weight: bold;">API CHANGE</span>: Changed
+          API
+          of DHeightField and DHeightFieldData to accept Object instead
+          of
+          Object[] as type of data.</li>
+        <li>Trimesh: Trimesh support contains no known bugs except bugs
+          that are also present in ODE for C/C++. However, performance
+          has still
+          not been optimized for Java.<br>
+        </li>
+      </ul>
+      <li>30th May 2010<br>
+        Released '1.3' of the <a
+          href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1</a>
+        Java physics engine.<br>
+      </li>
+      <ul>
+        <li>Fixed bugs: <a
+href="https://sourceforge.net/tracker/?func=detail&amp;aid=3003719&amp;group_id=257951&amp;atid=1141138">infinite
+recursion
+            in DxBody</a> and <a
+href="https://sourceforge.net/tracker/?func=detail&amp;aid=2957098&amp;group_id=257951&amp;atid=1141138"></a><a
+href="https://sourceforge.net/tracker/?func=detail&amp;aid=2957098&amp;group_id=257951&amp;atid=1141138">drawstuff
+crash
+            with ATI 10.1/10.2 driver (linux)</a><br>
+        </li>
+      </ul>
+      <li>16th April 2010<br>
+        Minor updates to this page, clarified multi-threading capability
+        (also
+        applicable to release 1.2)<br>
+      </li>
+      <li>3rd February 2010<br>
+        Released '1.2' of the <a
+          href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1</a>
+        Java physics engine.<br>
+        <ul>
+          <li>Initial TRIMESH support via GIMPACT port. This is still
+            buggy!</li>
+          <li>Improved Javadoc</li>
+          <li>Fixed bugs: <a
+href="https://sourceforge.net/tracker/?func=detail&amp;aid=2912249&amp;group_id=257951&amp;atid=1141138">damping
+&amp;
+              auto-diable</a> and <a
+href="https://sourceforge.net/tracker/?func=detail&amp;aid=2905309&amp;group_id=257951&amp;atid=1141138">commandline
+parameters
+              in demos</a><br>
+          </li>
+          <li>General code clean-up</li>
+          <li>API change: DrawStuff.setOuputNull() -&gt;
+            dsSetOutputNull()</li>
+          <li>API change: renamed DContact.dSurfaceParameters to
+            DSurfaceParameters</li>
+        </ul>
+      </li>
+      <li><span style="font-style: italic;">10th Januar 2010</span><br>
+        Committed bug fixes regarding dampening of bodies and regardin
+        command
+        line parameters (see bug tracker).<br>
+        Committed <span style="font-weight: bold;">initial trimesh
+          support</span>
+        (via gimpact) to SVN. The support should be considered <span
+          style="font-style: italic;">alpha</span>
+        state, there should be no crashes, but expect weird behaviour.
+        The new
+        demo_trimesh and demo_moving_convex work reasonably well. But
+        other
+        demos (demo_cyl, demo_basket, demo_moving_trimesh,
+        demo_heightfield)
+        show problem. Any help with bughunting is welcome. Note:
+        demo_moving_convex looks broken, however it behaves exactly like
+        ode-0.11.1. The test harness is broken as well.<br>
+        I intend to make the next release once the bugs are fixed.<br>
+        <span style="font-style: italic;" title="ode4j - A Java Port Of
+          The ODE 3D Physics Engine &amp; Library"></span></li>
+      <li><span style="font-style: italic;" title="ode4j - A Java Port
+          Of The ODE 3D Physics Engine &amp; Library">11th
+          November
+          2009</span><br>
+        Some minor updates to the home page, including some new
+        screenshots.<br>
+      </li>
+      <li><span style="font-style: italic;">18th August 2009</span><br>
+        Released '1.1' of the <a
+          href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1</a>
+        Java physics engine.<br>
+        <ul>
+          <li>API port is now complete except for TLS and TRIMESH
+            support</li>
+          <li>Javadoc has been copied to the OO-API</li>
+          <li>Bugfix</li>
+          <li>Cleaned up dependencies</li>
+          <li>DVector3 and DMatrix3 are slightly faster now</li>
+          <li><span style="font-weight: bold;">API CHANGE</span>: Some
+            mathematical support functions have been altered or removed
+            (only the
+            API, not the functionality). If you find having problems
+            with the
+            changes <a href="#mozTocId979502"><span style="font-style:
+                italic;">please
+                contact
+                me</span></a>.</li>
+          <li><a href="javadoc/index.html">On-line Javadoc available</a>
+            .
+            Please note that the <span style="font-style: italic;">method</span>
+            <span style="font-style: italic;">summary doc</span>
+            is often empty, while the <span style="font-style: italic;">detailed
+method
+              doc</span> is <span style="text-decoration: underline;">not</span>
+            empty. This is due to annotations in the original ODE doc.<br>
+          </li>
+        </ul>
+        I'm again working on the TRIMESH support.<br>
+        <span style="font-style: italic;"></span></li>
+      <li><span style="font-style: italic;">20th July 2009</span><br>
+        Released '1.0' of the <a
+          href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1</a>
+        Java physics engine.<br>
+        <ul>
+          <li>Two known bugs related to OpenGL, used in the demos only.</li>
+          <li>Currently working on an OPCODE port, enabling trimesh in
+            ode4j.<br>
+          </li>
+        </ul>
+      </li>
+      <li><span style="font-style: italic;">7th July 2009</span><br>
+        Released beta-2 of ode4j-0.11.1 Java physics engine (based on
+        ODE
+        0.11.1)</li>
+      <ul>
+        <li>All bugs are fixed, except two which are on drawstuff.</li>
+        <li>Re-arranged downloadable libraries, so there are the
+          following
+          now:</li>
+        <ul>
+          <li>ode4j.tar.gz -&gt; Contains the core jar file for end
+            users.</li>
+          <li>ode4j-cpp.tar.gz -&gt; Contains the additional C-style API
+            for end users, where the developer uses the C-style API.</li>
+          <li>ode4j-src.tar.gz -&gt; All sources, including demos and
+            test
+            harnesses.</li>
+          <li>ode4j-doc.tar.gz -&gt; Generated Javadoc for public API.<br>
+          </li>
+        </ul>
+      </ul>
+      <li><span style="font-style: italic;">6th July 2009<br>
+        </span>Released beta-1 of ode4j-0.11.1 Java physics engine
+        (based
+        on ODE 0.11.1)<br>
+        Known issues can be found in the <a
+href="https://sourceforge.net/tracker/?func=browse&amp;group_id=257951&amp;atid=1141138">Bug
+          Tracker</a>. I plan to fix the test harness and the DemoBuggy
+        for the
+        next beta, possibly later this week.<br>
+        The core library is now called ode4j.jar, the optional API
+        similar to
+        C/C++ is in ode4j-cpp.jar. both are included in the
+        ode4j-sdk.jar,
+        which also contains demos, tests, sources and the javadoc.<br>
+      </li>
+      <li><span style="font-style: italic;">10th June 2009</span> <br>
+        <ul>
+          <li>Released beta 2 of ode4j Java physics engine (based on ODE
+            0.10.1)</li>
+          <li>New home page<br>
+          </li>
+        </ul>
+      </li>
+      <li><span style="font-style: italic;">5th June 2009</span> <br>
+        <ul>
+          <li>First release of ode4j: ode4j-0.10.1-beta-1 Java physics
+            engine (based on ODE
+            0.10.1)</li>
+        </ul>
+      </li>
+    </ul>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId365970"></a>Features &amp;
+      Screenshots<br>
+    </h3>
+    <ul>
+      <li>100% pure Java port of the ODE / OpenDE physics engine.
+        Native libraries are only used for the OpenGL rendering in the
+        demos
+        (thanks to <a href="http://www.lwjgl.org/">lwjgl</a>).</li>
+      <li>Fast.
+        It is in some cases even faster than the original C/C++ ODE.
+        Please
+        note that only the physics are fast. The graphical rendering in
+        the
+        demos is not optimized and quite slow.<br>
+      </li>
+      <li>Provides javadoc, ~30 demos, complete source code and test
+        harnesses (<a href="http://www.junit.org/">JUnit</a>).<br>
+      </li>
+      <li>Supports
+        all geometries from ODE: box, convex, capsule, cylinder, plane,
+        ray,
+        space, sphere, transormable geom (deprecated), heightfield (a
+        kind
+        of trimesh) and trimesh (GIMMPACT port, still alpha state).</li>
+      <li>Supports all joints from ODE: AMotor, BallJoint, ContactJoint,
+        FixedJoint (deprecated), HingeJoint, Hinge2Joint, LMotorJoint,
+        PistonJoint, Plane2DJoint, PRJoint, PUJoint,SliderJoint and
+        UniversalJoint. </li>
+      <li>Supports all spaces from ODE: SimpleSpace, HashSpace,
+        QuadTreeSpace and SAPSpace.</li>
+      <li>Java specific optimisations.</li>
+      <li>A more object oriented implementation.</li>
+      <li>Provoides an alternative API which is a direct port of the
+        original C API. This simplifies understanding the
+        existing documentation &amp; tutoriuals and helps porting other
+        ODE
+        dependent code, but is not recommended, because it is less
+        object
+        oriented. <br>
+      </li>
+    </ul>
+    For physics features, please refer to the <a
+      href="http://opende.sourceforge.net/wiki/index.php/Main_Page">ODE-Wiki</a><br>
+    <br>
+    Some screen shots from the <span style="font-weight: bold;">demo_crash</span>
+    (one of many included demos):<br>
+    <img style="width: 358px; height: 315px;" alt="demo_crash1"
+      title="demo_crash1" src="demo_crash1.png"><img style="width:
+      358px; height: 315px;" alt="demo_crash2" title="demo_crash2"
+      src="demo_crash2.png"><img style="width: 358px; height: 315px;"
+      alt="demo_crash3" title="demo_crash3" src="demo_crash3.png"><img
+      style="width: 358px; height: 315px;" alt="demo_crash4"
+      title="demo_crash4" src="demo_crash4.png"><br>
+    <br>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId885869"></a>Status<br>
+    </h3>
+    <ul>
+      <li>Currently, the port has only been tested through the available
+        test
+        harnesses and through running the included demos. Functionality
+        that is
+        not used in either may not be function correctly or may not be
+        available at all. Please point out these cases to me.</li>
+      <li>ode4j uses 'double' precision. A single ('float') precision
+        version
+        may improve performance by 10%-20% (based on a singular test).
+        Also,
+        the code provides some features that should allow a rather
+        simple port.
+        But there are currently no plans for such a port.</li>
+      <li>Trimesh / GIMPACT: Trimesh support contains no known bugs
+        except
+        bugs that are
+        also present in ODE for C/C++. However, performance has still
+        not been
+        optimized for Java.</li>
+    </ul>
+    Next Steps<br>
+    <ul>
+      <li>Look into optimizing OpenGL usage in demos. This should also
+        fix
+        the GL related bugs.<br>
+      </li>
+      <li>Measure performance.<br>
+      </li>
+      <li>Improve javadoc (copy it from C++ API to object oriented API</li>
+      <li>Improve performance (DVector3 and DLCP)<br>
+      </li>
+      <li>Fix known <a
+href="https://sourceforge.net/tracker/?func=browse&amp;group_id=257951&amp;atid=1141138">bugs</a></li>
+      <li>Improve webpage.<br>
+      </li>
+    </ul>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId594998"></a>Performance &amp;
+      Multi-Threading<br>
+    </h3>
+    ode4j has been optimized for performance, leading to a significant
+    differences to the original code, mostly with respect to the
+    handling
+    of DVector3 and DMatrix3 classes. More improvements are on the way.<br>
+    For evaluating performance, please do NOT use the demos! They rely
+    on
+    the internal 'drawstuff' library. The way in which drawstuff uses
+    OpenGL is not optimal. While this does not affect performance much
+    under C/C++, it severely affects performance when using the
+    Java-OpenGL API provided by lwjgl. In other words:<br>
+    <ul>
+      <li>When profiling any of the included demos, you will see that
+        most
+        of
+        the time is spent in OpenGL calls (at least on my SUSE 11.1
+        64bit
+        system / ATI Radeon HD 3850).</li>
+      <li>As far as I can tell, this is not a problem with lwjgl, but
+        could
+        be fixed by optimizing 'drawstuff'.</li>
+      <li>To profile ode4j, please use applications that do not use
+        drawstuff.
+        To profile the existing demos, drawstuff can be disabled by
+        calling <code>DS_API.dsSetOutputNull()</code>
+        at the beginning of any demo.</li>
+      <li>ode4j is in certain cases faster that ODE. I have investigated
+        this only briefly, but I have the impression that Java can draw
+        its
+        advantage from using the garbage collector for arrays. This
+        means
+        de-allocation in Java occurs in a 2nd thread in parallel to
+        computations, while in C/C++ de-allocation (which is expensive)
+        occurs
+        in the main thread. </li>
+    </ul>
+    <span style="font-weight: bold;">Multi-Threading</span><br>
+    I did not port ODEs threading model, namely the use of ATOMIC.
+    Instead,
+    ode4j follow are very simple approach to multi-threading support by
+    avoid mutable static fields. That means ode4j can be used in a
+    multi-threaded environment under the following conditions:<br>
+    <ul>
+      <li>Any particular world should not be used be more then one
+        thread
+        at a time, reading or writing</li>
+      <li>Multiple worlds can be used in concurrently by multiple
+        threads
+        as long as every world is only access by a single thread at a
+        given time</li>
+      <li>A world can be passed around (and then used) between threads
+        simply by passing on the reference (this is unlike ODE in C/C++)</li>
+      <li>The method <code>OdeHelper.allocateODEDataForThread(int)</code>
+        does not need to be called as it does nothing (and never did).
+        Actually
+        it will be removed in one of the next releases.</li>
+      <li> <code>OdeHelper.init2(...)</code> needs to be called only
+        once
+        per application, not for every thread (in fact, calling it
+        multiple
+        times should fail).</li>
+      <li><code>OdeHelper.init2(...)</code> needs to have returned
+        before
+        any thread uses ode4j.<br>
+      </li>
+      <li>A future release may introduce more powerful mutlithreading.<br>
+      </li>
+    </ul>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId509706"></a>Differences to ODE
+      for C/C++<br>
+    </h3>
+    <ul>
+      <li>API: The preferred API of the ODE projects appears to be the C
+        API
+        (it is more complete and contains all the documentation). The
+        preferred
+        API in ode4j is the OO-API.</li>
+      <li>Class names all start with a 'D' rather than 'd'.</li>
+      <li>The d***ID types have not been ported. Simply use the
+        according D*** interfaces. Also, the type hierarchy has changed,
+        the
+        D*** classes are now interfaces that are implemented by the
+        according Dx*** classes.<br>
+      </li>
+      <li>Main access points in ode4j are <code>OdeHelper</code>
+        (initialisation methods and a factory for creating
+        most classes), <code>OdeConfig</code> (for configuration) and <code>OdeConstants</code>
+        (providing many of the contants used in ode4j).</li>
+      <li>Some of the math has been moved inside the <code>DVector3</code>
+        and <code>DMatrix3</code> classes.</li>
+      <li>ode4j provides <code>DVector3C</code> and <code>DMatrix3C</code>
+        interfaces that provide immutable encapsulation.<br>
+      </li>
+    </ul>
+    Methods<br>
+    <ul>
+      <li>All global methods have the leading 'd' removed and the 2nd
+        letter lowercased. Most of the global methods can be found in <code>OdeHelper</code>.
+        For
+        example: <code>dInitOde2(...)</code> -&gt; <code>OdeHelper.initOde2(...)</code>.</li>
+      <li>All 'create' methods have the 'create' moved to the beginning:
+        <code>OdeHelper.createMass()</code>.</li>
+      <li>To
+        find the Java method name for a global C method, one can usually
+        remove
+        the dClassName from the beginning and remove the first argument,
+        for
+        example <code>dJointAttach( myJoint, b1, b2 )</code> becomes <code>myJoint.attach(
+b1,
+b2
+          )</code>. This is also valid when looking for C++ function
+        names
+        in ODE itself.<br>
+        Another example: <code>dJointSetPistonAnchor ( piston, ... );</code>
+        becomes <code>piston.setAnchor ( ... );</code> .<br>
+      </li>
+      <li>Unlike ODE, the preferred policy for getting complex values
+        from
+        an object is not to pass in an empty array:<br>
+        <code>DVector3 result = new DVector3();<br>
+          box.getSides( result )</code>;<br>
+        but to return an immutable object:<br>
+        <code>DVector3C result = box.getLengths();</code>&nbsp;&nbsp;
+        //The
+        trailing '<code>C</code>' on <code>DVector3C</code> and other
+        classes
+        indicates and constant / immutable object.<br>
+        In many cases this avoids creating unnecessary temporary objects
+        and
+        also makes the code more compact. It also avoids a possible
+        spelling
+        mistake, when typing 'g' instead of 's' (get &lt;-&gt; set).<br>
+      </li>
+    </ul>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId55302"></a>Migration Guide</h3>
+    The migration guide is not only for migrating code from C/C++ to
+    Java,
+    but also for better understanding the existing documentation.<br>
+    TBW.<br>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId259113"></a>Documentation</h3>
+    <span style="font-weight: bold;">ode4j documentation</span><br>
+    This only contains ported javadoc and documentation specific to the
+    Java version of ODE. For documentation on physics and mathematics
+    please refer to the '<span style="font-weight: bold;">ODE
+      documentation</span>'
+    further
+    down.<br>
+    <a href="javadoc/index.html">On-line javadoc</a> (or download <a
+      href="https://sourceforge.net/projects/ode4j/files/">here</a>)<br>
+    The <a href="#mozTocId365970">demos</a> in the sourcecode provide
+    good
+    examples for many applications<br>
+    <a href="https://sourceforge.net/projects/ode4j/forums">Forums</a><br>
+    <a
+href="https://sourceforge.net/pm/task.php?group_project_id=59343&amp;group_id=257951&amp;func=browse"
+      target="_blank">Tasks</a><br>
+    <a
+href="https://sourceforge.net/tracker/?func=browse&amp;group_id=257951&amp;atid=1141138"
+      target="_blank">Bugs</a><br>
+    <a href="https://lists.sourceforge.net/lists/listinfo/ode4j-users"
+      target="_blank">Mailing List</a> (web interface). To join e-mail
+    to <span style="text-decoration: underline;"
+      class="moz-txt-link-abbreviated">ode4j-users-request@lists.sourceforge.net</span>
+    with the word 'info' in the header or in the body.<br>
+    <a href="#ProjectStructure">Code Structure</a><br>
+    <br>
+    <span style="font-weight: bold;">ODE documentation</span><br>
+    <a target="_blank" href="http://www.ode.org/ode-docs.html">ODE docs</a><br>
+    <a href="http://opende.sourceforge.net/wiki/index.php/Main_Page">ODE-Wiki</a><br>
+    <a href="http://www.ode.org/community.html" target="_blank">ODE
+      community</a><br>
+    <br>
+    <span style="font-weight: bold;">Further links:</span><br>
+    <a href="http://www.essentialmath.com/tutorial.htm">http://www.essentialmath.com/tutorial.htm</a><br>
+    <a href="http://realtimecollisiondetection.net/books/list/">http://realtimecollisiondetection.net/books/list</a><br>
+    <br>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId262835"></a>Source Code</h3>
+    <span style="font-style: italic;">Please keep in mind that the code
+      is
+      ported from C/C++ and does therefore often not obey common Java
+      coding
+      practices.</span><br style="font-style: italic;">
+    <span style="font-style: italic;">Also I avoided cleaning up the
+      code
+      too much, in order to simplify migration to newer ODE releases.</span><br>
+    <br>
+    <a style="text-decoration: underline;" name="ProjectStructure"></a><span
+      style="font-weight: bold;">Project Structure of downloadable files</span><br>
+    <ul>
+      <li><a href="https://sourceforge.net/projects/ode4j/files/">ode4j.tar.gz</a>
+        -&gt; Contains the core jar file for end users.<br>
+      </li>
+      <li><a href="https://sourceforge.net/projects/ode4j/files/">ode4j-cpp.tar.gz</a>
+        -&gt; Contains the additional C-style API for end users, in case
+        the
+        developer uses the C-style API.</li>
+      <li><a href="https://sourceforge.net/projects/ode4j/files/">ode4j-src.tar.gz</a>
+        -&gt; All sources, including demos and test harnesses.</li>
+      <li><a href="https://sourceforge.net/projects/ode4j/files/">ode4j-doc.tar.gz</a>
+        -&gt; Generated javadoc for public API.<br>
+      </li>
+    </ul>
+    <span style="font-weight: bold;">Project Structure - SVN</span><br>
+    <ul>
+      <li>cpp4j: <a href="http://sourceforge.net/projects/cpp4j/">This
+          is
+          from a different project of mine.</a> It contains helper
+        functions that
+        I used for porting the code from C/C++ to Java.<br>
+      </li>
+      <li>ode4j: This is the core repository containing all
+        functionality
+        to run physics simulations.</li>
+      <li>ode4j-cpp:
+        This provides an optional additional static C-like API (which is
+        the
+        preferred
+        API in ODE for C/C++). It can be used for reference (most of the
+        ODE
+        docs refer to the C-like API) or when migrating projects from
+        C/C++ to
+        Java.</li>
+      <li>ode4j-sdk: This repository provides additional code for
+        developers
+        like demos, sources, javadoc and test harnesses. There are two
+        sets of
+        demos; the demos in'org.ode4j.democpp' are ports of the original
+        demos
+        and require the C-like API (from
+        ode4j-cpp). The demos in 'org.ode4j.demo' are updated versions
+        of the
+        'democpp' demos, such that they now use the OO-API provided by
+        ode4j.jar.<br>
+      </li>
+    </ul>
+    The source code is available from the SVN repository at
+    sourcefourge.net:<br>
+    To import the code into <a href="http://www.eclipse.org/">Eclipse</a>
+    3.4, 3.5, 3.6:<br>
+    <ol>
+      <li>Download and install a SVN plugin for Eclipse (The following
+        steps are for <a href="http://www.eclipse.org/subversive/"
+          target="_blank">Subversive</a>, an alternative plug-in is <a
+          href="http://subclipse.tigris.org/" target="_blank">Subclipse</a>)</li>
+      <li>Create a new SVN project from existing source</li>
+      <li>URL =
+        https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-core</li>
+      <li>Press "Next &gt;"</li>
+      <li>Browse to select "trunk"</li>
+      <li>Press "Finish"&nbsp; (For SVN Project Set-Up)</li>
+      <li>Press "Finish"&nbsp; (For check-out)</li>
+    </ol>
+    Perform the steps above for the following sub-projects:<br>
+    <ul>
+      <li>https://cpp4j.svn.sourceforge.net/svnroot/cpp4j</li>
+      <li>https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-core</li>
+      <li>https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-cpp</li>
+      <li>https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-sdk</li>
+    </ul>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId437671"></a>Dependencies</h3>
+    The ode4j-core library requires currently no other libraries except
+    a <a href="http://www.java.com/">Java</a> 6 SE JVM or later.<br>
+    The ode4j-sdk requires <a href="http://www.lwjgl.org/">lwjgl</a>-2.0.1
+or
+    later (confirmed with 2.7.1) for the 'drawstuff' package used in the
+    demos. You will probably reuire
+    <span style="font-weight: bold;">lwjgl.jar</span> and <span
+      style="font-weight: bold;">lwjgl_util.jar</span>. Please don't
+    forget
+    to include the .jar file <span style="font-style: italic;">and</span>
+    the binaries into your eclipse project. Binaries can be included in
+    eclipse by right-clicking on your propect, then navigate to "Build
+    Path"-&gt;"Libraries", then unfold the lwjgl.jar and add the folder
+    that contains the binaries for your platform.<br>
+    The ode4j-sdk requires <a href="http://www.junit.org/">JUnit</a>
+    4.5
+    for the test harnesses.<br>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId375279"></a>Licensing &amp;
+      Copyright<br>
+    </h3>
+    This library is under copyright by Tilmann Z&auml;schke (Java port),
+    Russell L. Smith (copyright
+    holder of the original ODE code) and Francisco Leon (copyright
+    holder of the original GIMPACT code).<br>
+    <br>
+    This library is free software; you can redistribute it and/or modify
+    it
+    under the terms of EITHER:<br>
+    (1) The GNU Lesser General Public License as published by the Free
+    Software Foundation; either version 2.1 of the License, or (at your
+    option) any later version. The text of the GNU Lesser General Public
+    License is included with this library in the file LICENSE.TXT.<br>
+    (2) The BSD-style license that is included with this library in the
+    files ODE-LICENSE-BSD.TXT and ODE4j-LICENSE-BSD.TXT.<br>
+    <br>
+    This library is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files
+    LICENSE.TXT, ODE-LICENSE-BSD.TXT, GIMPACT-LICENSE-BSD.TXT,
+    GIMPACT-LICENSE-LGPL.TXT and ODE4J-LICENSE-BSD.TXT for more
+    details.<br>
+    <br>
+    The LICENSE.TXT, ODE-LICENSE-BSD.TXT, GIMPACT-LICENSE-BSD.TXT,
+    GIMPACT-LICENSE-LGPL.TXT and ODE4J-LICENSE-BSD.TXT files
+    are available in the source code.<br>
+    <br>
+    <h3><a class="mozTocH3" name="mozTocId979502"></a>Contact /
+      Contributors<br>
+    </h3>
+    Contributors:<br>
+    Tilmann Z&auml;schke:&nbsp; ode4j AT gmx DOT de<br>
+    <br>
+  </body>
+</html>
