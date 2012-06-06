@@ -172,16 +172,9 @@ public class CCD {
 
 		// compute median
 		len = 0;
-//		ccd_iter_t<?> it = ccd_iter(pt.vertices.next);
-//		while (it.hasNext()) {
-//			it.next();
-//			len++;
-//		}
 		for (ccd_pt_vertex_t v: pt.vertices) {
-			//TODO
 			len++;
 		}
-//		len = pt.vertices.size();
 //		ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
 //			len++;
 //		}
@@ -190,9 +183,6 @@ public class CCD {
 		vs = new ccd_pt_vertex_t[len];// CCD_ALLOC_ARR(ccd_pt_vertex_t *, len);
 		i = 0;
 //		ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
-//		ccd_iter_t<ccd_pt_vertex_t> it2 = ccd_iter(pt.vertices.next);
-//		while (it2.hasNext()) {
-//			v = it2.next();
 		for (ccd_pt_vertex_t v: pt.vertices) {
 			vs[i++] = v;
 		}

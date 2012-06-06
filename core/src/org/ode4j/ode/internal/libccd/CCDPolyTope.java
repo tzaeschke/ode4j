@@ -71,7 +71,7 @@ public class CCDPolyTope {
 
 	    int id;
 	    final ccd_support_t v = new ccd_support_t();
-	    ccd_list_t<ccd_pt_edge_t> edges = new ccd_list_t<ccd_pt_edge_t>(null); //!< List of edges
+	    ccd_list_t<ccd_pt_vertex_t> edges = new ccd_list_t<ccd_pt_vertex_t>(null); //!< List of edges
 		public ccd_support_t v() {
 			return v;
 		}

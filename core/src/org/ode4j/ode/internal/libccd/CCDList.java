@@ -169,7 +169,6 @@ public class CCDList {
 	/**
 	 * Returns true if list is empty.
 	 */
-	//@SuppressWarnings("rawtypes")
 	static final <T> boolean ccdListEmpty(final ccd_list_t<T> head)
 	{
 	    return head.next == head;
@@ -178,9 +177,7 @@ public class CCDList {
 	/**
 	 * Appends item to end of the list l.
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	//static final <T> void ccdListAppend(ccd_list_t<T> l, ccd_list_t<T> newccd)
-	static final void ccdListAppend(ccd_list_t l, ccd_list_t newccd)
+	static final <T> void ccdListAppend(ccd_list_t<T> l, ccd_list_t<T> newccd)
 	{
 	    newccd.prev = l.prev;
 	    newccd.next = l;
@@ -191,7 +188,6 @@ public class CCDList {
 	/**
 	 * Removes item from list.
 	 */
-	//@SuppressWarnings({ "rawtypes", "unchecked" })
 	static final <T> void ccdListDel(ccd_list_t<T> item)
 	{
 	    item.next.prev = item.prev;
