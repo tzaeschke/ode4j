@@ -258,15 +258,15 @@ public class TestBoxBox {
 
 	private static void pConf(ccd_box_t box1, ccd_box_t box2, final ccd_vec3_t v)
 	{
-	    fprintf(stdout, "# box1.pos: [%lf %lf %lf]\n",
+	    fprintf(stdout, "# box1.pos: [%f %f %f]\n",
 	            ccdVec3X(box1.pos), ccdVec3Y(box1.pos), ccdVec3Z(box1.pos));
-	    fprintf(stdout, "# box1.quat: [%lf %lf %lf %lf]\n",
+	    fprintf(stdout, "# box1.quat: [%f %f %f %f]\n",
 	            box1.quat.get0(), box1.quat.get1(), box1.quat.get2(), box1.quat.get3());
-	    fprintf(stdout, "# box2.pos: [%lf %lf %lf]\n",
+	    fprintf(stdout, "# box2.pos: [%f %f %f]\n",
 	            ccdVec3X(box2.pos), ccdVec3Y(box2.pos), ccdVec3Z(box2.pos));
-	    fprintf(stdout, "# box2.quat: [%lf %lf %lf %lf]\n",
+	    fprintf(stdout, "# box2.quat: [%f %f %f %f]\n",
 	            box2.quat.get0(), box2.quat.get1(), box2.quat.get2(), box2.quat.get3());
-	    fprintf(stdout, "# sep: [%lf %lf %lf]\n",
+	    fprintf(stdout, "# sep: [%f %f %f]\n",
 	            ccdVec3X(v), ccdVec3Y(v), ccdVec3Z(v));
 	    fprintf(stdout, "#\n");
 	}
