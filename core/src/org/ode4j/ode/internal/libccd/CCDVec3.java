@@ -45,11 +45,14 @@ public class CCDVec3 {
 	public static final double CCD_ZERO = 0;
 
 	public static class ccd_vec3_t {
-		final double[] v = new double[3];
+		//TZ: fields are much faster than arrays.
+		double v0;
+		double v1;
+		double v2;
 	    public ccd_vec3_t(double x, double y, double z) {
-			v[0] = x;
-			v[1] = y;
-			v[2] = z;
+			v0 = x;
+			v1 = y;
+			v2 = z;
 		}
 
 		public ccd_vec3_t() {
@@ -57,22 +60,28 @@ public class CCDVec3 {
 		}
 
 		public void set(double x, double y, double z) {
-			v[0] = x;
-			v[1] = y;
-			v[2] = z;
+			v0 = x;
+			v1 = y;
+			v2 = z;
 		}
 		public double get0() {
-			return v[0];
+			return v0;
 		}
 		public double get1() {
-			return v[1];
+			return v1;
 		}
 		public double get2() {
-			return v[2];
+			return v2;
 		}
 
 		public void add(int pos, double d) {
-			v[pos] += d;
+			switch(pos) {
+			case 0: v0+=d; break;
+			case 1: v1+=d; break;
+			case 2: v2+=d; break;
+			default:
+				throw new IllegalArgumentException();
+			}
 		}
 	};
 
@@ -127,17 +136,17 @@ public class CCDVec3 {
 
 	public static final double ccdVec3X(final ccd_vec3_t v)
 	{
-	    return v.v[0];
+	    return v.v0;
 	}
 
 	public static final double ccdVec3Y(final ccd_vec3_t v)
 	{
-	    return v.v[1];
+	    return v.v1;
 	}
 
 	public static final double ccdVec3Z(final ccd_vec3_t v)
 	{
-	    return v.v[2];
+	    return v.v2;
 	}
 
 	/**
@@ -170,16 +179,16 @@ public class CCDVec3 {
 
 	public static final void ccdVec3Set(ccd_vec3_t v, double x, double y, double z)
 	{
-	    v.v[0] = x;
-	    v.v[1] = y;
-	    v.v[2] = z;
+	    v.v0 = x;
+	    v.v1 = y;
+	    v.v2 = z;
 	}
 
 	public static final void ccdVec3Set(ccd_vec3_t v, DVector3C xyz)
 	{
-	    v.v[0] = xyz.get0();
-	    v.v[1] = xyz.get1();
-	    v.v[2] = xyz.get2();
+	    v.v0 = xyz.get0();
+	    v.v1 = xyz.get1();
+	    v.v2 = xyz.get2();
 	}
 
 	/**
@@ -188,9 +197,9 @@ public class CCDVec3 {
 	public static final void ccdVec3Copy(ccd_vec3_t v, final ccd_vec3_t w)
 	{
 	    //*v = *w;
-		v.v[0] = w.v[0];
-		v.v[1] = w.v[1];
-		v.v[2] = w.v[2];
+		v.v0 = w.v0;
+		v.v1 = w.v1;
+		v.v2 = w.v2;
 	}
 
 	/**
@@ -198,18 +207,18 @@ public class CCDVec3 {
 	 */
 	static final void ccdVec3Sub(ccd_vec3_t v, final ccd_vec3_t w)
 	{
-	    v.v[0] -= w.v[0];
-	    v.v[1] -= w.v[1];
-	    v.v[2] -= w.v[2];
+	    v.v0 -= w.v0;
+	    v.v1 -= w.v1;
+	    v.v2 -= w.v2;
 	}
 	/**
 	 * d = v - w
 	 */
 	static final void ccdVec3Sub2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w)
 	{
-	    d.v[0] = v.v[0] - w.v[0];
-	    d.v[1] = v.v[1] - w.v[1];
-	    d.v[2] = v.v[2] - w.v[2];
+	    d.v0 = v.v0 - w.v0;
+	    d.v1 = v.v1 - w.v1;
+	    d.v2 = v.v2 - w.v2;
 	}
 
 	/**
@@ -217,9 +226,9 @@ public class CCDVec3 {
 	 */
 	public static final void ccdVec3Add(ccd_vec3_t v, final ccd_vec3_t w)
 	{
-	    v.v[0] += w.v[0];
-	    v.v[1] += w.v[1];
-	    v.v[2] += w.v[2];
+	    v.v0 += w.v0;
+	    v.v1 += w.v1;
+	    v.v2 += w.v2;
 	}
 
 	/**
@@ -227,9 +236,9 @@ public class CCDVec3 {
 	 */
 	public static final void ccdVec3Scale(ccd_vec3_t d, double k)
 	{
-	    d.v[0] *= k;
-	    d.v[1] *= k;
-	    d.v[2] *= k;
+	    d.v0 *= k;
+	    d.v1 *= k;
+	    d.v2 *= k;
 	}
 
 	/**
@@ -248,9 +257,9 @@ public class CCDVec3 {
 	{
 	    double dot;
 
-	    dot  = a.v[0] * b.v[0];
-	    dot += a.v[1] * b.v[1];
-	    dot += a.v[2] * b.v[2];
+	    dot  = a.v0 * b.v0;
+	    dot += a.v1 * b.v1;
+	    dot += a.v2 * b.v2;
 	    return dot;
 	}
 
@@ -259,9 +268,9 @@ public class CCDVec3 {
 	 */
 	static final void ccdVec3Cross(ccd_vec3_t d, final ccd_vec3_t a, final ccd_vec3_t b)
 	{
-	    d.v[0] = (a.v[1] * b.v[2]) - (a.v[2] * b.v[1]);
-	    d.v[1] = (a.v[2] * b.v[0]) - (a.v[0] * b.v[2]);
-	    d.v[2] = (a.v[0] * b.v[1]) - (a.v[1] * b.v[0]);
+	    d.v0 = (a.v1 * b.v2) - (a.v2 * b.v1);
+	    d.v1 = (a.v2 * b.v0) - (a.v0 * b.v2);
+	    d.v2 = (a.v0 * b.v1) - (a.v1 * b.v0);
 	}
 	//static CCD_VEC3(__ccd_vec3_origin, CCD_ZERO, CCD_ZERO, CCD_ZERO);
 	/**

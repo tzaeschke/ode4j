@@ -22,24 +22,25 @@ import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 public class CCDQuat {
 
 	public static class ccd_quat_t {
-	    double[] q = new double[4]; //!< x, y, z, w
+		//TZ: fields are much faster than arrays.
+	    double q0, q1, q2, q3; //!< x, y, z, w
 	    public void set(double x, double y, double z, double w) {
-	    	q[0] = x;
-	    	q[1] = y;
-	    	q[2] = z;
-	    	q[3] = w;
+	    	q0 = x;
+	    	q1 = y;
+	    	q2 = z;
+	    	q3 = w;
 	    }
 		public Object get0() {
-			return q[0];
+			return q0;
 		}
 		public Object get1() {
-			return q[1];
+			return q1;
 		}
 		public Object get2() {
-			return q[2];
+			return q2;
 		}
 		public Object get3() {
-			return q[3];
+			return q3;
 		}
 	};
 
@@ -49,10 +50,10 @@ public class CCDQuat {
 	{
 	    double len;
 
-	    len  = q.q[0] * q.q[0];
-	    len += q.q[1] * q.q[1];
-	    len += q.q[2] * q.q[2];
-	    len += q.q[3] * q.q[3];
+	    len  = q.q0 * q.q0;
+	    len += q.q1 * q.q1;
+	    len += q.q2 * q.q2;
+	    len += q.q3 * q.q3;
 
 	    return len;
 	}
@@ -64,19 +65,19 @@ public class CCDQuat {
 
 	public static final void ccdQuatSet(ccd_quat_t q, double x, double y, double z, double w)
 	{
-	    q.q[0] = x;
-	    q.q[1] = y;
-	    q.q[2] = z;
-	    q.q[3] = w;
+	    q.q0 = x;
+	    q.q1 = y;
+	    q.q2 = z;
+	    q.q3 = w;
 	}
 
 	static final void ccdQuatCopy(ccd_quat_t dest, final ccd_quat_t src)
 	{
 		//*dest = *src;
-	    dest.q[0] = src.q[0];
-	    dest.q[1] = src.q[1];
-	    dest.q[2] = src.q[2];
-	    dest.q[3] = src.q[3];
+	    dest.q0 = src.q0;
+	    dest.q1 = src.q1;
+	    dest.q2 = src.q2;
+	    dest.q3 = src.q3;
 	}
 
 
@@ -103,15 +104,15 @@ public class CCDQuat {
 
 	    // axis==0? (treat this the same as angle==0 with an arbitrary axis)
 	    if (n < CCD_EPS){
-	        q.q[0] = q.q[1] = q.q[2] = CCD_ZERO;
-	        q.q[3] = CCD_ONE;
+	        q.q0 = q.q1 = q.q2 = CCD_ZERO;
+	        q.q3 = CCD_ONE;
 	    }else{
 	        s = Math.sin(a)/n;
 
-	        q.q[3] = Math.cos(a);
-	        q.q[0] = x*s;
-	        q.q[1] = y*s;
-	        q.q[2] = z*s;
+	        q.q3 = Math.cos(a);
+	        q.q0 = x*s;
+	        q.q1 = y*s;
+	        q.q2 = z*s;
 
 	        ccdQuatNormalize(q);
 	    }
@@ -120,9 +121,10 @@ public class CCDQuat {
 
 	static final void ccdQuatScale(ccd_quat_t q, double k)
 	{
-	    int i;
-	    for (i = 0; i < 4; i++)
-	        q.q[i] *= k;
+		q.q0 *= k;
+		q.q1 *= k;
+		q.q2 *= k;
+		q.q3 *= k;
 	}
 
 	
@@ -142,22 +144,22 @@ public class CCDQuat {
 	static final void ccdQuatMul2(ccd_quat_t q,
 	                             final ccd_quat_t a, final ccd_quat_t b)
 	{
-	    q.q[0] = a.q[3] * b.q[0]
-	                + a.q[0] * b.q[3]
-	                + a.q[1] * b.q[2]
-	                - a.q[2] * b.q[1];
-	    q.q[1] = a.q[3] * b.q[1]
-	                + a.q[1] * b.q[3]
-	                - a.q[0] * b.q[2]
-	                + a.q[2] * b.q[0];
-	    q.q[2] = a.q[3] * b.q[2]
-	                + a.q[2] * b.q[3]
-	                + a.q[0] * b.q[1]
-	                - a.q[1] * b.q[0];
-	    q.q[3] = a.q[3] * b.q[3]
-	                - a.q[0] * b.q[0]
-	                - a.q[1] * b.q[1]
-	                - a.q[2] * b.q[2];
+	    q.q0 = a.q3 * b.q0
+	                + a.q0 * b.q3
+	                + a.q1 * b.q2
+	                - a.q2 * b.q1;
+	    q.q1 = a.q3 * b.q1
+	                + a.q1 * b.q3
+	                - a.q0 * b.q2
+	                + a.q2 * b.q0;
+	    q.q2 = a.q3 * b.q2
+	                + a.q2 * b.q3
+	                + a.q0 * b.q1
+	                - a.q1 * b.q0;
+	    q.q3 = a.q3 * b.q3
+	                - a.q0 * b.q0
+	                - a.q1 * b.q1
+	                - a.q2 * b.q2;
 	}
 
 	
@@ -173,10 +175,10 @@ public class CCDQuat {
 
 	    len2 = CCD_ONE / len2;
 
-	    q.q[0] = -q.q[0] * len2;
-	    q.q[1] = -q.q[1] * len2;
-	    q.q[2] = -q.q[2] * len2;
-	    q.q[3] = q.q[3] * len2;
+	    q.q0 = -q.q0 * len2;
+	    q.q1 = -q.q1 * len2;
+	    q.q2 = -q.q2 * len2;
+	    q.q3 = q.q3 * len2;
 
 	    return 0;
 	}
@@ -200,10 +202,10 @@ public class CCDQuat {
 	    double w, x, y, z, ww, xx, yy, zz, wx, wy, wz, xy, xz, yz;
 	    double vx, vy, vz;
 
-	    w = q.q[3];
-	    x = q.q[0];
-	    y = q.q[1];
-	    z = q.q[2];
+	    w = q.q3;
+	    x = q.q0;
+	    y = q.q1;
+	    z = q.q2;
 	    ww = w*w;
 	    xx = x*x;
 	    yy = y*y;
