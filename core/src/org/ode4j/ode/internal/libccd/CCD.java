@@ -172,7 +172,7 @@ public class CCD {
 
 		// compute median
 		len = 0;
-		for (ccd_pt_vertex_t v: pt.vertices) {
+		for (@SuppressWarnings("unused") ccd_pt_vertex_t v: pt.vertices) {
 			len++;
 		}
 //		ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
@@ -370,7 +370,7 @@ public class CCD {
 		// get last added as A
 		A = ccdSimplexLast(simplex);
 		// get the other point
-		B = ccdSimplexPoint(simplex, 0);
+		B = ccdSimplexPoint0(simplex);
 		// compute AB oriented segment
 		ccdVec3Sub2(AB, B.v, A.v);
 		// compute AO vector
@@ -389,7 +389,7 @@ public class CCD {
 		// check if origin is in area where AB segment is
 		if (ccdIsZero(dot) || dot < CCD_ZERO){
 			// origin is in outside are of A
-			ccdSimplexSet(simplex, 0, A);
+			ccdSimplexSet0(simplex, A);
 			ccdSimplexSetSize(simplex, 1);
 			ccdVec3Copy(dir, AO);
 		}else{
@@ -416,8 +416,8 @@ public class CCD {
 		// get last added as A
 		A = ccdSimplexLast(simplex);
 		// get the other points
-		B = ccdSimplexPoint(simplex, 1);
-		C = ccdSimplexPoint(simplex, 0);
+		B = ccdSimplexPoint1(simplex);
+		C = ccdSimplexPoint0(simplex);
 
 		// check touching contact
 		dist = ccdVec3PointTriDist2(ccd_vec3_origin, A.v, B.v, C.v, null);
@@ -446,19 +446,19 @@ public class CCD {
 			dot = ccdVec3Dot(AC, AO);
 			if (ccdIsZero(dot) || dot > CCD_ZERO){
 				// C is already in place
-				ccdSimplexSet(simplex, 1, A);
+				ccdSimplexSet1(simplex, A);
 				ccdSimplexSetSize(simplex, 2);
 				tripleCross(AC, AO, AC, dir);
 			}else{
 				//ccd_do_simplex3_45:
 				dot = ccdVec3Dot(AB, AO);
 				if (ccdIsZero(dot) || dot > CCD_ZERO){
-					ccdSimplexSet(simplex, 0, B);
-					ccdSimplexSet(simplex, 1, A);
+					ccdSimplexSet0(simplex, B);
+					ccdSimplexSet1(simplex, A);
 					ccdSimplexSetSize(simplex, 2);
 					tripleCross(AB, AO, AB, dir);
 				}else{
-					ccdSimplexSet(simplex, 0, A);
+					ccdSimplexSet0(simplex, A);
 					ccdSimplexSetSize(simplex, 1);
 					ccdVec3Copy(dir, AO);
 				}
@@ -471,12 +471,12 @@ public class CCD {
 				//TZ copied to avoid goto
 				dot = ccdVec3Dot(AB, AO);
 				if (ccdIsZero(dot) || dot > CCD_ZERO){
-					ccdSimplexSet(simplex, 0, B);
-					ccdSimplexSet(simplex, 1, A);
+					ccdSimplexSet0(simplex, B);
+					ccdSimplexSet1(simplex, A);
 					ccdSimplexSetSize(simplex, 2);
 					tripleCross(AB, AO, AB, dir);
 				}else{
-					ccdSimplexSet(simplex, 0, A);
+					ccdSimplexSet0(simplex, A);
 					ccdSimplexSetSize(simplex, 1);
 					ccdVec3Copy(dir, AO);
 				}
@@ -487,8 +487,8 @@ public class CCD {
 				}else{
 					ccd_support_t Ctmp = new ccd_support_t();
 					ccdSupportCopy(Ctmp, C);
-					ccdSimplexSet(simplex, 0, B);
-					ccdSimplexSet(simplex, 1, Ctmp);
+					ccdSimplexSet0(simplex, B);
+					ccdSimplexSet1(simplex, Ctmp);
 
 					ccdVec3Copy(dir, ABC);
 					ccdVec3Scale(dir, -CCD_ONE);
@@ -515,9 +515,9 @@ public class CCD {
 		// get last added as A
 		A = ccdSimplexLast(simplex);
 		// get the other points
-		B = ccdSimplexPoint(simplex, 2);
-		C = ccdSimplexPoint(simplex, 1);
-		D = ccdSimplexPoint(simplex, 0);
+		B = ccdSimplexPoint2(simplex);
+		C = ccdSimplexPoint1(simplex);
+		D = ccdSimplexPoint0(simplex);
 
 		// check if tetrahedron is really tetrahedron (has volume > 0)
 		// if it is not simplex can't be expanded and thus no intersection is
@@ -575,18 +575,18 @@ public class CCD {
 			// case
 
 			// D and C are in place
-			ccdSimplexSet(simplex, 2, A);
+			ccdSimplexSet2(simplex, A);
 			ccdSimplexSetSize(simplex, 3);
 		}else if (!AC_O){
 			// C is farthest
-			ccdSimplexSet(simplex, 1, D);
-			ccdSimplexSet(simplex, 0, B);
-			ccdSimplexSet(simplex, 2, A);
+			ccdSimplexSet1(simplex, D);
+			ccdSimplexSet0(simplex, B);
+			ccdSimplexSet2(simplex, A);
 			ccdSimplexSetSize(simplex, 3);
 		}else{ // (!AD_O)
-			ccdSimplexSet(simplex, 0, C);
-			ccdSimplexSet(simplex, 1, B);
-			ccdSimplexSet(simplex, 2, A);
+			ccdSimplexSet0(simplex, C);
+			ccdSimplexSet1(simplex, B);
+			ccdSimplexSet2(simplex, A);
 			ccdSimplexSetSize(simplex, 3);
 		}
 
@@ -632,14 +632,15 @@ public class CCD {
 		final ccd_support_t a, b, c, d;
 		int use_polytope3;
 		double dist;
-		ccd_pt_vertex_t[] v = new ccd_pt_vertex_t[4];
-		ccd_pt_edge_t[] e = new ccd_pt_edge_t[6];
+		//final ccd_pt_vertex_t[] v = new ccd_pt_vertex_t[4];
+		ccd_pt_vertex_t v0, v1, v2, v3;
+		final ccd_pt_edge_t[] e = new ccd_pt_edge_t[6];
 		int i;
 
-		a = ccdSimplexPoint(simplex, 0);
-		b = ccdSimplexPoint(simplex, 1);
-		c = ccdSimplexPoint(simplex, 2);
-		d = ccdSimplexPoint(simplex, 3);
+		a = ccdSimplexPoint0(simplex);
+		b = ccdSimplexPoint1(simplex);
+		c = ccdSimplexPoint2(simplex);
+		d = ccdSimplexPoint3(simplex);
 
 		// check if origin lies on some of tetrahedron's face - if so use
 		// simplexToPolytope3()
@@ -651,20 +652,20 @@ public class CCD {
 		dist = ccdVec3PointTriDist2(ccd_vec3_origin, a.v, c.v, d.v, null);
 		if (ccdIsZero(dist)){
 			use_polytope3 = 1;
-			ccdSimplexSet(simplex, 1, c);
-			ccdSimplexSet(simplex, 2, d);
+			ccdSimplexSet1(simplex, c);
+			ccdSimplexSet2(simplex, d);
 		}
 		dist = ccdVec3PointTriDist2(ccd_vec3_origin, a.v, b.v, d.v, null);
 		if (ccdIsZero(dist)){
 			use_polytope3 = 1;
-			ccdSimplexSet(simplex, 2, d);
+			ccdSimplexSet2(simplex, d);
 		}
 		dist = ccdVec3PointTriDist2(ccd_vec3_origin, b.v, c.v, d.v, null);
 		if (ccdIsZero(dist)){
 			use_polytope3 = 1;
-			ccdSimplexSet(simplex, 0, b);
-			ccdSimplexSet(simplex, 1, c);
-			ccdSimplexSet(simplex, 2, d);
+			ccdSimplexSet0(simplex, b);
+			ccdSimplexSet1(simplex, c);
+			ccdSimplexSet2(simplex, d);
 		}
 
 		if (use_polytope3!=0){
@@ -673,16 +674,20 @@ public class CCD {
 		}
 
 		// no touching contact - simply create tetrahedron
-		for (i = 0; i < 4; i++){
-			v[i] = ccdPtAddVertex(pt, ccdSimplexPoint(simplex, i));
-		}
+//		for (i = 0; i < 4; i++){
+//			v[i] = ccdPtAddVertex(pt, ccdSimplexPoint(simplex, i));
+//		}
+		v0 = ccdPtAddVertex(pt, ccdSimplexPoint0(simplex));
+		v1 = ccdPtAddVertex(pt, ccdSimplexPoint1(simplex));
+		v2 = ccdPtAddVertex(pt, ccdSimplexPoint2(simplex));
+		v3 = ccdPtAddVertex(pt, ccdSimplexPoint3(simplex));
 
-		e[0] = ccdPtAddEdge(pt, v[0], v[1]);
-		e[1] = ccdPtAddEdge(pt, v[1], v[2]);
-		e[2] = ccdPtAddEdge(pt, v[2], v[0]);
-		e[3] = ccdPtAddEdge(pt, v[3], v[0]);
-		e[4] = ccdPtAddEdge(pt, v[3], v[1]);
-		e[5] = ccdPtAddEdge(pt, v[3], v[2]);
+		e[0] = ccdPtAddEdge(pt, v0, v1);
+		e[1] = ccdPtAddEdge(pt, v1, v2);
+		e[2] = ccdPtAddEdge(pt, v2, v0);
+		e[3] = ccdPtAddEdge(pt, v3, v0);
+		e[4] = ccdPtAddEdge(pt, v3, v1);
+		e[5] = ccdPtAddEdge(pt, v3, v2);
 
 		ccdPtAddFace(pt, e[0], e[1], e[2]);
 		ccdPtAddFace(pt, e[3], e[4], e[0]);
@@ -707,9 +712,9 @@ public class CCD {
 
 		nearest.set(null);// = NULL;
 
-		a = ccdSimplexPoint(simplex, 0);
-		b = ccdSimplexPoint(simplex, 1);
-		c = ccdSimplexPoint(simplex, 2);
+		a = ccdSimplexPoint0(simplex);
+		b = ccdSimplexPoint1(simplex);
+		c = ccdSimplexPoint2(simplex);
 
 		// If only one triangle left from previous GJK run origin lies on this
 		// triangle. So it is necessary to expand triangle into two
@@ -786,8 +791,8 @@ public class CCD {
 		int i;
 		boolean found;
 
-		a = ccdSimplexPoint(simplex, 0);
-		b = ccdSimplexPoint(simplex, 1);
+		a = ccdSimplexPoint0(simplex);
+		b = ccdSimplexPoint1(simplex);
 
 		// This situation is a bit tricky. If only one segment comes from
 		// previous run of GJK - it means that either this segment is on

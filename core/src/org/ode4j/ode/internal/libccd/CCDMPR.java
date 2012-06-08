@@ -123,36 +123,36 @@ public class CCDMPR {
 	    int cont;
 
 	    // vertex 0 is center of portal
-	    findOrigin(obj1, obj2, ccd, ccdSimplexPointW(portal, 0));
-	    ccdSimplexSetSize(portal, 1);
+	    findOrigin(obj1, obj2, ccd, ccdSimplexPointW0(portal));
+	    ccdSimplexSetSize(portal,1);
 
-	    if (ccdVec3Eq(ccdSimplexPoint(portal, 0).v, ccd_vec3_origin)){
+	    if (ccdVec3Eq(ccdSimplexPoint0(portal).v, ccd_vec3_origin)){
 	        // Portal's center lies on origin (0,0,0) => we know that objects
 	        // intersect but we would need to know penetration info.
 	        // So move center little bit...
 	        ccdVec3Set(va, CCD_EPS * (10.), CCD_ZERO, CCD_ZERO);
-	        ccdVec3Add(ccdSimplexPointW(portal, 0).v, va);
+	        ccdVec3Add(ccdSimplexPointW0(portal).v, va);
 	    }
 
 
 	    // vertex 1 = support in direction of origin
-	    ccdVec3Copy(dir, ccdSimplexPoint(portal, 0).v);
+	    ccdVec3Copy(dir, ccdSimplexPoint0(portal).v);
 	    ccdVec3Scale(dir, (-1.));
 	    ccdVec3Normalize(dir);
-	    __ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW(portal, 1));
-	    ccdSimplexSetSize(portal, 2);
+	    __ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW1(portal));
+	    ccdSimplexSetSize(portal,2);
 
 	    // test if origin isn't outside of v1
-	    dot = ccdVec3Dot(ccdSimplexPoint(portal, 1).v, dir);
+	    dot = ccdVec3Dot(ccdSimplexPoint1(portal).v, dir);
 	    if (ccdIsZero(dot) || dot < CCD_ZERO)
 	        return -1;
 
 
 	    // vertex 2
-	    ccdVec3Cross(dir, ccdSimplexPoint(portal, 0).v,
-	                       ccdSimplexPoint(portal, 1).v);
+	    ccdVec3Cross(dir, ccdSimplexPoint0(portal).v,
+	                       ccdSimplexPoint1(portal).v);
 	    if (ccdIsZero(ccdVec3Len2(dir))){
-	        if (ccdVec3Eq(ccdSimplexPoint(portal, 1).v, ccd_vec3_origin)){
+	        if (ccdVec3Eq(ccdSimplexPoint1(portal).v, ccd_vec3_origin)){
 	            // origin lies on v1
 	            return 1;
 	        }else{
@@ -162,31 +162,31 @@ public class CCDMPR {
 	    }
 
 	    ccdVec3Normalize(dir);
-	    __ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW(portal, 2));
-	    dot = ccdVec3Dot(ccdSimplexPoint(portal, 2).v, dir);
+	    __ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW2(portal));
+	    dot = ccdVec3Dot(ccdSimplexPoint2(portal).v, dir);
 	    if (ccdIsZero(dot) || dot < CCD_ZERO)
 	        return -1;
 
 	    ccdSimplexSetSize(portal, 3);
 
 	    // vertex 3 direction
-	    ccdVec3Sub2(va, ccdSimplexPoint(portal, 1).v,
-	                     ccdSimplexPoint(portal, 0).v);
-	    ccdVec3Sub2(vb, ccdSimplexPoint(portal, 2).v,
-	                     ccdSimplexPoint(portal, 0).v);
+	    ccdVec3Sub2(va, ccdSimplexPoint1(portal).v,
+	                     ccdSimplexPoint0(portal).v);
+	    ccdVec3Sub2(vb, ccdSimplexPoint2(portal).v,
+	                     ccdSimplexPoint0(portal).v);
 	    ccdVec3Cross(dir, va, vb);
 	    ccdVec3Normalize(dir);
 
 	    // it is better to form portal faces to be oriented "outside" origin
-	    dot = ccdVec3Dot(dir, ccdSimplexPoint(portal, 0).v);
+	    dot = ccdVec3Dot(dir, ccdSimplexPoint0(portal).v);
 	    if (dot > CCD_ZERO){
-	        ccdSimplexSwap(portal, 1, 2);
+	        ccdSimplexSwap12(portal);//, 1, 2);
 	        ccdVec3Scale(dir, (-1.));
 	    }
 
 	    while (ccdSimplexSize(portal) < 4){
-	        __ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW(portal, 3));
-	        dot = ccdVec3Dot(ccdSimplexPoint(portal, 3).v, dir);
+	        __ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW3(portal));
+	        dot = ccdVec3Dot(ccdSimplexPoint3(portal).v, dir);
 	        if (ccdIsZero(dot) || dot < CCD_ZERO)
 	            return -1;
 
@@ -194,31 +194,31 @@ public class CCDMPR {
 
 	        // test if origin is outside (v1, v0, v3) - set v2 as v3 and
 	        // continue
-	        ccdVec3Cross(va, ccdSimplexPoint(portal, 1).v,
-	                          ccdSimplexPoint(portal, 3).v);
-	        dot = ccdVec3Dot(va, ccdSimplexPoint(portal, 0).v);
+	        ccdVec3Cross(va, ccdSimplexPoint1(portal).v,
+	                          ccdSimplexPoint3(portal).v);
+	        dot = ccdVec3Dot(va, ccdSimplexPoint0(portal).v);
 	        if (dot < CCD_ZERO && !ccdIsZero(dot)){
-	            ccdSimplexSet(portal, 2, ccdSimplexPoint(portal, 3));
+	            ccdSimplexSet2(portal, ccdSimplexPoint3(portal));
 	            cont = 1;
 	        }
 
 	        if (cont==0){
 	            // test if origin is outside (v3, v0, v2) - set v1 as v3 and
 	            // continue
-	            ccdVec3Cross(va, ccdSimplexPoint(portal, 3).v,
-	                              ccdSimplexPoint(portal, 2).v);
-	            dot = ccdVec3Dot(va, ccdSimplexPoint(portal, 0).v);
+	            ccdVec3Cross(va, ccdSimplexPoint3(portal).v,
+	                              ccdSimplexPoint2(portal).v);
+	            dot = ccdVec3Dot(va, ccdSimplexPoint0(portal).v);
 	            if (dot < CCD_ZERO && !ccdIsZero(dot)){
-	                ccdSimplexSet(portal, 1, ccdSimplexPoint(portal, 3));
+	                ccdSimplexSet1(portal, ccdSimplexPoint3(portal));
 	                cont = 1;
 	            }
 	        }
 
 	        if (cont!=0){
-	            ccdVec3Sub2(va, ccdSimplexPoint(portal, 1).v,
-	                             ccdSimplexPoint(portal, 0).v);
-	            ccdVec3Sub2(vb, ccdSimplexPoint(portal, 2).v,
-	                             ccdSimplexPoint(portal, 0).v);
+	            ccdVec3Sub2(va, ccdSimplexPoint1(portal).v,
+	                             ccdSimplexPoint0(portal).v);
+	            ccdVec3Sub2(vb, ccdSimplexPoint2(portal).v,
+	                             ccdSimplexPoint0(portal).v);
 	            ccdVec3Cross(dir, va, vb);
 	            ccdVec3Normalize(dir);
 	        }else{
@@ -286,9 +286,9 @@ public class CCDMPR {
 	        if (portalReachTolerance(portal, v4, dir, ccd)
 	                || iterations > ccd.max_iterations){
 	            depth.set( ccdVec3PointTriDist2(ccd_vec3_origin,
-	                                          ccdSimplexPoint(portal, 1).v,
-	                                          ccdSimplexPoint(portal, 2).v,
-	                                          ccdSimplexPoint(portal, 3).v,
+	                                          ccdSimplexPoint1(portal).v,
+	                                          ccdSimplexPoint2(portal).v,
+	                                          ccdSimplexPoint3(portal).v,
 	                                          pdir));
 	            depth.set( CCD_SQRT(depth.get()));
 	            ccdVec3Normalize(pdir);
@@ -316,8 +316,8 @@ public class CCDMPR {
 	    depth.set (0.);
 	    ccdVec3Copy(dir, ccd_vec3_origin);
 
-	    ccdVec3Copy(pos, ccdSimplexPoint(portal, 1).v1);
-	    ccdVec3Add(pos, ccdSimplexPoint(portal, 1).v2);
+	    ccdVec3Copy(pos, ccdSimplexPoint1(portal).v1);
+	    ccdVec3Add(pos, ccdSimplexPoint1(portal).v2);
 	    ccdVec3Scale(pos, 0.5);
 	}
 
@@ -335,20 +335,20 @@ public class CCDMPR {
 	    // Depth is distance to v1, direction also and position must be
 	    // computed
 
-	    ccdVec3Copy(pos, ccdSimplexPoint(portal, 1).v1);
-	    ccdVec3Add(pos, ccdSimplexPoint(portal, 1).v2);
+	    ccdVec3Copy(pos, ccdSimplexPoint1(portal).v1);
+	    ccdVec3Add(pos, ccdSimplexPoint1(portal).v2);
 	    ccdVec3Scale(pos, (0.5));
 
 	    /*
-	    ccdVec3Sub2(vec, ccdSimplexPoint(portal, 1).v,
-	                      ccdSimplexPoint(portal, 0).v);
-	    k  = CCD_SQRT(ccdVec3Len2(ccdSimplexPoint(portal, 0).v));
+	    ccdVec3Sub2(vec, ccdSimplexPoint1(portal).v,
+	                      ccdSimplexPoint0(portal).v);
+	    k  = CCD_SQRT(ccdVec3Len2(ccdSimplexPoint0(portal).v));
 	    k /= CCD_SQRT(ccdVec3Len2(vec));
 	    ccdVec3Scale(vec, -k);
 	    ccdVec3Add(pos, vec);
 	    */
 
-	    ccdVec3Copy(dir, ccdSimplexPoint(portal, 1).v);
+	    ccdVec3Copy(dir, ccdSimplexPoint1(portal).v);
 	    depth.set( CCD_SQRT(ccdVec3Len2(dir)) );
 	    ccdVec3Normalize(dir);
 	}
@@ -360,61 +360,84 @@ public class CCDMPR {
 			final ccd_simplex_t portal, ccd_vec3_t pos)
 	{
 	    final ccd_vec3_t dir = new ccd_vec3_t();
-	    int i;
-	    double[] b=new double[4];
+	    //int i;
+	    double b0, b1, b2, b3;//=new double[4];
 	    double sum, inv;
 	    final ccd_vec3_t vec = new ccd_vec3_t(), p1 = new ccd_vec3_t(), p2 = new ccd_vec3_t();
 
 	    portalDir(portal, dir);
 
 	    // use barycentric coordinates of tetrahedron to find origin
-	    ccdVec3Cross(vec, ccdSimplexPoint(portal, 1).v,
-	                       ccdSimplexPoint(portal, 2).v);
-	    b[0] = ccdVec3Dot(vec, ccdSimplexPoint(portal, 3).v);
+	    ccdVec3Cross(vec, ccdSimplexPoint1(portal).v,
+	                       ccdSimplexPoint2(portal).v);
+	    b0 = ccdVec3Dot(vec, ccdSimplexPoint3(portal).v);
 
-	    ccdVec3Cross(vec, ccdSimplexPoint(portal, 3).v,
-	                       ccdSimplexPoint(portal, 2).v);
-	    b[1] = ccdVec3Dot(vec, ccdSimplexPoint(portal, 0).v);
+	    ccdVec3Cross(vec, ccdSimplexPoint3(portal).v,
+	                       ccdSimplexPoint2(portal).v);
+	    b1 = ccdVec3Dot(vec, ccdSimplexPoint0(portal).v);
 
-	    ccdVec3Cross(vec, ccdSimplexPoint(portal, 0).v,
-	                       ccdSimplexPoint(portal, 1).v);
-	    b[2] = ccdVec3Dot(vec, ccdSimplexPoint(portal, 3).v);
+	    ccdVec3Cross(vec, ccdSimplexPoint0(portal).v,
+	                       ccdSimplexPoint1(portal).v);
+	    b2 = ccdVec3Dot(vec, ccdSimplexPoint3(portal).v);
 
-	    ccdVec3Cross(vec, ccdSimplexPoint(portal, 2).v,
-	                       ccdSimplexPoint(portal, 1).v);
-	    b[3] = ccdVec3Dot(vec, ccdSimplexPoint(portal, 0).v);
+	    ccdVec3Cross(vec, ccdSimplexPoint2(portal).v,
+	                       ccdSimplexPoint1(portal).v);
+	    b3 = ccdVec3Dot(vec, ccdSimplexPoint0(portal).v);
 
-		sum = b[0] + b[1] + b[2] + b[3];
+		sum = b0 + b1 + b2 + b3;
 
 	    if (ccdIsZero(sum) || sum < CCD_ZERO){
-			b[0] = (0.);
+			b0 = (0.);
 
-	        ccdVec3Cross(vec, ccdSimplexPoint(portal, 2).v,
-	                           ccdSimplexPoint(portal, 3).v);
-	        b[1] = ccdVec3Dot(vec, dir);
-	        ccdVec3Cross(vec, ccdSimplexPoint(portal, 3).v,
-	                           ccdSimplexPoint(portal, 1).v);
-	        b[2] = ccdVec3Dot(vec, dir);
-	        ccdVec3Cross(vec, ccdSimplexPoint(portal, 1).v,
-	                           ccdSimplexPoint(portal, 2).v);
-	        b[3] = ccdVec3Dot(vec, dir);
+	        ccdVec3Cross(vec, ccdSimplexPoint2(portal).v,
+	                           ccdSimplexPoint3(portal).v);
+	        b1 = ccdVec3Dot(vec, dir);
+	        ccdVec3Cross(vec, ccdSimplexPoint3(portal).v,
+	                           ccdSimplexPoint1(portal).v);
+	        b2 = ccdVec3Dot(vec, dir);
+	        ccdVec3Cross(vec, ccdSimplexPoint1(portal).v,
+	                           ccdSimplexPoint2(portal).v);
+	        b3 = ccdVec3Dot(vec, dir);
 
-			sum = b[1] + b[2] + b[3];
+			sum = b1 + b2 + b3;
 		}
 
 		inv = (1.) / sum;
 
 	    ccdVec3Copy(p1, ccd_vec3_origin);
 	    ccdVec3Copy(p2, ccd_vec3_origin);
-	    for (i = 0; i < 4; i++){
-	        ccdVec3Copy(vec, ccdSimplexPoint(portal, i).v1);
-	        ccdVec3Scale(vec, b[i]);
-	        ccdVec3Add(p1, vec);
+	    //for (i = 0; i < 4; i++){
+	    //0
+	    ccdVec3Copy(vec, ccdSimplexPoint0(portal).v1);
+	    ccdVec3Scale(vec, b0);
+	    ccdVec3Add(p1, vec);
+	    ccdVec3Copy(vec, ccdSimplexPoint0(portal).v2);
+	    ccdVec3Scale(vec, b0);
+	    ccdVec3Add(p2, vec);
+	    //1
+	    ccdVec3Copy(vec, ccdSimplexPoint1(portal).v1);
+	    ccdVec3Scale(vec, b1);
+	    ccdVec3Add(p1, vec);
+	    ccdVec3Copy(vec, ccdSimplexPoint1(portal).v2);
+	    ccdVec3Scale(vec, b1);
+	    ccdVec3Add(p2, vec);
+	    //2
+	    ccdVec3Copy(vec, ccdSimplexPoint2(portal).v1);
+	    ccdVec3Scale(vec, b2);
+	    ccdVec3Add(p1, vec);
+	    ccdVec3Copy(vec, ccdSimplexPoint2(portal).v2);
+	    ccdVec3Scale(vec, b2);
+	    ccdVec3Add(p2, vec);
+	    //3
+	    ccdVec3Copy(vec, ccdSimplexPoint3(portal).v1);
+	    ccdVec3Scale(vec, b3);
+	    ccdVec3Add(p1, vec);
 
-	        ccdVec3Copy(vec, ccdSimplexPoint(portal, i).v2);
-	        ccdVec3Scale(vec, b[i]);
-	        ccdVec3Add(p2, vec);
-	    }
+	    ccdVec3Copy(vec, ccdSimplexPoint3(portal).v2);
+	    ccdVec3Scale(vec, b3);
+	    ccdVec3Add(p2, vec);
+
+		//}
 	    ccdVec3Scale(p1, inv);
 	    ccdVec3Scale(p2, inv);
 
@@ -432,21 +455,21 @@ public class CCDMPR {
 	    double dot;
 	    final ccd_vec3_t v4v0 = new ccd_vec3_t();
 
-	    ccdVec3Cross(v4v0, v4.v, ccdSimplexPoint(portal, 0).v);
-	    dot = ccdVec3Dot(ccdSimplexPoint(portal, 1).v, v4v0);
+	    ccdVec3Cross(v4v0, v4.v, ccdSimplexPoint0(portal).v);
+	    dot = ccdVec3Dot(ccdSimplexPoint1(portal).v, v4v0);
 	    if (dot > CCD_ZERO){
-	        dot = ccdVec3Dot(ccdSimplexPoint(portal, 2).v, v4v0);
+	        dot = ccdVec3Dot(ccdSimplexPoint2(portal).v, v4v0);
 	        if (dot > CCD_ZERO){
-	            ccdSimplexSet(portal, 1, v4);
+	            ccdSimplexSet1(portal, v4);
 	        }else{
-	            ccdSimplexSet(portal, 3, v4);
+	            ccdSimplexSet3(portal, v4);
 	        }
 	    }else{
-	        dot = ccdVec3Dot(ccdSimplexPoint(portal, 3).v, v4v0);
+	        dot = ccdVec3Dot(ccdSimplexPoint3(portal).v, v4v0);
 	        if (dot > CCD_ZERO){
-	            ccdSimplexSet(portal, 2, v4);
+	            ccdSimplexSet2(portal, v4);
 	        }else{
-	            ccdSimplexSet(portal, 1, v4);
+	            ccdSimplexSet1(portal, v4);
 	        }
 	    }
 	}
@@ -458,10 +481,10 @@ public class CCDMPR {
 	{
 	    final ccd_vec3_t v2v1 = new ccd_vec3_t(), v3v1 = new ccd_vec3_t();
 
-	    ccdVec3Sub2(v2v1, ccdSimplexPoint(portal, 2).v,
-	                       ccdSimplexPoint(portal, 1).v);
-	    ccdVec3Sub2(v3v1, ccdSimplexPoint(portal, 3).v,
-	                       ccdSimplexPoint(portal, 1).v);
+	    ccdVec3Sub2(v2v1, ccdSimplexPoint2(portal).v,
+	                       ccdSimplexPoint1(portal).v);
+	    ccdVec3Sub2(v3v1, ccdSimplexPoint3(portal).v,
+	                       ccdSimplexPoint1(portal).v);
 	    ccdVec3Cross(dir, v2v1, v3v1);
 	    ccdVec3Normalize(dir);
 	}
@@ -472,7 +495,7 @@ public class CCDMPR {
 	                                       final ccd_vec3_t dir)
 	{
 	    double dot;
-	    dot = ccdVec3Dot(dir, ccdSimplexPoint(portal, 1).v);
+	    dot = ccdVec3Dot(dir, ccdSimplexPoint1(portal).v);
 	    return ccdIsZero(dot) || dot > CCD_ZERO;
 	}
 
@@ -492,9 +515,9 @@ public class CCDMPR {
 
 	    // find the smallest dot product of dir and {v1-v4, v2-v4, v3-v4}
 
-	    dv1 = ccdVec3Dot(ccdSimplexPoint(portal, 1).v, dir);
-	    dv2 = ccdVec3Dot(ccdSimplexPoint(portal, 2).v, dir);
-	    dv3 = ccdVec3Dot(ccdSimplexPoint(portal, 3).v, dir);
+	    dv1 = ccdVec3Dot(ccdSimplexPoint1(portal).v, dir);
+	    dv2 = ccdVec3Dot(ccdSimplexPoint2(portal).v, dir);
+	    dv3 = ccdVec3Dot(ccdSimplexPoint3(portal).v, dir);
 	    dv4 = ccdVec3Dot(v4.v, dir);
 
 	    dot1 = dv4 - dv1;
