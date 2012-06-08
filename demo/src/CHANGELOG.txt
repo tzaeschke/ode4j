@@ -12,6 +12,7 @@ the rules for this file:
 
 2012-Jun-08 Tilmann Zaschke
 		* Fixed broken MPRBoxBox test.
+		* Improved performance of vec3/quat classes
 
 
 		   ******************************************************************
