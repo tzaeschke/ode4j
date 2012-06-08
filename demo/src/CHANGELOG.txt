@@ -14,6 +14,7 @@ the rules for this file:
 		* Fixed broken MPRBoxBox test.
 		* Improved performance of vec3/quat classes
 		* Fixed GJK collider. All tests run fine now.
+		* Improved performance of CCDSimplex a bit.
 
 
 		   ******************************************************************
