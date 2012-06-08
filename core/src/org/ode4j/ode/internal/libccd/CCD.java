@@ -94,7 +94,7 @@ public class CCD {
 		(ccd).center1  = null; 
 		(ccd).center2  = null; 
 
-		(ccd).max_iterations = (long)-1; 
+		(ccd).max_iterations = Long.MAX_VALUE;//(long)-1; 
 		(ccd).epa_tolerance = (0.0001); 
 		(ccd).mpr_tolerance = (0.0001); 
 	}
@@ -626,8 +626,8 @@ public class CCD {
 	 *  vertices! */
 	static int simplexToPolytope4(final Object obj1, final Object obj2,
 			final ccd_t ccd,
-			ccd_simplex_t simplex,
-			ccd_pt_t pt, Ref<ccd_pt_el_t> nearest) // **nearest)
+			final ccd_simplex_t simplex,
+			final ccd_pt_t pt, final Ref<ccd_pt_el_t> nearest) // **nearest)
 	{
 		final ccd_support_t a, b, c, d;
 		int use_polytope3;
@@ -696,7 +696,7 @@ public class CCD {
 	static int simplexToPolytope3(final Object obj1, final Object obj2,
 			final ccd_t ccd,
 			final ccd_simplex_t simplex,
-			ccd_pt_t pt, Ref<ccd_pt_el_t> nearest)// **nearest)
+			final ccd_pt_t pt, final Ref<ccd_pt_el_t> nearest)// **nearest)
 	{
 		final ccd_support_t a, b, c;
 		final ccd_support_t d = new ccd_support_t(), d2 = new ccd_support_t();
@@ -775,11 +775,12 @@ public class CCD {
 	static int simplexToPolytope2(final Object obj1, final Object obj2,
 			final ccd_t ccd,
 			final ccd_simplex_t simplex,
-			ccd_pt_t pt, Ref<ccd_pt_el_t> nearest)// **nearest)
+			final ccd_pt_t pt, final Ref<ccd_pt_el_t> nearest)// **nearest)
 	{
 		final ccd_support_t a, b;
 		ccd_vec3_t ab = new ccd_vec3_t(), ac = new ccd_vec3_t(), dir = new ccd_vec3_t();
 		ccd_support_t[] supp = new ccd_support_t[4];
+		for (int i = 0; i < supp.length; i++) supp[i] = new ccd_support_t();
 		ccd_pt_vertex_t[] v=new ccd_pt_vertex_t[6];
 		ccd_pt_edge_t[] e = new ccd_pt_edge_t[12];
 		int i;
@@ -1033,8 +1034,8 @@ public class CCD {
 			// fetch end points of edge
 			//ccdPtEdgeVec3((ccd_pt_edge_t )el, a, b);
 			ccd_pt_edge_t e = (ccd_pt_edge_t) el;
-			a = e.vertex[0].v.v;
-			b = e.vertex[1].v.v;
+			a = e.vertex0.v.v;
+			b = e.vertex1.v.v;
 
 			// get distance from segment
 			dist = ccdVec3PointSegmentDist2(out.v, a, b, null);
@@ -1042,14 +1043,14 @@ public class CCD {
 			// fetch vertices of triangle face
 			//ccdPtFaceVec3((ccd_pt_face_t )el, a, b, c);
 			ccd_pt_face_t face = (ccd_pt_face_t) el;
-			a = face.edge[0].vertex[0].v.v;
-			b = face.edge[0].vertex[1].v.v;
+			a = face.edge0.vertex0.v.v;
+			b = face.edge0.vertex1.v.v;
 
-			if (face.edge[1].vertex[0] != face.edge[0].vertex[0]
-			                                                  && face.edge[1].vertex[0] != face.edge[0].vertex[1]){
-				c = face.edge[1].vertex[0].v.v;
+			if (face.edge1.vertex0 != face.edge0.vertex0
+					&& face.edge1.vertex0 != face.edge0.vertex1){
+				c = face.edge1.vertex0.v.v;
 			}else{
-				c = face.edge[1].vertex[1].v.v;
+				c = face.edge1.vertex1.v.v;
 			}
 
 			// check if new point can significantly expand polytope

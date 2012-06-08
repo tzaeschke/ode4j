@@ -66,7 +66,7 @@ public class CCDPolyTope {
 	/**
 	 * Polytope's vertex.
 	 */
-	public static final class ccd_pt_vertex_t extends ccd_pt_el_t {
+	public static final class ccd_pt_vertex_t extends ccd_pt_el_t implements Comparable<ccd_pt_vertex_t> {
 //	    __CCD_PT_EL
 
 	    int id;
@@ -74,6 +74,20 @@ public class CCDPolyTope {
 	    ccd_list_t<ccd_pt_vertex_t> edges = new ccd_list_t<ccd_pt_vertex_t>(null); //!< List of edges
 		public ccd_support_t v() {
 			return v;
+		}
+		@Override
+		public int compareTo(ccd_pt_vertex_t o) {
+			ccd_pt_vertex_t v1, v2;
+			v1 = this;//*(ccd_pt_vertex_t **)a;
+			v2 = o;//*(ccd_pt_vertex_t **)b;
+
+			if (ccdEq(v1.dist, v2.dist)){
+				return 0;
+			}else if (v1.dist < v2.dist){
+				return -1;
+			}else{
+				return 1;
+			}
 		}
 	};
 
@@ -83,15 +97,21 @@ public class CCDPolyTope {
 	public static final class ccd_pt_edge_t extends ccd_pt_el_t {
 //	    __CCD_PT_EL
 
-	    final ccd_pt_vertex_t[] vertex = new ccd_pt_vertex_t[2]; //!< Reference to vertices
-	    final ccd_pt_face_t[] faces = new ccd_pt_face_t[2]; //!< Reference to faces
+	    //final ccd_pt_vertex_t[] vertex = new ccd_pt_vertex_t[2]; //!< Reference to vertices
+	    //final ccd_pt_face_t[] faces = new ccd_pt_face_t[2]; //!< Reference to faces
+	    ccd_pt_vertex_t vertex0; //!< Reference to vertices
+	    ccd_pt_face_t faces0; //!< Reference to faces
+	    ccd_pt_vertex_t vertex1; //!< Reference to vertices
+	    ccd_pt_face_t faces1; //!< Reference to faces
 
 	    @SuppressWarnings("unchecked")
-		final ccd_list_t<ccd_pt_vertex_t>[] vertex_list = new ccd_list_t[2]; //!< List items in vertices' lists
-		{
-			vertex_list[0] = new ccd_list_t<ccd_pt_vertex_t>(null);
-			vertex_list[1] = new ccd_list_t<ccd_pt_vertex_t>(null);
-		}
+		final ccd_list_t<ccd_pt_vertex_t> vertex_list0 = new ccd_list_t(null); //!< List items in vertices' lists
+		final ccd_list_t<ccd_pt_vertex_t> vertex_list1 = new ccd_list_t(null); //!< List items in vertices' lists
+		//final ccd_list_t<ccd_pt_vertex_t>[] vertex_list = new ccd_list_t[2]; //!< List items in vertices' lists
+		//{
+		//	vertex_list[0] = new ccd_list_t<ccd_pt_vertex_t>(null);
+		//	vertex_list[1] = new ccd_list_t<ccd_pt_vertex_t>(null);
+		//}
 	};
 
 	/**
@@ -100,7 +120,19 @@ public class CCDPolyTope {
 	public static final class ccd_pt_face_t extends ccd_pt_el_t {
 //	    __CCD_PT_EL
 
-	    final ccd_pt_edge_t[] edge = new ccd_pt_edge_t[3]; //!< Reference to surrounding edges
+	    //final ccd_pt_edge_t[] edge = new ccd_pt_edge_t[3]; //!< Reference to surrounding edges
+		 //!< Reference to surrounding edges
+		ccd_pt_edge_t edge0;
+		ccd_pt_edge_t edge1; 
+		ccd_pt_edge_t edge2;
+		ccd_pt_edge_t edge(int pos) {
+			switch(pos) {
+			case 0: return edge0;
+			case 1: return edge1;
+			case 2: return edge2;
+			}
+			throw new IllegalArgumentException();
+		}
 	};
 
 
@@ -152,12 +184,12 @@ public class CCDPolyTope {
 	{
 	    // text if any face is connected to this edge (faces[] is always
 	    // aligned to lower indices)
-	    if (e.faces[0] != null)
+	    if (e.faces0 != null)
 	        return -1;
 
 	    // disconnect edge from lists of edges in vertex struct
-	    ccdListDel(e.vertex_list[0]);
-	    ccdListDel(e.vertex_list[1]);
+	    ccdListDel(e.vertex_list0);
+	    ccdListDel(e.vertex_list1);
 
 	    // disconnect edge from main list
 	    ccdListDel(e.list);
@@ -177,11 +209,11 @@ public class CCDPolyTope {
 
 	    // remove face from edges' recerence lists
 	    for (i = 0; i < 3; i++){
-	        e = f.edge[i];
-	        if (e.faces[0] == f){
-	            e.faces[0] = e.faces[1];
+	        e = f.edge(i);
+	        if (e.faces0 == f){
+	            e.faces0 = e.faces1;
 	        }
-	        e.faces[1] = null;
+	        e.faces1 = null;
 	    }
 
 	    // remove face from list of all faces
@@ -246,9 +278,9 @@ public class CCDPolyTope {
 	static final void ccdPtFaceEdges(final ccd_pt_face_t f,
 			ccd_pt_edge_t[] abc, int pos1, int pos2, int pos3)
 	{
-		abc[pos1] = f.edge[0];
-		abc[pos2] = f.edge[1];
-		abc[pos3] = f.edge[2];
+		abc[pos1] = f.edge0;
+		abc[pos2] = f.edge1;
+		abc[pos3] = f.edge2;
 	}
 
 	@Deprecated
@@ -271,8 +303,8 @@ public class CCDPolyTope {
 	static final void ccdPtEdgeVertices(final ccd_pt_edge_t e,
 			ccd_pt_vertex_t[] ab, int a1, int a2)
 	{
-		ab[a1] = e.vertex[0];
-		ab[a2] = e.vertex[1];
+		ab[a1] = e.vertex0;
+		ab[a2] = e.vertex1;
 	}
 
 //	static final void ccdPtEdgeFaces(final ccd_pt_edge_t e,
@@ -285,8 +317,8 @@ public class CCDPolyTope {
 	static final void ccdPtEdgeFaces(final ccd_pt_edge_t e,
 			ccd_pt_face_t[] f12, int pos1, int pos2)
 	{
-		f12[pos1] = e.faces[0];
-		f12[pos2] = e.faces[1];
+		f12[pos1] = e.faces0;
+		f12[pos2] = e.faces1;
 	}
 
 
@@ -333,9 +365,7 @@ public class CCDPolyTope {
 	    pt.nearest = null;
 
 	    //ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
-    	System.err.println("xxx1");
 	    for (ccd_pt_el_t v: pt.vertices) {
-	    	System.err.println("xxx2");
 	        _ccdPtNearestUpdate(pt, (ccd_pt_el_t)v);
 	    }
 
@@ -425,17 +455,17 @@ public class CCDPolyTope {
 
 	    edge = new ccd_pt_edge_t();//CCD_ALLOC(ccd_pt_edge_t);
 	    edge.type = CCD_PT_EDGE;
-	    edge.vertex[0] = v1;
-	    edge.vertex[1] = v2;
-	    edge.faces[0] = edge.faces[1] = null;
+	    edge.vertex0 = v1;
+	    edge.vertex1 = v2;
+	    edge.faces0 = edge.faces1 = null;
 
-	    a = edge.vertex[0].v.v;
-	    b = edge.vertex[1].v.v;
+	    a = edge.vertex0.v.v;
+	    b = edge.vertex1.v.v;
 	    edge.dist = ccdVec3PointSegmentDist2(ccd_vec3_origin, a, b, edge.witness);
 
 	    //TZ TODO this is weird, adding vertices to the edge-list????
-	    ccdListAppend(edge.vertex[0].edges, edge.vertex_list[0]);
-	    ccdListAppend(edge.vertex[1].edges, edge.vertex_list[1]);
+	    ccdListAppend(edge.vertex0.edges, edge.vertex_list0);
+	    ccdListAppend(edge.vertex1.edges, edge.vertex_list1);
 
 	    ccdListAppend(pt.edges, edge.list);
 
@@ -459,28 +489,29 @@ public class CCDPolyTope {
 
 	    face = new ccd_pt_face_t();// CCD_ALLOC(ccd_pt_face_t);
 	    face.type = CCD_PT_FACE;
-	    face.edge[0] = e1;
-	    face.edge[1] = e2;
-	    face.edge[2] = e3;
+	    face.edge0 = e1;
+	    face.edge1 = e2;
+	    face.edge2 = e3;
 
 	    // obtain triplet of vertices
-	    a = face.edge[0].vertex[0].v.v;
-	    b = face.edge[0].vertex[1].v.v;
-	    e = face.edge[1];
-	    if (e.vertex[0] != face.edge[0].vertex[0]
-	            && e.vertex[0] != face.edge[0].vertex[1]){
-	        c = e.vertex[0].v.v;
+	    a = face.edge0.vertex0.v.v;
+	    b = face.edge0.vertex1.v.v;
+	    e = face.edge1;
+	    if (e.vertex0 != face.edge0.vertex0
+	            && e.vertex0 != face.edge0.vertex1){
+	        c = e.vertex0.v.v;
 	    }else{
-	        c = e.vertex[1].v.v;
+	        c = e.vertex1.v.v;
 	    }
 	    face.dist = ccdVec3PointTriDist2(ccd_vec3_origin, a, b, c, face.witness);
 
 
 	    for (i = 0; i < 3; i++){
-	        if (face.edge[i].faces[0] == null){
-	            face.edge[i].faces[0] = face;
+	    	ccd_pt_edge_t edge = face.edge(i);
+	        if (edge.faces0 == null){
+	            edge.faces0 = face;
 	        }else{
-	            face.edge[i].faces[1] = face;
+	            edge.faces1 = face;
 	        }
 	    }
 
@@ -513,8 +544,8 @@ public class CCDPolyTope {
 
 	    //ccdListForEachEntry(pt.edges, e, ccd_pt_edge_t, list){
 	    for (ccd_pt_edge_t e: pt.edges) {
-	        a = e.vertex[0].v.v;
-	        b = e.vertex[1].v.v;
+	        a = e.vertex0.v.v;
+	        b = e.vertex1.v.v;
 	        dist = ccdVec3PointSegmentDist2(ccd_vec3_origin, a, b, e.witness);
 	        e.dist = dist;
 	    }
@@ -522,14 +553,14 @@ public class CCDPolyTope {
 	    //ccdListForEachEntry(pt.faces, f, ccd_pt_face_t, list){
 	    for (ccd_pt_face_t f: pt.faces) {
 	        // obtain triplet of vertices
-	        a = f.edge[0].vertex[0].v.v;
-	        b = f.edge[0].vertex[1].v.v;
-	        ccd_pt_edge_t e = f.edge[1];
-	        if (e.vertex[0] != f.edge[0].vertex[0]
-	                && e.vertex[0] != f.edge[0].vertex[1]){
-	            c = e.vertex[0].v.v;
+	        a = f.edge0.vertex0.v.v;
+	        b = f.edge0.vertex1.v.v;
+	        ccd_pt_edge_t e = f.edge1;
+	        if (e.vertex0 != f.edge0.vertex0
+	                && e.vertex0 != f.edge0.vertex1){
+	            c = e.vertex0.v.v;
 	        }else{
-	            c = e.vertex[1].v.v;
+	            c = e.vertex1.v.v;
 	        }
 
 	        dist = ccdVec3PointTriDist2(ccd_vec3_origin, a, b, c, f.witness);
@@ -584,17 +615,17 @@ public class CCDPolyTope {
 	    Cstdio.fprintf(fout, "Edges:\n");
 	    //ccdListForEachEntry(pt.edges, e, ccd_pt_edge_t, list){
 	    for (ccd_pt_edge_t e: pt.edges) {
-	    	Cstdio.fprintf(fout, "%d %d\n", e.vertex[0].id, e.vertex[1].id);
+	    	Cstdio.fprintf(fout, "%d %d\n", e.vertex0.id, e.vertex1.id);
 	    }
 
 	    Cstdio.fprintf(fout, "Faces:\n");
 	    //ccdListForEachEntry(pt.faces, f, ccd_pt_face_t, list){
 	    for (ccd_pt_face_t f: pt.faces) {
-	        a = f.edge[0].vertex[0];
-	        b = f.edge[0].vertex[1];
-	        c = f.edge[1].vertex[0];
+	        a = f.edge0.vertex0;
+	        b = f.edge0.vertex1;
+	        c = f.edge1.vertex0;
 	        if (c == a || c == b){
-	            c = f.edge[1].vertex[1];
+	            c = f.edge1.vertex1;
 	        }
 	        Cstdio.fprintf(fout, "%d %d %d\n", a.id, b.id, c.id);
 	    }

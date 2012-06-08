@@ -23,7 +23,7 @@ public class CCDSimplex {
 
 
 	static class ccd_simplex_t {
-		final ccd_support_t[] ps = new ccd_support_t[4];
+		private final ccd_support_t[] ps = new ccd_support_t[4];
 		int last; //!< index of last added point
 		{
 			ps[0] = new ccd_support_t();
