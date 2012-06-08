@@ -10,6 +10,12 @@ the rules for this file:
 ------------------------------------------------------------------------------
 
 
+
+		   ******************************************************************
+2012-Jun-05 Tilmann Zaschke
+		* Release of ode4j-0.12.0-j1.2
+		   ******************************************************************
+
 2012-Jun-08 Tilmann Zaschke
 		* Fixed broken MPRBoxBox test.
 		* Improved performance of vec3/quat classes
