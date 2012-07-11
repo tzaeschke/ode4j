@@ -9,6 +9,9 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
+2012-Jul-11 Tilmann Zaschke
+		* Fixed NPE in DxGeom (dropping composite in DemoTrimesh)
+
 2012-Jun-29 Tilmann Zaschke
 		* Web page updates
 
