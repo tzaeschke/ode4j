@@ -734,7 +734,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		//dAASSERT (g, R);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
-        parent_space.CHECK_NOT_LOCKED ();
+		DxSpace.CHECK_NOT_LOCKED (parent_space);
 		if (offset_posr != null) {
 			recomputePosr();
 			// move body such that body+offset = rotation
@@ -764,7 +764,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		//dAASSERT (quat);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
-        parent_space.CHECK_NOT_LOCKED ();
+		DxSpace.CHECK_NOT_LOCKED (parent_space);
 		if (offset_posr != null) {
 			recomputePosr();
 			// move body such that body+offset = rotation
@@ -893,7 +893,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	//	void dGeomSetCategoryBits (dxGeom g, unsigned long bits)
 	private void dGeomSetCategoryBits (long bits)
 	{
-        parent_space.CHECK_NOT_LOCKED ();
+        DxSpace.CHECK_NOT_LOCKED (parent_space);
 		category_bits = bits;
 	}
 
@@ -901,7 +901,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	//	void dGeomSetCollideBits (dxGeom g, unsigned long bits)
 	private void dGeomSetCollideBits (long bits)
 	{
-        parent_space.CHECK_NOT_LOCKED ();
+        DxSpace.CHECK_NOT_LOCKED (parent_space);
 		collide_bits = bits;
 	}
 
@@ -1178,7 +1178,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		//dAASSERT (g);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-        parent_space.CHECK_NOT_LOCKED ();
+        DxSpace.CHECK_NOT_LOCKED (parent_space);
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset();
@@ -1196,7 +1196,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		//dAASSERT (g, R);
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-        parent_space.CHECK_NOT_LOCKED ();
+        DxSpace.CHECK_NOT_LOCKED (parent_space);
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset ();
@@ -1210,7 +1210,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-        parent_space.CHECK_NOT_LOCKED ();
+        DxSpace.CHECK_NOT_LOCKED (parent_space);
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset ();
@@ -1223,7 +1223,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-        parent_space.CHECK_NOT_LOCKED ();
+        DxSpace.CHECK_NOT_LOCKED (parent_space);
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset();
@@ -1236,7 +1236,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-        parent_space.CHECK_NOT_LOCKED ();
+        DxSpace.CHECK_NOT_LOCKED (parent_space);
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset ();
@@ -1257,7 +1257,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		dUASSERT (body, "geom must be on a body");
-        parent_space.CHECK_NOT_LOCKED ();
+        DxSpace.CHECK_NOT_LOCKED (parent_space);
 		if (offset_posr == null)
 		{
 			dGeomCreateOffset ();
