@@ -32,6 +32,11 @@ New release:
 - recreate javadoc, include cpp.internal!
   -group "Core Packages" org.ode4j.ode*:org.ode4j.math* -group "CPP Packages" org.ode4j.cpp* -tag brief:a:"Brief:" -tag ingroup:a:""  -tag remark:a:"Remark:"  -tag remarks:a:"Remark:" -tag note:a:"Note:" -tag warning:a:"Warning:" -tag defgroup:a:""
 - export jars from eclipse, include cpp4j!!!
+  In Eclipse, export --> 
+  ode4j.jar:       cpp4j/src + ode4j-core/src  (YES, select the SRC folders, Eclipse exports the binaries to that) 
+  ode4j-cpp.jar:   ode4j-cpp/src 
+  //jar cf ode4j.jar ~/projects/ode4j-core/bin/* ~/projects/cpp4j/bin/* 
+  //jar cf ode4j-cpp.jar ~/projects/ode4j-cpp/bin/* 
 - TEST before UPLOAD !!!
 - packRelease.sh
 - upload jars + javadoc
