@@ -39,7 +39,7 @@ New release:
   //jar cf ode4j-cpp.jar ~/projects/ode4j-cpp/bin/* 
 - TEST before UPLOAD !!!
 - packRelease.sh
-- upload jars + javadoc
+- upload jars + javadoc * README.txt
 - on sourceforge files-page, select info and mark ..-src.gz as default download!!
 - tagRelease.sh
 - Announce on html page
