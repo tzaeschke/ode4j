@@ -40,6 +40,7 @@ New release:
 - TEST before UPLOAD !!!
 - packRelease.sh
 - upload jars + javadoc
+- on sourceforge files-page, select info and mark ..-src.gz as default download!!
 - tagRelease.sh
 - Announce on html page
 - Announce on mailing list: ode4j-users@lists.sourceforge.net

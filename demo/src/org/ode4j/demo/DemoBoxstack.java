@@ -108,7 +108,7 @@ class DemoBoxstack extends dsFunctions {
 	//----> Convex Object
 
 	// some constants
-	private static final int NUM = 100;			// max number of objects
+	private static final int NUM = 10;			// max number of objects
 	private static final double DENSITY =(5.0);		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 8;          // maximum number of contact points per body
