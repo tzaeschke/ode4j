@@ -421,7 +421,7 @@ public class DxRay extends DxGeom implements DRay {
 			//		contact.normal[0] = box.final_posr.R[0*4+n] * sign[n];
 			//		contact.normal[1] = box.final_posr.R[1*4+n] * sign[n];
 			//		contact.normal[2] = box.final_posr.R[2*4+n] * sign[n];
-			contact.normal.set(box.final_posr().R().viewCol(2)).scale(sign.get(n));
+			contact.normal.set(box.final_posr().R().viewCol(n)).scale(sign.get(n));
 			contact.depth = alpha;
 			return 1;
 		}
