@@ -10,6 +10,9 @@ the rules for this file:
 ------------------------------------------------------------------------------
 
 
+2012-Sep-24 Tilmann Zaschke
+		* Test for unsolved (Bug 18): ray-cylinder collision may fail.
+
 2012-Sep-23 Tilmann Zaschke
 		* Fixed ray-box collider (Bug 18)
 
