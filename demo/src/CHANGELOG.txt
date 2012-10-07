@@ -10,8 +10,13 @@ the rules for this file:
 ------------------------------------------------------------------------------
 
 
+		   ******************************************************************
+2012-Oct-07 Tilmann Zaschke
+		* Release of ode4j-0.12.0-j1.4
+		   ******************************************************************
+
 2012-Sep-24 Tilmann Zaschke
-		* Test for unsolved (Bug 18): ray-cylinder collision may fail.
+		* Test for unsolved (Bug 19): ray-cylinder collision may fail.
 
 2012-Sep-23 Tilmann Zaschke
 		* Fixed ray-box collider (Bug 18)

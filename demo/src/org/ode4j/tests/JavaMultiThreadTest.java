@@ -1,6 +1,6 @@
 /*************************************************************************
  *                                                                       *
- * Open Dynamics Engine 4J, Copyright (C) 2007-2012 Tilmann Zäschke      *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2012 Tilmann Zï¿½schke      *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
@@ -138,7 +138,7 @@ public class JavaMultiThreadTest extends TestCase {
             _ignoreFields.add(OdeFactoryImpl.class.getDeclaredField("g_world_check_tag_generator"));
             _ignoreFields.add(Misc.class.getDeclaredField("seed"));
             _ignoreFields.add(DxHashSpace.class.getDeclaredField("prime"));
-            _ignoreFields.add(OdeInit.class.getDeclaredField("g_bODEInitialized"));
+            //_ignoreFields.add(OdeInit.class.getDeclaredField("bODEInitialized"));
             _ignoreFields.add(DxGeom.class.getDeclaredField("colliders_initialized")); //TODO fix this properly
             _ignoreFields.add(DxGeom.class.getDeclaredField("colliders")); //TODO fix this properly
             _ignoreFields.add(GimMath.class.getDeclaredField("random"));
@@ -288,6 +288,10 @@ public class JavaMultiThreadTest extends TestCase {
         println("Warnings: " + _nWarnings);
         println("");
         println("[Done]");
+        //TODO this fails currently for some static non-final fields.
+        //This is unlikely to be a problem if multithreading occurs
+        //only after all worlds have been initialised and if all 
+        //worlds use compatible same settings.
         assertEquals(0, _nErrors);
     }
 
