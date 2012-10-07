@@ -41,6 +41,7 @@ New release:
 - packRelease.sh
 - upload jars + javadoc * README.txt
 - on sourceforge files-page, select info and mark ..-src.gz as default download!!
+- Commit changes, including updated HTML!
 - tagRelease.sh
 - Announce on html page
 - Announce on mailing list: ode4j-users@lists.sourceforge.net
