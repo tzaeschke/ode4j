@@ -35,6 +35,11 @@ public class Test_Bug0019_OdeRayToCylinder
         rayCastGeom.set(-3, 0, 2, 3, 0, -2);
         rayCastGeom.setLength(30);
 
+        // ******************************
+        //TODO
+        //This is a problem in ODE C/C++. A fix will be ported to Java once it
+        //is available.
+        // ******************************
         OdeHelper.spaceCollide(rootSpace, null, new DGeom.DNearCallback() {
 
         	

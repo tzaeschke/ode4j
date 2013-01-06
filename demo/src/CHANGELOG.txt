@@ -10,7 +10,9 @@ the rules for this file:
 ------------------------------------------------------------------------------
 
 2013-Jan-06 Tilmann Zaschke
-		* Removed a number of deprecation and javadoc warnings
+		* Removed a number of deprecation and javadoc warnings.
+		* Changed DVector3 from double[] to double d0,d1,d2. This should
+		  by about 10% faster for pure vector math and should save some memory.
 
 		   ******************************************************************
 2012-Oct-07 Tilmann Zaschke
