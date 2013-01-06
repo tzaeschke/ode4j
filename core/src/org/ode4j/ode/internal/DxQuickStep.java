@@ -52,6 +52,10 @@ import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 
+/**
+ *
+ * Quickstep stepper.
+ */
 public class DxQuickStep extends AbstractStepper implements DxWorld.dstepper_fn_t,
 dmemestimate_fn_t {
 	

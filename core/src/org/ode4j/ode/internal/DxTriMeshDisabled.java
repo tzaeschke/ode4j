@@ -29,7 +29,6 @@ import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
-import org.ode4j.ode.internal.Common.DMatrix4;
 
 class DxTriMeshDisabled extends DxTriMesh {
 
@@ -121,10 +120,10 @@ class DxTriMeshDisabled extends DxTriMesh {
 	public Object dGeomTriMeshDataGet(DTriMeshData g, int data_id) { return null; }
 
 	//ODE_API 
-	void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {}
+	//void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {}
 	//ODE_API 
 	//dReal* dGeomTriMeshGetLastTransform( dGeom g ) { return identity; }
-	DMatrix4 dGeomTriMeshGetLastTransform( DGeom g ) { return null; } //TZ TODO?: return identity; }
+	//DMatrix4 dGeomTriMeshGetLastTransform( DGeom g ) { return null; } //TZ TODO?: return identity; }
 
 	void dGeomTriMeshSetData(DGeom g, DTriMeshData Data) {}
 	DTriMeshData dGeomTriMeshGetData(DGeom g) { return null; }

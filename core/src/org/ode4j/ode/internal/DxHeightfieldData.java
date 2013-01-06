@@ -76,13 +76,11 @@ public class DxHeightfieldData implements DHeightfieldData {
 	Object m_pHeightData; // Sample data array
 	Object m_pUserData;         // Callback user data
 
-	//TODO use buffer?
-	/** @deprecated ? */
 	//dContactGeom[]            m_contacts = new dContactGeom[HEIGHTFIELDMAXCONTACTPERCELL];
 	DContactGeomBuffer            m_contacts = new DContactGeomBuffer(DxHeightfield.HEIGHTFIELDMAXCONTACTPERCELL);
 
 	//dHeightfieldGetHeight* m_pGetHeightCallback;		// Callback pointer.
-	/** @deprecated TODO uses CPP-API! */
+	/** TODO uses CPP-API! */
 	DHeightfieldGetHeight m_pGetHeightCallback;		// Callback pointer.
 
 	//    dxHeightfieldData();

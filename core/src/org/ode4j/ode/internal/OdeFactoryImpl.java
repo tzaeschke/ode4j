@@ -1706,8 +1706,8 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 	if (dNODEBUG)
 		REGISTER_EXTENSION( "ODE_EXT_no_debug" );
 
-	if (dUSE_MALLOC_FOR_ALLOCA)
-		REGISTER_EXTENSION( "ODE_EXT_malloc_not_alloca" );
+//	if (dUSE_MALLOC_FOR_ALLOCA)
+//		REGISTER_EXTENSION( "ODE_EXT_malloc_not_alloca" );
 
 	if (dTRIMESH_ENABLED) {
 		REGISTER_EXTENSION( "ODE_EXT_trimesh" );
@@ -1730,9 +1730,9 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 
 	} // dTRIMESH_ENABLED
 
-	if (dTLS_ENABLED) {
-		REGISTER_EXTENSION( "ODE_EXT_mt_collisions" );
-	} // dTLS_ENABLED
+//	if (dTLS_ENABLED) {
+//		REGISTER_EXTENSION( "ODE_EXT_mt_collisions" );
+//	} // dTLS_ENABLED
 
 	//**********************************
 	// EXTENSION LIST END

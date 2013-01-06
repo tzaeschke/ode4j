@@ -88,7 +88,7 @@ public class GimDynArrayInt {
 	    } 
 	}
 
-	/** @deprecated remove? */
+	/** TODO remove? (TZ) */
 	public void GIM_DYNARRAY_DESTROY() {
 		// TODO Auto-generated method stub
 		

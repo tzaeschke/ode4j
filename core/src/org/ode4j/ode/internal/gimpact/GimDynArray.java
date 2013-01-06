@@ -79,7 +79,7 @@ public class GimDynArray<T> {//extends GimBufferArray<T> {
 
 	/**
 	 * Creates a dynamic array with n = size elements.
-	 * @deprecated TZ because it won't initialize the array with elements,
+	 * TODO (TZ) should be deprecated because it won't initialize the array with elements,
 	 * but still sets the 'size' to n.  
 	 */
 	//#define GIM_DYNARRAY_CREATE_SIZED(type, array_data, size) \

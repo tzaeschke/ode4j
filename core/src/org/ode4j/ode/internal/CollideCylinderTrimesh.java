@@ -1023,7 +1023,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		// get cylinder information
 		// Rotation
 		DMatrix3C pRotCyc = Cylinder.getRotation(); 
-		dMatrix3Copy(pRotCyc,m_mCylinderRot);
+		m_mCylinderRot.set(pRotCyc);
 		m_qCylinderRot.set( Cylinder.getQuaternion() );
 		
 		// Position
@@ -1038,7 +1038,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		
 		// get trimesh position and orientation
 		DMatrix3C pRotTris = Trimesh.getRotation(); 
-		dMatrix3Copy(pRotTris,m_mTrimeshRot);
+		m_mTrimeshRot.set(pRotTris);
 		m_qTrimeshRot = Trimesh.getQuaternion();  //TODO TZ copy instead?
 		
 		// Position

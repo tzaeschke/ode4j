@@ -738,27 +738,25 @@ public class OdeMath extends DRotation {
 	//#ifdef __cplusplus
 	//PURE_INLINE dReal dDISTANCE (const dVector3 a, const dVector3 b)
 	//	{ return dSqrt( (a[0]-b[0])*(a[0]-b[0]) + (a[1]-b[1])*(a[1]-b[1]) + (a[2]-b[2])*(a[2]-b[2]) ); }
-    /**
-     * Compute the distance between two 3D-vectors.
-     * Please use a.distance(b) instead.
-     * @param a 
-     * @param b 
-     * @return distance
-     * @deprecated
-     */
-	public static double dCalcPointsDistance3 (final DVector3C a, final DVector3C b) {
-	   return a.distance(b);
-	}
-    /**
-     * Compute the distance between two 3D-vectors.
-     * @param a 
-     * @param b 
-     * @return distance
-     */
-	@Deprecated
-    public static double dDISTANCE (final DVector3C a, final DVector3C b) {
-        return a.distance(b);
-    }
+//    /**
+//     * Compute the distance between two 3D-vectors.
+//     * Please use a.distance(b) instead.
+//     * @param a 
+//     * @param b 
+//     * @return distance
+//     */
+//	public static double dCalcPointsDistance3 (final DVector3C a, final DVector3C b) {
+//	   return a.distance(b);
+//	}
+//    /**
+//     * Compute the distance between two 3D-vectors.
+//     * @param a 
+//     * @param b 
+//     * @return distance
+//     */
+//    public static double dDISTANCE (final DVector3C a, final DVector3C b) {
+//        return a.distance(b);
+//    }
 	//#else
 	//#define dDISTANCE(a,b) \
 	//	(dSqrt( ((a)[0]-(b)[0])*((a)[0]-(b)[0]) + ((a)[1]-(b)[1])*((a)[1]-(b)[1]) + ((a)[2]-(b)[2])*((a)[2]-(b)[2]) ))

@@ -48,14 +48,14 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	static final int dSPACE_TLS_KIND_INIT_VALUE;
 	private static final int dSPACE_TLS_KIND_MANUAL_VALUE;
 	static {
-		if (dTLS_ENABLED) {
-			throw new UnsupportedOperationException();
+//		if (dTLS_ENABLED) {
+//			throw new UnsupportedOperationException();
 //			dSPACE_TLS_KIND_INIT_VALUE = OTK__DEFAULT;
 //			dSPACE_TLS_KIND_MANUAL_VALUE = OTK_MANUALCLEANUP;
-		} else {
+//		} else {
 			dSPACE_TLS_KIND_INIT_VALUE = 0;
 			dSPACE_TLS_KIND_MANUAL_VALUE = 0;
-		}
+//		}
 	}
 //	#define dSPACE_TLS_KIND_MANUAL_VALUE 
 //	#if dTLS_ENABLED

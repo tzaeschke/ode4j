@@ -302,7 +302,6 @@ public interface DWorld {
 	* @see DWorld#setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	* @deprecated Do not use ! (TZ)
 	*/
-	@Deprecated
 	public class DWorldStepMemoryFunctionsInfo 
 	{
 	    public int struct_size;

@@ -55,10 +55,6 @@ public class Common extends ErrorHandler {
 	 */
 
 	public static final boolean dNODEBUG = false;
-	/** @deprecated TZ this can be removed? */
-	public static final boolean dUSE_MALLOC_FOR_ALLOCA = false;
-	/** @deprecated TZ this can be removed? */
-	public static final  boolean dTLS_ENABLED = false;
 
 	
 	public static final boolean dDOUBLE = true;
@@ -202,29 +198,29 @@ public class Common extends ErrorHandler {
 	 * Round an integer up to a multiple of 4, except that 0 and 1 
 	 * are unmodified (used to compute matrix leading dimensions).
 	 * TODO Check that returned value is used!! (NOT Call by reference).
-	 * @deprecated Remove this if possible (TZ)
+	 * deprecated-keep for now (Remove this if possible) (TZ)
 	 */
 	public static final int dPAD(int a) {
 		return (a > 1) ? ((((a)-1)|3)+1) : a;
 	}
 	//#define dPAD(a) (((a) > 1) ? ((((a)-1)|3)+1) : (a))
 
-	/** 
-	 * These types are mainly just used in headers. 
-	 * @deprecated TZ: Do we really need this class??? 
-	 */
-	public static class DMatrix4 { 
-		public DMatrix4(double d, double e, double f, double g, double h,
-				double i, double j, double k, double l, double m, double n,
-				double o, double p, double q, double r, double s) {
-			v[0] = d; v[1] = e; v[2] = f; v[3] = g; 
-			v[4] = h; v[5] = i; v[6] = j; v[7] = k; 
-			v[8] = l; v[9] = m; v[10] = n; v[11] = o; 
-			v[12] = p; v[13] = q; v[14] = r; v[15] = s; 
-		}
-
-		public double[] v = new double[4*4]; 
-	}
+//	/** 
+//	 * These types are mainly just used in headers. 
+//	 * deprecated TZ: Do we really need this class??? 
+//	 */
+//	public static class DMatrix4 { 
+//		public DMatrix4(double d, double e, double f, double g, double h,
+//				double i, double j, double k, double l, double m, double n,
+//				double o, double p, double q, double r, double s) {
+//			v[0] = d; v[1] = e; v[2] = f; v[3] = g; 
+//			v[4] = h; v[5] = i; v[6] = j; v[7] = k; 
+//			v[8] = l; v[9] = m; v[10] = n; v[11] = o; 
+//			v[12] = p; v[13] = q; v[14] = r; v[15] = s; 
+//		}
+//
+//		public double[] v = new double[4*4]; 
+//	}
 	//private static class dMatrix6 { public double[] v = new double[8*6]; }
 	//typedef dReal dVector3[4];
 	//typedef dReal dVector4[4];

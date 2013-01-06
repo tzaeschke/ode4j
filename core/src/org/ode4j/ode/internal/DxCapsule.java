@@ -256,7 +256,7 @@ static class CollideCapsuleBox implements DColliderFn {
 			} else {
 			    mindist = 1e-18;
 			}//#endif
-			if (dCalcPointsDistance3(pl, pb)<mindist) {
+			if (pl.distance(pb)<mindist) {
 			    DVector3 normal = new DVector3(); // pb-c (vector from center of box to pb)
 			    //for (int i=0; i<3; i++) normal[i] = pb[i]-c[i];
 			    normal.eqDiff(pb, c);
