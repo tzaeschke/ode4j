@@ -62,6 +62,7 @@ dmemestimate_fn_t {
     //TZ where is this defined???
     private static final boolean CHECK_VELOCITY_OBEYS_CONSTRAINT = false;
     
+	/** DxQuickStep singleton instance. */
 	public static final DxQuickStep INSTANCE = new DxQuickStep();
 	
 	//void dxQuickStepper (dxWorld *world, dxBody * const *body, int nb,

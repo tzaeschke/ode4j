@@ -383,7 +383,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 		//TODO set size == 0? TZ
 	}
 
-	private void allocatePlaneBuffer(int numTri)
+	@SuppressWarnings("unchecked")
+    private void allocatePlaneBuffer(int numTri)
 	{
 		int alignedNumTri = AlignBufferSize(numTri, TEMP_PLANE_BUFFER_ELEMENT_COUNT_ALIGNMENT);
 		tempPlaneBufferSize = alignedNumTri;
@@ -410,7 +411,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 		tempPlaneBuffer = null;
 	}
 
-	private void allocateHeightBuffer(int numX, int numZ)
+	@SuppressWarnings("unchecked")
+    private void allocateHeightBuffer(int numX, int numZ)
 	{
 		int alignedNumX = AlignBufferSize(numX, TEMP_HEIGHT_BUFFER_ELEMENT_COUNT_ALIGNMENT_X);
 		int alignedNumZ = AlignBufferSize(numZ, TEMP_HEIGHT_BUFFER_ELEMENT_COUNT_ALIGNMENT_Z);
@@ -444,7 +446,12 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 	//////// Heightfield geom interface ////////////////////////////////////////////////////
 
-
+	/**
+	 * @param space 
+	 * @param data 
+	 * @param bPlaceable 
+	 * @return New DHeightfield
+	 */
 	public static DxHeightfield dCreateHeightfield( DxSpace space, DxHeightfieldData data, boolean bPlaceable )
 	{
 		return new DxHeightfield( space, data, bPlaceable );

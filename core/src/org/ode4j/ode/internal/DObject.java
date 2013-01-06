@@ -70,7 +70,8 @@ public abstract class DObject extends DBase {
      * @param <T> Type of the object/list
      * @param first List to which the object should be added.
      */
-    private <T extends DObject> void addObjectToList (Ref<T> first)
+    @SuppressWarnings("unchecked")
+    protected <T extends DObject> void addObjectToList (Ref<T> first)
     {
         //  obj.next = *first;
         //  obj.tome = first;
@@ -84,13 +85,14 @@ public abstract class DObject extends DBase {
         first.set((T) this);
     }
 
-    private void setTome(Ref<DObject> obj) {
+    protected void setTome(Ref<DObject> obj) {
         _tome = obj;
     }
 
 
     /**
      * Remove the object from the linked list.
+     * @param <T> 
      */
 //    public static <T extends dObject>void removeObjectFromList (T obj)
     public <T extends DObject>void removeObjectFromList ()

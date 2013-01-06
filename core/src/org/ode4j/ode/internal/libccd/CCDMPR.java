@@ -23,12 +23,18 @@ import static org.ode4j.ode.internal.libccd.CCDSimplex.*;
 import static org.ode4j.ode.internal.libccd.CCDSupport.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 
+/**
+ *
+ * LibCCD MPR collider.
+ */
 public class CCDMPR {
-
-
 
 	/**
 	 * Returns true if two given objects intersect - MPR algorithm is used.
+	 * @param obj1 
+	 * @param obj2 
+	 * @param ccd 
+	 * @return 1 of objects intersect otherwise 0.
 	 */
 	public static int ccdMPRIntersect(final Object obj1, final Object obj2, final ccd_t ccd)
 	{
@@ -59,6 +65,13 @@ public class CCDMPR {
 	 * see Game Programming Gem 7).
 	 *
 	 * Returns 0 if obj1 and obj2 intersect, otherwise -1 is returned.
+	 * @param obj1 
+	 * @param obj2 
+	 * @param ccd 
+	 * @param depth resulting penetration depth.
+	 * @param dir 
+	 * @param pos 
+	 * @return -1 if objects do not intersect, otherwise 0.
 	 */
 	public static int ccdMPRPenetration(final Object obj1, final Object obj2, final ccd_t ccd,
 	                      RefDouble depth, ccd_vec3_t dir, ccd_vec3_t pos)

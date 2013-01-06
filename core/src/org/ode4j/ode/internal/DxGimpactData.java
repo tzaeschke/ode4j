@@ -32,6 +32,10 @@ import org.cpp4j.java.Ref;
 import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector4;
 
+/**
+ *
+ * Data for Gimpact trimeshes.
+ */
 public class DxGimpactData extends DxTriMeshData {
 
 	private float[] m_Vertices;//const char* m_Vertices;
@@ -373,6 +377,9 @@ public class DxGimpactData extends DxTriMeshData {
 //	void dGeomTriMeshDataGetBuffer(DTriMeshData g, ByteBuffer buf, RefInt bufLen) { buf.clear(); bufLen.set(0); }
 //	void dGeomTriMeshDataSetBuffer(DTriMeshData g, ByteBuffer buf) {}
 
+	/**
+	 * Debugging method to check trimesh.
+	 */
 	public void check() {
 		@SuppressWarnings("unchecked")
 		ArrayList<Integer>[] edges = new ArrayList[m_Vertices.length/3];  // n = number of vertices

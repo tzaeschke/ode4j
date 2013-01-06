@@ -19,6 +19,10 @@ package org.ode4j.ode.internal.libccd;
 
 import static org.ode4j.ode.internal.libccd.CCDSupport.*;
 
+/**
+ *
+ * LibCCD simplex class.
+ */
 public class CCDSimplex {
 
 

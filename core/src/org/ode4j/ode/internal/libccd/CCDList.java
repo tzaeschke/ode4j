@@ -20,6 +20,10 @@ package org.ode4j.ode.internal.libccd;
 import java.util.Iterator;
 
 
+/**
+ *
+ * LibCCD list class.
+ */
 public class CCDList {
 
 	static final class ccd_list_t<T> implements Iterable<T> {

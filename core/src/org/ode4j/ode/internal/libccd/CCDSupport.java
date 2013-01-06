@@ -23,12 +23,23 @@ import org.ode4j.ode.internal.libccd.CCD.ccd_t;
 import org.ode4j.ode.internal.libccd.CCDVec3;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;
 
+/**
+ * 
+ *
+ * LibCCD class for support points.
+ */
 public class CCDSupport {
 
+	/**
+	 * Support point type.
+	 */
 	public static final class ccd_support_t {
 		final ccd_vec3_t v = new ccd_vec3_t();  //!< Support point in minkowski sum
 		final ccd_vec3_t v1 = new ccd_vec3_t(); //!< Support point in obj1
 		final ccd_vec3_t v2 = new ccd_vec3_t(); //!< Support point in obj2
+		/**
+		 * @return Support point minkowski sum.
+		 */
 		public ccd_vec3_t v() {
 			return v;
 		}
