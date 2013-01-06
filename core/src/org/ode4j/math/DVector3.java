@@ -44,28 +44,43 @@ import org.ode4j.math.DMatrix3.DVector3ColView;
  */
 public class DVector3 implements DVector3I, DVector3C {
 //public class DVector3 implements DVector3I, DVector3C {
-	private final double[] v;
+	private double d0, d1, d2;
 	private static final int LEN = 4;  //TODO 3 ?
     public static final DVector3C ZERO = new DVector3();
 	public static final int CURRENT_LENGTH = 4;
 
 	//private static int COUNT = 0;
 	
+	/**
+	 * Creates a (0,0,0) vector.
+	 */
 	public DVector3() { 
-		v = new double[LEN];
-		//if (COUNT++%1000000==0) System.out.println("V3="+COUNT);
+		d0 = 0;
+		d1 = 0;
+		d2 = 0;
 	}
 	
+	/**
+	 * Creates a vector initialised as copy of v2.
+	 * @param v2
+	 */
 	public DVector3(DVector3C v2) {
 		this();
 		set(v2);
 	}
 	
+    /**
+     * Creates a vector initialised with the first three values of v2.
+     * @param v2
+     */
 	public DVector3(double[] v2) {
 		this();
 		set(v2);
 	}
 	
+    /**
+     * Creates a (i,j,k) vector.
+     */
 	public DVector3(double i, double j, double k) {
 		this();
 		set(i, j, k);
@@ -82,7 +97,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	
 	public final DVector3 set(double x, double y, double z) {
 		//set0( x ); set1( y ); set2( z );
-		v[0] = x; v[1] = y; v[2] = z;
+		d0 = x; d1 = y; d2 = z;
 		return this;
 	}
 	
@@ -124,36 +139,36 @@ public class DVector3 implements DVector3I, DVector3C {
 	
 	@Override
 	public final void set0(double d) {
-		v[0] = d;
+		d0 = d;
 	}
 	
 	@Override
 	public final void set1(double d) {
-		v[1] = d;
+		d1 = d;
 	}
 	
 	@Override
 	public final void set2(double d) {
-		v[2] = d;
+		d2 = d;
 	}
 	
 	@Override
 	public final double get0() {
-		return v[0];
+		return d0;
 	}
 	
 	@Override
 	public final double get1() {
-		return v[1];
+		return d1;
 	}
 	
 	@Override
 	public final double get2() {
-		return v[2];
+		return d2;
 	}
 	
 	public final DVector3 add(double a, double b, double c) {
-		v[0] += a; v[1] += b; v[2] += c;
+		d0 += a; d1 += b; d2 += c;
 		return this;
 	}
 	
@@ -163,7 +178,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @return Current vector.
 	 */
 	public final DVector3 add(DVector3C v2) {
-		v[0] += v2.get0(); v[1] += v2.get1(); v[2] += v2.get2();
+		d0 += v2.get0(); d1 += v2.get1(); d2 += v2.get2();
 		return this;
 	}
 	
@@ -241,27 +256,27 @@ public class DVector3 implements DVector3I, DVector3C {
 	}
 	
 	public final DVector3 sub(double a, double b, double c) {
-		v[0] -= a; v[1] -= b; v[2] -= c;
+		d0 -= a; d1 -= b; d2 -= c;
 		return this;
 	}
 
 	public final DVector3 sub(DVector3C v2) {
-		v[0] -= v2.get0(); v[1] -= v2.get1(); v[2] -= v2.get2();
+		d0 -= v2.get0(); d1 -= v2.get1(); d2 -= v2.get2();
 		return this;
 	}
 
 	public final DVector3 scale(double a, double b, double c) {
-		v[0] *= a; v[1] *= b; v[2] *= c;
+		d0 *= a; d1 *= b; d2 *= c;
 		return this;
 	}
 
 	public final DVector3 scale(double s) {
-		v[0] *= s; v[1] *= s; v[2] *= s;
+		d0 *= s; d1 *= s; d2 *= s;
 		return this;
 	}
 
 	public final DVector3 scale(DVector3C v2) {
-		v[0] *= v2.get0(); v[1] *= v2.get1(); v[2] *= v2.get2();
+		d0 *= v2.get0(); d1 *= v2.get1(); d2 *= v2.get2();
 		return this;
 	}
 
@@ -304,17 +319,19 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * Sets the current vector v0 = v2 - v3.
 	 * @param v2
 	 * @param v3
+	 * @return (this).
 	 */
 	public final DVector3 eqDiff(DVector3C v2, DVector3C v3) {
-		v[0] = v2.get0() - v3.get0(); 
-		v[1] = v2.get1() - v3.get1(); 
-		v[2] = v2.get2() - v3.get2();
+		d0 = v2.get0() - v3.get0(); 
+		d1 = v2.get1() - v3.get1(); 
+		d2 = v2.get2() - v3.get2();
 		return this;
 	}
 	
 	/**
 	 * Return a new vector v0 = v(this) - v2.
 	 * @param v2
+	 * @return new vector
 	 */
 	@Override
 	public final DVector3 reSub(DVector3C v2) {
@@ -356,9 +373,9 @@ public class DVector3 implements DVector3I, DVector3C {
 			}
 			else {              // aa[0] might be the largest
 				if (aa0 <= 0) { // aa[0] might is largest
-//					a.v[0] = 1;	// if all a's are zero, this is where we'll end up.
-//					a.v[1] = 0;	// return a default unit length vector.
-//					a.v[2] = 0;
+//					a.d0 = 1;	// if all a's are zero, this is where we'll end up.
+//					a.d1 = 0;	// return a default unit length vector.
+//					a.d2 = 0;
 					set(1, 0, 0);
 					return false;
 				}
@@ -402,10 +419,20 @@ public class DVector3 implements DVector3I, DVector3C {
 	    return Math.sqrt(r1*r1 + r2*r2 + r3*r3);
 	}
 	
+	/**
+	 * Check whether two vectors contains the same values.
+	 * Due to Java's polymorphism handling, this method can be much faster than
+	 * v.equals(a).
+	 * @param a
+	 * @return quality
+	 */
 	public final boolean isEq(DVector3 a) {
 		return get0()==a.get0() && get1()==a.get1() && get2()==a.get2();
 	}
 
+	/**
+	 * Set this vector equal to abs(this).
+	 */
 	public final void eqAbs() {
 		set0( Math.abs(get0()));
 		set1( Math.abs(get1()));
@@ -432,21 +459,21 @@ public class DVector3 implements DVector3I, DVector3C {
 ////			v[aPos++] = sum;
 ////			bbPos += 4;
 ////		}
-//		v[0] = B.get00()*c.get0() + B.get01()*c.get1() + B.get02()*c.get2();
-//		v[1] = B.get10()*c.get0() + B.get11()*c.get1() + B.get12()*c.get2();
-//		v[2] = B.get20()*c.get0() + B.get21()*c.get1() + B.get22()*c.get2();
+//		d0 = B.get00()*c.get0() + B.get01()*c.get1() + B.get02()*c.get2();
+//		d1 = B.get10()*c.get0() + B.get11()*c.get1() + B.get12()*c.get2();
+//		d2 = B.get20()*c.get0() + B.get21()*c.get1() + B.get22()*c.get2();
 //	}
 
 	public final void add0(double d) {
-		v[0] += d;
+		d0 += d;
 	}
 
 	public final void add1(double d) {
-		v[1] += d;
+		d1 += d;
 	}
 
 	public final void add2(double d) {
-		v[2] += d;
+		d2 += d;
 	}
 
 	/**
@@ -459,6 +486,11 @@ public class DVector3 implements DVector3I, DVector3C {
 		return 3;
 	}
 
+	/**
+	 * Returns a new vector with the sum of (this)+c.
+	 * @param c
+	 * @return new vector
+	 */
 	public final DVector3C reAdd(DVector3C c) {
 		return new DVector3(this).add(c);
 	}
@@ -500,6 +532,11 @@ public class DVector3 implements DVector3I, DVector3C {
 		array[pos + 2] -= get2();
 	}
 
+    /**
+     * Returns a new vector which equals (this)*d.
+     * @param d
+     * @return new vector
+     */
 	@Override
 	public final DVector3 reScale(double d) {
 		return new DVector3(this).scale(d);
@@ -541,7 +578,12 @@ public class DVector3 implements DVector3I, DVector3C {
 	
 	@Override
 	public final double get(int i) {
-		return v[i];
+	    switch (i) {
+        case 0: return d0;
+        case 1: return d1;
+        case 2: return d2;
+        default: throw new IllegalArgumentException("i=" + i);
+	    }
 	}
 
 	@Override
@@ -550,15 +592,30 @@ public class DVector3 implements DVector3I, DVector3C {
 	}
 	
 	public final void set(int i, double d) {
-		v[i] = d;
+        switch (i) {
+        case 0: d0 = d; break;
+        case 1: d1 = d; break;
+        case 2: d2 = d; break;
+        default: throw new IllegalArgumentException("i=" + i);
+        }
 	}
 
 	public final void scale(int i, double d) {
-		v[i] *= d;
+        switch (i) {
+        case 0: d0 *= d; break;
+        case 1: d1 *= d; break;
+        case 2: d2 *= d; break;
+        default: throw new IllegalArgumentException("i=" + i);
+        }
 	}
 
 	public final void add(int i, double d) {
-		v[i] += d;
+        switch (i) {
+        case 0: d0 += d; break;
+        case 1: d1 += d; break;
+        case 2: d2 += d; break;
+        default: throw new IllegalArgumentException("i=" + i);
+        }
 	}
 	
 	/**
@@ -606,7 +663,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * result to the current vector.
 	 */
 	public final DVector3 addScaled(DVector3C v2, double d) {
-		v[0] += v2.get0()*d; v[1] += v2.get1()*d; v[2] += v2.get2()*d;
+		d0 += v2.get0()*d; d1 += v2.get1()*d; d2 += v2.get2()*d;
 		return this;
 	}
 
