@@ -78,7 +78,6 @@ import static org.ode4j.ode.DGeom.dBoxClass;
 import static org.ode4j.ode.DGeom.dCapsuleClass;
 import static org.ode4j.ode.DGeom.dPlaneClass;
 import static org.ode4j.ode.DGeom.dSphereClass;
-import static org.ode4j.ode.OdeMath.dCalcPointsDistance3;
 import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3_14;
@@ -682,7 +681,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) n.set(j, q2.get(j) - q.get(j) );
 		dNormalize3 (n);
 		dGeomRaySet (ray,q.get0(),q.get1(),q.get2(),n.get0(),n.get1(),n.get2());
-		dGeomRaySetLength (ray,dCalcPointsDistance3 (q,q2));
+		dGeomRaySetLength (ray,q.distance(q2));
 		if (dCollide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally outside the sphere
@@ -714,7 +713,7 @@ class DemoCollision extends dsFunctions {
 		dGeomRaySetLength (ray,1.01*r);
 		if (dCollide (ray,sphere,1,contacts) != 1) if (testFAILED()) return false;
 		for (j=0; j<3; j++) q2.set(j, r * q.get(j) + p.get(j) );
-		if (dCalcPointsDistance3 (contacts.get(0).pos,q2) > tol) if (testFAILED()) return false;
+		if (contacts.get(0).pos.distance(q2) > tol) if (testFAILED()) return false;
 
 		// ********** test contact point distance for random rays
 
@@ -728,7 +727,7 @@ class DemoCollision extends dsFunctions {
 		dGeomRaySetLength (ray,100);
 		if (dCollide (ray,sphere,1,contacts)!=0) {
 			DContactGeom contact = contacts.get(0);
-			k = dCalcPointsDistance3 (contacts.get(0).pos,dGeomGetPosition(sphere));
+			k = contacts.get(0).pos.distance(dGeomGetPosition(sphere));
 			if (dFabs(k - r) > tol) if (testFAILED()) return false;
 			// also check normal signs
 			if (dCalcVectorDot3 (n,contact.normal) > 0) if (testFAILED()) return false;
@@ -832,7 +831,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) n.set(j, q4.get(j) - q2.get(j) );
 		dNormalize3 (n);
 		dGeomRaySet (ray,q2.get0(),q2.get1(),q2.get2(),n.get0(),n.get1(),n.get2());
-		dGeomRaySetLength (ray,dCalcPointsDistance3(q2,q4));
+		dGeomRaySetLength (ray,q2.distance(q4));
 		if (dCollide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally outside the box
@@ -934,7 +933,7 @@ class DemoCollision extends dsFunctions {
 		dNormalize3 (b);
 		k = (dRandReal()-0.5)*l;
 		for (j=0; j<3; j++) b.set(j, p.get(j) + r*0.99*b.get(j) + k*0.99*R.get(j, 2) );//v[j*4+2] );
-		dGeomRaySetLength (ray,dCalcPointsDistance3(a,b));
+		dGeomRaySetLength (ray,a.distance(b));
 		for (j=0; j<3; j++) b.add(j,-a.get(j) );
 		dNormalize3 (b);
 		dGeomRaySet (ray,a.get0(),a.get1(),a.get2(),b.get0(),b.get1(),b.get2());

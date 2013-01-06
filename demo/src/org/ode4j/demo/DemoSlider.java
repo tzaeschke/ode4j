@@ -35,7 +35,6 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
@@ -57,16 +56,11 @@ class DemoSlider extends dsFunctions {
 
 
 	// start simulation - set viewpoint
-
 	private static float[] xyz= {1.0382f,-1.0811f,1.4700f};
 	private static float[] hpr= {135.0000f,-19.5000f,0.0000f};
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
-		//  static float xyz[3] = {1.0382f,-1.0811f,1.4700f};
-		//  static float hpr[3] = {135.0000f,-19.5000f,0.0000f};
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("Press 'e' to start/stop occasional error.");
 	}

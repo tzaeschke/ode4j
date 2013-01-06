@@ -229,8 +229,6 @@ class DemoHeightfield extends dsFunctions {
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("To drop another object, press:\n");
 		System.out.println ("   b for box.");

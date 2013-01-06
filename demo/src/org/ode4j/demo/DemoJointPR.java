@@ -137,8 +137,6 @@ class DemoJointPR extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("Press 'd' to add force along positive x direction.");
 		System.out.println ("Press 'a' to add force along negative x direction.");

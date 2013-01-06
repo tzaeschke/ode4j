@@ -56,6 +56,10 @@ import static org.ode4j.demo.BunnyGeom.*;
 import static org.ode4j.demo.ConvexBunnyGeom.*;
 
 
+/**
+ *
+ * Moving convex demo.
+ */
 public class DemoMovingConvex extends dsFunctions {
 
 	// some constants
@@ -141,8 +145,6 @@ public class DemoMovingConvex extends dsFunctions {
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread( dAllocateMaskAll );
-
 		dsSetViewpoint( xyz,hpr );
 		System.out.println( "To drop another object, press:" );
 		System.out.println( "   b for box." );
@@ -396,6 +398,9 @@ public class DemoMovingConvex extends dsFunctions {
 	}
 
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		new DemoMovingConvex().demo(args);
 	}

@@ -34,7 +34,6 @@ import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
@@ -78,8 +77,6 @@ class DemoI extends dsFunctions {
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 	}
 

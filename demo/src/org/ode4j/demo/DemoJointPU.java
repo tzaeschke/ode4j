@@ -267,8 +267,6 @@ class DemoJointPU extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("This program demonstrates how the PU joint works.");
 		System.out.println ("A PU joint is a combination of a Universal joint and a Slider joint.");

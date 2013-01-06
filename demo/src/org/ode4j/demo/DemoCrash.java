@@ -178,8 +178,6 @@ class DemoCrash extends dsFunctions {
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println("Press:\t'a' to increase speed.\n" +
 				"\t'z' to decrease speed.\n" +

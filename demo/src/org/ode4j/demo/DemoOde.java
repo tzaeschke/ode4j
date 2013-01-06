@@ -1326,7 +1326,7 @@ void testReorthonormalize()
 
 	private int runAllTests()
 	{
-		OdeHelper.initODE();
+		OdeHelper.initODE2(0);
 		testRandomNumberGenerator();
 		testInfinity();
 		testPad();

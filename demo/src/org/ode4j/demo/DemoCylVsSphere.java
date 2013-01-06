@@ -30,7 +30,6 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DSphere;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
@@ -132,14 +131,12 @@ class DemoCylVsSphere extends dsFunctions {
 	}
 
 
-	static float[] xyz = {-8,-9,3};
-	static float[] hpr = {45.0000f,-27.5000f,0.0000f};
+	private static float[] xyz = {-8,-9,3};
+	private static float[] hpr = {45.0000f,-27.5000f,0.0000f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 	}
 

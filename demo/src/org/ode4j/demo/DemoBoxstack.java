@@ -211,10 +211,6 @@ class DemoBoxstack extends dsFunctions {
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(dAllocateMaskAll);
-
-		//  static float xyz[3] = {2.1640f,-1.3079f,1.7600f};
-		//  static float hpr[3] = {125.5000f,-17.0000f,0.0000f};
 		dsSetViewpoint (xyz,hpr);
 		System.out.println("To drop another object, press:");
 		System.out.println("   b for box.");
@@ -584,16 +580,16 @@ class DemoBoxstack extends dsFunctions {
 		space.collide(null,nearCallback);
 		if (!pause) world.quickStep (0.02);
 
-		if (write_world) {
-			File f = new File("state.dif");
-			OdeHelper.worldExportDIF(world, f, "X");
+//		if (write_world) {
+//			File f = new File("state.dif");
+//			OdeHelper.worldExportDIF(world, f, "X");
 //			FILE f = fopen ("state.dif","wt");
 //			if (f!=null) {
 //				OdeHelper.dWorldExportDIF (world,f,"X");
 //				fclose (f);
 //			}
-			write_world = false;
-		}
+//			write_world = false;
+//		}
 
 
 		if (doFeedback)

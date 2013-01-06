@@ -154,9 +154,9 @@ public class PRGetInfo1_Fixture_2  {
 
 		// Reset Position and test
 		dBodySetPosition(bId2, 0, 1, 0);
-		DMatrix3 R_final = new DMatrix3( 1,0,0,0,
-				0,1,0,0,
-				0,0,1,0 );
+		DMatrix3 R_final = new DMatrix3( 1,0,0,
+				0,1,0,
+				0,0,1);
 		dBodySetRotation (bId2, R_final);
 
 		joint.getInfo1(info);
@@ -199,9 +199,9 @@ public class PRGetInfo1_Fixture_2  {
 
 		// Reset Position and test
 		dBodySetPosition(bId2, 0, 1, 0);
-		DMatrix3 R_final = new DMatrix3( 1,0,0,0,
-				0,1,0,0,
-				0,0,1,0 );
+		DMatrix3 R_final = new DMatrix3( 1,0,0,
+				0,1,0,
+				0,0,1 );
 		dBodySetRotation (bId2, R_final);
 
 		joint.getInfo1(info);

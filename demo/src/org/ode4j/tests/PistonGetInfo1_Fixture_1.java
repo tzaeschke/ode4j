@@ -170,9 +170,9 @@ public class PistonGetInfo1_Fixture_1  {
 
 		// Reset Position and test
 		dBodySetPosition(bId2, 1, 0, 0);
-		DMatrix3 R_final = new DMatrix3( 1,0,0,0,
-				0,1,0,0,
-				0,0,1,0 );
+		DMatrix3 R_final = new DMatrix3( 1,0,0,
+				0,1,0,
+				0,0,1 );
 		dBodySetRotation (bId2, R_final);
 
 		joint.getInfo1(info);
@@ -209,9 +209,9 @@ public class PistonGetInfo1_Fixture_1  {
 		CHECK_EQUAL(5, info.m);
 
 		// Reset Position and test
-		DMatrix3 R_final =  new DMatrix3( 1,0,0,0,
-				0,1,0,0,
-				0,0,1,0 );
+		DMatrix3 R_final =  new DMatrix3( 1,0,0,
+				0,1,0,
+				0,0,1 );
 		dBodySetRotation (bId2, R_final);
 
 		joint.getInfo1(info);
@@ -254,9 +254,9 @@ public class PistonGetInfo1_Fixture_1  {
 		// Reset Position and test
 		dBodySetPosition(bId1, 1, 0, 0);
 
-		DMatrix3 R_final =  new DMatrix3( 1,0,0,0,
-				0,1,0,0,
-				0,0,1,0 );
+		DMatrix3 R_final =  new DMatrix3( 1,0,0,
+				0,1,0,
+				0,0,1 );
 		dBodySetRotation (bId2, R_final);
 
 		joint.getInfo1(info);

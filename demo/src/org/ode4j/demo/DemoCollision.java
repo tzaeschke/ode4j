@@ -61,7 +61,6 @@ import org.ode4j.ode.DRay;
 import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.DxBox;
@@ -1322,10 +1321,6 @@ class DemoCollision extends dsFunctions {
 
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
-		//  static float xyz[3] = {2.4807,-1.8023,2.7600};
-		//  static float hpr[3] = {141.5000,-18.5000,0.0000};
 		dsSetViewpoint (xyz,hpr);
 	}
 

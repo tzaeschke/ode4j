@@ -33,7 +33,6 @@ import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPlane2DJoint;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
@@ -89,7 +88,6 @@ class DemoPlane2d extends dsFunctions {
 	private static void     cb_start ()
 	/** ********************** */
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 		dsSetViewpoint (xyz, hpr);
 	}
 
@@ -238,7 +236,9 @@ class DemoPlane2d extends dsFunctions {
 
 
 
-	/******************/
+	/**
+	 * @param args 
+	 */
 	public static void main(String[] args)
 	{
 		int         b;

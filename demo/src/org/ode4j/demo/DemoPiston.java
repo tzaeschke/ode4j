@@ -36,7 +36,6 @@ import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DFixedJoint;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
@@ -237,8 +236,6 @@ class DemoPiston extends dsFunctions {
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("This program demonstrates how the Piston joint works.");
 		System.out.println ("A Piston joint enables the sliding of a body with respect to another body");

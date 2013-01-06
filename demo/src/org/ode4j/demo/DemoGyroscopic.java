@@ -44,6 +44,10 @@ import org.ode4j.ode.DGeom.DNearCallback;
 import static org.ode4j.drawstuff.DrawStuff.*;
 
 
+/**
+ *
+ * Gyroscopic demo.
+ */
 public class DemoGyroscopic extends dsFunctions {
 
 	//private boolean write_world = false;
@@ -135,19 +139,10 @@ public class DemoGyroscopic extends dsFunctions {
 	{
 		dsSetColor (0,0,2);
 		space.collide(0,nearCallback);
-		if (!pause)
+		if (!pause) {
 			//world.quickStep(0.02);
 			world.step(0.02);
-
-		//TZ TODO
-		//	    if (write_world) {
-		//	        FILE *f = fopen ("state.dif","wt");
-		//	        if (f) {
-		//	            dWorldExportDIF (*world,f,"X");
-		//	            fclose (f);
-		//	        }
-		//	        write_world = false;
-		//	    }
+		}
 
 		// remove all contact joints
 		contactgroup.empty();
@@ -197,6 +192,9 @@ public class DemoGyroscopic extends dsFunctions {
 		top2.addTorque(0, 10, 0);
 	}
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		new DemoGyroscopic().demo(args);
 

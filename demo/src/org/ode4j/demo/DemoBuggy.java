@@ -128,8 +128,6 @@ class DemoBuggy extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println("Press:\t'a' to increase speed.");
 		System.out.println("\t'z' to decrease speed.");

@@ -132,8 +132,6 @@ class DemoSpaceStress extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("To drop another object, press:");
 		System.out.println ("   o to disable rendering.");

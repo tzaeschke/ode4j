@@ -366,7 +366,7 @@ public class DemoTracks extends dsFunctions {
                 double alignment = dCalcVectorDot3(contact.geom.normal, contacts.get(j).geom.normal);
                 if (alignment > 0.99 // about 8 degrees of difference
                         &&
-                        dCalcPointsDistance3(contact.geom.pos, contacts.get(j).geom.pos) < epsilon) {
+                        contact.geom.pos.distance(contacts.get(j).geom.pos) < epsilon) {
                     // they are too close
                     closest_point = j;
                     //clog << "found close points: " << j << " and " << i << endl;
@@ -540,7 +540,7 @@ public class DemoTracks extends dsFunctions {
 
     private void demo(String[] args) {
         // create world
-        OdeHelper.initODE();
+        OdeHelper.initODE2(0);
 
         // run demo
         dsSimulationLoop (args, 800, 600, this);

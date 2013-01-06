@@ -44,7 +44,11 @@ import org.ode4j.ode.DGeom.DNearCallback;
 import static org.ode4j.drawstuff.DrawStuff.*;
 
 
-class DemoMotor extends dsFunctions {
+/**
+ *
+ * Motor demo.
+ */
+public class DemoMotor extends dsFunctions {
 
 	// some constants
 	//#define SIDE (0.5f)	// side length of a box
@@ -69,8 +73,6 @@ class DemoMotor extends dsFunctions {
 	private static float[] hpr = {135.0000f,-19.5000f,0.0000f};
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("Press 'q,a,z' to control one axis of lmotor connectiong two bodies. (q is +,a is 0, z is -)");
 		System.out.println ("Press 'w,e,r' to control one axis of lmotor connectiong first body with world. (w is +,e is 0, r is -)");
@@ -153,6 +155,9 @@ class DemoMotor extends dsFunctions {
 	}
 
 
+	/**
+	 * @param args
+	 */
 	public static void main (String[] args)
 	{
 		new DemoMotor().demo(args);

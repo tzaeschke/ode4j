@@ -175,9 +175,9 @@ public class TestOdeMath {
 				CHECK_ARRAY_EQUAL(r1, r2, 12);
 			}
 			{
-				DMatrix3 r1 = new DMatrix3( 0, 0, 1, 0,
-						1, 0, 0, 0,
-						0, 1, 0, 0
+				DMatrix3 r1 = new DMatrix3( 0, 0, 1,
+						1, 0, 0,
+						0, 1, 0
 				);
 				DMatrix3 r2 = new DMatrix3();
 				r2.set(r1);//memcpy(r2, r1, sizeof(DMatrix3));
@@ -185,9 +185,9 @@ public class TestOdeMath {
 				CHECK_ARRAY_EQUAL(r1, r2, 12);
 			}
 			{
-				DMatrix3 r1 = new DMatrix3( -1, 0,  0, 0,
-						0, 1,  0, 0,
-						0, 0, -1, 0
+				DMatrix3 r1 = new DMatrix3( -1, 0, 0,
+						0, 1,  0,
+						0, 0, -1
 				);
 				DMatrix3 r2 = new DMatrix3();
 				r2.set(r1);//memcpy(r2, r1, sizeof(DMatrix3));
@@ -195,9 +195,9 @@ public class TestOdeMath {
 				CHECK_ARRAY_EQUAL(r1, r2, 12);
 			}
 			{
-				DMatrix3 r1 = new DMatrix3( 0, -1, 0, 0,
-						0,  0, 1, 0,
-						-1,  0, 0, 0
+				DMatrix3 r1 = new DMatrix3( 0, -1, 0,
+						0,  0, 1,
+						-1,  0, 0
 				);
 				DMatrix3 r2 = new DMatrix3();
 				r2.set(r1);//memcpy(r2, r1, sizeof(DMatrix3));
@@ -205,9 +205,9 @@ public class TestOdeMath {
 				CHECK_ARRAY_EQUAL(r1, r2, 12);
 			}
 			{
-				DMatrix3 r1 = new DMatrix3( 0, 0, -1, 0,
-						0, -1, 0, 0,
-						-1, 0, 0, 0
+				DMatrix3 r1 = new DMatrix3( 0, 0, -1,
+						0, -1, 0,
+						-1, 0, 0
 				);
 				DMatrix3 r2 = new DMatrix3();
 				r2.set(r1);//memcpy(r2, r1, sizeof(DMatrix3));

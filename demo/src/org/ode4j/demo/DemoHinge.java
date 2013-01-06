@@ -36,11 +36,14 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 
 
 
+/**
+ *
+ * Hinge demo.
+ */
 public class DemoHinge extends dsFunctions {
 
 	// some constants
@@ -62,15 +65,12 @@ public class DemoHinge extends dsFunctions {
 
 
 	// start simulation - set viewpoint
-
 	private static float[] xyz = {1.0382f,-1.0811f,1.4700f};
 	private static float[] hpr = {135.0000f,-19.5000f,0.0000f};
 
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("Press 'e' to start/stop occasional error.");
 	}
@@ -136,6 +136,9 @@ public class DemoHinge extends dsFunctions {
 	}
 
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{
 		new DemoHinge().demo(args);

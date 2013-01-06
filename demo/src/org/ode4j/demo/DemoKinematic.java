@@ -229,7 +229,7 @@ public class DemoKinematic extends dsFunctions {
 	
 	private void demo(String[] args)
 	{
-	    OdeHelper.initODE();
+	    OdeHelper.initODE2(0);
 	    
 	    System.out.println("*** Press SPACE to drop boxes **");
 	    

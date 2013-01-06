@@ -159,8 +159,6 @@ class DemoTrimesh extends dsFunctions {
 	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("To drop another object, press:");
 		System.out.println ("   b for box.");

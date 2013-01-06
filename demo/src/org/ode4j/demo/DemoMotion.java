@@ -83,7 +83,6 @@ public class DemoMotion extends dsFunctions {
 	private static boolean show_aabb = false;	// show geom AABBs?
 	private static boolean show_contacts = false;	// show contact points?
 	private static boolean random_pos = true;	// drop objects from random position?
-	private static boolean write_world = false;
 	private static boolean show_body = false;
 
 	private static DGeom platform, ground;
@@ -360,10 +359,6 @@ public class DemoMotion extends dsFunctions {
 			//        random_pos ^= 1;
 			random_pos ^= true;
 		}
-		else if (cmd == '1') {
-			//write_world = 1;
-			write_world = true;
-		}
 		else if (cmd == ' ') {
 			mov_time = 0;
 		}
@@ -469,14 +464,6 @@ public class DemoMotion extends dsFunctions {
 			//dWorldStep (world,stepsize);
 		}
 
-		if (write_world) {
-			File f = new File("state.dif","wt");
-			if (f != null) {
-				OdeHelper.worldExportDIF (world,f,"X");
-			}
-			write_world = false;
-		}
-
 		// remove all contact joints
 		contactgroup.empty ();
 
@@ -507,7 +494,7 @@ public class DemoMotion extends dsFunctions {
 	private void demo(String[] args) {
 
 		// create world
-		OdeHelper.initODE();
+		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();
 		//#if 1
 		space = OdeHelper.createHashSpace();

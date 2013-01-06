@@ -183,9 +183,9 @@ public class OdeMathTZ {
 				CHECK_ARRAY_EQUAL(r1, r2, 12);
 			}
 			{
-				DMatrix3 r1 = new DMatrix3( 0, 0, 1, 0,
-						1, 0, 0, 0,
-						0, 1, 0, 0
+				DMatrix3 r1 = new DMatrix3( 0, 0, 1,
+						1, 0, 0,
+						0, 1, 0
 				);
 				DMatrix3 r2 = new DMatrix3();
 				r2.set(r1);//memcpy(r2, r1, sizeof(DMatrix3));
@@ -193,9 +193,9 @@ public class OdeMathTZ {
 				CHECK_ARRAY_EQUAL(r1, r2, 12);
 			}
 			{
-				DMatrix3 r1 = new DMatrix3( -1, 0,  0, 0,
-						0, 1,  0, 0,
-						0, 0, -1, 0
+				DMatrix3 r1 = new DMatrix3( -1, 0,  0,
+						0, 1,  0,
+						0, 0, -1
 				);
 				DMatrix3 r2 = new DMatrix3();
 				r2.set(r1);//memcpy(r2, r1, sizeof(DMatrix3));
@@ -203,9 +203,9 @@ public class OdeMathTZ {
 				CHECK_ARRAY_EQUAL(r1, r2, 12);
 			}
 			{
-				DMatrix3 r1 = new DMatrix3( 0, -1, 0, 0,
-						0,  0, 1, 0,
-						-1,  0, 0, 0
+				DMatrix3 r1 = new DMatrix3( 0, -1, 0,
+						0,  0, 1,
+						-1,  0, 0
 				);
 				DMatrix3 r2 = new DMatrix3();
 				r2.set(r1);//memcpy(r2, r1, sizeof(DMatrix3));
@@ -213,9 +213,9 @@ public class OdeMathTZ {
 				CHECK_ARRAY_EQUAL(r1, r2, 12);
 			}
 			{
-				DMatrix3 r1 = new DMatrix3( 0, 0, -1, 0,
-						0, -1, 0, 0,
-						-1, 0, 0, 0
+				DMatrix3 r1 = new DMatrix3( 0, 0, -1,
+						0, -1, 0,
+						-1, 0, 0
 				);
 				DMatrix3 r2 = new DMatrix3();
 				r2.set(r1);//memcpy(r2, r1, sizeof(DMatrix3));
@@ -235,9 +235,9 @@ public class OdeMathTZ {
         );
         @SuppressWarnings("deprecation")
 		DMatrix3 r2 = new DMatrix3( 
-                4, 5, 6, 0,
-                7, 8, 9, 0,
-                10, 11, 12, 0
+                4, 5, 6,
+                7, 8, 9,
+                10, 11, 12
         );
         double[] r1a = { 
                 1, 2, 3, 0,
@@ -268,9 +268,9 @@ public class OdeMathTZ {
         );
         @SuppressWarnings("deprecation")
 		DMatrix3 r2 = new DMatrix3( 
-                4, 5, 6, 0,
-                7, 8, 9, 0,
-                10, 11, 12, 0
+                4, 5, 6,
+                7, 8, 9,
+                10, 11, 12
         );
         double[] r1a = { 
                 1, 2, 3, 0,
