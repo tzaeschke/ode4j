@@ -33,7 +33,6 @@ import org.ode4j.ode.DTriMesh.DTriArrayCallback;
 import org.ode4j.ode.DTriMesh.DTriCallback;
 import org.ode4j.ode.DTriMesh.DTriRayCallback;
 import org.ode4j.ode.internal.DxTriMeshData;
-import org.ode4j.ode.internal.Common.DMatrix4;
 
 
 /**
@@ -87,9 +86,9 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * It is stored per geom instance, rather than per dTriMeshData.
 	 */
 	//ODE_API 
-	void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {
-		throw new UnsupportedOperationException();
-	}
+	//void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {
+	//	throw new UnsupportedOperationException();
+	//}
 	public static void dGeomTriMeshSetLastTransform( DTriMesh g, DoubleArray last_trans ) {
 		throw new UnsupportedOperationException();
 	}
