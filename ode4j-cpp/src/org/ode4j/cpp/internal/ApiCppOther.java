@@ -46,7 +46,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	 */
 	//ODE_API 
 	public static boolean dAreConnected (DBody b1, DBody b2) {
-		return OdeHelper.areConnected((DBody)b1, (DBody)b2);
+		return OdeHelper.areConnected(b1, b2);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	//ODE_API 
 	public static boolean dAreConnectedExcluding (DBody body1, DBody body2, 
 			Class<? extends DJoint> ... joint_type) {
-		return OdeHelper.areConnectedExcluding((DBody)body1, (DBody)body2, joint_type);
+		return OdeHelper.areConnectedExcluding(body1, body2, joint_type);
 	}
 
 }
