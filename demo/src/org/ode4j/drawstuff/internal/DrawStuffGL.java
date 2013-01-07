@@ -805,7 +805,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		final int n = capped_cylinder_quality*4;
 
 		l *= 0.5;
-		a = (float) ((M_PI*2.0)/(float)n);
+		a = (float) ((M_PI*2.0)/n);
 		sa = (float) Math.sin(a);
 		ca = (float) Math.cos(a);
 
@@ -893,7 +893,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		final int n = 24;	// number of sides to the cylinder (divisible by 4)
 
 		l *= 0.5;
-		a = (float)(M_PI*2.0/(float)n);
+		a = (float)(M_PI*2.0/n);
 		sa = (float) Math.sin(a);
 		ca = (float) Math.cos(a);
 
@@ -992,19 +992,19 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	@Override
 	void dsMotion (int mode, int deltax, int deltay)
 	{
-		float side = 0.01f * (float)deltax;
-		float fwd = (mode==4) ? (0.01f * (float)deltay) : 0.0f;
+		float side = 0.01f * deltax;
+		float fwd = (mode==4) ? (0.01f * deltay) : 0.0f;
 		float s = (float) Math.sin (view_hpr[0]*DEG_TO_RAD);
 		float c = (float) Math.cos (view_hpr[0]*DEG_TO_RAD);
 
 		if (mode==1) {
-			view_hpr[0] += (float) (deltax) * 0.5f;
-			view_hpr[1] += (float) (deltay) * 0.5f;
+			view_hpr[0] += deltax * 0.5f;
+			view_hpr[1] += deltay * 0.5f;
 		}
 		else {
 			view_xyz[0] += -s*side + c*fwd;
 			view_xyz[1] += c*side + s*fwd;
-			if (mode==2 || mode==5) view_xyz[2] += 0.01f * (float)(deltay);
+			if (mode==2 || mode==5) view_xyz[2] += 0.01f * deltay;
 		}
 		wrapCameraAngles();
 	}
@@ -1188,7 +1188,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		for (int i=-1; i<=1; i++) {
 			for (int j=-1; j<=1; j++) {
 				GL11.glPushMatrix();
-				GL11.glTranslatef ((float)i,(float)j,(float)0);
+				GL11.glTranslatef (i,j,0);
 				if (i==1 && j==0) setColor (1,0,0,1);
 				else if (i==0 && j==1) setColor (0,0,1,1);
 				else setColor (1,1,0,1);

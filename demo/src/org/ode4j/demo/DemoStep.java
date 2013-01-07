@@ -106,8 +106,8 @@ class DemoStep extends dsFunctions {
 		for (i=0; i<NUMJ; i++) {
 			int b1,b2;
 			do {
-				b1 = (int) dRandInt (NUM);
-				b2 = (int) dRandInt (NUM);
+				b1 = dRandInt (NUM);
+				b2 = dRandInt (NUM);
 			} while (linked[b1*NUM + b2]!=0 || b1==b2);
 			linked[b1*NUM + b2] = 1;
 			linked[b2*NUM + b1] = 1;

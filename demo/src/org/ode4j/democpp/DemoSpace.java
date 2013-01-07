@@ -136,11 +136,11 @@ class DemoSpace extends dsFunctions {
 		i = (Integer) dGeomGetData (o1);
 		j = (Integer) dGeomGetData (o2);
 		if (i==j)
-			printf ("collision (%d,%d) is between the same object\n",(int)i,(int)j);
+			printf ("collision (%d,%d) is between the same object\n",i,j);
 		if (!good_matrix[i][j] || !good_matrix[j][i])
-			printf ("collision (%d,%d) is incorrect\n",(int)i,(int)j);
+			printf ("collision (%d,%d) is incorrect\n",i,j);
 		if (test_matrix[i][j] || test_matrix[j][i])
-			printf ("collision (%d,%d) reported more than once\n",(int)i,(int)j);
+			printf ("collision (%d,%d) reported more than once\n",i,j);
 		test_matrix[i][j] = true;
 		test_matrix[j][i] = true;
 	}

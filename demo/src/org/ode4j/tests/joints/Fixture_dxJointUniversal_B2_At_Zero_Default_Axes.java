@@ -2,7 +2,7 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
- * Open Dynamics Engine 4J, Copyright (C) 2007-2012 Tilmann Zäschke      *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2012 Tilmann Zï¿½schke      *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
@@ -69,10 +69,10 @@ import org.ode4j.ode.DWorld;
 public class Fixture_dxJointUniversal_B2_At_Zero_Default_Axes
 {
     static double d2r(double degree) {
-        return degree * (double)(M_PI / 180.0);
+        return degree * (M_PI / 180.0);
     }
     static double r2d(double degree) {
-        return degree * (double)(180.0/M_PI);
+        return degree * (180.0/M_PI);
     }
 
 	public Fixture_dxJointUniversal_B2_At_Zero_Default_Axes()

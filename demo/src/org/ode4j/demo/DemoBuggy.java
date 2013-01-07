@@ -212,7 +212,7 @@ class DemoBuggy extends dsFunctions {
 		for (i=1; i<=3; i++) dsDrawCylinder (body[i].getPosition(),
 				body[i].getRotation(),0.02f,RADIUS);
 
-		DVector3C ss = ((DBox)ground_box).getLengths();
+		DVector3C ss = ground_box.getLengths();
 		dsDrawBox (ground_box.getPosition(), ground_box.getRotation(), ss);
 
 		/*

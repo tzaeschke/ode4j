@@ -269,7 +269,7 @@ public class DemoMotion extends dsFunctions {
 	//void command (int cmd)
 	public void command (char cmd2)
 	{
-		char cmd = (char)cmd2;
+		char cmd = cmd2;
 		int i; //size_t i;
 		int k;
 		double[] sides = new double[3];

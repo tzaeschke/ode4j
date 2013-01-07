@@ -22,7 +22,7 @@ public class CCDTestCommon {
 	    ccdVec3Set(vpos, 0., c.radius, 0.);
 	    angle = 0.;
 	    for (i = 0; i < 16; i++){
-	        angle = (double)i * (2. * M_PI / 16.);
+	        angle = i * (2. * M_PI / 16.);
 
 	        ccdQuatSetAngleAxis(rot, angle, axis);
 	        ccdVec3Copy(vpos2, vpos);

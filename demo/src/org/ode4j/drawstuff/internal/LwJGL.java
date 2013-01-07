@@ -590,7 +590,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 			} else {
 				long timeUsed = 5000 + (startTime - System.currentTimeMillis());
 				startTime = System.currentTimeMillis() + 5000;
-				System.out.println(fps + " frames in " + (float) (timeUsed / 1000f) + " seconds = "
+				System.out.println(fps + " frames in " + (timeUsed / 1000f) + " seconds = "
 						+ (fps / (timeUsed / 1000f)));
 				fps = 0;
 			}
@@ -620,7 +620,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	}
 
 
-	private static double prev=(double)System.nanoTime()/1000000000.0;
+	private static double prev=System.nanoTime()/1000000000.0;
 	//extern "C" double dsElapsedTime()
 	public double dsElapsedTime()
 	{
@@ -630,7 +630,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 			//
 			//		gettimeofday(tv, 0);
 			//		double curr = tv.tv_sec + (double) tv.tv_usec / 1000000.0 ;
-			double curr = (double)System.nanoTime()/1000000000.0;
+			double curr = System.nanoTime()/1000000000.0;
 			//		if (prev==-1)
 			//			prev=curr;
 			double retval = curr-prev;

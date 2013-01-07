@@ -289,7 +289,7 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_FACE);
-	    assertEquals(nearest, (ccd_pt_el_t)f[1]);
+	    assertEquals(nearest, f[1]);
 	    assertTrue(ccdPtDelFace(pt, f[1]) == 0);
 
 
@@ -298,8 +298,8 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_FACE);
-	    assertTrue(nearest == (ccd_pt_el_t)f[0]
-	                || nearest == (ccd_pt_el_t)f[3]);
+	    assertTrue(nearest == f[0]
+	                || nearest == f[3]);
 	    assertTrue(ccdPtDelFace(pt, (ccd_pt_face_t)nearest) == 0);
 
 
@@ -308,8 +308,8 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_FACE);
-	    assertTrue(nearest == (ccd_pt_el_t)f[0]
-	                || nearest == (ccd_pt_el_t)f[3]);
+	    assertTrue(nearest == f[0]
+	                || nearest == f[3]);
 	    assertTrue(ccdPtDelFace(pt, (ccd_pt_face_t)nearest) == 0);
 
 
@@ -318,8 +318,8 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_EDGE);
-	    assertTrue(nearest == (ccd_pt_el_t)e[0]
-	                || nearest == (ccd_pt_el_t)e[3]);
+	    assertTrue(nearest == e[0]
+	                || nearest == e[3]);
 	    assertTrue(ccdPtDelEdge(pt, (ccd_pt_edge_t)nearest) == 0);
 
 
@@ -328,8 +328,8 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_EDGE);
-	    assertTrue(nearest == (ccd_pt_el_t)e[0]
-	                || nearest == (ccd_pt_el_t)e[3]);
+	    assertTrue(nearest == e[0]
+	                || nearest == e[3]);
 	    assertTrue(ccdPtDelEdge(pt, (ccd_pt_edge_t)nearest) == 0);
 
 
@@ -338,7 +338,7 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_FACE);
-	    assertEquals(nearest, (ccd_pt_el_t)f[2]);
+	    assertEquals(nearest, f[2]);
 	    assertTrue(ccdPtDelFace(pt, f[2]) == 0);
 
 
@@ -347,9 +347,9 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_EDGE);
-	    assertTrue(nearest == (ccd_pt_el_t)e[1]
-	                || nearest == (ccd_pt_el_t)e[4]
-	                || nearest == (ccd_pt_el_t)e[5]);
+	    assertTrue(nearest == e[1]
+	                || nearest == e[4]
+	                || nearest == e[5]);
 	    assertTrue(ccdPtDelEdge(pt, (ccd_pt_edge_t)nearest) == 0);
 
 
@@ -358,9 +358,9 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_EDGE);
-	    assertTrue(nearest == (ccd_pt_el_t)e[1]
-	                || nearest == (ccd_pt_el_t)e[4]
-	                || nearest == (ccd_pt_el_t)e[5]);
+	    assertTrue(nearest == e[1]
+	                || nearest == e[4]
+	                || nearest == e[5]);
 	    assertTrue(ccdPtDelEdge(pt, (ccd_pt_edge_t)nearest) == 0);
 
 
@@ -369,9 +369,9 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_EDGE);
-	    assertTrue(nearest == (ccd_pt_el_t)e[1]
-	                || nearest == (ccd_pt_el_t)e[4]
-	                || nearest == (ccd_pt_el_t)e[5]);
+	    assertTrue(nearest == e[1]
+	                || nearest == e[4]
+	                || nearest == e[5]);
 	    assertTrue(ccdPtDelEdge(pt, (ccd_pt_edge_t)nearest) == 0);
 
 
@@ -380,7 +380,7 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_EDGE);
-	    assertTrue(nearest == (ccd_pt_el_t)e[2]);
+	    assertTrue(nearest == e[2]);
 	    assertTrue(ccdPtDelEdge(pt, (ccd_pt_edge_t)nearest) == 0);
 
 
@@ -389,9 +389,9 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_VERTEX);
-	    assertTrue(nearest == (ccd_pt_el_t)v[1]
-	                || nearest == (ccd_pt_el_t)v[2]
-	                || nearest == (ccd_pt_el_t)v[3]);
+	    assertTrue(nearest == v[1]
+	                || nearest == v[2]
+	                || nearest == v[3]);
 	    assertTrue(ccdPtDelVertex(pt, (ccd_pt_vertex_t)nearest) == 0);
 
 
@@ -400,9 +400,9 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_VERTEX);
-	    assertTrue(nearest == (ccd_pt_el_t)v[1]
-	                || nearest == (ccd_pt_el_t)v[2]
-	                || nearest == (ccd_pt_el_t)v[3]);
+	    assertTrue(nearest == v[1]
+	                || nearest == v[2]
+	                || nearest == v[3]);
 	    assertTrue(ccdPtDelVertex(pt, (ccd_pt_vertex_t)nearest) == 0);
 
 
@@ -411,9 +411,9 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_VERTEX);
-	    assertTrue(nearest == (ccd_pt_el_t)v[1]
-	                || nearest == (ccd_pt_el_t)v[2]
-	                || nearest == (ccd_pt_el_t)v[3]);
+	    assertTrue(nearest == v[1]
+	                || nearest == v[2]
+	                || nearest == v[3]);
 	    assertTrue(ccdPtDelVertex(pt, (ccd_pt_vertex_t)nearest) == 0);
 
 
@@ -422,7 +422,7 @@ public class TestPolytope {
 	    //DBG("       .dist: %lf", nearest.dist);
 	    //DBG_VEC3(nearest.witness, "       .witness: ");
 	    assertEquals(nearest.type(), CCD_PT_VERTEX);
-	    assertTrue(nearest == (ccd_pt_el_t)v[0]);
+	    assertTrue(nearest == v[0]);
 	    assertTrue(ccdPtDelVertex(pt, (ccd_pt_vertex_t)nearest) == 0);
 
 

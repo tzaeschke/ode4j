@@ -157,8 +157,8 @@ class DemoPlane2d extends dsFunctions {
 			angle +=  0.01 ;
 
 			track_to_pos (dyn_bodies[0], plane2d_joint_ids[0],
-					(double)( STAGE_SIZE/2 + STAGE_SIZE/2.0 * cos (angle) ),
-					(double)( STAGE_SIZE/2 + STAGE_SIZE/2.0 * sin (angle) ));
+					( STAGE_SIZE/2 + STAGE_SIZE/2.0 * cos (angle) ),
+					( STAGE_SIZE/2 + STAGE_SIZE/2.0 * sin (angle) ));
 
 			/* double   f0 = 0.001; */
 			/* for (int b = 0; b < N_BODIES; b ++) */
@@ -174,7 +174,7 @@ class DemoPlane2d extends dsFunctions {
 			{
 				//dSpaceCollide (coll_space_id, 0, cb_near_collision);
 				dSpaceCollide (coll_space_id, null, myNearCallBack );
-				dyn_world.step ((double)(TIME_STEP/n));
+				dyn_world.step (TIME_STEP/n);
 				coll_contacts.empty ();
 			}
 		}
@@ -272,10 +272,10 @@ class DemoPlane2d extends dsFunctions {
 		for (b = 0; b < N_BODIES; b ++)
 		{
 			int     l = (int) (1 + sqrt ((double) N_BODIES));
-			double  x = (double)( (0.5 + (b / l)) / l * STAGE_SIZE );
-			double  y = (double)( (0.5 + (b % l)) / l * STAGE_SIZE );
+			double  x = (0.5 + (b / l)) / l * STAGE_SIZE;
+			double  y = (0.5 + (b % l)) / l * STAGE_SIZE;
 			//double  z = REAL( 1.0 ) + REAL( 0.1 ) * (double)drand48();
-			double  z = 1.0 + 0.1  * (double)drand48();
+			double  z = 1.0 + 0.1  * drand48();
 
 			//TZ
 //			bodies_sides[b] = new dVector3(
@@ -285,8 +285,8 @@ class DemoPlane2d extends dsFunctions {
 			double r2 = drand48();
 			double r1 = drand48();
 			bodies_sides[b] = new DVector3(
-					(double)( 5. * (0.2 + 0.7*r2) / sqrt((double)N_BODIES) ),
-					(double)( 5. * (0.2 + 0.7*r1) / sqrt((double)N_BODIES) ),
+					5. * (0.2 + 0.7*r2) / sqrt((double)N_BODIES),
+					5. * (0.2 + 0.7*r1) / sqrt((double)N_BODIES),
 					z);
 
 			dyn_bodies[b] = dBodyCreate(dyn_world);
@@ -298,8 +298,8 @@ class DemoPlane2d extends dsFunctions {
 			r2 = drand48();
 			r1 = drand48();
 			dBodySetLinearVel (dyn_bodies[b],
-			(double)( 3. * (r1 - 0.5) ), 
-			(double)( 3. * (r2 - 0.5) ), 0);
+			3. * (r1 - 0.5), 
+			3. * (r2 - 0.5), 0);
 
 			DMass m = OdeHelper.createMass();
 			m.setBox (1, bodies_sides[b].get0(),bodies_sides[b].get1(),bodies_sides[b].get2());
