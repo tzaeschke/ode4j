@@ -120,12 +120,12 @@ public class GimDynArray<T> {//extends GimBufferArray<T> {
 
 	//! Gets a pointer from the beginning of the array
 	//#define GIM_DYNARRAY_POINTER(type, array_data) ((type *)((array_data).m_pdata))
-	public T[] GIM_DYNARRAY_POINTER() { return (T[]) m_pdata; }
-	public ObjArray<T> GIM_DYNARRAY_POINTER_V() { return new ObjArray<T>((T[])m_pdata); }
+	public T[] GIM_DYNARRAY_POINTER() { return m_pdata; }
+	public ObjArray<T> GIM_DYNARRAY_POINTER_V() { return new ObjArray<T>(m_pdata); }
 
 	//! Gets a pointer from the last elemento of the array
 	//#define GIM_DYNARRAY_POINTER_LAST(type, array_data) (((type *)(array_data).m_pdata) + ((array_data).m_size - 1))
-	T GIM_DYNARRAY_POINTER_LAST() { return (T) m_pdata[m_size - 1]; }
+	T GIM_DYNARRAY_POINTER_LAST() { return m_pdata[m_size - 1]; }
 
 	//! Inserts an element at the last position
 	//#define GIM_DYNARRAY_PUSH_ITEM(type, array_data, item)\
