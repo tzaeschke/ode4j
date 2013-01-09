@@ -79,7 +79,7 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 
 
 		int contactcount = trimeshcontacts.size();
-		int maxcontacts = (int)(Flags & DxGeom.NUMC_MASK);
+		int maxcontacts = Flags & DxGeom.NUMC_MASK;
 		if (contactcount > maxcontacts)
 		{
 			contactcount = maxcontacts;

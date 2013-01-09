@@ -635,7 +635,7 @@ public class CCD {
 		//final ccd_pt_vertex_t[] v = new ccd_pt_vertex_t[4];
 		ccd_pt_vertex_t v0, v1, v2, v3;
 		final ccd_pt_edge_t[] e = new ccd_pt_edge_t[6];
-		int i;
+		//int i;
 
 		a = ccdSimplexPoint0(simplex);
 		b = ccdSimplexPoint1(simplex);
@@ -741,7 +741,7 @@ public class CCD {
 			e[0] = ccdPtAddEdge(pt, v[0], v[1]);
 			e[1] = ccdPtAddEdge(pt, v[1], v[2]);
 			e[2] = ccdPtAddEdge(pt, v[2], v[0]);
-			nearest.set( (ccd_pt_el_t )ccdPtAddFace(pt, e[0], e[1], e[2]) );
+			nearest.set( ccdPtAddFace(pt, e[0], e[1], e[2]) );
 
 			return -1;
 		}
@@ -852,7 +852,7 @@ public class CCD {
 		if (touching_contact) {
 			v[0] = ccdPtAddVertex(pt, a);
 			v[1] = ccdPtAddVertex(pt, b);
-			nearest.set( (ccd_pt_el_t )ccdPtAddEdge(pt, v[0], v[1]) );
+			nearest.set( ccdPtAddEdge(pt, v[0], v[1]) );
 			return -1;
 		}
 

@@ -129,7 +129,7 @@ public class CollisionLibccd {
 	{
 		DVector3 dim = new DVector3();
 
-		ccdGeomToObj(g, (ccd_obj_t)box);
+		ccdGeomToObj(g, box);
 
 		g.getLengths(dim);
 		box.dim[0] = dim.get0() / 2.;
@@ -140,7 +140,7 @@ public class CollisionLibccd {
 	static void ccdGeomToCap(final DxCapsule g, ccd_cap_t cap)
 	{
 		//RefDouble r, h;
-		ccdGeomToObj(g, (ccd_obj_t)cap);
+		ccdGeomToObj(g, cap);
 
 		//dGeomCapsuleGetParams(g, r, h);
 		cap.radius = g.getRadius();
@@ -150,7 +150,7 @@ public class CollisionLibccd {
 	static void ccdGeomToCyl(final DxCylinder g, ccd_cyl_t cyl)
 	{
 		//double r, h;
-		ccdGeomToObj(g, (ccd_obj_t)cyl);
+		ccdGeomToObj(g, cyl);
 
 		//dGeomCylinderGetParams(g, &r, &h);
 		cyl.radius = g.getRadius();
@@ -159,13 +159,13 @@ public class CollisionLibccd {
 
 	static void ccdGeomToSphere(final DxSphere g, ccd_sphere_t s)
 	{
-		ccdGeomToObj(g, (ccd_obj_t)s);
+		ccdGeomToObj(g, s);
 		s.radius = g.getRadius();
 	}
 
 	static void ccdGeomToConvex(final DxConvex g, ccd_convex_t c)
 	{
-		ccdGeomToObj(g, (ccd_obj_t)c);
+		ccdGeomToObj(g, c);
 		c.convex = g;
 	}
 

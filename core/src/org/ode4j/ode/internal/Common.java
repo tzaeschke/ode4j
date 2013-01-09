@@ -31,6 +31,7 @@ import java.io.StringWriter;
 /**
  * configuration stuff.
  */
+@SuppressWarnings("unused")
 public class Common extends ErrorHandler { 
 
 	/** configuration stuff */

@@ -28,7 +28,6 @@ import static org.ode4j.ode.internal.DxCollisionUtil.dClipEdgeToPlane;
 import static org.ode4j.ode.internal.DxCollisionUtil.dClipPolyToPlane;
 import static org.ode4j.ode.internal.DxCollisionUtil.dConstructPlane;
 import static org.ode4j.ode.internal.DxCollisionUtil.dMat3GetCol;
-import static org.ode4j.ode.internal.DxCollisionUtil.dMatrix3Copy;
 import static org.ode4j.ode.internal.DxCollisionUtil.dPointPlaneDistance;
 import static org.ode4j.ode.internal.DxCollisionUtil.dQuatInv;
 import static org.ode4j.ode.internal.DxCollisionUtil.dQuatTransform;
@@ -1047,7 +1046,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 
 
 		// calculate basic angle for 8-gon
-		double fAngle = (double) (OdeMath.M_PI / nCYLINDER_CIRCLE_SEGMENTS);
+		double fAngle = OdeMath.M_PI / nCYLINDER_CIRCLE_SEGMENTS;
 		// calculate angle increment
 		double fAngleIncrement = fAngle*(2.0); 
 

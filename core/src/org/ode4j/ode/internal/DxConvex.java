@@ -497,30 +497,30 @@ public class DxConvex extends DxGeom implements DConvex {
 	//	      final dVector3 Origin2,
 	//	      final dVector3 Direction2,
 	//	      dReal& t)
-	private boolean ClosestPointInRay(final DVector3 Origin1,
-			final DVector3 Direction1,
-			final DVector3 Origin2,
-			final DVector3 Direction2,
-			RefDouble t)
-	{
-		//  dVector3 w = {Origin1[0]-Origin2[0],
-		//				Origin1[1]-Origin2[1],
-		//				Origin1[2]-Origin2[2]};
-		DVector3 w = new DVector3();
-		w.eqDiff(Origin1, Origin2);
-		double a = dCalcVectorDot3(Direction1 , Direction1);
-		double b = dCalcVectorDot3(Direction1 , Direction2);
-		double c = dCalcVectorDot3(Direction2 , Direction2);
-		double d = dCalcVectorDot3(Direction1 , w);
-		double e = dCalcVectorDot3(Direction2 , w);
-		double denominator = (a*c)-(b*b);
-		if(denominator==0.0f)
-		{
-			return false;
-		}
-		t.set( ((a*e)-(b*d))/denominator );
-		return true;
-	}
+//	private boolean ClosestPointInRay(final DVector3 Origin1,
+//			final DVector3 Direction1,
+//			final DVector3 Origin2,
+//			final DVector3 Direction2,
+//			RefDouble t)
+//	{
+//		//  dVector3 w = {Origin1[0]-Origin2[0],
+//		//				Origin1[1]-Origin2[1],
+//		//				Origin1[2]-Origin2[2]};
+//		DVector3 w = new DVector3();
+//		w.eqDiff(Origin1, Origin2);
+//		double a = dCalcVectorDot3(Direction1 , Direction1);
+//		double b = dCalcVectorDot3(Direction1 , Direction2);
+//		double c = dCalcVectorDot3(Direction2 , Direction2);
+//		double d = dCalcVectorDot3(Direction1 , w);
+//		double e = dCalcVectorDot3(Direction2 , w);
+//		double denominator = (a*c)-(b*b);
+//		if(denominator==0.0f)
+//		{
+//			return false;
+//		}
+//		t.set( ((a*e)-(b*d))/denominator );
+//		return true;
+//	}
 
 	/** Clamp n to lie within the range [min, max]. */
 	private static double Clamp(double n, double min, double max)
@@ -606,22 +606,22 @@ public class DxConvex extends DxGeom implements DConvex {
 	                s = Clamp((b*f - c*e) / denom, 0.0f, 1.0f);
 	            }
 	            else s = 0.0f;
-	if (false) {//#if 0
-	            // Compute point on L2 closest to S1(s) using
-	            // t = Dot((P1+D1*s)-P2,D2) / Dot(D2,D2) = (b*s + f) / e
-	            t = (b*s + f) / e;
-
-	            // If t in [0,1] done. Else clamp t, recompute s for the new value
-	            // of t using s = Dot((P2+D2*t)-P1,D1) / Dot(D1,D1)= (t*b - c) / a
-	            // and clamp s to [0, 1]
-	            if (t < 0.0f) {
-	                t = 0.0f;
-	                s = Clamp(-c / a, 0.0f, 1.0f);
-	            } else if (t > 1.0f) {
-	                t = 1.0f;
-	                s = Clamp((b - c) / a, 0.0f, 1.0f);
-	            }
-	} else {//#else
+//	if (false) {//#if 0
+//	            // Compute point on L2 closest to S1(s) using
+//	            // t = Dot((P1+D1*s)-P2,D2) / Dot(D2,D2) = (b*s + f) / e
+//	            t = (b*s + f) / e;
+//
+//	            // If t in [0,1] done. Else clamp t, recompute s for the new value
+//	            // of t using s = Dot((P2+D2*t)-P1,D1) / Dot(D1,D1)= (t*b - c) / a
+//	            // and clamp s to [0, 1]
+//	            if (t < 0.0f) {
+//	                t = 0.0f;
+//	                s = Clamp(-c / a, 0.0f, 1.0f);
+//	            } else if (t > 1.0f) {
+//	                t = 1.0f;
+//	                s = Clamp((b - c) / a, 0.0f, 1.0f);
+//	            }
+//	} else {//#else
 	            double tnom = b*s + f;
 	            if (tnom < 0.0f)
 	            {
@@ -637,7 +637,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	            {
 	                t = tnom / e;
 	            }
-	}//#endif
+//	}//#endif
 	        }
 	    }
 
@@ -670,35 +670,35 @@ public class DxConvex extends DxGeom implements DConvex {
 //	}
 //	#endif
 
-	/** 
-	 * Returns the Ray on which 2 planes intersect if they do.
-	 * @param p1 Plane 1
-	 * @param p2 Plane 2
-	 * @param p Contains the origin of the ray upon returning if planes intersect
-	 * @param d Contains the direction of the ray upon returning if planes intersect
-	 * @return true if the planes intersect, false if paralell.
-	 */
-	private boolean IntersectPlanes(final DVector3 p1, double p13, final DVector3 p2, double p23,DVector3 p, DVector3 d)
-	{
-		// Compute direction of intersection line
-	    dCalcVectorCross3(d,p1,p2);  
-		// If d is (near) zero, the planes are parallel (and separated)
-		// or coincident, so they're not considered intersecting
-		double denom = d.dot(d);
-		if (denom < dEpsilon) return false;
-		DVector3 n=new DVector3();
-		//  n[0]=p1[3]*p2[0] - p2[3]*p1[0];
-		//  n[1]=p1[3]*p2[1] - p2[3]*p1[1];
-		//  n[2]=p1[3]*p2[2] - p2[3]*p1[2];
-		n.eqSum(p2, p13, p1, -p23);
-		// Compute point on intersection line
-		dCalcVectorCross3(p,n,d);
-		//  p[0]/=denom;
-		//  p[1]/=denom;
-		//  p[2]/=denom;
-		p.scale(1/denom);
-		return true;
-	}
+//	/** 
+//	 * Returns the Ray on which 2 planes intersect if they do.
+//	 * @param p1 Plane 1
+//	 * @param p2 Plane 2
+//	 * @param p Contains the origin of the ray upon returning if planes intersect
+//	 * @param d Contains the direction of the ray upon returning if planes intersect
+//	 * @return true if the planes intersect, false if paralell.
+//	 */
+//	private boolean IntersectPlanes(final DVector3 p1, double p13, final DVector3 p2, double p23,DVector3 p, DVector3 d)
+//	{
+//		// Compute direction of intersection line
+//	    dCalcVectorCross3(d,p1,p2);  
+//		// If d is (near) zero, the planes are parallel (and separated)
+//		// or coincident, so they're not considered intersecting
+//		double denom = d.dot(d);
+//		if (denom < dEpsilon) return false;
+//		DVector3 n=new DVector3();
+//		//  n[0]=p1[3]*p2[0] - p2[3]*p1[0];
+//		//  n[1]=p1[3]*p2[1] - p2[3]*p1[1];
+//		//  n[2]=p1[3]*p2[2] - p2[3]*p1[2];
+//		n.eqSum(p2, p13, p1, -p23);
+//		// Compute point on intersection line
+//		dCalcVectorCross3(p,n,d);
+//		//  p[0]/=denom;
+//		//  p[1]/=denom;
+//		//  p[2]/=denom;
+//		p.scale(1/denom);
+//		return true;
+//	}
 
 
 	//#if 0
@@ -1635,20 +1635,20 @@ Helper struct
 						}
 						if(!out)
 						{
-							if (false) {//#if 0
-								// Use t to move p into global space
-								//	p[0] = i1[0]+((i2[0]-i1[0])*t);
-								//	p[1] = i1[1]+((i2[1]-i1[1])*t);
-								//	p[2] = i1[2]+((i2[2]-i1[2])*t);
-								p.eqSum(i1, 1-t.get(), i2, t.get());
-							} else { //#else // #if0
+//							if (false) {//#if 0
+//								// Use t to move p into global space
+//								//	p[0] = i1[0]+((i2[0]-i1[0])*t);
+//								//	p[1] = i1[1]+((i2[1]-i1[1])*t);
+//								//	p[2] = i1[2]+((i2[2]-i1[2])*t);
+//								p.eqSum(i1, 1-t.get(), i2, t.get());
+//							} else { //#else // #if0
 								// Apply reference convex transformations to p
 								// The commented out piece of code is likelly to
 								// produce less operations than this one, but
 								// this way we know we are getting the right data
 								dMultiply0_331(tmp,cvx1.final_posr().R(),p);
 								p.eqSum(tmp, cvx1.final_posr().pos());//dVector3Add(tmp,cvx1._final_posr.pos,p);
-							} //#endif // #if 0
+//							} //#endif // #if 0
 							// get p's distance to reference plane
 //							d = p[0]*rplane[0]+
 //							p[1]*rplane[1]+

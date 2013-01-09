@@ -366,17 +366,17 @@ public class CCDPolyTope {
 
 	    //ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
 	    for (ccd_pt_el_t v: pt.vertices) {
-	        _ccdPtNearestUpdate(pt, (ccd_pt_el_t)v);
+	        _ccdPtNearestUpdate(pt, v);
 	    }
 
 	    //ccdListForEachEntry(pt.edges, e, ccd_pt_edge_t, list){
 	    for (ccd_pt_el_t e: pt.edges) {
-	        _ccdPtNearestUpdate(pt, (ccd_pt_el_t)e);
+	        _ccdPtNearestUpdate(pt, e);
 	    }
 
 	    //ccdListForEachEntry(pt.faces, f, ccd_pt_face_t, list){
 	    for (ccd_pt_el_t f: pt.faces) {
-	        _ccdPtNearestUpdate(pt, (ccd_pt_el_t)f);
+	        _ccdPtNearestUpdate(pt, f);
 	    }
 	}
 
@@ -439,7 +439,7 @@ public class CCDPolyTope {
 	    ccdListAppend(pt.vertices, vert.list);
 
 	    // update position in .nearest array
-	    _ccdPtNearestUpdate(pt, (ccd_pt_el_t)vert);
+	    _ccdPtNearestUpdate(pt, vert);
 
 	    return vert;
 	}
@@ -470,7 +470,7 @@ public class CCDPolyTope {
 	    ccdListAppend(pt.edges, edge.list);
 
 	    // update position in .nearest array
-	    _ccdPtNearestUpdate(pt, (ccd_pt_el_t )edge);
+	    _ccdPtNearestUpdate(pt, edge);
 
 	    return edge;
 	}
@@ -518,55 +518,55 @@ public class CCDPolyTope {
 	    ccdListAppend(pt.faces, face.list);
 
 	    // update position in .nearest array
-	    _ccdPtNearestUpdate(pt, (ccd_pt_el_t )face);
+	    _ccdPtNearestUpdate(pt, face);
 
 	    return face;
 	}
 
 
-	/**
-	 * Recompute distances from origin for all elements in pt.
-	 */
-	private static final void ccdPtRecomputeDistances(ccd_pt_t pt)
-	{
-	    //ccd_pt_vertex_t v;
-	    //ccd_pt_edge_t e;
-	    //ccd_pt_face_t f;
-	    ccd_vec3_t a, b, c;
-	    double dist;
-
-	    //ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
-	    for (ccd_pt_vertex_t v: pt.vertices) {
-	    	dist = ccdVec3Len2(v.v.v);
-	        v.dist = dist;
-	        ccdVec3Copy(v.witness, v.v.v);
-	    }
-
-	    //ccdListForEachEntry(pt.edges, e, ccd_pt_edge_t, list){
-	    for (ccd_pt_edge_t e: pt.edges) {
-	        a = e.vertex0.v.v;
-	        b = e.vertex1.v.v;
-	        dist = ccdVec3PointSegmentDist2(ccd_vec3_origin, a, b, e.witness);
-	        e.dist = dist;
-	    }
-
-	    //ccdListForEachEntry(pt.faces, f, ccd_pt_face_t, list){
-	    for (ccd_pt_face_t f: pt.faces) {
-	        // obtain triplet of vertices
-	        a = f.edge0.vertex0.v.v;
-	        b = f.edge0.vertex1.v.v;
-	        ccd_pt_edge_t e = f.edge1;
-	        if (e.vertex0 != f.edge0.vertex0
-	                && e.vertex0 != f.edge0.vertex1){
-	            c = e.vertex0.v.v;
-	        }else{
-	            c = e.vertex1.v.v;
-	        }
-
-	        dist = ccdVec3PointTriDist2(ccd_vec3_origin, a, b, c, f.witness);
-	        f.dist = dist;
-	    }
-	}
+//	/**
+//	 * Recompute distances from origin for all elements in pt.
+//	 */
+//	private static final void ccdPtRecomputeDistances(ccd_pt_t pt)
+//	{
+//	    //ccd_pt_vertex_t v;
+//	    //ccd_pt_edge_t e;
+//	    //ccd_pt_face_t f;
+//	    ccd_vec3_t a, b, c;
+//	    double dist;
+//
+//	    //ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
+//	    for (ccd_pt_vertex_t v: pt.vertices) {
+//	    	dist = ccdVec3Len2(v.v.v);
+//	        v.dist = dist;
+//	        ccdVec3Copy(v.witness, v.v.v);
+//	    }
+//
+//	    //ccdListForEachEntry(pt.edges, e, ccd_pt_edge_t, list){
+//	    for (ccd_pt_edge_t e: pt.edges) {
+//	        a = e.vertex0.v.v;
+//	        b = e.vertex1.v.v;
+//	        dist = ccdVec3PointSegmentDist2(ccd_vec3_origin, a, b, e.witness);
+//	        e.dist = dist;
+//	    }
+//
+//	    //ccdListForEachEntry(pt.faces, f, ccd_pt_face_t, list){
+//	    for (ccd_pt_face_t f: pt.faces) {
+//	        // obtain triplet of vertices
+//	        a = f.edge0.vertex0.v.v;
+//	        b = f.edge0.vertex1.v.v;
+//	        ccd_pt_edge_t e = f.edge1;
+//	        if (e.vertex0 != f.edge0.vertex0
+//	                && e.vertex0 != f.edge0.vertex1){
+//	            c = e.vertex0.v.v;
+//	        }else{
+//	            c = e.vertex1.v.v;
+//	        }
+//
+//	        dist = ccdVec3PointTriDist2(ccd_vec3_origin, a, b, c, f.witness);
+//	        f.dist = dist;
+//	    }
+//	}
 
 	/**
 	 * Returns nearest element to origin.
@@ -580,55 +580,55 @@ public class CCDPolyTope {
 	}
 
 
-	private static final void ccdPtDumpSVT(ccd_pt_t pt, String fn)//const char *fn)
-	{
-	    FILE fout;
-
-	    fout = Cstdio.fopen(fn, "a");
-	    if (fout == null)
-	        return;
-
-	    ccdPtDumpSVT2(pt, fout);
-
-	    Cstdio.fclose(fout);
-	}
-
-	private static final void ccdPtDumpSVT2(ccd_pt_t pt, FILE fout)
-	{
-	    //ccd_pt_vertex_t v; 
-	    ccd_pt_vertex_t a, b, c;
-	    //ccd_pt_edge_t e;
-	    //ccd_pt_face_t f;
-	    int i;
-
-	    Cstdio.fprintf(fout, "-----\n");
-
-	    Cstdio.fprintf(fout, "Points:\n");
-	    i = 0;
-	    //ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
-	    for (ccd_pt_vertex_t v: pt.vertices) {
-	        v.id = i++;
-	        Cstdio.fprintf(fout, "%lf %lf %lf\n",
-	                ccdVec3X(v.v.v), ccdVec3Y(v.v.v), ccdVec3Z(v.v.v));
-	    }
-
-	    Cstdio.fprintf(fout, "Edges:\n");
-	    //ccdListForEachEntry(pt.edges, e, ccd_pt_edge_t, list){
-	    for (ccd_pt_edge_t e: pt.edges) {
-	    	Cstdio.fprintf(fout, "%d %d\n", e.vertex0.id, e.vertex1.id);
-	    }
-
-	    Cstdio.fprintf(fout, "Faces:\n");
-	    //ccdListForEachEntry(pt.faces, f, ccd_pt_face_t, list){
-	    for (ccd_pt_face_t f: pt.faces) {
-	        a = f.edge0.vertex0;
-	        b = f.edge0.vertex1;
-	        c = f.edge1.vertex0;
-	        if (c == a || c == b){
-	            c = f.edge1.vertex1;
-	        }
-	        Cstdio.fprintf(fout, "%d %d %d\n", a.id, b.id, c.id);
-	    }
-	}
+//	private static final void ccdPtDumpSVT(ccd_pt_t pt, String fn)//const char *fn)
+//	{
+//	    FILE fout;
+//
+//	    fout = Cstdio.fopen(fn, "a");
+//	    if (fout == null)
+//	        return;
+//
+//	    ccdPtDumpSVT2(pt, fout);
+//
+//	    Cstdio.fclose(fout);
+//	}
+//
+//	private static final void ccdPtDumpSVT2(ccd_pt_t pt, FILE fout)
+//	{
+//	    //ccd_pt_vertex_t v; 
+//	    ccd_pt_vertex_t a, b, c;
+//	    //ccd_pt_edge_t e;
+//	    //ccd_pt_face_t f;
+//	    int i;
+//
+//	    Cstdio.fprintf(fout, "-----\n");
+//
+//	    Cstdio.fprintf(fout, "Points:\n");
+//	    i = 0;
+//	    //ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
+//	    for (ccd_pt_vertex_t v: pt.vertices) {
+//	        v.id = i++;
+//	        Cstdio.fprintf(fout, "%lf %lf %lf\n",
+//	                ccdVec3X(v.v.v), ccdVec3Y(v.v.v), ccdVec3Z(v.v.v));
+//	    }
+//
+//	    Cstdio.fprintf(fout, "Edges:\n");
+//	    //ccdListForEachEntry(pt.edges, e, ccd_pt_edge_t, list){
+//	    for (ccd_pt_edge_t e: pt.edges) {
+//	    	Cstdio.fprintf(fout, "%d %d\n", e.vertex0.id, e.vertex1.id);
+//	    }
+//
+//	    Cstdio.fprintf(fout, "Faces:\n");
+//	    //ccdListForEachEntry(pt.faces, f, ccd_pt_face_t, list){
+//	    for (ccd_pt_face_t f: pt.faces) {
+//	        a = f.edge0.vertex0;
+//	        b = f.edge0.vertex1;
+//	        c = f.edge1.vertex0;
+//	        if (c == a || c == b){
+//	            c = f.edge1.vertex1;
+//	        }
+//	        Cstdio.fprintf(fout, "%d %d %d\n", a.id, b.id, c.id);
+//	    }
+//	}
 
 }

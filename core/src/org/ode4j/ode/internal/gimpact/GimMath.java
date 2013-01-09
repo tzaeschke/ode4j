@@ -71,23 +71,23 @@ public class GimMath {
 
 	/*! Constants for integers*/
 	//#define GUINT32_BIT_COUNT 32
-	private static final int GUINT32_BIT_COUNT = 32;
-	//#define GUINT32_EXPONENT 5
-	private static final int GUINT32_EXPONENT = 5;
-
-	private static final boolean G_FASTMATH = true; //1;
-	private static final float G_PI = 3.14159265358979f;
-	private static final float G_HALF_PI = 1.5707963f;
-	//267948966
-	private static final float G_TWO_PI = 6.28318530f;
-	//71795864
-	private static final float G_ROOT3 = 1.73205f;
-	private static final float G_ROOT2 = 1.41421f;
+//	private static final int GUINT32_BIT_COUNT = 32;
+//	//#define GUINT32_EXPONENT 5
+//	private static final int GUINT32_EXPONENT = 5;
+//
+//	private static final boolean G_FASTMATH = true; //1;
+//	private static final float G_PI = 3.14159265358979f;
+//	private static final float G_HALF_PI = 1.5707963f;
+//	//267948966
+//	private static final float G_TWO_PI = 6.28318530f;
+//	//71795864
+//	private static final float G_ROOT3 = 1.73205f;
+//	private static final float G_ROOT2 = 1.41421f;
 	static final int G_UINT_INFINITY = 65534;      //TODO use Int.infinity!
 	protected static final float G_REAL_INFINITY = Float.POSITIVE_INFINITY;//FLT_MAX;  //TODO use Float.inifity!
 	protected static final float G_REAL_INFINITY_N = Float.NEGATIVE_INFINITY;//FLT_MAX;  //TODO use Float.inifity!
-	private static final int	G_SIGN_BITMASK	= 	0x80000000;
-	private static final boolean G_USE_EPSILON_TEST = true;
+//	private static final int	G_SIGN_BITMASK	= 	0x80000000;
+//	private static final boolean G_USE_EPSILON_TEST = true;
 	protected static final float G_EPSILON = 0.0000001f;
 	//! @}
 

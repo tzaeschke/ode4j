@@ -76,7 +76,7 @@ public class DxWorldProcessIslandsInfo {
 
         int nb = world.nb, nj = world.nj;
         // Make array for island body/joint counts
-        int[] islandsizes = memarena.AllocateArrayInt(2 * (int)nb);
+        int[] islandsizes = memarena.AllocateArrayInt(2 * nb);
         int sizescurrP;
 
         // make arrays for body and joint lists (for a single island) to go into
@@ -142,8 +142,8 @@ public class DxWorldProcessIslandsInfo {
                                     }
                                 }
                             }
-                            Common.dIASSERT(stacksize <= (int)world.nb);
-                            Common.dIASSERT(stacksize <= (int)world.nj);
+                            Common.dIASSERT(stacksize <= world.nb);
+                            Common.dIASSERT(stacksize <= world.nj);
 
                             if (stacksize == 0) {
                                 break;
@@ -153,10 +153,10 @@ public class DxWorldProcessIslandsInfo {
                             body[bodycurr++] = b;//*bodycurr++ = b;    // put body on body list
                         }
 
-                        int bcount = (int)(bodycurr - bodystart);
-                        int jcount = (int)(jointcurr - jointstart);
-                        Common.dIASSERT((int)(bodycurr - bodystart) <= Integer.MAX_VALUE);//UINT_MAX);
-                        Common.dIASSERT((int)(jointcurr - jointstart) <= Integer.MAX_VALUE);//UINT_MAX);
+                        int bcount = bodycurr - bodystart;
+                        int jcount = jointcurr - jointstart;
+                        Common.dIASSERT((bodycurr - bodystart) <= Integer.MAX_VALUE);//UINT_MAX);
+                        Common.dIASSERT((jointcurr - jointstart) <= Integer.MAX_VALUE);//UINT_MAX);
 
                         islandsizes[sizescurrP+0] = bcount;
                         islandsizes[sizescurrP+1] = jcount;

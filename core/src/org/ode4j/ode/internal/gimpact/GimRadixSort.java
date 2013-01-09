@@ -79,13 +79,13 @@ public class GimRadixSort {
 
 	//For the type of your array, you need to declare a macro for obtaining the key, like these:
 	//#define SIMPLE_GET_FLOAT32KEY(e,key) {key =(GREAL)(e);}
-	private float SIMPLE_GET_FLOAT32KEY(int e) {return (float)e;}
-
-	//#define SIMPLE_GET_INTKEY(e,key) {key =(GINT32)(e);}
-	private int SIMPLE_GET_INTKEY(float e) {return (int)e;}
-
-	//#define SIMPLE_GET_UINTKEY(e,key) {key =(GUINT32)(e);}
-	private long SIMPLE_GET_UINTKEY(float e) {return (long)e;}
+//	private float SIMPLE_GET_FLOAT32KEY(int e) {return (float)e;}
+//
+//	//#define SIMPLE_GET_INTKEY(e,key) {key =(GINT32)(e);}
+//	private int SIMPLE_GET_INTKEY(float e) {return (int)e;}
+//
+//	//#define SIMPLE_GET_UINTKEY(e,key) {key =(GUINT32)(e);}
+//	private long SIMPLE_GET_UINTKEY(float e) {return (long)e;}
 
 	//For the type of your array, you need to declare a macro for copy elements, like this:
 

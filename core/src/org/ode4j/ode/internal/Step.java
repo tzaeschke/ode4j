@@ -499,7 +499,7 @@ dmemestimate_fn_t {
 	    //memarena.ShrinkArray<dJointWithInfo1>(jointiinfos, ji_reserve_count, ji_end);
 	    DxWorldProcessMemArena.dummy();
 	    jiP = ji_start; //jointiinfos += ji_start;
-	    int nj = (int)(ji_end - ji_start);
+	    int nj = ji_end - ji_start;
 	    //dIASSERT((size_t)(ji_end - ji_start) <= (size_t)UINT_MAX);
 
 	    int m = 0;

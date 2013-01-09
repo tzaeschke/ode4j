@@ -48,8 +48,8 @@ public class CollideBoxPlane implements DColliderFn {
 //		dIASSERT (o2.type == dPlaneClass);
 		dIASSERT ((flags & DxGeom.NUMC_MASK) >= 1);
 
-		DxBox box = (DxBox) o1;
-		DxPlane plane = (DxPlane) o2;
+		DxBox box = o1;
+		DxPlane plane = o2;
 
 		DContactGeom contact = contacts.get(0);
 		contact.g1 = o1;

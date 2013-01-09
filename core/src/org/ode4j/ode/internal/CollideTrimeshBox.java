@@ -117,10 +117,10 @@ public class CollideTrimeshBox implements DColliderFn {
 	//	  (a)[9]=(b)[9]; \
 	//	  (a)[10]=(b)[10]; \
 	//	                     (a)[11]=(b)[11]; }while(0)
-	/** a.set(b); */
-	private void SETM(DMatrix3 a, DMatrix3C b) {
-		a.set(b);
-	}
+//	/** a.set(b); */
+//	private void SETM(DMatrix3 a, DMatrix3C b) {
+//		a.set(b);
+//	}
 
 
 	// dVector3
@@ -490,13 +490,6 @@ public class CollideTrimeshBox implements DColliderFn {
 
 		}
 
-
-		private final double dDOT(DVector3C a, DVector3C b) {
-			return a.dot(b);
-		}
-		private final double dFabs(double d) {
-			return Math.abs(d);
-		}
 
 		//	bool sTrimeshBoxColliderData::_cldTestSeparatingAxes(const dVector3 &v0, const dVector3 &v1, const dVector3 &v2) {
 		boolean _cldTestSeparatingAxes(final DVector3C v0, final DVector3C v1, final DVector3C v2) {

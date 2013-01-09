@@ -66,7 +66,7 @@ public final class DxWorldProcessMemArena {
 
     int GetMemorySize() //const
     {
-        return (int)m_pAllocEnd.toInt() - (int)m_pAllocBegin.toInt();
+        return m_pAllocEnd.toInt() - m_pAllocBegin.toInt();
     }
 
     BlockPointer SaveState() //const
@@ -172,7 +172,7 @@ public final class DxWorldProcessMemArena {
                     break;
                 }
 
-                arena = (DxWorldProcessMemArena)DxUtil.dEFFICIENT_PTR(pNewArenaBuffer).asDxWorldProcessMemArena();
+                arena = DxUtil.dEFFICIENT_PTR(pNewArenaBuffer).asDxWorldProcessMemArena();
 
                 BlockPointer blockbegin = DxUtil.dEFFICIENT_PTR(arena, 1);
                 BlockPointer blockend = DxUtil.dOFFSET_EFFICIENTLY(blockbegin, memreq_with_reserve);

@@ -138,14 +138,14 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DAMotorJoint createAMotorJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateAMotor((DxWorld) world, group);
+		return ODE.dJointCreateAMotor(world, group);
 	}
 	/**
 	 * Create a new joint of the A-motor type.
 	 * @ingroup joints
 	 */
 	public static DAMotorJoint createAMotorJoint (DWorld world) {
-		return ODE.dJointCreateAMotor((DxWorld) world, null);
+		return ODE.dJointCreateAMotor(world, null);
 	}
 
 	// BallJoint
@@ -159,7 +159,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DBallJoint createBallJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateBall((DxWorld) world, group);
+		return ODE.dJointCreateBall(world, group);
 	}
 	/**
 	 * Create a new joint of the ball type.
@@ -169,7 +169,7 @@ public abstract class OdeHelper {
 	 * because it does not connect to any bodies.
 	 */
 	public static DBallJoint createBallJoint (DWorld world) {
-		return ODE.dJointCreateBall((DxWorld) world, null);
+		return ODE.dJointCreateBall(world, null);
 	}
 
 	// ContactJoint
@@ -180,14 +180,14 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DContactJoint createContactJoint (DWorld world, DJointGroup group, DContact c) {
-		return ODE.dJointCreateContact((DxWorld) world, group, c);
+		return ODE.dJointCreateContact(world, group, c);
 	}
 	/**
 	 * Create a new joint of the contact type.
 	 * @ingroup joints
 	 */
 	public static DContactJoint createContactJoint (DWorld world, DContact c) {
-		return ODE.dJointCreateContact((DxWorld) world, null, c);
+		return ODE.dJointCreateContact(world, null, c);
 	}
 
 	// FixedJoint
@@ -198,14 +198,14 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DFixedJoint createFixedJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateFixed((DxWorld) world, group);
+		return ODE.dJointCreateFixed(world, group);
 	}
 	/**
 	 * Create a new joint of the fixed type.
 	 * @ingroup joints
 	 */
 	public static DFixedJoint createFixedJoint (DWorld world) {
-		return ODE.dJointCreateFixed((DxWorld) world, null);
+		return ODE.dJointCreateFixed(world, null);
 	}
 
 	// HingeJoint
@@ -216,14 +216,14 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DHingeJoint createHingeJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateHinge((DxWorld) world, group);
+		return ODE.dJointCreateHinge(world, group);
 	}
 	/**
 	 * Create a new joint of the hinge type.
 	 * @ingroup joints
 	 */
 	public static DHingeJoint createHingeJoint (DWorld world) {
-		return ODE.dJointCreateHinge((DxWorld) world, null);
+		return ODE.dJointCreateHinge(world, null);
 	}
 
 	// Hinge2Joint
@@ -234,14 +234,14 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DHinge2Joint createHinge2Joint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateHinge2((DxWorld) world, group);
+		return ODE.dJointCreateHinge2(world, group);
 	}
 	/**
 	 * Create a new joint of the hinge2 type.
 	 * @ingroup joints
 	 */
 	public static DHinge2Joint createHinge2Joint (DWorld world) {
-		return ODE.dJointCreateHinge2((DxWorld) world, null);
+		return ODE.dJointCreateHinge2(world, null);
 	}
 
 	// LMotorJoint
@@ -252,22 +252,22 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DLMotorJoint createLMotorJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateLMotor((DxWorld) world, group);
+		return ODE.dJointCreateLMotor(world, group);
 	}
 	/**
 	 * Create a new joint of the L-motor type.
 	 * @ingroup joints
 	 */
 	public static DLMotorJoint createLMotorJoint (DWorld world) {
-		return ODE.dJointCreateLMotor((DxWorld) world, null);
+		return ODE.dJointCreateLMotor(world, null);
 	}
 
 	// NullJoint
 	public static DNullJoint createNullJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateNull((DxWorld) world, group);
+		return ODE.dJointCreateNull(world, group);
 	}
 	public static DNullJoint createNullJoint (DWorld world) {
-		return ODE.dJointCreateNull((DxWorld) world, null);
+		return ODE.dJointCreateNull(world, null);
 	}
 
 	// PistonJoint
@@ -279,14 +279,14 @@ public abstract class OdeHelper {
 	 *                      joint group.
 	 */
 	public static DPistonJoint createPistonJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreatePiston((DxWorld) world, group);
+		return ODE.dJointCreatePiston(world, group);
 	}
 	/**
 	 * Create a new joint of the Piston type.
 	 * @ingroup joints
 	 */
 	public static DPistonJoint createPistonJoint (DWorld world) {
-		return ODE.dJointCreatePiston((DxWorld) world, null);
+		return ODE.dJointCreatePiston(world, null);
 	}
 
 	// Plane2DJoint
@@ -297,7 +297,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPlane2DJoint createPlane2DJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreatePlane2D((DxWorld) world, group);
+		return ODE.dJointCreatePlane2D(world, group);
 	}
 	/**
 	 * Create a new joint of the plane-2d type.
@@ -305,7 +305,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPlane2DJoint createPlane2DJoint (DWorld world) {
-		return ODE.dJointCreatePlane2D((DxWorld) world, null);
+		return ODE.dJointCreatePlane2D(world, null);
 	}
 
 	// PRJoint
@@ -316,7 +316,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPRJoint createPRJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreatePR((DxWorld) world, group);
+		return ODE.dJointCreatePR(world, group);
 	}
 	/**
 	 * Create a new joint of the PR (Prismatic and Rotoide) type.
@@ -324,7 +324,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPRJoint createPRJoint (DWorld world) {
-		return ODE.dJointCreatePR((DxWorld) world, null);
+		return ODE.dJointCreatePR(world, null);
 	}
 
 	// PUJoint
@@ -335,7 +335,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPUJoint createPUJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreatePU((DxWorld) world, group);
+		return ODE.dJointCreatePU(world, group);
 	}
 	/**
 	 * Create a new joint of the PU (Prismatic and Universal) type.
@@ -343,7 +343,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DPUJoint createPUJoint (DWorld world) {
-		return ODE.dJointCreatePU((DxWorld) world, null);
+		return ODE.dJointCreatePU(world, null);
 	}
 
 	// SliderJoint
@@ -354,7 +354,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DSliderJoint createSliderJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateSlider((DxWorld) world, group);
+		return ODE.dJointCreateSlider(world, group);
 	}
 	/**
 	 * Create a new joint of the slider type.
@@ -362,7 +362,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DSliderJoint createSliderJoint (DWorld world) {
-		return ODE.dJointCreateSlider((DxWorld) world, null);
+		return ODE.dJointCreateSlider(world, null);
 	}
 
 	// UniversalJoint
@@ -373,7 +373,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DUniversalJoint createUniversalJoint (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateUniversal((DxWorld) world, group);
+		return ODE.dJointCreateUniversal(world, group);
 	}
 	/**
 	 * Create a new joint of the universal type.
@@ -381,7 +381,7 @@ public abstract class OdeHelper {
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	public static DUniversalJoint createUniversalJoint (DWorld world) {
-		return ODE.dJointCreateUniversal((DxWorld) world, null);
+		return ODE.dJointCreateUniversal(world, null);
 	}
 
 

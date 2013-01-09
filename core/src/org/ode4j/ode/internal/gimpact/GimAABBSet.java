@@ -31,14 +31,16 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
-import java.util.Comparator;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.AABBCOLLISION;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.AABB_COPY;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.BOXINTERSECTION;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.MERGEBOXES;
+import static org.ode4j.ode.internal.gimpact.GimMath.CLAMP;
 
 import org.cpp4j.java.RefBoolean;
 import org.cpp4j.java.RefFloat;
-
-import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
-
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
+import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;
 
 /** 
@@ -139,7 +141,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	//! Constant for apply approaches between brute force and sorted pruning on bipartite queries
 	private static final int GIM_MIN_SORTED_BIPARTITE_PRUNING_BOXES = 600;
 	//! Constant for apply approaches between brute force and sorted pruning for box collision
-	private static final int GIM_MIN_SORTED_PRUNING_BOXES = 140;
+	//(TZ)private static final int GIM_MIN_SORTED_PRUNING_BOXES = 140;
 
 
 
@@ -389,23 +391,23 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	}
 
 	
-    private static final ComparatorTZ COMPARATOT_TZ = new ComparatorTZ();
-    private static final class ComparatorTZ implements Comparator<GIM_RSORT_TOKEN> {
-//      private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
-//      interface GimRSortTokenComparator {
-//          int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
-//      }
-//      static final GimRSortTokenComparator RSORT_TOKEN_COMPARATOR = new GimRSortTokenComparator() {
-//          @Override public int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
-//              return RSORT_TOKEN_COMPARATOR(x, y);
-//          }
-//      };
-
-        @Override
-        public int compare(GIM_RSORT_TOKEN o1, GIM_RSORT_TOKEN o2) {
-            return (int) -(o1.m_key - o2.m_key);
-        }
-    };
+//    private static final ComparatorTZ COMPARATOT_TZ = new ComparatorTZ();
+//    private static final class ComparatorTZ implements Comparator<GIM_RSORT_TOKEN> {
+////      private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
+////      interface GimRSortTokenComparator {
+////          int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
+////      }
+////      static final GimRSortTokenComparator RSORT_TOKEN_COMPARATOR = new GimRSortTokenComparator() {
+////          @Override public int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
+////              return RSORT_TOKEN_COMPARATOR(x, y);
+////          }
+////      };
+//
+//        @Override
+//        public int compare(GIM_RSORT_TOKEN o1, GIM_RSORT_TOKEN o2) {
+//            return (int) -(o1.m_key - o2.m_key);
+//        }
+//    };
 	
 	
 	//utility macros

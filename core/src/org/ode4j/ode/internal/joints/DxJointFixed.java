@@ -37,6 +37,7 @@ import static org.ode4j.ode.OdeMath.*;
  * @deprecated Should not be used anymore, see forums.
  *
  */
+@Deprecated
 public class DxJointFixed extends DxJoint implements DFixedJoint {
 
 	//****************************************************************************

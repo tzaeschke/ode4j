@@ -49,21 +49,21 @@ public class GimTrimeshTrimeshCol {
 	// ******************************************************
 	
 	//#define CLASSIFY_TRI_BY_FACE(v1,v2,v3,faceplane,out_of_face)\
-	private static boolean CLASSIFY_TRI_BY_FACE(final vec3f[] v, final vec4f faceplane,
-			final vec3f _distances)
-	{   
-	    _distances.f[0] = DISTANCE_PLANE_POINT(faceplane,v[0]);
-	    _distances.f[1] =  _distances.f[0] * DISTANCE_PLANE_POINT(faceplane,v[1]);
-	    _distances.f[2] =  _distances.f[0] * DISTANCE_PLANE_POINT(faceplane,v[2]); 
-		if(_distances.f[1]>0.0f && _distances.f[2]>0.0f)
-		{
-		    return true;
-		}
-		else
-		{
-		    return false;
-		}
-	}
+//	private static boolean CLASSIFY_TRI_BY_FACE(final vec3f[] v, final vec4f faceplane,
+//			final vec3f _distances)
+//	{   
+//	    _distances.f[0] = DISTANCE_PLANE_POINT(faceplane,v[0]);
+//	    _distances.f[1] =  _distances.f[0] * DISTANCE_PLANE_POINT(faceplane,v[1]);
+//	    _distances.f[2] =  _distances.f[0] * DISTANCE_PLANE_POINT(faceplane,v[2]); 
+//		if(_distances.f[1]>0.0f && _distances.f[2]>0.0f)
+//		{
+//		    return true;
+//		}
+//		else
+//		{
+//		    return false;
+//		}
+//	}
 	private static boolean CLASSIFY_TRI_BY_FACE(final vec3f[] v, final vec4f faceplane)
 	{   
 		float d0, d1, d2; 

@@ -190,8 +190,8 @@ public class DxSphere extends DxGeom implements DSphere {
 			double depth;
 			boolean onborder = false;
 
-			DxSphere sphere = (DxSphere) o1;
-			DxBox box = (DxBox) o2;
+			DxSphere sphere = o1;
+			DxBox box = o2;
 
 			DContactGeom contact = contacts.get(0);
 			contact.g1 = o1;
@@ -284,8 +284,8 @@ public class DxSphere extends DxGeom implements DSphere {
 			//  dIASSERT (o2.type == dPlaneClass);
 			dIASSERT ((flags & NUMC_MASK) >= 1);
 
-			DxSphere sphere = (DxSphere) o1;
-			DxPlane plane = (DxPlane) o2;
+			DxSphere sphere = o1;
+			DxPlane plane = o2;
 
 			DContactGeom contact = contacts.get(0);
 			contact.g1 = o1;

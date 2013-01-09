@@ -230,7 +230,7 @@ public class CollideTrimeshPlane implements DColliderFn {
 
 		collision_result.GIM_DYNARRAY_DESTROY();
 
-		return (int)contactcount;
+		return contactcount;
 	}
 	//	#endif // dTRIMESH_GIMPACT
 	//

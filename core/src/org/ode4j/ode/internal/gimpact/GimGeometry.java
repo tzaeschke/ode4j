@@ -379,12 +379,12 @@ public class GimGeometry extends GimMath {
 
 
 	/// distance between two points
-	private static final void VEC_DISTANCE(final RefFloat _len, 
-			final vec3f _va, final vec3f _vb) {
-	    vec3f _tmp_ = new vec3f();				
-	    VEC_DIFF(_tmp_, _vb, _va);			
-	    VEC_LENGTH(_tmp_,_len);			
-	}
+//	private static final void VEC_DISTANCE(final RefFloat _len, 
+//			final vec3f _va, final vec3f _vb) {
+//	    vec3f _tmp_ = new vec3f();				
+//	    VEC_DIFF(_tmp_, _vb, _va);			
+//	    VEC_LENGTH(_tmp_,_len);			
+//	}
 
 
 	/// Vector length
@@ -1283,22 +1283,22 @@ public class GimGeometry extends GimMath {
 	}
 
 
-	/** cofactor of matrix
-	 *
-	 * Computes cofactor of matrix m, returning a
-	 */
-	private static final void COFACTOR_3X3(mat3f a, mat3f m)					
-	{								
-	   a.f[M(0,0)] = m.f[M(1,1)]*m.f[M(2,2)] - m.f[M(1,2)]*m.f[M(2,1)];			
-	   a.f[M(0,1)] = - (m.f[M(1,0)]*m.f[M(2,2)] - m.f[M(2,0)]*m.f[M(1,2)]);		
-	   a.f[M(0,2)] = m.f[M(1,0)]*m.f[M(2,1)] - m.f[M(1,1)]*m.f[M(2,0)];			
-	   a.f[M(1,0)] = - (m.f[M(0,1)]*m.f[M(2,2)] - m.f[M(0,2)]*m.f[M(2,1)]);		
-	   a.f[M(1,1)] = m.f[M(0,0)]*m.f[M(2,2)] - m.f[M(0,2)]*m.f[M(2,0)];			
-	   a.f[M(1,2)] = - (m.f[M(0,0)]*m.f[M(2,1)] - m.f[M(0,1)]*m.f[M(2,0)]);		
-	   a.f[M(2,0)] = m.f[M(0,1)]*m.f[M(1,2)] - m.f[M(0,2)]*m.f[M(1,1)];			
-	   a.f[M(2,1)] = - (m.f[M(0,0)]*m.f[M(1,2)] - m.f[M(0,2)]*m.f[M(1,0)]);		
-	   a.f[M(2,2)] = m.f[M(0,0)]*m.f[M(1,1)] - m.f[M(0,1)]*m.f[M(1,0)];		
-	}
+//	/** cofactor of matrix
+//	 *
+//	 * Computes cofactor of matrix m, returning a
+//	 */
+//	private static final void COFACTOR_3X3(mat3f a, mat3f m)					
+//	{								
+//	   a.f[M(0,0)] = m.f[M(1,1)]*m.f[M(2,2)] - m.f[M(1,2)]*m.f[M(2,1)];			
+//	   a.f[M(0,1)] = - (m.f[M(1,0)]*m.f[M(2,2)] - m.f[M(2,0)]*m.f[M(1,2)]);		
+//	   a.f[M(0,2)] = m.f[M(1,0)]*m.f[M(2,1)] - m.f[M(1,1)]*m.f[M(2,0)];			
+//	   a.f[M(1,0)] = - (m.f[M(0,1)]*m.f[M(2,2)] - m.f[M(0,2)]*m.f[M(2,1)]);		
+//	   a.f[M(1,1)] = m.f[M(0,0)]*m.f[M(2,2)] - m.f[M(0,2)]*m.f[M(2,0)];			
+//	   a.f[M(1,2)] = - (m.f[M(0,0)]*m.f[M(2,1)] - m.f[M(0,1)]*m.f[M(2,0)]);		
+//	   a.f[M(2,0)] = m.f[M(0,1)]*m.f[M(1,2)] - m.f[M(0,2)]*m.f[M(1,1)];			
+//	   a.f[M(2,1)] = - (m.f[M(0,0)]*m.f[M(1,2)] - m.f[M(0,2)]*m.f[M(1,0)]);		
+//	   a.f[M(2,2)] = m.f[M(0,0)]*m.f[M(1,1)] - m.f[M(0,1)]*m.f[M(1,0)];		
+//	}
 
 
 	/** cofactor of matrix
@@ -1331,23 +1331,23 @@ public class GimGeometry extends GimMath {
 	}
 
 
-	/** adjoint of matrix
-	 *
-	 * Computes adjoint of matrix m, returning a
-	 * (Note that adjoint is just the transpose of the cofactor matrix)
-	 */
-	private static final void ADJOINT_3X3(mat3f a, mat3f m)					
-	{								
-	   a.f[M(0,0)] = m.f[M(1,1)]*m.f[M(2,2)] - m.f[M(1,2)]*m.f[M(2,1)];			
-	   a.f[M(1,0)] = - (m.f[M(1,0)]*m.f[M(2,2)] - m.f[M(2,0)]*m.f[M(1,2)]);		
-	   a.f[M(2,0)] = m.f[M(1,0)]*m.f[M(2,1)] - m.f[M(1,1)]*m.f[M(2,0)];			
-	   a.f[M(0,1)] = - (m.f[M(0,1)]*m.f[M(2,2)] - m.f[M(0,2)]*m.f[M(2,1)]);		
-	   a.f[M(1,1)] = m.f[M(0,0)]*m.f[M(2,2)] - m.f[M(0,2)]*m.f[M(2,0)];			
-	   a.f[M(2,1)] = - (m.f[M(0,0)]*m.f[M(2,1)] - m.f[M(0,1)]*m.f[M(2,0)]);		
-	   a.f[M(0,2)] = m.f[M(0,1)]*m.f[M(1,2)] - m.f[M(0,2)]*m.f[M(1,1)];			
-	   a.f[M(1,2)] = - (m.f[M(0,0)]*m.f[M(1,2)] - m.f[M(0,2)]*m.f[M(1,0)]);		
-	   a.f[M(2,2)] = m.f[M(0,0)]*m.f[M(1,1)] - m.f[M(0,1)]*m.f[M(1,0)];		
-	}
+//	/** adjoint of matrix
+//	 *
+//	 * Computes adjoint of matrix m, returning a
+//	 * (Note that adjoint is just the transpose of the cofactor matrix)
+//	 */
+//	private static final void ADJOINT_3X3(mat3f a, mat3f m)					
+//	{								
+//	   a.f[M(0,0)] = m.f[M(1,1)]*m.f[M(2,2)] - m.f[M(1,2)]*m.f[M(2,1)];			
+//	   a.f[M(1,0)] = - (m.f[M(1,0)]*m.f[M(2,2)] - m.f[M(2,0)]*m.f[M(1,2)]);		
+//	   a.f[M(2,0)] = m.f[M(1,0)]*m.f[M(2,1)] - m.f[M(1,1)]*m.f[M(2,0)];			
+//	   a.f[M(0,1)] = - (m.f[M(0,1)]*m.f[M(2,2)] - m.f[M(0,2)]*m.f[M(2,1)]);		
+//	   a.f[M(1,1)] = m.f[M(0,0)]*m.f[M(2,2)] - m.f[M(0,2)]*m.f[M(2,0)];			
+//	   a.f[M(2,1)] = - (m.f[M(0,0)]*m.f[M(2,1)] - m.f[M(0,1)]*m.f[M(2,0)]);		
+//	   a.f[M(0,2)] = m.f[M(0,1)]*m.f[M(1,2)] - m.f[M(0,2)]*m.f[M(1,1)];			
+//	   a.f[M(1,2)] = - (m.f[M(0,0)]*m.f[M(1,2)] - m.f[M(0,2)]*m.f[M(1,0)]);		
+//	   a.f[M(2,2)] = m.f[M(0,0)]*m.f[M(1,1)] - m.f[M(0,1)]*m.f[M(1,0)];		
+//	}
 
 
 	/** adjoint of matrix
@@ -1633,35 +1633,35 @@ public class GimGeometry extends GimMath {
 	    vmax.d = _fOrigin + _fMaximumExtent; 
 	}
 
-	/**
-	 * classify values:
-	 * <ol>
-	 * <li> 0 : In back of plane
-	 * <li> 1 : Spanning
-	 * <li> 2 : In front of
-	 * </ol>
-	 */
-	private static final void PLANE_CLASSIFY_BOX(final vec4f plane, 
-			final aabb3f aabb, final RefInt classify)
-	{
-		RefFloat _fmin = new RefFloat(),_fmax = new RefFloat(); 
-		AABB_PROJECTION_INTERVAL(aabb,plane, _fmin, _fmax); 
-		if(plane.f[3] >= _fmax.d) 
-		{ 
-			classify.i = 0;/*In back of*/ 
-		} 
-		else 
-		{ 
-			if(plane.f[3]+0.000001f>=_fmin.d) 
-			{ 
-				classify.i = 1;/*Spanning*/ 
-			} 
-			else 
-			{ 
-				classify.i = 2;/*In front of*/ 
-			} 
-		} 
-	}
+//	/**
+//	 * classify values:
+//	 * <ol>
+//	 * <li> 0 : In back of plane
+//	 * <li> 1 : Spanning
+//	 * <li> 2 : In front of
+//	 * </ol>
+//	 */
+//	private static final void PLANE_CLASSIFY_BOX(final vec4f plane, 
+//			final aabb3f aabb, final RefInt classify)
+//	{
+//		RefFloat _fmin = new RefFloat(),_fmax = new RefFloat(); 
+//		AABB_PROJECTION_INTERVAL(aabb,plane, _fmin, _fmax); 
+//		if(plane.f[3] >= _fmax.d) 
+//		{ 
+//			classify.i = 0;/*In back of*/ 
+//		} 
+//		else 
+//		{ 
+//			if(plane.f[3]+0.000001f>=_fmin.d) 
+//			{ 
+//				classify.i = 1;/*Spanning*/ 
+//			} 
+//			else 
+//			{ 
+//				classify.i = 2;/*In front of*/ 
+//			} 
+//		} 
+//	}
 	static final int PLANE_CLASSIFY_BOX(final vec4f plane, final aabb3f aabb)
 	{
 		RefFloat _fmin = new RefFloat(),_fmax = new RefFloat(); 
@@ -1950,38 +1950,38 @@ public class GimGeometry extends GimMath {
 	    VEC_SUM(pout,vPoint,pout);	
 	}
 
-	/*! \brief Returns the Ray on which 2 planes intersect if they do.
-	    Written by Rodrigo Hernandez on ODE convex collision
-
-	  \param p1 Plane 1
-	  \param p2 Plane 2
-	  \param p Contains the origin of the ray upon returning if planes intersect
-	  \param d Contains the direction of the ray upon returning if planes intersect
-	  \param dointersect 1 if the planes intersect, 0 if paralell.
-
-	*/
-	private static final void INTERSECT_PLANES(final vec3f p1, final vec3f p2, 
-			final vec3f p, final vec3f d, final RefBoolean dointersect) 
-	{ 
-	  VEC_CROSS(d,p1,p2); 
-	  float denom = VEC_DOT(d, d);
-	  if (IS_ZERO(denom)) 
-	  { 
-	      dointersect.b = false; 
-	  } 
-	  else 
-	  { 
-	      vec3f _n = new vec3f();
-	      _n.f[0]=p1.f[3]*p2.f[0] - p2.f[3]*p1.f[0]; 
-	      _n.f[1]=p1.f[3]*p2.f[1] - p2.f[3]*p1.f[1]; 
-	      _n.f[2]=p1.f[3]*p2.f[2] - p2.f[3]*p1.f[2]; 
-	      VEC_CROSS(p,_n,d); 
-	      p.f[0]/=denom; 
-	      p.f[1]/=denom; 
-	      p.f[2]/=denom; 
-	      dointersect.b = true; 
-	  }
-	}
+//	/*! \brief Returns the Ray on which 2 planes intersect if they do.
+//	    Written by Rodrigo Hernandez on ODE convex collision
+//
+//	  \param p1 Plane 1
+//	  \param p2 Plane 2
+//	  \param p Contains the origin of the ray upon returning if planes intersect
+//	  \param d Contains the direction of the ray upon returning if planes intersect
+//	  \param dointersect 1 if the planes intersect, 0 if paralell.
+//
+//	*/
+//	private static final void INTERSECT_PLANES(final vec3f p1, final vec3f p2, 
+//			final vec3f p, final vec3f d, final RefBoolean dointersect) 
+//	{ 
+//	  VEC_CROSS(d,p1,p2); 
+//	  float denom = VEC_DOT(d, d);
+//	  if (IS_ZERO(denom)) 
+//	  { 
+//	      dointersect.b = false; 
+//	  } 
+//	  else 
+//	  { 
+//	      vec3f _n = new vec3f();
+//	      _n.f[0]=p1.f[3]*p2.f[0] - p2.f[3]*p1.f[0]; 
+//	      _n.f[1]=p1.f[3]*p2.f[1] - p2.f[3]*p1.f[1]; 
+//	      _n.f[2]=p1.f[3]*p2.f[2] - p2.f[3]*p1.f[2]; 
+//	      VEC_CROSS(p,_n,d); 
+//	      p.f[0]/=denom; 
+//	      p.f[1]/=denom; 
+//	      p.f[2]/=denom; 
+//	      dointersect.b = true; 
+//	  }
+//	}
 
 	//***************** SEGMENT and LINE FUNCTIONS **********************************///
 
@@ -2011,40 +2011,40 @@ public class GimGeometry extends GimMath {
 	}
 
 
-	/*! \brief Finds the line params where these lines intersect.
-
-	\param dir1 Direction of line 1
-	\param point1 Point of line 1
-	\param dir2 Direction of line 2
-	\param point2 Point of line 2
-	\param t1 Result Parameter for line 1
-	\param t2 Result Parameter for line 2
-	\param dointersect  0  if the lines won't intersect, else 1
-
-	*/
-	private static final void LINE_INTERSECTION_PARAMS(final vec3f dir1, 
-			final vec3f point1, final vec3f dir2, final vec3f point2, 
-			final RefFloat t1, final RefFloat t2, final RefBoolean dointersect) {
-	    float det;
-		float e1e1 = VEC_DOT(dir1,dir1);
-		float e1e2 = VEC_DOT(dir1,dir2);
-		float e2e2 = VEC_DOT(dir2,dir2);
-		vec3f p1p2 = new vec3f();
-	    VEC_DIFF(p1p2,point1,point2);
-	    float p1p2e1 = VEC_DOT(p1p2,dir1);
-		float p1p2e2 = VEC_DOT(p1p2,dir2);
-		det = e1e2*e1e2 - e1e1*e2e2;
-		if(IS_ZERO(det))
-		{
-		     dointersect.b = false;
-		}
-		else
-		{
-	        t1.d = (e1e2*p1p2e2 - e2e2*p1p2e1)/det;
-	        t2.d = (e1e1*p1p2e2 - e1e2*p1p2e1)/det;
-	        dointersect.b = true;
-		}
-	}
+//	/*! \brief Finds the line params where these lines intersect.
+//
+//	\param dir1 Direction of line 1
+//	\param point1 Point of line 1
+//	\param dir2 Direction of line 2
+//	\param point2 Point of line 2
+//	\param t1 Result Parameter for line 1
+//	\param t2 Result Parameter for line 2
+//	\param dointersect  0  if the lines won't intersect, else 1
+//
+//	*/
+//	private static final void LINE_INTERSECTION_PARAMS(final vec3f dir1, 
+//			final vec3f point1, final vec3f dir2, final vec3f point2, 
+//			final RefFloat t1, final RefFloat t2, final RefBoolean dointersect) {
+//	    float det;
+//		float e1e1 = VEC_DOT(dir1,dir1);
+//		float e1e2 = VEC_DOT(dir1,dir2);
+//		float e2e2 = VEC_DOT(dir2,dir2);
+//		vec3f p1p2 = new vec3f();
+//	    VEC_DIFF(p1p2,point1,point2);
+//	    float p1p2e1 = VEC_DOT(p1p2,dir1);
+//		float p1p2e2 = VEC_DOT(p1p2,dir2);
+//		det = e1e2*e1e2 - e1e1*e2e2;
+//		if(IS_ZERO(det))
+//		{
+//		     dointersect.b = false;
+//		}
+//		else
+//		{
+//	        t1.d = (e1e2*p1p2e2 - e2e2*p1p2e1)/det;
+//	        t2.d = (e1e1*p1p2e2 - e1e2*p1p2e1)/det;
+//	        dointersect.b = true;
+//		}
+//	}
 
 	//! Find closest points on segments
 	static final void SEGMENT_COLLISION(final vec3f vA1, final vec3f vA2, 

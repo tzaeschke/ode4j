@@ -94,7 +94,7 @@ public class Timer {
 			cc1 = System.nanoTime(); 
 		} while (cc1 == cc2);
 
-		return ((double)(cc1-cc2)) / dTimerTicksPerSecond();
+		return (cc1-cc2) / dTimerTicksPerSecond();
 	}
 
 

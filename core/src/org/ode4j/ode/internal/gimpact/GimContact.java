@@ -31,13 +31,18 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
-import java.util.Comparator;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.VEC_ACCUM;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.VEC_COPY;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.VEC_DOT;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.VEC_NORMALIZE;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.VEC_SCALE;
+import static org.ode4j.ode.internal.gimpact.GimGeometry.VEC_SUM;
+import static org.ode4j.ode.internal.gimpact.GimMath.GIM_SQRT;
 
 import org.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
+import org.ode4j.ode.internal.gimpact.GimGeometry.vec4f;
 import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;
-
-import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 
 /**
  * Structure for collision results.
@@ -244,23 +249,23 @@ public class GimContact {
 	}
 	
 	
-    private static final ComparatorTZ COMPARATOT_TZ = new ComparatorTZ();
-    private static final class ComparatorTZ implements Comparator<GIM_RSORT_TOKEN> {
-//		private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
-//		interface GimRSortTokenComparator {
-//			int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
+//    private static final ComparatorTZ COMPARATOT_TZ = new ComparatorTZ();
+//    private static final class ComparatorTZ implements Comparator<GIM_RSORT_TOKEN> {
+////		private static int RSORT_TOKEN_COMPARATOR(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) { return x.m_key - y.m_key; }
+////		interface GimRSortTokenComparator {
+////			int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y);
+////		}
+////		static final GimRSortTokenComparator RSORT_TOKEN_COMPARATOR = new GimRSortTokenComparator() {
+////			@Override public int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
+////				return RSORT_TOKEN_COMPARATOR(x, y);
+////			}
+////		};
+//
+//		@Override
+//		public int compare(GIM_RSORT_TOKEN o1, GIM_RSORT_TOKEN o2) {
+//			return (int) -(o1.m_key - o2.m_key);
 //		}
-//		static final GimRSortTokenComparator RSORT_TOKEN_COMPARATOR = new GimRSortTokenComparator() {
-//			@Override public int run(GIM_RSORT_TOKEN x, GIM_RSORT_TOKEN y) {
-//				return RSORT_TOKEN_COMPARATOR(x, y);
-//			}
-//		};
-
-		@Override
-		public int compare(GIM_RSORT_TOKEN o1, GIM_RSORT_TOKEN o2) {
-			return (int) -(o1.m_key - o2.m_key);
-		}
-	};
+//	};
 	
 
 	//! Merges to an unique contact
@@ -298,7 +303,7 @@ public class GimContact {
 		    psource_contacts.inc();//++;
 		}
 
-		float divide_average = 1.0f/((float)source_count);
+		float divide_average = 1.0f/(source_count);
 
 		VEC_SCALE(pcontact.m_point,divide_average,pcontact.m_point);
 

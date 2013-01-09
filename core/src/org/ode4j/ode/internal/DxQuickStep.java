@@ -611,7 +611,7 @@ dmemestimate_fn_t {
 			if (RANDOMLY_REORDER_CONSTRAINTS) {//#ifdef RANDOMLY_REORDER_CONSTRAINTS
 				if ((iteration & 7) == 0) {
 					for (int i=1; i<m; i++) {
-					    int swapi = (int) dRandInt(i+1);
+					    int swapi = dRandInt(i+1);
                         IndexError tmp = order[i];
 						order[i] = order[swapi];
 						order[swapi] = tmp;

@@ -431,13 +431,13 @@ public class OdeInit {
         for (; max != EODEINITMODE.values().length; ++max)
         {
             EODEINITMODE uiCurrentMode = EODEINITMODE.values()[max];
-            if (IsODEModeInitialized((EODEINITMODE)uiCurrentMode))
+            if (IsODEModeInitialized(uiCurrentMode))
             {
                 // Must be called before CloseODEForMode()
-                ResetODEModeInitialized((EODEINITMODE)uiCurrentMode);
+                ResetODEModeInitialized(uiCurrentMode);
 
                 // Must be called after ResetODEModeInitialized()
-                CloseODEForMode((EODEINITMODE)uiCurrentMode);
+                CloseODEForMode(uiCurrentMode);
             }
         }
     }
@@ -449,9 +449,9 @@ public class OdeInit {
         //for (EODEINITMODE uiCurrentMode = OIM__MIN; uiCurrentMode != OIM__MAX; ++uiCurrentMode)
         for (EODEINITMODE uiCurrentMode: EODEINITMODE.values())
         {
-            if (IsODEModeInitialized((EODEINITMODE)uiCurrentMode))
+            if (IsODEModeInitialized(uiCurrentMode))
             {
-                if (!AllocateODEDataForThreadForMode((EODEINITMODE)uiCurrentMode, uiAllocateFlags))
+                if (!AllocateODEDataForThreadForMode(uiCurrentMode, uiAllocateFlags))
                 {
                     bAnyFailure = true;
                     break;

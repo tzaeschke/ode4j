@@ -1231,7 +1231,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//  { setMass (&mass); }
 	@Override
 	public void setMass (DMassC mass)
-	{ dBodySetMass ((DxMass) mass); }
+	{ dBodySetMass (mass); }
 	@Override
 	public DMass getMass () //const
 	{ DMass mass = new DxMass(); dBodyGetMass ((DxMass) mass); return mass; }

@@ -160,7 +160,7 @@ public class DxMass implements DMass {
 //	public void dMassSetSphere (dxMass m, double density, double radius)
 	public void dMassSetSphere (double density, double radius)
 	{
-		dMassSetSphereTotal ( (double) ((4.0/3.0) * M_PI *
+		dMassSetSphereTotal ( ((4.0/3.0) * M_PI *
 				radius*radius*radius * density), radius);
 	}
 
@@ -191,8 +191,8 @@ public class DxMass implements DMass {
 //		dAASSERT (m);
 		dUASSERT (direction >= 1 && direction <= 3,"bad direction number");
 		dMassSetZero ();
-		M1 = (double) (M_PI*radius*radius*length*density);			  // cylinder mass
-		M2 = (double) ((4.0/3.0)*M_PI*radius*radius*radius*density); // total cap mass
+		M1 = M_PI*radius*radius*length*density;			  // cylinder mass
+		M2 = (4.0/3.0)*M_PI*radius*radius*radius*density; // total cap mass
 		_mass = M1+M2;
 		Ia = M1*(0.25*radius*radius + (1.0/12.0)*length*length) +
 		M2*(0.4*radius*radius + 0.375*radius*length + 0.25*length*length);
@@ -219,7 +219,7 @@ public class DxMass implements DMass {
 	public void dMassSetCylinder (double density, int direction,
 			double radius, double length)
 	{
-		dMassSetCylinderTotal ((double) (M_PI*radius*radius*length*density),
+		dMassSetCylinderTotal (M_PI*radius*radius*length*density,
 				direction, radius, length);
 	}
 
@@ -692,7 +692,7 @@ public class DxMass implements DMass {
 	
 	@Override
 	public void add (DMassC b)
-	{ dMassAdd ((DxMass) b); }
+	{ dMassAdd (b); }
 
 	
 	

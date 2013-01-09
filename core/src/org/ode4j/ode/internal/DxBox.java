@@ -337,8 +337,8 @@ public class DxBox extends DxGeom implements DBox {
 		iretA[iretP] = i0;//iret[0] = i0;
 		iretP++;//iret++;
 		for (j=1; j<m; j++) {
-			a = (double)((double)j*(2.*M_PI/m) + A[i0]);
-			if (a > M_PI) a -= (double)(2*M_PI);
+			a = j*(2.*M_PI/m) + A[i0];
+			if (a > M_PI) a -= 2.*M_PI;
 			double maxdiff=1e9,diff;
 			if (!dNODEBUG) {//#ifndef dNODEBUG
 				iretA[iretP] = i0; //*iret = i0;			// iret is not allowed to keep this value
@@ -346,7 +346,7 @@ public class DxBox extends DxGeom implements DBox {
 			for (i=0; i<n; i++) {
 				if (avail[i]!=0) {
 					diff = dFabs (A[i]-a);
-					if (diff > M_PI) diff = (double) (2*M_PI - diff);
+					if (diff > M_PI) diff = 2.*M_PI - diff;
 					if (diff < maxdiff) {
 						maxdiff = diff;
 						iretA[iretP] = i;//*iret = i;

@@ -107,6 +107,7 @@ public class CollideSpaceGeom implements DColliderFn {
 		//data.setContacts(contact, 0);
 		data.skip = skip;
 		DxSpace.dSpaceCollide2 (o1,o2,data,new DNearCallback() {
+			@Override
 			public void call(Object data, DGeom g1, DGeom g2) {
 				space_geom_collider(data, (DxGeom)g1, (DxGeom)g2);
 			}

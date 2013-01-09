@@ -425,9 +425,9 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		RefInt BlocksP = new RefInt(1);
 
 	    double MinX = Center.get(AXIS0) - Extents.get(AXIS0);
-	    double MaxX = dNextAfter((Center.get(AXIS0) + Extents.get(AXIS0)), (double)dInfinity);
+	    double MaxX = dNextAfter((Center.get(AXIS0) + Extents.get(AXIS0)), dInfinity);
 	    double MinZ = Center.get(AXIS1) - Extents.get(AXIS1);
-	    double MaxZ = dNextAfter((Center.get(AXIS1) + Extents.get(AXIS1)), (double)dInfinity);
+	    double MaxZ = dNextAfter((Center.get(AXIS1) + Extents.get(AXIS1)), dInfinity);
 	    this.Blocks[0].Create(MinX, MaxX, MinZ, MaxZ, null, Depth, BlocksA, BlocksP);
 	    
 		CurrentBlock = null;
@@ -669,7 +669,7 @@ PARENTRECURSE:
 		{
 			//DataCallback *dc = (DataCallback*)data;
 			//data.callback(data.data, g2, g1);
-			((DataCallback)data).callback.call(data.data, g2, g1);
+			data.callback.call(data.data, g2, g1);
 		}
 
 		@Override

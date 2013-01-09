@@ -742,6 +742,7 @@ public class GimTrimesh implements GimConstants {
 	//#define MULT_MAT_VEC4_KERNEL(_mat,_src,_dst) MAT_DOT_VEC_3X4((_dst),(_mat),(_src))
 	private final GIM_PROCESS_BUFFER_ARRAY_FN MULT_MAT_VEC4_KERNEL = 
 		new GIM_PROCESS_BUFFER_ARRAY_FN() {
+		@Override
 		public void run(mat4f _mat, vec3f _src, vec3f _dst) {MAT_DOT_VEC_3X4( _dst, _mat, _src); }	
 	};
 
@@ -781,7 +782,7 @@ public class GimTrimesh implements GimConstants {
 	    //aabb3f[] paabb = m_aabbset.m_boxes;
 	    int triangle_count = gim_trimesh_get_triangle_count();
 	    //float[] v1,v2,v3;
-	    vec3f v1,v2,v3;
+	    //vec3f v1,v2,v3;
 	    int i;
 	    for (i=0; i<triangle_count;i++)
 	    {

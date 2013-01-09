@@ -972,7 +972,7 @@ public class DxWorld extends DBase implements DWorld {
 					}
 
 					// make average
-					double r1 = (double) 1.0  / (double) bb.adis.average_samples ;
+					double r1 = 1.0  / bb.adis.average_samples ;
 
 //					average_lvel.v[0] *= r1;
 //					average_avel.v[0] *= r1;

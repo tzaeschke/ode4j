@@ -49,7 +49,7 @@ public class DxSimpleSpace extends DxSpace implements DSimpleSpace {
 
 	DxSimpleSpace (DxSpace space)// : dxSpace (_space)
 	{
-		super((DxSpace) space);
+		super(space);
 		type = dSimpleSpaceClass;
 	}
 

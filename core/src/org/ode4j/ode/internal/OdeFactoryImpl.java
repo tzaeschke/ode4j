@@ -1565,8 +1565,8 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 				printf ("%d BODIES, %d JOINTS\n",nb,nj);
 			}
 			if (nj < NUM && nb > 2 && dRandReal() > 0.5) {
-				DxBody b1 = (DxBody) body [(int) (dRand() % nb)];
-				DxBody b2 = (DxBody) body [(int) (dRand() % nb)];
+				DxBody b1 = body [(int) (dRand() % nb)];
+				DxBody b2 = body [(int) (dRand() % nb)];
 				if (b1 != b2) {
 					//DO(
 					printf ("creating joint, attaching to %p,%p\n",b1,b2);

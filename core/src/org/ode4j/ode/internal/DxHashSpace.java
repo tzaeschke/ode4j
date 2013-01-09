@@ -290,7 +290,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 				for (int yi = dbounds[2]; yi <= dbounds[3]; yi++) {
 					for (int zi = dbounds[4]; zi <= dbounds[5]; zi++) {
 						// get the hash index  TODO TZ: cast to int
-						int hi = (int) (getVirtualAddress (aabb.level,xi,yi,zi) % sz);
+						int hi = getVirtualAddress (aabb.level,xi,yi,zi) % sz;
 						// add a new node to the hash table
 						Node node = new Node();//(Node) ALLOCA (sizeof (Node));
 						node.x = xi;

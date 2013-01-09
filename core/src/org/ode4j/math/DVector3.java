@@ -43,14 +43,11 @@ import org.ode4j.math.DMatrix3.DVector3ColView;
  *
  */
 public class DVector3 implements DVector3I, DVector3C {
-//public class DVector3 implements DVector3I, DVector3C {
+
 	private double d0, d1, d2;
-	private static final int LEN = 4;  //TODO 3 ?
     public static final DVector3C ZERO = new DVector3();
 	public static final int CURRENT_LENGTH = 4;
 
-	//private static int COUNT = 0;
-	
 	/**
 	 * Creates a (0,0,0) vector.
 	 */

@@ -174,7 +174,7 @@ public class DLCP {
 	//#define DEBUG_LCP
 
 	//#define dLCP_FAST		// use fast dLCP object
-	private static final boolean dLCP_FAST = true;
+	//private static final boolean dLCP_FAST = true;
 
 	// option 1 : matrix row pointers (less data copying)
 	//#define ROWPTRS
@@ -286,7 +286,7 @@ public class DLCP {
 
 	private final int AROWp(int i) { return i*m_nskip; };
 	protected final double AROW(int i, int j) { return m_A[i*m_nskip+j]; };
-	private void pN_plusequals_ANi (double[] p, int i) { pN_plusequals_ANi(p, i, 1); } ;
+	//private void pN_plusequals_ANi (double[] p, int i) { pN_plusequals_ANi(p, i, 1); } ;
 	void solve1(double[] a, int i, int dir) { solve1(a, i, dir, false); }
 	void solve1(double[] a, int i) { solve1(a, i, 1, false); }
 	
@@ -1021,12 +1021,12 @@ public class DLCP {
 		  lcp.unpermute();
 	}
 
-	private int sizeof(Class<?> cls) {
-	    return -1;
-//	    if (cls == double.class) {
-//	        return 8;
-//	    } else if
-	}
+//	private int sizeof(Class<?> cls) {
+//	    return -1;
+////	    if (cls == double.class) {
+////	        return 8;
+////	    } else if
+//	}
 	
 	static int dEstimateSolveLCPMemoryReq(int n, boolean outer_w_avail)
 	{
@@ -1184,7 +1184,7 @@ public class DLCP {
             Timer.dStopwatchStop (sw);
             double time = Timer.dStopwatchTime(sw);
             total_time += time;
-            double average = total_time / ((double)(count+1.)) * 1000.0;
+            double average = total_time / (count+1.) * 1000.0;
 
             // check the solution
 

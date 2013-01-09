@@ -1253,7 +1253,7 @@ public class CollideTrimeshCCylinder implements DColliderFn {
 
 		trimeshcontacts.GIM_DYNARRAY_DESTROY();
 
-	    return (int)contactcount;
+	    return contactcount;
 	}
 //	#endif //GIMPACT
 

@@ -154,8 +154,8 @@ public class DxCapsule extends DxGeom implements DCapsule {
 			//  dIASSERT (o2.type == dSphereClass);
 			dIASSERT ((flags & NUMC_MASK) >= 1);
 
-			DxCapsule ccyl = (DxCapsule) o1;
-			DxSphere sphere = (DxSphere) o2;
+			DxCapsule ccyl = o1;
+			DxSphere sphere = o2;
 
 			contacts.get(0).g1 = o1;
 			contacts.get(0).g2 = o2;
@@ -216,8 +216,8 @@ static class CollideCapsuleBox implements DColliderFn {
 			//  dIASSERT (o2.type == dBoxClass);
 			dIASSERT ((flags & NUMC_MASK) >= 1);
 
-			DxCapsule cyl = (DxCapsule) o1;
-			DxBox box = (DxBox) o2;
+			DxCapsule cyl = o1;
+			DxBox box = o2;
 
 			contacts.get(0).g1 = o1;
 			contacts.get(0).g2 = o2;
@@ -434,8 +434,8 @@ static class CollideCapsuleBox implements DColliderFn {
 			//  dIASSERT (o2.type == dPlaneClass);
 			dIASSERT ((flags & NUMC_MASK) >= 1);
 
-			DxCapsule ccyl = (DxCapsule) o1;
-			DxPlane plane = (DxPlane) o2;
+			DxCapsule ccyl = o1;
+			DxPlane plane = o2;
 			DVector3C planePos = plane.getNormal();
 
 			// collide the deepest capping sphere with the plane

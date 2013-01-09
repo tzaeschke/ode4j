@@ -399,7 +399,7 @@ public class DxHeightfieldData implements DHeightfieldData {
 			// double
 		case 4:
 			data_double = (double[])m_pHeightData;
-			h = (double)( data_double[x+(z * m_nWidthSamples)] );
+			h = data_double[x+(z * m_nWidthSamples)];
 			break;
 		}
 

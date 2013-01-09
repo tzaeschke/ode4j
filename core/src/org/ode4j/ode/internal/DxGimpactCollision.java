@@ -62,15 +62,15 @@ public class DxGimpactCollision {
 //			}
 	
 			//private void gim_trimesh_get_triangle_verticesODE(GimTrimesh trimesh, GUINT triangle_index, dVector3 v1, dVector3 v2, dVector3 v3) {   
-			private void gim_trimesh_get_triangle_verticesODE(GimTrimesh trimesh, int triangle_index, 
-					DVector3 v1, DVector3 v2, DVector3 v3) {   
-				vec3f src1 = new vec3f(), src2 = new vec3f(), src3 = new vec3f();
-				trimesh.gim_trimesh_get_triangle_vertices(triangle_index, src1, src2, src3);
-	
-				v1.set(src1.f);//dVECTOR3_VEC3F_COPY(v1, src1);
-				v2.set(src2.f);//dVECTOR3_VEC3F_COPY(v2, src2);
-				v3.set(src3.f);//dVECTOR3_VEC3F_COPY(v3, src3);
-			}
+//			private void gim_trimesh_get_triangle_verticesODE(GimTrimesh trimesh, int triangle_index, 
+//					DVector3 v1, DVector3 v2, DVector3 v3) {   
+//				vec3f src1 = new vec3f(), src2 = new vec3f(), src3 = new vec3f();
+//				trimesh.gim_trimesh_get_triangle_vertices(triangle_index, src1, src2, src3);
+//	
+//				v1.set(src1.f);//dVECTOR3_VEC3F_COPY(v1, src1);
+//				v2.set(src2.f);//dVECTOR3_VEC3F_COPY(v2, src2);
+//				v3.set(src3.f);//dVECTOR3_VEC3F_COPY(v3, src3);
+//			}
 	
 			private static vec3f DVector3Tovec3f(DVector3C v) {
 				vec3f vf = new vec3f();

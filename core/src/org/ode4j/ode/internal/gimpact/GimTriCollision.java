@@ -495,10 +495,10 @@ public class GimTriCollision extends GimGeometry {
 	    VEC_CROSS(D,tri1.m_planes.m_planes[0],tri2.m_planes.m_planes[0]);
 
 	    /* compute and index to the largest component of D */
-	    max=(float)FABS(D.f[0]);
+	    max=FABS(D.f[0]);
 	    index=0;
-	    bb=(float)FABS(D.f[1]);
-	    cc=(float)FABS(D.f[2]);
+	    bb=FABS(D.f[1]);
+	    cc=FABS(D.f[2]);
 	    if(bb>max) { max=bb; index=1; }
 	    if(cc>max) { max=cc; index=2; }
 
