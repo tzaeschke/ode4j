@@ -94,6 +94,9 @@ public class Cstdlib extends Cstring {
 	}
 	private static final Random31 RGEN = new Random31();
 	private static class Random31 extends Random {
+		/** UID */
+		private static final long serialVersionUID = 1L;
+
 		public int next() {
 			return super.next(31);
 		}
