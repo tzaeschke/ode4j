@@ -24,8 +24,6 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import java.io.File;
-
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -133,7 +131,6 @@ class DemoBoxstack extends dsFunctions {
 	private static boolean show_aabb = false;	// show geom AABBs?
 	private static boolean show_contacts = false;	// show contact points?
 	private static boolean random_pos = true;	// drop objects from random position?
-	private static boolean write_world = false;
 	private static boolean show_body = false;
 
 	private class MyFeedback {
@@ -467,9 +464,6 @@ class DemoBoxstack extends dsFunctions {
 		}
 		else if (cmd == 'r') {
 			random_pos ^= true;
-		}
-		else if (cmd == '1') {
-			write_world = true;
 		}
 		else if (cmd == 'p'&& selected >= 0)
 		{

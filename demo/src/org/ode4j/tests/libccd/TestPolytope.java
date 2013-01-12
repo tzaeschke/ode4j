@@ -261,7 +261,7 @@ public class TestPolytope {
 	    ccd_pt_vertex_t[] v = new ccd_pt_vertex_t[4];
 	    ccd_pt_edge_t[] e = new ccd_pt_edge_t[6];
 	    ccd_pt_face_t[] f = new ccd_pt_face_t[4];
-	    ccd_pt_el_t nearest;
+	    ccd_pt_el_t<?> nearest;
 
 	    DBG2("------");
 
