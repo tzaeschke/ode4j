@@ -30,8 +30,6 @@ import java.io.PushbackInputStream;
 
 public class FILE {
 
-	//private static final int EOF = -1;
-
 	private OutputStream _out;
 	private PushbackInputStream _in;
 	

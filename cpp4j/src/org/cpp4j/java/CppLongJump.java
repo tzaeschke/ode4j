@@ -34,6 +34,9 @@ public class CppLongJump extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @param string Target name.
+	 */
 	public CppLongJump(String string) {
 		super(string);
 	}

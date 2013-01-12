@@ -21,6 +21,12 @@
  *************************************************************************/
 package org.cpp4j;
 
+/**
+ * Sub-class of all porting classes. Importing this class gives access to 
+ * all C/C++ emulator functions.
+ * 
+ * @author Tilmann Zaeschke
+ */
 public class C_All extends Cmath {
 
 }

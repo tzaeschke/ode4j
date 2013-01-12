@@ -190,6 +190,9 @@ public class FloatArray {
         _ofs += n;
     }
 
+	/**
+	 * @return Original size
+	 */
 	public int size() {
 		return _data.length - _ofs;
 	}

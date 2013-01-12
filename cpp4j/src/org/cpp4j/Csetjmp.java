@@ -23,18 +23,34 @@ package org.cpp4j;
 
 import org.cpp4j.java.CppLongJump;
 
+/**
+ * Emulator for long jumps (setjmp).
+ *
+ * @author Tilmann Zaeschke
+ */
 public class Csetjmp extends Cstdarg {
 
+	/**
+	 *
+	 */
 	public static class jmp_buf {
 		int _ret = 0;
 	};
 	
+	/**
+	 * @param jump_buffer
+	 * @param i
+	 */
 	public static void longjmp(jmp_buf jump_buffer, int i) {
 		throw new CppLongJump("" + i);
 //		NIW();
 //		jump_buffer._ret = i;
 	}
 
+	/**
+	 * @param jump_buffer
+	 * @return jump parameter i.
+	 */
 	public static int setjmp(jmp_buf jump_buffer) {
 		NIW();
 		return 0;//jump_buffer._ret;

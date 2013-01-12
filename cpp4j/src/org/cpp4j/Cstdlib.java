@@ -23,8 +23,16 @@ package org.cpp4j;
 
 import java.util.Random;
 
+/**
+ * Emulator for stdlib.
+ *
+ * @author Tilmann Zaeschke
+ */
 public class Cstdlib extends Cstring {
 
+	/**
+	 * <code>RAND_MAX = 2147483647</code>
+	 */
 	public static final int RAND_MAX = 2147483647;
 	
 	/**

@@ -27,6 +27,7 @@ import java.util.Arrays;
  * Class to simulate pointer operations on object arrays.
  *
  * @author Tilmann Zaeschke
+ * @param <T> 
  */
 public class ObjArray<T> {
     
@@ -184,14 +185,25 @@ public class ObjArray<T> {
         _ofs += n;
     }
 
+	/**
+	 * @return current size
+	 */
 	public int size() {
 		return _data.length - _ofs;
 	}
 
+	/**
+	 * @return Original size
+	 */
 	public int dataSize() {
 		return _data.length;
 	}
 
+	/**
+	 * @param destPos
+	 * @param srcPos
+	 * @param len
+	 */
 	public void memcpy(int destPos, int srcPos, int len) {
 		if (destPos > srcPos) {
 			for (int i = _ofs+len-1; i >= _ofs; i--) {

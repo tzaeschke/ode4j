@@ -52,13 +52,20 @@ public class Cstdio extends Cstdlib {
 	
 	/**
 	 * Write to STDOUT.
-	 * @param string
+	 * @param format 
+	 * @param args 
 	 */
 	public static void printf(String format, Object ... args) {
 		System.out.printf(format, args);
 	}
 
 
+	/**
+	 * @param s
+	 * @param pos
+	 * @param string
+	 * @param args
+	 */
 	public static void sprintf(char[] s, int pos, String string, Object ... args) {
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
@@ -143,6 +150,7 @@ public class Cstdio extends Cstdlib {
 	
 	/**
 	 * Drop-in replacement functions for std::cout.
+	 * @param objs 
 	 */
 	public static void std_cout(Object ...  objs) {
 		for (Object o: objs) {

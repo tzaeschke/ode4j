@@ -21,10 +21,20 @@
  *************************************************************************/
 package org.cpp4j;
 
-public class Cstdarg extends Cstdio{
+/**
+ * Emulator for stdio.
+ *
+ * @author Tilmann Zaeschke
+ */
+public class Cstdarg extends Cstdio {
 
+	/**
+	 */
 	public static class va_list {
 		final Object[] l;
+		/**
+		 * @param varArgsOfCallingMethod
+		 */
 		public va_list(Object[] varArgsOfCallingMethod) {
 			l = varArgsOfCallingMethod;
 		}

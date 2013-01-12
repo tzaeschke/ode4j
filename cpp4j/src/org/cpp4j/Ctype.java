@@ -21,7 +21,16 @@
  *************************************************************************/
 package org.cpp4j;
 
+/**
+ * Emulator for type.
+ *
+ * @author Tilmann Zaeschke
+ */
 public class Ctype {
+	/**
+	 * @param ch
+	 * @return True if the character is a digit.
+	 */
 	public static boolean isdigit(char ch) {
 		return Character.isDigit(ch);
 	}

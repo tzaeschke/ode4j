@@ -21,6 +21,11 @@
  *************************************************************************/
 package org.cpp4j;
 
+/**
+ * Emulator for time.
+ *
+ * @author Tilmann Zaeschke
+ */
 public class Ctime extends Ctype {
 	
 	/**
@@ -39,8 +44,13 @@ public class Ctime extends Ctype {
 	 * @deprecated In Java, simply use 'long'.
 	 */
 	public static class time_t {
+		/** Current time */
 		public long seconds;
 
+		/**
+		 * Set time.
+		 * @param n
+		 */
 		public time_t(int n) {
 			seconds = n;
 		}

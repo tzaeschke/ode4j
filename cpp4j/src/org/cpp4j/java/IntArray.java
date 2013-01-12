@@ -198,6 +198,9 @@ public class IntArray {
     	return _ofs;
     }
 
+	/**
+	 * @return Current size
+	 */
 	public int size() {
 		return _data.length - _ofs;
 	}

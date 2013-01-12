@@ -54,7 +54,6 @@ public class Cstring extends Ctime {
 		for (int i = 0; i < l; i++) {
 			data[i] = c;
 		}
-		
 	}
 	
 	public static int strcmp(char[] s, String string) {
@@ -66,7 +65,9 @@ public class Cstring extends Ctime {
 	}
 
 	/**
-	 * returns the string length. The null terminator is not counted.
+	 * Returns the string length. The null terminator is not counted.
+	 * @param s String to get length of
+	 * @return length
 	 */
 	public static int strlen(char[] s) {
 		for (int i = 0; i < s.length; i++) {
@@ -79,6 +80,10 @@ public class Cstring extends Ctime {
 //				s.length + "): \"" + new String(s) + "\"");
 	}
 
+	/**
+	 * @param s
+	 * @return length of the string
+	 */
 	public static int strlen(String s) {
 		return strlen(s.toCharArray());
 	}
