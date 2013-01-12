@@ -130,7 +130,7 @@ public class CCD {
 			ccd_vec3_t sep)
 	{
 		ccd_pt_t polytope = new ccd_pt_t();
-		Ref<ccd_pt_el_t> nearestRef = new Ref<CCDPolyTope.ccd_pt_el_t>();
+		Ref<ccd_pt_el_t<?>> nearestRef = new Ref<CCDPolyTope.ccd_pt_el_t<?>>();
 		int ret;
 
 		ccdPtInit(polytope);
@@ -162,7 +162,7 @@ public class CCD {
 		}
 	}
 
-	static void penEPAPos(final ccd_pt_t pt, final ccd_pt_el_t nearest,
+	static void penEPAPos(final ccd_pt_t pt, final ccd_pt_el_t<?> nearest,
 			ccd_vec3_t pos)
 	{
 		//ccd_pt_vertex_t v;
@@ -222,7 +222,7 @@ public class CCD {
 			RefDouble depth, ccd_vec3_t dir, ccd_vec3_t pos)
 	{
 		ccd_pt_t polytope = new ccd_pt_t();
-		final Ref<ccd_pt_el_t> nearestRef = new Ref<CCDPolyTope.ccd_pt_el_t>();
+		final Ref<ccd_pt_el_t<?>> nearestRef = new Ref<CCDPolyTope.ccd_pt_el_t<?>>();
 		int ret;
 
 		ccdPtInit(polytope);
@@ -312,7 +312,7 @@ public class CCD {
 	 *  nearest element (vertex, edge, face) of polytope to origin. */
 	private static int __ccdGJKEPA(final Object obj1, final Object obj2,
 			final ccd_t ccd,
-			ccd_pt_t polytope, Ref<ccd_pt_el_t> nearest) // **nearest)
+			ccd_pt_t polytope, Ref<ccd_pt_el_t<?>> nearest) // **nearest)
 	{
 		ccd_simplex_t simplex = new ccd_simplex_t();
 		ccd_support_t supp = new ccd_support_t(); // support point
@@ -627,7 +627,7 @@ public class CCD {
 	static int simplexToPolytope4(final Object obj1, final Object obj2,
 			final ccd_t ccd,
 			final ccd_simplex_t simplex,
-			final ccd_pt_t pt, final Ref<ccd_pt_el_t> nearest) // **nearest)
+			final ccd_pt_t pt, final Ref<ccd_pt_el_t<?>> nearest) // **nearest)
 	{
 		final ccd_support_t a, b, c, d;
 		int use_polytope3;
@@ -701,7 +701,7 @@ public class CCD {
 	static int simplexToPolytope3(final Object obj1, final Object obj2,
 			final ccd_t ccd,
 			final ccd_simplex_t simplex,
-			final ccd_pt_t pt, final Ref<ccd_pt_el_t> nearest)// **nearest)
+			final ccd_pt_t pt, final Ref<ccd_pt_el_t<?>> nearest)// **nearest)
 	{
 		final ccd_support_t a, b, c;
 		final ccd_support_t d = new ccd_support_t(), d2 = new ccd_support_t();
@@ -780,7 +780,7 @@ public class CCD {
 	static int simplexToPolytope2(final Object obj1, final Object obj2,
 			final ccd_t ccd,
 			final ccd_simplex_t simplex,
-			final ccd_pt_t pt, final Ref<ccd_pt_el_t> nearest)// **nearest)
+			final ccd_pt_t pt, final Ref<ccd_pt_el_t<?>> nearest)// **nearest)
 	{
 		final ccd_support_t a, b;
 		ccd_vec3_t ab = new ccd_vec3_t(), ac = new ccd_vec3_t(), dir = new ccd_vec3_t();
@@ -895,7 +895,7 @@ public class CCD {
 
 	/** Expands polytope's tri by new vertex v. Triangle tri is replaced by
 	 *  three triangles each with one vertex in v. */
-	static void expandPolytope(ccd_pt_t pt, final ccd_pt_el_t el,
+	static void expandPolytope(ccd_pt_t pt, final ccd_pt_el_t<?> el,
 			final ccd_support_t newv)
 	{
 		ccd_pt_vertex_t[] v = new ccd_pt_vertex_t[5];
@@ -1020,7 +1020,7 @@ public class CCD {
 	/** Finds next support point (at stores it in out argument).
 	 *  Returns 0 on success, -1 otherwise */
 	static int nextSupport(final Object obj1, final Object obj2, final ccd_t ccd,
-			final ccd_pt_el_t el,
+			final ccd_pt_el_t<?> el,
 			final ccd_support_t out)
 	{
 		ccd_vec3_t a, b, c;

@@ -721,10 +721,14 @@ public abstract class OdeHelper {
 	 * bodies that already have contacts.
 	 * @ingroup joints
 	 */
-	public static boolean areConnectedExcluding (DBody body1, DBody body2, 
-			Class<? extends DJoint> ... jointType) {
-		return ODE._dAreConnectedExcluding(body1, body2, jointType);
-	}
+    public static boolean areConnectedExcluding (DBody body1, DBody body2, 
+            Class<? extends DJoint> ... jointType) {
+        return ODE._dAreConnectedExcluding(body1, body2, jointType);
+    }
+    public static boolean areConnectedExcluding (DBody body1, DBody body2, 
+            Class<? extends DJoint> jointType) {
+        return areConnectedExcluding(body1, body2, jointType);
+    }
 //	public static boolean dAreConnectedExcluding (DBody body1, DBody body2, dJointType joint_type) {
 //		return ODE._dAreConnectedExcluding(body1, body2, joint_type);
 //	}

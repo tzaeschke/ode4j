@@ -17,8 +17,6 @@
  */
 package org.ode4j.ode.internal.libccd;
 
-import org.cpp4j.Cstdio;
-import org.cpp4j.FILE;
 import org.ode4j.ode.internal.libccd.CCDList.ccd_list_t;
 import org.ode4j.ode.internal.libccd.CCDSupport.ccd_support_t;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;
@@ -45,12 +43,13 @@ public class CCDPolyTope {
 	 * General polytope element.
 	 * Could be vertex, edge or triangle.
 	 */
-	public static class ccd_pt_el_t {
+	public static class ccd_pt_el_t<T> {
 //	    __CCD_PT_EL
 	    int type;           /*! type of element */ 
 	    double dist;        /*! distance from origin */ 
 	    final ccd_vec3_t witness = new ccd_vec3_t(); /*! witness point of projection of origin */ 
-	    final ccd_list_t list = new ccd_list_t(this);    /*! list of elements of same type */
+	    @SuppressWarnings({ "unchecked", "rawtypes" })
+        final ccd_list_t<T> list = new ccd_list_t(this);    /*! list of elements of same type */
 
 		public double dist() {
 			return dist;
@@ -66,7 +65,7 @@ public class CCDPolyTope {
 	/**
 	 * Polytope's vertex.
 	 */
-	public static final class ccd_pt_vertex_t extends ccd_pt_el_t implements Comparable<ccd_pt_vertex_t> {
+	public static final class ccd_pt_vertex_t extends ccd_pt_el_t<ccd_pt_vertex_t> implements Comparable<ccd_pt_vertex_t> {
 //	    __CCD_PT_EL
 
 	    int id;
@@ -94,7 +93,7 @@ public class CCDPolyTope {
 	/**
 	 * Polytope's edge.
 	 */
-	public static final class ccd_pt_edge_t extends ccd_pt_el_t {
+	public static final class ccd_pt_edge_t extends ccd_pt_el_t<ccd_pt_edge_t> {
 //	    __CCD_PT_EL
 
 	    //final ccd_pt_vertex_t[] vertex = new ccd_pt_vertex_t[2]; //!< Reference to vertices
@@ -104,9 +103,8 @@ public class CCDPolyTope {
 	    ccd_pt_vertex_t vertex1; //!< Reference to vertices
 	    ccd_pt_face_t faces1; //!< Reference to faces
 
-	    @SuppressWarnings("unchecked")
-		final ccd_list_t<ccd_pt_vertex_t> vertex_list0 = new ccd_list_t(null); //!< List items in vertices' lists
-		final ccd_list_t<ccd_pt_vertex_t> vertex_list1 = new ccd_list_t(null); //!< List items in vertices' lists
+		final ccd_list_t<ccd_pt_vertex_t> vertex_list0 = new ccd_list_t<ccd_pt_vertex_t>(null); //!< List items in vertices' lists
+		final ccd_list_t<ccd_pt_vertex_t> vertex_list1 = new ccd_list_t<ccd_pt_vertex_t>(null); //!< List items in vertices' lists
 		//final ccd_list_t<ccd_pt_vertex_t>[] vertex_list = new ccd_list_t[2]; //!< List items in vertices' lists
 		//{
 		//	vertex_list[0] = new ccd_list_t<ccd_pt_vertex_t>(null);
@@ -117,7 +115,7 @@ public class CCDPolyTope {
 	/**
 	 * Polytope's triangle faces.
 	 */
-	public static final class ccd_pt_face_t extends ccd_pt_el_t {
+	public static final class ccd_pt_face_t extends ccd_pt_el_t<ccd_pt_face_t> {
 //	    __CCD_PT_EL
 
 	    //final ccd_pt_edge_t[] edge = new ccd_pt_edge_t[3]; //!< Reference to surrounding edges
@@ -144,7 +142,7 @@ public class CCDPolyTope {
 	    ccd_list_t<ccd_pt_edge_t> edges = new ccd_list_t<ccd_pt_edge_t>(null); //!< List of edges
 	    ccd_list_t<ccd_pt_face_t> faces = new ccd_list_t<ccd_pt_face_t>(null); //!< List of faces
 
-	    ccd_pt_el_t nearest;
+	    ccd_pt_el_t<? extends ccd_pt_el_t<?>> nearest;
 	    double nearest_dist;
 	    int nearest_type;
 	};
@@ -339,7 +337,7 @@ public class CCDPolyTope {
 	 *  See the License for more information.
 	 */
 
-	private static final void _ccdPtNearestUpdate(ccd_pt_t pt, ccd_pt_el_t el)
+	private static final void _ccdPtNearestUpdate(ccd_pt_t pt, ccd_pt_el_t<? extends ccd_pt_el_t<?>> el)
 	{
 	    if (ccdEq(pt.nearest_dist, el.dist)){
 	        if (el.type < pt.nearest_type){
@@ -365,17 +363,17 @@ public class CCDPolyTope {
 	    pt.nearest = null;
 
 	    //ccdListForEachEntry(pt.vertices, v, ccd_pt_vertex_t, list){
-	    for (ccd_pt_el_t v: pt.vertices) {
+	    for (ccd_pt_el_t<? extends ccd_pt_el_t<?>> v: pt.vertices) {
 	        _ccdPtNearestUpdate(pt, v);
 	    }
 
 	    //ccdListForEachEntry(pt.edges, e, ccd_pt_edge_t, list){
-	    for (ccd_pt_el_t e: pt.edges) {
+	    for (ccd_pt_el_t<? extends ccd_pt_el_t<?>> e: pt.edges) {
 	        _ccdPtNearestUpdate(pt, e);
 	    }
 
 	    //ccdListForEachEntry(pt.faces, f, ccd_pt_face_t, list){
-	    for (ccd_pt_el_t f: pt.faces) {
+	    for (ccd_pt_el_t<? extends ccd_pt_el_t<?>> f: pt.faces) {
 	        _ccdPtNearestUpdate(pt, f);
 	    }
 	}
@@ -571,7 +569,7 @@ public class CCDPolyTope {
 	/**
 	 * Returns nearest element to origin.
 	 */
-	public static final ccd_pt_el_t ccdPtNearest(ccd_pt_t pt)
+	public static final ccd_pt_el_t<?> ccdPtNearest(ccd_pt_t pt)
 	{
 	    if (pt.nearest==null){
 	        _ccdPtNearestRenew(pt);
