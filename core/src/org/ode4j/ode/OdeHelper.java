@@ -711,7 +711,7 @@ public abstract class OdeHelper {
 	/**
 	 * Utility function.
 	 * @return true if the two bodies are connected together by
-	 * a joint that does not have type @arg{joint_type}, otherwise return 0.
+	 * a joint that does not have type <code>jointType</code>, otherwise return 0.
 	 * @param body1 A body to check.
 	 * @param body2 A body to check.
 	 * @param jointType is a set of subclasses of DJoint.
