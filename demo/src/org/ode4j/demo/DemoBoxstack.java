@@ -33,6 +33,7 @@ import org.ode4j.ode.DAABBC;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DBox;
@@ -635,6 +636,7 @@ class DemoBoxstack extends dsFunctions {
 	}
 	
 	private void demo(String[] args) {
+		OdeConfig.setLibCCDEndabled(true);
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();
