@@ -8,7 +8,7 @@
  * 
  * Copyright of GIMPACT (c) 2006 Francisco Leon. C.C. 80087371.
  * email: projectileman@yahoo.com
- * Copyright of ODE4J (c) 2007-2010 Tilmann Zäschke.
+ * Copyright of ODE4J (c) 2007-2013 Tilmann Zäschke.
  * email: ode4j.gmx.de
  * 
  * This library is free software; you can redistribute it and/or
