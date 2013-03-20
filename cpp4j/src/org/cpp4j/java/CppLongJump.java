@@ -1,6 +1,6 @@
 /*************************************************************************
  *                                                                       *
- * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *

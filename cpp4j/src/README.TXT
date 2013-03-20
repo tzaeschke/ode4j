@@ -7,7 +7,7 @@ ODE4J:   http://www.ode4j.org/
 LEGAL
 =====
 cpp4j:
-Copyright  (c) 2009,2010 Tilmann Zaeschke <ode4j(AT)gmx.de>
+Copyright  (c) 2007,2013 Tilmann Zaeschke <ode4j(AT)gmx.de>
 All rights reserved.
 
 Contact
