@@ -5,12 +5,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/cpp4j"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ode4j-cpp"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ode4j-core"/>
-	<classpathentry kind="lib" path="D:/Eigene Dateien/Projekte/libs/lwjgl-2.1.0/jar/lwjgl.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="D:/Eigene Dateien/Projekte/libs/lwjgl-2.1.0/native/windows"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="D:/Eigene Dateien/Projekte/libs/lwjgl-2.1.0/jar/lwjgl_util.jar"/>
-	<classpathentry kind="lib" path="D:/Eigene Dateien/Projekte/libs/junit-4.6.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lwjgl 2"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
