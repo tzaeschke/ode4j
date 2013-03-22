@@ -33,7 +33,7 @@ package org.ode4j.ode;
 public class OdeConfig {
 
 	private static final boolean dDOUBLE = true;
-	private static boolean dLIBCCD = false;
+	private static boolean dLIBCCD = true;
 	
 	public static enum TRIMESH {
 		DISABLED,
