@@ -1,0 +1,51 @@
+﻿For SVN:
+svn mkdir https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-core/branches
+
+
+-->> ODE4J: core / cpp / sdk !!!!
+svn copy https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-core/trunk  https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-core/branches/0.11.1-j1.1 -m "Branch for 0.11.1-j1.1"
+
+-->> CPP4J:
+svn copy https://cpp4j.svn.sourceforge.net/svnroot/cpp4j/trunk  https://cpp4j.svn.sourceforge.net/svnroot/cpp4j/branches/0.11.1-j1.1 -m "Branch for 0.11.1-j1.1"
+
+For HTML:
+sftp tzaeschke,ode4j@web.sourceforge.net
+cd htdocs
+put index.html
+
+upload javadoc: ~/projects/ode4j-sdk/doc (?)
+scp -r * tzaeschke,ode4j@web.sourceforge.net:htdocs/javadoc
+
+
+For JARs:
+sftp tzaeschke@frs.sourceforge.net
+Connecting to frs.sourceforge.net...
+tzaeschke@frs.sourceforge.net's password: 
+sftp> cd uploads
+sftp> put ode4j-core.jar
+
+
+
+New release:
+- remove hs_error_logs
+- update CHANGELOG, VERSION.TXT (3x !!!) and OdeHelper.getVersion()
+- recreate javadoc, include cpp.internal!
+  -group "Core Packages" org.ode4j.ode*:org.ode4j.math* -group "CPP Packages" org.ode4j.cpp* -tag brief:a:"Brief:" -tag ingroup:a:""  -tag remark:a:"Remark:"  -tag remarks:a:"Remark:" -tag note:a:"Note:" -tag warning:a:"Warning:" -tag defgroup:a:""
+- export jars from eclipse, include cpp4j!!!
+  In Eclipse, export --> 
+  ode4j.jar:       cpp4j/src + ode4j-core/src  (YES, select the SRC folders, Eclipse exports the binaries to that) 
+  ode4j-cpp.jar:   ode4j-cpp/src 
+  //jar cf ode4j.jar ~/projects/ode4j-core/bin/* ~/projects/cpp4j/bin/* 
+  //jar cf ode4j-cpp.jar ~/projects/ode4j-cpp/bin/* 
+- TEST before UPLOAD !!!
+- packRelease.sh
+- upload jars + javadoc * README.txt
+- on sourceforge files-page, select info and mark ..-src.gz as default download!!
+- Commit changes, including updated HTML!
+- tagRelease.sh
+- Announce on html page
+- Announce on mailing list: ode4j-users@lists.sourceforge.net
+- Announce on Forum (open discussion)
+
+
+

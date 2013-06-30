@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />
+    <title>ode4j</title>
+    <meta name="keywords" content="ode4j,ode,Java,libccd,3D,physics,engine,library,dynamics" />
+  </head>
+  <body bgcolor="#E0E0E0">
+    <table border="0" style="width: 1200px;">
+      <tbody>
+        <tr>
+          <td style="width: 100px;"><br />
+          </td>
+          <td bgcolor="#E0E0E0" style="width: 1000px;">
+            <table cellspacing="1" cellpadding="5" border="0" bgcolor="#000000"
+              style="width: 100%;">
+              <tbody>
+                <tr>
+                  <td bgcolor="#E0E0E0" align="left" colspan="5" style="text-align: left;">
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight: bold;"><big>ode4j</big></big></big></font></p>
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight:           bold;">A Java 3D
+                            Physics Engine &amp; Library</big></big></font><font
+                        face="Helvetica, Arial, sans-serif"><b><br />
+                        </b></font></p>
+                    <p></p>
+                  </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td align="center" style="width: 20%;"> <font face="Helvetica, Arial, sans-serif">
+                      <a href="index.html" style="color: #000000;text-decoration:none">About</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"> <font face="Helvetica, Arial, sans-serif">
+                      <a href="ode4j-features.html" style="color: #000000;text-decoration:none">Features</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        href="ode4j-doc.html" style="color: #000000;text-decoration:none">Documentation</a><br />
+                    </font> </td>
+                  <td bgcolor="#FFFFFF" align="center" style="width: 20%;"><font
+                      face="Helvetica, Arial, sans-serif"><a href="ode4j-download.html"
+                        style="color: #000000;text-decoration:none">Download</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        href="ode4j-contact.html" style="color: #000000;text-decoration:none">Contact</a><br />
+                    </font> </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td bgcolor="#FFFFFF" align="left" colspan="5" style="text-align: left;">
+                    <font face="Helvetica, Arial, sans-serif">
+                      <h3>Source Code</h3>
+                      <span style="font-style: italic;">Please keep in mind that
+                        the code is ported from C/C++ and does therefore often
+                        not obey common Java coding practices.</span><br style="font-style: italic;" />
+                      <span style="font-style: italic;">Also I avoided cleaning
+                        up the code too much, in order to simplify migration to
+                        newer ODE releases.</span><br />
+                      <br />
+                      <span style="font-weight: bold;">Project Structure of
+                        downloadable files</span><br />
+                      <ul>
+                        <li><a href="https://sourceforge.net/projects/ode4j/files/">ode4j.tar.gz</a>
+                          -&gt; Contains the core jar file for end users.<br />
+                        </li>
+                        <li><a href="https://sourceforge.net/projects/ode4j/files/">ode4j-cpp.tar.gz</a>
+                          -&gt; Contains the additional C-style API for end
+                          users, in case the developer uses the C-style API.</li>
+                        <li><a href="https://sourceforge.net/projects/ode4j/files/">ode4j-src.tar.gz</a>
+                          -&gt; All sources, including demos and test harnesses.</li>
+                        <li><a href="https://sourceforge.net/projects/ode4j/files/">ode4j-doc.tar.gz</a>
+                          -&gt; Generated javadoc for public API.<br />
+                        </li>
+                      </ul>
+                      <span style="font-weight: bold;"><br />
+                        Project Structure - SVN</span><br />
+                      <br />
+                      <u>Sub-Projects </u>
+                      <ul>
+                        <li>https://cpp4j.svn.sourceforge.net/svnroot/cpp4j</li>
+                        <li>https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-core</li>
+                        <li>https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-cpp</li>
+                        <li>https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-sdk</li>
+                      </ul>
+                      <br />
+                      <u> Explanation</u><br />
+                      <ul>
+                        <li>cpp4j: <a href="http://sourceforge.net/projects/cpp4j/">This
+is
+                            from a different project of mine.</a> It contains
+                          helper functions that I used for porting the code from
+                          C/C++ to Java.<br />
+                        </li>
+                        <li>ode4j: This is the core repository containing all
+                          functionality to run physics simulations.</li>
+                        <li>ode4j-cpp: This provides an optional additional
+                          static C-like API (which is the preferred API in ODE
+                          for C/C++). It can be used for reference (most of the
+                          ODE docs refer to the C-like API) or when migrating
+                          projects from C/C++ to Java.</li>
+                        <li>ode4j-sdk: This repository provides additional code
+                          for developers like demos, sources, javadoc and test
+                          harnesses. There are two sets of demos; the demos in
+                          'org.ode4j.democpp' are ports of the original demos
+                          and require the C-like API (from ode4j-cpp). The demos
+                          in 'org.ode4j.demo' are updated versions of the
+                          'democpp' demos, such that they now use the OO-API
+                          provided by ode4j.jar.<br />
+                        </li>
+                      </ul>
+                      The source code is available from the SVN repository at
+                      sourcefourge.net:<br />
+                      To import the code into <a href="http://www.eclipse.org/">Eclipse</a>
+                      3.4, 3.5, 3.6:<br />
+                      <ol>
+                        <li>Download and install a SVN plugin for Eclipse (The
+                          following steps are for <a href="http://www.eclipse.org/subversive/"
+                            target="_blank">Subversive</a>, an alternative
+                          plug-in is <a href="http://subclipse.tigris.org/" target="_blank">Subclipse</a>)</li>
+                        <li>Create a new SVN project from existing source</li>
+                        <li>URL =
+https://ode4j.svn.sourceforge.net/svnroot/ode4j/ode4j-core</li>
+                        <li>Press "Next &gt;"</li>
+                        <li>Browse to select "trunk"</li>
+                        <li>Press "Finish" (For SVN Project Set-Up)</li>
+                        <li>Press "Finish" (For check-out)</li>
+                      </ol>
+                      Perform the steps above for the sub-projects above.<br />
+                      <br />
+                      <h3>Dependencies</h3>
+                      The ode4j-core library requires currently no other
+                      libraries except a <a href="http://www.java.com/">Java</a>
+                      6 SE JVM or later.<br />
+                      The ode4j-sdk requires <a href="http://www.lwjgl.org/">lwjgl</a>-2.0.1
+or
+
+
+
+
+
+
+
+
+later
+                      (confirmed with 2.7.1) for the 'drawstuff' package used in
+                      the demos. You will probably require <span style="font-weight: bold;">lwjgl.jar</span>
+                      and <span style="font-weight: bold;">lwjgl_util.jar</span>.
+                      Please don't forget to include the .jar file <span style="font-style: italic;">and</span>
+                      the binaries into your eclipse project. Binaries can be
+                      included in eclipse by right-clicking on your propect,
+                      then navigate to "Build Path"-&gt;"Libraries", then unfold
+                      the lwjgl.jar and add the folder that contains the
+                      binaries for your platform.<br />
+                      The ode4j-sdk requires <a href="http://www.junit.org/">JUnit</a>
+                      4.5 for the test harnesses.<br />
+                      <br />
+                      <h3>Licensing &amp; Copyright<br />
+                      </h3>
+                      This library is under copyright by Tilmann Zäschke (Java
+                      port), Russell L. Smith (copyright holder of the original
+                      ODE code), Francisco Leon (copyright holder of the
+                      original GIMPACT code) and Daniel Fiser (copyright holder
+                      of the original <a href="http://libccd.danfis.cz/">libccd</a>).<br />
+                      <br />
+                      This library is free software; you can redistribute it
+                      and/or modify it under the terms of EITHER:<br />
+                      (1) The GNU Lesser General Public License as published by
+                      the Free Software Foundation; either version 2.1 of the
+                      License, or (at your option) any later version. The text
+                      of the GNU Lesser General Public License is included with
+                      this library in the file LICENSE.TXT.<br />
+                      (2) The BSD-style license that is included with this
+                      library in the files ODE-LICENSE-BSD.TXT and
+                      ODE4j-LICENSE-BSD.TXT.<br />
+                      <br />
+                      This library is distributed in the hope that it will be
+                      useful, but WITHOUT ANY WARRANTY; without even the implied
+                      warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+                      PURPOSE. See the files LICENSE.TXT, ODE-LICENSE-BSD.TXT,
+                      GIMPACT-LICENSE-BSD.TXT, GIMPACT-LICENSE-LGPL.TXT,
+                      ODE4J-LICENSE-BSD.TXT and LIBCCD_BSD-LICENSE for more
+                      details.<br />
+                      <br />
+                      The LICENSE.TXT, ODE-LICENSE-BSD.TXT,
+                      GIMPACT-LICENSE-BSD.TXT, GIMPACT-LICENSE-LGPL.TXT,
+                      LIBCCD_BSD-LICENSE and ODE4J-LICENSE-BSD.TXT files are
+                      available in the source code. </font> </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="width: 100px;"><br />
+          </td>
+        </tr>
+        <tr>
+          <td><br />
+          </td>
+          <td> © Copyright 2012 Tilmann Zäschke [ode4j AT gmx DOT de]<br />
+          </td>
+          <td><br />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><br />
+    </p>
+    <p></p>
+    <br />
+    <p><br />
+    </p>
+  </body>
+</html>

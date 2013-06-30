@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,15 +13,20 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
+
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.dDOUBLE;
 
 import java.util.ArrayList;
 
@@ -28,12 +35,10 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.OdeMath.OP;
 import org.ode4j.ode.internal.DLCP;
 import org.ode4j.ode.internal.DxMass;
+import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
 import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
-
-import static org.ode4j.ode.OdeMath.*;
 
 class DemoOde {
 
@@ -62,7 +67,7 @@ class DemoOde {
 		public void call(int num, String msg, Object... args) {
 			print ("(Message : " + num);
 			//vprintf (msg,args);
-			for (Object o: args) print(args.toString());
+			for (Object o: args) print(o.toString());
 			print (")");
 			dSetMessageHandler (null);
 			throw new ExpectedException();
@@ -172,12 +177,16 @@ class DemoOde {
 	}
 
 
-	private void testInfinity()
+	@SuppressWarnings("unused")
+    private void testInfinity()
 	{
 		HEADER();
-		if (1e10 < dInfinity && -1e10 > -dInfinity && -dInfinity < dInfinity)
+		if (1e10 < dInfinity && -1e10 > -dInfinity && -dInfinity < dInfinity) {
 			println ("\tpassed");
-		else println ("\tFAILED");
+		}
+		else {
+		    println ("\tFAILED");
+		}
 	}
 
 
@@ -201,10 +210,10 @@ class DemoOde {
 		dMakeRandomVector (b,1.0);
 		dMakeRandomVector (c,1.0);
 
-		dCROSS (a1,OP.EQ,b,c);
+		a1.eqCross(b,c);
 
-		B.dSetZero();//dSetZero (B,12);
-		dCROSSMAT (B,b,4,+1,-1);
+		//B.dSetZero();//dSetZero (B,12);
+		dSetCrossMatrixPlus (B,b);
 		dMultiply0 (a2,B,c);
 
 		double diff = dMaxDifference(a1,a2);
@@ -217,7 +226,7 @@ class DemoOde {
 		HEADER();
 		double[] a = new double[100];
 		dMakeRandomVector (a,100,1.0);
-		dSetZero (a,100);
+		dSetZero (a);
 		for (int i=0; i<100; i++) if (a[i] != 0.0) {
 			println ("\tFAILED");
 			return;
@@ -235,11 +244,11 @@ class DemoOde {
 			dMakeRandomVector (n1,1.0);
 			n2.set(n1);
 			n2.normalize();
-			if (Math.abs(n2.reDot(n2) - 1.0) > tol) bad |= 1;
+			if (Math.abs(n2.dot(n2) - 1.0) > tol) bad |= 1;
 			if (Math.abs(n2.get0()/n1.get0() - n2.get1()/n1.get1()) > tol) bad |= 2;
 			if (Math.abs(n2.get0()/n1.get0() - n2.get2()/n1.get2()) > tol) bad |= 4;
 			if (Math.abs(n2.get1()/n1.get1() - n2.get2()/n1.get2()) > tol) bad |= 8;
-			if (Math.abs(n2.reDot(n1) - Math.sqrt(n1.reDot(n1))) > tol) bad |= 16;
+			if (Math.abs(n2.dot(n1) - Math.sqrt(n1.dot(n1))) > tol) bad |= 16;
 			if (bad != 0) {
 				println ("\tFAILED (code=" + bad + ")");
 				return;
@@ -271,11 +280,11 @@ void testReorthonormalize()
 			dMakeRandomVector (n,1.0);
 			n.normalize();
 			dPlaneSpace (n,p,q);
-			if (Math.abs(n.reDot(p)) > tol) bad = 1;
-			if (Math.abs(n.reDot(q)) > tol) bad = 1;
-			if (Math.abs(p.reDot(q)) > tol) bad = 1;
-			if (Math.abs(p.reDot(p)-1) > tol) bad = 1;
-			if (Math.abs(q.reDot(q)-1) > tol) bad = 1;
+			if (Math.abs(n.dot(p)) > tol) bad = 1;
+			if (Math.abs(n.dot(q)) > tol) bad = 1;
+			if (Math.abs(p.dot(q)) > tol) bad = 1;
+			if (Math.abs(p.dot(p)-1) > tol) bad = 1;
+			if (Math.abs(q.dot(q)-1) > tol) bad = 1;
 		}
 		println ("\t", bad != 0 ? "FAILED" : "passed");
 	}
@@ -297,13 +306,13 @@ void testReorthonormalize()
 		int i;
 
 		HEADER();
-		dSetZero (A,8);
+		dSetZero (A);
 		for (i=0; i<3; i++) A[i] = i+2;
 		for (i=0; i<3; i++) A[i+4] = i+3+2;
 		for (i=0; i<12; i++) B[i] = i+8;
-		dSetZero (A2,12);
+		dSetZero (A2);
 		for (i=0; i<6; i++) A2[i+2*(i/2)] = A[i+i/3];
-		dSetZero (B2,16);
+		dSetZero (B2);
 		for (i=0; i<12; i++) B2[i+i/3] = B[i];
 
 		dMultiply0 (C,A,B,2,3,4);
@@ -336,32 +345,32 @@ void testReorthonormalize()
 		dMakeRandomVector (x,1.0);
 
 		// dMULTIPLY0_331()
-		dMULTIPLY0_331 (a,B,x);
-		dMultiply0 (a2,B,x,3,3,1);
+		dMultiply0_331 (a,B,x);
+		dMultiply0 (a2,B,x);
 		println ("\t",(dMaxDifference (a,a2) > tol) ? "FAILED" : "passed", " (1)");
 
 		// dMULTIPLY1_331()
-		dMULTIPLY1_331 (a,B,x);
+		dMultiply1_331 (a,B,x);
 		dMultiply1 (a2,B,x);
 		println ("\t",(dMaxDifference (a,a2) > tol) ? "FAILED" : "passed", " (2)");
 
 		// dMULTIPLY0_133
-		dMULTIPLY0_133 (a,x,B);
+		dMultiply0_133 (a,x,B);
 		dMultiply0 (a2,x,B);
 		println ("\t",(dMaxDifference (a,a2) > tol) ? "FAILED" : "passed", " (3)");
 
 		// dMULTIPLY0_333()
-		dMULTIPLY0_333 (A,B,C);
+		dMultiply0_333 (A,B,C);
 		dMultiply0 (A2,B,C);
 		println ("\t",(dMaxDifference (A,A2) > tol) ? "FAILED" : "passed", " (4)");
 
 		// dMULTIPLY1_333()
-		dMULTIPLY1_333 (A,B,C);
+		dMultiply1_333 (A,B,C);
 		dMultiply1 (A2,B,C);
 		println ("\t",(dMaxDifference (A,A2) > tol) ? "FAILED" : "passed", " (5)");
 		
 		// dMULTIPLY2_333()
-		dMULTIPLY2_333 (A,B,C);
+		dMultiply2_333 (A,B,C);
 		dMultiply2 (A2,B,C);
 		println ("\t",(dMaxDifference (A,A2) > tol) ? "FAILED" : "passed", " (6)");
 	}
@@ -381,6 +390,25 @@ void testReorthonormalize()
 		dClearUpperTriangle (B,MSIZE);
 		dMultiply2 (C,B,B,MSIZE,MSIZE,MSIZE);
 		diff = dMaxDifference(A,C,MSIZE,MSIZE);
+		println ("\tmaximum difference = " + diff + " - ",
+				diff > tol ? "FAILED" : "passed", " (2)");
+	}
+
+
+	private void testCholeskyFactorizationM3()
+	{
+		DMatrix3 A = new DMatrix3(), B = new DMatrix3();
+		DMatrix3 C = new DMatrix3();
+		double diff;
+		HEADER();
+		dMakeRandomMatrix (A,1.0);
+		dMultiply2 (B,A,A);
+		A.set(B);
+		if (dFactorCholesky (B)) println ("\tpassed (1)");
+		else println ("\tFAILED (1)");
+		dClearUpperTriangle (B);
+		dMultiply2 (C,B,B);
+		diff = dMaxDifference(A,C);
 		println ("\tmaximum difference = " + diff + " - ",
 				diff > tol ? "FAILED" : "passed", " (2)");
 	}
@@ -418,6 +446,40 @@ void testReorthonormalize()
 	}
 
 
+	void testCholeskySolveM3()
+	{
+		DMatrix3 A = new DMatrix3(), L = new DMatrix3();
+		DVector3 b = new DVector3(), x = new DVector3(), btest = new DVector3();
+		double diff;
+		HEADER();
+
+		// get A,L = PD matrix
+		dMakeRandomMatrix (A,1.0);
+		dMultiply2 (L,A,A);
+		//memcpy (A,L,MSIZE4*MSIZE);//*sizeof(double));
+		A.set(L);
+
+		// get b,x = right hand side
+		dMakeRandomVector (b,1.0);
+		//memcpy (x,b,MSIZE);//*sizeof(double));
+		x.set(b);
+
+		// factor L
+		if (dFactorCholesky (L)) System.out.printf ("\tpassed (1)\n");
+		else System.out.printf ("\tFAILED (1)\n");
+		dClearUpperTriangle (L);
+
+		// solve A*x = b
+		dSolveCholesky (L,x);
+
+		// compute A*x and compare it with b
+		dMultiply2 (btest,A,x);
+		diff = dMaxDifference(b,btest);
+		System.out.printf ("\tmaximum difference = %.6e - %s (2)\n",diff,
+				diff > tol ? "FAILED" : "passed");
+	}
+
+	
 	private void testInvertPDMatrix()
 	{
 		int i,j,ok;
@@ -428,7 +490,7 @@ void testReorthonormalize()
 		dMakeRandomMatrix (A,MSIZE,MSIZE,1.0);
 		dMultiply2 (Ainv,A,A,MSIZE,MSIZE,MSIZE);
 		System.arraycopy(Ainv, 0, A, 0, MSIZE4*MSIZE);
-		dSetZero (Ainv,MSIZE4*MSIZE);
+		dSetZero (Ainv);
 
 		if (dInvertPDMatrix (A,Ainv,MSIZE))
 			println ("\tpassed (1)"); else println ("\tFAILED (1)");
@@ -447,7 +509,38 @@ void testReorthonormalize()
 		if (ok != 0) println ("\tpassed (2)"); else println ("\tFAILED (2)");
 	}
 
+	
+	private void testInvertPDMatrixM3()
+	{
+		int i,j,ok;
+		DMatrix3 A = new DMatrix3(), Ainv = new DMatrix3(); 
+		DMatrix3 I = new DMatrix3();
+		HEADER();
 
+		dMakeRandomMatrix (A,1.0);
+		dMultiply2 (Ainv,A,A);
+		//System.arraycopy(Ainv, 0, A, 0, MSIZE4*MSIZE);
+		A.set(Ainv);
+		Ainv.setZero();//dSetZero (Ainv,MSIZE4*MSIZE);
+
+		if (dInvertPDMatrix (A,Ainv))
+			println ("\tpassed (1)"); else println ("\tFAILED (1)");
+		dMultiply0 (I,A,Ainv);
+
+		// compare with identity
+		ok = 1;
+		for (i=0; i<3; i++) {
+			for (j=0; j<3; j++) {
+				if (i != j) if (cmp (I.get(i, j),0.0)==false) ok = 0;
+			}
+		}
+		for (i=0; i<3; i++) {
+			if (cmp (I.get(i, i),1.0)==false) ok = 0;
+		}
+		if (ok != 0) println ("\tpassed (2)"); else println ("\tFAILED (2)");
+	}
+
+	
 	private void testIsPositiveDefinite()
 	{
 		double[] A = new double[MSIZE4*MSIZE], B = new double[MSIZE4*MSIZE];
@@ -456,6 +549,16 @@ void testReorthonormalize()
 		dMultiply2 (B,A,A,MSIZE,MSIZE,MSIZE);
 		println ("\t",dIsPositiveDefinite(A,MSIZE) ? "FAILED (1)":"passed (1)");
 		println ("\t",dIsPositiveDefinite(B,MSIZE) ? "passed (2)":"FAILED (2)");
+	}
+
+	private void testIsPositiveDefiniteM3()
+	{
+		DMatrix3 A = new DMatrix3(), B = new DMatrix3();
+		HEADER();
+		dMakeRandomMatrix (A,1.0);
+		dMultiply2 (B,A,A);
+		println ("\t",dIsPositiveDefinite(A) ? "FAILED (1)":"passed (1)");
+		println ("\t",dIsPositiveDefinite(B) ? "passed (2)":"FAILED (2)");
 	}
 
 	private void testFastLDLTFactorization()
@@ -474,7 +577,7 @@ void testReorthonormalize()
 		dClearUpperTriangle (L,MSIZE);
 		for (i=0; i<MSIZE; i++) L[i*MSIZE4+i] = 1.0;
 
-		dSetZero (DL,MSIZE4*MSIZE);
+		dSetZero (DL);//,MSIZE4*MSIZE);
 		for (i=0; i<MSIZE; i++) {
 			for (j=0; j<MSIZE; j++) DL[i*MSIZE4+j] = L[i*MSIZE4+j] / d[j];
 		}
@@ -534,7 +637,7 @@ void testReorthonormalize()
 		// get modified L*D*L'
 		dClearUpperTriangle (L,MSIZE);
 		for (i=0; i<MSIZE; i++) L[i*MSIZE4+i] = 1.0;
-		dSetZero (DL,MSIZE4*MSIZE);
+		dSetZero (DL);
 		for (i=0; i<MSIZE; i++) {
 			for (j=0; j<MSIZE; j++) DL[i*MSIZE4+j] = L[i*MSIZE4+j] / d[j];
 		}
@@ -613,7 +716,7 @@ void testReorthonormalize()
 			for (i=0; i<(MSIZE-1); i++) L2[i*MSIZE4+i] = 1.0;
 			for (i=0; i<MSIZE; i++) L2[(MSIZE-1)*MSIZE4+i] = 0;
 			d2[MSIZE-1] = 1;
-			dSetZero (DL2,MSIZE4*MSIZE);
+			dSetZero (DL2);
 			for (i=0; i<(MSIZE-1); i++) {
 				for (j=0; j<MSIZE-1; j++) DL2[i*MSIZE4+j] = L2[i*MSIZE4+j] / d2[j];
 			}
@@ -633,6 +736,7 @@ void testReorthonormalize()
 		println ("\tmaximum difference = " + maxdiff + " - ",
 				maxdiff > tol ? "FAILED" : "passed");
 	}
+
 
 	//****************************************************************************
 	// test mass stuff
@@ -666,9 +770,10 @@ void testReorthonormalize()
 	// compute the mass parameters of a particle set
 
 	//void computeMassParams (dMass *m, dReal q[NUMP][3], dReal pm[NUMP])
-	private void computeMassParams (DMass m, double[][] q, double[] pm) {
+	//private void computeMassParams (DMass m, double[][] q, double[] pm) {
+	private void computeMassParams (DMass m, DVector3[] q, double[] pm) {
 		//assertTrue(q.length==NUMP && q[0].length==3 && pm.length==NUMP);
-		dIASSERT(q.length==NUMP && q[0].length==3 && pm.length==NUMP);
+		dIASSERT(q.length==NUMP && pm.length==NUMP);
 
 		int i;
 		m.setZero ();
@@ -676,14 +781,14 @@ void testReorthonormalize()
 			m.setMass( m.getMass() + pm[i]);// += pm[i];
 			//for (j=0; j<3; j++) m.getC().v[j] += pm[i]*q[i][j];
 			DVector3 cTmp = new DVector3(m.getC()); 
-			m.setC( cTmp.add(pm[i]*q[i][0], pm[i]*q[i][1], pm[i]*q[i][2]) );
+			m.setC( cTmp.add(pm[i]*q[i].get0(), pm[i]*q[i].get1(), pm[i]*q[i].get2()) );
 			DMatrix3 I = new DMatrix3(m.getI());
-			I.add(0,0, pm[i]*(q[i][1]*q[i][1] + q[i][2]*q[i][2]) );
-			I.add(1,1, pm[i]*(q[i][0]*q[i][0] + q[i][2]*q[i][2]) );
-			I.add(2,2, pm[i]*(q[i][0]*q[i][0] + q[i][1]*q[i][1]) );
-			I.add(0,1, -pm[i]*(q[i][0]*q[i][1]) );
-			I.add(0,2, -pm[i]*(q[i][0]*q[i][2]) );
-			I.add(1,2, -pm[i]*(q[i][1]*q[i][2]) );
+			I.add(0,0, pm[i]*(q[i].get1()*q[i].get1() + q[i].get2()*q[i].get2()) );
+			I.add(1,1, pm[i]*(q[i].get0()*q[i].get0() + q[i].get2()*q[i].get2()) );
+			I.add(2,2, pm[i]*(q[i].get0()*q[i].get0() + q[i].get1()*q[i].get1()) );
+			I.add(0,1, -pm[i]*(q[i].get0()*q[i].get1()) );
+			I.add(0,2, -pm[i]*(q[i].get0()*q[i].get2()) );
+			I.add(1,2, -pm[i]*(q[i].get1()*q[i].get2()) );
 			m.setI(I);
 		}
 		//for (j=0; j<3; j++) m.getC().v[j] /= m.getMass();
@@ -702,7 +807,8 @@ void testReorthonormalize()
 		DMass m = new DxMass();
 		int i,j;
 		//  double q[NUMP][3];		// particle positions
-		double[][] q = new double[NUMP][3];		// particle positions
+		//double[][] q = new double[NUMP][3];		// particle positions
+		DVector3[] q = new DVector3[NUMP];		// particle positions
 		//  double pm[NUMP];		// particle masses
 		double[] pm = new double[NUMP];		// particle masses
 		DMass m1 = new DxMass(),m2 = new DxMass();
@@ -754,8 +860,8 @@ void testReorthonormalize()
 		I = (DMatrix3)m.getI();
 		if (cmp(m.getMass(),5.99961928996029) && m.getC().get0()==0 && m.getC().get1()==0 && m.getC().get2()==0 &&
 				cmp(I.get00(),1.59461986077384) &&
-				cmp(I.get11(),4.57537403079093) &&
-				cmp(I.get22(),4.57537403079093) &&
+				cmp(I.get11(),4.21878433864904) &&
+				cmp(I.get22(),4.21878433864904) &&
 				I.get01()==0 && I.get02()==0 && I.get12()==0 &&
 				I.get10()==0 && I.get20()==0 && I.get21()==0)
 			println ("\tpassed (5)"); 
@@ -779,8 +885,9 @@ void testReorthonormalize()
 		// translate and repeat.
 		for (i=0; i<NUMP; i++) {
 			pm[i] = dRandReal()+0.5;
+			q[i] = new DVector3();
 			for (j=0; j<3; j++) {
-				q[i][j] = 2.0*(dRandReal()-0.5);
+				q[i].set(j, 2.0*(dRandReal()-0.5) );
 			}
 		}
 		computeMassParams (m1,q,pm);
@@ -793,9 +900,10 @@ void testReorthonormalize()
 		m2.setMass( m1.getMass() );
 		m2.translate (1,2,-3);
 		for (i=0; i<NUMP; i++) {
-			q[i][0] += 1;
-			q[i][1] += 2;
-			q[i][2] -= 3;
+//			q[i][0] += 1;
+//			q[i][1] += 2;
+//			q[i][2] -= 3;
+			q[i].add( 1, 2, -3 );
 		}
 		computeMassParams (m1,q,pm);
 		compareMassParams (m1,m2,"7");
@@ -812,12 +920,14 @@ void testReorthonormalize()
 		R.set22(  0.41743652473765 );
 		m2.rotate (R);
 		for (i=0; i<NUMP; i++) {
-			double[] a = new double[3];
+			//double[] a = new double[3];
+			DVector3 a = new DVector3();
 //			dMultiply0 (a,_R(0,0),q[i][0],3,3,1);
-			dMultiply0 (a,R.v,q[i],3,3,1);
-			q[i][0] = a[0];
-			q[i][1] = a[1];
-			q[i][2] = a[2];
+			dMultiply0 (a,R,q[i]);
+//			q[i][0] = a[0];
+//			q[i][1] = a[1];
+//			q[i][2] = a[2];
+			q[i].set(a);
 		}
 		computeMassParams (m1,q,pm);
 		compareMassParams (m1,m2,"8");
@@ -836,13 +946,13 @@ void testReorthonormalize()
 		dMakeRandomVector (u1, 1.0);
 		u1.normalize();
 		dMakeRandomVector (u2, 1.0);
-		double d = u1.reDot (u2);
+		double d = u1.dot (u2);
 		//		u2[0] -= d*u1[0];
 		//		u2[1] -= d*u1[1];
 		//		u2[2] -= d*u1[2];
 		u2.eqSum( u2, u1, -d );
 		u2.normalize();
-		dCROSS (u3,OP.EQ,u1,u2);
+		u3.eqCross(u1,u2);
 		//TZ back to R
 		R.setCol(0, u1);
 		R.setCol(1, u2);
@@ -957,7 +1067,7 @@ void testReorthonormalize()
 
 	// matrix header on the stack
 
-	private class dMatrixComparison {
+	private class MatrixComparison {
 		//  struct dMatInfo;
 		//  dArray<dMatInfo*> mat;
 		//	  int afterfirst,index;
@@ -967,7 +1077,7 @@ void testReorthonormalize()
 		int afterfirst,index;
 
 		//public:
-		//  ~dMatrixComparison();
+		//  ~MatrixComparison();
 
 		private class dMatInfo {
 			int n,m;		// size of matrix
@@ -979,7 +1089,7 @@ void testReorthonormalize()
 		}
 
 
-		dMatrixComparison()
+		MatrixComparison()
 		{
 			afterfirst = 0;
 			index = 0;
@@ -1027,8 +1137,8 @@ void testReorthonormalize()
 			}
 			else {
 				if (lower_tri != 0 && n != m)
-					dDebug (0,"dMatrixComparison, lower triangular matrix must be square");
-				if (index >= mat.size()) dDebug (0,"dMatrixComparison, too many matrices");
+					dDebug (0,"MatrixComparison, lower triangular matrix must be square");
+				if (index >= mat.size()) dDebug (0,"MatrixComparison, too many matrices");
 				dMatInfo mp = mat.get(index);//mat[index];
 				index++;
 
@@ -1039,10 +1149,10 @@ void testReorthonormalize()
 				//if (strlen(mi.name) >= mi.name.length()+1) dDebug (0,"name too long");
 
 				if (!mp.name.equals(mi.name))
-					dDebug (0,"dMatrixComparison, name mismatch (\"%s\" and \"%s\")",
+					dDebug (0,"MatrixComparison, name mismatch (\"%s\" and \"%s\")",
 							mp.name,mi.name);
 				if (mp.n != n || mp.m != m)
-					dDebug (0,"dMatrixComparison, size mismatch (%dx%d and %dx%d)",
+					dDebug (0,"MatrixComparison, size mismatch (%dx%d and %dx%d)",
 							mp.n,mp.m,n,m);
 
 				double maxdiff;
@@ -1053,7 +1163,7 @@ void testReorthonormalize()
 					maxdiff = dMaxDifference (A,mp.data,n,m);
 				}
 				if (maxdiff > tol)
-					dDebug (0,"dMatrixComparison, matrix error " +
+					dDebug (0,"MatrixComparison, matrix error " +
 							"(size=%dx%d, name=\"%s\", " +
 							"error=%.4e)",n,m,mi.name,maxdiff);
 				return maxdiff;
@@ -1098,7 +1208,7 @@ void testReorthonormalize()
 				println (i + ": " + m.name + " (" + m.n + "x" + m.m + ")");
 			}
 		}
-	}  //dMatrixComparison
+	}  //MatrixComparison
 
 
 	//****************************************************************************
@@ -1132,7 +1242,7 @@ void testReorthonormalize()
 		println ("dTestMatrixComparison()");
 		dMessageFunction orig_debug = dGetDebugHandler();
 
-		dMatrixComparison mc = new dMatrixComparison();
+		MatrixComparison mc = new MatrixComparison();
 		double[] A = new double[50*50];
 
 		// make first sequence
@@ -1228,9 +1338,13 @@ void testReorthonormalize()
 		testMatrixMultiply();
 		testSmallMatrixMultiply();
 		testCholeskyFactorization();
+		testCholeskyFactorizationM3();
 		testCholeskySolve();
+		testCholeskySolveM3();
 		testInvertPDMatrix();
+		testInvertPDMatrixM3();
 		testIsPositiveDefinite();
+		testIsPositiveDefiniteM3();
 		testFastLDLTFactorization();
 		testSolveLDLT();
 		testLDLTAddTL();
