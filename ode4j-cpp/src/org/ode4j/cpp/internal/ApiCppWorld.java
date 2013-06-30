@@ -23,7 +23,7 @@ package org.ode4j.cpp.internal;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.internal.DxWorld;
+import org.ode4j.ode.OdeHelper;
 
 /**
  * @defgroup world World
@@ -45,7 +45,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API
 	public static DWorld dWorldCreate() {
-		return DxWorld.dWorldCreate();
+		return OdeHelper.createWorld();
 	}
 
 
@@ -60,7 +60,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API
 	public static void dWorldDestroy (DWorld world) {
-		((DxWorld)world).dWorldDestroy();
+		world.destroy();
 	}
 
 
@@ -74,7 +74,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldSetGravity (DWorld w, double x, double y, double z) {
-		((DxWorld)w).dWorldSetGravity(x, y, z);
+		w.setGravity(x, y, z);
 	}
 
 
@@ -84,8 +84,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup world
 	 */
 	//ODE_API 
-	void dWorldGetGravity (DWorld w, DVector3 gravity) {
-		throw new UnsupportedOperationException();
+	public static void dWorldGetGravity (DWorld w, DVector3 gravity) {
+		w.getGravity(gravity);
 	}
 
 
@@ -94,12 +94,12 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @brief Set the global ERP value, that controls how much error
 	 * correction is performed in each time step.
 	 * @ingroup world
-	 * @param DWorld the identifier of the world.
+	 * @param w the identifier of the world.
 	 * @param erp Typical values are in the range 0.1--0.8. The default is 0.2.
 	 */
 	//ODE_API 
 	public static void dWorldSetERP (DWorld w, double erp) {
-		((DxWorld)w).dWorldSetERP(erp);
+		w.setERP(erp);
 	}
 
 
@@ -109,8 +109,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return ERP value
 	 */
 	//ODE_API 
-	double dWorldGetERP (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetERP (DWorld w) {
+		return w.getERP();
 	}
 
 
@@ -124,7 +124,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldSetCFM (DWorld w, double cfm) {
-		((DxWorld)w).dWorldSetCFM(cfm);
+		w.setCFM(cfm);
 	}
 
 
@@ -134,8 +134,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return CFM value
 	 */
 	//ODE_API 
-	double dWorldGetCFM (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetCFM (DWorld w) {
+		return w.getCFM();
 	}
 
 
@@ -152,7 +152,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldStep (DWorld w, double stepsize) {
-		((DxWorld)w).dWorldStep(stepsize);
+		w.step(stepsize);
 	}
 
 
@@ -172,12 +172,10 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * properties of the world.
 	 */
 	//ODE_API 
-	void dWorldImpulseToForce
-	(
+	public static void dWorldImpulseToForce(
 			DWorld w, double stepsize,
-			double ix, double iy, double iz, DVector3 force
-	) {
-		throw new UnsupportedOperationException();
+			double ix, double iy, double iz, DVector3 force) {
+		w.impulseToForce(stepsize, ix, iy, iz, force);
 	}
 
 
@@ -215,7 +213,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldQuickStep (DWorld w, double stepsize) {
-		((DxWorld)w).dWorldQuickStep(stepsize);
+		w.quickStep(stepsize);
 	}
 
 
@@ -231,7 +229,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldSetQuickStepNumIterations (DWorld w, int num) {
-		((DxWorld)w).dWorldSetQuickStepNumIterations(num);
+		w.setQuickStepNumIterations(num);
 	}
 
 
@@ -243,8 +241,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return nr of iterations
 	 */
 	//ODE_API 
-	int dWorldGetQuickStepNumIterations (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static int dWorldGetQuickStepNumIterations (DWorld w) {
+		return w.getQuickStepNumIterations();
 	}
 
 
@@ -254,19 +252,19 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @param over_relaxation value to use by SOR
 	 */
 	//ODE_API 
-	void dWorldSetQuickStepW (DWorld w, double over_relaxation) {
-		throw new UnsupportedOperationException();
+	public static void dWorldSetQuickStepW (DWorld w, double over_relaxation) {
+		w.setQuickStepW(over_relaxation);
 	}
 
 
 	/**
 	 * @brief Get the SOR over-relaxation parameter
 	 * @ingroup world
-	 * @returns the over-relaxation setting
+	 * @return the over-relaxation setting
 	 */
 	//ODE_API 
-	double dWorldGetQuickStepW (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetQuickStepW (DWorld w) {
+		return w.getQuickStepW();
 	}
 
 
@@ -282,7 +280,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldSetContactMaxCorrectingVel (DWorld w, double vel) {
-		((DxWorld)w).dWorldSetContactMaxCorrectingVel(vel);
+		w.setContactMaxCorrectingVel(vel);
 	}
 
 
@@ -292,8 +290,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup world
 	 */
 	//ODE_API 
-	double dWorldGetContactMaxCorrectingVel (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetContactMaxCorrectingVel (DWorld w) {
+		return w.getContactMaxCorrectingVel();
 	}
 
 
@@ -310,34 +308,19 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldSetContactSurfaceLayer (DWorld w, double depth) {
-		((DxWorld)w).dWorldSetContactSurfaceLayer(depth);
+		w.setContactSurfaceLayer(depth);
 	}
 
 
 	/**
 	 * @brief Get the depth of the surface layer around all geometry objects.
 	 * @ingroup world
-	 * @returns the depth
+	 * @return the depth
 	 */
 	//ODE_API 
-	double dWorldGetContactSurfaceLayer (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetContactSurfaceLayer (DWorld w) {
+		return w.getContactSurfaceLayer();
 	}
-
-
-	/* StepFast1 functions */
-
-	/**
-	 * @brief Step the world using the StepFast1 algorithm.
-	 * @param stepsize the nr of seconds to advance the simulation.
-	 * @param maxiterations The number of iterations to perform.
-	 * @ingroup world
-	 */
-	//ODE_API 
-	void dWorldStepFast1(DWorld w, double stepsize, int maxiterations) {
-		throw new UnsupportedOperationException();
-	}
-
 
 
 	/**
@@ -373,33 +356,13 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 
 	/**
-	 * @brief Set the AutoEnableDepth parameter used by the StepFast1 algorithm.
-	 * @ingroup disable
-	 */
-	//ODE_API 
-	void dWorldSetAutoEnableDepthSF1(DWorld w, int autoEnableDepth) {
-		throw new UnsupportedOperationException();
-	}
-
-
-	/**
-	 * @brief Get the AutoEnableDepth parameter used by the StepFast1 algorithm.
-	 * @ingroup disable
-	 */
-	//ODE_API 
-	int dWorldGetAutoEnableDepthSF1(DWorld w) {
-		throw new UnsupportedOperationException();
-	}
-
-
-	/**
 	 * @brief Get auto disable linear threshold for newly created bodies.
 	 * @ingroup disable
 	 * @return the threshold
 	 */
 	//ODE_API 
-	double dWorldGetAutoDisableLinearThreshold (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetAutoDisableLinearThreshold (DWorld w) {
+		return w.getAutoDisableLinearThreshold();
 	}
 
 
@@ -409,8 +372,9 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup disable
 	 */
 	//ODE_API 
-	void  dWorldSetAutoDisableLinearThreshold (DWorld w, double linear_threshold) {
-		throw new UnsupportedOperationException();
+	public static void dWorldSetAutoDisableLinearThreshold (
+			DWorld w, double linear_threshold) {
+		w.setAutoDisableLinearThreshold(linear_threshold);
 	}
 
 
@@ -420,19 +384,20 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return the threshold
 	 */
 	//ODE_API 
-	double dWorldGetAutoDisableAngularThreshold (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetAutoDisableAngularThreshold (DWorld w) {
+		return w.getAutoDisableAngularThreshold();
 	}
 
 
 	/**
 	 * @brief Set auto disable angular threshold for newly created bodies.
-	 * @param linear_threshold default is 0.01
+	 * @param angular_threshold default is 0.01
 	 * @ingroup disable
 	 */
 	//ODE_API 
-	void dWorldSetAutoDisableAngularThreshold (DWorld w, double angular_threshold) {
-		throw new UnsupportedOperationException();
+	public static void dWorldSetAutoDisableAngularThreshold (
+			DWorld w, double angular_threshold) {
+		w.setAutoDisableAngularThreshold(angular_threshold);
 	}
 
 
@@ -442,8 +407,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return the threshold
 	 */
 	//ODE_API 
-	double dWorldGetAutoDisableLinearAverageThreshold (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetAutoDisableLinearAverageThreshold (DWorld w) {
+		return w.getAutoDisableLinearAverageThreshold();
 	}
 
 
@@ -453,8 +418,9 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup disable
 	 */
 	//ODE_API 
-	void  dWorldSetAutoDisableLinearAverageThreshold (DWorld w, double linear_average_threshold) {
-		throw new UnsupportedOperationException();
+	public static void dWorldSetAutoDisableLinearAverageThreshold (
+			DWorld w, double linear_average_threshold) {
+		w.setAutoDisableLinearAverageThreshold(linear_average_threshold);
 	}
 
 
@@ -464,19 +430,20 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return the threshold
 	 */
 	//ODE_API 
-	double dWorldGetAutoDisableAngularAverageThreshold (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetAutoDisableAngularAverageThreshold (DWorld w) {
+		return w.getAutoDisableAngularAverageThreshold();
 	}
 
 
 	/**
 	 * @brief Set auto disable angular average threshold for newly created bodies.
-	 * @param linear_average_threshold default is 0.01
+	 * @param angular_average_threshold default is 0.01
 	 * @ingroup disable
 	 */
 	//ODE_API 
-	void dWorldSetAutoDisableAngularAverageThreshold (DWorld w, double angular_average_threshold) {
-		throw new UnsupportedOperationException();
+	public static void dWorldSetAutoDisableAngularAverageThreshold (
+			DWorld w, double angular_average_threshold) {
+		w.setAutoDisableAngularAverageThreshold(angular_average_threshold);
 	}
 
 
@@ -486,8 +453,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return number of samples used
 	 */
 	//ODE_API 
-	int dWorldGetAutoDisableAverageSamplesCount (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static int dWorldGetAutoDisableAverageSamplesCount (DWorld w) {
+		return w.getAutoDisableAverageSamplesCount();
 	}
 
 
@@ -502,7 +469,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	//	 unsigned int average_samples_count ) {
 	public static void dWorldSetAutoDisableAverageSamplesCount (DWorld w,  
 			int average_samples_count ) {
-		((DxWorld)w).dWorldSetAutoDisableAverageSamplesCount(average_samples_count);
+		w.setAutoDisableAverageSamplesCount(average_samples_count);
 	}
 
 
@@ -512,8 +479,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return nr of steps
 	 */
 	//ODE_API 
-	int dWorldGetAutoDisableSteps (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static int dWorldGetAutoDisableSteps (DWorld w) {
+		return w.getAutoDisableSteps();
 	}
 
 
@@ -523,8 +490,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @param steps default is 10
 	 */
 	//ODE_API 
-	void dWorldSetAutoDisableSteps (DWorld w, int steps) {
-		throw new UnsupportedOperationException();
+	public static void dWorldSetAutoDisableSteps (DWorld w, int steps) {
+		w.setAutoDisableSteps(steps);
 	}
 
 
@@ -534,8 +501,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return nr of seconds
 	 */
 	//ODE_API 
-	double dWorldGetAutoDisableTime (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetAutoDisableTime (DWorld w) {
+		return w.getAutoDisableTime();
 	}
 
 
@@ -545,8 +512,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @param time default is 0 seconds
 	 */
 	//ODE_API 
-	void dWorldSetAutoDisableTime (DWorld w, double time) {
-		throw new UnsupportedOperationException();
+	public static void dWorldSetAutoDisableTime (DWorld w, double time) {
+		w.setAutoDisableTime(time);
 	}
 
 
@@ -556,8 +523,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @return 0 or 1
 	 */
 	//ODE_API 
-	int dWorldGetAutoDisableFlag (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static boolean dWorldGetAutoDisableFlag (DWorld w) {
+		return w.getAutoDisableFlag();
 	}
 
 
@@ -568,7 +535,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldSetAutoDisableFlag (DWorld w, boolean do_auto_disable) {
-		((DxWorld)w).dWorldSetAutoDisableFlag(do_auto_disable);
+		w.setAutoDisableFlag(do_auto_disable);
 	}
 
 
@@ -619,8 +586,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup damping
 	 */
 	//ODE_API 
-	double dWorldGetLinearDampingThreshold (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetLinearDampingThreshold (DWorld w) {
+		return w.getLinearDampingThreshold();
 	}
 
 
@@ -631,8 +598,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup damping
 	 */
 	//ODE_API 
-	void dWorldSetLinearDampingThreshold(DWorld w, double threshold) {
-		throw new UnsupportedOperationException();
+	public static void dWorldSetLinearDampingThreshold(DWorld w, double threshold) {
+		w.setLinearDampingThreshold(threshold);
 	}
 
 
@@ -641,8 +608,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup damping
 	 */
 	//ODE_API 
-	double dWorldGetAngularDampingThreshold (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetAngularDampingThreshold (DWorld w) {
+		return w.getAngularDampingThreshold();
 	}
 
 
@@ -653,8 +620,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup damping
 	 */
 	//ODE_API 
-	void dWorldSetAngularDampingThreshold(DWorld w, double threshold) {
-		throw new UnsupportedOperationException();
+	public static void dWorldSetAngularDampingThreshold(DWorld w, double threshold) {
+		w.setAngularDampingThreshold(threshold);
 	}
 
 
@@ -663,8 +630,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup damping
 	 */
 	//ODE_API 
-	double dWorldGetLinearDamping (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetLinearDamping (DWorld w) {
+		return w.getLinearDamping();
 	}
 
 
@@ -676,7 +643,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldSetLinearDamping (DWorld w, double scale) {
-		((DxWorld)w).dWorldSetLinearDamping(scale);
+		w.setLinearDamping(scale);
 	}
 
 
@@ -685,8 +652,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup damping
 	 */
 	//ODE_API 
-	double dWorldGetAngularDamping (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetAngularDamping (DWorld w) {
+		return w.getAngularDamping();
 	}
 
 
@@ -698,7 +665,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 */
 	//ODE_API 
 	public static void dWorldSetAngularDamping(DWorld w, double scale) {
-		((DxWorld)w).dWorldSetAngularDamping(scale);
+		w.setAngularDamping(scale);
 	}
 
 
@@ -709,21 +676,21 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * @ingroup damping
 	 */
 	//ODE_API 
-	void dWorldSetDamping(DWorld w,
+	public static void dWorldSetDamping(DWorld w,
 			double linear_scale,
 			double angular_scale) {
-		throw new UnsupportedOperationException();
+		w.setDamping(linear_scale, angular_scale);
 	}
 
 
 	/**
 	 * @brief Get the default maximum angular speed.
 	 * @ingroup damping
-	 * @sa dBodyGetMaxAngularSpeed()
+	 * @see #dBodyGetMaxAngularSpeed(org.ode4j.ode.DBody)
 	 */
 	//ODE_API 
-	double dWorldGetMaxAngularSpeed (DWorld w) {
-		throw new UnsupportedOperationException();
+	public static double dWorldGetMaxAngularSpeed (DWorld w) {
+		return w.getMaxAngularSpeed();
 	}
 
 
@@ -731,11 +698,11 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * @brief Set the default maximum angular speed for new bodies.
 	 * @ingroup damping
-	 * @sa dBodySetMaxAngularSpeed()
+	 * @see #dBodySetMaxAngularSpeed(org.ode4j.ode.DBody, double)
 	 */
 	//ODE_API 
 	public static void dWorldSetMaxAngularSpeed (DWorld w, double max_speed) {
-		((DxWorld)w).dWorldSetMaxAngularSpeed(max_speed);
+		w.setMaxAngularSpeed(max_speed);
 	}
 
 

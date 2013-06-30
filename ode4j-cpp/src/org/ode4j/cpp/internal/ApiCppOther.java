@@ -21,21 +21,21 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
+import java.util.List;
+
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DJoint;
-import org.ode4j.ode.internal.OdeFactoryImpl;
+import org.ode4j.ode.OdeHelper;
 
 public abstract class ApiCppOther extends ApiCppMass {
-
-	protected static final OdeFactoryImpl ODE = new OdeFactoryImpl();
 	
 	/**
 	 * @ingroup joints
 	 */
 	//ODE_API 
 //	int dConnectingJointList (dBody b1, dBody b2, dJoint*);
-	int dConnectingJointList (DBody b1, DBody b2, DJoint[] js) {
-		throw new UnsupportedOperationException();
+	public static List<DJoint> dConnectingJointList (DBody b1, DBody b2) {
+		return OdeHelper.connectingJointList(b1, b2);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	 */
 	//ODE_API 
 	public static boolean dAreConnected (DBody b1, DBody b2) {
-		return ODE.areConnected((DBody)b1, (DBody)b2);
+		return OdeHelper.areConnected((DBody)b1, (DBody)b2);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	//ODE_API 
 	public static boolean dAreConnectedExcluding (DBody body1, DBody body2, 
 			Class<? extends DJoint> ... joint_type) {
-		return ODE._dAreConnectedExcluding((DBody)body1, (DBody)body2, joint_type);
+		return OdeHelper.areConnectedExcluding((DBody)body1, (DBody)body2, joint_type);
 	}
 
 }
