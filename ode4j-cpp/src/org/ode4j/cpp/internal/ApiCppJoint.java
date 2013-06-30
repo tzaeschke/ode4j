@@ -22,32 +22,105 @@
 package org.ode4j.cpp.internal;
 
 import org.cpp4j.java.RefDouble;
+import org.ode4j.ode.DAMotorJoint;
 import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
+import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DFixedJoint;
+import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DLMotorJoint;
+import org.ode4j.ode.DNullJoint;
+import org.ode4j.ode.DPRJoint;
+import org.ode4j.ode.DPUJoint;
+import org.ode4j.ode.DPistonJoint;
+import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.DSliderJoint;
+import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.internal.joints.DxJointAMotor;
-import org.ode4j.ode.internal.joints.DxJointBall;
-import org.ode4j.ode.internal.joints.DxJointFixed;
-import org.ode4j.ode.internal.joints.DxJointGroup;
-import org.ode4j.ode.internal.joints.DxJointHinge;
-import org.ode4j.ode.internal.joints.DxJointHinge2;
-import org.ode4j.ode.internal.joints.DxJointLMotor;
-import org.ode4j.ode.internal.joints.DxJointPR;
-import org.ode4j.ode.internal.joints.DxJointPU;
-import org.ode4j.ode.internal.joints.DxJointPiston;
-import org.ode4j.ode.internal.joints.DxJointPlane2D;
-import org.ode4j.ode.internal.joints.DxJointSlider;
-import org.ode4j.ode.internal.joints.DxJointUniversal;
+import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.DAMotorJoint.AMotorMode;
+import org.ode4j.ode.DJoint.PARAM;
+import org.ode4j.ode.DJoint.PARAM_N;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.internal.DxWorld;
 
 public abstract class ApiCppJoint extends ApiCppOther {
+
+	private static final int P_OFS_1 = 0x000;
+	private static final int P_OFS_2 = 0x100;
+	private static final int P_OFS_3 = 0x200;
+
+	public static final int dParamGroup = 0;
+	//	  /* parameters for limits and motors */ \
+	public static final int dParamLoStop = 0;
+	public static final int dParamHiStop = 1;
+	public static final int dParamVel = 2;
+	public static final int dParamFMax = 3;
+	public static final int dParamFudgeFactor  = 4;
+	public static final int dParamBounce  = 5;
+	public static final int dParamCFM  = 6;
+	public static final int dParamStopERP  = 7;
+	public static final int dParamStopCFM  = 8;
+	/* parameters for suspension */ 
+	public static final int dParamSuspensionERP  = 9;
+	public static final int dParamSuspensionCFM = 10;
+	public static final int dParamERP = 11;
+
+	public static final int dParamGroup1 = 0 + P_OFS_1;
+	//	  /* parameters for limits and motors */ \
+	public static final int dParamLoStop1 = 0 + P_OFS_1;
+	public static final int dParamHiStop1 = 1 + P_OFS_1;
+	public static final int dParamVel1 = 2 + P_OFS_1;
+	public static final int dParamFMax1  = 3 + P_OFS_1;
+	public static final int dParamFudgeFactor1  = 4 + P_OFS_1;
+	public static final int dParamBounce1  = 5 + P_OFS_1;
+	public static final int dParamCFM1  = 6 + P_OFS_1;
+	public static final int dParamStopERP1  = 7 + P_OFS_1;
+	public static final int dParamStopCFM1  = 8 + P_OFS_1;
+	/* parameters for suspension */ 
+	public static final int dParamSuspensionERP1  = 9 + P_OFS_1;
+	public static final int dParamSuspensionCFM1 = 10 + P_OFS_1;
+	public static final int dParamERP1 = 11 + P_OFS_1;
+
+	public static final int dParamGroup2 = 0 + P_OFS_2;
+	//	  /* parameters for limits and motors */ \
+	public static final int dParamLoStop2 = 0 + P_OFS_2;
+	public static final int dParamHiStop2 = 1 + P_OFS_2; 
+	public static final int dParamVel2 = 2 + P_OFS_2; 
+	public static final int dParamFMax2  = 3 + P_OFS_2; 
+	public static final int dParamFudgeFactor2  = 4 + P_OFS_2; 
+	public static final int dParamBounce2  = 5 + P_OFS_2; 
+	public static final int dParamCFM2  = 6 + P_OFS_2; 
+	public static final int dParamStopERP2  = 7 + P_OFS_2; 
+	public static final int dParamStopCFM2  = 8 + P_OFS_2; 
+	/* parameters for suspension */ 
+	public static final int dParamSuspensionERP2  = 9 + P_OFS_2; 
+	public static final int dParamSuspensionCFM2 = 10 + P_OFS_2;
+	public static final int dParamERP2 = 11 + P_OFS_2;
+
+	public static final int dParamGroup3 = 0 + P_OFS_3;
+	//	  /* parameters for limits and motors */ \
+	public static final int dParamLoStop3 = 0 + P_OFS_3; 
+	public static final int dParamHiStop3 = 1 + P_OFS_3; 
+	public static final int dParamVel3 = 2 + P_OFS_3; 
+	public static final int dParamFMax3  = 3 + P_OFS_3; 
+	public static final int dParamFudgeFactor3  = 4 + P_OFS_3; 
+	public static final int dParamBounce3  = 5 + P_OFS_3; 
+	public static final int dParamCFM3  = 6 + P_OFS_3; 
+	public static final int dParamStopERP3  = 7 + P_OFS_3; 
+	public static final int dParamStopCFM3  = 8 + P_OFS_3; 
+	/* parameters for suspension */ 
+	public static final int dParamSuspensionERP3  = 9 + P_OFS_3; 
+	public static final int dParamSuspensionCFM3 = 10 + P_OFS_3;
+	public static final int dParamERP3 = 11 + P_OFS_3;
+
+	
+	/* angular motor mode numbers */
+	public static final int dAMotorUser = 0;
+	public static final int dAMotorEuler = 1;
 
 	/* joint type numbers */
 
@@ -79,51 +152,50 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @remarks
 	 * The joint is initially in "limbo" (i.e. it has no effect on the simulation)
 	 * because it does not connect to any bodies.
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
 	public static DBallJoint dJointCreateBall (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateBall((DxWorld) w, g);
+		return OdeHelper.createBallJoint(w, g);
 	}
 
 	/**
 	 * @brief Create a new joint of the hinge type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
 	public static DHingeJoint dJointCreateHinge (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateHinge((DxWorld) w, g);
+		return OdeHelper.createHingeJoint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the slider type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
 	public static DSliderJoint dJointCreateSlider (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateSlider((DxWorld) w, g);
+		return OdeHelper.createSliderJoint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the contact type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
 	//	dJoint dJointCreateContact (dWorld, dJointGroup, const dContact *);
-	public static DJoint dJointCreateContact (DWorld w, DJointGroup g, final DContact c) {
-		return ODE.dJointCreateContact((DxWorld) w, (DJointGroup) g, c);
+	public static DContactJoint dJointCreateContact (DWorld w, DJointGroup g, final DContact c) {
+		return OdeHelper.createContactJoint(w, g, c);
 	}
 
-	//TODO by TZ
 	/**
 	 * @brief Create a new joint feedback.
 	 * @ingroup joints
@@ -135,115 +207,115 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Create a new joint of the hinge2 type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
-	public static DJoint dJointCreateHinge2 (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateHinge2((DWorld) w, g);
+	public static DHinge2Joint dJointCreateHinge2 (DWorld w, DJointGroup g) {
+		return OdeHelper.createHinge2Joint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the universal type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
-	public static DJoint dJointCreateUniversal (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateUniversal((DWorld) w, g);
+	public static DUniversalJoint dJointCreateUniversal (DWorld w, DJointGroup g) {
+		return OdeHelper.createUniversalJoint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the PR (Prismatic and Rotoide) type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
-	public static DJoint dJointCreatePR (DWorld w, DJointGroup g) {
-		return ODE.dJointCreatePR((DWorld)  w, g);
+	public static DPRJoint dJointCreatePR (DWorld w, DJointGroup g) {
+		return OdeHelper.createPRJoint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the PU (Prismatic and Universal) type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
-	public static DJoint dJointCreatePU (DWorld w, DJointGroup g) {
-		return ODE.dJointCreatePU( (DWorld) w, g);
+	public static DPUJoint dJointCreatePU (DWorld w, DJointGroup g) {
+		return OdeHelper.createPUJoint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the Piston type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 *                      If it is nonzero the joint is allocated in the given
 	 *                      joint group.
 	 */
 	//ODE_API 
-	public static DJoint dJointCreatePiston (DWorld w, DJointGroup g) {
-		return ODE.dJointCreatePiston((DWorld) w, g);
+	public static DPistonJoint dJointCreatePiston (DWorld w, DJointGroup g) {
+		return OdeHelper.createPistonJoint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the fixed type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
-	public static DJoint dJointCreateFixed (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateFixed((DWorld) w, g);
+	public static DFixedJoint dJointCreateFixed (DWorld w, DJointGroup g) {
+		return OdeHelper.createFixedJoint(w, g);
 	}
 
 
 	//ODE_API 
-	DJoint dJointCreateNull (DWorld w, DJointGroup g) {
-		throw new UnsupportedOperationException();
+	public static DNullJoint dJointCreateNull (DWorld w, DJointGroup g) {
+		return OdeHelper.createNullJoint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the A-motor type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
-	public static DJoint dJointCreateAMotor (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateAMotor((DxWorld) w, g);
+	public static DAMotorJoint dJointCreateAMotor (DWorld w, DJointGroup g) {
+		return OdeHelper.createAMotorJoint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the L-motor type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
-	public static DJoint dJointCreateLMotor (DWorld w, DJointGroup g) {
-		return ODE.dJointCreateLMotor((DxWorld) w, g);
+	public static DLMotorJoint dJointCreateLMotor (DWorld w, DJointGroup g) {
+		return OdeHelper.createLMotorJoint(w, g);
 	}
 
 
 	/**
 	 * @brief Create a new joint of the plane-2d type.
 	 * @ingroup joints
-	 * @param DJointGroup set to 0 to allocate the joint normally.
+	 * @param g set to <tt>null</tt> to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
 	//ODE_API 
-	public static DJoint dJointCreatePlane2D (DWorld w, DJointGroup g) {
-		return ODE.dJointCreatePlane2D((DxWorld) w, g);
+	public static DPlane2DJoint dJointCreatePlane2D (DWorld w, DJointGroup g) {
+		return OdeHelper.createPlane2DJoint(w, g);
 	}
 
 
@@ -269,7 +341,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static DJointGroup dJointGroupCreate (int max_size) {
-		return DxJointGroup.dJointGroupCreate(max_size);
+		return OdeHelper.createJointGroup();
 	}
 
 
@@ -281,7 +353,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointGroupDestroy (DJointGroup g) {
-		((DxJointGroup)g).dJointGroupDestroy();
+		g.destroy();
 	}
 
 
@@ -294,7 +366,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointGroupEmpty (DJointGroup g) {
-		((DxJointGroup)g).dJointGroupEmpty();
+		g.empty();
 	}
 
 
@@ -303,8 +375,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	int dJointGetNumBodies(DJoint j) {
-		throw new UnsupportedOperationException();
+	public static int dJointGetNumBodies(DJoint j) {
+		return j.getNumBodies();
 	}
 
 
@@ -323,18 +395,51 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointAttach (DJoint j, DBody body1, DBody body2) {
-		((DxJoint)j).dJointAttach((DBody)body1, (DBody)body2);
+		j.attach(body1, body2);
 	}
 
 
+	/**
+	 * @brief Manually enable a joint.
+	 * @param j identification of joint.
+	 * @ingroup joints
+	 */
+	//ODE_API 
+	public static void dJointEnable (DJoint j) {
+		j.enable();
+	}
+
+	/**
+	 * @brief Manually disable a joint.
+	 * @ingroup joints
+	 * @remarks
+	 * A disabled joint will not affect the simulation, but will maintain the anchors and
+	 * axes so it can be enabled later.
+	 */
+	//ODE_API 
+	public static void dJointDisable (DJoint j) {
+		j.disable();
+	}
+
+	/**
+	 * @brief Check wether a joint is enabled.
+	 * @ingroup joints
+	 * @return 1 if a joint is currently enabled or 0 if it is disabled.
+	 */
+	//ODE_API 
+	public static boolean dJointIsEnabled (DJoint j) {
+		return j.isEnabled();
+	}
+
+	
 	/**
 	 * @brief Set the user-data pointer
 	 * @ingroup joints
 	 */
 	//ODE_API
 	//	void dJointSetData (dJoint j, void *data) {
-	void dJointSetData (DJoint j, Object data) {
-		((DxJoint)j).dJointSetData(data);
+	public static void dJointSetData (DJoint j, Object data) {
+		j.setData(data);
 	}
 
 
@@ -344,8 +449,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	//	void *dJointGetData (dJoint j) {
-	Object dJointGetData (DJoint j) {
-		return ((DxJoint)j).dJointGetData();
+	public static Object dJointGetData (DJoint j) {
+		return j.getData();
 	}
 
 
@@ -353,20 +458,20 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief Get the type of the joint
 	 * @ingroup joints
 	 * @return the type, being one of these:
-	 * \li dJointTypeBall
-	 * \li dJointTypeHinge
-	 * \li dJointTypeSlider
-	 * \li dJointTypeContact
-	 * \li dJointTypeUniversal
-	 * \li dJointTypeHinge2
-	 * \li dJointTypeFixed
-	 * \li dJointTypeNull
-	 * \li dJointTypeAMotor
-	 * \li dJointTypeLMotor
-	 * \li dJointTypePlane2D
-	 * \li dJointTypePR
-	 * \li dJointTypePU
-	 * \li dJointTypePiston
+	 * <li> dJointTypeBall </li>
+	 * <li> dJointTypeHinge </li>
+	 * <li> dJointTypeSlider </li>
+	 * <li> dJointTypeContact </li>
+	 * <li> dJointTypeUniversal </li>
+	 * <li> dJointTypeHinge2 </li>
+	 * <li> dJointTypeFixed </li>
+	 * <li> dJointTypeNull </li>
+	 * <li> dJointTypeAMotor </li>
+	 * <li> dJointTypeLMotor </li>
+	 * <li> dJointTypePlane2D </li>
+	 * <li> dJointTypePR </li>
+	 * <li> dJointTypePU </li>
+	 * <li> dJointTypePiston </li>
 	 */
 	//ODE_API 
 	dJointType dJointGetType (DJoint j) {
@@ -386,7 +491,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API
 	public static DBody dJointGetBody (DJoint j, int index) {
-		return ((DxJoint)j).dJointGetBody(index);
+		return j.getBody(index);
 	}
 
 
@@ -400,7 +505,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	//ODE_API 
 	//	void dJointSetFeedback (dJoint j, dJointFeedback *);
 	public static void dJointSetFeedback (DJoint j, DJoint.DJointFeedback fb) {
-		((DxJoint)j).dJointSetFeedback(fb);
+		j.setFeedback(fb);
 	}
 
 
@@ -410,8 +515,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	//	dJointFeedback *dJointGetFeedback (dJoint j);
-	DJoint.DJointFeedback dJointGetFeedback (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static DJoint.DJointFeedback dJointGetFeedback (DJoint j) {
+		return j.getFeedback();
 	}
 
 
@@ -423,8 +528,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * together. The input is specified in world coordinates.
 	 */
 	//ODE_API 
-	public static void dJointSetBallAnchor (DJoint j, double x, double y, double z) {
-		((DxJointBall)j).dJointSetBallAnchor(x, y, z);
+	public static void dJointSetBallAnchor (DBallJoint j, double x, double y, double z) {
+		j.setAnchor(x, y, z);
 	}
 
 
@@ -433,8 +538,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetBallAnchor2 (DJoint j, double x, double y, double z) {
-		throw new UnsupportedOperationException();
+	public static void dJointSetBallAnchor2 (DBallJoint j, double x, double y, double z) {
+		j.setAnchor2(x, y, z);
 	}
 
 
@@ -443,8 +548,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetBallParam (DJoint j, int parameter, double value) {
-		throw new UnsupportedOperationException();
+	public static void dJointSetBallParam (DBallJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -452,14 +557,14 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief Set hinge anchor parameter.
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	void dJointSetHingeAnchor (DJoint j, double x, double y, double z) {
-		((DxJointHinge)j).dJointSetHingeAnchor(x, y, z);
+	//ODE_API 
+	public static void dJointSetHingeAnchor (DHingeJoint j, double x, double y, double z) {
+		j.setAnchor(x, y, z);
 	}
 
 
 	//ODE_API 
-	void dJointSetHingeAnchorDelta (DJoint j, double x, double y, double z, double ax, double ay, double az) {
+	void dJointSetHingeAnchorDelta (DHingeJoint j, double x, double y, double z, double ax, double ay, double az) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -468,9 +573,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief Set hinge axis.
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	void dJointSetHingeAxis (DJoint j, double x, double y, double z) {
-		((DxJointHinge)j).dJointSetHingeAxis(x, y, z);
+	//ODE_API 
+	public static void dJointSetHingeAxis (DHingeJoint j, double x, double y, double z) {
+		j.setAxis(x, y, z);
 	}
 
 
@@ -502,9 +607,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @warning Calling dJointSetHingeAnchor or dJointSetHingeAxis will reset the "zero"
 	 *          angle position.
 	 */
-	static public //ODE_API 
-	void dJointSetHingeAxisOffset (DJoint j, double x, double y, double z, double angle) {
-		((DxJointHinge)j).dJointSetHingeAxisOffset(x, y, z, angle);
+	//ODE_API 
+	public static void dJointSetHingeAxisOffset (DHingeJoint j, 
+			double x, double y, double z, double angle) {
+		j.setAxisOffset(x, y, z, angle);
 	}
 
 
@@ -513,8 +619,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetHingeParam (DJoint j, int parameter, double value) {
-		((DxJointHinge)j).dJointSetHingeParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+	public static void dJointSetHingeParam (DHingeJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -527,8 +633,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddHingeTorque(DJoint joint, double torque) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddHingeTorque(DHingeJoint joint, double torque) {
+		joint.addTorque(torque);
 	}
 
 
@@ -536,9 +642,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief set the joint axis
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	void dJointSetSliderAxis (DJoint j, double x, double y, double z) {
-		((DxJointSlider)j).dJointSetSliderAxis(x, y, z);
+	//ODE_API 
+	public static void dJointSetSliderAxis (DSliderJoint j, double x, double y, double z) {
+		j.setAxis(x, y, z);
 	}
 
 
@@ -546,8 +652,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetSliderAxisDelta (DJoint j, double x, double y, double z, double ax, double ay, double az) {
-		throw new UnsupportedOperationException();
+	public static void dJointSetSliderAxisDelta (DSliderJoint j, double x, double y, double z, 
+			double ax, double ay, double az) {
+		j.setAxisDelta(x, y, z, ax, ay, az);
 	}
 
 
@@ -556,8 +663,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetSliderParam (DJoint j, int parameter, double value) {
-		((DxJointSlider)j).dJointSetSliderParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+	public static void dJointSetSliderParam (DSliderJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -570,8 +677,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointAddSliderForce(DJoint joint, double force) {
-		((DxJointSlider)joint).dJointAddSliderForce(force);
+	public static void dJointAddSliderForce(DSliderJoint joint, double force) {
+		joint.addForce(force);
 	}
 
 
@@ -580,8 +687,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetHinge2Anchor (DJoint j, double x, double y, double z) {
-		((DxJointHinge2)j).dJointSetHinge2Anchor(x, y, z);
+	public static void dJointSetHinge2Anchor (DHinge2Joint j, double x, double y, double z) {
+		j.setAnchor(x, y, z);
 	}
 
 
@@ -590,8 +697,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetHinge2Axis1 (DJoint j, double x, double y, double z) {
-		((DxJointHinge2)j).dJointSetHinge2Axis1(x, y, z);
+	public static void dJointSetHinge2Axis1 (DHinge2Joint j, double x, double y, double z) {
+		j.setAxis1(x, y, z);
 	}
 
 
@@ -600,8 +707,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetHinge2Axis2 (DJoint j, double x, double y, double z) {
-		((DxJointHinge2)j).dJointSetHinge2Axis2(x, y, z);
+	public static void dJointSetHinge2Axis2 (DHinge2Joint j, double x, double y, double z) {
+		j.setAxis2(x, y, z);
 	}
 
 
@@ -609,9 +716,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief set joint parameter
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	void dJointSetHinge2Param (DJoint j, int parameter, double value) {
-		((DxJointHinge2)j).dJointSetHinge2Param(D_PARAM_NAMES_N.toEnum(parameter), value);
+	//ODE_API 
+	public static void dJointSetHinge2Param (DHinge2Joint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -622,8 +729,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddHinge2Torques(DJoint joint, double torque1, double torque2) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddHinge2Torques(DUniversalJoint joint, double torque1, double torque2) {
+		joint.addTorques(torque1, torque2);
 	}
 
 
@@ -631,9 +738,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief set anchor
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	void dJointSetUniversalAnchor (DJoint j, double x, double y, double z) {
-		((DxJointUniversal)j).dJointSetUniversalAnchor(x, y, z);
+	//ODE_API 
+	public static void dJointSetUniversalAnchor (DUniversalJoint j, double x, double y, double z) {
+		j.setAnchor(x, y, z);
 	}
 
 
@@ -642,28 +749,112 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetUniversalAxis1 (DJoint j, double x, double y, double z) {
-		((DxJointUniversal)j).dJointSetUniversalAxis1(x, y, z);
+	public static void dJointSetUniversalAxis1 (DUniversalJoint j, double x, double y, double z) {
+		j.setAxis1(x, y, z);
 	}
 
+
+	/**
+	 * @brief Set the Universal axis1 as if the 2 bodies were already at 
+	 *        offset1 and offset2 appart with respect to axis1 and axis2.
+	 * @ingroup joints
+	 *
+	 * This function initialize the axis1 and the relative orientation of 
+	 * each body as if body1 was rotated around the new axis1 by the offset1 
+	 * value and as if body2 was rotated around the axis2 by offset2. \br
+	 * Ex:
+	* <PRE>
+	 * dJointSetHuniversalAxis1(jId, 1, 0, 0);
+	 * // If you request the position you will have: dJointGetUniversalAngle1(jId) == 0
+	 * // If you request the position you will have: dJointGetUniversalAngle2(jId) == 0
+	 * dJointSetHuniversalAxis1Offset(jId, 1, 0, 0, 0.2, 0.17);
+	 * // If you request the position you will have: dJointGetUniversalAngle1(jId) == 0.2
+	 * // If you request the position you will have: dJointGetUniversalAngle2(jId) == 0.17
+	 * </PRE>
+	 *
+	 * @param j The Hinge joint ID for which the axis will be set
+	 * @param x The X component of the axis in world frame
+	 * @param y The Y component of the axis in world frame
+	 * @param z The Z component of the axis in world frame
+	 * @param angle The angle for the offset of the relative orientation.
+	 *              As if body1 was rotated by angle when the Axis was set (see below).
+	 *              The rotation is around the new Hinge axis.
+	 *
+	 * @note Usually the function dJointSetHingeAxis set the current position of body1
+	 *       and body2 as the zero angle position. This function set the current position
+	 *       as the if the 2 bodies where \b offsets appart.
+	 *
+	 * @note Any previous offsets are erased.
+	 *
+	 * @warning Calling dJointSetUniversalAnchor, dJointSetUnivesalAxis1, 
+	 *          dJointSetUniversalAxis2, dJointSetUniversalAxis2Offset 
+	 *          will reset the "zero" angle position.
+	 */
+	//ODE_API 
+	public static void dJointSetUniversalAxis1Offset (DUniversalJoint j, 
+			double x, double y, double z, double offset1, double offset2) {
+		j.setAxis1Offset(x, y, z, offset1, offset2);
+	}
 
 	/**
 	 * @brief set axis
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetUniversalAxis2 (DJoint j, double x, double y, double z) {
-		((DxJointUniversal)j).dJointSetUniversalAxis2(x, y, z);
+	public static void dJointSetUniversalAxis2 (DUniversalJoint j, double x, double y, double z) {
+		j.setAxis2(x, y, z);
 	}
 
+
+	/**
+	 * @brief Set the Universal axis2 as if the 2 bodies were already at 
+	 *        offset1 and offset2 appart with respect to axis1 and axis2.
+	 * @ingroup joints
+	 *
+	 * This function initialize the axis2 and the relative orientation of 
+	 * each body as if body1 was rotated around the axis1 by the offset1 
+	 * value and as if body2 was rotated around the new axis2 by offset2. \br
+	 * Ex:
+	 * <PRE>
+	 * dJointSetHuniversalAxis2(jId, 0, 1, 0);
+	 * // If you request the position you will have: dJointGetUniversalAngle1(jId) == 0
+	 * // If you request the position you will have: dJointGetUniversalAngle2(jId) == 0
+	 * dJointSetHuniversalAxis2Offset(jId, 0, 1, 0, 0.2, 0.17);
+	 * // If you request the position you will have: dJointGetUniversalAngle1(jId) == 0.2
+	 * // If you request the position you will have: dJointGetUniversalAngle2(jId) == 0.17
+	 * </PRE>
+
+	 * @param j The Hinge joint ID for which the axis will be set
+	 * @param x The X component of the axis in world frame
+	 * @param y The Y component of the axis in world frame
+	 * @param z The Z component of the axis in world frame
+	 * @param angle The angle for the offset of the relative orientation.
+	 *              As if body1 was rotated by angle when the Axis was set (see below).
+	 *              The rotation is around the new Hinge axis.
+	 *
+	 * @note Usually the function dJointSetHingeAxis set the current position of body1
+	 *       and body2 as the zero angle position. This function set the current position
+	 *       as the if the 2 bodies where \b offsets appart.
+	 *
+	 * @note Any previous offsets are erased.
+	 *
+	 * @warning Calling dJointSetUniversalAnchor, dJointSetUnivesalAxis1, 
+	 *          dJointSetUniversalAxis2, dJointSetUniversalAxis2Offset 
+	 *          will reset the "zero" angle position.
+	 */
+	//ODE_API 
+	public static void dJointSetUniversalAxis2Offset (DUniversalJoint j, 
+			double x, double y, double z, double offset1, double offset2) {
+		j.setAxis2Offset(x, y, z, offset1, offset2);
+	}
 
 	/**
 	 * @brief set joint parameter
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	void dJointSetUniversalParam (DJoint j, int parameter, double value) {
-		((DxJointUniversal)j).dJointSetUniversalParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+	//ODE_API 
+	public static void dJointSetUniversalParam (DUniversalJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -674,8 +865,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddUniversalTorques(DJoint joint, double torque1, double torque2) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddUniversalTorques(DUniversalJoint joint, 
+			double torque1, double torque2) {
+		joint.addTorques(torque1, torque2);
 	}
 
 
@@ -685,8 +877,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	static public void dJointSetPRAnchor (DJoint j, double x, double y, double z) {
-		((DxJointPR)j).dJointSetPRAnchor(x, y, z);
+	public static void dJointSetPRAnchor (DPRJoint j, double x, double y, double z) {
+		j.setAnchor(x, y, z);
 	}
 
 
@@ -695,8 +887,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetPRAxis1 (DJoint j, double x, double y, double z) {
-		((DxJointPR)j).dJointSetPRAxis1(x, y, z);
+	public static void dJointSetPRAxis1 (DPRJoint j, double x, double y, double z) {
+		j.setAxis1(x, y, z);
 	}
 
 
@@ -705,8 +897,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetPRAxis2 (DJoint j, double x, double y, double z) {
-		((DxJointPR)j).dJointSetPRAxis2(x, y, z);
+	public static void dJointSetPRAxis2 (DPRJoint j, double x, double y, double z) {
+		j.setAxis2(x, y, z);
 	}
 
 
@@ -717,8 +909,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @note parameterX where X equal 2 refer to parameter for the rotoide articulation
 	 */
 	//ODE_API 
-	static public void dJointSetPRParam (DJoint j, int parameter, double value) {
-		((DxJointPR)j).dJointSetPRParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+	public static void dJointSetPRParam (DPRJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -731,20 +923,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddPRTorque (DJoint j, double torque) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddPRTorque (DPRJoint j, double torque) {
+		j.addTorque(torque);
 	}
 
-
-
-	/**
-	 * @brief set anchor
-	 * @ingroup joints
-	 */
-	static public //ODE_API 
-	void dJointSetPUAnchor (DJoint j, double x, double y, double z) {
-		((DxJointPU)j).dJointSetPUAnchor(x, y, z);
-	}
 
 
 	/**
@@ -752,19 +934,64 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetPUAnchorDelta (DJoint j, double x, double y, double z,
-			double dx, double dy, double dz) {
-		throw new UnsupportedOperationException();
+	public static void dJointSetPUAnchor (DPUJoint j, double x, double y, double z) {
+		j.setAnchor(x, y, z);
 	}
 
+//deprecated
+//	/**
+//	 * @brief set anchor
+//	 * @ingroup joints
+//	 */
+//	//ODE_API 
+//	void dJointSetPUAnchorDelta (DJoint j, double x, double y, double z,
+//			double dx, double dy, double dz) {
+//		throw new UnsupportedOperationException();
+//	}
 
+	 /**
+	   * @brief Set the PU anchor as if the 2 bodies were already at [dx, dy, dz] appart.
+	   * @ingroup joints
+	   *
+	   * This function initialize the anchor and the relative position of each body
+	   * as if the position between body1 and body2 was already the projection of [dx, dy, dz]
+	   * along the Piston axis. (i.e as if the body1 was at its current position - [dx,dy,dy] when the
+	   * axis is set).
+	   * Ex:
+	   * <PRE>
+	   * dReal offset = 3;
+	   * dVector3 axis;
+	   * dJointGetPUAxis(jId, axis);
+	   * dJointSetPUAnchor(jId, 0, 0, 0);
+	   * // If you request the position you will have: dJointGetPUPosition(jId) == 0
+	   * dJointSetPUAnchorOffset(jId, 0, 0, 0, axis[X]*offset, axis[Y]*offset, axis[Z]*offset);
+	   * // If you request the position you will have: dJointGetPUPosition(jId) == offset
+	   * </PRE>
+	   * @param j The PU joint for which the anchor point will be set
+	   * @param x The X position of the anchor point in world frame
+	   * @param y The Y position of the anchor point in world frame
+	   * @param z The Z position of the anchor point in world frame
+	   * @param dx A delta to be substracted to the X position as if the anchor was set
+	   *           when body1 was at current_position[X] - dx
+	   * @param dy A delta to be substracted to the Y position as if the anchor was set
+	   *           when body1 was at current_position[Y] - dy
+	   * @param dz A delta to be substracted to the Z position as if the anchor was set
+	   *           when body1 was at current_position[Z] - dz
+	   */
+	  //ODE_API 
+	public static void dJointSetPUAnchorOffset (DPUJoint j, double x, double y, double z,
+			double dx, double dy, double dz) {
+		j.setAnchorOffset(x, y, z, dx, dy, dz);
+	}
+
+	  
 	/**
 	 * @brief set the axis for the first axis or the universal articulation
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	static public void dJointSetPUAxis1 (DJoint j, double x, double y, double z) {
-		((DxJointPU)j).dJointSetPUAxis1(x, y, z);
+	public static void dJointSetPUAxis1 (DPUJoint j, double x, double y, double z) {
+		j.setAxis1(x, y, z);
 	}
 
 
@@ -773,8 +1000,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	static public void dJointSetPUAxis2 (DJoint j, double x, double y, double z) {
-		((DxJointPU)j).dJointSetPUAxis2(x, y, z);
+	public static void dJointSetPUAxis2 (DPUJoint j, double x, double y, double z) {
+		j.setAxis2(x, y, z);
 	}
 
 
@@ -783,8 +1010,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	static public void dJointSetPUAxis3 (DJoint j, double x, double y, double z) {
-		((DxJointPU)j).dJointSetPUAxis1(x, y, z);
+	public static void dJointSetPUAxis3 (DPUJoint j, double x, double y, double z) {
+		j.setAxis1(x, y, z);
 	}
 
 
@@ -795,11 +1022,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 *       dJointSetPUAxis3
 	 */
 	//ODE_API 
-	static public void dJointSetPUAxisP (DJoint j, double x, double y, double z) {
-		((DxJointPU)j).dJointSetPUAxisP(x, y, z);
+	public static void dJointSetPUAxisP (DPUJoint j, double x, double y, double z) {
+		j.setAxisP(x, y, z);
 	}
-
-
 
 
 	/**
@@ -812,8 +1037,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 *       articulation
 	 */
 	//ODE_API 
-	static public void dJointSetPUParam (DJoint j, int parameter, double value) {
-		((DxJointPU)j).dJointSetPUParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+	public static void dJointSetPUParam (DPUJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -826,23 +1051,22 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddPUTorque (DJoint j, double torque) {
-		throw new UnsupportedOperationException();
+	void dJointAddPUTorque (DPUJoint j, double torque) {
+		//j.addTorque(torque);
+		//TODO there is no implementation. Use dBodyAddTorque???? Or leave unimplemented?
 	}
-
-
-
 
 
 	/**
 	 * @brief set the joint anchor
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	void dJointSetPistonAnchor (DJoint j, double x, double y, double z) {
-		((DxJointPiston)j).dJointSetPistonAnchor(new DVector3(x, y, z));
+	//ODE_API 
+	public static void dJointSetPistonAnchor (DPistonJoint j, double x, double y, double z) {
+		j.setAnchor(new DVector3(x, y, z));
 	}
 
+	
 	/**
 	 * @brief Set the Piston anchor as if the 2 bodies were already at [dx,dy, dz] appart.
 	 * @ingroup joints
@@ -867,15 +1091,15 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @param z The Z position of the anchor point in world frame
 	 * @param dx A delta to be substracted to the X position as if the anchor was set
 	 *           when body1 was at current_position[X] - dx
-	 * @param dx A delta to be substracted to the Y position as if the anchor was set
+	 * @param dy A delta to be substracted to the Y position as if the anchor was set
 	 *           when body1 was at current_position[Y] - dy
-	 * @param dx A delta to be substracted to the Z position as if the anchor was set
+	 * @param dz A delta to be substracted to the Z position as if the anchor was set
 	 *           when body1 was at current_position[Z] - dz
 	 */
 	//ODE_API 
-	void dJointSetPistonAnchorOffset(DJoint j, double x, double y, double z,
+	public static void dJointSetPistonAnchorOffset(DPistonJoint j, double x, double y, double z,
 			double dx, double dy, double dz) {
-		throw new UnsupportedOperationException();
+		j.setAnchorOffset(new DVector3(x, y, z), dx, dy, dz);
 	}
 
 
@@ -884,8 +1108,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetPistonAxis (DJoint j, double x, double y, double z) {
-		throw new UnsupportedOperationException();
+	public static void dJointSetPistonAxis (DPistonJoint j, double x, double y, double z) {
+		j.setAxis(new DVector3(x, y, z));
 	}
 
 
@@ -904,9 +1128,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @deprecated TZ
 	 */
 	//ODE_API_DEPRECATED ODE_API 
-	void dJointSetPistonAxisDelta (DJoint j, double x, double y, double z, double ax, double ay, double az) {
-		throw new UnsupportedOperationException();
-	}
+//	void dJointSetPistonAxisDelta (DPistonJoint j, double x, double y, double z, double ax, double ay, double az) {
+//		throw new UnsupportedOperationException();
+//	}
 
 
 	/**
@@ -914,8 +1138,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetPistonParam (DJoint j, int parameter, double value) {
-		((DxJointPiston)j).dJointSetPistonParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+	public static void dJointSetPistonParam (DPistonJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -928,8 +1152,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointAddPistonForce (DJoint joint, double force) {
-		((DxJointPiston)joint).dJointAddPistonForce(force);
+	public static void dJointAddPistonForce (DPistonJoint joint, double force) {
+		joint.addForce(force);
 	}
 
 
@@ -941,19 +1165,19 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API
-	public static void dJointSetFixed (DJoint j) {
-		((DxJointFixed)j).dJointSetFixed();
+	public static void dJointSetFixed (DFixedJoint j) {
+		j.setFixed();
 	}
 
 
-	/*
+	/**
 	 * @brief Sets joint parameter
 	 *
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetFixedParam (DJoint j, int parameter, double value) {
-		((DxJointFixed)j).dJointSetFixedParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+	public static void dJointSetFixedParam (DFixedJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -963,8 +1187,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetAMotorNumAxes (DJoint j, int num) {
-		((DxJointAMotor)j).dJointSetAMotorNumAxes(num);
+	public static void dJointSetAMotorNumAxes (DAMotorJoint j, int num) {
+		j.setNumAxes(num);
 	}
 
 
@@ -973,9 +1197,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetAMotorAxis (DJoint j, int anum, int rel,
+	public static void dJointSetAMotorAxis (DAMotorJoint j, int anum, int rel,
 			double x, double y, double z) {
-		((DxJointAMotor)j).dJointSetAMotorAxis(anum, rel, x, y, z);
+		j.setAxis(anum, rel, x, y, z);
 	}
 
 
@@ -989,8 +1213,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetAMotorAngle (DJoint j, int anum, double angle) {
-		throw new UnsupportedOperationException();
+	public static void dJointSetAMotorAngle (DAMotorJoint j, int anum, double angle) {
+		j.setAngle(anum, angle);
 	}
 
 
@@ -999,9 +1223,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetAMotorParam (DJoint j, int parameter, double value) {
-		((DxJointAMotor)j).dJointSetAMotorParam(
-				D_PARAM_NAMES_N.toEnum(parameter), value);
+	public static void dJointSetAMotorParam (DAMotorJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -1010,8 +1233,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetAMotorMode (DJoint j, int mode) {
-		((DxJointAMotor)j).dJointSetAMotorMode(DxJointAMotor.AMotorMode.from(mode));
+	public static void dJointSetAMotorMode (DAMotorJoint j, int mode) {
+		j.setMode(AMotorMode.from(mode));
 	}
 
 
@@ -1024,8 +1247,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointAddAMotorTorques (DJoint j, double torque1, double torque2, double torque3) {
-		throw new UnsupportedOperationException();
+	public static void dJointAddAMotorTorques (DAMotorJoint j, 
+			double torque1, double torque2, double torque3) {
+		j.addTorques(torque1, torque2, torque3);
 	}
 
 
@@ -1035,8 +1259,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetLMotorNumAxes (DJoint j, int num) {
-		((DxJointLMotor)j).dJointSetLMotorNumAxes(num);
+	public static void dJointSetLMotorNumAxes (DLMotorJoint j, int num) {
+		j.setNumAxes(num);
 	}
 
 
@@ -1044,16 +1268,16 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief Set the AMotor axes.
 	 * @param anum selects the axis to change (0,1 or 2).
 	 * @param rel Each axis can have one of three ``relative orientation'' modes
-	 * \li 0: The axis is anchored to the global frame.
-	 * \li 1: The axis is anchored to the first body.
-	 * \li 2: The axis is anchored to the second body.
+	 * <li> 0: The axis is anchored to the global frame.
+	 * <li> 1: The axis is anchored to the first body.
+	 * <li> 2: The axis is anchored to the second body.
 	 * @remarks The axis vector is always specified in global coordinates
 	 * regardless of the setting of rel.
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetLMotorAxis (DJoint j, int anum, int rel, double x, double y, double z) {
-		((DxJointLMotor)j).dJointSetLMotorAxis(anum, rel, x, y, z);
+	public static void dJointSetLMotorAxis (DLMotorJoint j, int anum, int rel, double x, double y, double z) {
+		j.setAxis(anum, rel, x, y, z);
 	}
 
 
@@ -1062,8 +1286,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetLMotorParam (DJoint j, int parameter, double value) {
-		((DxJointLMotor)j).dJointSetLMotorParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+	public static void dJointSetLMotorParam (DLMotorJoint j, int parameter, double value) {
+		j.setParam(PARAM_N.toEnum(parameter), value);
 	}
 
 
@@ -1071,18 +1295,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointSetPlane2DXParam (DJoint j, int parameter, double value) {
-		((DxJointPlane2D)j).dJointSetPlane2DXParam(D_PARAM_NAMES_N.toEnum(parameter), value);
-	}
-
-
-	/**
-	 * @ingroup joints
-	 */
-
-	//ODE_API 
-	public static void dJointSetPlane2DYParam (DJoint j, int parameter, double value) {
-		((DxJointPlane2D)j).dJointSetPlane2DYParam(D_PARAM_NAMES_N.toEnum(parameter), value);
+	public static void dJointSetPlane2DXParam (DPlane2DJoint j, int parameter, double value) {
+		j.setXParam(PARAM.toEnum(parameter), value);
 	}
 
 
@@ -1090,8 +1304,17 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointSetPlane2DAngleParam (DJoint j, int parameter, double value) {
-		throw new UnsupportedOperationException();
+	public static void dJointSetPlane2DYParam (DPlane2DJoint j, int parameter, double value) {
+		j.setYParam(PARAM.toEnum(parameter), value);
+	}
+
+
+	/**
+	 * @ingroup joints
+	 */
+	//ODE_API 
+	public static void dJointSetPlane2DAngleParam (DPlane2DJoint j, int parameter, double value) {
+		j.setAngleParam(PARAM.toEnum(parameter), value);
 	}
 
 
@@ -1102,8 +1325,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * this will be the same as the point on body 2.
 	 */
 	//ODE_API 
-	void dJointGetBallAnchor (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetBallAnchor (DBallJoint j, DVector3 result) {
+		j.getAnchor(result);
 	}
 
 
@@ -1118,8 +1341,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * dJointGetBallAnchor(), to see how far the joint has come apart.
 	 */
 	//ODE_API 
-	void dJointGetBallAnchor2 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetBallAnchor2 (DBallJoint j, DVector3 result) {
+		j.getAnchor2(result);
 	}
 
 
@@ -1128,8 +1351,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetBallParam (DJoint j, int parameter) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetBallParam (DBallJoint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1141,22 +1364,22 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetHingeAnchor (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetHingeAnchor (DHingeJoint j, DVector3 result) {
+		j.getAnchor(result);
 	}
 
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return The point on body 2. If the joint is perfectly satisfied,
+	 * Returns the point on body 2. If the joint is perfectly satisfied,
 	 * this will return the same value as dJointGetHingeAnchor().
 	 * If not, this value will be slightly different.
 	 * This can be used, for example, to see how far the joint has come apart.
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetHingeAnchor2 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetHingeAnchor2 (DHingeJoint j, DVector3 result) {
+		j.getAnchor2(result);
 	}
 
 
@@ -1165,8 +1388,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetHingeAxis (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetHingeAxis (DHingeJoint j, DVector3 result) {
+		j.getAxis(result);
 	}
 
 
@@ -1175,8 +1398,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetHingeParam (DJoint j, int parameter) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetHingeParam (DHingeJoint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1192,9 +1415,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * bodies is examined and that position will be the zero angle.
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	double dJointGetHingeAngle (DJoint j) {
-		return ((DxJointHinge)j).dJointGetHingeAngle();
+	//ODE_API 
+	public static double dJointGetHingeAngle (DHingeJoint j) {
+		return j.getAngle();
 	}
 
 
@@ -1203,8 +1426,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetHingeAngleRate (DJoint j) {
-		return ((DxJointHinge)j).dJointGetHingeAngleRate();
+	public static double dJointGetHingeAngleRate (DHingeJoint j) {
+		return j.getAngleRate();
 	}
 
 
@@ -1219,9 +1442,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * body 2. (A NULL body is replaced by the world).
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	double dJointGetSliderPosition (DJoint j) {
-		return ((DxJointSlider)j).dJointGetSliderPosition();
+	//ODE_API 
+	public static double dJointGetSliderPosition (DSliderJoint j) {
+		return j.getPosition();
 	}
 
 
@@ -1229,9 +1452,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @brief Get the slider linear position's time derivative.
 	 * @ingroup joints
 	 */
-	static public //ODE_API 
-	double dJointGetSliderPositionRate (DJoint j) {
-		return ((DxJointSlider)j).dJointGetSliderPositionRate();
+	//ODE_API 
+	public static double dJointGetSliderPositionRate (DSliderJoint j) {
+		return j.getPositionRate();
 	}
 
 
@@ -1240,8 +1463,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetSliderAxis (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetSliderAxis (DSliderJoint j, DVector3 result) {
+		j.getAxis(result);
 	}
 
 
@@ -1250,20 +1473,20 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetSliderParam (DJoint j, int parameter) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetSliderParam (DSliderJoint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return the point on body 1.  If the joint is perfectly satisfied,
+	 * Return the point on body 1.  If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetHinge2Anchor (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetHinge2Anchor (DHinge2Joint j, DVector3 result) {
+		j.getAnchor(result);
 	}
 
 
@@ -1276,8 +1499,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetHinge2Anchor2 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetHinge2Anchor2 (DHinge2Joint j, DVector3 result) {
+		j.getAnchor2(result);
 	}
 
 
@@ -1286,8 +1509,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetHinge2Axis1 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetHinge2Axis1 (DHinge2Joint j, DVector3 result) {
+		j.getAxis1(result);
 	}
 
 
@@ -1296,8 +1519,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetHinge2Axis2 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetHinge2Axis2 (DHinge2Joint j, DVector3 result) {
+		j.getAxis2(result);
 	}
 
 
@@ -1306,8 +1529,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetHinge2Param (DJoint j, int parameter) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetHinge2Param (DHinge2Joint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1316,8 +1539,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetHinge2Angle1 (DJoint j) {
-		return ((DxJointHinge2)j).dJointGetHinge2Angle1();
+	public static double dJointGetHinge2Angle1 (DHinge2Joint j) {
+		return j.getAngle1();
 	}
 
 
@@ -1326,8 +1549,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetHinge2Angle1Rate (DJoint j) {
-		return ((DxJointHinge2)j).dJointGetHinge2Angle1Rate();
+	public static double dJointGetHinge2Angle1Rate (DHinge2Joint j) {
+		return j.getAngle1Rate();
 	}
 
 
@@ -1336,26 +1559,26 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetHinge2Angle2Rate (DJoint j) {
-		return ((DxJointHinge2)j).dJointGetHinge2Angle2Rate();
+	public static double dJointGetHinge2Angle2Rate (DHinge2Joint j) {
+		return j.getAngle2Rate();
 	}
 
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return the point on body 1. If the joint is perfectly satisfied,
+	 * Return the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetUniversalAnchor (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetUniversalAnchor (DUniversalJoint j, DVector3 result) {
+		j.getAnchor(result);
 	}
 
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return This returns the point on body 2.
+	 * Return the point on body 2.
 	 * @remarks
 	 * You can think of the ball and socket part of a universal joint as
 	 * trying to keep the result of dJointGetBallAnchor() and
@@ -1367,8 +1590,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetUniversalAnchor2 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetUniversalAnchor2 (DUniversalJoint j, DVector3 result) {
+		j.getAnchor2(result);
 	}
 
 
@@ -1377,8 +1600,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointGetUniversalAxis1 (DJoint j, DVector3 result) {
-		((DxJointUniversal)j).dJointGetUniversalAxis1(result);
+	public static void dJointGetUniversalAxis1 (DUniversalJoint j, DVector3 result) {
+		j.getAxis1(result);
 	}
 
 
@@ -1387,8 +1610,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointGetUniversalAxis2 (DJoint j, DVector3 result) {
-		((DxJointUniversal)j).dJointGetUniversalAxis2(result);
+	public static void dJointGetUniversalAxis2 (DUniversalJoint j, DVector3 result) {
+		j.getAxis2(result);
 	}
 
 
@@ -1398,8 +1621,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetUniversalParam (DJoint j, int parameter) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetUniversalParam (DUniversalJoint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1416,8 +1639,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	//	void dJointGetUniversalAngles (dJoint j, double *angle1, double *angle2);
-	void dJointGetUniversalAngles (DJoint j, RefDouble angle1, RefDouble angle2) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetUniversalAngles (DUniversalJoint joint, 
+			RefDouble angle1, RefDouble angle2) {
+		angle1.d = joint.getAngle1();
+		angle2.d = joint.getAngle2();
 	}
 
 
@@ -1426,8 +1651,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetUniversalAngle1 (DJoint j) {
-		return ((DxJointUniversal)j).dJointGetUniversalAngle1();
+	public static double dJointGetUniversalAngle1 (DUniversalJoint j) {
+		return j.getAngle1();
 	}
 
 
@@ -1436,8 +1661,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetUniversalAngle2 (DJoint j) {
-		return ((DxJointUniversal)j).dJointGetUniversalAngle2();
+	public static double dJointGetUniversalAngle2 (DUniversalJoint j) {
+		return j.getAngle2();
 	}
 
 
@@ -1446,8 +1671,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetUniversalAngle1Rate (DJoint j) {
-		return ((DxJointUniversal)j).dJointGetUniversalAngle1Rate();
+	public static double dJointGetUniversalAngle1Rate (DUniversalJoint j) {
+		return j.getAngle1Rate();
 	}
 
 
@@ -1456,8 +1681,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetUniversalAngle2Rate (DJoint j) {
-		return ((DxJointUniversal)j).dJointGetUniversalAngle2Rate();
+	public static double dJointGetUniversalAngle2Rate (DUniversalJoint j) {
+		return j.getAngle2Rate();
 	}
 
 
@@ -1465,18 +1690,18 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return the point on body 1. If the joint is perfectly satisfied, 
+	 * Return the point on body 1. If the joint is perfectly satisfied, 
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointGetPRAnchor (DJoint j, DVector3 result) {
-		((DxJointPR)j).dJointGetPRAnchor(result);
+	public static void dJointGetPRAnchor (DPRJoint j, DVector3 result) {
+		j.getAnchor(result);
 	}
 
 
 	/**
-	 * @brief Get the PR linear position (i.e. the prismatic's extension)
+	 * @brief Get the PR linear position (i.e. the prismatic's extension).
 	 *
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
@@ -1487,21 +1712,44 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetPRPosition (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetPRPosition (DPRJoint j) {
+		return j.getPosition();
 	}
 
 
 	/**
-	 * @brief Get the PR linear position's time derivative
+	 * @brief Get the PR linear position's time derivative.
 	 *
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetPRPositionRate (DJoint j) {
-		return ((DxJointPR)j).dJointGetPRPositionRate();
+	public static double dJointGetPRPositionRate (DPRJoint j) {
+		return j.getPositionRate();
 	}
 
+
+	/**
+	 * @brief Get the PR angular position (i.e. the  twist between the 2 bodies)
+	 *
+	 * When the axis is set, the current position of the attached bodies is
+	 * examined and that position will be the zero position.
+	 * @ingroup joints
+	 */
+	//ODE_API
+	public static double dJointGetPRAngle (DPRJoint j) {
+		return j.getAngle();
+	}
+
+	
+	/**
+	 * @brief Get the PR angular position's time derivative
+	 *
+	 * @ingroup joints
+	 */
+	//ODE_API 
+	public static double dJointGetPRAngleRate (DPRJoint j) {
+		return j.getAngleRate();
+	}
 
 
 	/**
@@ -1509,8 +1757,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetPRAxis1 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPRAxis1 (DPRJoint j, DVector3 result) {
+		j.getAxis1(result);
 	}
 
 
@@ -1519,8 +1767,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetPRAxis2 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPRAxis2 (DPRJoint j, DVector3 result) {
+		j.getAxis2(result);
 	}
 
 
@@ -1529,8 +1777,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetPRParam (DJoint j, int d_param_names) {
-		return ((DxJointPR)j).dJointGetPRParam(D_PARAM_NAMES_N.toEnum(d_param_names));
+	public static double dJointGetPRParam (DPRJoint j, int d_param_names) {
+		return j.getParam(PARAM_N.toEnum(d_param_names));
 	}
 
 
@@ -1538,13 +1786,13 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * @brief Get the joint anchor point, in world coordinates.
-	 * @return the point on body 1. If the joint is perfectly satisfied,
+	 * Return the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointGetPUAnchor (DJoint j, DVector3 result) {
-		((DxJointPU)j).dJointGetPUAnchor(result);
+	public static void dJointGetPUAnchor (DPUJoint j, DVector3 result) {
+		j.getAnchor(result);
 	}
 
 
@@ -1560,8 +1808,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetPUPosition (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetPUPosition (DPUJoint j) {
+		return j.getPosition();
 	}
 
 
@@ -1571,8 +1819,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	static public double dJointGetPUPositionRate (DJoint j) {
-		return ((DxJointPU)j).dJointGetPUPositionRate();
+	public static double dJointGetPUPositionRate (DPUJoint j) {
+		return j.getPositionRate();
 	}
 
 
@@ -1581,8 +1829,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetPUAxis1 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPUAxis1 (DPUJoint j, DVector3 result) {
+		j.getAxis1(result);
 	}
 
 
@@ -1591,8 +1839,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetPUAxis2 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPUAxis2 (DPUJoint j, DVector3 result) {
+		j.getAxis2(result);
 	}
 
 
@@ -1601,8 +1849,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetPUAxis3 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPUAxis3 (DPUJoint j, DVector3 result) {
+		j.getAxis3(result);
 	}
 
 
@@ -1614,8 +1862,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 *       dJointGetPUAxis3
 	 */
 	//ODE_API 
-	void dJointGetPUAxisP (DJoint id, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPUAxisP (DPUJoint j, DVector3 result) {
+		j.getAxisP(result);
 	}
 
 
@@ -1635,8 +1883,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	//	  void dJointGetPUAngles (dJoint j, double *angle1, double *angle2);
-	void dJointGetPUAngles (DJoint j, RefDouble angle1, RefDouble angle2) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPUAngles (DPUJoint joint, RefDouble angle1, RefDouble angle2) {
+		angle1.d = joint.getAngle1();
+		angle2.d = joint.getAngle2();
 	}
 
 
@@ -1645,8 +1894,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetPUAngle1 (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetPUAngle1 (DPUJoint j) {
+		return j.getAngle1();
 	}
 
 
@@ -1656,8 +1905,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetPUAngle1Rate (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetPUAngle1Rate (DPUJoint j) {
+		return j.getAngle1Rate();
 	}
 
 
@@ -1667,8 +1916,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetPUAngle2 (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetPUAngle2 (DPUJoint j) {
+		return j.getAngle2();
 	}
 
 
@@ -1678,8 +1927,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetPUAngle2Rate (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetPUAngle2Rate (DPUJoint j) {
+		return j.getAngle2Rate();
 	}
 
 
@@ -1688,13 +1937,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	static public double dJointGetPUParam (DJoint j, int parameter) {
-		return ((DxJointPU)j).dJointGetPUParam(D_PARAM_NAMES_N.toEnum(parameter));
+	public static double dJointGetPUParam (DPUJoint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
-
-
-
-
 
 
 	/**
@@ -1705,8 +1950,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetPistonPosition (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetPistonPosition (DPistonJoint j) {
+		return j.getPosition();
 	}
 
 
@@ -1715,8 +1960,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	static public double dJointGetPistonPositionRate (DJoint j) {
-		return ((DxJointPiston)j).dJointGetPistonPositionRate();
+	public static double dJointGetPistonPositionRate (DPistonJoint j) {
+		return j.getPositionRate();
 	}
 
 
@@ -1728,8 +1973,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetPistonAngle (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetPistonAngle (DPistonJoint j) {
+		return j.getAngle();
 	}
 
 
@@ -1738,8 +1983,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetPistonAngleRate (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetPistonAngleRate (DPistonJoint j) {
+		return j.getAngleRate();
 	}
 
 
@@ -1754,8 +1999,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static void dJointGetPistonAnchor (DJoint j, DVector3 result) {
-		((DxJointPiston)j).dJointGetPistonAnchor(result);
+	public static void dJointGetPistonAnchor (DPistonJoint j, DVector3 result) {
+		j.getAnchor(result);
 	}
 
 
@@ -1773,8 +2018,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetPistonAnchor2 (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPistonAnchor2 (DPistonJoint j, DVector3 result) {
+		j.getAnchor2(result);
 	}
 
 
@@ -1783,8 +2028,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetPistonAxis (DJoint j, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetPistonAxis (DPistonJoint j, DVector3 result) {
+		j.getAxis(result);
 	}
 
 
@@ -1793,8 +2038,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	static public double dJointGetPistonParam (DJoint j, int parameter) {
-		return ((DxJointPiston)j).dJointGetPistonParam(D_PARAM_NAMES_N.toEnum(parameter));
+	public static double dJointGetPistonParam (DPistonJoint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1802,29 +2047,28 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	/**
 	 * @brief Get the number of angular axes that will be controlled by the
 	 * AMotor.
-	 * @param num can range from 0 (which effectively deactivates the
-	 * joint) to 3.
+	 * Num can range from 0 (which effectively deactivates the joint) to 3.
 	 * This is automatically set to 3 in dAMotorEuler mode.
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	int dJointGetAMotorNumAxes (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static int dJointGetAMotorNumAxes (DAMotorJoint j) {
+		return j.getNumAxes();
 	}
 
 
 	/**
 	 * @brief Get the AMotor axes.
 	 * @param anum selects the axis to change (0,1 or 2).
-	 * @param rel Each axis can have one of three ``relative orientation'' modes.
-	 * \li 0: The axis is anchored to the global frame.
-	 * \li 1: The axis is anchored to the first body.
-	 * \li 2: The axis is anchored to the second body.
+	 * <li> 0: The axis is anchored to the global frame. </li>
+	 * <li> 1: The axis is anchored to the first body. </li>
+	 * <li> 2: The axis is anchored to the second body. </li>
+	 * @param result Each axis can have one of three ``relative orientation'' modes.
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetAMotorAxis (DJoint j, int anum, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetAMotorAxis (DAMotorJoint j, int anum, DVector3 result) {
+		j.getAxis(anum, result);
 	}
 
 
@@ -1837,16 +2081,16 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * return the relative mode.
 	 *
 	 * For dAMotorEuler mode:
-	 * \li	Only axes 0 and 2 need to be set. Axis 1 will be determined
-		automatically at each time step.
-	 * \li	Axes 0 and 2 must be perpendicular to each other.
-	 * \li	Axis 0 must be anchored to the first body, axis 2 must be anchored
-		to the second body.
+	 * <li>	Only axes 0 and 2 need to be set. Axis 1 will be determined
+		automatically at each time step. </li>
+	 * <li>	Axes 0 and 2 must be perpendicular to each other. </li>
+	 * <li>	Axis 0 must be anchored to the first body, axis 2 must be anchored
+		to the second body. </li>
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	int dJointGetAMotorAxisRel (DJoint j, int anum) {
-		throw new UnsupportedOperationException();
+	public static int dJointGetAMotorAxisRel (DAMotorJoint j, int anum) {
+		return j.getAxisRel(anum);
 	}
 
 
@@ -1859,8 +2103,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetAMotorAngle (DJoint j, int anum) {
-		return ((DxJointAMotor)j).dJointGetAMotorAngle(anum);
+	public static double dJointGetAMotorAngle (DAMotorJoint j, int anum) {
+		return j.getAngle(anum);
 	}
 
 
@@ -1873,8 +2117,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetAMotorAngleRate (DJoint j, int anum) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetAMotorAngleRate (DAMotorJoint j, int anum) {
+		return j.getAngleRate(anum);
 	}
 
 
@@ -1883,27 +2127,27 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetAMotorParam (DJoint j, int parameter) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetAMotorParam (DAMotorJoint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
 	/**
 	 * @brief Get the angular motor mode.
-	 * @param mode must be one of the following constants:
-	 * \li dAMotorUser The AMotor axes and joint angle settings are entirely
-	 * controlled by the user.  This is the default mode.
-	 * \li dAMotorEuler Euler angles are automatically computed.
+	 * Mode must be one of the following constants:
+	 * <li> dAMotorUser The AMotor axes and joint angle settings are entirely
+	 * controlled by the user.  This is the default mode.</li>
+	 * <li> dAMotorEuler Euler angles are automatically computed.
 	 * The axis a1 is also automatically computed.
 	 * The AMotor axes must be set correctly when in this mode,
-	 * as described below.
+	 * as described below.</li>
 	 * When this mode is initially set the current relative orientations
 	 * of the bodies will correspond to all euler angles at zero.
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	int dJointGetAMotorMode (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static AMotorMode dJointGetAMotorMode (DAMotorJoint j) {
+		return j.getMode();
 	}
 
 
@@ -1912,8 +2156,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	int dJointGetLMotorNumAxes (DJoint j) {
-		throw new UnsupportedOperationException();
+	public static int dJointGetLMotorNumAxes (DLMotorJoint j) {
+		return j.getNumAxes();
 	}
 
 
@@ -1922,8 +2166,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	void dJointGetLMotorAxis (DJoint j, int anum, DVector3 result) {
-		throw new UnsupportedOperationException();
+	public static void dJointGetLMotorAxis (DLMotorJoint j, int anum, DVector3 result) {
+		j.getAxis(anum, result);
 	}
 
 
@@ -1932,9 +2176,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	public static double dJointGetLMotorParam (DJoint j, int parameter) {
-		return ((DxJointLMotor)j).dJointGetLMotorParam(
-				D_PARAM_NAMES_N.toEnum(parameter));
+	public static double dJointGetLMotorParam (DLMotorJoint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1943,8 +2186,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	double dJointGetFixedParam (DJoint j, int parameter) {
-		throw new UnsupportedOperationException();
+	public static double dJointGetFixedParam (DFixedJoint j, int parameter) {
+		return j.getParam(PARAM_N.toEnum(parameter));
 	}
 
 
@@ -1952,7 +2195,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @ingroup joints
 	 */
 	//ODE_API 
-	DJoint dConnectingJoint (DBody b1, DBody b2) {
-		throw new UnsupportedOperationException();
+	public static DJoint dConnectingJoint (DBody b1, DBody b2) {
+		return OdeHelper.connectingJoint(b1, b2);
 	}
 }
