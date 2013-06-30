@@ -1,7 +1,9 @@
 /*************************************************************************
  *                                                                       *
- * Open Dynamics Engine, Copyright (C) 2001-2003 Russell L. Smith.       *
+ * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,12 +13,13 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.drawstuff;
@@ -24,7 +27,7 @@ package org.ode4j.drawstuff;
 
 import static org.cpp4j.Cstdio.*;
 
-import org.ode4j.drawstuff.internal.DrawStuff;
+import org.ode4j.drawstuff.internal.DrawStuffApi;
 import org.ode4j.drawstuff.internal.DrawStuffGL;
 import org.ode4j.drawstuff.internal.DrawStuffNull;
 import org.ode4j.math.DMatrix3C;
@@ -46,11 +49,11 @@ import org.ode4j.math.DVector3C;
  * - right button - forward and sideways. <br>
  * - left + right button (or middle button) - sideways and up. <br>
  */
-public class DS_API {
+public class DrawStuff {
 
-	private static DrawStuff DS;
+	private static DrawStuffApi DS;
 	
-	private static DrawStuff get() {
+	private static DrawStuffApi get() {
 		if (DS == null) {
 			//default;
 			DS = new DrawStuffGL();
@@ -62,14 +65,14 @@ public class DS_API {
 	/**
 	 * Use lwjgl for output.
 	 */
-	public static void outputToGL() {
+	public static void dsSetOutputGL() {
 		DS = new DrawStuffGL();
 	}
 	
 	/**
 	 * Use no output. This can be useful for benchmarking.
 	 */
-	public static void outputToNull() {
+	public static void dsSetOutputNull() {
 		DS = new DrawStuffNull();
 	}
 	
@@ -82,14 +85,14 @@ public class DS_API {
 	public static int DS_VERSION = 0x0002;
 
 	/* texture numbers */
-	  public static enum DS_TEXTURE_NUMBER
-	  {
-	    DS_NONE, // = 0,       /* uses the current color instead of a texture */
-	    DS_WOOD,
-	    DS_CHECKERED,
-	    DS_GROUND,
-	    DS_SKY;
-	  }
+	public static enum DS_TEXTURE_NUMBER
+	{
+		DS_NONE, // = 0,       /* uses the current color instead of a texture */
+		DS_WOOD,
+		DS_CHECKERED,
+		DS_GROUND,
+		DS_SKY;
+	}
 
 	/* draw modes */
 
@@ -99,8 +102,8 @@ public class DS_API {
 	  public static final int DS_WIREFRAME = 1;
 
 	/**
+     * Set of functions to be used as callbacks by the simulation loop.
 	 * @struct dsFunctions
-	 * @brief Set of functions to be used as callbacks by the simulation loop.
 	 * @ingroup drawstuff
 	 */
 //	typedef struct dsFunctions {
@@ -114,35 +117,51 @@ public class DS_API {
 //		  const char *path_to_textures;	/* if nonzero, path to texture files */
 //		} dsFunctions;
 	  public abstract static class dsFunctions { 
-		  public int version;			/* put DS_VERSION here */
+		  private final int version = DS_VERSION;			/* put DS_VERSION here */
 		  /* version 1 data */
 		  public abstract void start();		/* called before sim loop starts */
 		  public abstract void step (boolean pause);	/* called before every frame */
 		  public abstract void command (char cmd);	/* called if a command key is pressed */
 		  public abstract void stop();		/* called after sim loop exits */
 		  /* version 2 data */
-		  public String path_to_textures;	/* if nonzero, path to texture files */
-		public void setVersion(int ds_version) {
-			version = ds_version;
-		}
-		public void setPathToTextures(String drawstuff_texture_path) {
-			path_to_textures = drawstuff_texture_path;
-		}
-		public String getPathToTextures() {
-			return path_to_textures;
-		}
-		public int getVersion() {
-			return version;
-		}
+		  /* if nonzero, path to texture files */
+		  private String path_to_textures = DRAWSTUFF_TEXTURE_PATH;	
+		  public void dsSetPathToTextures(String drawstuff_texture_path) {
+			  path_to_textures = drawstuff_texture_path;
+		  }
+		  public String dsGetPathToTextures() {
+			  return path_to_textures;
+		  }
+		  public int dsGetVersion() {
+			  return version;
+		  }
+		  
+		  /**
+		   * Prints command line help.
+		   * Overload this method to print your own help, don't forget
+		   * to call this method via <tt>super.dsPrintHelp();</tt>.
+		   */
+		  public void dsPrintHelp() {
+//				System.out.println(argv[0]);
+//			  * the following command line flags can be used (typically under unix)
+				System.out.println(" -h | -help              : Print this help.");
+				System.out.println(" -notex                  : Do not use any textures.");
+				System.out.println(" -noshadow[s]            : Do not draw any shadows.");
+				System.out.println(" -pause                  : Start the simulation paused.");
+				System.out.println(" -texturepath <path>     : Set an alternative path for the textures.");
+				System.out.println("                           Default = " + DRAWSTUFF_TEXTURE_PATH);
+		  }
 	  }
 //	} dsFunctions;
 
 
 	/**
-	 * @brief Does the complete simulation.
+	 * Does the complete simulation.
 	 * @ingroup drawstuff
 	 * This function starts running the simulation, and only exits when the simulation is done.
 	 * Function pointers should be provided for the callbacks.
+	 * If you filter out arguments beforehand, simply set them to "".
+	 * To extend the help, overload dsPrintHelp().
 	 * @param argv supports flags like '-notex' '-noshadow' '-pause'
 	 * @param fn Callback functions.
 	 */
@@ -157,7 +176,7 @@ public class DS_API {
 	  }
 
 	/**
-	 * @brief exit with error message.
+	 * Exit with error message.
 	 * @ingroup drawstuff
 	 * This function displays an error message then exit.
 	 * @param msg format strin, like printf, without the newline character.
@@ -172,7 +191,7 @@ public class DS_API {
 	}
  
 	/**
-	 * @brief exit with error message and core dump.
+	 * Exit with error message and core dump.
 	 * @ingroup drawstuff
 	 * this functions tries to dump core or start the debugger.
 	 * @param msg format strin, like printf, without the newline character.
@@ -187,7 +206,7 @@ public class DS_API {
 	}
 
 	/**
-	 * @brief print log message
+	 * Print log message.
 	 * @ingroup drawstuff
 	 * @param msg format string, like printf, without the \n.
 	 */
@@ -197,7 +216,7 @@ public class DS_API {
 	}
 
 	/**
-	 * @brief Sets the viewpoint
+	 * Sets the viewpoint.
 	 * @ingroup drawstuff
 	 * @param xyz camera position.
 	 * @param hpr contains heading, pitch and roll numbers in degrees. heading=0
@@ -212,7 +231,7 @@ public class DS_API {
 
 
 	/**
-	 * @brief Gets the viewpoint
+	 * Gets the viewpoint.
 	 * @ingroup drawstuff
 	 * @param xyz position
 	 * @param hpr heading,pitch,roll.
@@ -224,7 +243,7 @@ public class DS_API {
 	}
 
 	/**
-	 * @brief Stop the simulation loop.
+	 * Stop the simulation loop.
 	 * @ingroup drawstuff
 	 * Calling this from within dsSimulationLoop()
 	 * will cause it to exit and return to the caller. it is the same as if the
@@ -237,7 +256,7 @@ public class DS_API {
 	}
 
 	/**
-	 * @brief Get the elapsed time (on wall-clock)
+	 * Get the elapsed time (on wall-clock).
 	 * @ingroup drawstuff
 	 * It returns the nr of seconds since the last call to this function.
 	 */
@@ -247,11 +266,11 @@ public class DS_API {
 	}
 
 	/**
-	 * @brief Toggle the rendering of textures.
+	 * Toggle the rendering of textures.
 	 * @ingroup drawstuff
 	 * It changes the way objects are drawn. these changes will apply to all further
 	 * dsDrawXXX() functions. 
-	 * @param the texture number must be a DS_xxx texture constant.
+	 * @param texture_number The texture number must be a DS_xxx texture constant.
 	 * The current texture is colored according to the current color.
 	 * At the start of each frame, the texture is reset to none and the color is
 	 * reset to white.
@@ -263,7 +282,7 @@ public class DS_API {
 
 
 	/**
-	 * @brief Set the color with which geometry is drawn.
+	 * Set the color with which geometry is drawn.
 	 * @ingroup drawstuff
 	 * @param red Red component from 0 to 1
 	 * @param green Green component from 0 to 1
@@ -275,7 +294,7 @@ public class DS_API {
 	}
 
 	/**
-	 * @brief Set the color and transparency with which geometry is drawn.
+	 * Set the color and transparency with which geometry is drawn.
 	 * @ingroup drawstuff
 	 * @param alpha Note that alpha transparency is a misnomer: it is alpha opacity.
 	 * 1.0 means fully opaque, and 0.0 means fully transparent.
@@ -286,26 +305,26 @@ public class DS_API {
 	}
 
 	/**
-	 * @brief Draw a box.
+	 * Draw a box.
 	 * @ingroup drawstuff
 	 * @param pos is the x,y,z of the center of the object.
 	 * @param R is a 3x3 rotation matrix for the object, stored by row like this:
 	 *        [ R11 R12 R13 0 ]
 	 *        [ R21 R22 R23 0 ]
 	 *        [ R31 R32 R33 0 ]
-	 * @param sides[] is an array of x,y,z side lengths.
+	 * @param sides is an array of x,y,z side lengths.
 	 */
 	//DS_API 
 //	public static  void dsDrawBox (final float pos[3], final float R[12], final float sides[3]) {
 	public static  void dsDrawBox (final float[] pos, final float[] R, final float sides[]) {
 		get().dsDrawBox(pos, R, sides);
 	}
-	public static  void dsDrawBox (final DVector3C pos, final DMatrix3C R, final DVector3C sides) {
+	public static  void dsDrawBox (DVector3C pos, DMatrix3C R, DVector3C sides) {
 		get().dsDrawBox(pos, R, sides);
 	}
 
 	/**
-	 * @brief Draw a sphere.
+	 * Draw a sphere.
 	 * @ingroup drawstuff
 	 * @param pos Position of center.
 	 * @param R orientation.
@@ -317,13 +336,13 @@ public class DS_API {
 			float radius) {
 		get().dsDrawSphere(pos, R, radius);
 	}
-	public static  void dsDrawSphere (final DVector3C pos, final DMatrix3C R, 
+	public static  void dsDrawSphere (DVector3C pos, DMatrix3C R, 
 			double radius) {
 		get().dsDrawSphere(pos, R, (float) radius);
 	}
 
 	/**
-	 * @brief Draw a triangle.
+	 * Draw a triangle.
 	 * @ingroup drawstuff
 	 * @param pos Position of center
 	 * @param R orientation
@@ -340,8 +359,8 @@ public class DS_API {
 		throw new UnsupportedOperationException();
 	}
 
-	public static  void dsDrawTriangle (final DVector3C pos, final DMatrix3C R,
-		     final DVector3C v0, final DVector3C v1, final DVector3C v2, boolean solid) {
+	public static  void dsDrawTriangle (DVector3C pos, DMatrix3C R,
+		     DVector3C v0, DVector3C v1, DVector3C v2, boolean solid) {
 		get().dsDrawTriangle(pos, R, v0, v1, v2, solid);
 	}
 
@@ -350,8 +369,13 @@ public class DS_API {
 		get().dsDrawTriangle(pos, rot, v, i, j, k, solid);
 	}
 
+	public static void dsDrawTriangle(DVector3C pos, DMatrix3C rot,
+			float[] v0, float[] v1, float[] v2, boolean solid) {
+		get().dsDrawTriangle(pos, rot, v0, v1, v2, solid);
+	}
+
 	/**
-	 * @brief Draw a z-aligned cylinder
+	 * Draw a z-aligned cylinder.
 	 * @ingroup drawstuff
 	 */
 	//DS_API 
@@ -361,14 +385,14 @@ public class DS_API {
 		     float length, float radius) {
 	get().dsDrawCylinder(pos, R, length, radius);
 }
-	public static  void dsDrawCylinder (final DVector3C pos, final DMatrix3C R,
+	public static  void dsDrawCylinder (DVector3C pos, DMatrix3C R,
 		     double length, double radius) {
 	get().dsDrawCylinder(pos, R, (float)length, (float)radius);
 }
 
 	
 	/**
-	 * @brief Draw a z-aligned capsule
+	 * Draw a z-aligned capsule.
 	 * @ingroup drawstuff
 	 */
 	//DS_API 
@@ -378,14 +402,14 @@ public class DS_API {
 		    float length, float radius) {
 	get().dsDrawCapsule(pos, R, length, radius);
 }
-	public static  void dsDrawCapsule (final DVector3C pos, final DMatrix3C R,
+	public static  void dsDrawCapsule (DVector3C pos, DMatrix3C R,
 		    double length, double radius) {
 	get().dsDrawCapsule(pos, R, (float)length, (float)radius);
 }
 
 	
 	/**
-	 * @brief Draw a line.
+	 * Draw a line.
 	 * @ingroup drawstuff
 	 */
 	//DS_API 
@@ -393,13 +417,13 @@ public class DS_API {
 	public static  void dsDrawLine (final float[] pos1, final float[] pos2) {
 		get().dsDrawLine(pos1, pos2);
 	}
-	public static  void dsDrawLine (final DVector3C pos1, final DVector3C pos2) {
+	public static  void dsDrawLine (DVector3C pos1, DVector3C pos2) {
 		get().dsDrawLine(pos1, pos2);
 	}
 
 
 	/**
-	 * @brief Draw a convex shape.
+	 * Draw a convex shape.
 	 * @ingroup drawstuff
 	 */
 	//DS_API 
@@ -417,7 +441,7 @@ public class DS_API {
 			  int[] _polygons) {
 		throw new UnsupportedOperationException();
 	}
-	public static  void dsDrawConvex(final DVector3C pos, final DMatrix3C R,
+	public static  void dsDrawConvex(DVector3C pos, DMatrix3C R,
 			  double[] _planes,
 			  int _planecount,
 			  double[] _points,
@@ -430,7 +454,7 @@ public class DS_API {
 	//DS_API 
 //	public static  void dsDrawSphereD (final double pos[3], final double R[12],
 //		    final float radius) {
-	public static void dsDrawSphere (final DVector3C pos, final DMatrix3C R,
+	public static void dsDrawSphere (DVector3C pos, DMatrix3C R,
 			    final float radius) {
 		get().dsDrawSphere(pos, R, radius);
 	}
@@ -467,7 +491,7 @@ public class DS_API {
 
 
 	/**
-	 * @brief Set the quality with which curved objects are rendered.
+	 * Set the quality with which curved objects are rendered.
 	 * @ingroup drawstuff
 	 * Higher numbers are higher quality, but slower to draw. 
 	 * This must be set before the first objects are drawn to be effective.
@@ -485,7 +509,7 @@ public class DS_API {
 
 
 	/**
-	 * @brief Set Drawmode 0=Polygon Fill,1=Wireframe).
+	 * Set Drawmode (0=Polygon Fill,1=Wireframe).
 	 * Use the DS_POLYFILL and DS_WIREFRAME macros.
 	 * @ingroup drawstuff
 	 */
@@ -499,19 +523,19 @@ public class DS_API {
 //	#define dsDrawCappedCylinder dsDrawCapsule
 //	#define dsDrawCappedCylinderD dsDrawCapsuleD
 //	#define dsSetCappedCylinderQuality dsSetCapsuleQuality
-	/** @deprecated */
-	public static void dsDrawCappedCylinder(final float pos[], final float[] R,
-		    float length, float radius) {
-		dsDrawCapsule(pos, R, length, radius);
-	}
-	/** @deprecated */
-	public static void dsDrawCappedCylinder(final DVector3C pos, 
-			final DMatrix3C R,
-		     float length, float radius) {
-		dsDrawCapsule(pos, R, length, radius);
-	}
-	/** @deprecated */
-	public static void dsSetCappedCylinderQuality(int n) { 
-		dsSetCapsuleQuality(n);
-	}
+//	/** @deprecated Please use dsDrawCapsule() instead. */
+//	public static void dsDrawCappedCylinder(final float pos[], final float[] R,
+//		    float length, float radius) {
+//		dsDrawCapsule(pos, R, length, radius);
+//	}
+//	/** @deprecated Please use dsDrawCapsule() instead. */
+//	public static void dsDrawCappedCylinder(final DVector3C pos, 
+//			final DMatrix3C R,
+//		     float length, float radius) {
+//		dsDrawCapsule(pos, R, length, radius);
+//	}
+//	/** @deprecated Please use dsSetCapsuleQuality() instead. */
+//	public static void dsSetCappedCylinderQuality(int n) { 
+//		dsSetCapsuleQuality(n);
+//	}
 }

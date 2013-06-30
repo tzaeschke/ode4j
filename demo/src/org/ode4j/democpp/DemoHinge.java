@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,30 +13,31 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.democpp;
 
 import static org.cpp4j.Cstdio.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
-import org.ode4j.drawstuff.DS_API.DS_TEXTURE_NUMBER;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
@@ -54,7 +57,7 @@ public class DemoHinge extends dsFunctions {
 	// dynamics and collision objects
 	private static DWorld world;
 	private static DBody[] body = new DBody[2];
-	private static DJoint hinge;
+	private static DHingeJoint hinge;
 
 
 	// state set by keyboard commands
@@ -144,18 +147,18 @@ public class DemoHinge extends dsFunctions {
 	//int main (int argc, char **argv)
 	public static void main(String[] args)
 	{
+		new DemoHinge().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoHinge();
-		fn.setVersion(DS_VERSION);
+		//dsFunctions fn = new DemoHinge();
+		//fn.setVersion(DS_VERSION);
 		//	  fn.start = &start;
 		//	  fn.step = &simLoop;
 		//	  fn.command = &command;
 		//	  fn.stop = 0;
-		fn.setPathToTextures(DRAWSTUFF_TEXTURE_PATH);
-		if(args.length==2)
-		{
-			fn.setPathToTextures(args[1]);
-		}
+		//fn.setPathToTextures(DRAWSTUFF_TEXTURE_PATH);
 
 		// create world
 		dInitODE2(0);
@@ -186,7 +189,7 @@ public class DemoHinge extends dsFunctions {
 		// run simulation
 		//	  dsSimulationLoop (argc,argv,352,288,&fn);
 //		dsSimulationLoop (args,352,288,fn);
-		dsSimulationLoop (args,400,400,fn);
+		dsSimulationLoop (args,400,400,this);
 
 		dWorldDestroy (world);
 		dCloseODE();

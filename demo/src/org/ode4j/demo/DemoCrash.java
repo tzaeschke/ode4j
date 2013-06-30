@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,18 +13,18 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.cpp4j.java.RefInt;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
@@ -45,7 +47,7 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -101,8 +103,8 @@ class DemoCrash extends dsFunctions {
 	private static boolean BOX = false;
 	private static boolean CARS = true;
 	private static boolean WALL = true;
-	private static boolean BALLS = true;
-	private static boolean BALLSTACK = true;
+	private static boolean BALLS = false;
+	private static boolean BALLSTACK = false;
 	private static boolean ONEBALL = true;
 	private static boolean CENTIPEDE = true;
 	private static boolean CANNON = true;
@@ -203,14 +205,17 @@ class DemoCrash extends dsFunctions {
 		"\t'r' to reset simulation.\n");
 	}
 
+	private static class IrContainer {
+		int bodyIr, jointIr, boxIr, sphereIr;
+	}
 
 	//private void makeCar(double x, double y, int &bodyI, int &jointI, int &boxI, int &sphereI)
-	private void makeCar(double x, double y, RefInt bodyIr, RefInt jointIr, RefInt boxIr, RefInt sphereIr)
+	private void makeCar(double x, double y, IrContainer ir)
 	{
-		final int bodyI = bodyIr.get();
-		final int jointI = jointIr.get();
-		final int boxI = boxIr.get();
-		final int sphereI = sphereIr.get();
+		final int bodyI = ir.bodyIr;
+		final int jointI = ir.jointIr;
+		final int boxI = ir.boxIr;
+		final int sphereI = ir.sphereIr;
 		int i;
 		DMass m = OdeHelper.createMass();
 
@@ -267,10 +272,10 @@ class DemoCrash extends dsFunctions {
 		//box[boxI+1] = dCreateBox(space,LENGTH,WIDTH,HEIGHT);
 		//dGeomSetBody (box[boxI+1],b);
 
-		bodyIr.add(5);
-		jointIr.add(4);
-		boxIr.add(1);
-		sphereIr.add(4);
+		ir.bodyIr += 5;
+		ir.jointIr += 4;
+		ir.boxIr += 1;
+		ir.sphereIr += 4;
 	}
 
 
@@ -311,18 +316,15 @@ class DemoCrash extends dsFunctions {
 		boxes = 0;
 		spheres = 0;
 		wb = 0;
-		RefInt rBodies = new RefInt();
-		RefInt rJoints = new RefInt();
-		RefInt rBoxes = new RefInt();
-		RefInt rSpheres = new RefInt();
+		IrContainer ir = new IrContainer();
 		if (CARS) {//#ifdef CARS
 			for (double x = 0.0; x < COLS*(LENGTH+RADIUS); x += LENGTH+RADIUS)
 				for (double y = -((ROWS-1)*(WIDTH/2+RADIUS)); y <= ((ROWS-1)*(WIDTH/2+RADIUS)); y += WIDTH+RADIUS*2)
-					makeCar(x, y, rBodies, rJoints, rBoxes, rSpheres);
-			bodies = rBodies.get();
-			joints = rJoints.get();
-			boxes = rBoxes.get();
-			spheres = rSpheres.get();
+					makeCar(x, y, ir);
+			bodies = ir.bodyIr;
+			joints = ir.jointIr;
+			boxes = ir.boxIr;
+			spheres = ir.sphereIr;
 		}//#endif
 		if (WALL) {//#ifdef WALL
 			boolean offset = false;
@@ -526,7 +528,7 @@ class DemoCrash extends dsFunctions {
 			DMatrix3 R2 = new DMatrix3(), R3 = new DMatrix3(), R4 = new DMatrix3();
 			dRFromAxisAndAngle (R2,0,0,1,cannon_angle);
 			dRFromAxisAndAngle (R3,0,1,0,cannon_elevation);
-			dMultiply0 (R4,R2,R3,3,3,3);
+			dMultiply0 (R4,R2,R3);
 			double[] cpos = {CANNON_X,CANNON_Y,1};
 			for (int i=0; i<3; i++) cpos[i] += 3*R4.get(i, 2);//[i*4+2];
 			cannon_ball_body.setPosition (cpos[0],cpos[1],cpos[2]);
@@ -646,7 +648,7 @@ class DemoCrash extends dsFunctions {
 		DMatrix3 R2 = new DMatrix3(), R3 = new DMatrix3(), R4 = new DMatrix3();
 		dRFromAxisAndAngle (R2,0,0,1,cannon_angle);
 		dRFromAxisAndAngle (R3,0,1,0,cannon_elevation);
-		dMultiply0 (R4,R2,R3,3,3,3);
+		dMultiply0 (R4,R2,R3);
 		DVector3 cpos = new DVector3(CANNON_X,CANNON_Y,1);
 		DVector3 csides = new DVector3(2,2,2);
 		dsDrawBox (cpos,R2,csides);
@@ -665,19 +667,6 @@ class DemoCrash extends dsFunctions {
 	private void demo(String[] args) {
 		doFast = true;
 
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-		//	fn.start = &start;
-		//	fn.step = &simLoop;
-		//	fn.command = &command;
-		//	fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
-
 		OdeHelper.initODE2(0);
 
 		bodies = 0;
@@ -688,7 +677,7 @@ class DemoCrash extends dsFunctions {
 		resetSimulation();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy();
 		space.destroy();

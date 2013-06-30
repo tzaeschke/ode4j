@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,57 +13,59 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.drawstuff.internal;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
-import org.ode4j.drawstuff.DS_API;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.Common;
 
 import static org.cpp4j.Cstdio.*;
 
 
-// main window and event handling for X11
+/**
+ * Main window and event handling for LWJGL.
+ */
+abstract class LwJGL extends Internal implements DrawStuffApi {
 
-//#include <ode/odeconfig.h>
-//#include "config.h"
-//#include <stdlib.h>
-//#include <string.h>
-//#include <stdarg.h>
-//#include <X11/Xlib.h>
-//#include <X11/Xatom.h>
-//#include <X11/keysym.h>
-//#include <GL/glx.h>
-//
-//#ifdef HAVE_SYS_TIME_H
-//#include <sys/time.h>
-//#endif
-//
-//#include <drawstuff/drawstuff.h>
-//#include <drawstuff/version.h>
-//#include "internal.h"
-
-abstract class LwJGL extends Internal implements DrawStuff {
-
+	//Ensure that Display.destroy() is called (TZ)
+	//Not sure this works, but it's an attempt at least.
+	//-> This should avoid the Problem that a process keeps running with 99%CPU, 
+	//   even if the window is closed (clicking on the 'x'). The supposed 
+	//   problem is that when clicking 'x', Display.destroy() never gets called
+	//   by dsPlatformSimLoop(). 
+	static {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+//				Display.destroy();
+			}
+		});
+	}
+	
+	
 	//***************************************************************************
 	// error handling for unix
 
 	//static void printMessage (const char *msg1, const char *msg2, va_list ap)
-	static void printMessage (String msg1, String fmt, Object ...  ap)
+	private static void printMessage (String msg1, String fmt, Object ...  ap)
 	{
 		fflush (stderr);
 		fflush (stdout);
@@ -147,10 +151,10 @@ abstract class LwJGL extends Internal implements DrawStuff {
 		}
 		
 		if (firsttime) {
-			//TODO copied from Gears
-			System.err.println("GL_VENDOR: " + GL11.glGetString(GL11.GL_VENDOR));
-			System.err.println("GL_RENDERER: " + GL11.glGetString(GL11.GL_RENDERER));
-			System.err.println("GL_VERSION: " + GL11.glGetString(GL11.GL_VERSION));
+			System.err.println("GL_VENDOR:     " + GL11.glGetString(GL11.GL_VENDOR));
+			System.err.println("GL_RENDERER:   " + GL11.glGetString(GL11.GL_RENDERER));
+			System.err.println("GL_VERSION:    " + GL11.glGetString(GL11.GL_VERSION));
+			System.err.println("LWJGL_VERSION: " + Sys.getVersion());
 			System.err.println();
 			System.err.println("glLoadTransposeMatrixfARB() supported: " + 
 					GLContext.getCapabilities().GL_ARB_transpose_matrix);
@@ -217,7 +221,7 @@ abstract class LwJGL extends Internal implements DrawStuff {
 	}
 
 
-	static void destroyMainWindow()
+	private static void destroyMainWindow()
 	{
 		//  glXDestroyContext (display,glx_context);
 		//  XDestroyWindow (display,win);
@@ -339,27 +343,27 @@ abstract class LwJGL extends Internal implements DrawStuff {
 //	}
 
 
-	// return the index of the highest bit
-	//static int getHighBitIndex (unsigned int x)
-	static int getHighBitIndex (int x)
-	{
-		int i = 0;
-		while (x!=0) {
-			i++;
-			x >>= 1;
-		}
-		return i-1;
-	}
+//	// return the index of the highest bit
+//	//static int getHighBitIndex (unsigned int x)
+//	private static int getHighBitIndex (int x)
+//	{
+//		int i = 0;
+//		while (x!=0) {
+//			i++;
+//			x >>= 1;
+//		}
+//		return i-1;
+//	}
+//
+//
+//	// shift x left by i, where i can be positive or negative
+//	//#define SHIFTL(x,i) (((i) >= 0) ? ((x) << (i)) : ((x) >> (-i)))
+//	//int? double?
+//	private final int SHIFTL(long x, int i) { 
+//		return (int) ((i >= 0) ? (x << (i)) : ((x) >> (-i))); 
+//	}
 
-
-	// shift x left by i, where i can be positive or negative
-	//#define SHIFTL(x,i) (((i) >= 0) ? ((x) << (i)) : ((x) >> (-i)))
-	//TODO int? double?
-	private final int SHIFTL(long x, int i) { 
-		return (int) ((i >= 0) ? (x << (i)) : ((x) >> (-i))); 
-	}
-
-	static void captureFrame (int num)
+	private static void captureFrame (int num)
 	{
 		throw new UnsupportedOperationException();
 		//  fprintf (stderr,"capturing frame %04d\n",num);
@@ -488,12 +492,16 @@ abstract class LwJGL extends Internal implements DrawStuff {
 			return;
 		}
 
+		//LWJGL: 0=left 1=right 2=middle
+		//GL: 0=left 1=middle 2=right
+		
 		int mode = 0;
 		if (Mouse.isButtonDown(0)) mode |= 1; 
-		if (Mouse.isButtonDown(1)) mode |= 2; 
-		if (Mouse.isButtonDown(2)) mode |= 4;
+		if (Mouse.isButtonDown(2)) mode |= 2; 
+		if (Mouse.isButtonDown(1)) mode |= 4;
 		if (mode != 0) {
-			dsMotion (mode, dx, dy);
+			//LWJGL has inverted dy wrt C++/GL
+			dsMotion (mode, dx, -dy);
 		}
 		
 	}
@@ -502,6 +510,7 @@ abstract class LwJGL extends Internal implements DrawStuff {
 	//void dsPlatformSimLoop (int window_width, int window_height, dsFunctions *fn,
 	//			int initial_pause)
 	private static boolean firsttime=true;
+	@Override
 	void dsPlatformSimLoop (int window_width, int window_height, dsFunctions fn,
 			boolean initial_pause)
 	{
@@ -522,6 +531,10 @@ abstract class LwJGL extends Internal implements DrawStuff {
 		//TZ static bool firsttime=true;
 		if (firsttime)
 		{
+			System.err.println();
+			System.err.print("Using ode4j version: " + OdeHelper.getVersion());
+			System.err.println("  [" + OdeHelper.getConfiguration() + "]");
+			System.err.println();
 			fprintf
 			(
 					stderr,
@@ -539,7 +552,7 @@ abstract class LwJGL extends Internal implements DrawStuff {
 					"   Left button - pan and tilt.\n" +
 					"   Right button - forward and sideways.\n" +
 					"   Left + Right button (or middle button) - sideways and up.\n" +
-					"\n",DS_API.DS_VERSION >> 8,DS_API.DS_VERSION & 0xff
+					"\n",DrawStuff.DS_VERSION >> 8,DrawStuff.DS_VERSION & 0xff
 			);
 			firsttime = false;
 		}
@@ -608,7 +621,7 @@ abstract class LwJGL extends Internal implements DrawStuff {
 	//extern "C" double dsElapsedTime()
 	public double dsElapsedTime()
 	{
-		if (true) {//(HAVE_GETTIMEOFDAY) { //#if HAVE_GETTIMEOFDAY
+//		if (true) {//(HAVE_GETTIMEOFDAY) { //#if HAVE_GETTIMEOFDAY
 			//TZ static double prev=0.0;
 			//		timeval tv ;
 			//
@@ -622,10 +635,10 @@ abstract class LwJGL extends Internal implements DrawStuff {
 			if (retval>1.0) retval=1.0;
 			if (retval<Common.dEpsilon) retval=Common.dEpsilon;
 			return retval;
-		} else { //#else
-			return 0.01666; // Assume 60 fps
-			//#endif
-		}
+//		} else { //#else
+//			return 0.01666; // Assume 60 fps
+//			//#endif
+//		}
 
 	}
 }

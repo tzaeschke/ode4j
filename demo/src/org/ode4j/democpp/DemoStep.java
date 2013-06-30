@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,29 +13,29 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.cpp4j.Cstdio.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
 
@@ -48,11 +50,6 @@ class DemoStep extends dsFunctions {
 
 	// some constants
 
-	//#define NUM 10			// number of bodies
-	//#define NUMJ 9			// number of joints
-	//#define SIDE (0.2)		// side length of a box
-	//#define MASS (1.0)		// mass of a box
-	//#define RADIUS (0.1732f)	// sphere radius
 	private static int NUM = 10;	// number of bodies
 	private static int NUMJ = 9;			// number of joints
 	private static double SIDE = 0.2;		// side length of a box
@@ -64,7 +61,7 @@ class DemoStep extends dsFunctions {
 
 	static DWorld world=null;
 	static DBody[] body=new DBody[NUM];
-	static DJoint[] joint=new DJoint[NUMJ];
+	static DBallJoint[] joint=new DBallJoint[NUMJ];
 
 
 	// create the test system
@@ -98,7 +95,7 @@ class DemoStep extends dsFunctions {
 			dMassSetBox (m,1,dRandReal()+0.1,dRandReal()+0.1,dRandReal()+0.1);
 			dMassAdjust (m,dRandReal()+1);
 			for (j=0; j<4; j++) q.set(j, dRandReal()*2-1);
-			OdeMath.dQtoR (q,R);
+			OdeMath.dRfromQ (R,q);
 			dMassRotate (m,R);
 			dBodySetMass (body[i],m);
 		}
@@ -175,25 +172,26 @@ class DemoStep extends dsFunctions {
 
 
 	public static void main(String[] args) {
+		new DemoStep().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoStep();
-		fn.version = DS_VERSION;
+		//dsFunctions fn = new DemoStep();
+		//fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = 0;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		dInitODE2(0);
-		dRandSetSeed (time(null).seconds);
+		//dRandSetSeed (time(null).seconds);
+		dRandSetSeed (System.currentTimeMillis()/1000);
 		createTest();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dWorldDestroy (world);
 		dCloseODE();
