@@ -1,0 +1,21 @@
+ode4j.jar
+- cpp4j classes
+- ode4j classes
+
+ode4j-cpp.jar
+- ode4j-cpp classes
+
+ode4j-sdk.jar
+- ode-sdk classes
+
+ode4j-src.jar
+- cpp4j src
+- ode4j src
+- ode4j-cpp src
+- ode4j-sdk src
+
+ode4j-doc.jar
+- ode4j-sdk/doc javadoc
+
+To export jar for classes, DESELECT /src and select "Export all output folders for checked projects."
+

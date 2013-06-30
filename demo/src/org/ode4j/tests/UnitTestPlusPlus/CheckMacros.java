@@ -1,8 +1,35 @@
+/*************************************************************************
+ *                                                                       *
+ * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
+ * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
+ *                                                                       *
+ * This library is free software; you can redistribute it and/or         *
+ * modify it under the terms of EITHER:                                  *
+ *   (1) The GNU Lesser General Public License as published by the Free  *
+ *       Software Foundation; either version 2.1 of the License, or (at  *
+ *       your option) any later version. The text of the GNU Lesser      *
+ *       General Public License is included with this library in the     *
+ *       file LICENSE.TXT.                                               *
+ *   (2) The BSD-style license that is included with this library in     *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
+ *                                                                       *
+ * This library is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
+ *                                                                       *
+ *************************************************************************/
 package org.ode4j.tests.UnitTestPlusPlus;
 
+import org.cpp4j.java.RefDouble;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.*;
 
 //#ifndef UNITTEST_CHECKMACROS_H 
 //#define UNITTEST_CHECKMACROS_H
@@ -17,7 +44,10 @@ import junit.framework.TestCase;
 //#endif
 //
 
-public class CheckMacros extends TestCase {
+/**
+ * Test macros.
+ */
+public class CheckMacros {
 
 	public interface Expr {
 		public void run();
@@ -45,6 +75,9 @@ public class CheckMacros extends TestCase {
 //			testResults_.OnTestFailure(UnitTest.TestDetails(m_details, __LINE__), 
 //					"Unhandled exception in CHECK(" #value ")"); 
 //		} 
+	}
+	public static void CHECK(boolean value) {
+		assertTrue(value);
 	}
 
 	//#define CHECK_EQUAL(expected, actual) \
@@ -83,7 +116,7 @@ public class CheckMacros extends TestCase {
 	//    } while (0)
 	//
 	public static void CHECK_CLOSE(double expected, double actual, double tolerance) {
-		assertTrue("Expected" + expected + " / actual=" + actual + " / tolerance=" + tolerance, 
+		assertTrue("Expected=" + expected + " / actual=" + actual + " / tolerance=" + tolerance, 
 				tolerance >= Math.abs(expected - actual));
 		//    try { 
 		//        UnitTest::CheckClose(testResults_, expected, actual, tolerance, UnitTest.TestDetails(m_details, __LINE__)); 
@@ -92,6 +125,10 @@ public class CheckMacros extends TestCase {
 		//        testResults_.OnTestFailure(UnitTest.TestDetails(m_details, __LINE__), 
 		//                "Unhandled exception in CHECK_CLOSE(" #expected ", " #actual ")"); 
 		//    } 
+	}
+	public static void CHECK_CLOSE(double expected, RefDouble actual, double tolerance) {
+		assertTrue("Expected=" + expected + " / actual=" + actual + " / tolerance=" + tolerance, 
+				tolerance >= Math.abs(expected - actual.d));
 	}
 
 	//#define CHECK_ARRAY_EQUAL(expected, actual, count) \
@@ -105,8 +142,12 @@ public class CheckMacros extends TestCase {
 	//                    "Unhandled exception in CHECK_ARRAY_EQUAL(" #expected ", " #actual ")"); \
 	//        } \
 	//    } while (0)
+    public static void CHECK_ARRAY_EQUAL(DMatrix3C expected, DMatrix3C actual, int count) {
+        assertEquals(12, count);
+        assertEquals(expected, actual);
+    }
 	public static void CHECK_ARRAY_EQUAL(Object expected, Object actual, int count) {
-		throw new UnsupportedOperationException();
+		assertEquals(expected, actual);
 //		try { 
 //			UnitTest::CheckArrayEqual(testResults_, expected, actual, count, UnitTest::TestDetails(m_details, __LINE__)); 
 //		} 
@@ -134,13 +175,24 @@ public class CheckMacros extends TestCase {
 					Math.abs(actual[i]-expected[i]) <= tolerance);
 		}
 	}
-	public static void CHECK_ARRAY_CLOSE(DVector3 expected, DVector3 actual, int count, double tolerance) {
+	public static void CHECK_ARRAY_CLOSE(DVector3C expected, DVector3 actual, int count, double tolerance) {
 		for (int i = 0; i < count; i++) {
 			assertTrue("Expected: " + expected.get(i) + "  actual: " + actual.get(i) +
 					"   tolerance: " + tolerance, 
 					Math.abs(actual.get(i)-expected.get(i)) <= tolerance);
 		}
 	}
+    public static void CHECK_ARRAY_CLOSE(DMatrix3C expected, double[] actual, int count, double tolerance) {
+        assertEquals(12, count);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                int pos = i*4 + j;
+                assertTrue("Expected: " + expected.get(i, j) + "  actual: " + actual[pos] +
+                        "   tolerance: " + tolerance, 
+                        Math.abs(actual[pos]-expected.get(i, j)) <= tolerance);
+            }
+        }
+    }
 
 	//#define CHECK_ARRAY2D_CLOSE(expected, actual, rows, columns, tolerance) \
 	//    do \

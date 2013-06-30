@@ -1,7 +1,9 @@
 /*************************************************************************
  *                                                                       *
- * Open Dynamics Engine, Copyright (C) 2001-2003 Russell L. Smith.       *
+ * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,17 +13,18 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -31,6 +34,7 @@ import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.DSapSpace.AXES;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
@@ -45,7 +49,7 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -56,7 +60,8 @@ class DemoSpaceStress extends dsFunctions {
 	private static final float DENSITY = 5.0f;		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 4;		// maximum number of contact points per body
-	private static final int WORLD_SIZE = 100;
+    private static final int WORLD_SIZE = 20;
+    private static final int WORLD_HEIGHT = 20;
 
 
 	// dynamics and collision objects
@@ -111,7 +116,7 @@ class DemoSpaceStress extends dsFunctions {
 		int numc = OdeHelper.collide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());
 		if (numc != 0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			final DVector3 ss = new DVector3(0.02,0.02,0.02);
 			for (i=0; i<numc; i++) {
 				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contacts.get(i));
@@ -122,7 +127,7 @@ class DemoSpaceStress extends dsFunctions {
 	}
 
 
-	private static float[] xyz = {2.1640f,-1.3079f,1.7600f};
+	private static float[] xyz = {2.1640f,-1.3079f,3.7600f};
 	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
 	// start simulation - set viewpoint
 	public void start()
@@ -358,12 +363,12 @@ class DemoSpaceStress extends dsFunctions {
 			DMatrix3C R2 = g2.getRotation();
 			DVector3 actual_pos = new DVector3();
 			DMatrix3 actual_R = new DMatrix3();
-			dMULTIPLY0_331 (actual_pos,R,pos2);
+			dMultiply0_331 (actual_pos,R,pos2);
 			//    actual_pos[0] += pos[0];
 			//    actual_pos[1] += pos[1];
 			//    actual_pos[2] += pos[2];
 			actual_pos.add(pos);
-			dMULTIPLY0_333 (actual_R,R,R2);
+			dMultiply0_333 (actual_R,R,R2);
 			drawGeom (g2,actual_pos,actual_R,false);
 		}
 
@@ -387,6 +392,7 @@ class DemoSpaceStress extends dsFunctions {
 		dsSetColor (0,0,2);
 		OdeHelper.spaceCollide (space,0,nearCallback);
 		//if (!pause) dWorldStep (world,0.05);
+		if (!pause) world.quickStep (0.05);
 		//if (!pause) dWorldStepFast (world,0.05, 1);
 
 		// remove all contact joints
@@ -416,30 +422,24 @@ class DemoSpaceStress extends dsFunctions {
 	}
 
 	private void demo(String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
+
+	    dsSetSphereQuality(0);
 
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();
 
-
-		DVector3 Center = new DVector3();//{0, 0, 0, 0};
-		DVector3 Extents = new DVector3(WORLD_SIZE * 0.55, WORLD_SIZE * 0.55, WORLD_SIZE * 0.55);//, 0};
-
-		//space = dSimpleSpaceCreate(0);
-		//space = dHashSpaceCreate (0);
-		space = OdeHelper.createQuadTreeSpace (null, Center, Extents, 6);
+        DVector3 Center = new DVector3(0, 0, 0);
+        DVector3 Extents = new DVector3(WORLD_SIZE * 0.55, WORLD_SIZE * 0.55, WORLD_SIZE * 0.55);
+		if (false) {//#if 0
+		  space = OdeHelper.createQuadTreeSpace(Center, Extents, 6);
+		} else if (true) {//#elif 1
+		  space = OdeHelper.createHashSpace();
+		} else if (false) { //#elif 0
+		  space = OdeHelper.createSapSpace(AXES.XYZ);
+		} else { //#else
+		  space = OdeHelper.createSimpleSpace();
+		}//#endif
 
 		contactgroup = OdeHelper.createJointGroup();
 		world.setGravity (0,0,-0.5);
@@ -455,7 +455,7 @@ class DemoSpaceStress extends dsFunctions {
 		}
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy();
 		space.destroy();

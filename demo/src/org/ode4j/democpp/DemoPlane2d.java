@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,26 +13,28 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.democpp;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
-import org.ode4j.drawstuff.DS_API.DS_TEXTURE_NUMBER;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
@@ -52,36 +56,32 @@ import org.ode4j.ode.DGeom.DNearCallback;
  */
 class DemoPlane2d extends dsFunctions {
 
-	//#   define drand48()  ((double) (((double) rand()) / ((double) RAND_MAX)))
 	private static final double drand48() {
 		//return ((double) rand()) / ((double) RAND_MAX);
-		int i1 = OdeMath.dRandInt(RAND_MAX);//rand();
-		double d = ((double) i1) / ((double) RAND_MAX);
-		return d;
+		int i1 = OdeMath.dRandInt(RAND_MAX);
+		return ((double) i1) / ((double) RAND_MAX);
 	}
-	//
-	//# define        N_BODIES        40
-	private static final int N_BODIES = 40;
-	//# define        STAGE_SIZE      8.0  // in m
-	private static final float STAGE_SIZE = 8.0f;
-	//
-	//# define        TIME_STEP       0.01
-	private static final double TIME_STEP = 0.01;
-	//# define        K_SPRING        10.0
-	//private static final double K_SPRING = 10.0;
-	//# define        K_DAMP          10.0
-	//private static final double K_DAMP = 10.0; 
+	//TZ: below is the new version from 0.11.1, but it yields different results
+	//in Java and C++
+	//#   define drand48()  ((double) (((double) rand()) / ((double) RAND_MAX)))
+//	private static final double drand48() {
+//		return ((double)rand()) / ((double)RAND_MAX);
+//	}
 
-	//using namespace ode;
+	//
+	private static final int N_BODIES = 40;
+	private static final float STAGE_SIZE = 8.0f; // in m
+
+	private static final double TIME_STEP = 0.01;
+	//private static final double K_SPRING = 10.0;
+	//private static final double K_DAMP = 10.0; 
 
 	private static DWorld   dyn_world;
 	private static DBody[]    dyn_bodies = new DBody[N_BODIES];
-	//static dReal[]    bodies_sides = new double[N_BODIES][3];
-	//static double[][]    bodies_sides = new double[N_BODIES][3];
 	private static DVector3[]    bodies_sides = new DVector3[N_BODIES];
 
 	private static DSpace coll_space_id;
-	private static DJoint[] plane2d_joint_ids=new DJoint[N_BODIES];
+	private static DPlane2DJoint[] plane2d_joint_ids=new DPlane2DJoint[N_BODIES];
 	private static DJointGroup coll_contacts;
 
 
@@ -97,7 +97,6 @@ class DemoPlane2d extends dsFunctions {
 
 
 
-	//static void     cb_near_collision (void *data, dGeom o1, dGeom o2)
 	private static void     cb_near_collision (Object data, DGeom o1, DGeom o2)
 	/********************************************************************/
 	{
@@ -130,9 +129,7 @@ class DemoPlane2d extends dsFunctions {
 	}
 
 
-	//static void     track_to_pos (dBody &body, dJoint joint_id,
-	//        dReal target_x, dReal target_y)
-	private static void     track_to_pos (DBody body, DJoint joint_id,
+	private static void     track_to_pos (DBody body, DPlane2DJoint joint_id,
 			double target_x, double target_y)
 	/************************************************************************/
 	{
@@ -151,7 +148,6 @@ class DemoPlane2d extends dsFunctions {
 	};
 
 	private static double angle = 0;
-	//static void     cb_sim_step (int pause)
 	private void cb_sim_step (boolean pause)
 	{
 		if (! pause)
@@ -248,10 +244,12 @@ class DemoPlane2d extends dsFunctions {
 	/******************/
 	public static void main(String[] args)
 	{
+		new DemoPlane2d().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		int         b;
-		dsFunctions drawstuff_functions = new DemoPlane2d();
-
-
+		
 		dInitODE2(0);
 
 		// dynamic world
@@ -333,14 +331,14 @@ class DemoPlane2d extends dsFunctions {
 
 		{
 			// simulation loop (by drawstuff lib)
-			drawstuff_functions.setVersion(DS_VERSION);
+			//drawstuff_functions.setVersion(DS_VERSION);
 			//		drawstuff_functions.start = &cb_start;
 			//		drawstuff_functions.step = &cb_sim_step;
 			//		drawstuff_functions.command = 0;
 			//		drawstuff_functions.stop = 0;
-			drawstuff_functions.setPathToTextures(DRAWSTUFF_TEXTURE_PATH);
+			//drawstuff_functions.setPathToTextures(DRAWSTUFF_TEXTURE_PATH);
 
-			dsSimulationLoop (args, 352,288,drawstuff_functions);
+			dsSimulationLoop (args, 352,288,this);
 		}
 
 		dCloseODE();
