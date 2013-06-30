@@ -21,11 +21,10 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
-import org.ode4j.math.DMatrix;
-import org.ode4j.math.DVector;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.internal.FastDot;
-import org.ode4j.ode.internal.Matrix;
+import org.ode4j.math.DVector3C;
+import org.ode4j.ode.OdeMath;
 
 
 /** 
@@ -38,12 +37,12 @@ public abstract class ApiCppMathMatrix extends ApiCppMathRotation {
 	//ODE_API 
 	//	void dSetZero (double *a, int n);
 	public static void dSetZero (double[] a, int n) { 
-		Matrix.dSetZero(a, n); 
+		OdeMath.dSetZero(a, n); 
 	}
 	//ODE_API 
 	//	 void dSetValue (double *a, int n, double value);
 	public static void dSetValue (double[] a, int n, double value) {
-		Matrix.dSetValue(a, n, value);
+		OdeMath.dSetValue(a, n, value);
 	}
 
 
@@ -54,19 +53,18 @@ public abstract class ApiCppMathMatrix extends ApiCppMathRotation {
 
 	//ODE_API 
 	//	 double dDot (final double *a, final double *b, int n);
-	public static double dDot (final DVector3 a, final DVector3 b, int n) {
-		a.assertLen(n);
-		return a.reDot(b);
+	public static double dDot (final DVector3C a, final DVector3 b, int n) {
+		return a.dot(b);
 	}
 	public static double dDot (final double[] a, final double[] b, int n) {
-		return FastDot.dDot(a, 0, b, n);
+		return OdeMath.dDot(a, 0, b, 0, n);
 	}
 	public static double dDot (final double[] a, int aPos, final double[] b, int n) {
-		return FastDot.dDot(a, aPos, b, n);
+		return OdeMath.dDot(a, aPos, b, 0, n);
 	}
 	public static double dDot (final double[] a, int aPos, 
 			final double[] b, int bPos, int n) {
-		return FastDot.dDot(a, aPos, b, bPos, n);
+		return OdeMath.dDot(a, aPos, b, bPos, n);
 	}
 
 
@@ -94,17 +92,17 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//ODE_API 
 	//	 void dMultiply0 (double *A, final double *B, final double *C, int p,int q,int r);
 	public static void dMultiply0 (double[] A, final double[] B, final double[] C, int p,int q,int r) {
-		Matrix.dMultiply0(A, B, C, p, q, r);
+		OdeMath.dMultiply0(A, B, C, p, q, r);
 	}
 	//ODE_API 
 	//	 void dMultiply1 (double *A, final double *B, final double *C, int p,int q,int r);
 	public static void dMultiply1 (double[] A, final double[] B, final double[] C, int p,int q,int r) {
-		Matrix.dMultiply1(A, B, C, p, q, r);
+		OdeMath.dMultiply1(A, B, C, p, q, r);
 	}
 	//ODE_API 
 	//	 void dMultiply2 (double *A, final double *B, final double *C, int p,int q,int r);
 	public static void dMultiply2 (double[] A, final double[] B, final double[] C, int p,int q,int r) {
-		Matrix.dMultiply2(A, B, C, p, q, r);
+		OdeMath.dMultiply2(A, B, C, p, q, r);
 	}
 
 
@@ -116,7 +114,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	//ODE_API 
 	public static boolean dFactorCholesky (double[] A, int n) {
-		return Matrix.dFactorCholesky(A, n);
+		return OdeMath.dFactorCholesky(A, n);
 	}
 
 
@@ -127,7 +125,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//ODE_API 
 	//	 void dSolveCholesky (final double *L, double *b, int n) {
 	public static void dSolveCholesky (final double[] L, double[] b, int n) {
-		Matrix.dSolveCholesky(L, b, n);
+		OdeMath.dSolveCholesky(L, b, n);
 	}
 
 
@@ -138,7 +136,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	//ODE_API 
 	public static boolean dInvertPDMatrix (final double[] A, double[] Ainv, int n) {
-		return Matrix.dInvertPDMatrix(A, Ainv, n);
+		return OdeMath.dInvertPDMatrix(A, Ainv, n);
 	}
 
 
@@ -150,7 +148,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	//ODE_API 
 	public static boolean dIsPositiveDefinite (final double[] A, int n) {
-		return Matrix.dIsPositiveDefinite(A, n);
+		return OdeMath.dIsPositiveDefinite(A, n);
 	}
 
 
@@ -164,7 +162,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//ODE_API 
 	//	 void dFactorLDLT (double *A, double *d, int n, int nskip) {
 	public static void dFactorLDLT (double[] A, double[] d, int n, int nskip) {
-		Matrix.dFactorLDLT(A, d, n, nskip);
+		OdeMath.dFactorLDLT(A, d, n, nskip);
 	}
 
 
@@ -174,7 +172,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 */
 	//ODE_API 
 	//	 void dSolveL1 (final double *L, double *b, int n, int nskip) {
-	void dSolveL1 (final DMatrix L, DVector b, int n, int nskip) {
+	void dSolveL1 (final DMatrix3C L, DVector3 b, int n, int nskip) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -185,7 +183,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 */
 	//ODE_API 
 	//	 void dSolveL1T (final double *L, double *b, int n, int nskip) {
-	void dSolveL1T (final DMatrix L, DVector b, int n, int nskip) {
+	void dSolveL1T (final DMatrix3C L, DVector3 b, int n, int nskip) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -194,7 +192,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	//ODE_API 
 	//	 void dVectorScale (double *a, final double *d, int n) {
-	void dVectorScale (DVector a, final DVector d, int n) {
+	void dVectorScale (DVector3C a, final DVector3 d, int n) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -208,7 +206,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//ODE_API 
 	//	 void dSolveLDLT (final double *L, final double *d, double *b, int n, int nskip) {
 	public static void dSolveLDLT (final double[] L, final double[] d, double[] b, int n, int nskip) {
-		Matrix.dSolveLDLT(L, d, b, n, nskip);
+		OdeMath.dSolveLDLT(L, d, b, n, nskip);
 	}
 
 
@@ -228,7 +226,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//ODE_API 
 	//	 void dLDLTAddTL (double *L, double *d, final double *a, int n, int nskip) {
 	public static void dLDLTAddTL (double[] L, double[] d, final double[] a, int n, int nskip) {
-		Matrix.dLDLTAddTL(L, d, a, n, nskip);
+		OdeMath.dLDLTAddTL(L, d, a, n, nskip);
 	}
 
 
@@ -253,7 +251,7 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	//	 void dLDLTRemove (double **A, final int *p, double *L, double *d,
 	public static void dLDLTRemove (double[] A, final int [] p, double[] L, 
 			double[] d, int n1, int n2, int r, int nskip) {
-		Matrix.dLDLTRemove(A, p, L, d, n1, n2, r, nskip);
+		OdeMath.dLDLTRemove(A, p, L, d, n1, n2, r, nskip);
 	}
 
 
@@ -263,12 +261,8 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 */
 	//ODE_API 
 	public static void dRemoveRowCol (double[] A, int n, int nskip, int r) {
-		Matrix.dRemoveRowCol(A, n, nskip, r);
+		OdeMath.dRemoveRowCol(A, n, nskip, r);
 	}
 
 
-	//#ifdef __cplusplus
 }
-//#endif
-//
-//#endif
