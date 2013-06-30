@@ -21,41 +21,38 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
+import org.cpp4j.java.RefBoolean;
 import org.cpp4j.java.RefDouble;
 import org.cpp4j.java.RefInt;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
+import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector4;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DBody;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.ode.DContactGeomBuffer;
+import org.ode4j.ode.DConvex;
+import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.DHeightfield;
 import org.ode4j.ode.DHeightfieldData;
+import org.ode4j.ode.DPlane;
+import org.ode4j.ode.DRay;
 import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 import org.ode4j.ode.internal.DxCollisionUtil;
-import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxBox;
-import org.ode4j.ode.internal.DxCapsule;
-import org.ode4j.ode.internal.DxConvex;
-import org.ode4j.ode.internal.DxCylinder;
-import org.ode4j.ode.internal.DxGeom;
-import org.ode4j.ode.internal.DxGeomTransform;
-import org.ode4j.ode.internal.DxHeightfield;
-import org.ode4j.ode.internal.DxHeightfieldData;
-import org.ode4j.ode.internal.DxPlane;
-import org.ode4j.ode.internal.DxRay;
-import org.ode4j.ode.internal.DxSpace;
-import org.ode4j.ode.internal.DxSphere;
 
-
-//// Include odeinit.h for backward compatibility as some of initialization APIs
-//// were initally declared in current header.
 
 /**
  * @defgroup collide Collision Detection
@@ -90,7 +87,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 	//ODE_API 
 	public static void dGeomDestroy (DGeom geom) {
-		((DxGeom)geom).dGeomDestroy();
+		geom.destroy();
 	}
 
 
@@ -104,7 +101,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	//void dGeomSetData (dGeom geom, void* data) {
 	public static void dGeomSetData (DGeom geom, Object data) {
-		((DxGeom)geom).dGeomSetData(data);
+		geom.setData(data);
 	}
 
 
@@ -117,7 +114,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	// void *dGeomGetData (dGeom geom) {
 	public static Object dGeomGetData (DGeom geom) {
-		return ((DxGeom)geom).dGeomGetData();
+		return geom.getData();
 	}
 
 
@@ -141,19 +138,19 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 	//ODE_API 
 	public static void dGeomSetBody (DGeom geom, DBody body) {
-		((DxGeom)geom).dGeomSetBody((DxBody) body);
+		geom.setBody(body);
 	}
 
 
 	/**
 	 * @brief Get the body associated with a placeable geom.
 	 * @param geom the geom to query.
-	 * @sa dGeomSetBody
+	 * @see #dGeomSetBody(DGeom, DBody)
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static DBody dGeomGetBody (DGeom geom) {
-		return ((DxGeom)geom).dGeomGetBody();
+		return geom.getBody();
 	}
 
 
@@ -168,12 +165,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param x the new X coordinate.
 	 * @param y the new Y coordinate.
 	 * @param z the new Z coordinate.
-	 * @sa dBodySetPosition
+	 * @see ApiCppBody#dBodySetPosition(DBody, double, double, double)
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetPosition (DGeom geom, double x, double y, double z) {
-		((DxGeom)geom).dGeomSetPosition(new DVector3(x, y, z));
+		geom.setPosition(new DVector3(x, y, z));
 	}
 
 
@@ -186,12 +183,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set.
 	 * @param R the new rotation matrix.
-	 * @sa dBodySetRotation
+	 * @see ApiCppBody#dBodySetRotation(DBody, DMatrix3)
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	public static void dGeomSetRotation (DGeom geom, final DMatrix3 R) {
-		((DxGeom)geom).dGeomSetRotation(R);
+	public static void dGeomSetRotation (DGeom geom, final DMatrix3C R) {
+		geom.setRotation(R);
 	}
 
 
@@ -204,13 +201,13 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the debug build of ODE.
 	 *
 	 * @param geom the geom to set.
-	 * @param Q the new rotation.
-	 * @sa dBodySetQuaternion
+	 * @param quat the new rotation.
+	 * @see ApiCppBody#dBodySetQuaternion(DBody, DQuaternion)
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomSetQuaternion (DGeom geom, final DQuaternion Q) {
-		throw new UnsupportedOperationException();
+	public static void dGeomSetQuaternion (DGeom geom, DQuaternionC quat) {
+		geom.setQuaternion(quat);
 	}
 
 
@@ -223,16 +220,16 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the debug build of ODE.
 	 *
 	 * @param geom the geom to query.
-	 * @returns A pointer to the geom's position vector.
+	 * @return A pointer to the geom's position vector.
 	 * @remarks The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
-	 * @sa dBodyGetPosition
+	 * @see ApiCppBody#dBodyGetPosition(DBody)
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static final DVector3C dGeomGetPosition (DGeom geom) {
-		return ((DxGeom)geom).dGeomGetPosition();
+		return geom.getPosition();
 	}
 
 
@@ -241,11 +238,11 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 * @param geom  the geom to query
 	 * @param pos   a copy of the geom position
-	 * @sa dGeomGetPosition
+	 * @see #dGeomGetPosition(DGeom)
 	 */
 	//ODE_API 
-	void dGeomCopyPosition (DGeom geom, DVector3 pos) {
-		throw new UnsupportedOperationException();
+	public static void dGeomCopyPosition (DGeom geom, DVector3 pos) {
+		pos.set(geom.getPosition());
 	}
 
 
@@ -258,16 +255,16 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the debug build of ODE.
 	 *
 	 * @param geom the geom to query.
-	 * @returns A pointer to the geom's rotation matrix.
+	 * @return A pointer to the geom's rotation matrix.
 	 * @remarks The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
-	 * @sa dBodyGetRotation
+	 * @see ApiCppBody#dBodyGetRotation(DBody)
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static final DMatrix3C dGeomGetRotation (DGeom geom) {
-		return ((DxGeom)geom).dGeomGetRotation();
+		return geom.getRotation();
 	}
 
 
@@ -281,12 +278,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom   the geom to query.
 	 * @param R      a copy of the geom rotation
-	 * @sa dGeomGetRotation
+	 * @see #dGeomGetRotation(DGeom)
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomCopyRotation(DGeom geom, DMatrix3 R) {
-		throw new UnsupportedOperationException();
+	public static void dGeomCopyRotation(DGeom geom, DMatrix3 R) {
+		R.set(geom.getRotation());
 	}
 
 
@@ -300,12 +297,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to query.
 	 * @param result a copy of the rotation quaternion.
-	 * @sa dBodyGetQuaternion
+	 * @see ApiCppBody#dBodyGetQuaternion(DBody)
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomGetQuaternion (DGeom geom, DQuaternion result) {
-		((DxGeom)geom).dGeomGetQuaternion(result);
+		result.set(geom.getQuaternion());
 	}
 
 
@@ -327,33 +324,33 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 	//ODE_API 
 	// void dGeomGetAABB (dGeom geom, double aabb[6]) {
-	public static void dGeomGetAABB (DGeom geom, DVector6 aabb) {
-		((DxGeom)geom).dGeomGetAABB(aabb);
+	public static void dGeomGetAABB (DGeom geom, DAABB aabb) {
+		aabb.set(geom.getAABB());
 	}
 
 
 	/**
 	 * @brief Determing if a geom is a space.
 	 * @param geom the geom to query
-	 * @returns Non-zero if the geom is a space, zero otherwise.
+	 * @return Non-zero if the geom is a space, zero otherwise.
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static boolean dGeomIsSpace (DGeom geom) {
-		return ((DxGeom)geom).dGeomIsSpace();
+		return geom instanceof DSpace;
 	}
 
 
 	/**
 	 * @brief Query for the space containing a particular geom.
 	 * @param geom the geom to query
-	 * @returns The space that contains the geom, or NULL if the geom is
+	 * @return The space that contains the geom, or NULL if the geom is
 	 *          not contained by a space.
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	DSpace dGeomGetSpace (DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static DSpace dGeomGetSpace (DGeom geom) {
+		return geom.getSpace();
 	}
 
 
@@ -361,29 +358,29 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @brief Given a geom, this returns its class.
 	 *
 	 * The ODE classes are:
-	 *  @li dSphereClass
-	 *  @li dBoxClass
-	 *  @li dCylinderClass
-	 *  @li dPlaneClass
-	 *  @li dRayClass
-	 *  @li dConvexClass
-	 *  @li dGeomTransformClass
-	 *  @li dTriMeshClass
-	 *  @li dSimpleSpaceClass
-	 *  @li dHashSpaceClass
-	 *  @li dQuadTreeSpaceClass
-	 *  @li dFirstUserClass
-	 *  @li dLastUserClass
+	 *  <li> dSphereClass
+	 *  <li> dBoxClass
+	 *  <li> dCylinderClass
+	 *  <li> dPlaneClass
+	 *  <li> dRayClass
+	 *  <li> dConvexClass
+	 *  <li> dGeomTransformClass
+	 *  <li> dTriMeshClass
+	 *  <li> dSimpleSpaceClass
+	 *  <li> dHashSpaceClass
+	 *  <li> dQuadTreeSpaceClass
+	 *  <li> dFirstUserClass
+	 *  <li> dLastUserClass
 	 *
 	 * User-defined class will return their own number.
 	 *
 	 * @param geom the geom to query
-	 * @returns The geom class ID.
+	 * @return The geom class ID.
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static int dGeomGetClass (DGeom geom) {
-		return ((DxGeom)geom).dGeomGetClass();
+		return geom.getClassID();
 	}
 
 
@@ -402,7 +399,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	// void dGeomSetCategoryBits (dGeom geom, unsigned long bits) {
 	public static void dGeomSetCategoryBits (DGeom geom, long bits) {
-		((DxGeom)geom).dGeomSetCategoryBits(bits);
+		geom.setCategoryBits(bits);
 	}
 
 
@@ -421,7 +418,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	// void dGeomSetCollideBits (dGeom geom, unsigned long bits) {
 	public static void dGeomSetCollideBits (DGeom geom, long bits) {
-		((DxGeom)geom).dGeomSetCollideBits(bits);
+		geom.setCollideBits(bits);
 	}
 
 
@@ -429,14 +426,14 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @brief Get the "category" bitfield for the given geom.
 	 *
 	 * @param geom the geom to set
-	 * @param bits the new bitfield value
-	 * @sa dGeomSetCategoryBits
+	 * @return the bitfield value
+	 * @see #dGeomSetCategoryBits(DGeom, long)
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	// unsigned long dGeomGetCategoryBits (dGeom geom) {
-	long dGeomGetCategoryBits (DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static long dGeomGetCategoryBits (DGeom geom) {
+		return geom.getCategoryBits();
 	}
 
 
@@ -444,14 +441,14 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @brief Get the "collide" bitfield for the given geom.
 	 *
 	 * @param geom the geom to set
-	 * @param bits the new bitfield value
-	 * @sa dGeomSetCollideBits
+	 * @return the bitfield value
+	 * @see #dGeomSetCollideBits(DGeom, long)
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	// unsigned long dGeomGetCollideBits (dGeom geom) {
-	long dGeomGetCollideBits (DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static long dGeomGetCollideBits (DGeom geom) {
+		return geom.getCollideBits();
 	}
 
 
@@ -463,13 +460,13 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the enabled state.
 	 *
 	 * @param geom   the geom to enable
-	 * @sa dGeomDisable
-	 * @sa dGeomIsEnabled
+	 * @see #dGeomDisable(DGeom)
+	 * @see #dGeomIsEnabled(DGeom)
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomEnable (DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static void dGeomEnable (DGeom geom) {
+		geom.enable();
 	}
 
 
@@ -481,13 +478,13 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the enabled state.
 	 *
 	 * @param geom   the geom to disable
-	 * @sa dGeomDisable
-	 * @sa dGeomIsEnabled
+	 * @see #dGeomDisable(DGeom)
+	 * @see #dGeomIsEnabled(DGeom)
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomDisable (DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static void dGeomDisable (DGeom geom) {
+		geom.disable();
 	}
 
 
@@ -499,14 +496,14 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the enabled state.
 	 *
 	 * @param geom   the geom to query
-	 * @returns Non-zero if the geom is enabled, zero otherwise.
-	 * @sa dGeomDisable
-	 * @sa dGeomIsEnabled
+	 * @return Non-zero if the geom is enabled, zero otherwise.
+	 * @see #dGeomDisable(DGeom)
+	 * @see #dGeomIsEnabled(DGeom)
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	int dGeomIsEnabled (DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static boolean dGeomIsEnabled (DGeom geom) {
+		return geom.isEnabled();
 	}
 
 	/* ************************************************************************ */
@@ -529,7 +526,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 	//ODE_API 
 	public static void dGeomSetOffsetPosition (DGeom geom, double x, double y, double z) {
-		((DxGeom)geom).dGeomSetOffsetPosition(x, y, z);
+		geom.setOffsetPosition(x, y, z);
 	}
 
 
@@ -547,8 +544,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	public static void dGeomSetOffsetRotation (DGeom geom, final DMatrix3 R) {
-		((DxGeom)geom).dGeomSetOffsetRotation(R);
+	public static void dGeomSetOffsetRotation (DGeom geom, DMatrix3C R) {
+		geom.setOffsetRotation(R);
 	}
 
 
@@ -566,8 +563,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomSetOffsetQuaternion (DGeom geom, final DQuaternion Q) {
-		throw new UnsupportedOperationException();
+	public static void dGeomSetOffsetQuaternion (DGeom geom, DQuaternionC Q) {
+		geom.setOffsetQuaternion(Q);
 	}
 
 
@@ -588,8 +585,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomSetOffsetWorldPosition (DGeom geom, double x, double y, double z) {
-		throw new UnsupportedOperationException();
+	public static void dGeomSetOffsetWorldPosition (DGeom geom, double x, double y, double z) {
+		geom.setOffsetWorldPosition(x, y, z);
 	}
 
 
@@ -608,8 +605,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomSetOffsetWorldRotation (DGeom geom, final DMatrix3 R) {
-		throw new UnsupportedOperationException();
+	public static void dGeomSetOffsetWorldRotation (DGeom geom, DMatrix3C R) {
+		geom.setOffsetWorldRotation(R);
 	}
 
 
@@ -624,12 +621,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * If the geom did not have an offset, it is automatically created.
 	 *
 	 * @param geom the geom to set.
-	 * @param Q the new rotation.
+	 * @param q the new rotation.
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomSetOffsetWorldQuaternion (DGeom geom, final DQuaternion q) {
-		throw new UnsupportedOperationException();
+	public static void dGeomSetOffsetWorldQuaternion (DGeom geom, DQuaternionC q) {
+		geom.setOffsetWorldQuaternion(q);
 	}
 
 
@@ -647,8 +644,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomClearOffset(DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static void dGeomClearOffset(DGeom geom) {
+		geom.clearOffset();
 	}
 
 
@@ -664,12 +661,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * position.
 	 *
 	 * @param geom the geom to query.
-	 * @returns Non-zero if the geom has an offset, zero otherwise.
+	 * @return Non-zero if the geom has an offset, zero otherwise.
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	int dGeomIsOffset(DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static boolean dGeomIsOffset(DGeom geom) {
+		return geom.isOffset();
 	}
 
 
@@ -680,15 +677,15 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * If the geom has no offset, this function returns the zero vector.
 	 *
 	 * @param geom the geom to query.
-	 * @returns A pointer to the geom's offset vector.
+	 * @return A pointer to the geom's offset vector.
 	 * @remarks The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	final double [] dGeomGetOffsetPosition (DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static DVector3C dGeomGetOffsetPosition (DGeom geom) {
+		return geom.getOffsetPosition();
 	}
 
 
@@ -703,8 +700,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomCopyOffsetPosition (DGeom geom, DVector3 pos) {
-		throw new UnsupportedOperationException();
+	public static void dGeomCopyOffsetPosition (DGeom geom, DVector3 pos) {
+		pos.set(geom.getOffsetPosition());
 	}
 
 
@@ -716,15 +713,15 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * matrix.
 	 *
 	 * @param geom the geom to query.
-	 * @returns A pointer to the geom's offset rotation matrix.
+	 * @return A pointer to the geom's offset rotation matrix.
 	 * @remarks The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	final double [] dGeomGetOffsetRotation (DGeom geom) {
-		throw new UnsupportedOperationException();
+	public static DMatrix3C dGeomGetOffsetRotation (DGeom geom) {
+		return geom.getOffsetRotation();
 	}
 
 
@@ -740,8 +737,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomCopyOffsetRotation (DGeom geom, DMatrix3 R) {
-		throw new UnsupportedOperationException();
+	public static void dGeomCopyOffsetRotation (DGeom geom, DMatrix3 R) {
+		R.set(geom.getOffsetRotation());
 	}
 
 
@@ -756,8 +753,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomGetOffsetQuaternion (DGeom geom, DQuaternion result) {
-		throw new UnsupportedOperationException();
+	public static void dGeomGetOffsetQuaternion (DGeom geom, DQuaternion result) {
+		geom.getOffsetQuaternion(result);
 	}
 
 
@@ -784,7 +781,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * All other bits in flags must be set to zero. In the future the other bits
 	 * may be used to select from different contact generation strategies.
 	 *
-	 * @param contact Points to an array of dContactGeom structures. The array
+	 * @param contacts Points to an array of dContactGeom structures. The array
 	 * must be able to hold at least the maximum number of contacts. These
 	 * dContactGeom structures may be embedded within larger structures in the
 	 * array -- the skip parameter is the byte offset from one dContactGeom to
@@ -792,7 +789,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * points to a normal (C-style) array. It is an error for skip to be smaller
 	 * than sizeof(dContactGeom).
 	 *
-	 * @returns If the geoms intersect, this function returns the number of contact
+	 * @return If the geoms intersect, this function returns the number of contact
 	 * points generated (and updates the contact array), otherwise it returns 0
 	 * (and the contact array is not touched).
 	 *
@@ -816,7 +813,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//	      int skip) {
 	public static int dCollide (DGeom o1, DGeom o2, int flags, 
 			DContactGeomBuffer contacts) {
-		return DxGeom.dCollide((DxGeom)o1, (DxGeom)o2, flags, contacts, 1);
+		return OdeHelper.collide(o1, o2, flags, contacts);
 	}
 
 	/**
@@ -843,13 +840,13 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @sa dSpaceCollide2
+	 * @see #dSpaceCollide2(DGeom, DGeom, Object, DNearCallback)
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dSpaceCollide (dSpace space, void *data, dNearCallback *callback) {
 	public static void dSpaceCollide (DSpace space, Object data, DNearCallback callback) {
-		((DxSpace)space).dSpaceCollide(data, callback);
+		space.collide(data, callback);
 	}
 
 
@@ -889,14 +886,14 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * that dCollide will return contacts for every pair passed to the
 	 * callback.
 	 *
-	 * @sa dSpaceCollide
-	 * @sa dSpaceSetSublevel
+	 * @see #dSpaceCollide(DSpace, Object, DNearCallback)
+	 * @see #dSpaceSetSublevel(DSpace, int)
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dSpaceCollide2 (dGeom space1, dGeom space2, void *data, dNearCallback *callback) {
 	public static void dSpaceCollide2 (DGeom space1, DGeom space2, Object data, DNearCallback callback) {
-		DxSpace.dSpaceCollide2((DxGeom)space1, (DxGeom)space2, data, callback);
+		OdeHelper.spaceCollide2(space1, space2, data, callback);
 	}
 
 
@@ -946,17 +943,17 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param space   a space to contain the new geom. May be null.
 	 * @param radius  the radius of the sphere.
 	 *
-	 * @returns A new sphere geom.
+	 * @return A new sphere geom.
 	 *
 	 * @remarks The point of reference for a sphere is its center.
 	 *
-	 * @sa dGeomDestroy
-	 * @sa dGeomSphereSetRadius
+	 * @see #dGeomDestroy(DGeom)
+	 * @see #dGeomSphereSetRadius(DSphere, double)
 	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
-	public static DGeom dCreateSphere (DSpace space, double radius) {
-		return DxSphere.dCreateSphere((DxSpace)space, radius);
+	public static DSphere dCreateSphere (DSpace space, double radius) {
+		return OdeHelper.createSphere(space, radius);
 	}
 
 
@@ -966,12 +963,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param sphere  the sphere to set.
 	 * @param radius  the new radius.
 	 *
-	 * @sa dGeomSphereGetRadius
+	 * @see #dGeomSphereGetRadius(DSphere)
 	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
-	public static void dGeomSphereSetRadius (DGeom sphere, double radius) {
-		((DxSphere)sphere).dGeomSphereSetRadius(radius);
+	public static void dGeomSphereSetRadius (DSphere sphere, double radius) {
+		sphere.setRadius(radius);
 	}
 
 
@@ -980,12 +977,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param sphere  the sphere to query.
 	 *
-	 * @sa dGeomSphereSetRadius
+	 * @see #dGeomSphereSetRadius(DSphere, double)
 	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
-	public static double dGeomSphereGetRadius (DGeom sphere) {
-		return ((DxSphere)sphere).dGeomSphereGetRadius();
+	public static double dGeomSphereGetRadius (DSphere sphere) {
+		return sphere.getRadius();
 	}
 
 
@@ -997,15 +994,16 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param y       the Y coordinate of the point.
 	 * @param z       the Z coordinate of the point.
 	 *
-	 * @returns The depth of the point. Points inside the sphere will have a
+	 * @return The depth of the point. Points inside the sphere will have a
 	 * positive depth, points outside it will have a negative depth, and points
 	 * on the surface will have a depth of zero.
 	 *
 	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
-	public static double dGeomSpherePointDepth (DGeom sphere, double x, double y, double z) {
-		return ((DxSphere)sphere).dGeomSpherePointDepth(x, y, z);
+	public static double dGeomSpherePointDepth (DSphere sphere, 
+			double x, double y, double z) {
+		return sphere.getPointDepth(new DVector3(x, y, z));
 	}
 
 
@@ -1016,12 +1014,13 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//			       unsigned int _planecount,
 	//			       double *_points,
 	//			       unsigned int _pointcount,unsigned int *_polygons) {
-	public static DGeom dCreateConvex (DSpace space,
+	public static DConvex dCreateConvex (DSpace space,
 			double []planes,
 			int planecount,
 			double []points,
 			int pointcount, int []polygons) {
-		return DxConvex.dCreateConvex((DxSpace)space, planes, planecount, points, pointcount, polygons);
+		return OdeHelper.createConvex(space, planes, planecount, 
+				points, pointcount, polygons);
 	}
 
 	//ODE_API 
@@ -1030,12 +1029,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//			     unsigned int _count,
 	//			     double *_points,
 	//			     unsigned int _pointcount,unsigned int *_polygons) {
-	void dGeomSetConvex (DGeom g,
+	public static void dGeomSetConvex (DConvex g,
 			double []_planes,
 			int _count,
 			double []_points,
 			int _pointcount, int []_polygons) {
-		throw new UnsupportedOperationException();
+		g.setConvex(_planes, _count, _points, _pointcount, _polygons);
 	}
 	//<-- Convex Functions
 
@@ -1052,17 +1051,17 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param ly      the length of the box along the Y axis
 	 * @param lz      the length of the box along the Z axis
 	 *
-	 * @returns A new box geom.
+	 * @return A new box geom.
 	 *
 	 * @remarks The point of reference for a box is its center.
 	 *
-	 * @sa dGeomDestroy
-	 * @sa dGeomBoxSetLengths
+	 * @see #dGeomDestroy(DGeom)
+	 * @see #dGeomBoxSetLengths(DBox, double, double, double)
 	 * @ingroup collide_box
 	 */
 	//ODE_API 
-	public static DGeom dCreateBox (DSpace space, double lx, double ly, double lz) {
-		return DxBox.dCreateBox((DxSpace) space, lx, ly, lz);
+	public static DBox dCreateBox (DSpace space, double lx, double ly, double lz) {
+		return OdeHelper.createBox(space, lx, ly, lz);
 	}
 
 
@@ -1074,12 +1073,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param ly      the length of the box along the Y axis
 	 * @param lz      the length of the box along the Z axis
 	 *
-	 * @sa dGeomBoxGetLengths
+	 * @see #dGeomBoxGetLengths(DBox, DVector3)
 	 * @ingroup collide_box
 	 */
 	//ODE_API 
-	public static void dGeomBoxSetLengths (DGeom box, double lx, double ly, double lz) {
-		((DxBox)box).dGeomBoxSetLengths(new DVector3(lx, ly, lz));
+	public static void dGeomBoxSetLengths (DBox box, double lx, double ly, double lz) {
+		box.setLengths(new DVector3(lx, ly, lz));
 	}
 
 
@@ -1089,12 +1088,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param box     the box to query
 	 * @param result  the returned side lengths
 	 *
-	 * @sa dGeomBoxSetLengths
+	 * @see #dGeomBoxSetLengths(DBox, double, double, double)
 	 * @ingroup collide_box
 	 */
 	//ODE_API 
-	public static void dGeomBoxGetLengths (DGeom box, DVector3 result) {
-		((DxBox)box).dGeomBoxGetLengths(result);
+	public static void dGeomBoxGetLengths (DBox box, DVector3 result) {
+		box.getLengths(result);
 	}
 
 
@@ -1106,54 +1105,56 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param y    the Y coordinate of the point to test.
 	 * @param z    the Z coordinate of the point to test.
 	 *
-	 * @returns The depth of the point. Points inside the box will have a
+	 * @return The depth of the point. Points inside the box will have a
 	 * positive depth, points outside it will have a negative depth, and points
 	 * on the surface will have a depth of zero.
 	 */
 	//ODE_API 
-	public static double dGeomBoxPointDepth (DGeom box, double x, double y, double z) {
-		return ((DxBox)box).dGeomBoxPointDepth(x, y, z);
+	public static double dGeomBoxPointDepth (DBox box, double x, double y, double z) {
+		return box.getPointDepth(new DVector3(x, y, z));
 	}
 
 
 	//ODE_API 
-	public static DGeom dCreatePlane (DSpace space, double a, double b, double c, double d) {
-		return DxPlane.dCreatePlane((DxSpace) space, a, b, c, d);
+	public static DPlane dCreatePlane (DSpace space, double a, double b, double c, double d) {
+		return OdeHelper.createPlane(space, a, b, c, d);
 	}
 	//ODE_API 
-	public static void dGeomPlaneSetParams (DGeom plane, double a, double b, double c, double d) {
-		((DxPlane)plane).dGeomPlaneSetParams(a, b, c, d);
+	public static void dGeomPlaneSetParams (DPlane plane, double a, double b, double c, double d) {
+		plane.setParams(a, b, c, d);
 	}
 	//ODE_API 
-	public static void dGeomPlaneGetParams (DGeom plane, DVector4 result) {
-		((DxPlane)plane).dGeomPlaneGetParams(result);
+	public static void dGeomPlaneGetParams (DPlane plane, DVector4 result) {
+		DVector3C t = plane.getPosition();
+		result.set( t.get0(), t.get1(), t.get2(), plane.getDepth());
 	}
 	//ODE_API 
-	public static double dGeomPlanePointDepth (DGeom plane, double x, double y, double z) {
-		return ((DxPlane)plane).dGeomPlanePointDepth(x, y, z);
+	public static double dGeomPlanePointDepth (DPlane plane, double x, double y, double z) {
+		return plane.getPointDepth(new DVector3(x, y, z));
 	}
 
 	//ODE_API 
-	public static DGeom dCreateCapsule (DSpace space, double radius, double length) {
-		return DxCapsule.dCreateCapsule((DxSpace)space, radius, length);
+	public static DCapsule dCreateCapsule (DSpace space, double radius, double length) {
+		return OdeHelper.createCapsule(space, radius, length);
 	}
 	//ODE_API 
-	public static void dGeomCapsuleSetParams (DGeom ccylinder, double radius, double length) {
-		((DxCapsule)ccylinder).dGeomCapsuleSetParams(radius, length);
+	public static void dGeomCapsuleSetParams (DCapsule ccylinder, double radius, double length) {
+		ccylinder.setParams(radius, length);
 	}
 	//ODE_API 
 	// void dGeomCapsuleGetParams (dGeom ccylinder, double *radius, double *length) {
-	public static void dGeomCapsuleGetParams (DGeom ccylinder, RefDouble radius, 
+	public static void dGeomCapsuleGetParams (DCapsule ccylinder, RefDouble radius, 
 			RefDouble length) {
-		((DxCapsule)ccylinder).dGeomCapsuleGetParams(radius, length);
+		radius.d = ccylinder.getRadius();
+		length.d = ccylinder.getLength();
 	}
 	//ODE_API 
-	public static double dGeomCapsulePointDepth (DGeom ccylinder, double x, double y, double z) {
-		return ((DxCapsule)ccylinder).dGeomCapsulePointDepth(x, y, z);
+	public static double dGeomCapsulePointDepth (DCapsule ccylinder, 
+			double x, double y, double z) {
+		return ccylinder.getPointDepth(new DVector3(x, y, z));
 	}
 
 	// For now we want to have a backwards compatible C-API, note: C++ API is not.
-	//TODO?
 	//#define dCreateCCylinder dCreateCapsule
 	//#define dGeomCCylinderSetParams dGeomCapsuleSetParams
 	//#define dGeomCCylinderGetParams dGeomCapsuleGetParams
@@ -1161,39 +1162,42 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//#define dCCylinderClass dCapsuleClass
 
 	//ODE_API 
-	public static DGeom dCreateCylinder (DSpace space, double radius, double length) {
-		return DxCylinder.dCreateCylinder((DxSpace)space, radius, length);
+	public static DCylinder dCreateCylinder (DSpace space, double radius, double length) {
+		return OdeHelper.createCylinder(space, radius, length);
 	}
 	//ODE_API 
-	void dGeomCylinderSetParams (DGeom cylinder, double radius, double length) {
-		throw new UnsupportedOperationException();
+	public static void dGeomCylinderSetParams (DCylinder cylinder, 
+			double radius, double length) {
+		cylinder.setParams(radius, length);
 	}
 	//ODE_API 
 	// void dGeomCylinderGetParams (dGeom cylinder, double *radius, double *length) {
-	public static void dGeomCylinderGetParams (DGeom cylinder, RefDouble radius, RefDouble length) {
-		((DxCylinder)cylinder).dGeomCylinderGetParams(radius, length);
+	public static void dGeomCylinderGetParams (DCylinder cylinder, 
+			RefDouble radius, RefDouble length) {
+		radius.d = cylinder.getRadius();
+		length.d = cylinder.getLength();
 	}
 
 	//ODE_API 
-	public static DGeom dCreateRay (DSpace space, double length) {
-		return DxRay.dCreateRay((DxSpace) space, length);
+	public static DRay dCreateRay (DSpace space, double length) {
+		return OdeHelper.createRay(space, length);
 	}
 	//ODE_API 
-	public static void dGeomRaySetLength (DGeom ray, double length) {
-		((DxRay)ray).dGeomRaySetLength(length);
+	public static void dGeomRaySetLength (DRay ray, double length) {
+		ray.setLength(length);
 	}
 	//ODE_API 
-	public static double dGeomRayGetLength (DGeom ray) {
-		return ((DxRay)ray).dGeomRayGetLength();
+	public static double dGeomRayGetLength (DRay ray) {
+		return ray.getLength();
 	}
 	//ODE_API 
-	public static void dGeomRaySet (DGeom ray, double px, double py, double pz,
+	public static void dGeomRaySet (DRay ray, double px, double py, double pz,
 			double dx, double dy, double dz) {
-		((DxRay)ray).dGeomRaySet(px, py, pz, dx, dy, dz);
+		ray.set(px, py, pz, dx, dy, dz);
 	}
 	//ODE_API 
-	public static void dGeomRayGet (DGeom ray, DVector3 start, DVector3 dir) {
-		((DxRay)ray).dGeomRayGet(start, dir);
+	public static void dGeomRayGet (DRay ray, DVector3 start, DVector3 dir) {
+		ray.get(start, dir);
 	}
 
 	/**
@@ -1202,51 +1206,59 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * they can make a major differences there.
 	 */
 	//ODE_API 
-	void dGeomRaySetParams (DGeom g, int FirstContact, int BackfaceCull) {
-		throw new UnsupportedOperationException();
+	public static void dGeomRaySetParams (DRay g, 
+			boolean firstContact, boolean backfaceCull) {
+		g.setParams(firstContact, backfaceCull);
 	}
 	//ODE_API 
 	// void dGeomRayGetParams (dGeom g, int *FirstContact, int *BackfaceCull) {
-	void dGeomRayGetParams (DGeom g, int []FirstContact, int []BackfaceCull) {
-		throw new UnsupportedOperationException();
+	public static void dGeomRayGetParams (DRay g, RefBoolean firstContact, 
+			RefBoolean backfaceCull) {
+		firstContact.b = g.getFirstContact();
+		backfaceCull.b = g.getBackfaceCull();
 	}
 	//ODE_API 
-	void dGeomRaySetClosestHit (DGeom g, int closestHit) {
-		throw new UnsupportedOperationException();
+	public static void dGeomRaySetClosestHit (DRay g, boolean closestHit) {
+		g.setClosestHit(closestHit);
 	}
 	//ODE_API 
-	int dGeomRayGetClosestHit (DGeom g) {
-		throw new UnsupportedOperationException();
+	public static boolean dGeomRayGetClosestHit (DRay g) {
+		return g.getClosestHit();
 	}
 
-	//TZ TODO ????: #include "collision_trimesh.h"
 	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	public static DGeom dCreateGeomTransform (DSpace space) {
-		return DxGeomTransform.dCreateGeomTransform((DxSpace) space);
+	public static DGeomTransform dCreateGeomTransform (DSpace space) {
+		return OdeHelper.createGeomTransform(space);
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	public static void dGeomTransformSetGeom (DGeom g, DGeom obj) {
-		((DxGeomTransform)g).dGeomTransformSetGeom((DxGeom) obj);
+	public static void dGeomTransformSetGeom (DGeomTransform g, DGeom obj) {
+		g.setGeom(obj);
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	public static DGeom dGeomTransformGetGeom (DGeom g) {
-		return ((DxGeomTransform)g).dGeomTransformGetGeom();
+	public static DGeom dGeomTransformGetGeom (DGeomTransform g) {
+		return g.getGeom();
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	public static void dGeomTransformSetCleanup (DGeom g, boolean mode) {
-		((DxGeomTransform)g).dGeomTransformSetCleanup(mode);
+	public static void dGeomTransformSetCleanup (DGeomTransform g, boolean mode) {
+		g.setCleanup(mode);
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	int dGeomTransformGetCleanup (DGeom g) {
+	int dGeomTransformGetCleanup (DGeomTransform g) {
 		throw new UnsupportedOperationException();
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	void dGeomTransformSetInfo (DGeom g, int mode) {
+	void dGeomTransformSetInfo (DGeomTransform g, int mode) {
 		throw new UnsupportedOperationException();
 	}
+	/** TZ @deprecated (see Wiki) */
 	//ODE_API 
-	int dGeomTransformGetInfo (DGeom g) {
+	int dGeomTransformGetInfo (DGeomTransform g) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -1284,7 +1296,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	public static DGeom dCreateHeightfield( DSpace space,
 			DHeightfieldData data, boolean bPlaceable ) {
-		return DxHeightfield.dCreateHeightfield((DxSpace)space, (DxHeightfieldData)data, bPlaceable);
+		return OdeHelper.createHeightfield(space, data, bPlaceable);
 	}
 
 
@@ -1302,7 +1314,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 	//ODE_API 
 	public static DHeightfieldData dGeomHeightfieldDataCreate() {
-		return DxHeightfieldData.dGeomHeightfieldDataCreate();
+		return OdeHelper.createHeightfieldData();
 	}
 
 
@@ -1316,7 +1328,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 	//ODE_API 
 	public static void dGeomHeightfieldDataDestroy( DHeightfieldData d ) {
-		((DxHeightfieldData)d).dGeomHeightfieldDataDestroy();
+		d.destroy();
 	}
 
 
@@ -1370,9 +1382,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 				Object[] pUserData, DHeightfieldGetHeight pCallback,
 				double width, double depth, int widthSamples, int depthSamples,
 				double scale, double offset, double thickness, boolean bWrap ) {
-		((DxHeightfieldData)d).dGeomHeightfieldDataBuildCallback(pUserData, 
-				pCallback, width, depth, widthSamples, depthSamples, 
-				scale, offset, thickness, bWrap);
+		d.buildCallback(pUserData, pCallback, width, depth, widthSamples, 
+				depthSamples, scale, offset, thickness, bWrap);
 	}
 
 	/**
@@ -1423,11 +1434,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//				final unsigned char* pHeightData, int bCopyHeightData,
 	//				double width, double depth, int widthSamples, int depthSamples,
 	//				double scale, double offset, double thickness,	int bWrap ) {
-	void dGeomHeightfieldDataBuildByte( DHeightfieldData d,
-			final byte[] pHeightData, int bCopyHeightData,
+	public static void dGeomHeightfieldDataBuildByte( DHeightfieldData d,
+			final byte[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
-			double scale, double offset, double thickness,	int bWrap ) {
-		throw new UnsupportedOperationException();
+			double scale, double offset, double thickness, boolean bWrap ) {
+		d.build( pHeightData, bCopyHeightData, width, depth, 
+				widthSamples, depthSamples, scale, offset, thickness, bWrap);
 	}
 
 	/**
@@ -1479,10 +1491,11 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//				double width, double depth, int widthSamples, int depthSamples,
 	//				double scale, double offset, double thickness, int bWrap ) {
 	void dGeomHeightfieldDataBuildShort( DHeightfieldData d,
-			final short[] pHeightData, int bCopyHeightData,
+			final short[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
-			double scale, double offset, double thickness, int bWrap ) {
-		throw new UnsupportedOperationException();
+			double scale, double offset, double thickness, boolean bWrap ) {
+		d.build( pHeightData, bCopyHeightData, width, depth, 
+				widthSamples, depthSamples, scale, offset, thickness, bWrap);
 	}
 
 	/**
@@ -1536,10 +1549,11 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//				double width, double depth, int widthSamples, int depthSamples,
 	//				double scale, double offset, double thickness, int bWrap ) {
 	void dGeomHeightfieldDataBuildSingle( DHeightfieldData d,
-			final float[] pHeightData, int bCopyHeightData,
+			final float[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
-			double scale, double offset, double thickness, int bWrap ) {
-		throw new UnsupportedOperationException();
+			double scale, double offset, double thickness, boolean bWrap ) {
+		d.build( pHeightData, bCopyHeightData, width, depth, 
+				widthSamples, depthSamples, scale, offset, thickness, bWrap);
 	}
 
 	/**
@@ -1593,10 +1607,11 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//				double width, double depth, int widthSamples, int depthSamples,
 	//				double scale, double offset, double thickness, int bWrap ) {
 	void dGeomHeightfieldDataBuildDouble( DHeightfieldData d,
-			final double[] pHeightData, int bCopyHeightData,
+			final double[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,
-			double scale, double offset, double thickness, int bWrap ) {
-		throw new UnsupportedOperationException();
+			double scale, double offset, double thickness, boolean bWrap ) {
+		d.build( pHeightData, bCopyHeightData, width, depth, 
+				widthSamples, depthSamples, scale, offset, thickness, bWrap);
 	}
 
 	/**
@@ -1612,14 +1627,14 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * A close fit will yield a more efficient collision check.
 	 *
 	 * @param d A dHeightfieldData created by dGeomHeightfieldDataCreate
-	 * @param min_height The new minimum height value. Scale, offset and thickness is then applied.
-	 * @param max_height The new maximum height value. Scale and offset is then applied.
+	 * @param minHeight The new minimum height value. Scale, offset and thickness is then applied.
+	 * @param maxHeight The new maximum height value. Scale and offset is then applied.
 	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomHeightfieldDataSetBounds( DHeightfieldData d,
 			double minHeight, double maxHeight ) {
-		((DxHeightfieldData)d).dGeomHeightfieldDataSetBounds( minHeight, maxHeight );
+		d.setBounds(minHeight, maxHeight);
 	}
 
 
@@ -1634,8 +1649,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	void dGeomHeightfieldSetHeightfieldData( DGeom g, DHeightfieldData d ) {
-		throw new UnsupportedOperationException();
+	public static void dGeomHeightfieldSetHeightfieldData( DHeightfield g, DHeightfieldData d ) {
+		g.setHeightfieldData(d);
 	}
 
 
@@ -1649,8 +1664,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @ingroup collide
 	 */
 	//ODE_API 
-	DHeightfieldData dGeomHeightfieldGetHeightfieldData( DGeom g ) {
-		throw new UnsupportedOperationException();
+	public static DHeightfieldData dGeomHeightfieldGetHeightfieldData( DHeightfield g ) {
+		return g.getHeightfieldData();
 	}
 
 
@@ -1690,7 +1705,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 	//ODE_API 
 	// void dInfiniteAABB (dGeom geom, double aabb[6]) {
-	void dInfiniteAABB (DGeom geom, DVector6 aabb) {
+	void dInfiniteAABB (DGeom geom, DAABB aabb) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -1700,7 +1715,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 	//typedef void dGetAABBFn(dGeom g, double aabb[6])
 	public static interface dGetAABBFn {
-		void dGetAABBFn(DGeom g, DVector6 aabb);
+		void dGetAABBFn(DGeom g, DAABB aabb);
 	}
 	//typedef int dColliderFn (dGeom o1, dGeom o2,
 	//			 int flags, dContactGeom *contact, int skip) {
@@ -1718,7 +1733,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	}
 	//typedef int dAABBTestFn (dGeom o1, dGeom o2, double aabb[6]) {
 	public static interface dAABBTestFn {
-		boolean dAABBTestFn (DGeom o1, DGeom o2, DVector6 aabb);
+		boolean dAABBTestFn (DGeom o1, DGeom o2, DAABB aabb);
 	}
 
 	//TZ moved to dxGeom
@@ -1741,10 +1756,10 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 		public DColliderFn collider(int num) {
 			return collider.dGetColliderFnFn(num);
 		}
-		public void aabb(DGeom g, DVector6 aabb) {
+		public void aabb(DGeom g, DAABB aabb) {
 			this.aabb.dGetAABBFn(g, aabb);
 		}
-		public boolean aabb_test(DGeom o1, DGeom o2, DVector6 aabb) {
+		public boolean aabb_test(DGeom o1, DGeom o2, DAABB aabb) {
 			return aabb_test.dAABBTestFn(o1, o2, aabb);
 		}
 	}
@@ -1774,15 +1789,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 	//ODE_API 
 	// void dSetColliderOverride (int i, int j, dColliderFn *fn) {
-	void dSetColliderOverride (int i, int j, DColliderFn fn) {
-		throw new UnsupportedOperationException();
+	public static void dSetColliderOverride (int i, int j, DColliderFn fn) {
+		OdeHelper.setColliderOverride(i, j, fn);
 	}
-
-
-	/* ************************************************************************ */
-
-	//#ifdef __cplusplus
 }
-//#endif
-//
-//#endif
