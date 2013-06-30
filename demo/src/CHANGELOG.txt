@@ -5,10 +5,224 @@ the rules for this file:
   * entries are sorted newest-first.
   * summarise sets of changes.
   * don't ever delete anything.
-  * keep the format consistent (79 char width, YYYY-MM-DD date format).
+  * keep the format consistent (79 char width, YYYY-MMM-DD date format).
 
 ------------------------------------------------------------------------------
 
-2009-06-04  Tilmann Zäschke
+		   ******************************************************************
+
+2012-Jun-02 Tilmann Zaschke
+		* Release of ode4j-0.12.0-j1.0
+		   ******************************************************************
+
+2012-Jun-02 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Identified failing test (is because of GIMPACT)
+		SUMMARY of changes for ode-0.12
+		- Refactoring of OdeMath method names
+		- Refactoring of OdeMath super-classes Matrix->DMatrix, ...
+		- new functions in DGeom
+		- Quickstep refactored and sped up
+		- Clean-up of demos
+		- New TrackDemo
+		- Bug fixes
+
+
+2012-May-29 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Fixed NPE in Step.java (e.g. DemoChain1)
+		  - Fixed explosion in DemoCrash and DemoBuggy -> Step was faulty.
+
+2012-May-26 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Fixed Step.java, all test work now, except one.
+		  - Fixed QuickStep, much more stable now.
+		  - Fixed some warnings
+
+2012-May-18 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Initial version of migrated Step.java, still buggy
+		  - Finished migration of all other files.
+
+2012-May-17 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Migration of remaining core files until ode.cpp.
+
+2012-May-13 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Test harnesses. Don't run yet...
+		  - Fixed and cleaned up concurrency test and fixed modest reported problems
+		  - Removed Testing.java
+
+2012-May-08 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Included DMatrix/DRotation/DMisc in OdeMath.
+		  - Checked drawstuff
+
+2012-May-07 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Migrated APIs for DMatrix, DMisc and DRotation
+		  - Migrated remaining demos
+		  - Started migration of DrawStuff.
+		  - Fixed some bugs in new Matrix multiplication.
+
+2012-Apr-22 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - collision_kernel.*
+		  - Fixed QuickStep/DemoBoxStack
+		  - Demos up to demo_moving_convex
+
+2012-Apr-14 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Migrated matrix.cpp, fast*.c, objects.h, util.*, ode.cpp.
+
+2012-Apr-13 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Migrated QuickStep, LCP and parts of Matrix.
+
+2012-Apr-10 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - Fixed all joint-files.
+
+2012-Apr-09 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - 'finnished' include-files for now
+		  - migrated DxBox and quickstep.
+		  TODO Box is faulty!!!! 
+		  
+2012-Apr-08 Tilmann Zaschke
+		* Migration to ode-0.12:
+		  - odemath.h
+
+2010-Oct-24 Tilmann Zaschke
+		* Added missing Lo/HiStop functions in DAMotorJoint (Bug ID: 3088463)
+
+2010-Jun-19 Tilmann Zaschke
+		* Release of ode4j-0.11.1-j1.4
+		   ******************************************************************
+
+2010-Jun-08 Tilmann Zaschke
+		* Updated javadoc for DHeightfieldData build(...) methods.
+
+2010-Jun-07 Tilmann Zaschke
+		* Implemented support for building DHeightfieldData from short[], 
+		  float[] and double[].
+		* API CHANGE:
+		  - Changed API of DHeightField and DHeightFieldData to accept Object
+		    instead of Object[] as type of data.
+		   ******************************************************************
+
+2010-May-30 Tilmann Zaschke
+		* Release of ode4j-0.11.1-j1.3
+		   ******************************************************************
+
+2010-May-20 Tilmann Zaschke
+		* Fixed recursion in DxBody - Bug ID: 3003719
+
+2010-Feb-23 Tilmann Zaschke
+		* Fixed drawstuff problem with ATI 10.1 and 10.2 driver under Linux:
+		  Bug ID: 2957098
+
+2010-Feb-03 Tilmann Zaschke
+		* Release of ode4j-0.11.1-j1.2
+		   ******************************************************************
+
+2010-Jan-20 Tilmann Zaschke
+		* API change renamed DContact.dSurfaceParameters to DSurfaceParameters
+		   ************ ************ ************ ************ ************
+
+2010-Jan-18 Tilmann Zaschke
+		* Fixed another problem in GIMPACT (still buggy).
+
+2010-Jan-17 Tilmann Zaschke
+		* Improved version with GIMPACT (still buggy).
+		  DemoBasket and DemoCyl are working now.
+		* Updated copyright information.
+
+2010-Jan-10 Tilmann Zaschke
+		* Added initial version for TRIMESH support via GIMPACT (still buggy).
+
+2009-Dec-10 Tilmann Zaschke
+		* Fixed bugs where setting a body's dampening or auto-disable 
+		  parameters would set these parameters for all other bodies and the 
+		  associated world as well. -> BUG ID: 2912249
+		* reduced visibility of some public fields in DxWorld and DxBody.
+
+2009-Dec-07 Tilmann Zaschke
+		* Removed @brief tags in javadoc except cpp javadoc.
+
+2009-Nov-30 Tilmann Zäschke
+		* Cleaned up argument parsing in demos. 
+		* API change: DrawStuff.setOuputNull() -> dsSetOutputNull()
+
+2009-Nov-29 Tilmann Zäschke
+		* Fixed bug ID: 2905309 -texturepath ignored, 1st argument ignored 
+		* Started cleanup of DrawStuff, mainly regarding setting up
+		  version and texture_path
+
+2009-Nov-12 Tilmann Zäschke
+		* Fixed crash for DemoCyl in drawstuff
+
+2009-Aug-18 Tilmann Zäschke
+		* Javadoc improvements
+
+2009-Aug-12 Tilmann Zäschke
+		* Javadoc & API for DBody completed
+		* Javadoc & API for DSpace and sub-classes completed
+		* Javadoc & API for DGeom and sub-classes completed
+		* Fixed and reduced dependencies to .cpp and .internal
+		* Fixed Bug#2836288 in DxConvex
+		* Javadoc & API for DJoint and sub-classes completed
+		* cleaned up javadoc a bit
+
+2009-Aug-10 Tilmann Zäschke
+		* Reduced warnings
+		* Added @Override labels
+		* Javadoc & API for DWorld completed
+
+2009-Jul-22 Tilmann Zäschke
+		* Copied javadoc for CppMath API.
+		* More API changes in the MATH area.
+		  Array, Vector, Martrix and 'v' are not public anymore.
+
+2009-Jul-21 Tilmann Zäschke
+		* API changes !!!!!!!!!!!!!!!
+		  - DVector3 does not extend DVector anymore
+		  - DMatrix3C.get(i) removed
+		  - Removed following method:
+		  	Matrix.dMultiply0 (DVector3 A, final DMatrix3C B, 
+			final DVector3C C, int p, int q, int r)
+			-> last arguments removed, assumed to be always 3,3,1.
+		  - Matrix.dMultiply0 (DMatrix3 A, final DMatrix3C B, 
+			final DMatrix3C C, int p, int q, int r)
+		  
+
+
+2009-Jul-20 Tilmann Zäschke
+		* Minor updates
+		* released 0.11.1-j1.0 ***********************************************
+
+
+2009-Jul-07 Tilmann Zäschke
+		* Fixed Test harness errors and failures
+		* Fixed DemoBuggy
+
+2009-Jul-06 Tilmann Zäschke
+		* Replaced usage of DVector6 with DAABB / improved DAABB
+		* Reduced usage of RefDouble in API
+		* Implemented most of the functions in the fake-C/C++ API.
+
+2009-Jul-06 Tilmann Zäschke
+		* All code migrated to ode-0.11.1
+		* released 0.11.1-j1.0-beta-1
+
+2009-Jun-26 Tilmann Zäschke
+		* Started migration to ode-0.11.1
+		* Investigation of TLS mapping to Java
+		* Decision that SDK will contain everything, no need for the other 
+		  JARs anymore.
+
+2009-Jun-04  Tilmann Zäschke
         * Initial version checked in to SVN. This is a 95% complete port of 
           ode 0.10.1 .
+          
