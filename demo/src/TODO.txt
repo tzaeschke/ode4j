@@ -1,3 +1,17 @@
+July 6th 2009:
+Some minor things I found in the code:
+- The test universal.cpp (587-593) is probably incorrectly checking the first field of the array 3 times, rather than checking the 1st, 2nd, and 3rd field.
+- demo_gyroscopic is not initializing 'contactgroup'
+- demo_kinematic is not initializing 'joints'
+- demo_moving_convex uses dWorldStepFast1, which is deprecated:
+- dJointAddPUTorque (...) : Can anyone point me to the implementation? I don't think there is one.
+- http://opende.sourceforge.net/wiki/index.php/Joint_Param_Documentation
+  This indicate that PU & PR joint have not parameters, I don't think that's correct?
+- GeomTransform is obsolete since 0.6 (according to the Wiki), but it is still used in several demos:
+  deom_boxstack, demo_heightfield, demo_jointPU, demo_motion, demo_spacestress.
+  I haven't used it myself, so is it still required?
+
+
 REPORT MISSING:
 - dBody.destroy()
 - dCapsule class
@@ -12,18 +26,27 @@ REPORT MISSING:
 - dGeom.setOffsetPosition()
 - dGeom.setOffsetRotation()
 - dGeomTransform API class
-- Calls to d(x)Plane.getPosition()/getRotation() should cause an error/warning (see ODE WIKI)
+- dPistonJoint.setAnchorOffset()
+
 
 REPORT !!!!
 - Report that SAP-Space BoxPruning may miss some collisions:
   while ( poslist[*RunningAddress++] < poslist[IndexPair.id0] ) {}
   This line increases the RunningAddress to the first that is not
   smaller PLUS ONE!!  DONE (2009-05-08)
-- Why are demos still using TransformedGeom? Isn't it deprecated?
   
 
 FIX !!!!!!!!!!!!!!!
 - dArray.push() clones Objects!!!!!!!
+
+
+DOC:
+- replace @sa with @see
+- replace \li with <li>
+
+dJointGetAMotorNumAxes: Unused @param 'num'
+dJointGetAMotorAxis: Unused @param 'rel'
+dJointGetAMotorMode: Unused @param 'mode'
 
 
 DIFFERENCES:
@@ -53,9 +76,13 @@ DIFFERENCES:
     not only by one letter: dGeomGetPos(g,p) / dGeomSetPos(g,p) --> p = g.getPos() / get.setPos(p)
   - Above that, I think it is normal coding practice in Java to return a value if a method has only
     one result.
+  * On the other hand, this can cause problems, because the "immutable' Object may be modified
+    while it is used, either through multithreading, or simply by other calls to the Object.
+  * Also, it may NOT be modified, because the user does not know whether he gets an actual field
+    or only a calculated result back.
 
 REQUIRED LIBS:
-- Java 5: for everything.
+- Java 6: for everything.
 - cppLib: for everything. It is used to simplify the porting. It is currently
   included in the ode4j jars.
 - JUnit 4: for the test harnesses
@@ -66,7 +93,6 @@ REQUIRED LIBS:
 Cleanup uses of dVector.v, especially in e.g.
 - dxBody
 - dxJoint
-- try using dVector3.create() and implement pooling (perf tests!)
 
 dxPlane._p -> Change from double[4] to dVector3?
 
@@ -79,15 +105,14 @@ Check and remove references (and commented out occurrences) of:
 Remove commented out references to dUSE_MALLOC_FOR_ALLOCA
 
 
-
-Check Matrix.factorCholesky(2)()
--> TZs version causes larger w- and q-errors in DemoI ...
--> OdeVersion seems to forget to set ratio[] to 0.0 (?) 
-
+CPP API should not use internal classes ?!?!?!? Also avoid casting !!!!!
+-> Call DJoint j; j.getXY()
 
 TODO
 - DOC: @sa -> @see
+- DOC: @li -> <li>
 - change DxJoint node[0]/[1] to _node0/_node1
+- Use ThreadLocal DVector3 Pool to avoid synchronization?
 - DEMO: remove references to CPP4J
 - Implement auto-allocation of dContacts.
   dContactGeom() -> auto alloc
@@ -103,7 +128,6 @@ TODO
 - PerfTest and replace 'double[] v' in dVector3 with 'double v0, v1, v2;'
 - get rid of all _tome stuff and firstjoint/firstbody
 - Check that 'unsigned' is always assigned with fabs(y); !!!
-- replace AABB with two dVector3?
 - rename all classes to have capital 'D'?
 - Check that org.ode4j.ode.* does not reference org.ode4j.cpp  !!!
 - Check that org.ode4j.ode.* does not reference org.ode4j.*.internal.*  ?!?
@@ -150,6 +174,9 @@ Bigger plans:
 -------------------
 Migration guide
 -------------------
+ 
+Use QuickStep. Its's faster then Step. StepFast has not been migrated (or has it?)
+  
   
 dMass
 =====
@@ -272,6 +299,16 @@ dJointTypeContact
 Common.dJointType.dJointTypeContact
 
 
+ContactType -> Find better name
+===========
+
+if (b1!=null && b2!=null && dAreConnectedExcluding(b1, b2, dJointTypeContact))
+    return;
+-->
+if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding(b1, b2, DContactJoint.class))
+    return;
+
+
 
 Constants
 =========
@@ -291,4 +328,10 @@ dInitODE2(0);
 ---> OdeHelper.initODE2(0);
 
 dCloseODE();
----> OdeHelper.closeODE();	
+---> OdeHelper.closeODE();
+
+
+
+DAABB
+=====
+DVector6 is replaced by DAABB/DAABBC	

@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,17 +13,18 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -49,8 +52,9 @@ import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DJoint.PARAM_N;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -71,8 +75,6 @@ import static org.ode4j.ode.OdeMath.*;
  */
 class DemoJointPU extends dsFunctions {
 
-
-	//using namespace ode;
 
 //	enum IDX_CYL_DIM
 //	{
@@ -230,7 +232,7 @@ class DemoJointPU extends dsFunctions {
 		}
 	}
 
-	private static void printKeyBoardShortCut()
+	private void printKeyBoardShortCut()
 	{
 		System.out.println ("Press 'h' for this help.");
 		System.out.println ("Press 'q' to add force on BLUE body along positive x direction.");
@@ -350,22 +352,22 @@ class DemoJointPU extends dsFunctions {
 
 			// Velocity of joint
 		case ',': case '<' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel3) - VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel3, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel3) - VEL_INC;
+			joint.setParam (PARAM_N.dParamVel3, vel);
 			System.out.println("Velocity = " + vel + "  FMax = 2");
 		}
 		break;
 
 		case '.': case '>' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel3) + VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel3, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel3) + VEL_INC;
+			joint.setParam (PARAM_N.dParamVel3, vel);
 			System.out.println("Velocity = " + vel + "  FMax = 2");
 		}
 		break;
 
 		case 'l': case 'L' : {
 			double aLimit, lLimit, fmax;
-			if (  joint.getParam (D_PARAM_NAMES_N.dParamFMax1)!=0 ) {
+			if (  joint.getParam (PARAM_N.dParamFMax1)!=0 ) {
 				aLimit = dInfinity;
 				lLimit = dInfinity;
 				fmax = 0;
@@ -376,24 +378,24 @@ class DemoJointPU extends dsFunctions {
 				fmax = 0.02;
 			}
 
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax1, fmax);
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax2, fmax);
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax3, fmax);
+			joint.setParam (PARAM_N.dParamFMax1, fmax);
+			joint.setParam (PARAM_N.dParamFMax2, fmax);
+			joint.setParam (PARAM_N.dParamFMax3, fmax);
 
 			if (joint instanceof DPRJoint) {
 				DPRJoint pr = (DPRJoint) (joint);
-				pr.setParam (D_PARAM_NAMES_N.dParamLoStop1, -lLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamHiStop1, -lLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamLoStop2, aLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamHiStop2, -aLimit);
+				pr.setParam (PARAM_N.dParamLoStop1, -lLimit);
+				pr.setParam (PARAM_N.dParamHiStop1, -lLimit);
+				pr.setParam (PARAM_N.dParamLoStop2, aLimit);
+				pr.setParam (PARAM_N.dParamHiStop2, -aLimit);
 			} else if (joint instanceof DPUJoint) {
 				DPUJoint pu = (DPUJoint) (joint);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop1, -aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop1, aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop2, -aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop2, aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop3, -lLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop3, lLimit);
+				pu.setParam (PARAM_N.dParamLoStop1, -aLimit);
+				pu.setParam (PARAM_N.dParamHiStop1, aLimit);
+				pu.setParam (PARAM_N.dParamLoStop2, -aLimit);
+				pu.setParam (PARAM_N.dParamHiStop2, aLimit);
+				pu.setParam (PARAM_N.dParamLoStop3, -lLimit);
+				pu.setParam (PARAM_N.dParamHiStop3, lLimit);
 			}
 		}
 
@@ -427,7 +429,7 @@ class DemoJointPU extends dsFunctions {
 		}
 	}
 
-	private static void drawBox (DBox id, int R, int G, int B)
+	private void drawBox (DBox id, int R, int G, int B)
 	{
 		if (id==null)
 			return;
@@ -530,7 +532,7 @@ class DemoJointPU extends dsFunctions {
 				DQuaternion qq = new DQuaternion();
 				dQMultiply1 (qq, qAng, q);
 				DMatrix3 R = new DMatrix3();
-				dQtoR (qq,R);
+				dRfromQ (R,qq);
 
 
 				DCylinder cyl = (DCylinder) geomAXIS1.getGeom();
@@ -553,7 +555,7 @@ class DemoJointPU extends dsFunctions {
 
 
 				DMatrix3 R = new DMatrix3();
-				dQtoR (qq1,R);
+				dRfromQ (R,qq1);
 
 
 				DCylinder cyl = (DCylinder) geomAXIS2.getGeom();
@@ -589,14 +591,11 @@ class DemoJointPU extends dsFunctions {
 	}
 
 
-	private static void Help (String[] argv)
+	@Override
+	public void dsPrintHelp()
 	{
-		System.out.println (argv[0]);
-		System.out.println (" -h | --help   : print this help");
+		super.dsPrintHelp();
 		System.out.println (" -p | --PRJoint : Use a PR joint instead of PU joint");
-		System.out.println (" -t | --texture-path path  : Path to the texture.");
-		System.out.println ("                             Default =");
-		System.out.println (DRAWSTUFF_TEXTURE_PATH);
 		System.out.println ("--------------------------------------------------");
 		System.out.println ("Hit any key to continue:");
 		//getchar();
@@ -605,32 +604,14 @@ class DemoJointPU extends dsFunctions {
 	}
 
 	public static void main(String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoJointPU();
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-
-		if (args.length >= 2 ) {
-			for (int i=1; i < args.length; ++i) {
-				if ( "-h".equals(args[i]) || "--help".equals(args[i]) )
-					Help (args);
-
-				if ( "-p".equals(args[i]) || "--PRJoint".equals(args[i]) )
-					type = DPRJoint.class;
-
-				if ( "-t".equals(args[i]) || "--texture-path".equals(args[i]) ) {
-					int j = i+1;
-					if ( j+1 > args.length      ||  // Check if we have enough arguments
-							args[j].charAt(0) == '\0' ||  // We should have a path here
-							args[j].charAt(0) == '-' ) // We should have a path not a command line
-						Help (args);
-					else
-						fn.path_to_textures = args[++i]; // Increase i since we use this argument
-				}
+		new DemoJointPU().demo(args);
+	}
+	
+	private void demo(String[] args) {
+		for (int i=0; i < args.length; ++i) {
+			if ( "-p".equals(args[i]) || "--PRJoint".equals(args[i]) ) {
+				type = DPRJoint.class;
+				args[i] = "";
 			}
 		}
 
@@ -775,7 +756,7 @@ class DemoJointPU extends dsFunctions {
 
 
 		// run simulation
-		dsSimulationLoop (args,400,300,fn);
+		dsSimulationLoop (args,400,300,this);
 
 		//delete joint;
 		//joint.DESTRUCTOR();  //TZ, not necessary, is deleted from dWorldDestroy()

@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,22 +13,23 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 import java.io.File;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -197,7 +200,7 @@ public class DemoMotion extends dsFunctions {
 		int numc = OdeHelper.collide (o1, o2, MAX_CONTACTS, contacts.getGeomBuffer());
 
 		if (numc != 0)
-			dRSetIdentity(RI);
+			RI.setIdentity();
 
 		boolean isplatform = (o1 == platform) || (o2 == platform);
 
@@ -308,7 +311,7 @@ public class DemoMotion extends dsFunctions {
 						platpos.get0(),
 						platpos.get1(),
 						platpos.get2()+2);
-				dRSetIdentity (R);
+				R.setIdentity();
 			}
 			obj[i].body.setRotation (R);
 			//            obj[i].body.dBodySetData (obj[i].body,(void*) i);
@@ -369,13 +372,10 @@ public class DemoMotion extends dsFunctions {
 	//void drawGeom (dxGeom g, final double[] pos, final double[] R, boolean show_aabb)
 	private void drawGeom (DGeom g, DVector3C pos, DMatrix3C R, boolean show_aabb)
 	{
-		int i;
-
 		if (g == null) return;
 		if (pos == null) pos = g.getPosition ();
 		if (R == null) R = g.getRotation ();
 
-		Class<?> type = g.getClass();
 		if (g instanceof DBox) {
 			DVector3C sides = ((DBox)g).getLengths();
 			dsDrawBox (pos,R,sides);
@@ -418,11 +418,8 @@ public class DemoMotion extends dsFunctions {
 		if (show_aabb) {
 			// draw the bounding box for this geom
 			DAABBC aabb = g.getAABB();
-			//TODO
 			DVector3 bbpos = aabb.getCenter();
-			//for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
 			DVector3 bbsides = aabb.getLengths();
-			//for (i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i) );
 			DMatrix3 RI = new DMatrix3();
 			RI.setIdentity();
 			dsSetColorAlpha (1f,0f,0f,0.5f);
@@ -495,20 +492,12 @@ public class DemoMotion extends dsFunctions {
 	}
 
 
-	//int main (int argc, char **argv)
 	public static void main (String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoMotion();
-		fn.version = DS_VERSION;
-		//    fn.start = start;
-		//    fn.step = simLoop;
-		//    fn.command = command;
-		//    fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
+		new DemoMotion().demo(args);
+	}
+	
+	
+	private void demo(String[] args) {
 
 		// create world
 		OdeHelper.initODE();
@@ -538,13 +527,12 @@ public class DemoMotion extends dsFunctions {
 		platform.setCollideBits(~1l);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy ();
 		space.destroy ();
 		world.destroy ();
 		OdeHelper.closeODE();
-		//    return 0;
 	}
 
 

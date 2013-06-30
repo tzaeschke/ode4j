@@ -1,11 +1,32 @@
+/*************************************************************************
+ *                                                                       *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
+ *                                                                       *
+ * This library is free software; you can redistribute it and/or         *
+ * modify it under the terms of EITHER:                                  *
+ *   (1) The GNU Lesser General Public License as published by the Free  *
+ *       Software Foundation; either version 2.1 of the License, or (at  *
+ *       your option) any later version. The text of the GNU Lesser      *
+ *       General Public License is included with this library in the     *
+ *       file LICENSE.TXT.                                               *
+ *   (2) The BSD-style license that is included with this library in     *
+ *       the file ODE4J-LICENSE-BSD.TXT.                                 *
+ *                                                                       *
+ * This library is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
+ * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
+ *                                                                       *
+ *************************************************************************/
 package org.ode4j.drawstuff.internal;
 
-import org.ode4j.drawstuff.DS_API.DS_TEXTURE_NUMBER;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 
-public interface DrawStuff {
+public interface DrawStuffApi {
 
 	public abstract void dsSimulationLoop(String[] args, int window_width,
 			int window_height, dsFunctions fn);
@@ -65,4 +86,6 @@ public interface DrawStuff {
 	public abstract void dsDrawTriangle(DVector3C pos, DMatrix3C r,
 			DVector3C v0, DVector3C v1, DVector3C v2, boolean solid);
 
+	public void dsDrawTriangle (final DVector3C pos, final DMatrix3C R,
+			final float[] v0, final float[] v1, final float[] v2, boolean solid);
 }
