@@ -28,12 +28,12 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
-import org.ode4j.ode.DTriMesh.dTriArrayCallback;
-import org.ode4j.ode.DTriMesh.dTriCallback;
-import org.ode4j.ode.DTriMesh.dTriRayCallback;
-import org.ode4j.ode.internal.DxSpace;
-import org.ode4j.ode.internal.DxTriMesh;
+import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.DTriMesh.DTriArrayCallback;
+import org.ode4j.ode.DTriMesh.DTriCallback;
+import org.ode4j.ode.DTriMesh.DTriRayCallback;
 import org.ode4j.ode.internal.DxTriMeshData;
+import org.ode4j.ode.internal.Common.DMatrix4;
 
 
 /**
@@ -60,11 +60,11 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 */
 	//ODE_API 
 	public static DTriMeshData dGeomTriMeshDataCreate() {
-		return DxTriMeshData.dGeomTriMeshDataCreate();
+		return OdeHelper.createTriMeshData();
 	}
 	//ODE_API 
-	void dGeomTriMeshDataDestroy(DTriMeshData g) {
-		throw new UnsupportedOperationException();
+	public static void dGeomTriMeshDataDestroy(DTriMeshData g) {
+		g.destroy();
 	}
 
 
@@ -87,10 +87,10 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * It is stored per geom instance, rather than per dTriMeshData.
 	 */
 	//ODE_API 
-	void dGeomTriMeshSetLastTransform( DGeom g, dMatrix4 last_trans ) {
+	void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {
 		throw new UnsupportedOperationException();
 	}
-	public static void dGeomTriMeshSetLastTransform( DGeom g, DoubleArray last_trans ) {
+	public static void dGeomTriMeshSetLastTransform( DTriMesh g, DoubleArray last_trans ) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 
@@ -106,16 +106,10 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//             final void* Vertices, int VertexStride, int VertexCount, 
 	//             final void* Indices, int IndexCount, int TriStride);
 	public static void dGeomTriMeshDataBuildSingle(DTriMeshData g,
-			final double[] Vertices, int VertexStride, int VertexCount, 
-			final int[] Indices, int IndexCount, int TriStride) {
-		((DxTriMeshData)g).dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount, 
-				Indices, IndexCount, TriStride);
-	}
-	public static void dGeomTriMeshDataBuildSingle(DTriMeshData g,
 			final float[] Vertices, int VertexStride, int VertexCount, 
 			final int[] Indices, int IndexCount, int TriStride) {
-		((DxTriMeshData)g).dGeomTriMeshDataBuildSingle(Vertices, VertexStride, VertexCount, 
-				Indices, IndexCount, TriStride);
+		((DxTriMeshData)g).build(Vertices, //VertexStride, VertexCount, 
+				Indices);//, IndexCount, TriStride);
 	}
 	/** same again with a normals array (used as trimesh-trimesh optimization) */
 	//ODE_API 
@@ -205,11 +199,11 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//		 int call(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
 	//	 }
 	//ODE_API 
-	void dGeomTriMeshSetCallback(DGeom g, dTriCallback Callback) {
+	void dGeomTriMeshSetCallback(DGeom g, DTriCallback Callback) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 
-	dTriCallback dGeomTriMeshGetCallback(DGeom g) {
+	DTriCallback dGeomTriMeshGetCallback(DGeom g) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -222,11 +216,11 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//	void call(dGeom TriMesh, dGeom RefObject, final int[] TriIndices, int TriCount);
 	//}
 	//ODE_API 
-	void dGeomTriMeshSetArrayCallback(DGeom g, dTriArrayCallback ArrayCallback) {
+	void dGeomTriMeshSetArrayCallback(DGeom g, DTriArrayCallback ArrayCallback) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 
-	dTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) {
+	DTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -241,11 +235,31 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//	int call(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
 	//}
 	//ODE_API 
-	void dGeomTriMeshSetRayCallback(DGeom g, dTriRayCallback Callback) {
+	void dGeomTriMeshSetRayCallback(DTriMesh g, DTriRayCallback Callback) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 
-	dTriRayCallback dGeomTriMeshGetRayCallback(DGeom g) {
+	DTriRayCallback dGeomTriMeshGetRayCallback(DTriMesh g) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Triangle merging callback.
+	 * Allows the user to generate a fake triangle index for a new contact generated
+	 * from merging of two other contacts. That index could later be used by the 
+	 * user to determine attributes of original triangles used as sources for a 
+	 * merged contact.
+	 */
+	//typedef int dTriTriMergeCallback(dGeomID TriMesh, int FirstTriangleIndex, int SecondTriangleIndex);
+	private interface DTriTriMergeCallback {
+		int callback(DTriMesh TriMesh, int FirstTriangleIndex, int SecondTriangleIndex);
+	}
+	//ODE_API 
+	void dGeomTriMeshSetTriMergeCallback(DTriMesh g, DTriTriMergeCallback Callback) {
+		throw new UnsupportedOperationException();
+	}
+	//ODE_API 
+	DTriTriMergeCallback dGeomTriMeshGetTriMergeCallback(DTriMesh g) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -254,29 +268,29 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * Construction. Callbacks are optional.
 	 */
 	//ODE_API 
-	public static DTriMesh dCreateTriMesh(DSpace space, DTriMeshData Data, dTriCallback Callback, 
-			dTriArrayCallback ArrayCallback, dTriRayCallback RayCallback) {
-		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)Data, 
+	public static DTriMesh dCreateTriMesh(DSpace space, DTriMeshData Data, DTriCallback Callback, 
+			DTriArrayCallback ArrayCallback, DTriRayCallback RayCallback) {
+		return OdeHelper.createTriMesh(space, Data, 
 				Callback, ArrayCallback, RayCallback);
 	}
 
 	//ODE_API 
-	void dGeomTriMeshSetData(DGeom g, DTriMeshData Data) {
+	void dGeomTriMeshSetData(DTriMesh g, DTriMeshData Data) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 
-	DTriMeshData dGeomTriMeshGetData(DGeom g) {
+	DTriMeshData dGeomTriMeshGetData(DTriMesh g) {
 		throw new UnsupportedOperationException();
 	}
 
 
 	// enable/disable/check temporal coherence
 	//ODE_API 
-	void dGeomTriMeshEnableTC(DGeom g, int geomClass, int enable) {
+	void dGeomTriMeshEnableTC(DTriMesh g, int geomClass, int enable) {
 		throw new UnsupportedOperationException();
 	}
 	//ODE_API 
-	int dGeomTriMeshIsTCEnabled(DGeom g, int geomClass) {
+	int dGeomTriMeshIsTCEnabled(DTriMesh g, int geomClass) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -287,7 +301,7 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * We should be able to do this automagically.
 	 */
 	//ODE_API 
-	void dGeomTriMeshClearTCCache(DGeom g) {
+	void dGeomTriMeshClearTCCache(DTriMesh g) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -296,7 +310,7 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * returns the TriMeshDataID
 	 */
 	//ODE_API 
-	DTriMeshData dGeomTriMeshGetTriMeshDataID(DGeom g) {
+	DTriMeshData dGeomTriMeshGetTriMeshDataID(DTriMesh g) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -305,7 +319,7 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 */
 	//ODE_API 
 	//void dGeomTriMeshGetTriangle(dGeom g, int Index, dVector3* v0, dVector3* v1, dVector3* v2) {
-	void dGeomTriMeshGetTriangle(DGeom g, int Index, DVector3 v0, DVector3 v1, DVector3 v2) {
+	void dGeomTriMeshGetTriangle(DTriMesh g, int Index, DVector3 v0, DVector3 v1, DVector3 v2) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -314,7 +328,7 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * coordinates.
 	 */
 	//ODE_API 
-	void dGeomTriMeshGetPoint(DGeom g, int Index, double u, double v, DVector3 Out) {
+	void dGeomTriMeshGetPoint(DTriMesh g, int Index, double u, double v, DVector3 Out) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -338,7 +352,7 @@ int TriStride = sizeof(StridedTri);
 
 
 	//ODE_API 
-	int dGeomTriMeshGetTriangleCount (DGeom g) {
+	int dGeomTriMeshGetTriangleCount (DTriMesh g) {
 		throw new UnsupportedOperationException();
 	}
 

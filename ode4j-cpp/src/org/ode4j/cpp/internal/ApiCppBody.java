@@ -31,10 +31,10 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
+import org.ode4j.ode.DMassC;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.internal.DxBody;
-import org.ode4j.ode.internal.DxMass;
-import org.ode4j.ode.internal.DxWorld;
+import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.DBody.BodyMoveCallBack;
 
 public abstract class ApiCppBody extends ApiCppJoint {
 
@@ -44,18 +44,19 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return the threshold
 	 */
 	//ODE_API 
-	double dBodyGetAutoDisableLinearThreshold (DBody b){
-		throw new UnsupportedOperationException();
+	public static double dBodyGetAutoDisableLinearThreshold (DBody b){
+		return b.getAutoDisableLinearThreshold();
 	}
 
 	/**
 	 * @brief Set auto disable linear average threshold.
 	 * @ingroup bodies disable
-	 * @return the threshold
+	 * @param linear_average_threshold the threshold
 	 */
 	//ODE_API 
-	void  dBodySetAutoDisableLinearThreshold (DBody b, double linear_average_threshold){
-		throw new UnsupportedOperationException();
+	public static void dBodySetAutoDisableLinearThreshold (
+			DBody b, double linear_average_threshold){
+		b.setAutoDisableLinearThreshold(linear_average_threshold);
 	}
 
 	/**
@@ -64,18 +65,19 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return the threshold
 	 */
 	//ODE_API 
-	double dBodyGetAutoDisableAngularThreshold (DBody b){
-		throw new UnsupportedOperationException();
+	public static double dBodyGetAutoDisableAngularThreshold (DBody b){
+		return b.getAutoDisableAngularThreshold();
 	}
 
 	/**
 	 * @brief Set auto disable angular average threshold.
 	 * @ingroup bodies disable
-	 * @return the threshold
+	 * @param angular_average_threshold the threshold
 	 */
 	//ODE_API 
-	void  dBodySetAutoDisableAngularThreshold (DBody b, double angular_average_threshold){
-		throw new UnsupportedOperationException();
+	public static void dBodySetAutoDisableAngularThreshold (
+			DBody b, double angular_average_threshold){
+		b.setAutoDisableAngularThreshold(angular_average_threshold);
 	}
 
 	/**
@@ -84,8 +86,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return the nr of steps/size.
 	 */
 	//ODE_API 
-	int dBodyGetAutoDisableAverageSamplesCount (DBody b){
-		throw new UnsupportedOperationException();
+	public static int dBodyGetAutoDisableAverageSamplesCount (DBody b){
+		return b.getAutoDisableAverageSamplesCount();
 	}
 
 	/**
@@ -96,9 +98,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	//ODE_API 
 	//	 void dBodySetAutoDisableAverageSamplesCount (dBody b, 
 	//			 unsigned int average_samples_count){
-	void dBodySetAutoDisableAverageSamplesCount (DBody b, 
+	public static void dBodySetAutoDisableAverageSamplesCount (DBody b, 
 			int average_samples_count){
-		throw new UnsupportedOperationException();
+		b.setAutoDisableAverageSamplesCount(average_samples_count);
 	}
 
 
@@ -108,8 +110,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return the nr of steps
 	 */
 	//ODE_API 
-	int dBodyGetAutoDisableSteps (DBody b){
-		throw new UnsupportedOperationException();
+	public static int dBodyGetAutoDisableSteps (DBody b){
+		return b.getAutoDisableSteps();
 	}
 
 	/**
@@ -118,8 +120,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param steps the nr of steps.
 	 */
 	//ODE_API 
-	void dBodySetAutoDisableSteps (DBody b, int steps){
-		throw new UnsupportedOperationException();
+	public static void dBodySetAutoDisableSteps (DBody b, int steps){
+		b.setAutoDisableSteps(steps);
 	}
 
 	/**
@@ -128,8 +130,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return nr of seconds
 	 */
 	//ODE_API 
-	double dBodyGetAutoDisableTime (DBody b){
-		throw new UnsupportedOperationException();
+	public static double dBodyGetAutoDisableTime (DBody b){
+		return b.getAutoDisableTime();
 	}
 
 	/**
@@ -138,8 +140,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param time nr of seconds.
 	 */
 	//ODE_API 
-	void  dBodySetAutoDisableTime (DBody b, double time){
-		throw new UnsupportedOperationException();
+	public static void dBodySetAutoDisableTime (DBody b, double time){
+		b.setAutoDisableTime(time);
 	}
 
 	/**
@@ -148,8 +150,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return 0 or 1
 	 */
 	//ODE_API 
-	int dBodyGetAutoDisableFlag (DBody b){
-		throw new UnsupportedOperationException();
+	public static boolean dBodyGetAutoDisableFlag (DBody b){
+		return b.getAutoDisableFlag();
 	}
 
 	/**
@@ -158,8 +160,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param do_auto_disable 0 or 1
 	 */
 	//ODE_API 
-	void dBodySetAutoDisableFlag (DBody b, int do_auto_disable){
-		throw new UnsupportedOperationException();
+	public static void dBodySetAutoDisableFlag (DBody b, boolean do_auto_disable){
+		b.setAutoDisableFlag(do_auto_disable);
 	}
 
 	/**
@@ -169,8 +171,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies disable
 	 */
 	//ODE_API 
-	void  dBodySetAutoDisableDefaults (DBody b){
-		throw new UnsupportedOperationException();
+	public static void dBodySetAutoDisableDefaults (DBody b){
+		b.setAutoDisableDefaults();
 	}
 
 
@@ -181,8 +183,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	DWorld dBodyGetWorld (DBody b){
-		throw new UnsupportedOperationException();
+	public static DWorld dBodyGetWorld (DBody b){
+		return b.getWorld();
 	}
 
 	/**
@@ -192,8 +194,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	public static DxBody dBodyCreate (DWorld w){
-		return DxBody.dBodyCreate((DxWorld) w);
+	public static DBody dBodyCreate (DWorld w){
+		return OdeHelper.createBody(w);
 	}
 
 	/**
@@ -206,7 +208,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	public static void dBodyDestroy (DBody b){
-		((DxBody)b).dBodyDestroy();
+		b.destroy();
 	}
 
 	/**
@@ -215,9 +217,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param data arbitraty pointer
 	 */
 	//ODE_API 
-	//	 void  dBodySetData (dBody b, void *data){
 	public static void  dBodySetData (DBody b, Object data){
-		((DxBody)b).dBodySetData(data);
+		b.setData(data);
 	}
 
 	/**
@@ -226,9 +227,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return a pointer to the user's data.
 	 */
 	//ODE_API 
-	//void *dBodyGetData (dBody b){
 	public static Object dBodyGetData (DBody b){
-		return ((DxBody)b).dBodyGetData();
+		return b.getData();
 	}
 
 	/**
@@ -241,7 +241,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	public static void dBodySetPosition   (DBody b, double x, double y, double z){
-		((DxBody)b).dBodySetPosition(x, y, z);
+		b.setPosition(x, y, z);
 	}
 
 	/**
@@ -254,7 +254,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	public static void dBodySetRotation   (DBody b, final DMatrix3 R){
-		((DxBody)b).dBodySetRotation(R);
+		b.setRotation(R);
 	}
 
 	/**
@@ -267,7 +267,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	public static void dBodySetQuaternion (DBody b, final DQuaternion q){
-		((DxBody)b).dBodySetQuaternion(q);
+		b.setQuaternion(q);
 	}
 
 	/**
@@ -276,7 +276,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	public static void dBodySetLinearVel  (DBody b, double x, double y, double z){
-		((DxBody)b).dBodySetLinearVel(x, y, z);
+		b.setLinearVel(x, y, z);
 	}
 
 	/**
@@ -285,7 +285,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	public static void dBodySetAngularVel (DBody b, double x, double y, double z){
-		((DxBody)b).dBodySetAngularVel(x, y, z);
+		b.setAngularVel(x, y, z);
 	}
 
 	/**
@@ -295,12 +295,12 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * When getting, the returned values are pointers to internal data structures,
 	 * so the vectors are valid until any changes are made to the rigid body
 	 * system structure.
-	 * @sa dBodyCopyPosition
+	 * @see #dBodyCopyPosition(DBody, DVector3)
 	 */
 	//ODE_API 
 	//const 
 	public static DVector3C dBodyGetPosition (DBody b){
-		return ((DxBody)b).dBodyGetPosition();
+		return b.getPosition();
 	}
 
 
@@ -309,11 +309,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 * @param body  the body to query
 	 * @param pos   a copy of the body position
-	 * @sa dBodyGetPosition
+	 * @see #dBodyGetPosition(DBody)
 	 */
 	//ODE_API 
-	void dBodyCopyPosition (DBody body, DVector3 pos){
-		throw new UnsupportedOperationException();
+	public static void dBodyCopyPosition (DBody body, DVector3 pos){
+		pos.set(body.getPosition());
 	}
 
 
@@ -325,20 +325,20 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	//ODE_API 
 	//const 
 	public static DMatrix3C dBodyGetRotation (DBody b){
-		return ((DxBody)b).dBodyGetRotation();
+		return b.getRotation();
 	}
 
 
 	/**
 	 * @brief Copy the rotation of a body.
 	 * @ingroup bodies
-	 * @param body   the body to query
-	 * @param R      a copy of the rotation matrix
-	 * @sa dBodyGetRotation
+	 * @param b		the body to query
+	 * @param R    	a copy of the rotation matrix
+	 * @see #dBodyGetRotation(DBody)
 	 */
 	//ODE_API 
-	void dBodyCopyRotation (DBody b, DMatrix3 R){
-		throw new UnsupportedOperationException();
+	public static void dBodyCopyRotation (DBody b, DMatrix3 R){
+		R.set(b.getRotation());
 	}
 
 
@@ -350,7 +350,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	//ODE_API 
 	//const double * 
 	public static DQuaternionC dBodyGetQuaternion (DBody b){
-		return ((DxBody)b).dBodyGetQuaternion();
+		return b.getQuaternion();
 	}
 
 
@@ -359,11 +359,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 * @param body  the body to query
 	 * @param quat  a copy of the orientation quaternion
-	 * @sa dBodyGetQuaternion
+	 * @see #dBodyGetQuaternion(DBody)
 	 */
 	//ODE_API 
-	void dBodyCopyQuaternion(DBody body, DQuaternion quat){
-		throw new UnsupportedOperationException();
+	public static void dBodyCopyQuaternion(DBody body, DQuaternion quat){
+		quat.set(body.getQuaternion());
 	}
 
 
@@ -374,7 +374,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	//ODE_API 
 	//const double * 
 	public static DVector3C dBodyGetLinearVel (DBody b){
-		return ((DxBody)b).dBodyGetLinearVel();
+		return b.getLinearVel();
 	}
 
 	/**
@@ -384,7 +384,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	//ODE_API 
 	//const double * 
 	public static DVector3C dBodyGetAngularVel (DBody b){
-		return ((DxBody)b).dBodyGetAngularVel();
+		return b.getAngularVel();
 	}
 
 	/**
@@ -392,8 +392,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	public static void dBodySetMass (DBody b, final DMass mass){
-		((DxBody)b).dBodySetMass((DxMass) mass);
+	public static void dBodySetMass (DBody b, DMassC mass){
+		b.setMass(mass);
 	}
 
 	/**
@@ -403,7 +403,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	//ODE_API 
 	//	 void dBodyGetMass (dBody b, dMass *mass){
 	public static void dBodyGetMass (DBody b, DMass mass){
-		((DxBody)b).dBodyGetMass((DxMass) mass);
+		mass.setI(b.getMass().getI());
+		mass.setC(b.getMass().getC());
+		mass.setMass(b.getMass().getMass());
 	}
 
 	/**
@@ -411,8 +413,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	public static void dBodyAddForce            (DBody b, double fx, double fy, double fz){
-		((DxBody)b).dBodyAddForce(fx, fy, fz);
+	public static void dBodyAddForce (DBody b, double fx, double fy, double fz){
+		b.addForce(fx, fy, fz);
 	}
 
 	/**
@@ -420,8 +422,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	public static void dBodyAddTorque           (DBody b, double fx, double fy, double fz){
-		((DxBody)b).dBodyAddTorque(fx, fy, fz);
+	public static void dBodyAddTorque (DBody b, double fx, double fy, double fz){
+		b.addTorque(fx, fy, fz);
 	}
 
 	/**
@@ -429,8 +431,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	void dBodyAddRelForce         (DBody b, double fx, double fy, double fz){
-		throw new UnsupportedOperationException();
+	public static void dBodyAddRelForce (DBody b, double fx, double fy, double fz){
+		b.addRelForce(fx, fy, fz);
 	}
 
 	/**
@@ -439,7 +441,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	public static void dBodyAddRelTorque (DBody b, double fx, double fy, double fz){
-		((DxBody)b).dBodyAddRelTorque(new DVector3(fx, fy, fz));
+		b.addRelTorque(new DVector3(fx, fy, fz));
 	}
 
 	/**
@@ -447,36 +449,36 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	void dBodyAddForceAtPos       (DBody b, double fx, double fy, double fz,
+	public static void dBodyAddForceAtPos (DBody b, double fx, double fy, double fz,
 			double px, double py, double pz){
-		throw new UnsupportedOperationException();
+		b.addForceAtPos(fx, fy, fz, px, py, pz);
 	}
 	/**
 	 * @brief Add force at specified point in body in local coordinates.
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	void dBodyAddForceAtRelPos    (DBody b, double fx, double fy, double fz,
+	public static void dBodyAddForceAtRelPos (DBody b, double fx, double fy, double fz,
 			double px, double py, double pz){
-		throw new UnsupportedOperationException();
+		b.addForceAtRelPos(fx, fy, fz, px, py, pz);
 	}
 	/**
 	 * @brief Add force at specified point in body in global coordinates.
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	void dBodyAddRelForceAtPos    (DBody b, double fx, double fy, double fz,
+	public static void dBodyAddRelForceAtPos (DBody b, double fx, double fy, double fz,
 			double px, double py, double pz){
-		throw new UnsupportedOperationException();
+		b.addRelForceAtPos(fx, fy, fz, px, py, pz);
 	}
 	/**
 	 * @brief Add force at specified point in body in local coordinates.
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	void dBodyAddRelForceAtRelPos (DBody b, double fx, double fy, double fz,
+	public static void dBodyAddRelForceAtRelPos (DBody b, double fx, double fy, double fz,
 			double px, double py, double pz){
-		throw new UnsupportedOperationException();
+		b.addRelForceAtRelPos(fx, fy, fz, px, py, pz);
 	}
 
 	/**
@@ -490,8 +492,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	//const double * 
-	double[] dBodyGetForce (DBody b){
-		throw new UnsupportedOperationException();
+	public static DVector3C dBodyGetForce (DBody b){
+		return b.getForce();
 	}
 
 	/**
@@ -505,8 +507,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	//const double * 
-	double[] dBodyGetTorque (DBody b){
-		throw new UnsupportedOperationException();
+	public static DVector3C dBodyGetTorque (DBody b){
+		return b.getTorque();
 	}
 
 	/**
@@ -518,8 +520,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	void dBodySetForce  (DBody b, double x, double y, double z){
-		throw new UnsupportedOperationException();
+	public static void dBodySetForce  (DBody b, double x, double y, double z){
+		b.setForce(x, y, z);
 	}
 
 	/**
@@ -531,8 +533,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	void dBodySetTorque (DBody b, double x, double y, double z){
-		throw new UnsupportedOperationException();
+	public static void dBodySetTorque (DBody b, double x, double y, double z){
+		b.setTorque(x, y, z);
 	}
 
 	/**
@@ -541,12 +543,10 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
-	void dBodyGetRelPointPos
-	(
+	public static void dBodyGetRelPointPos (
 			DBody b, double px, double py, double pz,
-			DVector3 result
-	){
-		throw new UnsupportedOperationException();
+			DVector3 result){
+		b.getRelPointPos(px, py, pz, result);
 	}
 
 	/**
@@ -555,12 +555,10 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
-	void dBodyGetRelPointVel
-	(
+	public static void dBodyGetRelPointVel(
 			DBody b, double px, double py, double pz,
-			DVector3 result
-	){
-		throw new UnsupportedOperationException();
+			DVector3 result){
+		b.getRelPointVel(px, py, pz, result);
 	}
 
 	/**
@@ -570,12 +568,12 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
-	void dBodyGetPointVel
+	public static void dBodyGetPointVel
 	(
 			DBody b, double px, double py, double pz,
 			DVector3 result
 	){
-		throw new UnsupportedOperationException();
+		b.getPointVel(px, py, pz, result);
 	}
 
 	/**
@@ -587,12 +585,12 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
-	void dBodyGetPosRelPoint
+	public static void dBodyGetPosRelPoint
 	(
 			DBody b, double px, double py, double pz,
 			DVector3 result
 	){
-		throw new UnsupportedOperationException();
+		b.getPosRelPoint(px, py, pz, result);
 	}
 
 	/**
@@ -601,12 +599,12 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
-	void dBodyVectorToWorld
+	public static void dBodyVectorToWorld
 	(
 			DBody b, double px, double py, double pz,
 			DVector3 result
 	){
-		throw new UnsupportedOperationException();
+		b.vectorToWorld(px, py, pz, result);
 	}
 
 	/**
@@ -615,12 +613,12 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
-	void dBodyVectorFromWorld
+	public static void dBodyVectorFromWorld
 	(
 			DBody b, double px, double py, double pz,
 			DVector3 result
 	){
-		throw new UnsupportedOperationException();
+		b.vectorFromWorld(px, py, pz, result);
 	}
 
 	/**
@@ -641,8 +639,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * sources of error.
 	 */
 	//ODE_API 
-	void dBodySetFiniteRotationMode (DBody b, int mode){
-		throw new UnsupportedOperationException();
+	public static void dBodySetFiniteRotationMode (DBody b, boolean mode){
+		b.setFiniteRotationMode(mode);
 	}
 
 	/**
@@ -662,8 +660,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * try and improve its behavior.
 	 */
 	//ODE_API 
-	void dBodySetFiniteRotationAxis (DBody body, double x, double y, double z){
-		throw new UnsupportedOperationException();
+	public static void dBodySetFiniteRotationAxis (
+			DBody body, double x, double y, double z){
+		body.setFiniteRotationAxis(x, y, z);
 	}
 
 	/**
@@ -672,8 +671,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return the mode 0 (infitesimal) or 1 (finite).
 	 */
 	//ODE_API 
-	int dBodyGetFiniteRotationMode (DBody body){
-		throw new UnsupportedOperationException();
+	public static boolean dBodyGetFiniteRotationMode (DBody body){
+		return body.getFiniteRotationMode();
 	}
 
 	/**
@@ -682,8 +681,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	void dBodyGetFiniteRotationAxis (DBody body, DVector3 result){
-		throw new UnsupportedOperationException();
+	public void dBodyGetFiniteRotationAxis (DBody body, DVector3 result){
+		body.getFiniteRotationAxis(result);
 	}
 
 	/**
@@ -692,8 +691,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return nr of joints
 	 */
 	//ODE_API 
-	int dBodyGetNumJoints (DBody b){
-		throw new UnsupportedOperationException();
+	public static int dBodyGetNumJoints (DBody b){
+		return b.getNumJoints();
 	}
 
 	/**
@@ -703,18 +702,55 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * dBodyGetNumJoints().
 	 */
 	//ODE_API 
-	DJoint dBodyGetJoint (DBody body, int index){
-		throw new UnsupportedOperationException();
+	public DJoint dBodyGetJoint (DBody body, int index){
+		return body.getJoint(index);
+	}
+
+	/**
+	 * @brief Set rigid body to dynamic state (default).
+	 * @param body identification of body.
+	 * @ingroup bodies
+	 */
+	//ODE_API
+	public static void dBodySetDynamic (DBody body) {
+		body.setDynamic();
+	}
+
+	/**
+	 * @brief Set rigid body to kinematic state.
+	 * When in kinematic state the body isn't simulated as a dynamic
+	 * body (it's "unstoppable", doesn't respond to forces),
+	 * but can still affect dynamic bodies (e.g. in joints).
+	 * Kinematic bodies can be controlled by position and velocity.
+	 * @note A kinematic body has infinite mass. If you set its mass
+	 * to something else, it loses the kinematic state and behaves
+	 * as a normal dynamic body.
+	 * @param body identification of body.
+	 * @ingroup bodies
+	 */
+	//ODE_API
+	public static void dBodySetKinematic (DBody body) {
+		body.setKinematic();
+	}
+
+	/**
+	 * @brief Check wether a body is in kinematic state.
+	 * @ingroup bodies
+	 * @return 1 if a body is kinematic or 0 if it is dynamic.
+	 */
+	//ODE_API
+	public static boolean dBodyIsKinematic (DBody body ) {
+		return body.isKinematic();
 	}
 
 	/**
 	 * @brief Manually enable a body.
-	 * @param DBody identification of body.
+	 * @param body identification of body.
 	 * @ingroup bodies
 	 */
 	//ODE_API 
 	public static void dBodyEnable (DBody body){
-		((DxBody)body).dBodyEnable();
+		body.enable();
 	}
 
 	/**
@@ -726,7 +762,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	public static void dBodyDisable (DBody body){
-		((DxBody)body).dBodyDisable();
+		body.disable();
 	}
 
 	/**
@@ -736,7 +772,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	public static boolean dBodyIsEnabled (DBody body){
-		return ((DxBody)body).dBodyIsEnabled();
+		return body.isEnabled();
 	}
 
 	/**
@@ -747,8 +783,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * Newly created bodies are always influenced by the world's gravity.
 	 */
 	//ODE_API 
-	void dBodySetGravityMode (DBody b, int mode){
-		throw new UnsupportedOperationException();
+	public static void dBodySetGravityMode (DBody b, boolean mode){
+		b.setGravityMode(mode);
 	}
 
 	/**
@@ -757,8 +793,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @return nonzero means gravity affects this body.
 	 */
 	//ODE_API 
-	int dBodyGetGravityMode (DBody b){
-		throw new UnsupportedOperationException();
+	public static boolean dBodyGetGravityMode (DBody b){
+		return b.getGravityMode();
 	}
 
 
@@ -776,10 +812,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies
 	 */
 	//ODE_API 
-	//	 void dBodySetMovedCallback(dBody b, void (*callback)(dBody body)){
 	void dBodySetMovedCallback(DBody b, BodyMoveCallBack callback){
-		throw new UnsupportedOperationException();
-		//((dxBody)b).dBodySetMovedCallback(callback);
+		b.setMovedCallback(callback);
 	}
 
 
@@ -794,7 +828,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 */
 	//ODE_API 
 	DGeom dBodyGetFirstGeom (DBody b){
-		throw new UnsupportedOperationException();
+		return b.getFirstGeom();
 	}
 
 
@@ -802,12 +836,12 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @brief returns the next geom associated with the same body.
 	 * @param g a geom attached to some body.
 	 * @return the next geom attached to the same body, or 0.
-	 * @sa dBodyGetFirstGeom
+	 * @see dBodyGetFirstGeom
 	 * @ingroup bodies
 	 */
 	//ODE_API 
 	DGeom dBodyGetNextGeom (DGeom g){
-		throw new UnsupportedOperationException();
+		return g.getBody().getNextGeom(g);
 	}
 
 
@@ -816,8 +850,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 */
 	//ODE_API 
-	void dBodySetDampingDefaults(DBody b){
-		throw new UnsupportedOperationException();
+	public static void dBodySetDampingDefaults(DBody b){
+		b.setDampingDefaults();
 	}
 
 	/**
@@ -825,8 +859,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 */
 	//ODE_API 
-	double dBodyGetLinearDamping (DBody b){
-		throw new UnsupportedOperationException();
+	public static double dBodyGetLinearDamping (DBody b){
+		return b.getLinearDamping();
 	}
 
 	/**
@@ -835,11 +869,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 * @remarks From now on the body will not use the world's linear damping
 	 * scale until dBodySetDampingDefaults() is called.
-	 * @sa dBodySetDampingDefaults()
+	 * @see #dBodySetDampingDefaults(DBody)
 	 */
 	//ODE_API 
-	void dBodySetLinearDamping(DBody b, double scale){
-		throw new UnsupportedOperationException();
+	public static void dBodySetLinearDamping(DBody b, double scale){
+		b.setLinearDamping(scale);
 	}
 
 	/**
@@ -849,8 +883,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * returns the world's angular damping scale.
 	 */
 	//ODE_API 
-	double dBodyGetAngularDamping (DBody b){
-		throw new UnsupportedOperationException();
+	public static double dBodyGetAngularDamping (DBody b){
+		return b.getAngularDamping();
 	}
 
 	/**
@@ -859,11 +893,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 * @remarks From now on the body will not use the world's angular damping
 	 * scale until dBodyResetAngularDamping() is called.
-	 * @sa dBodyResetAngularDamping()
+	 * @see #dBodyResetAngularDamping()
 	 */
 	//ODE_API 
-	void dBodySetAngularDamping(DBody b, double scale){
-		throw new UnsupportedOperationException();
+	public static void dBodySetAngularDamping(DBody b, double scale){
+		b.setAngularDamping(scale);
 	}
 
 	/**
@@ -871,11 +905,12 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param linear_scale The linear damping scale. Should be in the interval [0, 1].
 	 * @param angular_scale The angular damping scale. Should be in the interval [0, 1].
 	 * @ingroup bodies damping
-	 * @sa dBodySetLinearDamping() dBodySetAngularDamping()
+	 * @see #dBodySetLinearDamping(DBody, double) 
+	 * @see #dBodySetAngularDamping(DBody, double)
 	 */
 	//ODE_API 
-	void dBodySetDamping(DBody b, double linear_scale, double angular_scale){
-		throw new UnsupportedOperationException();
+	public static void dBodySetDamping(DBody b, double linear_scale, double angular_scale){
+		b.setDamping(linear_scale, angular_scale);
 	}
 
 	/**
@@ -883,8 +918,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 */
 	//ODE_API 
-	double dBodyGetLinearDampingThreshold (DBody b){
-		throw new UnsupportedOperationException();
+	public static double dBodyGetLinearDampingThreshold (DBody b){
+		return b.getLinearDampingThreshold();
 	}
 
 	/**
@@ -894,8 +929,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 */
 	//ODE_API 
-	void dBodySetLinearDampingThreshold(DBody b, double threshold){
-		throw new UnsupportedOperationException();
+	public static void dBodySetLinearDampingThreshold(DBody b, double threshold){
+		b.setLinearDampingThreshold(threshold);
 	}
 
 	/**
@@ -903,8 +938,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 */
 	//ODE_API 
-	double dBodyGetAngularDampingThreshold (DBody b){
-		throw new UnsupportedOperationException();
+	public static double dBodyGetAngularDampingThreshold (DBody b){
+		return b.getAngularDampingThreshold();
 	}
 
 	/**
@@ -914,30 +949,60 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @ingroup bodies damping
 	 */
 	//ODE_API 
-	void dBodySetAngularDampingThreshold(DBody b, double threshold){
-		throw new UnsupportedOperationException();
+	public static void dBodySetAngularDampingThreshold(DBody b, double threshold){
+		b.setAngularDampingThreshold(threshold);
 	}
 
 	/**
 	 * @brief Get the body's maximum angular speed.
 	 * @ingroup damping bodies
-	 * @sa dWorldGetMaxAngularSpeed()
+	 * @see ApiCppWorld#dWorldGetMaxAngularSpeed(DWorld)
 	 */
 	//ODE_API 
-	double dBodyGetMaxAngularSpeed (DBody b){
-		throw new UnsupportedOperationException();
+	public static double dBodyGetMaxAngularSpeed (DBody b){
+		return b.getMaxAngularSpeed();
 	}
 
 	/**
 	 * @brief Set the body's maximum angular speed.
 	 * @ingroup damping bodies
-	 * @sa dWorldSetMaxAngularSpeed() dBodyResetMaxAngularSpeed()
+	 * @see ApiCppWorld#dWorldSetMaxAngularSpeed(DWorld, double) 
+	 * @see #dBodyResetMaxAngularSpeed()
 	 * The default value is dInfinity, but it's a good idea to limit
-	 * it at less than 500 if you build ODE with the gyroscopic term
+	 * it at less than 500 if the body has the gyroscopic term
 	 * enabled.
 	 */
 	//ODE_API 
-	void dBodySetMaxAngularSpeed(DBody b, double max_speed) {
-		throw new UnsupportedOperationException();
+	public static void dBodySetMaxAngularSpeed(DBody b, double max_speed) {
+		b.setMaxAngularSpeed(max_speed);
+	}
+
+	/**
+	 * @brief Get the body's gyroscopic state.
+	 *
+	 * @return nonzero if gyroscopic term computation is enabled (default),
+	 * zero otherwise.
+	 * @ingroup bodies
+	 */
+	//ODE_API 
+	public static boolean dBodyGetGyroscopicMode(DBody b) {
+		return b.getGyroscopicMode();
+	}
+
+
+	/**
+	 * @brief Enable/disable the body's gyroscopic term.
+	 *
+	 * Disabling the gyroscopic term of a body usually improves
+	 * stability. It also helps turning spining objects, like cars'
+	 * wheels.
+	 *
+	 * @param enabled   nonzero (default) to enable gyroscopic term, 0
+	 * to disable.
+	 * @ingroup bodies
+	 */
+	//ODE_API 
+	public static void dBodySetGyroscopicMode(DBody b, boolean enabled) {
+		b.setGyroscopicMode(enabled);
 	}
 }
