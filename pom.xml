@@ -21,6 +21,7 @@
         <module>core</module>
         <module>core-cpp</module>
         <module>demo</module>
+        <module>demo-cpp</module>
     </modules>
 
     <properties>
