@@ -78,7 +78,7 @@ public class DrawStuff {
 	
 	//texturepath.h
 	// Sourceforge tests require the textures in the drawstuff folder
-	public static String DRAWSTUFF_TEXTURE_PATH = "../../drawstuff/textures";
+	public static String DRAWSTUFF_TEXTURE_PATH = "/org/ode4j/demo/drawstuff/textures";
 
 	//version.h
 	/* high byte is major version, low byte is minor version */

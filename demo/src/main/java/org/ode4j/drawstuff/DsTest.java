@@ -22,7 +22,7 @@
  * details.                                                              *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.drawstuff.test;
+package org.ode4j.drawstuff;
 
 
 import static org.ode4j.drawstuff.DrawStuff.*;

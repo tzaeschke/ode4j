@@ -40,11 +40,11 @@
     <url>https://github.com/tzaeschke/ode4j</url>
     <licenses>
         <license>
-                  <name>GNU Lesser General Public License</name>
-                  <url>http://www.gnu.org/licenses/lgpl.html</url>
-                  <distribution>repo</distribution>
-              </license>
-              </licenses>
+            <name>GNU Lesser General Public License</name>
+            <url>http://www.gnu.org/licenses/lgpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <scm>
         <url>https://github.com/tzaeschke/ode4j</url>
         <connection>scm:git:git@github.com:tzaeschke/ode4j.git</connection>
@@ -124,6 +124,21 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
                     <version>3.2</version>
+                </plugin>
+                <plugin>
+                    <!-- mvn nativedependencies:copy -->
+                    <groupId>com.googlecode.mavennatives</groupId>
+                    <artifactId>maven-nativedependencies-plugin</artifactId>
+                    <version>0.0.5</version>
+                    <executions>
+                        <execution>
+                            <id>unpacknatives</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
