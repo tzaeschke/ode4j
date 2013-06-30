@@ -2,7 +2,6 @@ package org.ode4j.cpp.internal;
 
 import org.cpp4j.FILE;
 import org.ode4j.ode.DStopwatch;
-import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.Timer;
 
 /*************************************************************************
@@ -29,7 +28,7 @@ import org.ode4j.ode.internal.Timer;
 
 /** stop watch objects */
 
-public abstract class ApiCppTimer extends Common {
+public abstract class ApiCppTimer {
 
 //ODE_API 
 void dStopwatchReset (DStopwatch sw) {
