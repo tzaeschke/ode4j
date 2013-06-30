@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,22 +13,40 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
+
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawLine;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsSetCapsuleQuality;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
+import static org.ode4j.drawstuff.DrawStuff.dsSetSphereQuality;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DGeom.dBoxClass;
+import static org.ode4j.ode.DGeom.dCapsuleClass;
+import static org.ode4j.ode.DGeom.dPlaneClass;
+import static org.ode4j.ode.DGeom.dSphereClass;
+import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.M_PI;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.cpp4j.java.RefDouble;
 import org.cpp4j.java.RefInt;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -35,6 +55,7 @@ import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DRay;
 import org.ode4j.ode.DSimpleSpace;
@@ -43,14 +64,8 @@ import org.ode4j.ode.DSphere;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.OdeMath.OP;
-import org.ode4j.ode.internal.DxCollisionUtil;  //TODO can we avoid this?
-import org.ode4j.ode.internal.DxBox;  //TODO can we avoid this?
-import org.ode4j.ode.DGeom.DNearCallback;
-
-import static org.ode4j.drawstuff.DS_API.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.DGeom.*;
+import org.ode4j.ode.internal.DxBox;
+import org.ode4j.ode.internal.DxCollisionUtil;
 
 /**
  * collision tests. if this program is run without any arguments it will
@@ -154,7 +169,6 @@ class DemoCollision extends dsFunctions {
 	     dVector3 normal, dReal *depth, int *code,
 	     int maxc, dContactGeom *contact, int skip); */
 
-	//TODO
 	//void dLineClosestApproach (final dVector3 pa, final dVector3 ua,
 	//			   final dVector3 pb, final dVector3 ub,
 	//			   double *alpha, double *beta);
@@ -178,7 +192,7 @@ class DemoCollision extends dsFunctions {
 		}
 		if (n > 0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			DVector3 ss = new DVector3(0.01,0.01,0.01);
 			for (int i=0; i<n; i++) {
 				DContactGeom contact = contacts.get(i);
@@ -364,7 +378,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j, (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set( i, 0.5*s.get(i) ); else q.set( i, -0.5*s.get(i) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		//for (j=0; j<3; j++) q2[j] += p[j];
 		q2.add(p);
 		if (dFabs(box.getPointDepth (q2)) > tol) if (testFAILED()) return false;
@@ -375,25 +389,25 @@ class DemoCollision extends dsFunctions {
 			q.set(j, 0.5*s.get(j) + dRandReal() + 0.01 );
 			if (dRandReal() > 0.5) q.scale (i, -1);
 		}
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add(p);
 		if (box.getPointDepth (q2) >= 0) if (testFAILED()) return false;
 
 		// ********** test points inside box have +ve depth
 
 		for (j=0; j<3; j++) q.set(j, s.get(j) * 0.99 * (dRandReal()-0.5) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add(p);
 		if (box.getPointDepth (q2) <= 0) if (testFAILED()) return false;
 
 		// ********** test random depth of point aligned along axis (up to ss deep)
 
 		i = dRandInt (3);
-		q.setValues(0);
+		q.setZero();
 		d = (dRandReal()*(ss*0.5+1)-1);
 		q.set(i, s.get(i)*0.5 - d );
 		if (dRandReal() > 0.5) q.scale( i, -1 );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add(p);
 		if (dFabs(box.getPointDepth (q2) - d) >= tol) if (testFAILED()) return false;
 
@@ -444,7 +458,7 @@ class DemoCollision extends dsFunctions {
 
 		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		a.normalize();
-		if (dDOT14(a,R,2) > 0) {
+		if (dCalcVectorDot3_14(a,R,2) > 0) {
 			for (j=0; j<3; j++) a.set(j, p.get(j) + a.get(j)*r + l*0.5*R.get(j,2) );
 		}
 		else {
@@ -476,7 +490,7 @@ class DemoCollision extends dsFunctions {
 		d = (dRandReal()*2-1) * r;
 		for (j=0; j<3; j++) a.set(j, dRandReal()-0.5 );
 		a.normalize();
-		if (dDOT14(a,R,2) > 0) {
+		if (dCalcVectorDot3_14(a,R,2) > 0) {
 			for (j=0; j<3; j++) a.set(j, p.get(j) + a.get(j)*(r-d) + l*0.5*R.get(j,2) );
 		}
 		else {
@@ -504,7 +518,7 @@ class DemoCollision extends dsFunctions {
 		// ********** make a random plane
 
 		for (j=0; j<3; j++) n.set(j,dRandReal() - 0.5);
-		dNormalize3 (n);  //TODO TZ change
+		n.normalize();
 		d = dRandReal() - 0.5;
 		plane.setParams (n,d);
 		dPlaneSpace (n,p,q);
@@ -602,7 +616,7 @@ class DemoCollision extends dsFunctions {
 		n.eqDiff( q2, q );
 		n.normalize();
 		ray.set (q,n);
-		ray.setLength (dDISTANCE (q,q2));
+		ray.setLength (q.distance(q2));
 		if (OdeHelper.collide (ray,sphere,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally outside the sphere
@@ -613,7 +627,7 @@ class DemoCollision extends dsFunctions {
 			dMakeRandomVector (n,1.0);
 			n.normalize();
 		}
-		while (dDOT(n,q) < 0);	// make sure normal goes away from sphere
+		while (n.dot(q) < 0);	// make sure normal goes away from sphere
 		q.eqSum( p, q, 1.01*r );
 		ray.set (q,n);
 		ray.setLength (100);
@@ -634,7 +648,7 @@ class DemoCollision extends dsFunctions {
 		ray.setLength (1.01*r);
 		if (OdeHelper.collide (ray,sphere,1,contacts) != 1) if (testFAILED()) return false;
 		q2.eqSum( p, q, r );
-		if (dDISTANCE (contacts.get(0).pos,q2) > tol) if (testFAILED()) return false;
+		if (contacts.get(0).pos.distance(q2) > tol) if (testFAILED()) return false;
 
 		// ********** test contact point distance for random rays
 
@@ -648,10 +662,10 @@ class DemoCollision extends dsFunctions {
 		ray.setLength (100);
 		if (OdeHelper.collide (ray,sphere,1,contacts)!=0) {
 			DContactGeom contact = contacts.get(0);
-			k = dDISTANCE (contacts.get(0).pos,sphere.getPosition());
+			k = contacts.get(0).pos.distance(sphere.getPosition());
 			if (dFabs(k - r) > tol) if (testFAILED()) return false;
 			// also check normal signs
-			if (dDOT (n,contact.normal) > 0) if (testFAILED()) return false;
+			if (n.dot(contact.normal) > 0) if (testFAILED()) return false;
 			// also check depth of contact point
 			if (dFabs (sphere.getPointDepth(contact.pos)) > tol)
 				if (testFAILED()) return false;
@@ -718,7 +732,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set(i, 0.99*0.5*s.get(i) ); else q.set(i, -0.99*0.5*s.get(i) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add(p);
 		ray.setPosition (q2);
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
@@ -732,7 +746,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set(i, 1.01*0.5*s.get(i)); else q.set(i, -1.01*0.5*s.get(i));
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add( p );
 		ray.setPosition (q2);
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
@@ -743,15 +757,15 @@ class DemoCollision extends dsFunctions {
 		// ********** test finite length ray totally contained inside the box
 
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*0.99*s.get(j) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add( p );
 		for (j=0; j<3; j++) q3.set(j,  (dRandReal()-0.5)*0.99*s.get(j) );
-		dMultiply0 (q4,box.getRotation(),q3,3,3,1);
+		dMultiply0 (q4,box.getRotation(),q3);
 		q4.add( p );
 		n.eqDiff( q4, q2 );
 		n.normalize();
 		ray.set (q2,n);
-		ray.setLength (dDISTANCE(q2,q4));
+		ray.setLength (q2.distance(q4));
 		if (OdeHelper.collide (ray,box,1,contacts) != 0) if (testFAILED()) return false;
 
 		// ********** test finite length ray totally outside the box
@@ -759,7 +773,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set(i, 1.01*0.5*s.get(i)); else q.set(i, -1.01*0.5*s.get(i));
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q3.eqSum( q2, p );
 		q2.normalize();
 		ray.set (q3,q2);
@@ -771,7 +785,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set(i, 1.01*0.5*s.get(i)); else q.set(i, -1.01*0.5*s.get(i) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q3.eqSum( p, q2, 2 );
 		k = q2.length();
 		q2.scale( -1 );
@@ -787,7 +801,7 @@ class DemoCollision extends dsFunctions {
 		// ********** test contact point position for random rays
 
 		for (j=0; j<3; j++) q.set(j,  dRandReal()*s.get(j) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add( p );
 		for (j=0; j<3; j++) q3.set(j,  dRandReal()-0.5 );
 		q3.normalize();
@@ -807,7 +821,7 @@ class DemoCollision extends dsFunctions {
 				if (testFAILED()) return false;
 			}
 			// also check normal signs
-			if (dDOT (q3,contact.normal) > 0) if (testFAILED()) return false;
+			if (q3.dot(contact.normal) > 0) if (testFAILED()) return false;
 
 			draw_all_objects (space);
 		}
@@ -852,7 +866,7 @@ class DemoCollision extends dsFunctions {
 		b.normalize ();
 		k = (dRandReal()-0.5)*l;
 		for (j=0; j<3; j++) b.set(j,  p.get(j) + r*0.99*b.get(j) + k*0.99*R.get(j,2) );
-		ray.setLength (dDISTANCE(a,b));  //TODO get rid of dDISTANCE?
+		ray.setLength (a.distance(b));
 		b.sub( a );
 		b.normalize ();
 		ray.set (a, b);
@@ -882,7 +896,7 @@ class DemoCollision extends dsFunctions {
 
 		for (j=0; j<3; j++) a.set(j,  dRandReal()-0.5 );
 		a.normalize ();
-		if (dDOT14(a,R,2) < 0) {
+		if (dCalcVectorDot3_14(a,R,2) < 0) {
 			for (j=0; j<3; j++) b.set(j,  p.get(j) - a.get(j)*2*r + l*0.5*R.get(j,2) );
 		}
 		else {
@@ -914,7 +928,7 @@ class DemoCollision extends dsFunctions {
 				if (testFAILED()) return false;
 
 			// check normal signs
-			if (dDOT (n,contacts.get(0).normal) > 0) if (testFAILED()) return false;
+			if (n.dot(contacts.get(0).normal) > 0) if (testFAILED()) return false;
 
 			draw_all_objects (space);
 		}
@@ -990,9 +1004,9 @@ class DemoCollision extends dsFunctions {
 		ray.setLength (10);
 		if (OdeHelper.collide (ray,plane,1,contacts)!=0) {
 			// test that contact is on plane surface
-			if (dFabs (dDOT(contacts.get(0).pos,n) - d) > tol) if (testFAILED()) return false;
+			if (dFabs (contacts.get(0).pos.dot(n) - d) > tol) if (testFAILED()) return false;
 			// also check normal signs
-			if (dDOT (h,contacts.get(0).normal) > 0) if (testFAILED()) return false;
+			if (h.dot(contacts.get(0).normal) > 0) if (testFAILED()) return false;
 			// also check contact point depth
 			if (dFabs (plane.getPointDepth (contacts.get(0).pos)) > tol)
 				if (testFAILED()) return false;
@@ -1014,20 +1028,18 @@ class DemoCollision extends dsFunctions {
 		if (OdeHelper.collide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
 
 		// ********** test polarity with typical ground plane
-//TODO plane.setParams vs ray.set() ?!?!?!?!?!
-		//TODO remove dFabs?!?!?
 		plane.setParams (0,0,1,0);
 		a.set( 0.1, 1, 0.1 );
 		b.set( 0,  -1, 0   );
 		ray.set (a,b);
 		ray.setLength (2);
 		if (OdeHelper.collide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
-		if (dFabs (contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
+		if (Math.abs(contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
 		a.set2( -1 );
 		b.set2( 1 );
 		ray.set (a, b);
 		if (OdeHelper.collide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
-		if (dFabs (contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
+		if (Math.abs(contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
 
 		return retPASSED();
 	}
@@ -1046,29 +1058,29 @@ class DemoCollision extends dsFunctions {
 		u1.eqDiff(p3, p1);
 		//for (k=0; k<3; k++) u2[k] = p2[k]-p1[k];
 		u2.eqDiff(p2, p1);
-		double d1 = dSqrt(dDOT(u1,u1));
-		double d2 = dSqrt(dDOT(u2,u2));
-		dNormalize3 (u1);
-		dNormalize3 (u2);
-		if (dFabs(dDOT(u1,u2)) > 1e-6) dDebug (0,"bad u1/u2");
-		dCROSS (n,OP.EQ,u1,u2);
+		double d1 = dSqrt(u1.dot(u1));
+		double d2 = dSqrt(u2.dot(u2));
+		u1.normalize();
+		u2.normalize();
+		if (dFabs(u1.dot(u2)) > 1e-6) dDebug (0,"bad u1/u2");
+		n.eqCross(u1, u2);
 		//for (k=0; k<3; k++) tmp[k] = v2[k]-v1[k];
 		tmp.eqDiff(v2, v1);
-		double d = -dDOT(n,p1);
-		if (dFabs(dDOT(n,p1)+d) > 1e-8) dDebug (0,"bad n wrt p1");
-		if (dFabs(dDOT(n,p2)+d) > 1e-8) dDebug (0,"bad n wrt p2");
-		if (dFabs(dDOT(n,p3)+d) > 1e-8) dDebug (0,"bad n wrt p3");
-		double alpha = -(d+dDOT(n,v1))/dDOT(n,tmp);
+		double d = -n.dot(p1);
+		if (dFabs(n.dot(p1)+d) > 1e-8) dDebug (0,"bad n wrt p1");
+		if (dFabs(n.dot(p2)+d) > 1e-8) dDebug (0,"bad n wrt p2");
+		if (dFabs(n.dot(p3)+d) > 1e-8) dDebug (0,"bad n wrt p3");
+		double alpha = -(d+n.dot(v1))/n.dot(tmp);
 		//for (k=0; k<3; k++) tmp[k] = v1[k]+alpha*(v2[k]-v1[k]);
 		tmp.eqDiff(v2, v1);
 		tmp.eqSum(v1, tmp.scale(alpha));
-		if (dFabs(dDOT(n,tmp)+d) > 1e-6) dDebug (0,"bad tmp");
+		if (dFabs(n.dot(tmp)+d) > 1e-6) dDebug (0,"bad tmp");
 		if (alpha < 0) return false;
 		if (alpha > 1) return false;
 		//for (k=0; k<3; k++) tmp[k] -= p1[k];
 		tmp.set(p1).scale(-1);
-		double a1 = dDOT(u1,tmp);
-		double a2 = dDOT(u2,tmp);
+		double a1 = u1.dot(tmp);
+		double a2 = u2.dot(tmp);
 		if (a1<0 || a2<0 || a1>d1 || a2>d2) return false;
 		return true;
 	}
@@ -1085,10 +1097,10 @@ class DemoCollision extends dsFunctions {
 				for (int k=-1; k<=1; k+=2) {
 					DVector3 v=new DVector3(),vv=new DVector3();
 					v.set( side1 ).scale( i*0.5, j*0.5, k*0.5 );
-					dMULTIPLY0_331 (vv,R1,v);
+					dMultiply0_331 (vv,R1,v);
 					vv.add(p1).sub(p2);
 					for (int axis=0; axis < 3; axis++) {
-						double z = dDOT14(vv,R2,axis);
+						double z = dCalcVectorDot3_14(vv,R2,axis);
 						if (z < (-side2.get(axis)*0.5) || z > (side2.get(axis)*0.5)) return false;
 					}
 				}
@@ -1128,7 +1140,7 @@ class DemoCollision extends dsFunctions {
 				}
 				for (j=0; j<4; j++) {
 					fp[j].scale(side2).scale(0.5);
-					dMULTIPLY0_331 (tmp,R2,fp[j]);
+					dMultiply0_331 (tmp,R2,fp[j]);
 					fp[j].eqSum( tmp, p2 );
 				}
 
@@ -1145,8 +1157,8 @@ class DemoCollision extends dsFunctions {
 									vv1.set( v1[0], v1[1], v1[2] ).scale( 0.5 ).scale( side1 );
 									for (k=0; k<3; k++) vv2.set(k, (v1[k] + (k==ei?1:0)*2)*0.5*side1.get(k) );
 									DVector3 vertex1=new DVector3(),vertex2=new DVector3();
-									dMULTIPLY0_331 (vertex1,R1,vv1);
-									dMULTIPLY0_331 (vertex2,R1,vv2);
+									dMultiply0_331 (vertex1,R1,vv1);
+									dMultiply0_331 (vertex2,R1,vv2);
 									//for (k=0; k<3; k++) vertex1[k] += p1[k];
 									vertex1.add(p1);
 									//for (k=0; k<3; k++) vertex2[k] += p1[k];
@@ -1332,11 +1344,14 @@ class DemoCollision extends dsFunctions {
 	{
 		do {
 			draw_all_objects_called = false;
-			//unsigned TODO fAbs() ?
 			long seed = dRandGetSeed();
 			testslot[graphical_test].test_fn();
 			if (draw_all_objects_called) {
-				if (space_pressed) space_pressed = false; else dRandSetSeed (seed);
+				if (space_pressed) {
+				    space_pressed = false; 
+				} else {
+				    dRandSetSeed (seed);
+				}
 			}
 		}
 		while (!draw_all_objects_called);
@@ -1364,18 +1379,9 @@ class DemoCollision extends dsFunctions {
 
 			System.out.println ("performing test: " + testslot[graphical_test].name);
 
-			// setup pointers to drawstuff callback functions
-			dsFunctions fn = this;
-			fn.version = DS_VERSION;
-			//    fn.start = &start;
-			//    fn.step = &simLoop;
-			//    fn.command = &command;
-			//    fn.stop = 0;
-			fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-
 			dsSetSphereQuality (3);
 			dsSetCapsuleQuality (8);
-			dsSimulationLoop (args,1280,900,fn);
+			dsSimulationLoop (args,1280,900,this);
 		}
 		else {
 			// do all tests noninteractively

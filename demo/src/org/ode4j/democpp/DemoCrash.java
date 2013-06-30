@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,22 +13,26 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.democpp;
 
 import org.cpp4j.java.RefInt;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DFixedJoint;
+import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -39,10 +45,11 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DSapSpace.AXES;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -51,15 +58,6 @@ import static org.ode4j.ode.OdeMath.*;
  * originally by David Whittaker.
  */
 class DemoCrash extends dsFunctions {
-
-	// select the method you want to test here (only uncomment *one* line)
-	//#define QUICKSTEP 1
-	////#define STEPFAST 1
-	private enum STEP {
-		QUICKSTEP,
-		STEPFAST;
-	}
-	private static final STEP STEPPER = STEP.QUICKSTEP;
 
 	// some constants
 
@@ -110,7 +108,7 @@ class DemoCrash extends dsFunctions {
 	private static DSpace space;
 	private static DBody[] body=new DBody[10000];
 	private static int bodies;
-	private static DJoint[] joint=new DJoint[100000];
+	private static DHinge2Joint[] joint=new DHinge2Joint[100000];
 	private static int joints;
 	private static DJointGroup contactgroup;
 	private static DGeom ground;
@@ -118,7 +116,7 @@ class DemoCrash extends dsFunctions {
 	private static int boxes;
 	private static DGeom[] sphere=new DGeom[10000];
 	private static int spheres;
-	private static DGeom[] wall_boxes=new DGeom[10000];
+	private static DBox[] wall_boxes=new DBox[10000];
 	private static DBody[] wall_bodies=new DBody[10000];
 	private static DGeom cannon_ball_geom;
 	private static DBody cannon_ball_body;
@@ -195,8 +193,6 @@ class DemoCrash extends dsFunctions {
 				"\t'2' to lower the cannon.\n" +
 				"\t'x' to shoot from the cannon.\n" +
 				"\t'f' to toggle fast step mode.\n" +
-				"\t'+' to increase AutoEnableDepth.\n" +
-				"\t'-' to decrease AutoEnableDepth.\n" +
 		"\t'r' to reset simulation.\n");
 	}
 
@@ -257,7 +253,7 @@ class DemoCrash extends dsFunctions {
 		dMassSetBox (m,1,LENGTH,WIDTH,HEIGHT);
 		dMassAdjust (m,CMASS/2.0);
 		dBodySetMass (b,m);
-		DJoint j = dJointCreateFixed(world, null);
+		DFixedJoint j = dJointCreateFixed(world, null);
 		dJointAttach(j, body[bodyI], b);
 		dJointSetFixed(j);
 		//box[boxI+1] = dCreateBox(space,LENGTH,WIDTH,HEIGHT);
@@ -291,7 +287,7 @@ class DemoCrash extends dsFunctions {
 
 		//  space = dHashSpaceCreate( null );
 		//	space = dSimpleSpaceCreate( null );
-		space = dSweepAndPruneSpaceCreate( null, dSAP_AXES_XYZ );
+		space = dSweepAndPruneSpaceCreate( null, AXES.XYZ );//dSAP_AXES_XYZ );
 		
 		m = OdeHelper.createMass();
 
@@ -441,7 +437,7 @@ class DemoCrash extends dsFunctions {
 				}
 				if (lastb!=null)
 				{
-					DJoint j = dJointCreateFixed(world,null);
+					DFixedJoint j = dJointCreateFixed(world,null);
 					dJointAttach (j, b, lastb);
 					dJointSetFixed(j);
 				}
@@ -495,12 +491,6 @@ class DemoCrash extends dsFunctions {
 		case 'f': case 'F':
 			doFast = !doFast;
 			break;
-		case '+':
-//TODO TZ			dWorldSetAutoEnableDepthSF1 (world, dWorldGetAutoEnableDepthSF1 (world) + 1);
-			break;
-		case '-':
-//TODO	TZ		dWorldSetAutoEnableDepthSF1 (world, dWorldGetAutoEnableDepthSF1 (world) - 1);
-			break;
 		case 'r': case 'R':
 			resetSimulation();
 			break;
@@ -520,7 +510,7 @@ class DemoCrash extends dsFunctions {
 			DMatrix3 R2 = new DMatrix3(), R3 = new DMatrix3(), R4 = new DMatrix3();
 			dRFromAxisAndAngle (R2,0,0,1,cannon_angle);
 			dRFromAxisAndAngle (R3,0,1,0,cannon_elevation);
-			dMultiply0 (R4,R2,R3,3,3,3);
+			dMultiply0 (R4,R2,R3);
 			double[] cpos = {CANNON_X,CANNON_Y,1};
 			for (int i=0; i<3; i++) cpos[i] += 3*R4.get(i, 2);//[i*4+2];
 			dBodySetPosition (cannon_ball_body,cpos[0],cpos[1],cpos[2]);
@@ -542,11 +532,10 @@ class DemoCrash extends dsFunctions {
 		dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
 
 		if (!pause) {
-			if (BOX) {//#ifdef BOX
+			if (BOX) {
 				//dBodyAddForce(body[bodies-1],lspeed,0,0);
-				//TODO report, this did not compile
 				dBodyAddForce(body[bodies-1],speed,0,0);
-			}//#endif
+			}
 			for (j = 0; j < joints; j++)
 			{
 				double curturn = dJointGetHinge2Angle1 (joint[j]);
@@ -561,11 +550,7 @@ class DemoCrash extends dsFunctions {
 			if (doFast)
 			{
 				dSpaceCollide (space,0,nearCallback);
-				if (STEPPER == STEP.QUICKSTEP) {//#if defined(QUICKSTEP)
-					dWorldQuickStep (world,0.05);
-				} else { //#elif defined(STEPFAST)
-//TODO TZ					dWorldStepFast1 (world,0.05,ITERS);
-				}//#endif
+				dWorldQuickStep (world,0.05);
 				dJointGroupEmpty (contactgroup);
 			}
 			else
@@ -639,7 +624,7 @@ class DemoCrash extends dsFunctions {
 		DMatrix3 R2 = new DMatrix3(), R3 = new DMatrix3(), R4 = new DMatrix3();
 		dRFromAxisAndAngle (R2,0,0,1,cannon_angle);
 		dRFromAxisAndAngle (R3,0,1,0,cannon_elevation);
-		dMultiply0 (R4,R2,R3,3,3,3);
+		dMultiply0 (R4,R2,R3);
 		DVector3 cpos = new DVector3(CANNON_X,CANNON_Y,1);
 		DVector3 csides = new DVector3(2,2,2);
 		dsDrawBox (cpos,R2,csides);
@@ -659,17 +644,13 @@ class DemoCrash extends dsFunctions {
 		doFast = true;
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
+		//dsFunctions fn = this;
+		//fn.version = DS_VERSION;
 		//	fn.start = &start;
 		//	fn.step = &simLoop;
 		//	fn.command = &command;
 		//	fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		dInitODE2(0);
 
@@ -681,7 +662,7 @@ class DemoCrash extends dsFunctions {
 		resetSimulation();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);

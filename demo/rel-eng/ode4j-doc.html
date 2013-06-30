@@ -1,0 +1,240 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>ode4j</title>
+    <meta content="ode4j,ode,Java,libccd,3D,physics,engine,library,dynamics" name="keywords" />
+  </head>
+  <body bgcolor="#E0E0E0">
+    <table border="0" style="width: 1200px;">
+      <tbody>
+        <tr>
+          <td style="width: 100px;"><br />
+          </td>
+          <td bgcolor="#E0E0E0" style="width: 1000px;">
+            <table cellspacing="1" cellpadding="5" border="0" bgcolor="#000000"
+              style="width: 100%;">
+              <tbody>
+                <tr>
+                  <td bgcolor="#E0E0E0" align="left" style="text-align: left;" colspan="5">
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight: bold;"><big>ode4j</big></big></big></font></p>
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight:           bold;">A Java 3D
+                            Physics Engine &amp; Library</big></big></font><font
+                        face="Helvetica, Arial, sans-serif"><b><br />
+                        </b></font></p>
+                    <p></p>
+                  </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td align="center" style="width: 20%;"> <font face="Helvetica, Arial, sans-serif">
+                      <a style="color: #000000;text-decoration:none" href="index.html">About</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"> <font face="Helvetica, Arial, sans-serif">
+                      <a style="color: #000000;text-decoration:none" href="ode4j-features.html">Features</a><br />
+                    </font> </td>
+                  <td bgcolor="#FFFFFF" align="center" style="width: 20%;"><font
+                      face="Helvetica, Arial, sans-serif"><a style="color: #000000;text-decoration:none"
+                        href="ode4j-doc.html">Documentation</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        style="color: #000000;text-decoration:none" href="ode4j-download.html">Download</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        style="color: #000000;text-decoration:none" href="ode4j-contact.html">Contact</a><br />
+                    </font> </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td bgcolor="#FFFFFF" align="left" style="text-align: left;" colspan="5">
+                    <font face="Helvetica, Arial, sans-serif">
+                      <h3>Documentation</h3>
+                      <span style="font-weight: bold;">ode4j documentation</span><br />
+                      This only contains ported javadoc and documentation
+                      specific to the Java version of ODE. For documentation on
+                      physics and mathematics please refer to the '<span style="font-weight: bold;">ODE
+                        documentation</span>' further down.<br />
+                      <a href="javadoc/index.html">On-line javadoc</a> (or
+                      download <a href="https://sourceforge.net/projects/ode4j/files/">here</a>)<br />
+                      The <a href="#mozTocId365970">demos</a> in the source
+                      code provide good examples for many applications<br />
+                      <a href="https://sourceforge.net/projects/ode4j/forums">Forums</a><br />
+                      <a target="_blank" href="https://sourceforge.net/pm/task.php?group_project_id=59343&amp;group_id=257951&amp;func=browse">Tasks</a><br />
+                      <a target="_blank" href="https://sourceforge.net/tracker/?func=browse&amp;group_id=257951&amp;atid=1141138">Bugs</a><br />
+                      <a target="_blank" href="https://lists.sourceforge.net/lists/listinfo/ode4j-users">Mailing
+                        List</a> (web interface). To join e-mail to <span class="moz-txt-link-abbreviated"
+                        style="text-decoration: underline;">ode4j-users-request@lists.sourceforge.net</span>
+                      with the word 'info' in the header or in the body.<br />
+                      <a href="#ProjectStructure">Code Structure</a><br />
+                      <br />
+                      <span style="font-weight: bold;">ODE documentation</span><br />
+                      <a href="http://www.ode.org/ode-docs.html" target="_blank">ODE
+                        docs</a><br />
+                      <a href="http://opende.sourceforge.net/wiki/index.php/Main_Page">ODE-Wiki</a><br />
+                      <a target="_blank" href="http://www.ode.org/community.html">ODE
+                        community</a><br />
+                      <br />
+                      <span style="font-weight: bold;">GIMPACT</span><br />
+                      <a href="http://gimpact.sourceforge.net/">Home</a><br />
+                      <br />
+                      <span style="font-weight: bold;">libccd</span><br />
+                      <a href="http://libccd.danfis.cz/">Home</a><br />
+                      <br />
+                      <span style="font-weight: bold;">Further links:</span><br />
+                      <a href="http://www.essentialmath.com/tutorial.htm">http://www.essentialmath.com/tutorial.htm</a><br />
+                      <a href="http://realtimecollisiondetection.net/books/list/">http://realtimecollisiondetection.net/books/list</a><br />
+                      <br />
+                      <br />
+                      <h3>Performance &amp; Multi-Threading<br />
+                      </h3>
+                      ode4j has been optimized for performance, leading to a
+                      significant differences to the original code, mostly with
+                      respect to the handling of DVector3 and DMatrix3 classes.
+                      More improvements are on the way.<br />
+                      For evaluating performance, please do NOT use the demos!
+                      They rely on the internal 'drawstuff' library. The way in
+                      which drawstuff uses OpenGL is not optimal. While this
+                      does not affect performance much under C/C++, it severely
+                      affects performance when using the Java-OpenGL API
+                      provided by lwjgl. In other words:<br />
+                      <ul>
+                        <li>When profiling any of the included demos, you will
+                          see that most of the time is spent in OpenGL calls (at
+                          least on my SUSE 11.1 64bit system / ATI Radeon HD
+                          3850).</li>
+                        <li>As far as I can tell, this is not a problem with
+                          lwjgl, but could be fixed by optimizing 'drawstuff'.</li>
+                        <li>To profile ode4j, please use applications that do
+                          not use drawstuff. To profile the existing demos,
+                          drawstuff can be disabled by calling <code>DS_API.dsSetOutputNull()</code>
+                          at the beginning of any demo.</li>
+                        <li>ode4j is in certain cases faster that ODE. I have
+                          investigated this only briefly, but I have the
+                          impression that Java can draw its advantage from using
+                          the garbage collector for arrays. This means
+                          de-allocation in Java occurs in a 2nd thread in
+                          parallel to computations, while in C/C++ de-allocation
+                          (which is expensive) occurs in the main thread. </li>
+                      </ul>
+                      <span style="font-weight: bold;">Multi-Threading</span><br />
+                      I did not port ODEs threading model, namely the use of
+                      ATOMIC. Instead, ode4j follow are very simple approach to
+                      multi-threading support by avoid mutable static fields.
+                      That means ode4j can be used in a multi-threaded
+                      environment under the following conditions:<br />
+                      <ul>
+                        <li>Any particular world should not be used be more then
+                          one thread at a time, reading or writing</li>
+                        <li>Multiple worlds can be used in concurrently by
+                          multiple threads as long as every world is only access
+                          by a single thread at a given time</li>
+                        <li>A world can be passed around (and then used) between
+                          threads simply by passing on the reference (this is
+                          unlike ODE in C/C++)</li>
+                        <li>The method <code>OdeHelper.allocateODEDataForThread(int)</code>
+                          does not need to be called as it does nothing (and
+                          never did). Actually it will be removed in one of the
+                          next releases.</li>
+                        <li> <code>OdeHelper.init2(...)</code> needs to be
+                          called only once per application, not for every thread
+                          (in fact, calling it multiple times should fail).</li>
+                        <li><code>OdeHelper.init2(...)</code> needs to have
+                          returned before any thread uses ode4j.<br />
+                        </li>
+                        <li>A future release may introduce more powerful
+                          multi-threading.<br />
+                        </li>
+                      </ul>
+                      <br />
+                      <h3>Differences to ODE for C/C++<br />
+                      </h3>
+                      <ul>
+                        <li>API: The preferred API of the ODE projects appears
+                          to be the C API (it is more complete and contains all
+                          the documentation). The preferred API in ode4j is the
+                          OO-API.</li>
+                        <li>Class names all start with a 'D' rather than 'd'.</li>
+                        <li>The d***ID types have not been ported. Simply use
+                          the according D*** interfaces. Also, the type
+                          hierarchy has changed, the D*** classes are now
+                          interfaces that are implemented by the according Dx***
+                          classes.<br />
+                        </li>
+                        <li>Main access points in ode4j are <code>OdeHelper</code>
+                          (initialisation methods and a factory for creating
+                          most classes), <code>OdeConfig</code> (for
+                          configuration) and <code>OdeConstants</code>
+                          (providing many of the contants used in ode4j).</li>
+                        <li>Some of the math has been moved inside the <code>DVector3</code>
+                          and <code>DMatrix3</code> classes.</li>
+                        <li>ode4j provides <code>DVector3C</code> and <code>DMatrix3C</code>
+                          interfaces that provide immutable encapsulation.<br />
+                        </li>
+                      </ul>
+                      Methods<br />
+                      <ul>
+                        <li>All global methods have the leading 'd' removed and
+                          the 2nd letter lowercased. Most of the global methods
+                          can be found in <code>OdeHelper</code>. For example:
+                          <code>dInitOde2(...)</code> -&gt; <code>OdeHelper.initOde2(...)</code>.</li>
+                        <li>All 'create' methods have the 'create' moved to the
+                          beginning: <code>OdeHelper.createMass()</code>.</li>
+                        <li>To find the Java method name for a global C method,
+                          one can usually remove the dClassName from the
+                          beginning and remove the first argument, for example <code>dJointAttach(
+                            myJoint, b1, b2 )</code> becomes <code>myJoint.attach(
+                            b1, b2 )</code>. This is also valid when looking for
+                          C++ function names in ODE itself.<br />
+                          Another example: <code>dJointSetPistonAnchor (
+                            piston, ... );</code> becomes <code>piston.setAnchor
+                            ( ... );</code> .<br />
+                        </li>
+                        <li>Unlike ODE, the preferred policy for getting complex
+                          values from an object is not to pass in an empty
+                          array:<br />
+                          <code>DVector3 result = new DVector3();<br />
+                            box.getSides( result )</code>;<br />
+                          but to return an immutable object:<br />
+                          <code>DVector3C result = box.getLengths();</code>
+                          //The trailing '<code>C</code>' on <code>DVector3C</code>
+                          and other classes indicates and constant / immutable
+                          object.<br />
+                          In many cases this avoids creating unnecessary
+                          temporary objects and also makes the code more
+                          compact. It also avoids a possible spelling mistake,
+                          when typing 'g' instead of 's' (get &lt;-&gt; set).<br />
+                        </li>
+                      </ul>
+                      <br />
+                      <h3>Migration Guide</h3>
+                      The migration guide is not only for migrating code from
+                      C/C++ to Java, but also for better understanding the
+                      existing documentation.<br />
+                      TBW.<br />
+                      <br />
+                    </font> </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="width: 100px;"><br />
+          </td>
+        </tr>
+        <tr>
+          <td><br />
+          </td>
+          <td> © Copyright 2012 Tilmann Zäschke [ode4j AT gmx DOT de]<br />
+          </td>
+          <td><br />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><br />
+    </p>
+    <p></p>
+    <br />
+    <p><br />
+    </p>
+  </body>
+</html>

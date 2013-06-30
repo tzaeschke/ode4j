@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,24 +13,29 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.democpp;
 
 import org.cpp4j.java.RefDouble;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DCylinder;
+import org.ode4j.ode.DFixedJoint;
+import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -44,10 +51,11 @@ import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -68,8 +76,6 @@ import static org.ode4j.ode.OdeMath.*;
  */
 class DemoJointPU extends dsFunctions {
 
-
-	//using namespace ode;
 
 //	enum IDX_CYL_DIM
 //	{
@@ -291,66 +297,66 @@ class DemoJointPU extends dsFunctions {
 
 			// Force
 		case 'q' : case 'Q' :
-			body[D].addForce(40,0,0);
+			dBodyAddForce(body[D],40,0,0);
 			break;
 		case 'w' : case 'W' :
-			body[D].addForce(-40,0,0);
+			dBodyAddForce(body[D],-40,0,0);
 			break;
 
 		case 'a' : case 'A' :
-			body[D].addForce(0,40,0);
+			dBodyAddForce(body[D],0,40,0);
 			break;
 		case 's' : case 'S' :
-			body[D].addForce(0,-40,0);
+			dBodyAddForce(body[D],0,-40,0);
 			break;
 
 		case 'z' : case 'Z' :
-			body[D].addForce(0,0,40);
+			dBodyAddForce(body[D],0,0,40);
 			break;
 		case 'x' : case 'X' :
-			body[D].addForce(0,0,-40);
+			dBodyAddForce(body[D],0,0,-40);
 			break;
 
 			// Torque
 		case 'e': case 'E':
-			body[D].addTorque(0.1,0,0);
+			dBodyAddTorque(body[D],0.1,0,0);
 			break;
 		case 'r': case 'R':
-			body[D].addTorque(-0.1,0,0);
+			dBodyAddTorque(body[D],-0.1,0,0);
 			break;
 
 		case 'd': case 'D':
-			body[D].addTorque(0, 0.1,0);
+			dBodyAddTorque(body[D],0, 0.1,0);
 			break;
 		case 'f': case 'F':
-			body[D].addTorque(0,-0.1,0);
+			dBodyAddTorque(body[D],0,-0.1,0);
 			break;
 
 		case 'c': case 'C':
-			body[D].addTorque(0,0,0.1);
+			dBodyAddTorque(body[D],0,0,0.1);
 			break;
 		case 'v': case 'V':
-			body[D].addTorque(0,0,0.1);
+			dBodyAddTorque(body[D],0,0,0.1);
 			break;
 
 			// Velocity of joint
 		case ',': case '<' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel3) - VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel3, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel3) - VEL_INC;
+			joint.setParam (PARAM_N.dParamVel3, vel);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
 
 		case '.': case '>' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel3) + VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel3, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel3) + VEL_INC;
+			joint.setParam (PARAM_N.dParamVel3, vel);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
 
 		case 'l': case 'L' : {
 			double aLimit, lLimit, fmax;
-			if (  joint.getParam (D_PARAM_NAMES_N.dParamFMax1)!=0 ) {
+			if (  joint.getParam (PARAM_N.dParamFMax1)!=0 ) {
 				aLimit = dInfinity;
 				lLimit = dInfinity;
 				fmax = 0;
@@ -361,24 +367,24 @@ class DemoJointPU extends dsFunctions {
 				fmax = 0.02;
 			}
 
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax1, fmax);
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax2, fmax);
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax3, fmax);
+			joint.setParam (PARAM_N.dParamFMax1, fmax);
+			joint.setParam (PARAM_N.dParamFMax2, fmax);
+			joint.setParam (PARAM_N.dParamFMax3, fmax);
 
 			if (joint instanceof DPRJoint) {
 				DPRJoint pr = (DPRJoint) (joint);
-				pr.setParam (D_PARAM_NAMES_N.dParamLoStop1, -lLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamHiStop1, -lLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamLoStop2, aLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamHiStop2, -aLimit);
+				pr.setParam (PARAM_N.dParamLoStop1, -lLimit);
+				pr.setParam (PARAM_N.dParamHiStop1, -lLimit);
+				pr.setParam (PARAM_N.dParamLoStop2, aLimit);
+				pr.setParam (PARAM_N.dParamHiStop2, -aLimit);
 			} else if (joint instanceof DPUJoint) {
 				DPUJoint pu = (DPUJoint) (joint);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop1, -aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop1, aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop2, -aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop2, aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop3, -lLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop3, lLimit);
+				pu.setParam (PARAM_N.dParamLoStop1, -aLimit);
+				pu.setParam (PARAM_N.dParamHiStop1, aLimit);
+				pu.setParam (PARAM_N.dParamLoStop2, -aLimit);
+				pu.setParam (PARAM_N.dParamHiStop2, aLimit);
+				pu.setParam (PARAM_N.dParamLoStop3, -lLimit);
+				pu.setParam (PARAM_N.dParamHiStop3, lLimit);
 			}
 		}
 
@@ -412,7 +418,7 @@ class DemoJointPU extends dsFunctions {
 		}
 	}
 
-	private static void drawBox (DGeom id, int R, int G, int B)
+	private static void drawBox (DBox id, int R, int G, int B)
 	{
 		if (id==null)
 			return;
@@ -465,10 +471,10 @@ class DemoJointPU extends dsFunctions {
 
 			dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
 
-			drawBox (geom[W], 1,1,0);
+			drawBox ((DBox)geom[W], 1,1,0);
 
 
-			drawBox (geom[EXT], 0,1,0);
+			drawBox ((DBox)geom[EXT], 0,1,0);
 
 			DVector3 anchorPos = new DVector3();
 
@@ -500,7 +506,7 @@ class DemoJointPU extends dsFunctions {
 			if ( geom[INT]!=null ) {
 				dsSetColor (1,0,1);
 				DVector3 l = new DVector3();
-				dGeomBoxGetLengths (geom[INT], l);
+				dGeomBoxGetLengths ((DBox)geom[INT], l);
 
 				final DMatrix3C rotBox = dGeomGetRotation (geom[W]);
 
@@ -520,10 +526,12 @@ class DemoJointPU extends dsFunctions {
 				DQuaternion qq = new DQuaternion();
 				dQMultiply1 (qq, qAng, q);
 				DMatrix3 R = new DMatrix3();
-				dQtoR (qq,R);
+				dRfromQ (R,qq);
 
 
-				dGeomCylinderGetParams (dGeomTransformGetGeom (geom[AXIS1]), radius, length);
+				dGeomCylinderGetParams (
+						(DCylinder) dGeomTransformGetGeom ((DGeomTransform)geom[AXIS1]), 
+						radius, length);
 				dsSetColor (1,0,0);
 				dsDrawCylinder (anchorPos, R, length.getF(), radius.getF());
 			}
@@ -545,10 +553,12 @@ class DemoJointPU extends dsFunctions {
 
 
 				DMatrix3 R = new DMatrix3();
-				dQtoR (qq1,R);
+				dRfromQ (R,qq1);
 
 
-				dGeomCylinderGetParams (dGeomTransformGetGeom (geom[AXIS2]), radius, length);
+				dGeomCylinderGetParams (
+						(DCylinder)dGeomTransformGetGeom ((DGeomTransform)geom[AXIS2]), 
+						radius, length);
 				dsSetColor (0,0,1);
 				dsDrawCylinder (anchorPos, R, length.getF(), radius.getF());
 			}
@@ -559,7 +569,7 @@ class DemoJointPU extends dsFunctions {
 			if ( geom[ANCHOR]!=null ) {
 				dsSetColor (1,1,1);
 				DVector3 l = new DVector3();
-				dGeomBoxGetLengths (geom[ANCHOR], l);
+				dGeomBoxGetLengths ((DBox)geom[ANCHOR], l);
 
 				final DMatrix3C rotBox = dGeomGetRotation (geom[D]);
 				final DVector3C posBox = dGeomGetPosition (geom[D]);
@@ -577,18 +587,19 @@ class DemoJointPU extends dsFunctions {
 				dsDrawBox (pos, rotBox, l);
 			}
 
-			drawBox (geom[D], 1,1,0);
+			drawBox ((DBox)geom[D], 1,1,0);
 		}
 	}
 
 
-	private static void Help (String[] argv)
+	@Override
+	public void dsPrintHelp ()
 	{
-		printf ("%s ", argv[0]);
-		printf (" -h | --help   : print this help\n");
+		super.dsPrintHelp();
+		//printf (" -h | --help   : print this help\n");
 		printf (" -p | --PRJoint : Use a PR joint instead of PU joint\n");
-		printf (" -t | --texture-path path  : Path to the texture.\n");
-		printf ("                             Default = %s\n", DRAWSTUFF_TEXTURE_PATH);
+		//printf (" -t | --texture-path path  : Path to the texture.\n");
+		//printf ("                             Default = %s\n", DRAWSTUFF_TEXTURE_PATH);
 		printf ("--------------------------------------------------\n");
 		printf ("Hit any key to continue:");
 		//getchar();
@@ -597,34 +608,31 @@ class DemoJointPU extends dsFunctions {
 	}
 
 	public static void main(String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoJointPU();
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		new DemoJointPU().demo(args);
+	}
+	
+	private void demo(String[] args) {
+//		if (args.length >= 2 ) {
+			for (int i=0; i < args.length; ++i) {
+//				if (  0 == strcmp ("-h", args[i]) || 0 == strcmp ("--help", args[i]) )
+//					Help (args);
 
-		if (args.length >= 2 ) {
-			for (int i=1; i < args.length; ++i) {
-				if (  0 == strcmp ("-h", args[i]) || 0 == strcmp ("--help", args[i]) )
-					Help (args);
-
-				if (  0 == strcmp ("-p", args[i]) || 0 == strcmp ("--PRJoint", args[i]) )
+				if (  0 == strcmp ("-p", args[i]) || 0 == strcmp ("--PRJoint", args[i]) ) {
 					type = DPRJoint.class;
-
-				if (0 == strcmp ("-t", args[i]) || 0 == strcmp ("--texture-path", args[i]) ) {
-					int j = i+1;
-					if ( j+1 > args.length      ||  // Check if we have enough arguments
-							args[j].charAt(0) == '\0' ||  // We should have a path here
-							args[j].charAt(0) == '-' ) // We should have a path not a command line
-						Help (args);
-					else
-						fn.path_to_textures = args[++i]; // Increase i since we use this argument
+					args[i] = "";
 				}
+
+//				if (0 == strcmp ("-t", args[i]) || 0 == strcmp ("--texture-path", args[i]) ) {
+//					int j = i+1;
+//					if ( j+1 > args.length      ||  // Check if we have enough arguments
+//							args[j].charAt(0) == '\0' ||  // We should have a path here
+//							args[j].charAt(0) == '-' ) // We should have a path not a command line
+//						Help (args);
+//					else
+//						dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
+//				}
 			}
-		}
+//		}
 
 		dInitODE2(0);
 
@@ -692,7 +700,8 @@ class DemoJointPU extends dsFunctions {
 		dGeomSetCollideBits (geom[AXIS1],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
 		id = geom[AXIS1];
-		dGeomTransformSetGeom (geom[AXIS1],  dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
+		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS1],  
+				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the second axis of the universal joint
@@ -704,7 +713,8 @@ class DemoJointPU extends dsFunctions {
 		dGeomSetCollideBits (geom[AXIS2],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
 		id = geom[AXIS2];
-		dGeomTransformSetGeom (geom[AXIS2],  dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
+		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS2],  
+				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the anchor
@@ -742,7 +752,7 @@ class DemoJointPU extends dsFunctions {
 
 
 		// Attache the upper box to the world
-		DJoint fixed = dJointCreateFixed (world,null);
+		DFixedJoint fixed = dJointCreateFixed (world,null);
 		dJointAttach (fixed , null, body[W]);
 		dJointSetFixed (fixed );
 
@@ -767,7 +777,7 @@ class DemoJointPU extends dsFunctions {
 
 
 		// run simulation
-		dsSimulationLoop (args,400,300,fn);
+		dsSimulationLoop (args,400,300,this);
 
 		//delete joint;
 		//joint.DESTRUCTOR();  //TZ, not necessary, is deleted from dWorldDestroy()
