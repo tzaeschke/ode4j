@@ -21,23 +21,21 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
-import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DMass;
-import org.ode4j.ode.internal.DxMass;
+import org.ode4j.ode.DMassC;
+import org.ode4j.ode.DTriMesh;
+import org.ode4j.ode.OdeHelper;
 
 
 public abstract class ApiCppMass extends ApiCppOdeInit {
 
-	//struct dMass;
-	//typedef struct dMass dMass;
-
-	/** Not in the original API.
-	 * @author TZ 
+	/** 
+	 * Not in the original API. By TZ. 
 	 */
 	public static DMass dMassCreate() {
-		return new DxMass();
+		return OdeHelper.createMass();
 	}
 
 	
@@ -50,13 +48,13 @@ public abstract class ApiCppMass extends ApiCppOdeInit {
 	 * @return 1 if both condition are met
 	 */
 	//ODE_API 
-	public static int dMassCheck(final DMass m) {
-		throw new UnsupportedOperationException();
+	public static boolean dMassCheck(DMassC m) {
+		return m.check();
 	}
 
 	//ODE_API 
 	public static void dMassSetZero (DMass m) {
-		((DxMass)m).dMassSetZero();
+		m.setZero();
 	}
 
 	//ODE_API 
@@ -64,82 +62,82 @@ public abstract class ApiCppMass extends ApiCppOdeInit {
 			double cgx, double cgy, double cgz,
 			double I11, double I22, double I33,
 			double I12, double I13, double I23) {
-		((DxMass)m).dMassSetParameters(themass, cgx, cgy, cgz, I11, I22, I33, I12, I13, I23);
+		m.setParameters(themass, cgx, cgy, cgz, I11, I22, I33, I12, I13, I23);
 	}
 
 	//ODE_API 
 	public static void dMassSetSphere (DMass m, double density, double radius) {
-		((DxMass)m).dMassSetSphere(density, radius);
+		m.setSphere(density, radius);
 	}
 	//ODE_API 
-	public static void dMassSetSphereTotal (DMass m, double total_mass, double radius) {
-		((DxMass)m).dMassSetSphereTotal(total_mass, radius);
+	public static void dMassSetSphereTotal (DMass m, double total, double radius) {
+		m.setSphereTotal(total, radius);
 	}
 
 	//ODE_API 
 	public static void dMassSetCapsule (DMass m, double density, int direction,
 			double radius, double length) {
-		((DxMass)m).dMassSetCapsule(density, direction, radius, length);
+		m.setCapsule(density, direction, radius, length);
 	}
 	//ODE_API 
-	public static void dMassSetCapsuleTotal (DMass m, double total_mass, int direction,
+	public static void dMassSetCapsuleTotal (DMass m, double total, int direction,
 			double radius, double length) {
-		throw new UnsupportedOperationException();
+		m.setCapsuleTotal(total, direction, radius, length);
 	}
 
 	//ODE_API 
 	public static void dMassSetCylinder (DMass m, double density, int direction,
 			double radius, double length) {
-		((DxMass)m).dMassSetCylinder(density, direction, radius, length);
+		m.setCylinder(density, direction, radius, length);
 	}
 	//ODE_API 
-	public static void dMassSetCylinderTotal (DMass m, double total_mass, int direction,
+	public static void dMassSetCylinderTotal (DMass m, double total, int direction,
 			double radius, double length) {
-		throw new UnsupportedOperationException();
+		m.setCylinderTotal(total, direction, radius, length);
 	}
 
 	//ODE_API 
 	public static void dMassSetBox (DMass m, double density,
 			double lx, double ly, double lz) {
-		((DxMass)m).dMassSetBox(density, lx, ly, lz);
+		m.setBox(density, lx, ly, lz);
 	}
 	//ODE_API 
 	public static void dMassSetBoxTotal (DMass m, double total_mass,
 			double lx, double ly, double lz) {
-		throw new UnsupportedOperationException();
+		m.setBoxTotal(total_mass, lx, ly, lz);
 	}
 
 	//ODE_API 
-	public static void dMassSetTrimesh (DMass m, double density, DGeom g) {
-		throw new UnsupportedOperationException();
+	public static void dMassSetTrimesh (DMass m, double density, DTriMesh g) {
+		m.setTrimesh(density, g);
 	}
 
 	//ODE_API 
-	public static void dMassSetTrimeshTotal (DMass m, double total_mass, DGeom g) {
-		throw new UnsupportedOperationException();
+	public static void dMassSetTrimeshTotal (DMass m, double total_mass, DTriMesh g) {
+		m.setTrimeshTotal(total_mass, g);
 	}
 
 	//ODE_API 
 	public static void dMassAdjust (DMass m, double newmass) {
-		((DxMass)m).dMassAdjust(newmass);
+		m.adjust(newmass);
 	}
 
 	//ODE_API 
 	public static void dMassTranslate (DMass m, double x, double y, double z) {
-		((DxMass)m).dMassTranslate(new DVector3(x, y, z));
+		m.translate(new DVector3(x, y, z));
 	}
 
 	//ODE_API v
-	public static void dMassRotate (DMass m, final DMatrix3 R) {
-		((DxMass)m).dMassRotate(R);
+	public static void dMassRotate (DMass m, DMatrix3C R) {
+		m.rotate(R);
 	}
 
 	//ODE_API 
-	public static void dMassAdd (DMass a, final DMass b) {
-		((DxMass)a).add(b);
+	public static void dMassAdd (DMass m, DMassC b) {
+		m.add(b);
 	}
 
-	// Backwards compatible API
+	// Backwards compatible API (deprecated)
 	//#define dMassSetCappedCylinder dMassSetCapsule
 	//#define dMassSetCappedCylinderTotal dMassSetCapsuleTotal
 //
