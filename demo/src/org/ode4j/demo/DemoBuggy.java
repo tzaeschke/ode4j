@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,17 +13,18 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
@@ -44,7 +47,7 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 
 /**
@@ -55,13 +58,6 @@ class DemoBuggy extends dsFunctions {
 
 	// some constants
 
-	//#define LENGTH 0.7	// chassis length
-	//#define WIDTH 0.5	// chassis width
-	//#define HEIGHT 0.2	// chassis height
-	//#define RADIUS 0.18	// wheel radius
-	//#define STARTZ 0.5	// starting height of chassis
-	//#define CMASS 1		// chassis mass
-	//#define WMASS 0.2	// wheel mass
 	private final double LENGTH = 0.7;	// chassis length
 	private final double WIDTH = 0.5;	// chassis width
 	private final double HEIGHT = 0.2;	// chassis height
@@ -94,7 +90,7 @@ class DemoBuggy extends dsFunctions {
 	// this is called by dSpaceCollide when two objects in space are
 	// potentially colliding.
 
-	static void nearCallback (Object data, DGeom o1, DGeom o2)
+	private static void nearCallback (Object data, DGeom o1, DGeom o2)
 	{
 		int i,n;
 
@@ -119,12 +115,6 @@ class DemoBuggy extends dsFunctions {
 				contact.surface.soft_erp = 0.5;
 				contact.surface.soft_cfm = 0.3;
 				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contact);
-				System.out.println("i=" + i + "/" + n);
-				System.out.println("C=" + c);
-				System.out.println("CONT=" + contact);
-				System.out.println("GEOM=" + contact.geom);
-				System.out.println("G1=" + contact.geom.g1);
-				System.out.println("G2=" + contact.geom.g2);
 				c.attach(
 						contact.geom.g1.getBody(),
 						contact.geom.g2.getBody());
@@ -140,15 +130,13 @@ class DemoBuggy extends dsFunctions {
 	{
 		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
-		//  static float xyz[3] = {0.8317f,-0.9817f,0.8000f};
-		//  static float hpr[3] = {121.0000f,-27.5000f,0.0000f};
 		dsSetViewpoint (xyz,hpr);
-		System.out.println("Press:\t'a' to increase speed.\n" +
-				"\t'z' to decrease speed.\n" +
-				"\t',' to steer left.\n" +
-				"\t'.' to steer right.\n" +
-				"\t' ' to reset speed and steering.\n" +
-		"\t'1' to save the current state to 'state.dif'.\n");
+		System.out.println("Press:\t'a' to increase speed.");
+		System.out.println("\t'z' to decrease speed.");
+		System.out.println("\t',' to steer left.");
+		System.out.println("\t'.' to steer right.");
+		System.out.println("\t' ' to reset speed and steering.");
+		System.out.println("\t'1' to save the current state to 'state.dif'.");
 	}
 
 
@@ -197,8 +185,6 @@ class DemoBuggy extends dsFunctions {
 		int i;
 		if (!pause) {
 			// motor
-//			dJointSetHinge2Param (joint[0],dParamVel2,-speed);
-//			dJointSetHinge2Param (joint[0],dParamFMax2,0.1);
 			joint[0].setParamVel2 (-speed);
 			joint[0].setParamFMax2 (0.1);
 
@@ -207,11 +193,6 @@ class DemoBuggy extends dsFunctions {
 			if (v > 0.1) v = 0.1;
 			if (v < -0.1) v = -0.1;
 			v *= 10.0;
-//			dJointSetHinge2Param (joint[0],dParamVel,v);
-//			dJointSetHinge2Param (joint[0],dParamFMax,0.2);
-//			dJointSetHinge2Param (joint[0],dParamLoStop,-0.75);
-//			dJointSetHinge2Param (joint[0],dParamHiStop,0.75);
-//			dJointSetHinge2Param (joint[0],dParamFudgeFactor,0.1);
 			joint[0].setParamVel (v);
 			joint[0].setParamFMax (0.2);
 			joint[0].setParamLoStop (-0.75);
@@ -253,19 +234,6 @@ class DemoBuggy extends dsFunctions {
 	private void demo(String[] args) {
 		int i;
 		DMass m = OdeHelper.createMass();
-
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		OdeHelper.initODE2(0);
@@ -323,18 +291,14 @@ class DemoBuggy extends dsFunctions {
 
 		// set joint suspension
 		for (i=0; i<3; i++) {
-			//dJointSetHinge2Param (joint[i],dParamSuspensionERP,0.4);
 			joint[i].setParamSuspensionERP (0.4);
-			//dJointSetHinge2Param (joint[i],dParamSuspensionCFM,0.8);
 			joint[i].setParamSuspensionCFM (0.8);
 		}
 
 		// lock back wheels along the steering axis
 		for (i=1; i<3; i++) {
 			// set stops to make sure wheels always stay in alignment
-			//dJointSetHinge2Param (joint[i],dParamLoStop,0);
 			joint[i].setParamLoStop (0);
-			//dJointSetHinge2Param (joint[i],dParamHiStop,0);
 			joint[i].setParamHiStop (0);
 			// the following alternative method is no good as the wheels may get out
 			// of alignment:
@@ -358,7 +322,7 @@ class DemoBuggy extends dsFunctions {
 		ground_box.setRotation(R);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		box[0].destroy();
 		sphere[0].destroy();

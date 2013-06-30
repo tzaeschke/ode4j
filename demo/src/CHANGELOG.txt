@@ -9,6 +9,134 @@ the rules for this file:
 
 ------------------------------------------------------------------------------
 
-2009-06-04  Tilmann Zäschke
+
+
+2010-Jun-19 Tilmann Zaschke
+		* Release of ode4j-0.11.1-j1.4
+		   ******************************************************************
+
+2010-Jun-08 Tilmann Zaschke
+		* Updated javadoc for DHeightfieldData build(...) methods.
+
+2010-Jun-07 Tilmann Zaschke
+		* Implemented support for building DHeightfieldData from short[], 
+		  float[] and double[].
+		* API CHANGE:
+		  - Changed API of DHeightField and DHeightFieldData to accept Object
+		    instead of Object[] as type of data.
+		   ******************************************************************
+
+2010-May-30 Tilmann Zaschke
+		* Release of ode4j-0.11.1-j1.3
+		   ******************************************************************
+
+2010-May-20 Tilmann Zaschke
+		* Fixed recursion in DxBody - Bug ID: 3003719
+
+2010-Feb-23 Tilmann Zaschke
+		* Fixed drawstuff problem with ATI 10.1 and 10.2 driver under Linux:
+		  Bug ID: 2957098
+
+2010-Feb-03 Tilmann Zaschke
+		* Release of ode4j-0.11.1-j1.2
+		   ******************************************************************
+
+2010-Jan-20 Tilmann Zaschke
+		* API change renamed DContact.dSurfaceParameters to DSurfaceParameters
+		   ************ ************ ************ ************ ************
+
+2010-Jan-18 Tilmann Zaschke
+		* Fixed another problem in GIMPACT (still buggy).
+
+2010-Jan-17 Tilmann Zaschke
+		* Improved version with GIMPACT (still buggy).
+		  DemoBasket and DemoCyl are working now.
+		* Updated copyright information.
+
+2010-Jan-10 Tilmann Zaschke
+		* Added initial version for TRIMESH support via GIMPACT (still buggy).
+
+2009-Dec-10 Tilmann Zaschke
+		* Fixed bugs where setting a body's dampening or auto-disable 
+		  parameters would set these parameters for all other bodies and the 
+		  associated world as well. -> BUG ID: 2912249
+		* reduced visibility of some public fields in DxWorld and DxBody.
+
+2009-Dec-07 Tilmann Zaschke
+		* Removed @brief tags in javadoc except cpp javadoc.
+
+2009-Nov-30 Tilmann Zäschke
+		* Cleaned up argument parsing in demos. 
+		* API change: DrawStuff.setOuputNull() -> dsSetOutputNull()
+
+2009-Nov-29 Tilmann Zäschke
+		* Fixed bug ID: 2905309 -texturepath ignored, 1st argument ignored 
+		* Started cleanup of DrawStuff, mainly regarding setting up
+		  version and texture_path
+
+2009-Nov-12 Tilmann Zäschke
+		* Fixed crash for DemoCyl in drawstuff
+
+2009-Aug-18 Tilmann Zäschke
+		* Javadoc improvements
+
+2009-Aug-12 Tilmann Zäschke
+		* Javadoc & API for DBody completed
+		* Javadoc & API for DSpace and sub-classes completed
+		* Javadoc & API for DGeom and sub-classes completed
+		* Fixed and reduced dependencies to .cpp and .internal
+		* Fixed Bug#2836288 in DxConvex
+		* Javadoc & API for DJoint and sub-classes completed
+		* cleaned up javadoc a bit
+
+2009-Aug-10 Tilmann Zäschke
+		* Reduced warnings
+		* Added @Override labels
+		* Javadoc & API for DWorld completed
+
+2009-Jul-22 Tilmann Zäschke
+		* Copied javadoc for CppMath API.
+		* More API changes in the MATH area.
+		  Array, Vector, Martrix and 'v' are not public anymore.
+
+2009-Jul-21 Tilmann Zäschke
+		* API changes !!!!!!!!!!!!!!!
+		  - DVector3 does not extend DVector anymore
+		  - DMatrix3C.get(i) removed
+		  - Removed following method:
+		  	Matrix.dMultiply0 (DVector3 A, final DMatrix3C B, 
+			final DVector3C C, int p, int q, int r)
+			-> last arguments removed, assumed to be always 3,3,1.
+		  - Matrix.dMultiply0 (DMatrix3 A, final DMatrix3C B, 
+			final DMatrix3C C, int p, int q, int r)
+		  
+
+
+2009-Jul-20 Tilmann Zäschke
+		* Minor updates
+		* released 0.11.1-j1.0 ***********************************************
+
+
+2009-Jul-07 Tilmann Zäschke
+		* Fixed Test harness errors and failures
+		* Fixed DemoBuggy
+
+2009-Jul-06 Tilmann Zäschke
+		* Replaced usage of DVector6 with DAABB / improved DAABB
+		* Reduced usage of RefDouble in API
+		* Implemented most of the functions in the fake-C/C++ API.
+
+2009-Jul-06 Tilmann Zäschke
+		* All code migrated to ode-0.11.1
+		* released 0.11.1-j1.0-beta-1
+
+2009-Jun-26 Tilmann Zäschke
+		* Started migration to ode-0.11.1
+		* Investigation of TLS mapping to Java
+		* Decision that SDK will contain everything, no need for the other 
+		  JARs anymore.
+
+2009-Jun-04  Tilmann Zäschke
         * Initial version checked in to SVN. This is a 95% complete port of 
           ode 0.10.1 .
+          

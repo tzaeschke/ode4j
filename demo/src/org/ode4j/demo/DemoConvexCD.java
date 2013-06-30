@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,17 +13,18 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -39,7 +42,7 @@ import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.CollideBoxBox;  //TODO can we avoid this?
 import org.ode4j.ode.internal.DxConvex;   //TODO can we avoid this?
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -111,22 +114,30 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 
 	private DVector3 geom1pos=new DVector3(0.0,0.250,0.50);
 	private DQuaternion geom1quat=new DQuaternion(1,0,0,0);
-//	private DQuaternion geom0quat=new DQuaternion(0.7071,0,0.7071,0);
+	//	private DQuaternion geom0quat=new DQuaternion(0.7071,0,0.7071,0);
 
 	private boolean DumpInfo=true;
 	private int drawmode = DS_WIREFRAME;
 
-	private final DVector3 fixed_pos_0 = new DVector3(0.703704,-0.748281,0.249495);
-	private final DMatrix3 fixed_rot_0 = new DMatrix3(
-			0.996994,-0.001009,-0.077468,0.000000,
-			-0.077468,-0.000117,-0.996995,0.000000,
-			0.000996, 1.000000,-0.000195,0.000000);
+	//	private final DVector3C fixed_pos_0 = new DVector3(0.703704,-0.748281,0.249495);
+	//	private final DMatrix3C fixed_rot_0 = new DMatrix3(
+	//			0.996994,-0.001009,-0.077468,
+	//			-0.077468,-0.000117,-0.996995,
+	//			0.000996, 1.000000,-0.000195);
+	//
+	//	private final DVector3C fixed_pos_1 = new DVector3(0.894169,-0.372081,0.249432);
+	//	private final DMatrix3C fixed_rot_1 = new DMatrix3(
+	//			-0.999461, 0.032777,0.001829,
+	//			-0.032777,-0.999463,0.000033,
+	//			0.001829,-0.000027,0.999998);
 
-	private final DVector3 fixed_pos_1 = new DVector3(0.894169,-0.372081,0.249432);
-	private final DMatrix3 fixed_rot_1 = new DMatrix3(
-			-0.999461, 0.032777,0.001829,0.000000,
-			-0.032777,-0.999463,0.000033,0.000000,
-			0.001829,-0.000027,0.999998,0.000000);
+	// for EDGE-EDGE test
+	private final DVector3C fixed_pos_0=new DVector3(0.0,0.0,0.25);
+	private final DMatrix3C fixed_rot_0=new DMatrix3( 1,0,0,0,1,0,0,0,1 );
+	private final DVector3C fixed_pos_1=new DVector3(0.000000,0.450000,0.600000);
+	private final DMatrix3C fixed_rot_1=new DMatrix3(0.708311,-0.705472,-0.000000,
+			0.516939,0.519297,-0.679785,
+			0.480067,0.481293,0.733034);
 
 	public void start()
 	{
@@ -152,35 +163,35 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 		boxes[1]=OdeHelper.createBox(space,0.5,0.5,0.5);
 		geoms=convex;
 
-//		#if 0
-//		DMatrix3 m1 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
-//		DMatrix3 m2 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
-//		dGeomSetPosition (convex[0],
-//				0.0,
-//				0.0,
-//				0.25);
-//		dGeomSetPosition (convex[1],
-//				geom1pos[0],
-//				geom1pos[1],
-//				geom1pos[2]);
-//		dQtoR (geom0quat, m1);
-//		dGeomSetRotation (convex[0],m1);
-//		dQtoR (geom1quat, m2);
-//		dGeomSetRotation (convex[1],m2);
-//
-//		dGeomSetPosition (boxes[0],
-//				0.0,
-//				0.0,
-//				0.25);
-//		dGeomSetPosition (boxes[1],
-//				geom1pos[0],
-//				geom1pos[1],
-//				geom1pos[2]);
-//		dQtoR (geom0quat, m1);
-//		dGeomSetRotation (boxes[0],m1);
-//		dQtoR (geom1quat, m2);
-//		dGeomSetRotation (boxes[1],m2);
-//		#else
+		//		#if 0
+		//		DMatrix3 m1 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
+		//		DMatrix3 m2 = new DMatrix3( 1,0,0,0,0,1,0,0,0,0,1,0 );
+		//		dGeomSetPosition (convex[0],
+		//				0.0,
+		//				0.0,
+		//				0.25);
+		//		dGeomSetPosition (convex[1],
+		//				geom1pos[0],
+		//				geom1pos[1],
+		//				geom1pos[2]);
+		//		dQtoR (geom0quat, m1);
+		//		dGeomSetRotation (convex[0],m1);
+		//		dQtoR (geom1quat, m2);
+		//		dGeomSetRotation (convex[1],m2);
+		//
+		//		dGeomSetPosition (boxes[0],
+		//				0.0,
+		//				0.0,
+		//				0.25);
+		//		dGeomSetPosition (boxes[1],
+		//				geom1pos[0],
+		//				geom1pos[1],
+		//				geom1pos[2]);
+		//		dQtoR (geom0quat, m1);
+		//		dGeomSetRotation (boxes[0],m1);
+		//		dQtoR (geom1quat, m2);
+		//		dGeomSetRotation (boxes[1],m2);
+		//		#else
 		{
 			convex[0].setPosition (fixed_pos_0);
 			convex[1].setPosition (fixed_pos_1);
@@ -230,7 +241,7 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 		dsSetDrawMode(DS_POLYFILL);
 		/*if (show_contacts) */
 		DMatrix3 RI = new DMatrix3();
-		dRSetIdentity (RI);
+		RI.setIdentity();
 		dsSetColor (1.0f,0,0);
 		for(int i=0;i<contactcount;++i)
 		{
@@ -261,41 +272,52 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 	{
 		// note: 0.0174532925 radians = 1 degree
 		DQuaternion q = new DQuaternion();
+		boolean changed = false;
 		switch(cmd)
 		{
 		case 'w':
 			geom1pos.add0(0.05);
+			changed = true;
 			break;
 		case 'a':
 			geom1pos.add1(-0.05);
+			changed = true;
 			break;
 		case 's':
 			geom1pos.add0(-0.05);
+			changed = true;
 			break;
 		case 'd':
 			geom1pos.add1(+0.05);
+			changed = true;
 			break;
 		case 'e':
 			geom1pos.add2(-0.05);
+			changed = true;
 			break;
 		case 'q':
 			geom1pos.add2(+0.05);
+			changed = true;
 			break;
 		case 'i':
 			dQFromAxisAndAngle (q, 0, 0, 1,0.0174532925);
 			dQMultiply0(geom1quat,geom1quat,q);
+			changed = true;
 			break;
 		case 'j':
 			dQFromAxisAndAngle (q, 1, 0, 0,0.0174532925);
 			dQMultiply0(geom1quat,geom1quat,q);
+			changed = true;
 			break;
 		case 'k':
 			dQFromAxisAndAngle (q, 0, 0, 1,-0.0174532925);
 			dQMultiply0(geom1quat,geom1quat,q);
+			changed = true;
 			break;
 		case 'l':
 			dQFromAxisAndAngle (q, 1, 0, 0,-0.0174532925);
 			dQMultiply0(geom1quat,geom1quat,q);
+			changed = true;
 			break;
 		case 'm':
 			//(drawmode!=DS_POLYFILL) ? drawmode=DS_POLYFILL : drawmode=DS_WIREFRAME;
@@ -307,18 +329,35 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 			break;
 		case 'n':
 			if (geoms!=convex) geoms=convex; else geoms=boxes;
+			if(geoms==convex)
+			{
+				System.out.println("CONVEX------------------------------------------------------>");
+			}
+			else
+			{
+				System.out.println("BOX--------------------------------------------------------->");
+			}
 			break;
 		default:
 			dsPrint ("received command %d (`%c')\n",cmd,cmd);     
 		}
-//		#if 0
-//		dGeomSetPosition (geoms[1],
-//				geom1pos[0],
-//				geom1pos[1],
-//				geom1pos[2]);
-//		dQtoR (geom1quat, m);
-//		dGeomSetRotation (geoms[1],m);
-//		#endif
+		//		#if 0
+		//		dGeomSetPosition (geoms[1],
+		//				geom1pos[0],
+		//				geom1pos[1],
+		//				geom1pos[2]);
+		//		dQtoR (geom1quat, m);
+		//		dGeomSetRotation (geoms[1],m);
+		//	    if(changed)
+		//	    {
+		//
+		//	            printf("POS: %f,%f,%f\n",geom1pos[0],geom1pos[1],geom1pos[2]);
+		//	            printf("ROT:\n%f,%f,%f,%f\n%f,%f,%f,%f\n%f,%f,%f,%f\n",
+		//	            m[0],m[1],m[2],m[3],
+		//	            m[4],m[5],m[6],m[7],
+		//	            m[8],m[9],m[10],m[11]);
+		//	    }
+		//		#endif
 		DumpInfo=true;
 	}
 
@@ -328,20 +367,12 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 	}
 
 	private void demo(String[] args) {
-		// setup pointers to callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;	// uses default
 		world = OdeHelper.createWorld();
 		space = OdeHelper.createHashSpace(null);
 		contactgroup = OdeHelper.createJointGroup();
 
 		// run simulation
-		dsSimulationLoop (args,400,400,fn);
+		dsSimulationLoop (args,400,400,this);
 		contactgroup.destroy();
 		space.destroy();
 		world.destroy();
