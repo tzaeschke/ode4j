@@ -21,33 +21,30 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
-import org.ode4j.math.DVector3;
+import org.cpp4j.java.RefInt;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHashSpace;
 import org.ode4j.ode.DQuadTreeSpace;
 import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DSpace;
-import org.ode4j.ode.internal.DxGeom;
-import org.ode4j.ode.internal.DxHashSpace;
-import org.ode4j.ode.internal.DxQuadTreeSpace;
-import org.ode4j.ode.internal.DxSAPSpace;
-import org.ode4j.ode.internal.DxSimpleSpace;
-import org.ode4j.ode.internal.DxSpace;
+import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.DSapSpace.AXES;
 
 public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 
 	//ODE_API 
 	public static DSimpleSpace dSimpleSpaceCreate (DSpace space) {
-		return DxSimpleSpace.dSimpleSpaceCreate((DxSpace) space);
+		return OdeHelper.createSimpleSpace(space);
 	}
 	//ODE_API 
 	public static DHashSpace dHashSpaceCreate (DSpace space) {
-		return DxHashSpace.dHashSpaceCreate((DxSpace)space);
+		return OdeHelper.createHashSpace(space);
 	}
 	//ODE_API 
 	public static  DQuadTreeSpace dQuadTreeSpaceCreate (DSpace space, 
-			DVector3 Center, DVector3 Extents, int Depth) {
-		return DxQuadTreeSpace.dQuadTreeSpaceCreate((DxSpace) space, 
+			DVector3C Center, DVector3C Extents, int Depth) {
+		return OdeHelper.createQuadTreeSpace(space, 
 				Center, Extents, Depth);
 	}
 
@@ -68,33 +65,34 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	public static final int dSAP_AXES_ZYX = ((2)|(1<<2)|(0<<4));
 
 	//ODE_API 
-	public static DSpace dSweepAndPruneSpaceCreate( DSpace space, int axisorder ) {
-		return DxSAPSpace.dSweepAndPruneSpaceCreate((DxSpace)space, axisorder);
+	public static DSpace dSweepAndPruneSpaceCreate( DSpace space, AXES axisorder ) {
+		return OdeHelper.createSapSpace(space, axisorder);
 	}
 
 
 	//ODE_API 
 	public static void dSpaceDestroy (DSpace s) {
-		((DxSpace)s).dSpaceDestroy();
+		s.destroy();
 	}
 
 	//ODE_API 
-	void dHashSpaceSetLevels (DSpace space, int minlevel, int maxlevel) {
-		throw new UnsupportedOperationException();
+	public static void dHashSpaceSetLevels (DHashSpace space, int minlevel, int maxlevel) {
+		space.setLevels(minlevel, maxlevel);
 	}
 	//ODE_API 
 	// void dHashSpaceGetLevels (dSpace space, int *minlevel, int *maxlevel) {
-	void dHashSpaceGetLevels (DSpace space, int []minlevel, int []maxlevel) {
-		throw new UnsupportedOperationException();
+	public static void dHashSpaceGetLevels (DHashSpace space, RefInt minlevel, RefInt maxlevel) {
+		minlevel.set( space.getLevelMin() );
+		maxlevel.set( space.getLevelMax() );
 	}
 
 	//ODE_API 
 	public static void dSpaceSetCleanup (DSpace space, boolean mode) {
-		((DxSpace)space).dSpaceSetCleanup(mode);
+		space.setCleanup(mode);
 	}
 	//ODE_API 
-	int dSpaceGetCleanup (DSpace space) {
-		throw new UnsupportedOperationException();
+	public static boolean dSpaceGetCleanup (DSpace space) {
+		return space.getCleanup();
 	}
 
 	/**
@@ -109,19 +107,19 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * zero sublevel.
 	 *
 	 * @note
-	 * The space sublevel @e IS @e NOT automatically updated when one space is inserted
+	 * The space sublevel <b> IS NOT </b> automatically updated when one space is inserted
 	 * into another or removed from one. It is a client's responsibility to update sublevel
 	 * value if necessary.
 	 *
 	 * @param space the space to modify
 	 * @param sublevel the sublevel value to be assigned
 	 * @ingroup collide
-	 * @see dSpaceGetSublevel
-	 * @see dSpaceCollide2
+	 * @see #dSpaceGetSublevel(DSpace)
+	 * @see ApiCppCollision#dSpaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
 	 */
 	//ODE_API 
-	void dSpaceSetSublevel (DSpace space, int sublevel) {
-		throw new UnsupportedOperationException();
+	public static void dSpaceSetSublevel (DSpace space, int sublevel) {
+		space.setSublevel(sublevel);
 	}
 
 	/**
@@ -131,55 +129,94 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * with another space. See @c dSpaceSetSublevel for more details.
 	 *
 	 * @param space the space to query
-	 * @returns the sublevel value of the space
+	 * @return the sublevel value of the space
 	 * @ingroup collide
-	 * @see dSpaceSetSublevel
-	 * @see dSpaceCollide2
+	 * @see #dSpaceSetSublevel(DSpace, int)
+	 * @see ApiCppCollision#dSpaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
 	 */
 	//ODE_API 
-	int dSpaceGetSublevel (DSpace space) {
-		throw new UnsupportedOperationException();
+	public static int dSpaceGetSublevel (DSpace space) {
+		return space.getSublevel();
+	}
+
+
+	/**
+	 * @brief Sets manual cleanup flag for a space.
+	 *
+	 * Manual cleanup flag marks a space as eligible for manual thread data cleanup.
+	 * This function should be called for every space object right after creation in 
+	 * case if ODE has been initialized with @c dInitFlagManualThreadCleanup flag.
+	 * 
+	 * Failure to set manual cleanup flag for a space may lead to some resources 
+	 * remaining leaked until the program exit.
+	 *
+	 * @param space the space to modify
+	 * @param mode 1 for manual cleanup mode and 0 for default cleanup mode
+	 * @ingroup collide
+	 * @see #dSpaceGetManualCleanup(DSpace)
+	 * @see ApiCppOdeInit#dInitODE2(int)
+	 */
+	//ODE_API 
+	public static void dSpaceSetManualCleanup (DSpace space, int mode) {
+		space.setManualCleanup(mode);
+	}
+
+	/**
+	 * @brief Get manual cleanup flag of a space.
+	 *
+	 * Manual cleanup flag marks a space space as eligible for manual thread data cleanup.
+	 * See @c dSpaceSetManualCleanup for more details.
+	 * 
+	 * @param space the space to query
+	 * @return 1 for manual cleanup mode and 0 for default cleanup mode of the space
+	 * @ingroup collide
+	 * @see #dSpaceSetManualCleanup(DSpace, int)
+	 * @see ApiCppOdeInit#dInitODE2(int)
+	 */
+	//ODE_API 
+	public static int dSpaceGetManualCleanup (DSpace space) {
+		return space.getManualCleanup();
 	}
 
 	//ODE_API 
 	public static void dSpaceAdd (DSpace s, DGeom g) {
-		((DxSpace)s).dSpaceAdd((DxGeom) g);
+		s.add(g);
 	}
 	//ODE_API 
-	void dSpaceRemove (DSpace s, DGeom g) {
-		throw new UnsupportedOperationException();
+	public static void dSpaceRemove (DSpace s, DGeom g) {
+		s.remove(g);
 	}
 	//ODE_API 
-	int dSpaceQuery (DSpace s, DGeom g) {
-		throw new UnsupportedOperationException();
+	public static boolean dSpaceQuery (DSpace s, DGeom g) {
+		return s.query(g);
 	}
 	//ODE_API 
-	void dSpaceClean (DSpace s) {
-		throw new UnsupportedOperationException();
+	public static void dSpaceClean (DSpace s) {
+		s.cleanGeoms();
 	}
 	//ODE_API 
 	public static int dSpaceGetNumGeoms (DSpace s) {
-		return ((DxSpace)s).dSpaceGetNumGeoms();
+		return s.getNumGeoms();
 	}
 	//ODE_API 
 	public static DGeom dSpaceGetGeom (DSpace s, int i) {
-		return ((DxSpace)s).dSpaceGetGeom(i);
+		return s.getGeom(i);
 	}
 
 	/**
 	 * @brief Given a space, this returns its class.
-	 *
+	 * <p>
 	 * The ODE classes are:
-	 *  @li dSimpleSpaceClass
-	 *  @li dHashSpaceClass
-	 *  @li dSweepAndPruneSpaceClass
-	 *  @li dQuadTreeSpaceClass
-	 *  @li dFirstUserClass
-	 *  @li dLastUserClass
-	 *
+	 *  <li> dSimpleSpaceClass </li>
+	 *  <li> dHashSpaceClass </li>
+	 *  <li> dSweepAndPruneSpaceClass </li>
+	 *  <li> dQuadTreeSpaceClass </li>
+	 *  <li> dFirstUserClass </li>
+	 *  <li> dLastUserClass </li>
+	 * <p>
 	 * The class id not defined by the user should be between
 	 * dFirstSpaceClass and dLastSpaceClass.
-	 *
+	 * <p>
 	 * User-defined class will return their own number.
 	 *
 	 * @param space the space to query
