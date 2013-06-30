@@ -2,7 +2,7 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
- * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zäschke      *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann ZÃ¤schke      *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
@@ -24,9 +24,16 @@
  *************************************************************************/
 package org.ode4j.tests;
 
-import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
-import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
-import static org.ode4j.cpp.internal.ApiCppBody.dBodySetRotation;
+import org.junit.AfterClass;
+import org.junit.Test;
+import org.ode4j.math.DMatrix3;
+import org.ode4j.ode.DBody;
+import org.ode4j.ode.DPistonJoint;
+import org.ode4j.ode.DWorld;
+import org.ode4j.ode.internal.joints.DxJoint;
+import org.ode4j.ode.internal.joints.DxJointPiston;
+
+import static org.ode4j.cpp.internal.ApiCppBody.*;
 import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
 import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreatePiston;
 import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPistonAnchor;
@@ -41,15 +48,6 @@ import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_EQUAL;
-
-import org.junit.AfterClass;
-import org.junit.Test;
-import org.ode4j.math.DMatrix3;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DPistonJoint;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.internal.joints.DxJointPiston;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Default Position:
