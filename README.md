@@ -1,32 +1,20 @@
-Download Files
-==============
-ode4j-src-xxx             Full sources incl. tests/demos. Contains all that is required for development.
-ode4j-doc-xxx             Generated javadoc(html)
-ode4j-cpp-xxx             Prepackaged .jar for using cpp-API. Requires ode4j-xxx.
-ode4j-xxx                 Prepackaged .jar of ode4j core (without tests/demos/cpp-API)
-
-
-
-ode4j
+ODE4J
 =====
-ODE4J:   http://www.ode4j.org/
-ODE:     http://www.ode.org/
-GIMPACT: http://gimpact.sourceforge.net/
-LIBCCD:  http://libccd.danfis.cz/
 
-ode4j is based on the ODE/OpenDE physics library (www.ode.org) and the GIMPACT 
-trimesh library. It uses the GIMPACT and LIBCCD versions delivered with ODE 0.12.0.
-ODE, GIMPACT and LIBCCD have been ported to Java by Tilmann Zaeschke.
+Java port of [ODE](http://www.ode.org/).
 
+ODE is an open source, high performance library for simulating rigid body dynamics. It is fully featured, stable, mature and platform independent with an easy to use C/C++ API. It has advanced joint types and integrated collision detection with friction. ODE is useful for simulating vehicles, objects in virtual reality environments and virtual creatures.
+It is currently used in many computer games, 3D authoring tools and simulation tools.
 
 
 LEGAL
 =====
+
 ode4j:
 Copyright  (c) 2007-2013 Tilmann Zaeschke <ode4j(AT)gmx.de>
 All rights reserved.
 
-ODE/OpenDE: 
+ODE/OpenDE:
 Copyright  (c) 2001,2002 Russell L. Smith
 All rights reserved.
 
@@ -37,9 +25,9 @@ email: projectileman(AT)yahoo.com
 LIBCCD:
 Copyright (c)2010 Daniel Fiser <danfis(AT)danfis.cz>
 
-
 Contact
 =======
+
 Tilmann Zaeschke
 ode4j (AT) gmx.de
 

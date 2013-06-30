@@ -117,7 +117,7 @@ public class DrawStuff {
 //		  const char *path_to_textures;	/* if nonzero, path to texture files */
 //		} dsFunctions;
 	  public abstract static class dsFunctions { 
-		  private final int version = DS_VERSION;			/* put DS_VERSION here */
+		  public final int version = DS_VERSION;			/* put DS_VERSION here */
 		  /* version 1 data */
 		  public abstract void start();		/* called before sim loop starts */
 		  public abstract void step (boolean pause);	/* called before every frame */
