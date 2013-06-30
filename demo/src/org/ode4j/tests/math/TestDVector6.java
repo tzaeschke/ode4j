@@ -1,7 +1,7 @@
 /*************************************************************************
  *                                                                       *
- * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
- * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,12 +11,12 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE4J-LICENSE-BSD.TXT.                                 *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.tests.math;
@@ -106,8 +106,8 @@ public class TestDVector6 extends OdeTestCase {
 		x.set( new double[]{ 8, 9, 11, 7, 6, 5} );
 		assertTrue(x.get0()==8 && x.get1()==9 && x.get2()==11 && x.get3()==7 && x.get4()==6 && x.get5()==5);
 
-		x.setValues(2.5);
-		assertTrue(x.get0()==2.5 && x.get1()==2.5 && x.get2()==2.5 && x.get3()==2.5 && x.get4()==2.5 && x.get5()==2.5);
+//		x.setValues(2.5);
+//		assertTrue(x.get0()==2.5 && x.get1()==2.5 && x.get2()==2.5 && x.get3()==2.5 && x.get4()==2.5 && x.get5()==2.5);
 
 		assertFalse(x.equals(x2));
 		assertFalse(x.equals(y));
@@ -217,12 +217,16 @@ public class TestDVector6 extends OdeTestCase {
 		DVector6 y = new DVector6(4, 8, -1, -7, 17, 22);
 		DVector6 t = new DVector6();
 
-		//TODO remove dSafeNormalize3()?
-		t.set(0, 0, 0, 0, 0, 0).dSafeNormalize3();
+		try {
+			t.set(0, 0, 0, 0, 0, 0).normalize();
+			fail();
+		} catch (IllegalStateException e) {
+			//Good!
+		}
 		assertEquals(new DVector6(1, 0, 0, 0, 0, 0), t);
 
 		t.set(3, 4, -18, -6.5, 3.33, 2.77);
-		t.dSafeNormalize3();
+		t.normalize();
 		assertEquals(new DVector6(0.1481573074929876, 0.19754307665731682, 
 				-0.8889438449579258, -0.32100749956813984, 
 				0.16445461131721625, 0.1367985805851919), t);

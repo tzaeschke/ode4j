@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="google-site-verification"
+      content="dAjKqKTPDfTJBoFcbK2q23LKv1KTRF1sMQE0_RHFhFQ">
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />
+    <title>ode4j</title>
+    <meta name="keywords" content="ode4j,ode,Java,libccd,3D,physics,engine,library,dynamics" />
+  </head>
+  <body bgcolor="#E0E0E0">
+    <table border="0" style="width: 1200px;">
+      <tbody>
+        <tr>
+          <td style="width: 100px;"><br />
+          </td>
+          <td bgcolor="#E0E0E0" style="width: 1000px;">
+            <table cellspacing="1" cellpadding="5" border="0" bgcolor="#000000"
+              style="width: 100%;">
+              <tbody>
+                <tr>
+                  <td bgcolor="#E0E0E0" align="left" colspan="5" style="text-align: left;">
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight: bold;"><big>ode4j</big></big></big></font></p>
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight:           bold;">A Java 3D
+                            Physics Engine &amp; Library</big></big></font><font
+                        face="Helvetica, Arial, sans-serif"><b><br />
+                        </b></font></p>
+                    <p></p>
+                  </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td bgcolor="#FFFFFF" align="center" style="width: 20%;"> <font
+                      face="Helvetica, Arial, sans-serif"> <a style="color: #000000;text-decoration:none"
+                        href="index.html">About</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"> <font face="Helvetica, Arial, sans-serif">
+                      <a style="color: #000000;text-decoration:none" href="ode4j-features.html">Features</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        style="color: #000000;text-decoration:none" href="ode4j-doc.html">Documentation</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        style="color: #000000;text-decoration:none" href="ode4j-download.html">Download</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        style="color: #000000;text-decoration:none" href="ode4j-contact.html">Contact</a><br />
+                    </font> </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td bgcolor="#FFFFFF" align="left" colspan="5" style="text-align: left;">
+                    <font face="Helvetica, Arial, sans-serif"><br />
+                      <h3>About</h3>
+                      The ode4j project aims to provide a continuous Java port
+                      of the <a href="http://www.ode.org/" title="ODE">ODE</a>
+                      physics engine including <a href="http://gimpact.sourceforge.net/"
+                        title="GIMPACT">GIMPACT</a> and <a href="http://libccd.danfis.cz/">libccd</a>
+                      <p></p>
+                      About the ODE physics engine (cited from their home page):
+                      ODE is an open source, high performance library for
+                      simulating rigid body dynamics. It is fully featured,
+                      stable, mature and platform independent with an easy to
+                      use C/C++ API. It has advanced joint types and integrated
+                      collision detection with friction. ODE is useful for
+                      simulating vehicles, objects in virtual reality
+                      environments and virtual creatures. It is currently used
+                      in many computer games, 3D authoring tools and simulation
+                      tools.<br />
+                      <h3><br />
+                        Latest News</h3>
+                    </font>
+                    <ul>
+                      <li><font face="Helvetica, Arial, sans-serif">2012-06-05<br />
+                          Released <a href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.12.0-j1.1</a>
+                          <br />
+                        </font> </li>
+                      <ul>
+                        <li><font face="Helvetica, Arial, sans-serif">No fixes
+                            (well, no known problems yet)<br />
+                          </font> </li>
+                        <li><font face="Helvetica, Arial, sans-serif">Added port
+                            of <a href="http://libccd.danfis.cz/">libccd</a>.
+                            This can be enabled by calling <code>OdeConfig.setLibCCDEndabled(true)</code>
+                            <span style="font-style: italic;">before</span>
+                            doing anything else. LIBCCD adds many colliders,
+                            mostly for cylinders.<br />
+                          </font> </li>
+                      </ul>
+                      <li><font face="Helvetica, Arial, sans-serif">2012-06-02<br />
+                          Released <a href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.12.0-j1.0</a></font></li>
+                      <ul>
+                        <li><font face="Helvetica, Arial, sans-serif"><span style="font-weight: bold;">API-Change:</span>
+                            Refactoring of <code>OdeMath</code> method names</font></li>
+                        <li><font face="Helvetica, Arial, sans-serif"><span style="font-weight: bold;">API-Change:</span>
+                            Refactoring of <code>OdeMath</code> super-classes <code>Matrix</code>-&gt;<code>DMatrix</code>,
+                            ...</font></li>
+                        <li><font face="Helvetica, Arial, sans-serif">new
+                            functions in <code>DGeom</code></font></li>
+                        <li><font face="Helvetica, Arial, sans-serif">Quickstep
+                            refactoring and speed up</font></li>
+                        <li><font face="Helvetica, Arial, sans-serif">Clean-up
+                            of demos</font></li>
+                        <li><font face="Helvetica, Arial, sans-serif">New <code>TrackDemo</code></font></li>
+                        <li><font face="Helvetica, Arial, sans-serif">Bug fixes</font></li>
+                        <li><font face="Helvetica, Arial, sans-serif">libccd has
+                            NOT been ported</font></li>
+                      </ul>
+                      <li><font face="Helvetica, Arial, sans-serif">2011-07-16<br />
+                          Checked library compatibility. ode4j still works with
+                          latest Java (1.6.0_26) and lwjgl (2.7.1)<br />
+                        </font> </li>
+                      <li><font face="Helvetica, Arial, sans-serif">2010-06-19<br />
+                          Released <a href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1-j1.4</a></font></li>
+                      <ul>
+                        <li><font face="Helvetica, Arial, sans-serif">Updated
+                            javadoc for <code>DHeightfieldData.build(...)</code>
+                            methods.</font></li>
+                        <li><font face="Helvetica, Arial, sans-serif">Implemented
+                            support for building <code>DHeightfieldData</code>
+                            from <code>short[]</code>, <code>float[]</code>
+                            and <code>double[]</code>.</font></li>
+                        <li><font face="Helvetica, Arial, sans-serif"><span style="font-weight: bold;">API
+                              CHANGE</span>: Changed API of <code>DHeightField</code>
+                            and <code>DHeightFieldData</code> to accept <code>Object</code>
+                            instead of <code>Object[]</code> as type of data.</font></li>
+                        <li><font face="Helvetica, Arial, sans-serif">Trimesh:
+                            Trimesh support contains no known bugs except bugs
+                            that are also present in ODE for C/C++. However,
+                            performance has still not been optimized for Java.<br />
+                          </font> </li>
+                      </ul>
+                      <li><font face="Helvetica, Arial, sans-serif">2010-05-30<br />
+                          Released <a href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1-j1.3</a><br />
+                        </font> </li>
+                      <ul>
+                        <li><font face="Helvetica, Arial, sans-serif">Fixed
+                            bugs: <a href="https://sourceforge.net/tracker/?func=detail&amp;aid=3003719&amp;group_id=257951&amp;atid=1141138">infinite
+recursion
+
+
+
+
+
+
+
+                              in DxBody</a> and <a href="https://sourceforge.net/tracker/?func=detail&amp;aid=2957098&amp;group_id=257951&amp;atid=1141138">drawstuff
+crash
+
+
+
+
+
+
+
+                              with ATI 10.1/10.2 driver (linux)</a><br />
+                          </font> </li>
+                      </ul>
+                      <li><font face="Helvetica, Arial, sans-serif">2010-04-16<br />
+                          Minor updates to this page, clarified multi-threading
+                          capability (also applicable to release 1.2)<br />
+                        </font> </li>
+                      <li><font face="Helvetica, Arial, sans-serif">2010-02-03<br />
+                          Released <a href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1-j1.2</a><br />
+                        </font>
+                        <ul>
+                          <li><font face="Helvetica, Arial, sans-serif">Initial
+                              TRIMESH support via GIMPACT port. This is still
+                              buggy!</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">Improved
+                              Javadoc</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">Fixed
+                              bugs: <a href="https://sourceforge.net/tracker/?func=detail&amp;aid=2912249&amp;group_id=257951&amp;atid=1141138">damping
+&amp;
+
+
+
+
+
+
+
+                                auto-diable</a> and <a href="https://sourceforge.net/tracker/?func=detail&amp;aid=2905309&amp;group_id=257951&amp;atid=1141138">commandline
+parameters
+
+
+
+
+
+
+
+                                in demos</a><br />
+                            </font> </li>
+                          <li><font face="Helvetica, Arial, sans-serif">General
+                              code clean-up</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">API
+                              change: DrawStuff.setOuputNull() -&gt;
+                              dsSetOutputNull()</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">API
+                              change: renamed DContact.dSurfaceParameters to
+                              DSurfaceParameters</font></li>
+                        </ul>
+                      </li>
+                      <li><font face="Helvetica, Arial, sans-serif"><span style="font-style: italic;">2010-01-10</span><br />
+                          Committed bug fixes regarding dampening of bodies and
+                          regardin command line parameters (see bug tracker).<br />
+                          Committed <span style="font-weight: bold;">initial
+                            trimesh support</span> (via gimpact) to SVN. The
+                          support should be considered <span style="font-style: italic;">alpha</span>
+                          state, there should be no crashes, but expect weird
+                          behaviour. The new demo_trimesh and demo_moving_convex
+                          work reasonably well. But other demos (demo_cyl,
+                          demo_basket, demo_moving_trimesh, demo_heightfield)
+                          show problem. Any help with bughunting is welcome.
+                          Note: demo_moving_convex looks broken, however it
+                          behaves exactly like ode-0.11.1. The test harness is
+                          broken as well.<br />
+                          I intend to make the next release once the bugs are
+                          fixed.<br />
+                          <span style="font-style: italic;" title="ode4j - A Java Port Of           The ODE 3D Physics Engine &amp; Library"></span></font>
+                      </li>
+                      <li><font face="Helvetica, Arial, sans-serif"><span style="font-style: italic;"
+                            title="ode4j - A Java Port           Of The ODE 3D Physics Engine &amp; Library">2009</span>-11-11<br />
+                          Some minor updates to the home page, including some
+                          new screenshots.<br />
+                        </font> </li>
+                      <li><font face="Helvetica, Arial, sans-serif"><span style="font-style: italic;">2009</span>-08-18<br />
+                          Released <a href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1-j1.1</a><br />
+                        </font>
+                        <ul>
+                          <li><font face="Helvetica, Arial, sans-serif">API port
+                              is now complete except for TLS and TRIMESH support</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">Javadoc
+                              has been copied to the OO-API</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">Bugfix</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">Cleaned
+                              up dependencies</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">DVector3
+                              and DMatrix3 are slightly faster now</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif"><span style="font-weight: bold;">API
+                                CHANGE</span>: Some mathematical support
+                              functions have been altered or removed (only the
+                              API, not the functionality). If you find having
+                              problems with the changes <a href="http://ode4j.sourceforge.net/#mozTocId979502"><span
+                                  style="font-style: italic;">please contact me</span></a>.</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif"><a href="http://ode4j.sourceforge.net/javadoc/index.html">On-line
+                                Javadoc available</a> . Please note that the <span
+                                style="font-style: italic;">method</span> <span
+                                style="font-style: italic;">summary doc</span>
+                              is often empty, while the <span style="font-style: italic;">detailed
+method
+
+
+
+
+
+
+
+                                doc</span> is <span style="text-decoration: underline;">not</span>
+                              empty. This is due to annotations in the original
+                              ODE doc.<br />
+                            </font> </li>
+                        </ul>
+                        <font face="Helvetica, Arial, sans-serif"> I'm again
+                          working on the TRIMESH support.<br />
+                          <span style="font-style: italic;"></span></font> </li>
+                      <li><font face="Helvetica, Arial, sans-serif"><span style="font-style: italic;">2009-07-20</span><br />
+                          Released <a href="https://sourceforge.net/projects/ode4j/files/">ode4j-0.11.1-j1.0</a><br />
+                        </font>
+                        <ul>
+                          <li><font face="Helvetica, Arial, sans-serif">Two
+                              known bugs related to OpenGL, used in the demos
+                              only.</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">Currently
+                              working on an OPCODE port, enabling trimesh in
+                              ode4j.<br />
+                            </font> </li>
+                        </ul>
+                      </li>
+                      <li><font face="Helvetica, Arial, sans-serif"><span style="font-style: italic;">2009-07-07</span><br />
+                          Released beta-2 of ode4j-0.11.1(based on ODE 0.11.1)</font></li>
+                      <ul>
+                        <li><font face="Helvetica, Arial, sans-serif">All bugs
+                            are fixed, except two which are on drawstuff.</font></li>
+                        <li><font face="Helvetica, Arial, sans-serif">Re-arranged
+                            downloadable libraries, so there are the following
+                            now:</font></li>
+                        <ul>
+                          <li><font face="Helvetica, Arial, sans-serif">ode4j.tar.gz
+                              -&gt; Contains the core jar file for end users.</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">ode4j-cpp.tar.gz
+                              -&gt; Contains the additional C-style API for end
+                              users, where the developer uses the C-style API.</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">ode4j-src.tar.gz
+                              -&gt; All sources, including demos and test
+                              harnesses.</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">ode4j-doc.tar.gz
+                              -&gt; Generated Javadoc for public API.<br />
+                            </font> </li>
+                        </ul>
+                      </ul>
+                      <li><font face="Helvetica, Arial, sans-serif"><span style="font-style: italic;">2009-07-06<br />
+                          </span>Released beta-1 of ode4j-0.11.1(based on ODE
+                          0.11.1)<br />
+                          Known issues can be found in the <a href="https://sourceforge.net/tracker/?func=browse&amp;group_id=257951&amp;atid=1141138">Bug
+
+
+
+
+
+
+
+                            Tracker</a>. I plan to fix the test harness and the
+                          DemoBuggy for the next beta, possibly later this week.<br />
+                          The core library is now called ode4j.jar, the optional
+                          API similar to C/C++ is in ode4j-cpp.jar. both are
+                          included in the ode4j-sdk.jar, which also contains
+                          demos, tests, sources and the javadoc.<br />
+                        </font> </li>
+                      <li><font face="Helvetica, Arial, sans-serif"><span style="font-style: italic;">2009-06-10</span>
+                          <br />
+                        </font>
+                        <ul>
+                          <li><font face="Helvetica, Arial, sans-serif">Released
+                              beta 2 of ode4j (based on ODE 0.10.1)</font></li>
+                          <li><font face="Helvetica, Arial, sans-serif">New home
+                              page<br />
+                            </font> </li>
+                        </ul>
+                      </li>
+                      <li><font face="Helvetica, Arial, sans-serif"><span style="font-style: italic;">2009-06-05</span>
+                          <br />
+                        </font>
+                        <ul>
+                          <li><font face="Helvetica, Arial, sans-serif">First
+                              release of ode4j: ode4j-0.10.1-beta-1(based on ODE
+                              0.10.1)</font></li>
+                        </ul>
+                      </li>
+                    </ul>
+                    <br />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="width: 100px;"><br />
+          </td>
+        </tr>
+        <tr>
+          <td><br />
+          </td>
+          <td> © Copyright 2012 Tilmann Zäschke [ode4j AT gmx DOT de]<br />
+          </td>
+          <td><br />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><br />
+    </p>
+    <p></p>
+    <br />
+    <p><br />
+    </p>
+  </body>
+</html>

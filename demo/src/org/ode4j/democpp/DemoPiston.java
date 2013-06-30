@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2010 Tilmann Zäschke      *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,12 +13,13 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  * Created by:    Remi Ricard                                            *
  *                (remi.ricard@simlog.com or papaDoc@videotron.ca)       *
@@ -25,12 +28,15 @@
 package org.ode4j.democpp;
 
 import org.cpp4j.java.RefDouble;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -44,10 +50,11 @@ import org.ode4j.ode.DPistonJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.DGeom.*;
 
@@ -67,8 +74,6 @@ import static org.ode4j.ode.DGeom.*;
  * N.B. Many command options are available type -h to print them.
  */
 class DemoPiston extends dsFunctions {
-
-	//using namespace ode;
 
 	private final double VEL_INC = 0.01; // Velocity increment
 
@@ -142,8 +147,7 @@ class DemoPiston extends dsFunctions {
 	private static final double[] RECT_SIDES = {0.3, 0.1, 0.2};
 
 
-	//private int type = dJointTypePiston;
-	private Class type = DPistonJoint.class;
+	private Class<?> type = DPistonJoint.class;
 
 	//#pragma message("tc to be changed to 0")
 
@@ -209,6 +213,8 @@ class DemoPiston extends dsFunctions {
 		printf ("Press 't' to add force on prismatic joint in the positive axis direction\n");
 		printf ("Press 'y' to add force on prismatic joint in the negative axis direction\n");
 
+	    printf ("Press 'i' to add limits on the prismatic joint (0 to 0) \n");
+	    printf ("Press 'o' to add limits on the rotoide joint (0 to 0)\n");
 		printf ("Press 'k' to add limits on the rotoide joint (-45 to 45deg) \n");
 		printf ("Press 'l' to remove limits on the rotoide joint \n");
 
@@ -220,10 +226,16 @@ class DemoPiston extends dsFunctions {
 
 		printf ("Press '+' Go to the next test case.\n");
 		printf ("Press '-' Go to the previous test case.\n");
+
+	    printf ("Press '8' To remove one of the body. The blue body and the world will be\n");
+	    printf ("          attached to the joint (blue body at position 1)\n");
+	    printf ("Press '9' To remove one of the body. The blue body and the world will be\n");
+	    printf ("          attached to the joint (body body at position 2)\n");
 	}
 
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -283,10 +295,10 @@ class DemoPiston extends dsFunctions {
 			break;
 		}
 
-		final DMatrix3 R = new DMatrix3(
-				1,0,0,0,
-				0,1,0,0,
-				0,0,1,0
+		DMatrix3C R = new DMatrix3(
+				1,0,0,
+				0,1,0,
+				0,0,1
 		);
 
 		if (body[BODY1]!=null) {
@@ -304,7 +316,7 @@ class DemoPiston extends dsFunctions {
 		if (joint!=null) {
 			joint.attach (body[BODY1], body[BODY2]);
 			if (joint instanceof DPistonJoint)
-				dJointSetPistonAnchor(joint, anchor.get(X), anchor.get(Y), anchor.get(Z));
+				dJointSetPistonAnchor((DPistonJoint)joint, anchor.get(X), anchor.get(Y), anchor.get(Z));
 		}
 
 	}
@@ -324,6 +336,7 @@ class DemoPiston extends dsFunctions {
 
 
 	// called when a key pressed
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) {
@@ -377,42 +390,57 @@ class DemoPiston extends dsFunctions {
 
 		case 't': case 'T':
 			if (joint instanceof DPistonJoint)
-				dJointAddPistonForce (joint,1);
+				dJointAddPistonForce ((DPistonJoint)joint,1);
 			else
-				dJointAddSliderForce (joint,1);
+				dJointAddSliderForce ((DSliderJoint)joint,1);
 			break;
 		case 'y': case 'Y':
 			if (joint instanceof DPistonJoint)
-				dJointAddPistonForce (joint,-1);
+				dJointAddPistonForce ((DPistonJoint)joint,-1);
 			else
-				dJointAddSliderForce (joint,-1);
+				dJointAddSliderForce ((DSliderJoint)joint,-1);
 			break;
+	    case '8' :
+	        dJointAttach(joint, body[0], null);
+	        break;
+	    case '9' :
+	        dJointAttach(joint, null, body[0]);
+	        break;
 
+	    case 'i':
+	    case 'I' :
+	        joint.setParam (PARAM_N.dParamLoStop1, 0);
+	        joint.setParam (PARAM_N.dParamHiStop1, 0);
+	        break;
 
-		case 'k': case 'K':
-			if (joint instanceof DPistonJoint) {
-				dJointSetPistonParam (joint,dParamLoStop2, -45.0*3.14159267/180.0);
-				dJointSetPistonParam (joint,dParamHiStop2,  45.0*3.14159267/180.0);
-			}
+	    case 'o':
+	    case 'O' :
+	        joint.setParam (PARAM_N.dParamLoStop2, 0);
+	        joint.setParam (PARAM_N.dParamHiStop2, 0);
+	        break;
+
+	    case 'k':
+	    case 'K':
+	        joint.setParam (PARAM_N.dParamLoStop2, -45.0*3.14159267/180.0);
+	        joint.setParam (PARAM_N.dParamHiStop2,  45.0*3.14159267/180.0);
 			break;
-		case 'l': case 'L':
-			if (joint instanceof DPistonJoint) {
-				dJointSetPistonParam (joint,dParamLoStop2, -dInfinity);
-				dJointSetPistonParam (joint,dParamHiStop2, dInfinity);
-			}
+	    case 'l':
+	    case 'L':
+	        joint.setParam (PARAM_N.dParamLoStop2, -dInfinity);
+	        joint.setParam (PARAM_N.dParamHiStop2, dInfinity);
 			break;
 
 			// Velocity of joint
 		case ',': case '<' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel1) - VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel1, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel1) - VEL_INC;
+			joint.setParam (PARAM_N.dParamVel1, vel);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
 
 		case '.': case '>' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel1) + VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel1, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel1) + VEL_INC;
+			joint.setParam (PARAM_N.dParamVel1, vel);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
@@ -451,7 +479,7 @@ class DemoPiston extends dsFunctions {
 		dsSetColor (R,G,B);
 
 		DVector3 l = new DVector3();
-		dGeomBoxGetLengths (id, l);
+		dGeomBoxGetLengths ((DBox)id, l);
 		dsDrawBox (pos, rot, l);
 	}
 
@@ -503,7 +531,7 @@ class DemoPiston extends dsFunctions {
 				rot = dGeomGetRotation (geom[BODY1]);
 				dsSetColor (0,0,1);
 
-				dGeomCapsuleGetParams (geom[BODY1], radius, length);
+				dGeomCapsuleGetParams ((DCapsule)geom[BODY1], radius, length);
 				dsDrawCapsule (pos, rot, length.getF(), radius.getF());
 			}
 
@@ -527,7 +555,7 @@ class DemoPiston extends dsFunctions {
 
 			if (joint instanceof DPistonJoint ) {
 				DVector3 anchor = new DVector3();
-				dJointGetPistonAnchor(joint, anchor);
+				dJointGetPistonAnchor((DPistonJoint)joint, anchor);
 
 				// Draw the rotoide axis
 				rot = dGeomGetRotation (geom[BODY2]);
@@ -544,10 +572,12 @@ class DemoPiston extends dsFunctions {
 	}
 
 
-	private void Help (String[] args)
+	@Override
+	public void dsPrintHelp ()
 	{
-		printf ("%s ", args[0]);
-		printf (" -h | --help   : print this help\n");
+		super.dsPrintHelp();
+		//printf ("%s ", args[0]);
+//		printf (" -h | --help   : print this help\n");
 		printf (" -s | --slider : Set the joint as a slider\n");
 		printf (" -p | --piston : Set the joint as a Piston. (Default joint)\n");
 		printf (" -1 | --offset1 : Create an offset between the 2 bodies\n");
@@ -559,13 +589,13 @@ class DemoPiston extends dsFunctions {
 		printf (" -3 | --offset3 : Create an offset between the 2 bodies\n");
 		printf ("                  Offset one of the body by z=-0.5 and set the anchor\n");
 		printf ("                  point in the middle of the 2 bodies\n");
-		printf (" -t | --texture-path path  : Path to the texture.\n");
-		printf ("                             Default = %s\n", DRAWSTUFF_TEXTURE_PATH);
+//		printf (" -t | --texture-path path  : Path to the texture.\n");
+//		printf ("                             Default = %s\n", DRAWSTUFF_TEXTURE_PATH);
 		printf (" -n | --notFixed : In free space with no gravity mode");
-		printf ("-notex          : Don't use texture\n");
-		printf ("-noshadow       : No shadow\n");
-		printf ("-noshadows      : No shadows\n");
-		printf ("-pause          : Initial pause\n");
+//		printf ("-notex          : Don't use texture\n");
+//		printf ("-noshadow       : No shadow\n");
+//		printf ("-noshadows      : No shadows\n");
+//		printf ("-pause          : Initial pause\n");
 		printf ("--------------------------------------------------\n");
 		printf ("Hit any key to continue:");
 		getchar();
@@ -582,55 +612,65 @@ class DemoPiston extends dsFunctions {
 		boolean fixed  = true;
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
+		//dsFunctions fn = this;
 		//  fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = &command;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
-		DVector3 offset = new DVector3();
+		//DVector3 offset = new DVector3();
 		//dSetZero (offset, 4);
 
 		// Default test case
 
-		if (args.length >= 2 ) {
-			for (int i=1; i < args.length; ++i) {
+//		if (args.length >= 2 ) {
+			for (int i=0; i < args.length; ++i) {
 				//static int tata = 0;
 
-				if (false) {
-					if ( 0 == strcmp ("-h", args[i]) || 0 == strcmp ("--help", args[i]) )
-						Help (args);
+				if (true) {
+//					if ( 0 == strcmp ("-h", args[i]) || 0 == strcmp ("--help", args[i]) )
+//						Help (args);
 
-					if ( 0 == strcmp ("-s", args[i]) || 0 == strcmp ("--slider", args[i]) )
+					if ( 0 == strcmp ("-s", args[i]) || 0 == strcmp ("--slider", args[i]) ) {
 						type = DSliderJoint.class;
-
-					if ( 0 == strcmp ("-t", args[i]) || 0 == strcmp ("--texture-path", args[i]) ) {
-						int j = i+1;
-						if ( j+1 > args.length      ||  // Check if we have enough arguments
-								//TZ ? args[j] == '\0' ||  // We should have a path here
-								args[j].charAt(0) == '-' ) // We should have a path not a command line
-							Help (args);
-						else
-							fn.path_to_textures = args[++i]; // Increase i since we use this argument
+						 args[i] = ""; 
 					}
+
+//					if ( 0 == strcmp ("-t", args[i]) || 0 == strcmp ("--texture-path", args[i]) ) {
+//						int j = i+1;
+//						if ( j+1 > args.length      ||  // Check if we have enough arguments
+//								//TZ ? args[j] == '\0' ||  // We should have a path here
+//								args[j].charAt(0) == '-' ) // We should have a path not a command line
+//							Help (args);
+//						else
+//							dsSetPathToTextures( args[++i] ); // Increase i since we use this argument
+//					}
 				}
 
 
-				if ( 0 == strcmp ("-1", args[i]) || 0 == strcmp ("--offset1", args[i]) )
+				if ( 0 == strcmp ("-1", args[i]) || 0 == strcmp ("--offset1", args[i]) ) {
 					tc = 1;
+					args[i] = ""; 
+				}
 
-				if ( 0 == strcmp ("-2", args[i]) || 0 == strcmp ("--offset2", args[i]) )
+				if ( 0 == strcmp ("-2", args[i]) || 0 == strcmp ("--offset2", args[i]) ) {
 					tc = 2;
+					args[i] = ""; 
+				}
 
-				if ( 0 == strcmp ("-3", args[i]) || 0 == strcmp ("--offset3", args[i]) )
+				if ( 0 == strcmp ("-3", args[i]) || 0 == strcmp ("--offset3", args[i]) ) {
 					tc = 3;
+					args[i] = ""; 
+				}
 
-				if (0 == strcmp ("-n", args[i]) || 0 == strcmp ("--notFixed", args[i]) )
+				if (0 == strcmp ("-n", args[i]) || 0 == strcmp ("--notFixed", args[i]) ) {
 					fixed = false;
+					args[i] = ""; 
+				}
 			}
-		}
+//		}
 
 		world = OdeHelper.createWorld();
 		world.setERP (0.8);
@@ -706,7 +746,7 @@ class DemoPiston extends dsFunctions {
 
 		if ( fixed ) {
 			// Attache external cylinder to the world
-			DJoint fixedJ = dJointCreateFixed (world,null);
+			DFixedJoint fixedJ = dJointCreateFixed (world,null);
 			dJointAttach (fixedJ , null, body[BODY2]);
 			dJointSetFixed (fixedJ );
 			dWorldSetGravity (world,0,0,-0.8);
@@ -736,7 +776,7 @@ class DemoPiston extends dsFunctions {
 
 
 		// run simulation
-		dsSimulationLoop (args,400,300,fn);
+		dsSimulationLoop (args,400,300,this);
 
 		//delete joint;
 		dJointGroupDestroy (contactgroup);
