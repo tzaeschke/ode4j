@@ -17,9 +17,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>generator</module>
+        <module>cpp</module>
         <module>core</module>
-        <module>legacy</module>
+        <module>core-cpp</module>
+        <module>demo</module>
     </modules>
 
     <properties>
@@ -77,6 +78,12 @@
     <!-- mvn versions:display-dependency-updates -->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.lwjgl.lwjgl</groupId>
+                <artifactId>lwjgl_util</artifactId>
+                <version>2.9.0</version>
+            </dependency>
+
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
