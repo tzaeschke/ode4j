@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -50,7 +50,7 @@ import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.demo.BunnyGeom.*;
 
@@ -227,7 +227,7 @@ class DemoHeightfield extends dsFunctions {
 		int numc = OdeHelper.collide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());
 		if (numc!=0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			final DVector3 ss = new DVector3(0.02,0.02,0.02);
 			for (i=0; i<numc; i++) {
 				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contacts.get(i));
@@ -659,7 +659,7 @@ class DemoHeightfield extends dsFunctions {
 				if ( obj[i].geom[j]!=null && obj[i].geom[j] instanceof DTriMesh )
 				{
 					//dTriIndex* Indices = (dTriIndex*)::Indices;
-					int[][] Indices = BunnyGeom.Indices;
+					int[] Indices = BunnyGeom.Indices;
 
 					// assume all trimeshes are drawn as bunnies
 					DVector3C Pos = obj[i].geom[j].getPosition();
@@ -668,15 +668,15 @@ class DemoHeightfield extends dsFunctions {
 					for (int ii = 0; ii < IndexCount / 3; ii++)
 					{
 						final float[] v = { // explicit conversion from float to dReal
-								Vertices[Indices[ii * 3][0] * 3 + 0],
-								Vertices[Indices[ii * 3][0] * 3 + 1],
-								Vertices[Indices[ii * 3][0] * 3 + 2],
-								Vertices[Indices[ii * 3][1] * 3 + 0],
-								Vertices[Indices[ii * 3][1] * 3 + 1],
-								Vertices[Indices[ii * 3][1] * 3 + 2],
-								Vertices[Indices[ii * 3][2] * 3 + 0],
-								Vertices[Indices[ii * 3][2] * 3 + 1],
-								Vertices[Indices[ii * 3][2] * 3 + 2]
+								Vertices[Indices[ii * 3+0] * 3 + 0],
+								Vertices[Indices[ii * 3+0] * 3 + 1],
+								Vertices[Indices[ii * 3+0] * 3 + 2],
+								Vertices[Indices[ii * 3+1] * 3 + 0],
+								Vertices[Indices[ii * 3+1] * 3 + 1],
+								Vertices[Indices[ii * 3+1] * 3 + 2],
+								Vertices[Indices[ii * 3+2] * 3 + 0],
+								Vertices[Indices[ii * 3+2] * 3 + 1],
+								Vertices[Indices[ii * 3+2] * 3 + 2]
 						};
 						//dsDrawTriangle(Pos, Rot, &v[0], &v[3], &v[6], 1);
 						dsDrawTriangle(Pos, Rot, v, 0, 3, 6, true);
@@ -751,19 +751,6 @@ class DemoHeightfield extends dsFunctions {
 		//TODO g_allow_trimesh = OdeHelper.dCheckConfiguration( "ODE_EXT_trimesh" );
 		g_allow_trimesh = false;
 
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-		//	fn.start = &start;
-		//	fn.step = &simLoop;
-		//	fn.command = &command;
-		//	fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
-
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld ();
@@ -800,7 +787,7 @@ class DemoHeightfield extends dsFunctions {
 
 		// Give some very bounds which, while conservative,
 		// makes AABB computation more accurate than +/-INF.
-		heightid.setBounds( heightid, ( -4.0 ), ( +6.0 ) );
+		heightid.setBounds( ( -4.0 ), ( +6.0 ) );
 
 		gheight = OdeHelper.createHeightfield( space, heightid, true );
 
@@ -816,7 +803,7 @@ class DemoHeightfield extends dsFunctions {
 		gheight.setPosition( pos );
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy();
 		space.destroy();

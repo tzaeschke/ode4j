@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -42,7 +42,8 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.OdeConstants.dInfinity;
 
 
 /**
@@ -143,6 +144,14 @@ class DemoJointPR extends dsFunctions {
 		System.out.println ("Press 'e' to add torque around positive z direction.");
 		System.out.println ("Press 'q' to add torque around negative z direction.");
 		System.out.println ("Press 'o' to add force around positive x direction");
+
+		System.out.println ("Press 'v' to give a defined velocity and add a FMax to the rotoide axis");
+		System.out.println ("Press 'c' to set the velocity to zero and remove the FMax");
+
+		System.out.println ("Press 'l' to add limits (-0.5 to 0.5rad) on the rotoide axis");
+		System.out.println ("Press 'k' to remove the limits on the rotoide axis");
+
+		System.out.println ("Press 'i' to get joint info");
 	}
 
 	// function to update camera position at each step.
@@ -164,34 +173,72 @@ class DemoJointPR extends dsFunctions {
 	public void command (char cmd)
 	{
 		DVector3C pos = box2_body.getPosition();
-		switch(cmd)
+		switch(Character.toLowerCase(cmd))
 		{
-		case 'w': case 'W':
+		case 'w':
 			box2_body.addForce(0,500,0);
 			//std::cout<<(dBodyGetPosition(box2_body[0])[1]-dBodyGetPosition(boxody[0])[1])<<'\n';
 			System.out.print((pos.get1()-pos.get1()));
 			break;
-		case 's': case 'S':
+		case 's':
 			box2_body.addForce(0,-500,0);
 			System.out.print((pos.get1()-pos.get1()));
 			break;
-		case 'd': case 'D':
+		case 'd':
 			box2_body.addForce(500,0,0);
 			System.out.print((pos.get0()-pos.get0()));
 			break;
-		case 'a': case 'A':
+		case 'a':
 			box2_body.addForce(-500,0,0);
 			System.out.print((pos.get0()-pos.get0()));
 			break;
-		case 'e': case 'E':
+		case 'e':
 			box2_body.addRelTorque(0,0,200);
 			break;
-		case 'q': case 'Q':
+		case 'q':
 			box2_body.addRelTorque(0,0,-200);
 			break;
-		case 'o': case 'O':
+		case 'o':
 			box2_body.addForce(10000,0,0);
 			break;
+	    case 'v':
+	    case 'V':
+	        joint.setParamVel2(2);
+	        joint.setParamFMax2(500);
+	        break;
+
+	    case 'c':
+	    case 'C':
+	        joint.setParamVel2(0);
+	        joint.setParamFMax2(0);
+	        break;
+
+	    case 'l':
+	    case 'L':
+	        joint.setParamLoStop2(-0.5);
+	        joint.setParamHiStop2( 0.5);
+	        break;
+
+	    case 'k':
+	    case 'K':
+	        joint.setParamLoStop2( -dInfinity);
+	        joint.setParamHiStop2(  dInfinity);
+	        break;
+
+	    case 'i':
+	    case 'I':
+	        DVector3 anchor = new DVector3();
+	        joint.getAnchor(anchor);
+	        double angle = joint.getAngle();
+	        double w = joint.getAngleRate();
+
+	        double l = joint.getPosition();
+	        double v = joint.getPositionRate();
+
+	        System.out.println("Anchor: " + anchor);
+	        System.out.println("Position: " + l + ", Rate: " + v);
+	        System.out.println("Angle: " + angle + ", Rate: " + w);
+	        break;
 		}
 	}
 

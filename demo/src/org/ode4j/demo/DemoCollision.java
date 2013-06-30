@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 
 import org.cpp4j.java.RefDouble;
 import org.cpp4j.java.RefInt;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -48,7 +48,7 @@ import org.ode4j.ode.internal.DxCollisionUtil;  //TODO can we avoid this?
 import org.ode4j.ode.internal.DxBox;  //TODO can we avoid this?
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.DGeom.*;
 
@@ -178,7 +178,7 @@ class DemoCollision extends dsFunctions {
 		}
 		if (n > 0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			DVector3 ss = new DVector3(0.01,0.01,0.01);
 			for (int i=0; i<n; i++) {
 				DContactGeom contact = contacts.get(i);
@@ -364,7 +364,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j, (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set( i, 0.5*s.get(i) ); else q.set( i, -0.5*s.get(i) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		//for (j=0; j<3; j++) q2[j] += p[j];
 		q2.add(p);
 		if (dFabs(box.getPointDepth (q2)) > tol) if (testFAILED()) return false;
@@ -375,25 +375,25 @@ class DemoCollision extends dsFunctions {
 			q.set(j, 0.5*s.get(j) + dRandReal() + 0.01 );
 			if (dRandReal() > 0.5) q.scale (i, -1);
 		}
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add(p);
 		if (box.getPointDepth (q2) >= 0) if (testFAILED()) return false;
 
 		// ********** test points inside box have +ve depth
 
 		for (j=0; j<3; j++) q.set(j, s.get(j) * 0.99 * (dRandReal()-0.5) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add(p);
 		if (box.getPointDepth (q2) <= 0) if (testFAILED()) return false;
 
 		// ********** test random depth of point aligned along axis (up to ss deep)
 
 		i = dRandInt (3);
-		q.setValues(0);
+		q.setZero();
 		d = (dRandReal()*(ss*0.5+1)-1);
 		q.set(i, s.get(i)*0.5 - d );
 		if (dRandReal() > 0.5) q.scale( i, -1 );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add(p);
 		if (dFabs(box.getPointDepth (q2) - d) >= tol) if (testFAILED()) return false;
 
@@ -718,7 +718,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set(i, 0.99*0.5*s.get(i) ); else q.set(i, -0.99*0.5*s.get(i) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add(p);
 		ray.setPosition (q2);
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
@@ -732,7 +732,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set(i, 1.01*0.5*s.get(i)); else q.set(i, -1.01*0.5*s.get(i));
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add( p );
 		ray.setPosition (q2);
 		dRFromAxisAndAngle (R,dRandReal()*2-1,dRandReal()*2-1,
@@ -743,10 +743,10 @@ class DemoCollision extends dsFunctions {
 		// ********** test finite length ray totally contained inside the box
 
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*0.99*s.get(j) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add( p );
 		for (j=0; j<3; j++) q3.set(j,  (dRandReal()-0.5)*0.99*s.get(j) );
-		dMultiply0 (q4,box.getRotation(),q3,3,3,1);
+		dMultiply0 (q4,box.getRotation(),q3);
 		q4.add( p );
 		n.eqDiff( q4, q2 );
 		n.normalize();
@@ -759,7 +759,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set(i, 1.01*0.5*s.get(i)); else q.set(i, -1.01*0.5*s.get(i));
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q3.eqSum( q2, p );
 		q2.normalize();
 		ray.set (q3,q2);
@@ -771,7 +771,7 @@ class DemoCollision extends dsFunctions {
 		for (j=0; j<3; j++) q.set(j,  (dRandReal()-0.5)*s.get(j) );
 		i = dRandInt (3);
 		if (dRandReal() > 0.5) q.set(i, 1.01*0.5*s.get(i)); else q.set(i, -1.01*0.5*s.get(i) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q3.eqSum( p, q2, 2 );
 		k = q2.length();
 		q2.scale( -1 );
@@ -787,7 +787,7 @@ class DemoCollision extends dsFunctions {
 		// ********** test contact point position for random rays
 
 		for (j=0; j<3; j++) q.set(j,  dRandReal()*s.get(j) );
-		dMultiply0 (q2,box.getRotation(),q,3,3,1);
+		dMultiply0 (q2,box.getRotation(),q);
 		q2.add( p );
 		for (j=0; j<3; j++) q3.set(j,  dRandReal()-0.5 );
 		q3.normalize();

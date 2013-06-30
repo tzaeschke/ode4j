@@ -22,13 +22,17 @@
 package org.ode4j.democpp;
 
 import org.cpp4j.java.RefDouble;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DCylinder;
+import org.ode4j.ode.DFixedJoint;
+import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -44,10 +48,11 @@ import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DJoint.PARAM_N;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -68,8 +73,6 @@ import static org.ode4j.ode.OdeMath.*;
  */
 class DemoJointPU extends dsFunctions {
 
-
-	//using namespace ode;
 
 //	enum IDX_CYL_DIM
 //	{
@@ -291,66 +294,66 @@ class DemoJointPU extends dsFunctions {
 
 			// Force
 		case 'q' : case 'Q' :
-			body[D].addForce(40,0,0);
+			dBodyAddForce(body[D],40,0,0);
 			break;
 		case 'w' : case 'W' :
-			body[D].addForce(-40,0,0);
+			dBodyAddForce(body[D],-40,0,0);
 			break;
 
 		case 'a' : case 'A' :
-			body[D].addForce(0,40,0);
+			dBodyAddForce(body[D],0,40,0);
 			break;
 		case 's' : case 'S' :
-			body[D].addForce(0,-40,0);
+			dBodyAddForce(body[D],0,-40,0);
 			break;
 
 		case 'z' : case 'Z' :
-			body[D].addForce(0,0,40);
+			dBodyAddForce(body[D],0,0,40);
 			break;
 		case 'x' : case 'X' :
-			body[D].addForce(0,0,-40);
+			dBodyAddForce(body[D],0,0,-40);
 			break;
 
 			// Torque
 		case 'e': case 'E':
-			body[D].addTorque(0.1,0,0);
+			dBodyAddTorque(body[D],0.1,0,0);
 			break;
 		case 'r': case 'R':
-			body[D].addTorque(-0.1,0,0);
+			dBodyAddTorque(body[D],-0.1,0,0);
 			break;
 
 		case 'd': case 'D':
-			body[D].addTorque(0, 0.1,0);
+			dBodyAddTorque(body[D],0, 0.1,0);
 			break;
 		case 'f': case 'F':
-			body[D].addTorque(0,-0.1,0);
+			dBodyAddTorque(body[D],0,-0.1,0);
 			break;
 
 		case 'c': case 'C':
-			body[D].addTorque(0,0,0.1);
+			dBodyAddTorque(body[D],0,0,0.1);
 			break;
 		case 'v': case 'V':
-			body[D].addTorque(0,0,0.1);
+			dBodyAddTorque(body[D],0,0,0.1);
 			break;
 
 			// Velocity of joint
 		case ',': case '<' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel3) - VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel3, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel3) - VEL_INC;
+			joint.setParam (PARAM_N.dParamVel3, vel);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
 
 		case '.': case '>' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel3) + VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel3, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel3) + VEL_INC;
+			joint.setParam (PARAM_N.dParamVel3, vel);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
 
 		case 'l': case 'L' : {
 			double aLimit, lLimit, fmax;
-			if (  joint.getParam (D_PARAM_NAMES_N.dParamFMax1)!=0 ) {
+			if (  joint.getParam (PARAM_N.dParamFMax1)!=0 ) {
 				aLimit = dInfinity;
 				lLimit = dInfinity;
 				fmax = 0;
@@ -361,24 +364,24 @@ class DemoJointPU extends dsFunctions {
 				fmax = 0.02;
 			}
 
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax1, fmax);
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax2, fmax);
-			joint.setParam (D_PARAM_NAMES_N.dParamFMax3, fmax);
+			joint.setParam (PARAM_N.dParamFMax1, fmax);
+			joint.setParam (PARAM_N.dParamFMax2, fmax);
+			joint.setParam (PARAM_N.dParamFMax3, fmax);
 
 			if (joint instanceof DPRJoint) {
 				DPRJoint pr = (DPRJoint) (joint);
-				pr.setParam (D_PARAM_NAMES_N.dParamLoStop1, -lLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamHiStop1, -lLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamLoStop2, aLimit);
-				pr.setParam (D_PARAM_NAMES_N.dParamHiStop2, -aLimit);
+				pr.setParam (PARAM_N.dParamLoStop1, -lLimit);
+				pr.setParam (PARAM_N.dParamHiStop1, -lLimit);
+				pr.setParam (PARAM_N.dParamLoStop2, aLimit);
+				pr.setParam (PARAM_N.dParamHiStop2, -aLimit);
 			} else if (joint instanceof DPUJoint) {
 				DPUJoint pu = (DPUJoint) (joint);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop1, -aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop1, aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop2, -aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop2, aLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamLoStop3, -lLimit);
-				pu.setParam (D_PARAM_NAMES_N.dParamHiStop3, lLimit);
+				pu.setParam (PARAM_N.dParamLoStop1, -aLimit);
+				pu.setParam (PARAM_N.dParamHiStop1, aLimit);
+				pu.setParam (PARAM_N.dParamLoStop2, -aLimit);
+				pu.setParam (PARAM_N.dParamHiStop2, aLimit);
+				pu.setParam (PARAM_N.dParamLoStop3, -lLimit);
+				pu.setParam (PARAM_N.dParamHiStop3, lLimit);
 			}
 		}
 
@@ -412,7 +415,7 @@ class DemoJointPU extends dsFunctions {
 		}
 	}
 
-	private static void drawBox (DGeom id, int R, int G, int B)
+	private static void drawBox (DBox id, int R, int G, int B)
 	{
 		if (id==null)
 			return;
@@ -465,10 +468,10 @@ class DemoJointPU extends dsFunctions {
 
 			dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
 
-			drawBox (geom[W], 1,1,0);
+			drawBox ((DBox)geom[W], 1,1,0);
 
 
-			drawBox (geom[EXT], 0,1,0);
+			drawBox ((DBox)geom[EXT], 0,1,0);
 
 			DVector3 anchorPos = new DVector3();
 
@@ -500,7 +503,7 @@ class DemoJointPU extends dsFunctions {
 			if ( geom[INT]!=null ) {
 				dsSetColor (1,0,1);
 				DVector3 l = new DVector3();
-				dGeomBoxGetLengths (geom[INT], l);
+				dGeomBoxGetLengths ((DBox)geom[INT], l);
 
 				final DMatrix3C rotBox = dGeomGetRotation (geom[W]);
 
@@ -523,7 +526,9 @@ class DemoJointPU extends dsFunctions {
 				dQtoR (qq,R);
 
 
-				dGeomCylinderGetParams (dGeomTransformGetGeom (geom[AXIS1]), radius, length);
+				dGeomCylinderGetParams (
+						(DCylinder) dGeomTransformGetGeom ((DGeomTransform)geom[AXIS1]), 
+						radius, length);
 				dsSetColor (1,0,0);
 				dsDrawCylinder (anchorPos, R, length.getF(), radius.getF());
 			}
@@ -548,7 +553,9 @@ class DemoJointPU extends dsFunctions {
 				dQtoR (qq1,R);
 
 
-				dGeomCylinderGetParams (dGeomTransformGetGeom (geom[AXIS2]), radius, length);
+				dGeomCylinderGetParams (
+						(DCylinder)dGeomTransformGetGeom ((DGeomTransform)geom[AXIS2]), 
+						radius, length);
 				dsSetColor (0,0,1);
 				dsDrawCylinder (anchorPos, R, length.getF(), radius.getF());
 			}
@@ -559,7 +566,7 @@ class DemoJointPU extends dsFunctions {
 			if ( geom[ANCHOR]!=null ) {
 				dsSetColor (1,1,1);
 				DVector3 l = new DVector3();
-				dGeomBoxGetLengths (geom[ANCHOR], l);
+				dGeomBoxGetLengths ((DBox)geom[ANCHOR], l);
 
 				final DMatrix3C rotBox = dGeomGetRotation (geom[D]);
 				final DVector3C posBox = dGeomGetPosition (geom[D]);
@@ -577,7 +584,7 @@ class DemoJointPU extends dsFunctions {
 				dsDrawBox (pos, rotBox, l);
 			}
 
-			drawBox (geom[D], 1,1,0);
+			drawBox ((DBox)geom[D], 1,1,0);
 		}
 	}
 
@@ -692,7 +699,8 @@ class DemoJointPU extends dsFunctions {
 		dGeomSetCollideBits (geom[AXIS1],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
 		id = geom[AXIS1];
-		dGeomTransformSetGeom (geom[AXIS1],  dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
+		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS1],  
+				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the second axis of the universal joint
@@ -704,7 +712,8 @@ class DemoJointPU extends dsFunctions {
 		dGeomSetCollideBits (geom[AXIS2],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
 		id = geom[AXIS2];
-		dGeomTransformSetGeom (geom[AXIS2],  dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
+		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS2],  
+				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the anchor
@@ -742,7 +751,7 @@ class DemoJointPU extends dsFunctions {
 
 
 		// Attache the upper box to the world
-		DJoint fixed = dJointCreateFixed (world,null);
+		DFixedJoint fixed = dJointCreateFixed (world,null);
 		dJointAttach (fixed , null, body[W]);
 		dJointSetFixed (fixed );
 

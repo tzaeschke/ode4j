@@ -22,7 +22,7 @@
 package org.ode4j.democpp;
 
 import org.cpp4j.java.RefDouble;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -32,18 +32,20 @@ import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
+import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DJoint.DJointFeedback;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.OdeMath.*;
 
 
 /**
@@ -65,8 +67,8 @@ class DemoFeedback extends dsFunctions {
 	private static DGeom[]  seggeoms = new DGeom[SEGMCNT];
 	private static DBody[]  stackbodies = new DBody[STACKCNT];
 	private static DGeom[]  stackgeoms = new DGeom[STACKCNT];
-	private static DJoint[] hinges = new DJoint[SEGMCNT-1];
-	private static DJoint[] sliders = new DJoint[2];
+	private static DHingeJoint[] hinges = new DHingeJoint[SEGMCNT-1];
+	private static DSliderJoint[] sliders = new DSliderJoint[2];
 	private static DJoint.DJointFeedback[] jfeedbacks = new DJoint.DJointFeedback[SEGMCNT-1];
 	private static double[] colours = new double[SEGMCNT];
 	private static int[] stress = new int[SEGMCNT-1];
@@ -149,13 +151,13 @@ class DemoFeedback extends dsFunctions {
 		if (g instanceof DBox)
 		{
 			DVector3 sides = new DVector3();
-			dGeomBoxGetLengths (g, sides);
+			dGeomBoxGetLengths ((DBox)g, sides);
 			dsDrawBox (pos,R,sides);
 		}
 		if (g instanceof DCylinder)
 		{
 			RefDouble r = new RefDouble(0), l = new RefDouble(0);
-			dGeomCylinderGetParams(g, r, l);
+			dGeomCylinderGetParams((DCylinder)g, r, l);
 			dsDrawCylinder (pos, R, l.getF(), r.getF());
 		}
 	}
@@ -243,10 +245,6 @@ class DemoFeedback extends dsFunctions {
 //		fn.command = &command;
 //		fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		dInitODE2(0);

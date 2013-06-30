@@ -23,18 +23,18 @@ package org.ode4j.democpp;
 
 import static org.cpp4j.Cstdio.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
-import org.ode4j.drawstuff.DS_API.DS_TEXTURE_NUMBER;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
@@ -54,7 +54,7 @@ public class DemoHinge extends dsFunctions {
 	// dynamics and collision objects
 	private static DWorld world;
 	private static DBody[] body = new DBody[2];
-	private static DJoint hinge;
+	private static DHingeJoint hinge;
 
 
 	// state set by keyboard commands
@@ -152,10 +152,6 @@ public class DemoHinge extends dsFunctions {
 		//	  fn.command = &command;
 		//	  fn.stop = 0;
 		fn.setPathToTextures(DRAWSTUFF_TEXTURE_PATH);
-		if(args.length==2)
-		{
-			fn.setPathToTextures(args[1]);
-		}
 
 		// create world
 		dInitODE2(0);

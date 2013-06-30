@@ -29,14 +29,14 @@ import org.ode4j.math.DVector3C;
 
 import static org.ode4j.ode.OdeMath.*;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
+import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 class DemoSlider extends dsFunctions {
 
@@ -47,19 +47,19 @@ class DemoSlider extends dsFunctions {
 	private static final float MASS = 1.0f;
 
 	// dynamics and collision objects
-	static DWorld world;
-	static DBody[] body=new DBody[2];
-	static DJoint slider;
+	private static DWorld world;
+	private static DBody[] body=new DBody[2];
+	private static DSliderJoint slider;
 
 
 	// state set by keyboard commands
-	static int occasional_error = 0;
+	private static int occasional_error = 0;
 
 
 	// start simulation - set viewpoint
 
-	static float[] xyz= {1.0382f,-1.0811f,1.4700f};
-	static float[] hpr= {135.0000f,-19.5000f,0.0000f};
+	private static float[] xyz= {1.0382f,-1.0811f,1.4700f};
+	private static float[] hpr= {135.0000f,-19.5000f,0.0000f};
 	public void start()
 	{
 		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -85,7 +85,7 @@ class DemoSlider extends dsFunctions {
 	private static double a=0;
 	private static int count = 0;
 
-	static void simLoop (boolean pause)
+	private static void simLoop (boolean pause)
 	{
 		final double kd = -0.3;	// angular damping constant
 		final double ks = 0.5;	// spring constant
@@ -157,10 +157,6 @@ class DemoSlider extends dsFunctions {
 		//  fn.command = &command;
 		//  fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		dInitODE2(0);

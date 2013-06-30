@@ -24,7 +24,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -46,8 +46,10 @@ import org.ode4j.ode.DPistonJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.DJoint.PARAM_N;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.DGeom.*;
 
@@ -67,8 +69,6 @@ import static org.ode4j.ode.DGeom.*;
  * N.B. Many command options are available type -h to print them.
  */
 class DemoPiston extends dsFunctions {
-
-	//using namespace ode;
 
 	private final double VEL_INC = 0.01; // Velocity increment
 
@@ -143,7 +143,7 @@ class DemoPiston extends dsFunctions {
 
 
 	//private int type = dJointTypePiston;
-	private Class type = DPistonJoint.class;
+	private Class<?> type = DPistonJoint.class;
 
 	//#pragma message("tc to be changed to 0")
 
@@ -209,6 +209,8 @@ class DemoPiston extends dsFunctions {
 		System.out.println ("Press 't' to add force on prismatic joint in the positive axis direction");
 		System.out.println ("Press 'y' to add force on prismatic joint in the negative axis direction");
 
+		System.out.println ("Press 'i' to add limits on the prismatic joint (0 to 0)");
+		System.out.println ("Press 'o' to add limits on the rotoide joint (0 to 0)");
 		System.out.println ("Press 'k' to add limits on the rotoide joint (-45 to 45deg) ");
 		System.out.println ("Press 'l' to remove limits on the rotoide joint ");
 
@@ -220,6 +222,11 @@ class DemoPiston extends dsFunctions {
 
 		System.out.println ("Press '+' Go to the next test case.");
 		System.out.println ("Press '-' Go to the previous test case.");
+
+		System.out.println ("Press '8' To remove one of the body. The blue body and the world will be");
+		System.out.println ("          attached to the joint (blue body at position 1)");
+		System.out.println ("Press '9' To remove one of the body. The blue body and the world will be");
+		System.out.println ("          attached to the joint (body body at position 2)");
 	}
 
 
@@ -387,32 +394,47 @@ class DemoPiston extends dsFunctions {
 			else
 				((DSliderJoint) joint).addForce(-1);
 			break;
+	    case '8' :
+	        joint.attach(body[0], null);
+	        break;
+	    case '9' :
+	        joint.attach(null, body[0]);
+	        break;
 
+	    case 'i':
+	    case 'I' :
+	        joint.setParam (PARAM_N.dParamLoStop1, 0);
+	        joint.setParam (PARAM_N.dParamHiStop1, 0);
+	        break;
 
-		case 'k': case 'K':
-			if (joint instanceof DPistonJoint) {
-				((DPistonJoint)joint).setParamLoStop2 (-45.0*3.14159267/180.0);
-				((DPistonJoint)joint).setParamHiStop2 ( 45.0*3.14159267/180.0);
-			}
+	    case 'o':
+	    case 'O' :
+	        joint.setParam (PARAM_N.dParamLoStop2, 0);
+	        joint.setParam (PARAM_N.dParamHiStop2, 0);
+	        break;
+
+	    case 'k':
+	    case 'K':
+	        joint.setParam (PARAM_N.dParamLoStop2, -45.0*3.14159267/180.0);
+	        joint.setParam (PARAM_N.dParamHiStop2,  45.0*3.14159267/180.0);
 			break;
-		case 'l': case 'L':
-			if (joint instanceof DPistonJoint) {
-				((DPistonJoint)joint).setParamLoStop2 (-OdeConstants.dInfinity);
-				((DPistonJoint)joint).setParamHiStop2 ( OdeConstants.dInfinity);
-			}
+	    case 'l':
+	    case 'L':
+	        joint.setParam (PARAM_N.dParamLoStop2, -dInfinity);
+	        joint.setParam (PARAM_N.dParamHiStop2, dInfinity);
 			break;
 
 			// Velocity of joint
 		case ',': case '<' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel1) - VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel1, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel1) - VEL_INC;
+			joint.setParam (PARAM_N.dParamVel1, vel);
 			System.out.println("Velocity = " + vel + "  FMax = 2");
 		}
 		break;
 
 		case '.': case '>' : {
-			double vel = joint.getParam (D_PARAM_NAMES_N.dParamVel1) + VEL_INC;
-			joint.setParam (D_PARAM_NAMES_N.dParamVel1, vel);
+			double vel = joint.getParam (PARAM_N.dParamVel1) + VEL_INC;
+			joint.setParam (PARAM_N.dParamVel1, vel);
 			System.out.println("Velocity = " + vel + "  FMax = 2");
 		}
 		break;
@@ -578,25 +600,13 @@ class DemoPiston extends dsFunctions {
 		OdeHelper.initODE2(0);
 		boolean fixed  = true;
 
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		//  fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-
-		DVector3 offset = new DVector3();
-		//dSetZero (offset, 4);
-
 		// Default test case
 
 		if (args.length >= 2 ) {
 			for (int i=1; i < args.length; ++i) {
 				//static int tata = 0;
 
-				if (false) {
+				if (true) {
 					if ( "-h".equals(args[i]) || "--help".equals(args[i]) )
 						Help (args);
 
@@ -610,7 +620,7 @@ class DemoPiston extends dsFunctions {
 								args[j].charAt(0) == '-' ) // We should have a path not a command line
 							Help (args);
 						else
-							fn.path_to_textures = args[++i]; // Increase i since we use this argument
+							this.path_to_textures = args[++i]; // Increase i since we use this argument
 					}
 				}
 
@@ -733,7 +743,7 @@ class DemoPiston extends dsFunctions {
 
 
 		// run simulation
-		dsSimulationLoop (args,400,300,fn);
+		dsSimulationLoop (args,400,300,this);
 
 		//delete joint;
 		contactgroup.destroy ();
@@ -752,6 +762,3 @@ class DemoPiston extends dsFunctions {
 		// Nothing
 	}
 }
-
-
-

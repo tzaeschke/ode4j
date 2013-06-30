@@ -27,16 +27,22 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DAMotorJoint;
+import org.ode4j.ode.DFixedJoint;
+import org.ode4j.ode.DHinge2Joint;
+import org.ode4j.ode.DHingeJoint;
+import org.ode4j.ode.DPRJoint;
+import org.ode4j.ode.DSliderJoint;
+import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -78,7 +84,13 @@ public class DemoJoints extends dsFunctions {
 	// dynamics objects
 	private static DWorld world;
 	private static DBody[] body= new DBody[2];
-	private static DJoint joint;
+	private static DAMotorJoint jointAM;
+	private static DFixedJoint jointF;
+	private static DHingeJoint jointH;
+	private static DHinge2Joint jointH2;
+	private static DPRJoint jointPR;
+	private static DSliderJoint jointS;
+	private static DUniversalJoint jointU;
 
 
 	// data from the command line arguments
@@ -113,7 +125,7 @@ public class DemoJoints extends dsFunctions {
 	private double cmpIdentity (final DMatrix3C A)
 	{
 		DMatrix3 I = new DMatrix3();
-		I.dSetZero();//dSetZero (I,12);
+		I.setZero();//dSetZero (I,12);
 //		I.v[0] = 1;
 //		I.v[5] = 1;
 //		I.v[10] = 1;
@@ -251,9 +263,9 @@ public class DemoJoints extends dsFunctions {
 					0.5*SIDE,0.5*SIDE,1, -0.5*SIDE,-0.5*SIDE,1,
 					1,1,0, 1,1,0,
 					0.25*M_PI,0.25*M_PI);
-			joint = dJointCreateFixed (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetFixed (joint);
+			jointF = dJointCreateFixed (world,null);
+			dJointAttach (jointF,body[0],body[1]);
+			dJointSetFixed (jointF);
 			return 1;
 		}
 
@@ -262,9 +274,9 @@ public class DemoJoints extends dsFunctions {
 					0.5*SIDE,0.5*SIDE,1, 0,0,0,
 					1,0,0, 1,0,0,
 					0,0);
-			joint = dJointCreateFixed (world,null);
-			dJointAttach (joint,body[0],null);
-			dJointSetFixed (joint);
+			jointF = dJointCreateFixed (world,null);
+			dJointAttach (jointF,body[0],null);
+			dJointSetFixed (jointF);
 			return 1;
 		}
 
@@ -273,9 +285,9 @@ public class DemoJoints extends dsFunctions {
 					0.5*SIDE,0.5*SIDE,1, -0.5*SIDE,-0.5*SIDE,1,
 					1,1,0, 1,1,0,
 					0.25*M_PI,-0.25*M_PI);
-			joint = dJointCreateFixed (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetFixed (joint);
+			jointF = dJointCreateFixed (world,null);
+			dJointAttach (jointF,body[0],body[1]);
+			dJointSetFixed (jointF);
 			return 1;
 		}
 
@@ -284,9 +296,9 @@ public class DemoJoints extends dsFunctions {
 					0.5*SIDE,0.5*SIDE,1, 0,0,0,
 					1,0,0, 1,0,0,
 					0.25*M_PI,0);
-			joint = dJointCreateFixed (world,null);
-			dJointAttach (joint,body[0],null);
-			dJointSetFixed (joint);
+			jointF = dJointCreateFixed (world,null);
+			dJointAttach (jointF,body[0],null);
+			dJointSetFixed (jointF);
 			return 1;
 		}
 
@@ -296,10 +308,10 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					0.5*SIDE,0.5*SIDE,1, -0.5*SIDE,-0.5*SIDE,1,
 					1,1,0, 1,1,0, 0.25*M_PI,0.25*M_PI);
-			joint = dJointCreateHinge (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetHingeAnchor (joint,0,0,1);
-			dJointSetHingeAxis (joint,1,-1,1.41421356);
+			jointH = dJointCreateHinge (world,null);
+			dJointAttach (jointH,body[0],body[1]);
+			dJointSetHingeAnchor (jointH,0,0,1);
+			dJointSetHingeAxis (jointH,1,-1,1.41421356);
 			return 1;
 
 		case 220:			// hinge angle polarity test
@@ -307,10 +319,10 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					0.5*SIDE,0.5*SIDE,1, -0.5*SIDE,-0.5*SIDE,1,
 					1,0,0, 1,0,0, 0,0);
-			joint = dJointCreateHinge (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetHingeAnchor (joint,0,0,1);
-			dJointSetHingeAxis (joint,0,0,1);
+			jointH = dJointCreateHinge (world,null);
+			dJointAttach (jointH,body[0],body[1]);
+			dJointSetHingeAnchor (jointH,0,0,1);
+			dJointSetHingeAxis (jointH,0,0,1);
 			max_iterations = 50;
 			return 1;
 
@@ -319,14 +331,14 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					0.5*SIDE,0.5*SIDE,1, -0.5*SIDE,-0.5*SIDE,1,
 					1,0,0, 1,0,0, 0,0);
-			joint = dJointCreateHinge (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetHingeAnchor (joint,0,0,1);
-			dJointSetHingeAxis (joint,0,0,1);
-			dJointSetHingeParam (joint,dParamFMax,1);
+			jointH = dJointCreateHinge (world,null);
+			dJointAttach (jointH,body[0],body[1]);
+			dJointSetHingeAnchor (jointH,0,0,1);
+			dJointSetHingeAxis (jointH,0,0,1);
+			dJointSetHingeParam (jointH,dParamFMax,1);
 			if (n==231) {
-				dJointSetHingeParam (joint,dParamLoStop,-0.5);
-				dJointSetHingeParam (joint,dParamHiStop,0.5);
+				dJointSetHingeParam (jointH,dParamLoStop,-0.5);
+				dJointSetHingeParam (jointH,dParamHiStop,0.5);
 			}
 			return 1;
 
@@ -335,15 +347,15 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest ((n==251) ? 0.1 : -0.1, 2,
 					0.5*SIDE,0,1+0.5*SIDE, -0.5*SIDE,0,1-0.5*SIDE,
 					1,0,0, 1,0,0, 0,0);
-			joint = dJointCreateHinge (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetHingeAnchor (joint,0,0,1);
-			dJointSetHingeAxis (joint,0,1,0);
-			dJointSetHingeParam (joint,dParamLoStop,-0.9);
-			dJointSetHingeParam (joint,dParamHiStop,0.7854);
-			dJointSetHingeParam (joint,dParamBounce,0.5);
+			jointH = dJointCreateHinge (world,null);
+			dJointAttach (jointH,body[0],body[1]);
+			dJointSetHingeAnchor (jointH,0,0,1);
+			dJointSetHingeAxis (jointH,0,1,0);
+			dJointSetHingeParam (jointH,dParamLoStop,-0.9);
+			dJointSetHingeParam (jointH,dParamHiStop,0.7854);
+			dJointSetHingeParam (jointH,dParamBounce,0.5);
 			// anchor 2nd body with a fixed joint
-			DJoint j = dJointCreateFixed (world,null);
+			DFixedJoint j = dJointCreateFixed (world,null);
 			dJointAttach (j,body[1],null);
 			dJointSetFixed (j);
 			return 1;
@@ -355,9 +367,9 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					0,0,1, 0.2,0.2,1.2,
 					0,0,1, -1,1,0, 0,0.25*M_PI);
-			joint = dJointCreateSlider (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetSliderAxis (joint,1,1,1);
+			jointS = dJointCreateSlider (world,null);
+			dJointAttach (jointS,body[0],body[1]);
+			dJointSetSliderAxis (jointS,1,1,1);
 			return 1;
 
 		case 320:			// slider angle polarity test
@@ -365,9 +377,9 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					0,0,1, 0,0,1.2,
 					1,0,0, 1,0,0, 0,0);
-			joint = dJointCreateSlider (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetSliderAxis (joint,0,0,1);
+			jointS = dJointCreateSlider (world,null);
+			dJointAttach (jointS,body[0],body[1]);
+			dJointSetSliderAxis (jointS,0,0,1);
 			max_iterations = 50;
 			return 1;
 
@@ -376,13 +388,13 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0, 2,
 					0,0,1, 0,0,1.2,
 					1,0,0, 1,0,0, 0,0);
-			joint = dJointCreateSlider (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetSliderAxis (joint,0,0,1);
-			dJointSetSliderParam (joint,dParamFMax,100);
+			jointS = dJointCreateSlider (world,null);
+			dJointAttach (jointS,body[0],body[1]);
+			dJointSetSliderAxis (jointS,0,0,1);
+			dJointSetSliderParam (jointS,dParamFMax,100);
 			if (n==331) {
-				dJointSetSliderParam (joint,dParamLoStop,-0.4);
-				dJointSetSliderParam (joint,dParamHiStop,0.4);
+				dJointSetSliderParam (jointS,dParamLoStop,-0.4);
+				dJointSetSliderParam (jointS,dParamHiStop,0.4);
 			}
 			return 1;
 
@@ -391,14 +403,14 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest ((n==351) ? 0.1 : -0.1, 2,
 					0,0,1, 0,0,1.2,
 					1,0,0, 1,0,0, 0,0);
-			joint = dJointCreateSlider (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetSliderAxis (joint,0,0,1);
-			dJointSetSliderParam (joint,dParamLoStop,-0.5);
-			dJointSetSliderParam (joint,dParamHiStop,0.5);
-			dJointSetSliderParam (joint,dParamBounce,0.5);
+			jointS = dJointCreateSlider (world,null);
+			dJointAttach (jointS,body[0],body[1]);
+			dJointSetSliderAxis (jointS,0,0,1);
+			dJointSetSliderParam (jointS,dParamLoStop,-0.5);
+			dJointSetSliderParam (jointS,dParamHiStop,0.5);
+			dJointSetSliderParam (jointS,dParamBounce,0.5);
 			// anchor 2nd body with a fixed joint
-			DJoint j = dJointCreateFixed (world,null);
+			DFixedJoint j = dJointCreateFixed (world,null);
 			dJointAttach (j,body[1],null);
 			dJointSetFixed (j);
 			return 1;
@@ -411,11 +423,11 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					0.5*SIDE,0,1, -0.5*SIDE,0,1,
 					1,0,0, 1,0,0, 0,0);
-			joint = dJointCreateHinge2 (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetHinge2Anchor (joint,-0.5*SIDE,0,1);
-			dJointSetHinge2Axis1 (joint,0,0,1);
-			dJointSetHinge2Axis2 (joint,1,0,0);
+			jointH2 = dJointCreateHinge2 (world,null);
+			dJointAttach (jointH2,body[0],body[1]);
+			dJointSetHinge2Anchor (jointH2,-0.5*SIDE,0,1);
+			dJointSetHinge2Axis1 (jointH2,0,0,1);
+			dJointSetHinge2Axis2 (jointH2,1,0,0);
 			max_iterations = 50;
 			return 1;
 
@@ -425,16 +437,16 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					0.5*SIDE,0,1, -0.5*SIDE,0,1,
 					1,0,0, 1,0,0, 0,0);
-			joint = dJointCreateHinge2 (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetHinge2Anchor (joint,-0.5*SIDE,0,1);
-			dJointSetHinge2Axis1 (joint,0,0,1);
-			dJointSetHinge2Axis2 (joint,1,0,0);
-			dJointSetHinge2Param (joint,dParamFMax,1);
-			dJointSetHinge2Param (joint,dParamFMax2,1);
+			jointH2 = dJointCreateHinge2 (world,null);
+			dJointAttach (jointH2,body[0],body[1]);
+			dJointSetHinge2Anchor (jointH2,-0.5*SIDE,0,1);
+			dJointSetHinge2Axis1 (jointH2,0,0,1);
+			dJointSetHinge2Axis2 (jointH2,1,0,0);
+			dJointSetHinge2Param (jointH2,dParamFMax,1);
+			dJointSetHinge2Param (jointH2,dParamFMax2,1);
 			if (n==431) {
-				dJointSetHinge2Param (joint,dParamLoStop,-0.5);
-				dJointSetHinge2Param (joint,dParamHiStop,0.5);
+				dJointSetHinge2Param (jointH2,dParamLoStop,-0.5);
+				dJointSetHinge2Param (jointH2,dParamHiStop,0.5);
 			}
 			return 1;
 
@@ -444,13 +456,13 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					-SIDE*0.5,0,1, SIDE*0.5,0,1,
 					0,0,1, 0,0,1, 0,0);
-			joint = dJointCreateAMotor (world,null);
-			dJointAttach (joint,body[0],body[1]);
+			jointAM = dJointCreateAMotor (world,null);
+			dJointAttach (jointAM,body[0],body[1]);
 
-			dJointSetAMotorNumAxes (joint,3);
-			dJointSetAMotorAxis (joint,0,1, 0,0,1);
-			dJointSetAMotorAxis (joint,2,2, 1,0,0);
-			dJointSetAMotorMode (joint,dAMotorEuler);
+			dJointSetAMotorNumAxes (jointAM,3);
+			dJointSetAMotorAxis (jointAM,0,1, 0,0,1);
+			dJointSetAMotorAxis (jointAM,2,2, 1,0,0);
+			dJointSetAMotorMode (jointAM,dAMotorEuler);
 			max_iterations = 200;
 			return 1;
 
@@ -462,11 +474,11 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					0.5*SIDE,0.5*SIDE,1, -0.5*SIDE,-0.5*SIDE,1,
 					1,1,0, 1,1,0, 0.25*M_PI,0.25*M_PI);
-			joint = dJointCreateUniversal (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetUniversalAnchor (joint,0,0,1);
-			dJointSetUniversalAxis1 (joint, 1, -1, 1.41421356);
-			dJointSetUniversalAxis2 (joint, 1, -1, -1.41421356);
+			jointU = dJointCreateUniversal (world,null);
+			dJointAttach (jointU,body[0],body[1]);
+			dJointSetUniversalAnchor (jointU,0,0,1);
+			dJointSetUniversalAxis1 (jointU, 1, -1, 1.41421356);
+			dJointSetUniversalAxis2 (jointU, 1, -1, -1.41421356);
 			return 1;
 
 		case 720:		// universal transmit torque test
@@ -481,11 +493,11 @@ public class DemoJoints extends dsFunctions {
 			constructWorldForTest (0,2,
 					0.5*SIDE,0.5*SIDE,1, -0.5*SIDE,-0.5*SIDE,1,
 					1,0,0, 1,0,0, 0,0);
-			joint = dJointCreateUniversal (world,null);
-			dJointAttach (joint,body[0],body[1]);
-			dJointSetUniversalAnchor (joint,0,0,1);
-			dJointSetUniversalAxis1 (joint,0,0,1);
-			dJointSetUniversalAxis2 (joint, 1, -1,0);
+			jointU = dJointCreateUniversal (world,null);
+			dJointAttach (jointU,body[0],body[1]);
+			dJointSetUniversalAnchor (jointU,0,0,1);
+			dJointSetUniversalAxis1 (jointU,0,0,1);
+			dJointSetUniversalAxis2 (jointU, 1, -1,0);
 			max_iterations = 100;
 			return 1;
 
@@ -498,15 +510,15 @@ public class DemoJoints extends dsFunctions {
 					1.0, 0.0, 1.0,
 					1,0,0, 1,0,0,
 					0, 0);
-			joint = dJointCreatePR (world, null);
-			dJointAttach (joint, body[0], body[1]);
-			dJointSetPRAnchor (joint,-0.5, 0.0, 1.0);
-			dJointSetPRAxis1 (joint, 0, 1, 0);
-			dJointSetPRAxis2 (joint, 1, 0, 0);
-			dJointSetPRParam (joint,dParamLoStop,-0.5);
-			dJointSetPRParam (joint,dParamHiStop,0.5);
-			dJointSetPRParam (joint,dParamLoStop2,0);
-			dJointSetPRParam (joint,dParamHiStop2,0);
+			jointPR = dJointCreatePR (world, null);
+			dJointAttach (jointPR, body[0], body[1]);
+			dJointSetPRAnchor (jointPR,-0.5, 0.0, 1.0);
+			dJointSetPRAxis1 (jointPR, 0, 1, 0);
+			dJointSetPRAxis2 (jointPR, 1, 0, 0);
+			dJointSetPRParam (jointPR,dParamLoStop,-0.5);
+			dJointSetPRParam (jointPR,dParamHiStop,0.5);
+			dJointSetPRParam (jointPR,dParamLoStop2,0);
+			dJointSetPRParam (jointPR,dParamHiStop2,0);
 			return 1;
 		case 803:   // 2 bodies with spring force and prismatic NOT fixed
 		case 804:   // 2 bodies with torque force and prismatic NOT fixed
@@ -516,15 +528,15 @@ public class DemoJoints extends dsFunctions {
 					1.0, 0.0, 1.0,
 					1,0,0, 1,0,0,
 					0, 0);
-			joint = dJointCreatePR (world, null);
-			dJointAttach (joint, body[0], body[1]);
-			dJointSetPRAnchor (joint,-0.5, 0.0, 1.0);
-			dJointSetPRAxis1 (joint, 0, 1, 0);
-			dJointSetPRAxis2 (joint, 1, 0, 0);
-			dJointSetPRParam (joint,dParamLoStop,-0.5);
-			dJointSetPRParam (joint,dParamHiStop,0.5);
-			dJointSetPRParam (joint,dParamLoStop2,-0.5);
-			dJointSetPRParam (joint,dParamHiStop2,0.5);
+			jointPR = dJointCreatePR (world, null);
+			dJointAttach (jointPR, body[0], body[1]);
+			dJointSetPRAnchor (jointPR,-0.5, 0.0, 1.0);
+			dJointSetPRAxis1 (jointPR, 0, 1, 0);
+			dJointSetPRAxis2 (jointPR, 1, 0, 0);
+			dJointSetPRParam (jointPR,dParamLoStop,-0.5);
+			dJointSetPRParam (jointPR,dParamHiStop,0.5);
+			dJointSetPRParam (jointPR,dParamLoStop2,-0.5);
+			dJointSetPRParam (jointPR,dParamHiStop2,0.5);
 			return 1;
 		}
 		return 0;
@@ -640,7 +652,7 @@ public class DemoJoints extends dsFunctions {
 			dBodyAddTorque (body[0],0,0,0.01);
 			dBodyAddTorque (body[1],0,0,-0.01);
 			if (iteration == 40) {
-				double a = dJointGetHingeAngle (joint);
+				double a = dJointGetHingeAngle (jointH);
 				if (a > 0.5 && a < 1) return 0; else return 10;
 			}
 			return 0;
@@ -649,8 +661,8 @@ public class DemoJoints extends dsFunctions {
 			//TZ static double last_angle = 0;
 			dBodyAddTorque (body[0],0,0,0.01);
 			dBodyAddTorque (body[1],0,0,-0.01);
-			double a = dJointGetHingeAngle (joint);
-			double r = dJointGetHingeAngleRate (joint);
+			double a = dJointGetHingeAngle (jointH);
+			double r = dJointGetHingeAngleRate (jointH);
 			double er = (a-last_angle_221)/STEPSIZE;		// estimated rate
 			last_angle_221 = a;
 			return fabs(r-er) * 4e4;
@@ -659,11 +671,11 @@ public class DemoJoints extends dsFunctions {
 		case 230:			// hinge motor rate (and polarity) test
 		case 231: {			// ...with stops
 			//TZ static double a = 0;
-			double r = dJointGetHingeAngleRate (joint);
+			double r = dJointGetHingeAngleRate (jointH);
 			double err = fabs (cos(a_231) - r);
 			if (a_231==0) err = 0;
 			a_231 += 0.03;
-			dJointSetHingeParam (joint,dParamVel,cos(a_231));
+			dJointSetHingeParam (jointH,dParamVel,cos(a_231));
 			if (n==231) return dInfinity;
 			return err * 1e6;
 		}
@@ -680,8 +692,11 @@ public class DemoJoints extends dsFunctions {
 			dBodyAddForce (body[0],0,0,0.1);
 			dBodyAddForce (body[1],0,0,-0.1);
 			if (iteration == 40) {
-				double a = dJointGetSliderPosition (joint);
-				if (a > 0.2 && a < 0.5) return 0; else return 10;
+				double a = dJointGetSliderPosition (jointS);
+				if (a > 0.2 && a < 0.5) 
+					return 0; 
+				else 
+					return 10;
 			}
 			return 0;
 
@@ -689,8 +704,8 @@ public class DemoJoints extends dsFunctions {
 			//TZ static double last_pos = 0;
 			dBodyAddForce (body[0],0,0,0.1);
 			dBodyAddForce (body[1],0,0,-0.1);
-			double p = dJointGetSliderPosition (joint);
-			double r = dJointGetSliderPositionRate (joint);
+			double p = dJointGetSliderPosition (jointS);
+			double r = dJointGetSliderPositionRate (jointS);
 			double er = (p-last_pos_321)/STEPSIZE;	// estimated rate (almost exact)
 			last_pos_321 = p;
 			return fabs(r-er) * 1e9;
@@ -699,11 +714,11 @@ public class DemoJoints extends dsFunctions {
 		case 330:			// slider motor rate (and polarity) test
 		case 331: {			// ...with stops
 			//TZ static double a = 0;
-			double r = dJointGetSliderPositionRate (joint);
+			double r = dJointGetSliderPositionRate (jointS);
 			double err = fabs (0.7*cos(a_331) - r);
 			if (a_331 < 0.04) err = 0;
 			a_331 += 0.03;
-			dJointSetSliderParam (joint,dParamVel,0.7*cos(a_331));
+			dJointSetSliderParam (jointS,dParamVel,0.7*cos(a_331));
 			if (n==331) return dInfinity;
 			return err * 1e6;
 		}
@@ -714,7 +729,7 @@ public class DemoJoints extends dsFunctions {
 			dBodyAddTorque (body[0],0,0,0.01);
 			dBodyAddTorque (body[1],0,0,-0.01);
 			if (iteration == 40) {
-				double a = dJointGetHinge2Angle1 (joint);
+				double a = dJointGetHinge2Angle1 (jointH2);
 				if (a > 0.5 && a < 0.6) return 0; else return 10;
 			}
 			return 0;
@@ -723,8 +738,8 @@ public class DemoJoints extends dsFunctions {
 			//TZ static double last_angle = 0;
 			dBodyAddTorque (body[0],0,0,0.01);
 			dBodyAddTorque (body[1],0,0,-0.01);
-			double a = dJointGetHinge2Angle1 (joint);
-			double r = dJointGetHinge2Angle1Rate (joint);
+			double a = dJointGetHinge2Angle1 (jointH2);
+			double r = dJointGetHinge2Angle1Rate (jointH2);
 			double er = (a-last_angle_421)/STEPSIZE;		// estimated rate
 			last_angle_421 = a;
 			return fabs(r-er)*2e4;
@@ -733,22 +748,22 @@ public class DemoJoints extends dsFunctions {
 		case 430:			// hinge 2 steering motor rate (+polarity) test
 		case 431: {			// ...with stops
 			//TZ static double a = 0;
-			double r = dJointGetHinge2Angle1Rate (joint);
+			double r = dJointGetHinge2Angle1Rate (jointH2);
 			double err = fabs (cos(a_431) - r);
 			if (a_431==0) err = 0;
 			a_431 += 0.03;
-			dJointSetHinge2Param (joint,dParamVel,cos(a_431));
+			dJointSetHinge2Param (jointH2,dParamVel,cos(a_431));
 			if (n==431) return dInfinity;
 			return err * 1e6;
 		}
 
 		case 432: {			// hinge 2 wheel motor rate (+polarity) test
 			//TZ static double a = 0;
-			double r = dJointGetHinge2Angle2Rate (joint);
+			double r = dJointGetHinge2Angle2Rate (jointH2);
 			double err = fabs (cos(a_432) - r);
 			if (a_432==0) err = 0;
 			a_432 += 0.03;
-			dJointSetHinge2Param (joint,dParamVel2,cos(a_432));
+			dJointSetHinge2Param (jointH2,dParamVel2,cos(a_432));
 			return err * 1e6;
 		}
 
@@ -759,9 +774,9 @@ public class DemoJoints extends dsFunctions {
 			//TZ static double a1,a2,a3;
 
 			// find actual euler angles
-			double aa1 = dJointGetAMotorAngle (joint,0);
-			double aa2 = dJointGetAMotorAngle (joint,1);
-			double aa3 = dJointGetAMotorAngle (joint,2);
+			double aa1 = dJointGetAMotorAngle (jointAM,0);
+			double aa2 = dJointGetAMotorAngle (jointAM,1);
+			double aa3 = dJointGetAMotorAngle (jointAM,2);
 			// printf ("actual  = %.4f %.4f %.4f\n\n",aa1,aa2,aa3);
 
 			double err = dInfinity;
@@ -801,8 +816,8 @@ public class DemoJoints extends dsFunctions {
 
 			addOscillatingTorque (0.1);
 			dampRotationalMotion (0.1);
-			dJointGetUniversalAxis1(joint, ax1);
-			dJointGetUniversalAxis2(joint, ax2);
+			dJointGetUniversalAxis1(jointU, ax1);
+			dJointGetUniversalAxis2(jointU, ax2);
 			return fabs(10*OdeMath.dDOT(ax1, ax2));
 		}
 
@@ -810,8 +825,8 @@ public class DemoJoints extends dsFunctions {
 			//TZ static double last_angle = 0;
 			addOscillatingTorque (0.1);
 			dampRotationalMotion (0.1);
-			double a = dJointGetUniversalAngle1(joint);
-			double r = dJointGetUniversalAngle1Rate(joint);
+			double a = dJointGetUniversalAngle1(jointU);
+			double r = dJointGetUniversalAngle1Rate(jointU);
 			double diff = a - last_angle_701;
 			if (diff > M_PI) diff -= 2*M_PI;
 			if (diff < -M_PI) diff += 2*M_PI;
@@ -825,8 +840,8 @@ public class DemoJoints extends dsFunctions {
 			//TZ static double last_angle = 0;
 			addOscillatingTorque (0.1);
 			dampRotationalMotion (0.1);
-			double a = dJointGetUniversalAngle2(joint);
-			double r = dJointGetUniversalAngle2Rate(joint);
+			double a = dJointGetUniversalAngle2(jointU);
+			double r = dJointGetUniversalAngle2Rate(jointU);
 			double diff = a - last_angle_702;
 			if (diff > M_PI) diff -= 2*M_PI;
 			if (diff < -M_PI) diff += 2*M_PI;
@@ -840,8 +855,8 @@ public class DemoJoints extends dsFunctions {
 			DVector3 ax1 = new DVector3(), ax2 = new DVector3();
 			addOscillatingTorqueAbout (0.1, 1, 1, 0);
 			dampRotationalMotion (0.1);
-			dJointGetUniversalAxis1(joint, ax1);
-			dJointGetUniversalAxis2(joint, ax2);
+			dJointGetUniversalAxis1(jointU, ax1);
+			dJointGetUniversalAxis2(jointU, ax2);
 			return fabs(10*dDOT(ax1, ax2));
 		}
 
@@ -849,8 +864,8 @@ public class DemoJoints extends dsFunctions {
 			//TZ static double last_angle = 0;
 			addOscillatingTorqueAbout (0.1, 1, 1, 0);
 			dampRotationalMotion (0.1);
-			double a = dJointGetUniversalAngle1(joint);
-			double r = dJointGetUniversalAngle1Rate(joint);
+			double a = dJointGetUniversalAngle1(jointU);
+			double r = dJointGetUniversalAngle1Rate(jointU);
 			double diff = a - last_angle_721;
 			if (diff > M_PI) diff -= 2*M_PI;
 			if (diff < -M_PI) diff += 2*M_PI;
@@ -863,8 +878,8 @@ public class DemoJoints extends dsFunctions {
 			//TZ static double last_angle = 0;
 			addOscillatingTorqueAbout (0.1, 1, 1, 0);
 			dampRotationalMotion (0.1);
-			double a = dJointGetUniversalAngle2(joint);
-			double r = dJointGetUniversalAngle2Rate(joint);
+			double a = dJointGetUniversalAngle2(jointU);
+			double r = dJointGetUniversalAngle2Rate(jointU);
 			double diff = a - last_angle_722;
 			if (diff > M_PI) diff -= 2*M_PI;
 			if (diff < -M_PI) diff += 2*M_PI;
@@ -875,8 +890,8 @@ public class DemoJoints extends dsFunctions {
 
 		case 730:{
 			DVector3 ax1 = new DVector3(), ax2 = new DVector3();
-			dJointGetUniversalAxis1(joint, ax1);
-			dJointGetUniversalAxis2(joint, ax2);
+			dJointGetUniversalAxis1(jointU, ax1);
+			dJointGetUniversalAxis2(jointU, ax2);
 			addOscillatingTorqueAbout (0.1, ax1);
 			dampRotationalMotion (0.1);
 			return fabs(10*dDOT(ax1, ax2));
@@ -885,11 +900,11 @@ public class DemoJoints extends dsFunctions {
 		case 731:{
 			DVector3 ax1 = new DVector3();
 			//TZ static double last_angle = 0;
-			dJointGetUniversalAxis1(joint, ax1);
+			dJointGetUniversalAxis1(jointU, ax1);
 			addOscillatingTorqueAbout (0.1, ax1);
 			dampRotationalMotion (0.1);
-			double a = dJointGetUniversalAngle1(joint);
-			double r = dJointGetUniversalAngle1Rate(joint);
+			double a = dJointGetUniversalAngle1(jointU);
+			double r = dJointGetUniversalAngle1Rate(jointU);
 			double diff = a - last_angle_731;
 			if (diff > M_PI) diff -= 2*M_PI;
 			if (diff < -M_PI) diff += 2*M_PI;
@@ -901,11 +916,11 @@ public class DemoJoints extends dsFunctions {
 		case 732:{
 			DVector3 ax1 = new DVector3();
 			//TZ static double last_angle = 0;
-			dJointGetUniversalAxis1(joint, ax1);
+			dJointGetUniversalAxis1(jointU, ax1);
 			addOscillatingTorqueAbout (0.1, ax1);
 			dampRotationalMotion (0.1);
-			double a = dJointGetUniversalAngle2(joint);
-			double r = dJointGetUniversalAngle2Rate(joint);
+			double a = dJointGetUniversalAngle2(jointU);
+			double r = dJointGetUniversalAngle2Rate(jointU);
 			double diff = a - last_angle_732;
 			if (diff > M_PI) diff -= 2*M_PI;
 			if (diff < -M_PI) diff += 2*M_PI;
@@ -916,8 +931,8 @@ public class DemoJoints extends dsFunctions {
 
 		case 740:{
 			DVector3 ax1 = new DVector3(), ax2 = new DVector3();
-			dJointGetUniversalAxis1(joint, ax1);
-			dJointGetUniversalAxis2(joint, ax2);
+			dJointGetUniversalAxis1(jointU, ax1);
+			dJointGetUniversalAxis2(jointU, ax2);
 			addOscillatingTorqueAbout (0.1, ax2);
 			dampRotationalMotion (0.1);
 			return fabs(10*dDOT(ax1, ax2));
@@ -926,11 +941,11 @@ public class DemoJoints extends dsFunctions {
 		case 741:{
 			DVector3 ax2 = new DVector3();
 			//TZ static double last_angle = 0;
-			dJointGetUniversalAxis2(joint, ax2);
+			dJointGetUniversalAxis2(jointU, ax2);
 			addOscillatingTorqueAbout (0.1, ax2);
 			dampRotationalMotion (0.1);
-			double a = dJointGetUniversalAngle1(joint);
-			double r = dJointGetUniversalAngle1Rate(joint);
+			double a = dJointGetUniversalAngle1(jointU);
+			double r = dJointGetUniversalAngle1Rate(jointU);
 			double diff = a - last_angle_741;
 			if (diff > M_PI) diff -= 2*M_PI;
 			if (diff < -M_PI) diff += 2*M_PI;
@@ -942,11 +957,11 @@ public class DemoJoints extends dsFunctions {
 		case 742:{
 			DVector3 ax2 = new DVector3();
 			//TZ static double last_angle = 0;
-			dJointGetUniversalAxis2(joint, ax2);
+			dJointGetUniversalAxis2(jointU, ax2);
 			addOscillatingTorqueAbout (0.1, ax2);
 			dampRotationalMotion (0.1);
-			double a = dJointGetUniversalAngle2(joint);
-			double r = dJointGetUniversalAngle2Rate(joint);
+			double a = dJointGetUniversalAngle2(jointU);
+			double r = dJointGetUniversalAngle2Rate(jointU);
 			double diff = a - last_angle_742;
 			if (diff > M_PI) diff -= 2*M_PI;
 			if (diff < -M_PI) diff += 2*M_PI;
@@ -1099,7 +1114,13 @@ public class DemoJoints extends dsFunctions {
 		dWorldDestroy (world);
 		body[0] = null;
 		body[1] = null;
-		joint = null;
+		jointAM = null;
+		jointF = null;
+		jointH = null;
+		jointH2 = null;
+		jointPR = null;
+		jointS = null;
+		jointU = null;
 
 		// print results
 		printf ("test %d: ",n);

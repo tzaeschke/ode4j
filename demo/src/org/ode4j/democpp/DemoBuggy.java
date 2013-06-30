@@ -22,11 +22,13 @@
 package org.ode4j.democpp;
 
 import org.cpp4j.FILE;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
@@ -42,7 +44,8 @@ import org.ode4j.ode.DGeom.DNearCallback;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.OdeMath.*;
 
 
 /**
@@ -74,13 +77,13 @@ class DemoBuggy extends dsFunctions {
 	private static DWorld world;
 	private static DSpace space;
 	private static DBody[] body = new DBody[4];
-	private static DJoint[] joint = new DJoint[3];	// joint[0] is the front wheel
+	private static DHinge2Joint[] joint = new DHinge2Joint[3];	// joint[0] is the front wheel
 	private static DJointGroup contactgroup;
 	private static DGeom ground;
 	private static DSpace car_space;
 	private static DGeom[] box = new DGeom[1];
 	private static DGeom[] sphere = new DGeom[3];
-	private static DGeom ground_box;
+	private static DBox ground_box;
 
 
 	// things that the user controls
@@ -247,10 +250,6 @@ class DemoBuggy extends dsFunctions {
 		//  fn.command = &command;
 		//  fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		dInitODE2(0);

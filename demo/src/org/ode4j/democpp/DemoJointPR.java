@@ -21,12 +21,14 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
@@ -42,7 +44,8 @@ import org.ode4j.ode.DGeom.DNearCallback;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.OdeMath.*;
 
 
 /**
@@ -87,11 +90,11 @@ class DemoJointPR extends dsFunctions {
 	private static DSpace box1_space;
 	private static DBody[] box1_body = new DBody[1];
 	private static DBody[] box2_body = new DBody[1];
-	private static DJoint[] joint = new DJoint[1];
+	private static DPRJoint[] joint = new DPRJoint[1];
 	private static DJointGroup contactgroup;
 	private static DGeom ground;
-	private static DGeom[] box1 = new DGeom[1];
-	private static DGeom[] box2 = new DGeom[1];
+	private static DBox[] box1 = new DBox[1];
+	private static DBox[] box2 = new DBox[1];
 
 
 	//collision detection
@@ -138,6 +141,14 @@ class DemoJointPR extends dsFunctions {
 		printf ("Press 'w' to add force along positive y direction.\nPress 's' to add force along negative y direction.\n");
 		printf ("Press 'e' to add torque around positive z direction.\nPress 'q' to add torque around negative z direction.\n");
 		printf ("Press 'o' to add force around positive x direction \n");
+
+	    printf("Press 'v' to give a defined velocity and add a FMax to the rotoide axis\n");
+	    printf("Press 'c' to set the velocity to zero and remove the FMax\n");
+
+	    printf("Press 'l' to add limits (-0.5 to 0.5rad) on the rotoide axis\n");
+	    printf("Press 'k' to remove the limits on the rotoide axis\n");
+
+	    printf("Press 'i' to get joint info\n");
 	}
 
 	// function to update camera position at each step.
@@ -160,32 +171,77 @@ class DemoJointPR extends dsFunctions {
 	{
 		switch(cmd)
 		{
-		case 'w': case 'W':
+		case 'w': 
+		case 'W':
 			dBodyAddForce(box2_body[0],0,500,0);
 			//std::cout<<(dBodyGetPosition(box2_body[0])[1]-dBodyGetPosition(box1_body[0])[1])<<'\n';
 			System.out.print((dBodyGetPosition(box2_body[0]).get1()-dBodyGetPosition(box1_body[0]).get1()) +'\n');
 			break;
-		case 's': case 'S':
+		case 's': 
+		case 'S':
 			dBodyAddForce(box2_body[0],0,-500,0);
 			System.out.print((dBodyGetPosition(box2_body[0]).get1()-dBodyGetPosition(box1_body[0]).get1())+'\n');
 			break;
-		case 'd': case 'D':
+		case 'd': 
+		case 'D':
 			dBodyAddForce(box2_body[0],500,0,0);
 			System.out.print((dBodyGetPosition(box2_body[0]).get0()-dBodyGetPosition(box1_body[0]).get0())+'\n');
 			break;
-		case 'a': case 'A':
+		case 'a': 
+		case 'A':
 			dBodyAddForce(box2_body[0],-500,0,0);
 			System.out.print((dBodyGetPosition(box2_body[0]).get0()-dBodyGetPosition(box1_body[0]).get0())+'\n');
 			break;
-		case 'e': case 'E':
+		case 'e': 
+		case 'E':
 			dBodyAddRelTorque(box2_body[0],0,0,200);
 			break;
-		case 'q': case 'Q':
+		case 'q': 
+		case 'Q':
 			dBodyAddRelTorque(box2_body[0],0,0,-200);
 			break;
-		case 'o': case 'O':
+		case 'o': 
+		case 'O':
 			dBodyAddForce(box1_body[0],10000,0,0);
 			break;
+	    case 'v':
+	    case 'V':
+	        dJointSetPRParam(joint[0], dParamVel2, 2);
+	        dJointSetPRParam(joint[0], dParamFMax2, 500);
+	        break;
+
+	    case 'c':
+	    case 'C':
+	        dJointSetPRParam(joint[0], dParamVel2, 0);
+	        dJointSetPRParam(joint[0], dParamFMax2, 0);
+	        break;
+
+	    case 'l':
+	    case 'L':
+	        dJointSetPRParam(joint[0], dParamLoStop2, -0.5);
+	        dJointSetPRParam(joint[0], dParamHiStop2,  0.5);
+	        break;
+
+	    case 'k':
+	    case 'K':
+	        dJointSetPRParam(joint[0], dParamLoStop2, -dInfinity);
+	        dJointSetPRParam(joint[0], dParamHiStop2,  dInfinity);
+	        break;
+
+	    case 'i':
+	    case 'I':
+	        DVector3 anchor = new DVector3();
+	        dJointGetPRAnchor(joint[0], anchor);
+	        double angle = dJointGetPRAngle(joint[0]);
+	        double w = dJointGetPRAngleRate(joint[0]);
+
+	        double l = dJointGetPRPosition(joint[0]);
+	        double v = dJointGetPRPositionRate(joint[0]);
+
+	        printf("Anchor: [%6.4lf, %6.4lf, %6.4lf]\n", anchor.get0(), anchor.get1(), anchor.get2());
+	        printf("Position: %7.4lf, Rate: %7.4lf\n", l, v);
+	        printf("Angle: %7.4lf, Rate: %7.4lf\n", angle, w);
+	        break;
 		}
 	}
 

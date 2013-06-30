@@ -3,13 +3,14 @@ package org.ode4j.drawstuff.internal;
 import static org.cpp4j.Cstdio.fprintf;
 import static org.cpp4j.Cstdio.stderr;
 
-import org.ode4j.drawstuff.DS_API;
-import org.ode4j.drawstuff.DS_API.DS_TEXTURE_NUMBER;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff;
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.OdeHelper;
 
-public class DrawStuffNull implements DrawStuff {
+public class DrawStuffNull implements DrawStuffApi {
 
 	private static volatile boolean _run = true;
 	
@@ -75,6 +76,10 @@ public class DrawStuffNull implements DrawStuff {
 		//TZ static bool firsttime=true;
 		if (firsttime)
 		{
+			System.err.println();
+			System.err.print("Using ode4j version: " + OdeHelper.getVersion());
+			System.err.println("  [" + OdeHelper.getConfiguration() + "]");
+			System.err.println();
 			fprintf
 			(
 					stderr,
@@ -92,7 +97,7 @@ public class DrawStuffNull implements DrawStuff {
 					"   Left button - pan and tilt.\n" +
 					"   Right button - forward and sideways.\n" +
 					"   Left + Right button (or middle button) - sideways and up.\n" +
-					"\n",DS_API.DS_VERSION >> 8,DS_API.DS_VERSION & 0xff
+					"\n",DrawStuff.DS_VERSION >> 8,DrawStuff.DS_VERSION & 0xff
 			);
 			firsttime = false;
 		}
@@ -137,8 +142,8 @@ public class DrawStuffNull implements DrawStuff {
 				System.out.println(fps + " frames in " + (float) (timeUsed / 1000f) + " seconds = "
 						+ (fps / (timeUsed / 1000f)));
 				fps = 0;
-				loops++;
-				if (loops >=5) break;
+//				loops++;
+//				if (loops >=5) break;
 			}
 			//    glFlush();
 			//    glXSwapBuffers (display,win);

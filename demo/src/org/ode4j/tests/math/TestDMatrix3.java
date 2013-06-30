@@ -24,7 +24,8 @@ package org.ode4j.tests.math;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
-import org.ode4j.math.DMatrix3.DVector3View;
+import org.ode4j.math.DMatrix3.DVector3ColView;
+import org.ode4j.math.DMatrix3.DVector3RowTView;
 
 public class TestDMatrix3 extends OdeTestCase {
 
@@ -60,12 +61,12 @@ public class TestDMatrix3 extends OdeTestCase {
 		DMatrix3 x = newM3();
 		DMatrix3 xx = newM3();
 		DMatrix3 x1 = new DMatrix3();
-		assertTrue(x.equals(xx));
+		assertTrue(x.isEqual(xx));
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				x1.set(xx);
 				x1.set(i, j, 0);
-				assertFalse(x.equals(x1));
+				assertFalse(x.isEqual(x1));
 			}
 		}
 	}		
@@ -118,15 +119,15 @@ public class TestDMatrix3 extends OdeTestCase {
 
 		//TODO This ",0" should be removed at some point (?)
 		x = new DMatrix3();
-		x.set( new double[]{ 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0} , 0);
+		x.set12( new double[]{ 1, 2, 3, 0, 4, 5, 6, 0, 7, 8, 9, 0} , 0);
 		assertEquals(x, x2);
 
-		x = new DMatrix3();
-		x.setValues(2);
-		assertEquals(x, new DMatrix3(2, 2, 2, 2, 2, 2, 2, 2, 2));
+//		x = new DMatrix3();
+//		x.setValues(2);
+//		assertEquals(x, new DMatrix3(2, 2, 2, 2, 2, 2, 2, 2, 2));
 
 		x = new DMatrix3();
-		assertFalse(x.equals(x2));
+		assertFalse(x.isEqual(x2));
 	}		
 		
 	@Test
@@ -134,8 +135,8 @@ public class TestDMatrix3 extends OdeTestCase {
 		DMatrix3 x = newM3();
 		DMatrix3 y = new DMatrix3();
 		DMatrix3 z = new DMatrix3(x);
-		assertTrue(x.equals(z));
-		assertFalse(x.equals(y));
+		assertTrue(x.isEqual(z));
+		assertFalse(x.isEqual(y));
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -149,10 +150,10 @@ public class TestDMatrix3 extends OdeTestCase {
 	public void testAdd(){
 		DMatrix3 x = newM3();
 		DMatrix3 t = new DMatrix3();
-		assertFalse(x.equals(t));
+		assertFalse(x.isEqual(t));
 		
 		t.add(x);
-		assertTrue(t.equals(x));
+		assertTrue(t.isEqual(x));
 		
 //		t = new dMatrix3();
 //		t.add(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -164,7 +165,7 @@ public class TestDMatrix3 extends OdeTestCase {
 				t.add(i, j, 1 + j + 3*i);
 			}
 		}
-		assertTrue(t.equals(x));
+		assertTrue(t.isEqual(x));
 
 //		t.add0(3);
 //		t.add1(6);
@@ -208,7 +209,7 @@ public class TestDMatrix3 extends OdeTestCase {
 //		assertTrue(t.equals(y));
 		t.set(x);
 		t.scale(-2);
-		assertTrue(t.equals( new DMatrix3(-2, -4, -6, -8, -10, -12, -14, -16, -18) ));
+		assertTrue(t.isEqual( new DMatrix3(-2, -4, -6, -8, -10, -12, -14, -16, -18) ));
 
 //		t.sub(0, 3);
 //		t.sub(1, 6);
@@ -226,12 +227,13 @@ public class TestDMatrix3 extends OdeTestCase {
 //	}
 	
 	@Test
-	public void testOther(){
+	public void testViews(){
 		DMatrix3 t = newM3();
 
-		DVector3View c0 = t.viewCol(0);
-		DVector3View c1 = t.viewCol(1);
-		DVector3View c2 = t.viewCol(2);
+		//Column view
+		DVector3ColView c0 = t.viewCol(0);
+		DVector3ColView c1 = t.viewCol(1);
+		DVector3ColView c2 = t.viewCol(2);
 		assertEquals(new DVector3(1, 4, 7), c0);
 		assertEquals(new DVector3(2, 5, 8), c1);
 		assertEquals(new DVector3(3, 6, 9), c2);
@@ -242,6 +244,22 @@ public class TestDMatrix3 extends OdeTestCase {
 		assertEquals(new DVector3(2, -5, 8), c1);
 		assertEquals(new DVector3(3, 6, -9), c2);
 
+		//Row view
+		t = newM3();
+		DVector3RowTView r0 = t.viewRowT(0);
+		DVector3RowTView r1 = t.viewRowT(1);
+		DVector3RowTView r2 = t.viewRowT(2);
+		assertEquals(new DVector3(1, 2, 3), r0);
+		assertEquals(new DVector3(4, 5, 6), r1);
+		assertEquals(new DVector3(7, 8, 9), r2);
+		t.set(0, 0, -1);
+		t.set(1, 1, -5);
+		t.set(2, 2, -9);
+		assertEquals(new DVector3(-1, 2, 3), r0);
+		assertEquals(new DVector3(4, -5, 6), r1);
+		assertEquals(new DVector3(7, 8, -9), r2);
+
+		//column clone
 		t = newM3();
 		DVector3 v0 = t.columnAsNewVector(0);
 		DVector3 v1 = t.columnAsNewVector(1);
@@ -258,16 +276,23 @@ public class TestDMatrix3 extends OdeTestCase {
 		assertEquals(new DVector3(2, 5, 8), v1);
 		assertEquals(new DVector3(3, 6, 9), v2);
 		//check changing the vectors
-		v0.setValues(0);
-		v1.setValues(0);
-		v2.setValues(0);
+		v0.setZero();
+		v1.setZero();
+		v2.setZero();
 		//Check that Matrix did not change
 		assertEquals(new DMatrix3(-1, 2, 3, 4, -5, 6, 7, 8, -9), t);
 		
+	}
 		
-		t = newM3();
+	@Test
+	public void testZeroIdentity() {
+		DMatrix3 t = newM3();
+
 		t.eqIdentity();
 		assertEquals(new DMatrix3(1, 0, 0, 0, 1, 0, 0, 0, 1), t);
+
+		t.eqZero();
+		assertEquals(new DMatrix3(0, 0, 0, 0, 0, 0, 0, 0, 0), t);
 	}		
 	
 //	@Test
@@ -315,5 +340,217 @@ public class TestDMatrix3 extends OdeTestCase {
 			}
 		}
 		return m;
+	}
+	
+		
+	@Test
+	public void testDotVector() {
+		DMatrix3 m = new DMatrix3(21, 22, 23, 24, 25, 26, 27, 28, 29);
+		DVector3 y = new DVector3(31, 32, 33);
+		double[] da = new double[]{61, 62, 71, 72, 73};
+		
+		double d, ex;
+		
+		// ************ check dotCol ************
+		d = m.dotCol(0, y);
+		ex = 21*31 + 24*32 + 27*33;
+		assertEquals(ex, d);
+		
+		d = m.dotCol(1, y);
+		ex = 22*31 + 25*32 + 28*33;
+		assertEquals(ex, d);
+		
+		d = m.dotCol(2, y);
+		ex = 23*31 + 26*32 + 29*33;
+		assertEquals(ex, d);
+		
+		try {
+			d = m.dotCol(-1, y);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotCol(3, y);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		
+		// ************ check dotRow Vector ************
+		d = m.dotRow(0, y);
+		ex = 21*31 + 22*32 + 23*33;
+		assertEquals(ex, d);
+		
+		d = m.dotRow(1, y);
+		ex = 24*31 + 25*32 + 26*33;
+		assertEquals(ex, d);
+		
+		d = m.dotRow(2, y);
+		ex = 27*31 + 28*32 + 29*33;
+		assertEquals(ex, d);
+		
+		try {
+			d = m.dotRow(-1, y);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotRow(3, y);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		
+		
+		
+		// ************ check dotRow Array ************
+		d = m.dotRow(0, da, 2);
+		ex = 21*71 + 22*72 + 23*73;
+		assertEquals(ex, d);
+		
+		d = m.dotRow(1, da, 2);
+		ex = 24*71 + 25*72 + 26*73;
+		assertEquals(ex, d);
+		
+		d = m.dotRow(2, da, 2);
+		ex = 27*71 + 28*72 + 29*73;
+		assertEquals(ex, d);
+		
+		try {
+			d = m.dotRow(-1, da, 2);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotRow(3, da, 2);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotRow(1, da, -1);
+			fail();
+		} catch (RuntimeException e) {
+			//good
+		}
+		try {
+			d = m.dotRow(1, da, 3);
+			fail();
+		} catch (RuntimeException e) {
+			//good
+		}
+	}
+	
+	
+	@Test
+	public void testDotMatrix() {
+		DMatrix3 m = new DMatrix3(21, 22, 23, 24, 25, 26, 27, 28, 29);
+		DMatrix3 m2 = new DMatrix3(11, 12, 13, 14, 15, 16, 17, 18, 19);
+		
+		double d, ex;
+		
+		// ************ check dotColCol ************
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				d = m.dotColCol(i, m2, j);
+				ex = m.get(0, i)*m2.get(0, j) + m.get(1, i)*m2.get(1, j) + m.get(2, i)*m2.get(2, j);
+				assertEquals(ex, d);
+			}
+		}
+		try {
+			d = m.dotColCol(-1, m2, 1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotColCol(3, m2, 1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotColCol(1, m2, -1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotColCol(1, m2, 3);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+
+		
+		// ************ check dotRowCol ************
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				d = m.dotRowCol(i, m2, j);
+				ex = m.get(i,0)*m2.get(0,j) + m.get(i,1)*m2.get(1,j) + m.get(i,2)*m2.get(2,j);
+				assertEquals(ex, d);
+			}
+		}
+		try {
+			d = m.dotRowCol(-1, m2, 1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotRowCol(3, m2, 1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotRowCol(1, m2, -1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotRowCol(1, m2, 3);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+
+		
+		// ************ check dotRowRow ************
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				d = m.dotRowRow(i, m2, j);
+				ex = m.get(i,0)*m2.get(j,0) + m.get(i,1)*m2.get(j,1) + m.get(i,2)*m2.get(j,2);
+				assertEquals(ex, d);
+			}
+		}
+		try {
+			d = m.dotRowRow(-1, m2, 1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotRowRow(3, m2, 1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotRowRow(1, m2, -1);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
+		try {
+			d = m.dotRowRow(1, m2, 3);
+			fail();
+		} catch (IllegalArgumentException e) {
+			//good
+		}
 	}
 }

@@ -24,7 +24,7 @@ package org.ode4j.drawstuff;
 
 import static org.cpp4j.Cstdio.*;
 
-import org.ode4j.drawstuff.internal.DrawStuff;
+import org.ode4j.drawstuff.internal.DrawStuffApi;
 import org.ode4j.drawstuff.internal.DrawStuffGL;
 import org.ode4j.drawstuff.internal.DrawStuffNull;
 import org.ode4j.math.DMatrix3C;
@@ -46,11 +46,11 @@ import org.ode4j.math.DVector3C;
  * - right button - forward and sideways. <br>
  * - left + right button (or middle button) - sideways and up. <br>
  */
-public class DS_API {
+public class DrawStuff {
 
-	private static DrawStuff DS;
+	private static DrawStuffApi DS;
 	
-	private static DrawStuff get() {
+	private static DrawStuffApi get() {
 		if (DS == null) {
 			//default;
 			DS = new DrawStuffGL();
@@ -62,14 +62,14 @@ public class DS_API {
 	/**
 	 * Use lwjgl for output.
 	 */
-	public static void outputToGL() {
+	public static void setOutputGL() {
 		DS = new DrawStuffGL();
 	}
 	
 	/**
 	 * Use no output. This can be useful for benchmarking.
 	 */
-	public static void outputToNull() {
+	public static void setOutputNull() {
 		DS = new DrawStuffNull();
 	}
 	
@@ -114,26 +114,27 @@ public class DS_API {
 //		  const char *path_to_textures;	/* if nonzero, path to texture files */
 //		} dsFunctions;
 	  public abstract static class dsFunctions { 
-		  public int version;			/* put DS_VERSION here */
+		  public int version = DS_VERSION;			/* put DS_VERSION here */
 		  /* version 1 data */
 		  public abstract void start();		/* called before sim loop starts */
 		  public abstract void step (boolean pause);	/* called before every frame */
 		  public abstract void command (char cmd);	/* called if a command key is pressed */
 		  public abstract void stop();		/* called after sim loop exits */
 		  /* version 2 data */
-		  public String path_to_textures;	/* if nonzero, path to texture files */
-		public void setVersion(int ds_version) {
-			version = ds_version;
-		}
-		public void setPathToTextures(String drawstuff_texture_path) {
-			path_to_textures = drawstuff_texture_path;
-		}
-		public String getPathToTextures() {
-			return path_to_textures;
-		}
-		public int getVersion() {
-			return version;
-		}
+		  /* if nonzero, path to texture files */
+		  public String path_to_textures = DRAWSTUFF_TEXTURE_PATH;	
+		  public void setVersion(int ds_version) {
+			  version = ds_version;
+		  }
+		  public void setPathToTextures(String drawstuff_texture_path) {
+			  path_to_textures = drawstuff_texture_path;
+		  }
+		  public String getPathToTextures() {
+			  return path_to_textures;
+		  }
+		  public int getVersion() {
+			  return version;
+		  }
 	  }
 //	} dsFunctions;
 
@@ -251,7 +252,7 @@ public class DS_API {
 	 * @ingroup drawstuff
 	 * It changes the way objects are drawn. these changes will apply to all further
 	 * dsDrawXXX() functions. 
-	 * @param the texture number must be a DS_xxx texture constant.
+	 * @param texture_number The texture number must be a DS_xxx texture constant.
 	 * The current texture is colored according to the current color.
 	 * At the start of each frame, the texture is reset to none and the color is
 	 * reset to white.
@@ -293,7 +294,7 @@ public class DS_API {
 	 *        [ R11 R12 R13 0 ]
 	 *        [ R21 R22 R23 0 ]
 	 *        [ R31 R32 R33 0 ]
-	 * @param sides[] is an array of x,y,z side lengths.
+	 * @param sides is an array of x,y,z side lengths.
 	 */
 	//DS_API 
 //	public static  void dsDrawBox (final float pos[3], final float R[12], final float sides[3]) {

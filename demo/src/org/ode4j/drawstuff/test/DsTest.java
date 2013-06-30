@@ -31,7 +31,7 @@ package org.ode4j.drawstuff.test;
 //#define M_PI (3.14159265358979323846)
 //#endif
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 public class DsTest extends dsFunctions {
 

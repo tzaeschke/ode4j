@@ -29,13 +29,15 @@ import org.junit.runner.RunWith;
 
 import org.ode4j.ode.internal.joints.DxJointHinge;
 import org.ode4j.math.DMatrix3;
+import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DWorld;
 
+import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.cpp.OdeCppMath.*;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 
 
@@ -90,9 +92,7 @@ public class TestJointHinge {
 			dJointAttach (jId, bId1, bId2);
 			dJointSetHingeAnchor (jId, 0, 0, 0);
 
-			axis.v[0] = 1;
-			axis.v[1] = 0;
-			axis.v[2] = 0;
+			axis.set( 1, 0, 0);
 		}
 
 		@AfterClass
@@ -106,7 +106,7 @@ public class TestJointHinge {
 		DBody bId2;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();
@@ -135,7 +135,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (-M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  -M_PI/2.0);
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  -M_PI/2.0);
 			CHECK_CLOSE (-M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -161,7 +161,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_B2_Minus90deg() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -170,7 +170,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  M_PI/2.0);
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  M_PI/2.0);
 			CHECK_CLOSE (M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -196,7 +196,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_B1_0_23rad() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -205,7 +205,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE ((0.23), dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  (0.23));
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  (0.23));
 			CHECK_CLOSE ((0.23), dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -231,7 +231,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_B1_Minus0_23rad() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -240,7 +240,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (-(0.23), dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  -(0.23));
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  -(0.23));
 			CHECK_CLOSE (-(0.23), dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -279,9 +279,7 @@ public class TestJointHinge {
 			dJointAttach (jId, bId1, bId2);
 			dJointSetHingeAnchor (jId, 0, 0, 0);
 
-			axis.v[0] = -1;
-			axis.v[1] = 0;
-			axis.v[2] = 0;
+			axis.set( -1, 0, 0 );
 		}
 
 		//    ~dxJointHinge_Fixture_B1_and_B2_At_Zero_Axis_Inverse_of_X()
@@ -296,7 +294,7 @@ public class TestJointHinge {
 		DBody bId2;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();
@@ -318,7 +316,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_B2_90Deg() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -327,7 +325,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  M_PI/2.0);
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  M_PI/2.0);
 			CHECK_CLOSE (M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -353,7 +351,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_B2_Minus90Deg() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -362,7 +360,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (-M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  -M_PI/2.0);
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  -M_PI/2.0);
 			CHECK_CLOSE (-M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -388,7 +386,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_B1_0_23rad() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -397,7 +395,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (-(0.23), dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  -(0.23));
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  -(0.23));
 			CHECK_CLOSE (-(0.23), dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -423,7 +421,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_B1_Minus0_23rad() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -432,7 +430,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE ((0.23), dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  (0.23));
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  (0.23));
 			CHECK_CLOSE ((0.23), dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -469,9 +467,7 @@ public class TestJointHinge {
 			dJointAttach (jId, bId1, null);
 			dJointSetHingeAnchor (jId, 0, 0, 0);
 
-			axis.v[0] = 1;
-			axis.v[1] = 0;
-			axis.v[2] = 0;
+			axis.set( 1, 0, 0 );
 		}
 
 		//~dxJointHinge_Fixture_B1_At_Zero_Axis_Along_X()
@@ -485,7 +481,7 @@ public class TestJointHinge {
 		DBody bId1;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();
@@ -507,7 +503,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_1Body_B1_90Deg() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -516,7 +512,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  M_PI/2.0);
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  M_PI/2.0);
 			CHECK_CLOSE (M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -541,7 +537,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_1Body_B1_Minus0_23rad() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -550,7 +546,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (-(0.23), dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  -(0.23));
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  -(0.23));
 			CHECK_CLOSE (-(0.23), dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -588,9 +584,7 @@ public class TestJointHinge {
 			dJointAttach (jId, bId1, null);
 			dJointSetHingeAnchor (jId, 0, 0, 0);
 
-			axis.v[0] = -1;
-			axis.v[1] = 0;
-			axis.v[2] = 0;
+			axis.set( -1, 0, 0 );
 		}
 
 		//~dxJointHinge_Fixture_B1_At_Zero_Axis_Inverse_of_X()
@@ -604,7 +598,7 @@ public class TestJointHinge {
 		DBody bId1;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();
@@ -626,7 +620,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_1Body_B1_90Deg() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -635,7 +629,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (-M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  -M_PI/2.0);
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  -M_PI/2.0);
 			CHECK_CLOSE (-M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -660,7 +654,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_1Body_B1_Minus0_23rad() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -669,7 +663,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE ((0.23), dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  (0.23));
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  (0.23));
 			CHECK_CLOSE ((0.23), dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -709,9 +703,7 @@ public class TestJointHinge {
 			dJointAttach (jId, null, bId2);
 			dJointSetHingeAnchor (jId, 0, 0, 0);
 
-			axis.v[0] = 1;
-			axis.v[1] = 0;
-			axis.v[2] = 0;
+			axis.set( 1, 0, 0 );
 		}
 
 		//~dxJointHinge_Fixture_B2_At_Zero_Axis_Along_X()
@@ -725,7 +717,7 @@ public class TestJointHinge {
 		DBody bId2;
 
 
-		DJoint jId;
+		DHingeJoint jId;
 		DxJointHinge joint;
 
 		DVector3 axis = new DVector3();
@@ -747,7 +739,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_1Body_B2_90Deg() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -756,7 +748,7 @@ public class TestJointHinge {
 
 			CHECK_CLOSE (-M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  -M_PI/2.0);
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  -M_PI/2.0);
 			CHECK_CLOSE (-M_PI/2.0, dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
@@ -781,7 +773,7 @@ public class TestJointHinge {
 		@Test public void test_dJointSetHingeAxisOffset_1Body_B2_Minus0_23rad() {
 			DMatrix3 R = new DMatrix3();
 
-			dJointSetHingeAxis (jId, axis.v[0], axis.v[1], axis.v[2]);
+			dJointSetHingeAxis (jId, axis.get0(), axis.get1(), axis.get2());
 
 			CHECK_CLOSE (dJointGetHingeAngle (jId), 0.0, 1e-4);
 
@@ -790,13 +782,137 @@ public class TestJointHinge {
 
 			CHECK_CLOSE ((0.23), dJointGetHingeAngle (jId), 1e-4);
 
-			dJointSetHingeAxisOffset (jId, axis.v[0], axis.v[1], axis.v[2],  (0.23));
+			dJointSetHingeAxisOffset (jId, axis.get0(), axis.get1(), axis.get2(),  (0.23));
 			CHECK_CLOSE ((0.23), dJointGetHingeAngle (jId), 1e-4);
 
 			dRFromAxisAndAngle (R, 1, 0, 0, 0);
 			dBodySetRotation (bId2, R);
 
 			CHECK_CLOSE (0, dJointGetHingeAngle (jId), 1e-4);
+		}
+	}
+
+	// Create 2 bodies attached by a Hinge joint
+	// Axis is along the X axis (Default value
+	// Anchor at (0, 0, 0)      (Default value)
+	//
+	//       ^Y
+	//       |
+	//       * Body2
+	//       |
+	//       |
+	// Body1 |
+	// *     Z-------->
+	public static class dxJointHinge_Test_Initialization {
+		public dxJointHinge_Test_Initialization()
+		{
+			wId = dWorldCreate();
+
+			// Remove gravity to have the only force be the force of the joint
+			dWorldSetGravity(wId, 0,0,0);
+
+			for (int j=0; j<2; ++j) {
+				bId[j][0] = dBodyCreate (wId);
+				dBodySetPosition (bId[j][0], -1, -2, -3);
+
+				bId[j][1] = dBodyCreate (wId);
+				dBodySetPosition (bId[j][1], 11, 22, 33);
+
+
+				DMatrix3 R = new DMatrix3();
+				DVector3 axis = new DVector3(); // Random axis
+
+				axis.set0( 0.53);
+				axis.set1(-0.71);
+				axis.set2( 0.43);
+				dNormalize3(axis);
+				dRFromAxisAndAngle (R, axis, (0.47123)); // 27deg
+				dBodySetRotation (bId[j][0], R);
+
+
+				axis.set0( 1.2);
+				axis.set1( 0.87);
+				axis.set2(-0.33);
+				dNormalize3(axis);
+				dRFromAxisAndAngle (R, axis,
+						(0.47123)); // 27deg
+				dBodySetRotation (bId[j][1], R);
+
+				jId[j]   = dJointCreateHinge (wId, null);
+				dJointAttach (jId[j], bId[j][0], bId[j][1]);
+				//        dJointSetHingeParam(jId[j], dParamLoStop, 1);
+				//        dJointSetHingeParam(jId[j], dParamHiStop, 2);
+				//        dJointSetHingeParam(jId[j], dParamFMax, 200);
+			}
+		}
+
+		//~dxJointHinge_Test_Initialization()
+		@AfterClass
+		public static void DESTRUCTOR()
+		{
+			dWorldDestroy (wId);
+		}
+
+		static DWorld wId;
+
+		DBody[][] bId = new DBody[2][2];
+
+
+		DHingeJoint[] jId = new DHingeJoint[2];
+
+		//		  };
+
+
+		// Test if setting a Hinge with its default values
+		// will behave the same as a default Hinge joint
+		//TEST_FIXTURE (dxJointHinge_Test_Initialization,
+		@Test public void test_Hinge_Initialization() {
+			//using namespace std;
+
+			DVector3 axis = new DVector3();
+			dJointGetHingeAxis(jId[1], axis);
+			dJointSetHingeAxis(jId[1], axis.get0(), axis.get1(), axis.get2());
+
+
+			DVector3 anchor = new DVector3();
+			dJointGetHingeAnchor(jId[1], anchor);
+			dJointSetHingeAnchor(jId[1], anchor.get0(), anchor.get1(), anchor.get2());
+
+
+			for (int b=0; b<2; ++b) {
+				// Compare body b of the first joint with its equivalent on the
+				// second joint
+				DQuaternionC qA = dBodyGetQuaternion(bId[0][b]);
+				DQuaternionC qB = dBodyGetQuaternion(bId[1][b]);
+				CHECK_CLOSE (qA.get0(), qB.get0(), 1e-6);
+				CHECK_CLOSE (qA.get1(), qB.get1(), 1e-6);
+				CHECK_CLOSE (qA.get2(), qB.get2(), 1e-6);
+				CHECK_CLOSE (qA.get3(), qB.get3(), 1e-6);
+			}
+
+			dWorldStep (wId,0.5);
+			dWorldStep (wId,0.5);
+			dWorldStep (wId,0.5);
+			dWorldStep (wId,0.5);
+
+			for (int b=0; b<2; ++b) {
+				// Compare body b of the first joint with its equivalent on the
+				// second joint
+				DQuaternionC qA = dBodyGetQuaternion(bId[0][b]);
+				DQuaternionC qB = dBodyGetQuaternion(bId[1][b]);
+				CHECK_CLOSE (qA.get0(), qB.get0(), 1e-6);
+				CHECK_CLOSE (qA.get1(), qB.get1(), 1e-6);
+				CHECK_CLOSE (qA.get2(), qB.get2(), 1e-6);
+				CHECK_CLOSE (qA.get3(), qB.get3(), 1e-6);
+
+
+				DVector3C posA = dBodyGetPosition(bId[0][b]);
+				DVector3C posB = dBodyGetPosition(bId[1][b]);
+				CHECK_CLOSE (posA.get0(), posB.get0(), 1e-6);
+				CHECK_CLOSE (posA.get1(), posB.get1(), 1e-6);
+				CHECK_CLOSE (posA.get2(), posB.get2(), 1e-6);
+				//CHECK_CLOSE (posA.get3(), posB.get3(), 1e-6);
+			}
 		}
 
 

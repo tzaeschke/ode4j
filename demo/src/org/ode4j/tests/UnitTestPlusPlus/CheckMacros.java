@@ -1,6 +1,9 @@
 package org.ode4j.tests.UnitTestPlusPlus;
 
+import org.cpp4j.java.RefDouble;
+import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 
 import junit.framework.TestCase;
 
@@ -45,6 +48,9 @@ public class CheckMacros extends TestCase {
 //			testResults_.OnTestFailure(UnitTest.TestDetails(m_details, __LINE__), 
 //					"Unhandled exception in CHECK(" #value ")"); 
 //		} 
+	}
+	public static void CHECK(boolean value) {
+		assertTrue(value);
 	}
 
 	//#define CHECK_EQUAL(expected, actual) \
@@ -93,6 +99,10 @@ public class CheckMacros extends TestCase {
 		//                "Unhandled exception in CHECK_CLOSE(" #expected ", " #actual ")"); 
 		//    } 
 	}
+	public static void CHECK_CLOSE(double expected, RefDouble actual, double tolerance) {
+		assertTrue("Expected" + expected + " / actual=" + actual + " / tolerance=" + tolerance, 
+				tolerance >= Math.abs(expected - actual.d));
+	}
 
 	//#define CHECK_ARRAY_EQUAL(expected, actual, count) \
 	//    do \
@@ -105,8 +115,12 @@ public class CheckMacros extends TestCase {
 	//                    "Unhandled exception in CHECK_ARRAY_EQUAL(" #expected ", " #actual ")"); \
 	//        } \
 	//    } while (0)
+	public static void CHECK_ARRAY_EQUAL(DMatrix3C expected, DMatrix3C actual, int count) {
+		assertEquals(12, count);
+		assertEquals(expected, actual);
+	}
 	public static void CHECK_ARRAY_EQUAL(Object expected, Object actual, int count) {
-		throw new UnsupportedOperationException();
+		assertEquals(expected, actual);
 //		try { 
 //			UnitTest::CheckArrayEqual(testResults_, expected, actual, count, UnitTest::TestDetails(m_details, __LINE__)); 
 //		} 
@@ -134,7 +148,7 @@ public class CheckMacros extends TestCase {
 					Math.abs(actual[i]-expected[i]) <= tolerance);
 		}
 	}
-	public static void CHECK_ARRAY_CLOSE(DVector3 expected, DVector3 actual, int count, double tolerance) {
+	public static void CHECK_ARRAY_CLOSE(DVector3C expected, DVector3 actual, int count, double tolerance) {
 		for (int i = 0; i < count; i++) {
 			assertTrue("Expected: " + expected.get(i) + "  actual: " + actual.get(i) +
 					"   tolerance: " + tolerance, 

@@ -22,13 +22,17 @@
 package org.ode4j.democpp;
 
 import org.cpp4j.java.RefDouble;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.DSphere;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -44,7 +48,7 @@ import org.ode4j.ode.DGeom.DNearCallback;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -240,7 +244,7 @@ class DemoSpaceStress extends dsFunctions {
 
 				for (k=0; k<GPB; k++) {
 					obj[i].geom[k] = dCreateGeomTransform (space);
-					dGeomTransformSetCleanup (obj[i].geom[k],true);
+					dGeomTransformSetCleanup ((DGeomTransform)obj[i].geom[k],true);
 					if (k==0) {
 						double radius = dRandReal()*0.25+0.05;
 						g2[k] = dCreateSphere (null,radius);
@@ -256,7 +260,7 @@ class DemoSpaceStress extends dsFunctions {
 						g2[k] = dCreateCapsule (null,radius,length);
 						dMassSetCapsule (m2,DENSITY,3,radius,length);
 					}
-					dGeomTransformSetGeom (obj[i].geom[k],g2[k]);
+					dGeomTransformSetGeom ((DGeomTransform)obj[i].geom[k],g2[k]);
 
 					// set the transformation (adjust the mass too)
 					//dGeomSetPosition (g2[k],dpos[k][0],dpos[k][1],dpos[k][2]);
@@ -334,15 +338,15 @@ class DemoSpaceStress extends dsFunctions {
 		int type = dGeomGetClass (g);
 		if (type == DGeom.dBoxClass) {
 			DVector3 sides = new DVector3();
-			dGeomBoxGetLengths (g,sides);
+			dGeomBoxGetLengths ((DBox)g,sides);
 			dsDrawBox (pos,R,sides);
 		}
 		else if (type == DGeom.dSphereClass) {
-			dsDrawSphere (pos,R,dGeomSphereGetRadius (g));
+			dsDrawSphere (pos,R,dGeomSphereGetRadius ((DSphere)g));
 		}
 		else if (type == DGeom.dCapsuleClass) {
 			RefDouble radius = new RefDouble(),length = new RefDouble();
-			dGeomCapsuleGetParams (g,radius,length);
+			dGeomCapsuleGetParams ((DCapsule)g,radius,length);
 			dsDrawCapsule (pos,R,length.getF(),radius.getF());
 		}
 		/*
@@ -354,7 +358,7 @@ class DemoSpaceStress extends dsFunctions {
   }
 		 */
 		else if (type == DGeom.dGeomTransformClass) {
-			DGeom g2 = dGeomTransformGetGeom (g);
+			DGeom g2 = dGeomTransformGetGeom ((DGeomTransform)g);
 			final DVector3C pos2 = dGeomGetPosition (g2);
 			final DMatrix3C R2 = dGeomGetRotation (g2);
 			DVector3 actual_pos = new DVector3();
@@ -370,12 +374,12 @@ class DemoSpaceStress extends dsFunctions {
 
 		if (show_aabb) {
 			// draw the bounding box for this geom
-			DVector6 aabb = new DVector6();
+			DAABB aabb = new DAABB();
 			dGeomGetAABB (g,aabb);
 			DVector3 bbpos = new DVector3();
-			for (int i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.get(i*2) + aabb.get(i*2+1)) );
+			for (int i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
 			DVector3 bbsides = new DVector3();
-			for (int j=0; j<3; j++) bbsides.set(j, aabb.get(j*2+1) - aabb.get(j*2) );
+			for (int j=0; j<3; j++) bbsides.set(j, aabb.getMax(j) - aabb.getMin(j) );
 			DMatrix3 RI = new DMatrix3();
 			dRSetIdentity (RI);
 			dsSetColorAlpha (1,0,0,0.5f);
@@ -428,10 +432,6 @@ class DemoSpaceStress extends dsFunctions {
 		//  fn.command = &command;
 		//  fn.stop = 0;
 		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		dInitODE2(0);

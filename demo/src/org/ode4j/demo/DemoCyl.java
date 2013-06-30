@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -43,18 +43,15 @@ import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.demo.WorldGeom3.*;
 
 
 /**
  * Test for non-capped cylinder, by Bram Stolk.
  */
 class DemoCyl extends dsFunctions {
-	//#include "world_geom3.h" // this is our world mesh
-	private static int[] world_indices = WorldGeom3.world_indices;
-	private static float[] world_normals = WorldGeom3.world_normals;
-	private static float[] world_vertices = WorldGeom3.world_vertices;
 
 
 	//#define BOX
@@ -260,12 +257,6 @@ class DemoCyl extends dsFunctions {
 
 		// setup pointers to drawstuff callback functions
 		dsFunctions fn = new DemoCyl();
-		fn.version = DS_VERSION;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		OdeHelper.initODE2(0);
@@ -284,7 +275,6 @@ class DemoCyl extends dsFunctions {
 
 		data.buildSingle
 		(
-				data, 
 				world_vertices, 
 				3,// * sizeof(float), 
 				numv, 

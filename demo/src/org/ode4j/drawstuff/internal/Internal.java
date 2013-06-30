@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.drawstuff.internal;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 
 
 /**

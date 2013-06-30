@@ -25,23 +25,20 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.lang.Math;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.cpp4j.FILE;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.OdeMath.OP;
 
-import static org.cpp4j.Cstdio.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 /**
  *
@@ -51,7 +48,8 @@ import static org.ode4j.drawstuff.DS_API.*;
  * 	-notex		Do not use any textures
  * 	-noshadow[s]	Do not draw any shadows
  * 	-pause		Start the simulation paused
- * 
+ *  -texturepath <path> Inform an alternative textures path
+ *
  * TODO
  * ----
  * 
@@ -59,7 +57,7 @@ import static org.ode4j.drawstuff.DS_API.*;
  * 
  */
 //public class DrawStuff extends Swing implements All {
-public class DrawStuffGL extends LwJGL implements DrawStuff {
+public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 	
 	// ***************************************************************************
@@ -161,18 +159,18 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 
 		// skip over whitespace and comments in a stream.
 
-		static void skipWhiteSpace (String filename, PushbackInputStream f) throws IOException
+		private static void skipWhiteSpace (String filename, PushbackInputStream f) throws IOException
 		{
 			int c,d;
 			while(true) {//for(;;) {
 				c = f.read();//fgetc(f);
-				if (c==EOF) dsError ("unexpected end of file in \"%s\"",filename);
+				if (c==-1) dsError ("unexpected end of file in \"%s\"",filename);
 
 				// skip comments
 				if (c == '#') {
 					do {
 						d = f.read();//fgetc(f);
-						if (d==EOF) dsError ("unexpected end of file in \"%s\"",filename);
+						if (d==-1) dsError ("unexpected end of file in \"%s\"",filename);
 					} while (d != '\n');
 					continue;
 				}
@@ -188,12 +186,12 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 		// read a number from a stream, this return 0 if there is none (that's okay
 		// because 0 is a bad value for all PPM numbers anyway).
 
-		static int readNumber (String filename, PushbackInputStream f) throws IOException
+		private static int readNumber (String filename, PushbackInputStream f) throws IOException
 		{
 			int c,n=0;
 			for(;;) {
 				c = f.read();//fgetc(f);
-				if (c==EOF) dsError ("unexpected end of file in \"%s\"",filename);
+				if (c==-1) dsError ("unexpected end of file in \"%s\"",filename);
 				if (c >= '0' && c <= '9') n = n*10 + (c - '0');
 				else {
 					f.unread(c);//ungetc (c,f);
@@ -207,7 +205,6 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 		{
 			PushbackInputStream f = null;
 			try {
-				URL url = getClass().getResource(filename);
 				f = new PushbackInputStream( new BufferedInputStream( 
 						getClass().getResourceAsStream(filename) )); 
 				if (f==null) dsError ("Can't open image file `%s'",filename);
@@ -257,115 +254,11 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 						e2.printStackTrace();
 					}
 				}
+				throw new RuntimeException(e);
 			}
 		}
 	}
 	
-	private static class ImageCPP implements Image {
-		private int image_width,image_height;
-		private byte[] image_data;
-		//public:
-		//Image (String filename);
-		// load from PPM file
-		//  ~Image();
-		public int width() { return image_width; }
-		public int height() { return image_height; }
-		public byte[] data() { return image_data; }
-
-
-
-		// skip over whitespace and comments in a stream.
-
-		static void skipWhiteSpace (String filename, FILE f)
-		{
-			int c,d;
-			while(true) {//for(;;) {
-				c = fgetc(f);
-				if (c==EOF) dsError ("unexpected end of file in \"%s\"",filename);
-
-				// skip comments
-				if (c == '#') {
-					do {
-						d = fgetc(f);
-						if (d==EOF) dsError ("unexpected end of file in \"%s\"",filename);
-					} while (d != '\n');
-					continue;
-				}
-
-				if (c > ' ') {
-					ungetc (c,f);
-					return;
-				}
-			}
-		}
-
-
-		// read a number from a stream, this return 0 if there is none (that's okay
-		// because 0 is a bad value for all PPM numbers anyway).
-
-		static int readNumber (String filename, FILE f)
-		{
-			int c,n=0;
-			for(;;) {
-				c = fgetc(f);
-				if (c==EOF) dsError ("unexpected end of file in \"%s\"",filename);
-				if (c >= '0' && c <= '9') n = n*10 + (c - '0');
-				else {
-					ungetc (c,f);
-					return n;
-				}
-			}
-		}
-
-
-		ImageCPP (String filename)
-		{
-			FILE f = fopen (filename,"rb");
-			if (f==null) dsError ("Can't open image file `%s'",filename);
-
-			// read in header
-			if (fgetcC(f) != 'P' || fgetcC(f) != '6')
-				dsError ("image file \"%s\" is not a binary PPM (no P6 header)",filename);
-			skipWhiteSpace (filename,f);
-
-			// read in image parameters
-			image_width = readNumber (filename,f);
-			skipWhiteSpace (filename,f);
-			image_height = readNumber (filename,f);
-			skipWhiteSpace (filename,f);
-			int max_value = readNumber (filename,f);
-
-			// check values
-			if (image_width < 1 || image_height < 1)
-				dsError ("bad image file \"%s\"",filename);
-			if (max_value != 255)
-				dsError ("image file \"%s\" must have color range of 255",filename);
-
-			// read either nothing, LF (10), or CR,LF (13,10)
-			int c = fgetc(f);
-			if (c == 10) {
-				// LF
-			}
-			else if (c == 13) {
-				// CR
-				c = fgetc(f);
-				if (c != 10) ungetc (c,f);
-			}
-			else ungetc (c,f);
-
-			// read in rest of data
-			image_data = new byte [image_width*image_height*3];
-			if (fread (image_data,image_width*image_height*3,1,f) != 1)
-				dsError ("Can not read data from image file `%s'",filename);
-			fclose (f);
-		}
-
-
-		//Image::~Image()
-		//{
-		//  delete[] image_data;
-		//}
-	}
 	//***************************************************************************
 	// Texture object.
 
@@ -519,21 +412,21 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 	{
 		//GLdouble
 		double[] matrix=new double[16];
-		matrix[0]=R.get(0);
-		matrix[1]=R.get(4);
-		matrix[2]=R.get(8);
+		matrix[0]=R.get00();
+		matrix[1]=R.get10();
+		matrix[2]=R.get20();
 		matrix[3]=0;
-		matrix[4]=R.get(1);
-		matrix[5]=R.get(5);
-		matrix[6]=R.get(9);
+		matrix[4]=R.get01();
+		matrix[5]=R.get11();
+		matrix[6]=R.get21();
 		matrix[7]=0;
-		matrix[8]=R.get(2);
-		matrix[9]=R.get(6);
-		matrix[10]=R.get(10);
+		matrix[8]=R.get02();
+		matrix[9]=R.get12();
+		matrix[10]=R.get22();
 		matrix[11]=0;
-		matrix[12]=pos.get(0);
-		matrix[13]=pos.get(1);
-		matrix[14]=pos.get(2);
+		matrix[12]=pos.get0();
+		matrix[13]=pos.get1();
+		matrix[14]=pos.get2();
 		matrix[15]=1;
 		GL11.glPushMatrix();
 		GL11.glMultMatrix (DoubleBuffer.wrap(matrix));
@@ -1074,10 +967,11 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 	}
 
 
-	// call this to update the current camera position. the bits in `mode' say
-	// if the left (1), middle (2) or right (4) mouse button is pressed, and
-	// (deltax,deltay) is the amount by which the mouse pointer has moved.
-
+	/**
+	 * Call this to update the current camera position. the bits in `mode' say
+	 * if the left (1), middle (2) or right (4) mouse button is pressed, and
+	 * (deltax,deltay) is the amount by which the mouse pointer has moved.
+	 */
 	void dsMotion (int mode, int deltax, int deltay)
 	{
 		float side = 0.01f * (float)deltax;
@@ -1537,6 +1431,9 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 			if (args[i].equals("-noshadow")) use_shadows = false;
 			if (args[i].equals("-noshadows")) use_shadows = false;
 			if (args[i].equals("-pause")) initial_pause = true;
+		    if (args.equals("-texturepath"))
+		        if (++i < args.length)
+		          fn.path_to_textures = args[i];
 		}
 
 		if (fn.getVersion() > DS_VERSION)
@@ -1842,16 +1739,14 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 //	void dsDrawBoxD (final double pos[3], final double R[12],
 //			final double sides[3])
 	/**
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawBoxD(double[], double[], double[])
+	 * @see org.ode4j.drawstuff.internal.DrawStuffApi#dsDrawBox(float[], float[], float[])
 	 */
-	public void dsDrawBox (final DVector3C pos, final DMatrix3C R,
-			final DVector3C sides)
+	public void dsDrawBox (DVector3C pos, DMatrix3C R,
+			DVector3C sides)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12],fsides=new float[3];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
-		for (i=0; i<3; i++) fsides[i]=(float)sides.get(i);
+		float[] pos2=pos.toFloatArray4();
+		float[] R2=R.toFloatArray12();
+		float[] fsides=sides.toFloatArray4();
 		dsDrawBox (pos2,R2,fsides);
 	}
 
@@ -1864,7 +1759,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 	/* (non-Javadoc)
 	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawConvexD(double[], double[], double[], int, double[], int, int[])
 	 */
-	public void dsDrawConvex (final DVector3C pos, final DMatrix3C R,
+	public void dsDrawConvex (DVector3C pos, DMatrix3C R,
 			double[] _planes, int _planecount,
 			double[] _points,
 			int _pointcount,
@@ -1893,10 +1788,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 	 */
 	public void dsDrawSphere (final DVector3C pos, final DMatrix3C R, float radius)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
+		float[] pos2=pos.toFloatArray4();
+		float[] R2=R.toFloatArray12();
 		dsDrawSphere (pos2,R2,radius);
 	}
 
@@ -1925,10 +1818,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 			final DVector3C v0, final DVector3C v1,
 			final DVector3C v2, boolean solid)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
+		float[] pos2 = pos.toFloatArray4();
+		float[] R2 = R.toFloatArray12();
 
 		setupDrawingMode();
 		GL11.glShadeModel (GL11.GL_FLAT);
@@ -1946,10 +1837,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 	public void dsDrawCylinder (final DVector3C pos, final DMatrix3C R,
 			float length, float radius)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
+		float[] pos2=pos.toFloatArray4();
+		float[] R2=R.toFloatArray12();
 		dsDrawCylinder (pos2,R2,length,radius);
 	}
 
@@ -1962,10 +1851,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 	public void dsDrawCapsule (final DVector3C pos, final DMatrix3C R,
 			float length, float radius)
 	{
-		int i;
-		float[] pos2=new float[3],R2=new float[12];
-		for (i=0; i<3; i++) pos2[i]=(float)pos.get(i);
-		for (i=0; i<12; i++) R2[i]=(float)R.get(i);
+		float[] pos2=pos.toFloatArray4();
+		float[] R2=R.toFloatArray12();
 		dsDrawCapsule (pos2,R2,length,radius);
 	}
 
@@ -1976,10 +1863,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuff {
 	 */
 	public void dsDrawLine (final DVector3C _pos1, final DVector3C _pos2)
 	{
-		int i;
-		float[] pos1=new float[3],pos2=new float[3];
-		for (i=0; i<3; i++) pos1[i]=(float)_pos1.get(i);
-		for (i=0; i<3; i++) pos2[i]=(float)_pos2.get(i);
+		float[] pos1=_pos1.toFloatArray4();
+		float[] pos2=_pos2.toFloatArray4();
 		dsDrawLine (pos1,pos2);
 	}
 

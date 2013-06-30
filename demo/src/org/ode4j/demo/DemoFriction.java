@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
@@ -35,7 +35,7 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 
 /**
@@ -168,17 +168,7 @@ class DemoFriction extends dsFunctions {
 		DMass m = OdeHelper.createMass();
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoFriction();
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = 0;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
+		DemoFriction fn = new DemoFriction();
 
 		// create world
 		OdeHelper.initODE2(0);

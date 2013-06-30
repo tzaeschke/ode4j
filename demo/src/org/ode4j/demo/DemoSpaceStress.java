@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -45,7 +45,7 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -111,7 +111,7 @@ class DemoSpaceStress extends dsFunctions {
 		int numc = OdeHelper.collide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());
 		if (numc != 0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			final DVector3 ss = new DVector3(0.02,0.02,0.02);
 			for (i=0; i<numc; i++) {
 				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contacts.get(i));
@@ -416,18 +416,6 @@ class DemoSpaceStress extends dsFunctions {
 	}
 
 	private void demo(String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		// create world
 		OdeHelper.initODE2(0);
@@ -455,7 +443,7 @@ class DemoSpaceStress extends dsFunctions {
 		}
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy();
 		space.destroy();

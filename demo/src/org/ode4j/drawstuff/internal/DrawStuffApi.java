@@ -1,11 +1,11 @@
 package org.ode4j.drawstuff.internal;
 
-import org.ode4j.drawstuff.DS_API.DS_TEXTURE_NUMBER;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 
-public interface DrawStuff {
+public interface DrawStuffApi {
 
 	public abstract void dsSimulationLoop(String[] args, int window_width,
 			int window_height, dsFunctions fn);

@@ -22,9 +22,9 @@
 package org.ode4j.demo;
 
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3C;
@@ -169,12 +169,6 @@ class DemoStep extends dsFunctions {
 	public static void main(String[] args) {
 		// setup pointers to drawstuff callback functions
 		dsFunctions fn = new DemoStep();
-		fn.version = DS_VERSION;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
 
 		OdeHelper.initODE2(0);
 		dRandSetSeed (System.currentTimeMillis()/1000);
