@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,25 +13,30 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.democpp;
 
 import org.cpp4j.FILE;
-import org.cpp4j.java.DoubleArray;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DConvex;
+import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.DSphere;
+import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
@@ -49,25 +56,18 @@ import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.DGeom.*;
 import static org.ode4j.democpp.BunnyGeom.*;
 
 
 class DemoHeightfield extends dsFunctions {
-	//#include "bunny_geom.h"
-
-
 
 	private static final float DEGTORAD = 0.01745329251994329577f	; //!< PI / 180.0, convert degrees to radians
 
-	private boolean g_allow_trimesh;
-
 	// Our heightfield geom
 	private DGeom gheight;
-
-
 
 	// Heightfield dimensions
 
@@ -79,8 +79,6 @@ class DemoHeightfield extends dsFunctions {
 
 	private static final float HFIELD_WSAMP =			( HFIELD_WIDTH / ( HFIELD_WSTEP-1 ) );
 	private static final float HFIELD_DSAMP =			( HFIELD_DEPTH / ( HFIELD_DSTEP-1 ) );
-
-
 
 	//<---- Convex Object
 	private double[] planes= // planes for a cube
@@ -173,7 +171,7 @@ class DemoHeightfield extends dsFunctions {
 
 	private DHeightfieldGetHeight heightfield_callback = new DHeightfieldGetHeight(){
 		@Override
-		public double call(Object[] pUserData, int x, int z) {
+		public double call(Object pUserData, int x, int z) {
 			return heightfield_callback(pUserData, x, z);
 		}
 	};
@@ -183,8 +181,8 @@ class DemoHeightfield extends dsFunctions {
 		dIASSERT( x < HFIELD_WSTEP );
 		dIASSERT( z < HFIELD_DSTEP );
 
-		double fx = ( ((double)x) - ( HFIELD_WSTEP-1 )/2 ) / (double)( HFIELD_WSTEP-1 );
-		double fz = ( ((double)z) - ( HFIELD_DSTEP-1 )/2 ) / (double)( HFIELD_DSTEP-1 );
+		double fx = ( ((double)x) - ( HFIELD_WSTEP-1 )/2 ) / ( HFIELD_WSTEP-1 );
+		double fz = ( ((double)z) - ( HFIELD_DSTEP-1 )/2 ) / ( HFIELD_DSTEP-1 );
 
 		// Create an interesting 'hump' shape
 		double h = ( 1.0 ) + ( ( -16.0 ) * ( fx*fx*fx + fz*fz*fz ) );
@@ -227,7 +225,7 @@ class DemoHeightfield extends dsFunctions {
 		int numc = dCollide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());
 		if (numc!=0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			final DVector3 ss = new DVector3(0.02,0.02,0.02);
 			for (i=0; i<numc; i++) {
 				DJoint c = dJointCreateContact (world,contactgroup,contacts.get(i));
@@ -253,8 +251,7 @@ class DemoHeightfield extends dsFunctions {
 		printf ("   y for cylinder.\n");
 		printf ("   v for a convex object.\n");
 		printf ("   x for a composite object.\n");
-		if ( g_allow_trimesh )
-			printf ("   m for a trimesh.\n");
+		printf ("   m for a trimesh.\n");
 		printf ("To select an object, press space.\n");
 		printf ("To disable the selected object, press d.\n");
 		printf ("To enable the selected object, press e.\n");
@@ -274,12 +271,14 @@ class DemoHeightfield extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		int i;
 		int j,k;
 		double[] sides = new double[3];
 		DMass m = OdeHelper.createMass();
+		boolean setBody;
 
 		cmd = Character.toLowerCase(cmd);//locase (cmd);
 
@@ -288,9 +287,10 @@ class DemoHeightfield extends dsFunctions {
 		// Geom Creation
 		//
 
-		if ( cmd == 'b' || cmd == 's' || cmd == 'c' || ( cmd == 'm' && g_allow_trimesh ) ||
+		if ( cmd == 'b' || cmd == 's' || cmd == 'c' || ( cmd == 'm' ) ||
 				cmd == 'x' || cmd == 'y' || cmd == 'v' )
 		{
+			setBody = false;
 			if ( num < NUM )
 			{
 				i = num;
@@ -370,95 +370,151 @@ class DemoHeightfield extends dsFunctions {
 				dMassSetSphere (m,DENSITY,sides[0]);
 				obj[i].geom[0] = dCreateSphere (space,sides[0]);
 			}
-			else if (cmd == 'm' && g_allow_trimesh)
+			else if (cmd == 'm')
 			{
 				DTriMeshData new_tmdata = dGeomTriMeshDataCreate();
 //				dGeomTriMeshDataBuildSingle(new_tmdata, Vertices[0], 3,// * sizeof(float), 
 //						VertexCount, 
 //						Indices[0], IndexCount, 3);// * sizeof(dTriIndex));
-//TODO TZ				dGeomTriMeshDataBuildSingle(new_tmdata, Vertices, 3,// * sizeof(float), 
-//TODO TZ						VertexCount, 
-//TODO TZ						Indices, IndexCount, 3);// * sizeof(dTriIndex));
+				dGeomTriMeshDataBuildSingle(new_tmdata, Vertices, 3,// * sizeof(float), 
+						VertexCount, 
+						Indices, IndexCount, 3);// * sizeof(dTriIndex));
 
 				obj[i].geom[0] = dCreateTriMesh(space, new_tmdata, null, null, null);
 
-				dMassSetTrimesh( m, DENSITY, obj[i].geom[0] );
+				dMassSetTrimesh( m, DENSITY, (DTriMesh)obj[i].geom[0] );
 				DVector3 c = m.getC().clone();
 				printf("mass at %f %f %f\n", c.get0(), c.get1(), c.get2());
 				//dGeomSetPosition(obj[i].geom[0], -m.c[0], -m.c[1], -m.c[2]);
 				//dMassTranslate(m, -m.c[0], -m.c[1], -m.c[2]);
 				c.scale(-1);
-				obj[i].geom[0].setPosition(m.getC().clone().scale(-1));
+				obj[i].geom[0].setPosition(c);
 				m.translate(c);
 			}
-			else if (cmd == 'x')
-			{
-				DGeom[] g2 = new DGeom[GPB];		// encapsulated geometries
-				DVector3[] dpos = new DVector3[GPB];	// delta-positions for encapsulated geometries
-
+			else if (cmd == 'x') {
+				setBody = true;
 				// start accumulating masses for the encapsulated geometries
-				DMass m2 = OdeHelper.createMass();
+				DMass m2 = dMassCreate();
 				dMassSetZero (m);
+
+				double[][] dpos = new double[GPB][3];	// delta-positions for encapsulated geometries
+				DMatrix3[] drot = new DMatrix3[GPB];
 
 				// set random delta positions
 				for (j=0; j<GPB; j++) {
-					dpos[j] = new DVector3();
-					for (k=0; k<3; k++) dpos[j].set(k, dRandReal()*0.3-0.15);
+					for (k=0; k<3; k++) dpos[j][k] = dRandReal()*0.3-0.15;
 				}
 
 				for (k=0; k<GPB; k++) {
-					obj[i].geom[k] = dCreateGeomTransform (space);
-					dGeomTransformSetCleanup (obj[i].geom[k],true);
 					if (k==0) {
 						double radius = dRandReal()*0.25+0.05;
-						g2[k] = dCreateSphere (null,radius);
+						obj[i].geom[k] = dCreateSphere (space,radius);
 						dMassSetSphere (m2,DENSITY,radius);
 					}
 					else if (k==1) {
-						g2[k] = dCreateBox (null,sides[0],sides[1],sides[2]);
+						obj[i].geom[k] = dCreateBox (space,sides[0],sides[1],sides[2]);
 						dMassSetBox (m2,DENSITY,sides[0],sides[1],sides[2]);
 					}
 					else {
 						double radius = dRandReal()*0.1+0.05;
 						double length = dRandReal()*1.0+0.1;
-						g2[k] = dCreateCapsule (null,radius,length);
+						obj[i].geom[k] = dCreateCapsule (space,radius,length);
 						dMassSetCapsule (m2,DENSITY,3,radius,length);
 					}
-					dGeomTransformSetGeom (obj[i].geom[k],g2[k]);
 
-					// set the transformation (adjust the mass too)
-//					dGeomSetPosition (g2[k],dpos[k][0],dpos[k][1],dpos[k][2]);
-//					dMassTranslate (m2,dpos[k][0],dpos[k][1],dpos[k][2]);
-					g2[k].setPosition (dpos[k]);
-					m2.translate(dpos[k]);
-					DMatrix3 Rtx = new DMatrix3();
-					dRFromAxisAndAngle (Rtx,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
+					drot[k] = new DMatrix3();
+					dRFromAxisAndAngle (drot[k],dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 							dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
-					dGeomSetRotation (g2[k],Rtx);
-					dMassRotate (m2,Rtx);
+					dMassRotate (m2,drot[k]);
+
+					dMassTranslate (m2,dpos[k][0],dpos[k][1],dpos[k][2]);
 
 					// add to the total mass
 					dMassAdd (m,m2);
-				}
 
-				// move all encapsulated objects so that the center of mass is (0,0,0)
-				DVector3 c = m.getC().clone();
-				c.scale(1);
-				for (k=0; k<2; k++) {
-//					dGeomSetPosition (g2[k],
-//							dpos[k][0]-m.c[0],
-//							dpos[k][1]-m.c[1],
-//							dpos[k][2]-m.c[2]);
-				g2[k].setPosition(dpos[k].reAdd(c));
 				}
-//				dMassTranslate (m,-m.c[0],-m.c[1],-m.c[2]);
-				m.translate(c);
-			}
+				DVector3C m_c = m.getC();
+				for (k=0; k<GPB; k++) {
+					dGeomSetBody (obj[i].geom[k],obj[i].body);
+					dGeomSetOffsetPosition (obj[i].geom[k],
+							dpos[k][0]-m_c.get(0),
+							dpos[k][1]-m_c.get(1),
+							dpos[k][2]-m_c.get(2));
+					dGeomSetOffsetRotation(obj[i].geom[k], drot[k]);
+				}
+				dMassTranslate (m,-m_c.get(0),-m_c.get(1),-m_c.get(2));
+				dBodySetMass (obj[i].body,m);
 
-			for (k=0; k < GPB; k++)
-			{
-				if (obj[i].geom[k]!=null) dGeomSetBody (obj[i].geom[k],obj[i].body);
 			}
+//			else if (cmd == 'x')
+//			{
+//				DGeom[] g2 = new DGeom[GPB];		// encapsulated geometries
+//				DVector3[] dpos = new DVector3[GPB];	// delta-positions for encapsulated geometries
+//
+//				// start accumulating masses for the encapsulated geometries
+//				DMass m2 = OdeHelper.createMass();
+//				dMassSetZero (m);
+//
+//				// set random delta positions
+//				for (j=0; j<GPB; j++) {
+//					dpos[j] = new DVector3();
+//					for (k=0; k<3; k++) dpos[j].set(k, dRandReal()*0.3-0.15);
+//				}
+//
+//				for (k=0; k<GPB; k++) {
+//					obj[i].geom[k] = dCreateGeomTransform (space);
+//					dGeomTransformSetCleanup ((DGeomTransform)obj[i].geom[k],true);
+//					if (k==0) {
+//						double radius = dRandReal()*0.25+0.05;
+//						g2[k] = dCreateSphere (null,radius);
+//						dMassSetSphere (m2,DENSITY,radius);
+//					}
+//					else if (k==1) {
+//						g2[k] = dCreateBox (null,sides[0],sides[1],sides[2]);
+//						dMassSetBox (m2,DENSITY,sides[0],sides[1],sides[2]);
+//					}
+//					else {
+//						double radius = dRandReal()*0.1+0.05;
+//						double length = dRandReal()*1.0+0.1;
+//						g2[k] = dCreateCapsule (null,radius,length);
+//						dMassSetCapsule (m2,DENSITY,3,radius,length);
+//					}
+//					dGeomTransformSetGeom ((DGeomTransform)obj[i].geom[k],g2[k]);
+//
+//					// set the transformation (adjust the mass too)
+////					dGeomSetPosition (g2[k],dpos[k][0],dpos[k][1],dpos[k][2]);
+////					dMassTranslate (m2,dpos[k][0],dpos[k][1],dpos[k][2]);
+//					g2[k].setPosition (dpos[k]);
+//					m2.translate(dpos[k]);
+//					DMatrix3 Rtx = new DMatrix3();
+//					dRFromAxisAndAngle (Rtx,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
+//							dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
+//					dGeomSetRotation (g2[k],Rtx);
+//					dMassRotate (m2,Rtx);
+//
+//					// add to the total mass
+//					dMassAdd (m,m2);
+//				}
+//
+//				// move all encapsulated objects so that the center of mass is (0,0,0)
+//				DVector3 c = m.getC().clone();
+//				c.scale(-1);
+//				for (k=0; k<2; k++) {
+////					dGeomSetPosition (g2[k],
+////							dpos[k][0]-m.c[0],
+////							dpos[k][1]-m.c[1],
+////							dpos[k][2]-m.c[2]);
+//				g2[k].setPosition(dpos[k].reAdd(c));
+//				}
+////				dMassTranslate (m,-m.c[0],-m.c[1],-m.c[2]);
+//				m.translate(c);
+//			}
+
+			if (!setBody)
+				for (k=0; k < GPB; k++)
+				{
+					if (obj[i].geom[k]!=null) dGeomSetBody (obj[i].geom[k],obj[i].body);
+				}
 
 			dBodySetMass (obj[i].body,m);
 		}
@@ -504,23 +560,22 @@ class DemoHeightfield extends dsFunctions {
 		if (pos==null) pos = dGeomGetPosition (g);
 		if (R==null) R = dGeomGetRotation (g);
 
-		int type = dGeomGetClass (g);
-		if (type == dBoxClass) {
+		if (g instanceof DBox) {
 			DVector3 sides = new DVector3();
-			dGeomBoxGetLengths (g,sides);
+			dGeomBoxGetLengths ((DBox)g,sides);
 			dsDrawBox (pos,R,sides);
 		}
-		else if (type == dSphereClass) {
-			dsDrawSphere (pos,R,dGeomSphereGetRadius (g));
+		else if (g instanceof DSphere) {
+			dsDrawSphere (pos,R,dGeomSphereGetRadius ((DSphere)g));
 		}
-		else if (type == dCapsuleClass) {
+		else if (g instanceof DCapsule) {
 			//double radius,length;
 			//dGeomCapsuleGetParams (g,&radius,&length);
 			DCapsule cap = (DCapsule) g; 
 			dsDrawCapsule (pos,R,cap.getLength(),cap.getRadius());
 		}
 		//<---- Convex Object
-		else if (type == dConvexClass)
+		else if (g instanceof DConvex)
 		{
 			//dVector3 sides={0.50,0.50,0.50};
 			dsDrawConvex(pos,R,planes,
@@ -530,37 +585,37 @@ class DemoHeightfield extends dsFunctions {
 					polygons);
 		}
 		//----> Convex Object
-		else if (type == dCylinderClass) {
+		else if (g instanceof DCylinder) {
 			//double radius,length;
 			//dGeomCylinderGetParams (g,&radius,&length);
 			DCylinder cyl = (DCylinder) g;
 			dsDrawCylinder (pos,R,cyl.getLength(),cyl.getRadius());
 		}
-		else if (type == dGeomTransformClass) {
-			DGeom g2 = dGeomTransformGetGeom (g);
+		else if (g instanceof DGeomTransform) {
+			DGeom g2 = dGeomTransformGetGeom ((DGeomTransform)g);
 			final DVector3C pos2 = dGeomGetPosition (g2);
 			final DMatrix3C R2 = dGeomGetRotation (g2);
 			DVector3 actual_pos = new DVector3();
 			DMatrix3 actual_R = new DMatrix3();
-			dMULTIPLY0_331 (actual_pos,R,pos2);
+			dMultiply0_331 (actual_pos,R,pos2);
 //			actual_pos[0] += pos[0];
 //			actual_pos[1] += pos[1];
 //			actual_pos[2] += pos[2];
 			actual_pos.add(pos);
-			dMULTIPLY0_333 (actual_R,R,R2);
+			dMultiply0_333 (actual_R,R,R2);
 			drawGeom (g2,actual_pos,actual_R,false);
 		}
 
 		if (show_aabb) {
 			// draw the bounding box for this geom
-			DVector6 aabb = new DVector6();
+			DAABB aabb = new DAABB();
 			dGeomGetAABB (g,aabb);
 			DVector3 bbpos = new DVector3();
-			for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.get(i*2) + aabb.get(i*2+1)) );
+			for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
 			DVector3 bbsides = new DVector3();
-			for (i=0; i<3; i++) bbsides.set(i, aabb.get(i*2+1) - aabb.get(i*2) );
+			for (i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i) );
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			dsSetColorAlpha (1,0,0,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}
@@ -577,7 +632,6 @@ class DemoHeightfield extends dsFunctions {
 
 		//if (!pause) dWorldStep (world,0.05);
 		if (!pause) dWorldQuickStep (world,0.05);
-		//TODO TZ //if (!pause) dWorldStepFast1 (world,0.05, 5);
 
 
 		if (write_world) {
@@ -661,10 +715,10 @@ class DemoHeightfield extends dsFunctions {
 					dsSetColor (1,1,0);
 				}
 
-				if ( obj[i].geom[j]!=null && dGeomGetClass(obj[i].geom[j]) == dTriMeshClass )
+				if ( obj[i].geom[j]!=null && obj[i].geom[j] instanceof DTriMesh )
 				{
 					//dTriIndex* Indices = (dTriIndex*)::Indices;
-					int[][] Indices = BunnyGeom.Indices;
+					int[] Indices = BunnyGeom.Indices;
 
 					// assume all trimeshes are drawn as bunnies
 					final DVector3C Pos = dGeomGetPosition(obj[i].geom[j]);
@@ -673,15 +727,15 @@ class DemoHeightfield extends dsFunctions {
 					for (int ii = 0; ii < IndexCount / 3; ii++)
 					{
 						final float[] v = { // explicit conversion from float to dReal
-								Vertices[Indices[ii * 3][0] * 3 + 0],
-								Vertices[Indices[ii * 3][0] * 3 + 1],
-								Vertices[Indices[ii * 3][0] * 3 + 2],
-								Vertices[Indices[ii * 3][1] * 3 + 0],
-								Vertices[Indices[ii * 3][1] * 3 + 1],
-								Vertices[Indices[ii * 3][1] * 3 + 2],
-								Vertices[Indices[ii * 3][2] * 3 + 0],
-								Vertices[Indices[ii * 3][2] * 3 + 1],
-								Vertices[Indices[ii * 3][2] * 3 + 2]
+								Vertices[Indices[ii * 3+0] * 3 + 0],
+								Vertices[Indices[ii * 3+0] * 3 + 1],
+								Vertices[Indices[ii * 3+0] * 3 + 2],
+								Vertices[Indices[ii * 3+1] * 3 + 0],
+								Vertices[Indices[ii * 3+1] * 3 + 1],
+								Vertices[Indices[ii * 3+1] * 3 + 2],
+								Vertices[Indices[ii * 3+2] * 3 + 0],
+								Vertices[Indices[ii * 3+2] * 3 + 1],
+								Vertices[Indices[ii * 3+2] * 3 + 2]
 						};
 						//dsDrawTriangle(Pos, Rot, &v[0], &v[3], &v[6], 1);
 						dsDrawTriangle(Pos, Rot, v, 0, 3, 6, true);
@@ -720,8 +774,9 @@ class DemoHeightfield extends dsFunctions {
 						obj[i].last_matrix_index = 1;
 					
 					// Apply the 'other' matrix which is the oldest.
-					dGeomTriMeshSetLastTransform( obj[i].geom[j],
-							new DoubleArray( obj[i].matrix_dblbuff, ( obj[i].last_matrix_index * 16 ) ) );
+					//TODO TZ
+//					dGeomTriMeshSetLastTransform( obj[i].geom[j],
+//							new DoubleArray( obj[i].matrix_dblbuff, ( obj[i].last_matrix_index * 16 ) ) );
 				}
 				else
 				{
@@ -733,14 +788,14 @@ class DemoHeightfield extends dsFunctions {
 		if ( show_aabb )
 		{
 			// draw the bounding box for this geom
-			DVector6 aabb = new DVector6();
+			DAABB aabb = new DAABB();
 			dGeomGetAABB (gheight,aabb);
 			DVector3 bbpos = new DVector3();
-			for (int i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.get(i*2) + aabb.get(i*2+1)) );
+			for (int i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)) );
 			DVector3 bbsides = new DVector3();
-			for (int i=0; i<3; i++) bbsides.set(i, aabb.get(i*2+1) - aabb.get(i*2) );
+			for (int i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i) );
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			dsSetColorAlpha (1,0,0,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}
@@ -754,22 +809,14 @@ class DemoHeightfield extends dsFunctions {
 	private void demo(String[] args) {
 		printf("ODE configuration: %s\n", OdeHelper.getConfiguration());
 
-		// Is trimesh support built into this ODE?
-		//TODO g_allow_trimesh = OdeHelper.dCheckConfiguration( "ODE_EXT_trimesh" );
-		g_allow_trimesh = false;
-
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
+		//dsFunctions fn = this;
+		//fn.version = DS_VERSION;
 		//	fn.start = &start;
 		//	fn.step = &simLoop;
 		//	fn.command = &command;
 		//	fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		// create world
 		dInitODE2(0);
@@ -815,7 +862,7 @@ class DemoHeightfield extends dsFunctions {
 
 		// Rotate so Z is up, not Y (which is the default orientation)
 		DMatrix3 R = new DMatrix3();
-		dRSetIdentity( R );
+		R.setIdentity();
 		dRFromAxisAndAngle( R, 1, 0, 0, DEGTORAD * 90 );
 
 		// Place it.
@@ -823,7 +870,7 @@ class DemoHeightfield extends dsFunctions {
 		dGeomSetPosition( gheight, pos.get0(), pos.get1(), pos.get2() );
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);

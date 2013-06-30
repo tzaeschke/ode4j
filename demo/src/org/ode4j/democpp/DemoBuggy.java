@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,22 +13,24 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.democpp;
 
 import org.cpp4j.FILE;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
@@ -42,7 +46,8 @@ import org.ode4j.ode.DGeom.DNearCallback;
 
 import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.OdeMath.*;
 
 
 /**
@@ -74,13 +79,13 @@ class DemoBuggy extends dsFunctions {
 	private static DWorld world;
 	private static DSpace space;
 	private static DBody[] body = new DBody[4];
-	private static DJoint[] joint = new DJoint[3];	// joint[0] is the front wheel
+	private static DHinge2Joint[] joint = new DHinge2Joint[3];	// joint[0] is the front wheel
 	private static DJointGroup contactgroup;
 	private static DGeom ground;
 	private static DSpace car_space;
 	private static DGeom[] box = new DGeom[1];
 	private static DGeom[] sphere = new DGeom[3];
-	private static DGeom ground_box;
+	private static DBox ground_box;
 
 
 	// things that the user controls
@@ -128,6 +133,7 @@ class DemoBuggy extends dsFunctions {
 	private static float[] xyz = {0.8317f,-0.9817f,0.8000f};
 	private static float[] hpr = {121.0000f,-27.5000f,0.0000f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -146,6 +152,7 @@ class DemoBuggy extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) {
@@ -240,17 +247,13 @@ class DemoBuggy extends dsFunctions {
 		DMass m = dMassCreate();
 
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
+		//dsFunctions fn = this;
+		//fn.version = DS_VERSION;
 		//  fn.start = &start;
 		//  fn.step = &simLoop;
 		//  fn.command = &command;
 		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		// create world
 		dInitODE2(0);
@@ -338,7 +341,7 @@ class DemoBuggy extends dsFunctions {
 		dGeomSetRotation (ground_box,R);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dGeomDestroy (box[0]);
 		dGeomDestroy (sphere[0]);

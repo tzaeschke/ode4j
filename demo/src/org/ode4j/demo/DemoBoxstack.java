@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,18 +13,18 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -31,6 +33,7 @@ import org.ode4j.ode.DAABBC;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DBox;
@@ -48,8 +51,9 @@ import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.demo.IcosahedronGeom.*;
 
 class DemoBoxstack extends dsFunctions {
 
@@ -102,27 +106,8 @@ class DemoBoxstack extends dsFunctions {
 	};
 	//----> Convex Object
 
-	// select correct drawing functions
-
-	//#ifdef dDOUBLE
-	//#define dsDrawBox dsDrawBoxD
-	//#define dsDrawSphere dsDrawSphereD
-	//#define dsDrawCylinder dsDrawCylinderD
-	//#define dsDrawCapsule dsDrawCapsuleD
-	//#define dsDrawConvex dsDrawConvexD
-	//#endif
-
-
 	// some constants
-
-	//#define NUM 100			// max number of objects
-	//#define DENSITY (5.0)		// density of all objects
-	//#define GPB 3			// maximum number of geometries per body
-	//#define MAX_CONTACTS 8          // maximum number of contact points per body
-	//#define MAX_FEEDBACKNUM 20
-	//#define GRAVITY         REAL(0.5)
-	//#define USE_GEOM_OFFSET 1
-	private static final int NUM = 100;			// max number of objects
+	private static final int NUM = 10;			// max number of objects
 	private static final double DENSITY =(5.0);		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 8;          // maximum number of contact points per body
@@ -147,7 +132,6 @@ class DemoBoxstack extends dsFunctions {
 	private static boolean show_aabb = false;	// show geom AABBs?
 	private static boolean show_contacts = false;	// show contact points?
 	private static boolean random_pos = true;	// drop objects from random position?
-	private static boolean write_world = false;
 	private static boolean show_body = false;
 
 	private class MyFeedback {
@@ -158,6 +142,14 @@ class DemoBoxstack extends dsFunctions {
 	private static MyFeedback[] feedbacks=new MyFeedback[MAX_FEEDBACKNUM];
 	private static int fbnum=0;
 
+	
+	private DNearCallback nearCallback = new DNearCallback(){
+		@Override
+		public void call(Object data, DGeom o1, DGeom o2) {
+			nearCallback(data, o1, o2);
+		}};
+	
+	
 	// this is called by dSpaceCollide when two objects in space are
 	// potentially colliding.
 
@@ -188,7 +180,7 @@ class DemoBoxstack extends dsFunctions {
 		int numc = OdeHelper.collide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());//, sizeof(dContact));
 		if (numc!=0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			final DVector3 ss = new DVector3(0.02,0.02,0.02);
 			for (i=0; i<numc; i++) {
 				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contacts.get(i));
@@ -214,12 +206,9 @@ class DemoBoxstack extends dsFunctions {
 
 	// start simulation - set viewpoint
 
+	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(dAllocateMaskAll);
-
-		//  static float xyz[3] = {2.1640f,-1.3079f,1.7600f};
-		//  static float hpr[3] = {125.5000f,-17.0000f,0.0000f};
 		dsSetViewpoint (xyz,hpr);
 		System.out.println("To drop another object, press:");
 		System.out.println("   b for box.");
@@ -240,15 +229,8 @@ class DemoBoxstack extends dsFunctions {
 	}
 
 
-	private char locase (char c)
-	{
-		//  if (c >= 'A' && c <= 'Z') return c - ('a'-'A');
-		//  else return c;
-		return Character.toLowerCase(c);
-	}
-
-
 	// called when a key pressed
+	@Override
 	public void command (char cmd)
 	{
 		int i;//size_t i;
@@ -257,7 +239,7 @@ class DemoBoxstack extends dsFunctions {
 		DMass m = OdeHelper.createMass();
 		boolean setBody;
 
-		cmd = locase (cmd);
+		cmd = Character.toLowerCase (cmd);
 		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'y' || cmd == 'v')
 		{
 			setBody = false;
@@ -296,10 +278,10 @@ class DemoBoxstack extends dsFunctions {
 				for (k=0; k<num; k++) 
 				{
 					final DVector3C pos = obj[k].body.getPosition();
-					if (pos.get(2) > maxheight) maxheight = pos.get(2);
+					if (pos.get2() > maxheight) maxheight = pos.get2();
 				}
 				obj[i].body.setPosition( 0,0,maxheight+1);
-				dRSetIdentity (R);
+				R.setIdentity();
 				//dRFromAxisAndAngle (R,0,0,1,/*dRandReal()*10.0-5.0*/0);
 			}
 			obj[i].body.setRotation(R);
@@ -318,12 +300,21 @@ class DemoBoxstack extends dsFunctions {
 			else if (cmd == 'v') 
 			{
 				m.setBox(DENSITY,0.25,0.25,0.25);
-				obj[i].geom[0] = OdeHelper.createConvex (space,
-						planes,
-						planecount,
-						points,
-						pointcount,
-						polygons);
+				if (false) {//
+					obj[i].geom[0] = OdeHelper.createConvex (space,
+							planes,
+							planecount,
+							points,
+							pointcount,
+							polygons);
+				} else { //#else
+					obj[i].geom[0] = OdeHelper.createConvex (space,
+							Sphere_planes,
+							Sphere_planecount,
+							Sphere_points,
+							Sphere_pointcount,
+							Sphere_polygons);
+				} //#endif
 			}
 			//----> Convex Object
 			else if (cmd == 'y') {
@@ -440,9 +431,9 @@ class DemoBoxstack extends dsFunctions {
 				}
 
 				// move all encapsulated objects so that the center of mass is (0,0,0)
-				DVector3C m_c = m.getC().clone().scale(-1);
+				DVector3C m_c = m.getC().clone();
 				for (k=0; k<GPB; k++) {
-					g2[k].setPosition( dpos[k].reAdd(m_c) );
+					g2[k].setPosition( dpos[k].reSub(m_c) );
 				}
 				m.translate(m_c);
 			}
@@ -467,16 +458,13 @@ class DemoBoxstack extends dsFunctions {
 			obj[selected].body.enable();
 		}
 		else if (cmd == 'a') {
-			show_aabb = !show_aabb;//^= 1;
+			show_aabb ^= true;
 		}
 		else if (cmd == 't') {
-			show_contacts = !show_contacts;//^= 1;
+			show_contacts ^= true;
 		}
 		else if (cmd == 'r') {
-			random_pos =!random_pos;//^= 1;
-		}
-		else if (cmd == '1') {
-			write_world = true;
+			random_pos ^= true;
 		}
 		else if (cmd == 'p'&& selected >= 0)
 		{
@@ -497,8 +485,6 @@ class DemoBoxstack extends dsFunctions {
 	//void drawGeom (dGeom g, final double *pos, final double *R, boolean show_aabb)
 	private void drawGeom (DGeom g, DVector3C pos, DMatrix3C R, boolean show_aabb)
 	{
-		int i;
-
 		if (g==null) return;
 		if (pos==null) pos = g.getPosition();
 		if (R==null) R = g.getRotation();
@@ -518,11 +504,20 @@ class DemoBoxstack extends dsFunctions {
 		else if (g instanceof DConvex) 
 		{
 			//DVector3 sides={0.50,0.50,0.50};
-			dsDrawConvex(pos,R,planes,
-					planecount,
-					points,
-					pointcount,
-					polygons);
+			if (false) {
+				dsDrawConvex(pos,R,planes,
+						planecount,
+						points,
+						pointcount,
+						polygons);
+			} else { //#else
+				dsDrawConvex(pos,R,
+						Sphere_planes,
+						Sphere_planecount,
+						Sphere_points,
+						Sphere_pointcount,
+						Sphere_polygons);
+			} //#endif
 		}
 		//----> Convex Object
 		else if (g instanceof DCylinder) {
@@ -535,12 +530,12 @@ class DemoBoxstack extends dsFunctions {
 			final DMatrix3C R2 = g2.getRotation();
 			DVector3 actual_pos = new DVector3();
 			DMatrix3 actual_R = new DMatrix3();
-			dMULTIPLY0_331 (actual_pos,R,pos2);
+			dMultiply0_331 (actual_pos,R,pos2);
 			//    actual_pos[0] += pos[0];
 			//    actual_pos[1] += pos[1];
 			//    actual_pos[2] += pos[2];
 			actual_pos.add(pos);
-			dMULTIPLY0_333 (actual_R,R,R2);
+			dMultiply0_333 (actual_R,R,R2);
 			drawGeom (g2,actual_pos,actual_R,false);
 		}
 		if (show_body) {
@@ -572,26 +567,24 @@ class DemoBoxstack extends dsFunctions {
 
 	// simulation loop
 
-	private void simLoop (boolean pause)
+	@Override
+	public void step (boolean pause)
 	{
 		dsSetColor (0,0,2);
 		//  dSpaceCollide (space,null,nearCallback);
-		space.collide(null,new DNearCallback(){
-			@Override
-			public void call(Object data, DGeom o1, DGeom o2) {
-				nearCallback(data, o1, o2);
-			}});
+		space.collide(null,nearCallback);
 		if (!pause) world.quickStep (0.02);
 
-		if (write_world) {
-			//TODO
+//		if (write_world) {
+//			File f = new File("state.dif");
+//			OdeHelper.worldExportDIF(world, f, "X");
 //			FILE f = fopen ("state.dif","wt");
 //			if (f!=null) {
 //				OdeHelper.dWorldExportDIF (world,f,"X");
 //				fclose (f);
 //			}
-			write_world = false;
-		}
+//			write_world = false;
+//		}
 
 
 		if (doFeedback)
@@ -639,19 +632,11 @@ class DemoBoxstack extends dsFunctions {
 
 	public static void main (String[] args)
 	{
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoBoxstack();
-		fn.version = DS_API.DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DS_API.DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
-
+		new DemoBoxstack().demo(args);
+	}
+	
+	private void demo(String[] args) {
+		OdeConfig.setLibCCDEndabled(true);
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();
@@ -676,18 +661,12 @@ class DemoBoxstack extends dsFunctions {
 		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.destroy ();
 		space.destroy ();
 		world.destroy ();
 		OdeHelper.closeODE();
-	}
-
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
 	}
 
 

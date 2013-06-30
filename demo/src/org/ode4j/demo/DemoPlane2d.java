@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,26 +13,26 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
-import org.ode4j.drawstuff.DS_API.DS_TEXTURE_NUMBER;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPlane2DJoint;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
@@ -52,32 +54,27 @@ import org.ode4j.ode.DGeom.DNearCallback;
 class DemoPlane2d extends dsFunctions {
 
 	public static final int RAND_MAX = 2147483647;
-	//#   define drand48()  ((double) (((double) rand()) / ((double) RAND_MAX)))
 	private static final double drand48() {
 		//return ((double) rand()) / ((double) RAND_MAX);
-		int i1 = OdeMath.dRandInt(RAND_MAX);//rand();
-		double d = ((double) i1) / ((double) RAND_MAX);
-		return d;
+		int i1 = OdeMath.dRandInt(RAND_MAX);
+		return ((double) i1) / ((double) RAND_MAX);
 	}
-	//
-	//# define        N_BODIES        40
-	private static final int N_BODIES = 40;
-	//# define        STAGE_SIZE      8.0  // in m
-	private static final float STAGE_SIZE = 8.0f;
-	//
-	//# define        TIME_STEP       0.01
-	private static final double TIME_STEP = 0.01;
-	//# define        K_SPRING        10.0
-	//private static final double K_SPRING = 10.0;
-	//# define        K_DAMP          10.0
-	//private static final double K_DAMP = 10.0; 
+	//TZ: below is the new version from 0.11.1, but it yields different results
+	//in Java and C++
+	//#   define drand48()  ((double) (((double) rand()) / ((double) RAND_MAX)))
+//	private static final double drand48() {
+//		return ((double)rand()) / ((double)RAND_MAX);
+//	}
 
-	//using namespace ode;
+	private static final int N_BODIES = 40;
+	private static final float STAGE_SIZE = 8.0f; // in m
+
+	private static final double TIME_STEP = 0.01;
+	//private static final double K_SPRING = 10.0;
+	//private static final double K_DAMP = 10.0; 
 
 	private static DWorld   dyn_world;
 	private static DBody[]    dyn_bodies = new DBody[N_BODIES];
-	//static dReal[]    bodies_sides = new double[N_BODIES][3];
-	//static double[][]    bodies_sides = new double[N_BODIES][3];
 	private static DVector3[]    bodies_sides = new DVector3[N_BODIES];
 
 	private static DSpace coll_space_id;
@@ -91,13 +88,10 @@ class DemoPlane2d extends dsFunctions {
 	private static void     cb_start ()
 	/** ********************** */
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 		dsSetViewpoint (xyz, hpr);
 	}
 
 
-
-	//static void     cb_near_collision (void *data, dGeom o1, dGeom o2)
 	private static void     cb_near_collision (Object data, DGeom o1, DGeom o2)
 	/********************************************************************/
 	{
@@ -130,8 +124,6 @@ class DemoPlane2d extends dsFunctions {
 	}
 
 
-	//static void     track_to_pos (dBody &body, dJoint joint_id,
-	//        dReal target_x, dReal target_y)
 	private static void     track_to_pos (DBody body, DPlane2DJoint joint_id,
 			double target_x, double target_y)
 	/************************************************************************/
@@ -151,7 +143,6 @@ class DemoPlane2d extends dsFunctions {
 	};
 
 	private static double angle = 0;
-	//static void     cb_sim_step (int pause)
 	private void cb_sim_step (boolean pause)
 	{
 		if (! pause)
@@ -161,8 +152,8 @@ class DemoPlane2d extends dsFunctions {
 			angle +=  0.01 ;
 
 			track_to_pos (dyn_bodies[0], plane2d_joint_ids[0],
-					(double)( STAGE_SIZE/2 + STAGE_SIZE/2.0 * Math.cos (angle) ),
-					(double)( STAGE_SIZE/2 + STAGE_SIZE/2.0 * Math.sin (angle) ));
+					( STAGE_SIZE/2 + STAGE_SIZE/2.0 * Math.cos (angle) ),
+					( STAGE_SIZE/2 + STAGE_SIZE/2.0 * Math.sin (angle) ));
 
 			/* double   f0 = 0.001; */
 			/* for (int b = 0; b < N_BODIES; b ++) */
@@ -178,7 +169,7 @@ class DemoPlane2d extends dsFunctions {
 			{
 				//dSpaceCollide (coll_space_id, 0, cb_near_collision);
 				OdeHelper.spaceCollide (coll_space_id, null, myNearCallBack );
-				dyn_world.step ((double)(TIME_STEP/n));
+				dyn_world.step (TIME_STEP/n);
 				coll_contacts.empty ();
 			}
 		}
@@ -245,7 +236,9 @@ class DemoPlane2d extends dsFunctions {
 
 
 
-	/******************/
+	/**
+	 * @param args 
+	 */
 	public static void main(String[] args)
 	{
 		int         b;
@@ -274,10 +267,10 @@ class DemoPlane2d extends dsFunctions {
 		for (b = 0; b < N_BODIES; b ++)
 		{
 			int     l = (int) (1 + Math.sqrt (N_BODIES));
-			double  x = (double)( (0.5 + (b / l)) / l * STAGE_SIZE );
-			double  y = (double)( (0.5 + (b % l)) / l * STAGE_SIZE );
+			double  x = (0.5 + (b / l)) / l * STAGE_SIZE;
+			double  y = (0.5 + (b % l)) / l * STAGE_SIZE;
 			//double  z = REAL( 1.0 ) + REAL( 0.1 ) * (double)drand48();
-			double  z = 1.0 + 0.1  * (double)drand48();
+			double  z = 1.0 + 0.1  * drand48();
 
 			//TZ
 //			bodies_sides[b] = new dVector3(
@@ -287,8 +280,8 @@ class DemoPlane2d extends dsFunctions {
 			double r2 = drand48();
 			double r1 = drand48();
 			bodies_sides[b] = new DVector3(
-					(double)( 5. * (0.2 + 0.7*r2) / Math.sqrt(N_BODIES) ),
-					(double)( 5. * (0.2 + 0.7*r1) / Math.sqrt(N_BODIES) ),
+					5. * (0.2 + 0.7*r2) / Math.sqrt(N_BODIES),
+					5. * (0.2 + 0.7*r1) / Math.sqrt(N_BODIES),
 					z);
 
 			dyn_bodies[b] = OdeHelper.createBody(dyn_world);
@@ -300,8 +293,8 @@ class DemoPlane2d extends dsFunctions {
 			r2 = drand48();
 			r1 = drand48();
 			dyn_bodies[b].setLinearVel (
-			(double)( 3. * (r1 - 0.5) ), 
-			(double)( 3. * (r2 - 0.5) ), 0);
+			3. * (r1 - 0.5), 
+			3. * (r2 - 0.5), 0);
 
 			DMass m = OdeHelper.createMass();
 			m.setBox (1, bodies_sides[b].get0(),bodies_sides[b].get1(),bodies_sides[b].get2());
@@ -331,17 +324,7 @@ class DemoPlane2d extends dsFunctions {
 
 		coll_contacts = OdeHelper.createJointGroup();
 
-		{
-			// simulation loop (by drawstuff lib)
-			drawstuff_functions.setVersion(DS_VERSION);
-			//		drawstuff_functions.start = &cb_start;
-			//		drawstuff_functions.step = &cb_sim_step;
-			//		drawstuff_functions.command = 0;
-			//		drawstuff_functions.stop = 0;
-			drawstuff_functions.setPathToTextures(DRAWSTUFF_TEXTURE_PATH);
-
-			dsSimulationLoop (args, 352,288,drawstuff_functions);
-		}
+		dsSimulationLoop (args, 352,288,drawstuff_functions);
 
 		OdeHelper.closeODE();
 	}

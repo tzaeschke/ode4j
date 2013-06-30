@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,17 +13,18 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -42,7 +45,8 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.OdeConstants.dInfinity;
 
 
 /**
@@ -133,8 +137,6 @@ class DemoJointPR extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("Press 'd' to add force along positive x direction.");
 		System.out.println ("Press 'a' to add force along negative x direction.");
@@ -143,6 +145,14 @@ class DemoJointPR extends dsFunctions {
 		System.out.println ("Press 'e' to add torque around positive z direction.");
 		System.out.println ("Press 'q' to add torque around negative z direction.");
 		System.out.println ("Press 'o' to add force around positive x direction");
+
+		System.out.println ("Press 'v' to give a defined velocity and add a FMax to the rotoide axis");
+		System.out.println ("Press 'c' to set the velocity to zero and remove the FMax");
+
+		System.out.println ("Press 'l' to add limits (-0.5 to 0.5rad) on the rotoide axis");
+		System.out.println ("Press 'k' to remove the limits on the rotoide axis");
+
+		System.out.println ("Press 'i' to get joint info");
 	}
 
 	// function to update camera position at each step.
@@ -164,34 +174,72 @@ class DemoJointPR extends dsFunctions {
 	public void command (char cmd)
 	{
 		DVector3C pos = box2_body.getPosition();
-		switch(cmd)
+		switch(Character.toLowerCase(cmd))
 		{
-		case 'w': case 'W':
+		case 'w':
 			box2_body.addForce(0,500,0);
 			//std::cout<<(dBodyGetPosition(box2_body[0])[1]-dBodyGetPosition(boxody[0])[1])<<'\n';
 			System.out.print((pos.get1()-pos.get1()));
 			break;
-		case 's': case 'S':
+		case 's':
 			box2_body.addForce(0,-500,0);
 			System.out.print((pos.get1()-pos.get1()));
 			break;
-		case 'd': case 'D':
+		case 'd':
 			box2_body.addForce(500,0,0);
 			System.out.print((pos.get0()-pos.get0()));
 			break;
-		case 'a': case 'A':
+		case 'a':
 			box2_body.addForce(-500,0,0);
 			System.out.print((pos.get0()-pos.get0()));
 			break;
-		case 'e': case 'E':
+		case 'e':
 			box2_body.addRelTorque(0,0,200);
 			break;
-		case 'q': case 'Q':
+		case 'q':
 			box2_body.addRelTorque(0,0,-200);
 			break;
-		case 'o': case 'O':
+		case 'o':
 			box2_body.addForce(10000,0,0);
 			break;
+	    case 'v':
+	    case 'V':
+	        joint.setParamVel2(2);
+	        joint.setParamFMax2(500);
+	        break;
+
+	    case 'c':
+	    case 'C':
+	        joint.setParamVel2(0);
+	        joint.setParamFMax2(0);
+	        break;
+
+	    case 'l':
+	    case 'L':
+	        joint.setParamLoStop2(-0.5);
+	        joint.setParamHiStop2( 0.5);
+	        break;
+
+	    case 'k':
+	    case 'K':
+	        joint.setParamLoStop2( -dInfinity);
+	        joint.setParamHiStop2(  dInfinity);
+	        break;
+
+	    case 'i':
+	    case 'I':
+	        DVector3 anchor = new DVector3();
+	        joint.getAnchor(anchor);
+	        double angle = joint.getAngle();
+	        double w = joint.getAngleRate();
+
+	        double l = joint.getPosition();
+	        double v = joint.getPositionRate();
+
+	        System.out.println("Anchor: " + anchor);
+	        System.out.println("Position: " + l + ", Rate: " + v);
+	        System.out.println("Angle: " + angle + ", Rate: " + w);
+	        break;
 		}
 	}
 
@@ -261,19 +309,16 @@ class DemoJointPR extends dsFunctions {
 		}
 	}
 
-
-	private static void Help(String [] argv)
+	@Override
+	public void dsPrintHelp()
 	{
-		System.out.println(argv[0]);
-		System.out.println(" -h | --help : print this help");
-		System.out.println(" -b | --both : Display how the complete joint works");
-		System.out.println("               Default behavior");
+		super.dsPrintHelp();
+		System.out.println(" -b | --both :           Display how the complete joint works");
+		System.out.println("                         Default behavior");
 		System.out.println(" -p | --prismatic-only : Display how the prismatic part works");
 		System.out.println("                         The anchor pts is set at the center of body 2");
 		System.out.println(" -r | --rotoide-only   : Display how the rotoide part works");
 		System.out.println("                         The anchor pts is set at the center of body 1");
-		System.out.println(" -t | --texture-path path  : Path to the texture.");
-		System.out.println("                             Default = " + DRAWSTUFF_TEXTURE_PATH);
 		System.out.println("--------------------------------------------------");
 		System.out.println("Hit any key to continue:");
 		//  getchar();
@@ -282,38 +327,20 @@ class DemoJointPR extends dsFunctions {
 	}
 
 	public static void main(String[] args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoJointPR();
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-
-		if (args.length >= 2 )
+		new DemoJointPR().demo(args);
+	}
+	
+	private void demo(String[] args) {
+		for (int i=0; i < args.length; ++i)
 		{
-			for (int i=1; i < args.length; ++i)
-			{
-				if (  "-h".equals(args[i]) || "--help".equals(args[i]) )
-					Help(args);
+			if (flag==0 && ("-p".equals(args[i]) || "--prismatic-only".equals(args[i])) ) {
+				flag = PRISMATIC_ONLY;
+				args[i] = "";
+			}
 
-				if (flag==0 && ("-p".equals(args[i]) || "--prismatic-only".equals(args[i])) )
-					flag = PRISMATIC_ONLY;
-
-				if (flag==0 && ("-r".equals(args[i]) || "--rotoide-only".equals(args[i])) )
-					flag = ROTOIDE_ONLY;
-
-				if ("-t".equals(args[i]) || "--texture-path".equals(args[i]))
-				{
-					int j = i+1;
-					if ( j+1 > args.length      ||  // Check if we have enough arguments
-							args[j].equals('\0') ||  // We should have a path here
-							args[j].charAt(0) == '-' ) // We should have a path not a command line
-						Help(args);
-					else
-						fn.path_to_textures = args[++i]; // Increase i since we use this argument
-				}
+			if (flag==0 && ("-r".equals(args[i]) || "--rotoide-only".equals(args[i])) ) {
+				flag = ROTOIDE_ONLY;
+				args[i] = "";
 			}
 		}
 
@@ -403,7 +430,7 @@ class DemoJointPR extends dsFunctions {
 		box1_space.add(box1);
 
 		// run simulation
-		dsSimulationLoop (args,400,300,fn);
+		dsSimulationLoop (args,400,300,this);
 		contactgroup.destroy ();
 		space.destroy ();
 		world.destroy ();

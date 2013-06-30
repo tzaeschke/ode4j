@@ -1,9 +1,9 @@
-package org.ode4j.drawstuff.test;
-
 /*************************************************************************
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -13,42 +13,35 @@ package org.ode4j.drawstuff.test;
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
-
-//#include <stdio.h>
-//#include <math.h>
-//#include <drawstuff/drawstuff.h>
+package org.ode4j.drawstuff.test;
 
 
-//#ifndef M_PI
-//#define M_PI (3.14159265358979323846)
-//#endif
-
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 public class DsTest extends dsFunctions {
 
+	@Override
 	public void start()
 	{
 		// adjust the starting viewpoint a bit
-//		float xyz[3],hpr[3];
-//		dsGetViewpoint (xyz,hpr);
 		float[] xyz = new float[3], hpr = new float[3];
 		dsGetViewpoint (xyz,hpr);
 		hpr[0] += 7;
 		dsSetViewpoint (xyz,hpr);
 	}
 
-	private static float a = 0;
+	private float a = 0;
 
-	void simLoop (boolean pause)
+	private void simLoop (boolean pause)
 	{
 		float[] pos = new float[3];
 		float[] R = new float[12];
@@ -104,10 +97,11 @@ public class DsTest extends dsFunctions {
 		R[4] = 0; R[5] = ca; R[6] = sa;
 		R[8] = 1; R[9] = 0;  R[10] = 0;
 		dsSetColor (1,0.9f,0.2f);
-		dsDrawCappedCylinder (pos,R,0.8f,0.2f);
+		dsDrawCapsule (pos,R,0.8f,0.2f);
 	}
 
 
+	@Override
 	public void command (char cmd)
 	{
 		dsPrint ("received command %d (`%c')\n",cmd,cmd);
@@ -116,19 +110,12 @@ public class DsTest extends dsFunctions {
 
 	public static void main (String[] args)
 	{
-		// setup pointers to callback functions
-		dsFunctions fn = new DsTest();
-		//  fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = command;
-		//  fn.stop = 0;
-		//  fn.path_to_textures = 0;	// uses default
-		fn.setVersion(DS_VERSION);
-		fn.setPathToTextures(null);
-
+		new DsTest().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// run simulation
-		dsSimulationLoop (args,400,400,fn);
+		dsSimulationLoop (args,400,400,this);
 	}
 
 

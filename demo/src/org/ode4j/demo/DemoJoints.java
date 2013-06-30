@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,17 +13,17 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -34,7 +36,6 @@ import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DUniversalJoint;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
@@ -42,7 +43,7 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DAMotorJoint.AMotorMode;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -100,7 +101,6 @@ public class DemoJoints extends dsFunctions {
 	//static int cmd_graphics = 1;
 	private static boolean cmd_interactive = false;
 	private static boolean cmd_graphics = true;
-	private static String cmd_path_to_textures = null;
 	private static int cmd_occasional_error = 0;	// perturb occasionally
 
 
@@ -126,7 +126,7 @@ public class DemoJoints extends dsFunctions {
 	private double cmpIdentity (final DMatrix3C A)
 	{
 		DMatrix3 I = new DMatrix3();
-		I.dSetZero();//dSetZero (I,12);
+		I.setZero();//dSetZero (I,12);
 //		I.v[0] = 1;
 //		I.v[5] = 1;
 //		I.v[10] = 1;
@@ -584,7 +584,7 @@ public class DemoJoints extends dsFunctions {
 			DVector3C p2 = body[1].getPosition();
 			//    for (int i=0; i<3; i++) p.v[i] = p2.v[i] - p1.v[i];
 			p.eqDiff(p2, p1);
-			OdeMath.dMULTIPLY1_331 (pp,R1,p);
+			OdeMath.dMultiply1_331 (pp,R1,p);
 			//    pp.v[0] += 0.5;
 			//    pp.v[1] += 0.5;
 			pp.add(0.5, 0.5, 0);
@@ -619,7 +619,7 @@ public class DemoJoints extends dsFunctions {
 			DVector3C p2 = body[1].getPosition();
 			//    for (int i=0; i<3; i++) p.v[i] = p2.v[i] - p1.v[i];
 			p.eqDiff(p2, p1);
-			dMULTIPLY1_331 (pp,R1,p);
+			dMultiply1_331 (pp,R1,p);
 			//    pp.v[0] += 0.5;
 			//    pp.v[1] += 0.5;
 			pp.add(0.5, 0.5, 0);
@@ -693,7 +693,10 @@ public class DemoJoints extends dsFunctions {
 			body[1].addForce (0,0,-0.1);
 			if (iteration == 40) {
 				double a = jointSlider.getPosition ();
-				if (a > 0.2 && a < 0.5) return 0; else return 10;
+				if (a > 0.2 && a < 0.5) 
+					return 0; 
+				else 
+					return 10;
 			}
 			return 0;
 
@@ -815,7 +818,7 @@ public class DemoJoints extends dsFunctions {
 			dampRotationalMotion (0.1);
 			jointUniversal.getAxis1(ax1);
 			jointUniversal.getAxis2(ax2);
-			return Math.abs(10*OdeMath.dDOT(ax1, ax2));
+			return Math.abs(10*ax1.dot(ax2));
 		}
 
 		case 701: {		// 2 body: angle 1 rate
@@ -854,7 +857,7 @@ public class DemoJoints extends dsFunctions {
 			dampRotationalMotion (0.1);
 			jointUniversal.getAxis1(ax1);
 			jointUniversal.getAxis2(ax2);
-			return Math.abs(10*dDOT(ax1, ax2));
+			return Math.abs(10*ax1.dot(ax2));
 		}
 
 		case 721: {		// universal transmit torque test: angle1 rate
@@ -891,7 +894,7 @@ public class DemoJoints extends dsFunctions {
 			jointUniversal.getAxis2(ax2);
 			addOscillatingTorqueAbout (0.1, ax1);
 			dampRotationalMotion (0.1);
-			return Math.abs(10*dDOT(ax1, ax2));
+			return Math.abs(10*ax1.dot(ax2));
 		}
 
 		case 731:{
@@ -932,7 +935,7 @@ public class DemoJoints extends dsFunctions {
 			jointUniversal.getAxis2(ax2);
 			addOscillatingTorqueAbout (0.1, ax2);
 			dampRotationalMotion (0.1);
-			return Math.abs(10*dDOT(ax1, ax2));
+			return Math.abs(10*ax1.dot(ax2));
 		}
 
 		case 741:{
@@ -994,15 +997,11 @@ public class DemoJoints extends dsFunctions {
 	// simulation stuff common to all the tests
 
 	// start simulation - set viewpoint
-
 	private static float[] xyz = {1.0382f,-1.0811f,1.4700f};
 	private static float[] hpr = {135.0000f,-19.5000f,0.0000f};
+	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
-		//  static float xyz[3] = {1.0382f,-1.0811f,1.4700f};
-		//  static float hpr[3] = {135.0000f,-19.5000f,0.0000f};
 		dsSetViewpoint (xyz,hpr);
 	}
 
@@ -1087,21 +1086,9 @@ public class DemoJoints extends dsFunctions {
 			return;
 		}
 
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = this;
-		fn.version = DS_VERSION;
-//		fn.start = &start;
-//		fn.step = &simLoop;
-//		fn.command = 0;
-//		fn.stop = 0;
-		if (cmd_path_to_textures != null)
-			fn.path_to_textures = cmd_path_to_textures;
-		else
-			fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-
 		// run simulation
 		if (cmd_graphics) {
-			dsSimulationLoop (args,352,288,fn);
+			dsSimulationLoop (args,352,288,this);
 			//dsSimulationLoop (args,288,288,fn);
 			//dsSimulationLoop (args,400,400,fn);
 		}
@@ -1130,33 +1117,35 @@ public class DemoJoints extends dsFunctions {
 		}
 	}
 
-	//****************************************************************************
-	// main
-
+	@Override
+	public void dsPrintHelp() {
+		super.dsPrintHelp();
+		System.out.println("-i              : Interactive.");
+		System.out.println("-g              : Disable graphics.");
+		System.out.println("-e              : Disable graphics.");
+		System.out.println("-n<testNo>      : Run selected test.");
+	}
+	
+	
+	/** ***************************************************************************
+	 * main
+	 * @param args 
+	 */
 	public static void main (String[] args)
 	{
 		OdeHelper.initODE2(0);
-		DS_API.outputToNull();  //Avoid Drawstuff TZ
+		//DrawStuff.setOutputNull();  //Avoid Drawstuff TZ
 
 		// process the command line args. anything that starts with `-' is assumed
 		// to be a drawstuff argument.
-		for (int i=1; i<args.length; i++) {
-			//    if ( args[i][0]=='-' && args[i][1]=='i' && args[i][2]==0) cmd_interactive = true;
-			//	  else if ( args[i][0]=='-' && args[i][1]=='g' && args[i][2]==0) cmd_graphics = false;
-			//else if ( args[i][0]=='-' && args[i][1]=='e' && args[i][2]==0) cmd_graphics = false;
-			//	    else if ( args[i][0]=='-' && args[i][1]=='n' && isdigit(args[i][2]) ) {
-			//	        char *endptr;
-			//	        long int n = strtol (&(argv[i][2]),&endptr,10);
-			//	  			if (*endptr == 0) cmd_test_num = n;
-			//	  		}
-			if (args[i].equals("-i")) cmd_interactive = true;
-			else if (args[i].equals("-g")) cmd_graphics = false;
-			else if (args[i].equals("-e")) cmd_graphics = false;
-			else if (args[i].startsWith("-n") && Character.isDigit(args[i].charAt(2))) {
+		for (int i=0; i<args.length; i++) {
+			if (args[i].equals("-i")) { cmd_interactive = true; args[i] = ""; }
+			if (args[i].equals("-g")) { cmd_graphics = false; args[i] = ""; }
+			if (args[i].equals("-e")) { cmd_graphics = false; args[i] = ""; }
+			if (args[i].startsWith("-n") && Character.isDigit(args[i].charAt(2))) {
 				cmd_test_num = Integer.parseInt(args[i].substring(2));
+				args[i] = "";
 			}
-			else
-				cmd_path_to_textures = args[i];
 		}
 
 		DemoJoints demo = new DemoJoints();

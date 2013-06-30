@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,38 +13,45 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.democpp;
 
 import static org.cpp4j.Cstdio.*;
 import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.DGeom.*;
 
 import org.cpp4j.FILE;
 import org.cpp4j.java.RefDouble;
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector6;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DBody;
+import org.ode4j.ode.DBox;
+import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
+import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
+import org.ode4j.ode.DSapSpace;
 import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
@@ -171,9 +180,9 @@ public class DemoMotion extends dsFunctions {
 		if (contact.geom.g1 == platform)
 			inv = -1;
 
-		contact.surface.motion1 = dDOT(mov2_vel, motiondir1);
-		contact.surface.motion2 = inv * dDOT(mov2_vel, motiondir2);
-		contact.surface.motionN = inv * dDOT(mov2_vel, contact.geom.normal);
+		contact.surface.motion1 = dCalcVectorDot3(mov2_vel, motiondir1);
+		contact.surface.motion2 = inv * dCalcVectorDot3(mov2_vel, motiondir2);
+		contact.surface.motionN = inv * dCalcVectorDot3(mov2_vel, contact.geom.normal);
 
 	}
 
@@ -194,7 +203,7 @@ public class DemoMotion extends dsFunctions {
 		int numc = dCollide (o1, o2, MAX_CONTACTS, contacts.getGeomBuffer());
 
 		if (numc != 0)
-			dRSetIdentity(RI);
+			RI.setIdentity();
 
 		boolean isplatform = (o1 == platform) || (o2 == platform);
 
@@ -260,7 +269,7 @@ public class DemoMotion extends dsFunctions {
 	//void command (int cmd)
 	public void command (char cmd2)
 	{
-		char cmd = (char)cmd2;
+		char cmd = cmd2;
 		int i; //size_t i;
 		int k;
 		double[] sides = new double[3];
@@ -281,9 +290,13 @@ public class DemoMotion extends dsFunctions {
 				if (nextobj >= num) nextobj = 0;
 
 				// destroy the body and geoms for slot i
-				dBodyDestroy (obj[i].body);
+				if (obj[i].body!=null) {
+				    dBodyDestroy (obj[i].body);
+				}
 				for (k=0; k < GPB; k++) {
-					if (obj[i].geom[k]!= null) dGeomDestroy (obj[i].geom[k]);
+					if (obj[i].geom[k]!= null) {
+					    dGeomDestroy (obj[i].geom[k]);
+					}
 				}
 				//memset (obj[i],0);//,sizeof(obj[i]));
 				obj[i] = null;
@@ -300,19 +313,19 @@ public class DemoMotion extends dsFunctions {
 			if (random_pos) 
 			{
 				dBodySetPosition (obj[i].body,
-						dRandReal()*2-1 + platpos.v[0],
-						dRandReal()*2-1 + platpos.v[1],
-						dRandReal()+2 + platpos.v[2]);
+						dRandReal()*2-1 + platpos.get0(),
+						dRandReal()*2-1 + platpos.get1(),
+						dRandReal()+2 + platpos.get2());
 				dRFromAxisAndAngle (R,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 						dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
 			}
 			else 
 			{
 				dBodySetPosition (obj[i].body, 
-						platpos.v[0],
-						platpos.v[1],
-						platpos.v[2]+2);
-				dRSetIdentity (R);
+						platpos.get0(),
+						platpos.get1(),
+						platpos.get2()+2);
+				R.setIdentity();
 			}
 			dBodySetRotation (obj[i].body,R);
 			//            obj[i].body.dBodySetData (obj[i].body,(void*) i);
@@ -339,7 +352,9 @@ public class DemoMotion extends dsFunctions {
 
 			if (!setBody)
 				for (k=0; k < GPB; k++) {
-					if (obj[i].geom[k] != null) dGeomSetBody (obj[i].geom[k], obj[i].body);
+					if (obj[i].geom[k] != null) {
+					    dGeomSetBody (obj[i].geom[k], obj[i].body);
+					}
 				}
 
 			dBodySetMass (obj[i].body,m);
@@ -373,8 +388,6 @@ public class DemoMotion extends dsFunctions {
 	//void drawGeom (dxGeom g, final double[] pos, final double[] R, boolean show_aabb)
 	private void drawGeom (DGeom g, DVector3C pos, DMatrix3C R, boolean show_aabb)
 	{
-		int i;
-
 		if (g == null) return;
 		if (pos == null) pos = dGeomGetPosition (g);
 		if (R == null) R = dGeomGetRotation (g);
@@ -382,34 +395,34 @@ public class DemoMotion extends dsFunctions {
 		int type = dGeomGetClass (g);
 		if (type == dBoxClass) {
 			DVector3 sides = new DVector3();
-			dGeomBoxGetLengths (g,sides);
+			dGeomBoxGetLengths ((DBox)g,sides);
 			dsDrawBox (pos,R,sides);
 		}
 		else if (type == dSphereClass) {
-			dsDrawSphere (pos,R,(float)dGeomSphereGetRadius (g));
+			dsDrawSphere (pos,R,(float)dGeomSphereGetRadius ((DSphere)g));
 		}
 		else if (type == dCapsuleClass) {
 			RefDouble radius = new RefDouble(0),length = new RefDouble(0);
-			dGeomCapsuleGetParams (g,radius,length);
+			dGeomCapsuleGetParams ((DCapsule)g,radius,length);
 			dsDrawCapsule (pos,R,length.getF(),radius.getF());
 		}
 		else if (type == dCylinderClass) {
 			RefDouble radius = new RefDouble(0),length = new RefDouble(0);
-			dGeomCylinderGetParams (g,radius,length);
+			dGeomCylinderGetParams ((DCylinder)g,radius,length);
 			dsDrawCylinder (pos,R,length.getF(),radius.getF());
 		}
 		else if (type == dGeomTransformClass) {
-			DGeom g2 = dGeomTransformGetGeom (g);
+			DGeom g2 = dGeomTransformGetGeom ((DGeomTransform)g);
 			final DVector3C pos2 = dGeomGetPosition (g2);
 			final DMatrix3C R2 = dGeomGetRotation (g2);
 			DVector3 actual_pos = new DVector3();
 			DMatrix3 actual_R = new DMatrix3();
-			dMULTIPLY0_331 (actual_pos,R,pos2);
+			dMultiply0_331 (actual_pos,R,pos2);
 			//        actual_pos.v[0] += pos[0];
 			//        actual_pos.v[1] += pos[1];
 			//        actual_pos.v[2] += pos[2];
 			actual_pos.add(pos);
-			dMULTIPLY0_333 (actual_R,R,R2);
+			dMultiply0_333 (actual_R,R,R2);
 			drawGeom (g2,actual_pos,actual_R,false);
 		}
 		if (show_body) {
@@ -424,14 +437,14 @@ public class DemoMotion extends dsFunctions {
 		}
 		if (show_aabb) {
 			// draw the bounding box for this geom
-			DVector6 aabb = new DVector6();
+			DAABB aabb = new DAABB();
 			dGeomGetAABB (g,aabb);
-			DVector3 bbpos = new DVector3();
-			for (i=0; i<3; i++) bbpos.v[i] = 0.5*(aabb.v[i*2] + aabb.v[i*2+1]);
-			DVector3 bbsides = new DVector3();
-			for (i=0; i<3; i++) bbsides.v[i] = aabb.v[i*2+1] - aabb.v[i*2];
+			DVector3 bbpos = aabb.getCenter();
+			//for (i=0; i<3; i++) bbpos.v[i] = 0.5*(aabb.v[i*2] + aabb.v[i*2+1]);
+			DVector3 bbsides = aabb.getLengths();
+			//for (i=0; i<3; i++) bbsides.v[i] = aabb.v[i*2+1] - aabb.v[i*2];
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();
 			dsSetColorAlpha (1f,0f,0f,0.5f);
 			dsDrawBox (bbpos,RI,bbsides);
 		}
@@ -442,9 +455,9 @@ public class DemoMotion extends dsFunctions {
 
 	private void updatecam()
 	{
-		xyz[0] = (float) (platpos.v[0] + 3.3f);
-		xyz[1] = (float) (platpos.v[1] - 1.8f);
-		xyz[2] = (float) (platpos.v[2] + 2f);
+		xyz[0] = (float) (platpos.get0() + 3.3f);
+		xyz[1] = (float) (platpos.get1() - 1.8f);
+		xyz[2] = (float) (platpos.get2() + 2f);
 		dsSetViewpoint (xyz, hpr);
 	}
 
@@ -505,28 +518,34 @@ public class DemoMotion extends dsFunctions {
 
 	//int main (int argc, char **argv)
 	public static void main (String[] args) {
+		new DemoMotion().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoMotion();
-		fn.version = DS_VERSION;
+		//dsFunctions fn = new DemoMotion();
+		//fn.version = DS_VERSION;
 		//    fn.start = start;
 		//    fn.step = simLoop;
 		//    fn.command = command;
 		//    fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
+		//fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
 
 		// create world
-		dInitODE();
+		dInitODE2(0);
 		world = dWorldCreate();
-		//space = dHashSpaceCreate (0);
-		DVector3 center = new DVector3(0,0,0), extents = new DVector3( 100, 100, 100);
-		//TODO
-		//space = dQuadTreeSpaceCreate(null, center, extents, 5);
-		space = dSimpleSpaceCreate(null);
-
+		
+		//#if 1
+	    space = dHashSpaceCreate (null);
+	    //#elif 0
+	    //DVector3 center = new DVector3(0,0,0), extents = new DVector3( 100, 100, 100);
+        //space = dQuadTreeSpaceCreate(null, center, extents, 5);
+	    //#elif 0
+	    //space = dSweepAndPruneSpaceCreate (null, DSapSpace.AXES.XYZ);
+	    //#else
+	    //space = dSimpleSpaceCreate(null);
+	    //#endif
+	    
 		contactgroup = dJointGroupCreate (0);
 		dWorldSetGravity (world, 0,0,-0.5);
 		dWorldSetCFM (world, 1e-5);
@@ -548,7 +567,7 @@ public class DemoMotion extends dsFunctions {
 		dGeomSetCollideBits(platform, ~1l);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);

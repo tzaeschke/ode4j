@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />
+    <title>ode4j</title>
+    <meta name="keywords" content="ode4j,ode,Java,libccd,3D,physics,engine,library,dynamics" />
+  </head>
+  <body bgcolor="#E0E0E0">
+    <table border="0" style="width: 1200px;">
+      <tbody>
+        <tr>
+          <td style="width: 100px;"><br />
+          </td>
+          <td bgcolor="#E0E0E0" style="width: 1000px;">
+            <table cellspacing="1" cellpadding="5" border="0" bgcolor="#000000"
+              style="width: 100%;">
+              <tbody>
+                <tr>
+                  <td bgcolor="#E0E0E0" align="left" colspan="5" style="text-align: left;">
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight: bold;"><big>ode4j</big></big></big></font></p>
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight:           bold;">A Java 3D
+                            Physics Engine &amp; Library</big></big></font><font
+                        face="Helvetica, Arial, sans-serif"><b><br />
+                        </b></font></p>
+                    <p></p>
+                  </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td align="center" style="width: 20%;"> <font face="Helvetica, Arial, sans-serif">
+                      <a href="index.html" style="color: #000000;text-decoration:none">About</a><br />
+                    </font> </td>
+                  <td bgcolor="#FFFFFF" align="center" style="width: 20%;"> <font
+                      face="Helvetica, Arial, sans-serif"> <a href="ode4j-features.html"
+                        style="color: #000000;text-decoration:none">Features</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        href="ode4j-doc.html" style="color: #000000;text-decoration:none">Documentation</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        href="ode4j-download.html" style="color: #000000;text-decoration:none">Download</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        href="ode4j-contact.html" style="color: #000000;text-decoration:none">Contact</a><br />
+                    </font> </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td bgcolor="#FFFFFF" align="left" colspan="5" style="text-align: left;">
+                    <font face="Helvetica, Arial, sans-serif">
+                      <h3>Features &amp; Screenshots</h3>
+                      <ul>
+                        <li>100% pure Java port of the ODE / OpenDE physics
+                          engine. Native libraries are only used for the OpenGL
+                          rendering in the demos (thanks to <a href="http://www.lwjgl.org/">lwjgl</a>).</li>
+                        <li>Includes ports of <a href="http://gimpact.sourceforge.net/">GIMPACT</a>
+                          and <a href="http://libccd.danfis.cz/">libccd</a>, <span
+                            style="font-style: italic;">not</span> in their
+                          latest version, but as they are included in ODE. For
+                          GIMPACT that is pre-0.2, for libccd that is some
+                          pre-1.3 version (as of ODE 0.12.0).<br />
+                        </li>
+                        <li>Fast. It is in some cases even faster than the
+                          original C/C++ ODE. Please note that only the physics
+                          are fast. The graphical rendering in the demos is not
+                          optimized and quite slow.<br />
+                        </li>
+                        <li>Provides javadoc, ~30 demos, complete source code
+                          and test harnesses (<a href="http://www.junit.org/">JUnit</a>).<br />
+                        </li>
+                        <li>Supports all geometries from ODE: box, convex,
+                          capsule, cylinder, plane, ray, space, sphere,
+                          transormable geom (deprecated), heightfield (a kind of
+                          trimesh) and trimesh (GIMPACT port, still beta state).
+                          Additional colliders are available in libccd when
+                          enabled through <code>OdeConfig.setLibCCDEndabled(true)</code>
+                          (<span style="font-style: italic;">before</span>
+                          calling anything else).</li>
+                        <li>Supports all joints from ODE: AMotor, BallJoint,
+                          ContactJoint, FixedJoint (deprecated), HingeJoint,
+                          Hinge2Joint, LMotorJoint, PistonJoint, Plane2DJoint,
+                          PRJoint, PUJoint,SliderJoint and UniversalJoint. </li>
+                        <li>Supports all spaces from ODE: SimpleSpace,
+                          HashSpace, QuadTreeSpace and SAPSpace.</li>
+                        <li>Java specific optimisations.</li>
+                        <li>A more object oriented implementation.</li>
+                        <li>Provides an alternative API which is a direct port
+                          of the original C API. This simplifies understanding
+                          the existing documentation &amp; tutoriuals and helps
+                          porting other ODE dependent code, but is not
+                          recommended, because it is less object oriented. <br />
+                        </li>
+                      </ul>
+                      For physics features, please refer to the <a href="http://opende.sourceforge.net/wiki/index.php/Main_Page">ODE-Wiki</a><br />
+                      <br />
+                      Some screen shots from the <span style="font-weight: bold;">demo_crash</span>
+                      (one of many included demos):<br />
+                      <img style="width: 358px; height: 315px;" alt="demo_crash1"
+                        title="demo_crash1" src="demo_crash1.png" /><img style="width: 358px; height: 315px;"
+                        alt="demo_crash2" title="demo_crash2" src="demo_crash2.png" /><img
+                        style="width: 358px; height: 315px;" alt="demo_crash3" title="demo_crash3"
+                        src="demo_crash3.png" /><img style="width: 358px; height: 315px;"
+                        alt="demo_crash4" title="demo_crash4" src="demo_crash4.png" /><br />
+                      <br />
+                      <br />
+                      <h3>Status<br />
+                      </h3>
+                      <ul>
+                        <li>Currently, the port has only been tested through the
+                          available test harnesses and through running the
+                          included demos. Functionality that is not used in
+                          either may not be function correctly or may not be
+                          available at all. Please point out these cases to me.</li>
+                        <li>ode4j uses 'double' precision. A single ('float')
+                          precision version may improve performance by 10%-20%
+                          (based on a singular test). Also, the code provides
+                          some features that should allow a rather simple port.
+                          But there are currently no plans for such a port.</li>
+                        <li>Trimesh / GIMPACT: Trimesh support contains no known
+                          bugs except bugs that are also present in ODE for
+                          C/C++. However, performance has still not been
+                          optimized for Java.</li>
+                        <li>LIBCCD: A LIBCCD port is enclosed and can be enabled
+                          through <code>OdeConfig.setLibCCDEndabled(true)</code>
+                          before doing anything else.<br />
+                        </li>
+                      </ul>
+                      Next Steps<br />
+                      <ul>
+                        <li>Look into optimizing OpenGL usage in demos. This
+                          should also fix the GL related bugs.<br />
+                        </li>
+                        <li>Port OPCODE library</li>
+                        <li>Improve javadoc (copy it from C++ API to object
+                          oriented API</li>
+                        <li>Fix known <a href="https://sourceforge.net/tracker/?func=browse&amp;group_id=257951&amp;atid=1141138">bugs</a></li>
+                        <li>Improve webpage.<br />
+                        </li>
+                      </ul>
+                    </font> </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="width: 100px;"><br />
+          </td>
+        </tr>
+        <tr>
+          <td><br />
+          </td>
+          <td> © Copyright 2012 Tilmann Zäschke [ode4j AT gmx DOT de]<br />
+          </td>
+          <td><br />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><br />
+    </p>
+    <p></p>
+    <br />
+    <p><br />
+    </p>
+  </body>
+</html>

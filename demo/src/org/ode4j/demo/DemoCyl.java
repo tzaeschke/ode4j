@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,17 +13,18 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -29,7 +32,6 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCylinder;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
@@ -43,50 +45,36 @@ import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.demo.WorldGeom3.*;
 
 
 /**
  * Test for non-capped cylinder, by Bram Stolk.
  */
 class DemoCyl extends dsFunctions {
-	//#include "world_geom3.h" // this is our world mesh
-	private static int[] world_indices = WorldGeom3.world_indices;
-	private static float[] world_normals = WorldGeom3.world_normals;
-	private static float[] world_vertices = WorldGeom3.world_vertices;
 
 
-	//#define BOX
-	//#define CYL
 	private static final boolean BOX = true;
 	private static final boolean CYL = true;
 
 	// some constants
 
-	//#define RADIUS 0.22	// wheel radius
-	//#define WMASS 0.2	// wheel mass
-	//#define WHEELW 0.2	// wheel width
-	//#define BOXSZ 0.4	// box size
 	private static final float RADIUS = 0.22f;	// wheel radius
 	private static final float WMASS = 0.2f;	// wheel mass
 	private static final float WHEELW = 0.2f;	// wheel width
 	private static final float BOXSZ = 0.4f;	// box size
-	////#define CYL_GEOM_OFFSET // rotate cylinder using geom offset
-	private static boolean CYL_GEOM_OFFSET = false; 
+	private static boolean CYL_GEOM_OFFSET = false;   // rotate cylinder using geom offset
 
 	// dynamics and collision objects (chassis, 3 wheels, environment)
 
 	private static DWorld world;
 	private static DSpace space;
-	//#ifdef BOX
 	private static DBody boxbody;
 	private static DBox boxgeom;
-	//#endif
-	//#ifdef CYL
 	private static DBody cylbody;
 	private static DCylinder cylgeom;
-	//#endif
 	private static DJointGroup contactgroup;
 	private static DGeom world_mesh;
 
@@ -143,12 +131,9 @@ class DemoCyl extends dsFunctions {
 	private static float[] hpr = {45.0000f,-27.5000f,0.0000f};
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
-		//  static float xyz[3] = {-8,-9,3};
-		//  static float hpr[3] = {45.0000f,-27.5000f,0.0000f};
 		dsSetViewpoint (xyz,hpr);
 	}
 
@@ -159,23 +144,24 @@ class DemoCyl extends dsFunctions {
 		float sx=-4, sy=-4, sz=2;
 		DQuaternion q = new DQuaternion();
 		dQFromAxisAndAngle (q,1,0,0,M_PI*0.5);
-		if (BOX) {//#ifdef BOX
+		if (BOX) {
 			boxbody.setPosition (sx, sy+1, sz);
 			boxbody.setLinearVel (0,0,0);
 			boxbody.setAngularVel (0,0,0);
 			boxbody.setQuaternion (q);
-		}//#endif
-		if (CYL) {//#ifdef CYL
+		}
+		if (CYL) {
 			cylbody.setPosition (sx, sy, sz);
 			cylbody.setLinearVel (0,0,0);
 			cylbody.setAngularVel (0,0,0);
 			cylbody.setQuaternion (q);
-		}//#endif
+		}
 	}
 
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) 
@@ -203,29 +189,16 @@ class DemoCyl extends dsFunctions {
 		}
 
 		dsSetColor (1,1,1);
-		if (BOX) {//#ifdef BOX
-			final DVector3C BPos = boxbody.getPosition();
-			final DMatrix3C BRot = boxbody.getRotation();
-			//		float[] bpos = {BPos[0], BPos[1], BPos[2]};
-			//		float[] brot = { BRot[0], BRot[1], BRot[2], BRot[3], BRot[4], BRot[5], BRot[6], BRot[7], BRot[8], BRot[9], BRot[10], BRot[11] };
-			//float[] sides = {BOXSZ, BOXSZ, BOXSZ};
+		if (BOX) {
+			DVector3C BPos = boxbody.getPosition();
+			DMatrix3C BRot = boxbody.getRotation();
 			DVector3 sides = new DVector3(BOXSZ, BOXSZ, BOXSZ);
-			dsDrawBox
-			(
-					BPos, 
-					BRot, 
-					sides
-			);
-		}//#endif
-		if (CYL) {//#ifdef CYL
-			dsDrawCylinder
-			( 
-					cylbody.getPosition(),
-					cylbody.getRotation(),
-					WHEELW,
-					RADIUS
-			);
-		}//#endif
+			dsDrawBox( BPos, BRot, sides );
+		}
+		if (CYL) {
+			dsDrawCylinder( cylbody.getPosition(), cylbody.getRotation(),
+					WHEELW, RADIUS );
+		}
 
 		// draw world trimesh
 		dsSetColor(0.7f,0.7f,0.4f);
@@ -242,9 +215,6 @@ class DemoCyl extends dsFunctions {
 			int i0 = world_indices[i*3+0] * 3;
 			int i1 = world_indices[i*3+1] * 3;
 			int i2 = world_indices[i*3+2] * 3;
-			//			float *v0 = world_vertices+i0*3;
-			//			float *v1 = world_vertices+i1*3;
-			//			float *v2 = world_vertices+i2*3;
 			dsDrawTriangle(Pos, Rot, world_vertices, i0, i1, i2, true); // single precision draw
 		}
 	}
@@ -258,15 +228,6 @@ class DemoCyl extends dsFunctions {
 		DMass m = OdeHelper.createMass();
 		DMatrix3 R = new DMatrix3();
 
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoCyl();
-		fn.version = DS_VERSION;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-		{
-			fn.path_to_textures = args[1];
-		}
-
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld ();
@@ -277,20 +238,19 @@ class DemoCyl extends dsFunctions {
 
 
 		// Create a static world using a triangle mesh that we can collide with.
-		int numv = world_vertices.length;//sizeof(world_vertices)/(3*sizeof(float));
-		int numi = world_indices.length;//sizeof(world_indices)/ sizeof(dTriIndex);
+		int numv = world_vertices.length;
+		int numi = world_indices.length;
 		System.out.println("numv=" + numv + ", numi=" + numi);
 		DTriMeshData data = OdeHelper.createTriMeshData();
 
-		data.buildSingle
+		data.build
 		(
-				data, 
 				world_vertices, 
-				3,// * sizeof(float), 
-				numv, 
-				world_indices, 
-				numi, 
-				3// * sizeof(dTriIndex)
+				//3,// * sizeof(float), 
+				//numv, 
+				world_indices//, 
+				//numi, 
+				//3// * sizeof(dTriIndex)
 		);
 
 		world_mesh = OdeHelper.createTriMesh(space, data, null, null, null);
@@ -299,7 +259,7 @@ class DemoCyl extends dsFunctions {
 		world_mesh.setRotation (R);
 
 
-		if (BOX) {//#ifdef BOX
+		if (BOX) {
 			boxbody = OdeHelper.createBody (world);
 			m.setBox (1, BOXSZ, BOXSZ, BOXSZ);
 			m.adjust (1);
@@ -307,8 +267,8 @@ class DemoCyl extends dsFunctions {
 			boxgeom = OdeHelper.createBox (null, BOXSZ, BOXSZ, BOXSZ);
 			boxgeom.setBody (boxbody);
 			space.add (boxgeom);
-		}//#endif
-		if (CYL) {//#ifdef CYL
+		}
+		if (CYL) {
 			cylbody = OdeHelper.createBody (world);
 			m.setSphere (1,RADIUS);
 			m.adjust (WMASS);
@@ -316,29 +276,29 @@ class DemoCyl extends dsFunctions {
 			cylgeom = OdeHelper.createCylinder(null, RADIUS, WHEELW);
 			cylgeom.setBody (cylbody);
 
-			if (CYL_GEOM_OFFSET) {//#if defined(CYL_GEOM_OFFSET)
+			if (CYL_GEOM_OFFSET) {
 				DMatrix3 mat = new DMatrix3();
 				dRFromAxisAndAngle(mat,1.0f,0.0f,0.0f,M_PI/2.0);
 				cylgeom.setOffsetRotation(mat);
-			} //#endif
+			}
 
 			space.add (cylgeom);
-		}//#endif
+		}
 		reset_state();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.empty();
 		contactgroup.destroy();
 
 		// First destroy geoms, then space, then the world.
-		if (CYL) {//#ifdef CYL
+		if (CYL) {
 			cylgeom.destroy();
-		}//#endif
-		if (BOX) {//#ifdef BOX
+		}
+		if (BOX) {
 			boxgeom.destroy();
-		}//#endif
+		}
 		world_mesh.destroy ();
 
 		space.destroy ();

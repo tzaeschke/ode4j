@@ -2,6 +2,8 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,23 +13,23 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.demo;
 
-import org.ode4j.drawstuff.DS_API.dsFunctions;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DSphere;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
@@ -40,7 +42,7 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeMath;
 
-import static org.ode4j.drawstuff.DS_API.*;
+import static org.ode4j.drawstuff.DrawStuff.*;
 
 
 /**
@@ -129,19 +131,19 @@ class DemoCylVsSphere extends dsFunctions {
 	}
 
 
-	static float[] xyz = {-8,-9,3};
-	static float[] hpr = {45.0000f,-27.5000f,0.0000f};
+	private static float[] xyz = {-8,-9,3};
+	private static float[] hpr = {45.0000f,-27.5000f,0.0000f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
-		OdeHelper.allocateODEDataForThread(OdeConstants.dAllocateMaskAll);
-
 		dsSetViewpoint (xyz,hpr);
 	}
 
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) 
@@ -184,13 +186,11 @@ class DemoCylVsSphere extends dsFunctions {
 
 
 	public static void main(String[] args) {
+		new DemoCylVsSphere().demo(args);
+	}
+	
+	private void demo(String[] args) {
 		DMass m = OdeHelper.createMass();
-
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new DemoCylVsSphere();
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-		if(args.length==2)
-			fn.path_to_textures = args[1];
 
 		// create world
 		OdeHelper.initODE2(0);
@@ -227,7 +227,7 @@ class DemoCylVsSphere extends dsFunctions {
 		space.add (sphgeom);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,fn);
+		dsSimulationLoop (args,352,288,this);
 
 		contactgroup.empty();
 		contactgroup.destroy();

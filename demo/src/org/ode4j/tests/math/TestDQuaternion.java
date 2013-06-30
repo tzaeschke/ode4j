@@ -1,7 +1,7 @@
 /*************************************************************************
  *                                                                       *
- * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
- * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -11,12 +11,12 @@
  *       General Public License is included with this library in the     *
  *       file LICENSE.TXT.                                               *
  *   (2) The BSD-style license that is included with this library in     *
- *       the file LICENSE-BSD.TXT.                                       *
+ *       the file ODE4J-LICENSE-BSD.TXT.                                 *
  *                                                                       *
  * This library is distributed in the hope that it will be useful,       *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
- * LICENSE.TXT and LICENSE-BSD.TXT for more details.                     *
+ * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
 package org.ode4j.tests.math;
@@ -90,15 +90,15 @@ public class TestDQuaternion extends OdeTestCase {
 		x.set(y);
 		assertEquals(x, y);
 
-		x.set( new double[]{ 8, 9, 11, -12} );
-		assertTrue(x.get0()==8 && x.get1()==9 && x.get2()==11 && x.get3()==-12);
-
-		x.setValues(2.5);
-		assertTrue(x.get0()==2.5 && x.get1()==2.5 && x.get2()==2.5 && x.get3()==2.5);
-
-		assertFalse(x.equals(x2));
-		assertFalse(x.equals(y));
-		assertFalse(x.equals(z));
+//		x.set( new double[]{ 8, 9, 11, -12} );
+//		assertTrue(x.get0()==8 && x.get1()==9 && x.get2()==11 && x.get3()==-12);
+//
+//		x.setValues(2.5);
+//		assertTrue(x.get0()==2.5 && x.get1()==2.5 && x.get2()==2.5 && x.get3()==2.5);
+//
+//		assertFalse(x.equals(x2));
+//		assertFalse(x.equals(y));
+//		assertFalse(x.equals(z));
 	}		
 		
 	@Test
@@ -131,11 +131,11 @@ public class TestDQuaternion extends OdeTestCase {
 		t.add(3, 6, -4, -11);
 		assertTrue(t.equals(y));
 
-		t.add(0, -3);
-		t.add(1, -6);
-		t.add(2, 4);
-		t.add(3, 11);
-		assertTrue(t.equals(x));
+//		t.add(0, -3);
+//		t.add(1, -6);
+//		t.add(2, 4);
+//		t.add(3, 11);
+//		assertTrue(t.equals(x));
 
 //		t.add0(3);
 //		t.add1(6);
@@ -223,11 +223,16 @@ public class TestDQuaternion extends OdeTestCase {
 		DQuaternion t = new DQuaternion();
 
 		//TODO remove dSafeNormalize3()?
-		t.set(0, 0, 0, 0).dSafeNormalize3();
+		try {
+			t.set(0, 0, 0, 0).normalize();
+			fail();
+		} catch (IllegalStateException e) {
+			// Good!
+		}
 		assertEquals(new DQuaternion(1, 0, 0, 0), t);
 
 		t.set(3, 4, -18, -6.5);
-		t.dSafeNormalize3();
+		t.normalize();
 		assertEquals(new DQuaternion(0.15166804174966758, 0.20222405566622345, -0.9100082504980056, -0.32861409045761314), t);
 
 //		try {

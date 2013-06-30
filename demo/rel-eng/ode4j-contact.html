@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />
+    <title>ode4j</title>
+    <meta name="keywords" content="ode4j,ode,Java,libccd,3D,physics,engine,library,dynamics" />
+  </head>
+  <body bgcolor="#E0E0E0">
+    <table border="0" style="width: 1200px;">
+      <tbody>
+        <tr>
+          <td style="width: 100px;"><br />
+          </td>
+          <td bgcolor="#E0E0E0" style="width: 1000px;">
+            <table cellspacing="1" cellpadding="5" border="0" bgcolor="#000000"
+              style="width: 100%;">
+              <tbody>
+                <tr>
+                  <td bgcolor="#E0E0E0" align="left" colspan="5" style="text-align: left;">
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight: bold;"><big>ode4j</big></big></big></font></p>
+                    <p align="center"><font face="Helvetica, Arial, sans-serif"><big><big
+                            style="font-weight:           bold;">A Java 3D
+                            Physics Engine &amp; Library</big></big></font><font
+                        face="Helvetica, Arial, sans-serif"><b><br />
+                        </b></font></p>
+                    <p></p>
+                  </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td align="center" style="width: 20%;"> <font face="Helvetica, Arial, sans-serif">
+                      <a href="index.html" style="color: #000000;text-decoration:none">About</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"> <font face="Helvetica, Arial, sans-serif">
+                      <a href="ode4j-features.html" style="color: #000000;text-decoration:none">Features</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        href="ode4j-doc.html" style="color: #000000;text-decoration:none">Documentation</a><br />
+                    </font> </td>
+                  <td align="center" style="width: 20%;"><font face="Helvetica, Arial, sans-serif"><a
+                        href="ode4j-download.html" style="color: #000000;text-decoration:none">Download</a><br />
+                    </font> </td>
+                  <td bgcolor="#FFFFFF" align="center" style="width: 20%;"><font
+                      face="Helvetica, Arial, sans-serif"><a href="ode4j-contact.html"
+                        style="color: #000000;text-decoration:none">Contact</a><br />
+                    </font> </td>
+                </tr>
+                <tr style="background-color: #e0e0e0;">
+                  <td bgcolor="#FFFFFF" align="left" colspan="5" style="text-align: left;">
+                    <font face="Helvetica, Arial, sans-serif">
+                      <h3>Contact / Contributors<br />
+                      </h3>
+                      Contributors:<br />
+                      Tilmann Zäschke: ode4j AT gmx DOT de<br />
+                      <br />
+                      <br />
+                      <h3>Want to Contribute?</h3>
+                      Contributors are welcome. <br />
+                      <br />
+                    </font><font face="Helvetica, Arial, sans-serif"><strong><u>To
+                          avoid misunderstandings: What probably doesn't need
+                          doing</u></strong><br />
+                      I know that the current look of the code might bring tears
+                      to the eyes of any reasonable Java developer (public
+                      non-final fields, lots of commented out stuff, lack of
+                      abstraction, duplications, ...). However, there is a
+                      reason: I want the code to be as close as possible to the
+                      C/C++ original in order to simplify future porting of
+                      updates from C/C++ to Java. In some places I had to
+                      implement significant changes in order
+                      to keep performance acceptable, but other than that, the
+                      internals should stay as they are, which is as close as
+                      possible to the original.<br />
+                      The same is true for org.ode4j.math, which is not
+                      perfectly nice Java, but which I believe strikes a
+                      reasonable balance between beauty and performance.
+                      Recommendations for minor changes are welcome, but I would
+                      probably not agree on refactoring it (also to maintain API
+                      compatibility). <br />
+                      Generally, I also prefer any fixes to ode4j also to be
+                      applied to ODE, ideally before they end up in ode4j.
+                      Unless of course the bug is specific to ode4j/Java.<br />
+                      <br />
+                    </font><font face="Helvetica, Arial, sans-serif"><strong><u>What
+                          needs doing</u></strong><br />
+                      - Port OPCODE Trimesh collision engine to Java. OPCODE is
+                      the default trimesh library in ODE C/C++ and is supposed
+                      to be more stable than GIMPACT in some cases.<br />
+                      - Fix GIMPACT. GIMPACT is somewhat broken, but it is not
+                      updated anymore in the original ODE C/C++, so it could be
+                      refactored for bug fixing or performance improvements.<br />
+                      - Improve Javadoc of public API.<br />
+                      - More ideas, anyone? <br />
+                    </font>
+                    <p></p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="width: 100px;"><br />
+          </td>
+        </tr>
+        <tr>
+          <td><br />
+          </td>
+          <td> © Copyright 2012 Tilmann Zäschke [ode4j AT gmx DOT de]<br />
+          </td>
+          <td><br />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><br />
+    </p>
+    <p></p>
+    <br />
+    <p><br />
+    </p>
+  </body>
+</html>
