@@ -13,7 +13,7 @@
 
     <groupId>org.ode4j</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.2.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -130,7 +130,7 @@
                     <!-- mvn nativedependencies:copy -->
                     <groupId>com.googlecode.mavennatives</groupId>
                     <artifactId>maven-nativedependencies-plugin</artifactId>
-                    <version>0.0.5</version>
+                    <version>0.0.7</version>
                     <executions>
                         <execution>
                             <id>unpacknatives</id>

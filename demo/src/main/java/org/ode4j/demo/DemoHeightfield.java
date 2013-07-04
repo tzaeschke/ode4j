@@ -36,7 +36,6 @@ import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DTriMesh;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DCapsule;

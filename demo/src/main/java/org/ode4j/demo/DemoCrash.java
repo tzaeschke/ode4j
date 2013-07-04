@@ -34,7 +34,6 @@ import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.DSapSpace;
 import org.ode4j.ode.DSphere;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;

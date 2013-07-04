@@ -34,10 +34,6 @@ import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointPiston;
 
 import static org.ode4j.cpp.internal.ApiCppBody.*;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreatePiston;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPistonAnchor;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPistonParam;
 import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop1;
 import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop2;
 import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop1;

@@ -32,7 +32,6 @@ import org.ode4j.math.DVector3;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSpace;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DGeom.DNearCallback;
 

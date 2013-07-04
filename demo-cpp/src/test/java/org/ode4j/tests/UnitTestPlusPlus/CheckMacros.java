@@ -29,7 +29,7 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 //#ifndef UNITTEST_CHECKMACROS_H 
 //#define UNITTEST_CHECKMACROS_H

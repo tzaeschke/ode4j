@@ -49,7 +49,6 @@ import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DMass;
-import org.ode4j.ode.DSapSpace;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;

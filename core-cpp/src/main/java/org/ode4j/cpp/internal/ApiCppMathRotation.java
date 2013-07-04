@@ -25,7 +25,6 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.internal.Matrix;
 import org.ode4j.ode.internal.Rotation;
 
 

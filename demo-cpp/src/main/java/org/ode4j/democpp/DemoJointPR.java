@@ -33,7 +33,6 @@ import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;

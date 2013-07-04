@@ -44,7 +44,6 @@ import org.ode4j.ode.internal.DxHashSpace;
 import org.ode4j.ode.internal.ErrorHdl;
 import org.ode4j.ode.internal.Misc;
 import org.ode4j.ode.internal.OdeFactoryImpl;
-import org.ode4j.ode.internal.OdeInit;
 import org.ode4j.ode.internal.Timer;
 import org.ode4j.ode.internal.gimpact.GimMath;
 import org.ode4j.ode.internal.stuff.Performator;

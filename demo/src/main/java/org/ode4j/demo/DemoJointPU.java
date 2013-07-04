@@ -37,7 +37,6 @@ import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DPlane;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
