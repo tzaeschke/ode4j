@@ -13,7 +13,7 @@
 
     <groupId>org.ode4j</groupId>
     <artifactId>parent</artifactId>
-    <version>0.2.4</version>
+    <version>0.2.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -146,7 +146,8 @@
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.15</version>
         			<configuration>
-          				<skipTests>true</skipTests>
+    					<printSummary>true</printSummary>
+                      	<skipTests>true</skipTests>
         			</configuration>
 			   	</plugin>
            </plugins>
