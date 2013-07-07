@@ -277,13 +277,13 @@ public class CCDVec3 {
 	 * Holds origin (0,0,0) - this variable is meant to be read-only!
 	 */
 	//extern
-	static ccd_vec3_t ccd_vec3_origin = CCD_VEC3(CCD_ZERO, CCD_ZERO, CCD_ZERO);
+	static final ccd_vec3_t ccd_vec3_origin = CCD_VEC3(CCD_ZERO, CCD_ZERO, CCD_ZERO);
 	//ccd_vec3_t *ccd_vec3_origin = &__ccd_vec3_origin;
 
 	/**
 	 * Array of points uniformly distributed on unit sphere.
 	 */
-	static ccd_vec3_t points_on_sphere[] = {
+	private static final ccd_vec3_t points_on_sphere[] = {
 		CCD_VEC3_STATIC(( 0.000000), (-0.000000), (-1.000000)),
 		CCD_VEC3_STATIC(( 0.723608), (-0.525725), (-0.447219)),
 		CCD_VEC3_STATIC((-0.276388), (-0.850649), (-0.447219)),

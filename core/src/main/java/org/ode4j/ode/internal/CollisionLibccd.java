@@ -296,7 +296,7 @@ public class CollisionLibccd {
 		}
 	}; 
 
-	private static ccd_center_fn ccdCenter = new ccd_center_fn() {
+	private static final ccd_center_fn ccdCenter = new ccd_center_fn() {
 		@Override
 		public void run(Object obj1, ccd_vec3_t c) {
 			final ccd_obj_t o = (ccd_obj_t)obj1;

@@ -153,7 +153,7 @@ public class DemoKinematic extends dsFunctions {
 	    DBody b1 = dGeomGetBody(g1);
 	    DBody b2 = dGeomGetBody(g2);
 	    
-	    if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding(b1, b2, DContactJoint.class))
+	    if (b1!=null && b2!=null && dAreConnectedExcluding(b1, b2, DContactJoint.class))
 	        return;
 
 	    final int MAX_CONTACTS = 10;
