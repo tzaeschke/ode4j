@@ -145,7 +145,18 @@
 					<version>2.15</version>
         			<configuration>
     					<printSummary>true</printSummary>
-                      	<skipTests>true</skipTests>
+                      	<skipTests>false</skipTests>
+						<includes>
+		                    <!-- include ALL tests -->
+	            			<include>**/*.java</include>
+	          			</includes>
+	          			<excludes>
+		                    <!-- exclude tests that currently fail -->
+	          				<exclude>**/tests/JavaMultiThreadTest.java</exclude>
+	          				<exclude>**/tests/bugs/Test_Bug0019_OdeRayToCylinder.java</exclude>
+	          				<exclude>**/tests/CollisionTest.java</exclude>
+	          			</excludes>
+	                      	
         			</configuration>
 			   	</plugin>
            </plugins>
