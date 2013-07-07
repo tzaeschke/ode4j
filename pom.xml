@@ -155,7 +155,6 @@
 	          				<exclude>**/tests/bugs/Test_Bug0019_OdeRayToCylinder.java</exclude>
 	          				<exclude>**/tests/CollisionTest.java</exclude>
 	          			</excludes>
-	                      	
         			</configuration>
 			   	</plugin>
            </plugins>
