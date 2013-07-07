@@ -4,7 +4,6 @@
 
     <!--
     mvn clean
-    mvn -pl generator compile
     mvn compile
     mvn deploy -Psonatype-oss-release
     -->
