@@ -24,7 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefDouble;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -33,6 +32,7 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.OdeConstants;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.libccd.CCD.ccd_center_fn;
 import org.ode4j.ode.internal.libccd.CCD.ccd_support_fn;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;

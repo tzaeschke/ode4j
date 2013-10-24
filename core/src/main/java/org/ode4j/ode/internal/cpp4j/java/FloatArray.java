@@ -19,57 +19,62 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j.java;
-
-import java.util.Arrays;
+package org.ode4j.ode.internal.cpp4j.java;
 
 /**
- * Class to simulate pointer operations on object arrays.
+ * Class to simulate pointer operations on float arrays.
  *
  * @author Tilmann Zaeschke
- * @param <T> 
  */
-public class ObjArray<T> {
+public class FloatArray {
     
-    private final T[] _data;
+    private final float[] _data;
     private int _ofs;
     
     /**
-     * Create a new Array referencing the given array.
+     * @param size
+     */
+    public FloatArray(int size) {
+        _data = new float[size];
+        _ofs = 0;
+    }
+    
+    /**
+     * Create a new FloatArray referencing the given float array.
      * @param array
      */
-    public ObjArray(T[] array) {
+    public FloatArray(float[] array) {
         _data = array;
         _ofs = 0;
     }
     
     /**
-     * Create a new Array referencing the given array.
+     * Create a new FloatArray referencing the given float array.
      * @param array
      * @param ofs 
      */
-    public ObjArray(T[] array, int ofs) {
+    public FloatArray(float[] array, int ofs) {
         _data = array;
         _ofs = ofs;
     }
     
     /**
-     * Create a new Array referencing the same Array referenced by
+     * Create a new FloatArray referencing the same FloatArray referenced by
      * the argument.
      * @param array
      */
-    public ObjArray(ObjArray<T> array) {
+    public FloatArray(FloatArray array) {
         _data = array._data;
         _ofs = array._ofs;
     }
     
     /**
-     * Create a new Array referencing the same Array referenced by
+     * Create a new FloatArray referencing the same FloatArray referenced by
      * the argument, starting at the given offset.
      * @param array
      * @param ofs 
      */
-    public ObjArray(ObjArray<T> array, int ofs) {
+    public FloatArray(FloatArray array, int ofs) {
         _data = array._data;
         _ofs = array._ofs + ofs;
         if (_ofs >= _data.length) {
@@ -79,41 +84,41 @@ public class ObjArray<T> {
     }
     
     /**
-     * @return value at position 0;
+     * @return float value at position 0;
      */
-    public T at0() {
+    public float at0() {
         return _data[_ofs];
     }
     
     /**
      * @param ofs 
-     * @return value at position ofs;
+     * @return float value at position ofs;
      */
-    public T at(int ofs) {
+    public float at(int ofs) {
         return _data[_ofs + ofs];
     }
     
     /**
-     * Set value at position 0;
+     * Set float value at position 0;
      * @param d 
      */
-    public void setAt0(T d) {
+    public void setAt0(float d) {
         _data[_ofs] = d;
     }
     
     /**
-     * Set value at position ofs;
+     * Set float value at position ofs;
      * @param ofs 
      * @param d 
      */
-    public void setAt(int ofs, T d) {
+    public void setAt(int ofs, float d) {
         _data[_ofs + ofs] = d;
     }
     
     /**
      * @param data
      */
-    public void setData(T[] data) {
+    public void setData(float[] data) {
         if (data.length + _ofs >= _data.length) {
             throw new IndexOutOfBoundsException(data.length + " + " + 
                     _ofs + " = " + (data.length + _ofs) + " >= " + _data.length);
@@ -124,8 +129,8 @@ public class ObjArray<T> {
     /**
      * @param array
      */
-    public void setData(ObjArray<T> array) {
-        T[] data = array._data;
+    public void setData(FloatArray array) {
+    	float[] data = array._data;
         int ofs = array._ofs;
         if (data.length + _ofs + ofs >= _data.length) {
             throw new IndexOutOfBoundsException(data.length + " + " + ofs +
@@ -136,22 +141,22 @@ public class ObjArray<T> {
     }
     
     /**
-     * @return cloned double[].
+     * @return cloned float[].
      */
-    public T[] cloneData() {
-        T[] ret = Arrays.copyOf(_data, _data.length - _ofs);
-//        System.arraycopy(_data, _ofs, ret, 0, _data.length - _ofs);
+    public float[] cloneData() {
+    	float[] ret = new float[_data.length - _ofs];
+        System.arraycopy(_data, _ofs, ret, 0, _data.length - _ofs);
         return ret;
     }
     
     /**
      * @param ofs
      * @param len
-     * @return cloned []
+     * @return cloned float[]
      */
-    public T[] cloneData(int ofs, int len) {
-        T[] ret = _data.clone();
-//        System.arraycopy(_data, _ofs + ofs, ret, 0, len);
+    public float[] cloneData(int ofs, int len) {
+    	float[] ret = new float[len];
+        System.arraycopy(_data, _ofs + ofs, ret, 0, len);
         return ret;
     }
     
@@ -186,33 +191,9 @@ public class ObjArray<T> {
     }
 
 	/**
-	 * @return current size
+	 * @return Original size
 	 */
 	public int size() {
 		return _data.length - _ofs;
-	}
-
-	/**
-	 * @return Original size
-	 */
-	public int dataSize() {
-		return _data.length;
-	}
-
-	/**
-	 * @param destPos
-	 * @param srcPos
-	 * @param len
-	 */
-	public void memcpy(int destPos, int srcPos, int len) {
-		if (destPos > srcPos) {
-			for (int i = _ofs+len-1; i >= _ofs; i--) {
-				_data[destPos + i] = _data[srcPos + i];
-			}
-		} else if (destPos < srcPos) {
-			for (int i = _ofs; i < _ofs+len; i++) {
-				_data[destPos + i] = _data[srcPos + i];
-			}
-		}
 	}
 }

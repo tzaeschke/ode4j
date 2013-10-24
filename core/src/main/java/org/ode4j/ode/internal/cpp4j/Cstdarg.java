@@ -19,19 +19,41 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j;
+package org.ode4j.ode.internal.cpp4j;
 
 /**
- * Emulator for type.
+ * Emulator for stdio.
  *
  * @author Tilmann Zaeschke
  */
-public class Ctype {
+public class Cstdarg extends Cstdio {
+
 	/**
-	 * @param ch
-	 * @return True if the character is a digit.
 	 */
-	public static boolean isdigit(char ch) {
-		return Character.isDigit(ch);
+	public static class va_list {
+		final Object[] l;
+		/**
+		 * @param varArgsOfCallingMethod
+		 */
+		public va_list(Object[] varArgsOfCallingMethod) {
+			l = varArgsOfCallingMethod;
+		}
+	}
+	
+	/**
+	 * This method does nothing.
+	 * @param ap
+	 * @param argToStartAfter_isIgnored
+	 */
+	public static void va_start(va_list ap, Object argToStartAfter_isIgnored ) {
+		
+	}
+	
+	/**
+	 * This method does nothing.
+	 * @param ap
+	 */
+	public static void va_end(va_list ap) {
+		
 	}
 }

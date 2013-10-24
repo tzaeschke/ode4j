@@ -19,14 +19,14 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j;
+package org.ode4j.ode.internal.cpp4j;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.cpp4j.java.Ref;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
 
 public class Cstdio extends Cstdlib {
 	

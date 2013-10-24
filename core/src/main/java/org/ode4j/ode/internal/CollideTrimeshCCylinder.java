@@ -24,13 +24,13 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.ObjArray;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;

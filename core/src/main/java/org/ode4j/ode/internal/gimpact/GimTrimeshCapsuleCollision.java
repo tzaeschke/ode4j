@@ -33,7 +33,7 @@ package org.ode4j.ode.internal.gimpact;
 
 import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 
-import org.cpp4j.java.ObjArray;
+import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimTriCollision.GIM_TRIANGLE_DATA;
 
 /**

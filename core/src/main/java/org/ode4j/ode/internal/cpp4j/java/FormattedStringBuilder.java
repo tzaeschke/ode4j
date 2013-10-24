@@ -19,7 +19,7 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j.java;
+package org.ode4j.ode.internal.cpp4j.java;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

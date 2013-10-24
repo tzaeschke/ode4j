@@ -31,10 +31,10 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
-import org.cpp4j.java.FloatArray;
-import org.cpp4j.java.RefBoolean;
-import org.cpp4j.java.RefFloat;
-import org.cpp4j.java.RefInt;
+import org.ode4j.ode.internal.cpp4j.java.FloatArray;
+import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
+import org.ode4j.ode.internal.cpp4j.java.RefFloat;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 /**
  * @file gim_geometry.h

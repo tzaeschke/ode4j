@@ -6,8 +6,8 @@ import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 import static org.ode4j.tests.libccd.CCDTestSupport.*;
 
-import org.cpp4j.java.RefDouble;
 import org.junit.Assert;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.libccd.CCD.ccd_t;
 import org.ode4j.ode.internal.libccd.CCDQuat.ccd_quat_t;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;

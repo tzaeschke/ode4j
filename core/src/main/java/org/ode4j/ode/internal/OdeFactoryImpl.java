@@ -24,13 +24,13 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.Ref;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 
-import static org.cpp4j.Cstdio.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 
 /**

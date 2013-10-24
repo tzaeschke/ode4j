@@ -47,7 +47,6 @@ import static org.ode4j.ode.internal.Rotation.dQMultiply0;
 import static org.ode4j.ode.internal.Rotation.dQfromR;
 import static org.ode4j.ode.internal.Rotation.dRfromQ;
 
-import org.cpp4j.java.Ref;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -63,6 +62,7 @@ import org.ode4j.ode.internal.Objects_H.DxPosR;
 import org.ode4j.ode.internal.Objects_H.DxPosRC;
 import org.ode4j.ode.internal.Objects_H.dxAutoDisable;
 import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;

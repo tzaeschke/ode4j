@@ -1,6 +1,6 @@
 package org.ode4j.tests.libccd;
 
-import static org.cpp4j.Cstdio.*;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 import static org.ode4j.ode.internal.libccd.CCD.*;
 import static org.ode4j.ode.internal.libccd.CCDMPR.*;
 import static org.ode4j.ode.internal.libccd.CCDQuat.*;
@@ -8,9 +8,9 @@ import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 import static org.ode4j.tests.libccd.CCDTestCommon.*;
 import static org.ode4j.tests.libccd.CCDTestSupport.*;
 
-import org.cpp4j.java.RefDouble;
 import org.junit.Assert;
 import org.junit.Test;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
 public class TestMPRBoxBox {
 

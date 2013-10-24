@@ -39,10 +39,10 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.CollideBoxBox;
 import org.ode4j.ode.internal.DxConvex;
 
-import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 class DemoConvexCD extends dsFunctions {

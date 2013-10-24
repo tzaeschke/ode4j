@@ -25,9 +25,6 @@
 package org.ode4j.ode.internal;
 
 
-import static org.cpp4j.Cstdio.printf;
-import static org.cpp4j.Cstring.memcpy;
-import static org.cpp4j.Cstring.memmove;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.dAASSERT;
 import static org.ode4j.ode.internal.Common.dFabs;
@@ -46,6 +43,9 @@ import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
 import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
 import static org.ode4j.ode.internal.Misc.dMaxDifference;
 import static org.ode4j.ode.internal.Misc.dRandReal;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
+import static org.ode4j.ode.internal.cpp4j.Cstring.memmove;
 
 import org.ode4j.math.DMatrixN;
 import org.ode4j.ode.DStopwatch;

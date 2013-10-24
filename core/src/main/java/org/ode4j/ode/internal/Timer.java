@@ -25,10 +25,10 @@
 package org.ode4j.ode.internal;
 
 
-import static org.cpp4j.Cstdio.*;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
-import org.cpp4j.FILE;
 import org.ode4j.ode.DStopwatch;
+import org.ode4j.ode.internal.cpp4j.FILE;
 
 /**
  * TODO

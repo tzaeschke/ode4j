@@ -19,9 +19,9 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j;
+package org.ode4j.ode.internal.cpp4j;
 
-import org.cpp4j.java.CppLongJump;
+import org.ode4j.ode.internal.cpp4j.java.CppLongJump;
 
 /**
  * Emulator for long jumps (setjmp).

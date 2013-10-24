@@ -24,10 +24,10 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;

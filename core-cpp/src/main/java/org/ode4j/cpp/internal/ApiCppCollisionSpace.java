@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHashSpace;
@@ -30,6 +29,7 @@ import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DSapSpace.AXES;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 

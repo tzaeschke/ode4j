@@ -24,9 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefBoolean;
-import org.cpp4j.java.RefDouble;
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -38,6 +35,9 @@ import org.ode4j.ode.DColliderFn;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;

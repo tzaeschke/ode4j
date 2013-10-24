@@ -28,9 +28,9 @@ import static org.ode4j.ode.internal.Common.dIASSERT;
 
 import java.util.ArrayList;
 
-import org.cpp4j.java.Ref;
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector4;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 /**
  *

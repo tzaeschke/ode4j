@@ -34,7 +34,6 @@ import static org.ode4j.ode.internal.Common.dSqrt;
 import static org.ode4j.ode.internal.Common.dUASSERT;
 import static org.ode4j.ode.internal.ErrorHandler.dMessage;
 
-import org.cpp4j.java.Ref;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DWorld;
@@ -42,6 +41,7 @@ import org.ode4j.ode.internal.Objects_H.dxAutoDisable;
 import org.ode4j.ode.internal.Objects_H.dxContactParameters;
 import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxStepWorkingMemory;
 import org.ode4j.ode.internal.processmem.DxUtil;

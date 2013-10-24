@@ -24,18 +24,18 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import static org.cpp4j.Cmath.pow;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.dAASSERT;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dNextAfter;
+import static org.ode4j.ode.internal.cpp4j.Cmath.pow;
 
-import org.cpp4j.java.ObjArray;
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAABBC;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DQuadTreeSpace;
+import org.ode4j.ode.internal.cpp4j.java.ObjArray;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 
 /**

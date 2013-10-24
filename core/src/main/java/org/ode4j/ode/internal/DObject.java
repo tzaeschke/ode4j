@@ -24,7 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.Ref;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
 
 
 /**

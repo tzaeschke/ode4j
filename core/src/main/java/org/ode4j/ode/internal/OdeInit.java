@@ -24,7 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefBoolean;
+import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.gimpact.Gimpact;
 
 /**

@@ -37,7 +37,7 @@ import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.Common;
 
-import static org.cpp4j.Cstdio.*;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 
 /**

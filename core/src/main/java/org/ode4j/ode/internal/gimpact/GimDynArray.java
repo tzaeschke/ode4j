@@ -33,7 +33,7 @@ package org.ode4j.ode.internal.gimpact;
 
 import java.util.Arrays;
 
-import org.cpp4j.java.ObjArray;
+import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 
 /**
  * Dynamic Arrays. Allocated from system memory.

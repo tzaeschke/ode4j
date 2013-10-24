@@ -19,62 +19,62 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j.java;
+package org.ode4j.ode.internal.cpp4j.java;
 
 /**
- * Class to simulate pointer operations on float arrays.
+ * Class to simulate pointer operations on double arrays.
  *
  * @author Tilmann Zaeschke
  */
-public class FloatArray {
+public class DoubleArray {
     
-    private final float[] _data;
+    private final double[] _data;
     private int _ofs;
     
     /**
      * @param size
      */
-    public FloatArray(int size) {
-        _data = new float[size];
+    public DoubleArray(int size) {
+        _data = new double[size];
         _ofs = 0;
     }
     
     /**
-     * Create a new FloatArray referencing the given float array.
+     * Create a new DoubleArray referencing the given double array.
      * @param array
      */
-    public FloatArray(float[] array) {
+    public DoubleArray(double[] array) {
         _data = array;
         _ofs = 0;
     }
     
     /**
-     * Create a new FloatArray referencing the given float array.
+     * Create a new DoubleArray referencing the given double array.
      * @param array
      * @param ofs 
      */
-    public FloatArray(float[] array, int ofs) {
+    public DoubleArray(double[] array, int ofs) {
         _data = array;
         _ofs = ofs;
     }
     
     /**
-     * Create a new FloatArray referencing the same FloatArray referenced by
+     * Create a new DoubleArray referencing the same DoubleArray referenced by
      * the argument.
      * @param array
      */
-    public FloatArray(FloatArray array) {
+    public DoubleArray(DoubleArray array) {
         _data = array._data;
         _ofs = array._ofs;
     }
     
     /**
-     * Create a new FloatArray referencing the same FloatArray referenced by
+     * Create a new DoubleArray referencing the same DoubleArray referenced by
      * the argument, starting at the given offset.
      * @param array
      * @param ofs 
      */
-    public FloatArray(FloatArray array, int ofs) {
+    public DoubleArray(DoubleArray array, int ofs) {
         _data = array._data;
         _ofs = array._ofs + ofs;
         if (_ofs >= _data.length) {
@@ -84,41 +84,41 @@ public class FloatArray {
     }
     
     /**
-     * @return float value at position 0;
+     * @return double value at position 0;
      */
-    public float at0() {
+    public double getAt0() {
         return _data[_ofs];
     }
     
     /**
      * @param ofs 
-     * @return float value at position ofs;
+     * @return double value at position ofs;
      */
-    public float at(int ofs) {
+    public double getAt(int ofs) {
         return _data[_ofs + ofs];
     }
     
     /**
-     * Set float value at position 0;
+     * Set double value at position 0;
      * @param d 
      */
-    public void setAt0(float d) {
+    public void setAt0(double d) {
         _data[_ofs] = d;
     }
     
     /**
-     * Set float value at position ofs;
+     * Set double value at position ofs;
      * @param ofs 
      * @param d 
      */
-    public void setAt(int ofs, float d) {
+    public void setAt(int ofs, double d) {
         _data[_ofs + ofs] = d;
     }
     
     /**
      * @param data
      */
-    public void setData(float[] data) {
+    public void setData(double[] data) {
         if (data.length + _ofs >= _data.length) {
             throw new IndexOutOfBoundsException(data.length + " + " + 
                     _ofs + " = " + (data.length + _ofs) + " >= " + _data.length);
@@ -129,8 +129,8 @@ public class FloatArray {
     /**
      * @param array
      */
-    public void setData(FloatArray array) {
-    	float[] data = array._data;
+    public void setData(DoubleArray array) {
+        double[] data = array._data;
         int ofs = array._ofs;
         if (data.length + _ofs + ofs >= _data.length) {
             throw new IndexOutOfBoundsException(data.length + " + " + ofs +
@@ -141,10 +141,10 @@ public class FloatArray {
     }
     
     /**
-     * @return cloned float[].
+     * @return cloned double[].
      */
-    public float[] cloneData() {
-    	float[] ret = new float[_data.length - _ofs];
+    public double[] cloneData() {
+        double[] ret = new double[_data.length - _ofs];
         System.arraycopy(_data, _ofs, ret, 0, _data.length - _ofs);
         return ret;
     }
@@ -152,10 +152,10 @@ public class FloatArray {
     /**
      * @param ofs
      * @param len
-     * @return cloned float[]
+     * @return cloned double[]
      */
-    public float[] cloneData(int ofs, int len) {
-    	float[] ret = new float[len];
+    public double[] cloneData(int ofs, int len) {
+        double[] ret = new double[len];
         System.arraycopy(_data, _ofs + ofs, ret, 0, len);
         return ret;
     }
@@ -189,11 +189,4 @@ public class FloatArray {
     public void inc(int n) {
         _ofs += n;
     }
-
-	/**
-	 * @return Original size
-	 */
-	public int size() {
-		return _data.length - _ofs;
-	}
 }

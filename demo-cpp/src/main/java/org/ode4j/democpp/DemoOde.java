@@ -24,15 +24,6 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.cpp4j.Csetjmp.longjmp;
-import static org.cpp4j.Csetjmp.setjmp;
-import static org.cpp4j.Cstdio.printf;
-import static org.cpp4j.Cstdio.sprintf;
-import static org.cpp4j.Cstdio.vprintf;
-import static org.cpp4j.Cstdio.vsprintf;
-import static org.cpp4j.Cstring.memcpy;
-import static org.cpp4j.Cstring.strcmp;
-import static org.cpp4j.Cstring.strlen;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassRotate;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassSetCapsule;
@@ -47,12 +38,18 @@ import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Rotation.dQtoR;
 import static org.ode4j.ode.internal.Rotation.dRSetIdentity;
 import static org.ode4j.ode.internal.Rotation.dRtoQ;
+import static org.ode4j.ode.internal.cpp4j.Csetjmp.longjmp;
+import static org.ode4j.ode.internal.cpp4j.Csetjmp.setjmp;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.sprintf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.vprintf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.vsprintf;
+import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
+import static org.ode4j.ode.internal.cpp4j.Cstring.strcmp;
+import static org.ode4j.ode.internal.cpp4j.Cstring.strlen;
 
 import java.util.ArrayList;
 
-import org.cpp4j.Csetjmp.jmp_buf;
-import org.cpp4j.java.CppLongJump;
-import org.cpp4j.java.Ref;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -62,6 +59,9 @@ import org.ode4j.ode.internal.DLCP;
 import org.ode4j.ode.internal.DxMass;
 import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
 import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
+import org.ode4j.ode.internal.cpp4j.Csetjmp.jmp_buf;
+import org.ode4j.ode.internal.cpp4j.java.CppLongJump;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
 
 class DemoOde {
 

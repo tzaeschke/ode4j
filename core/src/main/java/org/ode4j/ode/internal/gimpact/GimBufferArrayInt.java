@@ -33,7 +33,7 @@ package org.ode4j.ode.internal.gimpact;
 
 import java.util.Arrays;
 
-import org.cpp4j.java.IntArray;
+import org.ode4j.ode.internal.cpp4j.java.IntArray;
 
 /**
  * @defgroup BUFFER_ARRAYS

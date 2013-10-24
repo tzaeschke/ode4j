@@ -31,13 +31,14 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.cpp4j.C_All.*;
+
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 
-import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 

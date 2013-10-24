@@ -24,7 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefDouble;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -32,6 +31,7 @@ import org.ode4j.math.DVector4;
 import org.ode4j.math.DVector4C;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;

@@ -44,8 +44,6 @@ import static org.ode4j.ode.internal.Common.M_PI;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.cpp4j.java.RefDouble;
-import org.cpp4j.java.RefInt;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
@@ -65,6 +63,8 @@ import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.DxBox;
 import org.ode4j.ode.internal.DxCollisionUtil;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 /**
  * collision tests. if this program is run without any arguments it will

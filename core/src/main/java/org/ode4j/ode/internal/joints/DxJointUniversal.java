@@ -37,13 +37,13 @@ import static org.ode4j.ode.internal.Rotation.dQMultiply2;
 import static org.ode4j.ode.internal.Rotation.dQfromR;
 import static org.ode4j.ode.internal.Rotation.dRFrom2Axes;
 
-import org.cpp4j.java.RefDouble;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.internal.DxWorld;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
 
 /** 

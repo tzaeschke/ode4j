@@ -24,13 +24,13 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 /**
  * Common base class for all geometries.

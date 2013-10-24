@@ -25,7 +25,7 @@
 package org.ode4j.drawstuff;
 
 
-import static org.cpp4j.Cstdio.*;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 import org.ode4j.drawstuff.internal.DrawStuffApi;
 import org.ode4j.drawstuff.internal.DrawStuffGL;

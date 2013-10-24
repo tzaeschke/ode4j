@@ -31,7 +31,7 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
-import org.cpp4j.java.ObjArray;
+import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry.mat4f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 

@@ -21,8 +21,8 @@
  *************************************************************************/
 package org.ode4j.drawstuff.internal;
 
-import static org.cpp4j.Cstdio.fprintf;
-import static org.cpp4j.Cstdio.stderr;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.fprintf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.stderr;
 
 import org.ode4j.drawstuff.DrawStuff;
 import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;

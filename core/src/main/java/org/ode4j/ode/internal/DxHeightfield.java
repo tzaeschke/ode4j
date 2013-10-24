@@ -34,7 +34,6 @@ import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Common.dFloor;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 
-import org.cpp4j.java.ObjArray;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -45,6 +44,7 @@ import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHeightfield;
 import org.ode4j.ode.DHeightfieldData;
+import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 
 /**
  *

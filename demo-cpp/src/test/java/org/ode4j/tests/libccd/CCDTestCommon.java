@@ -1,12 +1,12 @@
 package org.ode4j.tests.libccd;
 
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 import static org.ode4j.tests.libccd.CCDTestSupport.*;
 
-import static org.cpp4j.Cstdio.*;
-import org.cpp4j.FILE;
-import org.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.FILE;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
 public class CCDTestCommon {
 

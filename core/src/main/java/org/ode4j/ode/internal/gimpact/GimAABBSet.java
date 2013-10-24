@@ -37,8 +37,8 @@ import static org.ode4j.ode.internal.gimpact.GimGeometry.BOXINTERSECTION;
 import static org.ode4j.ode.internal.gimpact.GimGeometry.MERGEBOXES;
 import static org.ode4j.ode.internal.gimpact.GimMath.CLAMP;
 
-import org.cpp4j.java.RefBoolean;
-import org.cpp4j.java.RefFloat;
+import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
+import org.ode4j.ode.internal.cpp4j.java.RefFloat;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;

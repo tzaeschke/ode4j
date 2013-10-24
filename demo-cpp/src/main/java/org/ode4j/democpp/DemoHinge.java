@@ -24,10 +24,10 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.cpp4j.Cstdio.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;

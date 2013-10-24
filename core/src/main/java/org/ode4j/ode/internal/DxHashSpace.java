@@ -24,12 +24,12 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefInt;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DHashSpace;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
-import static org.cpp4j.C_All.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 /**
  * From collision_space.cpp

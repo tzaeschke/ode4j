@@ -19,12 +19,13 @@ package org.ode4j.ode.internal.libccd;
 
 import java.util.Arrays;
 
-import org.cpp4j.java.Ref;
-import org.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.libccd.CCDPolyTope.ccd_pt_edge_t;
 import org.ode4j.ode.internal.libccd.CCDPolyTope.ccd_pt_face_t;
 import org.ode4j.ode.internal.libccd.CCDSimplex.ccd_simplex_t;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;
+
 import static org.ode4j.ode.internal.libccd.CCDPolyTope.*;
 import static org.ode4j.ode.internal.libccd.CCDSimplex.*;
 import static org.ode4j.ode.internal.libccd.CCDSupport.*;

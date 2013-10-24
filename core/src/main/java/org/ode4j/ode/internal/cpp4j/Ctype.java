@@ -19,24 +19,19 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j.java;
+package org.ode4j.ode.internal.cpp4j;
 
-public final class RefFloat {
-	public float d;
-
-	public RefFloat() {
-		this.d = 0;
-	}
-	
-	public RefFloat(float d) {
-		this.d = d;
-	}
-	
-	public final void set(float d) {
-		this.d = d;
-	}
-
-	public final float get() {
-		return d;
+/**
+ * Emulator for type.
+ *
+ * @author Tilmann Zaeschke
+ */
+public class Ctype {
+	/**
+	 * @param ch
+	 * @return True if the character is a digit.
+	 */
+	public static boolean isdigit(char ch) {
+		return Character.isDigit(ch);
 	}
 }

@@ -38,9 +38,9 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.DGeom.DNearCallback;
 
-import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 class DemoChain1 extends dsFunctions {

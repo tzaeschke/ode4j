@@ -1,12 +1,12 @@
 package org.ode4j.tests.libccd;
 
-import org.cpp4j.java.RefDouble;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
 import static org.junit.Assert.*;
-import static org.cpp4j.Cstdio.*;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 import static org.ode4j.ode.internal.libccd.CCD.*;
 import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;

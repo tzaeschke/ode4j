@@ -24,7 +24,6 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import org.cpp4j.Ctype;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -42,11 +41,12 @@ import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.internal.cpp4j.Ctype;
 
-import static org.cpp4j.C_All.*;
 import static org.ode4j.cpp.OdeCpp.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 /**

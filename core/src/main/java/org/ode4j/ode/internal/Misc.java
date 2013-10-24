@@ -24,15 +24,15 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.FILE;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.internal.cpp4j.FILE;
 
-import static org.cpp4j.Cstdio.*;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 
 

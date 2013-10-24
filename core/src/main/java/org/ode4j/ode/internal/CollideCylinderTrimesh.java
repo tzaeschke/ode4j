@@ -36,7 +36,6 @@ import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Cross;
 import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Inv;
 import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Subtract;
 
-import org.cpp4j.java.RefBoolean;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -50,6 +49,7 @@ import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;

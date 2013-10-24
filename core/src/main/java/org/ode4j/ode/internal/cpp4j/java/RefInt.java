@@ -19,32 +19,32 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j.java;
+package org.ode4j.ode.internal.cpp4j.java;
 
-public final class RefDouble {
-	public double d;
+public final class RefInt {
+	public int i = 0;
 
-	public RefDouble() {
-		this.d = 0;
-	}
-	
-	public RefDouble(double d) {
-		this.d = d;
-	}
-	
-	public final void set(double d) {
-		this.d = d;
+	public RefInt() {
+		// Nothing
 	}
 
-	public final double get() {
-		return d;
+	public RefInt(int v) {
+		i = v;
 	}
 
-	public final float getF() {
-		return (float) d;
+	public final void set(int v) {
+		i = v;
 	}
 
-	public void sub(double e) {
-		d -= e;
+	public final int get() {
+		return i;
+	}
+
+	public final void inc() {
+		i++;
+	}
+
+	public void add(int j) {
+		i += j;
 	}
 }

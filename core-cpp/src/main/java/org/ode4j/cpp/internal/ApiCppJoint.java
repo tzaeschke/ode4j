@@ -21,7 +21,6 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
-import org.cpp4j.java.RefDouble;
 import org.ode4j.ode.DAMotorJoint;
 import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
@@ -45,6 +44,7 @@ import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DAMotorJoint.AMotorMode;
 import org.ode4j.ode.DJoint.PARAM;
 import org.ode4j.ode.DJoint.PARAM_N;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.math.DVector3;
 
 public abstract class ApiCppJoint extends ApiCppOther {

@@ -13,12 +13,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>cpp</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>

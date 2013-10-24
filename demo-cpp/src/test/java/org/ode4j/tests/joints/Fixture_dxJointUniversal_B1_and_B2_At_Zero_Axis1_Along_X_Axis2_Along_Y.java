@@ -46,7 +46,6 @@ import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.ode.internal.Rotation.dRFromAxisAndAngle;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
-import org.cpp4j.java.RefDouble;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
@@ -54,6 +53,7 @@ import org.ode4j.math.DVector3;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.joints.DxJointUniversal;
 
 // The 2 bodies are positionned at (0, 0, 0)

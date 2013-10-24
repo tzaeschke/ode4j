@@ -24,10 +24,6 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.cpp4j.Cmath.cos;
-import static org.cpp4j.Cmath.sin;
-import static org.cpp4j.Cstdio.printf;
-import static org.cpp4j.Cstdlib.atoi;
 import static org.ode4j.cpp.internal.ApiCppCollision.dBoxBox;
 import static org.ode4j.cpp.internal.ApiCppCollision.dBoxTouchesBox;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
@@ -99,12 +95,14 @@ import static org.ode4j.ode.internal.Misc.dRandSetSeed;
 import static org.ode4j.ode.internal.Rotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.internal.Rotation.dRFromZAxis;
 import static org.ode4j.ode.internal.Rotation.dRSetIdentity;
+import static org.ode4j.ode.internal.cpp4j.Cmath.cos;
+import static org.ode4j.ode.internal.cpp4j.Cmath.sin;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+import static org.ode4j.ode.internal.cpp4j.Cstdlib.atoi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.cpp4j.java.RefDouble;
-import org.cpp4j.java.RefInt;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
@@ -115,6 +113,8 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DRay;
 import org.ode4j.ode.DSimpleSpace;

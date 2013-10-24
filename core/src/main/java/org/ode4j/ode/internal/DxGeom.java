@@ -26,12 +26,9 @@ package org.ode4j.ode.internal;
 
 import java.util.List;
 
-
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Rotation.dQfromR;
 
-import org.cpp4j.java.Ref;
-import org.cpp4j.java.RefInt;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -51,6 +48,8 @@ import org.ode4j.ode.internal.DBase;
 import org.ode4j.ode.internal.DxSpace;
 import org.ode4j.ode.internal.Objects_H.DxPosRC;
 import org.ode4j.ode.internal.Objects_H.DxPosR;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.DxQuadTreeSpace.Block;
 
 import static org.ode4j.ode.internal.CollisionLibccd.*;

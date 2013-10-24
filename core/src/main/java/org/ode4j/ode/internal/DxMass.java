@@ -37,7 +37,6 @@ import static org.ode4j.ode.internal.Common.dRecip;
 import static org.ode4j.ode.internal.Common.dUASSERT;
 import static org.ode4j.ode.internal.Matrix.dIsPositiveDefinite;
 
-import org.cpp4j.java.FormattedStringBuilder;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -45,6 +44,7 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DMassC;
 import org.ode4j.ode.DTriMesh;
+import org.ode4j.ode.internal.cpp4j.java.FormattedStringBuilder;
 
 /**
  * DxMass.

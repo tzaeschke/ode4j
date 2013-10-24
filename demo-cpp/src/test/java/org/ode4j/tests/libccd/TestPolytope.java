@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.cpp4j.Cstdio.*;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 import static org.ode4j.ode.internal.libccd.CCDPolyTope.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 

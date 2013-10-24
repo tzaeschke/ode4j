@@ -19,20 +19,26 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j.java;
+package org.ode4j.ode.internal.cpp4j.java;
 
-public final class RefString {
-	public String b;
+/**
+ * Catching this exception can be used to implement a java version of 
+ * <tt>longjump(...)</tt>.
+ * 
+ * @author Tilmann Zaeschke
+ */
+public class CppLongJump extends RuntimeException {
 
-	public RefString(String b) {
-		this.b = b;
-	}
-	
-	public final void set(String b) {
-		this.b = b;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @param string Target name.
+	 */
+	public CppLongJump(String string) {
+		super(string);
 	}
 
-	public final String get() {
-		return b;
-	}
 }

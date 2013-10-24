@@ -19,41 +19,24 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j;
+package org.ode4j.ode.internal.cpp4j.java;
 
-/**
- * Emulator for stdio.
- *
- * @author Tilmann Zaeschke
- */
-public class Cstdarg extends Cstdio {
 
-	/**
-	 */
-	public static class va_list {
-		final Object[] l;
-		/**
-		 * @param varArgsOfCallingMethod
-		 */
-		public va_list(Object[] varArgsOfCallingMethod) {
-			l = varArgsOfCallingMethod;
-		}
+final public class Ref<T> {
+	public T r;
+	public Ref() {
+		r = null;
 	}
 	
-	/**
-	 * This method does nothing.
-	 * @param ap
-	 * @param argToStartAfter_isIgnored
-	 */
-	public static void va_start(va_list ap, Object argToStartAfter_isIgnored ) {
-		
+	public Ref(T obj) {
+		r = obj;
+	}
+
+	public final T get() {
+		return r;
 	}
 	
-	/**
-	 * This method does nothing.
-	 * @param ap
-	 */
-	public static void va_end(va_list ap) {
-		
+	public final void set(T r) {
+		this.r = r;
 	}
 }

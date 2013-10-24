@@ -19,24 +19,14 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.cpp4j.java;
+package org.ode4j.ode.internal.cpp4j;
 
+/**
+ * Sub-class of all porting classes. Importing this class gives access to 
+ * all C/C++ emulator functions.
+ * 
+ * @author Tilmann Zaeschke
+ */
+public class C_All extends Cmath {
 
-final public class Ref<T> {
-	public T r;
-	public Ref() {
-		r = null;
-	}
-	
-	public Ref(T obj) {
-		r = obj;
-	}
-
-	public final T get() {
-		return r;
-	}
-	
-	public final void set(T r) {
-		this.r = r;
-	}
 }

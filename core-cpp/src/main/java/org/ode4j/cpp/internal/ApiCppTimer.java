@@ -1,8 +1,8 @@
 package org.ode4j.cpp.internal;
 
-import org.cpp4j.FILE;
 import org.ode4j.ode.DStopwatch;
 import org.ode4j.ode.internal.Timer;
+import org.ode4j.ode.internal.cpp4j.FILE;
 
 /*************************************************************************
  *                                                                       *

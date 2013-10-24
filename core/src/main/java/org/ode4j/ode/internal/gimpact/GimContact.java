@@ -39,7 +39,7 @@ import static org.ode4j.ode.internal.gimpact.GimGeometry.VEC_SCALE;
 import static org.ode4j.ode.internal.gimpact.GimGeometry.VEC_SUM;
 import static org.ode4j.ode.internal.gimpact.GimMath.GIM_SQRT;
 
-import org.cpp4j.java.ObjArray;
+import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec4f;
 import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;

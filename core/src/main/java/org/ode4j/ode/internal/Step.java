@@ -24,7 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import static org.cpp4j.Cstdio.stdout;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dMultiply0_133;
 import static org.ode4j.ode.OdeMath.dMultiply0_331;
@@ -40,10 +39,11 @@ import static org.ode4j.ode.internal.Timer.dTimerEnd;
 import static org.ode4j.ode.internal.Timer.dTimerNow;
 import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 
-import org.cpp4j.FILE;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.ode.DJoint.DJointFeedback;
+import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;

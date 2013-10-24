@@ -22,8 +22,8 @@
 
 package org.ode4j.cpp.internal;
 
-import org.cpp4j.FILE;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.internal.cpp4j.FILE;
 
 public abstract class ApiCppExportDIF extends ApiCppCollision {
 

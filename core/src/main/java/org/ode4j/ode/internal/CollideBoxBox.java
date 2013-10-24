@@ -24,13 +24,13 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.cpp4j.java.RefDouble;
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DColliderFn;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 import static org.ode4j.ode.internal.Common.*;
 

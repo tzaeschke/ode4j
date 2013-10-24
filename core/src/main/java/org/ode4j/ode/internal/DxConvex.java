@@ -24,9 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import static org.cpp4j.Cmath.fabs;
-import static org.cpp4j.Cstdio.fprintf;
-import static org.cpp4j.Cstdio.stdout;
 import static org.ode4j.ode.OdeConstants.CONTACTS_UNIMPORTANT;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
@@ -40,9 +37,10 @@ import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dNODEBUG;
 import static org.ode4j.ode.internal.Common.dSqrt;
+import static org.ode4j.ode.internal.cpp4j.Cmath.fabs;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.fprintf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 
-import org.cpp4j.java.RefDouble;
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DColliderFn;
@@ -50,6 +48,8 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 /**
  * Code for Convex Collision Detection

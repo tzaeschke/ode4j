@@ -21,8 +21,6 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
-import org.cpp4j.java.DoubleArray;
-import org.cpp4j.java.RefInt;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSpace;
@@ -33,6 +31,8 @@ import org.ode4j.ode.DTriMesh.DTriArrayCallback;
 import org.ode4j.ode.DTriMesh.DTriCallback;
 import org.ode4j.ode.DTriMesh.DTriRayCallback;
 import org.ode4j.ode.internal.DxTriMeshData;
+import org.ode4j.ode.internal.cpp4j.java.DoubleArray;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 
 /**

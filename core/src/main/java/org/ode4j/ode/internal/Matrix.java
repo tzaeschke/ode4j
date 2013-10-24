@@ -24,8 +24,8 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import static org.cpp4j.Cstring.memcpy;
-import static org.cpp4j.Cstring.memmove;
+import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
+import static org.ode4j.ode.internal.cpp4j.Cstring.memmove;
 
 import java.util.Arrays;
 

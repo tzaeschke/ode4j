@@ -33,12 +33,12 @@ import static org.ode4j.ode.OdeMath.dMultiply0_331;
 import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.ode.internal.Common.M_PI;
 
-import org.cpp4j.java.RefDouble;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPUJoint;
 import org.ode4j.ode.internal.DxWorld;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
 
 /**

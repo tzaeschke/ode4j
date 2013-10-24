@@ -17,8 +17,9 @@
  */
 package org.ode4j.ode.internal.libccd;
 
-import org.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.libccd.CCD.ccd_t;
+
 import static org.ode4j.ode.internal.libccd.CCDSimplex.*;
 import static org.ode4j.ode.internal.libccd.CCDSupport.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
