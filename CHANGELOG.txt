@@ -1,3 +1,4 @@
 0.2.7
 
 - Merged 'cpp' package into 'core' package
+- Issue #3: porting typo in space collider

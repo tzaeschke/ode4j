@@ -257,7 +257,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 					}
 					else {
 						//for (dxGeom g = s2._first; g != null; g=g.getNext()) {
-						for (DxGeom g: s1._geoms) {
+						for (DxGeom g: s2._geoms) {
 							s1.collide2 (data,g,callback);
 						}
 					}
