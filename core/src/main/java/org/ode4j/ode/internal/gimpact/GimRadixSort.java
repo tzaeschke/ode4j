@@ -31,6 +31,8 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
+import java.util.TreeMap;
+
 
 /**
  * Based on the work of Michael Herf : "fast floating-point radix sort"
@@ -101,6 +103,14 @@ public class GimRadixSort {
 	static void GIM_RADIX_SORT_RTOKENS(final GIM_RSORT_TOKEN[] array, final GIM_RSORT_TOKEN[] sorted, 
 			final int element_count)
 	{
+                        TreeMap<Long,GIM_RSORT_TOKEN> tm = new TreeMap<Long, GIM_RSORT_TOKEN>();
+            for(GIM_RSORT_TOKEN t : array)
+                tm.put(t.m_key, t);
+            int i = 0;
+            for(GIM_RSORT_TOKEN t : tm.values())
+                sorted[i++] = t;
+
+            /*
 		int i;
 		//		int[] b0 = new int[kHist * 3];
 		//		IntArray b1 = new IntArray( b0, kHist );
@@ -161,6 +171,7 @@ public class GimRadixSort {
 			sorted[pos].m_key = array[i].m_key;
 			sorted[pos].m_value = array[i].m_value;
 		}
+                    */
 	}
 
 	//	/// Get the sorted tokens from an array. For generic use. Tokens are GIM_RSORT_TOKEN
