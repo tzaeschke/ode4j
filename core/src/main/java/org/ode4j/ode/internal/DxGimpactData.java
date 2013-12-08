@@ -117,7 +117,7 @@ public class DxGimpactData extends DxTriMeshData {
  		m_Vertices = Vertices;
  		m_Indices = Indices;
  		//TODO remove?
- 		check();
+ 		//check();
   	}
     
 	void GetVertex(int i, DVector4 Out)

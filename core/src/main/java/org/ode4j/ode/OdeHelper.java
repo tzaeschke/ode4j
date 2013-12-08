@@ -857,10 +857,10 @@ public abstract class OdeHelper {
 	 * Trimesh class
 	 * Construction. Callbacks are optional.
 	 */
-	public static DTriMesh createTriMesh(DSpace space, DTriMeshData Data, DTriCallback Callback, 
-			 DTriArrayCallback ArrayCallback, DTriRayCallback RayCallback) {
-		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)Data, 
-				Callback, ArrayCallback, RayCallback);
+	public static DTriMesh createTriMesh(DSpace space, DTriMeshData data, DTriCallback callback, 
+			 DTriArrayCallback arrayCallback, DTriRayCallback rayCallback) {
+		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)data, 
+				callback, arrayCallback, rayCallback);
 	}
 
 	/**

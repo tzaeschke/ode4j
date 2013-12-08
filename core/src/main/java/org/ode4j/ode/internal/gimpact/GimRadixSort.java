@@ -73,7 +73,7 @@ public class GimRadixSort {
 	//	#define D11_2(x)	(x >> 22 )
 	private static int D11_0(long x) { return (int) (x & 0x7FFl); }
 	private static int D11_1(long x) { return (int) (x >>> 11 & 0x7FFl); }
-	private static int D11_2(long x) { return (int) (x >>> 22 ); }
+	private static int D11_2(long x) { return (int) (x >>> 22 & 0x3FFl ); }
 
 
 	//COMMON FUNCTIONS FOR ACCESSING THE KEY OF AN ELEMENT
@@ -103,14 +103,13 @@ public class GimRadixSort {
 	static void GIM_RADIX_SORT_RTOKENS(final GIM_RSORT_TOKEN[] array, final GIM_RSORT_TOKEN[] sorted, 
 			final int element_count)
 	{
-                        TreeMap<Long,GIM_RSORT_TOKEN> tm = new TreeMap<Long, GIM_RSORT_TOKEN>();
-            for(GIM_RSORT_TOKEN t : array)
-                tm.put(t.m_key, t);
-            int i = 0;
-            for(GIM_RSORT_TOKEN t : tm.values())
-                sorted[i++] = t;
+//                        TreeMap<Long,GIM_RSORT_TOKEN> tm = new TreeMap<Long, GIM_RSORT_TOKEN>();
+//            for(GIM_RSORT_TOKEN t : array)
+//                tm.put(t.m_key, t);
+//            int i = 0;
+//            for(GIM_RSORT_TOKEN t : tm.values())
+//                sorted[i++] = t;
 
-            /*
 		int i;
 		//		int[] b0 = new int[kHist * 3];
 		//		IntArray b1 = new IntArray( b0, kHist );
@@ -171,7 +170,6 @@ public class GimRadixSort {
 			sorted[pos].m_key = array[i].m_key;
 			sorted[pos].m_value = array[i].m_value;
 		}
-                    */
 	}
 
 	//	/// Get the sorted tokens from an array. For generic use. Tokens are GIM_RSORT_TOKEN
