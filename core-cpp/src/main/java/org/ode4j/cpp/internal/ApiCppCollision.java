@@ -73,7 +73,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	/* general functions */
 
 	/**
-	 * @brief Destroy a geom, removing it from any space.
+	 * Destroy a geom, removing it from any space.
 	 *
 	 * Destroy a geom, removing it from any space it is in first. This one
 	 * function destroys a geom of any type, but to create a geom you must call
@@ -92,7 +92,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the user-defined data pointer stored in the geom.
+	 * Set the user-defined data pointer stored in the geom.
 	 *
 	 * @param geom the geom to hold the data
 	 * @param data the data pointer to be stored
@@ -106,7 +106,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the user-defined data pointer stored in the geom.
+	 * Get the user-defined data pointer stored in the geom.
 	 *
 	 * @param geom the geom containing the data
 	 * @ingroup collide
@@ -119,7 +119,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the body associated with a placeable geom.
+	 * Set the body associated with a placeable geom.
 	 *
 	 * Setting a body on a geom automatically combines the position vector and
 	 * rotation matrix of the body and geom, so that setting the position or
@@ -143,7 +143,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the body associated with a placeable geom.
+	 * Get the body associated with a placeable geom.
 	 * @param geom the geom to query.
 	 * @see #dGeomSetBody(DGeom, DBody)
 	 * @ingroup collide
@@ -155,7 +155,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the position vector of a placeable geom.
+	 * Set the position vector of a placeable geom.
 	 *
 	 * If the geom is attached to a body, the body's position will also be changed.
 	 * Calling this function on a non-placeable geom results in a runtime error in
@@ -175,7 +175,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the rotation matrix of a placeable geom.
+	 * Set the rotation matrix of a placeable geom.
 	 *
 	 * If the geom is attached to a body, the body's rotation will also be changed.
 	 * Calling this function on a non-placeable geom results in a runtime error in
@@ -193,7 +193,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the rotation of a placeable geom.
+	 * Set the rotation of a placeable geom.
 	 *
 	 * If the geom is attached to a body, the body's rotation will also be changed.
 	 *
@@ -212,7 +212,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the position vector of a placeable geom.
+	 * Get the position vector of a placeable geom.
 	 *
 	 * If the geom is attached to a body, the body's position will be returned.
 	 *
@@ -234,7 +234,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Copy the position of a geom into a vector.
+	 * Copy the position of a geom into a vector.
 	 * @ingroup collide
 	 * @param geom  the geom to query
 	 * @param pos   a copy of the geom position
@@ -247,7 +247,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the rotation matrix of a placeable geom.
+	 * Get the rotation matrix of a placeable geom.
 	 *
 	 * If the geom is attached to a body, the body's rotation will be returned.
 	 *
@@ -269,7 +269,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the rotation matrix of a placeable geom.
+	 * Get the rotation matrix of a placeable geom.
 	 *
 	 * If the geom is attached to a body, the body's rotation will be returned.
 	 *
@@ -288,7 +288,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the rotation quaternion of a placeable geom.
+	 * Get the rotation quaternion of a placeable geom.
 	 *
 	 * If the geom is attached to a body, the body's quaternion will be returned.
 	 *
@@ -307,7 +307,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Return the axis-aligned bounding box.
+	 * Return the axis-aligned bounding box.
 	 *
 	 * Return in aabb an axis aligned bounding box that surrounds the given geom.
 	 * The aabb array has elements (minx, maxx, miny, maxy, minz, maxz). If the
@@ -330,7 +330,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Determing if a geom is a space.
+	 * Determing if a geom is a space.
 	 * @param geom the geom to query
 	 * @return Non-zero if the geom is a space, zero otherwise.
 	 * @ingroup collide
@@ -342,7 +342,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Query for the space containing a particular geom.
+	 * Query for the space containing a particular geom.
 	 * @param geom the geom to query
 	 * @return The space that contains the geom, or NULL if the geom is
 	 *          not contained by a space.
@@ -355,7 +355,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Given a geom, this returns its class.
+	 * Given a geom, this returns its class.
 	 *
 	 * The ODE classes are:
 	 *  <li> dSphereClass
@@ -385,7 +385,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the "category" bitfield for the given geom.
+	 * Set the "category" bitfield for the given geom.
 	 *
 	 * The category bitfield is used by spaces to govern which geoms will
 	 * interact with each other. The bitfield is guaranteed to be at least
@@ -404,7 +404,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the "collide" bitfield for the given geom.
+	 * Set the "collide" bitfield for the given geom.
 	 *
 	 * The collide bitfield is used by spaces to govern which geoms will
 	 * interact with each other. The bitfield is guaranteed to be at least
@@ -423,7 +423,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the "category" bitfield for the given geom.
+	 * Get the "category" bitfield for the given geom.
 	 *
 	 * @param geom the geom to set
 	 * @return the bitfield value
@@ -438,7 +438,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the "collide" bitfield for the given geom.
+	 * Get the "collide" bitfield for the given geom.
 	 *
 	 * @param geom the geom to set
 	 * @return the bitfield value
@@ -453,7 +453,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Enable a geom.
+	 * Enable a geom.
 	 *
 	 * Disabled geoms are completely ignored by dSpaceCollide and dSpaceCollide2,
 	 * although they can still be members of a space. New geoms are created in
@@ -471,7 +471,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Disable a geom.
+	 * Disable a geom.
 	 *
 	 * Disabled geoms are completely ignored by dSpaceCollide and dSpaceCollide2,
 	 * although they can still be members of a space. New geoms are created in
@@ -489,7 +489,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Check to see if a geom is enabled.
+	 * Check to see if a geom is enabled.
 	 *
 	 * Disabled geoms are completely ignored by dSpaceCollide and dSpaceCollide2,
 	 * although they can still be members of a space. New geoms are created in
@@ -510,7 +510,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	/* geom offset from body */
 
 	/**
-	 * @brief Set the local offset position of a geom from its body.
+	 * Set the local offset position of a geom from its body.
 	 *
 	 * Sets the geom's positional offset in local coordinates.
 	 * After this call, the geom will be at a new position determined from the
@@ -531,7 +531,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the local offset rotation matrix of a geom from its body.
+	 * Set the local offset rotation matrix of a geom from its body.
 	 *
 	 * Sets the geom's rotational offset in local coordinates.
 	 * After this call, the geom will be at a new position determined from the
@@ -550,7 +550,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the local offset rotation of a geom from its body.
+	 * Set the local offset rotation of a geom from its body.
 	 *
 	 * Sets the geom's rotational offset in local coordinates.
 	 * After this call, the geom will be at a new position determined from the
@@ -569,7 +569,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the offset position of a geom from its body.
+	 * Set the offset position of a geom from its body.
 	 *
 	 * Sets the geom's positional offset to move it to the new world
 	 * coordinates.
@@ -591,7 +591,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the offset rotation of a geom from its body.
+	 * Set the offset rotation of a geom from its body.
 	 *
 	 * Sets the geom's rotational offset to orient it to the new world
 	 * rotation matrix.
@@ -611,7 +611,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the offset rotation of a geom from its body.
+	 * Set the offset rotation of a geom from its body.
 	 *
 	 * Sets the geom's rotational offset to orient it to the new world
 	 * rotation matrix.
@@ -631,7 +631,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Clear any offset from the geom.
+	 * Clear any offset from the geom.
 	 *
 	 * If the geom has an offset, it is eliminated and the geom is
 	 * repositioned at the body's position.  If the geom has no offset,
@@ -650,7 +650,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Check to see whether the geom has an offset.
+	 * Check to see whether the geom has an offset.
 	 *
 	 * This function will return non-zero if the offset has been created.
 	 * Note that there is a difference between a geom with no offset,
@@ -671,7 +671,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the offset position vector of a geom.
+	 * Get the offset position vector of a geom.
 	 *
 	 * Returns the positional offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the zero vector.
@@ -690,7 +690,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Copy the offset position vector of a geom.
+	 * Copy the offset position vector of a geom.
 	 *
 	 * Returns the positional offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the zero vector.
@@ -706,7 +706,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the offset rotation matrix of a geom.
+	 * Get the offset rotation matrix of a geom.
 	 *
 	 * Returns the rotational offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the identity
@@ -726,7 +726,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Copy the offset rotation matrix of a geom.
+	 * Copy the offset rotation matrix of a geom.
 	 *
 	 * Returns the rotational offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the identity
@@ -743,7 +743,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the offset rotation quaternion of a geom.
+	 * Get the offset rotation quaternion of a geom.
 	 *
 	 * Returns the rotation offset of the geom as a quaternion.
 	 * If the geom has no offset, the identity quaternion is returned.
@@ -763,7 +763,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 	/**
 	 *
-	 * @brief Given two geoms o1 and o2 that potentially intersect,
+	 * Given two geoms o1 and o2 that potentially intersect,
 	 * generate contact information for them.
 	 *
 	 * Internally, this just calls the correct class-specific collision
@@ -817,7 +817,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	}
 
 	/**
-	 * @brief Determines which pairs of geoms in a space may potentially intersect,
+	 * Determines which pairs of geoms in a space may potentially intersect,
 	 * and calls the callback function for each candidate pair.
 	 *
 	 * @param space The space to test.
@@ -851,7 +851,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Determines which geoms from one space may potentially intersect with
+	 * Determines which geoms from one space may potentially intersect with
 	 * geoms from another space, and calls the callback function for each candidate
 	 * pair.
 	 *
@@ -938,7 +938,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 
 	/**
-	 * @brief Create a sphere geom of the given radius, and return its ID.
+	 * Create a sphere geom of the given radius, and return its ID.
 	 *
 	 * @param space   a space to contain the new geom. May be null.
 	 * @param radius  the radius of the sphere.
@@ -958,7 +958,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the radius of a sphere geom.
+	 * Set the radius of a sphere geom.
 	 *
 	 * @param sphere  the sphere to set.
 	 * @param radius  the new radius.
@@ -973,7 +973,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Retrieves the radius of a sphere geom.
+	 * Retrieves the radius of a sphere geom.
 	 *
 	 * @param sphere  the sphere to query.
 	 *
@@ -987,7 +987,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Calculate the depth of the a given point within a sphere.
+	 * Calculate the depth of the a given point within a sphere.
 	 *
 	 * @param sphere  the sphere to query.
 	 * @param x       the X coordinate of the point.
@@ -1044,7 +1044,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 */
 
 	/**
-	 * @brief Create a box geom with the provided side lengths.
+	 * Create a box geom with the provided side lengths.
 	 *
 	 * @param space   a space to contain the new geom. May be null.
 	 * @param lx      the length of the box along the X axis
@@ -1066,7 +1066,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Set the side lengths of the given box.
+	 * Set the side lengths of the given box.
 	 *
 	 * @param box  the box to set
 	 * @param lx      the length of the box along the X axis
@@ -1083,7 +1083,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Get the side lengths of a box.
+	 * Get the side lengths of a box.
 	 *
 	 * @param box     the box to query
 	 * @param result  the returned side lengths
@@ -1098,7 +1098,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Return the depth of a point in a box.
+	 * Return the depth of a point in a box.
 	 *
 	 * @param box  the box to query
 	 * @param x    the X coordinate of the point to test.
@@ -1275,7 +1275,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Creates a heightfield geom.
+	 * Creates a heightfield geom.
 	 *
 	 * Uses the information in the given dHeightfieldData to construct
 	 * a geom representing a heightfield in a collision space.
@@ -1301,7 +1301,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Creates a new empty dHeightfieldData.
+	 * Creates a new empty dHeightfieldData.
 	 *
 	 * Allocates a new dHeightfieldData and returns it. You must call
 	 * dGeomHeightfieldDataDestroy to destroy it after the geom has been removed.
@@ -1319,7 +1319,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Destroys a dHeightfieldData.
+	 * Destroys a dHeightfieldData.
 	 *
 	 * Deallocates a given dHeightfieldData and all managed resources.
 	 *
@@ -1334,7 +1334,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Configures a dHeightfieldData to use a callback to
+	 * Configures a dHeightfieldData to use a callback to
 	 * retrieve height data.
 	 *
 	 * Before a dHeightfieldData can be used by a geom it must be
@@ -1387,7 +1387,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	}
 
 	/**
-	 * @brief Configures a dHeightfieldData to use height data in byte format.
+	 * Configures a dHeightfieldData to use height data in byte format.
 	 *
 	 * Before a dHeightfieldData can be used by a geom it must be
 	 * configured to specify the format of the height data.
@@ -1443,7 +1443,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	}
 
 	/**
-	 * @brief Configures a dHeightfieldData to use height data in short format.
+	 * Configures a dHeightfieldData to use height data in short format.
 	 *
 	 * Before a dHeightfieldData can be used by a geom it must be
 	 * configured to specify the format of the height data.
@@ -1499,7 +1499,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	}
 
 	/**
-	 * @brief Configures a dHeightfieldData to use height data in
+	 * Configures a dHeightfieldData to use height data in
 	 * single precision floating point format.
 	 *
 	 * Before a dHeightfieldData can be used by a geom it must be
@@ -1557,7 +1557,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	}
 
 	/**
-	 * @brief Configures a dHeightfieldData to use height data in
+	 * Configures a dHeightfieldData to use height data in
 	 * double precision floating point format.
 	 *
 	 * Before a dHeightfieldData can be used by a geom it must be
@@ -1598,8 +1598,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomHeightfieldDataBuildDouble( dHeightfieldData d,
@@ -1615,7 +1613,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	}
 
 	/**
-	 * @brief Manually set the minimum and maximum height bounds.
+	 * Manually set the minimum and maximum height bounds.
 	 *
 	 * This call allows you to set explicit min / max values after initial
 	 * creation typically for callback heightfields which default to +/- infinity,
@@ -1629,7 +1627,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param d A dHeightfieldData created by dGeomHeightfieldDataCreate
 	 * @param minHeight The new minimum height value. Scale, offset and thickness is then applied.
 	 * @param maxHeight The new maximum height value. Scale and offset is then applied.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomHeightfieldDataSetBounds( DHeightfieldData d,
@@ -1639,14 +1636,13 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Assigns a dHeightfieldData to a heightfield geom.
+	 * Assigns a dHeightfieldData to a heightfield geom.
 	 *
 	 * Associates the given dHeightfieldData with a heightfield geom.
 	 * This is done without affecting the GEOM_PLACEABLE flag.
 	 *
 	 * @param g A geom created by dCreateHeightfield
 	 * @param d A dHeightfieldData created by dGeomHeightfieldDataCreate
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomHeightfieldSetHeightfieldData( DHeightfield g, DHeightfieldData d ) {
@@ -1655,13 +1651,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @brief Gets the dHeightfieldData bound to a heightfield geom.
+	 * Gets the dHeightfieldData bound to a heightfield geom.
 	 *
 	 * Returns the dHeightfieldData associated with a heightfield geom.
 	 *
 	 * @param g A geom created by dCreateHeightfield
 	 * @return The dHeightfieldData which may be NULL if none was assigned.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static DHeightfieldData dGeomHeightfieldGetHeightfieldData( DHeightfield g ) {
@@ -1780,12 +1775,11 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	}
 
 	/**
-	 * @brief Sets a custom collider function for two geom classes.
+	 * Sets a custom collider function for two geom classes.
 	 *
 	 * @param i The first geom class handled by this collider
 	 * @param j The second geom class handled by this collider
 	 * @param fn The collider function to use to determine collisions.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dSetColliderOverride (int i, int j, dColliderFn *fn) {

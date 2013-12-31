@@ -96,7 +96,7 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	}
 
 	/**
-	 * @brief Sets sublevel value for a space.
+	 * Sets sublevel value for a space.
 	 *
 	 * Sublevel affects how the space is handled in dSpaceCollide2 when it is collided
 	 * with another space. If sublevels of both spaces match, the function iterates 
@@ -106,14 +106,13 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * collision callback as a geometry itself. By default all the spaces are assigned
 	 * zero sublevel.
 	 *
-	 * @note
+	 * <p>NOTE:
 	 * The space sublevel <b> IS NOT </b> automatically updated when one space is inserted
 	 * into another or removed from one. It is a client's responsibility to update sublevel
 	 * value if necessary.
 	 *
 	 * @param space the space to modify
 	 * @param sublevel the sublevel value to be assigned
-	 * @ingroup collide
 	 * @see #dSpaceGetSublevel(DSpace)
 	 * @see ApiCppCollision#dSpaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
 	 */
@@ -123,14 +122,13 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	}
 
 	/**
-	 * @brief Gets sublevel value of a space.
+	 * Gets sublevel value of a space.
 	 *
 	 * Sublevel affects how the space is handled in dSpaceCollide2 when it is collided
 	 * with another space. See @c dSpaceSetSublevel for more details.
 	 *
 	 * @param space the space to query
 	 * @return the sublevel value of the space
-	 * @ingroup collide
 	 * @see #dSpaceSetSublevel(DSpace, int)
 	 * @see ApiCppCollision#dSpaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
 	 */
@@ -141,18 +139,17 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 
 
 	/**
-	 * @brief Sets manual cleanup flag for a space.
+	 * Sets manual cleanup flag for a space.
 	 *
 	 * Manual cleanup flag marks a space as eligible for manual thread data cleanup.
 	 * This function should be called for every space object right after creation in 
-	 * case if ODE has been initialized with @c dInitFlagManualThreadCleanup flag.
+	 * case if ODE has been initialized with {@code dInitFlagManualThreadCleanup} flag.
 	 * 
 	 * Failure to set manual cleanup flag for a space may lead to some resources 
 	 * remaining leaked until the program exit.
 	 *
 	 * @param space the space to modify
 	 * @param mode 1 for manual cleanup mode and 0 for default cleanup mode
-	 * @ingroup collide
 	 * @see #dSpaceGetManualCleanup(DSpace)
 	 * @see ApiCppOdeInit#dInitODE2(int)
 	 */
@@ -162,14 +159,13 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	}
 
 	/**
-	 * @brief Get manual cleanup flag of a space.
+	 * Get manual cleanup flag of a space.
 	 *
 	 * Manual cleanup flag marks a space space as eligible for manual thread data cleanup.
-	 * See @c dSpaceSetManualCleanup for more details.
+	 * See {@code dSpaceSetManualCleanup} for more details.
 	 * 
 	 * @param space the space to query
 	 * @return 1 for manual cleanup mode and 0 for default cleanup mode of the space
-	 * @ingroup collide
 	 * @see #dSpaceSetManualCleanup(DSpace, int)
 	 * @see ApiCppOdeInit#dInitODE2(int)
 	 */
@@ -204,7 +200,7 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	}
 
 	/**
-	 * @brief Given a space, this returns its class.
+	 * Given a space, this returns its class.
 	 * <p>
 	 * The ODE classes are:
 	 *  <li> dSimpleSpaceClass </li>
@@ -221,7 +217,6 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 *
 	 * @param space the space to query
 	 * @returns The space class ID.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	int dSpaceGetClass(DSpace space) {

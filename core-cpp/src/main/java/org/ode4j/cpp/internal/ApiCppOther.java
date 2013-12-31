@@ -30,7 +30,6 @@ import org.ode4j.ode.OdeHelper;
 public abstract class ApiCppOther extends ApiCppMass {
 	
 	/**
-	 * @ingroup joints
 	 */
 	//ODE_API 
 //	int dConnectingJointList (dBody b1, dBody b2, dJoint*);
@@ -39,10 +38,9 @@ public abstract class ApiCppOther extends ApiCppMass {
 	}
 
 	/**
-	 * @brief Utility function
+	 * Utility function.
 	 * @return 1 if the two bodies are connected together by
 	 * a joint, otherwise return 0.
-	 * @ingroup joints
 	 */
 	//ODE_API 
 	public static boolean dAreConnected (DBody b1, DBody b2) {
@@ -50,7 +48,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	}
 
 	/**
-	 * @brief Utility function
+	 * Utility function.
 	 * @return 1 if the two bodies are connected together by
 	 * a joint that does not have type @arg{joint_type}, otherwise return 0.
 	 * @param body1 A body to check.
@@ -60,7 +58,6 @@ public abstract class ApiCppOther extends ApiCppMass {
 	 * if they are already connected by non-contact joints then it may not be
 	 * appropriate to add contacts, however it is okay to add more contact between-
 	 * bodies that already have contacts.
-	 * @ingroup joints
 	 */
 	//ODE_API 
 	public static boolean dAreConnectedExcluding (DBody body1, DBody body2, 

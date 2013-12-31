@@ -60,7 +60,6 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 //	 * @see dAllocateODEDataForThread
 //	 * @see dSpaceSetManualCleanup
 //	 * @see dCloseODE
-//	 * @ingroup init
 //	 */
 //	//public enum dInitODEFlags {
 //	public static final int
@@ -68,7 +67,7 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 //	//}
 
 	/**
-	 * @brief Initializes ODE library.
+	 * Initializes ODE library.
 	 *
 	 * {@code dInitODE} is obsolete. {@code dInitODE2} is to be used for library initialization.
 	 *
@@ -80,7 +79,6 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 *
 	 * @see #dInitODE2(int)
 	 * @see #dAllocateODEDataForThread
-	 * @ingroup init
 	 * @deprecated Please use dInitOde2() instead.
 	 */
 	//ODE_API 
@@ -89,20 +87,20 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	}
 
 	/**
-	 * @brief Initializes ODE library.
-	 * @param uiInitFlags Initialization options bitmask
-	 * @return A nonzero if initialization succeeded and zero otherwise.
+	 * Initializes ODE library.
 	 *
 	 * This function must be called to initialize ODE library before first use. If
 	 * initialization succeeds the function may not be called again until library is
-	 * closed with a call to @c dCloseODE.
+	 * closed with a call to {@code dCloseODE}.
 	 *
-	 * The @a uiInitFlags parameter specifies initialization options to be used. These
-	 * can be combination of zero or more @c dInitODEFlags flags.
+	 * The {@code uiInitFlags} parameter specifies initialization options to be used. These
+	 * can be combination of zero or more {@code dInitODEFlags} flags.
+	 * 
+	 * @param uiInitFlags Initialization options bitmask
+	 * @return A nonzero if initialization succeeded and zero otherwise.
 	 *
 	 * @see #dInitODEFlags
 	 * @see #dCloseODE()
-	 * @ingroup init
 	 */
 	//ODE_API 
 	//int dInitODE2(unsigned int uiInitFlags/*=0*/) {
@@ -133,7 +131,6 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 //	 * applications should use explicit flags they need rather than allocating everything.
 //	 *
 //	 * @see dAllocateODEDataForThread
-//	 * @ingroup init
 //	 */
 //	//public enum dAllocateODEDataFlags {
 //	public static final int
@@ -144,9 +141,7 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 //	dAllocateFlagCollisionData = 0x00000001; //@< Allocate data for collision detection
 
 	/**
-	 * @brief Allocate thread local data to allow the thread calling ODE.
-	 * @param uiAllocateFlags Allocation options bitmask.
-	 * @return A nonzero if allocation succeeded and zero otherwise.
+	 * Allocate thread local data to allow the thread calling ODE.
 	 *
 	 * The function is required to be called for every thread that is going to use
 	 * ODE. This function allocates the data that is required for accessing ODE from
@@ -162,9 +157,10 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * data has been allocated. The client may retry allocation attempt with the same
 	 * flags when more system resources are available.
 	 *
+	 * @param uiAllocateFlags Allocation options bitmask.
+	 * @return A nonzero if allocation succeeded and zero otherwise.
 	 * @see #dAllocateODEDataFlags
 	 * @see #dCleanupODEAllDataForThread
-	 * @ingroup init
 	 * @deprecated TZ I guess this can be removed?
 	 */
 	//ODE_API 
@@ -174,7 +170,7 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	}
 
 //	/**
-//	 * @brief Free thread local data that was allocated for current thread.
+//	 * Free thread local data that was allocated for current thread.
 //	 *
 //	 * If library was initialized with @c dInitFlagManualThreadCleanup flag the function
 //	 * is required to be called on exit of every thread that was calling @c dAllocateODEDataForThread.
@@ -196,7 +192,6 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 //	 * @see dAllocateODEDataForThread
 //	 * @see dInitODE2
 //	 * @see dCloseODE
-//	 * @ingroup init
 //	 */
 //	//ODE_API 
 //	public static void dCleanupODEAllDataForThread() {
@@ -205,7 +200,7 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 
 
 	/**
-	 * @brief Close ODE after it is not needed any more.
+	 * Close ODE after it is not needed any more.
 	 *
 	 * The function is required to be called when program does not need ODE features any more.
 	 * The call to {@code dCloseODE} releases all the resources allocated for library
@@ -215,14 +210,13 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * {@code dCloseODE} is a paired function for {@code dInitODE2} and must only be called
 	 * after successful library initialization.
 	 *
-	 * @note Important!
+	 * <p>NOTE: Important!
 	 * Make sure that all the threads that were using ODE have already terminated
 	 * before calling {@code dCloseODE}. In particular it is not allowed to call
 	 * {@code dCleanupODEAllDataForThread} after {@code dCloseODE}.
 	 *
 	 * @see #dInitODE2(int)
 	 * @see #dCleanupODEAllDataForThread
-	 * @ingroup init
 	 */
 	//ODE_API 
 	public static void dCloseODE() {
