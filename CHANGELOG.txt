@@ -1,4 +1,11 @@
-0.2.7
 
+
+0.2.8
+=====
+- Fixed issue #9: Exception when updating large trimeshes
+
+
+0.2.7
+=====
 - Merged 'cpp' package into 'core' package
 - Issue #3: porting typo in space collider
