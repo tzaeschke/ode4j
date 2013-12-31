@@ -545,33 +545,32 @@ public class OdeInit {
 
     
     /**
-     * @brief Library initialization flags.
+     * Library initialization flags.
      *
      * These flags define ODE library initialization options.
      *
-     * @c dInitFlagManualThreadCleanup indicates that resources allocated in TLS for threads
-     * using ODE are to be cleared by library client with explicit call to @c dCleanupODEAllDataForThread.
+     * {@code dInitFlagManualThreadCleanup} indicates that resources allocated in TLS for threads
+     * using ODE are to be cleared by library client with explicit call to {@code dCleanupODEAllDataForThread}.
      * If this flag is not specified the automatic resource tracking algorithm is used.
      *
      * With automatic resource tracking, On Windows, memory allocated for a thread may 
      * remain not freed for some time after the thread exits. The resources may be 
-     * released when one of other threads calls @c dAllocateODEDataForThread. Ultimately,
-     * the resources are released when library is closed with @c dCloseODE. On other 
+     * released when one of other threads calls {@code dAllocateODEDataForThread}. Ultimately,
+     * the resources are released when library is closed with {@code dCloseODE}. On other 
      * operating systems resources are always released by the thread itself on its exit
-     * or on library closure with @c dCloseODE.
+     * or on library closure with {@code dCloseODE}.
      *
      * With manual thread data cleanup mode every collision space object must be 
-     * explicitly switched to manual cleanup mode with @c dSpaceSetManualCleanup
+     * explicitly switched to manual cleanup mode with {@code dSpaceSetManualCleanup}
      * after creation. See description of the function for more details.
      *
-     * If @c dInitFlagManualThreadCleanup was not specified during initialization,
-     * calls to @c dCleanupODEAllDataForThread are not allowed.
+     * If {@code dInitFlagManualThreadCleanup} was not specified during initialization,
+     * calls to {@code dCleanupODEAllDataForThread} are not allowed.
      *
-     * @see dInitODE2
-     * @see dAllocateODEDataForThread
+     * @see OdeInit#dInitODE2(int)
+     * @see OdeInit#dAllocateODEDataForThread(int)
      * @see dSpaceSetManualCleanup
-     * @see dCloseODE
-     * @ingroup init
+     * @see OdeInit#dCloseODE()
      */
     //enum dInitODEFlags {
     private static final int dInitFlagManualThreadCleanup = 0x00000001; //@< Thread local data is to be cleared explicitly on @c dCleanupODEAllDataForThread function call
@@ -581,25 +580,24 @@ public class OdeInit {
      * ODE data allocation flags.
      *
      * These flags are used to indicate which data is to be pre-allocated in call to
-     * @c dAllocateODEDataForThread.
+     * {@code dAllocateODEDataForThread}.
      *
-     * @c dAllocateFlagBasicData tells to allocate the basic data set required for
+     * {@code dAllocateFlagBasicData} tells to allocate the basic data set required for
      * normal library operation. This flag is equal to zero and is always implicitly 
      * included.
      *
-     * @c dAllocateFlagCollisionData tells that collision detection data is to be allocated.
+     * {@code dAllocateFlagCollisionData} tells that collision detection data is to be allocated.
      * Collision detection functions may not be called if the data has not be allocated 
      * in advance. If collision detection is not going to be used, it is not necessary
      * to specify this flag.
      *
-     * @c dAllocateMaskAll is a mask that can be used for for allocating all possible 
+     * {@code dAllocateMaskAll} is a mask that can be used for for allocating all possible 
      * data in cases when it is not known what exactly features of ODE will be used.
      * The mask may not be used in combination with other flags. It is guaranteed to
      * include all the current and future legal allocation flags. However, mature 
      * applications should use explicit flags they need rather than allocating everything.
      *
-     * @see dAllocateODEDataForThread
-     * @ingroup init
+     * @see OdeInit#dAllocateODEDataForThread(int)
      */
     //enum dAllocateODEDataFlags {
     private final static int dAllocateFlagBasicData = 0; //@< Allocate basic data required for library to operate

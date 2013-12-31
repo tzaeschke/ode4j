@@ -27,7 +27,8 @@ package org.ode4j.ode;
 
 
 /**
- * From the Wiki: 
+ * From the Wiki:
+ * <p> 
  * The fixed joint maintains a fixed relative position and orientation between
  * two bodies, or between a body and the static environment. Using this joint
  * is almost never a good idea in practice, except when debugging. 
@@ -43,15 +44,12 @@ public interface DFixedJoint extends DJoint {
 	 * Call this on the fixed joint after it has been attached to
 	 * remember the current desired relative offset and desired relative
 	 * rotation between the bodies.
-	 * @ingroup joints
 	 */
 	void setFixed();
 
 	
 	/**
 	 * Sets joint parameter.
-	 *
-	 * @ingroup joints
 	 */
 	@Override
 	void setParam (PARAM_N parameter, double value);
@@ -59,7 +57,6 @@ public interface DFixedJoint extends DJoint {
 	
 	/**
 	 * Get joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	double getParam (PARAM_N type);

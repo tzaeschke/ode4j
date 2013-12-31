@@ -62,7 +62,6 @@ public interface DSpace extends DGeom {
 	 * remaining leaked until the program exit.
 	 *
 	 * @param mode 1 for manual cleanup mode and 0 for default cleanup mode
-	 * @ingroup collide
 	 * @see #setManualCleanup(int)
 	 * @see OdeHelper#initODE2(int)
 	 */
@@ -76,7 +75,6 @@ public interface DSpace extends DGeom {
 	 * See <tt>setManualCleanup</tt> for more details.
 	 * 
 	 * @return 1 for manual cleanup mode and 0 for default cleanup mode of the space
-	 * @ingroup collide
 	 * @see #setManualCleanup(int)
 	 * @see OdeHelper#initODE2(int)
 	 */
@@ -93,13 +91,12 @@ public interface DSpace extends DGeom {
 	 * collision callback as a geometry itself. By default all the spaces are assigned
 	 * zero sublevel.
 	 *
-	 * @note
+	 * <p>NOTE:
 	 * The space sublevel <b> IS NOT </b> automatically updated when one space is inserted
 	 * into another or removed from one. It is a client's responsibility to update sublevel
 	 * value if necessary.
 	 *
 	 * @param sublevel the sublevel value to be assigned
-	 * @ingroup collide
 	 * @see #getSublevel()
 	 * @see OdeHelper#spaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
 	 */
@@ -112,7 +109,6 @@ public interface DSpace extends DGeom {
 	 * with another space. See <tt>setSublevel</tt> for more details.
 	 *
 	 * @return the sublevel value of the space
-	 * @ingroup collide
 	 * @see #setSublevel(int)
 	 * @see OdeHelper#spaceCollide2(DGeom, DGeom, Object, org.ode4j.ode.DGeom.DNearCallback)
 	 */

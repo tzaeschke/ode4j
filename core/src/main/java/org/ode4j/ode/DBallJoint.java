@@ -31,8 +31,7 @@ public interface DBallJoint extends DJoint {
 
 	/**
 	 * Set the joint anchor point.
-	 * @ingroup joints
-	 *
+	 * <p>
 	 * The joint will try to keep this point on each body
 	 * together. The input is specified in world coordinates.
 	 */
@@ -41,15 +40,13 @@ public interface DBallJoint extends DJoint {
 	
 	/**
 	 * Set the joint anchor point.
-	 * @ingroup joints
 	 */
 	void setAnchor2(double x, double y, double z);
 	
 	
 	/**
 	 * Set the joint anchor point.
-	 * @ingroup joints
-	 *
+	 * <p>
 	 * The joint will try to keep this point on each body
 	 * together. The input is specified in world coordinates.
 	 */
@@ -58,14 +55,13 @@ public interface DBallJoint extends DJoint {
 	
 	/**
 	 * Set the joint anchor point on body 2.
-	 * @ingroup joints
 	 */
 	void setAnchor2 (DVector3C a);
 	
 	
 	/**
 	 * Get the joint anchor point, in world coordinates.
-	 *
+	 * <p>
 	 * This returns the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
 	 */
@@ -76,18 +72,17 @@ public interface DBallJoint extends DJoint {
 	 * Get the joint anchor point, in world coordinates.
 	 * <p>
 	 * This returns the point on body 2. You can think of a ball and socket
-	 * joint as trying to keep the result of dJointGetBallAnchor() and
-	 * dJointGetBallAnchor2() the same.  If the joint is perfectly satisfied,
-	 * this function will return the same value as dJointGetBallAnchor() to
-	 * within roundoff errors. dJointGetBallAnchor2() can be used, along with
-	 * dJointGetBallAnchor(), to see how far the joint has come apart.
+	 * joint as trying to keep the result of {@code dJointGetBallAnchor()} and
+	 * {@code dJointGetBallAnchor2()} the same.  If the joint is perfectly satisfied,
+	 * this function will return the same value as {@code dJointGetBallAnchor()} to
+	 * within roundoff errors. {@code dJointGetBallAnchor2()} can be used, along with
+	 * {@code dJointGetBallAnchor()}, to see how far the joint has come apart.
 	 */
 	void getAnchor2 (DVector3 result);
 
 
 	/**
 	 * Param setting for Ball joints
-	 * @ingroup joints
 	 */
 	@Override
 	void setParam(PARAM_N parameter, double value);
@@ -95,7 +90,6 @@ public interface DBallJoint extends DJoint {
 	
 	/**
 	 * Get joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	double getParam (PARAM_N parameter);

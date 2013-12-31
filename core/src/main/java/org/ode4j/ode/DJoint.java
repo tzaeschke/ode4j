@@ -87,8 +87,6 @@ import org.ode4j.math.DVector3;
  * These parameter names can be optionally followed by a digit (2 or 3)
  * to indicate the second or third set of parameters, e.g. for the second axis
  * in a hinge-2 joint, or the third axis in an AMotor joint.
- * 
- * @defgroup joints Joints
  */
 public interface DJoint {
 
@@ -108,7 +106,6 @@ public interface DJoint {
 
 //	/**
 //	 * Destroy a joint.
-//	 * @ingroup joints
 //	 *
 //	 * disconnects it from its attached bodies and removing it from the world.
 //	 * However, if the joint is a member of a group then this function has no
@@ -118,15 +115,13 @@ public interface DJoint {
 	
 	/**
 	 * Return the number of bodies attached to the joint.
-	 * @ingroup joints
 	 */
 	int getNumBodies();
 
 	
 	/**
 	 * Attach the joint to some new bodies.
-	 * @ingroup joints
-	 *
+	 * <p>
 	 * If the joint is already attached, it will be detached from the old bodies
 	 * first.
 	 * To attach this joint to only one body, set body1 or body2 to zero - a zero
@@ -141,14 +136,12 @@ public interface DJoint {
 
 	/**
 	 * Set the user-data pointer.
-	 * @ingroup joints
 	 */
 	void setData (Object data);
 	
 	
 	/**
 	 * Get the user-data pointer.
-	 * @ingroup joints
 	 */
 	Object getData();
 
@@ -156,13 +149,14 @@ public interface DJoint {
 
 	/**
 	 * Return the bodies that this joint connects.
-	 * @ingroup joints
-	 * @param index return the first (0) or second (1) body.
-	 * @remarks
+	 * 
+	 * <p> REMARK:
 	 * If one of these returned body IDs is zero, the joint connects the other body
 	 * to the static environment.
 	 * If both body IDs are zero, the joint is in ``limbo'' and has no effect on
 	 * the simulation.
+	 * 
+	 * @param index return the first (0) or second (1) body.
 	 */
 	DBody getBody (int index);
 	
@@ -172,14 +166,12 @@ public interface DJoint {
 	 * <p>
 	 * The feedback can be used by the user, so that it is known how
 	 * much force an individual joint exerts.
-	 * @ingroup joints
 	 */
 	void setFeedback(DJoint.DJointFeedback fb);
 	
 	
 	/**
 	 * Gets the datastructure that is to receive the feedback.
-	 * @ingroup joints
 	 */
 	DJoint.DJointFeedback getFeedback();
 
@@ -188,8 +180,8 @@ public interface DJoint {
 	
 	
 	/**
-	 * get joint parameter
-	 * @ingroup joints
+	 * Get joint parameter.
+	 * <p>
 	 * If not implemented it will do nothing as describe in the doc. 
 	 */
 	double getParam (PARAM_N type);
@@ -197,15 +189,13 @@ public interface DJoint {
 	
 	/**
 	 * Manually enable a joint.
-	 * @ingroup joints
 	 */
 	void enable();
 	
 	
 	/**
 	 * Manually disable a joint.
-	 * @ingroup joints
-	 * @remarks
+	 * <p> REMARK: 
 	 * A disabled joint will not affect the simulation, but will maintain the anchors and
 	 * axes so it can be enabled later.
 	 */
@@ -214,7 +204,6 @@ public interface DJoint {
 	
 	/**
 	 * Check whether a joint is enabled.
-	 * @ingroup joints
 	 * @return 1 if a joint is currently enabled or 0 if it is disabled.
 	 */
 	boolean isEnabled();

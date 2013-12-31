@@ -38,8 +38,6 @@ import org.ode4j.math.DVector3;
  * a distance depth (or equivalently if body 2 is moved the same distance 
  * in the opposite direction) then the contact depth will be reduced to 
  * zero. This means that the normal vector points "in" to body 1.
- *
- * @ingroup collide
  */
 public class DContactGeom {
 	

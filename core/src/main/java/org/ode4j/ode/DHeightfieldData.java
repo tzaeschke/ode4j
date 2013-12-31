@@ -63,8 +63,6 @@ public interface DHeightfieldData {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	void buildCallback(
 				Object pUserData, DHeightfieldGetHeight pCallback,
@@ -75,8 +73,6 @@ public interface DHeightfieldData {
 	 * Destroys a dHeightfieldData.
 	 * <p>
 	 * Deallocates a given dHeightfieldData and all managed resources.
-	 *
-	 * @ingroup collide
 	 */
 	void destroy();
 
@@ -87,14 +83,13 @@ public interface DHeightfieldData {
 	 * creation typically for callback heightfields which default to +/- infinity,
 	 * or those whose data has changed. This must be set prior to binding with a
 	 * geom, as the the AABB is not recomputed after it's first generation.
-	 *
-	 * @remarks The minimum and maximum values are used to compute the AABB
+	 * 
+	 * <p> The minimum and maximum values are used to compute the AABB
 	 * for the heightfield which is used for early rejection of collisions.
 	 * A close fit will yield a more efficient collision check.
 	 *
 	 * @param minHeight The new minimum height value. Scale, offset and thickness is then applied.
 	 * @param maxHeight The new maximum height value. Scale and offset is then applied.
-	 * @ingroup collide
 	 */
 	void setBounds( double minHeight, double maxHeight );
 
@@ -138,8 +133,6 @@ public interface DHeightfieldData {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	void build(byte[] pHeightData,
 			boolean bCopyHeightData, double width, double depth,
@@ -204,8 +197,6 @@ public interface DHeightfieldData {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomHeightfieldDataBuildShort( dHeightfieldData d,
@@ -258,8 +249,6 @@ public interface DHeightfieldData {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomHeightfieldDataBuildSingle( dHeightfieldData d,
@@ -323,8 +312,6 @@ public interface DHeightfieldData {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomHeightfieldDataBuildDouble( dHeightfieldData d,

@@ -38,7 +38,6 @@ public interface DBox extends DGeom {
 	 * @param lz      the length of the box along the Z axis
 	 *
 	 * @see #getLengths()
-	 * @ingroup collide_box
 	 */
 	void setLengths (double lx, double ly, double lz);
 	
@@ -49,7 +48,6 @@ public interface DBox extends DGeom {
 	 * @param result  the returned side lengths
 	 *
 	 * @see #setLengths(DVector3C)
-	 * @ingroup collide_box
 	 */
 	void getLengths (DVector3 result);
 	
@@ -60,7 +58,6 @@ public interface DBox extends DGeom {
 	 * @param sides   the lengths of the box along the X, Y and Z axes
 	 *
 	 * @see #getLengths()
-	 * @ingroup collide_box
 	 */
 	void setLengths (DVector3C sides);
 	
@@ -71,7 +68,6 @@ public interface DBox extends DGeom {
 	 * @return The returned side lengths.
 	 *
 	 * @see #setLengths(DVector3C)
-	 * @ingroup collide_box
 	 */
 	DVector3C getLengths ();
 

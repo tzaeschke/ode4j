@@ -77,14 +77,12 @@ public interface DPistonJoint extends DJoint {
 
 	/**
 	 * Set the joint anchor.
-	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 
 	
 	/**
 	 * Set the joint anchor.
-	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 
@@ -95,8 +93,6 @@ public interface DPistonJoint extends DJoint {
 	 * This returns the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2 in direction perpendicular
 	 * to the prismatic axis.
-	 *
-	 * @ingroup joints
 	 */
 	void getAnchor (DVector3 result);
 	
@@ -111,8 +107,6 @@ public interface DPistonJoint extends DJoint {
 	 * this function will return the same value as dJointGetPistonAnchor() to
 	 * within roundoff errors. dJointGetPistonAnchor2() can be used, along with
 	 * dJointGetPistonAnchor(), to see how far the joint has come apart.
-	 *
-	 * @ingroup joints
 	 */
 	void getAnchor2 (DVector3 result);
 
@@ -135,7 +129,6 @@ public interface DPistonJoint extends DJoint {
 	 * // If you request the position you will have: dJointGetPistonPosition(jId) == offset  <br>
 	 * </code>
 	 * 
-     * @ingroup joints
 	 * @param xyz The X, Y and Z position of the anchor point in world frame
 	 * @param dx A delta to be substracted to the X position as if the anchor was set
 	 *           when body1 was at current_position[X] - dx
@@ -148,21 +141,18 @@ public interface DPistonJoint extends DJoint {
 
 	/**
 	 * Set the joint axis.
-	 * @ingroup joints
 	 */
 	void setAxis (double x, double y, double z);
 
 	
 	/**
 	 * Set the joint axis.
-	 * @ingroup joints
 	 */
 	void setAxis (DVector3C a);
 
 	
 	/**
 	 * Get the prismatic axis (This is also the rotoide axis.
-	 * @ingroup joints
 	 */
 	void getAxis (DVector3 result);
 
@@ -172,14 +162,12 @@ public interface DPistonJoint extends DJoint {
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
-	 * @ingroup joints
 	 */
 	double getPosition();
 
 	
 	/**
 	 * Get the piston linear position's time derivative.
-	 * @ingroup joints
 	 */
 	double getPositionRate();
 
@@ -189,7 +177,6 @@ public interface DPistonJoint extends DJoint {
 	 * That is, it applies a force with specified magnitude, in the direction of
 	 * prismatic's axis, to body1, and with the same magnitude but opposite
 	 * direction to body2.  This function is just a wrapper for dBodyAddForce().
-	 * @ingroup joints
 	 */
 	void addForce (double force);
 	
@@ -204,21 +191,18 @@ public interface DPistonJoint extends DJoint {
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
-	 * @ingroup joints
 	 */
 	double getAngle();
 
 	
 	/**
 	 * Get the piston angular position's time derivative.
-	 * @ingroup joints
 	 */
 	double getAngleRate();
 
 
 	/**
 	 * Set joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	void setParam (PARAM_N parameter, double value);
@@ -226,7 +210,6 @@ public interface DPistonJoint extends DJoint {
 	
 	/**
 	 * Get joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	double getParam (PARAM_N parameter);

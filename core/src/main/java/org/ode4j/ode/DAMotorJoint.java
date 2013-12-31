@@ -46,7 +46,6 @@ public interface DAMotorJoint extends DJoint {
 
 	/**
 	 * Set mode.
-	 * @ingroup joints
 	 */
 	void setMode (AMotorMode mode);
 
@@ -62,7 +61,6 @@ public interface DAMotorJoint extends DJoint {
 	 * as described below.</li>
 	 * When this mode is initially set the current relative orientations
 	 * of the bodies will correspond to all euler angles at zero.
-	 * @ingroup joints
 	 */
 	AMotorMode getMode();
 
@@ -70,7 +68,6 @@ public interface DAMotorJoint extends DJoint {
 	/**
 	 * Set the nr of axes.
 	 * @param num 0..3
-	 * @ingroup joints
 	 */
 	void setNumAxes (int num);
 
@@ -80,20 +77,17 @@ public interface DAMotorJoint extends DJoint {
 	 * AMotor. <p>
 	 * Num can range from 0 (which effectively deactivates the joint) to 3.
 	 * This is automatically set to 3 in dAMotorEuler mode.
-	 * @ingroup joints
 	 */
 	int getNumAxes();
 
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis (int anum, int rel, double x, double y, double z);
 
 	
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis (int anum, int rel, DVector3C a);
 
@@ -105,14 +99,13 @@ public interface DAMotorJoint extends DJoint {
 	 * <li> 1: The axis is anchored to the first body. </li>
 	 * <li> 2: The axis is anchored to the second body. </li>
 	 * @param result Each axis can have one of three ``relative orientation'' modes.
-	 * @ingroup joints
 	 */
 	void getAxis (int anum, DVector3 result);
 
 	
 	/**
 	 * Get axis.
-	 * @remarks
+	 * <p>
 	 * The axis vector is always specified in global coordinates regardless
 	 * of the setting of rel. <br>
 	 * There are two GetAMotorAxis functions, one to return the axis and one to
@@ -124,7 +117,6 @@ public interface DAMotorJoint extends DJoint {
 	 * <li>	Axes 0 and 2 must be perpendicular to each other. </li>
 	 * <li>	Axis 0 must be anchored to the first body, axis 2 must be anchored
 		to the second body. </li>
-	 * @ingroup joints
 	 */
 	int getAxisRel (int anum);
 
@@ -135,29 +127,26 @@ public interface DAMotorJoint extends DJoint {
 	 * mode the AMotor has no other way of knowing the joint angles.
 	 * The angle information is needed if stops have been set along the axis,
 	 * but it is not needed for axis motors.
-	 * @ingroup joints
 	 */
 	void setAngle (int anum, double angle);
 
 	
 	/**
 	 * Get the current angle for axis.
-	 * @remarks
+	 * <p>
 	 * In dAMotorUser mode this is simply the value that was set with
 	 * dJointSetAMotorAngle().
 	 * In dAMotorEuler mode this is the corresponding euler angle.
-	 * @ingroup joints
 	 */
 	double getAngle (int anum);
 	
 	
 	/**
 	 * Get the current angle rate for axis anum.
-	 * @remarks
+	 * <p>
 	 * In dAMotorUser mode this is always zero, as not enough information is
 	 * available.
 	 * In dAMotorEuler mode this is the corresponding euler angle rate.
-	 * @ingroup joints
 	 */
 	double getAngleRate (int anum);
 
@@ -165,10 +154,9 @@ public interface DAMotorJoint extends DJoint {
 	/**
 	 * Applies torque0 about the AMotor's axis 0, torque1 about the
 	 * AMotor's axis 1, and torque2 about the AMotor's axis 2.
-	 * @remarks
+	 * <p>
 	 * If the motor has fewer than three axes, the higher torques are ignored.
 	 * This function is just a wrapper for dBodyAddTorque().
-	 * @ingroup joints
 	 */
 	void addTorques(double torque1, double torque2, double torque3);
 	
@@ -194,7 +182,6 @@ public interface DAMotorJoint extends DJoint {
 
 	/**
 	 * Set joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	void setParam (PARAM_N parameter, double value);
@@ -202,7 +189,6 @@ public interface DAMotorJoint extends DJoint {
 
 	/**
 	 * Get joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	double getParam (PARAM_N parameter);

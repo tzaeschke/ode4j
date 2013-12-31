@@ -31,64 +31,56 @@ public interface DPUJoint extends DJoint {
 
 	/**
 	 * Set anchor.
-	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 
 
 	/**
 	 * Set anchor.
-	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 
 	
 	/**
 	 * Set the axis for the first axis or the universal articulation.
-	 * @ingroup joints
 	 */
 	void setAxis1 (double x, double y, double z);
 
 	
 	/**
 	 * Set the axis for the first axis or the universal articulation.
-	 * @ingroup joints
 	 */
 	void setAxis1 (DVector3C a);
 
 	
 	/**
 	 * Set the axis for the second axis or the universal articulation.
-	 * @ingroup joints
 	 */
 	void setAxis2 (double x, double y, double z);
 
 	
 	/**
 	 * Set the axis for the second axis or the universal articulation.
-	 * @ingroup joints
 	 */
 	void setAxis2 (DVector3C a);
 	
 	
 	/**
 	 * Set the axis for the prismatic articulation.
-	 * @ingroup joints
 	 */
 	void setAxis3 (double x, double y, double z);
 
 	
 	/**
 	 * Set the axis for the prismatic articulation.
-	 * @ingroup joints
 	 */
 	void setAxis3 (DVector3C a);
 	
 	
 	/**
 	 * Set the axis for the prismatic articulation.
-	 * @ingroup joints
-	 * @note This function was added for convenience it is the same as
+	 * 
+	 * <p>NOTE: This function was added for convenience it is the same as
 	 *       dJointSetPUAxis3
 	 */
 	void setAxisP (double x, double y, double z);
@@ -96,8 +88,8 @@ public interface DPUJoint extends DJoint {
 
 	/**
 	 * Set the axis for the prismatic articulation.
-	 * @ingroup joints
-	 * @note This function was added for convenience it is the same as
+	 * 
+	 * <p>NOTE: This function was added for convenience it is the same as
 	 *       dJointSetPUAxis3
 	 */
 	void setAxisP (DVector3C a);
@@ -107,37 +99,32 @@ public interface DPUJoint extends DJoint {
 	 * Get the joint anchor point, in world coordinates.
 	 * Return the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
-	 * @ingroup joints
 	 */
 	void getAnchor (DVector3 result);
 
 
 	/**
 	 * Get the first axis of the universal component of the joint.
-	 * @ingroup joints
 	 */
 	void getAxis1 (DVector3 result);
 
 
 	/**
 	 * Get the second axis of the Universal component of the joint.
-	 * @ingroup joints
 	 */
 	void getAxis2 (DVector3 result);
 
 
 	/**
 	 * Get the prismatic axis.
-	 * @ingroup joints
 	 */
 	void getAxis3 (DVector3 result);
 
 
 	/**
 	 * Get the prismatic axis.
-	 * @ingroup joints
 	 *
-	 * @note This function was added for convenience it is the same as
+	 * <p>NOTE: This function was added for convenience it is the same as
 	 *       dJointGetPUAxis3
 	 */
 	void getAxisP (DVector3 result);
@@ -145,7 +132,6 @@ public interface DPUJoint extends DJoint {
 
 //	/**
 //	 * Get both angles at the same time.
-//	 * @ingroup joints
 //	 *
 //	 * @param joint   The Prismatic universal joint for which we want to calculate the angles
 //	 * @param angle1  The angle between the body1 and the axis 1
@@ -156,30 +142,24 @@ public interface DPUJoint extends DJoint {
 //	 */
 	/**
 	 * Get angle between the body1 and the axis 1.
-	 * @ingroup joints
 	 */
 	double getAngle1();
 
 	
 	/**
 	 * Get time derivative of angle1.
-	 *
-	 * @ingroup joints
 	 */
 	double getAngle1Rate();
 	
 	
 	/**
 	 * Get angle between the body2 and the axis 2.
-	 * @ingroup joints
 	 */
 	double getAngle2();
 	
 	
 	/**
 	 * Get time derivative of angle2.
-	 *
-	 * @ingroup joints
 	 */
 	double getAngle2Rate();
 
@@ -192,16 +172,12 @@ public interface DPUJoint extends DJoint {
 	 * <p>
 	 * The position is the "oriented" length between the
 	 * position = (Prismatic axis) dot_product [(body1 + offset) - (body2 + anchor2)]
-	 *
-	 * @ingroup joints
 	 */
 	double getPosition();
 
 	
 	/**
 	 * Get the PR linear position's time derivative.
-	 *
-	 * @ingroup joints
 	 */
 	double getPositionRate();
 
@@ -211,7 +187,6 @@ public interface DPUJoint extends DJoint {
 //	 * That is, it applies a torque with specified magnitude in the direction
 //	 * of the rotoide axis, to body 1, and with the same magnitude but in opposite
 //	 * direction to body 2. This function is just a wrapper for dBodyAddTorque()}
-//	 * @ingroup joints
 //	 */
 //  TODO there is no implementation. Use dBodyAddTorque???? Or leave unimplemented?
 //	void addTorque (double torque);
@@ -219,7 +194,6 @@ public interface DPUJoint extends DJoint {
 
 	/**
 	 * Set the PU anchor as if the 2 bodies were already at [dx, dy, dz] apart.
-	 * @ingroup joints
 	 * <p>
 	 * This function initialize the anchor and the relative position of each body
 	 * as if the position between body1 and body2 was already the projection of [dx, dy, dz]
@@ -252,12 +226,11 @@ public interface DPUJoint extends DJoint {
 
 	/**
 	 * Set joint parameter.
-	 * @ingroup joints
 	 *
-	 * @note parameterX where X equal 2 refer to parameter for second axis of the
-	 *       universal articulation
-	 * @note parameterX where X equal 3 refer to parameter for prismatic
-	 *       articulation
+	 * <p>NOTE: parameterX where X equal 2 refer to parameter for second axis of the
+	 *       universal articulation.
+	 * <p> NOTE: parameterX where X equal 3 refer to parameter for prismatic
+	 *       articulation.
 	 */
 	@Override
 	void setParam (PARAM_N parameter, double value);
@@ -265,7 +238,6 @@ public interface DPUJoint extends DJoint {
 	
 	/**
 	 * Get joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	double getParam (PARAM_N parameter);

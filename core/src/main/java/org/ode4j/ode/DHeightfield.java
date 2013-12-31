@@ -30,8 +30,6 @@ public interface DHeightfield extends DGeom {
 	 * <p>
 	 * Used by the callback heightfield data type to sample a height for a
 	 * given cell position.
-	 *
-	 * @ingroup collide
 	 */
 	//typedef double dHeightfieldGetHeight( void* p_user_data, int x, int z ) {
 	public static interface DHeightfieldGetHeight {
@@ -49,8 +47,6 @@ public interface DHeightfield extends DGeom {
 		 *
 		 * @return The sample height which is then scaled and offset using the
 		 * values specified when the heightfield data was created.
-		 *
-		 * @ingroup collide
 		 */
 		public double call( Object pUserData, int x, int z );
 	}
@@ -62,7 +58,6 @@ public interface DHeightfield extends DGeom {
 	 * This is done without affecting the GEOM_PLACEABLE flag.
 	 *
 	 * @param d A dHeightfieldData created by dGeomHeightfieldDataCreate
-	 * @ingroup collide
 	 */
 	void setHeightfieldData( DHeightfieldData d );
 
@@ -73,7 +68,6 @@ public interface DHeightfield extends DGeom {
 	 * Returns the dHeightfieldData associated with a heightfield geom.
 	 *
 	 * @return The dHeightfieldData which may be NULL if none was assigned.
-	 * @ingroup collide
 	 */
 	DHeightfieldData getHeightfieldData();
 

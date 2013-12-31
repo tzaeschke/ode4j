@@ -31,42 +31,36 @@ public interface DUniversalJoint extends DJoint {
 
 	/**
 	 * Set anchor.
-	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 	
 	
 	/**
 	 * Set anchor.
-	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 	
 	
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis1 (double x, double y, double z);
 	
 	
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis1 (DVector3C a);
 	
 	
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis2 (double x, double y, double z);
 	
 	
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis2 (DVector3C a);
 
@@ -75,7 +69,6 @@ public interface DUniversalJoint extends DJoint {
 	 * Get the joint anchor point, in world coordinates.
 	 * Return the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
-	 * @ingroup joints
 	 */
 	void getAnchor (DVector3 result);
 
@@ -83,7 +76,8 @@ public interface DUniversalJoint extends DJoint {
 	/**
 	 * Get the joint anchor point, in world coordinates.
 	 * Return the point on body 2.
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * You can think of the ball and socket part of a universal joint as
 	 * trying to keep the result of dJointGetBallAnchor() and
 	 * dJointGetBallAnchor2() the same. If the joint is
@@ -91,28 +85,24 @@ public interface DUniversalJoint extends DJoint {
 	 * as dJointGetUniversalAnchor() to within roundoff errors.
 	 * dJointGetUniversalAnchor2() can be used, along with
 	 * dJointGetUniversalAnchor(), to see how far the joint has come apart.
-	 * @ingroup joints
 	 */
 	void getAnchor2 (DVector3 result);
 
 	
 	/**
 	 * Get axis.
-	 * @ingroup joints
 	 */
 	void getAxis1 (DVector3 result);
 
 	
 	/**
 	 * Get axis.
-	 * @ingroup joints
 	 */
 	void getAxis2 (DVector3 result);
 
 
 //	/**
 //	 * Get both angles at the same time.
-//	 * @ingroup joints
 //	 *
 //	 * @param joint   The universal joint for which we want to calculate the angles
 //	 * @param angle1  The angle between the body1 and the axis 1
@@ -123,36 +113,32 @@ public interface DUniversalJoint extends DJoint {
 //	 */
 	/**
 	 * Get angle between body the 1 and the axis 1.
-	 * @ingroup joints
 	 */
 	double getAngle1();
 
 	
 	/**
 	 * Get angle between body the 2 and the axis 2.
-	 * @ingroup joints
 	 */
 	double getAngle2();
 	
 	
 	/**
 	 * Get time derivative of angle.
-	 * @ingroup joints
 	 */
 	double getAngle1Rate();
 
 	
 	/**
 	 * Get time derivative of angle.
-	 * @ingroup joints
 	 */
 	double getAngle2Rate();
 
 	/**
 	 * Applies torque1 about the universal's axis 1, torque2 about the
 	 * universal's axis 2.
-	 * @remarks This function is just a wrapper for dBodyAddTorque().
-	 * @ingroup joints
+	 * 
+	 * <p>REMARK: This function is just a wrapper for dBodyAddTorque().
 	 */
 	void addTorques (double torque1, double torque2);
 	
@@ -174,6 +160,16 @@ public interface DUniversalJoint extends DJoint {
 	 * // If you request the position you will have: dJointGetUniversalAngle2(jId) == 0.17 <br>
 	 * </code>
 	 *
+	 * <p>NOTE: Usually the function dJointSetHingeAxis set the current position of body1
+	 *       and body2 as the zero angle position. This function set the current position
+	 *       as the if the 2 bodies where \b offsets appart.
+	 *
+	 * <p>NOTE: Any previous offsets are erased.
+	 *
+	 * <p>WARNING: Calling dJointSetUniversalAnchor, dJointSetUnivesalAxis1, 
+	 *          dJointSetUniversalAxis2, dJointSetUniversalAxis2Offset 
+	 *          will reset the "zero" angle position.
+	 *          
 	 * @param x The X component of the axis in world frame
 	 * @param y The Y component of the axis in world frame
 	 * @param z The Z component of the axis in world frame
@@ -181,17 +177,6 @@ public interface DUniversalJoint extends DJoint {
 	 *              As if body1 was rotated by angle when the Axis was set (see below).
 	 *              The rotation is around the new Hinge axis.
 	 * @param offset2
-	 *
-	 * @note Usually the function dJointSetHingeAxis set the current position of body1
-	 *       and body2 as the zero angle position. This function set the current position
-	 *       as the if the 2 bodies where \b offsets appart.
-	 *
-	 * @note Any previous offsets are erased.
-	 *
-	 * @warning Calling dJointSetUniversalAnchor, dJointSetUnivesalAxis1, 
-	 *          dJointSetUniversalAxis2, dJointSetUniversalAxis2Offset 
-	 *          will reset the "zero" angle position.
-     * @ingroup joints
 	 */
 	void setAxis1Offset(double x, double y, double z, double offset1,
 			double offset2);
@@ -214,6 +199,16 @@ public interface DUniversalJoint extends DJoint {
 	 * // If you request the position you will have: dJointGetUniversalAngle2(jId) == 0.17 <br>
 	 * </code>
 	 * 
+ 	 * <p>NOTE: Usually the function dJointSetHingeAxis set the current position of body1
+	 *       and body2 as the zero angle position. This function set the current position
+	 *       as the if the 2 bodies where \b offsets apart.
+	 *
+	 * <p>NOTE: Any previous offsets are erased.
+	 *
+	 * <p>WARNING: Calling dJointSetUniversalAnchor, dJointSetUnivesalAxis1, 
+	 *          dJointSetUniversalAxis2, dJointSetUniversalAxis2Offset 
+	 *          will reset the "zero" angle position.
+	 * 
 	 * @param x The X component of the axis in world frame
 	 * @param y The Y component of the axis in world frame
 	 * @param z The Z component of the axis in world frame
@@ -221,17 +216,6 @@ public interface DUniversalJoint extends DJoint {
 	 *              As if body1 was rotated by angle when the Axis was set (see below).
 	 *              The rotation is around the new Hinge axis.
 	 * @param offset2
-	 *
-	 * @note Usually the function dJointSetHingeAxis set the current position of body1
-	 *       and body2 as the zero angle position. This function set the current position
-	 *       as the if the 2 bodies where \b offsets apart.
-	 *
-	 * @note Any previous offsets are erased.
-	 *
-	 * @warning Calling dJointSetUniversalAnchor, dJointSetUnivesalAxis1, 
-	 *          dJointSetUniversalAxis2, dJointSetUniversalAxis2Offset 
-	 *          will reset the "zero" angle position.
-     * @ingroup joints
 	 */
 	void setAxis2Offset(double x, double y, double z, double offset1,
 			double offset2);
@@ -239,7 +223,6 @@ public interface DUniversalJoint extends DJoint {
 	
 	/**
 	 * Set joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	void setParam (PARAM_N parameter, double value);
@@ -247,7 +230,6 @@ public interface DUniversalJoint extends DJoint {
 	
 	/**
 	 * Get joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	double getParam (PARAM_N parameter);

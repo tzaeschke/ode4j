@@ -39,8 +39,7 @@ import org.ode4j.ode.internal.processmem.DxUtil;
  * 
  * 
  * <p>
- * @defgroup disable <b>Automatic Enabling and Disabling</b>
- * @ingroup world bodies
+ * <b>Automatic Enabling and Disabling</b>
  * <p>
  * Every body can be enabled or disabled. Enabled bodies participate in the
  * simulation, while disabled bodies are turned off and do not get updated
@@ -70,8 +69,8 @@ import org.ode4j.ode.internal.processmem.DxUtil;
  * Newly created bodies get these parameters from world.
  * <p>
  * <p>
- * @defgroup damping <b>Damping</b><br>
- * @ingroup bodies world
+ * 
+ * <b>Damping</b><br>
  * <p>
  * Damping serves two purposes: reduce simulation instability, and to allow
  * the bodies to come to rest (and possibly auto-disabling them).
@@ -94,12 +93,12 @@ import org.ode4j.ode.internal.processmem.DxUtil;
  * (like cars' wheels), so you may want to give them a very high (like the default,
  * dInfinity) limit.
  * <p>
- * @note The velocities are damped after the stepper function has moved the
+ * <p>NOTE: The velocities are damped after the stepper function has moved the
  * object. Otherwise the damping could introduce errors in joints. First the
  * joint constraints are processed by the stepper (moving the body), then
  * the damping is applied.
  * <p>
- * @note The damping happens right after the moved callback is called; this way
+ * <p>NOTE: The damping happens right after the moved callback is called; this way
  * it still possible use the exact velocities the body has acquired during the
  * step. You can even use the callback to create your own customized damping.
  */
@@ -115,8 +114,6 @@ public interface DWorld {
 	 *
 	 * The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
 	 * assuming that +z is up. The default is no gravity, i.e. (0,0,0).
-	 *
-	 * @ingroup world
 	 */
 	void setGravity (double x, double y, double z);
 
@@ -126,15 +123,12 @@ public interface DWorld {
 	 *
 	 * The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
 	 * assuming that +z is up. The default is no gravity, i.e. (0,0,0).
-	 *
-	 * @ingroup world
 	 */
 	void setGravity (DVector3C g);
 
 	
 	/**
 	 * Get the gravity vector for a given world.
-	 * @ingroup world
 	 */
 	void getGravity (DVector3 g) ;
 
@@ -142,7 +136,6 @@ public interface DWorld {
 	/**
 	 * Set the global ERP value, that controls how much error
 	 * correction is performed in each time step.
-	 * @ingroup world
 	 * @param erp Typical values are in the range 0.1--0.8. The default is 0.2.
 	 */
 	void setERP (double erp);
@@ -150,7 +143,7 @@ public interface DWorld {
 	
 	/**
 	 * Get the error reduction parameter.
-	 * @ingroup world
+	 * 
 	 * @return ERP value
 	 */
 	double getERP() ;
@@ -158,7 +151,7 @@ public interface DWorld {
 
 	/**
 	 * Set the global CFM (constraint force mixing) value.
-	 * @ingroup world
+	 * 
 	 * @param cfm Typical values are in the range @m{10^{-9}} -- 1.
 	 * The default is 10^-5 if single precision is being used, or 10^-10
 	 * if double precision is being used.
@@ -168,7 +161,6 @@ public interface DWorld {
 	
 	/**
 	 * Get the constraint force mixing value.
-	 * @ingroup world
 	 * @return CFM value
 	 */
 	double getCFM() ;
@@ -204,7 +196,6 @@ public interface DWorld {
 	 * @param from_world Null or the world the shared memory is to be used from.
 	 * @return 1 for success and 0 for failure.
 	 *
-	 * @ingroup world
 	 * @see #cleanupWorkingMemory()
 	 * @see #setStepMemoryReservationPolicy(DWorldStepReserveInfo)
 	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
@@ -225,7 +216,6 @@ public interface DWorld {
 	 *
 	 * The function call does affect neither memory reservation policy nor memory manager.
 	 *
-	 * @ingroup world
 	 * @see #useSharedWorkingMemory(DWorld)
 	 * @see #setStepMemoryReservationPolicy(DWorldStepReserveInfo)
 	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
@@ -247,7 +237,6 @@ public interface DWorld {
 	 * is needed to allocate expected working memory minimum at once without extra 
 	 * reallocations as number of bodies/joints grows.
 	 *
-	 * @ingroup world
 	 * @see DWorld#setStepMemoryReservationPolicy(DWorldStepReserveInfo)
 	 */
 	public class DWorldStepReserveInfo	{
@@ -277,7 +266,6 @@ public interface DWorld {
 	 * @param policyinfo Null or a pointer to policy descriptor structure.
 	 * @return 1 for success and 0 for failure.
 	 *
-	 * @ingroup world
 	 * @see #useSharedWorkingMemory(DWorld)
 	 */
 	boolean setStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo/*=NULL*/);
@@ -298,7 +286,6 @@ public interface DWorld {
 	*
 	* <code>free_block</code> is a function to delete existing memory block.
 	*
-	* @ingroup init
 	* @see DWorld#setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	* @deprecated Do not use ! (TZ)
 	*/
@@ -335,7 +322,6 @@ public interface DWorld {
 	* @param memfuncs Null or a pointer to memory manager descriptor structure.
 	* @return 1 for success and 0 for failure.
 	*
-	* @ingroup world
 	* @see #useSharedWorkingMemory(DWorld)
 	*/
 	boolean setStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs);
@@ -354,8 +340,6 @@ public interface DWorld {
 	 *
 	 * @param stepsize The number of seconds that the simulation has to advance.
 	 * @return 1 for success and 0 for failure
-	 * 
-	 * @ingroup world
 	 */
 	void step (double stepsize);
 
@@ -397,8 +381,6 @@ public interface DWorld {
 	 *
 	 * @param stepsize The number of seconds that the simulation has to advance.
 	 * @return 1 for success and 0 for failure
-	 *
-	 * @ingroup world
 	 */
 	boolean quickStep(double stepsize);
 	
@@ -414,7 +396,6 @@ public interface DWorld {
 	* This function is given a dWorldID because, in the future, the force
 	* computation may depend on integrator parameters that are set as
 	* properties of the world.
-    * @ingroup world
 	*/
 	void impulseToForce(double stepsize, double ix, double iy, double iz, 
 	        DVector3 force);
@@ -423,10 +404,11 @@ public interface DWorld {
 	/**
 	 * Set the number of iterations that the QuickStep method performs per
 	 *        step.
-	 * @ingroup world
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * More iterations will give a more accurate solution, but will take
 	 * longer to compute.
+	 * 
 	 * @param num The default is 20 iterations.
 	 */
 	void setQuickStepNumIterations(int num);
@@ -435,7 +417,6 @@ public interface DWorld {
 	/**
 	 * Get the number of iterations that the QuickStep method performs per
 	 *        step.
-	 * @ingroup world
 	 * @return nr of iterations
 	 */
 	int getQuickStepNumIterations() ;
@@ -443,7 +424,7 @@ public interface DWorld {
 	
 	/**
 	 * Set the SOR over-relaxation parameter
-	 * @ingroup world
+	 * 
 	 * @param over_relaxation value to use by SOR
 	 */
 	void setQuickStepW(double over_relaxation);
@@ -451,7 +432,6 @@ public interface DWorld {
 	
 	/**
 	 * Get the SOR over-relaxation parameter.
-	 * @ingroup world
 	 * @return the over-relaxation setting
 	 */
 	double getQuickStepW();
@@ -460,14 +440,12 @@ public interface DWorld {
 	/**
 	 * Set auto disable linear threshold for newly created bodies.
 	 * @param threshold default is 0.01
-	 * @ingroup disable
 	 */
 	void  setAutoDisableLinearThreshold (double threshold);
 	
 	
 	/**
 	 * Get auto disable linear threshold for newly created bodies.
-	 * @ingroup disable
 	 * @return the threshold
 	 */
 	double getAutoDisableLinearThreshold();
@@ -476,14 +454,12 @@ public interface DWorld {
 	/**
 	 * Set auto disable angular threshold for newly created bodies.
 	 * @param threshold default is 0.01
-	 * @ingroup disable
 	 */
 	void setAutoDisableAngularThreshold (double threshold);
 
 	
 	/**
 	 * Get auto disable angular threshold for newly created bodies.
-	 * @ingroup disable
 	 * @return the threshold
 	 */
 	double getAutoDisableAngularThreshold();
@@ -491,7 +467,6 @@ public interface DWorld {
 
 	/**
 	 * Get auto disable linear average threshold for newly created bodies.
-	 * @ingroup disable
 	 * @return the threshold
 	 * @deprecated Not implemented in ODE.
 	 */
@@ -501,7 +476,6 @@ public interface DWorld {
 	/**
 	 * Set auto disable linear average threshold for newly created bodies.
 	 * @param linear_average_threshold default is 0.01
-	 * @ingroup disable
 	 * @deprecated Not implemented in ODE.
 	 */
 	void setAutoDisableLinearAverageThreshold (double linear_average_threshold);
@@ -509,7 +483,6 @@ public interface DWorld {
 
 	/**
 	 * Get auto disable angular average threshold for newly created bodies.
-	 * @ingroup disable
 	 * @return the threshold
 	 * @deprecated Not implemented in ODE.
 	 */
@@ -519,7 +492,6 @@ public interface DWorld {
 	/**
 	 * Set auto disable angular average threshold for newly created bodies.
 	 * @param angular_average_threshold default is 0.01
-	 * @ingroup disable
 	 * @deprecated Not implemented in ODE.
 	 */
 	void setAutoDisableAngularAverageThreshold (double angular_average_threshold);
@@ -527,7 +499,6 @@ public interface DWorld {
 
 	/**
 	 * Get auto disable sample count for newly created bodies.
-	 * @ingroup disable
 	 * @return number of samples used
 	 */
 	int getAutoDisableAverageSamplesCount ();
@@ -535,7 +506,6 @@ public interface DWorld {
 
 	/**
 	 * Set auto disable average sample count for newly created bodies.
-	 * @ingroup disable
 	 * @param average_samples_count Default is 1, meaning only instantaneous velocity is used.
 	 * Set to zero to disable sampling and thus prevent any body from auto-disabling.
 	 */
@@ -544,7 +514,6 @@ public interface DWorld {
 
 	/**
 	 * Set the depth of the surface layer around all geometry objects.
-	 * @ingroup world
 	 * @remarks
 	 * Contacts are allowed to sink into the surface layer up to the given
 	 * depth before coming to rest.
@@ -558,7 +527,6 @@ public interface DWorld {
 	
 	/**
 	 * Get the depth of the surface layer around all geometry objects.
-	 * @ingroup world
 	 * @return the depth
 	 */
 	double getContactSurfaceLayer();
@@ -567,10 +535,11 @@ public interface DWorld {
 	/**
 	 * Set the maximum correcting velocity that contacts are allowed
 	 * to generate.
-	 * @ingroup world
-	 * @param vel The default value is infinity (i.e. no limit).
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * Reducing this value can help prevent "popping" of deeply embedded objects.
+	 * 
+	 * @param vel The default value is infinity (i.e. no limit).
 	 */
 	void setContactMaxCorrectingVel (double vel);
 	
@@ -578,7 +547,6 @@ public interface DWorld {
 	/**
 	 * Get the maximum correcting velocity that contacts are allowed
 	 * to generated.
-	 * @ingroup world
 	 */
 	//ODE_API 
 	double getContactMaxCorrectingVel();
@@ -590,14 +558,12 @@ public interface DWorld {
 	 * This includes all bodies, and all joints that are not part of a joint
 	 * group. Joints that are part of a joint group will be deactivated, and
 	 * can be destroyed by calling, for example, dJointGroupEmpty().
-	 * @ingroup world
 	 */
 	void destroy();
 
 	
 	/**
 	 * Get auto disable steps for newly created bodies.
-	 * @ingroup disable
 	 * @return nr of steps
 	 */
 	int getAutoDisableSteps ();
@@ -605,7 +571,6 @@ public interface DWorld {
 
 	/**
 	 * Set auto disable steps for newly created bodies.
-	 * @ingroup disable
 	 * @param steps default is 10
 	 */
 	void setAutoDisableSteps (int steps);
@@ -613,7 +578,6 @@ public interface DWorld {
 
 	/**
 	 * Get auto disable time for newly created bodies.
-	 * @ingroup disable
 	 * @return nr of seconds
 	 */
 	double getAutoDisableTime ();
@@ -621,7 +585,6 @@ public interface DWorld {
 
 	/**
 	 * Set auto disable time for newly created bodies.
-	 * @ingroup disable
 	 * @param time default is 0 seconds
 	 */
 	void setAutoDisableTime (double time);
@@ -629,7 +592,6 @@ public interface DWorld {
 
 	/**
 	 * Get auto disable flag for newly created bodies.
-	 * @ingroup disable
 	 * @return 0 or 1
 	 */
 	boolean getAutoDisableFlag ();
@@ -637,7 +599,6 @@ public interface DWorld {
 
 	/**
 	 * Set auto disable flag for newly created bodies.
-	 * @ingroup disable
 	 * @param do_auto_disable default is false.
 	 */
 	void setAutoDisableFlag (boolean do_auto_disable);
@@ -647,7 +608,6 @@ public interface DWorld {
 
 	/**
 	 * Get the world's linear damping threshold.
-	 * @ingroup damping
 	 */
 	double getLinearDampingThreshold ();
 
@@ -656,14 +616,12 @@ public interface DWorld {
 	 * Set the world's linear damping threshold.
 	 * @param threshold The damping won't be applied if the linear speed is
 	 *        below this threshold. Default is 0.01.
-	 * @ingroup damping
 	 */
 	void setLinearDampingThreshold(double threshold);
 
 
 	/**
 	 * Get the world's angular damping threshold.
-	 * @ingroup damping
 	 */
 	double getAngularDampingThreshold ();
 
@@ -672,14 +630,12 @@ public interface DWorld {
 	 * Set the world's angular damping threshold.
 	 * @param threshold The damping won't be applied if the angular speed is
 	 *        below this threshold. Default is 0.01.
-	 * @ingroup damping
 	 */
 	void setAngularDampingThreshold(double threshold);
 
 
 	/**
 	 * Get the world's linear damping scale.
-	 * @ingroup damping
 	 */
 	double getLinearDamping ();
 
@@ -688,14 +644,12 @@ public interface DWorld {
 	 * Set the world's linear damping scale.
 	 * @param scale The linear damping scale that is to be applied to bodies.
 	 * Default is 0 (no damping). Should be in the interval [0, 1].
-	 * @ingroup damping
 	 */
 	void setLinearDamping (double scale);
 
 
 	/**
 	 * Get the world's angular damping scale.
-	 * @ingroup damping
 	 */
 	double getAngularDamping ();
 
@@ -704,7 +658,6 @@ public interface DWorld {
 	 * Set the world's angular damping scale.
 	 * @param scale The angular damping scale that is to be applied to bodies.
 	 * Default is 0 (no damping). Should be in the interval [0, 1].
-	 * @ingroup damping
 	 */
 	void setAngularDamping(double scale);
 
@@ -713,14 +666,12 @@ public interface DWorld {
 	 * Convenience function to set body linear and angular scales.
 	 * @param linear_scale The linear damping scale that is to be applied to bodies.
 	 * @param angular_scale The angular damping scale that is to be applied to bodies.
-	 * @ingroup damping
 	 */
 	void setDamping(double linear_scale, double angular_scale);
 
 
 	/**
 	 * Get the default maximum angular speed.
-	 * @ingroup damping
 	 * @see DBody#getMaxAngularSpeed()
 	 */
 	double getMaxAngularSpeed ();
@@ -728,7 +679,6 @@ public interface DWorld {
 
 	/**
 	 * Set the default maximum angular speed for new bodies.
-	 * @ingroup damping
 	 * @see DBody#setMaxAngularSpeed(double)
 	 */
 	void setMaxAngularSpeed (double max_speed);

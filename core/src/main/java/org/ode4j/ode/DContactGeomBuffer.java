@@ -29,8 +29,6 @@ import org.ode4j.ode.internal.DxGeom;
 
 /**
  * A collection of DContactGeom objects.
- *
- * @ingroup collide
  */
 public final class DContactGeomBuffer {
 	

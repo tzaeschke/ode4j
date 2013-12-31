@@ -92,8 +92,6 @@ public interface DGeom {
 	 * <p>
 	 * When a space is destroyed, if its cleanup mode is 1 (the default) then all
 	 * the geoms in that space are automatically destroyed as well.
-	 *
-	 * @ingroup collide
 	 */
 	void destroy();
 
@@ -119,7 +117,6 @@ public interface DGeom {
 	 * User-defined class will return their own number.
 	 *
 	 * @return The geom class ID.
-	 * @ingroup collide
 	 */
 	int getClassID();
 
@@ -129,7 +126,6 @@ public interface DGeom {
 	 * 
 	 * @return The space that contains the geom, or NULL if the geom is
 	 *          not contained by a space.
-	 * @ingroup collide
 	 */
 	DSpace getSpace();
 
@@ -138,15 +134,12 @@ public interface DGeom {
 	 * Set the user-defined data pointer stored in the geom.
 	 *
 	 * @param data the data pointer to be stored
-	 * @ingroup collide
 	 */
 	void setData (Object data);
 
 	
 	/**
 	 * Get the user-defined data pointer stored in the geom.
-	 *
-	 * @ingroup collide
 	 */
 	Object getData();
 
@@ -166,7 +159,6 @@ public interface DGeom {
 	 * error in the debug build of ODE.
 	 *
 	 * @param body the body to attach to the geom
-	 * @ingroup collide
 	 */
 	void setBody (DBody body);
 
@@ -174,7 +166,6 @@ public interface DGeom {
 	/**
 	 * Get the body associated with a placeable geom.
 	 * @see #setBody(DBody)
-	 * @ingroup collide
 	 */
 	DBody getBody();
 
@@ -190,7 +181,6 @@ public interface DGeom {
 	 * @param y the new Y coordinate.
 	 * @param z the new Z coordinate.
 	 * @see DBody#setPosition(double, double, double)
-	 * @ingroup collide
 	 */
 	void setPosition (double x, double y, double z);
 	
@@ -204,7 +194,6 @@ public interface DGeom {
 	 *
 	 * @param xyz the new X, Y and Z coordinate.
 	 * @see DBody#setPosition(DVector3C)
-	 * @ingroup collide
 	 */
 	void setPosition (DVector3C xyz);
 
@@ -222,14 +211,12 @@ public interface DGeom {
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
 	 * @see DBody#getPosition()
-	 * @ingroup collide
 	 */
 	DVector3C getPosition();
 
 	
 	/**
 	 * Copy the position of a geom into a vector.
-	 * @ingroup collide
 	 * @param pos   a copy of the geom position
 	 * @see #getPosition()
 	 */
@@ -244,7 +231,6 @@ public interface DGeom {
 	 *
 	 * @param R the new rotation matrix.
 	 * @see DBody#setRotation(DMatrix3C)
-	 * @ingroup collide
 	 */
 	void setRotation (DMatrix3C R);
 	
@@ -256,13 +242,13 @@ public interface DGeom {
 	 * <p>
 	 * Calling this function on a non-placeable geom results in a runtime error in
 	 * the debug build of ODE.
-	 *
-	 * @return A pointer to the geom's rotation matrix.
-	 * @remarks The returned value is a pointer to the geom's internal
+	 * 
+	 * <p>REMARK: The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
+	 *
+	 * @return A pointer to the geom's rotation matrix.
 	 * @see DBody#getRotation()
-	 * @ingroup collide
 	 */
 	DMatrix3C getRotation();
 	
@@ -277,7 +263,6 @@ public interface DGeom {
 	 *
 	 * @param R      a copy of the geom rotation
 	 * @see #getRotation()
-	 * @ingroup collide
 	 */
 	void copyRotation(DMatrix3 R);
 
@@ -292,7 +277,6 @@ public interface DGeom {
 	 *
 	 * @param quat the new rotation.
 	 * @see DBody#setQuaternion(DQuaternionC)
-	 * @ingroup collide
 	 */
 	void setQuaternion (DQuaternionC quat);
 
@@ -306,7 +290,6 @@ public interface DGeom {
 	 * the debug build of ODE.
 	 *
 	 * @see DBody#getQuaternion()
-	 * @ingroup collide
 	 */
 	DQuaternionC getQuaternion ();
 
@@ -322,8 +305,6 @@ public interface DGeom {
 	 * This function may return a pre-computed cached bounding box, if it can
 	 * determine that the geom has not moved since the last time the bounding
 	 * box was computed.
-	 *
-	 * @ingroup collide
 	 */
 	DAABBC getAABB ();
 
@@ -332,7 +313,6 @@ public interface DGeom {
 //	 * Determing if a geom is a space.
 //	 * @param geom the geom to query
 //	 * @return Non-zero if the geom is a space, zero otherwise.
-//	 * @ingroup collide
 //	 */
 	//	int isSpace();
 
@@ -346,7 +326,6 @@ public interface DGeom {
 	 * have all bits set.
 	 *
 	 * @param bits the new bitfield value
-	 * @ingroup collide
 	 */
 	void setCategoryBits (long bits);//unsigned long bits)
 	
@@ -360,7 +339,6 @@ public interface DGeom {
 	 * have all bits set.
 	 *
 	 * @param bits the new bitfield value
-	 * @ingroup collide
 	 */
 	void setCollideBits (long bits);//unsigned long bits)
 	
@@ -370,7 +348,6 @@ public interface DGeom {
 	 *
 	 * @return The bitfield value
 	 * @see #setCategoryBits(long)
-	 * @ingroup collide
 	 */
 	//unsigned 
 	long getCategoryBits();
@@ -381,7 +358,6 @@ public interface DGeom {
 	 *
 	 * @return The bitfield value
 	 * @see #setCollideBits(long)
-	 * @ingroup collide
 	 */
 	//unsigned 
 	long getCollideBits();
@@ -396,7 +372,6 @@ public interface DGeom {
 	 *
 	 * @see #disable()
 	 * @see #isEnabled()
-	 * @ingroup collide
 	 */
 	void enable();
 	
@@ -410,7 +385,6 @@ public interface DGeom {
 	 *
 	 * @see #enable()
 	 * @see #isEnabled()
-	 * @ingroup collide
 	 */
 	void disable();
 	
@@ -425,7 +399,6 @@ public interface DGeom {
 	 * @return Non-zero if the geom is enabled, zero otherwise.
 	 * @see #disable()
 	 * @see #enable()
-	 * @ingroup collide
 	 */
 	boolean isEnabled();
 
@@ -433,13 +406,11 @@ public interface DGeom {
 	/**
 	 * User callback for geom-geom collision testing.
 	 *
-	 * @remarks The callback function can call dCollide on o1 and o2 to generate
+	 * <p>REMARK: The callback function can call dCollide on o1 and o2 to generate
 	 * contact points between each pair. Then these contact points may be added
 	 * to the simulation as contact joints. The user's callback function can of
 	 * course chose not to call dCollide for any pair, e.g. if the user decides
 	 * that those pairs should not interact.
-	 *
-	 * @ingroup collide
 	 */
 	//typedef void dNearCallback (void *data, dGeom o1, dGeom o2);
 	public interface DNearCallback {
@@ -506,7 +477,6 @@ public interface DGeom {
 	 * @param dataValue   the control argument pointer
 	 * @param dataSize   the control argument size provided or expected
 	 * @return Boolean execution status
-	 * @ingroup collide
 	 */
 	boolean lowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
 			DataValue dataValue, RefInt dataSize);
@@ -518,7 +488,6 @@ public interface DGeom {
 	 * Calling this function on a non-placeable geom results in the same point being
 	 * returned.
 	 *
-	 * @ingroup collide
 	 * @param result will contain the result.
 	 */
 	void getRelPointPos(double px, double py, double pz, DVector3 result);
@@ -530,9 +499,9 @@ public interface DGeom {
 	 * Calling this function on a non-placeable geom results in the same point being
 	 * returned.
 	 *
-	 * @remarks
+	 * <p>REMARK:
 	 * This is the inverse of dGeomGetRelPointPos()
-	 * @ingroup collide
+	 * 
 	 * @param result will contain the result.
 	 */
 	void getPosRelPoint(double px, double py, double pz, DVector3 result);
@@ -543,7 +512,6 @@ public interface DGeom {
 	 * Calling this function on a non-placeable geom results in the same vector being
 	 * returned.
 	 *
-	 * @ingroup collide
 	 * @param result will contain the result.
 	 */
 	void vectorToWorld(double px, double py, double pz, DVector3 result);
@@ -554,7 +522,6 @@ public interface DGeom {
 	 * Calling this function on a non-placeable geom results in the same vector being
 	 * returned.
 	 *
-	 * @ingroup collide
 	 * @param result will contain the result.
 	 */
 	void vectorFromWorld(double px, double py, double pz, DVector3 result);
@@ -565,12 +532,12 @@ public interface DGeom {
 	 * <p>
 	 * Returns the positional offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the zero vector.
-	 *
-	 * @return A pointer to the geom's offset vector.
-	 * @remarks The returned value is a pointer to the geom's internal
+	 * 
+	 * <p>REMARK: The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
-	 * @ingroup collide
+	 *
+	 * @return A pointer to the geom's offset vector.
 	 */
 	DVector3C getOffsetPosition();
 
@@ -582,7 +549,6 @@ public interface DGeom {
 	 * If the geom has no offset, this function returns the zero vector.
 	 *
 	 * @param pos    returns the offset position
-	 * @ingroup collide
 	 */
 	void copyOffsetPosition (DVector3 pos);
 	
@@ -599,7 +565,6 @@ public interface DGeom {
 	 * @param x the new X coordinate.
 	 * @param y the new Y coordinate.
 	 * @param z the new Z coordinate.
-	 * @ingroup collide
 	 */
 	void setOffsetPosition(double x, double y, double z);
 
@@ -610,12 +575,12 @@ public interface DGeom {
 	 * Returns the rotational offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the identity
 	 * matrix.
-	 *
-	 * @return A pointer to the geom's offset rotation matrix.
-	 * @remarks The returned value is a pointer to the geom's internal
+	 * 
+	 * <p>REMARK: The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
-	 * @ingroup collide
+	 *
+	 * @return A pointer to the geom's offset rotation matrix.
 	 */
 	DMatrix3C getOffsetRotation();
 	
@@ -628,7 +593,6 @@ public interface DGeom {
 	 * matrix.
 	 *
 	 * @param R      returns the rotation matrix.
-	 * @ingroup collide
 	 */
 	void copyOffsetRotation (DMatrix3 R);
 
@@ -643,7 +607,6 @@ public interface DGeom {
 	 * If the geom did not have an offset, it is automatically created.
 	 *
 	 * @param R the new rotation matrix.
-	 * @ingroup collide
 	 */
 	void setOffsetRotation(DMatrix3C R);
 	
@@ -655,7 +618,6 @@ public interface DGeom {
 	 * If the geom has no offset, the identity quaternion is returned.
 	 *
 	 * @param result a copy of the rotation quaternion.
-	 * @ingroup collide
 	 */
 	void getOffsetQuaternion(DQuaternion result);
 
@@ -670,7 +632,6 @@ public interface DGeom {
 	 * If the geom did not have an offset, it is automatically created.
 	 *
 	 * @param q the new rotation.
-	 * @ingroup collide
 	 */
 	void setOffsetQuaternion(DQuaternionC q);
 
@@ -688,7 +649,6 @@ public interface DGeom {
 	 * @param x the new X coordinate.
 	 * @param y the new Y coordinate.
 	 * @param z the new Z coordinate.
-	 * @ingroup collide
 	 */
 	void setOffsetWorldPosition(double x, double y, double z);
 
@@ -704,7 +664,6 @@ public interface DGeom {
 	 * If the geom did not have an offset, it is automatically created.
 	 *
 	 * @param R the new rotation matrix.
-	 * @ingroup collide
 	 */
 	void setOffsetWorldRotation(DMatrix3C R);
 	
@@ -720,7 +679,6 @@ public interface DGeom {
 	 * If the geom did not have an offset, it is automatically created.
 	 *
 	 * @param q the new rotation.
-	 * @ingroup collide
 	 */
 	void setOffsetWorldQuaternion(DQuaternionC q);
 	
@@ -735,7 +693,6 @@ public interface DGeom {
 	 * and dGeomSetOffsetRotation(identiy), because this function actually
 	 * eliminates the offset, rather than leaving it as the identity transform.
 	 *
-	 * @ingroup collide
 	 */
 	void clearOffset();
 	
@@ -752,7 +709,6 @@ public interface DGeom {
 	 * position.
 	 *
 	 * @return Non-zero if the geom has an offset, zero otherwise.
-	 * @ingroup collide
 	 */
 	boolean isOffset();
 }

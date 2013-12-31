@@ -807,9 +807,8 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 	/**
 	 * Get the prismatic axis.
-	 * @ingroup joints
 	 *
-	 * @note This function was added for convenience it is the same as
+	 * NOTE: This function was added for convenience it is the same as
 	 *       dJointGetPUAxis3
 	 */
 	void dJointGetPUAxisP( DVector3 result )

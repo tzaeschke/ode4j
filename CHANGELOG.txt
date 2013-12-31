@@ -1,4 +1,9 @@
 
+0.2.9 (alpha)
+=====
+- Set version to 0.2.9
+- Cleaned up javadoc (@remarks/note/warning to <p>REMARKS:/...) and removed @brief/@ingroup/@defgroup
+
 
 0.2.8
 =====

@@ -31,24 +31,21 @@ public interface DHingeJoint extends DJoint {
 
 	/**
 	 * Set hinge anchor parameter.
-	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 	
 	
 	/**
 	 * Set hinge anchor parameter.
-	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 	
 	
 	/**
 	 * Get the hinge anchor point, in world coordinates.
-	 *
+	 * <p>
 	 * This returns the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
-	 * @ingroup joints
 	 */
 	void getAnchor (DVector3 result);
 
@@ -59,28 +56,24 @@ public interface DHingeJoint extends DJoint {
 	 * this will return the same value as dJointGetHingeAnchor().
 	 * If not, this value will be slightly different.
 	 * This can be used, for example, to see how far the joint has come apart.
-	 * @ingroup joints
 	 */
 	void getAnchor2 (DVector3 result);
 
 	
 	/**
 	 * Set hinge axis.
-	 * @ingroup joints
 	 */
 	void setAxis (double x, double y, double z);
 	
 	
 	/**
 	 * Set hinge axis.
-	 * @ingroup joints
 	 */
 	void setAxis (DVector3C a);
 	
 	
 	/**
 	 * Get axis.
-	 * @ingroup joints
 	 */
 	void getAxis (DVector3 result);
 	
@@ -97,20 +90,19 @@ public interface DHingeJoint extends DJoint {
 	 * dJointSetHingeAxisDelta(jId, 1, 0, 0, 0.23); <br>
 	 * // If you request the position you will have: dJointGetHingeAngle(jId) == 0.23 <br>
 	 * </code>
-
+	 * 
+	 * <p>NOTE: Usually the function dJointSetHingeAxis set the current position of body1
+	 *       and body2 as the zero angle position. This function set the current position
+	 *       as the if the 2 bodies where \b angle apart.
+	 * <p>WARNING: Calling dJointSetHingeAnchor or dJointSetHingeAxis will reset the "zero"
+	 *          angle position.
+	 *          	
 	 * @param x The X component of the axis in world frame
 	 * @param y The Y component of the axis in world frame
 	 * @param z The Z component of the axis in world frame
 	 * @param angle The angle for the offset of the relative orientation.
 	 *              As if body1 was rotated by angle when the Axis was set (see below).
 	 *              The rotation is around the new Hinge axis.
-	 *
-	 * @note Usually the function dJointSetHingeAxis set the current position of body1
-	 *       and body2 as the zero angle position. This function set the current position
-	 *       as the if the 2 bodies where \b angle apart.
-	 * @warning Calling dJointSetHingeAnchor or dJointSetHingeAxis will reset the "zero"
-	 *          angle position.
-     * @ingroup joints
 	 */
 	void setAxisOffset(double x, double y, double z, double angle);
 
@@ -125,14 +117,12 @@ public interface DHingeJoint extends DJoint {
 	 * respect to Body 2.
 	 * When the hinge anchor or axis is set, the current position of the attached
 	 * bodies is examined and that position will be the zero angle.
-	 * @ingroup joints
 	 */
 	double getAngle();
 	
 	
 	/**
 	 * Get the hinge angle time derivative.
-	 * @ingroup joints
 	 */
 	double getAngleRate();
 
@@ -143,7 +133,6 @@ public interface DHingeJoint extends DJoint {
 	 * That is, it applies a torque with specified magnitude in the direction
 	 * of the hinge axis, to body 1, and with the same magnitude but in opposite
 	 * direction to body 2. This function is just a wrapper for dBodyAddTorque()}
-	 * @ingroup joints
 	 */
 	void addTorque (double torque);
 	
@@ -156,7 +145,6 @@ public interface DHingeJoint extends DJoint {
 
 	/**
 	 * Set joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	void setParam (PARAM_N parameter, double value);
@@ -164,7 +152,6 @@ public interface DHingeJoint extends DJoint {
 	
 	/**
 	 * Get joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	double getParam (PARAM_N parameter);

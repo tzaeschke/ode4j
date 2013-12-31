@@ -82,46 +82,40 @@ public interface DBody {
 	 * All joints that are attached to this body will be put into limbo:
 	 * i.e. unattached and not affecting the simulation, but they will NOT be
 	 * deleted.
-	 * @ingroup bodies
 	 */
 	void destroy();
 
 	/**
 	 * Set the body's user-data pointer.
-	 * @ingroup bodies
 	 * @param data arbitraty pointer
 	 */
 	void setData (Object data);
 	/**
 	 * Get the body's user-data pointer.
-	 * @ingroup bodies
 	 * @return a pointer to the user's data.
 	 */
 	Object getData();
 
 	/**
 	 * Set position of a body.
-	 * @remarks
+	 * <p>REMARK:
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
-	 * @ingroup bodies
 	 */
 	void setPosition (double x, double y, double z);
 	/**
 	 * Set position of a body.
-	 * @remarks
+	 * <p>REMARK:
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
-	 * @ingroup bodies
 	 */
 	void setPosition (DVector3C p);
 
 	/**
 	 * Set the orientation of a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * <p>REMARK:
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
@@ -129,8 +123,7 @@ public interface DBody {
 	void setRotation (DMatrix3C R);
 	/**
 	 * Set the orientation of a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * <p>REMARK:
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
@@ -138,29 +131,24 @@ public interface DBody {
 	void setQuaternion (DQuaternionC q);
 	/**
 	 * Set the linear velocity of a body.
-	 * @ingroup bodies
 	 */
 	void setLinearVel (double x, double y, double z);
 	/**
 	 * Set the linear velocity of a body.
-	 * @ingroup bodies
 	 */
 	void setLinearVel (DVector3C v);
 	/**
 	 * Set the angular velocity of a body.
-	 * @ingroup bodies
 	 */
 	void setAngularVel (double x, double y, double z);
 	/**
 	 * Set the angular velocity of a body.
-	 * @ingroup bodies
 	 */
 	void setAngularVel (DVector3C v);
 
 	/**
 	 * Get the position of a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * <p>REMARK:
 	 * When getting, the returned values are pointers to internal data structures,
 	 * so the vectors are valid until any changes are made to the rigid body
 	 * system structure.
@@ -168,24 +156,20 @@ public interface DBody {
 	DVector3C getPosition();
 	/**
 	 * Get the rotation of a body.
-	 * @ingroup bodies
 	 * @return pointer to a 4x3 rotation matrix.
 	 */
 	DMatrix3C getRotation();
 	/**
 	 * Get the rotation of a body.
-	 * @ingroup bodies
 	 * @return pointer to 4 scalars that represent the quaternion.
 	 */
 	DQuaternionC getQuaternion();
 	/**
 	 * Get the linear velocity of a body.
-	 * @ingroup bodies
 	 */
 	DVector3C getLinearVel();
 	/**
 	 * Get the angular velocity of a body.
-	 * @ingroup bodies
 	 */
 	DVector3C getAngularVel();
 
@@ -195,274 +179,230 @@ public interface DBody {
 	//  { setMass (&mass); }
 	/**
 	 * Set the mass of a body.
-	 * @ingroup bodies
 	 */
 	void setMass (DMassC mass);
 	/**
 	 * Get the mass of a body.
-	 * @ingroup bodies
 	 */
 	DMassC getMass ();
 
 
 	/**
 	 * Retrieves the world attached to the given body.
-	 * @remarks
-	 *
-	 * @ingroup bodies
 	 */
 	DWorld getWorld();
 
 
 	/**
 	 * Set auto disable linear average threshold.
-	 * @ingroup bodies disable
 	 */
 	void setAutoDisableLinearThreshold (double threshold);
 	/**
 	 * Get auto disable linear average threshold.
-	 * @ingroup bodies disable
 	 * @return the threshold
 	 */
 	double getAutoDisableLinearThreshold();
 	/**
 	 * Set auto disable angular average threshold.
-	 * @ingroup bodies disable
 	 */
 	void setAutoDisableAngularThreshold (double threshold);
 	/**
 	 * Get auto disable angular average threshold.
-	 * @ingroup bodies disable
 	 * @return the threshold
 	 */
 	double getAutoDisableAngularThreshold();
 	/**
 	 * Set auto disable steps.
-	 * @ingroup bodies disable
 	 * @param steps the nr of steps.
 	 */
 	void setAutoDisableSteps (int steps);
 	/**
 	 * Get auto steps a body must be thought of as idle to disable
-	 * @ingroup bodies disable
 	 * @return the nr of steps
 	 */
 	int getAutoDisableSteps();
 	/**
 	 * Set auto disable time.
-	 * @ingroup bodies disable
 	 * @param time nr of seconds.
 	 */
 	void setAutoDisableTime (double time);
 	/**
 	 * Get auto disable time.
-	 * @ingroup bodies disable
 	 * @return nr of seconds
 	 */
 	double getAutoDisableTime();
 	/**
 	 * Set auto disable flag.
-	 * @ingroup bodies disable
 	 * @param do_auto_disable 0 or 1
 	 */
 	void setAutoDisableFlag (boolean do_auto_disable);
 	/**
 	 * Get auto disable flag.
-	 * @ingroup bodies disable
 	 * @return 0 or 1
 	 */
 	boolean getAutoDisableFlag();
 	/**
 	 * Get auto disable average size (samples count).
-	 * @ingroup bodies disable
 	 * @return the nr of steps/size.
 	 */
 	int getAutoDisableAverageSamplesCount();
 	/**
 	 * Set auto disable average buffer size (average steps).
-	 * @ingroup bodies disable
 	 * @param average_samples_count the nr of samples to review.
 	 */
 	void setAutoDisableAverageSamplesCount(int average_samples_count);
 	/**
 	 * Set auto disable defaults.
-	 * @remarks
+	 * <p>REMARK:
 	 * Set the values for the body to those set as default for the world.
-	 * @ingroup bodies disable
 	 */
 	void setAutoDisableDefaults();
 
 
 	/**
 	 * Add force at centre of mass of body in absolute coordinates.
-	 * @ingroup bodies
 	 */
 	void addForce (double fx, double fy, double fz);
 	/**
 	 * Add force at centre of mass of body in absolute coordinates.
-	 * @ingroup bodies
 	 */
 	void addForce (DVector3C f);
 	/**
 	 * Add torque at centre of mass of body in absolute coordinates.
-	 * @ingroup bodies
 	 */
 	void addTorque (double fx, double fy, double fz);
 	/**
 	 * Add torque at centre of mass of body in absolute coordinates.
-	 * @ingroup bodies
 	 */
 	void addTorque (DVector3C t);
 
 	/**
 	 * Add force at centre of mass of body in coordinates relative to body.
-	 * @ingroup bodies
 	 */
 	void addRelForce (double fx, double fy, double fz);
 	/**
 	 * Add force at centre of mass of body in coordinates relative to body.
-	 * @ingroup bodies
 	 */
 	void addRelForce (DVector3C f);
 	/**
 	 * Add torque at centre of mass of body in coordinates relative to body.
-	 * @ingroup bodies
 	 */
 	void addRelTorque (double fx, double fy, double fz);
 	/**
 	 * Add torque at centre of mass of body in coordinates relative to body.
-	 * @ingroup bodies
 	 */
 	void addRelTorque (DVector3C t);
 
 	/**
 	 * Add force at specified point in body in global coordinates.
-	 * @ingroup bodies
 	 */
 	void addForceAtPos (double fx, double fy, double fz,
 			double px, double py, double pz);
 	/**
 	 * Add force at specified point in body in global coordinates.
-	 * @ingroup bodies
 	 */
 	void addForceAtPos (DVector3C f, DVector3C p);
 
 	/**
 	 * Add force at specified point in body in local coordinates.
-	 * @ingroup bodies
 	 */
 	void addForceAtRelPos (double fx, double fy, double fz,
 			double px, double py, double pz);
 	/**
 	 * Add force at specified point in body in local coordinates.
-	 * @ingroup bodies
 	 */
 	void addForceAtRelPos (DVector3C f, DVector3C p);
 
 	/**
 	 * Add force at specified point in body in global coordinates.
-	 * @ingroup bodies
 	 */
 	void addRelForceAtPos (double fx, double fy, double fz,
 			double px, double py, double pz);
 	/**
 	 * Add force at specified point in body in global coordinates.
-	 * @ingroup bodies
 	 */
 	void addRelForceAtPos (DVector3C f, DVector3C p);
 
 	/**
 	 * Add force at specified point in body in local coordinates.
-	 * @ingroup bodies
 	 */
 	void addRelForceAtRelPos (double fx, double fy, double fz,
 			double px, double py, double pz);
 	/**
 	 * Add force at specified point in body in local coordinates.
-	 * @ingroup bodies
 	 */
 	void addRelForceAtRelPos (DVector3C f, DVector3C p);
 
 	/**
 	 * Return the current accumulated force vector.
-	 * @return points to an array of 3 reals.
-	 * @remarks
+	 * <p>REMARK:
 	 * The returned values are pointers to internal data structures, so
 	 * the vectors are only valid until any changes are made to the rigid
 	 * body system.
-	 * @ingroup bodies
+	 * @return points to an array of 3 reals.
 	 */
 	DVector3C getForce();
 	/**
 	 * Return the current accumulated torque vector.
-	 * @return points to an array of 3 reals.
-	 * @remarks
+	 * <p>REMARK:
 	 * The returned values are pointers to internal data structures, so
 	 * the vectors are only valid until any changes are made to the rigid
 	 * body system.
-	 * @ingroup bodies
+	 * @return points to an array of 3 reals.
 	 */
 	DVector3C getTorque();
 	/**
 	 * Set the body force accumulation vector.
-	 * @remarks
+	 * <p>REMARK:
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
-	 * @ingroup bodies
 	 */
 	void setForce (double x, double y, double z);
 	/**
 	 * Set the body force accumulation vector.
-	 * @remarks
+	 * <p>REMARK:
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
-	 * @ingroup bodies
 	 */
 	void setForce (DVector3C f);
 	/**
 	 * Set the body torque accumulation vector.
-	 * @remarks
+	 * <p>REMARK:
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
-	 * @ingroup bodies
 	 */
 	void setTorque (double x, double y, double z);
 	/**
 	 * Set the body torque accumulation vector.
-	 * @remarks
+	 * <p>REMARK:
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
-	 * @ingroup bodies
 	 */
 	void setTorque (DVector3C t);
 
 
 	/**
 	 * Get world position of a relative point on body.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void getRelPointPos (double px, double py, double pz, DVector3 result);
 	/**
 	 * Get world position of a relative point on body.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void getRelPointPos (DVector3C p, DVector3 result);
 
 	/**
 	 * Get velocity vector in global coords of a relative point on body.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void getRelPointVel (double px, double py, double pz, DVector3 result);
 	/**
 	 * Get velocity vector in global coords of a relative point on body.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void getRelPointVel (DVector3C p, DVector3 result);
@@ -470,14 +410,12 @@ public interface DBody {
 	/**
 	 * Get velocity vector in global coords of a globally
 	 * specified point on a body.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void getPointVel (double px, double py, double pz, DVector3 result);
 	/**
 	 * Get velocity vector in global coords of a globally
 	 * specified point on a body.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void getPointVel (DVector3C p, DVector3 result);
@@ -485,51 +423,50 @@ public interface DBody {
 	/**
 	 * Takes a point in global coordinates and returns
 	 * the point's position in body-relative coordinates.
-	 * @remarks
+	 * <p>REMARK:
 	 * This is the inverse of dBodyGetRelPointPos()
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void getPosRelPoint (double px, double py, double pz, DVector3 result);
 	/**
 	 * Takes a point in global coordinates and returns
 	 * the point's position in body-relative coordinates.
-	 * @remarks
+	 * <p>REMARK:
 	 * This is the inverse of dBodyGetRelPointPos()
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void getPosRelPoint (DVector3C p, DVector3 result);
 
 	/**
 	 * Convert from local to world coordinates.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void vectorToWorld (double px, double py, double pz, DVector3 result);
 	/**
 	 * Convert from local to world coordinates.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void vectorToWorld (DVector3C p, DVector3 result);
 
 	/**
 	 * Convert from world to local coordinates.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void vectorFromWorld (double px, double py, double pz, DVector3 result);
 	/**
 	 * Convert from world to local coordinates.
-	 * @ingroup bodies
 	 * @param result will contain the result.
 	 */
 	void vectorFromWorld (DVector3C p, DVector3 result);
 
 	/**
 	 * Controls the way a body's orientation is updated at each timestep.
-	 * @ingroup bodies
+	 * 
+	 * <p>REMARK:
+	 * Note however that high speed rotations can result in many types of
+	 * error in a simulation, and the finite mode will only fix one of those
+	 * sources of error.
+	 * 
 	 * @param mode can be 0 or 1:
 	 * <li> 0: An ``infinitesimal'' orientation update is used.
 	 * This is fast to compute, but it can occasionally cause inaccuracies
@@ -539,24 +476,21 @@ public interface DBody {
 	 * <li> 1: A ``finite'' orientation update is used. 
 	 * This is more costly to compute, but will be more accurate for high
 	 * speed rotations.</li>
-	 * @remarks
-	 * Note however that high speed rotations can result in many types of
-	 * error in a simulation, and the finite mode will only fix one of those
-	 * sources of error.
 	 */
 	void setFiniteRotationMode (boolean mode);
 
 	/**
 	 * Sets the finite rotation axis for a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * This is axis only has meaning when the finite rotation mode is set
 	 * If this axis is zero (0,0,0), full finite rotations are performed on
 	 * the body.
 	 * If this axis is nonzero, the body is rotated by performing a partial finite
 	 * rotation along the axis direction followed by an infinitesimal rotation
 	 * along an orthogonal direction.
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * This can be useful to alleviate certain sources of error caused by quickly
 	 * spinning bodies. For example, if a car wheel is rotating at high speed
 	 * you can call this function with the wheel's hinge axis as the argument to
@@ -565,15 +499,16 @@ public interface DBody {
 	void setFiniteRotationAxis (double x, double y, double z);
 	/**
 	 * Sets the finite rotation axis for a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * This is axis only has meaning when the finite rotation mode is set
 	 * If this axis is zero (0,0,0), full finite rotations are performed on
 	 * the body.
 	 * If this axis is nonzero, the body is rotated by performing a partial finite
 	 * rotation along the axis direction followed by an infinitesimal rotation
 	 * along an orthogonal direction.
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * This can be useful to alleviate certain sources of error caused by quickly
 	 * spinning bodies. For example, if a car wheel is rotating at high speed
 	 * you can call this function with the wheel's hinge axis as the argument to
@@ -583,26 +518,22 @@ public interface DBody {
 
 	/**
 	 * Get the way a body's orientation is updated each timestep.
-	 * @ingroup bodies
 	 * @return the mode 0 (infitesimal) or 1 (finite).
 	 */
 	boolean getFiniteRotationMode();
 	/**
 	 * Get the finite rotation axis.
 	 * @param result will contain the axis.
-	 * @ingroup bodies
 	 */
 	void getFiniteRotationAxis (DVector3 result);
 
 	/**
 	 * Get the number of joints that are attached to this body.
-	 * @ingroup bodies
 	 * @return nr of joints
 	 */
 	int getNumJoints();
 	/**
 	 * Return a joint attached to this body, given by index.
-	 * @ingroup bodies
 	 * @param index valid range is  0 to n-1 where n is the value returned by
 	 * dBodyGetNumJoints().
 	 */
@@ -610,7 +541,6 @@ public interface DBody {
 
 	/**
 	 * Set rigid body to dynamic state (default).
-	 * @ingroup bodies
 	 */
 	void setDynamic();
 	/**
@@ -619,35 +549,32 @@ public interface DBody {
 	 * body (it's "unstoppable", doesn't respond to forces),
 	 * but can still affect dynamic bodies (e.g. in joints).
 	 * Kinematic bodies can be controlled by position and velocity.
-	 * @note A kinematic body has infinite mass. If you set its mass
+	 * 
+	 * <p>NOTE: A kinematic body has infinite mass. If you set its mass
 	 * to something else, it loses the kinematic state and behaves
 	 * as a normal dynamic body.
-	 * @ingroup bodies
 	 */
 	void setKinematic();
 	/**
 	 * Check wether a body is in kinematic state.
-	 * @ingroup bodies
 	 * @return 1 if a body is kinematic or 0 if it is dynamic.
 	 */
 	boolean isKinematic();
 
 	/**
 	 * Manually enable a body.
-	 * @ingroup bodies
 	 */
 	void enable();
 	/**
 	 * Manually disable a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * A disabled body that is connected through a joint to an enabled body will
 	 * be automatically re-enabled at the next simulation step.
 	 */
 	void disable();
 	/**
 	 * Check wether a body is enabled.
-	 * @ingroup bodies
 	 * @return 1 if a body is currently enabled or 0 if it is disabled.
 	 */
 	boolean isEnabled();
@@ -655,15 +582,13 @@ public interface DBody {
 
 	/**
 	 * Set whether the body is influenced by the world's gravity or not.
-	 * @ingroup bodies
-	 * @param mode when nonzero gravity affects this body.
-	 * @remarks
+	 * <p>REMARK:
 	 * Newly created bodies are always influenced by the world's gravity.
+	 * @param mode when nonzero gravity affects this body.
 	 */
 	void setGravityMode (boolean mode);
 	/**
 	 * Get whether the body is influenced by the world's gravity or not.
-	 * @ingroup bodies
 	 * @return nonzero means gravity affects this body.
 	 */
 	boolean getGravityMode();
@@ -672,81 +597,73 @@ public interface DBody {
 
 	/**
 	 * Get the body's linear damping scale.
-	 * @ingroup bodies damping
 	 */
 	double getLinearDamping();
 	/**
 	 * Set the body's linear damping scale.
-	 * @param scale The linear damping scale. Should be in the interval [0, 1].
-	 * @ingroup bodies damping
-	 * @remarks From now on the body will not use the world's linear damping
+	 * 
+	 * <p>REMARK: From now on the body will not use the world's linear damping
 	 * scale until dBodySetDampingDefaults() is called.
+	 * @param scale The linear damping scale. Should be in the interval [0, 1].
 	 * @see #setDampingDefaults()
 	 */
 	void setLinearDamping(double scale);
 	/**
 	 * Get the body's angular damping scale.
-	 * @ingroup bodies damping
-	 * @remarks If the body's angular damping scale was not set, this function
+	 * 
+	 * <p>REMARK: If the body's angular damping scale was not set, this function
 	 * returns the world's angular damping scale.
 	 */
 	double getAngularDamping();
 	/**
 	 * Set the body's angular damping scale.
-	 * @param scale The angular damping scale. Should be in the interval [0, 1].
-	 * @ingroup bodies damping
-	 * @remarks From now on the body will not use the world's angular damping
+	 * 
+	 * <p>REMARK: From now on the body will not use the world's angular damping
 	 * scale until dBodyResetAngularDamping() is called.
+	 * @param scale The angular damping scale. Should be in the interval [0, 1].
 	 */
 	void setAngularDamping(double scale);
 	/**
 	 * Convenience function to set linear and angular scales at once.
 	 * @param linear_scale The linear damping scale. Should be in the interval [0, 1].
 	 * @param angular_scale The angular damping scale. Should be in the interval [0, 1].
-	 * @ingroup bodies damping
 	 * @see #setLinearDamping(double)
 	 * @see #setAngularDamping(double)
 	 */
 	void setDamping(double linear_scale, double angular_scale);
 	/**
 	 * Get the body's linear damping threshold.
-	 * @ingroup bodies damping
 	 */
 	double getLinearDampingThreshold();
 	/**
 	 * Set the body's linear damping threshold.
 	 * @param threshold The linear threshold to be used. Damping
 	 *      is only applied if the linear speed is above this limit.
-	 * @ingroup bodies damping
 	 */
 	void setLinearDampingThreshold(double threshold);
 	/**
 	 * Get the body's angular damping threshold.
-	 * @ingroup bodies damping
 	 */
 	double getAngularDampingThreshold();
 	/**
 	 * Set the body's angular damping threshold.
 	 * @param threshold The angular threshold to be used. Damping is
 	 *      only used if the angular speed is above this limit.
-	 * @ingroup bodies damping
 	 */
 	void setAngularDampingThreshold(double threshold);
 	/**
 	 * Resets the damping settings to the current world's settings.
-	 * @ingroup bodies damping
 	 */
 	void setDampingDefaults();
 
 	/**
 	 * Get the body's maximum angular speed.
-	 * @ingroup damping bodies
 	 * @see DWorld#getMaxAngularSpeed()
 	 */
 	double getMaxAngularSpeed();
 	/**
 	 * Set the body's maximum angular speed.
-	 * @ingroup damping bodies
+	 * 
 	 * The default value is dInfinity, but it's a good idea to limit
 	 * it at less than 500 if the body has the gyroscopic term
 	 * enabled.
@@ -759,7 +676,6 @@ public interface DBody {
 	 *
 	 * @return nonzero if gyroscopic term computation is enabled (default),
 	 * zero otherwise.
-	 * @ingroup bodies
 	 */
 	boolean getGyroscopicMode();
 	/**
@@ -771,7 +687,6 @@ public interface DBody {
 	 *
 	 * @param enabled   nonzero (default) to enable gyroscopic term, 0
 	 * to disable.
-	 * @ingroup bodies
 	 */
 	void setGyroscopicMode(boolean enabled);
 
@@ -786,7 +701,6 @@ public interface DBody {
 	 *
 	 * @param callback the callback to be invoked when the body moves. Set to zero
 	 * to disable.
-	 * @ingroup bodies
 	 */
 	void setMovedCallback(BodyMoveCallBack callback);
 
@@ -798,7 +712,6 @@ public interface DBody {
 	 * dBodyGetNextGeom().
 	 *
 	 * @return the first geom attached to this body, or 0.
-	 * @ingroup bodies
 	 * @deprecated May be replaced by a more Java-like API.
 	 */
 	DGeom getFirstGeom ();
@@ -809,7 +722,6 @@ public interface DBody {
 	 * @param geom a geom attached to some body.
 	 * @return the next geom attached to the same body, or 0.
 	 * @see DBody#getFirstGeom()
-	 * @ingroup bodies
 	 * @deprecated May be replaced by a more Java-like API.
 	 */
 	DGeom getNextGeom (DGeom geom);

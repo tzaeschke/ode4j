@@ -31,42 +31,36 @@ public interface DHinge2Joint extends DJoint {
 
 	/**
 	 * Set anchor.
-	 * @ingroup joints
 	 */
 	void setAnchor (double x, double y, double z);
 	
 	
 	/**
 	 * Set anchor.
-	 * @ingroup joints
 	 */
 	void setAnchor (DVector3C a);
 	
 	
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis1 (double x, double y, double z);
 	
 	
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis1 (DVector3C a);
 	
 	
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis2 (double x, double y, double z);
 	
 	
 	/**
 	 * Set axis.
-	 * @ingroup joints
 	 */
 	void setAxis2 (DVector3C a);
 
@@ -76,7 +70,6 @@ public interface DHinge2Joint extends DJoint {
 	 * <p>
 	 * Return the point on body 1.  If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
-	 * @ingroup joints
 	 */
 	void getAnchor (DVector3 result);
 
@@ -88,42 +81,36 @@ public interface DHinge2Joint extends DJoint {
 	 * this will return the same value as dJointGetHinge2Anchor.
 	 * If not, this value will be slightly different.
 	 * This can be used, for example, to see how far the joint has come apart.
-	 * @ingroup joints
 	 */
 	void getAnchor2 (DVector3 result);
 
 	
 	/**
 	 * Get joint axis.
-	 * @ingroup joints
 	 */
 	void getAxis1 (DVector3 result);
 
 	
 	/**
 	 * Get joint axis.
-	 * @ingroup joints
 	 */
 	void getAxis2 (DVector3 result);
 
 
 	/**
 	 * Get angle.
-	 * @ingroup joints
 	 */
 	double getAngle1();
 
 	
 	/**
 	 * Get time derivative of angle.
-	 * @ingroup joints
 	 */
 	double getAngle1Rate();
 
 	
 	/**
 	 * Get time derivative of angle.
-	 * @ingroup joints
 	 */
 	double getAngle2Rate();
 
@@ -131,8 +118,8 @@ public interface DHinge2Joint extends DJoint {
 	/**
 	 * Applies torque1 about the hinge2's axis 1, torque2 about the
 	 * hinge2's axis 2.
-	 * @remarks  This function is just a wrapper for dBodyAddTorque().
-	 * @ingroup joints
+	 * <p>
+	 * This function is just a wrapper for {@code dBodyAddTorque()}.
 	 */
 	void addTorques(double torque1, double torque2);
 	void setParamVel2(double d);
@@ -149,7 +136,6 @@ public interface DHinge2Joint extends DJoint {
 	
 	/**
 	 * Set joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	void setParam (PARAM_N parameter, double value);
@@ -157,7 +143,6 @@ public interface DHinge2Joint extends DJoint {
 	
 	/**
 	 * Get joint parameter.
-	 * @ingroup joints
 	 */
 	@Override
 	double getParam (PARAM_N parameter);

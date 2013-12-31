@@ -103,8 +103,6 @@ public class DrawStuff {
 
 	/**
      * Set of functions to be used as callbacks by the simulation loop.
-	 * @struct dsFunctions
-	 * @ingroup drawstuff
 	 */
 //	typedef struct dsFunctions {
 //		  int version;			/* put DS_VERSION here */
@@ -157,7 +155,7 @@ public class DrawStuff {
 
 	/**
 	 * Does the complete simulation.
-	 * @ingroup drawstuff
+	 * 
 	 * This function starts running the simulation, and only exits when the simulation is done.
 	 * Function pointers should be provided for the callbacks.
 	 * If you filter out arguments beforehand, simply set them to "".
@@ -177,7 +175,6 @@ public class DrawStuff {
 
 	/**
 	 * Exit with error message.
-	 * @ingroup drawstuff
 	 * This function displays an error message then exit.
 	 * @param msg format strin, like printf, without the newline character.
 	 */
@@ -192,7 +189,6 @@ public class DrawStuff {
  
 	/**
 	 * Exit with error message and core dump.
-	 * @ingroup drawstuff
 	 * this functions tries to dump core or start the debugger.
 	 * @param msg format strin, like printf, without the newline character.
 	 */
@@ -207,7 +203,6 @@ public class DrawStuff {
 
 	/**
 	 * Print log message.
-	 * @ingroup drawstuff
 	 * @param msg format string, like printf, without the \n.
 	 */
 	//DS_API 
@@ -217,7 +212,6 @@ public class DrawStuff {
 
 	/**
 	 * Sets the viewpoint.
-	 * @ingroup drawstuff
 	 * @param xyz camera position.
 	 * @param hpr contains heading, pitch and roll numbers in degrees. heading=0
 	 * points along the x axis, pitch=0 is looking towards the horizon, and
@@ -232,7 +226,6 @@ public class DrawStuff {
 
 	/**
 	 * Gets the viewpoint.
-	 * @ingroup drawstuff
 	 * @param xyz position
 	 * @param hpr heading,pitch,roll.
 	 */
@@ -244,7 +237,7 @@ public class DrawStuff {
 
 	/**
 	 * Stop the simulation loop.
-	 * @ingroup drawstuff
+	 * 
 	 * Calling this from within dsSimulationLoop()
 	 * will cause it to exit and return to the caller. it is the same as if the
 	 * user used the exit command. using this outside the loop will have no
@@ -257,7 +250,7 @@ public class DrawStuff {
 
 	/**
 	 * Get the elapsed time (on wall-clock).
-	 * @ingroup drawstuff
+	 * 
 	 * It returns the nr of seconds since the last call to this function.
 	 */
 	//DS_API 
@@ -267,7 +260,7 @@ public class DrawStuff {
 
 	/**
 	 * Toggle the rendering of textures.
-	 * @ingroup drawstuff
+	 * 
 	 * It changes the way objects are drawn. these changes will apply to all further
 	 * dsDrawXXX() functions. 
 	 * @param texture_number The texture number must be a DS_xxx texture constant.
@@ -283,7 +276,7 @@ public class DrawStuff {
 
 	/**
 	 * Set the color with which geometry is drawn.
-	 * @ingroup drawstuff
+	 * 
 	 * @param red Red component from 0 to 1
 	 * @param green Green component from 0 to 1
 	 * @param blue Blue component from 0 to 1
@@ -295,7 +288,7 @@ public class DrawStuff {
 
 	/**
 	 * Set the color and transparency with which geometry is drawn.
-	 * @ingroup drawstuff
+	 * 
 	 * @param alpha Note that alpha transparency is a misnomer: it is alpha opacity.
 	 * 1.0 means fully opaque, and 0.0 means fully transparent.
 	 */
@@ -306,7 +299,7 @@ public class DrawStuff {
 
 	/**
 	 * Draw a box.
-	 * @ingroup drawstuff
+	 * 
 	 * @param pos is the x,y,z of the center of the object.
 	 * @param R is a 3x3 rotation matrix for the object, stored by row like this:
 	 *        [ R11 R12 R13 0 ]
@@ -325,7 +318,7 @@ public class DrawStuff {
 
 	/**
 	 * Draw a sphere.
-	 * @ingroup drawstuff
+	 * 
 	 * @param pos Position of center.
 	 * @param R orientation.
 	 * @param radius
@@ -343,7 +336,7 @@ public class DrawStuff {
 
 	/**
 	 * Draw a triangle.
-	 * @ingroup drawstuff
+	 * 
 	 * @param pos Position of center
 	 * @param R orientation
 	 * @param v0 first vertex
@@ -376,7 +369,6 @@ public class DrawStuff {
 
 	/**
 	 * Draw a z-aligned cylinder.
-	 * @ingroup drawstuff
 	 */
 	//DS_API 
 //	public static  void dsDrawCylinder (final float pos[3], final float R[12],
@@ -393,7 +385,6 @@ public class DrawStuff {
 	
 	/**
 	 * Draw a z-aligned capsule.
-	 * @ingroup drawstuff
 	 */
 	//DS_API 
 //	public static  void dsDrawCapsule (final float pos[3], final float R[12],
@@ -410,7 +401,6 @@ public class DrawStuff {
 	
 	/**
 	 * Draw a line.
-	 * @ingroup drawstuff
 	 */
 	//DS_API 
 //	public static  void dsDrawLine (final float pos1[3], final float pos2[3]) {
@@ -424,7 +414,6 @@ public class DrawStuff {
 
 	/**
 	 * Draw a convex shape.
-	 * @ingroup drawstuff
 	 */
 	//DS_API 
 //	public static  void dsDrawConvex(final float pos[3], final float R[12],
@@ -495,7 +484,7 @@ public class DrawStuff {
 
 	/**
 	 * Set the quality with which curved objects are rendered.
-	 * @ingroup drawstuff
+	 * 
 	 * Higher numbers are higher quality, but slower to draw. 
 	 * This must be set before the first objects are drawn to be effective.
 	 * Default sphere quality is 1, default capsule quality is 3.
@@ -514,7 +503,6 @@ public class DrawStuff {
 	/**
 	 * Set Drawmode (0=Polygon Fill,1=Wireframe).
 	 * Use the DS_POLYFILL and DS_WIREFRAME macros.
-	 * @ingroup drawstuff
 	 */
 	//DS_API 
 	public static  void dsSetDrawMode(int mode) {

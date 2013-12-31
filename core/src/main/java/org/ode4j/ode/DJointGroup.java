@@ -32,8 +32,7 @@ public interface DJointGroup {
 
 	/**
 	 * Empty a joint group.
-	 * @ingroup joints
-	 *
+	 * <p>
 	 * All joints in the joint group will be destroyed,
 	 * but the joint group itself will not be destroyed.
 	 */
@@ -42,8 +41,7 @@ public interface DJointGroup {
 
 	/**
 	 * Destroy a joint group.
-	 * @ingroup joints
-	 *
+	 * <p>
 	 * All joints in the joint group will be destroyed.
 	 */
 	void destroy();

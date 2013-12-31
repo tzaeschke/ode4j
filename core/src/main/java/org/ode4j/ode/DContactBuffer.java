@@ -32,7 +32,6 @@ import java.util.Iterator;
 /**
  * A collection of DContact objects.
  *
- * @ingroup collide
  */
 public class DContactBuffer implements Iterable<DContact> {
 	
