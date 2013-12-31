@@ -10,7 +10,7 @@
 
     <groupId>org.ode4j</groupId>
     <artifactId>parent</artifactId>
-    <version>0.2.8-SNAPSHOT</version>
+    <version>0.2.8</version>
     <packaging>pom</packaging>
 
     <modules>
