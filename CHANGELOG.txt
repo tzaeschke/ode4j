@@ -1,6 +1,4 @@
 
-TODO: change to 2014
-
 0.2.9 (alpha)
 =====
 - Set version to 0.2.9
