@@ -2,7 +2,7 @@
  * libccd
  * ---------------------------------
  * Copyright (c)2010,2011 Daniel Fiser <danfis@danfis.cz>
- * Java-port: Copyright (c) 2007-2013 Tilmann Zaeschke<ode4j@gmx.de>  
+ * Java-port: Copyright (c) 2009-2014 Tilmann Zaeschke<ode4j@gmx.de>  
  *
  *
  *  This file is part of libccd.

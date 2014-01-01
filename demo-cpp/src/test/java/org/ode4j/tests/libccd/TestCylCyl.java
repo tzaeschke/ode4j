@@ -1,3 +1,20 @@
+/**
+ * libccd
+ * ---------------------------------
+ * Copyright (c)2010 Daniel Fiser <danfis@danfis.cz>
+ * Java-port: Copyright (c) 2009-2014 Tilmann Zaeschke<ode4j@gmx.de>  
+ *
+ *
+ *  This file is part of libccd.
+ *
+ *  Distributed under the OSI-approved BSD License (the "License");
+ *  see accompanying file BDS-LICENSE for details or see
+ *  <http://www.opensource.org/licenses/bsd-license.php>.
+ *
+ *  This software is distributed WITHOUT ANY WARRANTY; without even the
+ *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *  See the License for more information.
+ */
 package org.ode4j.tests.libccd;
 
 import org.junit.After;

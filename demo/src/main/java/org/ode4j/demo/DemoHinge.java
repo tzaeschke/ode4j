@@ -2,7 +2,7 @@
  *                                                                       *
  * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
- * Open Dynamics Engine 4J, Copyright (C) 2007-2013 Tilmann Zaeschke     *
+ * Open Dynamics Engine 4J, Copyright (C) 2009-2014 Tilmann Zaeschke     *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *

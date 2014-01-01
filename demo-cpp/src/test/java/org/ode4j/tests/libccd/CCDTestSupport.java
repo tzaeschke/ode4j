@@ -1,19 +1,19 @@
-	/***
-	 * libccd
-	 * ---------------------------------
-	 * Copyright (c)2010 Daniel Fiser <danfis@danfis.cz>
-	 *
-	 *
-	 *  This file is part of libccd.
-	 *
-	 *  Distributed under the OSI-approved BSD License (the "License");
-	 *  see accompanying file BDS-LICENSE for details or see
-	 *  <http://www.opensource.org/licenses/bsd-license.php>.
-	 *
-	 *  This software is distributed WITHOUT ANY WARRANTY; without even the
-	 *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-	 *  See the License for more information.
-	 */
+/**
+ * libccd
+ * ---------------------------------
+ * Copyright (c)2010 Daniel Fiser <danfis@danfis.cz>
+ *
+ *
+ *  This file is part of libccd.
+ *
+ *  Distributed under the OSI-approved BSD License (the "License");
+ *  see accompanying file BDS-LICENSE for details or see
+ *  <http://www.opensource.org/licenses/bsd-license.php>.
+ *
+ *  This software is distributed WITHOUT ANY WARRANTY; without even the
+ *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *  See the License for more information.
+ */
 package org.ode4j.tests.libccd;
 
 import static org.ode4j.ode.internal.libccd.CCD.*;

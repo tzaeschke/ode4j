@@ -1,8 +1,11 @@
 
+TODO: change to 2014
+
 0.2.9 (alpha)
 =====
 - Set version to 0.2.9
 - Cleaned up javadoc (@remarks/note/warning to <p>REMARKS:/...) and removed @brief/@ingroup/@defgroup
+- Updated license dates to 2014.
 
 
 0.2.8
