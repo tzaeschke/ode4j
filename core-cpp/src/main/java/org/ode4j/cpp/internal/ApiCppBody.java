@@ -39,8 +39,8 @@ import org.ode4j.ode.DBody.BodyMoveCallBack;
 public abstract class ApiCppBody extends ApiCppJoint {
 
 	/**
-	 * @brief Get auto disable linear average threshold.
-	 * @ingroup bodies disable
+	 * Get auto disable linear average threshold.
+	 * 
 	 * @return the threshold
 	 */
 	//ODE_API 
@@ -49,8 +49,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set auto disable linear average threshold.
-	 * @ingroup bodies disable
+	 * Set auto disable linear average threshold.
+	 * 
 	 * @param linear_average_threshold the threshold
 	 */
 	//ODE_API 
@@ -60,8 +60,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get auto disable angular average threshold.
-	 * @ingroup bodies disable
+	 * Get auto disable angular average threshold.
+	 * 
 	 * @return the threshold
 	 */
 	//ODE_API 
@@ -70,8 +70,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set auto disable angular average threshold.
-	 * @ingroup bodies disable
+	 * Set auto disable angular average threshold.
+	 * 
 	 * @param angular_average_threshold the threshold
 	 */
 	//ODE_API 
@@ -81,8 +81,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get auto disable average size (samples count).
-	 * @ingroup bodies disable
+	 * Get auto disable average size (samples count).
+	 * 
 	 * @return the nr of steps/size.
 	 */
 	//ODE_API 
@@ -91,8 +91,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set auto disable average buffer size (average steps).
-	 * @ingroup bodies disable
+	 * Set auto disable average buffer size (average steps).
+	 * 
 	 * @param average_samples_count the nr of samples to review.
 	 */
 	//ODE_API 
@@ -105,8 +105,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Get auto steps a body must be thought of as idle to disable
-	 * @ingroup bodies disable
+	 * Get auto steps a body must be thought of as idle to disable
+	 * 
 	 * @return the nr of steps
 	 */
 	//ODE_API 
@@ -115,8 +115,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set auto disable steps.
-	 * @ingroup bodies disable
+	 * Set auto disable steps.
+	 * 
 	 * @param steps the nr of steps.
 	 */
 	//ODE_API 
@@ -125,8 +125,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get auto disable time.
-	 * @ingroup bodies disable
+	 * Get auto disable time.
+	 * 
 	 * @return nr of seconds
 	 */
 	//ODE_API 
@@ -135,8 +135,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set auto disable time.
-	 * @ingroup bodies disable
+	 * Set auto disable time.
+	 * 
 	 * @param time nr of seconds.
 	 */
 	//ODE_API 
@@ -145,8 +145,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get auto disable flag.
-	 * @ingroup bodies disable
+	 * Get auto disable flag.
+	 * 
 	 * @return 0 or 1
 	 */
 	//ODE_API 
@@ -155,8 +155,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set auto disable flag.
-	 * @ingroup bodies disable
+	 * Set auto disable flag.
+	 * 
 	 * @param do_auto_disable 0 or 1
 	 */
 	//ODE_API 
@@ -165,10 +165,10 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set auto disable defaults.
-	 * @remarks
+	 * Set auto disable defaults.
+	 * <p>REMARKS:
 	 * Set the values for the body to those set as default for the world.
-	 * @ingroup bodies disable
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodySetAutoDisableDefaults (DBody b){
@@ -177,10 +177,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Retrieves the world attached to te given body.
-	 * @remarks
-	 *
-	 * @ingroup bodies
+	 * Retrieves the world attached to te given body.
 	 */
 	//ODE_API 
 	public static DWorld dBodyGetWorld (DBody b){
@@ -188,10 +185,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Create a body in given world.
-	 * @remarks
+	 * Create a body in given world.
+	 * 
 	 * Default mass parameters are at position (0,0,0).
-	 * @ingroup bodies
 	 */
 	//ODE_API 
 	public static DBody dBodyCreate (DWorld w){
@@ -199,12 +195,12 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Destroy a body.
-	 * @remarks
+	 * Destroy a body.
+	 * 
 	 * All joints that are attached to this body will be put into limbo:
 	 * i.e. unattached and not affecting the simulation, but they will NOT be
 	 * deleted.
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyDestroy (DBody b){
@@ -212,8 +208,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the body's user-data pointer.
-	 * @ingroup bodies
+	 * Set the body's user-data pointer.
+	 * 
 	 * @param data arbitraty pointer
 	 */
 	//ODE_API 
@@ -222,8 +218,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the body's user-data pointer.
-	 * @ingroup bodies
+	 * Get the body's user-data pointer.
+	 * 
 	 * @return a pointer to the user's data.
 	 */
 	//ODE_API 
@@ -232,12 +228,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set position of a body.
-	 * @remarks
+	 * Set position of a body.
+	 * 
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
-	 * @ingroup bodies
 	 */
 	//ODE_API 
 	public static void dBodySetPosition   (DBody b, double x, double y, double z){
@@ -245,9 +240,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the orientation of a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * Set the orientation of a body.
+	 * 
+	 * <p>REMARKS:
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
@@ -258,9 +253,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the orientation of a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * Set the orientation of a body.
+	 * 
+	 * <p>REMARKS:
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
@@ -271,8 +266,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the linear velocity of a body.
-	 * @ingroup bodies
+	 * Set the linear velocity of a body.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodySetLinearVel  (DBody b, double x, double y, double z){
@@ -280,8 +275,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the angular velocity of a body.
-	 * @ingroup bodies
+	 * Set the angular velocity of a body.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodySetAngularVel (DBody b, double x, double y, double z){
@@ -289,9 +284,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the position of a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * Get the position of a body.
+	 * 
+	 * <p>REMARKS:
 	 * When getting, the returned values are pointers to internal data structures,
 	 * so the vectors are valid until any changes are made to the rigid body
 	 * system structure.
@@ -305,8 +300,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Copy the position of a body into a vector.
-	 * @ingroup bodies
+	 * Copy the position of a body into a vector.
+	 * 
 	 * @param body  the body to query
 	 * @param pos   a copy of the body position
 	 * @see #dBodyGetPosition(DBody)
@@ -318,8 +313,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Get the rotation of a body.
-	 * @ingroup bodies
+	 * Get the rotation of a body.
+	 * 
 	 * @return pointer to a 4x3 rotation matrix.
 	 */
 	//ODE_API 
@@ -330,8 +325,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Copy the rotation of a body.
-	 * @ingroup bodies
+	 * Copy the rotation of a body.
+	 * 
 	 * @param b		the body to query
 	 * @param R    	a copy of the rotation matrix
 	 * @see #dBodyGetRotation(DBody)
@@ -343,8 +338,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Get the rotation of a body.
-	 * @ingroup bodies
+	 * Get the rotation of a body.
+	 * 
 	 * @return pointer to 4 scalars that represent the quaternion.
 	 */
 	//ODE_API 
@@ -355,8 +350,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Copy the orientation of a body into a quaternion.
-	 * @ingroup bodies
+	 * Copy the orientation of a body into a quaternion.
+	 * 
 	 * @param body  the body to query
 	 * @param quat  a copy of the orientation quaternion
 	 * @see #dBodyGetQuaternion(DBody)
@@ -368,8 +363,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Get the linear velocity of a body.
-	 * @ingroup bodies
+	 * Get the linear velocity of a body.
+	 * 
 	 */
 	//ODE_API 
 	//const double * 
@@ -378,8 +373,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the angular velocity of a body.
-	 * @ingroup bodies
+	 * Get the angular velocity of a body.
+	 * 
 	 */
 	//ODE_API 
 	//const double * 
@@ -388,8 +383,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the mass of a body.
-	 * @ingroup bodies
+	 * Set the mass of a body.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodySetMass (DBody b, DMassC mass){
@@ -397,8 +392,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the mass of a body.
-	 * @ingroup bodies
+	 * Get the mass of a body.
+	 * 
 	 */
 	//ODE_API 
 	//	 void dBodyGetMass (dBody b, dMass *mass){
@@ -409,8 +404,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Add force at centre of mass of body in absolute coordinates.
-	 * @ingroup bodies
+	 * Add force at centre of mass of body in absolute coordinates.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyAddForce (DBody b, double fx, double fy, double fz){
@@ -418,8 +413,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Add torque at centre of mass of body in absolute coordinates.
-	 * @ingroup bodies
+	 * Add torque at centre of mass of body in absolute coordinates.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyAddTorque (DBody b, double fx, double fy, double fz){
@@ -427,8 +422,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Add force at centre of mass of body in coordinates relative to body.
-	 * @ingroup bodies
+	 * Add force at centre of mass of body in coordinates relative to body.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyAddRelForce (DBody b, double fx, double fy, double fz){
@@ -436,8 +431,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Add torque at centre of mass of body in coordinates relative to body.
-	 * @ingroup bodies
+	 * Add torque at centre of mass of body in coordinates relative to body.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyAddRelTorque (DBody b, double fx, double fy, double fz){
@@ -445,8 +440,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Add force at specified point in body in global coordinates.
-	 * @ingroup bodies
+	 * Add force at specified point in body in global coordinates.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyAddForceAtPos (DBody b, double fx, double fy, double fz,
@@ -454,8 +449,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 		b.addForceAtPos(fx, fy, fz, px, py, pz);
 	}
 	/**
-	 * @brief Add force at specified point in body in local coordinates.
-	 * @ingroup bodies
+	 * Add force at specified point in body in local coordinates.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyAddForceAtRelPos (DBody b, double fx, double fy, double fz,
@@ -463,8 +458,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 		b.addForceAtRelPos(fx, fy, fz, px, py, pz);
 	}
 	/**
-	 * @brief Add force at specified point in body in global coordinates.
-	 * @ingroup bodies
+	 * Add force at specified point in body in global coordinates.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyAddRelForceAtPos (DBody b, double fx, double fy, double fz,
@@ -472,8 +467,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 		b.addRelForceAtPos(fx, fy, fz, px, py, pz);
 	}
 	/**
-	 * @brief Add force at specified point in body in local coordinates.
-	 * @ingroup bodies
+	 * Add force at specified point in body in local coordinates.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyAddRelForceAtRelPos (DBody b, double fx, double fy, double fz,
@@ -482,13 +477,13 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Return the current accumulated force vector.
-	 * @return points to an array of 3 reals.
-	 * @remarks
+	 * Return the current accumulated force vector.
+	 * <p>REMARKS:
 	 * The returned values are pointers to internal data structures, so
 	 * the vectors are only valid until any changes are made to the rigid
 	 * body system.
-	 * @ingroup bodies
+	 * 
+	 * @return points to an array of 3 reals.
 	 */
 	//ODE_API 
 	//const double * 
@@ -497,13 +492,13 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Return the current accumulated torque vector.
-	 * @return points to an array of 3 reals.
-	 * @remarks
+	 * Return the current accumulated torque vector.
+	 * <p>REMARKS:
 	 * The returned values are pointers to internal data structures, so
 	 * the vectors are only valid until any changes are made to the rigid
 	 * body system.
-	 * @ingroup bodies
+	 * 
+	 * @return points to an array of 3 reals.
 	 */
 	//ODE_API 
 	//const double * 
@@ -512,12 +507,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the body force accumulation vector.
-	 * @remarks
+	 * Set the body force accumulation vector.
+	 * <p>REMARKS:
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
-	 * @ingroup bodies
 	 */
 	//ODE_API 
 	public static void dBodySetForce  (DBody b, double x, double y, double z){
@@ -525,12 +519,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the body torque accumulation vector.
-	 * @remarks
+	 * Set the body torque accumulation vector.
+	 * <p>REMARKS:
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
-	 * @ingroup bodies
 	 */
 	//ODE_API 
 	public static void dBodySetTorque (DBody b, double x, double y, double z){
@@ -538,8 +531,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get world position of a relative point on body.
-	 * @ingroup bodies
+	 * Get world position of a relative point on body.
+	 * 
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
@@ -550,8 +543,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get velocity vector in global coords of a relative point on body.
-	 * @ingroup bodies
+	 * Get velocity vector in global coords of a relative point on body.
+	 * 
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
@@ -562,9 +555,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get velocity vector in global coords of a globally
+	 * Get velocity vector in global coords of a globally
 	 * specified point on a body.
-	 * @ingroup bodies
+	 * 
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
@@ -577,11 +570,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief takes a point in global coordinates and returns
+	 * Takes a point in global coordinates and returns
 	 * the point's position in body-relative coordinates.
-	 * @remarks
+	 * <p>REMARKS:
 	 * This is the inverse of dBodyGetRelPointPos()
-	 * @ingroup bodies
+	 * 
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
@@ -594,8 +587,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Convert from local to world coordinates.
-	 * @ingroup bodies
+	 * Convert from local to world coordinates.
+	 * 
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
@@ -608,8 +601,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Convert from world to local coordinates.
-	 * @ingroup bodies
+	 * Convert from world to local coordinates.
+	 * 
 	 * @param result will contain the result.
 	 */
 	//ODE_API 
@@ -622,18 +615,20 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief controls the way a body's orientation is updated at each timestep.
-	 * @ingroup bodies
+	 * Controls the way a body's orientation is updated at each timestep.
+	 * 
 	 * @param mode can be 0 or 1:
-	 * \li 0: An ``infinitesimal'' orientation update is used.
+	 * <ul>
+	 * <li> 0: An ``infinitesimal'' orientation update is used.
 	 * This is fast to compute, but it can occasionally cause inaccuracies
 	 * for bodies that are rotating at high speed, especially when those
 	 * bodies are joined to other bodies.
-	 * This is the default for every new body that is created.
-	 * \li 1: A ``finite'' orientation update is used.
+	 * This is the default for every new body that is created.</li>
+	 * <li> 1: A ``finite'' orientation update is used.
 	 * This is more costly to compute, but will be more accurate for high
-	 * speed rotations.
-	 * @remarks
+	 * speed rotations. </li>
+	 * </ul>
+	 * <p>REMARKS:
 	 * Note however that high speed rotations can result in many types of
 	 * error in a simulation, and the finite mode will only fix one of those
 	 * sources of error.
@@ -644,16 +639,16 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief sets the finite rotation axis for a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * Sets the finite rotation axis for a body.
+	 * 
+	 * <p>REMARKS:
 	 * This is axis only has meaning when the finite rotation mode is set
 	 * If this axis is zero (0,0,0), full finite rotations are performed on
 	 * the body.
 	 * If this axis is nonzero, the body is rotated by performing a partial finite
 	 * rotation along the axis direction followed by an infinitesimal rotation
 	 * along an orthogonal direction.
-	 * @remarks
+	 * <p>REMARKS:
 	 * This can be useful to alleviate certain sources of error caused by quickly
 	 * spinning bodies. For example, if a car wheel is rotating at high speed
 	 * you can call this function with the wheel's hinge axis as the argument to
@@ -666,8 +661,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the way a body's orientation is updated each timestep.
-	 * @ingroup bodies
+	 * Get the way a body's orientation is updated each timestep.
+	 * 
 	 * @return the mode 0 (infitesimal) or 1 (finite).
 	 */
 	//ODE_API 
@@ -676,9 +671,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the finite rotation axis.
+	 * Get the finite rotation axis.
 	 * @param result will contain the axis.
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API 
 	public void dBodyGetFiniteRotationAxis (DBody body, DVector3 result){
@@ -686,8 +681,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the number of joints that are attached to this body.
-	 * @ingroup bodies
+	 * Get the number of joints that are attached to this body.
+	 * 
 	 * @return nr of joints
 	 */
 	//ODE_API 
@@ -696,8 +691,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Return a joint attached to this body, given by index.
-	 * @ingroup bodies
+	 * Return a joint attached to this body, given by index.
+	 * 
 	 * @param index valid range is  0 to n-1 where n is the value returned by
 	 * dBodyGetNumJoints().
 	 */
@@ -707,9 +702,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set rigid body to dynamic state (default).
+	 * Set rigid body to dynamic state (default).
 	 * @param body identification of body.
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API
 	public static void dBodySetDynamic (DBody body) {
@@ -717,16 +712,16 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set rigid body to kinematic state.
+	 * Set rigid body to kinematic state.
 	 * When in kinematic state the body isn't simulated as a dynamic
 	 * body (it's "unstoppable", doesn't respond to forces),
 	 * but can still affect dynamic bodies (e.g. in joints).
 	 * Kinematic bodies can be controlled by position and velocity.
-	 * @note A kinematic body has infinite mass. If you set its mass
+	 * <p>NOTE: A kinematic body has infinite mass. If you set its mass
 	 * to something else, it loses the kinematic state and behaves
 	 * as a normal dynamic body.
 	 * @param body identification of body.
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API
 	public static void dBodySetKinematic (DBody body) {
@@ -734,8 +729,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Check wether a body is in kinematic state.
-	 * @ingroup bodies
+	 * Check wether a body is in kinematic state.
+	 * 
 	 * @return 1 if a body is kinematic or 0 if it is dynamic.
 	 */
 	//ODE_API
@@ -744,9 +739,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Manually enable a body.
+	 * Manually enable a body.
 	 * @param body identification of body.
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodyEnable (DBody body){
@@ -754,9 +749,9 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Manually disable a body.
-	 * @ingroup bodies
-	 * @remarks
+	 * Manually disable a body.
+	 * 
+	 * <p>REMARKS:
 	 * A disabled body that is connected through a joint to an enabled body will
 	 * be automatically re-enabled at the next simulation step.
 	 */
@@ -766,8 +761,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Check wether a body is enabled.
-	 * @ingroup bodies
+	 * Check wether a body is enabled.
+	 * 
 	 * @return 1 if a body is currently enabled or 0 if it is disabled.
 	 */
 	//ODE_API 
@@ -776,11 +771,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set whether the body is influenced by the world's gravity or not.
-	 * @ingroup bodies
-	 * @param mode when nonzero gravity affects this body.
-	 * @remarks
+	 * Set whether the body is influenced by the world's gravity or not.
+	 * <p>REMARKS:
 	 * Newly created bodies are always influenced by the world's gravity.
+	 * 
+	 * @param mode when nonzero gravity affects this body.
 	 */
 	//ODE_API 
 	public static void dBodySetGravityMode (DBody b, boolean mode){
@@ -788,8 +783,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get whether the body is influenced by the world's gravity or not.
-	 * @ingroup bodies
+	 * Get whether the body is influenced by the world's gravity or not.
+	 * 
 	 * @return nonzero means gravity affects this body.
 	 */
 	//ODE_API 
@@ -799,7 +794,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Set the 'moved' callback of a body.
+	 * Set the 'moved' callback of a body.
 	 *
 	 * Whenever a body has its position or rotation changed during the
 	 * timestep, the callback will be called (with body as the argument).
@@ -809,7 +804,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * @param b the body that needs to be watched.
 	 * @param callback the callback to be invoked when the body moves. Set to zero
 	 * to disable.
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API 
 	void dBodySetMovedCallback(DBody b, BodyMoveCallBack callback){
@@ -818,13 +813,13 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Return the first geom associated with the body.
+	 * Return the first geom associated with the body.
 	 *
 	 * You can traverse through the geoms by repeatedly calling
 	 * dBodyGetNextGeom().
 	 *
 	 * @return the first geom attached to this body, or 0.
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API 
 	DGeom dBodyGetFirstGeom (DBody b){
@@ -833,11 +828,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief returns the next geom associated with the same body.
+	 * returns the next geom associated with the same body.
 	 * @param g a geom attached to some body.
 	 * @return the next geom attached to the same body, or 0.
 	 * @see dBodyGetFirstGeom
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API 
 	DGeom dBodyGetNextGeom (DGeom g){
@@ -846,8 +841,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Resets the damping settings to the current world's settings.
-	 * @ingroup bodies damping
+	 * Resets the damping settings to the current world's settings.
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodySetDampingDefaults(DBody b){
@@ -855,8 +850,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the body's linear damping scale.
-	 * @ingroup bodies damping
+	 * Get the body's linear damping scale.
+	 * 
 	 */
 	//ODE_API 
 	public static double dBodyGetLinearDamping (DBody b){
@@ -864,11 +859,13 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the body's linear damping scale.
-	 * @param scale The linear damping scale. Should be in the interval [0, 1].
-	 * @ingroup bodies damping
-	 * @remarks From now on the body will not use the world's linear damping
+	 * Set the body's linear damping scale.
+	 * 
+	 * <p>REMARKS:
+	 * From now on the body will not use the world's linear damping
 	 * scale until dBodySetDampingDefaults() is called.
+	 * 
+	 * @param scale The linear damping scale. Should be in the interval [0, 1].
 	 * @see #dBodySetDampingDefaults(DBody)
 	 */
 	//ODE_API 
@@ -877,9 +874,10 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the body's angular damping scale.
-	 * @ingroup bodies damping
-	 * @remarks If the body's angular damping scale was not set, this function
+	 * Get the body's angular damping scale.
+	 * 
+	 * <p>REMARKS:
+	 * If the body's angular damping scale was not set, this function
 	 * returns the world's angular damping scale.
 	 */
 	//ODE_API 
@@ -888,11 +886,13 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the body's angular damping scale.
-	 * @param scale The angular damping scale. Should be in the interval [0, 1].
-	 * @ingroup bodies damping
-	 * @remarks From now on the body will not use the world's angular damping
+	 * Set the body's angular damping scale.
+	 * 
+	 * <p>REMARKS:
+	 * From now on the body will not use the world's angular damping
 	 * scale until dBodyResetAngularDamping() is called.
+	 * 
+	 * @param scale The angular damping scale. Should be in the interval [0, 1].
 	 * @see #dBodyResetAngularDamping()
 	 */
 	//ODE_API 
@@ -901,10 +901,10 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Convenience function to set linear and angular scales at once.
+	 * Convenience function to set linear and angular scales at once.
 	 * @param linear_scale The linear damping scale. Should be in the interval [0, 1].
 	 * @param angular_scale The angular damping scale. Should be in the interval [0, 1].
-	 * @ingroup bodies damping
+	 * 
 	 * @see #dBodySetLinearDamping(DBody, double) 
 	 * @see #dBodySetAngularDamping(DBody, double)
 	 */
@@ -914,8 +914,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the body's linear damping threshold.
-	 * @ingroup bodies damping
+	 * Get the body's linear damping threshold.
+	 * 
 	 */
 	//ODE_API 
 	public static double dBodyGetLinearDampingThreshold (DBody b){
@@ -923,10 +923,10 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the body's linear damping threshold.
+	 * Set the body's linear damping threshold.
 	 * @param threshold The linear threshold to be used. Damping
 	 *      is only applied if the linear speed is above this limit.
-	 * @ingroup bodies damping
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodySetLinearDampingThreshold(DBody b, double threshold){
@@ -934,8 +934,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the body's angular damping threshold.
-	 * @ingroup bodies damping
+	 * Get the body's angular damping threshold.
+	 * 
 	 */
 	//ODE_API 
 	public static double dBodyGetAngularDampingThreshold (DBody b){
@@ -943,10 +943,10 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the body's angular damping threshold.
+	 * Set the body's angular damping threshold.
 	 * @param threshold The angular threshold to be used. Damping is
 	 *      only used if the angular speed is above this limit.
-	 * @ingroup bodies damping
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodySetAngularDampingThreshold(DBody b, double threshold){
@@ -954,8 +954,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the body's maximum angular speed.
-	 * @ingroup damping bodies
+	 * Get the body's maximum angular speed.
 	 * @see ApiCppWorld#dWorldGetMaxAngularSpeed(DWorld)
 	 */
 	//ODE_API 
@@ -964,13 +963,14 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Set the body's maximum angular speed.
-	 * @ingroup damping bodies
-	 * @see ApiCppWorld#dWorldSetMaxAngularSpeed(DWorld, double) 
-	 * @see #dBodyResetMaxAngularSpeed()
+	 * Set the body's maximum angular speed.
+	 * 
 	 * The default value is dInfinity, but it's a good idea to limit
 	 * it at less than 500 if the body has the gyroscopic term
 	 * enabled.
+	 * 
+	 * @see ApiCppWorld#dWorldSetMaxAngularSpeed(DWorld, double) 
+	 * @see #dBodyResetMaxAngularSpeed()
 	 */
 	//ODE_API 
 	public static void dBodySetMaxAngularSpeed(DBody b, double max_speed) {
@@ -978,11 +978,11 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	}
 
 	/**
-	 * @brief Get the body's gyroscopic state.
+	 * Get the body's gyroscopic state.
 	 *
 	 * @return nonzero if gyroscopic term computation is enabled (default),
 	 * zero otherwise.
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API 
 	public static boolean dBodyGetGyroscopicMode(DBody b) {
@@ -991,7 +991,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 
 	/**
-	 * @brief Enable/disable the body's gyroscopic term.
+	 * Enable/disable the body's gyroscopic term.
 	 *
 	 * Disabling the gyroscopic term of a body usually improves
 	 * stability. It also helps turning spining objects, like cars'
@@ -999,7 +999,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 *
 	 * @param enabled   nonzero (default) to enable gyroscopic term, 0
 	 * to disable.
-	 * @ingroup bodies
+	 * 
 	 */
 	//ODE_API 
 	public static void dBodySetGyroscopicMode(DBody b, boolean enabled) {

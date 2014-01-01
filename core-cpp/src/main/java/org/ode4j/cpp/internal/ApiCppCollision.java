@@ -55,7 +55,7 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 
 /**
- * @defgroup collide Collision Detection
+ * Collision Detection.
  *
  * ODE has two main components: a dynamics simulation engine and a collision
  * detection engine. The collision engine is given information about the
@@ -83,7 +83,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the geoms in that space are automatically destroyed as well.
 	 *
 	 * @param geom the geom to be destroyed.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomDestroy (DGeom geom) {
@@ -96,7 +95,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to hold the data
 	 * @param data the data pointer to be stored
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	//void dGeomSetData (dGeom geom, void* data) {
@@ -109,7 +107,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Get the user-defined data pointer stored in the geom.
 	 *
 	 * @param geom the geom containing the data
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void *dGeomGetData (dGeom geom) {
@@ -134,7 +131,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to connect
 	 * @param body the body to attach to the geom
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetBody (DGeom geom, DBody body) {
@@ -146,7 +142,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Get the body associated with a placeable geom.
 	 * @param geom the geom to query.
 	 * @see #dGeomSetBody(DGeom, DBody)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static DBody dGeomGetBody (DGeom geom) {
@@ -166,7 +161,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param y the new Y coordinate.
 	 * @param z the new Z coordinate.
 	 * @see ApiCppBody#dBodySetPosition(DBody, double, double, double)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetPosition (DGeom geom, double x, double y, double z) {
@@ -184,7 +178,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom the geom to set.
 	 * @param R the new rotation matrix.
 	 * @see ApiCppBody#dBodySetRotation(DBody, DMatrix3)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetRotation (DGeom geom, final DMatrix3C R) {
@@ -203,7 +196,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom the geom to set.
 	 * @param quat the new rotation.
 	 * @see ApiCppBody#dBodySetQuaternion(DBody, DQuaternion)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetQuaternion (DGeom geom, DQuaternionC quat) {
@@ -221,11 +213,10 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to query.
 	 * @return A pointer to the geom's position vector.
-	 * @remarks The returned value is a pointer to the geom's internal
+	 * <p>REMARK: The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
 	 * @see ApiCppBody#dBodyGetPosition(DBody)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static final DVector3C dGeomGetPosition (DGeom geom) {
@@ -235,7 +226,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 	/**
 	 * Copy the position of a geom into a vector.
-	 * @ingroup collide
+	 * 
 	 * @param geom  the geom to query
 	 * @param pos   a copy of the geom position
 	 * @see #dGeomGetPosition(DGeom)
@@ -253,14 +244,14 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * Calling this function on a non-placeable geom results in a runtime error in
 	 * the debug build of ODE.
+
+	 * <p>REMARK: The returned value is a pointer to the geom's internal
+	 *          data structure. It is valid until any changes are made
+	 *          to the geom.
 	 *
 	 * @param geom the geom to query.
 	 * @return A pointer to the geom's rotation matrix.
-	 * @remarks The returned value is a pointer to the geom's internal
-	 *          data structure. It is valid until any changes are made
-	 *          to the geom.
 	 * @see ApiCppBody#dBodyGetRotation(DBody)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static final DMatrix3C dGeomGetRotation (DGeom geom) {
@@ -279,7 +270,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom   the geom to query.
 	 * @param R      a copy of the geom rotation
 	 * @see #dGeomGetRotation(DGeom)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomCopyRotation(DGeom geom, DMatrix3 R) {
@@ -298,7 +288,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom the geom to query.
 	 * @param result a copy of the rotation quaternion.
 	 * @see ApiCppBody#dBodyGetQuaternion(DBody)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomGetQuaternion (DGeom geom, DQuaternion result) {
@@ -320,7 +309,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to query
 	 * @param aabb the returned bounding box
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomGetAABB (dGeom geom, double aabb[6]) {
@@ -333,7 +321,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Determing if a geom is a space.
 	 * @param geom the geom to query
 	 * @return Non-zero if the geom is a space, zero otherwise.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static boolean dGeomIsSpace (DGeom geom) {
@@ -346,7 +333,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom the geom to query
 	 * @return The space that contains the geom, or NULL if the geom is
 	 *          not contained by a space.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static DSpace dGeomGetSpace (DGeom geom) {
@@ -358,25 +344,26 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Given a geom, this returns its class.
 	 *
 	 * The ODE classes are:
-	 *  <li> dSphereClass
-	 *  <li> dBoxClass
-	 *  <li> dCylinderClass
-	 *  <li> dPlaneClass
-	 *  <li> dRayClass
-	 *  <li> dConvexClass
-	 *  <li> dGeomTransformClass
-	 *  <li> dTriMeshClass
-	 *  <li> dSimpleSpaceClass
-	 *  <li> dHashSpaceClass
-	 *  <li> dQuadTreeSpaceClass
-	 *  <li> dFirstUserClass
-	 *  <li> dLastUserClass
+	 * <ul>
+	 *  <li> dSphereClass </li>
+	 *  <li> dBoxClass </li>
+	 *  <li> dCylinderClass </li>
+	 *  <li> dPlaneClass </li>
+	 *  <li> dRayClass </li>
+	 *  <li> dConvexClass </li>
+	 *  <li> dGeomTransformClass </li>
+	 *  <li> dTriMeshClass </li>
+	 *  <li> dSimpleSpaceClass </li>
+	 *  <li> dHashSpaceClass </li>
+	 *  <li> dQuadTreeSpaceClass </li>
+	 *  <li> dFirstUserClass </li>
+	 *  <li> dLastUserClass </li>
+	 * </ul>
 	 *
 	 * User-defined class will return their own number.
 	 *
 	 * @param geom the geom to query
 	 * @return The geom class ID.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static int dGeomGetClass (DGeom geom) {
@@ -394,7 +381,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set
 	 * @param bits the new bitfield value
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomSetCategoryBits (dGeom geom, unsigned long bits) {
@@ -413,7 +399,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set
 	 * @param bits the new bitfield value
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomSetCollideBits (dGeom geom, unsigned long bits) {
@@ -428,7 +413,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom the geom to set
 	 * @return the bitfield value
 	 * @see #dGeomSetCategoryBits(DGeom, long)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// unsigned long dGeomGetCategoryBits (dGeom geom) {
@@ -443,7 +427,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom the geom to set
 	 * @return the bitfield value
 	 * @see #dGeomSetCollideBits(DGeom, long)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// unsigned long dGeomGetCollideBits (dGeom geom) {
@@ -462,7 +445,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom   the geom to enable
 	 * @see #dGeomDisable(DGeom)
 	 * @see #dGeomIsEnabled(DGeom)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomEnable (DGeom geom) {
@@ -480,7 +462,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom   the geom to disable
 	 * @see #dGeomDisable(DGeom)
 	 * @see #dGeomIsEnabled(DGeom)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomDisable (DGeom geom) {
@@ -499,7 +480,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @return Non-zero if the geom is enabled, zero otherwise.
 	 * @see #dGeomDisable(DGeom)
 	 * @see #dGeomIsEnabled(DGeom)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static boolean dGeomIsEnabled (DGeom geom) {
@@ -522,7 +502,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param x the new X coordinate.
 	 * @param y the new Y coordinate.
 	 * @param z the new Z coordinate.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetOffsetPosition (DGeom geom, double x, double y, double z) {
@@ -541,7 +520,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set.
 	 * @param R the new rotation matrix.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetOffsetRotation (DGeom geom, DMatrix3C R) {
@@ -560,7 +538,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set.
 	 * @param Q the new rotation.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetOffsetQuaternion (DGeom geom, DQuaternionC Q) {
@@ -582,7 +559,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param x the new X coordinate.
 	 * @param y the new Y coordinate.
 	 * @param z the new Z coordinate.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetOffsetWorldPosition (DGeom geom, double x, double y, double z) {
@@ -602,7 +578,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set.
 	 * @param R the new rotation matrix.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetOffsetWorldRotation (DGeom geom, DMatrix3C R) {
@@ -622,7 +597,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to set.
 	 * @param q the new rotation.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomSetOffsetWorldQuaternion (DGeom geom, DQuaternionC q) {
@@ -641,7 +615,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * eliminates the offset, rather than leaving it as the identity transform.
 	 *
 	 * @param geom the geom to have its offset destroyed.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomClearOffset(DGeom geom) {
@@ -662,7 +635,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to query.
 	 * @return Non-zero if the geom has an offset, zero otherwise.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static boolean dGeomIsOffset(DGeom geom) {
@@ -676,12 +648,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Returns the positional offset of the geom in local coordinates.
 	 * If the geom has no offset, this function returns the zero vector.
 	 *
-	 * @param geom the geom to query.
-	 * @return A pointer to the geom's offset vector.
-	 * @remarks The returned value is a pointer to the geom's internal
+	 * <p>REMARK: The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
-	 * @ingroup collide
+
+	 * @param geom the geom to query.
+	 * @return A pointer to the geom's offset vector.
 	 */
 	//ODE_API 
 	public static DVector3C dGeomGetOffsetPosition (DGeom geom) {
@@ -697,7 +669,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom   the geom to query.
 	 * @param pos    returns the offset position
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomCopyOffsetPosition (DGeom geom, DVector3 pos) {
@@ -712,12 +683,12 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * If the geom has no offset, this function returns the identity
 	 * matrix.
 	 *
-	 * @param geom the geom to query.
-	 * @return A pointer to the geom's offset rotation matrix.
-	 * @remarks The returned value is a pointer to the geom's internal
+	 * <p>REMARK: The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
-	 * @ingroup collide
+
+	 * @param geom the geom to query.
+	 * @return A pointer to the geom's offset rotation matrix.
 	 */
 	//ODE_API 
 	public static DMatrix3C dGeomGetOffsetRotation (DGeom geom) {
@@ -734,7 +705,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom   the geom to query.
 	 * @param R      returns the rotation matrix.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomCopyOffsetRotation (DGeom geom, DMatrix3 R) {
@@ -750,7 +720,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param geom the geom to query.
 	 * @param result a copy of the rotation quaternion.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomGetOffsetQuaternion (DGeom geom, DQuaternion result) {
@@ -768,6 +737,19 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * Internally, this just calls the correct class-specific collision
 	 * functions for o1 and o2.
+	 *
+	 * <p>REMARK: If a space is passed as o1 or o2 then this function will collide
+	 * all objects contained in o1 with all objects contained in o2, and return
+	 * the resulting contact points. This method for colliding spaces with geoms
+	 * (or spaces with spaces) provides no user control over the individual
+	 * collisions. To get that control, use dSpaceCollide or dSpaceCollide2 instead.
+	 *
+	 * <p>REMARK: If o1 and o2 are the same geom then this function will do nothing
+	 * and return 0. Technically speaking an object intersects with itself, but it
+	 * is not useful to find contact points in this case.
+	 *
+	 * <p>REMARK: This function does not care if o1 and o2 are in the same space or not
+	 * (or indeed if they are in any space at all).
 	 *
 	 * @param o1 The first geom to test.
 	 * @param o2 The second geom to test.
@@ -792,21 +774,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @return If the geoms intersect, this function returns the number of contact
 	 * points generated (and updates the contact array), otherwise it returns 0
 	 * (and the contact array is not touched).
-	 *
-	 * @remarks If a space is passed as o1 or o2 then this function will collide
-	 * all objects contained in o1 with all objects contained in o2, and return
-	 * the resulting contact points. This method for colliding spaces with geoms
-	 * (or spaces with spaces) provides no user control over the individual
-	 * collisions. To get that control, use dSpaceCollide or dSpaceCollide2 instead.
-	 *
-	 * @remarks If o1 and o2 are the same geom then this function will do nothing
-	 * and return 0. Technically speaking an object intersects with itself, but it
-	 * is not useful to find contact points in this case.
-	 *
-	 * @remarks This function does not care if o1 and o2 are in the same space or not
-	 * (or indeed if they are in any space at all).
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// int dCollide (dGeom o1, dGeom o2, int flags, dContactGeom *contact,
@@ -820,6 +787,18 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Determines which pairs of geoms in a space may potentially intersect,
 	 * and calls the callback function for each candidate pair.
 	 *
+	 * <p>REMARK: Other spaces that are contained within the colliding space are
+	 * not treated specially, i.e. they are not recursed into. The callback
+	 * function may be passed these contained spaces as one or both geom
+	 * arguments.
+	 *
+	 * <p>REMARK: dSpaceCollide() is guaranteed to pass all intersecting geom
+	 * pairs to the callback function, but may also pass close but
+	 * non-intersecting pairs. The number of these calls depends on the
+	 * internal algorithms used by the space. Thus you should not expect
+	 * that dCollide will return contacts for every pair passed to the
+	 * callback.
+	 *
 	 * @param space The space to test.
 	 *
 	 * @param data Passed from dSpaceCollide directly to the callback
@@ -828,20 +807,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param callback A callback function is of type @ref dNearCallback.
 	 *
-	 * @remarks Other spaces that are contained within the colliding space are
-	 * not treated specially, i.e. they are not recursed into. The callback
-	 * function may be passed these contained spaces as one or both geom
-	 * arguments.
-	 *
-	 * @remarks dSpaceCollide() is guaranteed to pass all intersecting geom
-	 * pairs to the callback function, but may also pass close but
-	 * non-intersecting pairs. The number of these calls depends on the
-	 * internal algorithms used by the space. Thus you should not expect
-	 * that dCollide will return contacts for every pair passed to the
-	 * callback.
-	 *
 	 * @see #dSpaceCollide2(DGeom, DGeom, Object, DNearCallback)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dSpaceCollide (dSpace space, void *data, dNearCallback *callback) {
@@ -855,6 +821,27 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * geoms from another space, and calls the callback function for each candidate
 	 * pair.
 	 *
+	 * <p>REMARK: This function can also test a single non-space geom against a
+	 * space. This function is useful when there is a collision hierarchy, i.e.
+	 * when there are spaces that contain other spaces.
+	 *
+	 * <p>REMARK: Other spaces that are contained within the colliding space are
+	 * not treated specially, i.e. they are not recursed into. The callback
+	 * function may be passed these contained spaces as one or both geom
+	 * arguments.
+	 *
+	 * <p>REMARK: Sublevel value of space affects how the spaces are iterated.
+	 * Both spaces are recursed only if their sublevels match. Otherwise, only
+	 * the space with greater sublevel is recursed and the one with lesser sublevel
+	 * is used as a geom itself.
+	 *
+	 * <p>REMARK: dSpaceCollide2() is guaranteed to pass all intersecting geom
+	 * pairs to the callback function, but may also pass close but
+	 * non-intersecting pairs. The number of these calls depends on the
+	 * internal algorithms used by the space. Thus you should not expect
+	 * that dCollide will return contacts for every pair passed to the
+	 * callback.
+	 *
 	 * @param space1 The first space to test.
 	 *
 	 * @param space2 The second space to test.
@@ -865,30 +852,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @param callback A callback function is of type @ref dNearCallback.
 	 *
-	 * @remarks This function can also test a single non-space geom against a
-	 * space. This function is useful when there is a collision hierarchy, i.e.
-	 * when there are spaces that contain other spaces.
-	 *
-	 * @remarks Other spaces that are contained within the colliding space are
-	 * not treated specially, i.e. they are not recursed into. The callback
-	 * function may be passed these contained spaces as one or both geom
-	 * arguments.
-	 *
-	 * @remarks Sublevel value of space affects how the spaces are iterated.
-	 * Both spaces are recursed only if their sublevels match. Otherwise, only
-	 * the space with greater sublevel is recursed and the one with lesser sublevel
-	 * is used as a geom itself.
-	 *
-	 * @remarks dSpaceCollide2() is guaranteed to pass all intersecting geom
-	 * pairs to the callback function, but may also pass close but
-	 * non-intersecting pairs. The number of these calls depends on the
-	 * internal algorithms used by the space. Thus you should not expect
-	 * that dCollide will return contacts for every pair passed to the
-	 * callback.
-	 *
 	 * @see #dSpaceCollide(DSpace, Object, DNearCallback)
 	 * @see #dSpaceSetSublevel(DSpace, int)
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dSpaceCollide2 (dGeom space1, dGeom space2, void *data, dNearCallback *callback) {
@@ -933,23 +898,18 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * @defgroup collide_sphere Sphere Class
-	 * @ingroup collide
-	 */
-
-	/**
 	 * Create a sphere geom of the given radius, and return its ID.
+	 *
+	 * <p>REMARKS:
+	 * The point of reference for a sphere is its center.
 	 *
 	 * @param space   a space to contain the new geom. May be null.
 	 * @param radius  the radius of the sphere.
 	 *
 	 * @return A new sphere geom.
 	 *
-	 * @remarks The point of reference for a sphere is its center.
-	 *
 	 * @see #dGeomDestroy(DGeom)
 	 * @see #dGeomSphereSetRadius(DSphere, double)
-	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
 	public static DSphere dCreateSphere (DSpace space, double radius) {
@@ -964,7 +924,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param radius  the new radius.
 	 *
 	 * @see #dGeomSphereGetRadius(DSphere)
-	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
 	public static void dGeomSphereSetRadius (DSphere sphere, double radius) {
@@ -978,7 +937,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param sphere  the sphere to query.
 	 *
 	 * @see #dGeomSphereSetRadius(DSphere, double)
-	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
 	public static double dGeomSphereGetRadius (DSphere sphere) {
@@ -997,8 +955,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @return The depth of the point. Points inside the sphere will have a
 	 * positive depth, points outside it will have a negative depth, and points
 	 * on the surface will have a depth of zero.
-	 *
-	 * @ingroup collide_sphere
 	 */
 	//ODE_API 
 	public static double dGeomSpherePointDepth (DSphere sphere, 
@@ -1039,12 +995,10 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//<-- Convex Functions
 
 	/**
-	 * @defgroup collide_box Box Class
-	 * @ingroup collide
-	 */
-
-	/**
 	 * Create a box geom with the provided side lengths.
+	 *
+	 * <p>REMARKS:
+	 * The point of reference for a box is its center.
 	 *
 	 * @param space   a space to contain the new geom. May be null.
 	 * @param lx      the length of the box along the X axis
@@ -1053,11 +1007,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 *
 	 * @return A new box geom.
 	 *
-	 * @remarks The point of reference for a box is its center.
-	 *
 	 * @see #dGeomDestroy(DGeom)
 	 * @see #dGeomBoxSetLengths(DBox, double, double, double)
-	 * @ingroup collide_box
 	 */
 	//ODE_API 
 	public static DBox dCreateBox (DSpace space, double lx, double ly, double lz) {
@@ -1074,7 +1025,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param lz      the length of the box along the Z axis
 	 *
 	 * @see #dGeomBoxGetLengths(DBox, DVector3)
-	 * @ingroup collide_box
 	 */
 	//ODE_API 
 	public static void dGeomBoxSetLengths (DBox box, double lx, double ly, double lz) {
@@ -1089,7 +1039,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param result  the returned side lengths
 	 *
 	 * @see #dGeomBoxSetLengths(DBox, double, double, double)
-	 * @ingroup collide_box
 	 */
 	//ODE_API 
 	public static void dGeomBoxGetLengths (DBox box, DVector3 result) {
@@ -1290,8 +1239,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * represents the dynamic 'height' of the heightfield.
 	 *
 	 * @return A geom id to reference this geom in other calls.
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static DGeom dCreateHeightfield( DSpace space,
@@ -1310,7 +1257,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @return A dHeightfieldData for use with dGeomHeightfieldDataBuildCallback,
 	 * dGeomHeightfieldDataBuildByte, dGeomHeightfieldDataBuildShort or
 	 * dGeomHeightfieldDataBuildFloat.
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static DHeightfieldData dGeomHeightfieldDataCreate() {
@@ -1324,7 +1270,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Deallocates a given dHeightfieldData and all managed resources.
 	 *
 	 * @param d A dHeightfieldData created by dGeomHeightfieldDataCreate
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	public static void dGeomHeightfieldDataDestroy( DHeightfieldData d ) {
@@ -1370,8 +1315,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomHeightfieldDataBuildCallback( dHeightfieldData d,
@@ -1426,8 +1369,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomHeightfieldDataBuildByte( dHeightfieldData d,
@@ -1482,8 +1423,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomHeightfieldDataBuildShort( dHeightfieldData d,
@@ -1540,8 +1479,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * directions along the local x and z axes. If zero the heightfield is
 	 * bounded from zero to width in the local x axis, and zero to depth in
 	 * the local z axis.
-	 *
-	 * @ingroup collide
 	 */
 	//ODE_API 
 	// void dGeomHeightfieldDataBuildSingle( dHeightfieldData d,
@@ -1620,7 +1557,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * or those whose data has changed. This must be set prior to binding with a
 	 * geom, as the the AABB is not recomputed after it's first generation.
 	 *
-	 * @remarks The minimum and maximum values are used to compute the AABB
+	 * <p>REMARKS:
+	 * The minimum and maximum values are used to compute the AABB
 	 * for the heightfield which is used for early rejection of collisions.
 	 * A close fit will yield a more efficient collision check.
 	 *
