@@ -60,6 +60,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	 * bodies that already have contacts.
 	 */
 	//ODE_API 
+	@SafeVarargs
 	public static boolean dAreConnectedExcluding (DBody body1, DBody body2, 
 			Class<? extends DJoint> ... joint_type) {
 		return OdeHelper.areConnectedExcluding(body1, body2, joint_type);

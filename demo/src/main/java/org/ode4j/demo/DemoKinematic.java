@@ -45,6 +45,7 @@ import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DGeom.DNearCallback;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.OdeHelper.*;
 
 
 /**
@@ -148,7 +149,7 @@ public class DemoKinematic extends dsFunctions {
 	    DBody b1 = g1.getBody();
 	    DBody b2 = g2.getBody();
 	    
-	    if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding(b1, b2, DContactJoint.class))
+	    if (b1!=null && b2!=null && areConnectedExcluding(b1, b2, DContactJoint.class))
 	        return;
 
 	    final int MAX_CONTACTS = 10;

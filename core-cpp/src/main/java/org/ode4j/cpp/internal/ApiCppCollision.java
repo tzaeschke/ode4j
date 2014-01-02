@@ -1649,7 +1649,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 	//typedef void dGetAABBFn(dGeom g, double aabb[6])
 	public static interface dGetAABBFn {
-		void dGetAABBFn(DGeom g, DAABB aabb);
+		void run(DGeom g, DAABB aabb);
 	}
 	//typedef int dColliderFn (dGeom o1, dGeom o2,
 	//			 int flags, dContactGeom *contact, int skip) {
@@ -1659,15 +1659,15 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 //	}
 	//typedef dColliderFn * dGetColliderFnFn (int num) {
 	public static interface dGetColliderFnFn {
-		DColliderFn  dGetColliderFnFn (int num);
+		DColliderFn  run (int num);
 	}
 	//typedef void dGeomDtorFn (dGeom o) {
 	public static interface dGeomDtorFn {
-		void dGeomDtorFn (DGeom o);
+		void run (DGeom o);
 	}
 	//typedef int dAABBTestFn (dGeom o1, dGeom o2, double aabb[6]) {
 	public static interface dAABBTestFn {
-		boolean dAABBTestFn (DGeom o1, DGeom o2, DAABB aabb);
+		boolean run (DGeom o1, DGeom o2, DAABB aabb);
 	}
 
 	//TZ moved to dxGeom
@@ -1685,16 +1685,16 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 		public dAABBTestFn aabb_test;
 		public dGeomDtorFn dtor;
 		public void dtor(DGeom o) {
-			dtor.dGeomDtorFn(o);
+			dtor.run(o);
 		}
 		public DColliderFn collider(int num) {
-			return collider.dGetColliderFnFn(num);
+			return collider.run(num);
 		}
 		public void aabb(DGeom g, DAABB aabb) {
-			this.aabb.dGetAABBFn(g, aabb);
+			this.aabb.run(g, aabb);
 		}
 		public boolean aabb_test(DGeom o1, DGeom o2, DAABB aabb) {
-			return aabb_test.dAABBTestFn(o1, o2, aabb);
+			return aabb_test.run(o1, o2, aabb);
 		}
 	}
 

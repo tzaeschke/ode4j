@@ -47,6 +47,7 @@ import org.ode4j.ode.DGeom.DNearCallback;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeHelper.*;
 
 
 /**
@@ -106,8 +107,7 @@ class DemoJointPR extends dsFunctions {
 
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
-		if (b1!=null && b2!=null && 
-				OdeHelper.areConnectedExcluding (b1,b2,DContactJoint.class)) 
+		if (b1!=null && b2!=null &&	areConnectedExcluding (b1,b2,DContactJoint.class)) 
 			return;
 		final int N = 10;
 		//dContact[] contact=new dContact[N];

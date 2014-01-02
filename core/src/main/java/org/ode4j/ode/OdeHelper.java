@@ -701,7 +701,8 @@ public abstract class OdeHelper {
 	 * @return true if the two bodies are connected together by
 	 * a joint that does not have type <code>jointType</code>, otherwise return 0.
 	 */
-    public static boolean areConnectedExcluding (DBody body1, DBody body2, 
+ 	@SafeVarargs
+	public static boolean areConnectedExcluding (DBody body1, DBody body2, 
             Class<? extends DJoint> ... jointType) {
         return ODE._dAreConnectedExcluding(body1, body2, jointType);
     }

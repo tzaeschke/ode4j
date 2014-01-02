@@ -52,6 +52,7 @@ import org.ode4j.ode.DJoint.PARAM_N;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeHelper.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.DGeom.*;
 
@@ -166,7 +167,7 @@ class DemoPiston extends dsFunctions {
 
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
-		if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding (b1,b2,DContactJoint.class) ) return;
+		if (b1!=null && b2!=null && areConnectedExcluding (b1,b2,DContactJoint.class) ) return;
 		final int N = 10;
 		DContactBuffer contacts = new DContactBuffer(N);
 		n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//[0].geom,sizeof (dContact) );

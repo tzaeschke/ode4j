@@ -50,6 +50,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DGeom.DNearCallback;
 
+import static org.ode4j.ode.OdeHelper.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.demo.BunnyGeom.*;
@@ -105,7 +106,7 @@ public class DemoMovingConvex extends dsFunctions {
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
-		if ( b1!=null && b2!=null && OdeHelper.areConnectedExcluding( b1,b2,DContactJoint.class ) ) return;
+		if ( b1!=null && b2!=null && areConnectedExcluding( b1,b2,DContactJoint.class ) ) return;
 
 		//dContact contact[MAX_CONTACTS];   // up to MAX_CONTACTS contacts per box-box
 		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);

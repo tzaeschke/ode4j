@@ -1,9 +1,11 @@
 
 0.2.9 (alpha)
 =====
+- Migration to Java 7!!!!
 - Set version to 0.2.9
 - Cleaned up javadoc (@remarks/note/warning to <p>REMARKS:/...) and removed @brief/@ingroup/@defgroup
 - Updated license dates to 2014.
+- CLeaned up plenty of compiler warnings
 
 
 0.2.8
