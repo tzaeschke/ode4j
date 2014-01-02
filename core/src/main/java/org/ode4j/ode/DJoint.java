@@ -128,7 +128,8 @@ public interface DJoint {
 	 * body refers to the static environment.
 	 * Setting both bodies to zero puts the joint into "limbo", i.e. it will
 	 * have no effect on the simulation.
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * Some joints, like hinge-2 need to be attached to two bodies to work.
 	 */
 	void attach (DBody body1, DBody body2);

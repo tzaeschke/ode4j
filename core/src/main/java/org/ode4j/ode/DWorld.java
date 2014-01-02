@@ -514,11 +514,13 @@ public interface DWorld {
 
 	/**
 	 * Set the depth of the surface layer around all geometry objects.
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * Contacts are allowed to sink into the surface layer up to the given
 	 * depth before coming to rest.
+	 * 
 	 * @param depth The default value is zero.
-	 * @remarks
+	 * <p>REMARK:
 	 * Increasing this to some small value (e.g. 0.001) can help prevent
 	 * jittering problems due to contacts being repeatedly made and broken.
 	 */

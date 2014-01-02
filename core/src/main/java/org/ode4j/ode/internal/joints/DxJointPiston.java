@@ -97,11 +97,12 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	DQuaternion qrel = new DQuaternion();        ///< Initial relative rotation body1 -> body2
 
-	/// Anchor w.r.t first body.
-	/// This is the same as the offset for the Slider joint
-	/// @note To find the position of the anchor when the body 1 has moved
-	///       you must add the position of the prismatic joint
-	///       i.e anchor = R1 * anchor1 + dJointGetPistonPosition() * (R1 * axis1)
+	/** Anchor w.r.t first body.
+	 * This is the same as the offset for the Slider joint
+	 * <p>NOTE: To find the position of the anchor when the body 1 has moved
+	 *        you must add the position of the prismatic joint
+	 *        i.e anchor = R1 * anchor1 + dJointGetPistonPosition() * (R1 * axis1)
+	 */        
 	DVector3 anchor1 = new DVector3();
 	DVector3 anchor2 = new DVector3();        //< anchor w.r.t second body
 

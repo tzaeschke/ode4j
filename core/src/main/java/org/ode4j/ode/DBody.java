@@ -78,7 +78,8 @@ public interface DBody {
 	void DESTRUCTOR();
 	/**
 	 * Destroy a body.
-	 * @remarks
+	 * 
+	 * <p>REMARK:
 	 * All joints that are attached to this body will be put into limbo:
 	 * i.e. unattached and not affecting the simulation, but they will NOT be
 	 * deleted.

@@ -46,7 +46,6 @@ public class GimGeometry extends GimMath {
 	
 
 	/**
-	 * @defgroup GEOMETRIC_TYPES
 	 * Basic types and constants for geometry
 	 */
 

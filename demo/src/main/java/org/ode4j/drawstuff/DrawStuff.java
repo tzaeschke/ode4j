@@ -34,14 +34,14 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 
 /** 
- * @defgroup drawstuff DrawStuff
+ * DrawStuff
  * 
  * DrawStuff is a library for rendering simple 3D objects in a virtual
  * environment, for the purposes of demonstrating the features of ODE.
  * It is provided for demonstration purposes and is not intended for
  * production use.
  * 
- * @section Notes
+ * <p>Notes: 
  * In the virtual world, the z axis is "up" and z=0 is the floor. <br>
  *  <br>
  * The user is able to click+drag in the main window to move the camera: <br>

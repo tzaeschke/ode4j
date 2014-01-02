@@ -63,24 +63,24 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 	/**
 	 * Position of the rotoide articulation w.r.t second body.
-	 * @note Position of body 2 in world frame + anchor2 in world frame give 
+	 * <p>NOTE: Position of body 2 in world frame + anchor2 in world frame give 
 	 * the position of the rotoide articulation.
 	 */
 	DVector3 _anchor2;  
 	
 	/** 
 	 * Axis of the rotoide articulation w.r.t first body.
-	 * @note This is considered as axis1 from the parameter view.
+	 * <p>NOTE: This is considered as axis1 from the parameter view.
 	 */
 	DVector3 axisR1;
 	
 	/** Axis of the rotoide articulation w.r.t second body.
-	 * @note This is considered also as axis1 from the parameter view.
+	 * <p>NOTE: This is considered also as axis1 from the parameter view.
 	 */
 	DVector3 axisR2;
 	
 	/** Axis for the prismatic articulation w.r.t first body.
-	 * @note This is considered as axis2 in from the parameter view.
+	 * <p>NOTE: This is considered as axis2 in from the parameter view.
 	 */
 	DVector3 axisP1;
 	

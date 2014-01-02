@@ -36,8 +36,6 @@ import org.ode4j.ode.internal.gimpact.GimGeometry.mat4f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 
 /**
- * @defgroup BUFFER_ARRAYS
- * 
  * Buffered Arrays, for manip elements on a buffer and treat it as an array.
  * <ul>
  * <li> Before using buffer arrays you must initializes GIMPACT buffer managers by calling gimpact_init.

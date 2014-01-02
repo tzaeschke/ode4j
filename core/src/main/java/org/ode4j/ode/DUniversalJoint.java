@@ -104,12 +104,12 @@ public interface DUniversalJoint extends DJoint {
 //	/**
 //	 * Get both angles at the same time.
 //	 *
+//	 * <p>NOTE: This function combine getUniversalAngle1 and getUniversalAngle2 together
+//	 *       and try to avoid redundant calculation
+//	 *
 //	 * @param joint   The universal joint for which we want to calculate the angles
 //	 * @param angle1  The angle between the body1 and the axis 1
 //	 * @param angle2  The angle between the body2 and the axis 2
-//	 *
-//	 * @note This function combine getUniversalAngle1 and getUniversalAngle2 together
-//	 *       and try to avoid redundant calculation
 //	 */
 	/**
 	 * Get angle between body the 1 and the axis 1.

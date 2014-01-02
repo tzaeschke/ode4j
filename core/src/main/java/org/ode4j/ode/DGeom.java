@@ -205,11 +205,12 @@ public interface DGeom {
 	 * <p>
 	 * Calling this function on a non-placeable geom results in a runtime error in
 	 * the debug build of ODE.
-	 *
-	 * @return A pointer to the geom's position vector.
-	 * @remarks The returned value is a pointer to the geom's internal
+	 * 
+	 * <p>REMARK: The returned value is a pointer to the geom's internal
 	 *          data structure. It is valid until any changes are made
 	 *          to the geom.
+	 *
+	 * @return A pointer to the geom's position vector.
 	 * @see DBody#getPosition()
 	 */
 	DVector3C getPosition();

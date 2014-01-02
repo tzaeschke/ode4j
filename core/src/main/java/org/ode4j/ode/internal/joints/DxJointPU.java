@@ -80,7 +80,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 {
 	/** 
 	 * Axis for the prismatic articulation w.r.t first body.
-	 * @note This is considered as axis2 from the parameter view
+	 * <p>NOTE: This is considered as axis2 from the parameter view
 	 */
 	DVector3 axisP1 = new DVector3();
 
@@ -553,7 +553,8 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	 * dJointSetPUAnchorDelta(jId, 0, 0, 0, dir[X]*offset, dir[Y]*offset, dir[Z]*offset);
 	 * // If you request the position you will have: dJointGetPUPosition(jId) == -offset
 	 * </PRE>
-
+	 * <p>NOTE: Should have the same meaning as dJointSetSliderAxisDelta
+	 *
 	 * @param j The PU joint for which the anchor point will be set
 	 * @param x The X position of the anchor point in world frame
 	 * @param y The Y position of the anchor point in world frame
@@ -564,7 +565,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	 *           when body1 was at current_position[Y] + dy
 	 * @param dx A delta to be added to the Z position as if the anchor was set
 	 *           when body1 was at current_position[Z] + dz
-	 * @note Should have the same meaning as dJointSetSliderAxisDelta
 	 */
 	void dJointSetPUAnchorDelta( double x, double y, double z,
 			double dx, double dy, double dz )
@@ -593,7 +593,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 
 
 	/**
-	 * \brief This function initialize the anchor and the relative position of each body
+	 * This function initialize the anchor and the relative position of each body
 	 * such that dJointGetPUPosition will return the dot product of axis and [dx,dy,dy].
 	 *
 	 * The body 1 is moved to [-dx, -dy, -dx] then the anchor is set. This will be the
@@ -610,7 +610,8 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	 * dJointSetPUAnchorDelta(jId, 0, 0, 0, dir[X]*offset, dir[Y]*offset, dir[Z]*offset);
 	 * // If you request the position you will have: dJointGetPUPosition(jId) == offset
 	 * </PRE>
-
+	 * <p>NOTE: Should have the same meaning as dJointSetSliderAxisDelta
+	 *
 	 * @param j The PU joint for which the anchor point will be set
 	 * @param x The X position of the anchor point in world frame
 	 * @param y The Y position of the anchor point in world frame
@@ -621,7 +622,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	 *           when body1 was at current_position[Y] + dy
 	 * @param dx A delta to be added to the Z position as if the anchor was set
 	 *           when body1 was at current_position[Z] + dz
-	 * @note Should have the same meaning as dJointSetSliderAxisDelta
 	 */
 	void dJointSetPUAnchorOffset( double x, double y, double z,
 			double dx, double dy, double dz )

@@ -25,7 +25,7 @@ import org.ode4j.ode.OdeHelper;
 
 
 /**
- * @defgroup init Library Initialization
+ * Library Initialization
  *
  * Library initialization functions prepare ODE internal data structures for use
  * and release allocated resources after ODE is not needed any more.
@@ -34,12 +34,13 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 
 	//Not required for now, TODO remove? (TZ)
 //	/**
-//	 * @brief Library initialization flags.
+//	 * Library initialization flags.
 //	 *
 //	 * These flags define ODE library initialization options.
 //	 *
 //	 * @c dInitFlagManualThreadCleanup indicates that resources allocated in TLS for threads
-//	 * using ODE are to be cleared by library client with explicit call to @c dCleanupODEAllDataForThread.
+//	 * using ODE are to be cleared by library client with explicit call to 
+//   * @c dCleanupODEAllDataForThread.
 //	 * If this flag is not specified the automatic resource tracking algorithm is used.
 //	 *
 //	 * With automatic resource tracking, On Windows, memory allocated for a thread may
@@ -63,7 +64,9 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 //	 */
 //	//public enum dInitODEFlags {
 //	public static final int
-//	dInitFlagManualThreadCleanup = 0x00000001; //@< Thread local data is to be cleared explicitly on @c dCleanupODEAllDataForThread function call
+//  /** Thread local data is to be cleared explicitly on 
+//	 *  {@code dCleanupODEAllDataForThread} function call. */	
+//	dInitFlagManualThreadCleanup = 0x00000001; 
 //	//}
 
 	/**
@@ -110,7 +113,7 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 
 // TODO remove ? TZ disabled for now, may not be required at all.
 //	/**
-//	 * @brief ODE data allocation flags.
+//	 * ODE data allocation flags.
 //	 *
 //	 * These flags are used to indicate which data is to be pre-allocated in call to
 //	 * @c dAllocateODEDataForThread.

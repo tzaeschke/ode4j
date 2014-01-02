@@ -550,7 +550,8 @@ public class OdeInit {
      * These flags define ODE library initialization options.
      *
      * {@code dInitFlagManualThreadCleanup} indicates that resources allocated in TLS for threads
-     * using ODE are to be cleared by library client with explicit call to {@code dCleanupODEAllDataForThread}.
+     * using ODE are to be cleared by library client with explicit call to 
+     * {@code dCleanupODEAllDataForThread}.
      * If this flag is not specified the automatic resource tracking algorithm is used.
      *
      * With automatic resource tracking, On Windows, memory allocated for a thread may 
@@ -573,7 +574,9 @@ public class OdeInit {
      * @see OdeInit#dCloseODE()
      */
     //enum dInitODEFlags {
-    private static final int dInitFlagManualThreadCleanup = 0x00000001; //@< Thread local data is to be cleared explicitly on @c dCleanupODEAllDataForThread function call
+    /** Thread local data is to be cleared explicitly on 
+     * {@code dCleanupODEAllDataForThread function call.} */
+    private static final int dInitFlagManualThreadCleanup = 0x00000001; 
     //};
 
    /**

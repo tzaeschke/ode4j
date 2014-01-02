@@ -40,7 +40,6 @@ public class Gimpact {
 
 	/** 
 	 * Call this for initialize GIMPACT system structures.
-	 * @defgroup GIMPACT_INIT
 	 */
 	public static void gimpact_init()
 	{

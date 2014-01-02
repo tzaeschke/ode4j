@@ -531,6 +531,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	}
 	/** 
 	 * Returns the Closest Points from Segment 1 to Segment 2.
+	 * <p>NOTE: Adapted from Christer Ericson's Real Time Collision Detection Book.
 	 * @param p1 start of segment 1
 	 * @param q1 end of segment 1
 	 * @param p2 start of segment 2
@@ -538,7 +539,6 @@ public class DxConvex extends DxGeom implements DConvex {
 	 * @param t the time "t" in Ray 1 that gives us the closest point
 	 * (closest_point=Origin1+(Direction1*t).
 	 * @return true if there is a closest point, false if the rays are paralell.
-	 * @note Adapted from Christer Ericson's Real Time Collision Detection Book.
 	 */
 //	private float ClosestPointBetweenSegments(dVector3& p1,
 //            dVector3& q1,

@@ -125,7 +125,7 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * Gets sublevel value of a space.
 	 *
 	 * Sublevel affects how the space is handled in dSpaceCollide2 when it is collided
-	 * with another space. See @c dSpaceSetSublevel for more details.
+	 * with another space. See {@code dSpaceSetSublevel} for more details.
 	 *
 	 * @param space the space to query
 	 * @return the sublevel value of the space
