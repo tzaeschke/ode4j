@@ -143,6 +143,7 @@ class DemoPlane2d extends dsFunctions {
 	};
 
 	private static double angle = 0;
+	@SuppressWarnings("unused")
 	private void cb_sim_step (boolean pause)
 	{
 		if (! pause)

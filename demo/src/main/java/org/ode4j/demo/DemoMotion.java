@@ -62,7 +62,7 @@ public class DemoMotion extends dsFunctions {
 	private static final double DENSITY = 5.0;		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 8;		// maximum number of contact points per body
-	private static final int USE_GEOM_OFFSET = 1;
+	//private static final int USE_GEOM_OFFSET = 1;
 
 	// dynamics and collision objects
 

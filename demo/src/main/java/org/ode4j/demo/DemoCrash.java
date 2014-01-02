@@ -108,7 +108,7 @@ class DemoCrash extends dsFunctions {
 	private static DHinge2Joint[] joint=new DHinge2Joint[100000];
 	private static int joints;
 	private static DJointGroup contactgroup;
-	private static DGeom ground;
+	//private static DGeom ground;
 	private static DBox[] box=new DBox[10000];
 	private static int boxes;
 	private static DSphere[] sphere=new DSphere[10000];
@@ -296,7 +296,7 @@ class DemoCrash extends dsFunctions {
 		world.setCFM (1e-5);
 		world.setERP (0.8);
 		world.setQuickStepNumIterations (ITERS);
-		ground = OdeHelper.createPlane (space,0,0,1,0);
+		OdeHelper.createPlane (space,0,0,1,0);
 
 		bodies = 0;
 		joints = 0;

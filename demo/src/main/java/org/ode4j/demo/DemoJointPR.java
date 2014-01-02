@@ -93,7 +93,7 @@ class DemoJointPR extends dsFunctions {
 	private static DBody box2_body;
 	private static DPRJoint joint;
 	private static DJointGroup contactgroup;
-	private static DGeom ground;
+	//private static DGeom ground;
 	private static DBox box1;
 	private static DBox box2;
 
@@ -351,7 +351,7 @@ class DemoJointPR extends dsFunctions {
 		space = OdeHelper.createHashSpace (null);
 		contactgroup = OdeHelper.createJointGroup ();
 		world.setGravity (0,0,-10);
-		ground = OdeHelper.createPlane (space,0,0,1,0);
+		OdeHelper.createPlane (space,0,0,1,0);
 
 		//create two boxes
 		DMass m = OdeHelper.createMass();

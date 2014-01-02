@@ -73,6 +73,7 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
  * graphically/interactively, in which case the space bar can be used to
  * change the random test conditions.
  */
+@SuppressWarnings("unused")
 class DemoCollision extends dsFunctions {
 
 

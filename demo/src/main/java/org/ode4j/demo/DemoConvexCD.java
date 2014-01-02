@@ -274,6 +274,7 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 	{
 		// note: 0.0174532925 radians = 1 degree
 		DQuaternion q = new DQuaternion();
+		@SuppressWarnings("unused")
 		boolean changed = false;
 		switch(cmd)
 		{

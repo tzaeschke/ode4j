@@ -744,6 +744,7 @@ void testReorthonormalize()
 	//#define NUMP 10		// number of particles
 	private static final int NUMP = 10;		// number of particles
 
+	@SuppressWarnings("unused")
 	private void printMassParams (DMass m)
 	{
 		println ("mass = " + m.getMass());
@@ -1200,6 +1201,7 @@ void testReorthonormalize()
 		/** 
 		 * print out info about all the matrices in the sequence
 		 */
+		@SuppressWarnings("unused")
 		void dump()
 		{
 			for (int i=0; i<mat.size(); i++) {

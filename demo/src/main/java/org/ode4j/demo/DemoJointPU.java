@@ -83,7 +83,7 @@ class DemoJointPU extends dsFunctions {
 //	};
 	private static final int RADIUS = 0;
 	private static final int LENGTH = 1;
-	private static final int NUM_CYL_DIM = 2;
+	//private static final int NUM_CYL_DIM = 2;
 
 
 	private static final DVector3C boxDim = new DVector3(1,1,1);
@@ -158,7 +158,7 @@ class DemoJointPU extends dsFunctions {
 	//#define Mass1 10
 	//#define Mass2 8
 	private static final double Mass1 = 10;
-	private static final double Mass2 = 8;
+	//private static final double Mass2 = 8;
 
 
 	//camera view
@@ -668,7 +668,7 @@ class DemoJointPU extends dsFunctions {
 
 
 		DMatrix3 R = new DMatrix3();
-		DGeom id;
+		//DGeom id;
 		// Create the first axis of the universal joint
 		geomAXIS1 = OdeHelper.createGeomTransform (space);
 		//Rotation of 90deg around y
@@ -677,7 +677,7 @@ class DemoJointPU extends dsFunctions {
 		geomAXIS1.setCategoryBits (catBits[AXIS1]);
 		geomAXIS1.setCollideBits (
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
-		id = geomAXIS1;
+		//id = geomAXIS1;
 		geomAXIS1.setGeom ( OdeHelper.createCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
@@ -689,7 +689,7 @@ class DemoJointPU extends dsFunctions {
 		geomAXIS2.setCategoryBits (catBits[AXIS2]);
 		geomAXIS2.setCollideBits (
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
-		id = geomAXIS2;
+		//id = geomAXIS2;
 		geomAXIS2.setGeom ( OdeHelper.createCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 

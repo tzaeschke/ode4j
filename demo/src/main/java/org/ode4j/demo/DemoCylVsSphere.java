@@ -189,6 +189,7 @@ class DemoCylVsSphere extends dsFunctions {
 		new DemoCylVsSphere().demo(args);
 	}
 	
+	@SuppressWarnings("unused")
 	private void demo(String[] args) {
 		DMass m = OdeHelper.createMass();
 

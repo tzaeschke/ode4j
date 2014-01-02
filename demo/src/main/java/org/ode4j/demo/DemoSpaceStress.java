@@ -24,32 +24,47 @@
  *************************************************************************/
 package org.ode4j.demo;
 
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
+import static org.ode4j.drawstuff.DrawStuff.dsSetSphereQuality;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DMisc.dRandReal;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.OdeConstants.dContactBounce;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply0_333;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAABBC;
+import org.ode4j.ode.DBody;
 import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCapsule;
-import org.ode4j.ode.DContactJoint;
-import org.ode4j.ode.DGeomTransform;
-import org.ode4j.ode.DSapSpace.AXES;
-import org.ode4j.ode.DSphere;
-import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
+import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
+import org.ode4j.ode.DSapSpace.AXES;
 import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DGeom.DNearCallback;
-
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
+import org.ode4j.ode.OdeHelper;
 
 
 class DemoSpaceStress extends dsFunctions {
@@ -60,7 +75,7 @@ class DemoSpaceStress extends dsFunctions {
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 4;		// maximum number of contact points per body
     private static final int WORLD_SIZE = 20;
-    private static final int WORLD_HEIGHT = 20;
+    //private static final int WORLD_HEIGHT = 20;
 
 
 	// dynamics and collision objects
@@ -418,6 +433,7 @@ class DemoSpaceStress extends dsFunctions {
 		new DemoSpaceStress().demo(args);
 	}
 
+	@SuppressWarnings("unused")
 	private void demo(String[] args) {
 
 	    dsSetSphereQuality(0);

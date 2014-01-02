@@ -230,6 +230,7 @@ class DemoBoxstack extends dsFunctions {
 
 
 	// called when a key pressed
+	@SuppressWarnings("unused")
 	@Override
 	public void command (char cmd)
 	{
@@ -483,6 +484,7 @@ class DemoBoxstack extends dsFunctions {
 	// draw a geom
 
 	//void drawGeom (dGeom g, final double *pos, final double *R, boolean show_aabb)
+	@SuppressWarnings("unused")
 	private void drawGeom (DGeom g, DVector3C pos, DMatrix3C R, boolean show_aabb)
 	{
 		if (g==null) return;

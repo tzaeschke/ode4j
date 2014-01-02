@@ -40,7 +40,6 @@ import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
-import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
@@ -122,7 +121,7 @@ public class TestIssue8_Gimpact {
         
         DTriMeshData Data = OdeHelper.createTriMeshData();
 		Data.build(vertices, indices);
-		DTriMesh triMesh = OdeHelper.createTriMesh(space, Data, null, null, null);
+		OdeHelper.createTriMesh(space, Data, null, null, null);
 		space.add(tSpace);
 		
 		

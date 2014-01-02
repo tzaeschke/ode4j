@@ -51,8 +51,8 @@ class DemoStep extends dsFunctions {
 
 	private static int NUM = 10;	// number of bodies
 	private static int NUMJ = 9;			// number of joints
-	private static double SIDE = 0.2;		// side length of a box
-	private static double MASS = 1.0;		// mass of a box
+	//private static double SIDE = 0.2;		// side length of a box
+	//private static double MASS = 1.0;		// mass of a box
 	private static float RADIUS = 0.1732f;	// sphere radius
 
 

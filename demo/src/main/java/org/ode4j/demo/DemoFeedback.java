@@ -61,7 +61,7 @@ class DemoFeedback extends dsFunctions {
 	private static final int   SEGMCNT=16;	// nr of segments in bridge
 	private static final float[] SEGMDIM = { 0.9f, 4, 0.1f };
 
-	private static DGeom  groundgeom;
+	//private static DGeom  groundgeom;
 	private static DBody[]  segbodies = new DBody[SEGMCNT];
 	private static DGeom[]  seggeoms = new DGeom[SEGMCNT];
 	private static DBody[]  stackbodies = new DBody[STACKCNT];
@@ -297,7 +297,7 @@ class DemoFeedback extends dsFunctions {
 		sliders[1].setParamLoStop (   0.0);
 		sliders[1].setParamHiStop (  -0.2);
 
-		groundgeom = OdeHelper.createPlane(space, 0,0,1,0);
+		OdeHelper.createPlane(space, 0,0,1,0);
 
 		for (i=0; i<SEGMCNT; i++)
 			colours[i]=0.0;

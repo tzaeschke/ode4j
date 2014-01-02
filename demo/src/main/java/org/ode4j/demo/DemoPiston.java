@@ -96,7 +96,7 @@ class DemoPiston extends dsFunctions {
 	private static final int BODY1 = 0;
 	private static final int BODY2 = 1;
 	private static final int RECT = 2;
-	private static final int BOX = 3;
+	//private static final int BOX = 3;
 	private static final int OBS = 4;
 	private static final int GROUND = 5;
 	private static final int NUM_PARTS = 6;
@@ -117,7 +117,7 @@ class DemoPiston extends dsFunctions {
 	//#define Mass1 10
 	//#define Mass2 8
 	private static final double Mass1 = 10;
-	private static final double Mass2 = 8;
+	//private static final double Mass2 = 8;
 
 	//camera view
 	private static float[] xyz = {2.0f,-3.5f,2.0000f};
