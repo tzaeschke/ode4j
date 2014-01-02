@@ -120,6 +120,7 @@ class DemoChain2 extends dsFunctions {
 
 	// start simulation - set viewpoint
 
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);

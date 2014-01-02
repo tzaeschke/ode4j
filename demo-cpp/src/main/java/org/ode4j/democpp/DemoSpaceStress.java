@@ -198,6 +198,7 @@ class DemoSpaceStress extends dsFunctions {
 	private static float[] xyz = {2.1640f,-1.3079f,3.7600f};
 	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -227,6 +228,7 @@ class DemoSpaceStress extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		int i,j,k;

@@ -290,7 +290,8 @@ public class FormattedStringBuilder {
     /**
      * @see java.lang.Object#toString()
      */
-    public String toString() {
+    @Override
+	public String toString() {
         return _delegate.toString();
     }
 }

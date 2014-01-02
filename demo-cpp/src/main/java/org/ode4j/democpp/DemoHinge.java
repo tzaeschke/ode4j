@@ -94,6 +94,7 @@ public class DemoHinge extends dsFunctions {
 	private static float[] xyz = {1.0382f,-1.0811f,1.4700f};
 	private static float[] hpr = {135.0000f,-19.5000f,0.0000f};
 
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -107,6 +108,7 @@ public class DemoHinge extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		if (cmd == 'e' || cmd == 'E') {

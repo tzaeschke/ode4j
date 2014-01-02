@@ -135,6 +135,7 @@ class DemoJointPR extends dsFunctions {
 
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		dsSetViewpoint (xyz,hpr);
@@ -171,6 +172,7 @@ class DemoJointPR extends dsFunctions {
 
 
 	// called when a key pressed
+	@Override
 	public void command (char cmd)
 	{
 		DVector3C pos = box2_body.getPosition();
@@ -245,6 +247,7 @@ class DemoJointPR extends dsFunctions {
 
 
 	// simulation loop
+	@Override
 	public void step (boolean pause)
 	{
 		if (!pause)

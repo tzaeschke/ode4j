@@ -234,6 +234,7 @@ public class DemoMotion extends dsFunctions {
 	private static float[] xyz = {2.1106f,-1.3007f,2.f};
 	private static float[] hpr = {150.f,-13.5000f,0.0000f};
 
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(dAllocateMaskAll);
@@ -255,6 +256,7 @@ public class DemoMotion extends dsFunctions {
 	// called when a key pressed
 
 	//void command (int cmd)
+	@Override
 	public void command (char cmd2)
 	{
 		char cmd = cmd2;

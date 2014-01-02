@@ -22,7 +22,6 @@
 package org.ode4j.cpp.internal;
 
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.internal.OdeInit;
 
 
 /**

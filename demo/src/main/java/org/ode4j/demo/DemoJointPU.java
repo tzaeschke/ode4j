@@ -266,6 +266,7 @@ class DemoJointPU extends dsFunctions {
 
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		dsSetViewpoint (xyz,hpr);
@@ -298,6 +299,7 @@ class DemoJointPU extends dsFunctions {
 
 
 	// called when a key pressed
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) {

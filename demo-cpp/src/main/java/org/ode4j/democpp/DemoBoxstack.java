@@ -312,6 +312,7 @@ class DemoBoxstack extends dsFunctions {
 
 	// start simulation - set viewpoint
 
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -347,6 +348,7 @@ class DemoBoxstack extends dsFunctions {
 
 
 	// called when a key pressed
+	@Override
 	@SuppressWarnings("unused")
 	public void command (char cmd)
 	{

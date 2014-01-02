@@ -74,7 +74,7 @@ public class Ctime extends Ctype {
 	 * a -1 value.
 	 */
 	public static time_t time(time_t timer) {
-		int n = (int)( (double)System.currentTimeMillis()/1000. );
+		int n = (int)( System.currentTimeMillis()/1000. );
 		if (timer != null) {
 			timer.seconds = n;
 			return timer; 

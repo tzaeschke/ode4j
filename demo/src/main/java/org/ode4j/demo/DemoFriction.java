@@ -127,6 +127,7 @@ class DemoFriction extends dsFunctions {
 	private static float[] xyz = {1.7772f,-0.7924f,2.7600f};
 	private static float[] hpr = {90.0000f,-54.0000f,0.0000f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		dsSetViewpoint (xyz,hpr);

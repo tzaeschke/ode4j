@@ -330,6 +330,7 @@ class DemoHeightfield extends dsFunctions {
 	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);

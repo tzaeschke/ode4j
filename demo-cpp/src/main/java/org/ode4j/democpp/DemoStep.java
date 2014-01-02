@@ -155,6 +155,7 @@ class DemoStep extends dsFunctions {
 	private static float[] xyz = {2.6117f,-1.4433f,2.3700f};
 	private static float[] hpr = {151.5000f,-30.5000f,0.0000f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -167,6 +168,7 @@ class DemoStep extends dsFunctions {
 
 	// simulation loop
 
+	@Override
 	public void step (boolean pause)
 	{
 		if (!pause) {

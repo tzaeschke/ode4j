@@ -174,6 +174,7 @@ class DemoPlane2d extends dsFunctions {
 
 
 	private DNearCallback myNearCallBack = new DNearCallback() {
+		@Override
 		public void call(Object data, DGeom o1, DGeom o2) {
 			cb_near_collision(data, o1, o2);
 		}

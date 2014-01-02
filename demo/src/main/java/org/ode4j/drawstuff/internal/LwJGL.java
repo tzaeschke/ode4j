@@ -614,6 +614,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 
 
 	//extern "C" void dsStop()
+	@Override
 	public void dsStop()
 	{
 		run = false;
@@ -622,6 +623,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 
 	private static double prev=System.nanoTime()/1000000000.0;
 	//extern "C" double dsElapsedTime()
+	@Override
 	public double dsElapsedTime()
 	{
 //		if (true) {//(HAVE_GETTIMEOFDAY) { //#if HAVE_GETTIMEOFDAY

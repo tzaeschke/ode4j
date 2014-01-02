@@ -256,6 +256,7 @@ class DemoCrash extends dsFunctions {
 	private static float[] xyz = {3.8548f,9.0843f,7.5900f};
 	private static float[] hpr = {-145.5f,-22.5f,0.25f};
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -544,6 +545,7 @@ class DemoCrash extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) {

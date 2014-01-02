@@ -142,6 +142,7 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 			0.516939,0.519297,-0.679785,
 			0.480067,0.481293,0.733034);
 
+	@Override
 	public void start()
 	{
 		// adjust the starting viewpoint a bit
@@ -295,6 +296,7 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 	}
 
 
+	@Override
 	public void command (char cmd)
 	{
 		// note: 0.0174532925 radians = 1 degree

@@ -103,6 +103,7 @@ public class DemoGyroscopic extends dsFunctions {
 	private static float[] hpr = {153.0f, -14.5f, 0.0f};
 	// start simulation - set viewpoint
 
+	@Override
 	public void start()
 	{
 		dsSetViewpoint (xyz,hpr);
@@ -115,6 +116,7 @@ public class DemoGyroscopic extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		cmd = Character.toLowerCase (cmd);

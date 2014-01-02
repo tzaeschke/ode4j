@@ -154,8 +154,11 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		//Image (String filename);
 		// load from PPM file
 		//  ~Image();
+		@Override
 		public int width() { return image_width; }
+		@Override
 		public int height() { return image_height; }
+		@Override
 		public ByteBuffer data() { return image_data; }
 
 
@@ -1425,6 +1428,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	 * If you filter out arguments beforehand, simply set them to "".
 	 * @see org.ode4j.drawstuff.DrawStuff#dsSimulationLoop(String[], int, int, dsFunctions)
 	 */
+	@Override
 	public void dsSimulationLoop (String[] args,
 			int window_width, int window_height,
 			dsFunctions fn)
@@ -1465,6 +1469,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 	//extern "C" 
 	//void dsSetViewpoint (float xyz[3], float hpr[3])
+	@Override
 	public void dsSetViewpoint (float[] xyz, float[] hpr)
 	{
 		if (current_state < 1) dsError ("dsSetViewpoint() called before simulation started");
@@ -1484,6 +1489,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 	//extern "C" 
 	//void dsGetViewpoint (float xyz[3], float hpr[3])
+	@Override
 	public void dsGetViewpoint (float[] xyz, float[] hpr)
 	{
 		if (current_state < 1) dsError ("dsGetViewpoint() called before simulation started");
@@ -1504,6 +1510,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/* (non-Javadoc)
 	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsSetTexture(org.ode4j.drawstuff.DS_API.DS_TEXTURE_NUMBER)
 	 */
+	@Override
 	public void dsSetTexture (DS_TEXTURE_NUMBER texture_number)
 	{
 		if (current_state != 2) dsError ("drawing function called outside simulation loop");
@@ -1515,6 +1522,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/* (non-Javadoc)
 	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsSetColor(float, float, float)
 	 */
+	@Override
 	public void dsSetColor (float red, float green, float blue)
 	{
 		if (current_state != 2) dsError ("drawing function called outside simulation loop");
@@ -1526,8 +1534,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 
 	//extern "C" 
-	public void dsSetColorAlpha (float red, float green, float blue,
-			float alpha)
+	@Override
+	public void dsSetColorAlpha (float red, float green, float blue, float alpha)
 	{
 		if (current_state != 2) dsError ("drawing function called outside simulation loop");
 		color[0] = red;
@@ -1543,6 +1551,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/* (non-Javadoc)
 	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawBox(float[], float[], float[])
 	 */
+	@Override
 	public void dsDrawBox (final float[] pos, final float[] R,
 			final float[] sides)
 	{
@@ -1600,8 +1609,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/* (non-Javadoc)
 	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawSphere(float[], float[], float)
 	 */
-	public void dsDrawSphere (final float[] pos, final float[] R,
-			float radius)
+	@Override
+	public void dsDrawSphere (final float[] pos, final float[] R, float radius)
 	{
 		if (current_state != 2) dsError ("drawing function called outside simulation loop");
 		setupDrawingMode();
@@ -1666,6 +1675,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	}
 
 
+	@Override
 	public void dsDrawTriangle (final DVector3C pos, final DMatrix3C R,
 			final float[] vAll, final int v0, final int v1,
 			final int v2, boolean solid)
@@ -1679,6 +1689,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	}
 
 
+	@Override
 	public void dsDrawTriangle (final DVector3C pos, final DMatrix3C R,
 			final float[] v0, final float[] v1, final float[] v2, boolean solid)
 	{
@@ -1697,6 +1708,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/**
 	 * @see DrawStuffApi#dsDrawCylinder(float[], float[], float, float)
 	 */
+	@Override
 	public void dsDrawCylinder (final float[] pos, final float[] R,
 			float length, float radius)
 	{
@@ -1725,6 +1737,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/**
 	 * @see DrawStuffApi#dsDrawCapsule(float[], float[], float, float)
 	 */
+	@Override
 	public void dsDrawCapsule (final float[] pos, final float[] R,
 			float length, float radius)
 	{
@@ -1751,6 +1764,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/** 
 	 * @see DrawStuffApi#dsDrawLine(float[], float[])
 	 */
+	@Override
 	public void dsDrawLine (final float[] pos1, final float[] pos2)
 	{
 		setupDrawingMode();
@@ -1770,8 +1784,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/**
 	 * @see DrawStuffApi#dsDrawBox(float[], float[], float[])
 	 */
-	public void dsDrawBox (DVector3C pos, DMatrix3C R,
-			DVector3C sides)
+	@Override
+	public void dsDrawBox (DVector3C pos, DMatrix3C R, DVector3C sides)
 	{
 		float[] pos2=pos.toFloatArray4();
 		float[] R2=R.toFloatArray12();
@@ -1788,6 +1802,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/**
 	 * @see DrawStuffApi#dsDrawConvex(DVector3C, DMatrix3C, double[], int, double[], int, int[])
 	 */
+	@Override
 	public void dsDrawConvex (DVector3C pos, DMatrix3C R,
 			double[] _planes, int _planecount,
 			double[] _points,
@@ -1815,6 +1830,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/** 
 	 * @see DrawStuffApi#dsDrawSphere(DVector3C, DMatrix3C, float)
 	 */
+	@Override
 	public void dsDrawSphere (final DVector3C pos, final DMatrix3C R, float radius)
 	{
 		float[] pos2=pos.toFloatArray4();
@@ -1843,6 +1859,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 //	}
 
 
+	@Override
 	public void dsDrawTriangle (final DVector3C pos, final DMatrix3C R,
 			final DVector3C v0, final DVector3C v1,
 			final DVector3C v2, boolean solid)
@@ -1860,6 +1877,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/**
 	 * @see DrawStuffApi#dsDrawCylinder(DVector3C, DMatrix3C, float, float)
 	 */
+	@Override
 	public void dsDrawCylinder (final DVector3C pos, final DMatrix3C R,
 			float length, float radius)
 	{
@@ -1874,6 +1892,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/**
 	 * @see DrawStuffApi#dsDrawCapsule(DVector3C, DMatrix3C, float, float)
 	 */
+	@Override
 	public void dsDrawCapsule (final DVector3C pos, final DMatrix3C R,
 			float length, float radius)
 	{
@@ -1887,6 +1906,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	/**
 	 * @see DrawStuffApi#dsDrawLine(DVector3C, DVector3C)
 	 */
+	@Override
 	public void dsDrawLine (final DVector3C pos1, final DVector3C pos2)
 	{
 		float[] pos1f=pos1.toFloatArray4();
@@ -1907,6 +1927,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		capped_cylinder_quality = n;
 	}
 
+	@Override
 	public void dsSetDrawMode(int mode)
 	{
 		switch(mode)

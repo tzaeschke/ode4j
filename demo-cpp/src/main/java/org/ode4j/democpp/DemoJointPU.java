@@ -316,6 +316,7 @@ class DemoJointPU extends dsFunctions {
 
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -349,6 +350,7 @@ class DemoJointPU extends dsFunctions {
 
 
 	// called when a key pressed
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) {

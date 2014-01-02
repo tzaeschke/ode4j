@@ -220,6 +220,7 @@ public class DemoKinematic extends dsFunctions {
 	    for (Box b: boxes) b.draw();
 	}
 
+	@Override
 	public void command(char c)
 	{
 	    switch (c) {

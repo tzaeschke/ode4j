@@ -205,6 +205,7 @@ class DemoCyl extends dsFunctions {
 	private static float[] hpr = {45.0000f,-27.5000f,0.0000f};
 
 	// start simulation - set viewpoint
+	@Override
 	public void start()
 	{
 		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
@@ -238,6 +239,7 @@ class DemoCyl extends dsFunctions {
 
 	// called when a key pressed
 
+	@Override
 	public void command (char cmd)
 	{
 		switch (cmd) 

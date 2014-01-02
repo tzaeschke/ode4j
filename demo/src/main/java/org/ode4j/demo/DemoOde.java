@@ -64,6 +64,7 @@ class DemoOde {
 
 	private static final dMessageFunction myMessageFunction = new dMessageFunction() {
 
+		@Override
 		public void call(int num, String msg, Object... args) {
 			print ("(Message : " + num);
 			//vprintf (msg,args);
@@ -1224,6 +1225,7 @@ void testReorthonormalize()
 	//static dMessageFunction myDebug (int num, final String msg, Object ... ap)
 	private static final dMessageFunction myDebug = new dMessageFunction() {
 
+		@Override
 		public void call(int num, String msg, Object... ap) {
 //			printf ("(Error %d: ",num);
 //			vprintf (msg,ap);
