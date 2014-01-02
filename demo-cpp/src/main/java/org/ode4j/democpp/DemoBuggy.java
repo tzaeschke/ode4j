@@ -24,30 +24,98 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetRotation;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetQuaternion;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomDestroy;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dHashSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceAdd;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceSetCleanup;
+import static org.ode4j.cpp.internal.ApiCppExportDIF.dWorldExportDIF;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateHinge2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHinge2Angle1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Anchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Param;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFudgeFactor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamSuspensionCFM;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamSuspensionERP;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel2;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetSphere;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetGravity;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.OdeConstants.dContactApprox1;
+import static org.ode4j.ode.OdeConstants.dContactSlip1;
+import static org.ode4j.ode.OdeConstants.dContactSlip2;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dContactSoftERP;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.fclose;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.fopen;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DHinge2Joint;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.cpp4j.FILE;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 /**
@@ -136,7 +204,7 @@ class DemoBuggy extends dsFunctions {
 	@Override
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {0.8317f,-0.9817f,0.8000f};
 		//  static float hpr[3] = {121.0000f,-27.5000f,0.0000f};

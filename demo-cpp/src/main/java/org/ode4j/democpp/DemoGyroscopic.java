@@ -48,7 +48,7 @@ import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 public class DemoGyroscopic extends dsFunctions {
 
-	private boolean write_world = false;
+	//private boolean write_world = false;
 	private boolean show_contacts = false;
 	private DWorld world;
 	private DBody top1, top2;
@@ -59,7 +59,7 @@ public class DemoGyroscopic extends dsFunctions {
 	private final double pinlength = 1.5f;
 	private final double topradius = 1.0f;
 	private final double toplength = 0.25f;
-	private final double topmass = 1.0f;
+	//private final double topmass = 1.0f;
 
 	private static final int MAX_CONTACTS = 4;
 
@@ -128,9 +128,9 @@ public class DemoGyroscopic extends dsFunctions {
 		else if (cmd == 't') {
 			show_contacts = !show_contacts;
 		}
-		else if (cmd == '1') {
-			write_world = true;
-		}
+//		else if (cmd == '1') {
+//			write_world = true;
+//		}
 	}
 
 	// simulation loop

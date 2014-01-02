@@ -158,7 +158,6 @@ public class OdeMathTZ {
 
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test public void test_dOrthogonalizeR() {
 		//	TEST(test_dOrthogonalizeR)
 		{
@@ -233,7 +232,6 @@ public class OdeMathTZ {
                 0, 1, 0, //0,
                 0, 0, 1 //0
         );
-        @SuppressWarnings("deprecation")
 		DMatrix3 r2 = new DMatrix3( 
                 4, 5, 6,
                 7, 8, 9,
@@ -266,7 +264,6 @@ public class OdeMathTZ {
                 0, 1, 0, //0,
                 0, 0, 1 //0
         );
-        @SuppressWarnings("deprecation")
 		DMatrix3 r2 = new DMatrix3( 
                 4, 5, 6,
                 7, 8, 9,

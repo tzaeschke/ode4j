@@ -24,20 +24,45 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddForce;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddTorque;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetRotation;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetAngularVel;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetLinearVel;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetQuaternion;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateBall;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetBallAnchor;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassRotate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DMisc.dRandInt;
+import static org.ode4j.ode.DMisc.dRandReal;
+import static org.ode4j.ode.DMisc.dRandSetSeed;
 
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBallJoint;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.OdeMath;
 
 /**
  * test the step function by comparing the output of the fast and the slow
@@ -52,8 +77,8 @@ class DemoStep extends dsFunctions {
 
 	private static int NUM = 10;	// number of bodies
 	private static int NUMJ = 9;			// number of joints
-	private static double SIDE = 0.2;		// side length of a box
-	private static double MASS = 1.0;		// mass of a box
+	//private static double SIDE = 0.2;		// side length of a box
+	//private static double MASS = 1.0;		// mass of a box
 	private static float RADIUS = 0.1732f;	// sphere radius
 
 
@@ -132,7 +157,7 @@ class DemoStep extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {2.6117f,-1.4433f,2.3700f};
 		//  static float hpr[3] = {151.5000f,-30.5000f,0.0000f};

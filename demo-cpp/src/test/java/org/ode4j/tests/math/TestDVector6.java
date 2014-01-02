@@ -167,7 +167,7 @@ public class TestDVector6 extends OdeTestCase {
 	public void testSub(){
 		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
 		DVector6 y = new DVector6(4, 8, -1, -7, 17, 22);
-		DVector6 t = new DVector6();
+		//DVector6 t = new DVector6();
 		assertFalse(x.equals(y));
 		
 //		t.add(x);
@@ -185,9 +185,9 @@ public class TestDVector6 extends OdeTestCase {
 	
 	@Test
 	public void testScale(){
-		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
-		DVector6 y = new DVector6(4, 10, -6, -13, 7.3, -2.2);
-		DVector6 t = new DVector6();
+//		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
+//		DVector6 y = new DVector6(4, 10, -6, -13, 7.3, -2.2);
+//		DVector6 t = new DVector6();
 		
 //		t.set(x);
 //		t.scale(4, 5, -2);
@@ -213,8 +213,8 @@ public class TestDVector6 extends OdeTestCase {
 	
 	@Test
 	public void testOther(){
-		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
-		DVector6 y = new DVector6(4, 8, -1, -7, 17, 22);
+//		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
+//		DVector6 y = new DVector6(4, 8, -1, -7, 17, 22);
 		DVector6 t = new DVector6();
 
 		try {

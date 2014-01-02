@@ -35,9 +35,6 @@ import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
 import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.Rotation.dQtoR;
-import static org.ode4j.ode.internal.Rotation.dRSetIdentity;
-import static org.ode4j.ode.internal.Rotation.dRtoQ;
 import static org.ode4j.ode.internal.cpp4j.Csetjmp.longjmp;
 import static org.ode4j.ode.internal.cpp4j.Csetjmp.setjmp;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
@@ -211,6 +208,7 @@ class DemoOde {
 	}
 
 
+	@SuppressWarnings("unused")
 	void testInfinity()
 	{
 		HEADER();
@@ -927,7 +925,7 @@ void testReorthonormalize()
 		for (i=0; i<100; i++) {
 			dMakeRandomVector (q,1.0);
 			dNormalize4 (q);
-			dQtoR (q,R);
+			dRfromQ(R, q); //dQtoR (q,R);
 			dMultiply2 (I,R,R);
 			if (cmpIdentityMat3(I)==false) ok = 0;
 		}
@@ -937,8 +935,8 @@ void testReorthonormalize()
 		double maxdiff=0;
 		for (i=0; i<100; i++) {
 			makeRandomRotation (R);
-			dRtoQ (R,q);
-			dQtoR (q,R2);
+			dQfromR(q, R); //dRtoQ (R,q);
+			dRfromQ(R2, q); //dQtoR (q,R2);
 			double diff = dMaxDifference (R,R2);
 			if (diff > maxdiff) maxdiff = diff;
 		}
@@ -958,31 +956,31 @@ void testReorthonormalize()
 		for (int i=0; i<100; i++) {
 			makeRandomRotation (RB);
 			makeRandomRotation (RC);
-			dRtoQ (RB,qb);
-			dRtoQ (RC,qc);
+			dQfromR(qb, RB); //dRtoQ (RB,qb);
+			dQfromR(qc, RC); //dRtoQ (RC,qc);
 
 			dMultiply0 (RA,RB,RC);
 			dQMultiply0 (qa,qb,qc);
-			dQtoR (qa,Rtest);
+			dRfromQ(Rtest, qa); //dQtoR (qa,Rtest);
 			diff = dMaxDifference (Rtest,RA);
 			if (diff > maxdiff) maxdiff = diff;
 
 			dMultiply1 (RA,RB,RC);
 			dQMultiply1 (qa,qb,qc);
-			dQtoR (qa,Rtest);
+			dRfromQ(Rtest, qa); //dQtoR (qa,Rtest);
 			diff = dMaxDifference (Rtest,RA);
 			if (diff > maxdiff) maxdiff = diff;
 
 			dMultiply2 (RA,RB,RC);
 			dQMultiply2 (qa,qb,qc);
-			dQtoR (qa,Rtest);
+			dRfromQ(Rtest, qa); //dQtoR (qa,Rtest);
 			diff = dMaxDifference (Rtest,RA);
 			if (diff > maxdiff) maxdiff = diff;
 
 			dMultiply0 (RA,RC,RB);
 			transpose3x3 (RA);
 			dQMultiply3 (qa,qb,qc);
-			dQtoR (qa,Rtest);
+			dRfromQ(Rtest, qa); //dQtoR (qa,Rtest);
 			diff = dMaxDifference (Rtest,RA);
 			if (diff > maxdiff) maxdiff = diff;
 		}
@@ -998,7 +996,7 @@ void testReorthonormalize()
 
 		printf ("\tdRSetIdentity - ");
 		dMakeRandomMatrix (R1,1.0);
-		dRSetIdentity (R1);
+		R1.setIdentity();
 		if (cmpIdentityMat3(R1)) printf ("passed\n"); else printf ("FAILED\n");
 
 		printf ("\tdRFromAxisAndAngle - ");

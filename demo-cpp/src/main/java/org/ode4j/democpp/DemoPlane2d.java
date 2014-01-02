@@ -24,9 +24,42 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetAngularVel;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetLinearVel;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetQuaternion;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetAngularVel;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetLinearVel;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetQuaternion;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreatePlane2D;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPlane2DXParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPlane2DYParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppOther.dAreConnected;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetCFM;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetERP;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.internal.cpp4j.Cmath.cos;
+import static org.ode4j.ode.internal.cpp4j.Cmath.sin;
+import static org.ode4j.ode.internal.cpp4j.Cmath.sqrt;
+import static org.ode4j.ode.internal.cpp4j.Cstdlib.RAND_MAX;
 
 import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
@@ -34,19 +67,18 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DPlane2DJoint;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
+import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.OdeMath;
 
 
 /**
@@ -91,7 +123,7 @@ class DemoPlane2d extends dsFunctions {
 	private static void     cb_start ()
 	/** ********************** */
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 		dsSetViewpoint (xyz, hpr);
 	}
 
@@ -148,6 +180,7 @@ class DemoPlane2d extends dsFunctions {
 	};
 
 	private static double angle = 0;
+	@SuppressWarnings("unused")
 	private void cb_sim_step (boolean pause)
 	{
 		if (! pause)

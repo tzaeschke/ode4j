@@ -24,17 +24,31 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomDestroy;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetData;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetData;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dQuadTreeSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DMisc.dRandReal;
+import static org.ode4j.ode.DMisc.dRandSetSeed;
+import static org.ode4j.ode.DRotation.dRSetIdentity;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
 
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DSpace;
 
 /**
  * testing procedure:
@@ -151,7 +165,7 @@ class DemoSpace extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 	}

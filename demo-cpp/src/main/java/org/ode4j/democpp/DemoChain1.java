@@ -24,23 +24,56 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddForce;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetRotation;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dHashSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateBall;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetBallAnchor;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetGravity;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.internal.cpp4j.Cmath.sin;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.DGeom.DNearCallback;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 class DemoChain1 extends dsFunctions {
@@ -109,7 +142,7 @@ class DemoChain1 extends dsFunctions {
 	public void start()
 	{
 
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 		dsSetViewpoint (xyz,hpr);
 	}
 

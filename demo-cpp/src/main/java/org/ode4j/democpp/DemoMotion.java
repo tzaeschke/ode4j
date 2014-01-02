@@ -24,12 +24,90 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
-import static org.ode4j.ode.DGeom.*;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyDestroy;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetRotation;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyIsEnabled;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetData;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCapsule;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCylinder;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCapsuleGetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCylinderGetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomDestroy;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetAABB;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetClass;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCategoryBits;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCollideBits;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSphereGetRadius;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformGetGeom;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dHashSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppExportDIF.dWorldExportDIF;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetCapsule;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetCylinder;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetSphere;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldQuickStep;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetAngularDamping;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetCFM;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetContactSurfaceLayer;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetGravity;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetLinearDamping;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetMaxAngularSpeed;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DGeom.dBoxClass;
+import static org.ode4j.ode.DGeom.dCapsuleClass;
+import static org.ode4j.ode.DGeom.dCylinderClass;
+import static org.ode4j.ode.DGeom.dGeomTransformClass;
+import static org.ode4j.ode.DGeom.dSphereClass;
+import static org.ode4j.ode.DMisc.dRandReal;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.OdeConstants.dContactBounce;
+import static org.ode4j.ode.OdeConstants.dContactFDir1;
+import static org.ode4j.ode.OdeConstants.dContactMotion1;
+import static org.ode4j.ode.OdeConstants.dContactMotion2;
+import static org.ode4j.ode.OdeConstants.dContactMotionN;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply0_333;
+import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.fclose;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.fopen;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
 
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -43,14 +121,14 @@ import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DGeomTransform;
-import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
@@ -66,7 +144,7 @@ public class DemoMotion extends dsFunctions {
 	private static final double DENSITY = 5.0;		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 8;		// maximum number of contact points per body
-	private static final int USE_GEOM_OFFSET = 1;
+	//private static final int USE_GEOM_OFFSET = 1;
 
 	// dynamics and collision objects
 

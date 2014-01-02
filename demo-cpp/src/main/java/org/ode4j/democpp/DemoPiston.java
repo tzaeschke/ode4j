@@ -27,36 +27,92 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddForce;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddTorque;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCapsule;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCapsuleGetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCategoryBits;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCollideBits;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAddPistonForce;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAddSliderForce;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateFixed;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetPistonAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetFixed;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPistonAnchor;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppOther.dAreConnectedExcluding;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetGravity;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsElapsedTime;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.OdeConstants.dContactApprox1;
+import static org.ode4j.ode.OdeConstants.dContactSlip1;
+import static org.ode4j.ode.OdeConstants.dContactSlip2;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dContactSoftERP;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.internal.cpp4j.Cmath.ceilf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.getchar;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.std_cout;
+import static org.ode4j.ode.internal.cpp4j.Cstdlib.exit;
+import static org.ode4j.ode.internal.cpp4j.Cstring.strcmp;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBody;
 import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCapsule;
-import org.ode4j.ode.DContactJoint;
-import org.ode4j.ode.DFixedJoint;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
+import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJoint.PARAM_N;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DPistonJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DJoint.PARAM_N;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
-import static org.ode4j.ode.DGeom.*;
 
 
 /**
@@ -99,7 +155,7 @@ class DemoPiston extends dsFunctions {
 	private static final int BODY1 = 0;
 	private static final int BODY2 = 1;
 	private static final int RECT = 2;
-	private static final int BOX = 3;
+	//private static final int BOX = 3;
 	private static final int OBS = 4;
 	private static final int GROUND = 5;
 	private static final int NUM_PARTS = 6;
@@ -120,7 +176,7 @@ class DemoPiston extends dsFunctions {
 	//#define Mass1 10
 	//#define Mass2 8
 	private static final double Mass1 = 10;
-	private static final double Mass2 = 8;
+	//private static final double Mass2 = 8;
 
 	//camera view
 	private static float[] xyz = {2.0f,-3.5f,2.0000f};
@@ -238,7 +294,7 @@ class DemoPiston extends dsFunctions {
 	@Override
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 		printf ("This program demonstrates how the Piston joint works.\n");

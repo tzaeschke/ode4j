@@ -190,21 +190,12 @@ public class TestDQuaternion extends OdeTestCase {
 	
 	@Test
 	public void testScale(){
-		DQuaternion x = new DQuaternion(1, 2, 3, 4);
 		DQuaternion y = new DQuaternion(4, 10, -6, -13);
 		DQuaternion t = new DQuaternion();
 		
-//		t.set(x);
-//		t.scale(4, 5, -2);
-//		assertTrue(t.equals(y));
 		t.set(y);
 		t.scale(0.5);
 		assertTrue(t.equals( new DQuaternion(2, 5, -3, -6.5) ));
-
-//		t.sub(0, 3);
-//		t.sub(1, 6);
-//		t.sub(2, -4);
-//		assertTrue(t.isEq(x));
 	}		
 	
 //	@Test
@@ -218,8 +209,8 @@ public class TestDQuaternion extends OdeTestCase {
 	
 	@Test
 	public void testOther(){
-		DQuaternion x = new DQuaternion(1, 2, 3, 4);
-		DQuaternion y = new DQuaternion(4, 8, -1, -7);
+//		DQuaternion x = new DQuaternion(1, 2, 3, 4);
+//		DQuaternion y = new DQuaternion(4, 8, -1, -7);
 		DQuaternion t = new DQuaternion();
 
 		//TODO remove dSafeNormalize3()?

@@ -24,24 +24,90 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddForce;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddTorque;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCylinder;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateGeomTransform;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCylinderGetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetQuaternion;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCategoryBits;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCollideBits;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformGetGeom;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformSetGeom;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateFixed;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetPRAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetPUAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetFixed;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPUAnchor;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppOther.dAreConnectedExcluding;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
+import static org.ode4j.drawstuff.DrawStuff.dsElapsedTime;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.dsStop;
+import static org.ode4j.ode.DRotation.dQFromAxisAndAngle;
+import static org.ode4j.ode.DRotation.dQMultiply1;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.DRotation.dRfromQ;
+import static org.ode4j.ode.OdeConstants.dContactApprox1;
+import static org.ode4j.ode.OdeConstants.dContactSlip1;
+import static org.ode4j.ode.OdeConstants.dContactSlip2;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dContactSoftERP;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.internal.cpp4j.Cmath.ceilf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.std_cout;
+import static org.ode4j.ode.internal.cpp4j.Cstdlib.exit;
+import static org.ode4j.ode.internal.cpp4j.Cstring.strcmp;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBody;
 import org.ode4j.ode.DBox;
+import org.ode4j.ode.DContact;
+import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DFixedJoint;
-import org.ode4j.ode.DGeomTransform;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DContact;
-import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJoint.PARAM_N;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DPRJoint;
@@ -49,14 +115,8 @@ import org.ode4j.ode.DPUJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DJoint.PARAM_N;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 /**
@@ -85,7 +145,7 @@ class DemoJointPU extends dsFunctions {
 //	};
 	private static final int RADIUS = 0;
 	private static final int LENGTH = 1;
-	private static final int NUM_CYL_DIM = 2;
+	//private static final int NUM_CYL_DIM = 2;
 
 
 	private static final DVector3C boxDim = new DVector3(1,1,1);
@@ -160,7 +220,7 @@ class DemoJointPU extends dsFunctions {
 	//#define Mass1 10
 	//#define Mass2 8
 	private static final double Mass1 = 10;
-	private static final double Mass2 = 8;
+	//private static final double Mass2 = 8;
 
 
 	//camera view
@@ -257,7 +317,7 @@ class DemoJointPU extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 		printf ("This program demonstrates how the PU joint works.\n");
@@ -690,7 +750,7 @@ class DemoJointPU extends dsFunctions {
 
 
 		DMatrix3 R = new DMatrix3();
-		DGeom id;
+		//DGeom id;
 		// Create the first axis of the universal joi9nt
 		geom[AXIS1] = dCreateGeomTransform (space);
 		//Rotation of 90deg around y
@@ -699,7 +759,7 @@ class DemoJointPU extends dsFunctions {
 		dGeomSetCategoryBits (geom[AXIS1], catBits[AXIS1]);
 		dGeomSetCollideBits (geom[AXIS1],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
-		id = geom[AXIS1];
+		//id = geom[AXIS1];
 		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS1],  
 				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
@@ -712,7 +772,7 @@ class DemoJointPU extends dsFunctions {
 		dGeomSetCategoryBits (geom[AXIS2], catBits[AXIS2]);
 		dGeomSetCollideBits (geom[AXIS2],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
-		id = geom[AXIS2];
+		//id = geom[AXIS2];
 		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS2],  
 				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 

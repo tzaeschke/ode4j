@@ -57,7 +57,6 @@ import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceAdd;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceGetGeom;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceGetNumGeoms;
-import static org.ode4j.cpp.internal.ApiCppOdeInit.dAllocateODEDataForThread;
 import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
 import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
 import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
@@ -94,7 +93,6 @@ import static org.ode4j.ode.internal.Misc.dRandReal;
 import static org.ode4j.ode.internal.Misc.dRandSetSeed;
 import static org.ode4j.ode.internal.Rotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.internal.Rotation.dRFromZAxis;
-import static org.ode4j.ode.internal.Rotation.dRSetIdentity;
 import static org.ode4j.ode.internal.cpp4j.Cmath.cos;
 import static org.ode4j.ode.internal.cpp4j.Cmath.sin;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
@@ -113,14 +111,13 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.internal.cpp4j.java.RefDouble;
-import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DRay;
 import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
-import org.ode4j.ode.OdeConstants;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 /**
  * collision tests. if this program is run without any arguments it will
@@ -129,6 +126,7 @@ import org.ode4j.ode.OdeConstants;
  * graphically/interactively, in which case the space bar can be used to
  * change the random test conditions.
  */
+@SuppressWarnings("unused")
 class DemoCollision extends dsFunctions {
 
 
@@ -252,7 +250,7 @@ class DemoCollision extends dsFunctions {
 		}
 		if (n > 0) {
 			DMatrix3 RI = new DMatrix3();
-			dRSetIdentity (RI);
+			RI.setIdentity();//dRSetIdentity (RI);
 			DVector3 ss = new DVector3(0.01,0.01,0.01);
 			for (i=0; i<n; i++) {
 				DContactGeom contact = contacts.get(i);
@@ -1127,7 +1125,6 @@ class DemoCollision extends dsFunctions {
 	private static boolean edgeIntersectsRect (DVector3 v1, DVector3 v2,
 			DVector3 p1, DVector3 p2, DVector3 p3)
 	{
-		int k;
 		DVector3 u1=new DVector3(),u2=new DVector3(),n=new DVector3(),tmp=new DVector3();
 		//for (k=0; k<3; k++) u1[k] = p3[k]-p1[k];
 		u1.eqDiff(p3, p1);
@@ -1405,7 +1402,7 @@ class DemoCollision extends dsFunctions {
 
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {2.4807,-1.8023,2.7600};
 		//  static float hpr[3] = {141.5000,-18.5000,0.0000};

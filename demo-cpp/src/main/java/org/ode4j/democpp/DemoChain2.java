@@ -24,28 +24,41 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppOther.dAreConnected;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetCFM;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.internal.cpp4j.Cmath.sin;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
-import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DGeom.DNearCallback;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
+import org.ode4j.ode.OdeHelper;
 
 
 class DemoChain2 extends dsFunctions {
@@ -59,7 +72,7 @@ class DemoChain2 extends dsFunctions {
 	private static int NUM = 10;			// number of boxes
 	private static float SIDE = (0.2f);		// side length of a box
 	private static float MASS = (1.0f);		// mass of a box
-	private static float RADIUS = (0.1732f);	// sphere radius
+	//private static float RADIUS = (0.1732f);	// sphere radius
 
 	//using namespace ode;
 
@@ -109,7 +122,7 @@ class DemoChain2 extends dsFunctions {
 
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {2.1640f,-1.3079f,1.7600f};
 		//  static float hpr[3] = {125.5000f,-17.0000f,0.0000f};
@@ -164,7 +177,7 @@ class DemoChain2 extends dsFunctions {
 		world = OdeHelper.createWorld();
 		world.setGravity (0,0,-0.5);
 		dWorldSetCFM (world,1e-5);
-		DPlane plane = OdeHelper.createPlane(space,0,0,1,0);
+		OdeHelper.createPlane(space,0,0,1,0);
 
 		for (i=0; i<NUM; i++) {
 			body[i] = dBodyCreate(world);//.create (world);

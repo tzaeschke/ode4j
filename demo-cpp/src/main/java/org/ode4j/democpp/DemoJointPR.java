@@ -24,30 +24,93 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddForce;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddRelTorque;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dHashSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceAdd;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceSetCleanup;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreatePR;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetPRAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetPRAngle;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetPRAngleRate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetPRPosition;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetPRPositionRate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAxis1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAxis2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel2;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppOther.dAreConnectedExcluding;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldQuickStep;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetGravity;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.OdeConstants.dContactApprox1;
+import static org.ode4j.ode.OdeConstants.dContactSlip1;
+import static org.ode4j.ode.OdeConstants.dContactSlip2;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dContactSoftERP;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.internal.cpp4j.Cmath.sqrt;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+import static org.ode4j.ode.internal.cpp4j.Cstdlib.exit;
+import static org.ode4j.ode.internal.cpp4j.Cstring.strcmp;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DContactJoint;
-import org.ode4j.ode.DPRJoint;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.DBody;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
+import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
+import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DGeom.DNearCallback;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 /**
@@ -94,7 +157,7 @@ class DemoJointPR extends dsFunctions {
 	private static DBody[] box2_body = new DBody[1];
 	private static DPRJoint[] joint = new DPRJoint[1];
 	private static DJointGroup contactgroup;
-	private static DGeom ground;
+	//private static DGeom ground;
 	private static DBox[] box1 = new DBox[1];
 	private static DBox[] box2 = new DBox[1];
 
@@ -136,7 +199,7 @@ class DemoJointPR extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		dsSetViewpoint (xyz,hpr);
 		printf ("Press 'd' to add force along positive x direction.\nPress 'a' to add force along negative x direction.\n");
@@ -372,7 +435,7 @@ class DemoJointPR extends dsFunctions {
 		space = dHashSpaceCreate (null);
 		contactgroup = dJointGroupCreate (0);
 		dWorldSetGravity (world,0,0,-10);
-		ground = dCreatePlane (space,0,0,1,0);
+		dCreatePlane (space,0,0,1,0);
 
 		//create two boxes
 		DMass m = dMassCreate();

@@ -24,6 +24,56 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetRotation;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateAMotor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateLMotor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetAMotorAxis;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetAMotorNumAxes;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetAMotorParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetLMotorAxis;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetLMotorNumAxes;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetLMotorParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax3;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel3;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldQuickStep;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DAMotorJoint;
 import org.ode4j.ode.DBody;
@@ -31,19 +81,13 @@ import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DLMotorJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.DGeom.DNearCallback;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 
 class DemoMotor extends dsFunctions {
@@ -71,7 +115,7 @@ class DemoMotor extends dsFunctions {
 	static float[] hpr = {135.0000f,-19.5000f,0.0000f};
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {1.0382f,-1.0811f,1.4700f};
 		//  static float hpr[3] = {135.0000f,-19.5000f,0.0000f};

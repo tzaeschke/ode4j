@@ -49,7 +49,7 @@ class DemoConvexCD extends dsFunctions {
 	//#ifndef M_PI
 	//#define M_PI (3.14159265358979323846)
 	//#endif
-	private static final double M_PI = 3.14159265358979323846; 
+	//private static final double M_PI = 3.14159265358979323846; 
 
 	//<---- Convex Object
 	private double planes[]= // planes for a cube
@@ -117,7 +117,7 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 
 	private DVector3 geom1pos=new DVector3(0.0,0.250,0.50);
 	private DQuaternion geom1quat=new DQuaternion(1,0,0,0);
-	private DQuaternion geom0quat=new DQuaternion(0.7071,0,0.7071,0);
+	//private DQuaternion geom0quat=new DQuaternion(0.7071,0,0.7071,0);
 
 	private boolean DumpInfo=true;
 	private int drawmode = DS_WIREFRAME;
@@ -299,6 +299,7 @@ Where	c = cos(angle),	s = sine(angle), and ||( x,y,z )|| = 1
 	{
 		// note: 0.0174532925 radians = 1 degree
 		DQuaternion q = new DQuaternion();
+		@SuppressWarnings("unused")
 		boolean changed = false;
 		switch(cmd)
 		{

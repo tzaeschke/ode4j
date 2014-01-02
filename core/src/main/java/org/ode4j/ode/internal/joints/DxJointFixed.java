@@ -79,8 +79,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 
 
 	@Override
-	public void
-	getInfo1 ( Info1 info )
+	public void	getInfo1 ( Info1 info )
 	{
 		info.setM(6);
 		info.setNub(6);
@@ -88,8 +87,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 
 
 	@Override
-	public void
-	getInfo2 ( Info2 info )
+	public void getInfo2 ( Info2 info )
 	{
 		int s = info.rowskip();
 

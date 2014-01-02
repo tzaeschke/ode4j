@@ -24,10 +24,35 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddTorque;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetAngularVel;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetRotation;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetQuaternion;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetRotation;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateHinge;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeAxis;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DMisc.dRandReal;
+import static org.ode4j.ode.DRotation.dQFromAxisAndAngle;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
 
 import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
@@ -40,7 +65,6 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.internal.DxMass;
 
 
@@ -72,7 +96,7 @@ public class DemoHinge extends dsFunctions {
 
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//	  static double[] xyz = {1.0382f,-1.0811f,1.4700f};
 		//	  static double[] hpr = {135.0000f,-19.5000f,0.0000f};

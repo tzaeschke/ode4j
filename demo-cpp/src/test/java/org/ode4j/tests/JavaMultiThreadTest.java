@@ -160,7 +160,7 @@ public class JavaMultiThreadTest extends TestCase {
         boolean _hasBeenChecked = false;
         ClassInfo _superInfo = null;
         boolean _hasState = false;
-        boolean _isStaticallyReferenced = false;
+        //boolean _isStaticallyReferenced = false;
 
         public ClassInfo(Class<?> cls) {
             _cls = cls;

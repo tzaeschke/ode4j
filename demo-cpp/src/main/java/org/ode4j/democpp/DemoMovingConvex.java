@@ -147,7 +147,7 @@ public class DemoMovingConvex extends dsFunctions {
 	@Override
 	public void start()
 	{
-		dAllocateODEDataForThread( dAllocateMaskAll );
+		//dAllocateODEDataForThread( dAllocateMaskAll );
 
 		dsSetViewpoint( xyz,hpr );
 		printf( "To drop another object, press:\n" );

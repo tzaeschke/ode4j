@@ -24,6 +24,65 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCylinderGetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomDestroy;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomIsSpace;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide2;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dHashSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceAdd;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateFeedback;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateHinge;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateSlider;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetBody;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetFeedback;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeAxis;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetSliderAxis;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetSliderParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldQuickStep;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetGravity;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetQuickStepNumIterations;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
+import static org.ode4j.drawstuff.DrawStuff.dsElapsedTime;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.OdeConstants.dContactApprox1;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dContactSoftERP;
+import static org.ode4j.ode.internal.cpp4j.Cmath.ceilf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.fprintf;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.stderr;
+
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -34,21 +93,15 @@ import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DHingeJoint;
-import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 /**
@@ -65,7 +118,7 @@ class DemoFeedback extends dsFunctions {
 	private static final int   SEGMCNT=16;	// nr of segments in bridge
 	private static final float[] SEGMDIM = { 0.9f, 4, 0.1f };
 
-	private static DGeom  groundgeom;
+	//private static DGeom  groundgeom;
 	private static DBody[]  segbodies = new DBody[SEGMCNT];
 	private static DGeom[]  seggeoms = new DGeom[SEGMCNT];
 	private static DBody[]  stackbodies = new DBody[STACKCNT];
@@ -128,7 +181,7 @@ class DemoFeedback extends dsFunctions {
 	// start simulation - set viewpoint
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = { -6, 8, 6};
 		//  static float hpr[3] = { -65.0f, -27.0f, 0.0f};
@@ -314,7 +367,7 @@ class DemoFeedback extends dsFunctions {
 		dJointSetSliderParam (sliders[1],dParamLoStop,   0.0);
 		dJointSetSliderParam (sliders[1],dParamHiStop,  -0.2);
 
-		groundgeom = dCreatePlane(space, 0,0,1,0);
+		dCreatePlane(space, 0,0,1,0);
 
 		for (i=0; i<SEGMCNT; i++)
 			colours[i]=0.0;

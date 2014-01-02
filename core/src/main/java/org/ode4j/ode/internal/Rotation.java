@@ -305,7 +305,7 @@ public class Rotation extends Matrix {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated Please use {@link #dRfromQ(DMatrix3, DQuaternionC)} instead
 	 * @param q
 	 * @param R
 	 */
@@ -314,7 +314,7 @@ public class Rotation extends Matrix {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated Please use {@link #dQfromR(DQuaternion, DMatrix3C)} instead
 	 * @param q
 	 * @param R
 	 */

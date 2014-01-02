@@ -24,29 +24,118 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddForce;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddTorque;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetAngularVel;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetRotation;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetQuaternion;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetRotation;
+import static org.ode4j.cpp.internal.ApiCppJoint.dAMotorEuler;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateAMotor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateFixed;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateHinge;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateHinge2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreatePR;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateSlider;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateUniversal;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetAMotorAngle;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHinge2Angle1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHinge2Angle1Rate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHinge2Angle2Rate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHingeAngle;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHingeAngleRate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetSliderPosition;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetSliderPositionRate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle1Rate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle2Rate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAxis1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAxis2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetAMotorAxis;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetAMotorMode;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetAMotorNumAxes;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetFixed;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Anchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Param;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeAxis;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAxis1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAxis2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetSliderAxis;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetSliderParam;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAnchor;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAxis1;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAxis2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamBounce;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop2;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel;
+import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel2;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetCFM;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetERP;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetGravity;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.dsStop;
+import static org.ode4j.ode.DMisc.dMaxDifference;
+import static org.ode4j.ode.DMisc.dRandReal;
+import static org.ode4j.ode.DRotation.dQFromAxisAndAngle;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.ErrorHandler.dError;
+import static org.ode4j.ode.internal.cpp4j.Cmath.cos;
+import static org.ode4j.ode.internal.cpp4j.Cmath.fabs;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAMotorJoint;
+import org.ode4j.ode.DBody;
 import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.DHingeJoint;
+import org.ode4j.ode.DMass;
 import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DUniversalJoint;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DMass;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.cpp4j.Ctype;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 /**
@@ -1006,7 +1095,7 @@ public class DemoJoints extends dsFunctions {
 	@Override
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {1.0382f,-1.0811f,1.4700f};
 		//  static float hpr[3] = {135.0000f,-19.5000f,0.0000f};

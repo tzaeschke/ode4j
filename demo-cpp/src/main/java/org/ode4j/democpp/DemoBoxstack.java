@@ -24,6 +24,105 @@
  *************************************************************************/
 package org.ode4j.democpp;
 
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyCreate;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyDestroy;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyDisable;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyEnable;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetRotation;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodyIsEnabled;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetData;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
+import static org.ode4j.cpp.internal.ApiCppBody.dBodySetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCapsule;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateConvex;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCylinder;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateGeomTransform;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCapsuleGetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCylinderGetParams;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomDestroy;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetAABB;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSphereGetRadius;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformGetGeom;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformSetCleanup;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformSetGeom;
+import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dHashSpaceCreate;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
+import static org.ode4j.cpp.internal.ApiCppExportDIF.dWorldExportDIF;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
+import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetFeedback;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassAdd;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassRotate;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetCapsule;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetCylinder;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetSphere;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassSetZero;
+import static org.ode4j.cpp.internal.ApiCppMass.dMassTranslate;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
+import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
+import static org.ode4j.cpp.internal.ApiCppOther.dAreConnectedExcluding;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldCreate;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldQuickStep;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetAngularDamping;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetAutoDisableAverageSamplesCount;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetAutoDisableFlag;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetCFM;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetContactMaxCorrectingVel;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetContactSurfaceLayer;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetGravity;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetLinearDamping;
+import static org.ode4j.cpp.internal.ApiCppWorld.dWorldSetMaxAngularSpeed;
+import static org.ode4j.democpp.IcosahedronGeom.Sphere_planecount;
+import static org.ode4j.democpp.IcosahedronGeom.Sphere_planes;
+import static org.ode4j.democpp.IcosahedronGeom.Sphere_pointcount;
+import static org.ode4j.democpp.IcosahedronGeom.Sphere_points;
+import static org.ode4j.democpp.IcosahedronGeom.Sphere_polygons;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawConvex;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DMisc.dRandReal;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.OdeConstants.dContactBounce;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply0_333;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.fclose;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.fopen;
+import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
+import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -38,23 +137,16 @@ import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DGeomTransform;
-import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
-import static org.ode4j.democpp.IcosahedronGeom.*;
 
 class DemoBoxstack extends dsFunctions {
 
@@ -221,7 +313,7 @@ class DemoBoxstack extends dsFunctions {
 
 	public void start()
 	{
-		dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
+		//dAllocateODEDataForThread(OdeConstants.dAllocateMaskAll);
 
 		//  static float xyz[3] = {2.1640f,-1.3079f,1.7600f};
 		//  static float hpr[3] = {125.5000f,-17.0000f,0.0000f};
@@ -254,6 +346,7 @@ class DemoBoxstack extends dsFunctions {
 
 
 	// called when a key pressed
+	@SuppressWarnings("unused")
 	public void command (char cmd)
 	{
 		int i;//size_t i;
@@ -514,6 +607,7 @@ class DemoBoxstack extends dsFunctions {
 	// draw a geom
 
 	//void drawGeom (dGeom g, final double *pos, final double *R, boolean show_aabb)
+	@SuppressWarnings("unused")
 	private void drawGeom (DGeom g, DVector3C pos, DMatrix3C R, boolean show_aabb)
 	{
 		int i;
