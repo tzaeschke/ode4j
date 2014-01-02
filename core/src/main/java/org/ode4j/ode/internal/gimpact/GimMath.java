@@ -34,8 +34,9 @@ package org.ode4j.ode.internal.gimpact;
 import java.util.Random;
 
 /**
- * @author Francisco Le�n
-*/
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
+ */
 public class GimMath {
 //
 //

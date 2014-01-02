@@ -44,7 +44,7 @@ package org.ode4j.ode.internal.gimpact;
  * </ul>
  * The following example shows how Buffer arrays can be used:
  *
- * <code>
+ * <pre>
 int main()
 {
     //init gimpact
@@ -86,7 +86,10 @@ int main()
     //terminate gimpact
     gimpact_terminate();
 }
- * </code>
+ * </pre>
+ * 
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
  */
 public class GimBufferArray<T> implements GimConstants { //formerly GBUFFER_ARRAY
 

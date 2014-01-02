@@ -449,20 +449,20 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	//dxQuadTreeSpace::~dxQuadTreeSpace(){
 	@Override
 	public void DESTRUCTOR(){
-		int Depth = 0;
-		//Block* Current = &Blocks[0];
-		Block Current = Blocks[0];
-		while (Current!=null && Current.mChildren != null){
-			Depth++;
-			Current = Current.mChildren.at(0);//Current.Children;
-		}
-
-		int BlockCount = 0;
-		for (int i = 0; i < Depth; i++){
-			BlockCount += (int)pow((double)SPLITS, i);
-		}
+		//(TZ) This really does nothing useful in Java...
+//		int Depth = 0;
+//		//Block* Current = &Blocks[0];
+//		Block Current = Blocks[0];
+//		while (Current!=null && Current.mChildren != null){
+//			Depth++;
+//			Current = Current.mChildren.at(0);//Current.Children;
+//		}
 
 		///TODO call DESTRUCTORS (?, if any)
+		// int BlockCount = 0;
+		// for (int i = 0; i < Depth; i++){
+		// 	BlockCount += (int)pow((double)SPLITS, i);
+		// }
 		//	dFree(Blocks, BlockCount);// * sizeof(Block));
 		//	dFree(CurrentChild, (Depth + 1));// * sizeof(int));
 

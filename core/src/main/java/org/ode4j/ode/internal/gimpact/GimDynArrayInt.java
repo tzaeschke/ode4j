@@ -33,6 +33,10 @@ package org.ode4j.ode.internal.gimpact;
 
 import java.util.Arrays;
 
+/**
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
+ */
 public class GimDynArrayInt {
 
 	protected int[] m_pdata;// = new int[0];

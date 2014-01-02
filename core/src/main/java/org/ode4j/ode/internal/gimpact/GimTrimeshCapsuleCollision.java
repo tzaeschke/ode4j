@@ -38,7 +38,7 @@ import org.ode4j.ode.internal.gimpact.GimTriCollision.GIM_TRIANGLE_DATA;
 
 /**
  * Ported to Java by Tilmann Zaeschke
- * @author Francisco Le�n
+ * @author Francisco Leon
 */
 public class GimTrimeshCapsuleCollision {
 
@@ -97,12 +97,14 @@ public class GimTrimeshCapsuleCollision {
 	
 	/**
 	 * Utility function for find the closest point between a segment and a triangle.
+	 * <p> Postcondition: 
+	 * The contacts array is not set to 0. It adds additional contacts.
+	 * 
 	 * @param triangle
 	 * @param s1
 	 * @param s2
 	 * @param contacts Contains the closest points on the segment (1,2), and the
 	 * normal points to segment, and m_depth contains the distance
-	 * @post The contacts array is not set to 0. It adds additional contacts
 	*/
 	//void gim_closest_point_triangle_segment(GIM_TRIANGLE_DATA * triangle, vec3f s1,vec3f s2, GDYNAMIC_ARRAY * contacts)
 	static void gim_closest_point_triangle_segment(GIM_TRIANGLE_DATA triangle, vec3f s1,vec3f s2, 
@@ -239,11 +241,11 @@ public class GimTrimeshCapsuleCollision {
 
 	/**
 	 * Utility function for find the closest point between a capsule and a triangle
+	 * <p>Postcondition: The contacts array is not set to 0. It adds aditional contacts
 	 * @param triangle
 	 * @param capsule
 	 * @param contacts Contains the closest points on the capsule, and the normal points to triangle
 	 * @return 1 if the triangle collides the capsule
-	 * @post The contacts array is not set to 0. It adds aditional contacts
 	 */
 	//int gim_triangle_capsule_collision(GIM_TRIANGLE_DATA * triangle, GIM_CAPSULE_DATA * capsule, 
 	//GDYNAMIC_ARRAY * contacts)

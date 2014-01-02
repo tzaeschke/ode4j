@@ -41,6 +41,9 @@ import org.ode4j.ode.internal.cpp4j.java.ObjArray;
  * <li> For initializes a dynamic array, use GIM_DYNARRAY_CREATE or GIM_DYNARRAY_CREATE_SIZED.
  * <li> When an array is no longer used, must be terminated with the macro GIM_DYNARRAY_DESTROY.
  * </ul>
+ * 
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
  */
 public class GimDynArray<T> {//extends GimBufferArray<T> {
 	//! @{

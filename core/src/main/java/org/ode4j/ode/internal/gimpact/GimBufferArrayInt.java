@@ -89,6 +89,9 @@ int main()
     gimpact_terminate();
 }
  * </pre>
+ * 
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
  */
 public class GimBufferArrayInt implements GimConstants { //formerly GBUFFER_ARRAY
 

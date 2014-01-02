@@ -60,7 +60,7 @@ import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;
  * <li> When the box set is no longer used, you must destroy it by calling \ref gim_aabbset_destroy
  * </ul>
  * Ported to Java by Tilmann Zaeschke
- * @author Francisco Le�n
+ * @author Francisco Leon
  * 
  */
 public class GimAABBSet { //Formerly GimBoxPruning

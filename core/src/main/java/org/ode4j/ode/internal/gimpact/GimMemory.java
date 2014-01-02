@@ -31,11 +31,13 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
+/**
+ * Function prototypes to allocate and free memory.
+ * 
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
+ */
 public class GimMemory {
-	/*! \defgroup MEMORY_FUNCTION_PROTOTYPES
-	Function prototypes to allocate and free memory.
-	*/
-	//! @{
 //	typedef void * gim_alloc_function (size_t size);
 //	typedef void * gim_alloca_function (size_t size);//Allocs on the heap
 //	typedef void * gim_realloc_function (void *ptr, size_t oldsize, size_t newsize);
@@ -44,7 +46,4 @@ public class GimMemory {
 	interface gim_alloca_function { Object[] run(int size); };//Allocs on the heap
 	interface gim_realloc_function { Object[] run(Object[] ptr, int oldsize, int newsize); };
 	interface gim_free_function { Object[] run(Object[] ptr, int size); };
-	//! @}
-
-
 }

@@ -31,21 +31,20 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
-import java.util.TreeMap;
 
 
 /**
  * Based on the work of Michael Herf : "fast floating-point radix sort"
  * Avaliable on http://www.stereopsis.com/radix.html
- * @author Francisco Le�n.
+ * 
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
  */
 public class GimRadixSort {
 
-	/*! \defgroup SORTING
-	\brief
-	Macros for sorting.
+	/**
+	 * Macros for sorting.
 	 */
-	//! @{
 	static class GIM_RSORT_TOKEN
 	{
 		//	    GUINT32 m_key;

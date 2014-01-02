@@ -46,7 +46,7 @@ import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
  * </ul>
  * The following example shows how Buffer arrays can be used:
  *
- * <code>
+ * <pre>
 int main()
 {
     //init gimpact
@@ -88,8 +88,10 @@ int main()
     //terminate gimpact
     gimpact_terminate();
 }
- * </code>
- * @see BUFFERS
+ * </pre>
+ * 
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
  */
 public class GimBufferArrayFloat implements GimConstants { //formerly GBUFFER_ARRAY
 

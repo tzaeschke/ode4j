@@ -42,7 +42,10 @@ import java.util.BitSet;
  * <li> For clearing a mark on the bitset, call \ref GIM_BITSET_CLEAR
  * <li> For retrieving a bit value from a bitset, call \ref GIM_BITSET_GET-
  * </ul>
- */
+ * 
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
+*/
 public class GimBitSet {//extends GimDynArrayInt { //implements GimConstants {
 
 	private final BitSet _data;

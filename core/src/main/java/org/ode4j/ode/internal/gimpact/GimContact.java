@@ -54,7 +54,8 @@ import org.ode4j.ode.internal.gimpact.GimRadixSort.GIM_RSORT_TOKEN;
  * <li> Contacts can be merge for avoid duplicate results by calling \ref gim_merge_contacts
  * </ul>
  *
- * @author Francisco Le�n
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
  */
 public class GimContact {
 

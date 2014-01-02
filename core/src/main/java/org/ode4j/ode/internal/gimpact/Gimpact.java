@@ -33,7 +33,8 @@ package org.ode4j.ode.internal.gimpact;
 
 
 /** 
- * @author Francisco Le�n
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
  */
 public class Gimpact {
 

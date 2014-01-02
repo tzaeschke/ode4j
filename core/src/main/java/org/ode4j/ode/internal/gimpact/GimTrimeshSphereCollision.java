@@ -38,6 +38,10 @@ import org.ode4j.ode.internal.gimpact.GimTriCollision.GIM_TRIANGLE_DATA;
 
 import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 
+/**
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
+*/
 public class GimTrimeshSphereCollision {
 
 

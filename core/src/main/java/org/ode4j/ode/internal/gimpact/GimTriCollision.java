@@ -36,8 +36,8 @@ import org.ode4j.ode.internal.cpp4j.java.RefFloat;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 /**
- * @author Francisco Le�n N�jera
  * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
  */
 public class GimTriCollision extends GimGeometry {
 

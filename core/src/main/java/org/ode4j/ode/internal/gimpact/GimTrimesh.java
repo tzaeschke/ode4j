@@ -83,7 +83,7 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 	<p>On simulation loops, is needed to update trimeshes every time for update vertices althought updating triangle boxes and planes cache. There is two ways for update trimeshes: </p>
 	<ul>
 	<li> Updating vertices directly. You need to access to the \ref GIM_TRIMESH.m_source_vertex_buffer member; a vertex buffer which has access to the source vertices.
-	<code>
+	<pre>
 	// Access to the source vertices
 	gim_buffer_array_lock(&mytrimesh.m_source_vertex_buffer, G_MA_READ_WRITE);
 
@@ -109,7 +109,7 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 	// Notify that the state of the trimesh is changed
 	gim_trimesh_post_update(&mytrimesh.m_source_vertex_buffer);
 
-	</code>
+	</pre>
 	For making trimeshes that allow to update their vertices, use \ref gim_trimesh_create_from_data with parameter <strong>transformed_reply</strong> = 0.
 	</ul>
 	<ul>
@@ -119,6 +119,8 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 	<p><strong>TRIMESHES COLLISION</strong></p>
 	<p>Before collide trimeshes, you need to update them first.</p>
 	<p>Then you must use \ref gim_trimesh_trimesh_collision().</p>
+ * 
+ * Ported to Java by Tilmann Zaeschke
  * @author Francisco Leon
  */
 public class GimTrimesh implements GimConstants {

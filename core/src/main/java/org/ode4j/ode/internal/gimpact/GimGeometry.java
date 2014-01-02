@@ -37,8 +37,9 @@ import org.ode4j.ode.internal.cpp4j.java.RefFloat;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 /**
- * @file gim_geometry.h
- * @author Francisco Le�n
+ * From gim_geometry.h .
+ * Ported to Java by Tilmann Zaeschke
+ * @author Francisco Leon
  */
 public class GimGeometry extends GimMath {
 
@@ -96,10 +97,9 @@ public class GimGeometry extends GimMath {
 	//! @}
 
 
-	/*! \defgroup VECTOR_OPERATIONS
-	Operations for vectors : vec2f,vec3f and vec4f
-	*/
-	//! @{
+	/**
+	 * Operations for vectors : vec2f,vec3f and vec4f
+	 */
 
 	//! Zero out a 2D vector
 	static final void VEC_ZERO_2(vec2f a)
