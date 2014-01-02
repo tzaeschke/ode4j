@@ -757,7 +757,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @param x The X component of the axis in world frame
 	 * @param y The Y component of the axis in world frame
 	 * @param z The Z component of the axis in world frame
-	 * @param angle The angle for the offset of the relative orientation.
+	 * @param offset1 The angle for the offset of the relative orientation.
 	 *              As if body1 was rotated by angle when the Axis was set (see below).
 	 *              The rotation is around the new Hinge axis.
 	 */
@@ -807,7 +807,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @param x The X component of the axis in world frame
 	 * @param y The Y component of the axis in world frame
 	 * @param z The Z component of the axis in world frame
-	 * @param angle The angle for the offset of the relative orientation.
+	 * @param offset1 The angle for the offset of the relative orientation.
 	 *              As if body1 was rotated by angle when the Axis was set (see below).
 	 *              The rotation is around the new Hinge axis.
 	 */

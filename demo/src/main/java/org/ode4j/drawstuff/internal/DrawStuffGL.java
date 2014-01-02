@@ -1423,7 +1423,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	//extern "C" 
 	/**
 	 * If you filter out arguments beforehand, simply set them to "".
-	 * @see org.ode4j.drawstuff.DrawStuff#dsSimulationLoop(java.lang.String[], int, int, org.ode4j.drawstuff.DS_API.dsFunctions)
+	 * @see org.ode4j.drawstuff.DrawStuff#dsSimulationLoop(String[], int, int, dsFunctions)
 	 */
 	public void dsSimulationLoop (String[] args,
 			int window_width, int window_height,
@@ -1694,8 +1694,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	//extern "C" 
 //	void dsDrawCylinder (final float pos[3], final float R[12],
 //			float length, float radius)
-	/* (non-Javadoc)
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawCylinder(float[], float[], float, float)
+	/**
+	 * @see DrawStuffApi#dsDrawCylinder(float[], float[], float, float)
 	 */
 	public void dsDrawCylinder (final float[] pos, final float[] R,
 			float length, float radius)
@@ -1722,8 +1722,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	//extern "C" 
 //	void dsDrawCapsule (final float pos[3], final float R[12],
 //			float length, float radius)
-	/* (non-Javadoc)
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawCapsule(float[], float[], float, float)
+	/**
+	 * @see DrawStuffApi#dsDrawCapsule(float[], float[], float, float)
 	 */
 	public void dsDrawCapsule (final float[] pos, final float[] R,
 			float length, float radius)
@@ -1748,8 +1748,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 
 //	void dsDrawLine (final float pos1[3], final float pos2[3])
-	/* (non-Javadoc)
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawLine(float[], float[])
+	/** 
+	 * @see DrawStuffApi#dsDrawLine(float[], float[])
 	 */
 	public void dsDrawLine (final float[] pos1, final float[] pos2)
 	{
@@ -1768,7 +1768,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 //	void dsDrawBoxD (final double pos[3], final double R[12],
 //			final double sides[3])
 	/**
-	 * @see org.ode4j.drawstuff.internal.DrawStuffApi#dsDrawBox(float[], float[], float[])
+	 * @see DrawStuffApi#dsDrawBox(float[], float[], float[])
 	 */
 	public void dsDrawBox (DVector3C pos, DMatrix3C R,
 			DVector3C sides)
@@ -1785,8 +1785,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 //			double *_points,
 //			unsigned int _pointcount,
 //			unsigned int *_polygons)
-	/* (non-Javadoc)
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawConvexD(double[], double[], double[], int, double[], int, int[])
+	/**
+	 * @see DrawStuffApi#dsDrawConvex(DVector3C, DMatrix3C, double[], int, double[], int, int[])
 	 */
 	public void dsDrawConvex (DVector3C pos, DMatrix3C R,
 			double[] _planes, int _planecount,
@@ -1812,8 +1812,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	}
 
 //	void dsDrawSphereD (final double pos[3], final double R[12], float radius)
-	/** (non-Javadoc)
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawSphereD(double[], double[], float)
+	/** 
+	 * @see DrawStuffApi#dsDrawSphere(DVector3C, DMatrix3C, float)
 	 */
 	public void dsDrawSphere (final DVector3C pos, final DMatrix3C R, float radius)
 	{
@@ -1857,8 +1857,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 //	void dsDrawCylinderD (final double pos[3], final double R[12],
 //			float length, float radius)
-	/* (non-Javadoc)
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawCylinderD(double[], double[], float, float)
+	/**
+	 * @see DrawStuffApi#dsDrawCylinder(DVector3C, DMatrix3C, float, float)
 	 */
 	public void dsDrawCylinder (final DVector3C pos, final DMatrix3C R,
 			float length, float radius)
@@ -1871,8 +1871,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 //	void dsDrawCapsuleD (final double pos[3], final double R[12],
 //			float length, float radius)
-	/* (non-Javadoc)
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawCapsuleD(double[], double[], float, float)
+	/**
+	 * @see DrawStuffApi#dsDrawCapsule(DVector3C, DMatrix3C, float, float)
 	 */
 	public void dsDrawCapsule (final DVector3C pos, final DMatrix3C R,
 			float length, float radius)
@@ -1884,14 +1884,14 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 
 //	void dsDrawLineD (final double _pos1[3], final double _pos2[3])
-	/* (non-Javadoc)
-	 * @see org.ode4j.drawstuff.internal.DrawStuff#dsDrawLineD(double[], double[])
+	/**
+	 * @see DrawStuffApi#dsDrawLine(DVector3C, DVector3C)
 	 */
-	public void dsDrawLine (final DVector3C _pos1, final DVector3C _pos2)
+	public void dsDrawLine (final DVector3C pos1, final DVector3C pos2)
 	{
-		float[] pos1=_pos1.toFloatArray4();
-		float[] pos2=_pos2.toFloatArray4();
-		dsDrawLine (pos1,pos2);
+		float[] pos1f=pos1.toFloatArray4();
+		float[] pos2f=pos2.toFloatArray4();
+		dsDrawLine (pos1f,pos2f);
 	}
 
 

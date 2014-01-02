@@ -39,7 +39,6 @@ public final class SerTimer {
  
     /**
      * Start time measurement.
-     * @param key
      */
     public final void start() {
     	_prev = System.currentTimeMillis();

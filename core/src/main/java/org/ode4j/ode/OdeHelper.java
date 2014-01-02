@@ -596,10 +596,11 @@ public abstract class OdeHelper {
 	 *
 	 * @param uiInitFlags Initialization options bitmask
 	 * @return A nonzero if initialization succeeded and zero otherwise.
-	 * @see #initODEFlags
 	 * @see #closeODE()
+	 * @see OdeInit
 	 * @see DSpace#setManualCleanup(int)
 	 */
+	//* @see #initODEFlags
 	public static int initODE2(int uiInitFlags/*=0*/) {
 		return OdeInit.dInitODE2(uiInitFlags) ? 1 : 0;
 	}
@@ -621,8 +622,8 @@ public abstract class OdeHelper {
 	 * <tt>dCleanupODEAllDataForThread</tt> after <tt>dCloseODE</tt>.
 	 *
 	 * @see #initODE2(int)
-	 * @see #dCleanupODEAllDataForThread
 	 */
+	//* @see #dCleanupODEAllDataForThread
 	public static void closeODE() {
 		OdeInit.dCloseODE();
 	}
@@ -780,10 +781,10 @@ public abstract class OdeHelper {
 	 *
      * @param uiAllocateFlags Allocation options bitmask.
      * @return A nonzero if allocation succeeded and zero otherwise.
-	 * @see #dAllocateODEDataFlags
-	 * @see #dCleanupODEAllDataForThread
 	 * @deprecated TZ I guess this can be removed?
 	 */
+//	 * @see #dAllocateODEDataFlags
+//	 * @see #dCleanupODEAllDataForThread
 	public static int allocateODEDataForThread(int uiAllocateFlags) {
 		return OdeInit.dAllocateODEDataForThread(uiAllocateFlags) ? 1 : 0;
 	}

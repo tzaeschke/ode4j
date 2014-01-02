@@ -339,8 +339,8 @@ public interface DWorld {
 	 * retried as soon as more memory is available.
 	 *
 	 * @param stepsize The number of seconds that the simulation has to advance.
-	 * @return 1 for success and 0 for failure
 	 */
+	//* @return 1 for success and 0 for failure
 	void step (double stepsize);
 
 

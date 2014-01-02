@@ -893,7 +893,6 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * scale until dBodyResetAngularDamping() is called.
 	 * 
 	 * @param scale The angular damping scale. Should be in the interval [0, 1].
-	 * @see #dBodyResetAngularDamping()
 	 */
 	//ODE_API 
 	public static void dBodySetAngularDamping(DBody b, double scale){
@@ -970,7 +969,6 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * enabled.
 	 * 
 	 * @see ApiCppWorld#dWorldSetMaxAngularSpeed(DWorld, double) 
-	 * @see #dBodyResetMaxAngularSpeed()
 	 */
 	//ODE_API 
 	public static void dBodySetMaxAngularSpeed(DBody b, double max_speed) {

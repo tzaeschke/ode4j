@@ -22,6 +22,7 @@
 package org.ode4j.cpp.internal;
 
 import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.internal.OdeInit;
 
 
 /**
@@ -102,9 +103,10 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * @param uiInitFlags Initialization options bitmask
 	 * @return A nonzero if initialization succeeded and zero otherwise.
 	 *
-	 * @see #dInitODEFlags
 	 * @see #dCloseODE()
+	 * @see OdeInit
 	 */
+	//* @see #dInitODEFlags
 	//ODE_API 
 	//int dInitODE2(unsigned int uiInitFlags/*=0*/) {
 	public static int dInitODE2(int uiInitFlags/*=0*/) {
@@ -162,10 +164,10 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 *
 	 * @param uiAllocateFlags Allocation options bitmask.
 	 * @return A nonzero if allocation succeeded and zero otherwise.
-	 * @see #dAllocateODEDataFlags
-	 * @see #dCleanupODEAllDataForThread
 	 * @deprecated TZ I guess this can be removed?
 	 */
+//	 * @see #dAllocateODEDataFlags
+//	 * @see #dCleanupODEAllDataForThread
 	//ODE_API 
 	//	int dAllocateODEDataForThread(unsigned int uiAllocateFlags) {
 	public static int dAllocateODEDataForThread(int uiAllocateFlags) {
@@ -219,7 +221,6 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * {@code dCleanupODEAllDataForThread} after {@code dCloseODE}.
 	 *
 	 * @see #dInitODE2(int)
-	 * @see #dCleanupODEAllDataForThread
 	 */
 	//ODE_API 
 	public static void dCloseODE() {

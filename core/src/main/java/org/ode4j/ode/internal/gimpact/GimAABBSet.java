@@ -730,9 +730,9 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * Finds intersections between a box and a set. Return the colliding boxes of the set
 	 * @pre aabbset must be allocated and initialized.
 	 * @param test_aabb Box for collision query
-	 * @param aabbset Set of boxes .Global bound is required.
 	 * @param collided Array of GUINT elements, indices of boxes. Must be initialized before (Reserve size ~ 100)
 	 */
+	//* @param aabbset Set of boxes .Global bound is required.
 	//void gim_aabbset_box_collision(aabb3f *test_aabb, GIM_AABB_SET * aabbset, GDYNAMIC_ARRAY * collided)
 	public void gim_aabbset_box_collision(aabb3f test_aabb, GimDynArrayInt collided)
 	{

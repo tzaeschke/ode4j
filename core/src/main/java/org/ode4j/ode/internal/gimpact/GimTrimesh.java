@@ -218,10 +218,10 @@ public class GimTrimesh implements GimConstants {
 	 * <li> m_feature2 Is a triangle index of trimesh2.
 	 * </ul>
 	 * 
-	 * @param trimesh1 Collider
 	 * @param trimesh2 Collidee
 	 * @param contacts A GIM_CONTACT array. Must be initialized
 	 */
+	//* @param trimesh1 Collider
 	//void gim_trimesh_trimesh_collision(GimTrimesh * trimesh1, GimTrimesh * trimesh2, GDYNAMIC_ARRAY * contacts);
 	public void gim_trimesh_trimesh_collision(GimTrimesh trimesh2, GimDynArray<GimContact> contacts) {
 		GimTrimeshTrimeshCol.gim_trimesh_trimesh_collision(this, trimesh2, contacts);

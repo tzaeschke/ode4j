@@ -160,7 +160,7 @@ public class DrawStuff {
 	 * Function pointers should be provided for the callbacks.
 	 * If you filter out arguments beforehand, simply set them to "".
 	 * To extend the help, overload dsPrintHelp().
-	 * @param argv supports flags like '-notex' '-noshadow' '-pause'
+	 * @param args supports flags like '-notex' '-noshadow' '-pause'
 	 * @param fn Callback functions.
 	 */
 	//DS_API 
@@ -176,7 +176,7 @@ public class DrawStuff {
 	/**
 	 * Exit with error message.
 	 * This function displays an error message then exit.
-	 * @param msg format strin, like printf, without the newline character.
+	 * @param msgs format strin, like printf, without the newline character.
 	 */
 	//DS_API 
 	public static void dsError (final String ... msgs) { //sconst char *msg, ...);
@@ -190,7 +190,7 @@ public class DrawStuff {
 	/**
 	 * Exit with error message and core dump.
 	 * this functions tries to dump core or start the debugger.
-	 * @param msg format strin, like printf, without the newline character.
+	 * @param msgs format strin, like printf, without the newline character.
 	 */
 	//DS_API 
 	public static void dsDebug (final String ... msgs) { // (const char *msg, ...);
