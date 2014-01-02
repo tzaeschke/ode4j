@@ -583,6 +583,7 @@ public abstract class DxGeom extends DBase implements DGeom {
         return iRequiresSize == 0;
 	} 
 
+	@SuppressWarnings("deprecation")
 	boolean controlGeometry(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
 			DataValue dataValue, RefInt dataSize) {
 	    throw new IllegalArgumentException("Control class/code is not supported for current geom");
@@ -995,6 +996,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 
 
+	@SuppressWarnings("deprecation")
 	boolean dGeomLowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
 			DataValue dataValue, RefInt dataSize) {
 	    dAASSERT (dataSize);
@@ -1488,6 +1490,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 	//TODO put into a different class?
 	/*extern */
+	@SuppressWarnings("deprecation")
 	public static void dInitColliders()
 	{
 		dIASSERT(!colliders_initialized);
@@ -1930,7 +1933,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 		dGeomCopyRotation(R);
 	}
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public boolean lowLevelControl(CONTROL_CLASS controlClass,
             CONTROL_CODE controlCode, DataValue dataValue, RefInt dataSize) {
         return dGeomLowLevelControl(controlClass, controlCode, dataValue, dataSize);

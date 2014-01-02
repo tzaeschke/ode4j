@@ -67,6 +67,7 @@ import org.ode4j.ode.internal.DxWorld;
  * <li> Collision methods </li>   
  * <li> Other helper methods </li>   
  */
+@SuppressWarnings("deprecation")
 public abstract class OdeHelper {
 
 	private static final OdeFactoryImpl ODE = new OdeFactoryImpl(); 

@@ -54,6 +54,7 @@ import org.ode4j.ode.DGeom.DNearCallback;
 /**
  * This demo shows how to use dContactMotionN in a lifting platform.
  */
+@SuppressWarnings("deprecation")
 public class DemoMotion extends dsFunctions {
 
 	// some constants

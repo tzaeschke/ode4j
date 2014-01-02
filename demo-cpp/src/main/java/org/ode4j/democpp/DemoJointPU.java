@@ -134,6 +134,7 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
  * The blue object represent the axis2 of the universal part.
  * The gray object represent the anchor2 of the PU joint.
  */
+@SuppressWarnings("deprecation")
 class DemoJointPU extends dsFunctions {
 
 

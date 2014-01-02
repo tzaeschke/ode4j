@@ -56,6 +56,7 @@ import static org.ode4j.ode.OdeMath.*;
 
 
 // TriMesh test by Erwin de Vries
+@SuppressWarnings("deprecation")
 class DemoTrimesh extends dsFunctions {
 
 	// some constants

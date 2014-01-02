@@ -58,6 +58,7 @@ import static org.ode4j.demo.BunnyGeom.*;
 /**
  *
  */
+@SuppressWarnings("deprecation")
 public class DemoMovingTrimesh extends dsFunctions {
 
 	// some constants

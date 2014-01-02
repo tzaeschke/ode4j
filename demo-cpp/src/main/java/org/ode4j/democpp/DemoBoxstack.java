@@ -148,6 +148,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
+@SuppressWarnings("deprecation")
 class DemoBoxstack extends dsFunctions {
 
 	//<---- Convex Object

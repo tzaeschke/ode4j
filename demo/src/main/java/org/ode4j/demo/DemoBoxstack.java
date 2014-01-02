@@ -55,6 +55,7 @@ import static org.ode4j.drawstuff.DrawStuff.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.demo.IcosahedronGeom.*;
 
+@SuppressWarnings("deprecation")
 class DemoBoxstack extends dsFunctions {
 
 	//<---- Convex Object

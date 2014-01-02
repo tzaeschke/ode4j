@@ -347,6 +347,7 @@ public class DxWorld extends DBase implements DWorld {
 	    return result;
 	}
 
+	@SuppressWarnings("deprecation")
 	boolean dWorldSetStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs)
 	{
 	    dUASSERT (memfuncs==null || memfuncs.struct_size >= DxUtil.sizeof(memfuncs), "Bad functions info");
@@ -1240,7 +1241,8 @@ public class DxWorld extends DBase implements DWorld {
     }
 
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public boolean setStepMemoryManager(DWorldStepMemoryFunctionsInfo memfuncs) {
         return dWorldSetStepMemoryManager(memfuncs);
     }

@@ -47,6 +47,7 @@ import org.ode4j.ode.DJoint.PARAM_N;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.math.DVector3;
 
+@SuppressWarnings("deprecation")
 public abstract class ApiCppJoint extends ApiCppOther {
 
 	private static final int P_OFS_1 = 0x000;

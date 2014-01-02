@@ -67,6 +67,7 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
  * detection system can be used as long as it can supply the right kinds of
  * contact information.
  */
+@SuppressWarnings("deprecation")
 public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 	/* ************************************************************************ */

@@ -67,6 +67,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
 
 
+@SuppressWarnings("deprecation")
 class DemoSpaceStress extends dsFunctions {
 	// some constants
 

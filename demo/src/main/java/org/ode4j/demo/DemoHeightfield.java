@@ -57,6 +57,7 @@ import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.demo.BunnyGeom.*;
 
 
+@SuppressWarnings("deprecation")
 class DemoHeightfield extends dsFunctions {
 
 	private static final float DEGTORAD = 0.01745329251994329577f	; //!< PI / 180.0, convert degrees to radians

@@ -36,6 +36,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody.BodyMoveCallBack;
 
+@SuppressWarnings("deprecation")
 public abstract class ApiCppBody extends ApiCppJoint {
 
 	/**

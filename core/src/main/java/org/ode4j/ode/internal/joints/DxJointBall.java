@@ -123,6 +123,7 @@ public class DxJointBall extends DxJoint implements DBallJoint
 		case dParamERP:
 			erp = value;
 			break;
+		default:
 		}
 	}
 

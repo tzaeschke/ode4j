@@ -152,6 +152,7 @@ import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.cpp4j.FILE;
 
 
+@SuppressWarnings("deprecation")
 class DemoHeightfield extends dsFunctions {
 
 	private static final float DEGTORAD = 0.01745329251994329577f	; //!< PI / 180.0, convert degrees to radians

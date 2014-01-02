@@ -158,6 +158,7 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 		return ++g_world_check_tag_generator;
 	}
 
+	@SuppressWarnings("unused")
 	static void checkWorld (DxWorld w)
 	{
 		DxBody b;

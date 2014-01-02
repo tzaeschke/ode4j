@@ -120,6 +120,7 @@ import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
 
+@SuppressWarnings("deprecation")
 class DemoSpaceStress extends dsFunctions {
 	// some constants
 

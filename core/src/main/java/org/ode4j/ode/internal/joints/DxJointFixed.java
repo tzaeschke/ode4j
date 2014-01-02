@@ -176,6 +176,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		case dParamERP:
 			erp = value;
 			break;
+		default:
 		}
 	}
 

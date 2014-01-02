@@ -34,6 +34,7 @@ import org.ode4j.ode.OdeHelper;
  * reason to use separate worlds is to simulate systems at different rates.
  * Most applications will only need one world.
  */
+@SuppressWarnings("deprecation")
 public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**

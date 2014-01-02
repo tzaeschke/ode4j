@@ -28,6 +28,7 @@ import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.Rotation;
 
 
+@SuppressWarnings("deprecation")
 public abstract class ApiCppMathRotation extends ApiCppMathMisc {
 
 	//ODE_API 
