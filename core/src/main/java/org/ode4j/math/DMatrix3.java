@@ -589,7 +589,8 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Compares two matrices for equality.
 	 * This is marginally faster than <tt>equals(Object o)</tt>.
 	 */
-	public final boolean isEqual(DMatrix3C m) {
+	@Override
+	public final boolean isEq(DMatrix3C m) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				if (get(i, j) != m.get(i, j)) return false;
@@ -599,23 +600,39 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 
 	/**
+	 * Please use isEq() instead.
+	 */
+	@Deprecated
+	public final boolean isEqual(DMatrix3C m) {
+		return isEq(m);
+	}
+
+	/**
+	 * Do not use. This can be slow, use isEquals() instead.
 	 * Compares two objects for equality.
 	 * This is marginally slower than <tt>isEquals(DMatrix3C m)</tt>.
 	 */
 	@Override
+	@Deprecated
 	public final boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
 		if (! (o instanceof DMatrix3C)) {
 			return false;
 		}
-		DMatrix3C m = (DMatrix3C) o;
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				if (get(i, j) != m.get(i, j)) return false;
-			}
-		}
-		return true;
+		return isEq((DMatrix3C) o);
 	}
 
+	@Override
+	public int hashCode() {
+		int h = 0;
+		for (double d: v) {
+			h |= Double.doubleToRawLongBits(d);
+			h <<= 2;
+		}
+		return h;
+	}
 
 	public final void eqIdentity() {
 		eqZero();
@@ -678,6 +695,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Create a new transposed version of this matrix.
 	 * @return The transposed copy of this matrix.
 	 */
+	@Override
 	public final DMatrix3 reTranspose() {
 		return new DMatrix3(
 				get00(), get10(), get20(),

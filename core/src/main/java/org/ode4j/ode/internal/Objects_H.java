@@ -80,7 +80,7 @@ public class Objects_H {
 		public double w;			// the SOR over-relaxation parameter
 		@Override
 		protected dxQuickStepParameters clone() {
-			return clone();
+			return cloneThis();
 		}
 	}
 

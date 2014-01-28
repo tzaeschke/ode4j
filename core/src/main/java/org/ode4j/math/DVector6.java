@@ -114,10 +114,32 @@ public class DVector6 {
 		return v[i];
 	}
 
-	public boolean equals(DVector6 v2) {
+	public boolean isEq(DVector6 v2) {
 		return Arrays.equals(v, v2.v);
 	}
 	
+	/**
+	 * Do not use. This can be slow, use isEq() instead.
+	 */
+	@Override
+	@Deprecated
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof DVector6)) return false;
+		return isEq((DVector6)obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int h = 0;
+		for (double d: v) {
+			h |= Double.doubleToRawLongBits(d);
+			h <<= 4;
+		}
+		return h;
+	}
+
 	public void set0(double d) {
 		v[0] = d;
 	}

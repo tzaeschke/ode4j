@@ -112,13 +112,30 @@ public class DQuaternion implements DQuaternionC {
 		v[3] = d;
 	}
 
-	public boolean equals(DQuaternion q) {
+	public boolean isEq(DQuaternion q) {
 		return get0()==q.get0() && get1()==q.get1() && get2()==q.get2() && get3()==q.get3();
 	}
 
+	/**
+	 * Do not use. This can be slow, use isEq() instead.
+	 */
 	@Override
-	public boolean equals(Object q) {
-		return false;
+	@Deprecated
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof DQuaternion)) return false;
+		return isEq((DQuaternion)obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int h = 0;
+		for (double d: v) {
+			h |= Double.doubleToRawLongBits(d);
+			h <<= 6;
+		}
+		return h;
 	}
 
 	public void add(double d0, double d1, double d2, double d3) {

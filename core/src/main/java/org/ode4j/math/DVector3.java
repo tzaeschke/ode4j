@@ -423,7 +423,8 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param a
 	 * @return quality
 	 */
-	public final boolean isEq(DVector3 a) {
+	@Override
+	public final boolean isEq(DVector3C a) {
 		return get0()==a.get0() && get1()==a.get1() && get2()==a.get2();
 	}
 
@@ -636,10 +637,13 @@ public class DVector3 implements DVector3I, DVector3C {
 	
 	
 	/**
+	 * Do not use. This can be slow, use isEq() instead.
+	 * 
 	 * Any implementation of DVector3I will return true if get0(), get1()
 	 * and get2() return the same values.
 	 */
 	@Override
+	@Deprecated
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;

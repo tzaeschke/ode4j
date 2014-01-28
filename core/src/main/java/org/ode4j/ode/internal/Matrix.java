@@ -272,7 +272,7 @@ public class Matrix extends FastDot {
 	public static void dMultiply1(DMatrix3 A, final DMatrix3C B,
 			final DMatrix3C C) {
 		// dMultiply1(A.v, ((DMatrix3)B).v, ((DMatrix3)C).v, 3, 3, 3);
-        dMultiply0(A, B.clone().eqTranspose(), C);
+        dMultiply0(A, B.reTranspose(), C);
 //		int i, j, k;
 //		double sum;
 //		// dAASSERT (A , B, C);
@@ -333,7 +333,7 @@ public class Matrix extends FastDot {
 	public static void dMultiply2(DMatrix3 A, final DMatrix3C B,
 			final DMatrix3C C) {
 		//dMultiply2(A.v, ((DMatrix3) B).v, ((DMatrix3) C).v, 3, 3, 3);
-		dMultiply0(A, B, C.clone().eqTranspose());
+		dMultiply0(A, B, C.reTranspose());
 	}
 
 	/**

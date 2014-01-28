@@ -51,11 +51,11 @@ public class TestDQuaternion extends OdeTestCase {
 		DQuaternion x2 = new DQuaternion(1, 0, 3, 4);
 		DQuaternion x3 = new DQuaternion(1, 2, 0, 4);
 		DQuaternion x4 = new DQuaternion(1, 2, 3, 0);
-		assertTrue(x.equals(xx));
-		assertFalse(x.equals(x1));
-		assertFalse(x.equals(x2));
-		assertFalse(x.equals(x3));
-		assertFalse(x.equals(x4));
+		assertTrue(x.isEq(xx));
+		assertFalse(x.isEq(x1));
+		assertFalse(x.isEq(x2));
+		assertFalse(x.isEq(x3));
+		assertFalse(x.isEq(x4));
 	}		
 		
 	@Test
@@ -106,8 +106,8 @@ public class TestDQuaternion extends OdeTestCase {
 		DQuaternion x = new DQuaternion(1, 2, 3, 4);
 		DQuaternion y = new DQuaternion();
 		DQuaternion z = new DQuaternion(x);
-		assertTrue(x.equals(z));
-		assertFalse(x.equals(y));
+		assertTrue(x.isEq(z));
+		assertFalse(x.isEq(y));
 		assertEquals(y.get0(), 0.);
 		assertEquals(y.get1(), 0.);
 		assertEquals(y.get2(), 0.);
@@ -124,12 +124,12 @@ public class TestDQuaternion extends OdeTestCase {
 		DQuaternion x = new DQuaternion(1, 2, 3, 4);
 		DQuaternion y = new DQuaternion(4, 8, -1, -7);
 		DQuaternion t = new DQuaternion();
-		assertFalse(x.equals(y));
+		assertFalse(x.isEq(y));
 		
 		t.add(x);
-		assertTrue(t.equals(x));
+		assertTrue(t.isEq(x));
 		t.add(3, 6, -4, -11);
-		assertTrue(t.equals(y));
+		assertTrue(t.isEq(y));
 
 //		t.add(0, -3);
 //		t.add(1, -6);
@@ -173,7 +173,7 @@ public class TestDQuaternion extends OdeTestCase {
 		DQuaternion x = new DQuaternion(1, 2, 3, 4);
 		DQuaternion y = new DQuaternion(4, 8, -1, -7);
 		DQuaternion t = new DQuaternion();
-		assertFalse(x.equals(y));
+		assertFalse(x.isEq(y));
 		
 		t.add(x);
 		t.add(x);
@@ -195,7 +195,7 @@ public class TestDQuaternion extends OdeTestCase {
 		
 		t.set(y);
 		t.scale(0.5);
-		assertTrue(t.equals( new DQuaternion(2, 5, -3, -6.5) ));
+		assertTrue(t.isEq( new DQuaternion(2, 5, -3, -6.5) ));
 	}		
 	
 //	@Test

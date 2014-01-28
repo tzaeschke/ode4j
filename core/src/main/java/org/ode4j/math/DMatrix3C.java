@@ -64,4 +64,6 @@ public interface DMatrix3C {
 	public double dotRowCol(int row, DMatrix3C m2, int col2);
 	public double dotRowRow(int row, DMatrix3C m2, int row2);
 	public DVector3 columnAsNewVector(int column);
+	public boolean isEq(DMatrix3C m);
+	public DMatrix3 reTranspose();
 }
