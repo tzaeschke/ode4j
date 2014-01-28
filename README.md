@@ -26,7 +26,7 @@ Copyright of GIMPACT (c) 2006 Francisco Leon. C.C. 80087371.
 email: projectileman(AT)yahoo.com
 
 LIBCCD:
-Copyright (c)2010 Daniel Fiser <danfis(AT)danfis.cz>
+Copyright (c) 2010 Daniel Fiser <danfis(AT)danfis.cz>
 
 
 Contact
