@@ -40,9 +40,11 @@ public final class Performator {
      */
     public static final void begin(String key) {
         Entry e = data.get(key);
+        //funny construct for theoretical thread safety
         if (e == null) {
             e = new Entry();
-            data.put(key, e);
+        	data.putIfAbsent(key, e);
+        	e = data.get(key);
         }
         e.begin();
     }

@@ -41,7 +41,7 @@ public class Cstdio extends Cstdlib {
 		//FileWriter 	fw = new FileWriter(f);
 		PrintWriter pw = new PrintWriter(out);
 		pw.printf(fmt, args);
-		if (out.equals(stderr)) pw.flush();
+		if (out.equals(stderr.out())) pw.flush();
 	}
 	
 	public static void fprintf(FILE out, String fmt, Object ... args) {

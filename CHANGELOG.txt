@@ -1,6 +1,10 @@
 
 0.2.9
 =====
+- Fixed possible infinite loop when calling dxQuickStepParameters.clone()
+- fixed problem in low level check in Cstdio.fprintf()
+- Deprecated equals() methods for DVector3, DVector6 and DQuaternion
+- fixed NaN Check in Common.java
 - Migration to Java 7!!!!
 - Set version to 0.2.9
 - Cleaned up javadoc (@remarks/note/warning to <p>REMARKS:/...) and removed @brief/@ingroup/@defgroup

@@ -61,12 +61,12 @@ public class TestDMatrix3 extends OdeTestCase {
 		DMatrix3 x = newM3();
 		DMatrix3 xx = newM3();
 		DMatrix3 x1 = new DMatrix3();
-		assertTrue(x.isEqual(xx));
+		assertTrue(x.isEq(xx));
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				x1.set(xx);
 				x1.set(i, j, 0);
-				assertFalse(x.isEqual(x1));
+				assertFalse(x.isEq(x1));
 			}
 		}
 	}		
@@ -127,7 +127,7 @@ public class TestDMatrix3 extends OdeTestCase {
 //		assertEquals(x, new DMatrix3(2, 2, 2, 2, 2, 2, 2, 2, 2));
 
 		x = new DMatrix3();
-		assertFalse(x.isEqual(x2));
+		assertFalse(x.isEq(x2));
 	}		
 		
 	@Test
@@ -135,8 +135,8 @@ public class TestDMatrix3 extends OdeTestCase {
 		DMatrix3 x = newM3();
 		DMatrix3 y = new DMatrix3();
 		DMatrix3 z = new DMatrix3(x);
-		assertTrue(x.isEqual(z));
-		assertFalse(x.isEqual(y));
+		assertTrue(x.isEq(z));
+		assertFalse(x.isEq(y));
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -150,10 +150,10 @@ public class TestDMatrix3 extends OdeTestCase {
 	public void testAdd(){
 		DMatrix3 x = newM3();
 		DMatrix3 t = new DMatrix3();
-		assertFalse(x.isEqual(t));
+		assertFalse(x.isEq(t));
 		
 		t.add(x);
-		assertTrue(t.isEqual(x));
+		assertTrue(t.isEq(x));
 		
 //		t = new dMatrix3();
 //		t.add(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -165,7 +165,7 @@ public class TestDMatrix3 extends OdeTestCase {
 				t.add(i, j, 1 + j + 3*i);
 			}
 		}
-		assertTrue(t.isEqual(x));
+		assertTrue(t.isEq(x));
 
 //		t.add0(3);
 //		t.add1(6);
@@ -209,7 +209,7 @@ public class TestDMatrix3 extends OdeTestCase {
 //		assertTrue(t.equals(y));
 		t.set(x);
 		t.scale(-2);
-		assertTrue(t.isEqual( new DMatrix3(-2, -4, -6, -8, -10, -12, -14, -16, -18) ));
+		assertTrue(t.isEq( new DMatrix3(-2, -4, -6, -8, -10, -12, -14, -16, -18) ));
 
 //		t.sub(0, 3);
 //		t.sub(1, 6);

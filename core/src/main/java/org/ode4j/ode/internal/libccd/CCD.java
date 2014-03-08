@@ -193,7 +193,7 @@ public class CCD {
 		
 		ccdVec3Set(pos, CCD_ZERO, CCD_ZERO, CCD_ZERO);
 		scale = CCD_ZERO;
-		if (len % 2 == 1)
+		if ((len & 1) == 1)
 			len++;
 
 		for (i = 0; i < len / 2; i++){
