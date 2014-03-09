@@ -187,6 +187,46 @@ public abstract class OdeHelper {
 		return ODE.dJointCreateContact(world, null, c);
 	}
 
+	/**
+	 * Create a new joint of the double ball type.
+	 * 
+	 * @param dJointGroupID set to 0 to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
+	public static DDoubleBallJoint dJointCreateDBall (DWorld world, DJointGroup group) {
+		return ODE.dJointCreateDDBall(world, group);
+	}
+
+	/**
+	 * Create a new joint of the double ball type.
+	 * 
+	 * @param dJointGroupID set to 0 to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
+	public static DDoubleBallJoint dJointCreateDBall (DWorld world) {
+		return ODE.dJointCreateDDBall(world, null);
+	}
+
+	/**
+	 * Create a new joint of the double hinge type.
+	 * 
+	 * @param dJointGroupID set to 0 to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
+	public static DDoubleHingeJoint dJointCreateDHinge (DWorld world, DJointGroup group) {
+		return ODE.dJointCreateDDHinge(world, group);
+	}
+
+	/**
+	 * Create a new joint of the double hinge type.
+	 * 
+	 * @param dJointGroupID set to 0 to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
+	public static DDoubleHingeJoint dJointCreateDHinge (DWorld world) {
+		return ODE.dJointCreateDDHinge(world, null);
+	}
+
 	// FixedJoint
 	/**
 	 * Create a new joint of the fixed type.
@@ -354,6 +394,26 @@ public abstract class OdeHelper {
 	 */
 	public static DSliderJoint createSliderJoint (DWorld world) {
 		return ODE.dJointCreateSlider(world, null);
+	}
+
+	/**
+	 * Create a new joint of the Transmission type.
+	 * 
+	 * @param dJointGroupID set to 0 to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
+	public static DTransmissionJoint createTransmissionJoint (DWorld w, DJointGroup group) {
+		return ODE.dJointCreateTransmission(w, group);
+	}
+
+	/**
+	 * Create a new joint of the Transmission type.
+	 * 
+	 * @param dJointGroupID set to 0 to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
+	public static DTransmissionJoint dJointCreateTransmissionJoint (DWorld w) {
+		return ODE.dJointCreateTransmission(w, null);
 	}
 
 	// UniversalJoint

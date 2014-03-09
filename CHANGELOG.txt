@@ -1,5 +1,8 @@
 0.3.0
 =====
+TODO check if the new OdeMath.dCalcMatrix3Det and dInvertMatrix3 are really used.
+TODO add include/ode/threading*.h
+
 - Start migration to ODE 0.13.0
 
 

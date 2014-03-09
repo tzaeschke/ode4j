@@ -26,43 +26,53 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 
-/**
- *  contact info used by contact joint.
- */
-public class DContact {
+public interface DDoubleHingeJoint extends DJoint {
 
-	public final DSurfaceParameters surface = new DSurfaceParameters();
-	public final DContactGeom geom = new DContactGeom();
-	public final DVector3 fdir1 = new DVector3();
+	/**
+	 * Set axis for double hinge joint.
+	 */
+	void setAxis(double x, double y, double z);
 
-	DContact() {
-		// Nothing
-	}
-	
-	public class DSurfaceParameters {
-		/* must always be defined */
-		public int mode;
-		public double mu;
+	/**
+	 * Get axis for double hinge joint.
+	 */
+	void getAxis(DVector3 result);
 
-		/* only defined if the corresponding flag is set in mode */
-		public double mu2;
-		/** Rolling friction */
-		public double rho;                    
-		public double rho2;
-		/** Spinning friction */
-		public double rhoN;                   
-		/** Coefficient of restitution */
-		public double bounce;                 
-		/** Bouncing threshold */
-		public double bounce_vel;             
-		public double soft_erp;
-		public double soft_cfm;
-		public double motion1,motion2,motionN;
-		public double slip1;
-		public double slip2;
-	}
+	/**
+	 * Set anchor1 for double hinge joint.
+	 */
+	void setAnchor1(double x, double y, double z);
 
-	public DContactGeom getContactGeom() {
-		return geom;
-	}
+	/**
+	 * Set anchor2 for double hinge joint.
+	 */
+	void setAnchor2(double x, double y, double z);
+
+	/**
+	 * Get anchor1 from double hinge joint.
+	 */
+	void getAnchor1(DVector3 result);
+
+	/**
+	 * Get anchor2 from double hinge joint.
+	 */
+	void getAnchor2(DVector3 result);
+
+	/**
+	 * Get the set distance from double hinge joint.
+	 */
+	double getDistance();
+
+	/**
+	 * Set double hinge joint parameter.
+	 */
+	@Override
+	void setParam (PARAM_N parameter, double value);
+
+	/**
+	 * Get double hinge joint parameter.
+	 */
+	@Override
+	double getParam (PARAM_N parameter);
+
 }

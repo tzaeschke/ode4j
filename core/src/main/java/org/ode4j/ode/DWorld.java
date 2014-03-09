@@ -165,7 +165,44 @@ public interface DWorld {
 	 */
 	double getCFM() ;
 
+	@Deprecated
+	public static int dWORLDSTEP_THREADCOUNT_UNLIMITED = 0;
+
+	/**
+	 * Set maximum threads to be used for island stepping
+	 *
+	 * The actual number of threads that is going to be used will be the minimum
+	 * of this limit and number of threads in the threading pool. By default 
+	 * there is no limit ({@code WORLDSTEP_THREADCOUNT_UNLIMITED}).
+	 *
+	 * <p>WARNING: Running island stepping in multiple threads requires allocating 
+	 * individual stepping memory buffer for each of those threads. The size of buffers
+	 * allocated is the size needed to handle the largest island in the world.
+	 *
+	 * <p>NOTE: Setting a limit for island stepping does not affect threading at lower
+	 * levels in stepper functions. The sub-calls scheduled from them can be executed
+	 * in as many threads as there are available in the pool.
+	 *
+	 * @param w The world affected
+	 * @param count Thread count limit value for island stepping
+	 * @see #getStepIslandsProcessingMaxThreadCount()
+	 */
+	@Deprecated
+	void setStepIslandsProcessingMaxThreadCount(int count);
 	
+	/**
+	 * Get maximum threads that are allowed to be used for island stepping.
+	 *
+	 * Please read commentaries to {@code setStepIslandsProcessingMaxThreadCount} for 
+	 * important information regarding the value returned.
+	 *
+	 * @param w The world queried
+	 * @returns Current thread count limit value for island stepping
+	 * @see #setStepIslandsProcessingMaxThreadCount(int)
+	 */
+	@Deprecated
+	int getStepIslandsProcessingMaxThreadCount();
+
 	/**
 	 * Set the world to use shared working memory along with another world.
 	 *
@@ -190,6 +227,11 @@ public interface DWorld {
 	 * With sharing working memory worlds also automatically share memory reservation 
 	 * policy and memory manager. Thus, these parameters need to be customized for
 	 * initial world to be used as sharing source only.
+	 *
+	 * If worlds share working memory they must also use compatible threading implementations
+	 * (i.e. it is illegal for one world to perform stepping with self-threaded implementation
+	 * when the other world is assigned a multi-threaded implementation). 
+	 * For more information read section about threading approaches in ODE.
 	 *
 	 * Failure result status means a memory allocation failure.
 	 *

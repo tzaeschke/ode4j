@@ -140,6 +140,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 		dJointTypePlane2D (null),
 		dJointTypePR (null),
 		dJointTypePU (null),
+		dJointTypeDBall(null),
+		dJointTypeDHinge(null),
+		dJointTypeTransmission(null),
 		dJointTypePiston (null);
 		final Class<?> _cls;
 		private dJointType(Class<?> cls) {

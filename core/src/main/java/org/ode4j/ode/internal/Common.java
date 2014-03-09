@@ -43,6 +43,7 @@ public class Common extends ErrorHandler {
 	 */
 
 	public static final double M_PI = 3.1415926535897932384626433832795029;
+	public static final double M_PI_2 = 1.5707963267948966192313216916398;
 	public static final double M_SQRT1_2 = 0.7071067811865475244008443621048490;
 
 	/** debugging:
@@ -287,9 +288,12 @@ public class Common extends ErrorHandler {
 	//#define dAtan2(y,x) atan2((y),(x)) //TODO replace
 	public static final double dAtan2(double y, double x) {
 		return Math.atan2(y, x);
-		//throw new UnsupportedOperationException();
-		//	return Math.atan2(x);
 	}
+	//#define dAcos(x) acos(x)
+	public static final double dAcos(double x) {
+		return Math.acos(x);
+	}
+	
 	//#define dFMod(a,b) (fmod((a),(b))) //TODO replace
 	public static final double dFMod(double x) {
 		throw new UnsupportedOperationException();
@@ -298,7 +302,7 @@ public class Common extends ErrorHandler {
 	//#define dFloor(x) floor(x) //TODO replace
 	public static final double dFloor(double x) { return Math.floor(x); }
 	
-	//#define dCeil(x) ceilf(x)          /* floor */
+	//#define dCeil(x) ceilf(x)          /* ceil */
 	public static final double dCeil(double x) { return Math.ceil(x); }
 	
 	//#define dCopySign(a,b) ((dReal)copysignf(a,b)) /* copy value sign */

@@ -31,21 +31,35 @@ package org.ode4j.ode;
  */
 public class OdeConstants {
 	//TODO implement surface-mode class with boolean parameters? (TZ)
-	public static final int 	  dContactMu2		= 0x001;
+	/** Use axis dependent friction */
+	public static final int 	  dContactMu2		= 0x001;	
+	/** Same as above */
+	public static final int		  dContactAxisDep   = 0x001;      
+	/** Use FDir for the first friction value */
 	public static final int 	  dContactFDir1		= 0x002;
+	/** Restore collision energy anti-parallel to the normal */
 	public static final int 	  dContactBounce	= 0x004;
+	/** Don't use global erp for penetration reduction */
 	public static final int 	  dContactSoftERP	= 0x008;
+	/** Don't use global cfm for penetration constraint */
 	public static final int 	  dContactSoftCFM	= 0x010;
+	/** Use a non-zero target velocity for the constraint */
 	public static final int 	  dContactMotion1	= 0x020;
 	public static final int 	  dContactMotion2	= 0x040;
 	public static final int 	  dContactMotionN	= 0x080;
+	/** Force-dependent slip. */
 	public static final int 	  dContactSlip1		= 0x100;
 	public static final int 	  dContactSlip2		= 0x200;
+	/** Rolling/Angular friction */
+	public static final int 	  dContactRolling   = 0x400;
 
 	public static final int 	  dContactApprox0	= 0x0000;
 	public static final int 	  dContactApprox1_1	= 0x1000;
 	public static final int 	  dContactApprox1_2	= 0x2000;
-	public static final int 	  dContactApprox1	= 0x3000;
+	/**< For rolling friction */
+	public static final int		  dContactApprox1_N = 0x4000;
+	public static final int		  dContactApprox1   = 0x7000;
+	
 	
 	//TODO ?! (TZ)
 	public static final double dInfinity = Double.POSITIVE_INFINITY;

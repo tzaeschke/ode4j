@@ -225,16 +225,18 @@ public interface DJoint {
 		dParamLoStop(0), 
 		dParamHiStop(1), 
 		dParamVel(2), 
-		dParamFMax (3), 
-		dParamFudgeFactor (4), 
-		dParamBounce (5), 
-		dParamCFM (6), 
-		dParamStopERP (7), 
-		dParamStopCFM (8), 
+		dParamLoVel(3),
+		dParamHiVel(4),
+		dParamFMax (5), 
+		dParamFudgeFactor (6), 
+		dParamBounce (7), 
+		dParamCFM (8), 
+		dParamStopERP (9), 
+		dParamStopCFM (10), 
 		/* parameters for suspension */ 
-		dParamSuspensionERP (9), 
-		dParamSuspensionCFM(10),
-		dParamERP(11);
+		dParamSuspensionERP (11), 
+		dParamSuspensionCFM(12),
+		dParamERP(13);
 		//		public static int START = 0x000; 
 		private final int _x;
 		private PARAM(int x) {
@@ -283,48 +285,54 @@ public interface DJoint {
 		dParamLoStop1(0, P_OFS_1), 
 		dParamHiStop1(1, P_OFS_1), 
 		dParamVel1(2, P_OFS_1), 
-		dParamFMax1 (3, P_OFS_1), 
-		dParamFudgeFactor1 (4, P_OFS_1), 
-		dParamBounce1 (5, P_OFS_1), 
-		dParamCFM1 (6, P_OFS_1), 
-		dParamStopERP1 (7, P_OFS_1), 
-		dParamStopCFM1 (8, P_OFS_1), 
+		dParamLoVel(3, P_OFS_1),
+		dParamHiVel(4, P_OFS_1),
+		dParamFMax1 (5, P_OFS_1), 
+		dParamFudgeFactor1 (6, P_OFS_1), 
+		dParamBounce1 (7, P_OFS_1), 
+		dParamCFM1 (8, P_OFS_1), 
+		dParamStopERP1 (9, P_OFS_1), 
+		dParamStopCFM1 (10, P_OFS_1), 
 		/* parameters for suspension */ 
-		dParamSuspensionERP1 (9, P_OFS_1), 
-		dParamSuspensionCFM1(10, P_OFS_1),
-		dParamERP1(11, P_OFS_1),
+		dParamSuspensionERP1 (11, P_OFS_1), 
+		dParamSuspensionCFM1(12, P_OFS_1),
+		dParamERP1(13, P_OFS_1),
 
 		//		dParamGroup2(0, P_OFS_2),
 		//	  /* parameters for limits and motors */ \
 		dParamLoStop2(0, P_OFS_2), 
 		dParamHiStop2(1, P_OFS_2), 
 		dParamVel2(2, P_OFS_2), 
-		dParamFMax2 (3, P_OFS_2), 
-		dParamFudgeFactor2 (4, P_OFS_2), 
-		dParamBounce2 (5, P_OFS_2), 
-		dParamCFM2 (6, P_OFS_2), 
-		dParamStopERP2 (7, P_OFS_2), 
-		dParamStopCFM2 (8, P_OFS_2), 
+		dParamLoVel2(3, P_OFS_2),
+		dParamHiVel2(4, P_OFS_2),
+		dParamFMax2 (5, P_OFS_2), 
+		dParamFudgeFactor2 (6, P_OFS_2), 
+		dParamBounce2 (7, P_OFS_2), 
+		dParamCFM2 (8, P_OFS_2), 
+		dParamStopERP2 (9, P_OFS_2), 
+		dParamStopCFM2 (10, P_OFS_2), 
 		/* parameters for suspension */ 
-		dParamSuspensionERP2 (9, P_OFS_2), 
-		dParamSuspensionCFM2(10, P_OFS_2),
-		dParamERP2(11, P_OFS_2),
+		dParamSuspensionERP2 (11, P_OFS_2), 
+		dParamSuspensionCFM2(12, P_OFS_2),
+		dParamERP2(13, P_OFS_2),
 
 		//		dParamGroup3(0, P_OFS_3),
 		//	  /* parameters for limits and motors */ \
 		dParamLoStop3(0, P_OFS_3), 
 		dParamHiStop3(1, P_OFS_3), 
 		dParamVel3(2, P_OFS_3), 
-		dParamFMax3 (3, P_OFS_3), 
-		dParamFudgeFactor3 (4, P_OFS_3), 
-		dParamBounce3 (5, P_OFS_3), 
-		dParamCFM3 (6, P_OFS_3), 
-		dParamStopERP3 (7, P_OFS_3), 
-		dParamStopCFM3 (8, P_OFS_3), 
+		dParamLoVel3(3, P_OFS_3),
+		dParamHiVel3(4, P_OFS_3),
+		dParamFMax3 (5, P_OFS_3), 
+		dParamFudgeFactor3 (6, P_OFS_3), 
+		dParamBounce3 (7, P_OFS_3), 
+		dParamCFM3 (8, P_OFS_3), 
+		dParamStopERP3 (9, P_OFS_3), 
+		dParamStopCFM3 (10, P_OFS_3), 
 		/* parameters for suspension */ 
-		dParamSuspensionERP3 (9, P_OFS_3), 
-		dParamSuspensionCFM3(10, P_OFS_3),
-		dParamERP3(11, P_OFS_3);
+		dParamSuspensionERP3 (11, P_OFS_3), 
+		dParamSuspensionCFM3(12, P_OFS_3),
+		dParamERP3(13, P_OFS_3);
 		//		public static int START = 0x000; 
 		private final int _x;
 		private final PARAM_GROUPS _group;
@@ -388,4 +396,14 @@ public interface DJoint {
 		}
 	}
 
+	/* transmission joint mode numbers */
+
+	public enum TRANSMISSION {
+	  dTransmissionParallelAxes, // = 0,
+	  dTransmissionIntersectingAxes, // = 1,
+	  dTransmissionChainDrive, // = 2
+	};
+
+
+	
 }
