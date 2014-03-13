@@ -30,8 +30,11 @@ import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DJoint.PARAM;
+import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.internal.joints.DxJoint.Info2;
+import org.ode4j.ode.internal.joints.DxJoint.Info2Descr;
+import org.ode4j.ode.internal.processmem.DxWorldProcessContext;
 
 /**
  * common limit and motor information for a single joint axis of movement
@@ -162,8 +165,8 @@ public class DxJointLimitMotor {
 	// public  int addLimot( dxJoint joint,
 			//         Info2 info, int row,
 			//         final dVector3 ax1, int rotational )
-	public  int addLimot( DxJoint joint,
-			Info2 info, int row,
+	public  int addLimot( DxJoint joint, double fps,
+			Info2Descr info, int row,
 			final DVector3C ax1, boolean rotational )
 	{
 		int srow = row * info.rowskip();
@@ -184,11 +187,12 @@ public class DxJointLimitMotor {
 //				J2.v[srow+1] = -ax1.v[1];
 //				J2.v[srow+2] = -ax1.v[2];
 //			}
+			DxBody b1 = joint.node[1].body;
 			if (rotational) {
 				info._J[info.J1ap+srow+0] = ax1.get0();
 				info._J[info.J1ap+srow+1] = ax1.get1();
 				info._J[info.J1ap+srow+2] = ax1.get2();
-				if ( joint.node[1].body != null )
+				if ( b1 != null )
 				{
 					info._J[info.J2ap+srow+0] = -ax1.get0();
 					info._J[info.J2ap+srow+1] = -ax1.get1();
@@ -198,7 +202,7 @@ public class DxJointLimitMotor {
 				info._J[info.J1lp+srow+0] = ax1.get0();
 				info._J[info.J1lp+srow+1] = ax1.get1();
 				info._J[info.J1lp+srow+2] = ax1.get2();
-				if ( joint.node[1].body != null )
+				if ( b1 != null )
 				{
 					info._J[info.J2lp+srow+0] = -ax1.get0();
 					info._J[info.J2lp+srow+1] = -ax1.get1();
@@ -221,13 +225,14 @@ public class DxJointLimitMotor {
 			// only need to do this if the constraint connects two bodies.
 
 			DVector3 ltd = new DVector3(0, 0, 0);//{0,0,0}); // Linear Torque Decoupling vector (a torque)
-			if ( (!rotational) && (joint.node[1].body != null))
+			if ( (!rotational) && (b1 != null))
 			{
+				DxBody b0 = joint.node[0].body;
 				DVector3 c = new DVector3();
 //				c.v[0] = 0.5 * ( joint.node[1].body._posr.pos.v[0] - joint.node[0].body._posr.pos.v[0] );
 //				c.v[1] = 0.5 * ( joint.node[1].body._posr.pos.v[1] - joint.node[0].body._posr.pos.v[1] );
 //				c.v[2] = 0.5 * ( joint.node[1].body._posr.pos.v[2] - joint.node[0].body._posr.pos.v[2] );
-				c.eqDiff(joint.node[1].body.posr().pos(), joint.node[0].body.posr().pos()).scale(0.5);
+				c.eqDiff(b1.posr().pos(), b0.posr().pos()).scale(0.5);
 				dCalcVectorCross3( ltd, c, ax1 );
 				info._J[info.J1ap+srow+0] = ltd.get0();
 				info._J[info.J1ap+srow+1] = ltd.get1();
@@ -267,33 +272,44 @@ public class DxJointLimitMotor {
 					// if we're powering away from the limit, apply the fudge factor
 					if (( limit == 1 && vel > 0 ) || ( limit == 2 && vel < 0 ) ) fm *= fudge_factor;
 
+	                
+					double fm_ax1_0 = fm*ax1.get0(), fm_ax1_1 = fm*ax1.get1(), fm_ax1_2 = fm*ax1.get2();
+	                
+	                DxBody b0 = joint.node[0].body;
+	                DxWorldProcessContext world_process_context = b0.world.UnsafeGetWorldProcessingContext(); 
+
+	                world_process_context.LockForAddLimotSerialization();
+
 					if ( rotational )
 					{
-						joint.node[0].body.dBodyAddTorque( -fm*ax1.get0(), -fm*ax1.get1(),
-								-fm*ax1.get2() );
-						if ( joint.node[1].body != null)
-							joint.node[1].body.dBodyAddTorque( fm*ax1.get0(), fm*ax1.get1(), fm*ax1.get2() );
+	                    b1 = joint.node[1].body;
+						if ( b1 != null) {
+							b1.dBodyAddTorque( fm*ax1.get0(), fm*ax1.get1(), fm*ax1.get2() );
+						}
+	                    b0.dBodyAddTorque( -fm_ax1_0, -fm_ax1_1, -fm_ax1_2 );
 					}
 					else
 					{
-						joint.node[0].body.dBodyAddForce( -fm*ax1.get0(), -fm*ax1.get1(), -fm*ax1.get2() );
-						if ( joint.node[1].body != null)
+	                    b1 = joint.node[1].body;
+						if ( b1 != null)
 						{
-							joint.node[1].body.dBodyAddForce( fm*ax1.get0(), fm*ax1.get1(), fm*ax1.get2() );
+							b1.dBodyAddForce( fm*ax1.get0(), fm*ax1.get1(), fm*ax1.get2() );
 
 							// linear limot torque decoupling step: refer to above discussion
-							joint.node[0].body.dBodyAddTorque( -fm*ltd.get0(), -fm*ltd.get1(),
+							b0.dBodyAddTorque( -fm*ltd.get0(), -fm*ltd.get1(),
 									-fm*ltd.get2() );
-							joint.node[1].body.dBodyAddTorque( -fm*ltd.get0(), -fm*ltd.get1(),
+							b1.dBodyAddTorque( -fm*ltd.get0(), -fm*ltd.get1(),
 									-fm*ltd.get2() );
 						}
+	                    b0.dBodyAddForce( -fm_ax1_0, -fm_ax1_1, -fm_ax1_2 );
 					}
+	                world_process_context.UnlockForAddLimotSerialization();
 				}
 			}
 
 			if ( limit != 0 )
 			{
-				double k = info.fps * stop_erp;
+				double k = fps * stop_erp;
 				info.setC(row, -k * limit_err);
 				info.setCfm(row, stop_cfm);
 
@@ -364,6 +380,179 @@ public class DxJointLimitMotor {
 		else return 0;
 	}
 
+//    int addTwoPointLimot( dxJoint *joint, dReal fps,
+//            const dxJoint::Info2Descr *info, int row,
+//            const dVector3 ax1, const dVector3 pt1, const dVector3 pt2 );
+	/**
+	 * This function generalizes the "linear limot torque decoupling"
+	 * in addLimot to use anchor points provided by the caller.
+	 * 
+	 * This makes it so that the appropriate torques are applied to
+	 * a body when it's being linearly motored or limited using anchor points
+	 * that aren't at the center of mass.
+	 * 
+	 * pt1 and pt2 are centered in body coordinates but use global directions.
+	 * I.e., they are conveniently found within joint code with:
+	 *   getAxis(joint,pt1,anchor1);
+	 *   getAxis2(joint,pt2,anchor2);
+	 */
+	int addTwoPointLimot( DxJoint joint, double fps,
+			Info2Descr info, int row,
+			DVector3C ax1, DVector3C pt1, DVector3C pt2 )
+	{
+		int srow = row * info.rowskip();
+
+		// if the joint is powered, or has joint limits, add in the extra row
+		boolean powered = fmax > 0;
+		if ( powered || limit != 0)
+		{
+			// Set the linear portion
+			//dCopyVector3((info.J1l[srow]),ax1);
+			OdeMath.dCopyVector3(info._J, info.J1lp+srow, ax1);
+			
+			// Set the angular portion (to move the linear constraint 
+			// away from the center of mass).  
+			//dCalcVectorCross3((info.J1a[srow]),pt1,ax1);
+			dCalcVectorCross3(info._J,info.J1ap+srow,pt1,ax1);
+			// Set the constraints for the second body
+			if ( joint.node[1].body != null ) {
+				OdeMath.dCopyNegatedVector3(info._J, info.J2lp+srow, ax1);
+				//dCalcVectorCross3(&(info->J2a[srow]),pt2,&(info->J2l[srow]));
+				OdeMath.dCalcVectorCross3(info._J, info.J2ap+srow, pt2, 
+						info._J, info.J2lp+srow);
+			}
+
+			// if we're limited low and high simultaneously, the joint motor is
+			// ineffective
+			if ( limit != 0 && ( lostop == histop ) ) powered = false;
+
+			if ( powered )
+			{
+				//info.cfm[row] = normal_cfm;
+				info.setCfm(row, normal_cfm);
+				if ( limit==0 )
+				{
+					//                info.c[row] = vel;
+					//                info.lo[row] = -fmax;
+					//                info.hi[row] = fmax;
+					info.setC(row, vel);
+					info.setLo(row, -fmax);
+					info.setHi(row, fmax);
+				}
+				else
+				{
+					// the joint is at a limit, AND is being powered. if the joint is
+					// being powered into the limit then we apply the maximum motor force
+					// in that direction, because the motor is working against the
+					// immovable limit. if the joint is being powered away from the limit
+					// then we have problems because actually we need *two* lcp
+					// constraints to handle this case. so we fake it and apply some
+					// fraction of the maximum force. the fraction to use can be set as
+					// a fudge factor.
+
+					double fm = fmax;
+					if (( vel > 0 ) || ( vel == 0 && limit == 2 ) ) fm = -fm;
+
+					// if we're powering away from the limit, apply the fudge factor
+					if (( limit == 1 && vel > 0 ) || ( limit == 2 && vel < 0 ) ) fm *= fudge_factor;
+
+
+					//const dReal* tAx1 = &(info.J1a[srow]);
+					DxBody b0 = joint.node[0].body; 
+					b0.dBodyAddForce( -fm*ax1.get0(), -fm*ax1.get1(), -fm*ax1.get2() );
+					//b0.dBodyAddTorque( -fm*tAx1[0], -fm*tAx1[1], -fm*tAx1[2] );
+					double[] J = info.getJ();
+					int j1a = info.J1ap + srow;
+					b0.dBodyAddTorque( -fm*J[j1a+0], -fm*J[j1a+1], -fm*J[j1a+2] );
+
+					DxBody b1 = joint.node[1].body; 
+					if ( b1 != null )
+					{
+						//const dReal* tAx2 = &(info.J2a[srow]);
+						b1.dBodyAddForce( fm*ax1.get0(), fm*ax1.get1(), fm*ax1.get2() );
+						int j2a = info.J2ap + srow;
+						//b1.dBodyAddTorque( -fm*tAx2[0], -fm*tAx2[1], -fm*tAx2[2] );
+						b1.dBodyAddTorque( -fm*J[j2a+0], -fm*J[j2a+1], -fm*J[j2a+2] );
+					}
+
+				}
+			}
+
+			if ( limit!=0 )
+			{
+				double k = fps * stop_erp;
+				info.setC(row, -k * limit_err);
+				info.setCfm(row, stop_cfm);
+
+				if ( lostop == histop )
+				{
+					// limited low and high simultaneously
+					info.setLo(row, -dInfinity);
+					info.setHi(row, dInfinity);
+				}
+				else
+				{
+					if ( limit == 1 )
+					{
+						// low limit
+						info.setLo(row, 0);
+						info.setHi(row, dInfinity);
+					}
+					else
+					{
+						// high limit
+						info.setLo(row, -dInfinity);
+						info.setHi(row, 0);
+					}
+
+					// deal with bounce
+					if ( bounce > 0 )
+					{
+						// calculate relative velocity of the two anchor points
+						DxBody b0 = joint.node[0].body; 
+						double vel = 
+//								dCalcVectorDot3( joint.node[0].body.lvel, &(info.J1l[srow])) +
+//								dCalcVectorDot3( joint.node[0].body.avel, &(info.J1a[srow]));
+								b0.lvel.dot (info._J, info.J1lp+srow) +
+								b0.avel.dot (info._J, info.J1ap+srow);
+						DxBody b1 = joint.node[1].body; 
+						if (joint.node[1].body != null) {
+							vel +=
+//									dCalcVectorDot3( joint.node[1].body.lvel, &(info.J2l[srow])) +
+//									dCalcVectorDot3( joint.node[1].body.avel, &(info.J2a[srow]));
+									b1.lvel.dot (info._J, info.J2lp+srow) +
+									b1.avel.dot (info._J, info.J2ap+srow);
+						}
+
+						// only apply bounce if the velocity is incoming, and if the
+						// resulting c[] exceeds what we already have.
+						if ( limit == 1 )
+						{
+							// low limit
+							if ( vel < 0 )
+							{
+								double newc = -bounce * vel;
+								if ( newc > info.getC(row) ) info.setC(row, newc);
+							}
+						}
+						else
+						{
+							// high limit - all those computations are reversed
+							if ( vel > 0 )
+							{
+								double newc = -bounce * vel;
+								if ( newc < info.getC(row) ) info.setC(row, newc);
+							}
+						}
+					}
+				}
+			}
+			return 1;
+		}
+		else return 0;
+	}
+
+	
 	//************** TZ stuff  ****************
 	
 	

@@ -41,7 +41,56 @@ public class DxJointGroup extends DBase implements DJointGroup
     
 	//TODO use LinkedList?
 	private final ArrayList<DxJoint> _stack = new ArrayList<DxJoint>(); 
-    
+
+	
+//    template<class T>
+//    T *alloc(dWorldID w)
+//    {
+//        T *j = (T *)m_stack.alloc(sizeof(T));
+//        if (j != NULL) {
+//            ++m_num;
+//            new(j) T(w);
+//            j->flags |= dJOINT_INGROUP;
+//        }
+//        return j;
+//    }
+//
+	//TODO
+	int getJointCount() { return _stack.size(); }
+//
+	//TODO
+//    void *beginEnum() { return m_stack.rewind(); }
+	//TODO
+//    void *continueEnum(size_t num_bytes) { return m_stack.next(num_bytes); }
+//
+	//TODO
+//    void freeAll();
+
+	//  size_t exportJoints(dxJoint **jlist);
+	int exportJoints(ArrayList<DxJoint> jlist)
+	{
+//		size_t i=0;
+//		dxJoint *j = (dxJoint*) m_stack.rewind();
+//		while (j != NULL) {
+//			jlist[i++] = j;
+//			j = (dxJoint*) (m_stack.next (j->size()));
+//		}
+//		return i;
+		jlist.addAll(_stack);
+		return _stack.size();
+	}
+
+	void freeAll()
+	{
+		//m_num = 0;
+		//m_stack.freeAll();
+		_stack.clear();
+	}
+
+
+
+	
+	
     public static DxJointGroup dJointGroupCreate (int max_size)
     {
         // not any more ... dUASSERT (max_size > 0,"max size must be > 0");

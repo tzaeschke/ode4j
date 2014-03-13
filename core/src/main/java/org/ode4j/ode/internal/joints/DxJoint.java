@@ -131,7 +131,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	/**
 	 *  info returned by getInfo2 function
 	 */
-	public static class Info2
+	public static class Info2Descr
 	{
 		// integrator parameters: frames per second (1/stepsize), default error
 		// reduction parameter (0..1).
@@ -264,9 +264,13 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
     //virtual void setRelativeValues() {};
 
     public abstract void getInfo1( Info1 info );
-	/** (TZ) This method is used solely to extract information required
-	 * by the stepping algorithms.*/
-	public abstract void getInfo2( Info2 info );
+    /** 
+     * integrator parameters: 
+     * fps=frames per second (1/stepsize), 
+     * erp=default error reduction parameter (0..1).
+	 * (TZ) This method is used solely to extract information required by the stepping algorithms.
+	 */
+	public abstract void getInfo2( double worldFPS, double worldERP, Info2Descr info );
     // This call quickly!!! estimates maximum value of "m" that could be returned by getInfo1()
     // See comments at definition of SureMaxInfo for defails.
     abstract void getSureMaxInfo( SureMaxInfo info );
@@ -382,7 +386,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	// set three "ball-and-socket" rows in the constraint equation, and the
 	// corresponding right hand side.
 
-	void setBall( DxJoint joint, Info2 info,
+	void setBall( DxJoint joint, double fps, double erp, Info2Descr info,
 			DVector3 anchor1, DVector3 anchor2 )
 	{
 		// anchor points in global coordinates with respect to body PORs.
@@ -397,21 +401,22 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		dMultiply0_331( a1, joint.node[0].body.posr().R(), anchor1 );
 		//    dCROSSMAT( info.J1a, a1, s, -, + );
 		dSetCrossMatrixMinus( info._J, info.J1ap, a1, s );
-		if ( joint.node[1].body != null)
+		
+		DxBody b1 = joint.node[1].body; 
+		if ( b1 != null)
 		{
 			info._J[info.J2lp+0] = -1;
 			info._J[info.J2lp+s+1] = -1;
 			info._J[info.J2lp+2*s+2] = -1;
-			dMultiply0_331( a2, joint.node[1].body.posr().R(), anchor2 );
+			dMultiply0_331( a2, b1.posr().R(), anchor2 );
 			dSetCrossMatrixPlus( info._J, info.J2ap, a2, s );
 		}
 
-		DxBody b0 = joint.node[0].body;
-		DxBody b1 = joint.node[1].body;
 		
 		// set right hand side
-		double k = info.fps * info.erp;
-		if ( joint.node[1].body != null)
+		double k = fps * erp;
+		DxBody b0 = joint.node[0].body;
+		if ( b1 != null)
 		{
 //			for ( int j = 0; j < 3; j++ )
 //			{
@@ -447,7 +452,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	// position row (the other two row vectors will be derived from this).
 	// `erp1' is the erp value to use along the axis.
 
-	void setBall2( DxJoint joint, Info2 info,
+	void setBall2( DxJoint joint, double fps, double erp, Info2Descr info,
 			DVector3 anchor1, DVector3 anchor2,
 			DVector3 axis, double erp1 )
 	{
@@ -472,7 +477,9 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		dCalcVectorCross3( info._J, info.J1ap, a1, axis );
 		dCalcVectorCross3( info._J, info.J1ap + s, a1, q1 );
 		dCalcVectorCross3( info._J, info.J1ap + 2*s, a1, q2 );
-		if ( joint.node[1].body != null)
+		
+		DxBody b1 = joint.node[1].body;
+		if ( b1 != null)
 		{
 //			for ( i = 0; i < 3; i++ ) info._J[info.J2lp+i] = -axis.v[i];
 //			for ( i = 0; i < 3; i++ ) info._J[info.J2lp+s+i] = -q1.v[i];
@@ -490,7 +497,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //	        dReal *J2a_plus_2s = J2a_plus_s + s;
 //	        dCalcVectorCross3( J2a_plus_2s, a2, q2 );
 //	        dNegateVector3( J2a_plus_2s );
-	        dMultiply0_331( a2, joint.node[1].body._posr.R, anchor2 );
+	        dMultiply0_331( a2, b1._posr.R, anchor2 );
 	        double[] J = info._J;  //TZ
 	        int J2ap = info.J2ap; //TZ
 	        //dReal *J2a = info->J2a;
@@ -505,15 +512,16 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		}
 
 		// set right hand side - measure error along (axis,q1,q2)
-		double k1 = info.fps * erp1;
-		double k = info.fps * info.erp;
+		double k1 = fps * erp1;
+		double k = fps * erp;
 
 		//for ( i = 0; i < 3; i++ ) a1.v[i] += joint.node[0].body._posr.pos.v[i];
-		a1.add(joint.node[0].body.posr().pos());
-		if ( joint.node[1].body != null)
+		DxBody b0 = joint.node[0].body;
+		a1.add(b0.posr().pos());
+		if ( b1 != null)
 		{
 //			for ( i = 0; i < 3; i++ ) a2.v[i] += joint.node[1].body._posr.pos.v[i];
-			a2.add(joint.node[1].body.posr().pos());
+			a2.add(b1.posr().pos());
 			DVector3 a2_minus_a1 = new DVector3();
 			a2_minus_a1.eqDiff(a2, a1);
 			info.setC(0, k1 * ( dCalcVectorDot3( axis, a2_minus_a1 ) ));
@@ -539,8 +547,8 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	 * @param qrel
 	 * @param start_row
 	 */
-	void setFixedOrientation( DxJoint joint, Info2 info, DQuaternion qrel, 
-			int start_row )
+	void setFixedOrientation( DxJoint joint, double fps, double erp, Info2Descr info, 
+			DQuaternion qrel, int start_row )
 	{
 		int s = info.rowskip();
 		int start_index = start_row * s;
@@ -548,7 +556,9 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		info._J[info.J1ap+start_index] = 1;
 		info._J[info.J1ap+start_index + s + 1] = 1;
 		info._J[info.J1ap+start_index + s*2+2] = 1;
-		if ( joint.node[1].body != null)
+
+		DxBody b1 = joint.node[1].body;
+		if ( b1 != null)
 		{
 			info._J[info.J2ap+start_index] = -1;
 			info._J[info.J2ap+start_index + s+1] = -1;
@@ -572,15 +582,16 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		// get qerr = relative rotation (rotation error) between two bodies
 		DQuaternion qerr = new DQuaternion();
 		DVector3 e = new DVector3();
-		if ( joint.node[1].body != null)
+		DxBody b0 = joint.node[0].body;
+		if ( b1 != null)
 		{
 			DQuaternion qq = new DQuaternion();
-			dQMultiply1( qq, joint.node[0].body._q, joint.node[1].body._q );
+			dQMultiply1( qq, b0._q, b1._q );
 			dQMultiply2( qerr, qq, qrel );
 		}
 		else
 		{
-			dQMultiply3( qerr, joint.node[0].body._q, qrel );
+			dQMultiply3( qerr, b0._q, qrel );
 		}
 		if ( qerr.get0() < 0)
 		{
@@ -594,8 +605,8 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		qerr2.set0( qerr.get1() );
 		qerr2.set1( qerr.get2() );
 		qerr2.set2( qerr.get3() );
-		dMultiply0_331( e, joint.node[0].body.posr().R(), qerr2 );  // @@@ bad SIMD padding!
-		double k = info.fps * info.erp;
+		dMultiply0_331( e, b0.posr().R(), qerr2 );  // @@@ bad SIMD padding!
+		double k = fps * erp;
 		info.setC(start_row, 2 * k * e.get0() );
 		info.setC(start_row+1, 2 * k * e.get1() );
 		info.setC(start_row+2, 2 * k * e.get2() );
@@ -609,7 +620,8 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	final void setAnchors( DVector3C xyz,
 			DVector3 anchor1, DVector3 anchor2 )
 	{
-		if ( node[0].body != null)
+		DxBody b0 = node[0].body;
+		if ( b0 != null)
 		{
 			/// double[] q = new double[4];
 			DVector3 q = new DVector3();
@@ -617,16 +629,17 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //			q.v[1] = y - node[0].body._posr.pos.v[1];
 //			q.v[2] = z - node[0].body._posr.pos.v[2];
 //			q.v[3] = 0;
-			q.eqDiff(xyz, node[0].body.posr().pos());
-			dMultiply1_331( anchor1, node[0].body.posr().R(), q );
-			if ( node[1].body != null )
+			q.eqDiff(xyz, b0.posr().pos());
+			dMultiply1_331( anchor1, b0.posr().R(), q );
+			DxBody b1 = node[1].body;
+			if ( b1 != null )
 			{
 //				q.v[0] = x - node[1].body._posr.pos.v[0];
 //				q.v[1] = y - node[1].body._posr.pos.v[1];
 //				q.v[2] = z - node[1].body._posr.pos.v[2];
 //				q.v[3] = 0;
-				q.eqDiff(xyz, node[1].body.posr().pos());
-				dMultiply1_331( anchor2, node[1].body.posr().R(), q );
+				q.eqDiff(xyz, b1.posr().pos());
+				dMultiply1_331( anchor2, b1.posr().R(), q );
 			}
 			else
 			{
@@ -649,21 +662,23 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	void setAxes( double x, double y, double z,
 			DVector3 axis1, DVector3 axis2 )
 	{
-		if ( node[0].body != null)
+		DxBody b0 = node[0].body;
+		if ( b0 != null)
 		{
 			//        double[] q = new double[4];
 			DVector3 q = new DVector3(x, y, z);
 			dNormalize3( q );
 			if ( axis1 != null)
 			{
-				dMultiply1_331( axis1, node[0].body.posr().R(), q );
+				dMultiply1_331( axis1, b0.posr().R(), q );
 //				axis1.v[3] = 0;
 			}
 			if ( axis2 != null)
 			{
-				if ( node[1].body != null)
+				DxBody b1 = node[1].body;
+				if ( b1 != null)
 				{
-					dMultiply1_331( axis2, node[1].body.posr().R(), q );
+					dMultiply1_331( axis2, b1.posr().R(), q );
 				}
 				else
 				{
@@ -678,19 +693,21 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	}
 	void setAxes( DVector3C axis, DVector3 axis1, DVector3 axis2 )
 	{
-		if ( node[0].body != null)
+		DxBody b0 = node[0].body;
+		if ( b0 != null)
 		{
 			DVector3 q = new DVector3(axis);
 			dNormalize3( q );
 			if ( axis1 != null)
 			{
-				dMultiply1_331( axis1, node[0].body.posr().R(), q );
+				dMultiply1_331( axis1, b0.posr().R(), q );
 			}
 			if ( axis2 != null)
 			{
-				if ( node[1].body != null)
+				DxBody b1 = node[1].body;
+				if ( b1 != null)
 				{
-					dMultiply1_331( axis2, node[1].body.posr().R(), q );
+					dMultiply1_331( axis2, b1.posr().R(), q );
 				}
 				else
 				{
@@ -704,13 +721,14 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //	void getAnchor( dxJoint j, dVector3 result, dVector3 anchor1 )
 	void getAnchor( DVector3 result, DVector3 anchor1 )
 	{
-		if ( node[0].body != null)
+		DxBody b0 = node[0].body;
+		if ( b0 != null)
 		{
-			dMultiply0_331( result, node[0].body.posr().R(), anchor1 );
+			dMultiply0_331( result, b0.posr().R(), anchor1 );
 //			result.v[0] += node[0].body._posr.pos.v[0];
 //			result.v[1] += node[0].body._posr.pos.v[1];
 //			result.v[2] += node[0].body._posr.pos.v[2];
-			result.add(node[0].body.posr().pos());
+			result.add(b0.posr().pos());
 		}
 	}
 
@@ -718,13 +736,14 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //	void getAnchor2( dxJoint j, dVector3 result, dVector3 anchor2 )
 	void getAnchor2( DVector3 result, DVector3 anchor2 )
 	{
-		if ( node[1].body != null)
+		DxBody b1 = node[1].body;
+		if ( b1 != null)
 		{
-			dMultiply0_331( result, node[1].body.posr().R(), anchor2 );
+			dMultiply0_331( result, b1.posr().R(), anchor2 );
 //			result.v[0] += node[1].body.posr.pos.v[0];
 //			result.v[1] += node[1].body.posr.pos.v[1];
 //			result.v[2] += node[1].body.posr.pos.v[2];
-			result.add(node[1].body.posr().pos());
+			result.add(b1.posr().pos());
 		}
 		else
 		{
@@ -738,18 +757,20 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 
 	void getAxis( DVector3 result, DVector3C axis1 )
 	{
-		if ( node[0].body != null)
+		DxBody b0 = node[0].body;
+		if ( b0 != null)
 		{
-			dMultiply0_331( result, node[0].body.posr().R(), axis1 );
+			dMultiply0_331( result, b0.posr().R(), axis1 );
 		}
 	}
 
 
 	void getAxis2( DVector3 result, DVector3C axis2 )
 	{
-		if ( node[1].body != null )
+		DxBody b1 = node[1].body;
+		if ( b1 != null )
 		{
-			dMultiply0_331( result, node[1].body.posr().R(), axis2 );
+			dMultiply0_331( result, b1.posr().R(), axis2 );
 		}
 		else
 		{

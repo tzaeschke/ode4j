@@ -581,6 +581,11 @@ public class OdeMath extends DRotation {
 	    a[1+ofs] = (b.get2()*c.get0() - b.get0()*c.get2()); 
 	    a[2+ofs] = (b.get0()*c.get1() - b.get1()*c.get0());
 	}
+	public static void dCalcVectorCross3(double[] a, int ofs1, DVector3C b, double[] c, int ofs2) {
+	    a[0+ofs1] = (b.get1()*c[2+ofs1] - b.get2()*c[1+ofs1]); 
+	    a[1+ofs1] = (b.get2()*c[0+ofs1] - b.get0()*c[2+ofs1]); 
+	    a[2+ofs1] = (b.get0()*c[1+ofs1] - b.get1()*c[0+ofs1]);
+	}
 //	public static void dSubtractVectorCross3(double[] a, int ofs, DVector3C b, DVector3C c) {
 //	    a[0+ofs] = -(b.get1()*c.get2() - b.get2()*c.get1()); 
 //	    a[1+ofs] = -(b.get2()*c.get0() - b.get0()*c.get2()); 

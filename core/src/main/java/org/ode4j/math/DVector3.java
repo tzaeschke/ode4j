@@ -299,6 +299,16 @@ public class DVector3 implements DVector3I, DVector3C {
 		return get0()*b.get0() + get1()*b.get1() + get2()*b.get2();
 	}
 	
+	/**
+	 * Return the 'dot' product of two vectors.
+	 * r = a0*b0 + a1*b1 + a2*b2;
+	 * @param b 
+	 * @return (this) * b
+	 */
+	public final double dot(double[] da, int pos) {
+		return get0()*da[pos] + get1()*da[pos+1] + get2()*da[pos+2];
+	}
+	
 //	/**
 //	 * Calculate the 'dot' or 'inner' product. <br>
 //	 * x = b_t * c  <br>

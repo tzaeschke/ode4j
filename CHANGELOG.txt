@@ -1,5 +1,10 @@
 0.3.0
 =====
+Done:
+-- includes, EXCEPT threading.*
+-- joints: joint.h, joint_internal.h, joint.cpp
+
+
 TODO check if the new OdeMath.dCalcMatrix3Det and dInvertMatrix3 are really used.
 TODO add include/ode/threading*.h
 
