@@ -86,6 +86,20 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	}
 
 
+	public DxJointDBall dJointCreateDoubleBall (DWorld w, DJointGroup group)
+	{
+		dAASSERT (w);
+		return createJoint( new DxJointDBall((DxWorld) w),group);
+	}
+
+
+	public DxJointDHinge dJointCreateDoubleHinge (DWorld w, DJointGroup group)
+	{
+		dAASSERT (w);
+		return createJoint( new DxJointDHinge((DxWorld) w),group);
+	}
+
+
 	public DxJointHinge dJointCreateHinge (DWorld w, DJointGroup group)
 	{
 		dAASSERT (w);
@@ -97,6 +111,13 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	{
 		dAASSERT (w);
 		return createJoint( new DxJointSlider((DxWorld) w),group);
+	}
+
+
+	public DxJointTransmission dJointCreateTransmission (DWorld w, DJointGroup group)
+	{
+		dAASSERT (w);
+		return createJoint( new DxJointTransmission((DxWorld) w),group);
 	}
 
 

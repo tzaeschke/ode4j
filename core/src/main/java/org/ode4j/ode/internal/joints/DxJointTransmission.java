@@ -39,14 +39,14 @@ import static org.ode4j.ode.internal.Common.dUASSERT;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DDoubleHingeJoint;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DTransmissionJoint;
 import org.ode4j.ode.internal.DxWorld;
 
 /**
  * Double Hinge joint.
  */
-public class DxJointTransmission extends DxJointDBall implements DDoubleHingeJoint {
+public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
 	
     private TRANSMISSION mode; 
     private boolean update;
@@ -714,6 +714,146 @@ public class DxJointTransmission extends DxJointDBall implements DDoubleHingeJoi
 	@Override
 	public void getAxis(DVector3 result) {
 		dJointGetTransmissionAxis(result);
+	}
+
+	@Override
+	public void getContactPoint1(DVector3 result) {
+		dJointGetTransmissionContactPoint1(result);
+	}
+
+	@Override
+	public void getContactPoint2(DVector3 result) {
+		dJointGetTransmissionContactPoint2(result);
+	}
+
+	@Override
+	public void setAxis1(double x, double y, double z) {
+		dJointSetTransmissionAxis1(new DVector3(x, y, z));
+	}
+
+	@Override
+	public void setAxis1(DVector3C xyz) {
+		dJointSetTransmissionAxis1(xyz);
+	}
+
+	@Override
+	public void getAxis1(DVector3 result) {
+		dJointGetTransmissionAxis1(result);
+	}
+
+	@Override
+	public void setAxis2(double x, double y, double z) {
+		dJointSetTransmissionAxis2(new DVector3(x, y, z));
+	}
+
+	@Override
+	public void setAxis2(DVector3C xyz) {
+		dJointSetTransmissionAxis2(xyz);
+	}
+
+	@Override
+	public void getAxis2(DVector3 result) {
+		dJointGetTransmissionAxis2(result);
+	}
+
+	@Override
+	public void setAnchor1(double x, double y, double z) {
+		dJointSetTransmissionAnchor1(new DVector3(x, y, z));
+	}
+
+	@Override
+	public void setAnchor1(DVector3C xyz) {
+		dJointSetTransmissionAnchor1(xyz);
+	}
+
+	@Override
+	public void getAnchor1(DVector3 result) {
+		dJointGetTransmissionAnchor1(result);
+	}
+
+	@Override
+	public void setAnchor2(double x, double y, double z) {
+		dJointSetTransmissionAnchor2(new DVector3(x, y, z));
+	}
+
+	@Override
+	public void setAnchor2(DVector3C xyz) {
+		dJointSetTransmissionAnchor2(xyz);
+	}
+
+	@Override
+	public void getAnchor2(DVector3 result) {
+		dJointGetTransmissionAnchor2(result);
+	}
+
+	@Override
+	public void setMode(TRANSMISSION mode) {
+		dJointSetTransmissionMode(mode);
+	}
+
+	@Override
+	public TRANSMISSION getMode() {
+		return dJointGetTransmissionMode();
+	}
+
+	@Override
+	public void setRatio(double ratio) {
+		dJointSetTransmissionRatio(ratio);
+	}
+
+	@Override
+	public double getRatio() {
+		return dJointGetTransmissionRatio();
+	}
+
+	@Override
+	public double getAngle1() {
+		return dJointGetTransmissionAngle1();
+	}
+
+	@Override
+	public double getAngle2() {
+		return dJointGetTransmissionAngle2();
+	}
+
+	@Override
+	public double getRadius1() {
+		return dJointGetTransmissionRadius1();
+	}
+
+	@Override
+	public double getRadius2() {
+		return dJointGetTransmissionRadius2();
+	}
+
+	@Override
+	public void setRadius1(double radius) {
+		dJointSetTransmissionRadius1(radius);
+	}
+
+	@Override
+	public void setRadius2(double radius) {
+		dJointSetTransmissionRadius2(radius);
+	}
+
+	@Override
+	public double getBacklash() {
+		return dJointGetTransmissionBacklash();
+	}
+
+	@Override
+	public void setBacklash(double backlash) {
+		dJointSetTransmissionBacklash(backlash);
+	}
+
+	@Override
+	public void setParam(PARAM_N parameter, double value) {
+		dJointSetTransmissionParam(parameter.toSUB(), value);
+	}
+
+	@Override
+	public double getParam(PARAM_N parameter) {
+		return dJointGetTransmissionParam(parameter.toSUB());
 	}
 
 }

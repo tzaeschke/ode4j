@@ -25,6 +25,7 @@
 package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 
 public interface DTransmissionJoint extends DJoint {
 
@@ -46,6 +47,10 @@ public interface DTransmissionJoint extends DJoint {
 	 * parallel-axes and chain modes which share one common axis of
 	 * revolution for both gears setAxis should be used.
 	 */
+	void setAxis1(DVector3C xyz);
+	/**
+	 * @see #setAxis1(DVector3C)
+	 */
 	void setAxis1(double x, double y, double z);
 
 	/**
@@ -66,6 +71,10 @@ public interface DTransmissionJoint extends DJoint {
 	 * axis of revolution for both gears setAxis should
 	 * be used.
 	 */
+	void setAxis2(DVector3C xyz);
+	/**
+	 * @see #setAxis2(DVector3C)
+	 */
 	void setAxis2(double x, double y, double z);
 
 	/**
@@ -82,6 +91,10 @@ public interface DTransmissionJoint extends DJoint {
 	 * <p>REMARK: This is the point of attachment of the wheel on the
 	 * first body.  It is given in global coordinates.
 	 */
+	void setAnchor1(DVector3C xyz);
+	/**
+	 * @see #setAnchor1(DVector3C)
+	 */
 	void setAnchor1(double x, double y, double z);
 
 	/**
@@ -93,6 +106,10 @@ public interface DTransmissionJoint extends DJoint {
 	 * Set the second anchor for the Transmission joint.
 	 * <p>REMARK: This is the point of attachment of the wheel on the
 	 * second body.  It is given in global coordinates.
+	 */
+	void setAnchor2(DVector3C xyz);
+	/**
+	 * @see #setAnchor2(DVector3C)
 	 */
 	void setAnchor2(double x, double y, double z);
 
@@ -121,12 +138,12 @@ public interface DTransmissionJoint extends DJoint {
 	 * set of parallel-axes gears, intersecting-axes beveled gears or
 	 * chain and sprockets respectively.
 	 */
-	void setMode(int mode );
+	void setMode(TRANSMISSION mode );
 
 	/**
 	 * Get the Transmission joint mode.
 	 */
-	int getMode();
+	TRANSMISSION getMode();
 
 	/**
 	 * Set the Transmission ratio.
@@ -151,6 +168,10 @@ public interface DTransmissionJoint extends DJoint {
 	 * individually dJointSetTransmissionAxis1 and
 	 * dJointSetTransmissionAxis2 should be used.  The axis is given in
 	 * global coordinates
+	 */
+	void setAxis(DVector3C xyz);
+	/**
+	 * @see #setAxis(DVector3C)
 	 */
 	void setAxis(double x, double y, double z );
 
