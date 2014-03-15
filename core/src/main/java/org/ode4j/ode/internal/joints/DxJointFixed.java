@@ -27,7 +27,9 @@ package org.ode4j.ode.internal.joints;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DFixedJoint;
+import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
+
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -87,12 +89,12 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 
 
 	@Override
-	public void getInfo2 ( Info2 info )
+	public void getInfo2 ( double worldFPS, double worldERP, Info2Descr info )
 	{
 		int s = info.rowskip();
 
 		// Three rows for orientation
-		setFixedOrientation ( this, info, qrel, 3 );
+		setFixedOrientation ( this, worldFPS, worldERP, info, qrel, 3 );
 
 		// Three rows for position.
 		// set jacobian
@@ -100,14 +102,15 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		info._J[info.J1lp+s+1] = 1;
 		info._J[info.J1lp+2*s+2] = 1;
 
-		info.erp = erp;
 		info.setCfm(0, cfm);
 		info.setCfm(1, cfm);
 		info.setCfm(2, cfm);
 
-		DVector3 ofs = new DVector3();
-		dMultiply0_331 ( ofs, node[0].body.posr().R(), offset );
-		if ( node[1].body != null )
+	    DxBody b0 = node[0].body, b1 = node[1].body;
+
+	    DVector3 ofs = new DVector3();
+		dMultiply0_331 ( ofs, b0.posr().R(), offset );
+		if ( b1 != null )
 		{
 		    dSetCrossMatrixPlus ( info._J, info.J1ap, ofs, s);
 			info._J[info.J2lp+0] = -1;
@@ -116,17 +119,18 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		}
 
 		// set right hand side for the first three rows (linear)
-		double k = info.fps * info.erp;
-		if ( node[1].body != null)
+		double k = worldFPS * info.erp;
+		if ( b1 != null)
 		{
 			for ( int j = 0; j < 3; j++ )
-				info.setC(j, k * ( node[1].body.posr().pos().get(j) -
-						node[0].body.posr().pos().get(j) + ofs.get(j) ));
+				info.setC(j, k * ( b1.posr().pos().get(j) -
+						b0.posr().pos().get(j) + ofs.get(j) ));
 		}
 		else
 		{
-			for ( int j = 0; j < 3; j++ )
-				info.setC(j, k * ( offset.get(j) - node[0].body.posr().pos().get(j) ));
+			for ( int j = 0; j < 3; j++ ) {
+				info.setC(j, k * ( offset.get(j) - b0.posr().pos().get(j) ));
+			}
 		}
 	}
 

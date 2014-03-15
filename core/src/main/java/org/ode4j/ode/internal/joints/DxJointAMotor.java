@@ -122,6 +122,14 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 					{
 						dMultiply0_331( ax[i], node[1].body.posr().R(), axis[i] );
 					}
+	                else
+	                {
+	                    // global - just copy it
+						ax[i].set(axis[i]);
+						//ax[i][0] = axis[i][0];
+	                    //ax[i][1] = axis[i][1];
+	                    //ax[i][2] = axis[i][2];
+	                }
 				}
 				else
 				{
@@ -196,28 +204,16 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 			dMultiply1_331( reference1, node[0].body.posr().R(), r );
 			dMultiply0_331( r, node[0].body.posr().R(), axis[0] );
 			dMultiply1_331( reference2, node[1].body.posr().R(), r );
-		}
-
-		else     // jds
-		{
-			// else if (j->node[0].body) {
-			// dMultiply1_331 (j->reference1,j->node[0].body->posr.R,j->axis[2]);
-			// dMultiply0_331 (j->reference2,j->node[0].body->posr.R,j->axis[0]);
-
+		} else {
 			// We want to handle angular motors attached to passive geoms
-			DVector3 r = new DVector3();  // axis[2] and axis[0] in global coordinates
-//			r.v[0] = axis[2].v[0];
-//			r.v[1] = axis[2].v[1];
-//			r.v[2] = axis[2].v[2];
-//			r.v[3] = axis[2].v[3];
-			r.set(axis[2]);
-			dMultiply1_331( reference1, node[0].body.posr().R(), r );
-			dMultiply0_331( r, node[0].body.posr().R(), axis[0] );
-//			reference2.v[0] += r.v[0];
-//			reference2.v[1] += r.v[1];
-//			reference2.v[2] += r.v[2];
-//			reference2.v[3] += r.v[3];
-			reference2.add( r );
+	        // Replace missing node.R with identity
+	        if (node[0].body != null) {
+	          dMultiply1_331( reference1, node[0].body.posr().R(), axis[2] );
+	          dMultiply0_331( reference2, node[0].body.posr().R(), axis[0] );
+	        } else if (node[1].body != null) {
+	          dMultiply0_331( reference1, node[1].body.posr().R(), axis[2] );
+	          dMultiply1_331( reference2, node[1].body.posr().R(), axis[0] );
+	        }
 		}
 	}
 
@@ -259,7 +255,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	@Override
 	public void
-	getInfo2( DxJoint.Info2 info )
+	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		int i;
 
@@ -305,7 +301,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		for ( i = 0; i < _num; i++ )
 		{
 			//    row += limot[i].addLimot( this, info, row, *( axptr[i] ), true );
-			row += limot[i].addLimot( this, info, row, axptr[i] , true );
+			row += limot[i].addLimot( this, worldFPS, info, row, axptr[i] , true );
 		}
 	}
 
@@ -337,17 +333,13 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	public void dJointSetAMotorAxis( int anum, int rel, DVector3C r )
 	{
 		dAASSERT( anum >= 0 && anum <= 2 && rel >= 0 && rel <= 2 );
-		dUASSERT( !( node[1].body==null 
-				&& isFlagsReverse() && rel == 1 ), 
-				"no first body, can't set axis rel=1" );
-		dUASSERT( !( node[1].body==null 
-				&& !isFlagsReverse() && rel == 2 ), 
-				"no second body, can't set axis rel=2" );
+
 		if ( anum < 0 ) anum = 0;
 		if ( anum > 2 ) anum = 2;
 
 		// adjust rel to match the internal body order
-		if ( node[1].body == null&& rel == 2 ) rel = 1;
+	    if ( (flags & dJOINT_REVERSE)!=0 && rel!=0 )
+	        rel ^= 3; // turns 1 into 2, 2, into 1
 
 		_rel[anum] = rel;
 
@@ -359,7 +351,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 			{
 				dMultiply1_331( axis[anum], node[0].body.posr().R(), r );
 			}
-			else
+			else // rel == 2
 			{
 				// don't assert; handle the case of attachment to a bodiless geom
 				if ( node[1].body!=null )   // jds
@@ -394,7 +386,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		if ( _mode == AMotorMode.dAMotorUser )
 		{
 			if ( anum < 0 ) anum = 0;
-			if ( anum > 3 ) anum = 3;
+			if ( anum > 2 ) anum = 2;
 			this.angle[anum] = angle;
 		}
 	}
@@ -435,8 +427,31 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		dAASSERT( anum >= 0 && anum < 3 );
 		if ( anum < 0 ) anum = 0;
 		if ( anum > 2 ) anum = 2;
-		if ( _rel[anum] > 0 )
-		{
+	    
+	    // If we're in Euler mode, joint->axis[1] doesn't
+	    // have anything sensible in it.  So don't just return
+	    // that, find the actual effective axis.
+	    // Likewise, the actual axis of rotation for the
+	    // the other axes is different from what's stored.
+	    if ( _mode == AMotorMode.dAMotorEuler  ) {
+	      DVector3[] axes = new DVector3[]{new DVector3(), new DVector3(), new DVector3()};
+	      computeGlobalAxes(axes);
+	      if (anum == 1) {
+	        //result[0]=axes[1][0];
+	        //result[1]=axes[1][1];
+	        //result[2]=axes[1][2];
+	    	result.set(axes[1]);
+	      } else if (anum == 0) {
+	        // This won't be unit length in general,
+	        // but it's what's used in getInfo2
+	        // This may be why things freak out as
+	        // the body-relative axes get close to each other.
+	        dCalcVectorCross3( result, axes[1], axes[2] );
+	      } else if (anum == 2) {
+	        // Same problem as above.
+	        dCalcVectorCross3( result, axes[0], axes[1] );
+	      }
+	    } else if ( _rel[anum] > 0 ) {
 			if ( _rel[anum] == 1 )
 			{
 				dMultiply0_331( result, node[0].body.posr().R(), axis[anum] );
@@ -473,7 +488,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		dAASSERT( anum >= 0 && anum < 3 );
 		if ( anum < 0 ) anum = 0;
 		if ( anum > 2 ) anum = 2;
-		return _rel[anum];
+	    int rel = _rel[anum];
+	    if ( (flags & dJOINT_REVERSE)!=0 && rel!=0)
+	         rel ^= 3; // turns 1 into 2, 2 into 1
+	    return rel;
 	}
 
 	//TODO use enum?
@@ -481,15 +499,22 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	{
 		dAASSERT( anum >= 0 && anum < 3 );
 		if ( anum < 0 ) anum = 0;
-		if ( anum > 3 ) anum = 3;
+		if ( anum > 2 ) anum = 2;
 		return angle[anum];
 	}
 
 
 	double dJointGetAMotorAngleRate( int anum )
 	{
-		// @@@
-		dDebug( 0, "not yet implemented" );
+	    dAASSERT( anum >= 0 && anum < 3);
+	  
+	    if (node[0].body != null) {
+	      DVector3 axis = new DVector3();
+	      dJointGetAMotorAxis (anum, axis);
+	      double rate = axis.dot( node[0].body.avel );
+	      if (node[1].body!=null) rate -= axis.dot( node[1].body.avel );
+	      return rate;
+	    }
 		return 0;
 	}
 

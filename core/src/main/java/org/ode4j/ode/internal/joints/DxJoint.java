@@ -72,11 +72,11 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	 * is always nonzero, so this flag records the fact that the arguments were
 	 * swapped.
 	 */
-	private static final int dJOINT_REVERSE = 2;
+	protected static final int dJOINT_REVERSE = 2;
 
 	/** if this flag is set, the joint can not have just one body attached to it,
 	 * it must have either zero or two bodies attached. */
-	private static final int dJOINT_TWOBODIES = 4;
+	protected static final int dJOINT_TWOBODIES = 4;
 
 	private static final int dJOINT_DISABLED = 8;
 
@@ -275,10 +275,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
     // See comments at definition of SureMaxInfo for defails.
     abstract void getSureMaxInfo( SureMaxInfo info );
 //	abstract dJointType type();// const = 0;
-//	public UnsupportedOperationException size() {
-//		throw new UnsupportedOperationException();}// const = 0;
-	//	    abstract size_t size();// const = 0;
-	//	};
+//	abstract int size();
 
 
 	//	// joint group. NOTE: any joints in the group that have their world destroyed
@@ -948,10 +945,16 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		flags |= dJOINT_DISABLED;
 	}
 
+	/**
+	 * <b>Warning!</b> This is the external isEnabled(). The internal method
+	 * is called isEnabledAndDynamic(). (TZ)
+	 */
 //	boolean dJointIsEnabled ()
 	@Override
 	public boolean isEnabled()
 	{
+		//(TZ) Warning! This is the external isEnabled(). The internal method
+		//is called isEnabledAndDynamic()
 	  return (flags & dJOINT_DISABLED) == 0;
 	}
 

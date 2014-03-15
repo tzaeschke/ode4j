@@ -294,14 +294,14 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 	@Override
 	public void
-	getInfo2( DxJoint.Info2 info )
+	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		int s = info.rowskip();
 		int s2 = 2 * s;
 		int s3 = 3 * s;
 		//int s4= 4*s;
 
-		double k = info.fps * info.erp;
+		double k = worldFPS * worldERP;
 
 
 		DVector3 q = new DVector3();  // plane space of axP and after that axR
@@ -503,7 +503,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	    //if (  node[1].body || !(flags & dJOINT_REVERSE) )
 	    if (  node[1].body != null || !isFlagsReverse() )
 	    {
-	        row += limotP.addLimot ( this, info, 4, axP, false );
+	        row += limotP.addLimot ( this, worldFPS, info, 4, axP, false );
 	    }
 	    else
 	    {
@@ -512,10 +512,10 @@ public class DxJointPR extends DxJoint implements DPRJoint
 //	        rAxP[0] = -axP[0];
 //	        rAxP[1] = -axP[1];
 //	        rAxP[2] = -axP[2];
-	        row += limotP.addLimot ( this, info, 4, rAxP, false );
+	        row += limotP.addLimot ( this, worldFPS, info, 4, rAxP, false );
 	    }
 
-	    limotR.addLimot ( this, info, row, ax1, true );
+	    limotR.addLimot ( this, worldFPS, info, row, ax1, true );
 		//limotP.addLimot( this, info, 4, axP, false );
 	}
 

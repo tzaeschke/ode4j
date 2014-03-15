@@ -111,10 +111,10 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 	@Override
 	public void
-	getInfo2( DxJoint.Info2 info )
+	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		// set the three ball-and-socket rows
-		setBall( this, info, anchor1, anchor2 );
+		setBall( this, worldFPS, worldERP, info, anchor1, anchor2 );
 
 		// set the two hinge rows. the hinge axis should be the only unconstrained
 		// rotational axis, the angular velocity of the two bodies perpendicular to
@@ -182,12 +182,12 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 			//        ax2[2] = axis2[2];
 		}
 		dCalcVectorCross3( b, ax1, ax2 );
-		double k = info.fps * info.erp;
+		double k = worldFPS * worldERP;
 		info.setC(3, k * b.dot( p ) );
 		info.setC(4, k * b.dot( q ) );
 
 		// if the hinge is powered, or has joint limits, add in the stuff
-		limot.addLimot( this, info, 5, ax1, true );
+		limot.addLimot( this, worldFPS, info, 5, ax1, true );
 	}
 
 

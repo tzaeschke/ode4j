@@ -95,31 +95,40 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	    info.setM(3);
 	    info.setNub(3);
 
-		if ( motor_x.fmax > 0 )
-			row_motor_x = info.m ++;
-		if ( motor_y.fmax > 0 )
-			row_motor_y = info.m ++;
-		if ( motor_angle.fmax > 0 )
-			row_motor_angle = info.m ++;
+		if ( motor_x.fmax > 0 ) {
+			row_motor_x = info.m++;
+		} else {
+			row_motor_x = 0;
+		}
+		if ( motor_y.fmax > 0 ) {
+			row_motor_y = info.m++;
+		} else {
+			row_motor_y = 0;
+		}
+		if ( motor_angle.fmax > 0 ) {
+			row_motor_angle = info.m++;
+		} else {
+			row_motor_angle = 0;
+		}
 	}
 
 
 
 	@Override
 	public void
-	getInfo2( DxJoint.Info2 info )
+	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		int r0 = 0;
 		int r1 = info.rowskip();
 		int r2 = 2 * r1;
-		double       eps = info.fps * info.erp;
+		double       eps = worldFPS * worldERP;
 
 		/*
         v = v1, w = omega1
         (v2, omega2 not important (== static environment))
 
         constraint equations:
-            xz = 0
+            vz = 0
             wx = 0
             wy = 0
 
@@ -168,13 +177,13 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 		// if the slider is powered, or has joint limits, add in the extra row:
 
 		if ( row_motor_x > 0 )
-			motor_x.addLimot( this, info, row_motor_x, Midentity0, false );
+			motor_x.addLimot( this, worldFPS, info, row_motor_x, Midentity0, false );
 
 		if ( row_motor_y > 0 )
-			motor_y.addLimot( this, info, row_motor_y, Midentity1, false );
+			motor_y.addLimot( this, worldFPS, info, row_motor_y, Midentity1, false );
 
 		if ( row_motor_angle > 0 )
-			motor_angle.addLimot( this, info, row_motor_angle, Midentity2, true );
+			motor_angle.addLimot( this, worldFPS, info, row_motor_angle, Midentity2, true );
 	}
 
 

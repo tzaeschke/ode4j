@@ -172,7 +172,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 
 	@Override
 	public void
-	getInfo2 ( DxJoint.Info2 info )
+	getInfo2 ( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		int i, s = info.rowskip();
 		int s3 = 3 * s, s4 = 4 * s;
@@ -200,7 +200,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 		}
 
 		// 3 rows to make body rotations equal
-		setFixedOrientation ( this, info, qrel, 0 );
+		setFixedOrientation ( this, worldFPS, worldERP, info, qrel, 0 );
 
 		// remaining two rows. we want: vel2 = vel1 + w1 x c ... but this would
 		// result in three equations, so we project along the planespace vectors
@@ -234,7 +234,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 
 		// compute last two elements of right hand side. we want to align the offset
 		// point (in body 2's frame) with the center of body 1.
-		double k = info.fps * info.erp;
+		double k = worldFPS * worldERP;
 		if ( node[1].body != null)
 		{
 			DVector3 ofs = new DVector3();  // offset point in global coordinates
@@ -257,7 +257,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 		}
 
 		// if the slider is powered, or has joint limits, add in the extra row
-		limot.addLimot ( this, info, 5, ax1, false );
+		limot.addLimot ( this, worldFPS, info, 5, ax1, false );
 	}
 
 
@@ -326,7 +326,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 		DVector3 axis = new DVector3();
 
 		if ( isFlagsReverse() )
-			force -= force;
+			force = -force;
 
 		getAxis ( axis, axis1 );
 //		axis.v[0] *= force;

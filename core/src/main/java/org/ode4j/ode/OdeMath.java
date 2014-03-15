@@ -422,7 +422,7 @@ public class OdeMath extends DRotation {
 	//#define dDOT41(a,b) dDOTpq(a,b,4,1)
 	//#define dDOT44(a,b) dDOTpq(a,b,4,4)
 
-	@Deprecated
+	@Deprecated //Please use a.dot(b);
 	public static double dDOT(DVector3C a, DVector3C b) { return a.dot(b); }
 	/**
 	 * Instead, please use a.dot(b).
@@ -840,6 +840,14 @@ public class OdeMath extends DRotation {
 		A.set1( B.dotCol(1, C) ); 
 		A.set2( B.dotCol(2, C) ); 
 	} 
+	private static void dMULTIPLYOP1_331(double[] Aa, int aPos, DMatrix3C B, DVector3C C) {
+//		A.set0( dDOT41(B.v, 0, C) ); 
+//		A.set1( dDOT41(B.v, 1, C) ); 
+//		A.set2( dDOT41(B.v, 2, C) ); 
+		Aa[aPos + 0] = B.dotCol(0, C); 
+		Aa[aPos + 1] = B.dotCol(1, C); 
+		Aa[aPos + 2] = B.dotCol(2, C); 
+	} 
 	private static void dMULTIPLYOP0_133(DVector3 A, DVector3C B, DMatrix3C C) {
 //		A.set0( dDOT14(B, C.v,0) ); 
 //		A.set1( dDOT14(B, C.v,1) ); 
@@ -989,6 +997,8 @@ public class OdeMath extends DRotation {
 
 	public static void dMultiply1_331(DVector3 A, DMatrix3C B, DVector3C C) { 
 		dMULTIPLYOP1_331(A,B,C); }
+	public static void dMultiply1_331(double[] A, int a, DMatrix3C B, DVector3C C) { 
+		dMULTIPLYOP1_331(A,a,B,C); }
 	public static void dMultiply0_133(DVector3 A, DVector3C B, DMatrix3C C) { 
 		dMULTIPLYOP0_133(A,B,C); }
 	public static void dMultiply0_133(double[] A, int a, double[] B, int b, 

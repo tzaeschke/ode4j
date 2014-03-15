@@ -153,7 +153,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	
 	@Override
 	public void
-	getInfo2( DxJoint.Info2 info )
+	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		// get information we need to set the hinge row
 		DVector3 q = new DVector3();
@@ -165,7 +165,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		dNormalize3( q );   // @@@ quicker: divide q by s ?
 
 		// set the three ball-and-socket rows (aligned to the suspension axis ax1)
-		setBall2( this, info, anchor1, anchor2, ax1, susp_erp );
+		setBall2( this, worldFPS, worldERP, info, anchor1, anchor2, ax1, susp_erp );
 
 		// set the hinge row
 		int s3 = 3 * info.rowskip();
@@ -196,14 +196,14 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		// where c = cos(theta), s = sin(theta)
 		//       c0 = cos(theta0), s0 = sin(theta0)
 
-		double k = info.fps * info.erp;
+		double k = worldFPS * worldERP;
 		info.setC(3, k * ( c0 * s.get() - joint.s0 * c.get() ) );
 
 		// if the axis1 hinge is powered, or has joint limits, add in more stuff
-		int row = 4 + limot1.addLimot( this, info, 4, ax1, true );
+		int row = 4 + limot1.addLimot( this, worldFPS, info, 4, ax1, true );
 
 		// if the axis2 hinge is powered, add in more stuff
-		limot2.addLimot( this, info, row, ax2, true );
+		limot2.addLimot( this, worldFPS, info, row, ax2, true );
 
 		// set parameter for the suspension
 		info.setCfm(0, susp_cfm);

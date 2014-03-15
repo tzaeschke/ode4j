@@ -25,13 +25,19 @@
 package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 
-public interface DDoubleHingeJoint extends DJoint {
+public interface DDoubleHingeJoint extends DDoubleBallJoint {
 
 	/**
 	 * Set axis for double hinge joint.
 	 */
 	void setAxis(double x, double y, double z);
+
+	/**
+	 * Set axis for double hinge joint.
+	 */
+	void setAxis(DVector3C xyz);
 
 	/**
 	 * Get axis for double hinge joint.

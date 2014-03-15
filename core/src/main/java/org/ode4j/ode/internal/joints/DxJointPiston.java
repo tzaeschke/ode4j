@@ -294,13 +294,13 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	@Override
 	public void
-	getInfo2 ( DxJoint.Info2 info )
+	getInfo2 ( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		final int s0 = 0;
 		final int s1 = info.rowskip();
 		final int s2 = 2 * s1, s3 = 3 * s1 /*, s4=4*s1*/;
 
-		final double k = info.fps * info.erp;
+		final double k = worldFPS * worldERP;
 
 
 		// Pull out pos and R for both bodies. also get the `connection'
@@ -483,7 +483,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	    int row = 4;
 	    if (  node[1].body != null )
 	    {
-	        row += limotP.addLimot ( this, info, 4, ax1, false );
+	        row += limotP.addLimot ( this, worldFPS, info, 4, ax1, false );
 	    }
 	    else if ( isFlagsReverse() )
 	    {
@@ -492,12 +492,12 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 //	        rAx1[1] = -ax1[1];
 //	        rAx1[2] = -ax1[2];
 	        rAx1.sub( ax1 );
-	        row += limotP.addLimot ( this, info, 4, rAx1, false );
+	        row += limotP.addLimot ( this, worldFPS, info, 4, rAx1, false );
 	    }
 	    else
-	        row += limotP.addLimot ( this, info, 4, ax1, false );
+	        row += limotP.addLimot ( this, worldFPS, info, 4, ax1, false );
 
-	    limotR.addLimot ( this, info, row, ax1, true );
+	    limotR.addLimot ( this, worldFPS, info, row, ax1, true );
 //		int row = 4 + limotP.addLimot ( this, info, 4, ax1, false );
 //		limotR.addLimot ( this, info, row, ax1, true );
 //	}

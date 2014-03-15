@@ -25,6 +25,7 @@
 package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 
 public interface DDoubleBallJoint extends DJoint {
 
@@ -37,6 +38,16 @@ public interface DDoubleBallJoint extends DJoint {
 	 * Set anchor2 for double ball joint.
 	 */
 	void setAnchor2(double x, double y, double z);
+
+	/**
+	 * Set anchor1 for double ball joint.
+	 */
+	void setAnchor1(DVector3C xyz);
+
+	/**
+	 * Set anchor2 for double ball joint.
+	 */
+	void setAnchor2(DVector3C xyz);
 
 	/**
 	 * Get anchor1 from double ball joint.

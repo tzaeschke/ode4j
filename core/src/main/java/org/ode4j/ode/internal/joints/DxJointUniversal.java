@@ -333,10 +333,10 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 	@Override
 	public void
-	getInfo2( DxJoint.Info2 info )
+	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		// set the three ball-and-socket rows
-		setBall( this, info, _anchor1, _anchor2 );
+		setBall( this, worldFPS, worldERP, info, _anchor1, _anchor2 );
 
 		// set the universal joint row. the angular velocity about an axis
 		// perpendicular to both joint axes should be equal. thus the constraint
@@ -392,13 +392,13 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 		// theta - Pi/2 ~= cos(theta), so
 		//    |angular_velocity|  ~= (erp*fps) * (ax1 dot ax2)
 
-		info.setC(3, info.fps * info.erp * - k );
+		info.setC(3, worldFPS * worldERP * - k );
 
 		// if the first angle is powered, or has joint limits, add in the stuff
-		int row = 4 + limot1.addLimot( this, info, 4, ax1, true );
+		int row = 4 + limot1.addLimot( this, worldFPS, info, 4, ax1, true );
 
 		// if the second angle is powered, or has joint limits, add in more stuff
-		limot2.addLimot( this, info, row, ax2, true );
+		limot2.addLimot( this, worldFPS, info, row, ax2, true );
 	}
 
 

@@ -108,7 +108,7 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 
 	@Override
 	public void
-	getInfo2( DxJoint.Info2 info )
+	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		int row = 0;
 		DVector3[] ax = new DVector3[3];
@@ -120,7 +120,7 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 
 		for ( int i = 0;i < num;i++ )
 		{
-			row += limot[i].addLimot( this, info, row, ax[i], false );
+			row += limot[i].addLimot( this, worldFPS, info, row, ax[i], false );
 		}
 	}
 
