@@ -119,7 +119,7 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		}
 
 		// set right hand side for the first three rows (linear)
-		double k = worldFPS * info.erp;
+		double k = worldFPS * this.erp;
 		if ( b1 != null)
 		{
 			for ( int j = 0; j < 3; j++ )

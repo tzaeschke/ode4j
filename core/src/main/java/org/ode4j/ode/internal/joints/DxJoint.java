@@ -133,12 +133,6 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	 */
 	public static class Info2Descr
 	{
-		// integrator parameters: frames per second (1/stepsize), default error
-		// reduction parameter (0..1).
-		public double fps;
-
-		public double erp;
-
 		// for the first and second body, pointers to two (linear and angular)
 		// n*3 jacobian sub matrices, stored by rows. these matrices will have
 		// been initialized to 0 on entry. if the second body is zero then the
