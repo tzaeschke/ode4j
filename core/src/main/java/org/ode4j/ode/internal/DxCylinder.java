@@ -41,6 +41,11 @@ public class DxCylinder extends DxGeom implements DCylinder {
 
 	private double _radius,_lz;        // radius, length along z axis
 
+	//#define dMAX(A,B)  ((A)>(B) ? (A) : (B))
+	private final double dMAX(double A, double B) {
+		return ((A)>(B) ? (A) : (B));
+	}
+
 	// flat cylinder public API
 
 	DxCylinder (DxSpace space, double __radius, double __length)// dxGeom (space,1)
@@ -61,12 +66,13 @@ public class DxCylinder extends DxGeom implements DCylinder {
 		final DMatrix3C R = final_posr().R();
 		final DVector3C pos = final_posr().pos();
 
-		double xrange = dFabs (R.get00() * _radius) + dFabs (R.get01() * _radius) + 
-		0.5* dFabs (R.get02() * _lz);
-		double yrange = dFabs (R.get10() * _radius) + dFabs (R.get11() * _radius) + 
-		0.5* dFabs (R.get12() * _lz);
-		double zrange = dFabs (R.get20() * _radius) + dFabs (R.get21() * _radius) + 
-		0.5* dFabs (R.get22() * _lz);
+	    double dOneMinusR2Square = (1.0 - R.get02()*R.get02());
+	    double xrange = dFabs(R.get02()*_lz*0.5) + _radius * dSqrt(dMAX(0.0, dOneMinusR2Square));
+	    double dOneMinusR6Square = (1.0 - R.get12()*R.get12());
+	    double yrange = dFabs(R.get12()*_lz*0.5) + _radius * dSqrt(dMAX(0.0, dOneMinusR6Square));
+	    double dOneMinusR10Square = (1.0 - R.get22()*R.get22());
+	    double zrange = dFabs(R.get22()*_lz*0.5) + _radius * dSqrt(dMAX(0.0, dOneMinusR10Square));
+
 //		_aabb.v[0] = pos.v[0] - xrange;
 //		_aabb.v[1] = pos.v[0] + xrange;
 //		_aabb.v[2] = pos.v[1] - yrange;

@@ -4,7 +4,7 @@ Done:  --> 0.13.1
 -- includes, EXCEPT threading.*
 -- joints: ALL DONE! THis includes missing updates from 0.11.0 for some joints:
 			--> DxJoint2D, ...
--- ode: all until collision_util.h
+-- ode: all until cylinder.cpp
 
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 
