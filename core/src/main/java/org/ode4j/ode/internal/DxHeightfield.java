@@ -462,7 +462,8 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 	void dGeomHeightfieldSetHeightfieldData( DHeightfieldData d )
 	{
 		//dxHeightfield* geom = (dxHeightfield*) g;
-		_data = d;
+		//TODO change type of m_p_data?
+		m_p_data = (DxHeightfieldData) d;
 	}
 
 

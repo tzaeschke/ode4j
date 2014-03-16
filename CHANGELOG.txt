@@ -4,11 +4,13 @@ Done:  --> 0.13.1
 -- includes, EXCEPT threading.*
 -- joints: ALL DONE! THis includes missing updates from 0.11.0 for some joints:
 			--> DxJoint2D, ...
--- ode: all until cylinder.cpp
+-- ode: all until memory.cpp
+
 
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 
 TODO check use of _next/_tome in DxGeom. Make private? Remove getNext()?
+TODO check matrix.h
 
 
 TODO check if the new OdeMath.dCalcMatrix3Det and dInvertMatrix3 are really used.
