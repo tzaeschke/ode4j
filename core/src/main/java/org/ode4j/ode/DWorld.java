@@ -108,7 +108,22 @@ public interface DWorld {
 	//~dWorld()
 	void DESTRUCTOR();
 
+	/**
+	 * Set the user-data pointer.
+	 * @param world the world to set the data on
+	 * @param data
+	 */
+	void setData (Object data);
 
+
+	/**
+	 * Get the user-data pointer.
+	 * @param world the world to set the data on
+	 * @param data
+	 */
+	Object getData ();
+
+	
 	/**
 	 * Set the world's global gravity vector.
 	 *

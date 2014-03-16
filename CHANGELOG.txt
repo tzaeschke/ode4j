@@ -1,6 +1,6 @@
 0.3.0
 =====
-Done:
+Done:  --> 0.13.1
 -- includes, EXCEPT threading.*
 -- joints: ALL DONE! THis includes missing updates from 0.11.0 for some joints:
 			--> DxJoint2D, ...

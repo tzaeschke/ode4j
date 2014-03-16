@@ -104,6 +104,12 @@ public interface DHinge2Joint extends DJoint {
 
 	
 	/**
+	 * Get angle.
+	 */
+	double getAngle2();
+
+	
+	/**
 	 * Get time derivative of angle.
 	 */
 	double getAngle1Rate();

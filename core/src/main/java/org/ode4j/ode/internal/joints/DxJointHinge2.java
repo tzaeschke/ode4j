@@ -51,26 +51,49 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	DVector3 _axis2;     // axis 2 w.r.t second body
 	double c0, s0;       // cos,sin of desired angle between axis 1,2
 	DVector3 v1, v2;    // angle ref vectors embedded in first body
+	DVector3 w1, w2;    // angle ref vectors embedded in second body
 	DxJointLimitMotor limot1; // limit+motor info for axis 1
 	DxJointLimitMotor limot2; // limit+motor info for axis 2
 	double susp_erp, susp_cfm; // suspension parameters (erp,cfm)
 
 
-	double measureAngle() 
-	{
-		DVector3 a1 = new DVector3(), a2 = new DVector3();
+	private double measureAngle1() {
+	    // bring axis 2 into first body's reference frame
+	    DVector3 p = new DVector3(), q = new DVector3();
+	    if (node[1].body != null)
+	        dMultiply0_331( p, node[1].body.posr().R(), _axis2 );
+	    else
+	        p.set(_axis2);
 
-		dMultiply0_331( a1, node[1].body.posr().R(), _axis2 );
-		dMultiply1_331( a2, node[0].body.posr().R(), a1 );
-		double x = v1.dot( a2 );
-		double y = v2.dot( a2 );
-		return -dAtan2( y, x );
+	    if (node[0].body != null)
+	        dMultiply1_331( q, node[0].body.posr().R(), p );
+	    else
+	        q.set(p);
+
+	    double x = dCalcVectorDot3( v1, q );
+	    double y = dCalcVectorDot3( v2, q );
+	    return -dAtan2( y, x );
 	}
 
+	private double measureAngle2() {
+	    // bring axis 1 into second body's reference frame
+	    DVector3 p = new DVector3(), q = new DVector3();
+	    if (node[0].body != null)
+	        dMultiply0_331( p, node[0].body.posr().R(), _axis1 );
+	    else
+	        p.set(_axis1);
 
-	DxJointHinge2( DxWorld w ) 
-	//dxJoint( w )
-	{
+	    if (node[1].body != null)
+	        dMultiply1_331( q, node[1].body.posr().R(), p );
+	    else
+	        q.set(p);
+
+	    double x = dCalcVectorDot3( w1, q );
+	    double y = dCalcVectorDot3( w2, q );
+	    return -dAtan2( y, x );
+	}
+
+	DxJointHinge2( DxWorld w ) {
 		super(w);
 
 		anchor1 = new DVector3();
@@ -116,7 +139,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		if (( limot1.getLostop() >= -M_PI || limot1.histop <= M_PI ) &&
 				limot1.getLostop() <= limot1.histop )
 		{
-			double angle = measureAngle();
+			double angle = measureAngle1();
 			limot1.testRotationalLimit( angle );
 		}
 		if ( limot1.getLimit()!=0 || limot1.fmax > 0 ) info.incM();
@@ -213,8 +236,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	// compute vectors v1 and v2 (embedded in body1), used to measure angle
 	// between body 1 and body 2
 
-	void
-	makeV1andV2()
+	private void makeV1andV2()
 	{
 		if ( node[0].body != null)
 		{
@@ -241,14 +263,40 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		}
 	}
 
+	// same as above, but for the second axis
+	private void makeW1andW2()
+	{
+	    if ( node[1].body != null )
+	    {
+	        // get axis 1 and 2 in global coords
+	        DVector3 ax1 = new DVector3(), ax2 = new DVector3(), w = new DVector3();
+	        dMultiply0_331( ax1, node[0].body.posr().R(), _axis1 );
+	        dMultiply0_331( ax2, node[1].body.posr().R(), _axis2 );
 
-//	public void dJointSetHinge2Anchor( dJoint j, double x, double y, double z )
-	public void dJointSetHinge2Anchor( double x, double y, double z ) {
-		dJointSetHinge2Anchor( new DVector3(x, y, z) );
+	        // don't do anything if the axis1 or axis2 vectors are zero or the same
+	        if (( ax1.get0() == 0 && ax1.get1() == 0 && ax1.get2() == 0 ) ||
+	            ( ax2.get0() == 0 && ax2.get1() == 0 && ax2.get2() == 0 ) ||
+	            ( ax1.get0() == ax2.get0() && ax1.get1() == ax2.get1() && ax1.get2() == ax2.get2() ) ) {
+	        	return;
+	        }
+
+	        // modify axis 1 so it's perpendicular to axis 2
+	        double k = dCalcVectorDot3( ax2, ax1 );
+	        //for ( int i = 0; i < 3; i++ ) ax1[i] -= k * ax2[i];
+	        ax1.eqSum(ax1, ax2, -k);
+	        dNormalize3( ax1 );
+
+	        // make w1 = modified axis1, w2 = axis2 x (modified axis1)
+	        dCalcVectorCross3( w, ax2, ax1 );
+	        dMultiply1_331( w1, node[1].body.posr().R(), ax1 );
+	        dMultiply1_331( w2, node[1].body.posr().R(), w );
+	    }
 	}
+
 	public void dJointSetHinge2Anchor( DVector3C xyz ) {
 		setAnchors( xyz, anchor1, anchor2 );
 		makeV1andV2();
+		makeW1andW2();
 	}
 
 
@@ -267,6 +315,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 			s0 = s0MD.get();
 		}
 		makeV1andV2();
+		makeW1andW2();
 	}
 
 
@@ -285,6 +334,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 			s0 = s0MD.get();
 		}
 		makeV1andV2();
+		makeW1andW2();
 	}
 
 
@@ -364,10 +414,13 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 
 	public double dJointGetHinge2Angle1()
 	{
-		if ( node[0].body != null) return measureAngle();
-		else return 0;
+		return measureAngle1();
 	}
 
+	public double dJointGetHinge2Angle2()
+	{
+	    return measureAngle2();
+	}
 
 	public double dJointGetHinge2Angle1Rate()
 	{
@@ -445,6 +498,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	    c0 = c0R.d;
 
 	    makeV1andV2();
+	    makeW1andW2();
 	}
 
 	
@@ -462,7 +516,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 
 	@Override
 	public void setAnchor (double x, double y, double z)
-	{ dJointSetHinge2Anchor (x, y, z); }
+	{ dJointSetHinge2Anchor (new DVector3(x, y, z)); }
 	@Override
 	public void setAnchor (final DVector3C a)
 	{ dJointSetHinge2Anchor(a); }
@@ -497,6 +551,9 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	@Override
 	public double getAngle1()
 	{ return dJointGetHinge2Angle1 (); }
+	@Override
+	public double getAngle2()
+	{ return dJointGetHinge2Angle2 (); }
 	@Override
 	public double getAngle1Rate()
 	{ return dJointGetHinge2Angle1Rate (); }
