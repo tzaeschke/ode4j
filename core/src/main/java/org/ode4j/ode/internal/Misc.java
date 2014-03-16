@@ -24,6 +24,8 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
@@ -42,7 +44,7 @@ import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 public class Misc extends Common {
 
 	//	static unsigned long seed = 0;  //32bit unsigned
-	private static volatile long seed = 0;
+	private static final AtomicLong seed = new AtomicLong(0);
 
 	protected Misc() {
 		//private
@@ -57,14 +59,13 @@ public class Misc extends Common {
 	public static long
 	dRand()
 	{
-		seed = (1664525L*seed + 1013904223L) & 0xffffffffL;
-//		seed *= 1664525L;
-//		//if (seed > 0xffffffff) seed -= 0xffffffff+1;
-////		seed &= 0xffffffff;  //Could be skipped
-//		seed += 1013904223L;
-//		if (seed > 0xffffffff) seed -= 0xffffffff+1;
-//		seed = seed & 0x000000ffffffffL;  //Could be skipped
-		return seed;
+	    long origSeed, newSeed;
+        do {
+            origSeed = seed.get();
+            newSeed = (1664525L * origSeed + 1013904223L) & 0xffffffffL;
+        } while (seed.compareAndSet(origSeed, newSeed));
+        return newSeed;
+//		seed = (1664525L*seed + 1013904223L) & 0xffffffffL;
 	}
 
 
@@ -72,14 +73,14 @@ public class Misc extends Common {
 	//unsigned long  dRandGetSeed()
 	public static long  dRandGetSeed()
 	{
-		return Math.abs(seed);
+		return Math.abs(seed.get());
 	}
 
 
 	//void dRandSetSeed (unsigned long s)
 	public static void dRandSetSeed (long s)
 	{
-		seed = s;
+		seed.set(s);
 	}
 
 
@@ -87,9 +88,9 @@ public class Misc extends Common {
 	public static boolean dTestRand()
 	{
 		//	  unsigned long oldseed = seed;
-		long oldseed = seed;
+		long oldseed = seed.get();
 		boolean ret = true;
-		seed = 0;
+		seed.set(0);
 		if (dRand() != 0x3c6ef35f || dRand() != 0x47502932 ||
 				dRand() != 0xd1ccf6e9L || dRand() != 0xaaf95334L ||
 				dRand() != 0x6252e503L ||
@@ -99,7 +100,7 @@ public class Misc extends Common {
 				dRand() != 0x81fdbee7L ||
 				dRand() != 0x94f0af1aL ||
 				dRand() != 0xcbf633b1L) ret = false;
-		seed = oldseed;
+		seed.set(oldseed);
 		return ret;
 	}
 
@@ -112,17 +113,27 @@ public class Misc extends Common {
 	 */
 	public static int dRandInt (long n)
 	{
-		// seems good; xor-fold and modulus
-		//  final unsigned long un = n;
-		//  unsigned long r = dRand();
-		final long un = n;
-		//TZ the following is unnecessary In Java because each method call has
-		//its own context.
-//		// Since there is no memory barrier macro in ODE assign via volatile variable 
-//		// to prevent compiler reusing seed as value of `r'
-//		volatile long raw_r = dRand();
-//		long r = raw_r;
-		long r = dRand();
+	    long result;
+	    // Since there is no memory barrier macro in ODE assign via volatile variable 
+	    // to prevent compiler reusing seed as value of `r'
+	    long raw_r = dRand();
+	    long r = raw_r;
+	    
+	    long un = n;
+	    //dIASSERT(sizeof(n) == sizeof(un));
+
+	    
+//		// seems good; xor-fold and modulus
+//		//  final unsigned long un = n;
+//		//  unsigned long r = dRand();
+//		final long un = n;
+//		//TZ the following is unnecessary In Java because each method call has
+//		//its own context.
+////		// Since there is no memory barrier macro in ODE assign via volatile variable 
+////		// to prevent compiler reusing seed as value of `r'
+////		volatile long raw_r = dRand();
+////		long r = raw_r;
+//		long r = dRand();
 
 		// note: probably more aggressive than it needs to be -- might be
 		//       able to get away without one or two of the innermost branches.
@@ -165,23 +176,32 @@ public class Misc extends Common {
 		    if (un <= 0x00000002L) {
 		        r ^= (r >> 2);
 		        r ^= (r >> 1);
+	            result = (r/* & (duint32)0x01*/) & (un >> 1);
 		    } else {
 		        if (un <= 0x00000004L) {
 		            r ^= (r >> 2);
+	                result = ((r & 0x03L) * un) >> 2;
+	            } else {
+	                result = ((r & 0x0FL) * un) >> 4;
 		        }
 		    }
 		} else {
 		    if (un <= 0x00000100L) {
 		        r ^= (r >> 16);
 		        r ^= (r >> 8);
+	            result = ((r & 0xFFL) * un) >> 8;
 		    } else {
 		        if (un <= 0x00010000L) {
 		            r ^= (r >> 16);
+	                result = ((r & 0xFFFFL) * un) >> 16;
+	            } else {
+	                //result = (int)(((duint64)r * un) >> 32);
+	            	result = (int)(((long)r * un) >> 32);
 		        }
 		    }
 		}
 
-		return (int) (r % un);    
+		return (int)result;    
 	}
 
 
