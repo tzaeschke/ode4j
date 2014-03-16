@@ -164,13 +164,15 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 * For the first element, it is a pointer to (container.first).
 	 */
 //	private final Ref<dxGeom> tome = new Ref<dxGeom>();
-	DxGeom _next = null;
+	DxGeom _next = null;// next geom in linked list of geoms
 	private DxGeom _prev = null;
 	//dxGeom tome;	// linked list backpointer
+    private DxGeom _next_ex;	// next geom in extra linked list of geoms (for higher level structures)
+    private DxGeom _tome_ex;	// extra linked list backpointer (for higher level structures)
 	DxSpace parent_space;// the space this geom is contained in, 0 if none
-	int _sapIdxDirty; // TZ: Used by SAP-Space.
-	int _sapIdxGeom; // TZ: Used by SAP-Space.
-	Block _qtIdx; // TZ: Used by QuadTree-Space.
+	int _sapIdxDirtyEx; // TZ: Used by SAP-Space.
+	int _sapIdxGeomEx; // TZ: Used by SAP-Space.
+	Block _qtIdxEx; // TZ: Used by QuadTree-Space.
 	
 	//double[] aabb = new double[6];	// cached AABB for this space
 	DAABB _aabb = new DAABB();	// cached AABB for this space
@@ -396,6 +398,17 @@ public abstract class DxGeom extends DBase implements DGeom {
 		return _next;
 	}
 
+	/**
+	 * @return next dxGeom.
+	 * @author Tilmann Zaeschke
+	 */
+	final DxGeom getNextEx() {
+		return _next_ex;
+	}
+	final void setNextEx(DxGeom g) {
+		_next_ex = g;
+	}
+
 	// add and remove this geom from a linked list maintained by a body.
 
 	private void bodyAdd (DxBody b) {
@@ -429,6 +442,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 		//TODO remove.
 		_next = null;
 		_prev = null;//tome = null;
+		_next_ex = null;
+		_tome_ex = null;
 		parent_space = null;
 		_aabb.setZero();//dSetZero (_aabb.v,6);
 		category_bits = ~0;

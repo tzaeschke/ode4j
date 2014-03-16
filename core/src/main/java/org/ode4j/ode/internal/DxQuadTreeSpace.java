@@ -28,7 +28,6 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.dAASSERT;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dNextAfter;
-import static org.ode4j.ode.internal.cpp4j.Cmath.pow;
 
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAABBC;
@@ -196,9 +195,9 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 			DxGeom g = mFirst;
 			while (g != null){
 				if (GEOM_ENABLED(g)){
-					Collide(g, g.getNext(), UserData, Callback);
+					Collide(g, g.getNextEx(), UserData, Callback);
 				}
-				g = g.getNext();
+				g = g.getNextEx();
 			}
 
 			// Recurse for children
@@ -226,7 +225,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 				if (GEOM_ENABLED(g2)){
 					collideAABBs (g1, g2, UserData, Callback);
 				}
-				g2 = g2.getNext();
+				g2 = g2.getNextEx();
 			}
 
 			// Collide against children
@@ -268,17 +267,17 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 				if (GEOM_ENABLED(g1)){
 					collideAABBs (g1, g2, userData, callback);
 				}
-				g1 = g1.getNext();
+				g1 = g1.getNextEx();
 			}
 		}
 
 		//void Block::AddObject(dGeom Object){
 		void AddObject(DxGeom aObject){
 			// Add the geom
-			aObject._next = mFirst;
+			aObject.setNextEx( mFirst );
 			mFirst = aObject;
 			//XXX TZ aObject.tome = (dxGeom**)this;
-			aObject._qtIdx = this;
+			aObject._qtIdxEx = this;
 
 			// Now traverse upwards to tell that we have a geom
 			Block Block = this;
@@ -297,18 +296,18 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 			while (g!=null){
 				if (g == aObject){
 					if (Last!=null){
-						Last._next = g._next;
+						Last.setNextEx( g.getNextEx() );
 					}
-					else mFirst = g.getNext();
+					else mFirst = g.getNextEx();
 
 					break;
 				}
 				Last = g;
-				g = g.getNext();
+				g = g.getNextEx();
 			}
 
 			//XXX TZ aObject.tome = null;
-			aObject._qtIdx = null;
+			aObject._qtIdxEx = null;
 			
 
 			// Now traverse upwards to tell that we have lost a geom
@@ -405,6 +404,16 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	int CurrentIndex;
 	//};
 
+	private int numNodes(int depth) 
+    {
+        // A 4-ary tree has (4^(depth+1) - 1)/3 nodes
+        // Note: split up into multiple constant expressions for readability
+        final int k = depth+1;
+        final int fourToNthPlusOne = 1 << (2*k); // 4^k = 2^(2k)
+        return (fourToNthPlusOne - 1) / 3;
+    }
+
+	
 	//dxQuadTreeSpace::dxQuadTreeSpace(dSpace _space, 
 	//dVector3 Center, dVector3 Extents, int Depth) : dxSpace(_space){
 	DxQuadTreeSpace(DxSpace _space, 
@@ -412,11 +421,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		super(_space);
 		type = dQuadTreeSpaceClass;
 
-		int BlockCount = 0;
-		// TODO: should be just BlockCount = (4^(n+1) - 1)/3
-		for (int i = 0; i <= Depth; i++){
-			BlockCount += (int)pow((double)SPLITS, i);
-		}
+		int BlockCount = numNodes(Depth);
 
 		this.Blocks = new Block[BlockCount];//(Block*)dAlloc(BlockCount * sizeof(Block));
 		for (int i = 0; i < this.Blocks.length; i++) Blocks[i] = new Block(); 
@@ -459,10 +464,8 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 //		}
 
 		///TODO call DESTRUCTORS (?, if any)
-		// int BlockCount = 0;
-		// for (int i = 0; i < Depth; i++){
-		// 	BlockCount += (int)pow((double)SPLITS, i);
-		// }
+		// int BlockCount = numNode(Depth);
+		//
 		//	dFree(Blocks, BlockCount);// * sizeof(Block));
 		//	dFree(CurrentChild, (Depth + 1));// * sizeof(int));
 
@@ -549,22 +552,15 @@ PARENTRECURSE:
 	void add(DxGeom g){
 		CHECK_NOT_LOCKED (this);
 		Common.dAASSERT(g);
-		Common.dUASSERT(g.parent_space == null && g.getNext() == null, 
+		Common.dUASSERT(g._qtIdxEx == null && g.getNextEx() == null, 
 		"geom is already in a space");
 
-		//g._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
-		g.setFlagDirtyAndBad();
 		DirtyList.push(g);
 
 		// add
-		g.parent_space = this;
 		Blocks[0].GetBlock(g._aabb).AddObject(g);	// Add to best block
-		count++;
 
-		// enumerator has been invalidated
-		current_geom = null;
-
-		this.dGeomMoved();
+		super.add(g);
 	}
 
 	//void dxQuadTreeSpace::remove(dxGeom* g){
@@ -576,8 +572,7 @@ PARENTRECURSE:
 
 		// remove
 		//TZ XXX ((Block*)g.tome).DelObject(g);
-		g._qtIdx.DelObject(g);
-		count--;
+		g._qtIdxEx.DelObject(g);
 
 		for (int i = 0; i < DirtyList.size(); i++){
 			if (DirtyList.get(i) == g){
@@ -586,18 +581,8 @@ PARENTRECURSE:
 				--i;
 			}
 		}
-
-		// safeguard
-// FIXME		g.next = null;
-		// FIXME		g.tome = null;
-		g.parent_space = null;
-
-		// enumerator has been invalidated
-		current_geom = null;
-
-		// the bounding box of this space (and that of all the parents) may have
-		// changed as a consequence of the removal.
-		this.dGeomMoved();
+		
+		super.remove(g);
 	}
 
 	//void dxQuadTreeSpace::dirty(dxGeom* g){
@@ -628,7 +613,7 @@ PARENTRECURSE:
 			g.unsetFlagDirtyAndBad();
 
 			//TZ XXX ((Block)g.tome).Traverse(g);
-			g._qtIdx.Traverse(g);
+			g._qtIdxEx.Traverse(g);
 		}
 		DirtyList.setSize(0);
 
@@ -698,7 +683,7 @@ PARENTRECURSE:
 		if (g2.parent_space == this){
 			// The block the geom is in
 			//XXX TZ Block* CurrentBlock = (Block*)g2.tome;
-			Block CurrentBlock = g2._qtIdx;
+			Block CurrentBlock = g2._qtIdxEx;
 
 			// Collide against block and its children
 			DataCallback dc = new DataCallback(UserData, Callback);

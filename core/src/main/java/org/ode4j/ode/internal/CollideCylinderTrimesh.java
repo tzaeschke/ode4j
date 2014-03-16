@@ -497,12 +497,14 @@ public class CollideCylinderTrimesh implements DColliderFn {
 //		vCp0[2] = m_vCylinderPos[2] + m_vCylinderAxis[2]*(m_fCylinderSize* REAL(0.5));
 		vCp0.eqSum( m_vCylinderPos, m_vCylinderAxis, m_fCylinderSize* 0.5);
 
-		DVector3 vCp1 = new DVector3();
-//		vCp1[0] = m_vCylinderPos[0] - m_vCylinderAxis[0]*(m_fCylinderSize* REAL(0.5));
-//		vCp1[1] = m_vCylinderPos[1] - m_vCylinderAxis[1]*(m_fCylinderSize* REAL(0.5));
-//		vCp1[2] = m_vCylinderPos[2] - m_vCylinderAxis[2]*(m_fCylinderSize* REAL(0.5));
-		vCp1.eqSum( m_vCylinderPos, m_vCylinderAxis, -m_fCylinderSize* 0.5);
-
+//	#if 0
+//		DVector3 vCp1 = new DVector3();
+////		vCp1[0] = m_vCylinderPos[0] - m_vCylinderAxis[0]*(m_fCylinderSize* REAL(0.5));
+////		vCp1[1] = m_vCylinderPos[1] - m_vCylinderAxis[1]*(m_fCylinderSize* REAL(0.5));
+////		vCp1[2] = m_vCylinderPos[2] - m_vCylinderAxis[2]*(m_fCylinderSize* REAL(0.5));
+//		vCp1.eqSum( m_vCylinderPos, m_vCylinderAxis, -m_fCylinderSize* 0.5);
+//	#endif
+		
 		// reset best axis
 		m_iBestAxis = 0;
 		DVector3 vAxis = new DVector3();

@@ -24,20 +24,29 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3_41;
+import static org.ode4j.ode.OdeMath.dCalcVectorDot3_44;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply1_331;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dRecip;
+import static org.ode4j.ode.internal.cpp4j.Cmath.asin;
+import static org.ode4j.ode.internal.cpp4j.Cmath.atan2;
+
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector4;
-import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
-
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.cpp4j.C_All.*;
 
 
 /**
@@ -294,18 +303,20 @@ public class DxCollisionUtil {
 			dst.setIdentity();
 			return;
 		}
+		
+	    double detRecip = 1.0 / det;
 
-		dst.set00(    ma.get11()*ma.get22() - ma.get12()*ma.get21()   / det );
-		dst.set01( -( ma.get01()*ma.get22() - ma.get21()*ma.get02() ) / det );
-		dst.set02(    ma.get01()*ma.get12()  - ma.get11()*ma.get02()   / det );
+		dst.set00( (ma.get11()*ma.get22() - ma.get12()*ma.get21()) * detRecip );
+		dst.set01( (ma.get21()*ma.get02() - ma.get01()*ma.get22()) * detRecip );
+		dst.set02( (ma.get01()*ma.get12() - ma.get11()*ma.get02()) * detRecip );
 
-		dst.set10( -( ma.get10()*ma.get22() - ma.get12()*ma.get20() ) / det );
-		dst.set11(    ma.get00()*ma.get22() - ma.get20()*ma.get02()   / det );
-		dst.set12( -( ma.get00()*ma.get12() - ma.get10()*ma.get02() ) / det );
+		dst.set10( (ma.get12()*ma.get20() - ma.get10()*ma.get22()) * detRecip );
+		dst.set11( (ma.get00()*ma.get22() - ma.get20()*ma.get02()) * detRecip );
+		dst.set12( (ma.get10()*ma.get02() - ma.get00()*ma.get12()) * detRecip );
 
-		dst.set20(    ma.get10()*ma.get21() - ma.get20()*ma.get11()   / det );
-		dst.set21( -( ma.get00()*ma.get21() - ma.get20()*ma.get01() ) / det );
-		dst.set22(    ma.get00()*ma.get11() - ma.get01()*ma.get10()   / det );
+		dst.set20( (ma.get10()*ma.get21() - ma.get20()*ma.get11()) * detRecip );
+		dst.set21( (ma.get20()*ma.get01() - ma.get00()*ma.get21()) * detRecip );
+		dst.set22( (ma.get00()*ma.get11() - ma.get01()*ma.get10()) * detRecip );
 	}
 
 	//inline void dQuatTransform(final dQuaternion& quat,final dVector3& source,dVector3& dest)
@@ -350,11 +361,12 @@ public class DxCollisionUtil {
 
 		if (norm > (0.0))
 		{
+			double invNorm = 1.0/norm;
 			DQuaternion invQuat = new DQuaternion();
-			invQuat.set0(  quat.get0() / norm );
-			invQuat.set1( -quat.get1() / norm );
-			invQuat.set2( -quat.get2() / norm );
-			invQuat.set3( -quat.get3() / norm );	
+			invQuat.set0(  quat.get0() * invNorm );
+			invQuat.set1( -quat.get1() * invNorm );
+			invQuat.set2( -quat.get2() * invNorm );
+			invQuat.set3( -quat.get3() * invNorm );	
 
 			dQuatTransform(invQuat,source,dest);
 
@@ -420,10 +432,11 @@ public class DxCollisionUtil {
 
 		if (norm > 0.0f)
 		{
-			dest.set0( source.get0() / norm );
-			dest.set1( -source.get1() / norm );
-			dest.set2( -source.get2() / norm );
-			dest.set3( -source.get3() / norm );	
+			double invNorm = 1.0/norm;
+			dest.set0( source.get0() * invNorm );
+			dest.set1( -source.get1() * invNorm );
+			dest.set2( -source.get2() * invNorm );
+			dest.set3( -source.get3() * invNorm);	
 		}
 		else
 		{
@@ -915,13 +928,6 @@ public class DxCollisionUtil {
 	//****************************************************************************
 	// other utility functions
 
-	//void dInfiniteAABB (dxGeom *geom, dReal aabb[6])
-	void dInfiniteAABB (DxGeom geom, DAABB aabb)
-	{
-		aabb.set( -dInfinity, dInfinity,
-				-dInfinity, dInfinity,
-				-dInfinity, dInfinity);
-	}
 
 
 	//****************************************************************************
@@ -1007,13 +1013,14 @@ public class DxCollisionUtil {
 			if( (fDistance0 > 0 && fDistance1 < 0) || ( fDistance0 < 0 && fDistance1 > 0) ) {
 
 				// find intersection point of edge and plane
-				DVector3 vIntersectionPoint=new DVector3();
+				DVector3 vIntersectionPoint = new DVector3();
+				double f001 = fDistance0/(fDistance0-fDistance1); 
 				vIntersectionPoint.set0( avArrayIn[i0].get0() - 
-						(avArrayIn[i0].get0()-avArrayIn[i1].get0())*fDistance0/(fDistance0-fDistance1) );
+						(avArrayIn[i0].get0()-avArrayIn[i1].get0()) * f001 );
 				vIntersectionPoint.set1( avArrayIn[i0].get1() - 
-						(avArrayIn[i0].get1()-avArrayIn[i1].get1())*fDistance0/(fDistance0-fDistance1) );
+						(avArrayIn[i0].get1()-avArrayIn[i1].get1()) * f001 );
 				vIntersectionPoint.set2( avArrayIn[i0].get2() - 
-						(avArrayIn[i0].get2()-avArrayIn[i1].get2())*fDistance0/(fDistance0-fDistance1) );
+						(avArrayIn[i0].get2()-avArrayIn[i1].get2()) * f001 );
 
 				// emit intersection point
 				//				avArrayOut[ctOut.get()].v[0] = vIntersectionPoint.get0();
@@ -1065,12 +1072,13 @@ public class DxCollisionUtil {
 
 				// find intersection point of edge and plane
 				DVector3 vIntersectionPoint=new DVector3();
+				double f001 = fDistance0/(fDistance0-fDistance1);
 				vIntersectionPoint.set0( avArrayIn[i0].get0() - 
-						(avArrayIn[i0].get0()-avArrayIn[i1].get0())*fDistance0/(fDistance0-fDistance1) );
+						(avArrayIn[i0].get0()-avArrayIn[i1].get0())*f001 );
 				vIntersectionPoint.set1( avArrayIn[i0].get1() - 
-						(avArrayIn[i0].get1()-avArrayIn[i1].get1())*fDistance0/(fDistance0-fDistance1) );
+						(avArrayIn[i0].get1()-avArrayIn[i1].get1())*f001 );
 				vIntersectionPoint.set2( avArrayIn[i0].get2() - 
-						(avArrayIn[i0].get2()-avArrayIn[i1].get2())*fDistance0/(fDistance0-fDistance1) );
+						(avArrayIn[i0].get2()-avArrayIn[i1].get2())*f001 );
 
 				// emit intersection point
 				if (dVector3LengthSquare(avArrayIn[i0]) <= fRadius*fRadius)

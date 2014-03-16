@@ -148,7 +148,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 //	private boolean GEOM_ENABLED(dxGeom g) { 
 //		return (((g)->gflags & GEOM_ENABLE_TEST_MASK) == GEOM_ENABLE_TEST_VALUE); }
 	//
-	//// HACK: We abuse 'next' and 'tome' members of dxGeom to store indice into dirty/geom lists.
+	//// HACK: We abuse 'next' and 'tome' members of dxGeom to store indices into dirty/geom lists.
 	//#define GEOM_SET_DIRTY_IDX(g,idx) { (g)->next = (dxGeom*)(size_t)(idx); }
 	//#define GEOM_SET_GEOM_IDX(g,idx) { (g)->tome = (dxGeom**)(size_t)(idx); }
 	//#define GEOM_GET_DIRTY_IDX(g) ((int)(size_t)(g)->next)
@@ -159,10 +159,10 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	 * As an alternative to the above, be implement separate fields in dxGeom.
 	 * This should be faster than having a generic class for SAP and QT-Space info.
 	 */
-	private void GEOM_SET_DIRTY_IDX(DxGeom g,int idx) { g._sapIdxDirty = idx; }
-	private void GEOM_SET_GEOM_IDX(DxGeom g,int idx) { g._sapIdxGeom = idx; }
-	private int GEOM_GET_DIRTY_IDX(DxGeom g) { return g._sapIdxDirty; }
-	private int GEOM_GET_GEOM_IDX(DxGeom g) { return g._sapIdxGeom; }
+	private void GEOM_SET_DIRTY_IDX(DxGeom g,int idx) { g._sapIdxDirtyEx = idx; }
+	private void GEOM_SET_GEOM_IDX(DxGeom g,int idx) { g._sapIdxGeomEx = idx; }
+	private int GEOM_GET_DIRTY_IDX(DxGeom g) { return g._sapIdxDirtyEx; }
+	private int GEOM_GET_GEOM_IDX(DxGeom g) { return g._sapIdxGeomEx; }
 	private static final int GEOM_INVALID_IDX = -1;
 	
 	/**
@@ -261,20 +261,14 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	{
 		CHECK_NOT_LOCKED (this);
 		dAASSERT(g);
-		dUASSERT(g.parent_space == null && g.getNext() == null, "geom is already in a space");
-
-		//g._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
-		g.setFlagDirtyAndBad();
+		dUASSERT(g._sapIdxGeomEx == 0 && g.getNextEx() == null, "geom is already in a space");
 
 		// add to dirty list
 		GEOM_SET_DIRTY_IDX( g, DirtyList.size() );
 		GEOM_SET_GEOM_IDX( g, GEOM_INVALID_IDX );
 		DirtyList.push( g );
 
-		g.parent_space = this;
-		this.count++;
-
-		dGeomMoved();
+		super.add(g);
 	}
 
 	//void dxSAPSpace::remove( dxGeom* g )
@@ -310,14 +304,8 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 			GEOM_SET_GEOM_IDX(g,GEOM_INVALID_IDX);
 			GeomList.setSize( geomSize-1 );
 		}
-		count--;
-
-		// safeguard
-		g.parent_space = null;
-
-		// the bounding box of this space (and that of all the parents) may have
-		// changed as a consequence of the removal.
-		dGeomMoved();
+		
+		super.remove(g);
 	}
 
 	//void dxSAPSpace::dirty( dxGeom* g )

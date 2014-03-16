@@ -32,6 +32,9 @@ import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
+
 import static org.ode4j.ode.OdeMath.*;
 
 
@@ -187,24 +190,7 @@ public class DxCapsule extends DxGeom implements DCapsule {
 		}
 	}
 
-	// use this instead of dCollideSpheres if the spheres are at the same point, 
-	//  but the normal is known (e.g. in capsule-box collision)
-	private static int dCollideSpheresZeroDist (DVector3 p1, double r1, DVector3 p2, double r2, 
-	        DVector3 normal, DContactGeom c) {
-//	    c->normal[0] = normal[0];
-//	    c->normal[1] = normal[1];
-//	    c->normal[2] = normal[2];
-	    c.normal.set(normal);
-	    c.depth  = r1 + r2;
-	    double k = 0.5 * (r2 - r1);
-//	    c->pos[0] = p1[0] + c->normal[0]*k;
-//	    c->pos[1] = p1[1] + c->normal[1]*k;
-//	    c->pos[2] = p1[2] + c->normal[2]*k;
-	    c.pos.eqSum(p1, c.normal, k);
-	    return 1;
-	}
-
-static class CollideCapsuleBox implements DColliderFn {
+	static class CollideCapsuleBox implements DColliderFn {
 		//int dCollideCapsuleBox (dxGeom *o1, dxGeom *o2, int flags,
 		//		  dContactGeom *contact, int skip)
 		int dCollideCapsuleBox (DxCapsule o1, DxBox o2, int flags,
@@ -248,20 +234,35 @@ static class CollideCapsuleBox implements DColliderFn {
 			DxCollisionUtil.dClosestLineBoxPoints (p1,p2,c,R,side,pl,pb);
 
 			// if the capsule is penetrated further than radius 
-			//  than pl and pb are equal -> unknown normal
-			// use vector to center of box as normal
+			//  then pl and pb are equal (up to mindist) -> unknown normal
+			// use normal vector of closest box surface
 			double mindist;
-			if (!dDOUBLE) {
-			    mindist = 1e-9;
+			if (!dDOUBLE) { 
+				mindist = 1e-6;
 			} else {
-			    mindist = 1e-18;
-			}//#endif
+				mindist = 1e-15;
+			}
 			if (pl.distance(pb)<mindist) {
-			    DVector3 normal = new DVector3(); // pb-c (vector from center of box to pb)
-			    //for (int i=0; i<3; i++) normal[i] = pb[i]-c[i];
-			    normal.eqDiff(pb, c);
-			    dSafeNormalize3(normal);
-			    return dCollideSpheresZeroDist (pl,radius,pb,0.,normal,contacts.get());
+				// consider capsule as box
+				DVector3 normal = new DVector3();
+				RefDouble depth = new RefDouble();
+				RefInt code = new RefInt();
+				// WARNING! rad2 is declared as #define in Microsoft headers (as well as psh2, chx2, grp2, frm2, rct2, ico2, stc2, lst2, cmb2, edt2, scr2). Avoid abbreviations!
+				/* dReal rad2 = radius*REAL(2.0); */ double radiusMul2 = radius * 2.0;
+				DVector3C capboxside = new DVector3(radiusMul2, radiusMul2, cyl._lz + radiusMul2);
+				int num = DxBox.dBoxBox (c, R, side, 
+						o1.final_posr().pos(), o1.final_posr().R(), capboxside,
+						normal, depth, code, flags, contacts, skip);
+
+				for (int i=0; i<num; i++) {
+					DContactGeom cC = contacts.get(i*skip);
+					cC.normal.set(normal);
+					cC.g1 = o1;
+					cC.g2 = o2;
+					cC.side1 = -1;
+					cC.side2 = -1;
+				}
+				return num;
 			} else {
 			    // generate contact point
 			    return DxCollisionUtil.dCollideSpheres (pl,radius,pb,0.,contacts);

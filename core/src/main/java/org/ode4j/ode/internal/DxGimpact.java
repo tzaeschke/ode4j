@@ -30,7 +30,6 @@ import static org.ode4j.ode.internal.DxGimpactCollision.MakeMatrix;
 import java.nio.channels.UnsupportedAddressTypeException;
 
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DGeom;
@@ -146,13 +145,6 @@ public class DxGimpact extends DxTriMesh {
 //	{
 //	    return dxGeom::controlGeometry(controlClass, controlCode, dataValue, dataSize);
 //	}
-
-
-	@Override
-	//int dxTriMesh::AABBTest(dxGeom* g, dReal aabb[6]){
-	boolean AABBTest(DAABB aabb){
-		return true;//1;
-	}
 
 
 	@Override

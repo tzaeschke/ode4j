@@ -179,9 +179,8 @@ public class CollideTrimeshRay implements DColliderFn {
 		DxGimpact TriMesh = (DxGimpact) g1;
 
 		double Length = RayGeom.getLength();
-		//boolean FirstContact = RayGeom.getFirstContact();
-		//boolean BackfaceCull = RayGeom.getBackfaceCull();
-		//dGeomRayGetParams(RayGeom, &FirstContact, &BackfaceCull);
+		boolean FirstContact = RayGeom.getFirstContact();
+		boolean BackfaceCull = RayGeom.getBackfaceCull();
 		boolean ClosestHit = RayGeom.getClosestHit();//dGeomRayGetClosestHit(RayGeom);
 		DVector3 Origin = new DVector3(), Direction = new DVector3();
 		RayGeom.get(Origin, Direction);
