@@ -54,25 +54,17 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	//dxJoint XXcreateJoint(dWorld w, dxJointGroup group)
 	//{
 	//    dxJoint j;
-	////    if (group != null) {
-	////        j = (dxJoint) group.stack.alloc(sizeof(T));
-	////        group.num++;
-	////    } else
-	////        j = (dxJoint) dAlloc(sizeof(T));
-	////    
-	////    new(j) T(w);
-	//    if (group != null)
-	//        j.flags |= dJOINT_INGROUP;
-	//    
+	//	if (group) {
+	// 	   j = group->alloc<T>(w);
+	//	} else {
+	//	    j = new T(w);
+	//	}
 	//    return j;
 	//}
 	private <T extends DxJoint> T createJoint(T j, DJointGroup group)
 	{
 		//TODO move this into dxJoint constructor? (TZ)
 		if (group != null) {
-//			((dxJointGroup)group).stack.add(j);
-//			((dxJointGroup)group).num++;
-//			j.flags |= dxJoint.dJOINT_INGROUP;
 			((DxJointGroup)group).addJoint(j);
 		}
 		return j;
@@ -83,20 +75,6 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	{
 		dAASSERT (w);
 		return createJoint( new DxJointBall((DxWorld) w),group);
-	}
-
-
-	public DxJointDBall dJointCreateDoubleBall (DWorld w, DJointGroup group)
-	{
-		dAASSERT (w);
-		return createJoint( new DxJointDBall((DxWorld) w),group);
-	}
-
-
-	public DxJointDHinge dJointCreateDoubleHinge (DWorld w, DJointGroup group)
-	{
-		dAASSERT (w);
-		return createJoint( new DxJointDHinge((DxWorld) w),group);
 	}
 
 
@@ -111,13 +89,6 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	{
 		dAASSERT (w);
 		return createJoint( new DxJointSlider((DxWorld) w),group);
-	}
-
-
-	public DxJointTransmission dJointCreateTransmission (DWorld w, DJointGroup group)
-	{
-		dAASSERT (w);
-		return createJoint( new DxJointTransmission((DxWorld) w),group);
 	}
 
 
@@ -197,8 +168,48 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 		return createJoint( new DxJointPlane2D((DxWorld) w),group);
 	}
 
+	public DxJointDBall dJointCreateDBall (DWorld w, DJointGroup group)
+	{
+		dAASSERT (w);
+		return createJoint( new DxJointDBall((DxWorld) w),group);
+	}
+
+	public DxJointDHinge dJointCreateDHinge (DWorld w, DJointGroup group)
+	{
+		dAASSERT (w);
+		return createJoint( new DxJointDHinge((DxWorld) w),group);
+	}
+
+	public DxJointTransmission dJointCreateTransmission (DWorld w, DJointGroup group)
+	{
+		dAASSERT (w);
+		return createJoint( new DxJointTransmission((DxWorld) w),group);
+	}
+
+	//TZ: Moved to DxJoint
+//	static void FinalizeAndDestroyJointInstance(DxJoint j, boolean delete_it)
+//	{
+//	    // if any group joints have their world pointer set to 0, their world was
+//	    // previously destroyed. no special handling is required for these joints.
+//	    if (j.world != null) {
+//	        j.removeJointReferencesFromAttachedBodies ();
+//	        j.removeObjectFromList ();
+//	        j.world.nj--;
+//	    }
+//	    if (delete_it) { 
+//	        //delete j;
+//	    } else {
+//	        j.DESTRUCTOR();//j->~dxJoint();
+//	    }
+//	}
+	
 	protected static void dJointDestroy (DxJoint j)
 	{
+	    dAASSERT (j);
+	    if ((j.flags & DxJoint.dJOINT_INGROUP)==0) {
+	        j.FinalizeAndDestroyJointInstance(true);
+	    }
+	    
 		dAASSERT (j);
 		//TZ size_t sz = j.size();
 		if ( j.isFlagsInGroup() ) return;

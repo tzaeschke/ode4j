@@ -104,6 +104,8 @@ public class OdeInit {
 //                }
 //            }
 //
+//    #else        	
+//            (void)imInitMode; // unused
 //    #endif // #if dTLS_ENABLED
 
             bResult = true;
@@ -130,6 +132,8 @@ public class OdeInit {
 //            }
 //        }
 //
+//    	#else
+//    	    (void)imInitMode; // unused
 //    #endif // #if dTLS_ENABLED
     }
 
@@ -185,6 +189,8 @@ public class OdeInit {
 //                bOutDataAllocated = true;
 //            }
 //
+//        	#else
+//                (void)imInitMode; // unused
 //    #endif // #if dTLS_ENABLED
 
             bResult = true;
@@ -204,6 +210,8 @@ public class OdeInit {
 //
 //        COdeTls::DropDataAllocationFlags(tkTlsKind, TLD_INTERNAL_COLLISIONDATA_ALLOCATED);
 //
+//    	#else
+//    	    (void)imInitMode; // unused
 //    #endif // dTLS_ENABLED
     }
 
@@ -221,7 +229,11 @@ public class OdeInit {
 //    #if dTLS_ENABLED
 //        EODETLSKIND tkTLSKindToInit = g_atkTLSKindsByInitMode[imInitMode];
 //        bool bTlsInitialized = false;
+//        #else
+//            (void)imInitMode; // unused
 //    #endif
+
+        boolean bWorldThreadingInitialized = false;
 
         do
         {
@@ -259,6 +271,13 @@ public class OdeInit {
 
             if (!bAnyModeAlreadyInitialized)
             {
+                if (!DxWorld.InitializeDefaultThreading())
+                {
+                    break;
+                }
+
+                bWorldThreadingInitialized = true;
+
 //    #if dTRIMESH_ENABLED && dTRIMESH_OPCODE
 //                if (!Opcode::InitOpcode())
 //                {
@@ -280,6 +299,11 @@ public class OdeInit {
 
         if (!bResult)
         {
+            if (bWorldThreadingInitialized)
+            {
+                DxWorld.FinalizeDefaultThreading();
+            }
+
 //    #if dTLS_ENABLED
 //            if (bTlsInitialized)
 //            {
@@ -371,11 +395,15 @@ public class OdeInit {
 //
 //            Opcode::CloseOpcode();
             } //#endif
-        }
+
+            DxWorld.FinalizeDefaultThreading();
+       }
 
 //    #if dTLS_ENABLED
 //        EODETLSKIND tkTLSKindToFinalize = g_atkTLSKindsByInitMode[imInitMode];
 //        COdeTls::Finalize(tkTLSKindToFinalize);
+//        #else
+//            (void)imInitMode; // unused
 //    #endif
 
         if (!bAnyModeStillInitialized)

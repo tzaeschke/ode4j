@@ -1165,19 +1165,14 @@ public class OdeMath extends DRotation {
 	private static void _dNormalize3(DVector3 a)
 	{
 		boolean bNormalizationResult = _dSafeNormalize3(a);
-		Common.dIASSERT(bNormalizationResult);
+		Common.dIVERIFY(bNormalizationResult);
 	}
 
 	//static __inline void _dNormalize4(dVector4 a)
 //	private static void _dNormalize4(double[] a)
 //	{
-//		if (!_dSafeNormalize4(a)) {
-//			throw new IllegalStateException(
-//					"Normalization failed: " + Arrays.toString(a));
-//		}
-////		int bNormalizationResult = _dSafeNormalize4(a);
-////		dIASSERT(bNormalizationResult);
-////		dVARIABLEUSED(bNormalizationResult);
+//    int bNormalizationResult = _dSafeNormalize4(a);
+//    dIVERIFY(bNormalizationResult);
 //	}
 
 	//#endif // defined(__ODE__)

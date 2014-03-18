@@ -27,6 +27,8 @@ package org.ode4j.ode;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.internal.processmem.DxUtil;
+import org.ode4j.ode.threading.DThreadingFunctionsInfo;
+import org.ode4j.ode.threading.DThreadingImplementation;
 
 /**
  * The world object is a container for rigid bodies and joints. Objects in
@@ -382,6 +384,22 @@ public interface DWorld {
 	* @see #useSharedWorkingMemory(DWorld)
 	*/
 	boolean setStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs);
+
+	/**
+	 * Assign threading implementation to be used for [quick]stepping the world.
+	 *
+	 * <p>WARNING: It is not recommended to assign the same threading implementation to
+	 * different worlds if they are going to be called in parallel. In particular this
+	 * makes resources preallocation for threaded calls to lose its sense. 
+	 * Built-in threading implementation is likely to crash if misused this way.
+	 * 
+	 * @param w The world to change threading implementation for.
+	 * @param functions_info Pointer to threading functions structure
+	 * @param threading_impl ID of threading implementation object
+	 * @deprecated This is not supported by ode4j.
+	 */
+	void setStepThreadingImplementation(final DThreadingFunctionsInfo functions_info, 
+			DThreadingImplementation threading_impl);
 
 	/**
 	 * Step the world.

@@ -51,9 +51,15 @@ import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryManager;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryReserveInfo;
+import org.ode4j.ode.threading.DThreadingFunctionsInfo;
+import org.ode4j.ode.threading.DThreadingImplementation;
 
 public class DxWorld extends DBase implements DWorld {
 
+	//TZ these are super-classes, but I made them delegates.
+	private Object dxThreadingBase;
+	private Object dxIThreadingDefaultImplProvider;
+	
 	//TODO
 	public final Ref<DxBody> firstbody = new Ref<DxBody>();
 	public final Ref<DxJoint> firstjoint = new Ref<DxJoint>();
@@ -68,6 +74,7 @@ public class DxWorld extends DBase implements DWorld {
 	double global_cfm;		// global constraint force mixing parameter
 	dxAutoDisable adis;		// auto-disable parameters
 	int body_flags;               // flags for new bodies
+    private int islands_max_threads; // maximum threads to allocate for island processing
 	public DxStepWorkingMemory wmem; // Working memory object for dWorldStep/dWorldQuickStep
 
 	dxQuickStepParameters qs;
@@ -75,61 +82,57 @@ public class DxWorld extends DBase implements DWorld {
 	dxDampingParameters dampingp; // damping parameters
 	double max_angular_speed;      // limit the angular velocity to this magnitude
 
-	//****************************************************************************
+	private Object userdata;
+
+    //dxWorld();
+    //virtual ~dxWorld(); // Compilers emit warnings if a class with virtual methods does not have a virtual destructor :(
+
+//    static boolean InitializeDefaultThreading();
+//    static void FinalizeDefaultThreading();
+//
+//    void AssignThreadingImpl(dxThreadingFunctionsInfo [][]functions_info, dThreadingImplementationID threading_impl);
+//    int GetThreadingIslandsMaxThreadsCount(int [][]out_active_thread_count_ptr=NULL);
+//    dxWorldProcessContext[][] UnsafeGetWorldProcessingContext();
+//
+//    //private: // dxIThreadingDefaultImplProvider
+//    dxThreadingFunctionsInfo RetrieveThreadingDefaultImpl(dThreadingImplementationID &out_default_impl);
+
+    //****************************************************************************
 	// world
 	private DxWorld() {
 		//private
 		super();
+		dxThreadingBase = new Object();  //super-constr.
+		firstbody = null;
+		firstjoint = null;
+		nb = 0;
+		nj = 0;
+		global_erp = Objects_H.dWORLD_DEFAULT_GLOBAL_ERP;
+		global_cfm = Objects_H.dWORLD_DEFAULT_GLOBAL_CFM;
+		adis = null;
+		body_flags = 0;  // everything disabled
+		islands_max_threads = dWORLDSTEP_THREADCOUNT_UNLIMITED;
+		wmem = null;
+		qs = null;
+		contactp = null;
+		dampingp = null;
+		max_angular_speed = dInfinity;
+		userdata = 0;
+	    dxThreadingBase.SetThreadingDefaultImplProvider(this);
+
+	    //dSetZero (gravity, 4);
+		gravity = new DVector3();
+		
+		adis = new dxAutoDisable();
+		qs = new dxQuickStepParameters();
+		contactp = new dxContactParameters();
+		dampingp = new dxDampingParameters();
 	}
 
 
 	public static DxWorld dWorldCreate()
 	{
 		DxWorld w = new DxWorld();
-		w.firstbody.set(null);
-		w.firstjoint.set(null);
-		w.nb = 0;
-		w.nj = 0;
-		//dSetZero (w.gravity,4);
-		w.gravity = new DVector3();
-		w.global_erp = 0.2;
-		//	#if defined(dSINGLE)
-		//	  w.global_cfm = 1e-5f;
-		//	#elif defined(dDOUBLE)
-		if (dDOUBLE) {
-			w.global_cfm = 1e-10;
-		} else {
-			w.global_cfm = 1e-5;
-		}
-		//	#else
-		//	  #error dSINGLE or dDOUBLE must be defined
-		//	#endif
-
-		w.body_flags = 0; // everything disabled
-		
-		w.wmem = null;
-
-		w.adis = new dxAutoDisable();
-		w.adis.idle_steps = 10;
-		w.adis.idle_time = 0;
-		w.adis.average_samples = 1;		// Default is 1 sample => Instantaneous velocity
-		w.adis.angular_average_threshold = (0.01)*(0.01);	// (magnitude squared)
-		w.adis.linear_average_threshold = (0.01)*(0.01);		// (magnitude squared)
-
-		w.qs = new dxQuickStepParameters();
-		w.qs.num_iterations = 20;
-		w.qs.w = (1.3);
-
-		w.contactp = new dxContactParameters();
-		w.contactp.max_vel = dInfinity;
-		w.contactp.min_depth = 0;
-
-		w.dampingp = new dxDampingParameters();
-		w.dampingp.linear_scale = 0;
-		w.dampingp.angular_scale = 0;
-		w.dampingp.linear_threshold = (0.01) * (0.01);
-		w.dampingp.angular_threshold = (0.01) * (0.01);  
-		w.max_angular_speed = dInfinity;
 
 		return w;
 	}
@@ -166,13 +169,21 @@ public class DxWorld extends DBase implements DWorld {
 			j = nextj;
 		}
 
-		if (wmem!=null) {
-		    wmem.Release();
-		}
-
 //		delete w;
 		DESTRUCTOR();
 	}
+
+	public void dWorldSetData (Object data)
+	{
+		userdata = data;
+	}
+
+
+	public Object dWorldGetData ()
+	{
+	    return userdata;
+	}
+
 
 
 //	public void dWorldSetGravity (dxWorld w, double x, double y, double z)
@@ -254,6 +265,16 @@ public class DxWorld extends DBase implements DWorld {
 //		return result;
 //	}
 
+
+	void dWorldSetStepIslandsProcessingMaxThreadCount(int count)
+	{
+	    islands_max_threads = count;
+	}
+
+	int dWorldGetStepIslandsProcessingMaxThreadCount()
+	{
+	    return islands_max_threads;
+	}
 
 	boolean dWorldUseSharedWorkingMemory(DxWorld from_world)
 	{
@@ -350,7 +371,7 @@ public class DxWorld extends DBase implements DWorld {
 	@SuppressWarnings("deprecation")
 	boolean dWorldSetStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs)
 	{
-	    dUASSERT (memfuncs==null || memfuncs.struct_size >= DxUtil.sizeof(memfuncs), "Bad functions info");
+	    dUASSERT (memfuncs==null || memfuncs.struct_size >= DxUtil.sizeof(memfuncs), "Bad memory functions info");
 
 	    boolean result = false;
 
@@ -388,6 +409,19 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
+	void dWorldSetStepThreadingImplementation( 
+		    final DxThreadingFunctionsInfo functions_info, 
+		    DThreadingImplementation threading_impl)
+		{
+		    dUASSERT (!functions_info || functions_info.struct_size >= sizeof(*functions_info), "Bad threading functions info");
+
+		if (dTHREADING_INTF_DISABLED) {
+		    dUASSERT(functions_info == null && threading_impl == null, "Threading interface is not available");
+		} else {
+		    AssignThreadingImpl(functions_info, threading_impl);
+		} 
+	}
+
 	boolean dWorldStep (double stepsize)
 	{
 	    dUASSERT (stepsize > 0,"stepsize must be > 0");
@@ -398,12 +432,12 @@ public class DxWorld extends DBase implements DWorld {
         if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
         		Step.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
         {
-	        dxProcessIslands (islandsinfo, stepsize, Step.INSTANCE);//dInternalStepIsland);
-
-	        result = true;
+        	//if (dxProcessIslands (w, islandsinfo, stepsize, &dxStepIsland, &dxEstimateStepMaxCallCount))
+            if (dxProcessIslands (islandsinfo, stepsize, Step.INSTANCE, dxEstimateStepMaxCallCount))
+            {
+                result = true;
+            }
 	    }
-
-	    DxWorldProcessContext.dxCleanupWorldProcessContext (this);
 
 	    return result;
 	}
@@ -418,12 +452,12 @@ public class DxWorld extends DBase implements DWorld {
 	    if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
 	            DxQuickStep.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
 	    {
-	        dxProcessIslands (islandsinfo, stepsize, DxQuickStep.INSTANCE);
-
-	        result = true;
+	    	//if (dxProcessIslands (w, islandsinfo, stepsize, &dxQuickStepIsland, &dxEstimateQuickStepMaxCallCount))
+	        if (dxProcessIslands (islandsinfo, stepsize, DxQuickStep.INSTANCE, dxEstimateQuickStepMaxCallCount))
+	        {
+	        	result = true;
+	        }
 	    }
-
-	    DxWorldProcessContext.dxCleanupWorldProcessContext (this);
 
 	    return result;
 	}
@@ -1041,7 +1075,82 @@ public class DxWorld extends DBase implements DWorld {
 	@Override
 	public void DESTRUCTOR()
 //	{ dWorldDestroy (); super.DESTRUCTOR(); }
-	{ super.DESTRUCTOR(); }
+	{ 
+		if (wmem != null)
+		{
+			wmem.CleanupWorldReferences(this);
+			wmem.Release();
+		}
+		super.DESTRUCTOR(); 
+	}
+
+	private boolean InitializeDefaultThreading()
+	{
+	    dIASSERT(g_world_default_threading_impl == null);
+
+	    boolean init_result = false;
+
+	    DThreadingImplementation threading_impl = DxThreadingImplementation.allocateSelfThreadedImplementation();
+
+	    if (threading_impl != null)
+	    {
+	        g_world_default_threading_functions = dThreadingImplementationGetFunctions(threading_impl);
+	        g_world_default_threading_impl = threading_impl;
+
+	        init_result = true;
+	    }
+
+	    return init_result;
+	}
+
+	private void FinalizeDefaultThreading()
+	{
+	    dThreadingImplementationID threading_impl = g_world_default_threading_impl;
+
+	    if (threading_impl != null)
+	    {
+	        dThreadingFreeImplementation(threading_impl);
+
+	        g_world_default_threading_functions = null;
+	        g_world_default_threading_impl = null;
+	    }
+	}
+
+	private void AssignThreadingImpl(DxThreadingFunctionsInfo[][] functions_info, dThreadingImplementationID threading_impl)
+	{
+	    if (wmem != null)
+	    {
+	        // Free objects allocated with old threading
+	        wmem.CleanupWorldReferences(this);
+	    }
+
+	    dxThreadingBase.AssignThreadingImpl(functions_info, threading_impl);
+	}
+
+	private int GetThreadingIslandsMaxThreadsCount(unsigned *out_active_thread_count_ptr/*=NULL*/) const
+	{
+	    unsigned active_thread_count = RetrieveThreadingThreadCount();
+	    if (out_active_thread_count_ptr != NULL)
+	    {
+	        *out_active_thread_count_ptr = active_thread_count;
+	    }
+
+	    return islands_max_threads == dWORLDSTEP_THREADCOUNT_UNLIMITED 
+	        ? active_thread_count 
+	        : (islands_max_threads < active_thread_count ? islands_max_threads : active_thread_count);
+	}
+
+	private DxWorldProcessContext UnsafeGetWorldProcessingContext()
+	{
+	    return wmem.GetWorldProcessingContext();
+	}
+
+	//private!
+	private DxThreadingFunctionsInfo [][] RetrieveThreadingDefaultImpl(DThreadingImplementation out_default_impl)
+	{
+	    out_default_impl = g_world_default_threading_impl;
+	    return g_world_default_threading_functions;
+	}
 
 
 	@Override
@@ -1246,4 +1355,44 @@ public class DxWorld extends DBase implements DWorld {
     public boolean setStepMemoryManager(DWorldStepMemoryFunctionsInfo memfuncs) {
         return dWorldSetStepMemoryManager(memfuncs);
     }
+
+
+	@Override
+	public void setData(Object data) {
+		dWorldSetData(data);
+	}
+
+
+	@Override
+	public Object getData() {
+		return dWorldGetData();
+	}
+
+
+	@Override
+	public void setStepIslandsProcessingMaxThreadCount(int count) {
+		dWorldSetStepIslandsProcessingMaxThreadCount(count);
+	}
+
+
+	@Override
+	public int getStepIslandsProcessingMaxThreadCount() {
+		return dWorldGetStepIslandsProcessingMaxThreadCount();
+	}
+//
+//
+//	@Override
+//	public void dWorldSetStepThreadingImplementation(
+//			DThreadingFunctionsInfo functions_info,
+//			DThreadingImplementation threading_impl) {
+//		
+//	}
+
+
+	@Override
+	public void setStepThreadingImplementation(
+			DThreadingFunctionsInfo functions_info,
+			DThreadingImplementation threading_impl) {
+		dxThreadingXYZ.x();
+	}
 }

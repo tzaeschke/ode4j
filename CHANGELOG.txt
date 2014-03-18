@@ -4,19 +4,22 @@ Done:  --> 0.13.1
 -- includes, EXCEPT threading.*
 -- joints: ALL DONE! THis includes missing updates from 0.11.0 for some joints:
 			--> DxJoint2D, ...
--- ode: all until memory.cpp
+-- ode: all until plane.cpp
 
 
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 
 TODO check use of _next/_tome in DxGeom. Make private? Remove getNext()?
 TODO check matrix.h
-
+TODO check use of (M_PI/2.0)
 
 TODO check if the new OdeMath.dCalcMatrix3Det and dInvertMatrix3 are really used.
 TODO add include/ode/threading*.h
+--> Currently ignoring dObStack (has new arenaSwitching)
 
 - Start migration to ODE 0.13.0
+
+- Skipped: odeou.*, odetls.*
 
 
 0.2.9

@@ -64,7 +64,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	//	enum dJOINT
 	//	{
 	/** if this flag is set, the joint was allocated in a joint group. */
-	private static final int dJOINT_INGROUP = 1;
+	static final int dJOINT_INGROUP = 1;
 
 	/**
 	 * if this flag is set, the joint was attached with arguments (0,body).
@@ -1029,6 +1029,22 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	void FinalizeAndDestroyJointInstance(boolean delete_it)
+	{
+	    // if any group joints have their world pointer set to 0, their world was
+	    // previously destroyed. no special handling is required for these joints.
+	    if (world != null) {
+	        removeJointReferencesFromAttachedBodies ();
+	        removeObjectFromList ();
+	        world.nj--;
+	    }
+	    if (delete_it) { 
+	        //delete j;
+	    } else {
+	        DESTRUCTOR();//j->~dxJoint();
+	    }
 	}
 	
 	// *************************************

@@ -28,15 +28,29 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.threading.DThreadingFunctionsInfo;
+import org.ode4j.ode.threading.DThreadingImplementation;
 
 
 /**
  *  object, body, and world structs.
  *  
- *  @author Tilmann Z�schke
+ *  @author Tilmann Zaeschke
  */
 public class Objects_H {
 
+	static final double dWORLD_DEFAULT_GLOBAL_ERP = 0.2;
+
+//	#if defined(dSINGLE)
+//	#define dWORLD_DEFAULT_GLOBAL_CFM REAL(1e-5)
+//	#elif defined(dDOUBLE)
+	static final double dWORLD_DEFAULT_GLOBAL_CFM = Common.dDOUBLE ? 1e-10 : 1e-5;
+//	#else
+//	#error dSINGLE or dDOUBLE must be defined
+//	#endif
+
+	static DThreadingImplementation g_world_default_threading_impl = null;
+	static final DThreadingFunctionsInfo[][] g_world_default_threading_functions = null;
 
 	/** auto disable parameters. */
 	public static class dxAutoDisable implements Cloneable {
@@ -54,6 +68,15 @@ public class Objects_H {
 				throw new RuntimeException(e);
 			}
 		}
+
+		//TZ: 'explicit' not required in Java
+	    dxAutoDisable() {
+	        idle_time = 0.0;
+	        idle_steps = 10;
+	        average_samples = 1; // Default is 1 sample => Instantaneous velocity
+	        linear_average_threshold = 0.01*0.01; // (magnitude squared)
+	        angular_average_threshold = 0.01*0.01; // (magnitude squared)
+	    }
 	}
 
 
@@ -71,6 +94,14 @@ public class Objects_H {
 				throw new RuntimeException(e);
 			}
 		}
+
+		//TZ: 'explicit' not required in Java
+	    dxDampingParameters() {
+	        linear_scale = 0.0;
+	        angular_scale = 0.0;
+	        linear_threshold = 0.01 * 0.01;
+	        angular_threshold = 0.01 * 0.01;
+	    }
 	}
 
 
@@ -82,6 +113,12 @@ public class Objects_H {
 		protected dxQuickStepParameters clone() {
 			return cloneThis();
 		}
+
+		//TZ: 'explicit' not required in Java
+	    dxQuickStepParameters() {
+	    	num_iterations = 20;
+	    	w = 1.3;
+	    }
 	}
 
 
@@ -93,6 +130,12 @@ public class Objects_H {
 		protected dxContactParameters clone() {
 			return cloneThis();
 		}
+
+		//TZ: 'explicit' not required in Java
+	    dxContactParameters() {
+	        max_vel = Common.dInfinity;
+	        min_depth = 0.0;
+	    }
 	}
 
 

@@ -1735,6 +1735,14 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 //		REGISTER_EXTENSION( "ODE_EXT_mt_collisions" );
 //	} // dTLS_ENABLED
 
+//	#if !dTHREADING_INTF_DISABLED
+//	REGISTER_EXTENSION( ODE_EXT_threading )
+//
+//	#if dBUILTIN_THREADING_IMPL_ENABLED
+//	REGISTER_EXTENSION( ODE_THR_builtin_impl )
+//	#endif // #if dBUILTIN_THREADING_IMPL_ENABLED
+//	#endif // #if !dTHREADING_INTF_DISABLED
+
 	//**********************************
 	// EXTENSION LIST END
 

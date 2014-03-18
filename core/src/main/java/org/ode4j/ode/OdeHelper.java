@@ -193,15 +193,15 @@ public abstract class OdeHelper {
 	 * @param group set to 0 to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
-	public static DDoubleBallJoint dJointCreateDBall (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateDoubleBall(world, group);
+	public static DDoubleBallJoint createDBall (DWorld world, DJointGroup group) {
+		return ODE.dJointCreateDBall(world, group);
 	}
 
 	/**
 	 * Create a new joint of the double ball type.
 	 */
-	public static DDoubleBallJoint dJointCreateDBall (DWorld world) {
-		return ODE.dJointCreateDoubleBall(world, null);
+	public static DDoubleBallJoint createDBallJoint (DWorld world) {
+		return ODE.dJointCreateDBall(world, null);
 	}
 
 	/**
@@ -210,15 +210,15 @@ public abstract class OdeHelper {
 	 * @param group set to 0 to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
-	public static DDoubleHingeJoint dJointCreateDHinge (DWorld world, DJointGroup group) {
-		return ODE.dJointCreateDoubleHinge(world, group);
+	public static DDoubleHingeJoint createDHingeJoint (DWorld world, DJointGroup group) {
+		return ODE.dJointCreateDHinge(world, group);
 	}
 
 	/**
 	 * Create a new joint of the double hinge type.
 	 */
-	public static DDoubleHingeJoint dJointCreateDHinge (DWorld world) {
-		return ODE.dJointCreateDoubleHinge(world, null);
+	public static DDoubleHingeJoint createDHingeJoint (DWorld world) {
+		return ODE.dJointCreateDHinge(world, null);
 	}
 
 	// FixedJoint
@@ -403,7 +403,7 @@ public abstract class OdeHelper {
 	/**
 	 * Create a new joint of the Transmission type.
 	 */
-	public static DTransmissionJoint dJointCreateTransmissionJoint (DWorld w) {
+	public static DTransmissionJoint createTransmissionJoint (DWorld w) {
 		return ODE.dJointCreateTransmission(w, null);
 	}
 

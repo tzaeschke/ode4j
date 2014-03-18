@@ -27,6 +27,7 @@ package org.ode4j.ode.internal.joints;
 import java.util.ArrayList;
 
 import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.DBase;
 
 /** 
@@ -111,7 +112,54 @@ public class DxJointGroup extends DBase implements DJointGroup
 
 
 //    public void dJointGroupEmpty (dxJointGroup group)
-    public void dJointGroupEmpty ()
+    void dJointGroupEmpty ()
+    {
+//        final int num_joints = getJointCount();
+//        if (num_joints != 0) {
+//            // Local array is used since ALLOCA leads to mysterious NULL values in first array element and crashes under VS2005 :)
+//            final int max_stack_jlist_size = 1024;
+////            DxJoint [][]stack_jlist[max_stack_jlist_size];
+////
+////            final int jlist_size = num_joints * sizeof(dxJoint*);
+////            dxJoint **jlist = num_joints <= max_stack_jlist_size ? stack_jlist : (dxJoint **)dAlloc(jlist_size);
+//
+//            if (jlist != NULL) {
+//                // the joints in this group are detached starting from the most recently
+//                // added (at the top of the stack). this helps ensure that the various
+//                // linked lists are not traversed too much, as the joints will hopefully
+//                // be at the start of those lists.
+//                int num_exported = exportJoints(jlist);
+//                Common.dIVERIFY(num_exported == num_joints);
+//
+//                for (int i = num_joints; i != 0; ) {
+//                    --i;
+//                    DxJoint j = jlist[i];
+//                    FinalizeAndDestroyJointInstance(j, false);
+//                }
+//            } else {
+//                // ...else if there is no memory, go on detaching the way it is possible
+//                int joint_bytes;
+//                for (DxJoint j = (dxJoint *)group->beginEnum(); j != NULL; j = (dxJoint *)group->continueEnum(joint_bytes)) {
+//                    joint_bytes = j->size(); // Get size before object is destroyed!
+//                    FinalizeAndDestroyJointInstance(j, false);
+//                }
+//            }
+//
+//            freeAll();
+//
+//            if (jlist != stack_jlist && jlist != NULL) {
+//                dFree(jlist, jlist_size);
+//            }
+//        }
+        for (int i = _stack.size()-1; i >= 0; i--) {
+        	DxJoint j = _stack.get(i);
+        	j.FinalizeAndDestroyJointInstance(false);
+        }
+        _stack.clear();
+    }
+
+
+    public void dJointGroupEmptyOld ()
     {
         // the joints in this group are detached starting from the most recently
         // added (at the top of the stack). this helps ensure that the various
