@@ -188,17 +188,8 @@ public class DxRay extends DxGeom implements DRay {
 	//void dGeomRaySetParams (dxGeom *g, int FirstContact, int BackfaceCull)
 	void dGeomRaySetParams (boolean FirstContact, boolean BackfaceCull)
 	{
-		//dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
-
-		if (FirstContact){
-			setFlagCustom(RAY_FIRSTCONTACT);//_gflags |= RAY_FIRSTCONTACT;
-		}
-		else unsetFlagCustom(RAY_FIRSTCONTACT);//_gflags &= ~RAY_FIRSTCONTACT;
-
-		if (BackfaceCull){
-			setFlagCustom(RAY_BACKFACECULL);//_gflags |= RAY_BACKFACECULL;
-		}
-		else unsetFlagCustom(RAY_BACKFACECULL);//_gflags &= ~RAY_BACKFACECULL;
+		dGeomRaySetFirstContact(FirstContact);
+		dGeomRaySetBackfaceCull(BackfaceCull);
 	}
 
 
@@ -213,6 +204,46 @@ public class DxRay extends DxGeom implements DRay {
 //		BackfaceCull.set((_gflags & RAY_BACKFACECULL) != 0);
 //	}
 	
+//	void dGeomRayGetParams (RefBoolean FirstContact, RefBoolean BackfaceCull)
+//	{
+//	    //dUASSERT (g && g->type == dRayClass,"argument not a ray");
+//
+//	    FirstContact = ((gflags & RAY_FIRSTCONTACT) != 0);
+//	    BackfaceCull = ((gflags & RAY_BACKFACECULL) != 0);
+//	}
+
+
+	// set/get backface culling flag
+	void dGeomRaySetBackfaceCull (boolean backfaceCull) 
+	{
+	    
+	    //dUASSERT (g && g->type == dRayClass,"argument not a ray");
+	    if (backfaceCull) {
+	        setFlagCustom(RAY_BACKFACECULL);//gflags |= RAY_BACKFACECULL;
+	    } else {
+	        unsetFlagCustom(RAY_BACKFACECULL);//gflags &= ~RAY_BACKFACECULL;
+	    }
+	}
+
+
+	boolean dGeomRayGetBackfaceCull ()
+	{
+	    //dUASSERT (g && g->type == dRayClass,"argument not a ray");
+	    return ((getFlags() & RAY_BACKFACECULL) != 0);
+	}
+
+
+	// set/get first contact flag
+	void dGeomRaySetFirstContact (boolean firstContact)
+	{
+	    //dUASSERT (g && g->type == dRayClass,"argument not a ray");
+	    if (firstContact) {
+	        setFlagCustom(RAY_FIRSTCONTACT);//gflags |= RAY_FIRSTCONTACT;
+	    } else {
+	        unsetFlagCustom(RAY_FIRSTCONTACT);//gflags &= ~RAY_FIRSTCONTACT;
+	    }
+	}
+
 	@Override
 	public boolean getFirstContact() {
 		return (getFlags() & RAY_FIRSTCONTACT) != 0;
@@ -621,6 +652,216 @@ public class DxRay extends DxGeom implements DRay {
 	}
 
 	static class CollideRayCylinder implements DColliderFn {
+		// Ray-Cylinder collider by Joseph Cooper (2011)
+		//int dCollideRayCylinder( dxGeom *o1, dxGeom *o2, int flags, dContactGeom *contact, int skip )
+		int dCollideRayCylinder( DxRay ray, DxCylinder cyl, int flags, DContactGeomBuffer contacts, int skip )
+		{
+			dIASSERT( skip >= 1);//(int)sizeof( dContactGeom ) );
+			//	dIASSERT( o1.type == dRayClass );
+			//	dIASSERT( o2.type == dCylinderClass );
+			dIASSERT( (flags & NUMC_MASK) >= 1 );
+
+			//	dxRay* ray = (dxRay*)( o1 );
+			//	dxCylinder* cyl = (dxCylinder*)( o2 );
+
+			// Fill in contact information.
+			DContactGeom contact = contacts.get(0);
+			contact.g1 = ray;
+			contact.g2 = cyl;
+			contact.side1 = -1;
+			contact.side2 = -1;
+
+			final double half_length = cyl.getLength() * ( 0.5 );//_lz * REAL( 0.5 );
+
+		    /* Possible collision cases:
+		     *  Ray origin between/outside caps
+		     *  Ray origin within/outside radius
+		     *  Ray direction left/right/perpendicular
+		     *  Ray direction parallel/perpendicular/other
+		     * 
+		     *  Ray origin cases (ignoring origin on surface)
+		     *
+		     *  A          B
+		     *     /-\-----------\
+		     *  C (   )    D      )
+		     *     \_/___________/
+		     *
+		     *  Cases A and D can collide with caps or cylinder
+		     *  Case C can only collide with the caps
+		     *  Case B can only collide with the cylinder
+		     *  Case D will produce inverted normals
+		     *  If the ray is perpendicular, only check the cylinder
+		     *  If the ray is parallel to cylinder axis,
+		     *  we can only check caps
+		     *  If the ray points right,
+		     *    Case A,C Check left cap
+		     *    Case  D  Check right cap
+		     *  If the ray points left
+		     *    Case A,C Check right cap
+		     *    Case  D  Check left cap
+		     *  Case B, check only first possible cylinder collision
+		     *  Case D, check only second possible cylinder collision
+		     */
+		    // Find the ray in the cylinder coordinate frame:
+		    DVector3 tmp = new DVector3();
+		    DVector3 pos = new DVector3();  // Ray origin in cylinder frame
+		    DVector3 dir = new DVector3();  // Ray direction in cylinder frame
+		    // Translate ray start by inverse cyl
+		    //dSubtractVectors3(tmp,ray.final_posr().pos(),cyl.final_posr().pos());
+		    tmp.eqDiff( ray.final_posr().pos(), cyl.final_posr().pos() );
+		    // Rotate ray start by inverse cyl
+		    dMultiply1_331(pos,cyl.final_posr().R(),tmp);
+
+		    // Get the ray's direction
+		    //tmp[0] = ray.final_posr().R[2];
+		    //tmp[1] = ray.final_posr().R[6];
+		    //tmp[2] = ray.final_posr().R[10];
+		    ray.final_posr().R().getColumn2(tmp);
+		    // Rotate the ray direction by inverse cyl
+		    dMultiply1_331(dir,cyl.final_posr().R(),tmp); 
+
+		    // Is the ray origin inside of the (extended) cylinder?
+		    double r2 = cyl.getRadius()*cyl.getRadius();
+		    double C = pos.get0()*pos.get0() + pos.get1()*pos.get1() - r2;
+
+		    // Find the different cases
+		    // Is ray parallel to the cylinder length?
+		    boolean parallel = (dir.get0()==0 && dir.get1()==0);
+		    // Is ray perpendicular to the cylinder length?
+		    boolean perpendicular = (dir.get2()==0);
+		    // Is ray origin within the radius of the caps?
+		    boolean inRadius = (C<=0);
+		    // Is ray origin between the top and bottom caps?
+		    boolean inCaps   = (dFabs(pos.get2())<=half_length);
+
+		    boolean checkCaps = (!perpendicular && (!inCaps || inRadius));
+		    boolean checkCyl  = (!parallel && (!inRadius || inCaps));
+		    boolean flipNormals = (inCaps&&inRadius);
+
+		    double tt=-dInfinity; // Depth to intersection
+		    DVector3 tmpNorm = new DVector3(dNaN, dNaN, dNaN); // ensure we don't leak garbage
+
+		    if (checkCaps) {
+		        // Make it so we only need to check one cap
+		        boolean flipDir = false;
+		        // Wish c had logical xor...
+		        if ((dir.get2()<0 && flipNormals) || (dir.get2()>0 && !flipNormals)) {
+		            flipDir = true;
+		            dir.set2( -dir.get2() );
+		            pos.set2( -pos.get2() );
+		        }
+		        // The cap is half the cylinder's length
+		        // from the cylinder's origin
+		        // We only checkCaps if dir[2]!=0
+		        tt = (half_length-pos.get2())/dir.get2();
+		        if (tt>=0 && tt<=ray.getLength()) {
+		            tmp.set0( pos.get0() + tt*dir.get0() );
+		            tmp.set1( pos.get1() + tt*dir.get1() );
+		            // Ensure collision point is within cap circle
+		            if (tmp.get0()*tmp.get0() + tmp.get1()*tmp.get1() <= r2) {
+		                // Successful collision
+		                tmp.set2( (flipDir)?-half_length:half_length );
+		                tmpNorm.set0( 0 );
+		                tmpNorm.set1( 0 );
+		                tmpNorm.set2( (flipDir!=flipNormals)?-1:1 );
+		                checkCyl = false;  // Short circuit cylinder check
+		            } else {
+		                // Ray hits cap plane outside of cap circle
+		                tt=-dInfinity; // No collision yet
+		            }
+		        } else {
+		            // The cap plane is beyond (or behind) the ray length
+		            tt=-dInfinity; // No collision yet
+		        }
+		        if (flipDir) {
+		            // Flip back
+		            dir.set2( -dir.get2() );
+		            pos.set2( -pos.get2() );
+		        }
+		    }
+		    if (checkCyl) {
+		        // Compute quadratic formula for parametric ray equation
+		        double A =    dir.get0()*dir.get0() + dir.get1()*dir.get1();
+		        double B = 2*(pos.get0()*dir.get0() + pos.get1()*dir.get1());
+		        // Already computed C
+
+		        double k = B*B - 4*A*C;
+		        // Check collision with infinite cylinder
+		        // k<0 means the ray passes outside the cylinder
+		        // k==0 means ray is tangent to cylinder (or parallel)
+		        //
+		        //  Our quadratic formula: tt = (-B +- sqrt(k))/(2*A)   
+		        // 
+		        // A must be positive (otherwise we wouldn't be checking
+		        // cylinder because ray is parallel)
+		        //    if (k<0) ray doesn't collide with sphere
+		        //    if (B > sqrt(k)) then both times are negative
+		        //         -- don't calculate
+		        //    if (B<-sqrt(k)) then both times are positive (Case A or B)
+		        //         -- only calculate first, if first isn't valid
+		        //         -- second can't be without first going through a cap
+		        //    otherwise (fabs(B)<=sqrt(k)) then C<=0 (ray-origin inside/on cylinder)
+		        //         -- only calculate second collision
+		        if (k>=0 && (B<0 || B*B<=k)) {
+		            k = dSqrt(k); 
+		            A = dRecip(2*A);
+		            if (dFabs(B)<=k) {
+		                tt = (-B + k)*A; // Second solution
+		                // If ray origin is on surface and pointed out, we
+		                // can get a tt=0 solution...
+		            } else {
+		                tt = (-B - k)*A; // First solution
+		            }
+		            if (tt<=ray.getLength()) {
+		                tmp.set2( pos.get2() + tt*dir.get2() );
+		                if (dFabs(tmp.get2())<=half_length) {
+		                    // Valid solution
+		                    tmp.set0( pos.get0() + tt*dir.get0() );
+		                    tmp.set1( pos.get1() + tt*dir.get1() );
+		                    tmpNorm.set0( tmp.get0()/cyl.getRadius() );
+		                    tmpNorm.set1( tmp.get1()/cyl.getRadius() );
+		                    tmpNorm.set2( 0 );
+		                    if (flipNormals) {
+		                        // Ray origin was inside cylinder
+		                        tmpNorm.set0( -tmpNorm.get0() );
+		                        tmpNorm.set1( -tmpNorm.get1() );
+		                    }
+		                } else {
+		                    // Ray hits cylinder outside of caps
+		                    tt=-dInfinity;
+		                }
+		            } else {
+		                // Ray doesn't reach the cylinder
+		                tt=-dInfinity;
+		            }
+		        }
+		    }
+
+		    if (tt>0) {
+		        contact.depth = tt;
+		        // Transform the point back to world coordinates
+		        //tmpNorm[3]=0;
+		        //tmp[3] = 0;
+		        dMultiply0_331(contact.normal,cyl.final_posr().R(),tmpNorm);
+		        dMultiply0_331(contact.pos,cyl.final_posr().R(),tmp);
+//		        contact.pos[0]+=cyl.final_posr.pos[0];
+//		        contact.pos[1]+=cyl.final_posr.pos[1];
+//		        contact.pos[2]+=cyl.final_posr.pos[2];
+		        contact.pos.add( cyl.final_posr().pos() );
+		        return 1;
+		    }
+		    // No contact with anything.
+		    return 0;
+		}
+
+		@Override
+		public int dColliderFn(DGeom o1, DGeom o2, int flags,
+				DContactGeomBuffer contacts) {
+			return dCollideRayCylinder((DxRay)o1, (DxCylinder)o2, flags, contacts, 1);
+		}
+	}
+	
+	static class CollideRayCylinder_ODE_0_12 implements DColliderFn {
 		// Ray - Cylinder collider by David Walters (June 2006)
 		//int dCollideRayCylinder( dxGeom *o1, dxGeom *o2, int flags, dContactGeom *contact, int skip )
 		int dCollideRayCylinder( DxRay ray, DxCylinder cyl, int flags, DContactGeomBuffer contacts, int skip )
@@ -885,6 +1126,18 @@ public class DxRay extends DxGeom implements DRay {
 	@Override
 	public DVector3C getDirection() {
 		return final_posr().R().columnAsNewVector(2);
+	}
+
+
+	@Override
+	public void setFirstContact(boolean firstContact) {
+		dGeomRaySetFirstContact(firstContact);
+	}
+
+
+	@Override
+	public void setBackfaceCull(boolean backfaceCull) {
+		dGeomRaySetBackfaceCull(backfaceCull);
 	}
 
 

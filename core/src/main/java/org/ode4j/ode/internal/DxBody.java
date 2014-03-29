@@ -66,6 +66,7 @@ import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
+import org.ode4j.ode.internal.processmem.DxWorldProcessContext;
 
 /**
  * rigid body (dynamics object).
@@ -1119,6 +1120,12 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		// notify all attached geoms that this body has moved
 		for (DxGeom geom2 = geom; geom2 != null; geom2 = geom2.dGeomGetBodyNext ())
 			geom2.dGeomMoved ();
+	    DxWorldProcessContext world_process_context = world.UnsafeGetWorldProcessingContext(); 
+	    for (DxGeom geom2 = geom; geom2 != null; geom2 = geom2.dGeomGetBodyNext ()) {
+	        world_process_context.LockForStepbodySerialization();
+	        geom2.dGeomMoved ();
+	        world_process_context.UnlockForStepbodySerialization();
+	    }
 
 		// notify the user
 		if (moved_callback != null)

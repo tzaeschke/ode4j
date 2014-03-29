@@ -64,11 +64,17 @@ public class DxWorldProcessIslandsInfo {
     };
 
 
+	//private enum dxISLANDSIZESELEMENT
+	//{
+	private static final int dxISE_BODIES_COUNT = 0;
+	private static final int dxISE_JOINTS_COUNT = 1;
+	private static final int dxISE__MAX = 2;
+	//};
+	
     static int BuildIslandsAndEstimateStepperMemoryRequirements(
             DxWorldProcessIslandsInfo islandsinfo, DxWorldProcessMemArena memarena, 
             DxWorld world, double stepsize, dmemestimate_fn_t stepperestimate)
     {
-        final int sizeelements = 2;
         int maxreq = 0;
 
         // handle auto-disabling of bodies
@@ -158,9 +164,9 @@ public class DxWorldProcessIslandsInfo {
                         Common.dIASSERT((bodycurr - bodystart) <= Integer.MAX_VALUE);//UINT_MAX);
                         Common.dIASSERT((jointcurr - jointstart) <= Integer.MAX_VALUE);//UINT_MAX);
 
-                        islandsizes[sizescurrP+0] = bcount;
-                        islandsizes[sizescurrP+1] = jcount;
-                        sizescurrP += sizeelements;
+                        islandsizes[sizescurrP+dxISE_BODIES_COUNT] = bcount;
+                        islandsizes[sizescurrP+dxISE_JOINTS_COUNT] = jcount;
+                        sizescurrP += dxISE__MAX;
 
                         int islandreq = stepperestimate.dxEstimateMemoryRequirements(
                                 body, bodystart, bcount, joint, jointstart, jcount);
@@ -204,7 +210,7 @@ public class DxWorldProcessIslandsInfo {
         }//# endif
 
         //int islandcount = ((size_t)(sizescurr - islandsizes) / sizeelements);
-        int islandcount = sizescurrP / sizeelements;
+        int islandcount = sizescurrP / dxISE__MAX;
         islandsinfo.AssignInfo(islandcount, islandsizes, body, joint);
 
         return maxreq;

@@ -25,6 +25,7 @@
 package org.ode4j.ode.internal.processmem;
 
 import org.ode4j.ode.internal.Common;
+import org.ode4j.ode.internal.DxWorld;
 
 public class DxStepWorkingMemory {
     //public:
@@ -68,6 +69,14 @@ public class DxStepWorkingMemory {
         //delete 
         m_ppcProcessingContext.DESTRUCTOR();
         m_ppcProcessingContext = null;
+    }
+
+    public void CleanupWorldReferences(DxWorld world)
+    {
+        if (m_ppcProcessingContext != null)
+        {
+            m_ppcProcessingContext.CleanupWorldReferences(world);
+        }
     }
 
     //public: 

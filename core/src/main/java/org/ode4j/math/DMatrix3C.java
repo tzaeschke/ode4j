@@ -66,4 +66,7 @@ public interface DMatrix3C {
 	public DVector3 columnAsNewVector(int column);
 	public boolean isEq(DMatrix3C m);
 	public DMatrix3 reTranspose();
+	public void getColumn0(DVector3 result);
+	public void getColumn1(DVector3 result);
+	public void getColumn2(DVector3 result);
 }

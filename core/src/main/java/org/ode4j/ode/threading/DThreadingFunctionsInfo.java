@@ -163,7 +163,7 @@ public abstract class DThreadingFunctionsInfo {
 	}
 
 	//struct dxCallWait;
-	interface DCallWait {
+	public interface DCallWait {
 
 		/**
 		 * @brief Resets a Wait ID so that it could be used to wait for another call.

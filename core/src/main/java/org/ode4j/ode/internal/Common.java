@@ -326,6 +326,7 @@ public class Common extends ErrorHandler {
 	//#define dIsNan(x) (_isnan(x))
 	//#endif
 	public final boolean dIsNan(double x) { return Double.isNaN(x); }
+	public static final double dNaN = Double.NaN;
 
 	//#define dCopySign(a,b) (copysign((a),(b)))
 	public final double dCopySign(double a, double b) {

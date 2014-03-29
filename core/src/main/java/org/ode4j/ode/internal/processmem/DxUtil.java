@@ -32,6 +32,12 @@ package org.ode4j.ode.internal.processmem;
  */
 public class DxUtil {
 
+	//#define dMIN(A,B)  ((A)>(B) ? (B) : (A))
+	//#define dMAX(A,B)  ((B)>(A) ? (B) : (A))
+	public static final int dMIN(int A, int B) { return A > B ? B : A; }
+	public static final int dMAX(int B, int A) { return A > B ? B : A; }
+	
+	
     //****************************************************************************
     // Malloc based world stepping memory manager
 
@@ -99,6 +105,8 @@ public class DxUtil {
     /* alloca aligned to the EFFICIENT_ALIGNMENT. note that this can waste
      * up to 15 bytes per allocation, depending on what alloca() returns.
      */
+    //#define dALLOCA16(n) dEFFICIENT_PTR(alloca((n)+(EFFICIENT_ALIGNMENT)))
+
 
 //    #ifndef SIZE_MAX
 //    #define SIZE_MAX  ((size_t)(-1))
@@ -139,7 +147,9 @@ public class DxUtil {
             }
             return (DxWorldProcessMemArena) o;
         }
-        
+        void setTo(DxWorldProcessMemArena x) {
+        	o = x;
+        }
     }
 
     

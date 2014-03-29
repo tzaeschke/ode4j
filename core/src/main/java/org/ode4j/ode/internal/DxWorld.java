@@ -43,7 +43,10 @@ import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
+import org.ode4j.ode.internal.processmem.DxIslandsProcessingCallContext;
 import org.ode4j.ode.internal.processmem.DxStepWorkingMemory;
+import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dmaxcallcountestimate_fn_t;
+import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
 import org.ode4j.ode.internal.processmem.DxUtil;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessContext;
@@ -52,6 +55,8 @@ import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryManager;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryReserveInfo;
 import org.ode4j.ode.threading.DThreadingFunctionsInfo;
+import org.ode4j.ode.threading.DThreadingFunctionsInfo.DCallReleasee;
+import org.ode4j.ode.threading.DThreadingFunctionsInfo.DCallWait;
 import org.ode4j.ode.threading.DThreadingImplementation;
 
 public class DxWorld extends DBase implements DWorld {
@@ -692,16 +697,6 @@ public class DxWorld extends DBase implements DWorld {
 
 	//**** FROM util.cpp TZ
 
-	//	typedef void (*dstepper_fn_t) (dxWorld *world, dxBody * const *body, int nb,
-			//	        dxJoint * const *_joint, int nj, dReal stepsize);
-	public interface dstepper_fn_t {
-		public void run(DxWorldProcessMemArena memarena, 
-		        DxWorld world, DxBody[]body, int bodyOfs, int nb,
-				DxJoint []_joint, int jointOfs, int nj, double stepsize);
-	}
-
-
-
 //	dxWorldProcessMemArena *dxAllocateTemporaryWorldProcessMemArena(
 //	        size_t memreq, const dxWorldProcessMemoryManager *memmgr/*=NULL*/, const dxWorldProcessMemoryReserveInfo *reserveinfo/*=NULL*/);
 //	      void dxFreeTemporaryWorldProcessMemArena(dxWorldProcessMemArena *arena);
@@ -733,7 +728,7 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 	// This estimates dynamic memory requirements for dxProcessIslands
-	public int EstimateIslandsProcessingMemoryRequirements()
+	public int EstimateIslandProcessingMemoryRequirements()
 	{
 	    //          int res = 0;
 	    //
@@ -752,6 +747,21 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 	
+	static int EstimateIslandProcessingSimultaneousCallsMaximumCount(int activeThreadCount, 
+			int islandsAllowedThreadCount, 
+			int stepperAllowedThreadCount, dmaxcallcountestimate_fn_t maxCallCountEstimator)
+	{
+		int stepperCallsMaximum = maxCallCountEstimator.run(activeThreadCount, stepperAllowedThreadCount);
+		int islandsIntermediateCallsMaximum = (1 + 2); // ThreadedProcessIslandSearch_Callback + (ThreadedProcessIslandStepper_Callback && ThreadedProcessIslandSearch_Callback)
+
+		int result = 
+				1 // ThreadedProcessGroup_Callback
+				+ islandsAllowedThreadCount * DxUtil.dMAX(stepperCallsMaximum, islandsIntermediateCallsMaximum)
+				+ DxUtil.dMIN(islandsAllowedThreadCount, (int)(activeThreadCount - islandsAllowedThreadCount)) // ThreadedProcessJobStart_Callback
+				/*...the end*/;
+		return result;
+	}
+
 	//****************************************************************************
 	// island processing
 
@@ -767,8 +777,65 @@ public class DxWorld extends DBase implements DWorld {
 	// re-enabled if they are found to be part of an active island.
 
 	//	void dxProcessIslands (dxWorld *world, dReal stepsize, dstepper_fn_t stepper)
-	void dxProcessIslands (DxWorldProcessIslandsInfo islandsinfo, 
-	        double stepsize, dstepper_fn_t stepper)
+	//bool dxProcessIslands (dxWorld *world, const dxWorldProcessIslandsInfo &islandsInfo, 
+    //        dReal stepSize, dstepper_fn_t stepper, dmaxcallcountestimate_fn_t maxCallCountEstimator);
+	boolean dxProcessIslands (final DxWorldProcessIslandsInfo islandsInfo, 
+			double stepSize, dstepper_fn_t stepper, 
+			dmaxcallcountestimate_fn_t maxCallCountEstimator)
+	{
+		boolean result = false;
+
+		DxIslandsProcessingCallContext callContext = new DxIslandsProcessingCallContext(world, islandsInfo, stepSize, stepper);
+
+		do {
+			//DxStepWorkingMemory wmem = world.wmem;
+			dIASSERT(wmem != null);
+			DxWorldProcessContext context = wmem.GetWorldProcessingContext(); 
+			dIASSERT(context != null);
+			DCallWait pcwGroupCallWait = context.GetIslandsSteppingWait();
+
+			int summaryFault = 0;
+
+			int activeThreadCount;
+			final int islandsAllowedThreadCount = GetThreadingIslandsMaxThreadsCount(&activeThreadCount);
+			dIASSERT(islandsAllowedThreadCount != 0);
+			dIASSERT(activeThreadCount >= islandsAllowedThreadCount);
+
+			int stepperAllowedThreadCount = islandsAllowedThreadCount; // For now, set stepper allowed threads equal to island stepping threads
+
+			int simultaneousCallsCount = EstimateIslandProcessingSimultaneousCallsMaximumCount(activeThreadCount, islandsAllowedThreadCount, stepperAllowedThreadCount, maxCallCountEstimator);
+			if (!PreallocateResourcesForThreadedCalls(simultaneousCallsCount)) {
+				break;
+			}
+
+			DCallReleasee groupReleasee;
+			// First post a group call with dependency count set to number of expected threads
+			PostThreadedCall(&summaryFault, &groupReleasee, islandsAllowedThreadCount, NULL, pcwGroupCallWait, 
+					&DxIslandsProcessingCallContext.ThreadedProcessGroup_Callback, &callContext, 0, "World Islands Stepping Group");
+
+			callContext.AssignGroupReleasee(groupReleasee);
+			callContext.SetStepperAllowedThreads(stepperAllowedThreadCount);
+
+			// Summary fault flag may be omitted as any failures will automatically propagate to dependent releasee (i.e. to groupReleasee)
+			PostThreadedCallsGroup(null, islandsAllowedThreadCount, groupReleasee, 
+					&DxIslandsProcessingCallContext.ThreadedProcessJobStart_Callback, &callContext, "World Islands Stepping Start");
+
+			// Wait until group completes (since jobs were the dependencies of the group the group is going to complete only after all the jobs end)
+			world.WaitThreadedCallExclusively(NULL, pcwGroupCallWait, NULL, "World Islands Stepping Wait");
+
+			if (summaryFault != 0) {
+				break;
+			}
+
+			result = true;
+		}
+		while (false);
+
+		return result;
+	}
+
+	boolean dxProcessIslands (final DxWorldProcessIslandsInfo islandsInfo, 
+            double stepSize, dstepper_fn_t stepper, dmaxcallcountestimate_fn_t maxCallCountEstimator)
 	{
 	    final int sizeelements = 2;
 
@@ -1140,7 +1207,7 @@ public class DxWorld extends DBase implements DWorld {
 	        : (islands_max_threads < active_thread_count ? islands_max_threads : active_thread_count);
 	}
 
-	private DxWorldProcessContext UnsafeGetWorldProcessingContext()
+	DxWorldProcessContext UnsafeGetWorldProcessingContext()
 	{
 	    return wmem.GetWorldProcessingContext();
 	}

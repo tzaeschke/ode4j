@@ -59,7 +59,7 @@ public final class DxWorldProcessMemArena {
         return m_pAllocBegin!=null 
         && m_pAllocEnd!=null 
         && m_pAllocBegin.toInt() <= m_pAllocEnd.toInt() 
-        && m_pAllocCurrent == m_pAllocBegin 
+        && (m_pAllocCurrentOrNextArena == null || m_pAllocCurrentOrNextArena == m_pAllocBegin) 
         && m_pArenaBegin!=null  
         && m_pArenaBegin.toInt() <= m_pAllocBegin.toInt(); 
     }
@@ -71,28 +71,28 @@ public final class DxWorldProcessMemArena {
 
     BlockPointer SaveState() //const
     {
-        return m_pAllocCurrent;
+        return m_pAllocCurrentOrNextArena;
     }
 
     void RestoreState(BlockPointer state)
     {
-        m_pAllocCurrent = state;
+    	m_pAllocCurrentOrNextArena = state;
     }
 
     void ResetState()
     {
-        m_pAllocCurrent = m_pAllocBegin;
+    	m_pAllocCurrentOrNextArena = m_pAllocBegin;
     }
 
     public BlockPointer PeekBufferRemainder() //const
     {
-        return m_pAllocCurrent;
+        return m_pAllocCurrentOrNextArena;
     }
 
     BlockPointer AllocateBlock(int size)
     {
-        BlockPointer block = m_pAllocCurrent;
-        m_pAllocCurrent = DxUtil.dOFFSET_EFFICIENTLY(block, size);
+        BlockPointer block = m_pAllocCurrentOrNextArena;
+        m_pAllocCurrentOrNextArena = DxUtil.dOFFSET_EFFICIENTLY(block, size);
         Common.dIASSERT(m_pAllocCurrent.toInt() <= m_pAllocEnd.toInt());
         return block;
     }
@@ -107,8 +107,8 @@ public final class DxWorldProcessMemArena {
     //          void ShrinkArray(Class<?> arr, int oldcount, int newcount)
     //          {
     //            dIASSERT(newcount <= oldcount);
-    //            dIASSERT(dOFFSET_EFFICIENTLY(arr, oldcount * sizeof(ElementType)) == m_pAllocCurrent);
-    //            m_pAllocCurrent = dOFFSET_EFFICIENTLY(arr, newcount * sizeof(ElementType));
+    //            dIASSERT(dOFFSET_EFFICIENTLY(arr, oldcount * sizeof(ElementType)) == m_pAllocCurrentOrNextArena);
+    //            m_pAllocCurrentOrNextArena = dOFFSET_EFFICIENTLY(arr, newcount * sizeof(ElementType));
     //          }
 
     //       public:
@@ -121,9 +121,15 @@ public final class DxWorldProcessMemArena {
     //        throw new UnsupportedOperationException();
     //    }
 
+    //dxWorldProcessMemArena *GetNextMemArena() const { return (dxWorldProcessMemArena *)m_pAllocCurrentOrNextArena; }
+    DxWorldProcessMemArena GetNextMemArena() { return m_pAllocCurrentOrNextArena.asDxWorldProcessMemArena(); }
+    //void SetNextMemArena(dxWorldProcessMemArena *pArenaInstance) { m_pAllocCurrentOrNextArena = pArenaInstance; }
+    void SetNextMemArena(DxWorldProcessMemArena pArenaInstance) { m_pAllocCurrentOrNextArena.setTo( pArenaInstance ); }
+
+    
+    private BlockPointer m_pAllocCurrentOrNextArena;
     private BlockPointer m_pAllocBegin;
     private BlockPointer m_pAllocEnd;
-    private BlockPointer m_pAllocCurrent;
     private BlockPointer m_pArenaBegin;
 
     DxWorldProcessMemoryManager m_pArenaMemMgr;

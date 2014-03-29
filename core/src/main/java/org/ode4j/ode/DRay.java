@@ -55,9 +55,9 @@ public interface DRay extends DGeom {
 	  boolean getParamBackfaceCull();
 	  
 	  boolean getFirstContact();
-	  boolean setFirstContact(boolean firstContact);
+	  void setFirstContact(boolean firstContact);
 	  boolean getBackfaceCull();
-	  boolean setBackfaceCull(boolean backfaceCull);
+	  void setBackfaceCull(boolean backfaceCull);
 	  void setClosestHit (boolean closestHit);
 	  boolean getClosestHit();
 

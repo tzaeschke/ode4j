@@ -25,7 +25,6 @@
 package org.ode4j.ode.internal;
 
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
@@ -93,11 +92,6 @@ class DxTriMeshDisabled extends DxTriMesh {
 //	    return DxGeom.controlGeometry(controlClass, controlCode, dataValue, dataSize);
 //	}
 
-	//int dxTriMesh::AABBTest(dxGeom* g, dReal aabb[6]) { return 0; }
-	@Override
-	boolean AABBTest(DAABB aabb) {
-		return false;
-	}
 	//void dxTriMesh::computeAABB() { dSetZero (aabb,6); }
 	@Override
 	void computeAABB() {

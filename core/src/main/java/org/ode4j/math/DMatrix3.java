@@ -908,4 +908,20 @@ public final class DMatrix3 implements DMatrix3C {
 	public void sub(int i, int j, double d) {
 		v[i*MAX_J + j] -= d;
 	}
+
+
+	@Override
+	public void getColumn0(DVector3 result) {
+		result.set(get00(), get10(), get20());
+	}
+
+	@Override
+	public void getColumn1(DVector3 result) {
+		result.set(get01(), get11(), get21());
+	}
+
+	@Override
+	public void getColumn2(DVector3 result) {
+		result.set(get02(), get12(), get22());
+	}
 }

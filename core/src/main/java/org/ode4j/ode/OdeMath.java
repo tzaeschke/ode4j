@@ -1091,7 +1091,7 @@ public class OdeMath extends DRotation {
 	//#define dMULTIPLYADD2_333(A,B,C) dMULTIPLYOP2_333(A,+=,B,C)
 
 	@Deprecated
-	public static double dCalcMatrix3Det( const dReal* mat ) {
+	public static double dCalcMatrix3Det( final double[][] mat ) {
 	    dReal det;
 
 	    det = mat[0] * ( mat[5]*mat[10] - mat[9]*mat[6] )
@@ -1109,7 +1109,7 @@ public class OdeMath extends DRotation {
 	 * returns 0 and does nothing if the matrix is singular.
 	 */
 	@Deprecated
-	public static double dInvertMatrix3(dReal *dst, const dReal *ma) {
+	public static double dInvertMatrix3( double[][] dst, final double[][] ma) {
 	    dReal det;  
 	    dReal detRecip;
 
