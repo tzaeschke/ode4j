@@ -27,8 +27,8 @@ package org.ode4j.ode.internal.processmem;
 import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.DxWorld;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
-import org.ode4j.ode.threading.DThreadingFunctionsInfo.DCallWait;
-import org.ode4j.ode.threading.DThreadingFunctionsInfo.DMutexGroup;
+import org.ode4j.ode.threading.Threading_H.DCallWait;
+import org.ode4j.ode.threading.Threading_H.DMutexGroup;
 
 
 public class DxWorldProcessContext {
@@ -406,7 +406,7 @@ public class DxWorldProcessContext {
     //  dReal stepsize, dmemestimate_fn_t stepperestimate);
     //void dxCleanupWorldProcessContext (dxWorld *world);
     //TODO remove! ODE 0.12
-    private static boolean dxReallocateWorldProcessContext (DxWorld world, 
+    public static boolean dxReallocateWorldProcessContext (DxWorld world, 
             DxWorldProcessIslandsInfo islandsinfo, 
             double stepsize, dmemestimate_fn_t stepperestimate)
     {

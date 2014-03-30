@@ -5,6 +5,11 @@ Done:  --> 0.13.1
 -- joints: ALL DONE! THis includes missing updates from 0.11.0 for some joints:
 			--> DxJoint2D, ...
 -- ode: all until util.cpp(900/550), except quickstep, step, threadingxxx
+   Started work Step, until line 872/506 
+
+
+skipped: threading_atomics_provs.*
+done: threading_base.*
 
 
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect

@@ -26,13 +26,14 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.internal.Common.dDOUBLE;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dNODEBUG;
 import static org.ode4j.ode.internal.Common.dRecip;
 import static org.ode4j.ode.internal.Common.dSqrt;
 import static org.ode4j.ode.internal.Common.dUASSERT;
 import static org.ode4j.ode.internal.ErrorHandler.dMessage;
+import static org.ode4j.ode.internal.Objects_H.g_world_default_threading_functions;
+import static org.ode4j.ode.internal.Objects_H.g_world_default_threading_impl;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -42,6 +43,7 @@ import org.ode4j.ode.internal.Objects_H.dxContactParameters;
 import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxIslandsProcessingCallContext;
 import org.ode4j.ode.internal.processmem.DxStepWorkingMemory;
@@ -54,16 +56,20 @@ import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryManager;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryReserveInfo;
-import org.ode4j.ode.threading.DThreadingFunctionsInfo;
-import org.ode4j.ode.threading.DThreadingFunctionsInfo.DCallReleasee;
-import org.ode4j.ode.threading.DThreadingFunctionsInfo.DCallWait;
 import org.ode4j.ode.threading.DThreadingImplementation;
+import org.ode4j.ode.threading.DThreadingImplementation.DxThreadingImplementation;
+import org.ode4j.ode.threading.DxThreadingBase;
+import org.ode4j.ode.threading.DxThreadingBase.DxIThreadingDefaultImplProvider;
+import org.ode4j.ode.threading.Threading_H.DCallReleasee;
+import org.ode4j.ode.threading.Threading_H.DCallWait;
+import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
+import org.ode4j.ode.threading.Threading_H.DxThreadingFunctionsInfo;
 
-public class DxWorld extends DBase implements DWorld {
+public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplProvider {
 
 	//TZ these are super-classes, but I made them delegates.
-	private Object dxThreadingBase;
-	private Object dxIThreadingDefaultImplProvider;
+	private DxThreadingBase dxThreadingBase;
+	//private DxIThreadingDefaultImplProvider dxIThreadingDefaultImplProvider;
 	
 	//TODO
 	public final Ref<DxBody> firstbody = new Ref<DxBody>();
@@ -107,9 +113,9 @@ public class DxWorld extends DBase implements DWorld {
 	private DxWorld() {
 		//private
 		super();
-		dxThreadingBase = new Object();  //super-constr.
-		firstbody = null;
-		firstjoint = null;
+		dxThreadingBase = new DxThreadingBase();  //super-constr.
+		firstbody.set( null );
+		firstjoint.set( null );
 		nb = 0;
 		nj = 0;
 		global_erp = Objects_H.dWORLD_DEFAULT_GLOBAL_ERP;
@@ -415,15 +421,15 @@ public class DxWorld extends DBase implements DWorld {
 
 
 	void dWorldSetStepThreadingImplementation( 
-		    final DxThreadingFunctionsInfo functions_info, 
-		    DThreadingImplementation threading_impl)
-		{
-		    dUASSERT (!functions_info || functions_info.struct_size >= sizeof(*functions_info), "Bad threading functions info");
+			final DxThreadingFunctionsInfo functions_info, 
+			DThreadingImplementation threading_impl)
+	{
+		//dUASSERT (!functions_info || functions_info.struct_size >= sizeof(*functions_info), "Bad threading functions info");
 
 		if (dTHREADING_INTF_DISABLED) {
-		    dUASSERT(functions_info == null && threading_impl == null, "Threading interface is not available");
+			dUASSERT(functions_info == null && threading_impl == null, "Threading interface is not available");
 		} else {
-		    AssignThreadingImpl(functions_info, threading_impl);
+			dxThreadingBase.AssignThreadingImpl(functions_info, threading_impl);
 		} 
 	}
 
@@ -785,7 +791,8 @@ public class DxWorld extends DBase implements DWorld {
 	{
 		boolean result = false;
 
-		DxIslandsProcessingCallContext callContext = new DxIslandsProcessingCallContext(world, islandsInfo, stepSize, stepper);
+		DxIslandsProcessingCallContext callContext = new DxIslandsProcessingCallContext(this, 
+				islandsInfo, stepSize, stepper);
 
 		do {
 			//DxStepWorkingMemory wmem = world.wmem;
@@ -794,36 +801,44 @@ public class DxWorld extends DBase implements DWorld {
 			dIASSERT(context != null);
 			DCallWait pcwGroupCallWait = context.GetIslandsSteppingWait();
 
-			int summaryFault = 0;
+			RefInt summaryFault = new RefInt();
 
-			int activeThreadCount;
-			final int islandsAllowedThreadCount = GetThreadingIslandsMaxThreadsCount(&activeThreadCount);
+			RefInt activeThreadCount = new RefInt();
+			final int islandsAllowedThreadCount = GetThreadingIslandsMaxThreadsCount(activeThreadCount);
 			dIASSERT(islandsAllowedThreadCount != 0);
-			dIASSERT(activeThreadCount >= islandsAllowedThreadCount);
+			dIASSERT(activeThreadCount.get() >= islandsAllowedThreadCount);
 
-			int stepperAllowedThreadCount = islandsAllowedThreadCount; // For now, set stepper allowed threads equal to island stepping threads
+			// For now, set stepper allowed threads equal to island stepping threads
+			int stepperAllowedThreadCount = islandsAllowedThreadCount; 
 
-			int simultaneousCallsCount = EstimateIslandProcessingSimultaneousCallsMaximumCount(activeThreadCount, islandsAllowedThreadCount, stepperAllowedThreadCount, maxCallCountEstimator);
-			if (!PreallocateResourcesForThreadedCalls(simultaneousCallsCount)) {
+			int simultaneousCallsCount = EstimateIslandProcessingSimultaneousCallsMaximumCount(
+					activeThreadCount, islandsAllowedThreadCount, 
+					stepperAllowedThreadCount, maxCallCountEstimator);
+			if (!dxThreadingBase.PreallocateResourcesForThreadedCalls(simultaneousCallsCount)) {
 				break;
 			}
 
-			DCallReleasee groupReleasee;
+			Ref<DCallReleasee> groupReleasee = new Ref<>();
 			// First post a group call with dependency count set to number of expected threads
-			PostThreadedCall(&summaryFault, &groupReleasee, islandsAllowedThreadCount, NULL, pcwGroupCallWait, 
-					&DxIslandsProcessingCallContext.ThreadedProcessGroup_Callback, &callContext, 0, "World Islands Stepping Group");
+			PostThreadedCall(summaryFault, groupReleasee, islandsAllowedThreadCount, null, 
+					pcwGroupCallWait, 
+					DxIslandsProcessingCallContext.ThreadedProcessGroup_Callback, 
+					callContext, 0, "World Islands Stepping Group");
 
-			callContext.AssignGroupReleasee(groupReleasee);
+			callContext.AssignGroupReleasee(groupReleasee.get());
 			callContext.SetStepperAllowedThreads(stepperAllowedThreadCount);
 
-			// Summary fault flag may be omitted as any failures will automatically propagate to dependent releasee (i.e. to groupReleasee)
+			// Summary fault flag may be omitted as any failures will automatically propagate to 
+			// dependent releasee (i.e. to groupReleasee)
 			PostThreadedCallsGroup(null, islandsAllowedThreadCount, groupReleasee, 
-					&DxIslandsProcessingCallContext.ThreadedProcessJobStart_Callback, &callContext, "World Islands Stepping Start");
+					DxIslandsProcessingCallContext.ThreadedProcessJobStart_Callback, 
+					callContext, "World Islands Stepping Start");
 
-			// Wait until group completes (since jobs were the dependencies of the group the group is going to complete only after all the jobs end)
-			world.WaitThreadedCallExclusively(NULL, pcwGroupCallWait, NULL, "World Islands Stepping Wait");
+			// Wait until group completes (since jobs were the dependencies of the group the group 
+			// is going to complete only after all the jobs end)
+			dxThreadingBase.WaitThreadedCallExclusively(null, pcwGroupCallWait, null, "World Islands Stepping Wait");
 
-			if (summaryFault != 0) {
+			if (summaryFault.get() != 0) {
 				break;
 			}
 
@@ -834,7 +849,8 @@ public class DxWorld extends DBase implements DWorld {
 		return result;
 	}
 
-	boolean dxProcessIslands (final DxWorldProcessIslandsInfo islandsInfo, 
+	@Deprecated
+	boolean dxProcessIslandsOld (final DxWorldProcessIslandsInfo islandsInfo, 
             double stepSize, dstepper_fn_t stepper, dmaxcallcountestimate_fn_t maxCallCountEstimator)
 	{
 	    final int sizeelements = 2;
@@ -1151,13 +1167,14 @@ public class DxWorld extends DBase implements DWorld {
 		super.DESTRUCTOR(); 
 	}
 
-	private boolean InitializeDefaultThreading()
+	static boolean InitializeDefaultThreading()
 	{
 	    dIASSERT(g_world_default_threading_impl == null);
 
 	    boolean init_result = false;
 
-	    DThreadingImplementation threading_impl = DxThreadingImplementation.allocateSelfThreadedImplementation();
+	    DThreadingImplementation threading_impl = 
+	    		DxThreadingImplementation.allocateSelfThreadedImplementation();
 
 	    if (threading_impl != null)
 	    {
@@ -1170,9 +1187,9 @@ public class DxWorld extends DBase implements DWorld {
 	    return init_result;
 	}
 
-	private void FinalizeDefaultThreading()
+	static void FinalizeDefaultThreading()
 	{
-	    dThreadingImplementationID threading_impl = g_world_default_threading_impl;
+	    DThreadingImplementation threading_impl = g_world_default_threading_impl;
 
 	    if (threading_impl != null)
 	    {
@@ -1183,7 +1200,8 @@ public class DxWorld extends DBase implements DWorld {
 	    }
 	}
 
-	private void AssignThreadingImpl(DxThreadingFunctionsInfo[][] functions_info, dThreadingImplementationID threading_impl)
+	private void AssignThreadingImpl(DxThreadingFunctionsInfo functions_info, 
+			DThreadingImplementation threading_impl)
 	{
 	    if (wmem != null)
 	    {
@@ -1194,12 +1212,12 @@ public class DxWorld extends DBase implements DWorld {
 	    dxThreadingBase.AssignThreadingImpl(functions_info, threading_impl);
 	}
 
-	private int GetThreadingIslandsMaxThreadsCount(unsigned *out_active_thread_count_ptr/*=NULL*/) const
+	private int GetThreadingIslandsMaxThreadsCount(RefInt out_active_thread_count_ptr/*=NULL*/)
 	{
-	    unsigned active_thread_count = RetrieveThreadingThreadCount();
-	    if (out_active_thread_count_ptr != NULL)
+	    int active_thread_count = dxThreadingBase.RetrieveThreadingThreadCount();
+	    if (out_active_thread_count_ptr != null)
 	    {
-	        *out_active_thread_count_ptr = active_thread_count;
+	        out_active_thread_count_ptr.set( active_thread_count );
 	    }
 
 	    return islands_max_threads == dWORLDSTEP_THREADCOUNT_UNLIMITED 
@@ -1213,10 +1231,10 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 	//private!
-	private DxThreadingFunctionsInfo [][] RetrieveThreadingDefaultImpl(DThreadingImplementation out_default_impl)
+	public DxThreadingFunctionsInfo RetrieveThreadingDefaultImpl(DThreadingImplementation out_default_impl)
 	{
 	    out_default_impl = g_world_default_threading_impl;
-	    return g_world_default_threading_functions;
+	    return (DxThreadingFunctionsInfo) g_world_default_threading_functions;
 	}
 
 

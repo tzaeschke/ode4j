@@ -26,7 +26,7 @@ package org.ode4j.ode.internal.processmem;
 
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.threading.DThreadingFunctionsInfo.DCallReleasee;
+import org.ode4j.ode.threading.Threading_H.DCallReleasee;
 
 public class DxSingleIslandCallContext {
 	DxSingleIslandCallContext(DxIslandsProcessingCallContext islandsProcessingContext, 

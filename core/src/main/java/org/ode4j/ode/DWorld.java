@@ -27,8 +27,8 @@ package org.ode4j.ode;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.internal.processmem.DxUtil;
-import org.ode4j.ode.threading.DThreadingFunctionsInfo;
 import org.ode4j.ode.threading.DThreadingImplementation;
+import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
 
 /**
  * The world object is a container for rigid bodies and joints. Objects in

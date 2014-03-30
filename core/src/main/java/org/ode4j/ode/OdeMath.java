@@ -1090,13 +1090,15 @@ public class OdeMath extends DRotation {
 	//#define dMULTIPLYADD1_333(A,B,C) dMULTIPLYOP1_333(A,+=,B,C)
 	//#define dMULTIPLYADD2_333(A,B,C) dMULTIPLYOP2_333(A,+=,B,C)
 
-	@Deprecated
-	public static double dCalcMatrix3Det( final double[][] mat ) {
-	    dReal det;
+	public static double dCalcMatrix3Det( final DMatrix3C mat ) {
+	    double det;
 
-	    det = mat[0] * ( mat[5]*mat[10] - mat[9]*mat[6] )
-	        - mat[1] * ( mat[4]*mat[10] - mat[8]*mat[6] )
-	        + mat[2] * ( mat[4]*mat[9]  - mat[8]*mat[5] );
+//	    det = mat[0] * ( mat[5]*mat[10] - mat[9]*mat[6] )
+//	        - mat[1] * ( mat[4]*mat[10] - mat[8]*mat[6] )
+//	        + mat[2] * ( mat[4]*mat[9]  - mat[8]*mat[5] );
+	    det = 	mat.get00() * ( mat.get11()*mat.get22() - mat.get21()*mat.get12() )
+		      - mat.get01() * ( mat.get10()*mat.get22() - mat.get20()*mat.get12() )
+		      + mat.get02() * ( mat.get10()*mat.get21() - mat.get20()*mat.get11() );
 
 	    return( det );
 	}
@@ -1108,10 +1110,9 @@ public class OdeMath extends DRotation {
 	 * Returns the determinant.
 	 * returns 0 and does nothing if the matrix is singular.
 	 */
-	@Deprecated
-	public static double dInvertMatrix3( double[][] dst, final double[][] ma) {
-	    dReal det;  
-	    dReal detRecip;
+	public static double dInvertMatrix3( DMatrix3 dst, final DMatrix3C ma) {
+	    double det;  
+	    double detRecip;
 
 	    det = dCalcMatrix3Det( ma );
 	    
@@ -1137,17 +1138,17 @@ public class OdeMath extends DRotation {
 
 	    detRecip = dRecip(det);    
 
-	    dst[0] =  ( ma[5]*ma[10] - ma[6]*ma[9]  ) * detRecip;
-	    dst[1] =  ( ma[9]*ma[2]  - ma[1]*ma[10] ) * detRecip;
-	    dst[2] =  ( ma[1]*ma[6]  - ma[5]*ma[2]  ) * detRecip;
+	    dst.set00( ( ma.get11()*ma.get22()  - ma.get12()*ma.get21()  ) * detRecip );
+	    dst.set01( ( ma.get21()*ma.get02()  - ma.get01()*ma.get22()  ) * detRecip );
+	    dst.set02( ( ma.get01()*ma.get12()  - ma.get11()*ma.get02()  ) * detRecip );
 
-	    dst[4] =  ( ma[6]*ma[8]  - ma[4]*ma[10] ) * detRecip;
-	    dst[5] =  ( ma[0]*ma[10] - ma[8]*ma[2]  ) * detRecip;
-	    dst[6] =  ( ma[4]*ma[2]  - ma[0]*ma[6]  ) * detRecip;
+	    dst.set10( ( ma.get12()*ma.get20()  - ma.get10()*ma.get22()  ) * detRecip );
+	    dst.set11( ( ma.get00()*ma.get22()  - ma.get20()*ma.get02()  ) * detRecip );
+	    dst.set12( ( ma.get10()*ma.get02()  - ma.get00()*ma.get12()  ) * detRecip );
 
-	    dst[8] =  ( ma[4]*ma[9]  - ma[8]*ma[5]  ) * detRecip;
-	    dst[9] =  ( ma[8]*ma[1]  - ma[0]*ma[9]  ) * detRecip;
-	    dst[10] = ( ma[0]*ma[5]  - ma[1]*ma[4]  ) * detRecip;
+	    dst.set20( ( ma.get10()*ma.get21()  - ma.get20()*ma.get11()  ) * detRecip );
+	    dst.set21( ( ma.get20()*ma.get01()  - ma.get00()*ma.get21()  ) * detRecip );
+	    dst.set22( ( ma.get00()*ma.get11()  - ma.get01()*ma.get10()  ) * detRecip );
 
 	    return det;
 	}

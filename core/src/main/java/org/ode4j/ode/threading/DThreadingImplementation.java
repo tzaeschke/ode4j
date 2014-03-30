@@ -24,6 +24,8 @@
  *************************************************************************/
 package org.ode4j.ode.threading;
 
+import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
+
 /**
  * 
  * @author Tilmann Zäschke
@@ -32,6 +34,9 @@ package org.ode4j.ode.threading;
 public abstract class DThreadingImplementation {
 	//struct dxThreadingThreadPool;
 	//typedef struct dxThreadingThreadPool *dThreadingThreadPoolID;
+	public abstract class DxThreadingImplementation extends DThreadingImplementation {
+		
+	}
 	
 	/**
 	 * @brief Allocates built-in multi-threaded threading implementation object.

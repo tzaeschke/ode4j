@@ -69,12 +69,12 @@ public final class DxWorldProcessMemArena {
         return m_pAllocEnd.toInt() - m_pAllocBegin.toInt();
     }
 
-    BlockPointer SaveState() //const
+    public BlockPointer SaveState() //const
     {
         return m_pAllocCurrentOrNextArena;
     }
 
-    void RestoreState(BlockPointer state)
+    public void RestoreState(BlockPointer state)
     {
     	m_pAllocCurrentOrNextArena = state;
     }

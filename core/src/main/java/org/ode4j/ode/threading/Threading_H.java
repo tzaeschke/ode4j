@@ -4,6 +4,10 @@
  * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
  * Open Dynamics Engine 4J, Copyright (C) 2009-2014 Tilmann Zaeschke     *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
+ * 																		 *
+ * Threading support header file.                                        *
+ * Copyright (C) 2011-2012 Oleh Derevenko. All rights reserved.          *
+ * e-mail: odar@eleks.com (change all "a" to "e")                        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
  * modify it under the terms of EITHER:                                  *
@@ -24,93 +28,24 @@
  *************************************************************************/
 package org.ode4j.ode.threading;
 
-/**
- * 
- * @author Tilmann Zäschke
- * @Deprecated Not supported in ode4j.
- */
-public abstract class DThreadingFunctionsInfo {
-	//struct dxThreadingImplementation;
-	///typedef struct dxThreadingImplementation *dThreadingImplementationID;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
-	//typedef unsigned 
-	int dmutexindex_t;
+/**
+ *   ODE threading support interfaces	
+ */
+public class Threading_H {
+
+
+//	struct dxThreadingImplementation;
+//	typedef struct dxThreadingImplementation *dThreadingImplementationID;
+//	public interface DThreadingImplementation { };
+
+//	typedef unsigned dmutexindex_t;
 //	struct dxMutexGroup;
 //	typedef struct dxMutexGroup *dMutexGroupID;
-	public interface DMutexGroup {
-		
-		/**
-		 * @brief Deletes a group of muteces.
-		 *
-		 * @param impl Threading implementation ID
-		 * @param mutex_group Mutex group to deallocate
-		 *
-		 * @ingroup threading
-		 * @see dMutexGroupAllocFunction
-		 * @see dMutexGroupMutexLockFunction
-		 * @see dMutexGroupMutexUnlockFunction
-		 */
-		void dMutexGroupFreeFunction (DThreadingImplementation impl);
-
-		/**
-		 * @brief Locks a mutex in a group of muteces.
-		 *
-		 * The function is to block execution until requested mutex can be locked.
-		 *
-		 * Note: Mutex provided may not support recursive locking. Calling this function
-		 * while mutex is already locked by current thread will result in unpredictable behavior.
-		 *
-		 * @param impl Threading implementation ID
-		 * @param mutex_group Mutex group to use for locking
-		 * @param mutex_index The index of mutex to be locked (0..Mutex_count - 1)
-		 *
-		 * @ingroup threading
-		 * @see dMutexGroupAllocFunction
-		 * @see dMutexGroupFreeFunction
-		 * @see dMutexGroupMutexUnlockFunction
-		 */
-		//public void lockFunction (DThreadingImplementation impl, dmutexindex_t mutex_index);
-		public void lockFunction (DThreadingImplementation impl, int mutex_index);
-
-		/**
-		 * @brief Attempts to lock a mutex in a group of muteces.
-		 *
-		 * The function is to lock the requested mutex if it is unoccupied or 
-		 * immediately return failure if mutex is already locked by other thread.
-		 *
-		 * Note: Mutex provided may not support recursive locking. Calling this function
-		 * while mutex is already locked by current thread will result in unpredictable behavior.
-		 *
-		 * @param impl Threading implementation ID
-		 * @param mutex_group Mutex group to use for locking
-		 * @param mutex_index The index of mutex to be locked (0..Mutex_count - 1)
-		 * @returns 1 for success (mutex is locked) and 0 for failure (mutex is not locked)
-		 *
-		 * @ingroup threading
-		 * @see dMutexGroupAllocFunction
-		 * @see dMutexGroupFreeFunction
-		 * @see dMutexGroupMutexLockFunction
-		 * @see dMutexGroupMutexUnlockFunction
-		 */
-		/* typedef int dMutexGroupMutexTryLockFunction (dThreadingImplementationID impl, dMutexGroupID mutex_group, dmutexindex_t mutex_index);*/
-
-		/**
-		 * @brief Unlocks a mutex in a group of muteces.
-		 *
-		 * The function is to unlock the given mutex provided it had been locked before.
-		 *
-		 * @param impl Threading implementation ID
-		 * @param mutex_group Mutex group to use for unlocking
-		 * @param mutex_index The index of mutex to be unlocked (0..Mutex_count - 1)
-		 *
-		 * @ingroup threading
-		 * @see dMutexGroupAllocFunction
-		 * @see dMutexGroupFreeFunction
-		 * @see dMutexGroupMutexLockFunction
-		 */
-		//void unlockFunction (DThreadingImplementation impl, dmutexindex_t mutex_index);
-		void unlockFunction (DThreadingImplementation impl, int mutex_index);
-	}
+	public interface DMutexGroup { };
+	public interface DxMutexGroup extends DMutexGroup { };
 
 	/**
 	 * @brief Allocates a group of muteces.
@@ -128,22 +63,117 @@ public abstract class DThreadingFunctionsInfo {
 	 * @see dMutexGroupFreeFunction
 	 * @see dMutexGroupMutexLockFunction
 	 * @see dMutexGroupMutexUnlockFunction
-	 * @Deprecated: Should be part of DMutexGroup
 	 */
-	//static DMutexGroup dMutexGroupAllocFunction (DThreadingImplementation impl, 
-	//dmutexindex_t Mutex_count, const char *const *Mutex_names_ptr/*=NULL*/);
-	static DMutexGroup dMutexGroupAllocFunction (DThreadingImplementation impl, 
-			int Mutex_count, String Mutex_names_ptr/*=NULL*/) {
-		throw new UnsupportedOperationException();
+	public interface dMutexGroupAllocFunction {
+		DMutexGroup  run(DThreadingImplementation impl, int /*dmutexindex_t*/ Mutex_count, 
+				String[] Mutex_names_ptr/*=NULL*/);
 	}
 
+	/**
+	 * @brief Deletes a group of muteces.
+	 *
+	 * @param impl Threading implementation ID
+	 * @param mutex_group Mutex group to deallocate
+	 *
+	 * @ingroup threading
+	 * @see dMutexGroupAllocFunction
+	 * @see dMutexGroupMutexLockFunction
+	 * @see dMutexGroupMutexUnlockFunction
+	 */
+	public interface dMutexGroupFreeFunction {
+		void run(DThreadingImplementation impl, DMutexGroup mutex_group);
+	}
+
+	/**
+	 * @brief Locks a mutex in a group of muteces.
+	 *
+	 * The function is to block execution until requested mutex can be locked.
+	 *
+	 * Note: Mutex provided may not support recursive locking. Calling this function
+	 * while mutex is already locked by current thread will result in unpredictable behavior.
+	 *
+	 * @param impl Threading implementation ID
+	 * @param mutex_group Mutex group to use for locking
+	 * @param mutex_index The index of mutex to be locked (0..Mutex_count - 1)
+	 *
+	 * @ingroup threading
+	 * @see dMutexGroupAllocFunction
+	 * @see dMutexGroupFreeFunction
+	 * @see dMutexGroupMutexUnlockFunction
+	 */
+	public interface dMutexGroupMutexLockFunction { 
+		void run(DThreadingImplementation impl, DMutexGroup mutex_group, 
+				int /*dmutexindex_t*/ mutex_index);
+	}
+
+	/**
+	 * @brief Attempts to lock a mutex in a group of muteces.
+	 *
+	 * The function is to lock the requested mutex if it is unoccupied or 
+	 * immediately return failure if mutex is already locked by other thread.
+	 *
+	 * Note: Mutex provided may not support recursive locking. Calling this function
+	 * while mutex is already locked by current thread will result in unpredictable behavior.
+	 *
+	 * @param impl Threading implementation ID
+	 * @param mutex_group Mutex group to use for locking
+	 * @param mutex_index The index of mutex to be locked (0..Mutex_count - 1)
+	 * @returns 1 for success (mutex is locked) and 0 for failure (mutex is not locked)
+	 *
+	 * @ingroup threading
+	 * @see dMutexGroupAllocFunction
+	 * @see dMutexGroupFreeFunction
+	 * @see dMutexGroupMutexLockFunction
+	 * @see dMutexGroupMutexUnlockFunction
+	 */
+	/* typedef int dMutexGroupMutexTryLockFunction (dThreadingImplementationID impl, dMutexGroupID mutex_group, dmutexindex_t mutex_index);*/
+
+	/**
+	 * @brief Unlocks a mutex in a group of muteces.
+	 *
+	 * The function is to unlock the given mutex provided it had been locked before.
+	 *
+	 * @param impl Threading implementation ID
+	 * @param mutex_group Mutex group to use for unlocking
+	 * @param mutex_index The index of mutex to be unlocked (0..Mutex_count - 1)
+	 *
+	 * @ingroup threading
+	 * @see dMutexGroupAllocFunction
+	 * @see dMutexGroupFreeFunction
+	 * @see dMutexGroupMutexLockFunction
+	 */
+	public interface dMutexGroupMutexUnlockFunction {
+		void run(DThreadingImplementation impl, DMutexGroup mutex_group, 
+				int/*dmutexindex_t*/ mutex_index);
+	}
 
 
 	//struct dxCallReleasee;
 	//typedef struct dxCallReleasee *dCallReleaseeID;
-	public interface DCallReleasee {
-		
+	public abstract class DCallReleasee {}
+	public class DxCallReleasee extends DCallReleasee {}
+
+	//struct dxCallWait;
+	//typedef struct dxCallWait *dCallWaitID;
+	public abstract class DCallWait {}
+	public class DxCallWait extends DCallWait {}
+
+	//typedef size_t ddependencycount_t;
+	//typedef ptrdiff_t ddependencychange_t;
+	//typedef size_t dcallindex_t;
+	public interface dThreadedCallFunction {
+		int run(Object[] call_context, int/*dcallindex_t*/ instance_index, 
+				  DCallReleasee this_releasee);
 	}
+
+	public abstract class DThreadedWaitTime {}
+	public class DxThreadedWaitTime extends DThreadedWaitTime
+	{
+	  int          wait_sec;
+	  long   wait_nsec;
+
+	}
+
 
 	/**
 	 * @brief Allocates a Wait ID that can be used to wait for a call.
@@ -156,70 +186,41 @@ public abstract class DThreadingFunctionsInfo {
 	 * @see dThreadedCallWaitFreeFunction
 	 * @see dThreadedCallPostFunction
 	 * @see dThreadedCallWaitFunction
-	 * @deprecated should be part of DCallWait (TZ)
 	 */
-	public static DCallWait callWaitAllocFunction(DThreadingImplementation impl) {
-		throw new UnsupportedOperationException();
+	public interface dThreadedCallWaitAllocFunction {
+		DCallWait run(DThreadingImplementation impl);
 	}
 
-	//struct dxCallWait;
-	public interface DCallWait {
-
-		/**
-		 * @brief Resets a Wait ID so that it could be used to wait for another call.
-		 *
-		 * @param impl Threading implementation ID
-		 * @param call_wait Wait ID to reset
-		 *
-		 * @ingroup threading
-		 * @see dThreadedCallWaitAllocFunction
-		 * @see dThreadedCallWaitFreeFunction
-		 * @see dThreadedCallPostFunction
-		 * @see dThreadedCallWaitFunction
-		 */
-		void resetFunction(DThreadingImplementation impl);
-
-		/**
-		 * @brief Frees a Wait ID.
-		 *
-		 * @param impl Threading implementation ID
-		 * @param call_wait Wait ID to delete
-		 *
-		 * @ingroup threading
-		 * @see dThreadedCallWaitAllocFunction
-		 * @see dThreadedCallPostFunction
-		 * @see dThreadedCallWaitFunction
-		 */
-		void freeFunction(DThreadingImplementation impl);
-	};
-
-	//typedef size_t 
-	int ddependencycount_t;
-	//typedef ptrdiff_t 
-	int ddependencychange_t;
-	//typedef size_t 
-	int dcallindex_t;
-	//typedef int dThreadedCallFunction(void *call_context, dcallindex_t instance_index, 
-	//  dCallReleaseeID this_releasee);
-	interface DThreadedCallFunction {
-		int f(Object[][] call_context, int instance_index, 
-				DCallReleasee this_releasee);
+	/**
+	 * @brief Resets a Wait ID so that it could be used to wait for another call.
+	 *
+	 * @param impl Threading implementation ID
+	 * @param call_wait Wait ID to reset
+	 *
+	 * @ingroup threading
+	 * @see dThreadedCallWaitAllocFunction
+	 * @see dThreadedCallWaitFreeFunction
+	 * @see dThreadedCallPostFunction
+	 * @see dThreadedCallWaitFunction
+	 */
+	public interface dThreadedCallWaitResetFunction {
+		void run(DThreadingImplementation impl, DCallWait call_wait);
 	}
-	
-	
-	static class DxThreadedWaitTime
-	{
-	  //time_t    wait_sec;
-	  int	   	wait_sec;
-	  long   	wait_nsec;
 
-	};
-	
-	interface DThreadedWaitTime {
-		
-	};
-
-
+	/**
+	 * @brief Frees a Wait ID.
+	 *
+	 * @param impl Threading implementation ID
+	 * @param call_wait Wait ID to delete
+	 *
+	 * @ingroup threading
+	 * @see dThreadedCallWaitAllocFunction
+	 * @see dThreadedCallPostFunction
+	 * @see dThreadedCallWaitFunction
+	 */
+	public interface dThreadedCallWaitFreeFunction {
+		void run(DThreadingImplementation impl, DCallWait call_wait);
+	}
 
 
 	/**
@@ -283,13 +284,23 @@ public abstract class DThreadingFunctionsInfo {
 	 * @see dThreadedCallDependenciesCountAlterFunction
 	 * @see dThreadingImplResourcesForCallsPreallocateFunction
 	 */
-	abstract void callPostFunction(DThreadingImplementation impl, int[][] out_summary_fault/*=NULL*/, 
-	  DCallReleasee out_post_releasee/*=NULL*/, //ddependencycount_t dependencies_count, dCallReleaseeID dependent_releasee/*=NULL*/, 
-	  int dependencies_count, DCallReleasee dependent_releasee/*=NULL*/,
-	  DCallWait call_wait/*=NULL*/, 
-	  DThreadedCallFunction call_func, Object [][]call_context, //dcallindex_t instance_index, 
-	  int instance_index,
-	  String call_name/*=NULL*/);
+//	typedef void dThreadedCallPostFunction(dThreadingImplementationID impl, int *out_summary_fault/*=NULL*/, 
+//	  dCallReleaseeID *out_post_releasee/*=NULL*/, ddependencycount_t dependencies_count, dCallReleaseeID dependent_releasee/*=NULL*/, 
+//	  dCallWaitID call_wait/*=NULL*/, 
+//	  dThreadedCallFunction *call_func, void *call_context, dcallindex_t instance_index, 
+//	  const char *call_name/*=NULL*/);
+	public interface dThreadedCallPostFunction {
+		void run(DThreadingImplementation impl, 
+				RefInt out_summary_fault/*=NULL*/, 
+				Ref<DCallReleasee> out_post_releasee/*=NULL*/, 
+				int /*ddependencycount_t*/ dependencies_count, 
+				DCallReleasee dependent_releasee/*=NULL*/, 
+				DCallWait call_wait/*=NULL*/, 
+				final dThreadedCallFunction call_func, 
+				final Object[] call_context, 
+				int /*dcallindex_t*/ instance_index, 
+				String call_name/*=NULL*/);
+	}
 
 	/**
 	 * @brief Add or remove extra dependencies from call that has been scheduled
@@ -312,10 +323,10 @@ public abstract class DThreadingFunctionsInfo {
 	 * @ingroup threading
 	 * @see dThreadedCallPostFunction
 	 */
-	abstract void callDependenciesCountAlterFunction(DThreadingImplementation impl, 
-			DCallReleasee target_releasee, 
-	  //ddependencychange_t dependencies_count_change);
-			int dependencies_count_change);
+	public interface dThreadedCallDependenciesCountAlterFunction {
+		void run(DThreadingImplementation impl, DCallReleasee target_releasee, 
+				int /*ddependencychange_t*/ dependencies_count_change);
+	}
 
 	/**
 	 * @brief Wait for a posted call to complete.
@@ -349,9 +360,12 @@ public abstract class DThreadingFunctionsInfo {
 	 * @ingroup threading
 	 * @see dThreadedCallPostFunction
 	 */
-	abstract void callWaitFunction(DThreadingImplementation impl, int [][]out_wait_status/*=NULL*/, 
-	  DCallWait call_wait, final DThreadedWaitTime [][]timeout_time_ptr/*=NULL*/, 
+	public interface dThreadedCallWaitFunction {
+		void run(DThreadingImplementation impl, RefInt out_wait_status/*=NULL*/, 
+	  DCallWait call_wait, 
+	  Object[] /*const dThreadedWaitTime * */ timeout_time_ptr/*=NULL*/, 
 	  String wait_name/*=NULL*/);
+	}
 
 	/**
 	 * @brief Retrieve number of active threads that serve the implementation.
@@ -361,7 +375,9 @@ public abstract class DThreadingFunctionsInfo {
 	 *
 	 * @ingroup threading
 	 */
-	abstract int dThreadingImplThreadCountRetrieveFunction(DThreadingImplementation impl);
+	public interface dThreadingImplThreadCountRetrieveFunction {
+		int run(DThreadingImplementation impl);
+	}
 
 	/**
 	 * @brief Preallocate resources to handle posted calls.
@@ -385,33 +401,35 @@ public abstract class DThreadingFunctionsInfo {
 	 * @ingroup threading
 	 * @see dThreadedCallPostFunction
 	 */
-	abstract int dThreadingImplResourcesForCallsPreallocateFunction(DThreadingImplementation impl, 
-	  //ddependencycount_t max_simultaneous_calls_estimate);
-			int max_simultaneous_calls_estimate);
+	public interface dThreadingImplResourcesForCallsPreallocateFunction {
+		int run(DThreadingImplementation impl, 
+				int /*ddependencycount_t*/ max_simultaneous_calls_estimate);
+	}
 
 
 	/**
 	 * @brief An interface structure with function pointers to be provided by threading implementation.
 	 */
-	static class DxThreadingFunctionsInfo
+	public interface DThreadingFunctionsInfo {}
+	public class DxThreadingFunctionsInfo implements DThreadingFunctionsInfo 
 	{
-	  int struct_size;
+	  //int struct_size; //?? TZ
 	  
-//	  dMutexGroupAllocFunction []alloc_mutex_group;
-//	  dMutexGroupFreeFunction []free_mutex_group;
-//	  dMutexGroupMutexLockFunction []lock_group_mutex;
-//	  dMutexGroupMutexUnlockFunction []unlock_group_mutex;
-//
-//	  dThreadedCallWaitAllocFunction []alloc_call_wait;
-//	  dThreadedCallWaitResetFunction []reset_call_wait;
-//	  dThreadedCallWaitFreeFunction []free_call_wait;
-//
-//	  dThreadedCallPostFunction []post_call;
-//	  dThreadedCallDependenciesCountAlterFunction []alter_call_dependencies_count;
-//	  dThreadedCallWaitFunction []wait_call;
-//
-//	  dThreadingImplThreadCountRetrieveFunction []retrieve_thread_count;
-//	  dThreadingImplResourcesForCallsPreallocateFunction []preallocate_resources_for_calls; 
+	  dMutexGroupAllocFunction alloc_mutex_group;
+	  dMutexGroupFreeFunction free_mutex_group;
+	  dMutexGroupMutexLockFunction lock_group_mutex;
+	  dMutexGroupMutexUnlockFunction unlock_group_mutex;
+
+	  dThreadedCallWaitAllocFunction alloc_call_wait;
+	  dThreadedCallWaitResetFunction reset_call_wait;
+	  dThreadedCallWaitFreeFunction free_call_wait;
+
+	  dThreadedCallPostFunction post_call;
+	  dThreadedCallDependenciesCountAlterFunction alter_call_dependencies_count;
+	  dThreadedCallWaitFunction wait_call;
+
+	  dThreadingImplThreadCountRetrieveFunction retrieve_thread_count;
+	  dThreadingImplResourcesForCallsPreallocateFunction preallocate_resources_for_calls; 
 
 	  /* 
 	   * Beware of Jon Watte's anger if you dare to uncomment this!
@@ -423,10 +441,13 @@ public abstract class DThreadingFunctionsInfo {
 	   * dMutexGroupMutexTryLockFunction *trylock_group_mutex;
 	   */
 
-	} 
-	
-//	public interface DThreadingFunctionsInfo {
-//		
-//	};
+	}
+
+
+//	#ifdef __cplusplus
+//	}
+//	#endif
+//
+//	#endif /* #ifndef _ODE_THREADING_H_ */
 
 }

@@ -27,9 +27,9 @@ package org.ode4j.ode.internal.processmem;
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
 import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.threading.DThreadingFunctionsInfo.DCallReleasee;
+import org.ode4j.ode.threading.Threading_H.DCallReleasee;
 
-public class DxStepperProcessingCallContext {
+public final class DxStepperProcessingCallContext {
 
 	//typedef void (*dstepper_fn_t) (const dxStepperProcessingCallContext *callContext);
 	public interface dstepper_fn_t {
@@ -43,43 +43,96 @@ public class DxStepperProcessingCallContext {
 	
 	
 	DxStepperProcessingCallContext(DxWorld world, double stepSize, int stepperAllowedThreads, 
-			DxWorldProcessMemArena stepperArena, DxBody[] islandBodiesStart, DxJoint[] islandJointsStart) {
+			DxWorldProcessMemArena stepperArena, 
+			DxBody[] islandBodiesStartA, int islandBodiesStartOfs,
+			DxJoint[] islandJointsStartA, int islandJointsStartOfs) {
 		m_world = world;
 		m_stepSize = stepSize;
 		m_stepperArena = stepperArena;
 		m_finalReleasee = null; 
-		m_islandBodiesStart = islandBodiesStart;
-		m_islandJointsStart = islandJointsStart;
+		m_islandBodiesStartA = islandBodiesStartA;
+		m_islandBodiesStartOfs = islandBodiesStartOfs;
+		m_islandJointsStartA = islandJointsStartA;
+		m_islandJointsStartOfs = islandJointsStartOfs;
 		m_islandBodiesCount = 0;
 		m_islandJointsCount = 0;
 		m_stepperAllowedThreads = stepperAllowedThreads;
 	}
 
-	void AssignIslandSelection(DxBody[] islandBodiesStart, DxJoint[] islandJointsStart, 
+	void AssignIslandSelection(DxBody[] islandBodiesStartA, int islandBodiesStartOfs,
+			DxJoint[] islandJointsStartA, int islandJointsStartOfs,
 			int islandBodiesCount, int islandJointsCount)
 	{
-		m_islandBodiesStart = islandBodiesStart;
-		m_islandJointsStart = islandJointsStart;
+		m_islandBodiesStartA = islandBodiesStartA;
+		m_islandBodiesStartOfs = islandBodiesStartOfs;
+		m_islandJointsStartA = islandJointsStartA;
+		m_islandJointsStartOfs = islandJointsStartOfs;
 		m_islandBodiesCount = islandBodiesCount;
 		m_islandJointsCount = islandJointsCount;
 	}
 
-	DxBody[] GetSelectedIslandBodiesEnd() { return m_islandBodiesStart + m_islandBodiesCount; }
-	DxJoint[] GetSelectedIslandJointsEnd() { return m_islandJointsStart + m_islandJointsCount; }
+	int/*DxBody[]*/ GetSelectedIslandBodiesEnd() { return /*m_islandBodiesStart +*/ m_islandBodiesCount; }
+	int/*DxJoint[]*/ GetSelectedIslandJointsEnd() { return /*m_islandJointsStart +*/ m_islandJointsCount; }
 
 	void AssignStepperCallFinalReleasee(DCallReleasee finalReleasee)
 	{
 		m_finalReleasee = finalReleasee;
 	}
 
-	DxWorld            m_world;
-	double             m_stepSize;
-	DxWorldProcessMemArena  m_stepperArena;
-	DCallReleasee         m_finalReleasee;
-	DxBody[]           m_islandBodiesStart;
-	DxJoint[]          m_islandJointsStart;
-	int                m_islandBodiesCount;
-	int                m_islandJointsCount;
-	int                m_stepperAllowedThreads;
+	private DxWorld            m_world;
+	private double             m_stepSize;
+	private DxWorldProcessMemArena  m_stepperArena;
+	private DCallReleasee         m_finalReleasee;
+	private DxBody[]           m_islandBodiesStartA;
+	private int         	   m_islandBodiesStartOfs;
+	private DxJoint[]          m_islandJointsStartA;
+	private int  		       m_islandJointsStartOfs;
+	private int                m_islandBodiesCount;
+	private int                m_islandJointsCount;
+	private int                m_stepperAllowedThreads;
+	
+	public DxWorldProcessMemArena m_stepperArena() {
+		return m_stepperArena;
+	}
+
+	public DxWorld m_world() {
+		return m_world;
+	}
+
+	public int m_islandBodiesCount() {
+		return m_islandBodiesCount;
+	}
+
+	public int m_islandJointsCount() {
+		return m_islandJointsCount;
+	}
+
+	public int m_stepperAllowedThreads() {
+		return m_stepperAllowedThreads;
+	}
+
+	public DCallReleasee m_finalReleasee() {
+		return m_finalReleasee;
+	}
+
+	public DxBody[] m_islandBodiesStartA() {
+		return m_islandBodiesStartA;
+	}
+
+	public int m_islandBodiesStartOfs() {
+		return m_islandBodiesStartOfs;
+	}
+
+	public DxJoint[] m_islandJointsStartA() {
+		return m_islandJointsStartA;
+	}
+
+	public int m_islandJointsStartOfs() {
+		return m_islandJointsStartOfs;
+	}
+
+	public double m_stepSize() {
+		return m_stepSize;
+	}
 
 }

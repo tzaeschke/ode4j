@@ -24,15 +24,13 @@
  *************************************************************************/
 package org.ode4j.ode.internal.processmem;
 
-import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
-import org.ode4j.ode.threading.DThreadingFunctionsInfo.DCallReleasee;
+import org.ode4j.ode.threading.Threading_H.DCallReleasee;
 
 public class DxIslandsProcessingCallContext {
 
-	DxIslandsProcessingCallContext(DxWorld world, DxWorldProcessIslandsInfo islandsInfo, 
+	public DxIslandsProcessingCallContext(DxWorld world, DxWorldProcessIslandsInfo islandsInfo, 
 			double stepSize, dstepper_fn_t stepper) {
 		m_world = world;
 		m_islandsInfo = islandsInfo;
