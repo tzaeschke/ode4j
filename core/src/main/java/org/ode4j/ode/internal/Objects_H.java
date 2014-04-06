@@ -50,7 +50,7 @@ public class Objects_H {
 //	#endif
 
 	static DThreadingImplementation g_world_default_threading_impl = null;
-	static final DThreadingFunctionsInfo g_world_default_threading_functions = null;
+	static DThreadingFunctionsInfo g_world_default_threading_functions = null;
 
 	/** auto disable parameters. */
 	public static class dxAutoDisable implements Cloneable {

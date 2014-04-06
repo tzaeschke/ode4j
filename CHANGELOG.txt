@@ -4,8 +4,7 @@ Done:  --> 0.13.1
 -- includes, EXCEPT threading.*
 -- joints: ALL DONE! THis includes missing updates from 0.11.0 for some joints:
 			--> DxJoint2D, ...
--- ode: all until util.cpp(900/550), except quickstep, step, threadingxxx
-   Started work Step, until line 872/506 
+-- ode: all except quickstep, threadingxxx
 
 
 skipped: threading_atomics_provs.*

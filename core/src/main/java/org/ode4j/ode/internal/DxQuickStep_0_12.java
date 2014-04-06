@@ -48,9 +48,6 @@ import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
-import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dmaxcallcountestimate_fn_t;
-import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
@@ -59,14 +56,14 @@ import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
  *
  * Quickstep stepper.
  */
-public class DxQuickStep extends AbstractStepper implements dstepper_fn_t,
-dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
+public class DxQuickStep_0_12 extends AbstractStepper implements DxWorld.dstepper_fn_t,
+dmemestimate_fn_t {
 	
     //TZ where is this defined???
     private static final boolean CHECK_VELOCITY_OBEYS_CONSTRAINT = false;
     
 	/** DxQuickStep singleton instance. */
-	public static final DxQuickStep INSTANCE = new DxQuickStep();
+	public static final DxQuickStep_0_12 INSTANCE = new DxQuickStep_0_12();
 	
 	//void dxQuickStepper (dxWorld *world, dxBody * const *body, int nb,
 	//	     dxJoint * const *_joint, int nj, dReal stepsize);
@@ -1332,16 +1329,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 
 	@Override
-	public int run(int activeThreadCount, int allowedThreadCount) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-		//return 0;
-	}
-
-	@Override
-	public void run(DxStepperProcessingCallContext callContext) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-		//
+	public void run(DxWorldProcessMemArena memarena, 
+	        DxWorld world, DxBody[] body, int bodyOfs, int nb, 
+	        DxJoint[] joint, int jointOfs, int nj,
+			double stepsize) {
+		dxQuickStepper(memarena, world, body, bodyOfs, nb, joint, jointOfs, nj, stepsize);
 	}
 }

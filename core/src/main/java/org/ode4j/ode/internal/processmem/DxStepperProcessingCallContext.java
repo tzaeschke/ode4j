@@ -71,8 +71,8 @@ public final class DxStepperProcessingCallContext {
 		m_islandJointsCount = islandJointsCount;
 	}
 
-	int/*DxBody[]*/ GetSelectedIslandBodiesEnd() { return /*m_islandBodiesStart +*/ m_islandBodiesCount; }
-	int/*DxJoint[]*/ GetSelectedIslandJointsEnd() { return /*m_islandJointsStart +*/ m_islandJointsCount; }
+	int/*DxBody[]*/ GetSelectedIslandBodiesEnd() { return m_islandBodiesStartOfs + m_islandBodiesCount; }
+	int/*DxJoint[]*/ GetSelectedIslandJointsEnd() { return m_islandJointsStartOfs + m_islandJointsCount; }
 
 	void AssignStepperCallFinalReleasee(DCallReleasee finalReleasee)
 	{

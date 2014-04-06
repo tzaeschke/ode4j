@@ -166,6 +166,9 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		public void setC(int i, double d) {
 			_cA[_cP+i] = d;
 		}
+		public void scaleC(int i, double d) {
+			_cA[_cP+i] *= d;
+		}
 		public void setC(int i, DVector3C v) {
 			_cA[_cP+i] = v.get0();
 		}
@@ -201,7 +204,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		public void setFindex(int i, int val) {
 			_findexA[_findexP+i] = val;
 		}
-		public double getFindex(int i) {
+		public int getFindex(int i) {
 			return _findexA[_findexP+i];
 		}
 		/**

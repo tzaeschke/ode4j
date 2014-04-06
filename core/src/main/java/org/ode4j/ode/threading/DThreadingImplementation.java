@@ -32,11 +32,6 @@ import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
  * @Deprecated Not supported in ode4j.
  */
 public abstract class DThreadingImplementation {
-	//struct dxThreadingThreadPool;
-	//typedef struct dxThreadingThreadPool *dThreadingThreadPoolID;
-	public abstract class DxThreadingImplementation extends DThreadingImplementation {
-		
-	}
 	
 	/**
 	 * @brief Allocates built-in multi-threaded threading implementation object.
@@ -70,7 +65,7 @@ public abstract class DThreadingImplementation {
 	 * @ingroup threading
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 */
-	abstract DThreadingFunctionsInfo getFunctions();
+	public abstract DThreadingFunctionsInfo getFunctions();
 
 	/**
 	 * @brief Requests a built-in implementation to release threads serving it.

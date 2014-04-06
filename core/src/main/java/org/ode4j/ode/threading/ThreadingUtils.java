@@ -76,24 +76,23 @@ public class ThreadingUtils {
 
 //	static inline 
 //	bool ThrsafeCompareExchangePointer(volatile atomicptr *papDestination, atomicptr apComparand, atomicptr apExchange)
-	static  
-	boolean ThrsafeCompareExchangePointer(AtomicReference<?> papDestination, AtomicReference<?> apComparand, AtomicReference<?> apExchange)
+	public static <T>  
+	boolean ThrsafeCompareExchangePointer(AtomicReference<T> papDestination, T apComparand, T apExchange)
 	{
 		//return (*papDestination == apComparand) ? ((*papDestination = apExchange), true) : false;
-	    return (papDestination == apComparand) ? ((papDestination = apExchange), true) : false;
+	    //return (papDestination == apComparand) ? ((papDestination = apExchange), true) : false;
+		return papDestination.compareAndSet(apComparand, apExchange);
 	}
 
 //	static inline 
 //	atomicptr ThrsafeExchangePointer(volatile atomicptr *papDestination, atomicptr apExchange)
 	static 
-	AtomicReference<?> ThrsafeExchangePointer(AtomicReference<?> papDestination, AtomicReference<?> apExchange)
+	<T> T ThrsafeExchangePointer(AtomicReference<T> papDestination, T apExchange)
 	{
 //	    atomicptr apDestinationValue = *papDestination;
 //	    *papDestination = apExchange;
 //	    return apDestinationValue;
-	    atomicptr apDestinationValue = papDestination;
-	    papDestination = apExchange;
-	    return apDestinationValue;
+		return papDestination.getAndSet(apExchange);
 	}
 
 
@@ -102,8 +101,8 @@ public class ThreadingUtils {
 
 //	static inline 
 //	unsigned int ThrsafeIncrementIntUpToLimit(volatile unsigned int *storagePointer, unsigned int limitValue)
-	static 
-	int ThrsafeIncrementIntUpToLimit(int[] storagePointer, int limitValue)
+	public static 
+	int ThrsafeIncrementIntUpToLimit(AtomicInteger storagePointer, int limitValue)
 	{
 //	    unsigned int resultValue;
 //	    while (true) {
@@ -118,7 +117,7 @@ public class ThreadingUtils {
 //	    return resultValue;
 	    int resultValue;
 	    while (true) {
-	        resultValue = storagePointer;
+	        resultValue = storagePointer.get();
 	        if (resultValue == limitValue) {
 	            break;
 	        }
@@ -131,8 +130,8 @@ public class ThreadingUtils {
 
 //	static inline 
 //	size_t ThrsafeIncrementSizeUpToLimit(volatile size_t *storagePointer, size_t limitValue)
-	static 
-	int ThrsafeIncrementSizeUpToLimit(int [] storagePointer, int limitValue)
+	public static 
+	int ThrsafeIncrementSizeUpToLimit(AtomicInteger storagePointer, int limitValue)
 	{
 //	    size_t resultValue;
 //	    while (true) {
@@ -147,12 +146,15 @@ public class ThreadingUtils {
 //	    return resultValue;
 	    int resultValue;
 	    while (true) {
-	        resultValue = storagePointer;
+	        resultValue = storagePointer.get();
 	        if (resultValue == limitValue) {
 	            break;
 	        }
-	        if (ThrsafeCompareExchangePointer((volatile atomicptr *)storagePointer, (atomicptr)resultValue, (atomicptr)(resultValue + 1))) {
-	            break;
+	        //if (ThrsafeCompareExchangePointer((volatile atomicptr *)storagePointer, (atomicptr)resultValue, (atomicptr)(resultValue + 1))) {
+	        //TODO (TZ)
+	        System.out.println("Is this right? Using Int instead of Pointer?");
+	        if (ThrsafeCompareExchange(storagePointer, resultValue, (resultValue + 1))) {
+	        	break;
 	        }
 	    }
 	    return resultValue;

@@ -30,12 +30,14 @@ package org.ode4j.ode.threading;
 
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
+import org.ode4j.ode.internal.processmem.DxWorldProcessContext.dxProcessContextMutex;
 
 /**
  *   ODE threading support interfaces	
  */
 public class Threading_H {
 
+	public static boolean dTHREADING_INTF_DISABLED = true;
 
 //	struct dxThreadingImplementation;
 //	typedef struct dxThreadingImplementation *dThreadingImplementationID;
@@ -65,7 +67,9 @@ public class Threading_H {
 	 * @see dMutexGroupMutexUnlockFunction
 	 */
 	public interface dMutexGroupAllocFunction {
-		DMutexGroup  run(DThreadingImplementation impl, int /*dmutexindex_t*/ Mutex_count, 
+		DMutexGroup  run(DThreadingImplementation impl, 
+				//int /*dmutexindex_t*/ Mutex_count,
+				dxProcessContextMutex Mutex_count,
 				String[] Mutex_names_ptr/*=NULL*/);
 	}
 
@@ -103,7 +107,8 @@ public class Threading_H {
 	 */
 	public interface dMutexGroupMutexLockFunction { 
 		void run(DThreadingImplementation impl, DMutexGroup mutex_group, 
-				int /*dmutexindex_t*/ mutex_index);
+				//int /*dmutexindex_t*/ mutex_index);
+				dxProcessContextMutex mutex_index);
 	}
 
 	/**
@@ -144,7 +149,8 @@ public class Threading_H {
 	 */
 	public interface dMutexGroupMutexUnlockFunction {
 		void run(DThreadingImplementation impl, DMutexGroup mutex_group, 
-				int/*dmutexindex_t*/ mutex_index);
+				//int/*dmutexindex_t*/ mutex_index);
+				dxProcessContextMutex mutex_index);
 	}
 
 
@@ -162,9 +168,14 @@ public class Threading_H {
 	//typedef ptrdiff_t ddependencychange_t;
 	//typedef size_t dcallindex_t;
 	public interface dThreadedCallFunction {
-		int run(Object[] call_context, int/*dcallindex_t*/ instance_index, 
+		boolean run(CallContext call_context, int/*dcallindex_t*/ instance_index, 
 				  DCallReleasee this_releasee);
 	}
+	//TZ
+	public static interface CallContext {
+		//
+	}
+
 
 	public abstract class DThreadedWaitTime {}
 	public class DxThreadedWaitTime extends DThreadedWaitTime
@@ -297,7 +308,7 @@ public class Threading_H {
 				DCallReleasee dependent_releasee/*=NULL*/, 
 				DCallWait call_wait/*=NULL*/, 
 				final dThreadedCallFunction call_func, 
-				final Object[] call_context, 
+				final CallContext call_context, 
 				int /*dcallindex_t*/ instance_index, 
 				String call_name/*=NULL*/);
 	}
@@ -363,7 +374,7 @@ public class Threading_H {
 	public interface dThreadedCallWaitFunction {
 		void run(DThreadingImplementation impl, RefInt out_wait_status/*=NULL*/, 
 	  DCallWait call_wait, 
-	  Object[] /*const dThreadedWaitTime * */ timeout_time_ptr/*=NULL*/, 
+	  DThreadedWaitTime timeout_time_ptr/*=NULL*/, 
 	  String wait_name/*=NULL*/);
 	}
 

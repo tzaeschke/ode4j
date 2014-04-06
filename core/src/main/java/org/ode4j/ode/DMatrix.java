@@ -48,6 +48,15 @@ public class DMatrix extends DMisc {
         Arrays.fill(a,0);
     }
     /** 
+     * Set a vector/matrix to all zeros. 
+     */
+    public static void dSetZero (double[] a, int aOfs, int aLen) {
+        //Arrays.fill(a, aOfs, aOfs+aLen, 0);
+        for (int i = aOfs; i < aOfs+aLen; i++) {
+            a[i] = 0;
+        }
+    }
+    /** 
      * Set a vector/matrix to a specific value. 
      */
     public static void dSetValue (DVector3 a, double value) {

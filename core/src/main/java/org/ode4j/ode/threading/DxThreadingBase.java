@@ -27,6 +27,8 @@ package org.ode4j.ode.threading;
 import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
+import org.ode4j.ode.internal.processmem.DxWorldProcessContext.dxProcessContextMutex;
+import org.ode4j.ode.threading.Threading_H.CallContext;
 import org.ode4j.ode.threading.Threading_H.DCallReleasee;
 import org.ode4j.ode.threading.Threading_H.DCallWait;
 import org.ode4j.ode.threading.Threading_H.DMutexGroup;
@@ -71,7 +73,7 @@ public class DxThreadingBase {
 
 	    //public:
 	    //public 
-	    DMutexGroup AllocMutexGroup(int /*dmutexindex_t*/ Mutex_count, String[] Mutex_names_ptr/*=NULL*/)
+	    public DMutexGroup AllocMutexGroup(dxProcessContextMutex /*dmutexindex_t*/ Mutex_count, String[] Mutex_names_ptr/*=NULL*/)
 	    {
 	        Ref<DThreadingImplementation> impl = new Ref<>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
@@ -79,7 +81,7 @@ public class DxThreadingBase {
 	    }
 
 	    //public 
-	    void FreeMutexGroup(DMutexGroup mutex_group) 
+	    public void FreeMutexGroup(DMutexGroup mutex_group) 
 	    {
 	        Ref<DThreadingImplementation> impl = new Ref<>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
@@ -87,7 +89,9 @@ public class DxThreadingBase {
 	    }
 
 	    //public 
-	    void LockMutexGroupMutex(DMutexGroup mutex_group, int /*dmutexindex_t*/ mutex_index) 
+	    public void LockMutexGroupMutex(DMutexGroup mutex_group, 
+	    		//int /*dmutexindex_t*/ mutex_index)
+	    		dxProcessContextMutex mutex_index)
 	    {
 	        Ref<DThreadingImplementation> impl = new Ref<>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
@@ -101,14 +105,16 @@ public class DxThreadingBase {
 //	         return functions->trylock_group_mutex(impl, mutex_group, mutex_index) != 0;
 //	     }
 
-	    void UnlockMutexGroupMutex(DMutexGroup mutex_group, int /*dmutexindex_t*/ mutex_index)
+	    public void UnlockMutexGroupMutex(DMutexGroup mutex_group, 
+	    		//int /*dmutexindex_t*/ mutex_index)
+	    		dxProcessContextMutex mutex_index)
 	    {
 	        Ref<DThreadingImplementation> impl = new Ref<>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.unlock_group_mutex.run(impl.get(), mutex_group, mutex_index);
 	    }
 
-	    DCallWait AllocThreadedCallWait() 
+	    public DCallWait AllocThreadedCallWait() 
 	    {
 	        Ref<DThreadingImplementation> impl = new Ref<>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
@@ -122,7 +128,7 @@ public class DxThreadingBase {
 	        functions.reset_call_wait.run(impl.get(), call_wait);
 	    }
 
-	    void FreeThreadedCallWait(DCallWait call_wait)
+	    public void FreeThreadedCallWait(DCallWait call_wait)
 	    {
 	        Ref<DThreadingImplementation> impl = new Ref<>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
@@ -136,13 +142,13 @@ public class DxThreadingBase {
 //	        dCallWaitID call_wait/*=NULL*/, 
 //	        dThreadedCallFunction *call_func, void *call_context, dcallindex_t instance_index, 
 //	        const char *call_name/*=NULL*/) const
-	    void PostThreadedCall(RefInt out_summary_fault/*=NULL*/, 
+	    public void PostThreadedCall(RefInt out_summary_fault/*=NULL*/, 
 		        Ref<DCallReleasee> out_post_releasee/*=NULL*/, 
 		        int /*ddependencycount_t*/ dependencies_count, 
 		        DCallReleasee dependent_releasee/*=NULL*/, 
 		        DCallWait call_wait/*=NULL*/, 
 		        dThreadedCallFunction call_func, 
-		        Object[] call_context, 
+		        CallContext call_context, 
 		        int /*dcallindex_t*/ instance_index, 
 		        String call_name/*=NULL*/)
 	    {
@@ -153,7 +159,7 @@ public class DxThreadingBase {
 	        		call_name);
 	    }
 
-	    void AlterThreadedCallDependenciesCount(DCallReleasee target_releasee, 
+	    public void AlterThreadedCallDependenciesCount(DCallReleasee target_releasee, 
 	        int /*ddependencychange_t*/ dependencies_count_change) 
 	    {
 	        Ref<DThreadingImplementation> impl = new Ref<>();
@@ -232,11 +238,11 @@ public class DxThreadingBase {
 //	    	    ddependencycount_t member_count, dCallReleaseeID dependent_releasee/*=NULL*/, 
 //	    	    dThreadedCallFunction *call_func, void *call_context, 
 //	    	    const char *call_name/*=NULL*/) const
-	    void PostThreadedCallsGroup(
+	    public void PostThreadedCallsGroup(
 	    		RefInt out_summary_fault/*=NULL*/, 
 	    		int /*ddependencycount_t*/ member_count, 
 	    		DCallReleasee dependent_releasee/*=NULL*/, 
-	    		dThreadedCallFunction call_func, Object[] call_context, 
+	    		dThreadedCallFunction call_func, CallContext call_context, 
 	    		String call_name/*=NULL*/)
 	    {
 	        Ref<DThreadingImplementation> impl = new Ref<>();
@@ -256,13 +262,14 @@ public class DxThreadingBase {
 //	    	    dCallWaitID call_wait/*=NULL*/, 
 //	    	    dThreadedCallFunction *call_func, void *call_context, dcallindex_t instance_index, 
 //	    	    const char *call_name/*=NULL*/) const
-	    void PostThreadedCallForUnawareReleasee(
+	    public void PostThreadedCallForUnawareReleasee(
 	    		RefInt out_summary_fault/*=NULL*/, 
 	    		Ref<DCallReleasee> out_post_releasee/*=NULL*/, 
 	    		int /*ddependencycount_t*/ dependencies_count, 
 	    		DCallReleasee dependent_releasee/*=NULL*/, 
 	    		DCallWait call_wait/*=NULL*/, 
-	    		dThreadedCallFunction call_func, Object[] call_context, 
+	    		dThreadedCallFunction call_func, 
+	    		CallContext call_context, 
 	    		int /*dcallindex_t*/ instance_index, 
 	    		String call_name/*=NULL*/)
 	    {
@@ -292,11 +299,12 @@ public class DxThreadingBase {
 	    
 //	}  //End of dxThreadingBase
 
-	public class DxMutexGroupLockHelper
+	public static class DxMutexGroupLockHelper
 	{
 	//public:
-		DxMutexGroupLockHelper(DxThreadingBase threading_base, DMutexGroup mutex_group, 
-				int /*dmutexindex_t*/ mutex_index) {
+		public DxMutexGroupLockHelper(DxThreadingBase threading_base, DMutexGroup mutex_group, 
+				//int /*dmutexindex_t*/ mutex_index) {
+				dxProcessContextMutex mutex_index) {
 			m_threading_base = threading_base;
 			m_mutex_group = mutex_group;
 			m_mutex_index = mutex_index;
@@ -313,7 +321,7 @@ public class DxThreadingBase {
 	        }
 	    }
 
-	    void UnlockMutex()
+	    public void UnlockMutex()
 	    {
 	    	Common.dIASSERT(m_mutex_locked);
 
@@ -332,7 +340,8 @@ public class DxThreadingBase {
 	    //private:
 	    private DxThreadingBase          	m_threading_base;
 	    private DMutexGroup                 m_mutex_group;
-	    private int /*dmutexindex_t*/               m_mutex_index;
+	    //private int /*dmutexindex_t*/               m_mutex_index;
+	    private dxProcessContextMutex		m_mutex_index;
 	    private boolean                     m_mutex_locked;
 	};
 

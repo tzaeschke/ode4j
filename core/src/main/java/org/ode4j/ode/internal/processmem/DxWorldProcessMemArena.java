@@ -93,7 +93,7 @@ public final class DxWorldProcessMemArena {
     {
         BlockPointer block = m_pAllocCurrentOrNextArena;
         m_pAllocCurrentOrNextArena = DxUtil.dOFFSET_EFFICIENTLY(block, size);
-        Common.dIASSERT(m_pAllocCurrent.toInt() <= m_pAllocEnd.toInt());
+        Common.dIASSERT(m_pAllocCurrentOrNextArena.toInt() <= m_pAllocEnd.toInt());
         return block;
     }
 
@@ -186,12 +186,13 @@ public final class DxWorldProcessMemArena {
                 arena.m_pAllocBegin = blockbegin;
                 arena.m_pAllocEnd = blockend;
                 arena.m_pArenaBegin = pNewArenaBuffer;
-                arena.m_pAllocCurrent = blockbegin;
+                arena.m_pAllocCurrentOrNextArena = null;
                 arena.m_pArenaMemMgr = memmgr;
             }
 
             allocsuccess = true;
-        } while (false);
+        } 
+        while (false);
 
         if (!allocsuccess) {
             if (pOldArenaBuffer != null) {

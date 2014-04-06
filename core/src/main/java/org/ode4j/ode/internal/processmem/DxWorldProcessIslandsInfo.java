@@ -66,9 +66,9 @@ public class DxWorldProcessIslandsInfo {
 
 	//private enum dxISLANDSIZESELEMENT
 	//{
-	private static final int dxISE_BODIES_COUNT = 0;
-	private static final int dxISE_JOINTS_COUNT = 1;
-	private static final int dxISE__MAX = 2;
+	static final int dxISE_BODIES_COUNT = 0;
+	static final int dxISE_JOINTS_COUNT = 1;
+	static final int dxISE__MAX = 2;
 	//};
 	
     static int BuildIslandsAndEstimateStepperMemoryRequirements(
