@@ -5,6 +5,7 @@ Done:  --> 0.13.1
 -- joints: ALL DONE! THis includes missing updates from 0.11.0 for some joints:
 			--> DxJoint2D, ...
 -- ode: all except quickstep, threadingxxx
+        did quickstep until 1171/999/666
 
 
 skipped: threading_atomics_provs.*
@@ -16,6 +17,7 @@ done: threading_base.*
 TODO check use of _next/_tome in DxGeom. Make private? Remove getNext()?
 TODO check matrix.h
 TODO check use of (M_PI/2.0)
+TODO clean up javadoc @brief, etc
 
 TODO check if the new OdeMath.dCalcMatrix3Det and dInvertMatrix3 are really used.
 TODO add include/ode/threading*.h

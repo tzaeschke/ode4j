@@ -25,11 +25,7 @@
 package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dMultiply0_333;
-import static org.ode4j.ode.OdeMath.dMultiply2_333;
-import static org.ode4j.ode.OdeMath.dMultiplyAdd0_331;
-import static org.ode4j.ode.OdeMath.dSubtractVectorCross3;
+import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dRecip;
@@ -43,6 +39,8 @@ import static org.ode4j.ode.internal.Timer.dTimerStart;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint;
@@ -54,6 +52,10 @@ import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
+import org.ode4j.ode.threading.ThreadingUtils;
+import org.ode4j.ode.threading.Threading_H.CallContext;
+import org.ode4j.ode.threading.Threading_H.DCallReleasee;
+import org.ode4j.ode.threading.Threading_H.dThreadedCallFunction;
 
 /**
  *
@@ -74,6 +76,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	private static final boolean TIMING = false;
 	
+	//#define dMIN(A,B)  ((A)>(B) ? (B) : (A))
+	//#define dMAX(A,B)  ((B)>(A) ? (B) : (A))
+	private static final int dMIN(int A, int B) { return ((A)>(B) ? (B) : (A)); }
+	private static final int dMAX(int A, int B) { return ((B)>(A) ? (B) : (A)); }
 
 	//***************************************************************************
 	// configuration
@@ -185,6 +191,180 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	//#endif
 
 
+
+	private static class dJointWithInfo1
+	{
+		DxJoint[] joint;
+		final DxJoint.Info1 info = new DxJoint.Info1();
+	}
+
+	private static class dxQuickStepperStage0Outputs
+	{
+		int                    nj;
+		int                    m;
+		int                    mfb;
+	}
+
+	private static class dxQuickStepperStage1CallContext implements CallContext
+	{
+		void Initialize(DxStepperProcessingCallContext stepperCallContext, 
+				BlockPointer stageMemArenaState, double[] invI, dJointWithInfo1[] jointinfos)
+		{
+			m_stepperCallContext = stepperCallContext;
+			m_stageMemArenaState = stageMemArenaState; 
+			m_invI = invI;
+			m_jointinfos = jointinfos;
+		}
+
+		DxStepperProcessingCallContext m_stepperCallContext;
+		BlockPointer                       m_stageMemArenaState;
+		double[]                           m_invI;
+		dJointWithInfo1[]                 m_jointinfos;
+		dxQuickStepperStage0Outputs     m_stage0Outputs;
+	}
+
+	private static class dxQuickStepperStage0BodiesCallContext implements CallContext
+	{
+		void Initialize(final DxStepperProcessingCallContext stepperCallContext, 
+				double[] invI)
+		{
+			m_stepperCallContext = stepperCallContext;
+			m_invI = invI;
+			//m_tagsTaken = 0;
+			//m_gravityTaken = 0;
+			//m_inertiaBodyIndex = 0;
+		}
+
+		DxStepperProcessingCallContext m_stepperCallContext;
+		double[]                           m_invI;
+		final AtomicInteger                     m_tagsTaken = new AtomicInteger();
+		final AtomicInteger                     m_gravityTaken = new AtomicInteger();
+		//unsigned int                    volatile m_inertiaBodyIndex;
+		final AtomicInteger                    m_inertiaBodyIndex = new AtomicInteger();
+	}
+
+	private static class dxQuickStepperStage0JointsCallContext implements CallContext
+	{
+		void Initialize(DxStepperProcessingCallContext stepperCallContext, 
+				dJointWithInfo1[] jointinfos, dxQuickStepperStage0Outputs stage0Outputs)
+		{
+			m_stepperCallContext = stepperCallContext;
+			m_jointinfos = jointinfos;
+			m_stage0Outputs = stage0Outputs;
+		}
+
+		DxStepperProcessingCallContext m_stepperCallContext;
+		dJointWithInfo1[]                 m_jointinfos;
+		dxQuickStepperStage0Outputs     m_stage0Outputs;
+	}
+
+	//static int dxQuickStepIsland_Stage0_Bodies_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+	//static int dxQuickStepIsland_Stage0_Joints_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+	//static int dxQuickStepIsland_Stage1_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+
+	//static void dxQuickStepIsland_Stage0_Bodies(dxQuickStepperStage0BodiesCallContext *callContext);
+	//static void dxQuickStepIsland_Stage0_Joints(dxQuickStepperStage0JointsCallContext *callContext);
+	//static void dxQuickStepIsland_Stage1(dxQuickStepperStage1CallContext *callContext);
+
+
+	private static class dxQuickStepperLocalContext
+	{
+//		void Initialize(dReal *invI, dJointWithInfo1 *jointinfos, unsigned int nj, 
+//				unsigned int m, unsigned int mfb, const unsigned int *mindex, int *findex, 
+//				dReal *J, dReal *cfm, dReal *lo, dReal *hi, int *jb, dReal *rhs, dReal *Jcopy)
+		void Initialize(double[] invI, dJointWithInfo1[] jointinfos, int nj, 
+				int m, int mfb, final int[] mindex, int[] findex, 
+				double[] J, double[] cfm, double[] lo, double[] hi, int[] jb, double[] rhs, double[] Jcopy)
+		{
+			m_invI = invI;
+			m_jointinfos = jointinfos;
+			m_nj = nj;
+			m_m = m;
+			m_mfb = mfb;
+			m_mindex = mindex;
+			m_findex = findex; 
+			m_J = J;
+			m_cfm = cfm;
+			m_lo = lo;
+			m_hi = hi;
+			m_jb = jb;
+			m_rhs = rhs;
+			m_Jcopy = Jcopy;
+		}
+
+		double[]                        m_invI;
+		dJointWithInfo1[]                 m_jointinfos;
+		int                    m_nj;
+		int                    m_m;
+		int                    m_mfb;
+		int[]              m_mindex;
+		int[]                            m_findex;
+		double[]                         m_J;
+		double[]                         m_cfm;
+		double[]                         m_lo;
+		double[]                         m_hi;
+		int[]                            m_jb;
+		double[]                         m_rhs;
+		double[]                         m_Jcopy;
+	};
+
+	private static class dxQuickStepperStage3CallContext implements CallContext
+	{
+		void Initialize(DxStepperProcessingCallContext callContext, 
+				dxQuickStepperLocalContext localContext, 
+				BlockPointer stage1MemArenaState)
+		{
+			m_stepperCallContext = callContext;
+			m_localContext = localContext;
+			m_stage1MemArenaState = stage1MemArenaState;
+		}
+
+		DxStepperProcessingCallContext m_stepperCallContext;
+		dxQuickStepperLocalContext   m_localContext;
+		BlockPointer                            m_stage1MemArenaState;
+	};
+
+	private static class dxQuickStepperStage2CallContext implements CallContext
+	{
+		void Initialize(DxStepperProcessingCallContext callContext, 
+				dxQuickStepperLocalContext localContext, 
+				double[] rhs_tmp)
+		{
+			m_stepperCallContext = callContext;
+			m_localContext = localContext;
+			m_rhs_tmp = rhs_tmp;
+			//m_ji_J = 0;
+			//m_ji_jb = 0;
+			//m_bi = 0;
+			//m_Jrhsi = 0;
+		}
+
+		DxStepperProcessingCallContext m_stepperCallContext;
+		dxQuickStepperLocalContext   m_localContext;
+		double[]                           m_rhs_tmp;
+//		volatile unsigned int           m_ji_J;
+//		volatile unsigned int           m_ji_jb;
+//		volatile unsigned int           m_bi;
+//		volatile unsigned int           m_Jrhsi;
+		final AtomicInteger           m_ji_J = new AtomicInteger();
+		final AtomicInteger           m_ji_jb = new AtomicInteger();
+		final AtomicInteger           m_bi = new AtomicInteger();
+		final AtomicInteger           m_Jrhsi = new AtomicInteger();
+	};
+
+	//static int dxQuickStepIsland_Stage2a_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+	//static int dxQuickStepIsland_Stage2aSync_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+	//static int dxQuickStepIsland_Stage2b_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+	//static int dxQuickStepIsland_Stage2bSync_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+	//static int dxQuickStepIsland_Stage2c_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+	//static int dxQuickStepIsland_Stage3_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+
+	//static void dxQuickStepIsland_Stage2a(dxQuickStepperStage2CallContext *callContext);
+	//static void dxQuickStepIsland_Stage2b(dxQuickStepperStage2CallContext *callContext);
+	//static void dxQuickStepIsland_Stage2c(dxQuickStepperStage2CallContext *callContext);
+	//static void dxQuickStepIsland_Stage3(dxQuickStepperStage3CallContext *callContext);
+
+
 	//***************************************************************************
 	// various common computations involving the matrix J
 
@@ -200,23 +380,20 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        final int[]jb,
 			final DxBody[]bodyP, final int bodyOfs, final double[] invI)
 	{
-		int i,j;
-		//dRealMutablePtr iMJ_ptr = iMJ;
-		//dRealMutablePtr J_ptr = J;
 		int iMJ_ofs = 0;//TZ
 		int J_ofs = 0;//TZ
-		for (i=0; i<m; J_ofs +=12, iMJ_ofs += 12, i++) {
+		for (int i=0; i<m; J_ofs +=12, iMJ_ofs += 12, i++) {
 			int b1 = jb[i*2];
 			int b2 = jb[i*2+1];
 			double k1 = bodyP[b1+bodyOfs].invMass;
 //TZ			for (j=0; j<3; j++) iMJ_ptr[j] = k*J_ptr[j];
-			for (j=0; j<3; j++) iMJ[j + iMJ_ofs] = k1*J[j + J_ofs];
+			for (int j=0; j<3; j++) iMJ[j + iMJ_ofs] = k1*J[j + J_ofs];
 //			dMULTIPLY0_331 (iMJ_ptr + 3, invI + 12*b1, J_ptr + 3);
 			dMultiply0_331 (iMJ, iMJ_ofs + 3, invI, 12*b1, J,J_ofs + 3);
 			if (b2 != -1) {
 				double k2 = bodyP[b2+bodyOfs].invMass;
 				//for (j=0; j<3; j++) iMJ_ptr[j+6] = k*J_ptr[j+6];
-				for (j=0; j<3; j++) iMJ[j+6+iMJ_ofs] = k2*J[j+6+J_ofs];
+				for (int j=0; j<3; j++) iMJ[j+6+iMJ_ofs] = k2*J[j+6+J_ofs];
 				//dMULTIPLY0_331 (iMJ_ptr + 9, invI + 12*b2, J_ptr + 9);
 				dMultiply0_331 (iMJ, iMJ_ofs + 9, invI, 12*b2, J, J_ofs + 9);
 			}
@@ -261,10 +438,30 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	 * @param in double[nb*6]
 	 * @param out double[m]
 	 */
+	private static void multiplyAdd_J (AtomicInteger mi_storage, 
+			int m, final double[] J, final int[] jb, final double[] in, double[] out)
+	{
+		int mi;
+		while ((mi = ThreadingUtils.ThrsafeIncrementIntUpToLimit(mi_storage, m)) != m) {
+			int b1 = jb[mi*2];
+			int b2 = jb[mi*2+1];
+			int J_ofs = mi*12;//const dReal *J_ptr = J + mi * 12;
+			double sum = 0.0;
+			int in_ofs = b1*6;//const dReal *in_ptr = in + (size_t)(unsigned)b1*6;
+			for (int j = 0; j < 6; ++j) sum += J[J_ofs+j]*in[in_ofs+j];//J_ptr[j] * in_ptr[j];
+			if (b2 != -1) {
+				//in_ptr = in + (size_t)(unsigned)b2*6;
+				in_ofs = b2*6;
+				//for (int j=0; j<6; j++) sum += J_ptr[6 + j] * in_ptr[j];
+				for (int j=0; j<6; j++) sum += J[J_ofs + 6 + j] * in[in_ofs + j];
+			}
+			out[mi] += sum;
+		}
+	}
 
-	//static void multiply_J (int m, dRealMutablePtr J, int *jb,
-	//		dRealMutablePtr in, dRealMutablePtr out)
-	private static void multiply_J (int m, final double[] J, final int[]jb,
+	// Single threaded versionto be removed later
+	//#if defined(WARM_STARTING) || defined(CHECK_VELOCITY_OBEYS_CONSTRAINT)
+	private static void _multiply_J (int m, final double[] J, final int[]jb,
 			final double[] in, final double[] out)
 	{
 		int J_ofs = 0;//final double[] J_ptr = J;
@@ -283,7 +480,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			out[i] = sum;
 		}
 	}
-
+	//#endif
 
 	// compute out = (J*inv(M)*J' + cfm)*in.
 	// use z as an nb*6 temporary.
@@ -295,7 +492,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 //			final double[] cfm, final double[] z, final double[] in, final double[] out)
 //	{
 //		multiply_invM_JT (m,nb,iMJ,jb,in,z);
-//		multiply_J (m,J,jb,z,out);
+//		_multiply_J (m,J,jb,z,out);
 //
 //		// add cfm
 //		for (int i=0; i<m; i++) out[i] += cfm[i] * in[i];
@@ -347,8 +544,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	//
 	//	        // precompute 1 / diagonals of A
 	//	        dReal *Ad = memarena->AllocateArray<dReal> (m);
-	//	        dRealPtr iMJ_ptr = iMJ;
-	//	        dRealPtr J_ptr = J;
+	//			const dReal *iMJ_ptr = iMJ;
+	//			const dReal *J_ptr = J;
 	//	        for (unsigned int i=0; i<m; i++) {
 	//	          dReal sum = 0;
 	//	          for (unsigned int j=0; j<6; j++) sum += iMJ_ptr[j] * J_ptr[j];
@@ -543,6 +740,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		//IndexError *order = (IndexError*) ALLOCA (m*sizeof(IndexError));
 		IndexError[] order = new IndexError[m];
 		for (int iii=0; iii<m; iii++) order[iii] = new IndexError();
+		int head_size = 0;
 
 		if (!REORDER_CONSTRAINTS) {//TZ #ifndef REORDER_CONSTRAINTS
 		    // make sure constraints with findex < 0 come first.
@@ -559,6 +757,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		            --ordertail;
 		        }
 		    }
+	        head_size = orderhead;// - order;
 		    dIASSERT (orderhead-ordertail==1);
 		} //#endif
 
@@ -579,10 +778,13 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 //				if (iteration < 2) {
 //					// for the first two iterations, solve the constraints in
 //					// the given order
+//				    head_size = 0;
 //					for (int i=0; i<m; i++) {
+//						int findex_i = findex[i];				
 //						order[i].error = i;
-//						order[i].findex = findex[i];
+//						order[i].findex = findex_i;
 //						order[i].index = i;
+//		                if (findex_i == -1) { ++head_size; }
 //					}
 //				}
 //				else {
@@ -599,8 +801,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 //						else {
 //							order[i].error = dInfinity;
 //						}
-//						order[i].findex = findex[i];
+//		                int findex_i = findex[i];
+//						order[i].findex = findex_i;
 //						order[i].index = i;
+//		                if (findex_i == -1) { ++head_size; }
 //					}
 //				}
 //				//qsort (order,m,sizeof(IndexError),&compare_index_error);
@@ -613,12 +817,19 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			}//TZ #endif
 			if (RANDOMLY_REORDER_CONSTRAINTS) {//#ifdef RANDOMLY_REORDER_CONSTRAINTS
 				if ((iteration & 7) == 0) {
-					for (int i=1; i<m; i++) {
+					for (int i=1; i<head_size; i++) {
 					    int swapi = dRandInt(i+1);
                         IndexError tmp = order[i];
 						order[i] = order[swapi];
 						order[swapi] = tmp;
 					}
+		            int tail_size = m - head_size;
+		            for (int j=1; j<tail_size; j++) {
+		                int swapj = dRandInt(j+1);
+		                IndexError tmp = order[head_size + j];
+		                order[head_size + j] = order[head_size + swapj];
+		                order[head_size + swapj] = tmp;
+		            }
 				}
 			}//#endif
 
@@ -629,8 +840,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				//     access pattern.
 				int index = order[i].index;
 
-				int fc_ofs1;//dRealMutablePtr fc_ptr1;
-				int fc_ofs2;//dRealMutablePtr fc_ptr2;
+				int fc_ofs1;//dReal *fc_ptr1;
+				int fc_ofs2;//dReal *fc_ptr2;
 				double delta;
 				final int NULL = -1;
 				
@@ -647,8 +858,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				    delta = b[index] - old_lambda*Ad[index];
 
 				    //dRealPtr J_ptr = J + index*12;
-				    int J_ofs = index*12;
-				    
+				    final int J_ofs = index*12;
 				    // @@@ potential optimization: SIMD-ize this and the b2 >= 0 case
 				    //delta -=fc_ptr1[0] * J_ptr[0] + fc_ptr1[1] * J_ptr[1] +
 				    delta -=fc[fc_ofs1] * J[J_ofs] + fc[fc_ofs1+1] * J[J_ofs+1] +
@@ -708,7 +918,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				//delta *= ramp;
 
 				{
-				    int iMJ_ofs = 0+index*12; //dRealPtr iMJ_ptr = iMJ + (size_t)index*12;
+				    final int iMJ_ofs = 0+index*12; //dRealPtr iMJ_ptr = iMJ + (size_t)index*12;
     				// update fc.
     				// @@@ potential optimization: SIMD for this and the b2 >= 0 case
 				    fc[fc_ofs1 + 0] += delta * iMJ[iMJ_ofs + 0];//fc_ptr[0] += delta * iMJ_ptr[0];
@@ -732,54 +942,94 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		}
 	}
 	
-	static class DJointWithInfo1
-	{
-	  DxJoint joint;
-	  final DxJoint.Info1 info = new DxJoint.Info1();
-	}
 
-	//void dxQuickStepper (dxWorld *world, dxBody * const *body, int nb,
-	//	     dxJoint * const *_joint, int nj, dReal stepsize)
-	private static void dxQuickStepper (DxWorldProcessMemArena memarena,
-	        DxWorld world, DxBody[] bodyP, final int bodyOfs, final int nb,
-			DxJoint[] _jointP, final int _jointOfs, final int _nj, double stepsize)
+	/*extern */
+	void dxQuickStepIsland(DxStepperProcessingCallContext callContext)
 	{
 		if (TIMING) dTimerStart("preprocessing");
 
-		double stepsize1 = dRecip(stepsize);
+	    DxWorldProcessMemArena memarena = callContext.m_stepperArena();
+	    DxWorld world = callContext.m_world();
+	    int nb = callContext.m_islandBodiesCount();
+	    int _nj = callContext.m_islandJointsCount();
 
-		// number all bodies in the body list - set their tag values
-		for (int i=0; i<nb; i++) bodyP[i+bodyOfs].tag = i;
+	    double[] invI = memarena.AllocateArrayDReal(nb*3*4);//new double[3*4*nb];//dRealAllocaArray (invI,3*4*nb);
+	    //dJointWithInfo1[] const jointinfos = memarena.AllocateArray<dJointWithInfo1>(_nj);
+	    DxWorldProcessMemArena.dummy();
+	    dJointWithInfo1[] jointinfos = new dJointWithInfo1[_nj];
 
-		// for all bodies, compute the inertia tensor and its inverse in the global
-		// frame, and compute the rotational force and add it to the torque
-		// accumulator. I and invI are a vertical stack of 3x4 matrices, one per body.
-		double[] invI = memarena.AllocateArrayDReal(nb*3*4);//new double[3*4*nb];//dRealAllocaArray (invI,3*4*nb);
+	    final int allowedThreads = callContext.m_stepperAllowedThreads();
+	    dIASSERT(allowedThreads != 0);
+
+	    BlockPointer stagesMemArenaState = memarena.SaveState();
+
+	    dxQuickStepperStage1CallContext stage1CallContext = (dxQuickStepperStage1CallContext )memarena.AllocateBlock(sizeof(dxQuickStepperStage1CallContext));
+	    stage1CallContext.Initialize(callContext, stagesMemArenaState, invI, jointinfos);
+
+	    dxQuickStepperStage0BodiesCallContext stage0BodiesCallContext = (dxQuickStepperStage0BodiesCallContext)memarena.AllocateBlock(sizeof(dxQuickStepperStage0BodiesCallContext));
+	    stage0BodiesCallContext.Initialize(callContext, invI);
+
+	    dxQuickStepperStage0JointsCallContext stage0JointsCallContext = (dxQuickStepperStage0JointsCallContext)memarena.AllocateBlock(sizeof(dxQuickStepperStage0JointsCallContext));
+	    stage0JointsCallContext.Initialize(callContext, jointinfos, stage1CallContext.m_stage0Outputs);
+
+	    if (allowedThreads == 1)
+	    {
+	        dxQuickStepIsland_Stage0_Bodies(stage0BodiesCallContext);
+	        dxQuickStepIsland_Stage0_Joints(stage0JointsCallContext);
+	        dxQuickStepIsland_Stage1(stage1CallContext);
+	    }
+	    else
+	    {
+	        int bodyThreads = allowedThreads;
+	        int jointThreads = 1;
+
+	        DCallReleasee stage1CallReleasee;
+	        world.PostThreadedCallForUnawareReleasee(null, stage1CallReleasee, 
+	        		bodyThreads + jointThreads, callContext.m_finalReleasee(), 
+	        		null, dxQuickStepIsland_Stage1_Callback, stage1CallContext, 0, 
+	        		"QuickStepIsland Stage1");
+
+	        world.PostThreadedCallsGroup(null, bodyThreads, stage1CallReleasee, 
+	        		dxQuickStepIsland_Stage0_Bodies_Callback, stage0BodiesCallContext, 
+	        		"QuickStepIsland Stage0-Bodies");
+
+	        world.PostThreadedCall(null, null, 0, stage1CallReleasee, null, 
+	        		dxQuickStepIsland_Stage0_Joints_Callback, stage0JointsCallContext, 0, 
+	        		"QuickStepIsland Stage0-Joints");
+	        dIASSERT(jointThreads == 1);
+	    }
+	}    
+
+	private static dThreadedCallFunction dxQuickStepIsland_Stage0_Bodies_Callback = new dThreadedCallFunction() {
+		@Override
+		public boolean run(CallContext _callContext, 
+				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
 		{
-		    int invIrowP = 0;//invI;
-		    
-    		for (int i=0; i<nb; invIrowP += 12, i++) {
-    			DMatrix3 tmp = new DMatrix3();
-    			DxBody b = bodyP[i+bodyOfs];
-    
-    			// compute inverse inertia tensor in global frame
-    			dMultiply2_333 (tmp,b.invI,b.posr().R());
-    			dMultiply0_333 (invI,invIrowP,b.posr().R(),tmp);
-    
-    			if (b.isFlagsGyroscopic()) {
-    				DMatrix3 I = new DMatrix3();
-    				// compute inertia tensor in global frame
-    				dMultiply2_333 (tmp,b.mass._I,b.posr().R());
-    				dMultiply0_333 (I,b.posr().R(),tmp);
-    				// compute rotational force
-    				//dMULTIPLY0_331 (tmp.v,0,I.v,0,body[i].avel.v,0);
-    				dMultiply0_331 (tmp,I,b.avel);
-    				dSubtractVectorCross3(b.tacc, b.avel, tmp);
-    			}//#endif
-    		}
+			//(void)callInstanceIndex; // unused
+			//(void)callThisReleasee; // unused
+			dxQuickStepperStage0BodiesCallContext callContext = (dxQuickStepperStage0BodiesCallContext)_callContext;
+			dxQuickStepIsland_Stage0_Bodies(callContext);
+			return true;
 		}
-		
-		{
+	};
+
+	static 
+	void dxQuickStepIsland_Stage0_Bodies(dxQuickStepperStage0BodiesCallContext callContext)
+	{
+	    DxBody[] bodyP = callContext.m_stepperCallContext.m_islandBodiesStartA();
+	    int bodyOfs = callContext.m_stepperCallContext.m_islandBodiesStartOfs();
+	    int nb = callContext.m_stepperCallContext.m_islandBodiesCount();
+
+	    if (ThreadingUtils.ThrsafeExchange(callContext.m_tagsTaken, 1) == 0)
+	    {
+	        // number all bodies in the body list - set their tag values
+	        for (int i=0; i<nb; i++) bodyP[bodyOfs+i].tag = i;
+	    }
+
+	    if (ThreadingUtils.ThrsafeExchange(callContext.m_gravityTaken, 1) == 0)
+	    {
+	        DxWorld world = callContext.m_stepperCallContext.m_world();
+
 		    // add the gravity force to all bodies
 		    // since gravity does normally have only one component it's more efficient
 		    // to run three loops for each individual component
@@ -811,6 +1061,117 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		        }
 		    }
 		}
+
+	    // for all bodies, compute the inertia tensor and its inverse in the global
+	    // frame, and compute the rotational force and add it to the torque
+	    // accumulator. I and invI are a vertical stack of 3x4 matrices, one per body.
+	    {
+	        double[] invIrowA = callContext.m_invI;
+	        int invIrowP = 0;
+	        int bodyIndex = ThreadingUtils.ThrsafeIncrementIntUpToLimit(callContext.m_inertiaBodyIndex, nb);
+
+	        for (int i = 0; i != nb; invIrowP += 12, ++i) {
+	            if (i == bodyIndex) {
+	                DMatrix3 tmp;
+	                DxBody b = bodyP[bodyOfs+i];
+
+	                // compute inverse inertia tensor in global frame
+	                dMultiply2_333 (tmp,b.invI,b.posr().R());
+	                dMultiply0_333 (invIrowA, invIrowP,b.posr().R(),tmp);
+
+	                // Don't apply gyroscopic torques to bodies
+	                // if not flagged or the body is kinematic
+	                if (b.isFlagsGyroscopic() && (b.invMass>0)) {
+	                    DMatrix3 I;
+	                    // compute inertia tensor in global frame
+	                    dMultiply2_333 (tmp,b.mass._I,b.posr().R());
+	                    dMultiply0_333 (I,b.posr().R(),tmp);
+	                    // compute rotational force
+//	#if 0
+//	                    // Explicit computation
+//	                    dMultiply0_331 (tmp,I,b.avel);
+//	                    dSubtractVectorCross3(b.tacc,b.avel,tmp);
+//	#else
+	                    // Do the implicit computation based on 
+	                    //"Stabilizing Gyroscopic Forces in Rigid Multibody Simulations"
+	                    // (LacoursiÃ¨re 2006)
+	                    double h = callContext.m_stepperCallContext.m_stepSize(); // Step size
+	                    DVector3 L; // Compute angular momentum
+	                    dMultiply0_331(L,I,b.avel);
+	                    
+	                    // Compute a new effective 'inertia tensor'
+	                    // for the implicit step: the cross-product 
+	                    // matrix of the angular momentum plus the
+	                    // old tensor scaled by the timestep.  
+	                    // Itild may not be symmetric pos-definite, 
+	                    // but we can still use it to compute implicit
+	                    // gyroscopic torques.
+	                    DMatrix3 Itild= new DMatrix3();//{0};  
+	                    dSetCrossMatrixMinus(Itild,L,4);
+	                    for (int ii=0;ii<12;++ii) {
+	                      Itild[ii]=Itild[ii]*h+I[ii];
+	                    }
+
+	                    // Scale momentum by inverse time to get 
+	                    // a sort of "torque"
+	                    L.scale(dRecip(h));//dScaleVector3(L,dRecip(h)); 
+	                    // Invert the pseudo-tensor
+	                    DMatrix3 itInv = new DMatrix3();
+	                    // This is a closed-form inversion.
+	                    // It's probably not numerically stable
+	                    // when dealing with small masses with
+	                    // a large asymmetry.
+	                    // An LU decomposition might be better.
+	                    if (dInvertMatrix3(itInv,Itild)!=0) {
+	                        // "Divide" the original tensor
+	                        // by the pseudo-tensor (on the right)
+	                        dMultiply0_333(Itild,I,itInv);
+	                        // Subtract an identity matrix
+	                        Itild[0]-=1; Itild[5]-=1; Itild[10]-=1;
+
+	                        // This new inertia matrix rotates the 
+	                        // momentum to get a new set of torques
+	                        // that will work correctly when applied
+	                        // to the old inertia matrix as explicit
+	                        // torques with a semi-implicit update
+	                        // step.
+	                        DVector3 tau0;
+	                        dMultiply0_331(tau0,Itild,L);
+	                        
+	                        // Add the gyro torques to the torque 
+	                        // accumulator
+	                        //for (int ii=0;ii<3;++ii) {
+	                        //  b.tacc[ii]+=tau0[ii];
+	                        //}
+	                        b.tacc.add(tau0);
+	                    }
+//	#endif
+	                }
+
+	                bodyIndex = ThreadingUtils.ThrsafeIncrementIntUpToLimit(callContext.m_inertiaBodyIndex, nb);
+	            }
+	        }
+	    }
+	}
+
+	private static dThreadedCallFunction dxQuickStepIsland_Stage0_Joints_Callback = new dThreadedCallFunction() {
+		@Override
+		public boolean run(CallContext _callContext, 
+				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
+		{
+			//(void)callInstanceIndex; // unused
+			//(void)callThisReleasee; // unused
+			dxQuickStepperStage0JointsCallContext callContext = (dxQuickStepperStage0JointsCallContext)_callContext;
+			dxQuickStepIsland_Stage0_Joints(callContext);
+			return true;
+		}
+	};
+
+	static 
+	void dxQuickStepIsland_Stage0_Joints(dxQuickStepperStage0JointsCallContext *callContext)
+	{
+	    dxJoint * const *_joint = callContext.m_stepperCallContext.m_islandJointsStart;
+	    int _nj = callContext.m_stepperCallContext.m_islandJointsCount;
 
 		// get joint information (m = total constraint dimension, nub = number of unbounded variables).
 		// joints with m=0 are inactive and are removed from the joints array
