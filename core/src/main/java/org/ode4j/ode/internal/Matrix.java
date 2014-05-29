@@ -73,6 +73,15 @@ public class Matrix extends FastDot {
 		}
 	}
 
+	public static void dSetValue(double[] a, int pos, int n, double value) {
+		dAASSERT(n >= 0);
+		while (n > 0) {
+			// *(a++) = value;
+			a[pos + n - 1] = value;
+			n--;
+		}
+	}
+
 	/**
 	 * Matrix multiplication. all matrices are stored in standard row format.
 	 * the digit refers to the argument that is transposed: <br>

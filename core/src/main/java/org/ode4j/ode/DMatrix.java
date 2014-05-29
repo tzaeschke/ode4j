@@ -63,6 +63,12 @@ public class DMatrix extends DMisc {
         a.set(value, value, value);
     }
 
+    public static void dSetValue (int[] a, int pos, int len, int value) {
+    	for (int i = pos; i < len+pos; i++) {
+    		a[i] = value;
+    	}
+    }
+
 
 //    /** 
 //     * Get the dot product of two n*1 vectors. if n <= 0 then

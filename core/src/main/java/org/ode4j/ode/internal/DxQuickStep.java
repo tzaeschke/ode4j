@@ -24,10 +24,18 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.DMatrix.dSetValue;
+import static org.ode4j.ode.DMatrix.dSetZero;
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.OdeMath.dInvertMatrix3;
+import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.dMultiply0_333;
+import static org.ode4j.ode.OdeMath.dMultiply2_333;
+import static org.ode4j.ode.OdeMath.dMultiplyAdd0_331;
+import static org.ode4j.ode.OdeMath.dSetCrossMatrixMinus;
 import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.dIVERIFY;
 import static org.ode4j.ode.internal.Common.dRecip;
 import static org.ode4j.ode.internal.Matrix.dSetValue;
 import static org.ode4j.ode.internal.Matrix.dSetZero;
@@ -37,7 +45,6 @@ import static org.ode4j.ode.internal.Timer.dTimerNow;
 import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
-import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -945,7 +952,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	
 
 	/*extern */
-	void dxQuickStepIsland(DxStepperProcessingCallContext callContext)
+	private void dxQuickStepIsland(DxStepperProcessingCallContext callContext)
 	{
 		if (TIMING) dTimerStart("preprocessing");
 
@@ -1020,7 +1027,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		}
 	};
 
-	static 
+	private static 
 	void dxQuickStepIsland_Stage0_Bodies(dxQuickStepperStage0BodiesCallContext callContext)
 	{
 	    DxBody[] bodyP = callContext.m_stepperCallContext.m_islandBodiesStartA();
@@ -1226,7 +1233,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			//(void)callThisReleasee; // unused
 			dxQuickStepperStage1CallContext stage1CallContext = (dxQuickStepperStage1CallContext)_stage1CallContext;
 			dxQuickStepIsland_Stage1(stage1CallContext);
-			return 1;
+			return true;
 		}
 	};
 
@@ -1337,15 +1344,17 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			else
 			{
 				final Ref<DCallReleasee> stage3CallReleasee = new Ref<>();
-				world.PostThreadedCallForUnawareReleasee(null, stage3CallReleasee, 1, callContext.m_finalReleasee(), 
+				world.threading().PostThreadedCallForUnawareReleasee(null, stage3CallReleasee, 1, callContext.m_finalReleasee(), 
 						null, dxQuickStepIsland_Stage3_Callback, stage3CallContext, 0, "QuickStepIsland Stage3");
 
 				final Ref<DCallReleasee> stage2bSyncReleasee = new Ref<>();
-				world.PostThreadedCall(null, stage2bSyncReleasee, 1, stage3CallReleasee, 
+				world.threading().PostThreadedCall(
+						null, stage2bSyncReleasee, 1, stage3CallReleasee.get(), 
 						null, dxQuickStepIsland_Stage2bSync_Callback, stage2CallContext, 0, "QuickStepIsland Stage2b Sync");
 
 				final Ref<DCallReleasee> stage2aSyncReleasee = new Ref<>();
-				world.PostThreadedCall(null, stage2aSyncReleasee, allowedThreads, stage2bSyncReleasee, 
+				world.threading().PostThreadedCall(
+						null, stage2aSyncReleasee, allowedThreads, stage2bSyncReleasee.get(), 
 						null, dxQuickStepIsland_Stage2aSync_Callback, stage2CallContext, 0, "QuickStepIsland Stage2a Sync");
 
 				world.threading().PostThreadedCallsGroup(null, allowedThreads, stage2aSyncReleasee.get(), 
@@ -1367,7 +1376,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			//(void)callThisReleasee; // unused
 			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
 			dxQuickStepIsland_Stage2a(stage2CallContext);
-			return 1;
+			return true;
 		}
 	};
 
@@ -1411,140 +1420,277 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        Jinfo.setRowskip(12);
 	        Jinfo.setArrays(J, rhs, cfm, lo, hi, findex);
 		            
-		            int JcopyrowP = 0;//double[] Jcopyrow = Jcopy;
-		            int ofsi = 0;
-		            // const dJointWithInfo1 *jicurr = jointiinfos;
-		            for (int i = 0; i < njXXX; i++) {
-		                DJointWithInfo1 jicurr = jointiinfos[i];
-		                int JrowP = 0 + ofsi * 12;		                
-		                Jinfo.J1lp = JrowP;
-		                Jinfo.J1ap = JrowP + 3;
-		                Jinfo.J2lp = JrowP + 6;
-		                Jinfo.J2ap = JrowP + 9;
-//		                Jinfo.setC(c, ofsi);
-//		                Jinfo.setCfm( cfm, ofsi );
-//		                Jinfo.setLo( lo, ofsi );
-//		                Jinfo.setHi( hi, ofsi );
-//		                Jinfo.setFindex( findex, ofsi );
-		                Jinfo.setAllP(ofsi);
+	        int ji;
+	        while ((ji = ThreadingUtils.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_J, nj)) != nj) {
+	            final int ofsi = mindex[ji * 2 + 0];
+	            final int infom = mindex[ji * 2 + 2] - ofsi;
+
+//		            int JcopyrowP = 0;//double[] Jcopyrow = Jcopy;
+//		            int ofsi = 0;
+//		            // const dJointWithInfo1 *jicurr = jointiinfos;
+//		            for (int i = 0; i < njXXX; i++) {
+//		                DJointWithInfo1 jicurr = jointiinfos[i];
+	            int JrowP = 0 + ofsi * 12;		                
+	            Jinfo.J1lp = JrowP;
+	            Jinfo.J1ap = JrowP + 3;
+	            Jinfo.J2lp = JrowP + 6;
+	            Jinfo.J2ap = JrowP + 9;
+	            Jinfo.setAllP(ofsi);
+	            dSetZero (J, JrowP, infom*12);
+	            //Jinfo.c = rhs + ofsi;
+	            //dSetZero (Jinfo.c, infom);
+	            dSetZero(rhs, ofsi, infom);
+	            //Jinfo.cfm = cfm + ofsi;
+	            dSetValue (cfm, ofsi, infom, world.global_cfm);
+	            //Jinfo.lo = lo + ofsi;
+	            dSetValue (lo, ofsi, infom, -dInfinity);
+	            //Jinfo.hi = hi + ofsi;
+	            dSetValue (hi, ofsi, infom, dInfinity);
+	            //Jinfo.findex = findex + ofsi;
+	            dSetValue(findex, ofsi, infom, -1);
+
+	            DxJoint joint = jointinfos[ji].joint;
+	            joint.getInfo2(stepsizeRecip, worldERP, Jinfo);
+
+	            //double *rhs_row = Jinfo.c;
+	            //double *cfm_row = Jinfo.cfm;
+	            for (int i = 0; i != infom; ++i) {
+//	            	rhs_row[i] *= stepsizeRecip;
+//	            	cfm_row[i] *= stepsizeRecip;
+	            	rhs[i+ofsi] *= stepsizeRecip;
+	            	cfm[i+ofsi] *= stepsizeRecip;
+	            }
+
+	            // adjust returned findex values for global index numbering
+	            //int *findex_row = Jinfo.findex;
+	            for (int j = infom; j != 0; ) {
+	            	--j;
+	            	int fival = findex[j+ofsi];
+	            	if (fival != -1) 
+	            		findex[j+ofsi] = fival + ofsi;
+	            }
+
+	            // we need a copy of Jacobian for joint feedbacks
+	            // because it gets destroyed by SOR solver
+	            // instead of saving all Jacobian, we can save just rows
+	            // for joints, that requested feedback (which is normally much less)
+	            int mfbcurr = mindex[ji * 2 + 1], mfbnext = mindex[ji * 2 + 3];
+	            if (mfbcurr != mfbnext) {
+	            	//dReal *Jcopyrow = Jcopy + mfbcurr * 12;
+	            	//memcpy(Jcopyrow, Jrow, (mfbnext - mfbcurr) * 12 * sizeof(dReal));
+	            	System.arraycopy(Jcopy, mfbcurr * 12, J, JrowP, (mfbnext - mfbcurr) * 12);
+	            }
+	        }
+	    }
+
+	    {
+	        int[] jb = localContext.m_jb;
+
+	        // create an array of body numbers for each joint row
+	        int ji;
+	        while ((ji = ThreadingUtils.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_jb, nj)) != nj) {
+	        	DxJoint joint = jointinfos[ji].joint;
 		                
-		                DxJoint joint = jicurr.joint;
-		                joint.getInfo2 (Jinfo);
+	        	int b1 = (joint.node[0].body!=null) ? (joint.node[0].body.tag) : -1;
+	        	int b2 = (joint.node[1].body!=null) ? (joint.node[1].body.tag) : -1;
 
-		                final int infom = jicurr.info.m;
+	        	int jb_end = 2 * mindex[ji * 2 + 2];
+	        	int jb_ptr = 2 * mindex[ji * 2 + 0];
+	        	for (; jb_ptr != jb_end; jb_ptr += 2) {
+	        		jb[jb_ptr] = b1;//jb_ptr[0] = b1;
+	        		jb[jb_ptr+1] = b2;//jb_ptr[1] = b2;
+	        	}
+	        }
+	    }
+	}
 
-		                
-//		                Jinfo.J1lp = ofs[i]*12;//J + ofs[i]*12;
-//		                Jinfo.J1ap = ofs[i]*12 + 3;// = Jinfo.J1l + 3;  
-//		                Jinfo.J2lp = ofs[i]*12 + 6;//  = Jinfo.J1l + 6;
-//		                Jinfo.J2ap = ofs[i]*12 + 9;//  = Jinfo.J1l + 9;
-//		                Jinfo.setAllP(ofs[i]);
-				
-//				Jinfo.c.set(c, ofs[i]);//				Jinfo.c = c + ofs[i];
-//				Jinfo.cfm.set(cfm, ofs[i]);//				Jinfo.cfm = cfm + ofs[i];
-//				Jinfo.lo.set(lo, ofs[i]);//				Jinfo.lo = lo + ofs[i];
-//				Jinfo.hi.set(hi, ofs[i]);//				Jinfo.hi = hi + ofs[i];
-//				joint[i].getInfo2 (Jinfo);
-//				
-//				// adjust returned findex values for global index numbering
-//				for (j=0; j<info[i].getM(); j++) {
-//					if (findex[ofs[i] + j] >= 0) findex[ofs[i] + j] += ofs[i];
-//				}
-//				if (joint[i].feedback!=null)
-//					mfb += info[i].getM();
-//			}
+	private static 
+	dThreadedCallFunction dxQuickStepIsland_Stage2aSync_Callback = new dThreadedCallFunction() {
+		@Override
+		public boolean run(CallContext _stage2CallContext, int callInstanceIndex,
+				DCallReleasee callThisReleasee) {
+			//callInstanceIndex; // unused
+			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
+			final DxStepperProcessingCallContext callContext = stage2CallContext.m_stepperCallContext;
+			DxWorld world = callContext.m_world();
+			final int allowedThreads = callContext.m_stepperAllowedThreads();
 
-		                // we need a copy of Jacobian for joint feedbacks
-		                // because it gets destroyed by SOR solver
-		                // instead of saving all Jacobian, we can save just rows
-		                // for joints, that requested feedback (which is normaly much less)
-		                if (joint.feedback != null) {
-		                    int rowels = infom * 12;
-		                    memcpy(Jcopy, JcopyrowP, J, JrowP, rowels);
-		                    JcopyrowP += rowels;
-		                }
+			world.threading().AlterThreadedCallDependenciesCount(callThisReleasee, allowedThreads);
+			world.threading().PostThreadedCallsGroup(null, allowedThreads, callThisReleasee, 
+					dxQuickStepIsland_Stage2b_Callback, stage2CallContext, "QuickStepIsland Stage2b");
 
-		                // adjust returned findex values for global index numbering
-		                int findex_ofsi = ofsi; //findex + ofsi;
-		                for (int j=0; j<infom; j++) {
-		                    int fival = findex[findex_ofsi + j];
-		                    if (fival != -1) {
-		                        //findex_ofsi[j] = fival + ofsi;
-		                        findex[findex_ofsi + j] = fival + ofsi;
-		                    }
-		                }
+			return true;
+		}
+	};
 
-		                ofsi += infom;
-		            }
-		        }
+	private static 
+	dThreadedCallFunction dxQuickStepIsland_Stage2b_Callback = new dThreadedCallFunction() {
+		@Override
+		public boolean run(CallContext _stage2CallContext, int callInstanceIndex,
+				DCallReleasee callThisReleasee) {
+			//(void)callInstanceIndex; // unused
+			//(void)callThisReleasee; // unused
+			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
+			dxQuickStepIsland_Stage2b(stage2CallContext);
+			return true;
+		}
+	};
+
+	private static 
+	void dxQuickStepIsland_Stage2b(dxQuickStepperStage2CallContext stage2CallContext)
+	{
+	    final DxStepperProcessingCallContext callContext = stage2CallContext.m_stepperCallContext;
+	    final dxQuickStepperLocalContext localContext = stage2CallContext.m_localContext;
+
+	    final double stepsizeRecip = dRecip(callContext.m_stepSize());
+	    {
+	        // Warning!!!
+	        // This code reads facc/tacc fields of body objects which (the fields)
+	        // may be modified by dxJoint::getInfo2(). Therefore the code must be
+	        // in different sub-stage from Jacobian construction in Stage2a 
+	        // to ensure proper synchronization and avoid accessing numbers being modified.
+	        // Warning!!!
+	        DxBody[] bodyA = callContext.m_islandBodiesStartA();
+	        int bodyOfs = callContext.m_islandBodiesStartOfs(); 
+	        final int nb = callContext.m_islandBodiesCount();
+	        double[] invI = localContext.m_invI;
+	        double[] rhs_tmp = stage2CallContext.m_rhs_tmp;
+
+	        // compute the right hand side `rhs'
+	        if (TIMING) dTimerNow ("compute rhs_tmp");
+
+	        // put -(v/h + invM*fe) into rhs_tmp
+	        int bi;
+	        while ((bi = ThreadingUtils.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_bi, nb)) != nb) {
+	            int tmp1currOfs = bi * 6; //+rhs_tmp
+	            int invIrowOfs = bi * (6 * 2); //+invI
+	            DxBody b = bodyA[bodyOfs+bi];
+	            double body_invMass = b.invMass;
+	            for (int j=0; j<3; ++j) 
+	            	rhs_tmp[tmp1currOfs+j] = -(b.facc.get(j) * body_invMass + b.lvel.get(j) * stepsizeRecip);
+	            dMultiply0_331 (rhs_tmp, tmp1currOfs + 3, invI, invIrowOfs, b.tacc);
+	            for (int k=0; k<3; ++k) 
+	            	rhs_tmp[tmp1currOfs+3+k] = -(b.avel.get(k) * stepsizeRecip) - rhs_tmp[tmp1currOfs+3+k];
+	        }
+	    }
+	}
+
+	private static 
+	dThreadedCallFunction dxQuickStepIsland_Stage2bSync_Callback = new dThreadedCallFunction() {
+		@Override
+		public boolean run(CallContext _stage2CallContext, int callInstanceIndex,
+				DCallReleasee callThisReleasee) {
+			//(void)callInstanceIndex; // unused
+			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
+			final DxStepperProcessingCallContext callContext = stage2CallContext.m_stepperCallContext;
+			DxWorld world = callContext.m_world();
+			final int allowedThreads = callContext.m_stepperAllowedThreads();
+
+			world.threading().AlterThreadedCallDependenciesCount(callThisReleasee, allowedThreads);
+			world.threading().PostThreadedCallsGroup(null, allowedThreads, callThisReleasee, 
+					dxQuickStepIsland_Stage2c_Callback, stage2CallContext, "QuickStepIsland Stage2c");
+
+			return true;
+		}
+	};
+
+	private static 
+	dThreadedCallFunction dxQuickStepIsland_Stage2c_Callback = new dThreadedCallFunction() {
+		@Override
+		public boolean run(CallContext _stage2CallContext, int callInstanceIndex,
+				DCallReleasee callThisReleasee) {
+			//(void)callInstanceIndex; // unused
+			//(void)callThisReleasee; // unused
+			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
+			dxQuickStepIsland_Stage2c(stage2CallContext);
+			return true;
+		}
+	};
+
+	private static 
+	void dxQuickStepIsland_Stage2c(dxQuickStepperStage2CallContext stage2CallContext)
+	{
+	    //const dxStepperProcessingCallContext *callContext = stage2CallContext->m_stepperCallContext;
+		final dxQuickStepperLocalContext localContext = stage2CallContext.m_localContext;
+
+	    //const dReal stepsizeRecip = dRecip(callContext->m_stepSize);
+	    {
+	        // Warning!!!
+	        // This code depends on rhs_tmp and therefore must be in different sub-stage 
+	        // from rhs_tmp calculation in Stage2b to ensure proper synchronization 
+	        // and avoid accessing numbers being modified.
+	        // Warning!!!
+	        double[] rhs = localContext.m_rhs;
+	        double[] J = localContext.m_J;
+	        int[] jb = localContext.m_jb;
+	        double[] rhs_tmp = stage2CallContext.m_rhs_tmp;
+	        final int m = localContext.m_m;
+
+	        // add J*rhs_tmp to rhs
+	        multiplyAdd_J(stage2CallContext.m_Jrhsi, m, J, jb, rhs_tmp, rhs);
+	    }
+	}
 
 
-		        {
-		            // create an array of body numbers for each joint row
-		            int jb_ofs = 0;//int[] jb_ptr = jb;
-		            for (int i=0; i<njXXX; i++) {
-		                DxJoint joint = jointiinfos[i].joint;
-		                int infom = jointiinfos[i].info.m;
-		                
-		                int b1 = (joint.node[0].body!=null) ? (joint.node[0].body.tag) : -1;
-		                int b2 = (joint.node[1].body!=null) ? (joint.node[1].body.tag) : -1;
-		                for (int j=0; j<infom; j++) {
-		                    jb[jb_ofs] = b1;//jb_ptr[0] = b1;
-		                    jb[jb_ofs+1] = b2;//jb_ptr[1] = b2;
-		                    jb_ofs += 2;//jb_ptr += 2;
-		                }
-		            }
-		            dIASSERT (jb_ofs == 2*m);//(jb_ptr == jb+2*m);
-		        }
-    			
-		        BlockPointer tmp1state = memarena.BEGIN_STATE_SAVE(); {
-		            if (TIMING) dTimerNow ("compute rhs");
-		        
-		            // compute the right hand side `rhs'
-		            double[] tmp1 = memarena.AllocateArrayDReal(nb*6);//new double[nb*6];//dRealAllocaArray (tmp1,nb*6);
-		            // put v/h + invM*fe into tmp1
-		            int tmp1currP = 0;//tmp1;
-		            int invIrowP = 0; //invI
-		            for (int i=0; i<nb; tmp1currP+=6, invIrowP+=12, i++) {
-		                DxBody b = bodyP[i+bodyOfs];
-		                double body_invMass = b.invMass;
-		                for (int j=0; j<3; j++) {
-		                    tmp1[tmp1currP+j] = 
-		                        b.facc.get(j) * body_invMass + b.lvel.get(j) * stepsize1;
-		                }
-		                //dMULTIPLY0_331 (tmp1, i*6 + 3,invI, i*12,body[i].tacc.v, 0);
-		                dMultiply0_331 (tmp1, tmp1currP + 3 ,invI, invIrowP, b.tacc);
-		                for (int k=0; k<3; k++) 
-		                    tmp1[tmp1currP+3+k] += b.avel.get(k) * stepsize1;
-		            }
+	private static 
+	dThreadedCallFunction dxQuickStepIsland_Stage3_Callback = new dThreadedCallFunction() {
+		@Override
+		public boolean run(CallContext _stage3CallContext, int callInstanceIndex,
+				DCallReleasee callThisReleasee) {
+			//(void)callInstanceIndex; // unused
+			//(void)callThisReleasee; // unused
+			dxQuickStepperStage3CallContext stage3CallContext = (dxQuickStepperStage3CallContext)_stage3CallContext;
+			dxQuickStepIsland_Stage3(stage3CallContext);
+			return true;
+		}
+	};
 
-		            // put J*tmp1 into rhs
-		            multiply_J (m,J,jb,tmp1,rhs);
-		        }
-		        memarena.END_STATE_SAVE(tmp1state);
+	private static 
+	void dxQuickStepIsland_Stage3(dxQuickStepperStage3CallContext stage3CallContext)
+	{
+	    final DxStepperProcessingCallContext callContext = stage3CallContext.m_stepperCallContext;
+	    final dxQuickStepperLocalContext localContext = stage3CallContext.m_localContext;
 
-    			// complete rhs
-    			for (int i=0; i<m; i++) rhs[i] = c[i]*stepsize1 - rhs[i];
-    
-    			// scale CFM
-    			for (int j=0; j<m; j++) cfm[j] *= stepsize1;
+	    DxWorldProcessMemArena memarena = callContext.m_stepperArena();
+	    memarena.RestoreState(stage3CallContext.m_stage1MemArenaState);
+	    stage3CallContext = null; // WARNING! stage3CallContext is not valid after this point!
+	    dIVERIFY(stage3CallContext == null); // To suppress unused variable assignment warnings
 
-		    }
-		    memarena.END_STATE_SAVE(cstate);
+	    double[] invI = localContext.m_invI;
+	    DJointWithInfo1[] jointinfos = localContext.m_jointinfos;
+	    int nj = localContext.m_nj;
+	    int m = localContext.m_m;
+	    int mfb = localContext.m_mfb;
+	    //const unsigned int *mindex = localContext->m_mindex;
+	    int[] findex = localContext.m_findex;
+	    double[] J = localContext.m_J;
+	    double[] cfm = localContext.m_cfm;
+	    double[] lo = localContext.m_lo;
+	    double[] hi = localContext.m_hi;
+	    int[] jb = localContext.m_jb;
+	    double[] rhs = localContext.m_rhs;
+	    double[] Jcopy = localContext.m_Jcopy;
+
+	    DxWorld world = callContext.m_world();
+	    DxBody[] bodyA = callContext.m_islandBodiesStartA();
+	    int bodyOfs = callContext.m_islandBodiesStartOfs();
+	    int nb = callContext.m_islandBodiesCount();
+
+	    if (m > 0) {
     			
 			// load lambda from the value saved on the previous iteration
 			double[] lambda = memarena.AllocateArrayDReal(m);//new double[m];//dRealAllocaArray (lambda,m);
 			
 			//TZ not defined
 //			if (WARM_STARTING) {//#ifdef WARM_STARTING
-//		     dReal *lambdscurr = lambda;
-//		      const dJointWithInfo1 *jicurr = jointiinfos;
-//		      const dJointWithInfo1 *const jiend = jicurr + nj;
-//		      for (; jicurr != jiend; jicurr++) {
-//		        unsigned int infom = jicurr->info.m;
-//		        memcpy (lambdscurr, jicurr->joint->lambda, (size_t)infom * sizeof(dReal));
-//		        lambdscurr += infom;
-//		      }
+//	           dReal *lambdscurr = lambda;
+//	            const dJointWithInfo1 *jicurr = jointinfos;
+//	            const dJointWithInfo1 *const jiend = jicurr + nj;
+//	            for (; jicurr != jiend; jicurr++) {
+//	                unsigned int infom = jicurr->info.m;
+//	                memcpy (lambdscurr, jicurr->joint->lambda, infom * sizeof(dReal));
+//	                lambdscurr += infom;
+//	            }
 //			}//#endif
 
 			double[] cforce = memarena.AllocateArrayDReal(nb*6);
@@ -1552,7 +1698,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			{
 	            if (TIMING) dTimerNow ("solving LCP problem");
 	            // solve the LCP problem and get lambda and invM*constraint_force
-	            SOR_LCP (memarena,m,nb,J,jb,bodyP,bodyOfs,invI,lambda,cforce,rhs,lo,hi,cfm,findex,world.qs);
+	            SOR_LCP (memarena,m,nb,J,jb,bodyA,bodyOfs,invI,lambda,cforce,rhs,lo,hi,cfm,findex,world.qs);
 			}
 			memarena.END_STATE_SAVE(lcpstate);
 			    
@@ -1572,17 +1718,17 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			//TZ not defined
 //			if (WARM_STARTING) {//#ifdef WARM_STARTING
 //		    {
-//		        // save lambda for the next iteration
-//		        //@@@ note that this doesn't work for contact joints yet, as they are
-//		        // recreated every iteration
-//		        const dReal *lambdacurr = lambda;
-//		        const dJointWithInfo1 *jicurr = jointiinfos;
-//		        const dJointWithInfo1 *const jiend = jicurr + nj;
-//		        for (; jicurr != jiend; jicurr++) {
-//		          unsigned int infom = jicurr->info.m;
-//		          memcpy (jicurr->joint->lambda, lambdacurr, (size_t)infom * sizeof(dReal));
-//		          lambdacurr += infom;
-//		        }
+//            // save lambda for the next iteration
+//            //@@@ note that this doesn't work for contact joints yet, as they are
+//            // recreated every iteration
+//            const dReal *lambdacurr = lambda;
+//            const dJointWithInfo1 *jicurr = jointinfos;
+//            const dJointWithInfo1 *const jiend = jicurr + nj;
+//            for (; jicurr != jiend; jicurr++) {
+//                unsigned int infom = jicurr->info.m;
+//                memcpy (jicurr->joint->lambda, lambdacurr, infom * sizeof(dReal));
+//                lambdacurr += infom;
+//            }
 //		      }
 //				//#endif
 
@@ -1590,10 +1736,11 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			// they should not be used again.
 
 			{
+	            double stepsize = callContext.m_stepSize();
 			    // add stepsize * cforce to the body velocity
 			    int cforcecurrP = 0; //cforce
 			    for (int i=0; i<nb; cforcecurrP+=6, i++) {
-			        DxBody b = bodyP[i+bodyOfs];
+			        DxBody b = bodyA[i+bodyOfs];
 			        for (int j=0; j<3; j++) {
 			            b.lvel.add(j, stepsize * cforce[cforcecurrP+j] );
 			            b.avel.add(j, stepsize * cforce[cforcecurrP+3+j] );
@@ -1610,9 +1757,9 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			    int JcopyrowP = 0;//Jcopy;
 			    //int jicurrP = 0;//jointiinfos;
 				//mfb = 0;
-				for (int i=0; i<njXXX; i++) {
-				    DxJoint joint = jointiinfos[i].joint;
-				    int infom = jointiinfos[i].info.m;
+				for (int i=0; i<nj; i++) {
+				    DxJoint joint = jointinfos[i].joint;
+				    int infom = jointinfos[i].info.m;
 					if (joint.feedback != null) {
 						DJoint.DJointFeedback fb = joint.feedback;
 //						double[] data = new double[6];
@@ -1644,11 +1791,12 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 		{
 		    if (TIMING) dTimerNow ("compute velocity update");
+	        double stepsize = callContext.m_stepSize();
 		    // compute the velocity update:
 		    // add stepsize * invM * fe to the body velocity
 		    int invIrowP = 0;//invI
 		    for (int i=0; i<nb; invIrowP += 12, i++) {
-		        DxBody b = bodyP[i+bodyOfs]; 
+		        DxBody b = bodyA[i+bodyOfs]; 
 		        double body_invMass_mul_stepsize = stepsize * b.invMass;
 		        for (int j=0; j<3; j++) {
 		            b.lvel.add(j, body_invMass_mul_stepsize * b.facc.get(j) );
@@ -1674,7 +1822,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 //		        }
 //		      }
 //		      dReal *tmp = memarena->AllocateArray<dReal> (m);
-//		      multiply_J (m,J,jb,vel,tmp);
+//		      _multiply_J (m,J,jb,vel,tmp);
 //		      dReal error = 0;
 //		      for (unsigned int i=0; i<m; i++) error += dFabs(tmp[i]);
 //		      printf ("velocity error = %10.6e\n",error);
@@ -1684,11 +1832,12 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		} //#endif
 
 		{
+	        double stepsize = callContext.m_stepSize();
     		// update the position and orientation from the new linear/angular velocity
     		// (over the given timestep)
 		    if (TIMING) dTimerNow ("update position");
 		    for (int i=0; i<nb; i++) {
-		        bodyP[i+bodyOfs].dxStepBody (stepsize);
+		        bodyA[i+bodyOfs].dxStepBody (stepsize);
 		    }
 		}
 		
@@ -1697,7 +1846,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     
     		// zero all force accumulators
     		for (int i=0; i<nb; i++) {
-    		    DxBody b = bodyP[i+bodyOfs];
+    		    DxBody b = bodyA[i+bodyOfs];
     			b.facc.setZero();//dSetZero (body[i].facc,3);
     			b.tacc.setZero();//dSetZero (body[i].tacc,3);
     		}
@@ -1777,24 +1926,21 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 //	        int sub1_res1 = dEFFICIENT_SIZE(sizeof(DJointWithInfo1.class) * _nj); // for initial jointiinfos
 //
 //	        int sub1_res2 = dEFFICIENT_SIZE(sizeof(DJointWithInfo1.class) * nj); // for shrunk jointiinfos
+//        sub1_res2 += dEFFICIENT_SIZE(sizeof(dxQuickStepperLocalContext)); // for dxQuickStepLocalContext
 //	        if (m > 0) {
 //	            sub1_res2 += dEFFICIENT_SIZE(sizeof(double.class) * 12 * m); // for J
+//        sub1_res2 += dEFFICIENT_SIZE(sizeof(dReal) * 12 * m); // for J
 //	            sub1_res2 += dEFFICIENT_SIZE(sizeof(int.class) * 12 * m); // for jb
 //	            sub1_res2 += 4 * dEFFICIENT_SIZE(sizeof(double.class) * m); // for cfm, lo, hi, rhs
 //	            sub1_res2 += dEFFICIENT_SIZE(sizeof(int.class) * m); // for findex
 //	            sub1_res2 += dEFFICIENT_SIZE(sizeof(double.class) * 12 * mfb); // for Jcopy
 //	            {
-//	        int sub2_res1 = dEFFICIENT_SIZE(sizeof(double.class) * m); // for c
-//	        {
-//	            int sub3_res1 = dEFFICIENT_SIZE(sizeof(double.class) * 6 * nb); // for tmp1
-//	    
-//	            int sub3_res2 = 0;
+//        size_t sub2_res1 = dEFFICIENT_SIZE(sizeof(dxQuickStepperStage3CallContext)); // for dxQuickStepperStage3CallContext
+//        sub2_res1 += dEFFICIENT_SIZE(sizeof(dReal) * 6 * nb); // for rhs_tmp
+//        sub2_res1 += dEFFICIENT_SIZE(sizeof(dxQuickStepperStage2CallContext)); // for dxQuickStepperStage2CallContext
 //
-//	          sub2_res1 += (sub3_res1 >= sub3_res2) ? sub3_res1 : sub3_res2;
-//	        }
-//
-//	        int sub2_res2 = dEFFICIENT_SIZE(sizeof(double.class) * m); // for lambda
-//	        sub2_res2 += dEFFICIENT_SIZE(sizeof(double.class) * 6 * nb); // for cforce
+//        size_t sub2_res2 = dEFFICIENT_SIZE(sizeof(dReal) * m); // for lambda
+//        sub2_res2 += dEFFICIENT_SIZE(sizeof(dReal) * 6 * nb); // for cforce
 //	        {
 //	            int sub3_res1 = EstimateSOR_LCPMemoryRequirements(m); // for SOR_LCP
 //
@@ -1806,35 +1952,48 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 //
 //	            int sub4_res2 = 0;
 //
-//	            sub3_res2 += (sub4_res1 >= sub4_res2) ? sub4_res1 : sub4_res2;
+//	            sub3_res2 += dMax(sub4_res1, sub4_res2);
 //	          }
 //	}//#endif
-//	          sub2_res2 += (sub3_res1 >= sub3_res2) ? sub3_res1 : sub3_res2;
+//	          sub2_res2 += dMax(sub3_res1, sub3_res2);
 //	        }
 //
-//	        sub1_res2 += (sub2_res1 >= sub2_res2) ? sub2_res1 : sub2_res2;
+//	        sub1_res2 += dMax(sub2_res1, sub2_res2);
 //	      }
+//	}
+//        else {
+//            sub1_res2 += dEFFICIENT_SIZE(sizeof(dxQuickStepperStage3CallContext)); // for dxQuickStepperStage3CallContext
 //	    }
 //	    
-//	    res += (sub1_res1 >= sub1_res2) ? sub1_res1 : sub1_res2;
+//        size_t sub1_res12_max = dMAX(sub1_res1, sub1_res2);
+//        size_t stage01_contexts = dEFFICIENT_SIZE(sizeof(dxQuickStepperStage0BodiesCallContext))
+//            + dEFFICIENT_SIZE(sizeof(dxQuickStepperStage0JointsCallContext))
+//            + dEFFICIENT_SIZE(sizeof(dxQuickStepperStage1CallContext));
+//        res += dMAX(sub1_res12_max, stage01_contexts);
 //	  }
 //
 //	  return res;
 	    return -1;
 	}
 
+	/*extern */
+	private int dxEstimateQuickStepMaxCallCount(int activeThreadCount, int allowedThreadCount)
+	{
+		//(void)activeThreadCount; // unused
+	    int result = 1 // dxQuickStepIsland itself
+	        + (2 * allowedThreadCount + 2) // (dxQuickStepIsland_Stage2a + dxQuickStepIsland_Stage2b) * allowedThreadCount + 2 * dxStepIsland_Stage2?_Sync
+	        + 1; // dxStepIsland_Stage3
+	    return result;
+	}
+
 
 	@Override
 	public int run(int activeThreadCount, int allowedThreadCount) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-		//return 0;
+		return dxEstimateQuickStepMaxCallCount(activeThreadCount, allowedThreadCount);
 	}
 
 	@Override
 	public void run(DxStepperProcessingCallContext callContext) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-		//
+		dxQuickStepIsland(callContext);
 	}
 }
