@@ -426,21 +426,21 @@ public class Threading_H {
 	{
 	  //int struct_size; //?? TZ
 	  
-	  dMutexGroupAllocFunction alloc_mutex_group;
-	  dMutexGroupFreeFunction free_mutex_group;
-	  dMutexGroupMutexLockFunction lock_group_mutex;
-	  dMutexGroupMutexUnlockFunction unlock_group_mutex;
+	  final dMutexGroupAllocFunction alloc_mutex_group;
+	  final dMutexGroupFreeFunction free_mutex_group;
+	  final dMutexGroupMutexLockFunction lock_group_mutex;
+	  final dMutexGroupMutexUnlockFunction unlock_group_mutex;
 
-	  dThreadedCallWaitAllocFunction alloc_call_wait;
-	  dThreadedCallWaitResetFunction reset_call_wait;
-	  dThreadedCallWaitFreeFunction free_call_wait;
+	  final dThreadedCallWaitAllocFunction alloc_call_wait;
+	  final dThreadedCallWaitResetFunction reset_call_wait;
+	  final dThreadedCallWaitFreeFunction free_call_wait;
 
-	  dThreadedCallPostFunction post_call;
-	  dThreadedCallDependenciesCountAlterFunction alter_call_dependencies_count;
-	  dThreadedCallWaitFunction wait_call;
+	  final dThreadedCallPostFunction post_call;
+	  final dThreadedCallDependenciesCountAlterFunction alter_call_dependencies_count;
+	  final dThreadedCallWaitFunction wait_call;
 
-	  dThreadingImplThreadCountRetrieveFunction retrieve_thread_count;
-	  dThreadingImplResourcesForCallsPreallocateFunction preallocate_resources_for_calls; 
+	  final dThreadingImplThreadCountRetrieveFunction retrieve_thread_count;
+	  final dThreadingImplResourcesForCallsPreallocateFunction preallocate_resources_for_calls; 
 
 	  /* 
 	   * Beware of Jon Watte's anger if you dare to uncomment this!
@@ -452,6 +452,35 @@ public class Threading_H {
 	   * dMutexGroupMutexTryLockFunction *trylock_group_mutex;
 	   */
 
+	  DxThreadingFunctionsInfo(
+			  dMutexGroupAllocFunction alloc_mutex_group,
+			  dMutexGroupFreeFunction free_mutex_group,
+			  dMutexGroupMutexLockFunction lock_group_mutex,
+			  dMutexGroupMutexUnlockFunction unlock_group_mutex,
+			  dThreadedCallWaitAllocFunction alloc_call_wait,
+			  dThreadedCallWaitResetFunction reset_call_wait,
+			  dThreadedCallWaitFreeFunction free_call_wait,
+			  dThreadedCallPostFunction post_call,
+			  dThreadedCallDependenciesCountAlterFunction alter_call_dependencies_count,
+			  dThreadedCallWaitFunction wait_call,
+			  dThreadingImplThreadCountRetrieveFunction retrieve_thread_count,
+			  dThreadingImplResourcesForCallsPreallocateFunction preallocate_resources_for_calls) {
+		  this.alloc_mutex_group = alloc_mutex_group;
+		  this.free_mutex_group = free_mutex_group;
+		  this.lock_group_mutex = lock_group_mutex;
+		  this.unlock_group_mutex = unlock_group_mutex;
+
+		  this.alloc_call_wait = alloc_call_wait;
+		  this.reset_call_wait = reset_call_wait;
+		  this.free_call_wait = free_call_wait;
+
+		  this.post_call = post_call;
+		  this.alter_call_dependencies_count = alter_call_dependencies_count;
+		  this.wait_call = wait_call;
+
+		  this.retrieve_thread_count = retrieve_thread_count;
+		  this.preallocate_resources_for_calls = preallocate_resources_for_calls; 
+	  }
 	}
 
 
