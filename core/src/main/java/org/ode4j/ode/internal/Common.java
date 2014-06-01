@@ -149,6 +149,18 @@ public class Common extends ErrorHandler {
 			dUASSERT(null, "Bad argument(s)");
 	}
 
+//	#  ifdef __GNUC__
+//	#    define dICHECK(a) { if (!(a)) { dDebug (d_ERR_IASSERT, \
+//	      "assertion \"" #a "\" failed in %s() [%s:%u]",__FUNCTION__,__FILE__,__LINE__); *(int *)0 = 0; } }
+//	#  else // not __GNUC__
+//	#    define dICHECK(a) { if (!(a)) { dDebug (d_ERR_IASSERT, \
+//	      "assertion \"" #a "\" failed in %s:%u",__FILE__,__LINE__); *(int *)0 = 0; } }
+//	#  endif
+	public static void dICHECK(boolean a) {
+		if (!a) {
+			dDebug(d_ERR_IASSERT, "", (Object[])null);
+		}
+	}
 
 	/* floating point data type, vector, matrix and quaternion types */
 

@@ -24,11 +24,13 @@
  *************************************************************************/
 package org.ode4j.ode.threading;
 
-import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.processmem.DxWorldProcessContext.dxProcessContextMutex;
 import org.ode4j.ode.threading.DThreadingImplementation.DThreadReadyToServeCallback;
+import org.ode4j.ode.threading.ThreadingTemplates.dIMutexGroup;
+import org.ode4j.ode.threading.ThreadingTemplates.dxICallWait;
+import org.ode4j.ode.threading.ThreadingTemplates.dxIThreadingImplementation;
 import org.ode4j.ode.threading.Threading_H.CallContext;
 import org.ode4j.ode.threading.Threading_H.DCallReleasee;
 import org.ode4j.ode.threading.Threading_H.DCallWait;
@@ -50,6 +52,7 @@ import org.ode4j.ode.threading.Threading_H.dThreadedCallWaitResetFunction;
 import org.ode4j.ode.threading.Threading_H.dThreadingImplResourcesForCallsPreallocateFunction;
 import org.ode4j.ode.threading.Threading_H.dThreadingImplThreadCountRetrieveFunction;
 
+import static org.ode4j.ode.internal.Common.*;
 
 /**
  * 
@@ -165,7 +168,7 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 	/*extern */DThreadingFunctionsInfo dThreadingImplementationGetFunctions(DThreadingImplementation impl)
 	{
 		if (dBUILTIN_THREADING_IMPL_ENABLED) {
-			Common.dAASSERT(impl != null);
+			dAASSERT(impl != null);
 		}//#endif // #if dBUILTIN_THREADING_IMPL_ENABLED
 
 		final DThreadingFunctionsInfo functions = null;
@@ -185,7 +188,7 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 	/*extern */void dThreadingImplementationShutdownProcessing(DThreadingImplementation impl)
 	{
 		if (dBUILTIN_THREADING_IMPL_ENABLED) {
-			Common.dAASSERT(impl != null);
+			dAASSERT(impl != null);
 		}//#endif // #if dBUILTIN_THREADING_IMPL_ENABLED
 
 		if (!dBUILTIN_THREADING_IMPL_ENABLED) {
@@ -199,7 +202,7 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 		}
 	}
 
-	/*extern */void dThreadingImplementationCleanupForRestart(dThreadingImplementationID impl)
+	/*extern */void dThreadingImplementationCleanupForRestart(DThreadingImplementation impl)
 	{
 		if (dBUILTIN_THREADING_IMPL_ENABLED) {
 			dAASSERT(impl != null);
@@ -228,7 +231,7 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 			DThreadReadyToServeCallback readiness_callback/*=NULL*/, Object[] callback_context/*=NULL*/)
 	{
 		if (dBUILTIN_THREADING_IMPL_ENABLED) {
-			Common.dAASSERT(impl != null);
+			dAASSERT(impl != null);
 		}//#endif // #if dBUILTIN_THREADING_IMPL_ENABLED
 
 		if (!dBUILTIN_THREADING_IMPL_ENABLED) {
@@ -354,14 +357,15 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 	dThreadingImplThreadCountRetrieveFunction RetrieveThreadingThreadCount = new dThreadingImplThreadCountRetrieveFunction() {
 		@Override
 		public int run(DThreadingImplementation impl) {
-			return ((DxThreadingImplementation)impl).RetrieveActiveThreadsCount();
+			return ((dxIThreadingImplementation)impl).RetrieveActiveThreadsCount();
 		}
 	};
 
 	private static final 
-	dThreadingImplResourcesForCallsPreallocateFunction PreallocateResourcesForThreadedCalls = new dThreadingImplResourcesForCallsPreallocateFunction() {
+	dThreadingImplResourcesForCallsPreallocateFunction PreallocateResourcesForThreadedCalls = 
+	new dThreadingImplResourcesForCallsPreallocateFunction() {
 		@Override
-		public int run(DThreadingImplementation impl,
+		public boolean run(DThreadingImplementation impl,
 				int max_simultaneous_calls_estimate) {
 			return ((dxIThreadingImplementation)impl).PreallocateJobInfos(max_simultaneous_calls_estimate);
 		}

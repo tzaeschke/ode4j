@@ -203,7 +203,7 @@ public class DxThreadingBase {
 	    {
 	        Ref<DThreadingImplementation> impl = new Ref<>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
-	        return functions.preallocate_resources_for_calls.run(impl.get(), max_simultaneous_calls_estimate) != 0;
+	        return functions.preallocate_resources_for_calls.run(impl.get(), max_simultaneous_calls_estimate);// != 0;
 	    }
 
 	//public:

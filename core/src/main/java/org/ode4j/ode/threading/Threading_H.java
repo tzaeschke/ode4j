@@ -413,7 +413,7 @@ public class Threading_H {
 	 * @see dThreadedCallPostFunction
 	 */
 	public interface dThreadingImplResourcesForCallsPreallocateFunction {
-		int run(DThreadingImplementation impl, 
+		boolean run(DThreadingImplementation impl, 
 				int /*ddependencycount_t*/ max_simultaneous_calls_estimate);
 	}
 
