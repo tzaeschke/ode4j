@@ -33,6 +33,9 @@ import org.ode4j.ode.threading.ThreadingFake.dxSelfWakeup;
 import org.ode4j.ode.threading.ThreadingTemplates.dxtemplateJobListContainer;
 import org.ode4j.ode.threading.ThreadingTemplates.dxtemplateJobListSelfHandlertemplate;
 import org.ode4j.ode.threading.ThreadingTemplates.dxtemplateThreadingImplementation;
+import org.ode4j.ode.threading.ThreadingTemplates.tJobListContainer;
+import org.ode4j.ode.threading.ThreadingTemplates.tThreadLull;
+import org.ode4j.ode.threading.ThreadingTemplates.tThreadMutex;
 
 public class ThreadingImpl_H {
 
@@ -47,6 +50,28 @@ public class ThreadingImpl_H {
 	public static class dxSelfThreadedJobListHandler extends dxtemplateJobListSelfHandlertemplate{};//<dxSelfWakeup, dxSelfThreadedJobListContainer> {};
 	public static class dxSelfThreadedThreading extends dxtemplateThreadingImplementation{};//<dxSelfThreadedJobListContainer, dxSelfThreadedJobListHandler> {};
 
+	//TZ
+	public static ThreadFactory THREAD_FACTORY = new ThreadFactory() {
+		@Override
+		public tThreadMutex createThreadMutex() {
+			return new dxFakeMutex();
+		}
+		@Override
+		public tThreadLull createThreadLull() {
+			return new dxFakeLull();
+		}
+		@Override
+		public tJobListContainer createJobListContainer() {
+			return new dxSelfThreadedJobListContainer();
+		}
+		
+	};
+	public static interface ThreadFactory {
+		public tThreadMutex createThreadMutex();
+		public tThreadLull createThreadLull();
+		//public tThreadMutex createThreadMutex();
+		public tJobListContainer createJobListContainer();
+	}
 
 //	#if dBUILTIN_THREADING_IMPL_ENABLED
 

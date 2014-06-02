@@ -28,6 +28,7 @@ import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.processmem.DxWorldProcessContext.dxProcessContextMutex;
 import org.ode4j.ode.threading.DThreadingImplementation.DThreadReadyToServeCallback;
+import org.ode4j.ode.threading.ThreadingImpl_H.dxSelfThreadedThreading;
 import org.ode4j.ode.threading.ThreadingTemplates.dIMutexGroup;
 import org.ode4j.ode.threading.ThreadingTemplates.dxICallWait;
 import org.ode4j.ode.threading.ThreadingTemplates.dxIThreadingImplementation;
@@ -137,7 +138,8 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 
 		if (threading != null && !threading.InitializeObject())
 		{
-			delete threading;
+			//delete threading;
+			threading.DESTRUCTOR();
 			threading = null;
 		}
 
@@ -154,7 +156,8 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 
 			if (threading != null && !threading.InitializeObject())
 			{
-				delete threading;
+				//delete threading;
+				threading.DESTRUCTOR();
 				threading = null;
 			}
 			//			} else {

@@ -29,6 +29,8 @@ package org.ode4j.ode.threading;
 
 import static org.ode4j.ode.internal.Common.*;
 
+import org.ode4j.ode.threading.ThreadingTemplates.tThreadLull;
+import org.ode4j.ode.threading.ThreadingTemplates.tThreadMutex;
 import org.ode4j.ode.threading.Threading_H.DThreadedWaitTime;
 
 /*
@@ -89,17 +91,28 @@ public class ThreadingFake {
 	/* Fake mutex class implementation                                      */
 	/************************************************************************/
 
-	class dxFakeMutex
+	static class dxFakeMutex implements tThreadMutex
 	{
 	//public:
 	    public dxFakeMutex() {}
 
+		@Override
 	    public boolean InitializeObject() { return true; }
 
 	//public:
+		@Override
 	    public void LockMutex() { /* Do nothing */ }
+		@Override
 	    public boolean TryLockMutex() { /* Do nothing */ return true; }
+		@Override
 	    public void UnlockMutex() { /* Do nothing */ }
+
+		@Override
+		public void DESTRUCTOR() {
+			// TODO Auto-generated method stub
+			throw new UnsupportedOperationException();
+			//
+		}
 	};
 
 
@@ -107,18 +120,23 @@ public class ThreadingFake {
 	/* Fake lull class implementation                                      */
 	/************************************************************************/
 
-	class dxFakeLull
+	static class dxFakeLull implements tThreadLull
 	{
 	//public:
 		public dxFakeLull() {}
 
+		@Override
 		public boolean InitializeObject() { return true; }
 
 	//public:
+		@Override
 		public void RegisterToLull() { /* Do nothing */ }
+		@Override
 		public void WaitForLullAlarm() { dICHECK(false); } // Fake lull can't be waited
+		@Override
 		public void UnregisterFromLull() { /* Do nothing */ }
 
+		@Override
 		public void SignalLullAlarmIfAnyRegistrants() { /* Do nothing */ }
 	};
 
