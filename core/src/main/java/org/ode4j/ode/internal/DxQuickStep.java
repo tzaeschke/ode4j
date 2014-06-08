@@ -228,7 +228,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		BlockPointer                       m_stageMemArenaState;
 		double[]                           m_invI;
 		DJointWithInfo1[]                 m_jointinfos;
-		dxQuickStepperStage0Outputs     m_stage0Outputs;
+		final dxQuickStepperStage0Outputs     m_stage0Outputs = new dxQuickStepperStage0Outputs();
 	}
 
 	private static class dxQuickStepperStage0BodiesCallContext implements CallContext

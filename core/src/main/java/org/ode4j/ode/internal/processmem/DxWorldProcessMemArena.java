@@ -127,7 +127,7 @@ public final class DxWorldProcessMemArena {
     void SetNextMemArena(DxWorldProcessMemArena pArenaInstance) { m_pAllocCurrentOrNextArena.setTo( pArenaInstance ); }
 
     
-    private BlockPointer m_pAllocCurrentOrNextArena;
+    private BlockPointer m_pAllocCurrentOrNextArena = new BlockPointer(0);
     private BlockPointer m_pAllocBegin;
     private BlockPointer m_pAllocEnd;
     private BlockPointer m_pArenaBegin;
@@ -186,7 +186,7 @@ public final class DxWorldProcessMemArena {
                 arena.m_pAllocBegin = blockbegin;
                 arena.m_pAllocEnd = blockend;
                 arena.m_pArenaBegin = pNewArenaBuffer;
-                arena.m_pAllocCurrentOrNextArena = null;
+                arena.m_pAllocCurrentOrNextArena.setTo(null);
                 arena.m_pArenaMemMgr = memmgr;
             }
 

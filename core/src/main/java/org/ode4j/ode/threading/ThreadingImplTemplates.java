@@ -395,7 +395,7 @@ class ThreadingTemplates {
 		int/*ddependencycount_t*/ m_dependencies_count;
 		dxThreadedJobInfo       m_dependent_job;
 		dxCallWait              m_call_wait;
-		RefInt                  m_fault_accumulator_ptr;
+		RefInt                  m_fault_accumulator_ptr = new RefInt();
 
 		int                     m_call_fault;
 		dThreadedCallFunction   m_call_function;
@@ -621,7 +621,7 @@ class ThreadingTemplates {
 
 				int call_fault = current_job.m_call_fault;
 
-				if (current_job.m_fault_accumulator_ptr.get() != 0)
+				if (current_job.m_fault_accumulator_ptr != null)
 				{
 					current_job.m_fault_accumulator_ptr.set( call_fault );
 				}
@@ -678,7 +678,7 @@ class ThreadingTemplates {
 			dIASSERT(job_instance.m_dependencies_count != 0);
 			// It's OK that access is not atomic - that is to be handled by external logic
 			//dIASSERT(dependencies_count_change < 0 ? (job_instance.m_dependencies_count >= (ddependencycount_t)(-dependencies_count_change)) : ((ddependencycount_t)(-(ddependencychange_t)job_instance.m_dependencies_count) > (ddependencycount_t)dependencies_count_change));
-			dIASSERT(dependencies_count_change < 0 ? (job_instance.m_dependencies_count >= (int)(-dependencies_count_change)) : ((int)(-(int)job_instance.m_dependencies_count) > (int)dependencies_count_change));
+			dIASSERT(dependencies_count_change < 0 ? (job_instance.m_dependencies_count >= (-dependencies_count_change)) : ((-job_instance.m_dependencies_count) > (int)dependencies_count_change));
 
 			int /*ddependencycount_t*/ new_dependencies_count = SmartAddJobDependenciesCount(job_instance, dependencies_count_change);
 			out_job_has_become_ready.set( new_dependencies_count == 0 );
@@ -874,8 +874,10 @@ class ThreadingTemplates {
 					current_info_ptr = current_info;
 					//TZ
 					if (previous_info == null) {
+						//We are in the first loop round
 						m_info_pool.set(current_info);
 					} else {
+						//for subsequent loop rounds
 						previous_info.m_next_job = current_info;
 					}
 				}
@@ -892,9 +894,9 @@ class ThreadingTemplates {
 			}
 
 			// Make sure m_info_pool was not changed
-			dIASSERT(m_info_pool == null || m_info_pool.get() == info_pool);
+//TZ TODO?			dIASSERT(m_info_pool == null || m_info_pool.get() == info_pool);
 
-			m_info_pool.set(info_pool);
+//TZ TODO?			m_info_pool.set(info_pool);
 
 			boolean result = !allocation_failure;
 			return result;

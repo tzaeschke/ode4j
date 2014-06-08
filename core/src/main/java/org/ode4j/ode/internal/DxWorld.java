@@ -429,7 +429,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 		if (Threading_H.dTHREADING_INTF_DISABLED) {
 			dUASSERT(functions_info == null && threading_impl == null, "Threading interface is not available");
 		} else {
-			dxThreadingBase.AssignThreadingImpl(functions_info, threading_impl);
+			AssignThreadingImpl(functions_info, threading_impl);
 		} 
 	}
 
@@ -1013,6 +1013,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 		{
 			wmem.CleanupWorldReferences(this);
 			wmem.Release();
+			wmem = null;
 		}
 		super.DESTRUCTOR(); 
 	}
@@ -1081,6 +1082,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	}
 
 	//private!
+	@Override
 	public DxThreadingFunctionsInfo RetrieveThreadingDefaultImpl(Ref<DThreadingImplementation> out_default_impl)
 	{
 	    out_default_impl.set( g_world_default_threading_impl );

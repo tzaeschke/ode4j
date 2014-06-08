@@ -420,6 +420,7 @@ public class DxWorldProcessContext {
     	{
     		//DxStepWorkingMemory wmem = AllocateOnDemand(world.wmem);
     		DxStepWorkingMemory wmem = world.wmem != null ? world.wmem : new DxStepWorkingMemory();
+    		world.wmem = wmem;
     		if (wmem == null)
     		{
     			break;
