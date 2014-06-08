@@ -44,16 +44,16 @@ public final class DxStepperProcessingCallContext {
 	
 	DxStepperProcessingCallContext(DxWorld world, double stepSize, int stepperAllowedThreads, 
 			DxWorldProcessMemArena stepperArena, 
-			DxBody[] islandBodiesStartA, int islandBodiesStartOfs,
-			DxJoint[] islandJointsStartA, int islandJointsStartOfs) {
+			DxBody[] islandBodiesStart,
+			DxJoint[] islandJointsStart) {
 		m_world = world;
 		m_stepSize = stepSize;
 		m_stepperArena = stepperArena;
 		m_finalReleasee = null; 
-		m_islandBodiesStartA = islandBodiesStartA;
-		m_islandBodiesStartOfs = islandBodiesStartOfs;
-		m_islandJointsStartA = islandJointsStartA;
-		m_islandJointsStartOfs = islandJointsStartOfs;
+		m_islandBodiesStartA = islandBodiesStart;
+		m_islandBodiesStartOfs = 0;
+		m_islandJointsStartA = islandJointsStart;
+		m_islandJointsStartOfs = 0;
 		m_islandBodiesCount = 0;
 		m_islandJointsCount = 0;
 		m_stepperAllowedThreads = stepperAllowedThreads;

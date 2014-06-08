@@ -30,7 +30,7 @@ package org.ode4j.ode.threading;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-/*
+/**
  *  Fake atomics provider for built-in threading support provider.
  *  OU-based atomics provider for built-in threading support provider.
  *
@@ -95,7 +95,7 @@ public class ThreadingAtomics {
 
 	    //template<>
 	    //final int dxFakeAtomicsProvider::AddValueToTarget<sizeof(dxFakeAtomicsProvider::atomicord_t)>(volatile void *value_accumulator_ptr, ptrdiff_t value_addend)
-	    final int AddValueToTarget1(AtomicInteger value_accumulator_ptr, int value_addend)
+	    public static final int AddValueToTarget1(AtomicInteger value_accumulator_ptr, int value_addend)
 	    {
 //	    	atomicord_t original_value = *(volatile atomicord_t *)value_accumulator_ptr;
 //
@@ -107,7 +107,7 @@ public class ThreadingAtomics {
 
 	    //template<>
 	    //final int dxFakeAtomicsProvider::AddValueToTarget<2 * sizeof(dxFakeAtomicsProvider::atomicord_t)>(volatile void *value_accumulator_ptr, ptrdiff_t value_addend)
-	    public final int AddValueToTarge2(AtomicInteger value_accumulator_ptr, int value_addend)
+	    public static final int AddValueToTarge2(AtomicInteger value_accumulator_ptr, int value_addend)
 	    {
 //	    	atomicptr_t original_value = *(volatile atomicptr_t *)value_accumulator_ptr;
 //

@@ -26,8 +26,6 @@ package org.ode4j.ode.internal.processmem;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.security.auth.callback.Callback;
-
 import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
@@ -123,12 +121,16 @@ public class DxIslandsProcessingCallContext implements CallContext {
         final DxWorldProcessIslandsInfo islandsInfo = m_islandsInfo;
         DxBody[] islandBodiesStart = islandsInfo.GetBodiesArray();
         DxJoint[] islandJointsStart = islandsInfo.GetJointsArray();
-
-        DxSingleIslandCallContext stepperCallContext = (DxSingleIslandCallContext)stepperArena.AllocateBlock(sizeof(dxSingleIslandCallContext));
+        
+        DxSingleIslandCallContext stepperCallContext = null;//TZ (DxSingleIslandCallContext)stepperArena.AllocateBlock(sizeof(dxSingleIslandCallContext));
         // Save area state after context allocation to be restored for the stepper
         BlockPointer arenaState = stepperArena.SaveState();
-        new(stepperCallContext) DxSingleIslandCallContext(this, stepperArena, arenaState, islandBodiesStart, islandJointsStart);
-
+        //new(stepperCallContext) DxSingleIslandCallContext(this, stepperArena, arenaState, islandBodiesStart, islandJointsStart);
+        //stepperCallContext = new DxSingleIslandCallContext(this, stepperArena, arenaState, islandBodiesStart, islandJointsStart);
+        stepperCallContext = new DxSingleIslandCallContext(this, stepperArena, arenaState, 
+        		islandBodiesStart, 
+    			islandJointsStart);
+        
         // Summary fault flag may be omitted as any failures will automatically propagate to dependent releasee (i.e. to m_groupReleasee)
         m_world.threading().PostThreadedCallForUnawareReleasee(null, null, 0, m_groupReleasee, null, 
             DxIslandsProcessingCallContext.ThreadedProcessIslandSearch_Callback, stepperCallContext, 0, "World Islands Stepping Selection");
@@ -208,7 +210,7 @@ public class DxIslandsProcessingCallContext implements CallContext {
         if (finalizeJob) {
             DxWorldProcessMemArena stepperArena = stepperCallContext.m_stepperArena;
             //stepperCallContext.dxSingleIslandCallContext::~dxSingleIslandCallContext();
-            stepperCallContext.dxSingleIslandCallContext.DESTRUCTOR();
+            stepperCallContext.DESTRUCTOR();//dxSingleIslandCallContext.DESTRUCTOR();
 
             DxWorldProcessContext context = m_world.UnsafeGetWorldProcessingContext(); 
             context.ReturnStepperMemArena(stepperArena);

@@ -29,13 +29,13 @@ package org.ode4j.ode.threading;
 
 import org.ode4j.ode.threading.ThreadingFake.dxFakeLull;
 import org.ode4j.ode.threading.ThreadingFake.dxFakeMutex;
-import org.ode4j.ode.threading.ThreadingFake.dxSelfWakeup;
 import org.ode4j.ode.threading.ThreadingTemplates.dxtemplateJobListContainer;
 import org.ode4j.ode.threading.ThreadingTemplates.dxtemplateJobListSelfHandlertemplate;
 import org.ode4j.ode.threading.ThreadingTemplates.dxtemplateThreadingImplementation;
 import org.ode4j.ode.threading.ThreadingTemplates.tJobListContainer;
 import org.ode4j.ode.threading.ThreadingTemplates.tThreadLull;
 import org.ode4j.ode.threading.ThreadingTemplates.tThreadMutex;
+import org.ode4j.ode.threading.ThreadingTemplates.tThreadWakeup;
 
 public class ThreadingImpl_H {
 
@@ -64,13 +64,17 @@ public class ThreadingImpl_H {
 		public tJobListContainer createJobListContainer() {
 			return new dxSelfThreadedJobListContainer();
 		}
-		
+		@Override
+		public tThreadWakeup createThreadWakeup() {
+			return new ThreadingFake.dxSelfWakeup();
+		}
 	};
 	public static interface ThreadFactory {
 		public tThreadMutex createThreadMutex();
 		public tThreadLull createThreadLull();
 		//public tThreadMutex createThreadMutex();
 		public tJobListContainer createJobListContainer();
+		public tThreadWakeup createThreadWakeup();
 	}
 
 //	#if dBUILTIN_THREADING_IMPL_ENABLED

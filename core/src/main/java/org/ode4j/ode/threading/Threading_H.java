@@ -156,13 +156,12 @@ public class Threading_H {
 
 	//struct dxCallReleasee;
 	//typedef struct dxCallReleasee *dCallReleaseeID;
-	public abstract class DCallReleasee {}
-	public class DxCallReleasee extends DCallReleasee {}
+	public static interface DCallReleasee {};
 
 	//struct dxCallWait;
 	//typedef struct dxCallWait *dCallWaitID;
-	public abstract class DCallWait {}
-	public class DxCallWait extends DCallWait {}
+	public static interface DCallWait {}
+	//public class DxCallWait extends DCallWait {}
 
 	//typedef size_t ddependencycount_t;
 	//typedef ptrdiff_t ddependencychange_t;
@@ -422,7 +421,7 @@ public class Threading_H {
 	 * @brief An interface structure with function pointers to be provided by threading implementation.
 	 */
 	public interface DThreadingFunctionsInfo {}
-	public class DxThreadingFunctionsInfo implements DThreadingFunctionsInfo 
+	public static class DxThreadingFunctionsInfo implements DThreadingFunctionsInfo 
 	{
 	  //int struct_size; //?? TZ
 	  

@@ -24,10 +24,11 @@
  *************************************************************************/
 package org.ode4j.ode.threading;
 
+import static org.ode4j.ode.internal.Common.dAASSERT;
+
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.processmem.DxWorldProcessContext.dxProcessContextMutex;
-import org.ode4j.ode.threading.DThreadingImplementation.DThreadReadyToServeCallback;
 import org.ode4j.ode.threading.ThreadingImpl_H.dxSelfThreadedThreading;
 import org.ode4j.ode.threading.ThreadingTemplates.dIMutexGroup;
 import org.ode4j.ode.threading.ThreadingTemplates.dxICallWait;
@@ -53,11 +54,9 @@ import org.ode4j.ode.threading.Threading_H.dThreadedCallWaitResetFunction;
 import org.ode4j.ode.threading.Threading_H.dThreadingImplResourcesForCallsPreallocateFunction;
 import org.ode4j.ode.threading.Threading_H.dThreadingImplThreadCountRetrieveFunction;
 
-import static org.ode4j.ode.internal.Common.*;
-
 /**
  * 
- * @author Tilmann Zäschke
+ * @author Tilmann Zaeschke
  * @Deprecated Not supported in ode4j.
  */
 public abstract class DxThreadingImplementation extends DThreadingImplementation {
@@ -86,9 +85,9 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 	 * @see DThreadingImplementation#freeImplementation()
 	 */
 	/*ODE_API */
-	public static DThreadingImplementation allocateSelfThreadedImplementation() {
-		throw new UnsupportedOperationException();
-	}
+//	public static DThreadingImplementation dThreadingAllocateSelfThreadedImplementation() {
+//		throw new UnsupportedOperationException();
+//	}
 
 //	static void PostThreadedCall(
 //		    dThreadingImplementationID impl, int *out_summary_fault/*=NULL*/, 
@@ -108,31 +107,8 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 //		static int PreallocateResourcesForThreadedCalls(dThreadingImplementationID impl, ddependencycount_t max_simultaneous_calls_estimate);
 
 
-	static DxThreadingFunctionsInfo g_builtin_threading_functions =
-			new DxThreadingFunctionsInfo(
-					//sizeof(dxThreadingFunctionsInfo), // unsigned struct_size;
 
-					AllocMutexGroup, // dMutexGroupAllocFunction *alloc_mutex_group;
-					FreeMutexGroup, // dMutexGroupFreeFunction *free_mutex_group;
-					LockMutexGroupMutex, // dMutexGroupMutexLockFunction *lock_group_mutex;
-					UnlockMutexGroupMutex, // dMutexGroupMutexUnlockFunction *unlock_group_mutex;
-
-					AllocThreadedCallWait, // dThreadedCallWaitAllocFunction *alloc_call_wait;
-					ResetThreadedCallWait, // dThreadedCallWaitResetFunction *reset_call_wait;
-					FreeThreadedCallWait, // dThreadedCallWaitFreeFunction *free_call_wait;
-
-					PostThreadedCall, // dThreadedCallPostFunction *post_call;
-					AlterThreadedCallDependenciesCount, // dThreadedCallDependenciesCountAlterFunction *alter_call_dependencies_count;
-					WaitThreadedCall, // dThreadedCallWaitFunction *wait_call;
-
-					RetrieveThreadingThreadCount, // dThreadingImplThreadCountRetrieveFunction *retrieve_thread_count;
-					PreallocateResourcesForThreadedCalls // dThreadingImplResourcesForCallsPreallocateFunction *preallocate_resources_for_calls;
-
-					// &TryLockMutexGroupMutex, // dMutexGroupMutexTryLockFunction *trylock_group_mutex;
-					);
-
-
-	/*extern */DThreadingImplementation dThreadingAllocateSelfThreadedImplementation()
+	/*extern */public static DThreadingImplementation dThreadingAllocateSelfThreadedImplementation()
 	{
 		dxSelfThreadedThreading threading = new dxSelfThreadedThreading();
 
@@ -147,34 +123,37 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 		return (DThreadingImplementation)impl;
 	}
 
-	/*extern */DThreadingImplementation dThreadingAllocateMultiThreadedImplementation()
+	/*extern */public static DThreadingImplementation dThreadingAllocateMultiThreadedImplementation()
 	{
-		dxIThreadingImplementation threading = null;
-		if (dBUILTIN_THREADING_IMPL_ENABLED) {
-			//dxMultiThreadedThreading 
-			threading = new dxMultiThreadedThreading();
-
-			if (threading != null && !threading.InitializeObject())
-			{
-				//delete threading;
-				threading.DESTRUCTOR();
-				threading = null;
-			}
-			//			} else {
-			//				dxIThreadingImplementation threading = null;
-		}//endif // #if dBUILTIN_THREADING_IMPL_ENABLED
-
-		dxIThreadingImplementation impl = threading;
-		return (DThreadingImplementation)impl;
+		throw new UnsupportedOperationException();
+//		dxIThreadingImplementation threading = null;
+//		if (dBUILTIN_THREADING_IMPL_ENABLED) {
+//			//dxMultiThreadedThreading 
+//			threading = new dxMultiThreadedThreading();
+//
+//			if (threading != null && !threading.InitializeObject())
+//			{
+//				//delete threading;
+//				threading.DESTRUCTOR();
+//				threading = null;
+//			}
+//			//			} else {
+//			//				dxIThreadingImplementation threading = null;
+//		}//endif // #if dBUILTIN_THREADING_IMPL_ENABLED
+//
+//		dxIThreadingImplementation impl = threading;
+//		return (DThreadingImplementation)impl;
 	}
 
-	/*extern */DThreadingFunctionsInfo dThreadingImplementationGetFunctions(DThreadingImplementation impl)
+	@Override
+	/*extern */public DThreadingFunctionsInfo dThreadingImplementationGetFunctions()
 	{
+		DThreadingImplementation impl = this;
 		if (dBUILTIN_THREADING_IMPL_ENABLED) {
 			dAASSERT(impl != null);
 		}//#endif // #if dBUILTIN_THREADING_IMPL_ENABLED
 
-		final DThreadingFunctionsInfo functions = null;
+		DThreadingFunctionsInfo functions = null;
 
 		if (!dBUILTIN_THREADING_IMPL_ENABLED) {
 			if (impl != null) {
@@ -188,8 +167,10 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 		return functions;
 	}
 
-	/*extern */void dThreadingImplementationShutdownProcessing(DThreadingImplementation impl)
+	@Override
+	/*extern */void dThreadingImplementationShutdownProcessing()
 	{
+		DThreadingImplementation impl = this;
 		if (dBUILTIN_THREADING_IMPL_ENABLED) {
 			dAASSERT(impl != null);
 		}//#endif // #if dBUILTIN_THREADING_IMPL_ENABLED
@@ -205,8 +186,10 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 		}
 	}
 
-	/*extern */void dThreadingImplementationCleanupForRestart(DThreadingImplementation impl)
+	@Override
+	/*extern */public void dThreadingImplementationCleanupForRestart()
 	{
+		DThreadingImplementation impl = this;
 		if (dBUILTIN_THREADING_IMPL_ENABLED) {
 			dAASSERT(impl != null);
 		}//#endif // #if dBUILTIN_THREADING_IMPL_ENABLED
@@ -221,26 +204,31 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 		}
 	}
 
-	/*extern */void dThreadingFreeImplementation(DThreadingImplementation impl)
+	@Override
+	/*extern */public void dThreadingFreeImplementation()
 	{
+		DThreadingImplementation impl = this;
 		if (impl != null)
 		{
 			((dxIThreadingImplementation)impl).FreeInstance();
 		}
 	}
 
-
-	/*extern */void dExternalThreadingServeMultiThreadedImplementation(DThreadingImplementation impl, 
-			DThreadReadyToServeCallback readiness_callback/*=NULL*/, Object[] callback_context/*=NULL*/)
+	@Override
+//	/*extern */void dExternalThreadingServeMultiThreadedImplementation(DThreadingImplementation impl, 
+//			DThreadReadyToServeCallback readiness_callback/*=NULL*/, Object[] callback_context/*=NULL*/)
+	public void dExternalThreadingServeMultiThreadedImplementation( 
+			DThreadReadyToServeCallback readiness_callback/*=NULL*/, CallContext callback_context/*=NULL*/)
 	{
+		DThreadingImplementation impl = this;
 		if (dBUILTIN_THREADING_IMPL_ENABLED) {
 			dAASSERT(impl != null);
 		}//#endif // #if dBUILTIN_THREADING_IMPL_ENABLED
 
 		if (!dBUILTIN_THREADING_IMPL_ENABLED) {
-			if (impl != null) {
+			//if (impl != null) {
 				((dxIThreadingImplementation)impl).StickToJobsProcessing(readiness_callback, callback_context);
-			}
+			//}
 		}//#endif // #if !dBUILTIN_THREADING_IMPL_ENABLED
 		else {
 			((dxIThreadingImplementation)impl).StickToJobsProcessing(readiness_callback, callback_context);
@@ -373,5 +361,29 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 			return ((dxIThreadingImplementation)impl).PreallocateJobInfos(max_simultaneous_calls_estimate);
 		}
 	};
+
+	static DxThreadingFunctionsInfo g_builtin_threading_functions =
+			new DxThreadingFunctionsInfo(
+					//sizeof(dxThreadingFunctionsInfo), // unsigned struct_size;
+
+					AllocMutexGroup, // dMutexGroupAllocFunction *alloc_mutex_group;
+					FreeMutexGroup, // dMutexGroupFreeFunction *free_mutex_group;
+					LockMutexGroupMutex, // dMutexGroupMutexLockFunction *lock_group_mutex;
+					UnlockMutexGroupMutex, // dMutexGroupMutexUnlockFunction *unlock_group_mutex;
+
+					AllocThreadedCallWait, // dThreadedCallWaitAllocFunction *alloc_call_wait;
+					ResetThreadedCallWait, // dThreadedCallWaitResetFunction *reset_call_wait;
+					FreeThreadedCallWait, // dThreadedCallWaitFreeFunction *free_call_wait;
+
+					PostThreadedCall, // dThreadedCallPostFunction *post_call;
+					AlterThreadedCallDependenciesCount, // dThreadedCallDependenciesCountAlterFunction *alter_call_dependencies_count;
+					WaitThreadedCall, // dThreadedCallWaitFunction *wait_call;
+
+					RetrieveThreadingThreadCount, // dThreadingImplThreadCountRetrieveFunction *retrieve_thread_count;
+					PreallocateResourcesForThreadedCalls // dThreadingImplResourcesForCallsPreallocateFunction *preallocate_resources_for_calls;
+
+					// &TryLockMutexGroupMutex, // dMutexGroupMutexTryLockFunction *trylock_group_mutex;
+					);
+
 
 }

@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.threading;
 
+import org.ode4j.ode.threading.Threading_H.CallContext;
 import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
 
 /**
@@ -48,9 +49,10 @@ public abstract class DThreadingImplementation {
 	 * @see dExternalThreadingServeMultiThreadedImplementation
 	 * @see dThreadingFreeImplementation
 	 */
-	public static DThreadingImplementation allocateMultiThreadedImplementation() {
-		throw new UnsupportedOperationException();
-	};
+//	public static DThreadingImplementation dThreadingAllocateSelfThreadedImplementation() {
+//		throw new UnsupportedOperationException();
+//	};
+	//TZ see DxThreadingImplementation
 
 	/**
 	 * @brief Retrieves the functions record of a built-in threading implementation.
@@ -65,7 +67,7 @@ public abstract class DThreadingImplementation {
 	 * @ingroup threading
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 */
-	public abstract DThreadingFunctionsInfo getFunctions();
+	public abstract DThreadingFunctionsInfo dThreadingImplementationGetFunctions();
 
 	/**
 	 * @brief Requests a built-in implementation to release threads serving it.
@@ -93,7 +95,7 @@ public abstract class DThreadingImplementation {
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 * @see dThreadingImplementationCleanupForRestart
 	 */
-	abstract void shutdownProcessing();
+	abstract void dThreadingImplementationShutdownProcessing();
 
 	/**
 	 * @brief Restores built-in implementation's state to let it be reused after shutdown.
@@ -111,7 +113,7 @@ public abstract class DThreadingImplementation {
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 * @see dThreadingImplementationShutdownProcessing
 	 */
-	public abstract void cleanupForRestart();
+	public abstract void dThreadingImplementationCleanupForRestart();
 
 	/**
 	 * @brief Deletes an instance of built-in threading implementation.
@@ -125,7 +127,7 @@ public abstract class DThreadingImplementation {
 	 * @ingroup threading
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 */
-	public abstract void freeImplementation();
+	public abstract void dThreadingFreeImplementation();
 
 
 	//typedef void (dThreadReadyToServeCallback)(void *callback_context);
@@ -155,7 +157,7 @@ public abstract class DThreadingImplementation {
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 * @see dThreadingImplementationShutdownProcessing
 	 */
-	public abstract void serveMultiThreadedImplementation( 
-	  DThreadReadyToServeCallback readiness_callback/*=NULL*/, Object[][] callback_context/*=NULL*/);
+	public abstract void dExternalThreadingServeMultiThreadedImplementation( 
+	  DThreadReadyToServeCallback readiness_callback/*=NULL*/, CallContext callback_context/*=NULL*/);
 
 }

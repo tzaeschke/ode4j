@@ -32,8 +32,8 @@ import org.ode4j.ode.threading.Threading_H.DCallReleasee;
 public class DxSingleIslandCallContext implements CallContext {
 	DxSingleIslandCallContext(DxIslandsProcessingCallContext islandsProcessingContext, 
 			DxWorldProcessMemArena stepperArena, DxUtil.BlockPointer arenaInitialState, 
-			DxBody[] islandBodiesStartA, int islandBodiesStartP, 
-			DxJoint[] islandJointsStartA, int islandJointsStartP) {
+			DxBody[] islandBodiesStart, 
+			DxJoint[] islandJointsStart) {
 		m_islandsProcessingContext = islandsProcessingContext;
 		m_islandIndex = 0; 
 		m_stepperArena = stepperArena;
@@ -42,9 +42,14 @@ public class DxSingleIslandCallContext implements CallContext {
 				islandsProcessingContext.m_stepSize, 
 				islandsProcessingContext.m_stepperAllowedThreads, 
 				stepperArena, 
-				islandBodiesStartA, islandBodiesStartP, islandJointsStartA, islandJointsStartP);
+				islandBodiesStart, islandJointsStart);
 	}
 
+	//TZ
+	public void DESTRUCTOR() {
+		//nothing
+	}
+	
 	void AssignIslandSearchProgress(int islandIndex)
 	{
 		m_islandIndex = islandIndex; 

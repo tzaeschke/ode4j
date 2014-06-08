@@ -385,13 +385,13 @@ public class DxWorldProcessContext {
     }
 
 
-    void LockForAddLimotSerialization()
+    public void LockForAddLimotSerialization()
     {
     	m_pswObjectsAllocWorld.threading().LockMutexGroupMutex(m_pmgStepperMutexGroup, 
     			dxProcessContextMutex.dxPCM_STEPPER_ADDLIMOT_SERIALIZE);
     }
 
-    void UnlockForAddLimotSerialization()
+    public void UnlockForAddLimotSerialization()
     {
     	m_pswObjectsAllocWorld.threading().UnlockMutexGroupMutex(m_pmgStepperMutexGroup, 
     			dxProcessContextMutex.dxPCM_STEPPER_ADDLIMOT_SERIALIZE);

@@ -44,6 +44,8 @@ import org.ode4j.ode.threading.DThreadingImplementation.DThreadReadyToServeCallb
 import org.ode4j.ode.threading.ThreadingTemplates.dxtemplateJobListContainer.dWaitSignallingFunction;
 import org.ode4j.ode.threading.Threading_H.CallContext;
 import org.ode4j.ode.threading.Threading_H.DCallReleasee;
+import org.ode4j.ode.threading.Threading_H.DCallWait;
+import org.ode4j.ode.threading.Threading_H.DMutexGroup;
 import org.ode4j.ode.threading.Threading_H.DThreadedWaitTime;
 import org.ode4j.ode.threading.Threading_H.dThreadedCallFunction;
 
@@ -54,7 +56,7 @@ import org.ode4j.ode.threading.Threading_H.dThreadedCallFunction;
 class ThreadingTemplates { 
 
 	//TZ
-	public static class dxCallWait extends dxtemplateCallWait {} //<tThreadWakeup> {};
+	public static class dxCallWait extends dxICallWait {} //<tThreadWakeup> {};
 
 	//TZ
 	public static interface tThreadMutex {
@@ -120,7 +122,7 @@ class ThreadingTemplates {
 
 
 	//template <class tThreadMutex>
-	static class dxtemplateMutexGroup
+	static class dxtemplateMutexGroup implements dIMutexGroup, DMutexGroup
 	{
 		//private:
 		private dxtemplateMutexGroup(int size) {
@@ -270,9 +272,13 @@ class ThreadingTemplates {
 	//template<class tThreadWakeup>
 	static class dxtemplateCallWait
 	extends DBase
+	implements DCallWait
 	{
 		//public:
-		public dxtemplateCallWait() {}
+		public dxtemplateCallWait() {
+			//TZ
+			m_wait_wakeup = THREAD_FACTORY.createThreadWakeup();
+		}
 		//~dxtemplateCallWait() { DoFinalizeObject(); }
 		@Override
 		public void DESTRUCTOR() { DoFinalizeObject(); }
@@ -349,7 +355,7 @@ class ThreadingTemplates {
 
 
 	static class dxThreadedJobInfo extends
-	DBase
+	DBase implements DCallReleasee
 	{
 		dxThreadedJobInfo() {}
 		//explicit dxThreadedJobInfo(void *): m_next_job(NULL) {}
@@ -384,7 +390,7 @@ class ThreadingTemplates {
 		}
 
 		dxThreadedJobInfo       m_next_job;
-		dxThreadedJobInfo[][]   m_prev_job_next_ptr;
+		Ref<dxThreadedJobInfo>   m_prev_job_next_ptr;
 
 		int/*ddependencycount_t*/ m_dependencies_count;
 		dxThreadedJobInfo       m_dependent_job;
@@ -434,7 +440,7 @@ class ThreadingTemplates {
 	{
 		//public:
 		public dxtemplateJobListContainer() {
-			m_job_list = null;//(NULL),
+			m_job_list.set(null);//(NULL),
 			//m_info_pool = new ((atomicptr_t)NULL);
 			m_pool_access_lock = THREAD_FACTORY.createThreadMutex();//();
 			m_list_access_lock = THREAD_FACTORY.createThreadMutex();//();
@@ -445,12 +451,13 @@ class ThreadingTemplates {
 		//~dxtemplateJobListContainer()
 		public void DESTRUCTOR()
 		{
-			dIASSERT(m_job_list == null); // Would not it be nice to wait for jobs to complete before deleting the list?
+			dIASSERT(m_job_list.get() == null); // Would not it be nice to wait for jobs to complete before deleting the list?
 
 			FreeJobInfoPoolInfos();
 			DoFinalizeObject();
 		}
 
+		@Override
 		public boolean InitializeObject() { return DoInitializeObject(); }
 
 		//private:
@@ -506,10 +513,10 @@ class ThreadingTemplates {
 		//private boolean DoPreallocateJobInfos(int /*ddependencycount_t*/ required_info_count);
 
 		//public:
-		public boolean IsJobListReadyForShutdown() { return m_job_list == null; }
+		public boolean IsJobListReadyForShutdown() { return m_job_list.get() == null; }
 
 		//private:
-		private dxThreadedJobInfo       m_job_list;
+		private final Ref<dxThreadedJobInfo>       m_job_list = new Ref<>();
 		//private volatile atomicptr_t    m_info_pool; // dxThreadedJobInfo *
 		private final AtomicReference<dxThreadedJobInfo> m_info_pool = new AtomicReference<>(); // dxThreadedJobInfo *
 		private tThreadMutex            m_pool_access_lock;
@@ -554,7 +561,7 @@ class ThreadingTemplates {
 		private dxThreadedJobInfo PickNextPendingJob(
 				RefBoolean out_last_job_flag)
 		{
-			dxThreadedJobInfo current_job = m_job_list;
+			dxThreadedJobInfo current_job = m_job_list.get();
 			boolean last_job_flag = false;
 
 			while (current_job != null)
@@ -640,6 +647,7 @@ class ThreadingTemplates {
 
 		//template<class tThreadLull, class tThreadMutex, class tAtomicsProvider>
 		//dxThreadedJobInfo *dxtemplateJobListContainer<tThreadLull, tThreadMutex, tAtomicsProvider>::
+		@Override
 		public dxThreadedJobInfo AllocateJobInfoFromPool()
 		{
 			// No locking is necessary
@@ -649,6 +657,7 @@ class ThreadingTemplates {
 
 		//template<class tThreadLull, class tThreadMutex, class tAtomicsProvider>
 		//void dxtemplateJobListContainer<tThreadLull, tThreadMutex, tAtomicsProvider>::
+		@Override
 		public void QueueJobForProcessing(dxThreadedJobInfo job_instance)
 		{
 			//dxMutexLockHelper list_access(m_list_access_lock);
@@ -684,10 +693,16 @@ class ThreadingTemplates {
 			//			ddependencycount_t new_dependencies_count = 
 			//					tAtomicsProvider::template AddValueToTarget<sizeof(ddependencycount_t)>((volatile void *)&job_instance.m_dependencies_count, dependencies_count_change) 
 			//					+ dependencies_count_change;
-			int new_dependencies_count = 
-					AddValueToTarget1(job_instance.m_dependencies_count, dependencies_count_change) 
-					+ dependencies_count_change;
-			return new_dependencies_count;
+//			int new_dependencies_count = ThreadingAtomics.dxFakeAtomicsProvider.
+//					AddValueToTarget1(job_instance.m_dependencies_count, dependencies_count_change) 
+//					+ dependencies_count_change;
+			//TODO TZ keep in mind for future changes:
+			//TZ no atomic needed, update occurs only here
+			synchronized (job_instance) {
+				job_instance.m_dependencies_count += dependencies_count_change;
+				return job_instance.m_dependencies_count;
+			}
+			//return new_dependencies_count;
 		}
 
 
@@ -696,16 +711,16 @@ class ThreadingTemplates {
 		private void InsertJobInfoIntoListHead(
 				dxThreadedJobInfo job_instance)
 		{
-			dxThreadedJobInfo job_list_head = m_job_list;
+			dxThreadedJobInfo job_list_head = m_job_list.get();
 			job_instance.m_next_job = job_list_head;
 
 			if (job_list_head != null)
 			{
-				job_list_head.m_prev_job_next_ptr = &job_instance.m_next_job;
+				job_list_head.m_prev_job_next_ptr = new Ref<>(job_instance.m_next_job);
 			}
 
-			job_instance.m_prev_job_next_ptr = &m_job_list;
-			m_job_list = job_instance;
+			job_instance.m_prev_job_next_ptr = m_job_list;
+			m_job_list.set( job_instance );
 		}
 
 		//template<class tThreadLull, class tThreadMutex, class tAtomicsProvider>
@@ -718,8 +733,9 @@ class ThreadingTemplates {
 				job_instance.m_next_job.m_prev_job_next_ptr = job_instance.m_prev_job_next_ptr;
 			}
 
-			*job_instance.m_prev_job_next_ptr = job_instance.m_next_job;
+			job_instance.m_prev_job_next_ptr.set(job_instance.m_next_job);
 			// Assign NULL to m_prev_job_next_ptr as an indicator that instance has been dequeued
+			//TZ this makes sense if the pointer equals the m_job_list REF.
 			job_instance.m_prev_job_next_ptr = null;
 		}
 
@@ -817,6 +833,7 @@ class ThreadingTemplates {
 			m_info_pool.set(null);
 		}
 
+		@Override
 		//template<class tThreadLull, class tThreadMutex, class tAtomicsProvider>
 		//bool dxtemplateJobListContainer<tThreadLull, tThreadMutex, tAtomicsProvider>::
 		public boolean EnsureNumberOfJobInfosIsPreallocated(int /*ddependencycount_t*/ required_info_count)
@@ -834,12 +851,15 @@ class ThreadingTemplates {
 
 			boolean allocation_failure = false;
 
-			dxThreadedJobInfo info_pool = (dxThreadedJobInfo)m_info_pool.get();
+			final dxThreadedJobInfo info_pool = m_info_pool.get();
 
 			int /*ddependencycount_t*/ info_index = 0;
-			for (dxThreadedJobInfo **current_info_ptr = &info_pool; ; )
+			//for (dxThreadedJobInfo **current_info_ptr = &info_pool; ; )
+			//TZ
+			dxThreadedJobInfo previous_info = null;
+			for (dxThreadedJobInfo current_info_ptr = info_pool; ; )
 			{
-				dxThreadedJobInfo current_info = *current_info_ptr;
+				dxThreadedJobInfo current_info = current_info_ptr;
 
 				if (current_info == null)
 				{
@@ -851,7 +871,13 @@ class ThreadingTemplates {
 						break;
 					}
 
-					*current_info_ptr = current_info;
+					current_info_ptr = current_info;
+					//TZ
+					if (previous_info == null) {
+						m_info_pool.set(current_info);
+					} else {
+						previous_info.m_next_job = current_info;
+					}
 				}
 
 				if (++info_index == required_info_count)
@@ -860,7 +886,9 @@ class ThreadingTemplates {
 					break;
 				}
 
-				current_info_ptr = &current_info.m_next_job;
+				//current_info_ptr = &current_info.m_next_job;
+				previous_info = current_info_ptr;
+				current_info_ptr = current_info.m_next_job;
 			}
 
 			// Make sure m_info_pool was not changed
@@ -957,6 +985,7 @@ class ThreadingTemplates {
 
 	//template<class tThreadWakeup, class tJobListContainer>
 	static class dxtemplateJobListSelfHandlertemplate//<tThreadWakeup, tJobListContainer>
+	implements tJobListHandler
 	{
 		//TZ
 		public dxtemplateJobListSelfHandlertemplate() {
@@ -974,6 +1003,7 @@ class ThreadingTemplates {
 			// Do nothing
 		}
 
+		@Override
 		public boolean InitializeObject() { return true; }
 
 		//public:
@@ -1006,6 +1036,7 @@ class ThreadingTemplates {
 
 		//template<class tThreadWakeup, class tJobListContainer>
 		//void dxtemplateJobListSelfHandler<tThreadWakeup, tJobListContainer>::
+		@Override
 		public void ProcessActiveJobAddition()
 		{
 			// Do nothing
@@ -1013,6 +1044,7 @@ class ThreadingTemplates {
 
 		//template<class tThreadWakeup, class tJobListContainer>
 		//void dxtemplateJobListSelfHandler<tThreadWakeup, tJobListContainer>::
+		@Override
 		public void PrepareForWaitingAJobCompletion()
 		{
 			PerformJobProcessingUntilExhaustion();
@@ -1021,6 +1053,7 @@ class ThreadingTemplates {
 
 		//template<class tThreadWakeup, class tJobListContainer>
 		//unsigned dxtemplateJobListSelfHandler<tThreadWakeup, tJobListContainer>::
+		@Override
 		public int RetrieveActiveThreadsCount()
 		{
 			return 1;//U; // Self-Handling is always performed by a single thread
@@ -1028,6 +1061,7 @@ class ThreadingTemplates {
 
 		//template<class tThreadWakeup, class tJobListContainer>
 		//void dxtemplateJobListSelfHandler<tThreadWakeup, tJobListContainer>::
+		@Override
 		public void StickToJobsProcessing(DThreadReadyToServeCallback readiness_callback/*=NULL*/, 
 				CallContext callback_context/*=NULL*/)
 		{
@@ -1068,6 +1102,7 @@ class ThreadingTemplates {
 
 		//template<class tThreadWakeup, class tJobListContainer>
 		//void dxtemplateJobListSelfHandler<tThreadWakeup, tJobListContainer>::
+		@Override
 		public void ShutdownProcessing()
 		{
 			// Do nothing
@@ -1075,6 +1110,7 @@ class ThreadingTemplates {
 
 		//template<class tThreadWakeup, class tJobListContainer>
 		//void dxtemplateJobListSelfHandler<tThreadWakeup, tJobListContainer>::
+		@Override
 		public void CleanupForRestart()
 		{
 			// Do nothing
@@ -1085,9 +1121,9 @@ class ThreadingTemplates {
 	//struct dIMutexGroup;
 	public static interface dIMutexGroup {}
 	//struct dxICallWait;
-	public static interface dxICallWait {}
+	public static class dxICallWait extends dxtemplateCallWait {}
 
-	abstract class dxIThreadingImplementation extends DThreadingImplementation
+	abstract static class dxIThreadingImplementation extends DxThreadingImplementation
 	{
 		//public:
 		public abstract void FreeInstance();// = 0;
@@ -1120,7 +1156,7 @@ class ThreadingTemplates {
 		//public:
 		public abstract int RetrieveActiveThreadsCount();// = 0;
 		public abstract void StickToJobsProcessing(DThreadReadyToServeCallback readiness_callback/*=NULL*/, 
-				Object[] callback_context/*=NULL*/);// = 0;
+				CallContext callback_context/*=NULL*/);// = 0;
 		public abstract void ShutdownProcessing();// = 0;
 		public abstract void CleanupForRestart();// = 0;
 	};
@@ -1135,7 +1171,7 @@ class ThreadingTemplates {
 		public dxtemplateThreadingImplementation() {
 			super();//dBase();
 			m_list_container = THREAD_FACTORY.createJobListContainer();//();
-			m_list_handler(&m_list_container);
+			m_list_handler = new dxtemplateJobListSelfHandlertemplate(m_list_container);//(&m_list_container);
 		}
 
 		//virtual ~dxtemplateThreadingImplementation()
@@ -1188,8 +1224,10 @@ class ThreadingTemplates {
 		//protected abstract void CleanupForRestart();
 
 		//private:
-		private tJobListContainer     m_list_container;
-		private tJobListHandler       m_list_handler;
+		//TZ final to ensure that simplified constructor is correct
+		//TZ TOD why on earth are there two separate fields?
+		private final tJobListContainer     m_list_container;
+		private final tJobListHandler       m_list_handler;
 
 		/************************************************************************/
 		/* Implementation of dxtemplateThreadingImplementation                          */
@@ -1277,7 +1315,7 @@ class ThreadingTemplates {
 
 		//template<class tJobListContainer, class tJobListHandler>
 		//void dxtemplateThreadingImplementation<tJobListContainer, tJobListHandler>::
-		protected void FreeACallWait(dxCallWait call_wait)
+		public void FreeACallWait(dxICallWait call_wait)
 		{
 			//delete ((dxCallWait *)call_wait);
 			call_wait.DESTRUCTOR();
@@ -1377,7 +1415,8 @@ class ThreadingTemplates {
 
 		//template<class tJobListContainer, class tJobListHandler>
 		//void dxtemplateThreadingImplementation<tJobListContainer, tJobListHandler>::
-		protected void StickToJobsProcessing(DThreadReadyToServeCallback readiness_callback/*=NULL*/, 
+		@Override
+		public void StickToJobsProcessing(DThreadReadyToServeCallback readiness_callback/*=NULL*/, 
 				CallContext callback_context/*=NULL*/)
 		{
 			m_list_handler.StickToJobsProcessing(readiness_callback, callback_context);

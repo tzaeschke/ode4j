@@ -42,7 +42,7 @@ public class DxThreadingBase {
 	{
 	//public:
 	    //virtual const dxThreadingFunctionsInfo *RetrieveThreadingDefaultImpl(dThreadingImplementationID &out_default_impl) = 0;
-		DxThreadingFunctionsInfo RetrieveThreadingDefaultImpl(DThreadingImplementation out_default_impl);
+		DxThreadingFunctionsInfo RetrieveThreadingDefaultImpl(Ref<DThreadingImplementation> out_default_impl);
 	};
 
 
@@ -291,7 +291,7 @@ public class DxThreadingBase {
 	    	}
 	    	else
 	    	{
-	    		functions_found = m_default_impl_provider.RetrieveThreadingDefaultImpl(out_impl_found.get());
+	    		functions_found = m_default_impl_provider.RetrieveThreadingDefaultImpl(out_impl_found);
 	    	}
 
 	    	return functions_found;

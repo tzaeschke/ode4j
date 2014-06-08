@@ -31,6 +31,7 @@ import static org.ode4j.ode.internal.Common.*;
 
 import org.ode4j.ode.threading.ThreadingTemplates.tThreadLull;
 import org.ode4j.ode.threading.ThreadingTemplates.tThreadMutex;
+import org.ode4j.ode.threading.ThreadingTemplates.tThreadWakeup;
 import org.ode4j.ode.threading.Threading_H.DThreadedWaitTime;
 
 /*
@@ -46,7 +47,7 @@ public class ThreadingFake {
 	/* dxSelfWakeup class definition                                        */
 	/************************************************************************/
 
-	class dxSelfWakeup
+	static class dxSelfWakeup implements tThreadWakeup
 	{
 	//public:
 	    public dxSelfWakeup() {
@@ -54,12 +55,15 @@ public class ThreadingFake {
 	        m_state_is_permanent = false;
 	    }
 
-	    public boolean InitializeObject() { return true; }
+	    @Override
+		public boolean InitializeObject() { return true; }
 
 	//public:
-	    public void ResetWakeup() { m_wakeup_state = false; m_state_is_permanent = false; }
+	    @Override
+		public void ResetWakeup() { m_wakeup_state = false; m_state_is_permanent = false; }
 	    public void WakeupAThread() { dIASSERT(!m_state_is_permanent); m_wakeup_state = true; } // Wakeup should not be used after permanent signal
-	    public void WakeupAllThreads() { m_wakeup_state = true; m_state_is_permanent = true; }
+	    @Override
+		public void WakeupAllThreads() { m_wakeup_state = true; m_state_is_permanent = true; }
 
 	    //public boolean WaitWakeup(const dThreadedWaitTime *timeout_time_ptr);
 
@@ -69,6 +73,8 @@ public class ThreadingFake {
 //	};
 
 
+	@Override
+	public
 	boolean WaitWakeup(final DThreadedWaitTime timeout_time_ptr)
 	{
 	    //(void)timeout_time_ptr; // unused

@@ -1024,11 +1024,11 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	    boolean init_result = false;
 
 	    DThreadingImplementation threading_impl = 
-	    		DxThreadingImplementation.allocateSelfThreadedImplementation();
+	    		DxThreadingImplementation.dThreadingAllocateSelfThreadedImplementation();
 
 	    if (threading_impl != null)
 	    {
-	        g_world_default_threading_functions = threading_impl.getFunctions();
+	        g_world_default_threading_functions = threading_impl.dThreadingImplementationGetFunctions();
 	        g_world_default_threading_impl = threading_impl;
 
 	        init_result = true;
@@ -1043,7 +1043,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 
 	    if (threading_impl != null)
 	    {
-	    	threading_impl.freeImplementation();
+	    	threading_impl.dThreadingFreeImplementation();
 
 	        g_world_default_threading_functions = null;
 	        g_world_default_threading_impl = null;
@@ -1081,9 +1081,9 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	}
 
 	//private!
-	public DxThreadingFunctionsInfo RetrieveThreadingDefaultImpl(DThreadingImplementation out_default_impl)
+	public DxThreadingFunctionsInfo RetrieveThreadingDefaultImpl(Ref<DThreadingImplementation> out_default_impl)
 	{
-	    out_default_impl = g_world_default_threading_impl;
+	    out_default_impl.set( g_world_default_threading_impl );
 	    return (DxThreadingFunctionsInfo) g_world_default_threading_functions;
 	}
 

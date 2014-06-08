@@ -45,13 +45,13 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
  */
 public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 
-	DVector3 anchor1;   // anchor w.r.t first body
-	DVector3 anchor2;   // anchor w.r.t second body
-	DVector3 _axis1;     // axis 1 w.r.t first body
-	DVector3 _axis2;     // axis 2 w.r.t second body
+	private final DVector3 anchor1;   // anchor w.r.t first body
+	private final DVector3 anchor2;   // anchor w.r.t second body
+	private final DVector3 _axis1;     // axis 1 w.r.t first body
+	private final DVector3 _axis2;     // axis 2 w.r.t second body
 	double c0, s0;       // cos,sin of desired angle between axis 1,2
-	DVector3 v1, v2;    // angle ref vectors embedded in first body
-	DVector3 w1, w2;    // angle ref vectors embedded in second body
+	private final DVector3 v1, v2;    // angle ref vectors embedded in first body
+	private final DVector3 w1, w2;    // angle ref vectors embedded in second body
 	DxJointLimitMotor limot1; // limit+motor info for axis 1
 	DxJointLimitMotor limot2; // limit+motor info for axis 2
 	double susp_erp, susp_cfm; // suspension parameters (erp,cfm)
@@ -107,6 +107,10 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		v1 = new DVector3(1, 0, 0);
 		v2 = new DVector3(0, 1, 0);
 
+		//TZ
+		w1 = new DVector3();
+		w2 = new DVector3();
+		
 		limot1 = new DxJointLimitMotor();
 		limot1.init( world );
 		limot2 = new DxJointLimitMotor();

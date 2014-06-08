@@ -38,19 +38,25 @@ public class DxWorldProcessIslandsInfo {
         m_IslandCount = islandcount;
         m_pIslandSizes = islandsizes;
         m_pBodies = bodies;
+        m_pBodiesP = 0;
         m_pJoints = joints;
+        m_pJointsP = 0;
     }
 
     public int GetIslandsCount() { return m_IslandCount; }
     public int[] GetIslandSizes() { return m_pIslandSizes; }
     public DxBody[] GetBodiesArray() { return m_pBodies; }
+    public int GetBodiesArrayP() { return m_pBodiesP; }
     public DxJoint[] GetJointsArray() { return m_pJoints; }
+    public int GetJointsArrayP() { return m_pJointsP; }
 
     //private:
     private int m_IslandCount;
     private int[] m_pIslandSizes;
     private DxBody[] m_pBodies;
+    private int m_pBodiesP;
     private DxJoint[] m_pJoints;
+    private int m_pJointsP;
 
     // *******************************
     // from util.cpp (TZ)
