@@ -63,7 +63,7 @@ public class Misc extends Common {
         do {
             origSeed = seed.get();
             newSeed = (1664525L * origSeed + 1013904223L) & 0xffffffffL;
-        } while (seed.compareAndSet(origSeed, newSeed));
+        } while (!seed.compareAndSet(origSeed, newSeed));
         return newSeed;
 //		seed = (1664525L*seed + 1013904223L) & 0xffffffffL;
 	}

@@ -128,8 +128,8 @@ public final class DxWorldProcessMemArena {
 
     
     private BlockPointer m_pAllocCurrentOrNextArena = new BlockPointer(0);
-    private BlockPointer m_pAllocBegin;
-    private BlockPointer m_pAllocEnd;
+    private BlockPointer m_pAllocBegin = new BlockPointer(0);
+    private BlockPointer m_pAllocEnd = new BlockPointer(0);
     private BlockPointer m_pArenaBegin;
 
     DxWorldProcessMemoryManager m_pArenaMemMgr;
