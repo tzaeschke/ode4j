@@ -678,7 +678,9 @@ class ThreadingTemplates {
 			dIASSERT(job_instance.m_dependencies_count != 0);
 			// It's OK that access is not atomic - that is to be handled by external logic
 			//dIASSERT(dependencies_count_change < 0 ? (job_instance.m_dependencies_count >= (ddependencycount_t)(-dependencies_count_change)) : ((ddependencycount_t)(-(ddependencychange_t)job_instance.m_dependencies_count) > (ddependencycount_t)dependencies_count_change));
-			dIASSERT(dependencies_count_change < 0 ? (job_instance.m_dependencies_count >= (-dependencies_count_change)) : ((-job_instance.m_dependencies_count) > (int)dependencies_count_change));
+			//TZ: ddependencycount_t is UN-signed <--> dependencies_count_change is SIGNED --> wtf?!?!?
+			// -->   job_instance.m_dependencies_count = dependencies_count_change = 1 fails in Java but passes in C/C++
+			//dIASSERT(dependencies_count_change < 0 ? (job_instance.m_dependencies_count >= (-dependencies_count_change)) : ((-job_instance.m_dependencies_count) > (int)dependencies_count_change));
 
 			int /*ddependencycount_t*/ new_dependencies_count = SmartAddJobDependenciesCount(job_instance, dependencies_count_change);
 			out_job_has_become_ready.set( new_dependencies_count == 0 );

@@ -358,13 +358,14 @@ public class DxWorldProcessContext {
 
     void FreeArenasList(DxWorldProcessMemArena pmaExistingArenas)
     {
-    	while (pmaExistingArenas != null)
-    	{
-    		DxWorldProcessMemArena pmaCurrentMemArena = pmaExistingArenas;
-    		pmaExistingArenas = pmaExistingArenas.GetNextMemArena();
-
-    		DxWorldProcessMemArena.FreeMemArena(pmaCurrentMemArena);
-    	}
+//    	while (pmaExistingArenas != null)
+//    	{
+//    		DxWorldProcessMemArena pmaCurrentMemArena = pmaExistingArenas;
+//    		pmaExistingArenas = pmaExistingArenas.GetNextMemArena();
+//
+//    		DxWorldProcessMemArena.FreeMemArena(pmaCurrentMemArena);
+//    	}
+    	//TZ TODO 
     }
 
     DxWorldProcessMemArena GetStepperArenasHead()

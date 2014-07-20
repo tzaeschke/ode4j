@@ -152,7 +152,7 @@ public class ThreadingUtils {
 	        }
 	        //if (ThrsafeCompareExchangePointer((volatile atomicptr *)storagePointer, (atomicptr)resultValue, (atomicptr)(resultValue + 1))) {
 	        //TODO (TZ)
-	        System.out.println("Is this right? Using Int instead of Pointer?");
+	        //System.out.println("Is this right? Using Int instead of Pointer?");
 	        if (ThrsafeCompareExchange(storagePointer, resultValue, (resultValue + 1))) {
 	        	break;
 	        }

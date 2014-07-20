@@ -27,6 +27,11 @@ package org.ode4j.ode;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.internal.processmem.DxUtil;
+import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
+import org.ode4j.ode.internal.processmem.DxUtil.alloc_block_fn_t;
+import org.ode4j.ode.internal.processmem.DxUtil.free_block_fn_t;
+import org.ode4j.ode.internal.processmem.DxUtil.shrink_block_fn_t;
+import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.threading.DThreadingImplementation;
 import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
 
@@ -348,16 +353,33 @@ public interface DWorld {
 	* @see DWorld#setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	* @deprecated Do not use ! (TZ)
 	*/
-	public class DWorldStepMemoryFunctionsInfo 
+	public static class DWorldStepMemoryFunctionsInfo 
 	{
 	    public int struct_size;
 	    //TODO, already in DxUtil (TZ) -> Should not be public in Java.
 	    //	  void *(*alloc_block)(size_t block_size);
-	    public DxUtil.alloc_block_fn_t alloc_block;
+	    public static final DxUtil.alloc_block_fn_t alloc_block = new alloc_block_fn_t() {
+			@Override
+			public BlockPointer run(int block_size) {
+				return new BlockPointer(new DxWorldProcessMemArena(), 0);
+			}
+		};
 	    //	  void *(*shrink_block)(void *block_pointer, size_t block_current_size, size_t block_smaller_size);
-	    public DxUtil.shrink_block_fn_t shrink_block;
+	    public static final DxUtil.shrink_block_fn_t shrink_block = new shrink_block_fn_t() {
+			@Override
+			public BlockPointer run(BlockPointer block_pointer, int block_current_size,
+					int block_smaller_size) {
+				//block_pointer.setSize(block_smaller_size);
+				return block_pointer;
+			}
+		};
 	    //	  void (*free_block)(void *block_pointer, size_t block_current_size);
-	    public DxUtil.free_block_fn_t free_block;
+	    public static final DxUtil.free_block_fn_t free_block = new free_block_fn_t() {
+			@Override
+			public void run(BlockPointer block_pointer, int block_current_size) {
+				//TODO?
+			}
+		};
 	};
 
 	/**

@@ -30,7 +30,7 @@ import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 
 public final class DxWorldProcessMemArena {
-
+	
     //   public:
         //TODO        #define BUFFER_TO_ARENA_EXTRA (EFFICIENT_ALIGNMENT + dEFFICIENT_SIZE(sizeof(dxWorldProcessMemArena)))
     private final static int BUFFER_TO_ARENA_EXTRA () {
@@ -127,9 +127,9 @@ public final class DxWorldProcessMemArena {
     void SetNextMemArena(DxWorldProcessMemArena pArenaInstance) { m_pAllocCurrentOrNextArena.setTo( pArenaInstance ); }
 
     
-    private BlockPointer m_pAllocCurrentOrNextArena = new BlockPointer(0);
-    private BlockPointer m_pAllocBegin = new BlockPointer(0);
-    private BlockPointer m_pAllocEnd = new BlockPointer(0);
+    private BlockPointer m_pAllocCurrentOrNextArena = new BlockPointer(this, 0);
+    private BlockPointer m_pAllocBegin = new BlockPointer(this, 0);
+    private BlockPointer m_pAllocEnd = new BlockPointer(this, 0);
     private BlockPointer m_pArenaBegin;
 
     DxWorldProcessMemoryManager m_pArenaMemMgr;
@@ -211,7 +211,8 @@ public final class DxWorldProcessMemArena {
         int arenasize = DxWorldProcessMemArena.MakeArenaSize(memsize);
 
         BlockPointer pArenaBegin = arena.m_pArenaBegin;
-        arena.m_pArenaMemMgr.m_fnFree.run(pArenaBegin, arenasize);
+        //TODO TZ couldn get this to work easily...
+        //arena.m_pArenaMemMgr.m_fnFree.run(pArenaBegin, arenasize);
     }
 
 

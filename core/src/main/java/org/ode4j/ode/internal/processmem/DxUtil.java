@@ -24,6 +24,8 @@
  *************************************************************************/
 package org.ode4j.ode.internal.processmem;
 
+import org.ode4j.ode.DWorld;
+
 
 /**
  * From util.cpp and util.h.
@@ -41,24 +43,14 @@ public class DxUtil {
     //****************************************************************************
     // Malloc based world stepping memory manager
 
-	public static final BlockPointer NULL_BP = new BlockPointer(-1);
+	public static final BlockPointer NULL_BP = new BlockPointer(new DxWorldProcessMemArena(), -1);
 	
     /*extern */
     static final DxWorldProcessMemoryManager g_WorldProcessMallocMemoryManager = 
         new DxWorldProcessMemoryManager(
-                //null,//dAlloc, 
-                new alloc_block_fn_t() {
-                    @Override
-                    public BlockPointer run(int block_size) {
-                    	//TODO this is not really nice, is it?
-                        //System.err.println("FIXME: alloc_block_fn_t");
-                        //return new BlockPointer(-1);
-                        return NULL_BP;
-                        //return null;
-                    }
-                },
-                null,//dRealloc, 
-                null);//dFree);
+        		DWorld.DWorldStepMemoryFunctionsInfo.alloc_block,
+        		DWorld.DWorldStepMemoryFunctionsInfo.shrink_block,
+        		DWorld.DWorldStepMemoryFunctionsInfo.free_block);
     /*extern */
     static final DxWorldProcessMemoryReserveInfo g_WorldProcessDefaultReserveInfo = 
         new DxWorldProcessMemoryReserveInfo(
@@ -89,17 +81,21 @@ public class DxUtil {
     }
 //  #define dEFFICIENT_PTR(p) ((void *)dEFFICIENT_SIZE((size_t)(p)))
     static final BlockPointer dEFFICIENT_PTR(BlockPointer p) {
-        return new BlockPointer(dEFFICIENT_SIZE(p.toInt()));
+    	//return new BlockPointer(dEFFICIENT_SIZE(p.toInt()));
+    	//TZ reallocation not possible --> just return it
+    	return p;
     }
-    static final BlockPointer dEFFICIENT_PTR(Object obj, int i) {
+    static final BlockPointer dEFFICIENT_PTR(DxWorldProcessMemArena obj, int i) {
         //System.out.println("dEFFICIENT_PTR(Object obj, int i)");
     	//TODO arghhh!!!
-    	return NULL_BP;
-        //return new BlockPointer(i);
+    	//return NULL_BP;
+        return new BlockPointer(obj, i);
     }
 //  #define dOFFSET_EFFICIENTLY(p, b) ((void *)((size_t)(p) + dEFFICIENT_SIZE(b)))
     static final BlockPointer dOFFSET_EFFICIENTLY(BlockPointer p, int b) {
-        return new BlockPointer((p.toInt() + dEFFICIENT_SIZE(b)));
+        //return new BlockPointer((p.toInt() + dEFFICIENT_SIZE(b)));
+    	//TZ reallocation not possible --> just return it
+    	return p;
     }
 
     /* alloca aligned to the EFFICIENT_ALIGNMENT. note that this can waste
@@ -129,17 +125,17 @@ public class DxUtil {
 
     //TZ replacement for void*
     public static class BlockPointer {
-        private final int pointer;
+        private int pointer;
         private Object o = null;
-        public BlockPointer(int pointer) {
-            this.pointer = pointer;
-        }
-        int toInt() {
+//        public BlockPointer(int pointer) {
+//            this.pointer = pointer;
+//        }
+        public BlockPointer(DxWorldProcessMemArena obj, int pointer) {
+        	this.pointer = pointer;
+			o = obj;
+		}
+		int toInt() {
             return pointer;
-        }
-        public Object getObject() {
-            // TODO Auto-generated method stub
-            return null;
         }
         public DxWorldProcessMemArena asDxWorldProcessMemArena() {
             if (o == null) {
@@ -150,6 +146,10 @@ public class DxUtil {
         void setTo(DxWorldProcessMemArena x) {
         	o = x;
         }
+		public void setSize(int block_smaller_size) {
+			this.pointer = block_smaller_size;
+			
+		}
     }
 
     

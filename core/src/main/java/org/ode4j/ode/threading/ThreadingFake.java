@@ -115,8 +115,6 @@ public class ThreadingFake {
 
 		@Override
 		public void DESTRUCTOR() {
-			// TODO Auto-generated method stub
-			throw new UnsupportedOperationException();
 			//
 		}
 	};
