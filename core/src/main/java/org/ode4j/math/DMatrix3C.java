@@ -44,14 +44,23 @@ public interface DMatrix3C {
 	 * @return Value at (i,j).
 	 */
 	public double get(int i, int j);
+	/** @return value at row 0, column 0 ([0]). */
 	public double get00();
+	/** @return value at row 0, column 1 ([1]). */
 	public double get01();
+	/** @return value at row 0, column 2 ([2]). */
 	public double get02();
+	/** @return value at row 2, column 0 ([4]). */
 	public double get10();
+	/** @return value at row 2, column 1 ([5]). */
 	public double get11();
+	/** @return value at row 2, column 2 ([6]). */
 	public double get12();
+	/** @return value at row 2, column 0 ([8]). */
 	public double get20();
+	/** @return value at row 2, column 1 ([9]). */
 	public double get21();
+	/** @return value at row 2, column 2 ([10]). */
 	public double get22();
 	public float[] toFloatArray();
 	public float[] toFloatArray12();

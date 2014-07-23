@@ -476,54 +476,81 @@ public final class DMatrix3 implements DMatrix3C {
 		}
 	}
 
+	/**
+	 * @return value at row 0, column 0 ([0]).
+	 */
 	@Override
 	public final double get00() {
 		return v[0];
 	}
 
 
+	/**
+	 * @return value at row 0, column 1 ([1]).
+	 */
 	@Override
 	public final double get01() {
 		return v[1];
 	}
 
 
+	/**
+	 * @return value at row 0, column 2 ([2]).
+	 */
 	@Override
 	public final double get02() {
 		return v[2];
 	}
 
 
+	/**
+	 * @return value at row 1, column 0 ([4]).
+	 */
 	@Override
 	public final double get10() {
 		return v[1*MAX_J + 0];
 	}
 
 
+	/**
+	 * @return value at row 1, column 1 ([5]).
+	 */
 	@Override
 	public final double get11() {
 		return v[1*MAX_J + 1];
 	}
 
 
+	/**
+	 * @return value at row 1, column 2 ([6]).
+	 */
 	@Override
 	public final double get12() {
 		return v[1*MAX_J + 2];
 	}
 
 
+	/**
+	 * @return value at row 2, column 0 ([8]).
+	 */
 	@Override
 	public final double get20() {
 		return v[2*MAX_J + 0];
 	}
 
 
+	/**
+	 * @return value at row 2, column 1 ([9]).
+	 */
 	@Override
 	public final double get21() {
 		return v[2*MAX_J + 1];
 	}
 
 
+	/**
+	 * @return value at row 2, column 2 ([10]).
+	 */
 	@Override
 	public final double get22() {
 		return v[2*MAX_J + 2];

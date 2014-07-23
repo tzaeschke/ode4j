@@ -102,6 +102,9 @@ public class CheckMacros {
 		//                "Unhandled exception in CHECK_EQUAL(" #expected ", " #actual ")"); 
 		//    } 
 	}
+	public static void CHECK_EQUAL(int expected, int actual) {
+		assertEquals(expected, actual);
+	}
 
 	//#define CHECK_CLOSE(expected, actual, tolerance) \
 	//    do \

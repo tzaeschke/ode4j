@@ -2,6 +2,10 @@
 =====
 Migration to 0.13.1
 
+Done:
+- main code
+- tests (except main.cpp) / don't run yet!!! 
+
 TODO: 
 -- tests
 -- demos

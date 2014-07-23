@@ -1054,8 +1054,10 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	// dJoint API
 	// *************************************
 	
+	@Override
 	public void destroy() {
 		//Nothing to do at the moment
+		OdeJointsFactoryImpl.dJointDestroy(this);
 	}
 	
 	@Override

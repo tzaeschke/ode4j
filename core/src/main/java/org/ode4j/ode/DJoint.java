@@ -402,8 +402,8 @@ public interface DJoint {
 	  dTransmissionParallelAxes, // = 0,
 	  dTransmissionIntersectingAxes, // = 1,
 	  dTransmissionChainDrive, // = 2
-	};
+	}
 
+	void destroy();
 
-	
 }
