@@ -47,6 +47,7 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DPistonJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJointPiston;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
  * Only body 2
@@ -55,7 +56,7 @@ import org.ode4j.ode.internal.joints.DxJointPiston;
  * Axis is along the X axis
  * Anchor at (0, 0, 0)
  */
-public class Fixture_dxJointPiston_B2_At_Zero_Axis_Along_X
+public class Fixture_dxJointPiston_B2_At_Zero_Axis_Along_X extends TestSuperClass
 {
 	public Fixture_dxJointPiston_B2_At_Zero_Axis_Along_X()
 	{

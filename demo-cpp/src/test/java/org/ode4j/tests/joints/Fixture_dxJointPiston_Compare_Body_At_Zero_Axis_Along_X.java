@@ -49,6 +49,7 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DPistonJoint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
  * Compare only one body to 2 bodies with one fixed.
@@ -58,7 +59,7 @@ import org.ode4j.ode.DWorld;
  * Axis is along the X axis
  * Anchor at (0, 0, 0)
  */
-public class Fixture_dxJointPiston_Compare_Body_At_Zero_Axis_Along_X
+public class Fixture_dxJointPiston_Compare_Body_At_Zero_Axis_Along_X extends TestSuperClass
 {
 	public Fixture_dxJointPiston_Compare_Body_At_Zero_Axis_Along_X()
 	{

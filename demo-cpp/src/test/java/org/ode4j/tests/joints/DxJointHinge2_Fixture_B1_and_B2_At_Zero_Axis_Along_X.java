@@ -53,6 +53,7 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DHinge2Joint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
  * The 2 bodies are positionned at (-1, -2, -3),  and (11, 22, 33)
@@ -61,7 +62,7 @@ import org.ode4j.ode.DWorld;
  * Axis is along the X axis
  * Anchor at (0, 0, 0)
  */
-public class DxJointHinge2_Fixture_B1_and_B2_At_Zero_Axis_Along_X {
+public class DxJointHinge2_Fixture_B1_and_B2_At_Zero_Axis_Along_X extends TestSuperClass {
 	public DxJointHinge2_Fixture_B1_and_B2_At_Zero_Axis_Along_X()
 	{
 		wId = dWorldCreate();

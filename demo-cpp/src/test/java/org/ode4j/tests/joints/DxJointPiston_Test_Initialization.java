@@ -52,6 +52,7 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DPistonJoint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
  *  Create 2 bodies attached by a Piston joint
@@ -66,7 +67,7 @@ import org.ode4j.ode.DWorld;
 // Body1 |
 // *     Z-------->
  */
-public class DxJointPiston_Test_Initialization
+public class DxJointPiston_Test_Initialization extends TestSuperClass
 {
 	public DxJointPiston_Test_Initialization()
 	{

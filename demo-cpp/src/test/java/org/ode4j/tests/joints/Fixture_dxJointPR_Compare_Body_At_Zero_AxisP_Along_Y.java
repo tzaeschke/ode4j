@@ -54,6 +54,7 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 // Compare only one body to 2 bodies with one fixed.
 //
@@ -61,7 +62,7 @@ import org.ode4j.ode.DWorld;
 // The joint is a PR Joint
 // Axis is along the X axis
 // Anchor at (0, 0, 0)
-public class Fixture_dxJointPR_Compare_Body_At_Zero_AxisP_Along_Y
+public class Fixture_dxJointPR_Compare_Body_At_Zero_AxisP_Along_Y extends TestSuperClass
     {
         public Fixture_dxJointPR_Compare_Body_At_Zero_AxisP_Along_Y()
         {

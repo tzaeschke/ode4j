@@ -41,12 +41,13 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJointSlider;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 // The 2 bodies are positionned at (0, 0, 0), with no rotation
 // The joint is a Slider Joint
 // Axis is the opposite of the X axis
 // Anchor at (0, 0, 0)
-public class Fixture_dxJointSlider_B1_and_B2_At_Zero_Axis_Inverse_of_X
+public class Fixture_dxJointSlider_B1_and_B2_At_Zero_Axis_Inverse_of_X extends TestSuperClass
   {
     public Fixture_dxJointSlider_B1_and_B2_At_Zero_Axis_Inverse_of_X()
       {

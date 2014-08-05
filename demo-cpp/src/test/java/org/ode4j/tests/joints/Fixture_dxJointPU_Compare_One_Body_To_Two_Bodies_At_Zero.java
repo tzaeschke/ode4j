@@ -55,12 +55,13 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DPUJoint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 // Compare only one body to 2 bodies with one fixed.
 //
 // The body are positionned at (0, 0, 0), with no rotation
 // The joint is a PU Joint with default values
-public class Fixture_dxJointPU_Compare_One_Body_To_Two_Bodies_At_Zero
+public class Fixture_dxJointPU_Compare_One_Body_To_Two_Bodies_At_Zero extends TestSuperClass
     {
         public Fixture_dxJointPU_Compare_One_Body_To_Two_Bodies_At_Zero()
         {

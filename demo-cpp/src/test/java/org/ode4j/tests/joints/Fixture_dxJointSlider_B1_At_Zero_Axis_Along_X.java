@@ -41,13 +41,14 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJointSlider;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 // Only body 1
 // The body are positionned at (0, 0, 0), with no rotation
 // The joint is a Slider Joint
 // Axis is along the X axis
 // Anchor at (0, 0, 0)
-public class Fixture_dxJointSlider_B1_At_Zero_Axis_Along_X
+public class Fixture_dxJointSlider_B1_At_Zero_Axis_Along_X extends TestSuperClass
   {
     public Fixture_dxJointSlider_B1_At_Zero_Axis_Along_X()
       {

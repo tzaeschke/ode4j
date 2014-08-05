@@ -136,7 +136,7 @@ dmaxcallcountestimate_fn_t {
 		double[]                        m_invI;
 		dJointWithInfo1[]               m_jointinfosA;
 		int				                m_jointinfosOfs;
-		dxStepperStage0Outputs          m_stage0Outputs;
+		final dxStepperStage0Outputs          m_stage0Outputs = new dxStepperStage0Outputs();
 	}
 
 	private static class dxStepperStage0BodiesCallContext implements CallContext
@@ -450,6 +450,10 @@ dmaxcallcountestimate_fn_t {
 		final int ji_reserve_count = 2 * _nj;
 		DxWorldProcessMemArena.dummy();
 		dJointWithInfo1[] jointinfosA = new dJointWithInfo1[ji_reserve_count];//memarena.AllocateArray<dJointWithInfo1>(ji_reserve_count);
+		//TZ: init
+		for (int i = 0; i < jointinfosA.length; i++) {
+			jointinfosA[i] = new dJointWithInfo1();
+		}
 		int jointinfosOfs = 0;
 
 		final int allowedThreads = callContext.m_stepperAllowedThreads();

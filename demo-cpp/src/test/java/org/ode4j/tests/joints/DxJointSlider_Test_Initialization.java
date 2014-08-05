@@ -51,6 +51,7 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 // Create 2 bodies attached by a Slider joint
 // Axis is along the X axis (Default value
@@ -63,7 +64,7 @@ import org.ode4j.ode.DWorld;
 //       |
 // Body1 |     Body2
 // *     Z-----*->x
-public class DxJointSlider_Test_Initialization
+public class DxJointSlider_Test_Initialization extends TestSuperClass
   {
       public DxJointSlider_Test_Initialization()
       {

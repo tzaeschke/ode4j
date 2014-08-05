@@ -49,12 +49,13 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DWorld;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
  * This file create unit test for some of the functions found in:
  * ode/src/joinst/ball.cpp
  */
-public class DxJointBall_Fixture_B1_and_B2_At_Zero_Axis_Along_X {
+public class DxJointBall_Fixture_B1_and_B2_At_Zero_Axis_Along_X extends TestSuperClass {
 	public DxJointBall_Fixture_B1_and_B2_At_Zero_Axis_Along_X()
 	{
 		wId = dWorldCreate();

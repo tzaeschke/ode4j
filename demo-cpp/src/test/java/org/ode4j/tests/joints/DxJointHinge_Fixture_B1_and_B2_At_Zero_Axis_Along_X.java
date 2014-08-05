@@ -54,13 +54,14 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJointHinge;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
  * This file create unit test for some of the functions found in:
  * ode/src/joinst/hinge.cpp
  * @author Tilmann Zaeschke
  */
-public class DxJointHinge_Fixture_B1_and_B2_At_Zero_Axis_Along_X {
+public class DxJointHinge_Fixture_B1_and_B2_At_Zero_Axis_Along_X extends TestSuperClass {
 		public DxJointHinge_Fixture_B1_and_B2_At_Zero_Axis_Along_X()
 		{
 			wId = dWorldCreate();
