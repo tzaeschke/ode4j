@@ -43,6 +43,7 @@ import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
@@ -111,17 +112,17 @@ public class DxJointPiston_Test_Initialization extends TestSuperClass
 	}
 
 	//        ~dxJointPiston_Test_Initialization()
-	@AfterClass
-	public static void DESTRUCTOR() {
+	@After
+	public void DESTRUCTOR() {
 		dWorldDestroy (wId);
 	}
 
-	static DWorld wId;
+	private static DWorld wId;
 
-	DBody[][] bId = new DBody[2][2];
+	private DBody[][] bId = new DBody[2][2];
 
 
-	DPistonJoint[] jId = new DPistonJoint[2];
+	private DPistonJoint[] jId = new DPistonJoint[2];
 
 	//    };
 

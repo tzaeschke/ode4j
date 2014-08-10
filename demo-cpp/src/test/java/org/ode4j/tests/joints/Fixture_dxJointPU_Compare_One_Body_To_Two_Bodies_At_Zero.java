@@ -46,7 +46,8 @@ import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
@@ -63,7 +64,8 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 // The joint is a PU Joint with default values
 public class Fixture_dxJointPU_Compare_One_Body_To_Two_Bodies_At_Zero extends TestSuperClass
     {
-        public Fixture_dxJointPU_Compare_One_Body_To_Two_Bodies_At_Zero()
+	@Before
+        public void Fixture_dxJointPU_Compare_One_Body_To_Two_Bodies_At_Zero_init()
         {
             wId = dWorldCreate();
 
@@ -95,26 +97,26 @@ public class Fixture_dxJointPU_Compare_One_Body_To_Two_Bodies_At_Zero extends Te
         }
 
 //        ~Fixture_dxJointPU_Compare_One_Body_To_Two_Bodies_At_Zero()
-		@AfterClass
-		public static void DESTRUCTOR() {
+		@After
+		public void DESTRUCTOR() {
             dWorldDestroy (wId);
         }
 
-        static DWorld wId;
+		private static DWorld wId;
 
-        DBody bId1_12;
-        DBody bId2_12;
+		private DBody bId1_12;
+		private DBody bId2_12;
 
-        DPUJoint jId_12; // Joint with 2 bodies
+		private DPUJoint jId_12; // Joint with 2 bodies
 
-        DFixedJoint fixed;
+		private DFixedJoint fixed;
 
 
 
-        DBody  bId;
-        DPUJoint jId;    // Joint with one body
+		private DBody  bId;
+		private DPUJoint jId;    // Joint with one body
 
-        static final double magnitude = 4.27;
+		private static final double magnitude = 4.27;
 //    };
 //    const dReal Fixture_dxJointPU_Compare_One_Body_To_Two_Bodies_At_Zero::magnitude = REAL (4.27);
 

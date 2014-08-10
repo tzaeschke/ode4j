@@ -44,7 +44,8 @@ import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternionC;
@@ -63,7 +64,9 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
  * Anchor at (0, 0, 0)
  */
 public class DxJointHinge2_Fixture_B1_and_B2_At_Zero_Axis_Along_X extends TestSuperClass {
-	public DxJointHinge2_Fixture_B1_and_B2_At_Zero_Axis_Along_X()
+	
+	@Before
+	public void DxJointHinge2_Fixture_B1_and_B2_At_Zero_Axis_Along_X_init()
 	{
 		wId = dWorldCreate();
 
@@ -101,17 +104,17 @@ public class DxJointHinge2_Fixture_B1_and_B2_At_Zero_Axis_Along_X extends TestSu
 	}
 
 	//    ~dxJointHinge2_Fixture_B1_and_B2_At_Zero_Axis_Along_X()
-	@AfterClass
-	public static void DESTRUCTOR() {
+	@After
+	public void DESTRUCTOR() {
 		dWorldDestroy (wId);
 	}
 
-	static DWorld wId;
+	private static DWorld wId;
 
-	DBody[][] bId = new DBody[2][2];
+	private DBody[][] bId = new DBody[2][2];
 
 
-	DHinge2Joint[] jId = new DHinge2Joint[2];
+	private DHinge2Joint[] jId = new DHinge2Joint[2];
 	//  };
 
 	// Rotate 2nd body 90deg around X then back to original position

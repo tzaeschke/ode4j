@@ -45,7 +45,8 @@ import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
 import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
@@ -64,7 +65,8 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 // Anchor at (0, 0, 0)
 public class Fixture_dxJointPR_Compare_Body_At_Zero_AxisP_Along_Y extends TestSuperClass
     {
-        public Fixture_dxJointPR_Compare_Body_At_Zero_AxisP_Along_Y()
+	@Before
+        public void Fixture_dxJointPR_Compare_Body_At_Zero_AxisP_Along_Y_init()
         {
             wId = dWorldCreate();
 
@@ -96,24 +98,24 @@ public class Fixture_dxJointPR_Compare_Body_At_Zero_AxisP_Along_Y extends TestSu
         }
 
 //        ~Fixture_dxJointPR_Compare_Body_At_Zero_AxisP_Along_Y()
-		@AfterClass
-		public static void DESTRUCTOR() {
+		@After
+		public void DESTRUCTOR() {
             dWorldDestroy (wId);
         }
 
-        static DWorld wId;
+		private static DWorld wId;
 
-        DBody bId1_12;
-        DBody bId2_12;
+		private DBody bId1_12;
+		private DBody bId2_12;
 
-        DPRJoint jId_12; // Joint with 2 bodies
+		private DPRJoint jId_12; // Joint with 2 bodies
 
-        DFixedJoint fixed;
+		private DFixedJoint fixed;
 
 
 
-        DBody  bId;
-        DPRJoint jId;    // Joint with one body
+		private DBody  bId;
+		private DPRJoint jId;    // Joint with one body
 //    };
 
 

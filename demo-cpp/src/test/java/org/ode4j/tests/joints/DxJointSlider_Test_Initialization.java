@@ -42,7 +42,8 @@ import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternionC;
@@ -66,7 +67,8 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 // *     Z-----*->x
 public class DxJointSlider_Test_Initialization extends TestSuperClass
   {
-      public DxJointSlider_Test_Initialization()
+	@Before
+      public void DxJointSlider_Test_Initialization_init()
       {
           wId = dWorldCreate();
 
@@ -109,17 +111,17 @@ public class DxJointSlider_Test_Initialization extends TestSuperClass
       }
 
 //      ~dxJointSlider_Test_Initialization()
-		@AfterClass
-		public static void DESTRUCTOR() {
-          dWorldDestroy (wId);
-      }
+	@After
+	public void DESTRUCTOR() {
+		dWorldDestroy (wId);
+	}
 
-      static DWorld wId;
+	private static DWorld wId;
 
-      DBody[][] bId = new DBody[2][2];
+	private DBody[][] bId = new DBody[2][2];
 
 
-      DSliderJoint[] jId = new DSliderJoint[2];
+	private DSliderJoint[] jId = new DSliderJoint[2];
 
 //  };
 

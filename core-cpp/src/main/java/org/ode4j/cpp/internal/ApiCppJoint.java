@@ -56,67 +56,75 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	public static final int dParamGroup = 0;
 	//	  /* parameters for limits and motors */ \
-	public static final int dParamLoStop = 0;
+	public static final int dParamLoStop = PARAM_N.dParamLoStop1.ordinal();
 	public static final int dParamHiStop = 1;
 	public static final int dParamVel = 2;
-	public static final int dParamFMax = 3;
-	public static final int dParamFudgeFactor  = 4;
-	public static final int dParamBounce  = 5;
-	public static final int dParamCFM  = 6;
-	public static final int dParamStopERP  = 7;
-	public static final int dParamStopCFM  = 8;
+	public static final int dParamLoVel = 3;
+	public static final int dParamHiVel = 4;
+	public static final int dParamFMax = 5;
+	public static final int dParamFudgeFactor  = 6;
+	public static final int dParamBounce  = 7;
+	public static final int dParamCFM  = 8;
+	public static final int dParamStopERP  = 9;
+	public static final int dParamStopCFM  = 10;
 	/* parameters for suspension */ 
-	public static final int dParamSuspensionERP  = 9;
-	public static final int dParamSuspensionCFM = 10;
-	public static final int dParamERP = 11;
+	public static final int dParamSuspensionERP  = 11;
+	public static final int dParamSuspensionCFM = 12;
+	public static final int dParamERP = 13;
 
 	public static final int dParamGroup1 = 0 + P_OFS_1;
 	//	  /* parameters for limits and motors */ \
 	public static final int dParamLoStop1 = 0 + P_OFS_1;
 	public static final int dParamHiStop1 = 1 + P_OFS_1;
 	public static final int dParamVel1 = 2 + P_OFS_1;
-	public static final int dParamFMax1  = 3 + P_OFS_1;
-	public static final int dParamFudgeFactor1  = 4 + P_OFS_1;
-	public static final int dParamBounce1  = 5 + P_OFS_1;
-	public static final int dParamCFM1  = 6 + P_OFS_1;
-	public static final int dParamStopERP1  = 7 + P_OFS_1;
-	public static final int dParamStopCFM1  = 8 + P_OFS_1;
+	public static final int dParamLoVel1 = 3 + P_OFS_1;
+	public static final int dParamHiVel1 = 4 + P_OFS_1;
+	public static final int dParamFMax1  = 5 + P_OFS_1;
+	public static final int dParamFudgeFactor1  = 6 + P_OFS_1;
+	public static final int dParamBounce1  = 7 + P_OFS_1;
+	public static final int dParamCFM1  = 8 + P_OFS_1;
+	public static final int dParamStopERP1  = 9 + P_OFS_1;
+	public static final int dParamStopCFM1  = 10 + P_OFS_1;
 	/* parameters for suspension */ 
-	public static final int dParamSuspensionERP1  = 9 + P_OFS_1;
-	public static final int dParamSuspensionCFM1 = 10 + P_OFS_1;
-	public static final int dParamERP1 = 11 + P_OFS_1;
+	public static final int dParamSuspensionERP1  = 11 + P_OFS_1;
+	public static final int dParamSuspensionCFM1 = 12 + P_OFS_1;
+	public static final int dParamERP1 = 13 + P_OFS_1;
 
 	public static final int dParamGroup2 = 0 + P_OFS_2;
 	//	  /* parameters for limits and motors */ \
 	public static final int dParamLoStop2 = 0 + P_OFS_2;
 	public static final int dParamHiStop2 = 1 + P_OFS_2; 
 	public static final int dParamVel2 = 2 + P_OFS_2; 
-	public static final int dParamFMax2  = 3 + P_OFS_2; 
-	public static final int dParamFudgeFactor2  = 4 + P_OFS_2; 
-	public static final int dParamBounce2  = 5 + P_OFS_2; 
-	public static final int dParamCFM2  = 6 + P_OFS_2; 
-	public static final int dParamStopERP2  = 7 + P_OFS_2; 
-	public static final int dParamStopCFM2  = 8 + P_OFS_2; 
+	public static final int dParamLoVel2 = 3 + P_OFS_1;
+	public static final int dParamHiVel2 = 4 + P_OFS_1;
+	public static final int dParamFMax2  = 5 + P_OFS_2; 
+	public static final int dParamFudgeFactor2  = 6 + P_OFS_2; 
+	public static final int dParamBounce2  = 7 + P_OFS_2; 
+	public static final int dParamCFM2  = 8 + P_OFS_2; 
+	public static final int dParamStopERP2  = 9 + P_OFS_2; 
+	public static final int dParamStopCFM2  = 10 + P_OFS_2; 
 	/* parameters for suspension */ 
-	public static final int dParamSuspensionERP2  = 9 + P_OFS_2; 
-	public static final int dParamSuspensionCFM2 = 10 + P_OFS_2;
-	public static final int dParamERP2 = 11 + P_OFS_2;
+	public static final int dParamSuspensionERP2  = 11 + P_OFS_2; 
+	public static final int dParamSuspensionCFM2 = 12 + P_OFS_2;
+	public static final int dParamERP2 = 13 + P_OFS_2;
 
 	public static final int dParamGroup3 = 0 + P_OFS_3;
 	//	  /* parameters for limits and motors */ \
 	public static final int dParamLoStop3 = 0 + P_OFS_3; 
 	public static final int dParamHiStop3 = 1 + P_OFS_3; 
 	public static final int dParamVel3 = 2 + P_OFS_3; 
-	public static final int dParamFMax3  = 3 + P_OFS_3; 
-	public static final int dParamFudgeFactor3  = 4 + P_OFS_3; 
-	public static final int dParamBounce3  = 5 + P_OFS_3; 
-	public static final int dParamCFM3  = 6 + P_OFS_3; 
-	public static final int dParamStopERP3  = 7 + P_OFS_3; 
-	public static final int dParamStopCFM3  = 8 + P_OFS_3; 
+	public static final int dParamLoVel3 = 3 + P_OFS_1;
+	public static final int dParamHiVel3 = 4 + P_OFS_1;
+	public static final int dParamFMax3  = 5 + P_OFS_3; 
+	public static final int dParamFudgeFactor3  = 6 + P_OFS_3; 
+	public static final int dParamBounce3  = 7 + P_OFS_3; 
+	public static final int dParamCFM3  = 8 + P_OFS_3; 
+	public static final int dParamStopERP3  = 9 + P_OFS_3; 
+	public static final int dParamStopCFM3  = 10 + P_OFS_3; 
 	/* parameters for suspension */ 
-	public static final int dParamSuspensionERP3  = 9 + P_OFS_3; 
-	public static final int dParamSuspensionCFM3 = 10 + P_OFS_3;
-	public static final int dParamERP3 = 11 + P_OFS_3;
+	public static final int dParamSuspensionERP3  = 11 + P_OFS_3; 
+	public static final int dParamSuspensionCFM3 = 12 + P_OFS_3;
+	public static final int dParamERP3 = 13 + P_OFS_3;
 
 	
 	/* angular motor mode numbers */

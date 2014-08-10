@@ -28,6 +28,8 @@ import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_EQUAL;
 
 import java.util.Arrays;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
@@ -62,13 +64,14 @@ public class FrictionJointContact extends TestSuperClass
 {
 //    private static class ContactSetup
 //    {
-        DWorld world;
-        DBody body1;
-        DBody body2;
-        DContactJoint joint;
+	private DWorld world;
+	private DBody body1;
+	private DBody body2;
+	private DContactJoint joint;
 
         //ContactSetup()
-        public FrictionJointContact()
+	@Before
+        public void FrictionJointContact_init()
         {
             world = OdeHelper.createWorld();
             body1 = OdeHelper.createBody(world);
@@ -79,7 +82,8 @@ public class FrictionJointContact extends TestSuperClass
         }
 
         //~ContactSetup()
-        void DESTRUCTOR()
+	@After
+        public void DESTRUCTOR()
         {
             body1.destroy();
             body2.destroy();

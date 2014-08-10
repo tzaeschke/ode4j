@@ -40,7 +40,9 @@ import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
 import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
@@ -57,7 +59,8 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 // Anchor at (0, 0, 0)
 public class Fixture_dxJointSlider_Compare_Body_At_Zero_Axis_Along_X extends TestSuperClass
   {
-      public Fixture_dxJointSlider_Compare_Body_At_Zero_Axis_Along_X()
+	@Before
+      public void Fixture_dxJointSlider_Compare_Body_At_Zero_Axis_Along_X_init()
       {
           wId = dWorldCreate();
 
@@ -85,24 +88,24 @@ public class Fixture_dxJointSlider_Compare_Body_At_Zero_Axis_Along_X extends Tes
       }
 
 //      ~Fixture_dxJointSlider_Compare_Body_At_Zero_Axis_Along_X()
-		@AfterClass
-		public static void DESTRUCTOR() {
-          dWorldDestroy (wId);
+      @After
+      public void DESTRUCTOR() {
+    	  dWorldDestroy (wId);
       }
 
-      static DWorld wId;
+      private static DWorld wId;
 
-      DBody bId1_12;
-      DBody bId2_12;
+      private DBody bId1_12;
+      private DBody bId2_12;
 
-      DSliderJoint jId_12; // Joint with 2 bodies
+      private DSliderJoint jId_12; // Joint with 2 bodies
 
-      DFixedJoint fixed;
+      private DFixedJoint fixed;
 
 
 
-      DBody  bId;
-      DSliderJoint jId;    // Joint with one body
+      private DBody  bId;
+      private DSliderJoint jId;    // Joint with one body
 //  };
 
   // This test compare the result of a slider with 2 bodies where body body 2 is

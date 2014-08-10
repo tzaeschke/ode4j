@@ -965,7 +965,11 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    //dJointWithInfo1[] const jointinfos = memarena.AllocateArray<dJointWithInfo1>(_nj);
 	    DxWorldProcessMemArena.dummy();
 	    DJointWithInfo1[] jointinfos = new DJointWithInfo1[_nj];
-
+	    //TZ: init TODO is this necessary?
+//	    for (int i = 0; i < jointinfos.length; i++) {
+//	    	jointinfos[i] = new DJointWithInfo1();
+//	    }
+	    
 	    final int allowedThreads = callContext.m_stepperAllowedThreads();
 	    dIASSERT(allowedThreads != 0);
 

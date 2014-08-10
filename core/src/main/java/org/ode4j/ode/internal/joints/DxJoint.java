@@ -42,6 +42,8 @@ import static org.ode4j.ode.internal.Rotation.dQMultiply1;
 import static org.ode4j.ode.internal.Rotation.dQMultiply2;
 import static org.ode4j.ode.internal.Rotation.dQMultiply3;
 
+import java.util.Arrays;
+
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;

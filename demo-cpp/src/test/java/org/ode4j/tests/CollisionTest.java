@@ -24,6 +24,25 @@
  *************************************************************************/
 package org.ode4j.tests;
 
+import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateHeightfield;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateRay;
+import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomDestroy;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomHeightfieldDataBuildByte;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomHeightfieldDataCreate;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomHeightfieldDataDestroy;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomHeightfieldDataSetBounds;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomRaySet;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
+import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dCreateTriMesh;
+import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dGeomTriMeshDataBuildSingle;
+import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dGeomTriMeshDataCreate;
+import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_ARRAY_EQUAL;
+import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
+import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_EQUAL;
+
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
@@ -33,17 +52,14 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.DRay;
 import org.ode4j.ode.DTriMeshData;
-import org.ode4j.ode.OdeHelper;
-
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
  * Tests from collision.cpp.
  *
  * @author Tilmann Zaeschke
  */
-public class CollisionTest {
+public class CollisionTest extends TestSuperClass {
 
 	/**
 	 * This tests some extreme cases, where a sphere barely touches some triangles
@@ -111,9 +127,9 @@ public class CollisionTest {
 			CHECK_ARRAY_EQUAL(trinormal, cg.get(i).normal, 3);
 		}
 		//TODO remove tz
-		//	        CHECK_EQUAL(1, nc);
-		//	        //CHECK_EQUAL(0, cg.get(0).depth);
-		//	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
+//		CHECK_EQUAL(1, nc);
+//		//CHECK_EQUAL(0, cg.get(0).depth);
+//		CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
 
 		// now translate both geoms
 		dGeomSetPosition(trimesh, 10,30,40);
@@ -125,10 +141,10 @@ public class CollisionTest {
 			CHECK_EQUAL(0, cg.get(i).depth);
 			CHECK_ARRAY_EQUAL(trinormal, cg.get(i).normal, 3);
 		}
-		//TODO removbe tz
-		//	        CHECK_EQUAL(1, nc);
-		//	        //CHECK_EQUAL(0, cg.get(0).depth);
-		//	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
+		//TODO remove tz
+//		CHECK_EQUAL(1, nc);
+//		//CHECK_EQUAL(0, cg.get(0).depth);
+//		CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
 
 		// and now, let's rotate the trimesh, 90 degrees on X
 		DMatrix3 rot = new DMatrix3( 1, 0, 0, //0,
@@ -147,9 +163,9 @@ public class CollisionTest {
 			CHECK_ARRAY_EQUAL(rtrinormal, cg.get(i).normal, 3);
 		}
 		//TODO remove tz
-		//	        CHECK_EQUAL(1, nc);
-		//	        //CHECK_EQUAL(0, cg.get(0).depth);
-		//	        CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
+//		CHECK_EQUAL(1, nc);
+//		//CHECK_EQUAL(0, cg.get(0).depth);
+//		CHECK_CLOSE(0, cg.get(0).depth, 0.00000000001);  //TZ is not ==0!
 	}
 
 

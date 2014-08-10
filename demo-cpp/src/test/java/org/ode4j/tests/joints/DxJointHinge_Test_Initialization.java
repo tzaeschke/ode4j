@@ -43,7 +43,9 @@ import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternionC;
@@ -68,7 +70,9 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 // *     Z-------->
  */
 public class DxJointHinge_Test_Initialization extends TestSuperClass {
-	public DxJointHinge_Test_Initialization()
+	
+	@Before
+	public void DxJointHinge_Test_Initialization_init()
 	{
 		wId = dWorldCreate();
 
@@ -111,18 +115,18 @@ public class DxJointHinge_Test_Initialization extends TestSuperClass {
 	}
 
 	//~dxJointHinge_Test_Initialization()
-	@AfterClass
-	public static void DESTRUCTOR()
+	@After
+	public void DESTRUCTOR()
 	{
 		dWorldDestroy (wId);
 	}
 
-	static DWorld wId;
+	private static DWorld wId;
 
-	DBody[][] bId = new DBody[2][2];
+	private DBody[][] bId = new DBody[2][2];
 
 
-	DHingeJoint[] jId = new DHingeJoint[2];
+	private DHingeJoint[] jId = new DHingeJoint[2];
 
 	//		  };
 

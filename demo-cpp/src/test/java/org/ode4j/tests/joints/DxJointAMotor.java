@@ -30,6 +30,7 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 
 //234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -49,7 +50,7 @@ class DxJointAMotor
 
 	static final double tol = 1e-5;
 
-	static class FixtureBase {
+	static class FixtureBase extends TestSuperClass {
 		DWorld world;
 		DBody body;
 		DAMotorJoint joint;

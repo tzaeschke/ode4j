@@ -49,7 +49,8 @@ import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.ode.internal.Rotation.dRFromAxisAndAngle;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternionC;
@@ -58,6 +59,7 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 // Create 2 bodies attached by a Universal joint
 // Axis is along the X axis (Default value
@@ -70,9 +72,10 @@ import org.ode4j.ode.DWorld;
 //       |
 // Body1 |
 // *     Z-------->
-public class DxJointUniversal_Test_Initialization
+public class DxJointUniversal_Test_Initialization extends TestSuperClass
 {
-	public DxJointUniversal_Test_Initialization()
+	@Before
+	public void DxJointUniversal_Test_Initialization_init()
 	{
 		wId = dWorldCreate();
 
@@ -117,17 +120,17 @@ public class DxJointUniversal_Test_Initialization
 	}
 
 	//        ~dxJointUniversal_Test_Initialization()
-	@AfterClass
-	public static void DESTRUCTOR() {
+	@After
+	public void DESTRUCTOR() {
 		dWorldDestroy (wId);
 	}
 
-	static DWorld wId;
+	private static DWorld wId;
 
-	DBody[][] bId = new DBody[2][2];
+	private DBody[][] bId = new DBody[2][2];
 
 
-	DUniversalJoint[] jId = new DUniversalJoint[2];
+	private DUniversalJoint[] jId = new DUniversalJoint[2];
 
 	//    };
 

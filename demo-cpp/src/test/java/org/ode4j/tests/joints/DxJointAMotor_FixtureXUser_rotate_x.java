@@ -59,7 +59,7 @@ public class DxJointAMotor_FixtureXUser_rotate_x extends FixtureXUser
 		CHECK_CLOSE(OdeMath.dSin(v*h), rot.get21(), DxJointAMotor.tol);
 
 		CHECK_CLOSE(0, rot.get02(), DxJointAMotor.tol);
-		CHECK_CLOSE(-OdeMath.dSin(v*h), rot.get21(), DxJointAMotor.tol);
+		CHECK_CLOSE(-OdeMath.dSin(v*h), rot.get12(), DxJointAMotor.tol);
 		CHECK_CLOSE( OdeMath.dCos(v*h), rot.get22(), DxJointAMotor.tol);
 	}
 }

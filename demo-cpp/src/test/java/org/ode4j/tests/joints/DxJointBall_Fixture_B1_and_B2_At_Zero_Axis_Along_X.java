@@ -40,7 +40,9 @@ import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternionC;
@@ -56,7 +58,9 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
  * ode/src/joinst/ball.cpp
  */
 public class DxJointBall_Fixture_B1_and_B2_At_Zero_Axis_Along_X extends TestSuperClass {
-	public DxJointBall_Fixture_B1_and_B2_At_Zero_Axis_Along_X()
+	
+	@Before
+	public void DxJointBall_Fixture_B1_and_B2_At_Zero_Axis_Along_X_init()
 	{
 		wId = dWorldCreate();
 
@@ -94,17 +98,17 @@ public class DxJointBall_Fixture_B1_and_B2_At_Zero_Axis_Along_X extends TestSupe
 	}
 
 	//    ~dxJointBall_Fixture_B1_and_B2_At_Zero_Axis_Along_X()
-	@AfterClass
-	public static void DESTRUCTOR() {
+	@After
+	public void DESTRUCTOR() {
 		dWorldDestroy (wId);
 	}
 
-	static DWorld wId;
+	private static DWorld wId;
 
-	DBody[][] bId = new DBody[2][2];
+	private DBody[][] bId = new DBody[2][2];
 
 
-	DBallJoint[] jId = new DBallJoint[2];
+	private DBallJoint[] jId = new DBallJoint[2];
 	//  };
 
 	// Rotate 2nd body 90deg around X then back to original position
