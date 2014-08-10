@@ -205,7 +205,7 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 	}
 
 	@Override
-	/*extern */public void dThreadingFreeImplementation()
+	/*extern */public void free()
 	{
 		DThreadingImplementation impl = this;
 		if (impl != null)

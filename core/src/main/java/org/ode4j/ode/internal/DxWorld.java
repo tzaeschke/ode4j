@@ -1044,7 +1044,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 
 	    if (threading_impl != null)
 	    {
-	    	threading_impl.dThreadingFreeImplementation();
+	    	threading_impl.free();
 
 	        g_world_default_threading_functions = null;
 	        g_world_default_threading_impl = null;

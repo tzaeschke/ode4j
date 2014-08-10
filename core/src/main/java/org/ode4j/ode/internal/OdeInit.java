@@ -631,7 +631,7 @@ public class OdeInit {
      * @see OdeInit#dAllocateODEDataForThread(int)
      */
     //enum dAllocateODEDataFlags {
-    private final static int dAllocateFlagBasicData = 0; //@< Allocate basic data required for library to operate
+    public final static int dAllocateFlagBasicData = 0; //@< Allocate basic data required for library to operate
 
     private static final int dAllocateFlagCollisionData = 0x00000001; //@< Allocate data for collision detection
 

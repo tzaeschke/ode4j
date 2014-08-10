@@ -296,6 +296,9 @@ public class DrawStuff {
 	public static  void dsSetColorAlpha (float red, float green, float blue, float alpha) {
 		get().dsSetColorAlpha(red, green, blue, alpha);
 	}
+	public static  void dsSetColorAlpha (double red, double green, double blue, double alpha) {
+		get().dsSetColorAlpha((float)red, (float)green, (float)blue, (float)alpha);
+	}
 
 	/**
 	 * Draw a box.

@@ -4,7 +4,13 @@ Migration to 0.13.1
 
 Done:
 - main code
-- tests (except main.cpp) / don't run yet!!! 
+- tests (except main.cpp) / don't run yet!!!
+- demos up to demo_collision/convex_cd
+
+Demos:
+- DemoBoxstack has MT disabled.
+
+ 
 
 TODO: 
 -- tests

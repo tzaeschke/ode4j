@@ -259,7 +259,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		// grow large with high n, but oh well...
 		int tested_rowsize = (n+7) >> 3;	// number of bytes needed for n bits
 		//std::vector<unsigned char> tested(n * tested_rowsize);
-		int[] tested = new int[n + tested_rowsize];
+		int[] tested = new int[n * tested_rowsize];
 
 		// create a hash table to store all AABBs. each AABB may take up to 8 cells.
 		// we use chaining to resolve collisions, but we use a relatively large table

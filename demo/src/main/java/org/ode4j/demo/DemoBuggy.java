@@ -216,14 +216,6 @@ class DemoBuggy extends dsFunctions {
 
 		DVector3C ss = ground_box.getLengths();
 		dsDrawBox (ground_box.getPosition(), ground_box.getRotation(), ss);
-
-		/*
-  printf ("%.10f %.10f %.10f %.10f\n",
-	  dJointGetHingeAngle (joint[1]),
-	  dJointGetHingeAngle (joint[2]),
-	  dJointGetHingeAngleRate (joint[1]),
-	  dJointGetHingeAngleRate (joint[2]));
-		 */
 	}
 
 
@@ -267,16 +259,6 @@ class DemoBuggy extends dsFunctions {
 		body[1].setPosition(0.5*LENGTH,0,STARTZ-HEIGHT*0.5);
 		body[2].setPosition(-0.5*LENGTH, WIDTH*0.5,STARTZ-HEIGHT*0.5);
 		body[3].setPosition(-0.5*LENGTH,-WIDTH*0.5,STARTZ-HEIGHT*0.5);
-
-		// front wheel hinge
-		/*
-  joint[0] = dJointCreateHinge2 (world,0);
-  dJointAttach (joint[0],body[0],body[1]);
-  const dReal *a = dBodyGetPosition (body[1]);
-  dJointSetHinge2Anchor (joint[0],a[0],a[1],a[2]);
-  dJointSetHinge2Axis1 (joint[0],0,0,1);
-  dJointSetHinge2Axis2 (joint[0],0,1,0);
-		 */
 
 		// front and back wheel hinges
 		for (i=0; i<3; i++) {

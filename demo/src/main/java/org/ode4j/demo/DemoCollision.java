@@ -26,6 +26,7 @@ package org.ode4j.demo;
 
 import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
 import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
 import static org.ode4j.drawstuff.DrawStuff.dsDrawLine;
 import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
 import static org.ode4j.drawstuff.DrawStuff.dsSetCapsuleQuality;
@@ -36,6 +37,7 @@ import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
 import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
 import static org.ode4j.ode.DGeom.dBoxClass;
 import static org.ode4j.ode.DGeom.dCapsuleClass;
+import static org.ode4j.ode.DGeom.dCylinderClass;
 import static org.ode4j.ode.DGeom.dPlaneClass;
 import static org.ode4j.ode.DGeom.dSphereClass;
 import static org.ode4j.ode.OdeMath.*;
@@ -52,6 +54,7 @@ import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
+import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DPlane;
@@ -276,7 +279,15 @@ class DemoCollision extends dsFunctions {
 				break;
 			}
 
-			case dPlaneClass: {
+			case dCylinderClass: {
+				dsSetColorAlpha (0,1,0,0.8);
+				double radius = ((DCylinder)g).getRadius();
+				double length = ((DCylinder)g).getLength();
+				dsDrawCylinder (pos,g.getRotation(),length,radius);
+				break;
+			}
+
+		    case dPlaneClass: {
 				DMatrix3 R = new DMatrix3();
 				DVector3 pos2 = new DVector3();
 				DVector3C n3 = ((DPlane)g).getNormal();
@@ -937,6 +948,61 @@ class DemoCollision extends dsFunctions {
 	}
 
 
+	/**
+	  Test rays within the cylinder
+	  -completely inside
+	  -exiting through side
+	  -exiting through cap
+	  -exiting through corner
+	  Test rays outside the cylinder
+	*/
+	private boolean test_ray_and_cylinder()
+	{
+	  DVector3 a = new DVector3(), b = new DVector3();
+
+	  DSimpleSpace space = OdeHelper.createSimpleSpace();
+	  DRay ray = OdeHelper.createRay(space,4);
+
+	  // The first thing that happens is the ray is
+	  // rotated into cylinder coordinates.  We'll trust that's
+	  // done right.  The major axis is in the z-dir.
+
+
+	  // Random tests
+	  /*b[0]=4*dRandReal()-2;
+	  b[1]=4*dRandReal()-2;
+	  b[2]=4*dRandReal()-2;
+	  a[0]=2*dRandReal()-1;
+	  a[1]=2*dRandReal()-1;
+	  a[2]=2*dRandReal()-1;*/
+	  
+	  // Inside out
+	  b.set0( dRandReal()-0.5 );
+	  b.set1( dRandReal()-0.5 );
+	  b.set2( dRandReal()-0.5 );
+	  a.set0( 2*dRandReal()-1 );
+	  a.set1( 2*dRandReal()-1 );
+	  a.set2( 2*dRandReal()-1 );
+
+	  // Outside in
+	  /*b[0]=4*dRandReal()-2;
+	  b[1]=4*dRandReal()-2;
+	  b[2]=4*dRandReal()-2;
+	  a[0]=-b[0];
+	  a[1]=-b[1];
+	  a[2]=-b[2];*/
+
+	  
+	  ray.set (b ,a);
+	  // This is just for visual inspection right now.
+	  //if (dCollide (ray,cyl,1,&contact,sizeof(dContactGeom)) != 1) FAILED();
+
+	  draw_all_objects (space);
+
+	  return retPASSED();
+	}
+
+
 	private boolean test_ray_and_plane()
 	{
 		int j;
@@ -1457,6 +1523,7 @@ class DemoCollision extends dsFunctions {
 		MAKE_TEST(11,"test_ray_and_box");
 		MAKE_TEST(12,"test_ray_and_ccylinder");
 		MAKE_TEST(13,"test_ray_and_plane");
+		MAKE_TEST(14,"test_ray_and_cylinder");
 
 		MAKE_TEST(100,"test_dBoxTouchesBox");
 		MAKE_TEST(101,"test_dBoxBox");

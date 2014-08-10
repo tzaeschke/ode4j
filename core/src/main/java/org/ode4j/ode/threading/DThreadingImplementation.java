@@ -70,7 +70,7 @@ public abstract class DThreadingImplementation {
 	public abstract DThreadingFunctionsInfo dThreadingImplementationGetFunctions();
 
 	/**
-	 * @brief Requests a built-in implementation to release threads serving it.
+	 * Requests a built-in implementation to release threads serving it.
 	 *
 	 * The function unblocks threads employed in implementation serving and lets them 
 	 * return to from where they originate. It's the responsibility of external code 
@@ -89,13 +89,14 @@ public abstract class DThreadingImplementation {
 	 * If this function is called for self-threaded built-in threading implementation
 	 * the call has no effect.
 	 * 
-	 * @param impl Threading implementation ID
-	 * 
-	 * @ingroup threading
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 * @see dThreadingImplementationCleanupForRestart
 	 */
+	public void shutdownProcessing() {
+		dThreadingImplementationShutdownProcessing();
+	}
 	abstract void dThreadingImplementationShutdownProcessing();
+
 
 	/**
 	 * @brief Restores built-in implementation's state to let it be reused after shutdown.
@@ -116,18 +117,16 @@ public abstract class DThreadingImplementation {
 	public abstract void dThreadingImplementationCleanupForRestart();
 
 	/**
-	 * @brief Deletes an instance of built-in threading implementation.
+	 * Deletes an instance of built-in threading implementation.
 	 *
-	 * @warning A care must be taken to make sure the implementation is unassigned
+	 * WARNING: A care must be taken to make sure the implementation is unassigned
 	 * from all the objects it was assigned to and that there are no more threads 
 	 * serving it before attempting to call this function.
 	 *
-	 * @param impl Threading implementation ID
-	 * 
-	 * @ingroup threading
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 */
-	public abstract void dThreadingFreeImplementation();
+	public abstract void free();
+	//public abstract void dThreadingFreeImplementation();
 
 
 	//typedef void (dThreadReadyToServeCallback)(void *callback_context);
