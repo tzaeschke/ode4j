@@ -191,7 +191,7 @@ public class FrictionJointContact extends TestSuperClass
         joint = OdeHelper.createContactJoint(world, null, contact);
         joint.attach(body1, body2);
         ((DxJointContact)joint).getInfo1(info1);
-        CHECK_EQUAL(2, (int)info1.m);
+        CHECK_EQUAL(2, info1.m);
         ZERO_ALL(dummy_J, dummy_c, dummy_cfm, dummy_lo, dummy_hi, dummy_findex);
         ((DxJointContact)joint).getInfo2(info2_fps, info2_erp, info2);
 //        CHECK_CLOSE(0, dummy_J[1][0], 1e-6);
@@ -232,7 +232,7 @@ public class FrictionJointContact extends TestSuperClass
         joint = OdeHelper.createContactJoint(world, null, contact);
         joint.attach(body1, body2);
         ((DxJointContact)joint).getInfo1(info1);
-        CHECK_EQUAL(2, (int)info1.m);
+        CHECK_EQUAL(2, info1.m);
         ZERO_ALL(dummy_J, dummy_c, dummy_cfm, dummy_lo, dummy_hi, dummy_findex);
         ((DxJointContact)joint).getInfo2(info2_fps, info2_erp, info2);
 //        CHECK_CLOSE(0, dummy_J[1][0], 1e-6);
