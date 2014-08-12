@@ -33,15 +33,18 @@ import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
 import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_EQUAL;
 
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DHingeJoint;
 import org.ode4j.ode.DWorld;
+import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
-public class Fixture_Simple_Hinge
+public class Fixture_Simple_Hinge extends TestSuperClass
 {
-	public Fixture_Simple_Hinge ()
+	@Before
+	public void Fixture_Simple_Hinge_init ()
 	{
 		wId = dWorldCreate();
 
@@ -58,17 +61,17 @@ public class Fixture_Simple_Hinge
 	}
 
 	//		        ~Fixture_Simple_Hinge()
-	@AfterClass
-	public static void DESTRUCTOR() {
+	@After
+	public void DESTRUCTOR() {
 		dWorldDestroy(wId);
 	}
 
-	DHingeJoint jId;
+	private DHingeJoint jId;
 
-	static DWorld wId;
+	private static DWorld wId;
 
-	DBody bId1;
-	DBody bId2;
+	private DBody bId1;
+	private DBody bId2;
 	//};
 
 	// Test that it is possible to have joint without a body
@@ -82,6 +85,7 @@ public class Fixture_Simple_Hinge
 		}
 		catch (Throwable t) {
 			//OK
+			t.printStackTrace();
 			only_body1_OK = false;
 		}
 		CHECK_EQUAL(true, only_body1_OK);
