@@ -24,6 +24,8 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.Matrix.dSetValue;
+import static org.ode4j.ode.DMatrix.dSetValue;
 import static org.ode4j.ode.DMatrix.dSetZero;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dInvertMatrix3;
@@ -45,6 +47,7 @@ import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 import static org.ode4j.ode.threading.ThreadingUtils.ThrsafeExchange;
 import static org.ode4j.ode.threading.ThreadingUtils.ThrsafeIncrementIntUpToLimit;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ode4j.math.DMatrix3;
@@ -533,7 +536,9 @@ dmaxcallcountestimate_fn_t {
 		if (ThrsafeExchange(callContext.m_tagsTaken, 1) == 0)
 		{
 			// number all bodies in the body list - set their tag values
-			for (int i=bOfs; i<nb+bOfs; i++) bodyA[i].tag = i;
+			for (int i=0; i<nb; i++) {
+				bodyA[i+bOfs].tag = i;
+			}
 		}
 
 		if (ThrsafeExchange(callContext.m_gravityTaken, 1) == 0)
@@ -1135,14 +1140,16 @@ dmaxcallcountestimate_fn_t {
 				//Jinfo.c = rhs + ofsi;  //TODO !!!!!!!
 				dSetZero(rhs, ofsi, infom);//dSetZero (rhs, Jinfo.c, infom);
 				//Jinfo.cfm = cfm + ofsi;
-				Jinfo.setCfm(infom, world.global_cfm);//dSetValue (Jinfo.cfm, infom, world.global_cfm);
+				dSetValue(cfm, ofsi, infom, world.global_cfm);//dSetValue(Jinfo.cfm, infom, world.global_cfm);
 				//Jinfo.lo = lo + ofsi;
-				Jinfo.setLo(infom, -dInfinity);
-				//Jinfo.hi = hi + ofsi;
-				Jinfo.setHi(infom, dInfinity);
-				//Jinfo.findex = findex + ofsi;
-				Jinfo.setFindex(infom, -1);
+				dSetValue (lo, ofsi, infom, -dInfinity);
+	            //Jinfo.hi = hi + ofsi;
+				dSetValue (hi, ofsi, infom, dInfinity);
+	            //Jinfo.findex = findex + ofsi;
+	            dSetValue(findex, ofsi, infom, -1);
 
+				
+				
 				DxJoint joint = jointinfosA[jointinfosOfs+ji].joint;
 				joint.getInfo2(stepsizeRecip, worldERP, Jinfo);
 

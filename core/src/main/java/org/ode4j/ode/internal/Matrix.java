@@ -73,14 +73,11 @@ public class Matrix extends FastDot {
 		}
 	}
 
-	public static void dSetValue(double[] a, int pos, int n, double value) {
-		dAASSERT(n >= 0);
-		while (n > 0) {
-			// *(a++) = value;
-			a[pos + n - 1] = value;
-			n--;
-		}
-	}
+	public static void dSetValue(double[] a, int pos, int len, double value) {
+    	for (int i = pos; i < len+pos; i++) {
+    		a[i] = value;
+    	}
+    }
 
 	/**
 	 * Matrix multiplication. all matrices are stored in standard row format.
