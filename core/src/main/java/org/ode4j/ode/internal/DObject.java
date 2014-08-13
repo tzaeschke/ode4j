@@ -97,7 +97,6 @@ public abstract class DObject extends DBase {
 //    public static <T extends dObject>void removeObjectFromList (T obj)
     public <T extends DObject>void removeObjectFromList ()
     {
-        //System.err.println("REMOVING OBJ: " + getClass().getName() + " / " + toString());
         //      if (obj.next) obj.next.tome = obj.tome;
         //      *(obj.tome) = obj.next;
         //      // safeguard

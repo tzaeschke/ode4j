@@ -27,7 +27,6 @@ package org.ode4j.ode.internal.joints;
 import java.util.ArrayList;
 
 import org.ode4j.ode.DJointGroup;
-import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.DBase;
 
 /** 
@@ -159,47 +158,6 @@ public class DxJointGroup extends DBase implements DJointGroup
     }
 
 
-    public void dJointGroupEmptyOld ()
-    {
-        // the joints in this group are detached starting from the most recently
-        // added (at the top of the stack). this helps ensure that the various
-        // linked lists are not traversed too much, as the joints will hopefully
-        // be at the start of those lists.
-        // if any group joints have their world pointer set to 0, their world was
-        // previously destroyed. no special handling is required for these joints.
-        
-        //COM.dAASSERT (group);
-//        int i;
-//        dxJoint **jlist = (dxJoint**) ALLOCA (group.num * sizeof(dxJoint*));
-//        dxJoint *j = (dxJoint*) group.stack.rewind();
-//        dxJoint[]jlist = new dxJoint[num]; //(dxJoint**) ALLOCA (group.num * sizeof(dxJoint*));
-//        dxJoint j = stack.rewind();
-//        for (i=0; i < num; i++) {
-//            jlist[i] = j;
-//            j = (dxJoint) (stack.next());//j.size()));
-//        }
-//        for (i=num-1; i >= 0; i--) {
-//            if (jlist[i].world != null) {
-//            	jlist[i].removeJointReferencesFromAttachedBodies ();
-//                jlist[i].removeObjectFromList ();
-//                jlist[i].world.nj--;
-//                jlist[i].DESTRUCTOR();//~dxJoint();
-//            }
-//        }
-//        num = 0;
-//        stack.freeAll();
-        for (int i = _stack.size()-1; i >= 0; i--) {
-        	DxJoint j = _stack.get(i);
-            if (j.world != null) {
-            	j.removeJointReferencesFromAttachedBodies ();
-                j.removeObjectFromList ();
-                j.world.nj--;
-                j.DESTRUCTOR();//~dxJoint();
-            }
-        }
-        _stack.clear();
-    }
-    
     void addJoint(DxJoint j) {
 //		stack.add(j);
 //		num++;

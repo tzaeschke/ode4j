@@ -209,15 +209,6 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	    if ((j.flags & DxJoint.dJOINT_INGROUP)==0) {
 	        j.FinalizeAndDestroyJointInstance(true);
 	    }
-	    
-		dAASSERT (j);
-		//TZ size_t sz = j.size();
-		if ( j.isFlagsInGroup() ) return;
-		j.removeJointReferencesFromAttachedBodies ();
-		j.removeObjectFromList ();
-		j.world.nj--;
-		j.DESTRUCTOR();//~dxJoint();
-		//TZ dFree (j, sz);
 	}
 
 
