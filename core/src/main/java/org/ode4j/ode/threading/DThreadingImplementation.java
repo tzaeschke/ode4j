@@ -35,16 +35,15 @@ import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
 public abstract class DThreadingImplementation {
 	
 	/**
-	 * @brief Allocates built-in multi-threaded threading implementation object.
+	 * Allocates built-in multi-threaded threading implementation object.
 	 *
 	 * A multi-threaded implementation is a type of implementation that has to be 
 	 * served with a thread pool. The thread pool can be either the built-in ODE object
 	 * or set of external threads that dedicate themselves to this purpose and stay
 	 * in ODE until implementation releases them.
 	 * 
-	 * @returns ID of object allocated or NULL on failure
+	 * @return ID of object allocated or NULL on failure
 	 * 
-	 * @ingroup threading
 	 * @see dThreadingThreadPoolServeMultiThreadedImplementation
 	 * @see dExternalThreadingServeMultiThreadedImplementation
 	 * @see dThreadingFreeImplementation
@@ -55,16 +54,15 @@ public abstract class DThreadingImplementation {
 	//TZ see DxThreadingImplementation
 
 	/**
-	 * @brief Retrieves the functions record of a built-in threading implementation.
+	 * Retrieves the functions record of a built-in threading implementation.
 	 *
 	 * The implementation can be the one allocated by ODE (from @c dThreadingAllocateMultiThreadedImplementation). 
 	 * Do not use this function with self-made custom implementations - 
 	 * they should be bundled with their own set of functions.
 	 * 
 	 * @param impl Threading implementation ID
-	 * @returns Pointer to associated functions structure
+	 * @return Pointer to associated functions structure
 	 * 
-	 * @ingroup threading
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 */
 	public abstract DThreadingFunctionsInfo dThreadingImplementationGetFunctions();
@@ -99,10 +97,10 @@ public abstract class DThreadingImplementation {
 
 
 	/**
-	 * @brief Restores built-in implementation's state to let it be reused after shutdown.
+	 * Restores built-in implementation's state to let it be reused after shutdown.
 	 *
 	 * If a multi-threaded built-in implementation needs to be reused after a call
-	 * to @c dThreadingImplementationShutdownProcessing this call is to be made to 
+	 * to {@code dThreadingImplementationShutdownProcessing} this call is to be made to 
 	 * restore object's internal state. After that the implementation can be served again.
 	 *
 	 * If this function is called for self-threaded built-in threading implementation
@@ -110,7 +108,6 @@ public abstract class DThreadingImplementation {
 	 * 
 	 * @param impl Threading implementation ID
 	 * 
-	 * @ingroup threading
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 * @see dThreadingImplementationShutdownProcessing
 	 */
@@ -135,15 +132,16 @@ public abstract class DThreadingImplementation {
 	}
 
 	/**
-	 * @brief An entry point for external threads that would like to serve a built-in 
+	 * An entry point for external threads that would like to serve a built-in 
 	 * threading implementation object.
 	 *
 	 * A thread that calls this function remains blocked in ODE and serves implementation
-	 * object @p impl until being released with @c dThreadingImplementationShutdownProcessing call.
+	 * object {@code impl} until being released with 
+	 * {@code dThreadingImplementationShutdownProcessing} call.
 	 * This function can be used to provide external threads instead of ODE's built-in
 	 * thread pools.
 	 *
-	 * The optional callback @readiness_callback is called after the thread has reached 
+	 * The optional callback {@code readiness_callback} is called after the thread has reached 
 	 * and has registered within the implementation. The implementation should not 
 	 * be used until all dedicated threads register within it as otherwise it will not
 	 * have accurate view of the execution resources available.
@@ -152,7 +150,6 @@ public abstract class DThreadingImplementation {
 	 * @param readiness_callback Optional readiness callback to be called after thread enters the implementation
 	 * @param callback_context A value to be passed as parameter to readiness callback
 	 * 
-	 * @ingroup threading
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 * @see dThreadingImplementationShutdownProcessing
 	 */

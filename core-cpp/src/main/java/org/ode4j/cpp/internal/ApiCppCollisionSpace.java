@@ -216,7 +216,7 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	 * User-defined class will return their own number.
 	 *
 	 * @param space the space to query
-	 * @returns The space class ID.
+	 * @return The space class ID.
 	 */
 	//ODE_API 
 	int dSpaceGetClass(DSpace space) {

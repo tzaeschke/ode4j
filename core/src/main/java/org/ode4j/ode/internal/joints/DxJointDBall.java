@@ -53,12 +53,14 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 		cfm = world.getCFM();
 	}
 
+	@Override
 	void
 	getSureMaxInfo( SureMaxInfo info )
 	{
 		info.max_m = 1;
 	}
 
+	@Override
 	public void
 	getInfo1( DxJoint.Info1 info )
 	{
@@ -66,6 +68,7 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 		info.nub = 1;
 	}
 
+	@Override
 	public void
 	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
@@ -307,6 +310,7 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 	}
 
 
+	@Override
 	void
 	setRelativeValues()
 	{

@@ -113,7 +113,7 @@ class ThreadingTemplates {
 	}
 
 	private static DCallReleasee dMAKE_JOBINSTANCE_RELEASEE(dxThreadedJobInfo job_instance) {
-		return (DCallReleasee)job_instance;
+		return job_instance;
 	}
 
 	private static final dxThreadedJobInfo dMAKE_RELEASEE_JOBINSTANCE(DCallReleasee releasee) {
@@ -304,7 +304,7 @@ class ThreadingTemplates {
 		public static dWaitSignallingFunction AbstractSignalTheWait = new dWaitSignallingFunction() {
 			@Override
 			public void run(dxCallWait job_call_wait) {
-				((dxCallWait)job_call_wait).SignalTheWait(); 
+				job_call_wait.SignalTheWait(); 
 			}
 		};
 
@@ -752,7 +752,7 @@ class ThreadingTemplates {
 
 			while (true)
 			{
-				dxThreadedJobInfo raw_head_info = (dxThreadedJobInfo)m_info_pool.get();
+				dxThreadedJobInfo raw_head_info = m_info_pool.get();
 
 				if (raw_head_info == null)
 				{
@@ -772,7 +772,7 @@ class ThreadingTemplates {
 				//dxMutexLockHelper pool_access(m_pool_access_lock);
 				dxtemplateThreadingLockHelper pool_access = new dxtemplateThreadingLockHelper(m_pool_access_lock);
 
-				dxThreadedJobInfo head_info = (dxThreadedJobInfo)m_info_pool.get(); // Head info must be re-read after mutex had been locked
+				dxThreadedJobInfo head_info = m_info_pool.get(); // Head info must be re-read after mutex had been locked
 
 				if (head_info != null)
 				{
@@ -805,7 +805,7 @@ class ThreadingTemplates {
 		{
 			while (true)
 			{
-				dxThreadedJobInfo next_info = (dxThreadedJobInfo)m_info_pool.get();
+				dxThreadedJobInfo next_info = m_info_pool.get();
 				job_instance.m_next_job = next_info;
 
 				if (CompareExchangeTargetPtr(m_info_pool, next_info, job_instance))
@@ -821,7 +821,7 @@ class ThreadingTemplates {
 		//void dxtemplateJobListContainer<tThreadLull, tThreadMutex, tAtomicsProvider>::
 		private void FreeJobInfoPoolInfos()
 		{
-			dxThreadedJobInfo current_info = (dxThreadedJobInfo)m_info_pool.get();
+			dxThreadedJobInfo current_info = m_info_pool.get();
 
 			while (current_info != null)
 			{
@@ -1253,7 +1253,7 @@ class ThreadingTemplates {
 		public dIMutexGroup AllocMutexGroup(dxProcessContextMutex /*dmutexindex_t*/ Mutex_count)
 		{
 			dxtemplateMutexGroup mutex_group = dxtemplateMutexGroup.AllocateInstance(Mutex_count);
-			return (dIMutexGroup)mutex_group;
+			return mutex_group;
 		}
 
 		//template<class tJobListContainer, class tJobListHandler>
@@ -1306,7 +1306,7 @@ class ThreadingTemplates {
 				call_wait = null;
 			}
 
-			return (dxICallWait)call_wait;
+			return call_wait;
 		}
 
 		//template<class tJobListContainer, class tJobListHandler>
@@ -1319,6 +1319,7 @@ class ThreadingTemplates {
 
 		//template<class tJobListContainer, class tJobListHandler>
 		//void dxtemplateThreadingImplementation<tJobListContainer, tJobListHandler>::
+		@Override
 		public void FreeACallWait(dxICallWait call_wait)
 		{
 			//delete ((dxCallWait *)call_wait);

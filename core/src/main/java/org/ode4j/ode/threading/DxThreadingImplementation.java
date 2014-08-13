@@ -79,7 +79,7 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 	 * The processing is arranged in a way to prevent call stack depth growth 
 	 * as more and more nested calls are posted.
 	 *
-	 * @returns ID of object allocated or NULL on failure
+	 * @return ID of object allocated or NULL on failure
 	 * 
 	 * @see DThreadingImplementation#allocateMultiThreadedImplementation()
 	 * @see DThreadingImplementation#freeImplementation()
@@ -120,7 +120,7 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 		}
 
 		dxIThreadingImplementation impl = threading;
-		return (DThreadingImplementation)impl;
+		return impl;
 	}
 
 	/*extern */public static DThreadingImplementation dThreadingAllocateMultiThreadedImplementation()
@@ -288,7 +288,7 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 		@Override
 		public DCallWait run(DThreadingImplementation impl) {
 			dxICallWait call_wait = ((dxIThreadingImplementation)impl).AllocACallWait();
-			return (DCallWait)call_wait;
+			return call_wait;
 		}
 	};
 

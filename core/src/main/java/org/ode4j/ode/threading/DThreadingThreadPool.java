@@ -33,14 +33,14 @@ package org.ode4j.ode.threading;
 public abstract class DThreadingThreadPool {
 
 	/**
-	 * @brief Creates an instance of built-in thread pool object that can be used to serve
+	 * Creates an instance of built-in thread pool object that can be used to serve
 	 * multi-threaded threading implementations.
 	 *
 	 * The threads allocated inherit priority of caller thread. Their affinity is not
 	 * explicitly adjusted and gets the value the system assigns by default. Threads 
 	 * have their stack memory fully committed immediately on start. On POSIX platforms 
 	 * threads are started with all the possible signals blocked. Threads execute 
-	 * calls to @c dAllocateODEDataForThread with @p ode_data_allocate_flags 
+	 * calls to {@code dAllocateODEDataForThread} with {@code ode_data_allocate_flags} 
 	 * on initialization.
 	 *
 	 * On POSIX platforms this function must be called with signals masked 
@@ -50,9 +50,8 @@ public abstract class DThreadingThreadPool {
 	 * @param thread_count Number of threads to start in pool
 	 * @param stack_size Size of stack to be used for every thread or 0 for system default value
 	 * @param ode_data_allocate_flags Flags to be passed to @c dAllocateODEDataForThread on behalf of each thread
-	 * @returns ID of object allocated or NULL on failure
+	 * @return ID of object allocated or NULL on failure
 	 *
-	 * @ingroup threading
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 * @see dThreadingImplementationShutdownProcessing
 	 * @see dThreadingFreeThreadPool
@@ -63,11 +62,11 @@ public abstract class DThreadingThreadPool {
 	}
 
 	/**
-	 * @brief Commands an instance of built-in thread pool to serve a built-in multi-threaded 
+	 * Commands an instance of built-in thread pool to serve a built-in multi-threaded 
 	 * threading implementation.
 	 *
 	 * A pool can only serve one threading implementation at a time. 
-	 * Call @c dThreadingImplementationShutdownProcessing to release pool threads 
+	 * Call {@code dThreadingImplementationShutdownProcessing} to release pool threads 
 	 * from implementation serving and make them idle. Pool threads must be released 
 	 * from any implementations before pool is attempted to be deleted.
 	 *
@@ -77,7 +76,6 @@ public abstract class DThreadingThreadPool {
 	 * @param pool Thread pool ID to serve the implementation
 	 * @param impl Implementation ID of implementation to be served
 	 *
-	 * @ingroup threading
 	 * @see dThreadingAllocateThreadPool
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 * @see dThreadingImplementationShutdownProcessing
@@ -85,23 +83,22 @@ public abstract class DThreadingThreadPool {
 	public abstract void serveMultiThreadedImplementation(DThreadingImplementation impl);
 
 	/**
-	 * @brief Waits until all pool threads are released from threading implementation 
+	 * Waits until all pool threads are released from threading implementation 
 	 * they might be serving.
 	 *
-	 * The function can be used after a call to @c dThreadingImplementationShutdownProcessing
+	 * The function can be used after a call to {@code dThreadingImplementationShutdownProcessing}
 	 * to make sure all the threads have already been released by threading implementation 
 	 * and it can be deleted or it can be cleaned up for restart and served by another pool
 	 * or this pool's threads can be used to serve another threading implementation.
 	 *
 	 * Note that is it not necessary to call this function before pool destruction
-	 * since @c dThreadingFreeThreadPool performs similar wait operation implicitly on its own.
+	 * since {@code dThreadingFreeThreadPool} performs similar wait operation implicitly on its own.
 	 * 
 	 * It is OK to call this function even if pool was not serving any threading implementation
 	 * in which case the call exits immediately with minimal delay.
 	 * 
 	 * @param pool Thread pool ID to wait for
 	 *
-	 * @ingroup threading
 	 * @see dThreadingAllocateThreadPool
 	 * @see dThreadingImplementationShutdownProcessing
 	 * @see dThreadingFreeThreadPool
@@ -109,7 +106,7 @@ public abstract class DThreadingThreadPool {
 	public abstract void waitIdleState();
 
 	/**
-	 * @brief Deletes a built-in thread pool instance.
+	 * Deletes a built-in thread pool instance.
 	 *
 	 * The pool threads must be released from any implementations they might be serving
 	 * before this function is called. Otherwise the call is going to block 
@@ -117,7 +114,6 @@ public abstract class DThreadingThreadPool {
 	 * 
 	 * @param pool Thread pool ID to delete
 	 *
-	 * @ingroup threading
 	 * @see dThreadingAllocateThreadPool
 	 * @see dThreadingImplementationShutdownProcessing
 	 */

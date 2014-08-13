@@ -763,7 +763,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 		int result = 
 				1 // ThreadedProcessGroup_Callback
 				+ islandsAllowedThreadCount * DxUtil.dMAX(stepperCallsMaximum, islandsIntermediateCallsMaximum)
-				+ DxUtil.dMIN(islandsAllowedThreadCount, (int)(activeThreadCount - islandsAllowedThreadCount)) // ThreadedProcessJobStart_Callback
+				+ DxUtil.dMIN(islandsAllowedThreadCount, (activeThreadCount - islandsAllowedThreadCount)) // ThreadedProcessJobStart_Callback
 				/*...the end*/;
 		return result;
 	}

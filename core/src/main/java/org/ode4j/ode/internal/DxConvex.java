@@ -30,7 +30,7 @@ import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
 import static org.ode4j.ode.OdeMath.dMultiply0_331;
 import static org.ode4j.ode.OdeMath.dMultiply1_331;
-import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.ode.internal.Common.dAASSERT;
 import static org.ode4j.ode.internal.Common.dEpsilon;
 import static org.ode4j.ode.internal.Common.dFabs;

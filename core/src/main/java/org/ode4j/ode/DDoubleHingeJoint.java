@@ -47,26 +47,31 @@ public interface DDoubleHingeJoint extends DDoubleBallJoint {
 	/**
 	 * Set anchor1 for double hinge joint.
 	 */
+	@Override
 	void setAnchor1(double x, double y, double z);
 
 	/**
 	 * Set anchor2 for double hinge joint.
 	 */
+	@Override
 	void setAnchor2(double x, double y, double z);
 
 	/**
 	 * Get anchor1 from double hinge joint.
 	 */
+	@Override
 	void getAnchor1(DVector3 result);
 
 	/**
 	 * Get anchor2 from double hinge joint.
 	 */
+	@Override
 	void getAnchor2(DVector3 result);
 
 	/**
 	 * Get the set distance from double hinge joint.
 	 */
+	@Override
 	double getDistance();
 
 	/**

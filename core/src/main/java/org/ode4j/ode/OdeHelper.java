@@ -1014,7 +1014,7 @@ public abstract class OdeHelper {
 	 * or set of external threads that dedicate themselves to this purpose and stay
 	 * in ODE until implementation releases them.
 	 * 
-	 * @returns allocated object or NULL on failure
+	 * @return allocated object or NULL on failure
 	 * 
 	 * @see dThreadingThreadPoolServeMultiThreadedImplementation
 	 * @see dExternalThreadingServeMultiThreadedImplementation
@@ -1033,7 +1033,7 @@ public abstract class OdeHelper {
 	 * explicitly adjusted and gets the value the system assigns by default. Threads 
 	 * have their stack memory fully committed immediately on start. On POSIX platforms 
 	 * threads are started with all the possible signals blocked. Threads execute 
-	 * calls to @c dAllocateODEDataForThread with @p ode_data_allocate_flags 
+	 * calls to {@code dAllocateODEDataForThread} with {@code ode_data_allocate_flags} 
 	 * on initialization.
 	 *
 	 * On POSIX platforms this function must be called with signals masked 
@@ -1043,7 +1043,7 @@ public abstract class OdeHelper {
 	 * @param thread_count Number of threads to start in pool
 	 * @param stack_size Size of stack to be used for every thread or 0 for system default value
 	 * @param ode_data_allocate_flags Flags to be passed to {@code dAllocateODEDataForThread} on behalf of each thread
-	 * @returns the allocated object or NULL on failure
+	 * @return the allocated object or NULL on failure
 	 *
 	 * @see dThreadingAllocateMultiThreadedImplementation
 	 * @see dThreadingImplementationShutdownProcessing

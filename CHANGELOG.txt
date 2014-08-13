@@ -4,13 +4,19 @@ Migration to 0.13.1
 
 Done:
 - main code
-- tests (except main.cpp) / don't run yet!!!
+- tests 
 - demos up to demo_collision/convex_cd
+-- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
+-- Fixed bug in DObject --> destroying joints might have crashed
 
 Demos:
 - DemoBoxstack has MT disabled.
 
- 
+Missing:
+- Multithreading does not work
+
+
+
 
 TODO: 
 -- tests
@@ -23,12 +29,9 @@ TODO:
 -- Skipped: odeou.*, odetls.*
 
 
--- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
-
 TODO check use of _next/_tome in DxGeom. Make private? Remove getNext()?
 TODO check matrix.h
 TODO check use of (M_PI/2.0)
-TODO clean up javadoc @brief, etc
 
 
 0.2.9

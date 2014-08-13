@@ -55,6 +55,7 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
     }
 
 
+	@Override
     void
     getSureMaxInfo( SureMaxInfo info )
     {
@@ -62,6 +63,7 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
     }
 
 
+	@Override
     public void
     getInfo1( DxJoint.Info1 info )
     {
@@ -70,6 +72,7 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
     }
 
 
+	@Override
     public void
     getInfo2( double worldFPS, double worldERP, Info2Descr info )
     {

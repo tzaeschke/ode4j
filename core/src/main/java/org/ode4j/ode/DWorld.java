@@ -219,7 +219,7 @@ public interface DWorld {
 	 * important information regarding the value returned.
 	 *
 	 * @param w The world queried
-	 * @returns Current thread count limit value for island stepping
+	 * @return Current thread count limit value for island stepping
 	 * @see #setStepIslandsProcessingMaxThreadCount(int)
 	 */
 	@Deprecated
