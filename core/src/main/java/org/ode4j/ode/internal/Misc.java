@@ -196,7 +196,7 @@ public class Misc extends Common {
 	                result = ((r & 0xFFFFL) * un) >> 16;
 	            } else {
 	                //result = (int)(((duint64)r * un) >> 32);
-	            	result = (int)(((long)r * un) >> 32);
+	            	result = (int)((r * un) >> 32);
 		        }
 		    }
 		}

@@ -212,7 +212,9 @@ public final class DxWorldProcessMemArena {
 
         BlockPointer pArenaBegin = arena.m_pArenaBegin;
         //TODO TZ couldn get this to work easily...
-        //arena.m_pArenaMemMgr.m_fnFree.run(pArenaBegin, arenasize);
+        if (false) {
+        	arena.m_pArenaMemMgr.m_fnFree.run(pArenaBegin, arenasize);
+        }
     }
 
 
@@ -259,7 +261,12 @@ public final class DxWorldProcessMemArena {
      * Reminder function. At the place where it is called, something needs to 
      * be implemented with respect to ProcessMemManagement.
      */
-    public final static void dummy() {
+    public final void dummy() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public static final void dummyStatic() {
         // TODO Auto-generated method stub
 
     }

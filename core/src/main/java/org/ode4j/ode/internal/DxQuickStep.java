@@ -86,8 +86,9 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	
 	//#define dMIN(A,B)  ((A)>(B) ? (B) : (A))
 	//#define dMAX(A,B)  ((B)>(A) ? (B) : (A))
-	private static final int dMIN(int A, int B) { return ((A)>(B) ? (B) : (A)); }
-	private static final int dMAX(int A, int B) { return ((B)>(A) ? (B) : (A)); }
+	//TZ not used...
+	//private static final int dMIN(int A, int B) { return ((A)>(B) ? (B) : (A)); }
+	//private static final int dMAX(int A, int B) { return ((B)>(A) ? (B) : (A)); }
 
 	//***************************************************************************
 	// configuration
@@ -469,25 +470,26 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	// Single threaded versionto be removed later
 	//#if defined(WARM_STARTING) || defined(CHECK_VELOCITY_OBEYS_CONSTRAINT)
-	private static void _multiply_J (int m, final double[] J, final int[]jb,
-			final double[] in, final double[] out)
-	{
-		int J_ofs = 0;//final double[] J_ptr = J;
-		for (int i=0; i<m; i++) {
-			int b1 = jb[i*2];
-			int b2 = jb[i*2+1];
-			double sum = 0;
-			int in_ofs = b1*6; //double[] in_ptr = in + b1*6;
-			for (int j=0; j<6; j++) sum += J[j + J_ofs] * in[j + in_ofs];//J_ptr[j]*in_ptr[j];
-			J_ofs += 6;//J_ptr += 6;
-			if (b2 != -1) {
-				in_ofs = b2*6;//in_ptr = in + b2*6;
-				for (int j=0; j<6; j++) sum += J[j + J_ofs] * in[j + in_ofs];//J_ptr[j] * in_ptr[j];
-			}
-			J_ofs += 6;//J_ptr += 6;
-			out[i] = sum;
-		}
-	}
+	//TZ: not used...
+//	private static void _multiply_J (int m, final double[] J, final int[]jb,
+//			final double[] in, final double[] out)
+//	{
+//		int J_ofs = 0;//final double[] J_ptr = J;
+//		for (int i=0; i<m; i++) {
+//			int b1 = jb[i*2];
+//			int b2 = jb[i*2+1];
+//			double sum = 0;
+//			int in_ofs = b1*6; //double[] in_ptr = in + b1*6;
+//			for (int j=0; j<6; j++) sum += J[j + J_ofs] * in[j + in_ofs];//J_ptr[j]*in_ptr[j];
+//			J_ofs += 6;//J_ptr += 6;
+//			if (b2 != -1) {
+//				in_ofs = b2*6;//in_ptr = in + b2*6;
+//				for (int j=0; j<6; j++) sum += J[j + J_ofs] * in[j + in_ofs];//J_ptr[j] * in_ptr[j];
+//			}
+//			J_ofs += 6;//J_ptr += 6;
+//			out[i] = sum;
+//		}
+//	}
 	//#endif
 
 	// compute out = (J*inv(M)*J' + cfm)*in.
@@ -963,7 +965,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	    double[] invI = memarena.AllocateArrayDReal(nb*3*4);//new double[3*4*nb];//dRealAllocaArray (invI,3*4*nb);
 	    //dJointWithInfo1[] const jointinfos = memarena.AllocateArray<dJointWithInfo1>(_nj);
-	    DxWorldProcessMemArena.dummy();
+	    memarena.dummy();
 	    DJointWithInfo1[] jointinfos = new DJointWithInfo1[_nj];
 	    //TZ: init TODO is this necessary?
 //	    for (int i = 0; i < jointinfos.length; i++) {

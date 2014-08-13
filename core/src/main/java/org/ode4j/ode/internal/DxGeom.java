@@ -168,7 +168,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	private DxGeom _prev = null;
 	//dxGeom tome;	// linked list backpointer
     private DxGeom _next_ex;	// next geom in extra linked list of geoms (for higher level structures)
-    private DxGeom _tome_ex;	// extra linked list backpointer (for higher level structures)
+    //private DxGeom _tome_ex;	// extra linked list backpointer (for higher level structures)
 	DxSpace parent_space;// the space this geom is contained in, 0 if none
 	int _sapIdxDirtyEx; // TZ: Used by SAP-Space.
 	int _sapIdxGeomEx; // TZ: Used by SAP-Space.
@@ -443,7 +443,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		_next = null;
 		_prev = null;//tome = null;
 		_next_ex = null;
-		_tome_ex = null;
+		//_tome_ex = null;
 		parent_space = null;
 		_aabb.setZero();//dSetZero (_aabb.v,6);
 		category_bits = ~0;

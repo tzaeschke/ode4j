@@ -46,7 +46,8 @@ public class DxUtil {
 	public static final BlockPointer NULL_BP = new BlockPointer(new DxWorldProcessMemArena(), -1);
 	
     /*extern */
-    static final DxWorldProcessMemoryManager g_WorldProcessMallocMemoryManager = 
+    @SuppressWarnings("deprecation")
+	static final DxWorldProcessMemoryManager g_WorldProcessMallocMemoryManager = 
         new DxWorldProcessMemoryManager(
         		DWorld.DWorldStepMemoryFunctionsInfo.alloc_block,
         		DWorld.DWorldStepMemoryFunctionsInfo.shrink_block,

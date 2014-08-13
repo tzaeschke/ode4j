@@ -110,6 +110,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 
     //****************************************************************************
 	// world
+	@SuppressWarnings("deprecation")
 	private DxWorld() {
 		//private
 		super();
@@ -379,7 +380,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	    return result;
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "static-access" })
 	boolean dWorldSetStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs)
 	{
 	    dUASSERT (memfuncs==null || memfuncs.struct_size >= DxUtil.sizeof(memfuncs), "Bad memory functions info");
@@ -1063,6 +1064,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	    dxThreadingBase.AssignThreadingImpl(functions_info, threading_impl);
 	}
 
+	@SuppressWarnings("deprecation")
 	public int GetThreadingIslandsMaxThreadsCount(RefInt out_active_thread_count_ptr/*=NULL*/)
 	{
 	    int active_thread_count = dxThreadingBase.RetrieveThreadingThreadCount();

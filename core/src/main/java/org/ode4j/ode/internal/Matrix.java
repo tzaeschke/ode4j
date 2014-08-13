@@ -728,7 +728,7 @@ public class Matrix extends FastDot {
 		double[] Acopy;
 		dAASSERT(n > 0);
 		int nskip = dPAD(n);
-		DxWorldProcessMemArena.dummy();//tmpbuf
+		DxWorldProcessMemArena.dummyStatic();//tmpbuf
 		Acopy = new double[nskip * n]; // TZ (double*) ALLOCA (nskip*n *
 										// sizeof(double));
 		//memcpy(Acopy, A, nskip * n);// * sizeof(double));
@@ -815,7 +815,7 @@ public class Matrix extends FastDot {
 
 		if (n < 2)
 			return;
-		DxWorldProcessMemArena.dummy();
+		DxWorldProcessMemArena.dummyStatic();
 		double[] W1 = new double[n]; // (double*) ALLOCA (n*sizeof(double));
 		double[] W2 = new double[n]; // (double*) ALLOCA (n*sizeof(double));
 
@@ -932,7 +932,7 @@ public class Matrix extends FastDot {
 		if (r == n2 - 1) {
 			return; // deleting last row/col is easy
 		} else {
-		DxWorldProcessMemArena.dummy();
+		DxWorldProcessMemArena.dummyStatic();
 //		    int LDLTAddTL_size = _dEstimateLDLTAddTLTmpbufSize(nskip);
 //		    dIASSERT(LDLTAddTL_size % 8 /*sizeof(dReal)*/ == 0);
 //		    double[] tmp = tmpbuf!=null ? tmpbuf : new double[LDLTAddTL_size + n2];

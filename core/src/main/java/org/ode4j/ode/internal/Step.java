@@ -74,7 +74,8 @@ dmaxcallcountestimate_fn_t {
 
 	//#define dMIN(A,B)  ((A)>(B) ? (B) : (A))
 	//#define dMAX(A,B)  ((B)>(A) ? (B) : (A))
-	private static final int dMIN(int A, int B) { return ((A)>(B) ? (B) : (A)); }
+	//TX: not used
+	//private static final int dMIN(int A, int B) { return ((A)>(B) ? (B) : (A)); }
 	private static final int dMAX(int A, int B) { return ((B)>(A) ? (B) : (A)); }
 
 
@@ -296,32 +297,33 @@ dmaxcallcountestimate_fn_t {
 
 	// this assumes the 4th and 8th rows of B and C are zero.
 
-	private static void Multiply2_p8r (double[] A, int APos,
-			double[] B, int BPos, double[] C, int CPos,
-			int p, int r, int Askip)
-	{
-		dIASSERT (p>0 && r>0);
-		//		dAASSERT(A, B, C);
-		final int Askip_munus_r = Askip - r;
-		int aa = APos;//dReal *aa = A;
-		int bb = BPos;//const dReal *bb = B;
-		for (int i = p; i != 0; --i) {
-			int cc = CPos;//const dReal *cc = C;
-			for (int j = r; j != 0; --j) {
-				double sum;
-				sum  = B[bb] * C[cc]; //bb[0]*cc[0];
-				sum += B[bb+1] * C[cc+1]; //sum += bb[1]*cc[1];
-				sum += B[bb+2] * C[cc+2]; //sum += bb[2]*cc[2];
-				sum += B[bb+4] * C[cc+4]; //sum += bb[4]*cc[4];
-				sum += B[bb+5] * C[cc+5]; //sum += bb[5]*cc[5];
-				sum += B[bb+6] * C[cc+6]; //sum += bb[6]*cc[6];
-				A[aa++] = sum;//*(A++) = sum; 
-				cc +=8;//cc += 8;
-			}
-			bb += 8;
-			aa += Askip_munus_r;
-		}
-	}
+	//TZ: not used...
+//	private static void Multiply2_p8r (double[] A, int APos,
+//			double[] B, int BPos, double[] C, int CPos,
+//			int p, int r, int Askip)
+//	{
+//		dIASSERT (p>0 && r>0);
+//		//		dAASSERT(A, B, C);
+//		final int Askip_munus_r = Askip - r;
+//		int aa = APos;//dReal *aa = A;
+//		int bb = BPos;//const dReal *bb = B;
+//		for (int i = p; i != 0; --i) {
+//			int cc = CPos;//const dReal *cc = C;
+//			for (int j = r; j != 0; --j) {
+//				double sum;
+//				sum  = B[bb] * C[cc]; //bb[0]*cc[0];
+//				sum += B[bb+1] * C[cc+1]; //sum += bb[1]*cc[1];
+//				sum += B[bb+2] * C[cc+2]; //sum += bb[2]*cc[2];
+//				sum += B[bb+4] * C[cc+4]; //sum += bb[4]*cc[4];
+//				sum += B[bb+5] * C[cc+5]; //sum += bb[5]*cc[5];
+//				sum += B[bb+6] * C[cc+6]; //sum += bb[6]*cc[6];
+//				A[aa++] = sum;//*(A++) = sum; 
+//				cc +=8;//cc += 8;
+//			}
+//			bb += 8;
+//			aa += Askip_munus_r;
+//		}
+//	}
 
 
 	// this assumes the 4th and 8th rows of B and C are zero.
@@ -445,12 +447,12 @@ dmaxcallcountestimate_fn_t {
 		int nb = callContext.m_islandBodiesCount();
 		int _nj = callContext.m_islandJointsCount();
 
-		DxWorldProcessMemArena.dummy();
+		memarena.dummy();
 		double[] invI = new double[3*4*nb];//memarena.AllocateArray<dReal> (3*4*(size_t)nb);
 		// Reserve twice as much memory and start from the middle so that regardless of 
 		// what direction the array grows to there would be sufficient room available.
 		final int ji_reserve_count = 2 * _nj;
-		DxWorldProcessMemArena.dummy();
+		memarena.dummy();
 		dJointWithInfo1[] jointinfosA = new dJointWithInfo1[ji_reserve_count];//memarena.AllocateArray<dJointWithInfo1>(ji_reserve_count);
 		//TZ: init
 		for (int i = 0; i < jointinfosA.length; i++) {
@@ -465,19 +467,19 @@ dmaxcallcountestimate_fn_t {
 
 		//dxStepperStage1CallContext stage1CallContext = (dxStepperStage1CallContext *)memarena->AllocateBlock(sizeof(dxStepperStage1CallContext));
 		//new(stage1CallContext) dxStepperStage1CallContext(callContext, stagesMemArenaState, invI, jointinfos);
-		DxWorldProcessMemArena.dummy();
+		memarena.dummy();
 		dxStepperStage1CallContext stage1CallContext = new dxStepperStage1CallContext(callContext, 
 				stagesMemArenaState, invI, jointinfosA, jointinfosOfs);
 
 		//dxStepperStage0BodiesCallContext *stage0BodiesCallContext = (dxStepperStage0BodiesCallContext *)memarena->AllocateBlock(sizeof(dxStepperStage0BodiesCallContext));
 		//new(stage0BodiesCallContext) dxStepperStage0BodiesCallContext(callContext, invI);
-		DxWorldProcessMemArena.dummy();
+		memarena.dummy();
 		dxStepperStage0BodiesCallContext stage0BodiesCallContext = 
 				new dxStepperStage0BodiesCallContext(callContext, invI);
 
 		//dxStepperStage0JointsCallContext *stage0JointsCallContext = (dxStepperStage0JointsCallContext *)memarena->AllocateBlock(sizeof(dxStepperStage0JointsCallContext));
 		//new(stage0JointsCallContext) dxStepperStage0JointsCallContext(callContext, jointinfos, &stage1CallContext->m_stage0Outputs);
-		DxWorldProcessMemArena.dummy();
+		memarena.dummy();
 		dxStepperStage0JointsCallContext stage0JointsCallContext = 
 				new dxStepperStage0JointsCallContext(callContext, jointinfosA, jointinfosOfs, 
 						stage1CallContext.m_stage0Outputs);
@@ -923,10 +925,10 @@ dmaxcallcountestimate_fn_t {
 			stage1CallContext = null; // WARNING! _stage1CallContext is not valid after this point!
 			dIVERIFY(stage1CallContext == null); // To suppress compiler warnings about unused variable assignment
 
-			int _nj = callContext.m_islandJointsCount();
-			final int ji_reserve_count = 2 * _nj;
+			//int _nj = callContext.m_islandJointsCount();
+			//final int ji_reserve_count = 2 * _nj;
 			//memarena.ShrinkArray<dJointWithInfo1>(jointiinfos, ji_reserve_count, ji_end);
-			DxWorldProcessMemArena.dummy();
+			memarena.dummy();
 		}
 
 		DxWorld world = callContext.m_world();
@@ -1275,7 +1277,7 @@ dmaxcallcountestimate_fn_t {
 				DxJoint joint = jointinfosA[jointinfosP+ji].joint;
 
 				DxBody jb0 = joint.node[0].body;
-				if (true || jb0 != null) { // -- always true
+				if (true) {// || jb0 != null) { // -- always true
 					double body_invMass0 = jb0.invMass;
 					int body_invI0 = jb0.tag*12; //invI + (int)jb0.tag*12;
 					for (int j=infom; j>0;) {
@@ -1408,7 +1410,7 @@ dmaxcallcountestimate_fn_t {
 				DxJoint joint = jointinfosA[jointinfosP+ji].joint;
 
 				DxBody jb0 = joint.node[0].body;
-				if (true || jb0 != null) { // -- always true
+				if (true) {// || jb0 != null) { // -- always true
 					// compute diagonal block of A
 					MultiplyAdd2_p8r (ArowA, ArowP + ofsi, JinvMrowA, JinvMrowP, 
 							J, 2*8*ofsi, infom, infom, mskip);
@@ -1481,7 +1483,7 @@ dmaxcallcountestimate_fn_t {
 				DxJoint joint = jointinfosA[jointinfosP+ji].joint;
 
 				DxBody jb0 = joint.node[0].body;
-				if (true || jb0 != null) { // -- always true
+				if (true) {// || jb0 != null) { // -- always true
 					MultiplySub0_p81 (rhscurrA, rhscurrP, JrowA, JrowP, rhs_tmp, 8*jb0.tag, infom);
 				}
 
@@ -1541,7 +1543,7 @@ dmaxcallcountestimate_fn_t {
 
 		if (m > 0) {
 			//lambda = memarena->AllocateArray<dReal>(m);
-			DxWorldProcessMemArena.dummy();
+			memarena.dummy();
 			lambda = new double[m];
 
 

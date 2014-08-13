@@ -130,7 +130,7 @@ class ThreadingTemplates {
 			m_Mutex_array = new tThreadMutex[size];
 		}
 		//~dxtemplateMutexGroup() {}
-		private void DESTRUCTOR() {};
+		//private void DESTRUCTOR() {};
 
 		//public:
 		//public static dxtemplateMutexGroup<tThreadMutex>[] AllocateInstance(dmutexindex_t Mutex_count);

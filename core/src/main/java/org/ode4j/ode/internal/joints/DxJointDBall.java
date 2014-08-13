@@ -293,6 +293,8 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 		case dParamERP:
 			erp = value;
 			break;
+		default:
+			//ignore
 		}
 	}
 

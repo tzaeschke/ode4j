@@ -608,6 +608,8 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
             case dParamERP:
                 erp = value;
                 break;
+    		default:
+    			//ignore
         }
     }
 
