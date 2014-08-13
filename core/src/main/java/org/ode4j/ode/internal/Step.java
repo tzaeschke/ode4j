@@ -24,7 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import static org.ode4j.ode.internal.Matrix.dSetValue;
 import static org.ode4j.ode.DMatrix.dSetValue;
 import static org.ode4j.ode.DMatrix.dSetZero;
 import static org.ode4j.ode.OdeConstants.dInfinity;
@@ -39,6 +38,7 @@ import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dIVERIFY;
 import static org.ode4j.ode.internal.Common.dPAD;
 import static org.ode4j.ode.internal.Common.dRecip;
+import static org.ode4j.ode.internal.Matrix.dSetValue;
 import static org.ode4j.ode.internal.Timer.dTimerEnd;
 import static org.ode4j.ode.internal.Timer.dTimerNow;
 import static org.ode4j.ode.internal.Timer.dTimerReport;
@@ -47,7 +47,6 @@ import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 import static org.ode4j.ode.threading.ThreadingUtils.ThrsafeExchange;
 import static org.ode4j.ode.threading.ThreadingUtils.ThrsafeIncrementIntUpToLimit;
 
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ode4j.math.DMatrix3;
@@ -437,7 +436,7 @@ dmaxcallcountestimate_fn_t {
 	//****************************************************************************
 
 	/*extern */
-	void dxStepIsland(final DxStepperProcessingCallContext callContext)
+	private void dxStepIsland(final DxStepperProcessingCallContext callContext)
 	{
 		IFTIMING_dTimerStart("preprocessing");
 
@@ -646,9 +645,9 @@ dmaxcallcountestimate_fn_t {
 							dMultiply0_333(Itild,I,itInv);
 							// Subtract an identity matrix
 							//Itild[0]-=1; Itild[5]-=1; Itild[10]-=1;
-							Itild.set00(-1);
-							Itild.set11(-1);
-							Itild.set22(-1);
+							Itild.sub(0, 0, 1);
+							Itild.sub(1, 1, 1);
+							Itild.sub(2, 2, 1);
 
 							// This new inertia matrix rotates the 
 							// momentum to get a new set of torques
@@ -688,7 +687,7 @@ dmaxcallcountestimate_fn_t {
 		}
 	};
 
-	static 
+	private static 
 	void dxStepIsland_Stage0_Joints(dxStepperStage0JointsCallContext callContext)
 	{
 		DxJoint[] _jointA = callContext.m_stepperCallContext.m_islandJointsStartA();
@@ -1137,7 +1136,7 @@ dmaxcallcountestimate_fn_t {
 				//              Jinfo.findex = findex + ofsi;
 				Jinfo.setAllP(ofsi); //TZ
 
-				//Jinfo.c = rhs + ofsi;  //TODO !!!!!!!
+				//Jinfo.c = rhs + ofsi; 
 				dSetZero(rhs, ofsi, infom);//dSetZero (rhs, Jinfo.c, infom);
 				//Jinfo.cfm = cfm + ofsi;
 				dSetValue(cfm, ofsi, infom, world.global_cfm);//dSetValue(Jinfo.cfm, infom, world.global_cfm);

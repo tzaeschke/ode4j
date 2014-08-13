@@ -228,6 +228,22 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			_hiA = hi;
 			_findexA = findex;
 		}
+		@Override
+		public String toString() {
+			System.out.println("rowskip : " + rowskip());
+			System.out.println("Jxxp    : " + J1lp + "/" + J1ap + "  /  " + J2lp + "/" + J2ap);
+			for (int i = 0; i < _J.length; i+=8) {
+				System.out.println("_J      : " + 
+						_J[i+0]+ " " + _J[i+1]+ " " + _J[i+2]+ " " + _J[i+3]+ " / " + 
+						_J[i+4]+ " " + _J[i+5]+ " " + _J[i+6]+ " " + _J[i+7]);
+			}
+			System.out.println("_cA     : " + Arrays.toString(_cA));
+			System.out.println("_cfmA   : " + Arrays.toString(_cfmA));
+			System.out.println("_loA    : " + Arrays.toString(_loA));
+			System.out.println("_hiA    : " + Arrays.toString(_hiA));
+			System.out.println("_findexA: " + Arrays.toString(_findexA));
+			return super.toString();
+		}
 	}
 
     // info returned by getSureMaxInfo function. 
