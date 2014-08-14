@@ -516,9 +516,10 @@ class ThreadingTemplates {
 		public boolean IsJobListReadyForShutdown() { return m_job_list.get() == null; }
 
 		//private:
-		private final Ref<dxThreadedJobInfo>       m_job_list = new Ref<>();
+		private final Ref<dxThreadedJobInfo>       m_job_list = new Ref<dxThreadedJobInfo>();
 		//private volatile atomicptr_t    m_info_pool; // dxThreadedJobInfo *
-		private final AtomicReference<dxThreadedJobInfo> m_info_pool = new AtomicReference<>(); // dxThreadedJobInfo *
+		private final AtomicReference<dxThreadedJobInfo> m_info_pool = 
+				new AtomicReference<dxThreadedJobInfo>(); // dxThreadedJobInfo *
 		private tThreadMutex            m_pool_access_lock;
 		private tThreadMutex            m_list_access_lock;
 		private tThreadLull             m_info_wait_lull;
@@ -718,7 +719,8 @@ class ThreadingTemplates {
 
 			if (job_list_head != null)
 			{
-				job_list_head.m_prev_job_next_ptr = new Ref<>(job_instance.m_next_job);
+				job_list_head.m_prev_job_next_ptr = 
+						new Ref<dxThreadedJobInfo>(job_instance.m_next_job);
 			}
 
 			job_instance.m_prev_job_next_ptr = m_job_list;

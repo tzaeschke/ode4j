@@ -102,7 +102,8 @@ public class DxWorldProcessContext {
     //private DxWorldProcessMemArena m_pmaStepperArena;
     DxWorldProcessMemArena  m_pmaIslandsArena;
     //volatile DxWorldProcessMemArena  m_pmaStepperArenas;
-    final AtomicReference<DxWorldProcessMemArena>  m_pmaStepperArenas = new AtomicReference<>();
+    final AtomicReference<DxWorldProcessMemArena>  m_pmaStepperArenas = 
+    		new AtomicReference<DxWorldProcessMemArena>();
     DxWorld                 m_pswObjectsAllocWorld;
     DMutexGroup           m_pmgStepperMutexGroup;
     DCallWait             m_pcwIslandsSteppingWait;

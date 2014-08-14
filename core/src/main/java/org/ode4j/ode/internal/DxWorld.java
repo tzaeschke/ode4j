@@ -819,7 +819,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 				break;
 			}
 
-			Ref<DCallReleasee> groupReleasee = new Ref<>();
+			Ref<DCallReleasee> groupReleasee = new Ref<DCallReleasee>();
 			// First post a group call with dependency count set to number of expected threads
 			threading().PostThreadedCall(summaryFault, groupReleasee, islandsAllowedThreadCount, null, 
 					pcwGroupCallWait, 

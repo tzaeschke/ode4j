@@ -185,7 +185,7 @@ public class DxIslandsProcessingCallContext implements CallContext {
                     // Restore saved stepper memory arena position
                     stepperCallContext.RestoreSavedMemArenaStateForStepper();
 
-                    Ref<DCallReleasee> nextSearchReleasee = new Ref<>();
+                    Ref<DCallReleasee> nextSearchReleasee = new Ref<DCallReleasee>();
 
                     // Summary fault flag may be omitted as any failures will automatically propagate to dependent releasee (i.e. to m_groupReleasee)
                     m_world.threading().PostThreadedCallForUnawareReleasee(null, nextSearchReleasee, 1, m_groupReleasee, null, 

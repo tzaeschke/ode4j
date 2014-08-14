@@ -75,7 +75,7 @@ public class DxThreadingBase {
 	    //public 
 	    public DMutexGroup AllocMutexGroup(dxProcessContextMutex /*dmutexindex_t*/ Mutex_count, String[] Mutex_names_ptr/*=NULL*/)
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        return functions.alloc_mutex_group.run(impl.get(), Mutex_count, Mutex_names_ptr);
 	    }
@@ -83,7 +83,7 @@ public class DxThreadingBase {
 	    //public 
 	    public void FreeMutexGroup(DMutexGroup mutex_group) 
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.free_mutex_group.run(impl.get(), mutex_group);
 	    }
@@ -93,7 +93,7 @@ public class DxThreadingBase {
 	    		//int /*dmutexindex_t*/ mutex_index)
 	    		dxProcessContextMutex mutex_index)
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.lock_group_mutex.run(impl.get(), mutex_group, mutex_index);
 	    }
@@ -109,28 +109,28 @@ public class DxThreadingBase {
 	    		//int /*dmutexindex_t*/ mutex_index)
 	    		dxProcessContextMutex mutex_index)
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.unlock_group_mutex.run(impl.get(), mutex_group, mutex_index);
 	    }
 
 	    public DCallWait AllocThreadedCallWait() 
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        return functions.alloc_call_wait.run(impl.get());
 	    }
 
 	    void ResetThreadedCallWait(DCallWait call_wait)
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.reset_call_wait.run(impl.get(), call_wait);
 	    }
 
 	    public void FreeThreadedCallWait(DCallWait call_wait)
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.free_call_wait.run(impl.get(), call_wait);
 	    }
@@ -152,7 +152,7 @@ public class DxThreadingBase {
 		        int /*dcallindex_t*/ instance_index, 
 		        String call_name/*=NULL*/)
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.post_call.run(impl.get(), out_summary_fault, out_post_releasee, dependencies_count, 
 	        		dependent_releasee, call_wait, call_func, call_context, instance_index, 
@@ -162,7 +162,7 @@ public class DxThreadingBase {
 	    public void AlterThreadedCallDependenciesCount(DCallReleasee target_releasee, 
 	        int /*ddependencychange_t*/ dependencies_count_change) 
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.alter_call_dependencies_count.run(impl.get(), target_releasee, dependencies_count_change);
 	    }
@@ -174,7 +174,7 @@ public class DxThreadingBase {
 		        DCallWait call_wait, DThreadedWaitTime timeout_time_ptr/*=NULL*/, 
 		        String wait_name/*=NULL*/) 
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.wait_call.run(impl.get(), out_wait_status, call_wait, timeout_time_ptr, wait_name);
 	        functions.reset_call_wait.run(impl.get(), call_wait);
@@ -187,21 +187,21 @@ public class DxThreadingBase {
 		        DCallWait call_wait, DThreadedWaitTime timeout_time_ptr/*=NULL*/, 
 		        String wait_name/*=NULL*/) 
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        functions.wait_call.run(impl.get(), out_wait_status, call_wait, timeout_time_ptr, wait_name);
 	    }
 
 	    public int RetrieveThreadingThreadCount() 
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        return functions.retrieve_thread_count.run(impl.get());
 	    }
 
 	    public boolean PreallocateResourcesForThreadedCalls(int max_simultaneous_calls_estimate)
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	        DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 	        return functions.preallocate_resources_for_calls.run(impl.get(), max_simultaneous_calls_estimate);// != 0;
 	    }
@@ -245,7 +245,7 @@ public class DxThreadingBase {
 	    		dThreadedCallFunction call_func, CallContext call_context, 
 	    		String call_name/*=NULL*/)
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	    	DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 
 	    	for (int member_index = 0; member_index != member_count; ++member_index) {
@@ -273,7 +273,7 @@ public class DxThreadingBase {
 	    		int /*dcallindex_t*/ instance_index, 
 	    		String call_name/*=NULL*/)
 	    {
-	        Ref<DThreadingImplementation> impl = new Ref<>();
+	        Ref<DThreadingImplementation> impl = new Ref<DThreadingImplementation>();
 	    	DxThreadingFunctionsInfo functions = FindThreadingImpl(impl);
 
 	    	functions.alter_call_dependencies_count.run(impl.get(), dependent_releasee, 1);

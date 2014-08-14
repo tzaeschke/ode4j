@@ -1003,7 +1003,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        int bodyThreads = allowedThreads;
 	        int jointThreads = 1;
 
-	        Ref<DCallReleasee> stage1CallReleasee = new Ref<>();
+	        Ref<DCallReleasee> stage1CallReleasee = new Ref<DCallReleasee>();
 	        world.threading().PostThreadedCallForUnawareReleasee(null, stage1CallReleasee, 
 	        		bodyThreads + jointThreads, callContext.m_finalReleasee(), 
 	        		null, dxQuickStepIsland_Stage1_Callback, stage1CallContext, 0, 
@@ -1349,16 +1349,16 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			}
 			else
 			{
-				final Ref<DCallReleasee> stage3CallReleasee = new Ref<>();
+				final Ref<DCallReleasee> stage3CallReleasee = new Ref<DCallReleasee>();
 				world.threading().PostThreadedCallForUnawareReleasee(null, stage3CallReleasee, 1, callContext.m_finalReleasee(), 
 						null, dxQuickStepIsland_Stage3_Callback, stage3CallContext, 0, "QuickStepIsland Stage3");
 
-				final Ref<DCallReleasee> stage2bSyncReleasee = new Ref<>();
+				final Ref<DCallReleasee> stage2bSyncReleasee = new Ref<DCallReleasee>();
 				world.threading().PostThreadedCall(
 						null, stage2bSyncReleasee, 1, stage3CallReleasee.get(), 
 						null, dxQuickStepIsland_Stage2bSync_Callback, stage2CallContext, 0, "QuickStepIsland Stage2b Sync");
 
-				final Ref<DCallReleasee> stage2aSyncReleasee = new Ref<>();
+				final Ref<DCallReleasee> stage2aSyncReleasee = new Ref<DCallReleasee>();
 				world.threading().PostThreadedCall(
 						null, stage2aSyncReleasee, allowedThreads, stage2bSyncReleasee.get(), 
 						null, dxQuickStepIsland_Stage2aSync_Callback, stage2CallContext, 0, "QuickStepIsland Stage2a Sync");
