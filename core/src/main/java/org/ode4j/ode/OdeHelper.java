@@ -196,7 +196,7 @@ public abstract class OdeHelper {
 	 * @param group set to 0 to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
 	 */
-	public static DDoubleBallJoint createDBall (DWorld world, DJointGroup group) {
+	public static DDoubleBallJoint createDBallJoint (DWorld world, DJointGroup group) {
 		return ODE.dJointCreateDBall(world, group);
 	}
 

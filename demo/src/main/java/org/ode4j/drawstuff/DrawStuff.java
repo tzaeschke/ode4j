@@ -222,6 +222,11 @@ public class DrawStuff {
 	public static void dsSetViewpoint (float xyz[], float hpr[]) {
 		get().dsSetViewpoint(xyz, hpr);
 	}
+	public static void dsSetViewpoint (double xyz[], double hpr[]) {
+		float[] xyzF = {(float) xyz[0], (float) xyz[1], (float) xyz[2]};
+		float[] hprF = {(float) hpr[0], (float) hpr[1], (float) hpr[2]};
+		get().dsSetViewpoint(xyzF, hprF);
+	}
 
 
 	/**

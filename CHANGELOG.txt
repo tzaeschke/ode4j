@@ -2,10 +2,14 @@
 =====
 Migration to 0.13.1
 
+New:
+-- 3 new joints: DoubleBall, DoubleHinge, Transmission
+-- Multithreading (well...)
+
 Done:
 -- main code
 -- tests 
--- demos up to demo_collision/convex_cd
+-- demos up to demo_dball
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 -- Fixed bug in DObject --> destroying joints might have crashed
 

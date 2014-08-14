@@ -266,18 +266,28 @@ class DemoCrash extends dsFunctions {
 	}
 
 
-	private void resetSimulation()
+	private void shutdownSimulation()
 	{
-		int i;
-		i = 0;
 		// destroy world if it exists
 		if (bodies!=0)
 		{
+			//TODO
+//		    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
+//		    pool.freeThreadPool();
+//		    world.setStepThreadingImplementation(null, null);
+//		    threading.free();
+
 			contactgroup.destroy ();
 			space.destroy ();
 			world.destroy ();
-		}
 
+	        bodies = 0;
+		}
+	}
+	
+	private void setupSimulation()
+	{
+		int i;
 		for (i = 0; i < 1000; i++)
 			wb_stepsdis[i] = 0;
 
@@ -296,6 +306,14 @@ class DemoCrash extends dsFunctions {
 		world.setCFM (1e-5);
 		world.setERP (0.8);
 		world.setQuickStepNumIterations (ITERS);
+
+		//TODO
+//	    DThreadingImplementation threading = OdeHelper.allocateMultiThreaded();
+//	    DThreadingThreadPool pool = OdeHelper.allocateThreadPool(4, 0, /*dAllocateFlagBasicData,*/ null);
+//	    pool.serveMultiThreadedImplementation(threading);
+//	    // dWorldSetStepIslandsProcessingMaxThreadCount(world, 1);
+//	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
+
 		OdeHelper.createPlane (space,0,0,1,0);
 
 		bodies = 0;
@@ -492,7 +510,8 @@ class DemoCrash extends dsFunctions {
 			doFast = !doFast;
 			break;
 		case 'r': case 'R':
-			resetSimulation();
+			shutdownSimulation();
+			setupSimulation();
 			break;
 		case '[':
 			cannon_angle += 0.1;
@@ -651,14 +670,12 @@ class DemoCrash extends dsFunctions {
 		boxes = 0;
 		spheres = 0;
 
-		resetSimulation();
+		setupSimulation();
 
 		// run simulation
 		dsSimulationLoop (args,352,288,this);
 
-		contactgroup.destroy();
-		space.destroy();
-		world.destroy();
+		shutdownSimulation();
 		OdeHelper.closeODE();
 	}
 
