@@ -72,10 +72,7 @@ import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.threading.DThreadingImplementation;
-import org.ode4j.ode.threading.DThreadingThreadPool;
 
-@SuppressWarnings("deprecation")
 class DemoBoxstack extends dsFunctions {
 
 	//<---- Convex Object

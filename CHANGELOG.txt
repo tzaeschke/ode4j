@@ -9,7 +9,7 @@ New:
 Done:
 -- main code
 -- tests 
--- demos up to demo_dball
+-- demos up to demo_friction
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 -- Fixed bug in DObject --> destroying joints might have crashed
 

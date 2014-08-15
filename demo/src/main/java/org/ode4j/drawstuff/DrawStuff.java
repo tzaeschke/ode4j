@@ -223,11 +223,16 @@ public class DrawStuff {
 		get().dsSetViewpoint(xyz, hpr);
 	}
 	public static void dsSetViewpoint (double xyz[], double hpr[]) {
-		float[] xyzF = {(float) xyz[0], (float) xyz[1], (float) xyz[2]};
-		float[] hprF = {(float) hpr[0], (float) hpr[1], (float) hpr[2]};
-		get().dsSetViewpoint(xyzF, hprF);
+		get().dsSetViewpoint(toFloat(xyz), toFloat(hpr));
 	}
 
+	private static float[] toFloat(double[] d) {
+		float[] ret = new float[d.length];
+		for (int i = 0; i < d.length; i++) {
+			ret[i] = (float) d[i];
+		}
+		return ret;
+	}
 
 	/**
 	 * Gets the viewpoint.
@@ -289,6 +294,9 @@ public class DrawStuff {
 	//DS_API 
 	public static  void dsSetColor (float red, float green, float blue) {
 		get().dsSetColor(red, green, blue);
+	}
+	public static  void dsSetColor (double red, double green, double blue) {
+		get().dsSetColor((float)red, (float)green, (float)blue);
 	}
 
 	/**
@@ -459,18 +467,19 @@ public class DrawStuff {
 	//DS_API 
 //	public static  void dsDrawTriangleD (final double pos[3], final double R[12],
 //		      final double *v0, final double *v1, final double *v2, int solid) {
-	/** @deprecated Not implemented */
-	public static void dsDrawTriangle (final double[] pos, final double[] R,
-			      final double[] v0, final double[] v1, final double[] v2, int solid) {
-		throw new UnsupportedOperationException();
-	}
+//	/** @deprecated Not implemented */
+//	public static void dsDrawTriangle (final double[] pos, final double[] R,
+//			      final double[] v0, final double[] v1, final double[] v2, int solid) {
+//		throw new UnsupportedOperationException();
+//	}
 
 	//DS_API 
 //	public static void dsDrawLineD (final double pos1[3], final double pos2[3]) {
-	/** @deprecated Not implemented */
-	public static void dsDrawLine (final double[] pos1, final double[] pos2) {
-		throw new UnsupportedOperationException();
-	}
+//	/** @deprecated Not implemented */
+//	public static void dsDrawLine (final double[] pos1, final double[] pos2) {
+//		dsDrawLine(pos1, pos2);
+//		throw new UnsupportedOperationException();
+//	}
 
 	//DS_API 
 //	public static  void dsDrawConvexD(final double pos[3], final double R[12],
@@ -479,15 +488,15 @@ public class DrawStuff {
 //			  double *_points,
 //			  unsigned int _pointcount,
 //			  unsigned int *_polygons) {
-	/** @deprecated Not implemented */
-	public static  void dsDrawConvex(final double[] pos, final double[] R,
-			  double[] _planes,
-			  int _planecount,
-			  double[] _points,
-			  int _pointcount,
-			  int[] _polygons) {
-		throw new UnsupportedOperationException();
-	}
+//	/** @deprecated Not implemented */
+//	public static  void dsDrawConvex(final double[] pos, final double[] R,
+//			  double[] _planes,
+//			  int _planecount,
+//			  double[] _points,
+//			  int _pointcount,
+//			  int[] _polygons) {
+//		throw new UnsupportedOperationException();
+//	}
 
 
 	/**
