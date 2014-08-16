@@ -24,9 +24,25 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DMisc.dRandReal;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.OdeConstants.dContactBounce;
+import static org.ode4j.ode.OdeConstants.dContactFDir1;
+import static org.ode4j.ode.OdeConstants.dContactMotion1;
+import static org.ode4j.ode.OdeConstants.dContactMotion2;
+import static org.ode4j.ode.OdeConstants.dContactMotionN;
+import static org.ode4j.ode.OdeMath.dPlaneSpace;
 
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -40,21 +56,19 @@ import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DGeomTransform;
-import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.DGeom.DNearCallback;
 
 
 /**
  * This demo shows how to use dContactMotionN in a lifting platform.
  */
-@SuppressWarnings("deprecation")
 public class DemoMotion extends dsFunctions {
 
 	// some constants
@@ -392,20 +406,6 @@ public class DemoMotion extends dsFunctions {
 		else if (g instanceof DCylinder) {
 			DCylinder cyl = (DCylinder) g;
 			dsDrawCylinder (pos,R,cyl.getLength(),cyl.getRadius());
-		}
-		else if (g instanceof DGeomTransform) {
-			DGeom g2 = ((DGeomTransform)g).getGeom ();
-			DVector3C pos2 = g2.getPosition ();
-			DMatrix3C R2 = g2.getRotation ();
-			DVector3 actual_pos = new DVector3();
-			DMatrix3 actual_R = new DMatrix3();
-			dMultiply0_331 (actual_pos,R,pos2);
-			//        actual_pos.v[0] += pos[0];
-			//        actual_pos.v[1] += pos[1];
-			//        actual_pos.v[2] += pos[2];
-			actual_pos.add(pos);
-			dMultiply0_333 (actual_R,R,R2);
-			drawGeom (g2,actual_pos,actual_R,false);
 		}
 		if (show_body) {
 			DBody body = g.getBody ();

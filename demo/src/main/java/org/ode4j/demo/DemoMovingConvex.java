@@ -261,7 +261,7 @@ public class DemoMovingConvex extends dsFunctions {
 				new_tmdata.destroy();
 
 				DVector3 mc = new DVector3( m.getC() );
-				System.out.println( "mass at " + mc );
+				//System.out.println( "mass at " + mc );
 				mc.scale( -1 );
 				obj[i].geom[0].setPosition( mc );
 				m.translate( mc );

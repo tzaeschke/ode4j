@@ -56,6 +56,7 @@ public interface DMass extends DMassC {
 	void setCylinderTotal (double total, int direction, double radius, double length);
 
 	void setBox (double density, double lx, double ly, double lz);
+	void setBox (double density, DVector3C lxyz);
 	void setBoxTotal (double total, double lx, double ly, double lz);
 	
 	void adjust (double newmass);

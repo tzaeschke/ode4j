@@ -661,6 +661,10 @@ public class DxMass implements DMass {
 	{ dMassSetBox (density,lx,ly,lz); }
 	
 	@Override
+	public void setBox (double density, DVector3C lxyz)
+	{ dMassSetBox (density, lxyz.get0(), lxyz.get1(), lxyz.get2()); }
+	
+	@Override
 	public void setBoxTotal (double total, double lx, double ly, double lz)
 	{ dMassSetBoxTotal (total,lx,ly,lz); }
 	

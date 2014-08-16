@@ -366,6 +366,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 		resetTriangleBuffer();
 		resetPlaneBuffer();
 		resetHeightBuffer();
+		super.DESTRUCTOR();
 	}
 
 	private void allocateTriangleBuffer(int numTri)

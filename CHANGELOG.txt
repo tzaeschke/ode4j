@@ -9,14 +9,16 @@ New:
 Done:
 -- main code
 -- tests 
--- demos up to demo_friction
+-- demos up to demo_moving_convex
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 -- Fixed bug in DObject --> destroying joints might have crashed
+-- Fixed bug: Calling destroy() on a space with a Heightfield cause hang. 
 
 Demos:
 - DemoBoxstack has MT disabled.
 
 Missing:
+-- demo_gyro2 explodes...
 -- Multithreading does not work
 -- Check further:
   -- DxWorldProcessMemArena.FreeMemArena --> Commented out

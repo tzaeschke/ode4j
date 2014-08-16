@@ -72,8 +72,7 @@ public class DemoGyroscopic extends dsFunctions {
 		}
 	};
 
-	private void nearCallback (Object data, DGeom o1, DGeom o2)
-	{
+	private void nearCallback (Object data, DGeom o1, DGeom o2) {
 		// for drawing the contact points
 		DMatrix3 RI = new DMatrix3();
 		RI.setIdentity ();
@@ -102,9 +101,11 @@ public class DemoGyroscopic extends dsFunctions {
 	// start simulation - set viewpoint
 
 	@Override
-	public void start()
-	{
+	public void start() {
 		dsSetViewpoint (xyz,hpr);
+		System.out.println ("Orange top approximates conservation of angular momentum");
+		System.out.println ("Green top uses conservation of angular velocity");
+		System.out.println ("---");
 		System.out.println ("SPACE to reset");
 		System.out.println ("A to tilt the tops.");
 		System.out.println ("T to toggle showing the contact points.");
@@ -115,8 +116,7 @@ public class DemoGyroscopic extends dsFunctions {
 	// called when a key pressed
 
 	@Override
-	public void command (char cmd)
-	{
+	public void command (char cmd) {
 		cmd = Character.toLowerCase (cmd);
 		if (cmd == ' ')
 		{
@@ -135,8 +135,7 @@ public class DemoGyroscopic extends dsFunctions {
 
 	// simulation loop
 
-	private void simLoop (boolean pause)
-	{
+	private void simLoop (boolean pause) {
 		dsSetColor (0,0,2);
 		space.collide(0,nearCallback);
 		if (!pause) {
@@ -168,8 +167,7 @@ public class DemoGyroscopic extends dsFunctions {
 	}
 
 
-	private void reset()
-	{
+	private void reset() {
 		DMatrix3 R = new DMatrix3();
 		R.setIdentity();
 
@@ -179,15 +177,14 @@ public class DemoGyroscopic extends dsFunctions {
 		top1.setPosition(0.8f, -2, 2);
 		top2.setPosition(0.8f, 2, 2);
 
-		top1.setAngularVel(0,0,5);
-		top2.setAngularVel(0,0,5);
+		top1.setAngularVel(1,0,7);
+		top2.setAngularVel(1,0,7);
 
 		top1.setLinearVel(0,0.2f,0);
 		top2.setLinearVel(0,0.2f,0);
 	}
 
-	private void tilt()
-	{
+	private void tilt() {
 		top1.addTorque(0, 10, 0);
 		top2.addTorque(0, 10, 0);
 	}
@@ -200,8 +197,7 @@ public class DemoGyroscopic extends dsFunctions {
 
 	}
 
-	private void demo(String[] args)
-	{
+	private void demo(String[] args) {
 		// create world
 		OdeHelper.initODE2(0);
 		world = OdeHelper.createWorld();

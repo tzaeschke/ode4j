@@ -594,6 +594,7 @@ class DemoBoxstack extends dsFunctions {
 		//memset (obj,0);//,sizeof(obj));
 		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
 
+		//TODO
 //	    DThreadingImplementation threading = OdeHelper.allocateMultiThreaded();
 //	    DThreadingThreadPool pool = OdeHelper.allocateThreadPool(4, 0, /*dAllocateFlagBasicData,*/ null);
 //	    pool.serveMultiThreadedImplementation(threading);

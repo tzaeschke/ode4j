@@ -133,8 +133,17 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	private static void createMainWindow (int _width, int _height)
 	{
 		// create Window of size 300x300
-		Display.setLocation((Display.getDisplayMode().getWidth() - _width) / 2,
-				(Display.getDisplayMode().getHeight() - _height) / 2);
+		try {
+			Display.setLocation((Display.getDisplayMode().getWidth() - _width) / 2,
+					(Display.getDisplayMode().getHeight() - _height) / 2);
+		} catch (UnsatisfiedLinkError e) {
+			System.err.println("Missing lwjgl native libraries.");
+			System.err.println("If you are using maven, make sure to use "
+					+ "'-Djava.library.path=target/natives' as VM argument of your application.");
+			System.err.println("For plain Eclipse, add the native library path to the included "
+					+ "lwjgl.jar in the definition of the Referenced Libraries.");
+			throw e;
+		}
 		try {
 			Display.setDisplayMode(new DisplayMode(_width, _height));
 			Display.setTitle("Simulation");

@@ -24,6 +24,27 @@
  *************************************************************************/
 package org.ode4j.demo;
 
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
+import static org.ode4j.drawstuff.DrawStuff.dsElapsedTime;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.dsStop;
+import static org.ode4j.ode.DRotation.dQFromAxisAndAngle;
+import static org.ode4j.ode.DRotation.dQMultiply1;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.DRotation.dRfromQ;
+import static org.ode4j.ode.OdeConstants.dContactApprox1;
+import static org.ode4j.ode.OdeConstants.dContactSlip1;
+import static org.ode4j.ode.OdeConstants.dContactSlip2;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dContactSoftERP;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeMath.dNormalize3;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -31,31 +52,25 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DContactJoint;
-import org.ode4j.ode.DCylinder;
-import org.ode4j.ode.DFixedJoint;
-import org.ode4j.ode.DGeomTransform;
-import org.ode4j.ode.DPlane;
-import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
+import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
+import org.ode4j.ode.DCylinder;
+import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJoint.PARAM_N;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.DPUJoint;
+import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DJoint.PARAM_N;
-
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeHelper.*;
-import static org.ode4j.ode.OdeMath.*;
+import org.ode4j.ode.OdeHelper;
 
 
 /**
@@ -73,8 +88,7 @@ import static org.ode4j.ode.OdeMath.*;
  * The blue object represent the axis2 of the universal part.
  * The gray object represent the anchor2 of the PU joint.
  */
-@SuppressWarnings("deprecation")
-class DemoJointPU extends dsFunctions {
+public class DemoJointPU extends dsFunctions {
 
 
 //	enum IDX_CYL_DIM
@@ -181,8 +195,8 @@ class DemoJointPU extends dsFunctions {
 	private static DBox geomEXT;
 	private static DBox geomINT;
 	private static DBox geomANCHOR;
-	private static DGeomTransform geomAXIS1;
-	private static DGeomTransform geomAXIS2;
+	private static DCylinder geomAXIS1;
+	private static DCylinder geomAXIS2;
 	private static DPlane geomGROUND;
 	
 
@@ -209,9 +223,6 @@ class DemoJointPU extends dsFunctions {
 	{
 		int i,n;
 
-		DBody b1 = o1.getBody ();
-		DBody b2 = o2.getBody ();
-		if (b1!=null && b2!=null && areConnectedExcluding (b1,b2,DContactJoint.class) ) return;
 		final int N = 10;
 		//dContact contact[N];
 		DContactBuffer contacts = new DContactBuffer(N);
@@ -355,6 +366,7 @@ class DemoJointPU extends dsFunctions {
 		case ',': case '<' : {
 			double vel = joint.getParam (PARAM_N.dParamVel3) - VEL_INC;
 			joint.setParam (PARAM_N.dParamVel3, vel);
+			joint.setParam(PARAM_N.dParamFMax3, 2);
 			System.out.println("Velocity = " + vel + "  FMax = 2");
 		}
 		break;
@@ -362,6 +374,7 @@ class DemoJointPU extends dsFunctions {
 		case '.': case '>' : {
 			double vel = joint.getParam (PARAM_N.dParamVel3) + VEL_INC;
 			joint.setParam (PARAM_N.dParamVel3, vel);
+			joint.setParam(PARAM_N.dParamFMax3, 2);
 			System.out.println("Velocity = " + vel + "  FMax = 2");
 		}
 		break;
@@ -535,10 +548,8 @@ class DemoJointPU extends dsFunctions {
 				DMatrix3 R = new DMatrix3();
 				dRfromQ (R,qq);
 
-
-				DCylinder cyl = (DCylinder) geomAXIS1.getGeom();
 				dsSetColor (1,0,0);
-				dsDrawCylinder (anchorPos, R, cyl.getLength(), cyl.getRadius());
+				dsDrawCylinder (anchorPos, R, geomAXIS1.getLength(), geomAXIS1.getRadius());
 			}
 
 			if ( DPUJoint.class == type && geomAXIS2!=null ) {
@@ -558,10 +569,8 @@ class DemoJointPU extends dsFunctions {
 				DMatrix3 R = new DMatrix3();
 				dRfromQ (R,qq1);
 
-
-				DCylinder cyl = (DCylinder) geomAXIS2.getGeom();
 				dsSetColor (0,0,1);
-				dsDrawCylinder (anchorPos, R, cyl.getLength(), cyl.getRadius());
+				dsDrawCylinder (anchorPos, R, geomAXIS2.getLength(), geomAXIS2.getRadius());
 			}
 
 			dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
@@ -657,13 +666,13 @@ class DemoJointPU extends dsFunctions {
 
 
 		// Create the external part of the slider joint
-		geomEXT = OdeHelper.createBox (space, extDim.get(X), extDim.get(Y), extDim.get(Z));
+		geomEXT = OdeHelper.createBox (null, extDim.get(X), extDim.get(Y), extDim.get(Z));
 		geomEXT.setCategoryBits (catBits[EXT]);
 		geomEXT.setCollideBits (
 				catBits[ALL] & (~catBits[JOINT]) & (~catBits[W]) & (~catBits[D]) );
 
 		// Create the internal part of the slider joint
-		geomINT = OdeHelper.createBox (space, INT_EXT_RATIO*extDim.get(X),
+		geomINT = OdeHelper.createBox (null, INT_EXT_RATIO*extDim.get(X),
 				INT_EXT_RATIO*extDim.get(Y),
 				INT_EXT_RATIO*extDim.get(Z));
 		geomINT.setCategoryBits (catBits[INT]);
@@ -672,33 +681,28 @@ class DemoJointPU extends dsFunctions {
 
 
 		DMatrix3 R = new DMatrix3();
-		//DGeom id;
 		// Create the first axis of the universal joint
-		geomAXIS1 = OdeHelper.createGeomTransform (space);
+		geomAXIS1 = OdeHelper.createCylinder(null, axDim[RADIUS], axDim[LENGTH]);
 		//Rotation of 90deg around y
 		dRFromAxisAndAngle (R, 0,1,0, 0.5*PI);
 		geomAXIS1.setRotation (R);
 		geomAXIS1.setCategoryBits (catBits[AXIS1]);
 		geomAXIS1.setCollideBits (
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
-		//id = geomAXIS1;
-		geomAXIS1.setGeom ( OdeHelper.createCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the second axis of the universal joint
-		geomAXIS2 = OdeHelper.createGeomTransform (space);
+		geomAXIS2 = OdeHelper.createCylinder(null,  axDim[RADIUS], axDim[LENGTH]);
 		//Rotation of 90deg around y
 		dRFromAxisAndAngle (R, 1,0,0, 0.5*PI);
 		geomAXIS2.setRotation (R);
 		geomAXIS2.setCategoryBits (catBits[AXIS2]);
 		geomAXIS2.setCollideBits (
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
-		//id = geomAXIS2;
-		geomAXIS2.setGeom ( OdeHelper.createCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the anchor
-		geomANCHOR = OdeHelper.createBox (space, ancDim.get(X), ancDim.get(Y), ancDim.get(Z));
+		geomANCHOR = OdeHelper.createBox (null, ancDim.get(X), ancDim.get(Y), ancDim.get(Z));
 		geomANCHOR.setCategoryBits (catBits[ANCHOR]);
 		geomANCHOR.setCollideBits (
 				catBits[ALL] & (~catBits[JOINT]) & (~catBits[W]) & (~catBits[D]) );

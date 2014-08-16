@@ -33,6 +33,7 @@ import org.ode4j.ode.DTriMesh.DTriCallback;
 import org.ode4j.ode.DTriMesh.DTriRayCallback;
 import org.ode4j.ode.internal.joints.DxJointGroup;
 import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
+import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.internal.DxHeightfield;
 import org.ode4j.ode.internal.DxHeightfieldData;
@@ -521,6 +522,13 @@ public abstract class OdeHelper {
 		return DxBox.dCreateBox(null, lx, ly, lz);
 	}
 	/**
+	 * @param lxyz
+	 * @see #createBox(double, double, double)
+	 */
+	public static DBox createBox(DVector3 lxyz) {
+		return DxBox.dCreateBox(null, lxyz.get0(), lxyz.get1(), lxyz.get2());
+	}
+	/**
 	 * Create a box geom with the provided side lengths.
 	 *
 	 * <p>REMARK: The point of reference for a box is its center.
@@ -538,6 +546,13 @@ public abstract class OdeHelper {
 	 */
 	public static DBox createBox(DSpace space, double lx, double ly, double lz) {
 		return DxBox.dCreateBox((DxSpace) space, lx, ly, lz);
+	}
+	/**
+	 * @param lxyz
+	 * @see #createBox(DSpace, double, double, double)
+	 */
+	public static DBox createBox(DSpace space, DVector3 lxyz) {
+		return DxBox.dCreateBox((DxSpace) space, lxyz.get0(), lxyz.get1(), lxyz.get2());
 	}
 
 	public static DCapsule createCapsule(double radius, double length) {
