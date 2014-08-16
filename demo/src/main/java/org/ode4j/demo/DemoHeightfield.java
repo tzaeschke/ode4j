@@ -410,11 +410,11 @@ class DemoHeightfield extends dsFunctions {
 				c.scale(-1);
 				for (k=0; k<GPB; k++) {
 					obj[i].geom[k].setBody(obj[i].body);
-//					dGeomSetPosition (obj[i].geom[k],
+//					dGeomSetOffsetPosition (obj[i].geom[k],
 //							dpos[k][0]-m.c[0],
 //							dpos[k][1]-m.c[1],
 //							dpos[k][2]-m.c[2]);
-					obj[i].geom[k].setPosition(dpos[k].reAdd(c));
+					obj[i].geom[k].setOffsetPosition(dpos[k].reAdd(c));
 					obj[i].geom[k].setOffsetRotation(drot[k]);
 				}
 //				dMassTranslate (m,-m.c[0],-m.c[1],-m.c[2]);

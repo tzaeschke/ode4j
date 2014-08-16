@@ -568,6 +568,12 @@ public interface DGeom {
 	 * @param z the new Z coordinate.
 	 */
 	void setOffsetPosition(double x, double y, double z);
+	/**
+	 * 
+	 * @param xyz
+	 * @see #setOffsetPosition(double, double, double) 
+	 */
+	void setOffsetPosition(DVector3C xyz);
 
 	
 	/**

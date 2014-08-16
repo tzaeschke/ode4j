@@ -1031,9 +1031,9 @@ public abstract class OdeHelper {
 	 * 
 	 * @return allocated object or NULL on failure
 	 * 
-	 * @see dThreadingThreadPoolServeMultiThreadedImplementation
-	 * @see dExternalThreadingServeMultiThreadedImplementation
-	 * @see dThreadingFreeImplementation
+	 * @see DThreadingThreadPool#serveMultiThreadedImplementation
+	 * @see DThreadingImplementation#dExternalThreadingServeMultiThreadedImplementation
+	 * @see DThreadingImplementation#free()
 	 */
 	@Deprecated
 	public static DThreadingImplementation allocateMultiThreaded() {
@@ -1057,12 +1057,13 @@ public abstract class OdeHelper {
 	 * 
 	 * @param thread_count Number of threads to start in pool
 	 * @param stack_size Size of stack to be used for every thread or 0 for system default value
-	 * @param ode_data_allocate_flags Flags to be passed to {@code dAllocateODEDataForThread} on behalf of each thread
+//	 * @param ode_data_allocate_flags Flags to be passed to {@code dAllocateODEDataForThread} on 
+//	 * behalf of each thread
 	 * @return the allocated object or NULL on failure
 	 *
-	 * @see dThreadingAllocateMultiThreadedImplementation
-	 * @see dThreadingImplementationShutdownProcessing
-	 * @see dThreadingFreeThreadPool
+	 * @see OdeHelper#allocateMultiThreaded()
+	 * @see DThreadingImplementation#shutdownProcessing()
+	 * @see DThreadingThreadPool#freeThreadPool()
 	 */
 	@Deprecated
 	public static DThreadingThreadPool allocateThreadPool(int thread_count, int stack_size, 

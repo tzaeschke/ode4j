@@ -1869,6 +1869,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 
 	@Override
+	public void setOffsetPosition(DVector3C xyz) {
+		dGeomSetOffsetPosition(xyz.get0(), xyz.get1(), xyz.get2());
+	}
+
+	@Override
 	public void setOffsetRotation(DMatrix3C R) {
 		dGeomSetOffsetRotation(R);
 	}

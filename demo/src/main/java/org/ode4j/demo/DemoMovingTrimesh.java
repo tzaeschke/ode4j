@@ -37,7 +37,6 @@ import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
@@ -59,7 +58,6 @@ import static org.ode4j.demo.BunnyGeom.*;
 /**
  *
  */
-@SuppressWarnings("deprecation")
 public class DemoMovingTrimesh extends dsFunctions {
 
 	// some constants
@@ -166,6 +164,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 		int i,j,k;
 		double[] sides = new double[3];
 		DMass m = OdeHelper.createMass();
+		boolean setBody = false;
 
 		cmd = Character.toLowerCase (cmd);
 		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'm' || cmd == 'y' ) {
@@ -250,47 +249,45 @@ public class DemoMovingTrimesh extends dsFunctions {
 				m.translate( c );
 			}
 			else if (cmd == 'x') {
-				DGeom[] g2 = new DGeom[GPB];		// encapsulated geometries
-				DVector3[] dpos = new DVector3[GPB];//[3];	// delta-positions for encapsulated geometries
+				setBody = true;
 
 				// start accumulating masses for the encapsulated geometries
 				DMass m2 = OdeHelper.createMass();
 				m.setZero ();
 
+				DVector3[] dpos = new DVector3[GPB];//[3];	// delta-positions for encapsulated geometries
+				DMatrix3[] drot = new DMatrix3[GPB];
+
 				// set random delta positions
 				for (j=0; j<GPB; j++) {
 					dpos[j] = new DVector3();
 					for (k=0; k<3; k++) dpos[j].set(k, dRandReal()*0.3-0.15 );
+					drot[j] = new DMatrix3();
 				}
 
 				for (k=0; k<GPB; k++) {
-					obj[i].geom[k] = OdeHelper.createGeomTransform (space);
-					((DGeomTransform)obj[i].geom[k]).setCleanup (true);
 					if (k==0) {
 						double radius = dRandReal()*0.25+0.05;
-						g2[k] = OdeHelper.createSphere (null,radius);
+						obj[i].geom[k] = OdeHelper.createSphere (space,radius);
 						m2.setSphere (DENSITY,radius);
 					}
 					else if (k==1) {
-						g2[k] = OdeHelper.createBox (null,sides[0], sides[1], sides[2]);
+						obj[i].geom[k] = OdeHelper.createBox (space,sides[0], sides[1], sides[2]);
 						m2.setBox (DENSITY,sides[0], sides[1], sides[2]);
 					}
 					else {
 						double radius = dRandReal()*0.1+0.05;
 						double length = dRandReal()*1.0+0.1;
-						g2[k] = OdeHelper.createCapsule (null,radius,length);
+						obj[i].geom[k] = OdeHelper.createCapsule (space,radius,length);
 						m2.setCapsule (DENSITY,3,radius,length);
 					}
-					((DGeomTransform)obj[i].geom[k]).setGeom (g2[k]);
-
-					// set the transformation (adjust the mass too)
-					g2[k].setPosition (dpos[k]);
-					m2.translate (dpos[k]);
-					DMatrix3 Rtx = new DMatrix3();
-					dRFromAxisAndAngle (Rtx,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
+					
+					dRFromAxisAndAngle (drot[k],dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 							dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
-					g2[k].setRotation (Rtx);
-					m2.rotate (Rtx);
+
+					m2.rotate(drot[k]);
+
+					m2.translate (dpos[k]);
 
 					// add to the total mass
 					m.add (m2);
@@ -298,39 +295,43 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 				// move all encapsulated objects so that the center of mass is (0,0,0)
 				DVector3 c = new DVector3( m.getC() );
-				for (k=0; k<2; k++) {
-					g2[k].setPosition (	dpos[k].reSub(c) );
+				for (k=0; k<GPB; k++) {
+					obj[i].geom[k].setBody(obj[i].body);
+					obj[i].geom[k].setOffsetPosition( dpos[k].reSub(c) );
+					obj[i].geom[k].setOffsetRotation( drot[k]);
 				}
 				c.scale(-1);
 				m.translate (c);
+				obj[i].body.setMass(m);
 			}
 
-			for (k=0; k < GPB; k++) {
-				if (obj[i].geom[k]!=null) obj[i].geom[k].setBody (obj[i].body);
-			}
+			if (!setBody) {// avoid calling for composite geometries
+				for (k=0; k < GPB; k++) {
+					if (obj[i].geom[k]!=null) {
+						obj[i].geom[k].setBody (obj[i].body);
+					}
+				}
 
-			obj[i].body.setMass (m);
+				obj[i].body.setMass (m);
+			}
 		}
 
 		if (cmd == ' ') {
 			selected++;
-			if (selected >= num) selected = 0;
-			if (selected < 0) selected = 0;
-		}
-		else if (cmd == 'd' && selected >= 0 && selected < num) {
+			if (selected >= num) 
+				selected = 0;
+			if (selected < -1) 
+				selected = 0;
+		} else if (cmd == 'd' && selected >= 0 && selected < num) {
 			obj[selected].body.disable ();
-		}
-		else if (cmd == 'e' && selected >= 0 && selected < num) {
+		} else if (cmd == 'e' && selected >= 0 && selected < num) {
 			obj[selected].body.enable ();
-		}
-		else if (cmd == 'a') {
-			show_aabb ^= true;
-		}
-		else if (cmd == 't') {
-			show_contacts ^= true;
-		}
-		else if (cmd == 'r') {
-			random_pos ^= true;
+		} else if (cmd == 'a') {
+			show_aabb = !show_aabb;
+		} else if (cmd == 't') {
+			show_contacts = !show_contacts;
+		} else if (cmd == 'r') {
+			random_pos = !random_pos;
 		}
 	}
 
@@ -339,36 +340,28 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 	private void drawGeom (DGeom g, DVector3C pos, DMatrix3C R, boolean show_aabb)
 	{
-		if (g==null) return;
-		if (pos==null) pos = g.getPosition ();
-		if (R==null) R = g.getRotation ();
+		if (g==null) 
+			return;
+		if (pos==null) 
+			pos = g.getPosition ();
+		if (R==null) 
+			R = g.getRotation ();
 
 		if (g instanceof DBox) {
 			DVector3C sides = ((DBox)g).getLengths();
 			dsDrawBox (pos,R,sides);
-		}
-		else if (g instanceof DSphere) {
+			
+		} else if (g instanceof DSphere) {
 			dsDrawSphere (pos,R, ((DSphere)g).getRadius ());
-		}
-		else if (g instanceof DCapsule) {
+			
+		} else if (g instanceof DCapsule) {
 			DCapsule cap = (DCapsule) g;
 			dsDrawCapsule (pos,R, cap.getLength(), cap.getRadius());
-		}
-		else if (g instanceof DCylinder) {
+			
+		} else if (g instanceof DCylinder) {
 			DCylinder c = (DCylinder) g;
 			dsDrawCylinder (pos,R, c.getLength(), c.getRadius());
-		}
-
-		else if (g instanceof DGeomTransform) {
-			DGeom g2 = ((DGeomTransform)g).getGeom();
-			DVector3C pos2 = g2.getPosition ();
-			DMatrix3C R2 = g2.getRotation ();
-			DVector3 actual_pos = new DVector3();
-			DMatrix3 actual_R = new DMatrix3();
-			dMultiply0_331 (actual_pos,R,pos2);
-			actual_pos.add(pos);
-			dMultiply0_333 (actual_R,R,R2);
-			drawGeom (g2,actual_pos,actual_R,false);
+			
 		}
 
 		if (show_aabb) {
@@ -518,7 +511,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 		world.setGravity (0,0,-0.5);
 		world.setCFM (1e-5);
 		OdeHelper.createPlane (space,0,0,1,0);
-		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject(); //TODO really? TZ (obj,0,sizeof(obj));
+		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject(); 
 
 		// note: can't share tridata if intending to trimesh-trimesh collide
 		TriData1 = OdeHelper.createTriMeshData();
@@ -541,8 +534,20 @@ public class DemoMovingTrimesh extends dsFunctions {
 		dRFromAxisAndAngle(Rotation2, 1, 0, 0, M_PI / 2.);
 		TriMesh2.setRotation(Rotation2);
 
+		//TODO
+//	    DThreadingImplementation threading = OdeHelper.allocateMultiThreaded();
+//	    DThreadingThreadPool pool = OdeHelper.allocateThreadPool(4, 0, /*dAllocateFlagBasicData,*/ null);
+//	    pool.serveMultiThreadedImplementation(threading);
+//	    // dWorldSetStepIslandsProcessingMaxThreadCount(world, 1);
+//	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
+
 		// run simulation
 		dsSimulationLoop (args,352,288,this);
+
+//	    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
+//	    pool.freeThreadPool();
+//	    world.setStepThreadingImplementation(null, null);
+//	    threading.free();
 
 		contactgroup.destroy ();
 		space.destroy ();

@@ -88,6 +88,8 @@ class DemoPlane2d extends dsFunctions {
 	private static void     cb_start ()
 	/** ********************** */
 	{
+		//dAllocateODEDataForThread(dAllocateMaskAll);
+
 		dsSetViewpoint (xyz, hpr);
 	}
 

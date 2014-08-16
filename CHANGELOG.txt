@@ -4,18 +4,22 @@ Migration to 0.13.1
 
 New:
 -- 3 new joints: DoubleBall, DoubleHinge, Transmission
+-- New demos: DoubleBall, DoubleHinge, Gyro2, RFriction, Transmission
 -- Multithreading (well...)
 
 Done:
 -- main code
 -- tests 
--- demos up to demo_moving_convex
+-- demos up to demo_plane2d
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 -- Fixed bug in DObject --> destroying joints might have crashed
 -- Fixed bug: Calling destroy() on a space with a Heightfield cause hang. 
 
 Demos:
 - DemoBoxstack has MT disabled.
+
+TODO
+-- remove GeomTransform!?!?!
 
 Missing:
 -- demo_gyro2 explodes...
