@@ -10,7 +10,7 @@ New:
 Done:
 -- main code
 -- tests 
--- demos up to demo_plane2d
+-- demos except transmission/trimesh
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 -- Fixed bug in DObject --> destroying joints might have crashed
 -- Fixed bug: Calling destroy() on a space with a Heightfield cause hang. 

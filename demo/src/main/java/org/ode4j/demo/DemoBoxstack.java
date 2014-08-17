@@ -185,8 +185,7 @@ class DemoBoxstack extends dsFunctions {
 
 		//dContact[] contact=new dContact[MAX_CONTACTS];   // up to MAX_CONTACTS contacts per box-box
 		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
-		for (i=0; i<MAX_CONTACTS; i++) {
-			DContact contact = contacts.get(i);
+		for (DContact contact: contacts) {
 			contact.surface.mode = dContactBounce | dContactSoftCFM;
 			contact.surface.mu = dInfinity;
 			contact.surface.mu2 = 0;

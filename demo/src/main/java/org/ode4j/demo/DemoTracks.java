@@ -186,8 +186,9 @@ public class DemoTracks extends dsFunctions {
 
 
     @Override
-    public void start()
-    {
+    public void start() {
+    	//dAllocateODEDataForThread(dAllocateMaskAll);
+
         world = OdeHelper.createWorld();
         world.setGravity (0,0,-9.8);
 
