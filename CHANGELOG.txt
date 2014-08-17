@@ -10,7 +10,7 @@ New:
 Done:
 -- main code
 -- tests 
--- demos except transmission/trimesh
+-- demos
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 -- Fixed bug in DObject --> destroying joints might have crashed
 -- Fixed bug: Calling destroy() on a space with a Heightfield cause hang. 
@@ -20,6 +20,7 @@ Demos:
 
 TODO
 -- remove GeomTransform!?!?!
+-- demo_gyro2 explodes...
 
 Missing:
 -- demo_gyro2 explodes...

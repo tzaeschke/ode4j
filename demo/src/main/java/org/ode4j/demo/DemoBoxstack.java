@@ -345,13 +345,13 @@ class DemoBoxstack extends dsFunctions {
 				DMass m2 = OdeHelper.createMass();
 				m.setZero();
 
-				double[][] dpos = new double[GPB][3];	// delta-positions for encapsulated geometries
+				DVector3[] dpos = new DVector3[GPB];	// delta-positions for encapsulated geometries
 				DMatrix3[] drot = new DMatrix3[GPB];
 
 				// set random delta positions
 				for (j=0; j<GPB; j++) {
 					for (k=0; k<3; k++) {
-						dpos[j][k] = dRandReal()*0.3-0.15;
+						dpos[j].set(k, dRandReal()*0.3-0.15);
 					}
 				}
 
@@ -375,22 +375,19 @@ class DemoBoxstack extends dsFunctions {
 							dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
 					m2.rotate(drot[k]);
 
-					m2.translate(dpos[k][0],dpos[k][1],dpos[k][2]);
+					m2.translate(dpos[k]);
 
 					// add to the total mass
 					m.add(m2);
 
 				}
-				DVector3C m_c = m.getC().clone().scale(-1);
+				DVector3C negC = m.getC().clone().scale(-1);
 				for (k=0; k<GPB; k++) {
 					obj[i].geom[k].setBody(obj[i].body);
-					obj[i].geom[k].setOffsetPosition (
-							dpos[k][0]+m_c.get(0),
-							dpos[k][1]+m_c.get(1),
-							dpos[k][2]+m_c.get(2));
+					obj[i].geom[k].setOffsetPosition(dpos[k].reAdd(negC));
 					obj[i].geom[k].setOffsetRotation(drot[k]);
 				}
-				m.translate(m_c.get(0),m_c.get(1),m_c.get(2));
+				m.translate(negC);
 				obj[i].body.setMass(m);
 
 			}
