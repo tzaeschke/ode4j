@@ -41,7 +41,6 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.internal.OdeInit;
 
 public class DemoDHinge extends dsFunctions {
 
@@ -200,12 +199,12 @@ public class DemoDHinge extends dsFunctions {
 
 	private void demo(String[] args) {
 		// create world
-		OdeInit.dInitODE();
+		OdeHelper.initODE();
 
 		// run demo
 		dsSimulationLoop (args, 800, 600, this);
 
-		OdeInit.dCloseODE();
+		OdeHelper.closeODE();
 	}
 
 	@Override

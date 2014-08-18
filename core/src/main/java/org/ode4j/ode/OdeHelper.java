@@ -643,7 +643,6 @@ public abstract class OdeHelper {
 	 *
 	 * @see #initODE2(int)
 	 * @see #allocateODEDataForThread(int)
-	 * @deprecated Please use initOde2() instead.
 	 */
 	public static void initODE() {
 		OdeInit.dInitODE();

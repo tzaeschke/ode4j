@@ -85,18 +85,12 @@ class DemoPlane2d extends dsFunctions {
 	private static float[]    xyz = { 0.5f*STAGE_SIZE, 0.5f*STAGE_SIZE, 0.65f*STAGE_SIZE};
 	private static float[]    hpr = { 90.0f, -90.0f, 0 };
 
-	private static void     cb_start ()
-	/** ********************** */
-	{
-		//dAllocateODEDataForThread(dAllocateMaskAll);
-
+	private static void cb_start ()	{
 		dsSetViewpoint (xyz, hpr);
 	}
 
 
-	private static void     cb_near_collision (Object data, DGeom o1, DGeom o2)
-	/********************************************************************/
-	{
+	private static void     cb_near_collision (Object data, DGeom o1, DGeom o2) {
 		DBody     b1 = o1.getBody();
 		DBody     b2 = o2.getBody();
 		//dContact    contact = new dContact();
@@ -127,9 +121,7 @@ class DemoPlane2d extends dsFunctions {
 
 
 	private static void     track_to_pos (DBody body, DPlane2DJoint joint_id,
-			double target_x, double target_y)
-	/************************************************************************/
-	{
+			double target_x, double target_y) {
 		double  curr_x = body.getPosition().get0();
 		double  curr_y = body.getPosition().get1();
 
@@ -147,10 +139,8 @@ class DemoPlane2d extends dsFunctions {
 
 	private static double angle = 0;
 	@SuppressWarnings("unused")
-	private void cb_sim_step (boolean pause)
-	{
-		if (! pause)
-		{
+	private void cb_sim_step (boolean pause) {
+		if (! pause) {
 			//        static double angle = 0;
 
 			angle +=  0.01 ;
@@ -243,13 +233,12 @@ class DemoPlane2d extends dsFunctions {
 	/**
 	 * @param args 
 	 */
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		int         b;
 		dsFunctions drawstuff_functions = new DemoPlane2d();
 
 
-		OdeHelper.initODE2(0);
+		OdeHelper.initODE();
 
 		// dynamic world
 
