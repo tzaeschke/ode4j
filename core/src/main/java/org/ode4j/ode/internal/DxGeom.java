@@ -431,7 +431,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		if (isPlaceable) {
 			_final_posr = dAllocPosr();
 			_final_posr.pos.setZero();//dSetZero (_final_posr.pos.v,4);
-			_final_posr.R.setIdentity();
+			_final_posr.Rw().setIdentity();
 		}
 		else {
 			_final_posr = null;
@@ -542,11 +542,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 	void getBodyPosr(final DxPosR offset_posr, final DxPosR final_posr, DxPosR body_posr)
 	{
 		DMatrix3 inv_offset = new DMatrix3();
-		matrixInvert(offset_posr.R, inv_offset);
+		matrixInvert(offset_posr.Rw(), inv_offset);
 
-		dMultiply0_333(body_posr.R, final_posr.R, inv_offset);
+		dMultiply0_333(body_posr.Rw(), final_posr.R(), inv_offset);
 		DVector3 world_offset = new DVector3();  //TZ
-		dMultiply0_331(world_offset, body_posr.R, offset_posr.pos());
+		dMultiply0_331(world_offset, body_posr.R(), offset_posr.pos());
 //		body_posr.pos.v[0] = final_posr.pos.v[0] - world_offset.v[0];
 //		body_posr.pos.v[1] = final_posr.pos.v[1] - world_offset.v[1];
 //		body_posr.pos.v[2] = final_posr.pos.v[2] - world_offset.v[2];
@@ -559,7 +559,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		DMatrix3 inv_body = new DMatrix3();
 		matrixInvert(body_posr.R(), inv_body);
 
-		dMultiply0_333(offset_posr.R, inv_body, world_posr.R());
+		dMultiply0_333(offset_posr.Rw(), inv_body, world_posr.R());
 		DVector3 world_offset = new DVector3();
 //		world_offset.v[0] = world_posr.pos.v[0] - body_posr.pos.v[0];
 //		world_offset.v[1] = world_posr.pos.v[1] - body_posr.pos.v[1];
@@ -582,7 +582,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 //		_final_posr.pos.v[1] += body._posr.pos.v[1];
 //		_final_posr.pos.v[2] += body._posr.pos.v[2];
 		_final_posr.pos.add( body.posr().pos() );
-		dMultiply0_333 (_final_posr.R,body.posr().R(),offset_posr.R);
+		dMultiply0_333 (_final_posr.Rw(),body.posr().R(),offset_posr.R());
 	}
 
 //	boolean checkControlValueSizeValidity(void *dataValue, int *dataSize, 
@@ -693,7 +693,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 					//	        memcpy (g.final_posr.pos,g.body.posr.pos,sizeof(dVector3));
 					_final_posr.pos.set(body.posr().pos()); //,sizeof(dVector3));
 					//	        memcpy (g.final_posr.R,g.body.posr.R,sizeof(dMatrix3));
-					_final_posr.R.set(body.posr().R());//,sizeof(dMatrix3));
+					_final_posr.Rw().set(body.posr().R());//,sizeof(dMatrix3));
 				}
 				bodyRemove();
 			}
@@ -758,9 +758,9 @@ public abstract class DxGeom extends DBase implements DGeom {
 			//	    memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 			//	    memcpy(new_final_posr.R, R, sizeof(dMatrix3));
 			new_final_posr.pos.set(_final_posr.pos());//, sizeof(dVector3));
-			new_final_posr.R.set(R);//, sizeof(dMatrix3));
+			new_final_posr.Rw().set(R);//, sizeof(dMatrix3));
 			getBodyPosr(offset_posr, new_final_posr, new_body_posr);
-			body.dBodySetRotation(new_body_posr.R);
+			body.dBodySetRotation(new_body_posr.R());
 			body.dBodySetPosition(new_body_posr.pos());
 		}
 		else if (body != null) {
@@ -769,7 +769,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		}
 		else {
 			//memcpy (g.final_posr.R,R,sizeof(dMatrix3));
-			_final_posr.R.set(R);//,sizeof(dMatrix3));
+			_final_posr.Rw().set(R);//,sizeof(dMatrix3));
 			dGeomMoved ();
 		}
 	}
@@ -785,12 +785,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 			// move body such that body+offset = rotation
 			DxPosR new_final_posr = new DxPosR();
 			DxPosR new_body_posr = new DxPosR();
-			dRfromQ (new_final_posr.R, quat);
+			dRfromQ (new_final_posr.Rw(), quat);
 			//memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 			new_final_posr.pos.set(_final_posr.pos());
 			
 			getBodyPosr(offset_posr, new_final_posr, new_body_posr);
-			body.dBodySetRotation( new_body_posr.R);
+			body.dBodySetRotation(new_body_posr.R());
 			body.dBodySetPosition(new_body_posr.pos());
 		}
 		if (body != null) {
@@ -798,7 +798,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 			body.dBodySetQuaternion (quat);
 		}
 		else {
-			dRfromQ (_final_posr.R, quat);
+			dRfromQ (_final_posr.Rw(), quat);
 			dGeomMoved ();
 		}
 	}
@@ -822,7 +822,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
 		recomputePosr();
-		return _final_posr.R;
+		return _final_posr.R();
 	}
 
 
@@ -848,7 +848,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		}
 		else {
 			recomputePosr();
-			dQfromR(quat, _final_posr.R);
+			dQfromR(quat, _final_posr.R());
 		}
 	}
 	@Override
@@ -861,7 +861,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		else {
 			recomputePosr();
 			DQuaternion quat = new DQuaternion();
-			dQfromR(quat, _final_posr.R);
+			dQfromR(quat, _final_posr.R());
 			return quat;
 		}
 	}
@@ -961,7 +961,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 	    DVector3 prel,p = new DVector3();
 	    prel = new DVector3(px, py, pz);
-	    dMultiply0_331 (p,_final_posr.R,prel);
+	    dMultiply0_331 (p,_final_posr.R(),prel);
 	    result.eqSum(p, _final_posr.pos());
 	}
 
@@ -980,7 +980,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 //	    prel[1] = py - g->final_posr->pos[1];
 //	    prel[2] = pz - g->final_posr->pos[2];
 //	    prel[3] = 0;
-	    dMultiply1_331 (result,_final_posr.R,prel);
+	    dMultiply1_331 (result,_final_posr.R(),prel);
 	}
 
 
@@ -993,7 +993,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	    recomputePosr();
 
 	    DVector3 p = new DVector3(px, py, pz);
-	    dMultiply0_331 (result,_final_posr.R,p);
+	    dMultiply0_331 (result,_final_posr.R(),p);
 	}
 
 
@@ -1006,7 +1006,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	    recomputePosr();
 
 	    DVector3 p = new DVector3(px, py, pz);
-	    dMultiply1_331 (result,_final_posr.R,p);
+	    dMultiply1_331 (result,_final_posr.R(),p);
 	}
 
 
@@ -1183,7 +1183,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		_final_posr = dAllocPosr();
 		offset_posr = dAllocPosr();
 		offset_posr.pos.setZero();//dSetZero (offset_posr.pos.v,4);
-		offset_posr.R.setIdentity();
+		offset_posr.Rw().setIdentity();
 
 		_gflags |= GEOM_POSR_BAD;
 	}
@@ -1218,7 +1218,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 			dGeomCreateOffset ();
 		}
 //		memcpy (g.offset_posr.R,R,sizeof(dMatrix3));
-		offset_posr.R.set(R);
+		offset_posr.Rw().set(R);
 		dGeomMoved();
 	}
 
@@ -1231,7 +1231,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		{
 			dGeomCreateOffset ();
 		}
-		dRfromQ (offset_posr.R, quat);
+		dRfromQ (offset_posr.Rw(), quat);
 		dGeomMoved();
 	}
 
@@ -1263,7 +1263,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 //		memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 		new_final_posr.pos.set(_final_posr.pos());
 //		memcpy(new_final_posr.R, R, sizeof(dMatrix3));
-		new_final_posr.R.set(R);
+		new_final_posr.Rw().set(R);
 
 		getWorldOffsetPosr(body.posr(), new_final_posr, offset_posr);
 		dGeomMoved();
@@ -1284,7 +1284,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		DxPosR new_final_posr = new DxPosR();
 //		memcpy(new_final_posr.pos, g.final_posr.pos, sizeof(dVector3));
 		new_final_posr.pos.set(_final_posr.pos());
-		dRfromQ (new_final_posr.R, quat);
+		dRfromQ (new_final_posr.Rw(), quat);
 
 		getWorldOffsetPosr(body.posr(), new_final_posr, offset_posr);
 		dGeomMoved();
@@ -1340,7 +1340,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		if (offset_posr != null)
 		{
-			return offset_posr.R;
+			return offset_posr.R();
 		}
 		return OFFSET_ROTATION_ZERO;
 	}
@@ -1354,7 +1354,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	{
 		if (offset_posr != null)
 		{
-			dQfromR(result, offset_posr.R);
+			dQfromR(result, offset_posr.R());
 		}
 		else
 		{

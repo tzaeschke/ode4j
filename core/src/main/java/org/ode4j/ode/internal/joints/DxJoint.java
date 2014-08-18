@@ -509,7 +509,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //	        dReal *J2a_plus_2s = J2a_plus_s + s;
 //	        dCalcVectorCross3( J2a_plus_2s, a2, q2 );
 //	        dNegateVector3( J2a_plus_2s );
-	        dMultiply0_331( a2, b1._posr.R, anchor2 );
+	        dMultiply0_331( a2, b1._posr.R(), anchor2 );
 	        double[] J = info._J;  //TZ
 	        int J2ap = info.J2ap; //TZ
 	        //dReal *J2a = info->J2a;

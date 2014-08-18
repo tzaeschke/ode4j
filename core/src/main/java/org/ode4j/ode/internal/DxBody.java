@@ -168,7 +168,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		b._q = new DQuaternion();
 		//MAT.dSetZero (b._q.v,4);
 		b._q.set( 0, 1 );
-		b._posr.R.setIdentity();
+		b._posr.Rw().setIdentity();
 		b.lvel = new DVector3();
 		//MAT.dSetZero (b.lvel.v,4);
 		b.avel = new DVector3();
@@ -290,8 +290,8 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public void dBodySetRotation (DMatrix3C R)
 	{
 		//memcpy(b->posr.R, R, sizeof(dMatrix3));
-		_posr.R.set(R);
-		 dOrthogonalizeR(_posr.R);
+		_posr.Rw().set(R);
+		 dOrthogonalizeR(_posr.Rw());
 		 dQfromR (_q, R);
 		 dNormalize4 (_q);
 		  
@@ -313,7 +313,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		_q.set(q);
 		dNormalize4 (_q);
 		//dQtoR (b.q, b.posr.R);
-		dRfromQ(_posr.R, _q);
+		dRfromQ(_posr.Rw(), _q);
 
 		// notify all attached geoms that this body has moved
 		for (DxGeom geom2 = geom; geom2 != null; geom2 = geom2.dGeomGetBodyNext ())
@@ -472,7 +472,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodyAddRelForce (DVector3C f)
 	{
 		DVector3 t2 = new DVector3();
-		dMultiply0_331 (t2,_posr.R,f);
+		dMultiply0_331 (t2,_posr.R(),f);
 		facc.add(t2);
 	}
 
@@ -481,7 +481,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public void dBodyAddRelTorque (DVector3C f)
 	{
 		DVector3 t2 = new DVector3();
-		dMultiply0_331 (t2,_posr.R,f);
+		dMultiply0_331 (t2,_posr.R(),f);
 		tacc.add(t2);
 	}
 
@@ -497,7 +497,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodyAddForceAtRelPos (DVector3C f, DVector3C prel)
 	{
 		DVector3 p = new DVector3();
-		dMultiply0_331 (p,_posr.R,prel);
+		dMultiply0_331 (p,_posr.R(),prel);
 		facc.add(f);
 		dAddVectorCross3 (tacc,p,f);
 	}
@@ -506,7 +506,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodyAddRelForceAtPos (DVector3C frel, DVector3C p)
 	{
 		DVector3 f = new DVector3();
-		dMultiply0_331 (f,_posr.R,frel);
+		dMultiply0_331 (f,_posr.R(),frel);
 		facc.add(f);
 		DVector3 q = p.reSub(_posr.pos());
 		dAddVectorCross3 (tacc,q,f);
@@ -529,8 +529,8 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		//		prel.v[1] = py;
 		//		prel.v[2] = pz;
 		//		prel.v[3] = 0;
-		dMultiply0_331 (f,_posr.R,fRel);
-		dMultiply0_331 (p,_posr.R,pRel);
+		dMultiply0_331 (f,_posr.R(),fRel);
+		dMultiply0_331 (p,_posr.R(),pRel);
 		//		b.facc.v[0] += f.v[0];
 		//		b.facc.v[1] += f.v[1];
 		//		b.facc.v[2] += f.v[2];
@@ -587,7 +587,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		//		result.v[1] = p.v[1] + b._posr.pos.v[1];
 		//		result.v[2] = p.v[2] + b._posr.pos.v[2];
 		//		result.sum(p, b._posr.pos);
-		dMultiply0_331 (result,_posr.R,prel);
+		dMultiply0_331 (result,_posr.R(),prel);
 		result.add( _posr.pos() );
 	}
 
@@ -598,7 +598,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	{
 		//dVector3 prel = new dVector3(px, py, pz);
 		DVector3 p = new DVector3();
-		dMultiply0_331 (p,_posr.R,prel);
+		dMultiply0_331 (p,_posr.R(),prel);
 		result.set(lvel);
 		dAddVectorCross3 (result,avel,p);
 	}
@@ -619,7 +619,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodyGetPosRelPoint (DVector3C p, DVector3 result)
 	{
 		DVector3 prel = p.reSub(_posr.pos());
-		dMultiply1_331 (result,_posr.R,prel);
+		dMultiply1_331 (result,_posr.R(),prel);
 	}
 
 
@@ -627,7 +627,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//			dVector3 result)
 	void dBodyVectorToWorld (DVector3C p, DVector3 result)
 	{
-		dMultiply0_331 (result,_posr.R,p);
+		dMultiply0_331 (result,_posr.R(),p);
 	}
 
 
@@ -635,7 +635,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	//			dVector3 result)
 	void dBodyVectorFromWorld (DVector3C p, DVector3 result)
 	{
-		dMultiply1_331 (result,_posr.R,p);
+		dMultiply1_331 (result,_posr.R(),p);
 	}
 
 
@@ -1114,7 +1114,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 
 		// normalize the quaternion and convert it to a rotation matrix
 		dNormalize4 (_q);
-		dRfromQ (_posr.R,_q);
+		dRfromQ (_posr.Rw(),_q);
 
 
 		// notify all attached geoms that this body has moved

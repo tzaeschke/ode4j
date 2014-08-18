@@ -80,10 +80,11 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 	//dGeomMoved (&myRay);                        \
 	//        }
 	private void dGeomRaySetNoNormalize(DxRay myRay, DVector3C MyPoint, DVector3C MyVector) {  
-		myRay._final_posr.pos.set(MyPoint);   
-		myRay._final_posr.R.set(0, 2, MyVector.get0());       
-		myRay._final_posr.R.set(1, 2, MyVector.get1());       
-		myRay._final_posr.R.set(2, 2, MyVector.get2());      
+		myRay._final_posr.pos.set(MyPoint);  
+		DMatrix3 R = myRay._final_posr.Rw();
+		R.set(0, 2, MyVector.get0());       
+		R.set(1, 2, MyVector.get1());       
+		R.set(2, 2, MyVector.get2());      
 		myRay.dGeomMoved();                        
 	}
 	//
@@ -1537,7 +1538,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 				// Update o2 with transformed position and rotation.
 				o2._final_posr.pos.set(pos1);//dVector3Copy( pos1, o2._final_posr.pos );
-				o2._final_posr.R.set(R1);//dMatrix3Copy( R1, o2._final_posr.R );
+				o2._final_posr.Rw().set(R1);//dMatrix3Copy( R1, o2._final_posr.R );
 			}
 
 			if (!DHEIGHTFIELD_CORNER_ORIGIN) {//#ifndef DHEIGHTFIELD_CORNER_ORIGIN
@@ -1632,7 +1633,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 					//dVector3Copy( posbak, o2._final_posr.pos );
 					o2._final_posr.pos.set(posbak);
 					//dMatrix3Copy( Rbak, o2._final_posr.R );
-					o2._final_posr.R.set(Rbak);
+					o2._final_posr.Rw().set(Rbak);
 					//memcpy( o2.aabb, aabbbak, sizeof(double)*6 );
 					o2._aabb.set(aabbbak);
 					o2.setFlags(gflagsbak);//_gflags = gflagsbak;
