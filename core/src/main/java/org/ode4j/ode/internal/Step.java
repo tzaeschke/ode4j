@@ -468,19 +468,19 @@ dmaxcallcountestimate_fn_t {
 		//dxStepperStage1CallContext stage1CallContext = (dxStepperStage1CallContext *)memarena->AllocateBlock(sizeof(dxStepperStage1CallContext));
 		//new(stage1CallContext) dxStepperStage1CallContext(callContext, stagesMemArenaState, invI, jointinfos);
 		memarena.dummy();
-		dxStepperStage1CallContext stage1CallContext = new dxStepperStage1CallContext(callContext, 
+		final dxStepperStage1CallContext stage1CallContext = new dxStepperStage1CallContext(callContext, 
 				stagesMemArenaState, invI, jointinfosA, jointinfosOfs);
 
 		//dxStepperStage0BodiesCallContext *stage0BodiesCallContext = (dxStepperStage0BodiesCallContext *)memarena->AllocateBlock(sizeof(dxStepperStage0BodiesCallContext));
 		//new(stage0BodiesCallContext) dxStepperStage0BodiesCallContext(callContext, invI);
 		memarena.dummy();
-		dxStepperStage0BodiesCallContext stage0BodiesCallContext = 
+		final dxStepperStage0BodiesCallContext stage0BodiesCallContext = 
 				new dxStepperStage0BodiesCallContext(callContext, invI);
 
 		//dxStepperStage0JointsCallContext *stage0JointsCallContext = (dxStepperStage0JointsCallContext *)memarena->AllocateBlock(sizeof(dxStepperStage0JointsCallContext));
 		//new(stage0JointsCallContext) dxStepperStage0JointsCallContext(callContext, jointinfos, &stage1CallContext->m_stage0Outputs);
 		memarena.dummy();
-		dxStepperStage0JointsCallContext stage0JointsCallContext = 
+		final dxStepperStage0JointsCallContext stage0JointsCallContext = 
 				new dxStepperStage0JointsCallContext(callContext, jointinfosA, jointinfosOfs, 
 						stage1CallContext.m_stage0Outputs);
 
@@ -510,6 +510,31 @@ dmaxcallcountestimate_fn_t {
 					"StepIsland Stage0-Joints");
 			dIASSERT(jointThreads == 1);
 		}
+//		{
+//			//TODO
+//			try {
+//				dxStepIsland_Stage1(stage1CallContext);
+//				ArrayList<Callable<Boolean>> tasks = new ArrayList<>(); 
+//				for (int i = 0; i < DxQuickStep.THREADS; i++) {
+//					tasks.add(new Callable<Boolean>() {
+//						@Override
+//						public Boolean call() {
+//							//dxStepIsland_Stage1_Callback.run(call_context, i, this_releasee);
+//							//dxStepperStage0BodiesCallContext callContext = (dxStepperStage0BodiesCallContext )_callContext;
+//							dxStepIsland_Stage0_Bodies(stage0BodiesCallContext);
+//							return Boolean.TRUE;
+//						}
+//					});
+//				}
+//				for (Future<Boolean> f: DxQuickStep.POOL.invokeAll(tasks, 1, TimeUnit.HOURS)) {
+//					f.get();
+//				}
+//				dxStepIsland_Stage0_Joints(stage0JointsCallContext);
+//			} catch (InterruptedException e) {
+//				throw new RuntimeException(e);
+//			} catch (ExecutionException e) {
+//				throw new RuntimeException(e);
+//			}
 	}    
 
 	private static dThreadedCallFunction dxStepIsland_Stage0_Bodies_Callback = new dThreadedCallFunction() {

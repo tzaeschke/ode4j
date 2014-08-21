@@ -46,6 +46,9 @@ import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ode4j.math.DMatrix3;
@@ -72,7 +75,11 @@ import org.ode4j.ode.threading.Threading_H.dThreadedCallFunction;
 public class DxQuickStep extends AbstractStepper implements dstepper_fn_t,
 dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	
-    //TZ where is this defined???
+	public static final int THREADS = 4;
+	static final ThreadPoolExecutor POOL = new ThreadPoolExecutor(
+			THREADS, THREADS, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+
+	//TZ where is this defined???
     private static final boolean CHECK_VELOCITY_OBEYS_CONSTRAINT = false;
     
 	/** DxQuickStep singleton instance. */
@@ -978,17 +985,17 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    BlockPointer stagesMemArenaState = memarena.SaveState();
 
 	    memarena.dummy();
-	    dxQuickStepperStage1CallContext stage1CallContext = new dxQuickStepperStage1CallContext(); 
+	    final dxQuickStepperStage1CallContext stage1CallContext = new dxQuickStepperStage1CallContext(); 
 	    		//(dxQuickStepperStage1CallContext )memarena.AllocateBlock(sizeof(dxQuickStepperStage1CallContext));
 	    stage1CallContext.Initialize(callContext, stagesMemArenaState, invI, jointinfos);
 
 	    memarena.dummy();
-	    dxQuickStepperStage0BodiesCallContext stage0BodiesCallContext = new dxQuickStepperStage0BodiesCallContext(); 
+	    final dxQuickStepperStage0BodiesCallContext stage0BodiesCallContext = new dxQuickStepperStage0BodiesCallContext(); 
 	    		//(dxQuickStepperStage0BodiesCallContext)memarena.AllocateBlock(sizeof(dxQuickStepperStage0BodiesCallContext));
 	    stage0BodiesCallContext.Initialize(callContext, invI);
 
 	    memarena.dummy();
-	    dxQuickStepperStage0JointsCallContext stage0JointsCallContext = new dxQuickStepperStage0JointsCallContext(); 
+	    final dxQuickStepperStage0JointsCallContext stage0JointsCallContext = new dxQuickStepperStage0JointsCallContext(); 
 	    		//(dxQuickStepperStage0JointsCallContext)memarena.AllocateBlock(sizeof(dxQuickStepperStage0JointsCallContext));
 	    stage0JointsCallContext.Initialize(callContext, jointinfos, stage1CallContext.m_stage0Outputs);
 
@@ -1000,7 +1007,31 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    }
 	    else
 	    {
-	        int bodyThreads = allowedThreads;
+			//TODO
+//			try {
+//				ArrayList<Callable<Boolean>> tasks = new ArrayList<>(); 
+//				for (int i = 0; i < THREADS; i++) {
+//					tasks.add(new Callable<Boolean>() {
+//						@Override
+//						public Boolean call() {
+//							dxQuickStepIsland_Stage0_Bodies(stage0BodiesCallContext);
+//							return Boolean.TRUE;
+//						}
+//					});
+//				}
+//				for (Future<Boolean> f: POOL.invokeAll(tasks, 1, TimeUnit.HOURS)) {
+//					f.get();
+//				}
+//
+//				dxQuickStepIsland_Stage0_Joints(stage0JointsCallContext);
+//				dxQuickStepIsland_Stage1(stage1CallContext);
+//			} catch (InterruptedException e) {
+//				throw new RuntimeException(e);
+//			} catch (ExecutionException e) {
+//				throw new RuntimeException(e);
+//			}
+
+			int bodyThreads = allowedThreads;
 	        int jointThreads = 1;
 
 	        Ref<DCallReleasee> stage1CallReleasee = new Ref<DCallReleasee>();
