@@ -34,12 +34,11 @@ import static org.ode4j.ode.OdeMath.*;
 
 
 /**
- * 
+ * WARNING:
  *
- * @deprecated Should not be used anymore, see forums.
+ * Should not be used anymore, see forums.
  *
  */
-@Deprecated
 public class DxJointFixed extends DxJoint implements DFixedJoint {
 
 	//****************************************************************************

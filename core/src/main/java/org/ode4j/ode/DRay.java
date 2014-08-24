@@ -47,13 +47,6 @@ public interface DRay extends DGeom {
 	   * These flags are currently only noticed by the trimesh collider, because
 	   * they can make a major differences there.
 	   */
-	  @Deprecated
-	  void setParams (boolean firstContact, boolean backfaceCull);
-	  @Deprecated
-	  boolean getParamFirstContact ();
-	  @Deprecated
-	  boolean getParamBackfaceCull();
-	  
 	  boolean getFirstContact();
 	  void setFirstContact(boolean firstContact);
 	  boolean getBackfaceCull();

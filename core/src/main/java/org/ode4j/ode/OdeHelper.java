@@ -758,11 +758,30 @@ public abstract class OdeHelper {
 	 * @return true if the two bodies are connected together by
 	 * a joint that does not have type <code>jointType</code>, otherwise return 0.
 	 */
- 	@SafeVarargs
+ 	//@SafeVarargs --> Not available in Java 6!
 	public static boolean areConnectedExcluding (DBody body1, DBody body2, 
             Class<? extends DJoint> ... jointType) {
         return ODE._dAreConnectedExcluding(body1, body2, jointType);
     }
+	/**
+	 * Utility function.
+	 * @param body1 A body to check.
+	 * @param body2 A body to check.
+	 * @param jointType is a set of subclasses of DJoint.
+	 * This is useful for deciding whether to add contact joints between two bodies:
+	 * if they are already connected by non-contact joints then it may not be
+	 * appropriate to add contacts, however it is okay to add more contact between-
+	 * bodies that already have contacts.
+	 * @return true if the two bodies are connected together by
+	 * a joint that does not have type <code>jointType</code>, otherwise return 0.
+	 */
+ 	//@SafeVarargs --> Not available in Java 6!
+	@SuppressWarnings("unchecked")
+	public static boolean areConnectedExcluding (DBody body1, DBody body2, 
+            Class<? extends DJoint> jointType) {
+        return ODE._dAreConnectedExcluding(body1, body2, new Class[]{jointType});
+    }
+	
 	
 	
 	/**

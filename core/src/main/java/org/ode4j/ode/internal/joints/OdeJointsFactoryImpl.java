@@ -135,7 +135,6 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 		return createJoint( new DxJointPiston((DxWorld) w),group);
 	}
 
-	@SuppressWarnings("deprecation")
 	public DxJointFixed dJointCreateFixed (DWorld id, DJointGroup group)
 	{
 		dAASSERT (id);

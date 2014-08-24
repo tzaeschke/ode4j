@@ -50,7 +50,6 @@ import org.ode4j.tests.UnitTestPlusPlus.CheckMacros;
  * This file create unit test for some of the functions found in:
  * ode/src/joinst/fixed.cpp
  */
-@SuppressWarnings("deprecation")
 public class DxJointFixed_Fixture_1
 {
 	public DxJointFixed_Fixture_1()

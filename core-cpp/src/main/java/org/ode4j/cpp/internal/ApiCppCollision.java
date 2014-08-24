@@ -66,7 +66,6 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
  * detection system can be used as long as it can supply the right kinds of
  * contact information.
  */
-@SuppressWarnings("deprecation")
 public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 	/* ************************************************************************ */
@@ -1160,7 +1159,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	public static void dGeomRaySetParams (DRay g, 
 			boolean firstContact, boolean backfaceCull) {
-		g.setParams(firstContact, backfaceCull);
+		g.setFirstContact(firstContact);
+		g.setBackfaceCull(backfaceCull);
 	}
 	//ODE_API 
 	// void dGeomRayGetParams (dGeom g, int *FirstContact, int *BackfaceCull) {

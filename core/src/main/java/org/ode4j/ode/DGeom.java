@@ -30,7 +30,6 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 /**
  * Common base class for all geometries.
@@ -428,59 +427,59 @@ public interface DGeom {
 
 	
 
-	enum CONTROL_CLASS {
-	    dGeomCommonControlClass,// = 0,
-	    dGeomColliderControlClass;// = 1
-	}
-
-	enum CONTROL_CODE {
-	    dGeomCommonAnyControlCode,// = 0,
-	    dGeomColliderSetMergeSphereContactsControlCode,// = 1,
-	    dGeomColliderGetMergeSphereContactsControlCode;// = 2
-	}
-
-	enum COLLIDER_MERGE_CONTACTS_VALUE {
-	    dGeomColliderMergeContactsValue__Default,// = 0, // Used with Set... to restore default value
-	    dGeomColliderMergeContactsValue_None,// = 1,
-	    dGeomColliderMergeContactsValue_Normals,// = 2,
-	    dGeomColliderMergeContactsValue_Full;// = 3
-	}
-
-	/**
-	 * 
-	 *
-	 * @author Tilmann Zaeschke
-	 * @deprecated not implemented yet.
-	 */
-	static interface DataValue {};
-	
-	/**
-	 * Execute low level control operation for geometry.
-	 *
-	 * The variable the dataSize points to must be initialized before the call.
-	 * If the size does not match the one expected for the control class/code function
-	 * changes it to the size expected and returns failure. This implies the function 
-	 * can be called with NULL data and zero size to test if control class/code is supported
-	 * and obtain required data size for it.
-	 * <p>
-	 * dGeomCommonAnyControlCode applies to any control class and returns success if 
-	 * at least one control code is available for the given class with given geom.
-	 * <br>
-	 * Currently there are the folliwing control classes supported:<br>
-	 * <li> dGeomColliderControlClass</li>
-	 * <p>
-	 * For dGeomColliderControlClass there are the following codes available:<br>
-	 *  <li> dGeomColliderSetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)</li>
-	 *  <li> dGeomColliderGetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)</li>
-	 * 
-	 * @param controlClass   the control class
-	 * @param controlCode   the control code for the class
-	 * @param dataValue   the control argument pointer
-	 * @param dataSize   the control argument size provided or expected
-	 * @return Boolean execution status
-	 */
-	boolean lowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
-			DataValue dataValue, RefInt dataSize);
+//	enum CONTROL_CLASS {
+//	    dGeomCommonControlClass,// = 0,
+//	    dGeomColliderControlClass;// = 1
+//	}
+//
+//	enum CONTROL_CODE {
+//	    dGeomCommonAnyControlCode,// = 0,
+//	    dGeomColliderSetMergeSphereContactsControlCode,// = 1,
+//	    dGeomColliderGetMergeSphereContactsControlCode;// = 2
+//	}
+//
+//	enum COLLIDER_MERGE_CONTACTS_VALUE {
+//	    dGeomColliderMergeContactsValue__Default,// = 0, // Used with Set... to restore default value
+//	    dGeomColliderMergeContactsValue_None,// = 1,
+//	    dGeomColliderMergeContactsValue_Normals,// = 2,
+//	    dGeomColliderMergeContactsValue_Full;// = 3
+//	}
+//
+//	/**
+//	 * 
+//	 *
+//	 * @author Tilmann Zaeschke
+//	 * @deprecated not implemented yet.
+//	 */
+//	static interface DataValue {};
+//	
+//	/**
+//	 * Execute low level control operation for geometry.
+//	 *
+//	 * The variable the dataSize points to must be initialized before the call.
+//	 * If the size does not match the one expected for the control class/code function
+//	 * changes it to the size expected and returns failure. This implies the function 
+//	 * can be called with NULL data and zero size to test if control class/code is supported
+//	 * and obtain required data size for it.
+//	 * <p>
+//	 * dGeomCommonAnyControlCode applies to any control class and returns success if 
+//	 * at least one control code is available for the given class with given geom.
+//	 * <br>
+//	 * Currently there are the folliwing control classes supported:<br>
+//	 * <li> dGeomColliderControlClass</li>
+//	 * <p>
+//	 * For dGeomColliderControlClass there are the following codes available:<br>
+//	 *  <li> dGeomColliderSetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)</li>
+//	 *  <li> dGeomColliderGetMergeSphereContactsControlCode (arg of type int, dGeomColliderMergeContactsValue_*)</li>
+//	 * 
+//	 * @param controlClass   the control class
+//	 * @param controlCode   the control code for the class
+//	 * @param dataValue   the control argument pointer
+//	 * @param dataSize   the control argument size provided or expected
+//	 * @return Boolean execution status
+//	 */
+//	boolean lowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
+//			DataValue dataValue, RefInt dataSize);
 
 
 	/**

@@ -44,7 +44,6 @@ import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactBounce;
 import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeHelper.areConnectedExcluding;
 
 import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
@@ -179,7 +178,7 @@ class DemoBoxstack extends dsFunctions {
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
-		if (b1!=null && b2!=null && areConnectedExcluding (b1,b2,DContactJoint.class)) {
+		if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding (b1,b2,DContactJoint.class)) {
 			return;
 		}
 

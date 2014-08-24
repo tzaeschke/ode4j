@@ -138,24 +138,6 @@ public interface DHeightfieldData {
 			boolean bCopyHeightData, double width, double depth,
 			int widthSamples, int depthSamples, double scale, double offset,
 			double thickness, boolean bWrap);
-	/**
-	 * 
-	 * @param pHeightData
-	 * @param bCopyHeightData
-	 * @param width
-	 * @param depth
-	 * @param widthSamples
-	 * @param depthSamples
-	 * @param scale
-	 * @param offset
-	 * @param thickness
-	 * @param bWrap
-	 * @deprecated Please use build(byte[], ...) instead.
-	 */
-	void buildByte(byte[] pHeightData,
-			boolean bCopyHeightData, double width, double depth,
-			int widthSamples, int depthSamples, double scale, double offset,
-			double thickness, boolean bWrap);
 	
 	/**
 	 * Configures a dHeightfieldData to use height data in short format.

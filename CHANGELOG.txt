@@ -14,7 +14,9 @@ Done:
 -- Fixed bug in dMatrix3Inv() --> Calculation was incorrect
 -- Fixed bug in DObject --> destroying joints might have crashed
 -- Fixed bug: Calling destroy() on a space with a Heightfield cause hang. 
--- Removed GeomTransform
+-- Removed GeomTransform and other deprecated stuff
+-- Java 1.6 again
+-- Now passes strict -Xlint:all / -Werror builds
 
 Demos:
 - DemoBoxstack has MT disabled.

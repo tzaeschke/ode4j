@@ -598,16 +598,16 @@ public abstract class DxGeom extends DBase implements DGeom {
         return iRequiresSize == 0;
 	} 
 
-	@SuppressWarnings("deprecation")
-	boolean controlGeometry(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
-			DataValue dataValue, RefInt dataSize) {
-	    throw new IllegalArgumentException("Control class/code is not supported for current geom");
-//	   dAASSERT(false && "Control class/code is not supported for current geom");
-//
-//	   //*dataSize = 0;
-//	   dataSize.set(0);
-//	   return false;
-	 }
+//	@SuppressWarnings("deprecation")
+//	boolean controlGeometry(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
+//			DataValue dataValue, RefInt dataSize) {
+//	    throw new IllegalArgumentException("Control class/code is not supported for current geom");
+////	   dAASSERT(false && "Control class/code is not supported for current geom");
+////
+////	   //*dataSize = 0;
+////	   dataSize.set(0);
+////	   return false;
+//	 }
 	
 	// ************ TZ from collision_kernel.cpp ********************
 
@@ -1011,19 +1011,19 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 
 
-	@SuppressWarnings("deprecation")
-	boolean dGeomLowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
-			DataValue dataValue, RefInt dataSize) {
-	    dAASSERT (dataSize);
-
-	    //if (!dataSize) {
-	    if (dataSize == null) {
-	        return false;
-	    }
-
-	    boolean result = controlGeometry(controlClass, controlCode, dataValue, dataSize);
-	    return result;
-	}
+//	@SuppressWarnings("deprecation")
+//	boolean dGeomLowLevelControl(CONTROL_CLASS controlClass, CONTROL_CODE controlCode, 
+//			DataValue dataValue, RefInt dataSize) {
+//	    dAASSERT (dataSize);
+//
+//	    //if (!dataSize) {
+//	    if (dataSize == null) {
+//	        return false;
+//	    }
+//
+//	    boolean result = controlGeometry(controlClass, controlCode, dataValue, dataSize);
+//	    return result;
+//	}
 
 
 //	/** **************************************************************************
@@ -1950,12 +1950,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 		dGeomCopyRotation(R);
 	}
 
-    @SuppressWarnings("deprecation")
-	@Override
-    public boolean lowLevelControl(CONTROL_CLASS controlClass,
-            CONTROL_CODE controlCode, DataValue dataValue, RefInt dataSize) {
-        return dGeomLowLevelControl(controlClass, controlCode, dataValue, dataSize);
-    }
+//    @SuppressWarnings("deprecation")
+//	@Override
+//    public boolean lowLevelControl(CONTROL_CLASS controlClass,
+//            CONTROL_CODE controlCode, DataValue dataValue, RefInt dataSize) {
+//        return dGeomLowLevelControl(controlClass, controlCode, dataValue, dataSize);
+//    }
 
     @Override
     public void getRelPointPos(double px, double py, double pz, DVector3 result) {

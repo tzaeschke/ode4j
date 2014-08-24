@@ -215,15 +215,37 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 
 	@Override
 	public double getParam(PARAM_N parameter) {
-		//TODO use 1 for x and 2 for y ?
-		throw new UnsupportedOperationException();
+		// use 1 for x and 2 for y ?
+		switch (parameter) {
+		case dParamFMax1:
+		case dParamVel1:
+			return motor_x.get(parameter.toSUB());
+		case dParamFMax2:
+		case dParamVel2:
+			return motor_y.get(parameter.toSUB());
+
+		default:
+			throw new UnsupportedOperationException();
+		}
 	}
 
 
 	@Override
 	public void setParam(PARAM_N parameter, double value) {
-		// TODO use 1 for x and 2 for y ?
-		throw new UnsupportedOperationException();
+		// use 1 for x and 2 for y ?
+		switch (parameter) {
+		case dParamFMax1:
+		case dParamVel1:
+			motor_x.set(parameter.toSUB(), value);
+			break;
+		case dParamFMax2:
+		case dParamVel2:
+			motor_y.set(parameter.toSUB(), value);
+			break;
+
+		default:
+			throw new UnsupportedOperationException();
+		}
 	}
 
 
@@ -267,20 +289,6 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	public void setYParamVel(double d) {
 		dJointSetPlane2DYParam(PARAM_N.dParamVel1, d);
 	}
-
-	/** @deprecated TZ do not use. */
-	@Override
-	public void setXParam(PARAM parameter, double value) {
-		motor_x.set(parameter, value);
-	}
-
-	/** @deprecated TZ do not use. */
-	@Override
-	public void setYParam(PARAM parameter, double value) {
-		motor_y.set(parameter, value);
-	}
-
-
 
 	@Override
 	public void setAngleParam(PARAM parameter, double value) {

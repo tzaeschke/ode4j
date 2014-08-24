@@ -24,7 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal.processmem;
 
-import org.ode4j.ode.DWorld;
+import org.ode4j.ode.internal.DxWorld;
 
 
 /**
@@ -49,9 +49,9 @@ public class DxUtil {
     @SuppressWarnings("deprecation")
 	static final DxWorldProcessMemoryManager g_WorldProcessMallocMemoryManager = 
         new DxWorldProcessMemoryManager(
-        		DWorld.DWorldStepMemoryFunctionsInfo.alloc_block,
-        		DWorld.DWorldStepMemoryFunctionsInfo.shrink_block,
-        		DWorld.DWorldStepMemoryFunctionsInfo.free_block);
+        		DxWorld.DWorldStepMemoryFunctionsInfo.alloc_block,
+        		DxWorld.DWorldStepMemoryFunctionsInfo.shrink_block,
+        		DxWorld.DWorldStepMemoryFunctionsInfo.free_block);
     /*extern */
     static final DxWorldProcessMemoryReserveInfo g_WorldProcessDefaultReserveInfo = 
         new DxWorldProcessMemoryReserveInfo(

@@ -47,7 +47,6 @@ import org.ode4j.ode.DJoint.PARAM_N;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.math.DVector3;
 
-@SuppressWarnings("deprecation")
 public abstract class ApiCppJoint extends ApiCppOther {
 
 	private static final int P_OFS_1 = 0x000;
@@ -1076,20 +1075,20 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	}
 
 
-	/**
-	 * This function set prismatic axis of the joint and also set the position
-	 * of the joint.
-	 *
-	 * @param j The joint affected by this function
-	 * @param x The x component of the axis
-	 * @param y The y component of the axis
-	 * @param z The z component of the axis
-	 * @param dx The Initial position of the prismatic join in the x direction
-	 * @param dy The Initial position of the prismatic join in the y direction
-	 * @param dz The Initial position of the prismatic join in the z direction
-	 * @deprecated TZ
-	 */
-	//ODE_API_DEPRECATED ODE_API 
+//	/**
+//	 * This function set prismatic axis of the joint and also set the position
+//	 * of the joint.
+//	 *
+//	 * @param j The joint affected by this function
+//	 * @param x The x component of the axis
+//	 * @param y The y component of the axis
+//	 * @param z The z component of the axis
+//	 * @param dx The Initial position of the prismatic join in the x direction
+//	 * @param dy The Initial position of the prismatic join in the y direction
+//	 * @param dz The Initial position of the prismatic join in the z direction
+//	 * @deprecated TZ
+//	 */
+//	//ODE_API_DEPRECATED ODE_API 
 //	void dJointSetPistonAxisDelta (DPistonJoint j, double x, double y, double z, double ax, double ay, double az) {
 //		throw new UnsupportedOperationException();
 //	}
@@ -1244,7 +1243,17 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetPlane2DXParam (DPlane2DJoint j, int parameter, double value) {
-		j.setXParam(PARAM.toEnum(parameter), value);
+		switch (PARAM.toEnum(parameter)) {
+		case dParamFMax:
+			j.setXParamFMax(value);
+			break;
+		case dParamVel:
+			j.setXParamVel(value);
+			break;
+		default:
+			break;
+		
+		}
 	}
 
 
@@ -1252,7 +1261,17 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 */
 	//ODE_API 
 	public static void dJointSetPlane2DYParam (DPlane2DJoint j, int parameter, double value) {
-		j.setYParam(PARAM.toEnum(parameter), value);
+		switch (PARAM.toEnum(parameter)) {
+		case dParamFMax:
+			j.setYParamFMax(value);
+			break;
+		case dParamVel:
+			j.setYParamVel(value);
+			break;
+		default:
+			break;
+		
+		}
 	}
 
 

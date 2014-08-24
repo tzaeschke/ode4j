@@ -34,7 +34,6 @@ import org.ode4j.ode.OdeHelper;
  * reason to use separate worlds is to simulate systems at different rates.
  * Most applications will only need one world.
  */
-@SuppressWarnings("deprecation")
 public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
@@ -378,46 +377,48 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	}
 
 
-	/**
-	 * Get auto disable linear average threshold for newly created bodies.
-	 * @return the threshold
-	 */
-	//ODE_API 
-	public static double dWorldGetAutoDisableLinearAverageThreshold (DWorld w) {
-		return w.getAutoDisableLinearAverageThreshold();
-	}
+	//TODO remove these were never implemented in ODE
+//	/**
+//	 * Get auto disable linear average threshold for newly created bodies.
+//	 * @return the threshold
+//	 */
+//	//ODE_API 
+//	public static double dWorldGetAutoDisableLinearAverageThreshold (DWorld w) {
+//		return w.getAutoDisableLinearAverageThreshold();
+//	}
+//
+//
+//	/**
+//	 * Set auto disable linear average threshold for newly created bodies.
+//	 * @param linear_average_threshold default is 0.01
+//	 */
+//	//ODE_API 
+//	public static void dWorldSetAutoDisableLinearAverageThreshold (
+//			DWorld w, double linear_average_threshold) {
+//		w.setAutoDisableLinearAverageThreshold(linear_average_threshold);
+//	}
 
 
-	/**
-	 * Set auto disable linear average threshold for newly created bodies.
-	 * @param linear_average_threshold default is 0.01
-	 */
-	//ODE_API 
-	public static void dWorldSetAutoDisableLinearAverageThreshold (
-			DWorld w, double linear_average_threshold) {
-		w.setAutoDisableLinearAverageThreshold(linear_average_threshold);
-	}
-
-
-	/**
-	 * Get auto disable angular average threshold for newly created bodies.
-	 * @return the threshold
-	 */
-	//ODE_API 
-	public static double dWorldGetAutoDisableAngularAverageThreshold (DWorld w) {
-		return w.getAutoDisableAngularAverageThreshold();
-	}
-
-
-	/**
-	 * Set auto disable angular average threshold for newly created bodies.
-	 * @param angular_average_threshold default is 0.01
-	 */
-	//ODE_API 
-	public static void dWorldSetAutoDisableAngularAverageThreshold (
-			DWorld w, double angular_average_threshold) {
-		w.setAutoDisableAngularAverageThreshold(angular_average_threshold);
-	}
+	//TODO remove these were never implemented in ODE
+//	/**
+//	 * Get auto disable angular average threshold for newly created bodies.
+//	 * @return the threshold
+//	 */
+//	//ODE_API 
+//	public static double dWorldGetAutoDisableAngularAverageThreshold (DWorld w) {
+//		return w.getAutoDisableAngularAverageThreshold();
+//	}
+//
+//
+//	/**
+//	 * Set auto disable angular average threshold for newly created bodies.
+//	 * @param angular_average_threshold default is 0.01
+//	 */
+//	//ODE_API 
+//	public static void dWorldSetAutoDisableAngularAverageThreshold (
+//			DWorld w, double angular_average_threshold) {
+//		w.setAutoDisableAngularAverageThreshold(angular_average_threshold);
+//	}
 
 
 	/**

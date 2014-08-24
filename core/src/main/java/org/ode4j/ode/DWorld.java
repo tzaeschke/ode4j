@@ -26,12 +26,6 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.internal.processmem.DxUtil;
-import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
-import org.ode4j.ode.internal.processmem.DxUtil.alloc_block_fn_t;
-import org.ode4j.ode.internal.processmem.DxUtil.free_block_fn_t;
-import org.ode4j.ode.internal.processmem.DxUtil.shrink_block_fn_t;
-import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.threading.DThreadingImplementation;
 import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
 
@@ -187,7 +181,6 @@ public interface DWorld {
 	 */
 	double getCFM() ;
 
-	@Deprecated
 	public static int dWORLDSTEP_THREADCOUNT_UNLIMITED = 0;
 
 	/**
@@ -334,78 +327,6 @@ public interface DWorld {
 	 */
 	boolean setStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo/*=NULL*/);
 
-	/**
-	* World stepping memory manager descriptor structure
-	*
-	* This structure is intended to define the functions of memory manager to be used
-	* with world stepping functions.
-	*
-	* <code>struct_size</code> should be assigned the size of the structure
-	*
-	* <code>alloc_block</code> is a function to allocate memory block of given size.
-	*
-	* <code>shrink_block</code> is a function to shrink existing memory block to a smaller size.
-	* It must preserve the contents of block head while shrinking. The new block size
-	* is guaranteed to be always less than the existing one.
-	*
-	* <code>free_block</code> is a function to delete existing memory block.
-	*
-	* @see DWorld#setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
-	* @deprecated Do not use ! (TZ)
-	*/
-	public static class DWorldStepMemoryFunctionsInfo 
-	{
-	    public int struct_size;
-	    //TODO, already in DxUtil (TZ) -> Should not be public in Java.
-	    //	  void *(*alloc_block)(size_t block_size);
-	    public static final DxUtil.alloc_block_fn_t alloc_block = new alloc_block_fn_t() {
-			@Override
-			public BlockPointer run(int block_size) {
-				return new BlockPointer(new DxWorldProcessMemArena(), 0);
-			}
-		};
-	    //	  void *(*shrink_block)(void *block_pointer, size_t block_current_size, size_t block_smaller_size);
-	    public static final DxUtil.shrink_block_fn_t shrink_block = new shrink_block_fn_t() {
-			@Override
-			public BlockPointer run(BlockPointer block_pointer, int block_current_size,
-					int block_smaller_size) {
-				//block_pointer.setSize(block_smaller_size);
-				return block_pointer;
-			}
-		};
-	    //	  void (*free_block)(void *block_pointer, size_t block_current_size);
-	    public static final DxUtil.free_block_fn_t free_block = new free_block_fn_t() {
-			@Override
-			public void run(BlockPointer block_pointer, int block_current_size) {
-				//TODO?
-			}
-		};
-	};
-
-	/**
-	* Set memory manager for world to be used with simulation stepping functions
-	*
-	* The function allows to customize memory manager to be used for internal
-	* memory allocation during simulation for a world. By default, 
-	* <code> dAlloc dRealloc dFree</code>
-	* based memory manager is used.
-	*
-	* Passing <code>memfuncs</code> argument as NULL results in memory manager being
-	* reset to default one as if the world has been just created. The content of 
-	* <code>memfuncs</code> structure is copied internally and does not need to remain valid
-	* after the call returns.
-	*
-	* If the world uses working memory sharing, changing memory manager
-	* affects all the worlds linked together. 
-	*
-	* Failure result status means a memory allocation failure.
-	*
-	* @param memfuncs Null or a pointer to memory manager descriptor structure.
-	* @return 1 for success and 0 for failure.
-	*
-	* @see #useSharedWorkingMemory(DWorld)
-	*/
-	boolean setStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs);
 
 	/**
 	 * Assign threading implementation to be used for [quick]stepping the world.
@@ -562,36 +483,36 @@ public interface DWorld {
 	double getAutoDisableAngularThreshold();
 
 
-	/**
-	 * Get auto disable linear average threshold for newly created bodies.
-	 * @return the threshold
-	 * @deprecated Not implemented in ODE.
-	 */
-	double getAutoDisableLinearAverageThreshold ();
-
-
-	/**
-	 * Set auto disable linear average threshold for newly created bodies.
-	 * @param linear_average_threshold default is 0.01
-	 * @deprecated Not implemented in ODE.
-	 */
-	void setAutoDisableLinearAverageThreshold (double linear_average_threshold);
-
-
-	/**
-	 * Get auto disable angular average threshold for newly created bodies.
-	 * @return the threshold
-	 * @deprecated Not implemented in ODE.
-	 */
-	double getAutoDisableAngularAverageThreshold ();
-
-
-	/**
-	 * Set auto disable angular average threshold for newly created bodies.
-	 * @param angular_average_threshold default is 0.01
-	 * @deprecated Not implemented in ODE.
-	 */
-	void setAutoDisableAngularAverageThreshold (double angular_average_threshold);
+//	/**
+//	 * Get auto disable linear average threshold for newly created bodies.
+//	 * @return the threshold
+//	 * @deprecated Not implemented in ODE.
+//	 */
+//	double getAutoDisableLinearAverageThreshold ();
+//
+//
+//	/**
+//	 * Set auto disable linear average threshold for newly created bodies.
+//	 * @param linear_average_threshold default is 0.01
+//	 * @deprecated Not implemented in ODE.
+//	 */
+//	void setAutoDisableLinearAverageThreshold (double linear_average_threshold);
+//
+//
+//	/**
+//	 * Get auto disable angular average threshold for newly created bodies.
+//	 * @return the threshold
+//	 * @deprecated Not implemented in ODE.
+//	 */
+//	double getAutoDisableAngularAverageThreshold ();
+//
+//
+//	/**
+//	 * Set auto disable angular average threshold for newly created bodies.
+//	 * @param angular_average_threshold default is 0.01
+//	 * @deprecated Not implemented in ODE.
+//	 */
+//	void setAutoDisableAngularAverageThreshold (double angular_average_threshold);
 
 
 	/**

@@ -737,15 +737,6 @@ public class DxHeightfieldData implements DHeightfieldData {
 	}
 		
 	@Override
-	public void buildByte(
-			final byte[] pHeightData, boolean bCopyHeightData,
-			double width, double depth, int widthSamples, int depthSamples,
-			double scale, double offset, double thickness, boolean bWrap ) {
-		build( pHeightData, bCopyHeightData, 
-				width, depth, widthSamples, depthSamples, scale, offset, thickness, bWrap);
-	}
-
-	@Override
 	public void build(
 			final byte[] pHeightData, boolean bCopyHeightData,
 			double width, double depth, int widthSamples, int depthSamples,

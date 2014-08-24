@@ -36,11 +36,15 @@ package org.ode4j.ode;
  */
 public interface DPlane2DJoint extends DJoint {
 
-	/** @deprecated Do not use. */
+	/** 
+	 * Uses 1 for x and 2 for y.
+	 */
 	@Override
 	double getParam(PARAM_N parameter);
 
-	/** @deprecated Do not use. */
+	/** 
+	 * Uses 1 for x and 2 for y.
+	 */
 	@Override
 	void setParam(PARAM_N parameter, double value);
 
@@ -59,17 +63,4 @@ public interface DPlane2DJoint extends DJoint {
 	 */
 	void setAngleParam(PARAM parameter, double value);
 	
-	
-	/**
-	 * @deprecated TZ Use above methods instead. 
-	 */
-	void setXParam(PARAM parameter, double value);
-	
-	
-	/**
-	 * @deprecated TZ Use above methods instead. 
-	 */
-	void setYParam(PARAM parameter, double value);
-
-
 }

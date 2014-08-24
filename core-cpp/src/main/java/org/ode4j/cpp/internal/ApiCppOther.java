@@ -50,7 +50,7 @@ public abstract class ApiCppOther extends ApiCppMass {
 	/**
 	 * Utility function.
 	 * @return 1 if the two bodies are connected together by
-	 * a joint that does not have type @arg{joint_type}, otherwise return 0.
+	 * a joint that does not have type {@code joint_type}, otherwise return 0.
 	 * @param body1 A body to check.
 	 * @param body2 A body to check.
 	 * @param joint_type is a dJointTypeXXX constant.
@@ -60,9 +60,24 @@ public abstract class ApiCppOther extends ApiCppMass {
 	 * bodies that already have contacts.
 	 */
 	//ODE_API 
-	@SafeVarargs
 	public static boolean dAreConnectedExcluding (DBody body1, DBody body2, 
 			Class<? extends DJoint> ... joint_type) {
+		return OdeHelper.areConnectedExcluding(body1, body2, joint_type);
+	}
+	/**
+	 * Utility function.
+	 * @return 1 if the two bodies are connected together by
+	 * a joint that does not have type {@code joint_type}, otherwise return 0.
+	 * @param body1 A body to check.
+	 * @param body2 A body to check.
+	 * @param joint_type is a dJointTypeXXX constant.
+	 * This is useful for deciding whether to add contact joints between two bodies:
+	 * if they are already connected by non-contact joints then it may not be
+	 * appropriate to add contacts, however it is okay to add more contact between-
+	 * bodies that already have contacts.
+	 */
+	public static boolean dAreConnectedExcluding (DBody body1, DBody body2, 
+			Class<? extends DJoint> joint_type) {
 		return OdeHelper.areConnectedExcluding(body1, body2, joint_type);
 	}
 
