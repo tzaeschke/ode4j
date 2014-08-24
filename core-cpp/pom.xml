@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.ode4j</groupId>
         <artifactId>parent</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.3.0</version>
     </parent>
 
     <artifactId>core-cpp</artifactId>
