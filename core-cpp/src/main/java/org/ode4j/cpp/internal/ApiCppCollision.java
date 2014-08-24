@@ -37,18 +37,17 @@ import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DGeomTransform;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DHeightfield;
+import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.DPlane;
 import org.ode4j.ode.DRay;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
-import org.ode4j.ode.internal.DxCollisionUtil;
 import org.ode4j.ode.internal.DxBox;
+import org.ode4j.ode.internal.DxCollisionUtil;
 import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
@@ -507,6 +506,9 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	public static void dGeomSetOffsetPosition (DGeom geom, double x, double y, double z) {
 		geom.setOffsetPosition(x, y, z);
+	}
+	public static void dGeomSetOffsetPosition (DGeom geom, DVector3C xyz) {
+		geom.setOffsetPosition(xyz);
 	}
 
 
@@ -1174,42 +1176,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	//ODE_API 
 	public static boolean dGeomRayGetClosestHit (DRay g) {
 		return g.getClosestHit();
-	}
-
-	/** TZ @deprecated (see Wiki) */
-	//ODE_API 
-	public static DGeomTransform dCreateGeomTransform (DSpace space) {
-		return OdeHelper.createGeomTransform(space);
-	}
-	/** TZ @deprecated (see Wiki) */
-	//ODE_API 
-	public static void dGeomTransformSetGeom (DGeomTransform g, DGeom obj) {
-		g.setGeom(obj);
-	}
-	/** TZ @deprecated (see Wiki) */
-	//ODE_API 
-	public static DGeom dGeomTransformGetGeom (DGeomTransform g) {
-		return g.getGeom();
-	}
-	/** TZ @deprecated (see Wiki) */
-	//ODE_API 
-	public static void dGeomTransformSetCleanup (DGeomTransform g, boolean mode) {
-		g.setCleanup(mode);
-	}
-	/** TZ @deprecated (see Wiki) */
-	//ODE_API 
-	int dGeomTransformGetCleanup (DGeomTransform g) {
-		throw new UnsupportedOperationException();
-	}
-	/** TZ @deprecated (see Wiki) */
-	//ODE_API 
-	void dGeomTransformSetInfo (DGeomTransform g, int mode) {
-		throw new UnsupportedOperationException();
-	}
-	/** TZ @deprecated (see Wiki) */
-	//ODE_API 
-	int dGeomTransformGetInfo (DGeomTransform g) {
-		throw new UnsupportedOperationException();
 	}
 
 

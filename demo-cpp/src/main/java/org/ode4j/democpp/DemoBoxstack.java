@@ -32,7 +32,6 @@ import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetMass;
 import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetPosition;
 import static org.ode4j.cpp.internal.ApiCppBody.dBodyGetRotation;
 import static org.ode4j.cpp.internal.ApiCppBody.dBodyIsEnabled;
-import static org.ode4j.cpp.internal.ApiCppBody.dBodySetData;
 import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
 import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
 import static org.ode4j.cpp.internal.ApiCppBody.dBodySetRotation;
@@ -41,7 +40,6 @@ import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCapsule;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCreateConvex;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCylinder;
-import static org.ode4j.cpp.internal.ApiCppCollision.dCreateGeomTransform;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
@@ -55,12 +53,7 @@ import static org.ode4j.cpp.internal.ApiCppCollision.dGeomGetRotation;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetPosition;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetRotation;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSphereGetRadius;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformGetGeom;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformSetCleanup;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformSetGeom;
 import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dHashSpaceCreate;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
@@ -115,8 +108,6 @@ import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactBounce;
 import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dMultiply0_333;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.fclose;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.fopen;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
@@ -138,7 +129,6 @@ import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
@@ -148,7 +138,6 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
-@SuppressWarnings("deprecation")
 class DemoBoxstack extends dsFunctions {
 
 	//<---- Convex Object
@@ -200,33 +189,14 @@ class DemoBoxstack extends dsFunctions {
 	};
 	//----> Convex Object
 
-	// select correct drawing functions
-
-	//#ifdef dDOUBLE
-	//#define dsDrawBox dsDrawBoxD
-	//#define dsDrawSphere dsDrawSphereD
-	//#define dsDrawCylinder dsDrawCylinderD
-	//#define dsDrawCapsule dsDrawCapsuleD
-	//#define dsDrawConvex dsDrawConvexD
-	//#endif
-
-
 	// some constants
 
-	//#define NUM 100			// max number of objects
-	//#define DENSITY (5.0)		// density of all objects
-	//#define GPB 3			// maximum number of geometries per body
-	//#define MAX_CONTACTS 8          // maximum number of contact points per body
-	//#define MAX_FEEDBACKNUM 20
-	//#define GRAVITY         REAL(0.5)
-	//#define USE_GEOM_OFFSET 1
 	private static final int NUM = 100;			// max number of objects
 	private static final double DENSITY =(5.0);		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 8;          // maximum number of contact points per body
 	private static final int MAX_FEEDBACKNUM = 20;
 	private static final double GRAVITY = 0.5f;
-	private static final boolean USE_GEOM_OFFSET = true;
 
 	// dynamics and collision objects
 
@@ -268,7 +238,8 @@ class DemoBoxstack extends dsFunctions {
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = dGeomGetBody(o1);
 		DBody b2 = dGeomGetBody(o2);
-		if (b1!=null && b2!=null && dAreConnectedExcluding (b1,b2,DContactJoint.class)) return;
+		if (b1!=null && b2!=null && dAreConnectedExcluding (b1,b2,DContactJoint.class)) 
+			return;
 
 		//dContact[] contact=new dContact[MAX_CONTACTS];   // up to MAX_CONTACTS contacts per box-box
 		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
@@ -291,7 +262,10 @@ class DemoBoxstack extends dsFunctions {
 			for (i=0; i<numc; i++) {
 				DJoint c = dJointCreateContact (world,contactgroup,contacts.get(i));
 				dJointAttach (c,b1,b2);
-				if (show_contacts) dsDrawBox (contacts.get(i).geom.pos,RI,ss);
+				if (show_contacts) {
+	                dsSetColor(0,0,1);
+					dsDrawBox (contacts.get(i).geom.pos,RI,ss);
+				}
 
 				if (doFeedback && (b1==obj[selected].body || b2==obj[selected].body))
 				{
@@ -339,7 +313,7 @@ class DemoBoxstack extends dsFunctions {
 	}
 
 
-	private char locase (char c)
+	private char locase(char c)
 	{
 		//  if (c >= 'A' && c <= 'Z') return c - ('a'-'A');
 		//  else return c;
@@ -356,68 +330,66 @@ class DemoBoxstack extends dsFunctions {
 		int j,k;
 		double[] sides= new double[3];
 		DMass m = dMassCreate();
-		boolean setBody;
+		boolean setBody = false;
 
 		cmd = locase (cmd);
-		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'y' || cmd == 'v')
-		{
-			setBody = false;
+		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'y' || cmd == 'v') {
 			if (num < NUM) {
 				i = num;
 				num++;
-			}
-			else {
-				i = nextobj;
-				nextobj++;
-				if (nextobj >= num) nextobj = 0;
+			} else {
+	            // recycle existing object
+	            i = nextobj++;
+	            nextobj %= num; // wrap-around if needed
 
 				// destroy the body and geoms for slot i
 				dBodyDestroy (obj[i].body);
-				for (k=0; k < GPB; k++) {
-					if (obj[i].geom[k]!=null) dGeomDestroy (obj[i].geom[k]);
+	            obj[i].body = null;
+
+	            for (k=0; k < GPB; k++) {
+					if (obj[i].geom[k]!=null) {
+						dGeomDestroy (obj[i].geom[k]);
+	                    obj[i].geom[k] = null;
+					}
 				}
 				//memset (obj[i],0);//,sizeof(obj[i]));
 				obj[i] = new MyObject();
 			}
 
 			obj[i].body = dBodyCreate (world);
-			for (k=0; k<3; k++) sides[k] = dRandReal()*0.5+0.1;
+			for (k=0; k<3; k++) 
+				sides[k] = dRandReal()*0.5+0.1;
 
 			DMatrix3 R = new DMatrix3();
-			if (random_pos) 
-			{
+			if (random_pos)	{
 				dBodySetPosition (obj[i].body,
 						dRandReal()*2-1,dRandReal()*2-1,dRandReal()+2);
 				dRFromAxisAndAngle (R,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 						dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
-			}
-			else 
-			{
+			} else {
+	            // higher than highest body position
 				double maxheight = 0;
-				for (k=0; k<num; k++) 
-				{
+				for (k=0; k<num; k++) {
 					final DVector3C pos = dBodyGetPosition (obj[k].body);
-					if (pos.get(2) > maxheight) maxheight = pos.get(2);
+					if (pos.get(2) > maxheight) 
+						maxheight = pos.get(2);
 				}
 				dBodySetPosition (obj[i].body, 0,0,maxheight+1);
 				R.setIdentity();
 				//dRFromAxisAndAngle (R,0,0,1,/*dRandReal()*10.0-5.0*/0);
 			}
 			dBodySetRotation (obj[i].body,R);
-			dBodySetData (obj[i].body, i);//(void*) i);
 
 			if (cmd == 'b') {
 				dMassSetBox (m,DENSITY,sides[0],sides[1],sides[2]);
 				obj[i].geom[0] = dCreateBox (space,sides[0],sides[1],sides[2]);
-			}
-			else if (cmd == 'c') {
+				
+			} else if (cmd == 'c') {
 				sides[0] *= 0.5;
 				dMassSetCapsule (m,DENSITY,3,sides[0],sides[1]);
 				obj[i].geom[0] = dCreateCapsule (space,sides[0],sides[1]);
-			}
-			//<---- Convex Object    
-			else if (cmd == 'v') 
-			{
+				
+			} else if (cmd == 'v') {
 				dMassSetBox (m,DENSITY,0.25,0.25,0.25);
 				if (false) { //#if 0
 					obj[i].geom[0] = dCreateConvex (space,
@@ -434,18 +406,17 @@ class DemoBoxstack extends dsFunctions {
 									Sphere_pointcount,
 									Sphere_polygons);
 				} //#endif
-			}
-			//----> Convex Object
-			else if (cmd == 'y') {
+				
+			} else if (cmd == 'y') {
 				dMassSetCylinder (m,DENSITY,3,sides[0],sides[1]);
 				obj[i].geom[0] = dCreateCylinder (space,sides[0],sides[1]);
-			}
-			else if (cmd == 's') {
+				
+			} else if (cmd == 's') {
 				sides[0] *= 0.5;
 				dMassSetSphere (m,DENSITY,sides[0]);
 				obj[i].geom[0] = dCreateSphere (space,sides[0]);
-			}
-			else if (cmd == 'x' && USE_GEOM_OFFSET) {
+				
+			} else if (cmd == 'x') {
 				setBody = true;
 				// start accumulating masses for the encapsulated geometries
 				DMass m2 = dMassCreate();
@@ -464,12 +435,10 @@ class DemoBoxstack extends dsFunctions {
 						double radius = dRandReal()*0.25+0.05;
 						obj[i].geom[k] = dCreateSphere (space,radius);
 						dMassSetSphere (m2,DENSITY,radius);
-					}
-					else if (k==1) {
+					} else if (k==1) {
 						obj[i].geom[k] = dCreateBox (space,sides[0],sides[1],sides[2]);
 						dMassSetBox (m2,DENSITY,sides[0],sides[1],sides[2]);
-					}
-					else {
+					} else {
 						double radius = dRandReal()*0.1+0.05;
 						double length = dRandReal()*1.0+0.1;
 						obj[i].geom[k] = dCreateCapsule (space,radius,length);
@@ -500,98 +469,43 @@ class DemoBoxstack extends dsFunctions {
 				dBodySetMass (obj[i].body,m);
 
 			}
-			else if (cmd == 'x') {
-				DGeom[] g2=new DGeom[GPB];		// encapsulated geometries
-				double[][] dpos= new double[GPB][3];	// delta-positions for encapsulated geometries
-
-				// start accumulating masses for the encapsulated geometries
-				DMass m2 = dMassCreate();
-				dMassSetZero (m);
-
-				// set random delta positions
-				for (j=0; j<GPB; j++) {
-					for (k=0; k<3; k++) dpos[j][k] = dRandReal()*0.3-0.15;
-				}
-
-				for (k=0; k<GPB; k++) {
-					obj[i].geom[k] = dCreateGeomTransform (space);
-					dGeomTransformSetCleanup ((DGeomTransform)obj[i].geom[k],true);
-					if (k==0) {
-						double radius = dRandReal()*0.25+0.05;
-						g2[k] = dCreateSphere (null,radius);
-						dMassSetSphere (m2,DENSITY,radius);
-					}
-					else if (k==1) {
-						g2[k] = dCreateBox (null,sides[0],sides[1],sides[2]);
-						dMassSetBox (m2,DENSITY,sides[0],sides[1],sides[2]);
-					}
-					else {
-						double radius = dRandReal()*0.1+0.05;
-						double length = dRandReal()*1.0+0.1;
-						g2[k] = dCreateCapsule (null,radius,length);
-						dMassSetCapsule (m2,DENSITY,3,radius,length);
-					}
-					dGeomTransformSetGeom ((DGeomTransform)obj[i].geom[k],g2[k]);
-
-					// set the transformation (adjust the mass too)
-					dGeomSetPosition (g2[k],dpos[k][0],dpos[k][1],dpos[k][2]);
-					DMatrix3 Rtx = new DMatrix3();
-					dRFromAxisAndAngle (Rtx,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
-							dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
-					dGeomSetRotation (g2[k],Rtx);
-					dMassRotate (m2,Rtx);
-
-					// Translation *after* rotation
-					dMassTranslate (m2,dpos[k][0],dpos[k][1],dpos[k][2]);
-
-					// add to the total mass
-					dMassAdd (m,m2);
-				}
-
-				// move all encapsulated objects so that the center of mass is (0,0,0)
-				DVector3C m_c = m.getC();
-				for (k=0; k<GPB; k++) {
-					dGeomSetPosition (g2[k],
-							dpos[k][0]-m_c.get(0),
-							dpos[k][1]-m_c.get(1),
-							dpos[k][2]-m_c.get(2));
-				}
-				dMassTranslate (m,-m_c.get(0),-m_c.get(1),-m_c.get(2));
-			}
-
-			if (!setBody)
+	
+			if (!setBody) {// avoid calling for composite geometries
 				for (k=0; k < GPB; k++) {
-					if (obj[i].geom[k]!=null) dGeomSetBody (obj[i].geom[k],obj[i].body);
+					if (obj[i].geom[k]!=null) 
+						dGeomSetBody (obj[i].geom[k],obj[i].body);
 				}
 
-			dBodySetMass (obj[i].body,m);
+				dBodySetMass (obj[i].body,m);
+			}
 		}
 
 		if (cmd == ' ') {
 			selected++;
-			if (selected >= num) selected = 0;
-			if (selected < 0) selected = 0;
-		}
-		else if (cmd == 'd' && selected >= 0 && selected < num) {
+			if (selected >= num) 
+				selected = 0;
+			if (selected < 0) 
+				selected = 0;
+			
+		} else if (cmd == 'd' && selected >= 0 && selected < num) {
 			dBodyDisable (obj[selected].body);
-		}
-		else if (cmd == 'e' && selected >= 0 && selected < num) {
+			
+		} else if (cmd == 'e' && selected >= 0 && selected < num) {
 			dBodyEnable (obj[selected].body);
-		}
-		else if (cmd == 'a') {
-			show_aabb = !show_aabb;//^= 1;
-		}
-		else if (cmd == 't') {
-			show_contacts = !show_contacts;//^= 1;
-		}
-		else if (cmd == 'r') {
-			random_pos =!random_pos;//^= 1;
-		}
-		else if (cmd == '1') {
+			
+		} else if (cmd == 'a') {
+			show_aabb = !show_aabb;
+			
+		} else if (cmd == 't') {
+			show_contacts = !show_contacts;
+			
+		} else if (cmd == 'r') {
+			random_pos =!random_pos;
+			
+		} else if (cmd == '1') {
 			write_world = true;
-		}
-		else if (cmd == 'p'&& selected >= 0)
-		{
+			
+		} else if (cmd == 'p'&& selected >= 0) {
 			final DVector3C pos = dGeomGetPosition(obj[selected].geom[0]);
 			final DMatrix3C rot = dGeomGetRotation(obj[selected].geom[0]);
 			printf("POSITION:\n\t[%f,%f,%f]\n\n",pos.get(0),pos.get(1),pos.get(2));
@@ -599,8 +513,8 @@ class DemoBoxstack extends dsFunctions {
 					rot.get00(),rot.get01(),rot.get02(),//rot.get(3),
 					rot.get10(),rot.get11(),rot.get12(),//rot.get(7),
 					rot.get20(),rot.get21(),rot.get22());//,rot.get(11));
-		}
-		else if (cmd == 'f' && selected >= 0 && selected < num) {
+			
+		} else if (cmd == 'f' && selected >= 0 && selected < num) {
 			if (dBodyIsEnabled(obj[selected].body))
 				doFeedback = true;
 		}
@@ -615,26 +529,27 @@ class DemoBoxstack extends dsFunctions {
 	{
 		int i;
 
-		if (g==null) return;
-		if (pos==null) pos = dGeomGetPosition (g);
-		if (R==null) R = dGeomGetRotation (g);
+		if (g==null) 
+			return;
+		if (pos==null) 
+			pos = dGeomGetPosition (g);
+		if (R==null) 
+			R = dGeomGetRotation (g);
 
 		if (g instanceof DBox) {
 			DVector3 sides = new DVector3();
 			dGeomBoxGetLengths ((DBox)g,sides);
 			dsDrawBox (pos,R,sides);
-		}
-		else if (g instanceof DSphere) {
+			
+		} else if (g instanceof DSphere) {
 			dsDrawSphere (pos,R,dGeomSphereGetRadius ((DSphere)g));
-		}
-		else if (g instanceof DCapsule) {
+			
+		} else if (g instanceof DCapsule) {
 			RefDouble radius = new RefDouble(0),length=new RefDouble(0);
 			dGeomCapsuleGetParams ((DCapsule)g,radius,length);
 			dsDrawCapsule (pos,R,length.getF(),radius.getF());
-		}
-		//<---- Convex Object
-		else if (g instanceof DConvex) 
-		{
+			
+		} else if (g instanceof DConvex) {
 			//dVector3 sides={0.50,0.50,0.50};
 			if (false) {//if#
 				dsDrawConvex(pos,R,planes,
@@ -657,20 +572,7 @@ class DemoBoxstack extends dsFunctions {
 			dGeomCylinderGetParams ((DCylinder)g,radius,length);
 			dsDrawCylinder (pos,R,length.getF(),radius.getF());
 		}
-		else if (g instanceof DGeomTransform) {
-			DGeom g2 = dGeomTransformGetGeom ((DGeomTransform)g);
-			final DVector3C pos2 = dGeomGetPosition (g2);
-			final DMatrix3C R2 = dGeomGetRotation (g2);
-			DVector3 actual_pos = new DVector3();
-			DMatrix3 actual_R = new DMatrix3();
-			dMultiply0_331 (actual_pos,R,pos2);
-			//    actual_pos[0] += pos[0];
-			//    actual_pos[1] += pos[1];
-			//    actual_pos[2] += pos[2];
-			actual_pos.add(pos);
-			dMultiply0_333 (actual_R,R,R2);
-			drawGeom (g2,actual_pos,actual_R,false);
-		}
+
 		if (show_body) {
 			DBody body = dGeomGetBody(g);
 			if (body!=null) {
@@ -681,14 +583,17 @@ class DemoBoxstack extends dsFunctions {
 				dsDrawBox(bodypos,bodyr,bodySides); 
 			}
 		}
+		
 		if (show_aabb) {
 			// draw the bounding box for this geom
 			DAABB aabb=new DAABB();
 			dGeomGetAABB (g,aabb);
 			DVector3 bbpos = new DVector3();
-			for (i=0; i<3; i++) bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)));
+			for (i=0; i<3; i++) 
+				bbpos.set(i, 0.5*(aabb.getMin(i) + aabb.getMax(i)));
 			DVector3 bbsides = new DVector3();
-			for (i=0; i<3; i++) bbsides.set(i, aabb.getMax(i) - aabb.getMin(i));
+			for (i=0; i<3; i++) 
+				bbsides.set(i, aabb.getMax(i) - aabb.getMin(i));
 			DMatrix3 RI = new DMatrix3();
 			RI.setIdentity();
 			dsSetColorAlpha (1,0,0,0.5f);
@@ -701,15 +606,14 @@ class DemoBoxstack extends dsFunctions {
 
 	private void simLoop (boolean pause)
 	{
-		dsSetColor (0,0,2);
 		//  dSpaceCollide (space,null,nearCallback);
 		dSpaceCollide (space,null,new DNearCallback(){
 			@Override
 			public void call(Object data, DGeom o1, DGeom o2) {
 				nearCallback(data, o1, o2);
 			}});
-		if (!pause) dWorldQuickStep (world,0.02);
-		//if (!pause) dWorldStep(world,0.02);
+		if (!pause) 
+			dWorldQuickStep (world,0.02);
 
 		if (write_world) {
 			FILE f = fopen ("state.dif","wt");
@@ -721,12 +625,10 @@ class DemoBoxstack extends dsFunctions {
 		}
 
 
-		if (doFeedback)
-		{
-			if (fbnum>MAX_FEEDBACKNUM)
+		if (doFeedback) {
+			if (fbnum>MAX_FEEDBACKNUM) {
 				printf("joint feedback buffer overflow!\n");
-			else
-			{
+			} else {
 				DVector3 sum = new DVector3(0, 0, 0);
 				printf("\n");
 				for (int i=0; i<fbnum; i++) {
@@ -749,17 +651,14 @@ class DemoBoxstack extends dsFunctions {
 		// remove all contact joints
 		dJointGroupEmpty (contactgroup);
 
-		dsSetColor (1,1,0);
 		dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
 		for (int i=0; i<num; i++) {
 			for (int j=0; j < GPB; j++) {
 				if (i==selected) {
 					dsSetColor (0,0.7f,1);
-				}
-				else if (! dBodyIsEnabled (obj[i].body)) {
+				} else if (! dBodyIsEnabled (obj[i].body)) {
 					dsSetColor (1,0.8f,0);
-				}
-				else {
+				} else {
 					dsSetColor (1,1,0);
 				}
 				drawGeom (obj[i].geom[j],null,null,show_aabb);
@@ -803,7 +702,7 @@ class DemoBoxstack extends dsFunctions {
 		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,new DemoBoxstack());
+		dsSimulationLoop (args,640,480,new DemoBoxstack());
 
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);

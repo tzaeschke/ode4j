@@ -58,7 +58,6 @@ import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetOffsetRotation;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSphereGetRadius;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformGetGeom;
 import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dHashSpaceCreate;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
@@ -113,8 +112,6 @@ import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactBounce;
 import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dMultiply0_333;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.fclose;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.fopen;
@@ -137,7 +134,6 @@ import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.DJoint;
@@ -152,7 +148,6 @@ import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.cpp4j.FILE;
 
 
-@SuppressWarnings("deprecation")
 class DemoHeightfield extends dsFunctions {
 
 	private static final float DEGTORAD = 0.01745329251994329577f	; //!< PI / 180.0, convert degrees to radians
@@ -682,20 +677,6 @@ class DemoHeightfield extends dsFunctions {
 			//dGeomCylinderGetParams (g,&radius,&length);
 			DCylinder cyl = (DCylinder) g;
 			dsDrawCylinder (pos,R,cyl.getLength(),cyl.getRadius());
-		}
-		else if (g instanceof DGeomTransform) {
-			DGeom g2 = dGeomTransformGetGeom ((DGeomTransform)g);
-			final DVector3C pos2 = dGeomGetPosition (g2);
-			final DMatrix3C R2 = dGeomGetRotation (g2);
-			DVector3 actual_pos = new DVector3();
-			DMatrix3 actual_R = new DMatrix3();
-			dMultiply0_331 (actual_pos,R,pos2);
-//			actual_pos[0] += pos[0];
-//			actual_pos[1] += pos[1];
-//			actual_pos[2] += pos[2];
-			actual_pos.add(pos);
-			dMultiply0_333 (actual_R,R,R2);
-			drawGeom (g2,actual_pos,actual_R,false);
 		}
 
 		if (show_aabb) {

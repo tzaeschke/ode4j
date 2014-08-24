@@ -29,7 +29,6 @@ import static org.ode4j.cpp.internal.ApiCppBody.dBodyAddTorque;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCreateBox;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCreateCylinder;
-import static org.ode4j.cpp.internal.ApiCppCollision.dCreateGeomTransform;
 import static org.ode4j.cpp.internal.ApiCppCollision.dCreatePlane;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomBoxGetLengths;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomCylinderGetParams;
@@ -42,8 +41,6 @@ import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCategoryBits;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCollideBits;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformGetGeom;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformSetGeom;
 import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
@@ -61,7 +58,6 @@ import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPUAnchor;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
 import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
 import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
-import static org.ode4j.cpp.internal.ApiCppOther.dAreConnectedExcluding;
 import static org.ode4j.cpp.internal.ApiCppWorld.dWorldDestroy;
 import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
 import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
@@ -100,12 +96,10 @@ import org.ode4j.ode.DBody;
 import org.ode4j.ode.DBox;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
-import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DJoint.PARAM_N;
 import org.ode4j.ode.DJointGroup;
@@ -134,7 +128,6 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
  * The blue object represent the axis2 of the universal part.
  * The gray object represent the anchor2 of the PU joint.
  */
-@SuppressWarnings("deprecation")
 class DemoJointPU extends dsFunctions {
 
 
@@ -259,9 +252,6 @@ class DemoJointPU extends dsFunctions {
 	{
 		int i,n;
 
-		DBody b1 = dGeomGetBody (o1);
-		DBody b2 = dGeomGetBody (o2);
-		if (b1!=null && b2!=null && dAreConnectedExcluding (b1,b2,DContactJoint.class) ) return;
 		final int N = 10;
 		//dContact contact[N];
 		DContactBuffer contacts = new DContactBuffer(N);
@@ -406,6 +396,7 @@ class DemoJointPU extends dsFunctions {
 		case ',': case '<' : {
 			double vel = joint.getParam (PARAM_N.dParamVel3) - VEL_INC;
 			joint.setParam (PARAM_N.dParamVel3, vel);
+			joint.setParam (PARAM_N.dParamFMax3, 2);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
@@ -413,6 +404,7 @@ class DemoJointPU extends dsFunctions {
 		case '.': case '>' : {
 			double vel = joint.getParam (PARAM_N.dParamVel3) + VEL_INC;
 			joint.setParam (PARAM_N.dParamVel3, vel);
+			joint.setParam (PARAM_N.dParamFMax3, 2);
 			std_cout("Velocity = ",vel,"  FMax = 2",'\n');
 		}
 		break;
@@ -592,9 +584,7 @@ class DemoJointPU extends dsFunctions {
 				dRfromQ (R,qq);
 
 
-				dGeomCylinderGetParams (
-						(DCylinder) dGeomTransformGetGeom ((DGeomTransform)geom[AXIS1]), 
-						radius, length);
+				dGeomCylinderGetParams ((DCylinder)geom[AXIS1], radius, length);
 				dsSetColor (1,0,0);
 				dsDrawCylinder (anchorPos, R, length.getF(), radius.getF());
 			}
@@ -619,9 +609,7 @@ class DemoJointPU extends dsFunctions {
 				dRfromQ (R,qq1);
 
 
-				dGeomCylinderGetParams (
-						(DCylinder)dGeomTransformGetGeom ((DGeomTransform)geom[AXIS2]), 
-						radius, length);
+				dGeomCylinderGetParams ((DCylinder)geom[AXIS2], radius, length);
 				dsSetColor (0,0,1);
 				dsDrawCylinder (anchorPos, R, length.getF(), radius.getF());
 			}
@@ -738,13 +726,13 @@ class DemoJointPU extends dsFunctions {
 
 
 		// Create the external part of the slider joint
-		geom[EXT] = dCreateBox (space, extDim.get(X), extDim.get(Y), extDim.get(Z));
+		geom[EXT] = dCreateBox (null, extDim.get(X), extDim.get(Y), extDim.get(Z));
 		dGeomSetCategoryBits (geom[EXT], catBits[EXT]);
 		dGeomSetCollideBits (geom[EXT],
 				catBits[ALL] & (~catBits[JOINT]) & (~catBits[W]) & (~catBits[D]) );
 
 		// Create the internal part of the slider joint
-		geom[INT] = dCreateBox (space, INT_EXT_RATIO*extDim.get(X),
+		geom[INT] = dCreateBox (null, INT_EXT_RATIO*extDim.get(X),
 				INT_EXT_RATIO*extDim.get(Y),
 				INT_EXT_RATIO*extDim.get(Z));
 		dGeomSetCategoryBits (geom[INT], catBits[INT]);
@@ -753,35 +741,29 @@ class DemoJointPU extends dsFunctions {
 
 
 		DMatrix3 R = new DMatrix3();
-		//DGeom id;
 		// Create the first axis of the universal joi9nt
-		geom[AXIS1] = dCreateGeomTransform (space);
+		//Rotation of 90deg around y
+		geom[AXIS1] = dCreateCylinder(null, axDim[RADIUS], axDim[LENGTH]);
 		//Rotation of 90deg around y
 		dRFromAxisAndAngle (R, 0,1,0, 0.5*PI);
 		dGeomSetRotation (geom[AXIS1], R);
 		dGeomSetCategoryBits (geom[AXIS1], catBits[AXIS1]);
 		dGeomSetCollideBits (geom[AXIS1],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
-		//id = geom[AXIS1];
-		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS1],  
-				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the second axis of the universal joint
-		geom[AXIS2] = dCreateGeomTransform (space);
+		geom[AXIS2] = dCreateCylinder(null, axDim[RADIUS], axDim[LENGTH]);
 		//Rotation of 90deg around y
 		dRFromAxisAndAngle (R, 1,0,0, 0.5*PI);
 		dGeomSetRotation (geom[AXIS2], R);
 		dGeomSetCategoryBits (geom[AXIS2], catBits[AXIS2]);
 		dGeomSetCollideBits (geom[AXIS2],
 				catBits[ALL]  & ~catBits[JOINT] & ~catBits[W] & ~catBits[D]);
-		//id = geom[AXIS2];
-		dGeomTransformSetGeom ((DGeomTransform)geom[AXIS2],  
-				dCreateCylinder (null, axDim[RADIUS], axDim[LENGTH]) );
 
 
 		// Create the anchor
-		geom[ANCHOR] = dCreateBox (space, ancDim.get(X), ancDim.get(Y), ancDim.get(Z));
+		geom[ANCHOR] = dCreateBox (null, ancDim.get(X), ancDim.get(Y), ancDim.get(Z));
 		dGeomSetCategoryBits (geom[ANCHOR], catBits[ANCHOR]);
 		dGeomSetCollideBits (geom[ANCHOR],
 				catBits[ALL] & (~catBits[JOINT]) & (~catBits[W]) & (~catBits[D]) );

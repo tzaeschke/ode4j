@@ -52,7 +52,6 @@ import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCategoryBits;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetCollideBits;
 import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSphereGetRadius;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomTransformGetGeom;
 import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dHashSpaceCreate;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
@@ -90,7 +89,6 @@ import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
 import static org.ode4j.ode.DGeom.dBoxClass;
 import static org.ode4j.ode.DGeom.dCapsuleClass;
 import static org.ode4j.ode.DGeom.dCylinderClass;
-import static org.ode4j.ode.DGeom.dGeomTransformClass;
 import static org.ode4j.ode.DGeom.dSphereClass;
 import static org.ode4j.ode.DMisc.dRandReal;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
@@ -100,8 +98,6 @@ import static org.ode4j.ode.OdeConstants.dContactMotion1;
 import static org.ode4j.ode.OdeConstants.dContactMotion2;
 import static org.ode4j.ode.OdeConstants.dContactMotionN;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dMultiply0_333;
 import static org.ode4j.ode.OdeMath.dPlaneSpace;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.fclose;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.fopen;
@@ -122,7 +118,6 @@ import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DGeomTransform;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
@@ -136,7 +131,6 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 /**
  * This demo shows how to use dContactMotionN in a lifting platform.
  */
-@SuppressWarnings("deprecation")
 public class DemoMotion extends dsFunctions {
 
 	// some constants
@@ -490,20 +484,6 @@ public class DemoMotion extends dsFunctions {
 			RefDouble radius = new RefDouble(0),length = new RefDouble(0);
 			dGeomCylinderGetParams ((DCylinder)g,radius,length);
 			dsDrawCylinder (pos,R,length.getF(),radius.getF());
-		}
-		else if (type == dGeomTransformClass) {
-			DGeom g2 = dGeomTransformGetGeom ((DGeomTransform)g);
-			final DVector3C pos2 = dGeomGetPosition (g2);
-			final DMatrix3C R2 = dGeomGetRotation (g2);
-			DVector3 actual_pos = new DVector3();
-			DMatrix3 actual_R = new DMatrix3();
-			dMultiply0_331 (actual_pos,R,pos2);
-			//        actual_pos.v[0] += pos[0];
-			//        actual_pos.v[1] += pos[1];
-			//        actual_pos.v[2] += pos[2];
-			actual_pos.add(pos);
-			dMultiply0_333 (actual_R,R,R2);
-			drawGeom (g2,actual_pos,actual_R,false);
 		}
 		if (show_body) {
 			DBody body = dGeomGetBody(g);

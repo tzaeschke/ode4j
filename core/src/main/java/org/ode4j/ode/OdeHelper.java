@@ -27,37 +27,36 @@ package org.ode4j.ode;
 import java.io.File;
 import java.util.List;
 
+import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DTriMesh.DTriArrayCallback;
 import org.ode4j.ode.DTriMesh.DTriCallback;
 import org.ode4j.ode.DTriMesh.DTriRayCallback;
-import org.ode4j.ode.internal.joints.DxJointGroup;
-import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
-import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector3C;
-import org.ode4j.ode.internal.DxHeightfield;
-import org.ode4j.ode.internal.DxHeightfieldData;
-import org.ode4j.ode.internal.DxSAPSpace;
-import org.ode4j.ode.internal.DxTriMesh;
-import org.ode4j.ode.internal.DxTriMeshData;
-import org.ode4j.ode.internal.OdeFactoryImpl;
-import org.ode4j.ode.internal.OdeInit;
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxBox;
 import org.ode4j.ode.internal.DxCapsule;
 import org.ode4j.ode.internal.DxConvex;
 import org.ode4j.ode.internal.DxCylinder;
 import org.ode4j.ode.internal.DxGeom;
-import org.ode4j.ode.internal.DxGeomTransform;
 import org.ode4j.ode.internal.DxHashSpace;
+import org.ode4j.ode.internal.DxHeightfield;
+import org.ode4j.ode.internal.DxHeightfieldData;
 import org.ode4j.ode.internal.DxMass;
 import org.ode4j.ode.internal.DxPlane;
 import org.ode4j.ode.internal.DxQuadTreeSpace;
 import org.ode4j.ode.internal.DxRay;
+import org.ode4j.ode.internal.DxSAPSpace;
 import org.ode4j.ode.internal.DxSimpleSpace;
 import org.ode4j.ode.internal.DxSpace;
 import org.ode4j.ode.internal.DxSphere;
+import org.ode4j.ode.internal.DxTriMesh;
+import org.ode4j.ode.internal.DxTriMeshData;
 import org.ode4j.ode.internal.DxWorld;
+import org.ode4j.ode.internal.OdeFactoryImpl;
+import org.ode4j.ode.internal.OdeInit;
+import org.ode4j.ode.internal.joints.DxJointGroup;
+import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
 import org.ode4j.ode.threading.DThreadingImplementation;
 import org.ode4j.ode.threading.DThreadingThreadPool;
 import org.ode4j.ode.threading.DxThreadingImplementation;
@@ -71,7 +70,6 @@ import org.ode4j.ode.threading.DxThreadingImplementation;
  * <li> Collision methods </li>   
  * <li> Other helper methods </li>   
  */
-@SuppressWarnings("deprecation")
 public abstract class OdeHelper {
 
 	private static final OdeFactoryImpl ODE = new OdeFactoryImpl(); 
@@ -576,15 +574,6 @@ public abstract class OdeHelper {
 	}
 	public static DCylinder createCylinder(DSpace space, double radius, double length) {
 		return DxCylinder.dCreateCylinder((DxSpace)space, radius, length);
-	}
-
-	/** @deprecated TZ: Please do not use DGeomTransform. */
-	public static DGeomTransform createGeomTransform() {
-		return DxGeomTransform.dCreateGeomTransform(null);
-	}
-	/** @deprecated TZ: Please do not use DGeomTransform. */
-	public static DGeomTransform createGeomTransform(DSpace space) {
-		return DxGeomTransform.dCreateGeomTransform((DxSpace) space);
 	}
 
 	public static DPlane createPlane (DSpace space, double a, double b, double c, double d) {
