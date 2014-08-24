@@ -65,6 +65,41 @@
                       <h3>Latest News</h3>
                     </font>
                     <ul>
+	                  <li><font face="Helvetica, Arial, sans-serif">2014-08-24<br />
+                          Released <a href="https://github.com/tzaeschke/ode4j/releases">ode4j 0.3.0</a>, this is a port of ODE 0.13.1.</font>
+                        <ul>
+							<li>
+								3 new joints: DoubleBall, DoubleHinge, Transmission
+							</li>
+							<li>			
+								5 new demos: DoubleBall, DoubleHinge, Gyro2, RFriction, Transmission
+							</li>
+							<li>
+								Java 1.6 compliance is back --> Android is still on Java 6...
+							</li>
+							<li>
+								Now passes strict -Xlint:all / -Werror builds
+                          	</li>
+							<li>
+								Removed GeomTransform and other deprecated stuff
+							</li>
+							<li>
+								Fixed bug in dMatrix3Inv() --> Calculation was incorrect
+							</li>
+							<li>
+								Fixed bug in DObject --> destroying joints might have crashed
+							</li>
+							<li>
+								Fixed bug: Calling destroy() on a space with a Heightfield cause hang. 
+							</li>
+							<li>
+								Known issue: DemoPlane2 behaves weird with old world.step(). Please use quickstep instead 
+							</li>
+							<li>
+								Multithreading is not quite there yet.
+							</li>
+                      	</ul>
+                      </li>
                       <li><font face="Helvetica, Arial, sans-serif">2013-12-31<br />
                           Released <a href="https://github.com/tzaeschke/ode4j/releases">ode4j 0.2.8</a>, this is still a port of ODE 0.12.0.</font>
                         <ul>
