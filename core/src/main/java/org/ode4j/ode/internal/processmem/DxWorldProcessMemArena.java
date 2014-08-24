@@ -205,13 +205,15 @@ public final class DxWorldProcessMemArena {
         return arena;
     }
 
-    static void FreeMemArena (DxWorldProcessMemArena arena)
+    @SuppressWarnings("unused")
+	static void FreeMemArena (DxWorldProcessMemArena arena)
     {
         int memsize = arena.GetMemorySize();
         int arenasize = DxWorldProcessMemArena.MakeArenaSize(memsize);
 
         BlockPointer pArenaBegin = arena.m_pArenaBegin;
         //TODO TZ couldn get this to work easily...
+        //TODO remove?
         if (false) {
         	arena.m_pArenaMemMgr.m_fnFree.run(pArenaBegin, arenasize);
         }

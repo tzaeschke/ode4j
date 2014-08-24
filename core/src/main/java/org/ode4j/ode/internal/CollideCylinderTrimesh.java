@@ -142,7 +142,11 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		private final DVector3[] 	m_avCylinderNormals = new DVector3[nCYLINDER_CIRCLE_SEGMENTS];
 
 		// mesh data
+		//TODO remove/report ?
+		@SuppressWarnings("unused")
 		private DQuaternionC 		m_qTrimeshRot;
+		//TODO remove/report ?
+		@SuppressWarnings("unused")
 		private DQuaternion 		m_qInvTrimeshRot;
 		private final DMatrix3 	m_mTrimeshRot = new DMatrix3();
 		private final DVector3 	m_vTrimeshPos = new DVector3();
@@ -150,6 +154,8 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		// global collider data
 		private final DVector3 	m_vBestPoint = new DVector3();
 		private double		m_fBestDepth;
+		//TODO remove/report ?
+		@SuppressWarnings("unused")
 		private double		m_fBestCenter;
 		private double		m_fBestrt;
 		private int				m_iBestAxis;

@@ -1498,14 +1498,13 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 
 
-	private static void setAllColliders (int i, DColliderFn fn)
-	{
-		for (int j=0; j<dGeomNumClasses; j++) setCollider (i,j,fn);
-	}
+//	private static void setAllColliders (int i, DColliderFn fn)
+//	{
+//		for (int j=0; j<dGeomNumClasses; j++) setCollider (i,j,fn);
+//	}
 
 	//TODO put into a different class?
 	/*extern */
-	@SuppressWarnings("deprecation")
 	public static void dInitColliders()
 	{
 		dIASSERT(!colliders_initialized);
@@ -1613,8 +1612,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 			setCollider (dHeightfieldClass,dTriMeshClass, new DxHeightfield.CollideHeightfield());//dCollideHeightfield);
 //		}
 //		//<-- dHeightfield Collision
-//
-		setAllColliders (dGeomTransformClass, new DxGeomTransform.CollideTransform());//dCollideTransform);
 	}
 
 	/*extern */

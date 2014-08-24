@@ -210,6 +210,7 @@ public class CollideTrimeshBox implements DColliderFn {
 		//dReal    m_fBestDepth;
 		double    m_fBestDepth;
 		int    m_iBestAxis;
+		@SuppressWarnings("unused")
 		int    m_iExitAxis;
 		final DVector3 m_vE0 = new DVector3(), m_vE1 = new DVector3(), m_vE2 = new DVector3(), m_vN = new DVector3();
 
