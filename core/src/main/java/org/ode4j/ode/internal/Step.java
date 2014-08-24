@@ -614,7 +614,7 @@ dmaxcallcountestimate_fn_t {
 			for (int i = 0; i != nb; invIrowO += 12, ++i) {
 				if (i == bodyIndex) {
 					DMatrix3 tmp = new DMatrix3();
-					DxBody b = bodyA[i];
+					DxBody b = bodyA[i+bOfs];
 
 					// compute inverse inertia tensor in global frame
 					dMultiply2_333 (tmp,b.invI,b.posr().R());

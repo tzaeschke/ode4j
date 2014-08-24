@@ -118,7 +118,7 @@ public class DemoGyro2 extends dsFunctions {
 		// Try to avoid collisions.
 		double sep = sides.length();
 		noGyroBody.setPosition( -sep, 0, sep);
-		expGyroBody.setPosition( 0, 0, sep);
+		expGyroBody.setPosition(   0, 0, sep);
 		impGyroBody.setPosition( sep, 0, sep);
 
 		// Set the initial angular velocity
@@ -134,7 +134,7 @@ public class DemoGyro2 extends dsFunctions {
 		// the angular speed of the explicit body.
 		// Note that this isn't necessary for
 		// the other two bodies.
-		impGyroBody.setMaxAngularSpeed( 40 );
+		expGyroBody.setMaxAngularSpeed( 40 );
 	}
 
 	@Override
