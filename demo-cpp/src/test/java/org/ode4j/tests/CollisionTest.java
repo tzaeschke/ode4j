@@ -40,7 +40,6 @@ import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dCreateTriMesh;
 import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dGeomTriMeshDataBuildSingle;
 import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dGeomTriMeshDataCreate;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_ARRAY_EQUAL;
-import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_EQUAL;
 
 import org.junit.Test;

@@ -57,13 +57,13 @@ public class TestDVector6 extends OdeTestCase {
 		DVector6 x4 = new DVector6(1, 2, 3, 0, 5, 6);
 		DVector6 x5 = new DVector6(1, 2, 3, 4, 0, 6);
 		DVector6 x6 = new DVector6(1, 2, 3, 4, 5, 0);
-		assertTrue(x.equals(xx));
-		assertFalse(x.equals(x1));
-		assertFalse(x.equals(x2));
-		assertFalse(x.equals(x3));
-		assertFalse(x.equals(x4));
-		assertFalse(x.equals(x5));
-		assertFalse(x.equals(x6));
+		assertTrue(x.isEq(xx));
+		assertFalse(x.isEq(x1));
+		assertFalse(x.isEq(x2));
+		assertFalse(x.isEq(x3));
+		assertFalse(x.isEq(x4));
+		assertFalse(x.isEq(x5));
+		assertFalse(x.isEq(x6));
 	}		
 		
 	@Test
@@ -109,9 +109,9 @@ public class TestDVector6 extends OdeTestCase {
 //		x.setValues(2.5);
 //		assertTrue(x.get0()==2.5 && x.get1()==2.5 && x.get2()==2.5 && x.get3()==2.5 && x.get4()==2.5 && x.get5()==2.5);
 
-		assertFalse(x.equals(x2));
-		assertFalse(x.equals(y));
-		assertFalse(x.equals(z));
+		assertFalse(x.isEq(x2));
+		assertFalse(x.isEq(y));
+		assertFalse(x.isEq(z));
 	}		
 		
 	@Test
@@ -119,8 +119,8 @@ public class TestDVector6 extends OdeTestCase {
 		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
 		DVector6 y = new DVector6();
 		DVector6 z = new DVector6(x);
-		assertTrue(x.equals(z));
-		assertFalse(x.equals(y));
+		assertTrue(x.isEq(z));
+		assertFalse(x.isEq(y));
 		assertEquals(y.get0(), 0.);
 		assertEquals(y.get1(), 0.);
 		assertEquals(y.get2(), 0.);
@@ -141,7 +141,7 @@ public class TestDVector6 extends OdeTestCase {
 		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
 		DVector6 y = new DVector6(4, 8, -1, -7, 17, 22);
 		DVector6 t = new DVector6();
-		assertFalse(x.equals(y));
+		assertFalse(x.isEq(y));
 		
 //		t.add(x);
 //		assertTrue(t.equals(x));
@@ -155,7 +155,7 @@ public class TestDVector6 extends OdeTestCase {
 		t.add(3, 11);
 		t.add(4, -12);
 		t.add(5, -16);
-		assertTrue(t.equals(x));
+		assertTrue(t.isEq(x));
 
 //		t.add0(3);
 //		t.add1(6);
@@ -168,7 +168,7 @@ public class TestDVector6 extends OdeTestCase {
 		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
 		DVector6 y = new DVector6(4, 8, -1, -7, 17, 22);
 		//DVector6 t = new DVector6();
-		assertFalse(x.equals(y));
+		assertFalse(x.isEq(y));
 		
 //		t.add(x);
 //		t.add(x);

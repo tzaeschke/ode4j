@@ -41,7 +41,6 @@ import static org.ode4j.cpp.internal.ApiCppWorld.dWorldStep;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.math.DVector3C;

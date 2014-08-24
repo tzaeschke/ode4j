@@ -44,7 +44,6 @@ import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternionC;
