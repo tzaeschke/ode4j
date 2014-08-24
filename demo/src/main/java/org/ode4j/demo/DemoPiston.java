@@ -27,34 +27,48 @@
  *************************************************************************/
 package org.ode4j.demo;
 
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
+import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
+import static org.ode4j.drawstuff.DrawStuff.dsElapsedTime;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
+import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.OdeConstants.dContactApprox1;
+import static org.ode4j.ode.OdeConstants.dContactSlip1;
+import static org.ode4j.ode.OdeConstants.dContactSlip2;
+import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
+import static org.ode4j.ode.OdeConstants.dContactSoftERP;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeHelper.areConnectedExcluding;
+
+import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DBody;
 import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCapsule;
-import org.ode4j.ode.DContactJoint;
-import org.ode4j.ode.DFixedJoint;
-import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
+import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DFixedJoint;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJoint.PARAM_N;
 import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DPistonJoint;
 import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
-import org.ode4j.ode.DJoint.PARAM_N;
-
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeHelper.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.DGeom.*;
+import org.ode4j.ode.OdeHelper;
 
 
 /**
@@ -315,23 +329,9 @@ class DemoPiston extends dsFunctions {
 	}
 
 
-	// function to update camera position at each step.
-	private void update()
-	{
-		//   static FILE *file = fopen("x:/sim/src/libode/tstsrcSF/export.dat", "w");
-
-		//   static int cnt = 0;
-		//   char str[24];
-		//   sprintf(str, "%06d",cnt++);
-
-		//   dWorldExportDIF(world, file, str);
-	}
-
-
 	// called when a key pressed
 	@Override
-	public void command (char cmd)
-	{
+	public void command (char cmd) {
 		switch (cmd) {
 		case 'h' : case 'H' : case '?' :
 			printKeyBoardShortCut();
@@ -462,8 +462,7 @@ class DemoPiston extends dsFunctions {
 		}
 	}
 
-	private static void drawBox (DBox id, int R, int G, int B)
-	{
+	private static void drawBox (DBox id, int R, int G, int B) {
 		if (id==null)
 			return;
 
@@ -477,8 +476,8 @@ class DemoPiston extends dsFunctions {
 
 
 	// simulation loop
-	private void simLoop (boolean pause)
-	{
+	@Override
+	public void step (boolean pause) {
 		DMatrix3C rot;
 		DVector3 ax = new DVector3();
 		double l=0;
@@ -506,9 +505,6 @@ class DemoPiston extends dsFunctions {
 
 				contactgroup.empty();
 			}
-
-			update();
-
 
 			dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
 
@@ -563,8 +559,7 @@ class DemoPiston extends dsFunctions {
 
 
 	@Override
-	public void dsPrintHelp()
-	{
+	public void dsPrintHelp() {
 		super.dsPrintHelp();
 		System.out.println (" -s | --slider : Set the joint as a slider");
 		System.out.println (" -p | --piston : Set the joint as a Piston. (Default joint)");
@@ -738,11 +733,6 @@ class DemoPiston extends dsFunctions {
 		space.destroy ();
 		world.destroy ();
 		OdeHelper.closeODE();
-	}
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
 	}
 
 	@Override

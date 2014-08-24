@@ -661,6 +661,10 @@ public final class DMatrix3 implements DMatrix3C {
 		return h;
 	}
 
+	/**
+	 * Make the matrix an identity matrix.
+	 * Same as setIdenity().
+	 */
 	public final void eqIdentity() {
 		eqZero();
 		set00(1);
@@ -669,12 +673,20 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 
 
+	/**
+	 * Make the matrix an identity matrix.
+	 * Same as eqIdenity().
+	 */
 	public final DMatrix3 setIdentity() {
 		eqIdentity();
 		return this;
 	}
 
 	
+	/**
+	 * Set the matrix to zero.
+	 * Same as setZero().
+	 */
 	public final void eqZero() {
 		for (int i = 0; i < v.length; i++) {
 			v[i] = 0;
@@ -682,6 +694,10 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 
 
+	/**
+	 * Set the matrix to zero.
+	 * Same as eqZero().
+	 */
 	public final void setZero() {
 		eqZero();
 	}

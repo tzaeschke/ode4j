@@ -138,8 +138,10 @@ class DemoPlane2d extends dsFunctions {
 	};
 
 	private static double angle = 0;
+	
+	@Override
 	@SuppressWarnings("unused")
-	private void cb_sim_step (boolean pause) {
+	public void step (boolean pause) {
 		if (! pause) {
 			//        static double angle = 0;
 
@@ -332,12 +334,6 @@ class DemoPlane2d extends dsFunctions {
 	@Override
 	public void start() {
 		cb_start();	
-	}
-
-
-	@Override
-	public void step(boolean pause) {
-		cb_sim_step(pause);
 	}
 
 

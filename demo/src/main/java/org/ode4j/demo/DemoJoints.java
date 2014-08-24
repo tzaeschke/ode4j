@@ -114,22 +114,10 @@ public class DemoJoints extends dsFunctions {
 	//****************************************************************************
 	// utility stuff
 
-	private static double length (DVector3 a)
-	{
-		return a.length();
-		//return dSqrt (a.v[0]*a.v[0] + a.v[1]*a.v[1] + a.v[2]*a.v[2]);
-	}
-
-
 	// get the max difference between a 3x3 matrix and the identity
 
-	private double cmpIdentity (final DMatrix3C A)
-	{
+	private double cmpIdentity (final DMatrix3C A) {
 		DMatrix3 I = new DMatrix3();
-		I.setZero();//dSetZero (I,12);
-//		I.v[0] = 1;
-//		I.v[5] = 1;
-//		I.v[10] = 1;
 		I.eqIdentity();
 		return dMaxDifference (A,I);
 	}
@@ -588,7 +576,7 @@ public class DemoJoints extends dsFunctions {
 			//    pp.v[0] += 0.5;
 			//    pp.v[1] += 0.5;
 			pp.add(0.5, 0.5, 0);
-			return (err1 + length (pp)) * 300;
+			return (err1 + pp.length()) * 300;
 		}
 
 		case 1: {			// 1 body to static env
@@ -605,7 +593,7 @@ public class DemoJoints extends dsFunctions {
 			//    p.v[1] -= 0.25;
 			//    p.v[2] -= 1;
 			p.set(p1).sub(0.25, 0.25, 1);
-			return (err1 + length (p)) * 1e6;
+			return (err1 + p.length()) * 1e6;
 		}
 
 		case 2: {			// 2 body
@@ -623,7 +611,7 @@ public class DemoJoints extends dsFunctions {
 			//    pp.v[0] += 0.5;
 			//    pp.v[1] += 0.5;
 			pp.add(0.5, 0.5, 0);
-			return length(pp) * 300;
+			return pp.length() * 300;
 		}
 
 		case 3: {			// 1 body to static env with relative rotation
@@ -637,7 +625,7 @@ public class DemoJoints extends dsFunctions {
 			//    p[1] -= 0.25;
 			//    p[2] -= 1;
 			p.set(p1).sub(0.25, 0.25, 1);
-			return  length (p) * 1e6;
+			return  p.length() * 1e6;
 		}
 
 
@@ -1010,8 +998,8 @@ public class DemoJoints extends dsFunctions {
 	// simulation loop
 
 	//static 
-	private void simLoop (boolean pause)
-	{
+	@Override
+	public void step (boolean pause) {
 		// stop after a given number of iterations, as long as we are not in
 		// interactive mode
 		if (cmd_graphics && !cmd_interactive &&
@@ -1074,8 +1062,7 @@ public class DemoJoints extends dsFunctions {
 	//****************************************************************************
 	// conduct a specific test, and report the results
 
-	private void doTest (String[] args, int n, int fatal_if_bad_n)
-	{
+	private void doTest (String[] args, int n, int fatal_if_bad_n) {
 		test_num = n;
 		iteration = 0;
 		max_iterations = 300;
@@ -1093,7 +1080,7 @@ public class DemoJoints extends dsFunctions {
 			//dsSimulationLoop (args,400,400,fn);
 		}
 		else {
-			for (int i=0; i < max_iterations; i++) simLoop (false);
+			for (int i=0; i < max_iterations; i++) step (false);
 		}
 		world.destroy ();
 		body[0] = null;
@@ -1165,12 +1152,6 @@ public class DemoJoints extends dsFunctions {
 	@Override
 	public void command(char cmd) {
 		//Nothing
-	}
-
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
 	}
 
 

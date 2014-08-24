@@ -58,9 +58,9 @@ class DemoSlider extends dsFunctions {
 	// start simulation - set viewpoint
 	private static float[] xyz= {1.0382f,-1.0811f,1.4700f};
 	private static float[] hpr= {135.0000f,-19.5000f,0.0000f};
+	
 	@Override
-	public void start()
-	{
+	public void start()	{
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("Press 'e' to start/stop occasional error.");
 	}
@@ -69,8 +69,7 @@ class DemoSlider extends dsFunctions {
 	// called when a key pressed
 
 	@Override
-	public void command (char cmd)
-	{
+	public void command (char cmd) {
 		if (cmd == 'e' || cmd == 'E') {
 			occasional_error ^= 1;
 		}
@@ -81,8 +80,8 @@ class DemoSlider extends dsFunctions {
 	private static double a=0;
 	private static int count = 0;
 
-	private static void simLoop (boolean pause)
-	{
+	@Override
+	public void step (boolean pause)	{
 		final double kd = -0.3;	// angular damping constant
 		final double ks = 0.5;	// spring constant
 		if (!pause) {
@@ -142,8 +141,7 @@ class DemoSlider extends dsFunctions {
 	}
 
 
-	public static void main (String[] args)
-	{
+	public static void main (String[] args) {
 		new DemoSlider().demo(args);
 	}
 	
@@ -174,12 +172,6 @@ class DemoSlider extends dsFunctions {
 
 		world.destroy ();
 		OdeHelper.closeODE();
-	}
-
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
 	}
 
 

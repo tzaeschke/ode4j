@@ -134,8 +134,8 @@ class DemoChain2 extends dsFunctions {
 
 	// simulation loop
 
-	private static void simLoop (boolean pause)
-	{
+	@Override
+	public void step (boolean pause)	{
 		if (!pause) {
 			//    static double angle = 0;
 			angle += 0.05;
@@ -209,11 +209,6 @@ class DemoChain2 extends dsFunctions {
 	@Override
 	public void command(char cmd) {
 		// Nothing
-	}
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
 	}
 
 	@Override

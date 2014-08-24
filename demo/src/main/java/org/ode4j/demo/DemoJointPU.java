@@ -219,8 +219,7 @@ public class DemoJointPU extends dsFunctions {
 	
 	
 	//collision detection
-	private void nearCallback (Object data, DGeom o1, DGeom o2)
-	{
+	private void nearCallback (Object data, DGeom o1, DGeom o2)	{
 		int i,n;
 
 		final int N = 10;
@@ -244,8 +243,7 @@ public class DemoJointPU extends dsFunctions {
 		}
 	}
 
-	private void printKeyBoardShortCut()
-	{
+	private void printKeyBoardShortCut() {
 		System.out.println ("Press 'h' for this help.");
 		System.out.println ("Press 'q' to add force on BLUE body along positive x direction.");
 		System.out.println ("Press 'w' to add force on BLUE body along negative x direction.");
@@ -278,8 +276,7 @@ public class DemoJointPU extends dsFunctions {
 
 	// start simulation - set viewpoint
 	@Override
-	public void start()
-	{
+	public void start()	{
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("This program demonstrates how the PU joint works.");
 		System.out.println ("A PU joint is a combination of a Universal joint and a Slider joint.");
@@ -296,23 +293,9 @@ public class DemoJointPU extends dsFunctions {
 		printKeyBoardShortCut();
 	}
 
-	// function to update camera position at each step.
-	private void update()
-	{
-		//   static FILE *file = fopen("x:/sim/src/libode/tstsrcSF/export.dat", "w");
-
-		//   static int cnt = 0;
-		//   char str[24];
-		//   sprintf(str, "%06d",cnt++);
-
-		//   dWorldExportDIF(world, file, str);
-	}
-
-
 	// called when a key pressed
 	@Override
-	public void command (char cmd)
-	{
+	public void command (char cmd) {
 		switch (cmd) {
 		case 'h' : case 'H' : case '?' :
 			printKeyBoardShortCut();
@@ -443,8 +426,7 @@ public class DemoJointPU extends dsFunctions {
 		}
 	}
 
-	private void drawBox (DBox id, int R, int G, int B)
-	{
+	private void drawBox (DBox id, int R, int G, int B)	{
 		if (id==null)
 			return;
 
@@ -458,9 +440,10 @@ public class DemoJointPU extends dsFunctions {
 
 	private static boolean todo = false;
 	private static int cnt = 0;
+	
 	// simulation loop
-	private void simLoop (boolean pause)
-	{
+	@Override
+	public void step (boolean pause) {
 		if ( todo ) { // DEBUG
 			//    static int cnt = 0;
 			++cnt;
@@ -486,9 +469,6 @@ public class DemoJointPU extends dsFunctions {
 
 				contactgroup.empty ();
 			}
-
-			update();
-
 
 			dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
 
@@ -771,11 +751,6 @@ public class DemoJointPU extends dsFunctions {
 		OdeHelper.closeODE();
 	}
 
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
-	}
 
 	@Override
 	public void stop() {

@@ -137,8 +137,8 @@ public class DemoGyroscopic extends dsFunctions {
 
 	// simulation loop
 
-	private void simLoop (boolean pause)
-	{
+	@Override
+	public void step (boolean pause) {
 		dsSetColor (0,0,2);
 		space.collide(0,nearCallback);
 		if (!pause)
@@ -271,13 +271,6 @@ public class DemoGyroscopic extends dsFunctions {
 		world.DESTRUCTOR();//delete world;
 		dCloseODE();
 	}
-
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
-	}
-
 
 	@Override
 	public void stop() {
