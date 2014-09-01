@@ -302,7 +302,6 @@ public class DVector3 implements DVector3I, DVector3C {
 	/**
 	 * Return the 'dot' product of two vectors.
 	 * r = a0*b0 + a1*b1 + a2*b2;
-	 * @param b 
 	 * @return (this) * b
 	 */
 	public final double dot(double[] da, int pos) {

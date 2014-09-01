@@ -60,10 +60,9 @@ public abstract class DThreadingImplementation {
 	 * Do not use this function with self-made custom implementations - 
 	 * they should be bundled with their own set of functions.
 	 * 
-	 * @param impl Threading implementation ID
 	 * @return Pointer to associated functions structure
 	 * 
-	 * @see dThreadingAllocateMultiThreadedImplementation
+	 * @see DxThreadingImplementation#dThreadingAllocateMultiThreadedImplementation
 	 */
 	public abstract DThreadingFunctionsInfo dThreadingImplementationGetFunctions();
 
@@ -87,8 +86,8 @@ public abstract class DThreadingImplementation {
 	 * If this function is called for self-threaded built-in threading implementation
 	 * the call has no effect.
 	 * 
-	 * @see dThreadingAllocateMultiThreadedImplementation
-	 * @see dThreadingImplementationCleanupForRestart
+	 * @see DxThreadingImplementation#dThreadingAllocateMultiThreadedImplementation
+	 * @see #dThreadingImplementationCleanupForRestart
 	 */
 	public void shutdownProcessing() {
 		dThreadingImplementationShutdownProcessing();
@@ -106,10 +105,8 @@ public abstract class DThreadingImplementation {
 	 * If this function is called for self-threaded built-in threading implementation
 	 * the call has no effect.
 	 * 
-	 * @param impl Threading implementation ID
-	 * 
-	 * @see dThreadingAllocateMultiThreadedImplementation
-	 * @see dThreadingImplementationShutdownProcessing
+	 * @see DxThreadingImplementation#dThreadingAllocateMultiThreadedImplementation
+	 * @see #shutdownProcessing()
 	 */
 	public abstract void dThreadingImplementationCleanupForRestart();
 
@@ -120,7 +117,7 @@ public abstract class DThreadingImplementation {
 	 * from all the objects it was assigned to and that there are no more threads 
 	 * serving it before attempting to call this function.
 	 *
-	 * @see dThreadingAllocateMultiThreadedImplementation
+	 * @see DxThreadingImplementation#dThreadingAllocateMultiThreadedImplementation
 	 */
 	public abstract void free();
 	//public abstract void dThreadingFreeImplementation();
@@ -146,12 +143,11 @@ public abstract class DThreadingImplementation {
 	 * be used until all dedicated threads register within it as otherwise it will not
 	 * have accurate view of the execution resources available.
 	 *
-	 * @param impl Threading implementation ID
 	 * @param readiness_callback Optional readiness callback to be called after thread enters the implementation
 	 * @param callback_context A value to be passed as parameter to readiness callback
 	 * 
-	 * @see dThreadingAllocateMultiThreadedImplementation
-	 * @see dThreadingImplementationShutdownProcessing
+	 * @see DxThreadingImplementation#dThreadingAllocateMultiThreadedImplementation
+	 * @see #shutdownProcessing()
 	 */
 	public abstract void dExternalThreadingServeMultiThreadedImplementation( 
 	  DThreadReadyToServeCallback readiness_callback/*=NULL*/, CallContext callback_context/*=NULL*/);

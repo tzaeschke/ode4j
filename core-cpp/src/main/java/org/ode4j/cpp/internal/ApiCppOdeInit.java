@@ -22,6 +22,7 @@
 package org.ode4j.cpp.internal;
 
 import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.internal.OdeInit;
 
 
 /**
@@ -103,7 +104,7 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * @return A nonzero if initialization succeeded and zero otherwise.
 	 *
 	 * @see #dCloseODE()
-	 * @see OdeInit
+	 * @see OdeInit#dInitODE2(int)
 	 */
 	//* @see #dInitODEFlags
 	//ODE_API 

@@ -255,7 +255,7 @@ public interface DWorld {
 	 *
 	 * @see #cleanupWorkingMemory()
 	 * @see #setStepMemoryReservationPolicy(DWorldStepReserveInfo)
-	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
+//	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	 */
 	boolean useSharedWorkingMemory(DWorld from_world/*=NULL*/);
 
@@ -275,7 +275,7 @@ public interface DWorld {
 	 *
 	 * @see #useSharedWorkingMemory(DWorld)
 	 * @see #setStepMemoryReservationPolicy(DWorldStepReserveInfo)
-	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
+//	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	 */
 	void cleanupWorkingMemory();
 

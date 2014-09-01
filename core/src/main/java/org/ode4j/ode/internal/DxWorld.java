@@ -1358,7 +1358,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	*
 	* <code>free_block</code> is a function to delete existing memory block.
 	*
-	* @see DWorld#setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
+//	* @see DWorld#setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	* @deprecated Do not use ! (TZ)
 	*/
 	public static class DWorldStepMemoryFunctionsInfo 

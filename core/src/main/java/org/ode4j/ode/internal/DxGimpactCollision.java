@@ -93,9 +93,9 @@ public class DxGimpactCollision {
 			// should be patched through to the dDOUBLE version above
 	
 			//#define gim_trimesh_get_triangle_vertices gim_trimesh_get_triangle_verticesODE
-			static void gim_trimesh_get_triangle_verticesODE( GimTrimesh mesh ) {
-				mesh.gim_trimesh_get_triangle_vertices(0, null, null, null);
-			}
+//			static void gim_trimesh_get_triangle_verticesODE( GimTrimesh mesh ) {
+//				mesh.gim_trimesh_get_triangle_vertices(0, null, null, null);
+//			}
 	
 //			inline int gim_trimesh_ray_closest_collisionODE( GIM_TRIMESH *mesh, dVector3 origin, 
 //					dVector3 dir, GREAL tmax, GIM_TRIANGLE_RAY_CONTACT_DATA *contact ) {

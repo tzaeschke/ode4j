@@ -81,8 +81,8 @@ public abstract class DxThreadingImplementation extends DThreadingImplementation
 	 *
 	 * @return ID of object allocated or NULL on failure
 	 * 
-	 * @see DThreadingImplementation#allocateMultiThreadedImplementation()
-	 * @see DThreadingImplementation#freeImplementation()
+	 * @see DxThreadingImplementation#dThreadingAllocateMultiThreadedImplementation()
+	 * @see DThreadingImplementation#free()
 	 */
 	/*ODE_API */
 //	public static DThreadingImplementation dThreadingAllocateSelfThreadedImplementation() {

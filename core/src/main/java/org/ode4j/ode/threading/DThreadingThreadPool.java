@@ -52,9 +52,9 @@ public abstract class DThreadingThreadPool {
 	 * @param ode_data_allocate_flags Flags to be passed to @c dAllocateODEDataForThread on behalf of each thread
 	 * @return ID of object allocated or NULL on failure
 	 *
-	 * @see dThreadingAllocateMultiThreadedImplementation
-	 * @see dThreadingImplementationShutdownProcessing
-	 * @see dThreadingFreeThreadPool
+	 * @see DxThreadingImplementation#dThreadingAllocateMultiThreadedImplementation
+	 * @see DThreadingImplementation#shutdownProcessing()
+	 * @see #freeThreadPool()
 	 */
 	public static DThreadingThreadPool allocateThreadPool(int thread_count, 
 	  int stack_size, int ode_data_allocate_flags, Object[][] reserved/*=NULL*/) {
@@ -73,12 +73,11 @@ public abstract class DThreadingThreadPool {
 	 * This function waits for threads to register within implementation before returning.
 	 * So, after the function call exits the implementation can be used immediately.
 	 * 
-	 * @param pool Thread pool ID to serve the implementation
 	 * @param impl Implementation ID of implementation to be served
 	 *
-	 * @see dThreadingAllocateThreadPool
-	 * @see dThreadingAllocateMultiThreadedImplementation
-	 * @see dThreadingImplementationShutdownProcessing
+	 * @see #allocateThreadPool(int, int, int, Object[][])
+	 * @see DxThreadingImplementation#dThreadingAllocateMultiThreadedImplementation
+	 * @see DThreadingImplementation#shutdownProcessing()
 	 */
 	public abstract void serveMultiThreadedImplementation(DThreadingImplementation impl);
 
@@ -97,11 +96,9 @@ public abstract class DThreadingThreadPool {
 	 * It is OK to call this function even if pool was not serving any threading implementation
 	 * in which case the call exits immediately with minimal delay.
 	 * 
-	 * @param pool Thread pool ID to wait for
-	 *
-	 * @see dThreadingAllocateThreadPool
-	 * @see dThreadingImplementationShutdownProcessing
-	 * @see dThreadingFreeThreadPool
+	 * @see #allocateThreadPool(int, int, int, Object[][])
+	 * @see DThreadingImplementation#shutdownProcessing()
+	 * @see #freeThreadPool()
 	 */
 	public abstract void waitIdleState();
 
@@ -112,10 +109,8 @@ public abstract class DThreadingThreadPool {
 	 * before this function is called. Otherwise the call is going to block 
 	 * and wait until pool's threads return.
 	 * 
-	 * @param pool Thread pool ID to delete
-	 *
-	 * @see dThreadingAllocateThreadPool
-	 * @see dThreadingImplementationShutdownProcessing
+	 * @see #allocateThreadPool(int, int, int, Object[][])
+	 * @see DThreadingImplementation#shutdownProcessing()
 	 */
 	public abstract void freeThreadPool();
 	
