@@ -1,0 +1,19 @@
+body {
+   font-family: "Helvetica", Arial, sans-serif;
+}
+.title {
+	line-height: 0.1em;
+	font-weight: bold;
+	text-align: center;
+	font-size: 2em;
+}
+.subtitle {
+	line-height: 0.5em;
+	font-weight: bold;
+	text-align: center;
+	font-size: 1.5em;
+}
+.menuitem {
+	line-height: 0.1em;
+	padding-bottom: -10px;
+}
