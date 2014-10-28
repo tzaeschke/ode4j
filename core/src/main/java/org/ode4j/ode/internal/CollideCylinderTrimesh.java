@@ -796,15 +796,11 @@ public class CollideCylinderTrimesh implements DColliderFn {
 	{
 		int i = 0;
 		DVector3[] avPoints = { new DVector3(), new DVector3(), new DVector3() };//[3];
-		DVector3[] avTempArray1 = new DVector3[nMAX_CYLINDER_TRIANGLE_CLIP_POINTS];
-		DVector3[] avTempArray2 = new DVector3[nMAX_CYLINDER_TRIANGLE_CLIP_POINTS];
+		DVector3[] avTempArray1 = DVector3.newArray(nMAX_CYLINDER_TRIANGLE_CLIP_POINTS);
+		DVector3[] avTempArray2 = DVector3.newArray(nMAX_CYLINDER_TRIANGLE_CLIP_POINTS);
 
 //		dSetZero(avTempArray1[0][0],nMAX_CYLINDER_TRIANGLE_CLIP_POINTS * 4);
 //		dSetZero(avTempArray2[0][0],nMAX_CYLINDER_TRIANGLE_CLIP_POINTS * 4);
-		for (int ii = 0; ii < nMAX_CYLINDER_TRIANGLE_CLIP_POINTS; ii++) {
-			avTempArray1[ii] = new DVector3();
-			avTempArray2[ii] = new DVector3();
-		}
 
 		// setup array of triangle vertices
 		dVector3Copy(v0,avPoints[0]);

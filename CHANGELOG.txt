@@ -1,3 +1,11 @@
+
+0.3.1
+=====
+- Fixed issue #17
+- Fixed NPE in DemoBoxStack-'x'
+- Added newArray(size) methods to DVector3 and DMatrix3
+
+
 0.3.0
 =====
 Migration to 0.13.1

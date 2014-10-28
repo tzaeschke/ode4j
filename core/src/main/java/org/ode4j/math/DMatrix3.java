@@ -967,4 +967,17 @@ public final class DMatrix3 implements DMatrix3C {
 	public void getColumn2(DVector3 result) {
 		result.set(get02(), get12(), get22());
 	}
+	
+	/**
+	 * Create an array of DVector instances.
+	 * @param size
+	 * @return AN array of DVector
+	 */
+	public final static DMatrix3[] newArray(int size) {
+		DMatrix3[] a = new DMatrix3[size];
+		for (int i = 0; i < size; i++) {
+			a[i] = new DMatrix3();
+		}
+		return a;
+	}
 }

@@ -701,6 +701,19 @@ public class DVector3 implements DVector3I, DVector3C {
 	    set1( m.get10()*v2.get0()+  m.get11()*v2.get1()+  m.get12()*v2.get2() );
 	    set2( m.get20()*v2.get0()+  m.get21()*v2.get1()+  m.get22()*v2.get2() );
 	}
+	
+	/**
+	 * Create an array of DVector instances.
+	 * @param size
+	 * @return AN array of DVector
+	 */
+	public final static DVector3[] newArray(int size) {
+		DVector3[] a = new DVector3[size];
+		for (int i = 0; i < size; i++) {
+			a[i] = new DVector3();
+		}
+		return a;
+	}
 }
 
 

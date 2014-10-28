@@ -810,7 +810,7 @@ void testReorthonormalize()
 		int i,j;
 		//  double q[NUMP][3];		// particle positions
 		//double[][] q = new double[NUMP][3];		// particle positions
-		DVector3[] q = new DVector3[NUMP];		// particle positions
+		DVector3[] q = DVector3.newArray(NUMP);		// particle positions
 		//  double pm[NUMP];		// particle masses
 		double[] pm = new double[NUMP];		// particle masses
 		DMass m1 = new DxMass(),m2 = new DxMass();
@@ -887,7 +887,6 @@ void testReorthonormalize()
 		// translate and repeat.
 		for (i=0; i<NUMP; i++) {
 			pm[i] = dRandReal()+0.5;
-			q[i] = new DVector3();
 			for (j=0; j<3; j++) {
 				q[i].set(j, 2.0*(dRandReal()-0.5) );
 			}

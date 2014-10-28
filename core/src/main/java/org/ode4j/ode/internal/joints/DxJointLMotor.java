@@ -111,10 +111,7 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
 		int row = 0;
-		DVector3[] ax = new DVector3[3];
-		for (int i = 0; i<3; i++ ) {
-			ax[i] = new DVector3();
-		}
+		DVector3[] ax = new DVector3[]{new DVector3(), new DVector3(), new DVector3()};
 
 		computeGlobalAxes( ax );
 

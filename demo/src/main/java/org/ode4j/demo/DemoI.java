@@ -117,7 +117,7 @@ class DemoI extends dsFunctions {
 		int i;
 		DMass m = OdeHelper.createMass(), anchor_m=OdeHelper.createMass();
 		//float q[NUM][3], pm[NUM];	// particle positions and masses
-		DVector3[] q = new DVector3[NUM];
+		DVector3[] q = DVector3.newArray(NUM);
 		DVectorN pm = new DVectorN(NUM);
 		DVector3 pos1 = new DVector3(1,0,1);	// point of reference (POR)
 		DVector3 pos2 = new DVector3(-1,0,1);	// point of reference (POR)
@@ -125,7 +125,6 @@ class DemoI extends dsFunctions {
 		// make random particle positions (relative to POR) and masses
 		for (i=0; i<NUM; i++) {
 			pm.set(i, dRandReal()+0.1);
-			q[i] = new DVector3();
 			q[i].set0(dRandReal()-0.5);
 			q[i].set1(dRandReal()-0.5);
 			q[i].set2(dRandReal()-0.5);

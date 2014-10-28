@@ -45,7 +45,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 
-public class TestIssue8_Gimpact {
+public class TestIssue0008_Gimpact {
 
     private DWorld world;
     private DSpace space;

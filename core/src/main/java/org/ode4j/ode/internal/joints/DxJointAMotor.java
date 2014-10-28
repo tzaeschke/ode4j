@@ -537,7 +537,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	void dJointAddAMotorTorques( double torque1, double torque2, double torque3 )
 	{
-		DVector3[] axes = new DVector3[3];
+		DVector3[] axes = new DVector3[]{new DVector3(), new DVector3(), new DVector3()};
 
 		if ( _num == 0 )
 			return;

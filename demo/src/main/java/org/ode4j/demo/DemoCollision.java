@@ -1193,8 +1193,7 @@ class DemoCollision extends dsFunctions {
 				if (fd==0) { k1 = 1; k2 = 2; }
 				if (fd==1) { k1 = 0; k2 = 2; }
 				if (fd==2) { k1 = 0; k2 = 1; }
-				DVector3 fp[]=new DVector3[4],tmp=new DVector3();
-				for (int z=0; z < fp.length; z++) fp[z] = new DVector3();
+				DVector3 fp[] = DVector3.newArray(4), tmp=new DVector3();
 				k=0;
 				for (j1=-1; j1<=1; j1+=2) {
 					for (j2=-1; j2<=1; j2+=2) {

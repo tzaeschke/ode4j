@@ -344,8 +344,8 @@ class DemoBoxstack extends dsFunctions {
 				DMass m2 = OdeHelper.createMass();
 				m.setZero();
 
-				DVector3[] dpos = new DVector3[GPB];	// delta-positions for encapsulated geometries
-				DMatrix3[] drot = new DMatrix3[GPB];
+				DVector3[] dpos = DVector3.newArray(GPB);	// delta-positions for encapsulated geometries
+				DMatrix3[] drot = DMatrix3.newArray(GPB);
 
 				// set random delta positions
 				for (j=0; j<GPB; j++) {
@@ -369,7 +369,6 @@ class DemoBoxstack extends dsFunctions {
 						m2.setCapsule(DENSITY,3,radius,length);
 					}
 
-					drot[k] = new DMatrix3();
 					dRFromAxisAndAngle (drot[k],dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
 							dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
 					m2.rotate(drot[k]);

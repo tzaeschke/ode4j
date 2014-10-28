@@ -370,14 +370,12 @@ class DemoHeightfield extends dsFunctions {
 				DMass m2 = OdeHelper.createMass();
 				m.setZero ();
 
-				DVector3[] dpos = new DVector3[GPB];	// delta-positions for encapsulated geometries
-				DMatrix3[] drot = new DMatrix3[GPB];
+				DVector3[] dpos = DVector3.newArray(GPB);	// delta-positions for encapsulated geometries
+				DMatrix3[] drot = DMatrix3.newArray(GPB);
 
 				// set random delta positions
 				for (j=0; j<GPB; j++) {
-					dpos[j] = new DVector3();
 					for (k=0; k<3; k++) dpos[j].set(k, dRandReal()*0.3-0.15);
-					drot[j] = new DMatrix3();
 				}
 
 				for (k=0; k<GPB; k++) {

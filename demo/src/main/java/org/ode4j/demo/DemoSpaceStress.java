@@ -70,7 +70,7 @@ import org.ode4j.ode.OdeHelper;
 public class DemoSpaceStress extends dsFunctions {
 	// some constants
 
-	private static final int NUM = 10000;			// max number of objects
+	private static final int NUM = 2000;			// max number of objects
 	private static final float DENSITY = 5.0f;		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 4;		// maximum number of contact points per body
@@ -246,16 +246,14 @@ public class DemoSpaceStress extends dsFunctions {
 				DMass m2 = OdeHelper.createMass();
 				m.setZero ();
 
-				DVector3[] dpos = new DVector3[GPB];	// delta-positions for encapsulated geometries
-				DMatrix3[] drot = new DMatrix3[GPB];
+				DVector3[] dpos = DVector3.newArray(GPB);	// delta-positions for encapsulated geometries
+				DMatrix3[] drot = DMatrix3.newArray(GPB);
 
 				// set random delta positions
 				for (j=0; j<GPB; j++) {
-					dpos[j] = new DVector3();
 					for (k=0; k<3; k++) {
 						dpos[j].set(k, dRandReal()*0.3-0.15 );
 					}
-					drot[j] = new DMatrix3();
 				}
 
 				for (k=0; k<GPB; k++) {

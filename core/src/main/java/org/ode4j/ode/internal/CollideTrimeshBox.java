@@ -973,25 +973,25 @@ public class CollideTrimeshBox implements DColliderFn {
 				avPoints[3].eqSum( vRotCol,  tz1, vRotCol2,  tz2).add (vCenter);
 
 				// clip Box face with 4 planes of triangle (1 face plane, 3 egde planes)
-				DVector3[] avTempArray1 = new DVector3[9];
-				DVector3[] avTempArray2 = new DVector3[9];
+				DVector3[] avTempArray1 = DVector3.newArray(9);
+				DVector3[] avTempArray2 = DVector3.newArray(9);
 				DVector4 plPlane = new DVector4();
 
 				RefInt iTempCnt1 = new RefInt(0);
 				RefInt iTempCnt2 = new RefInt(0);
 
 				// zeroify vectors - necessary?
-				for(int i=0; i<9; i++) {
-					//	      avTempArray1[i][0]=0;
-					//	      avTempArray1[i][1]=0;
-					//	      avTempArray1[i][2]=0;
-					avTempArray1[i] = new DVector3();
-
-					//	      avTempArray2[i][0]=0;
-					//	      avTempArray2[i][1]=0;
-					//	      avTempArray2[i][2]=0;
-					avTempArray2[i] = new DVector3();
-				}
+//				for(int i=0; i<9; i++) {
+//					//	      avTempArray1[i][0]=0;
+//					//	      avTempArray1[i][1]=0;
+//					//	      avTempArray1[i][2]=0;
+//					avTempArray1[i] = new DVector3();
+//
+//					//	      avTempArray2[i][0]=0;
+//					//	      avTempArray2[i][1]=0;
+//					//	      avTempArray2[i][2]=0;
+//					avTempArray2[i] = new DVector3();
+//				}
 
 
 				// Normal plane
@@ -1102,23 +1102,23 @@ public class CollideTrimeshBox implements DColliderFn {
 
 				// CLIP Polygons
 				// define temp data for clipping
-				DVector3[] avTempArray1 = new DVector3[9];
-				DVector3[] avTempArray2 = new DVector3[9];
+				DVector3[] avTempArray1 = DVector3.newArray(9);
+				DVector3[] avTempArray2 = DVector3.newArray(9);
 
 				RefInt iTempCnt1 = new RefInt(), iTempCnt2 = new RefInt();
 
 				// zeroify vectors - necessary?
-				for(int i=0; i<9; i++) {
-					//	      avTempArray1[i][0]=0;
-					//	      avTempArray1[i][1]=0;
-					//	      avTempArray1[i][2]=0;
-					avTempArray1[i] = new DVector3();
-
-					//	      avTempArray2[i][0]=0;
-					//	      avTempArray2[i][1]=0;
-					//	      avTempArray2[i][2]=0;
-					avTempArray2[i] = new DVector3();
-				}
+//				for(int i=0; i<9; i++) {
+//					//	      avTempArray1[i][0]=0;
+//					//	      avTempArray1[i][1]=0;
+//					//	      avTempArray1[i][2]=0;
+//					avTempArray1[i] = new DVector3();
+//
+//					//	      avTempArray2[i][0]=0;
+//					//	      avTempArray2[i][1]=0;
+//					//	      avTempArray2[i][2]=0;
+//					avTempArray2[i] = new DVector3();
+//				}
 
 				// clip triangle with 5 box planes (1 face plane, 4 edge planes)
 

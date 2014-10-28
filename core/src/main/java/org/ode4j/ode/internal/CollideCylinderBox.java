@@ -198,11 +198,10 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 
 			// temp index
 			int i = 0;
-			DVector3[]	vTempBoxVertices = new DVector3[8];
+			DVector3[]	vTempBoxVertices = DVector3.newArray(8);
 			// transform vertices in absolute space
 			for(i=0; i < 8; i++) 
 			{
-				vTempBoxVertices[i] = new DVector3();
 				dMultiplyMat3Vec3(m_mBoxRot,m_avBoxVertices[i], vTempBoxVertices[i]);
 				dVector3Add(vTempBoxVertices[i], m_vBoxPos, m_avBoxVertices[i]);
 			}
@@ -898,24 +897,23 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			}
 
 			// find the vertices of box polygon
-			DVector3[] avPoints = new DVector3[4];
-			DVector3[] avTempArray1 = new DVector3[MAX_CYLBOX_CLIP_POINTS];
-			DVector3[] avTempArray2 = new DVector3[MAX_CYLBOX_CLIP_POINTS];
-			for (int ii = 0; ii < avPoints.length; ii++) avPoints[ii] = new DVector3();
+			DVector3[] avPoints = DVector3.newArray(4);
+			DVector3[] avTempArray1 = DVector3.newArray(MAX_CYLBOX_CLIP_POINTS);
+			DVector3[] avTempArray2 = DVector3.newArray(MAX_CYLBOX_CLIP_POINTS);
 
-			int i=0;
-			for(i=0; i<MAX_CYLBOX_CLIP_POINTS; i++) 
-			{
-//				avTempArray1[i][0] = (0.0);
-//				avTempArray1[i][1] = (0.0);
-//				avTempArray1[i][2] = (0.0);
-				avTempArray1[i] = new DVector3();
-
-//				avTempArray2[i][0] = (0.0);
-//				avTempArray2[i][1] = (0.0);
-//				avTempArray2[i][2] = (0.0);
-				avTempArray2[i] = new DVector3();
-			}
+//			int i=0;
+//			for(i=0; i<MAX_CYLBOX_CLIP_POINTS; i++) 
+//			{
+////				avTempArray1[i][0] = (0.0);
+////				avTempArray1[i][1] = (0.0);
+////				avTempArray1[i][2] = (0.0);
+//				avTempArray1[i] = new DVector3();
+//
+////				avTempArray2[i][0] = (0.0);
+////				avTempArray2[i][1] = (0.0);
+////				avTempArray2[i][2] = (0.0);
+//				avTempArray2[i] = new DVector3();
+//			}
 
 			DVector3 vAxis1 = new DVector3(), vAxis2 = new DVector3();
 
@@ -950,7 +948,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			DMatrix3 mCylinderInv = new DMatrix3();
 			dMatrix3Inv(m_mCylinderRot,mCylinderInv);
 
-			for(i=0; i<4; i++) 
+			for(int i=0; i<4; i++) 
 			{
 				dVector3Subtract(avPoints[i],vCylinderCirclePos,vTemp);
 				dMultiplyMat3Vec3(mCylinderInv,vTemp,avPoints[i]);
@@ -991,7 +989,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 
 			if (nCircleSegment % 2 != 0)
 			{
-				for( i=0; i<iTmpCounter2; i++)
+				for(int i=0; i<iTmpCounter2; i++)
 				{
 					dMultiply0_331(vPoint,m_mCylinderRot,avTempArray2[i]);
 //					vPoint[0] += vCylinderCirclePos[0];
@@ -1027,7 +1025,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 			}
 			else
 			{
-				for( i=0; i<iTmpCounter1; i++)
+				for(int i=0; i<iTmpCounter1; i++)
 				{
 					dMultiply0_331(vPoint,m_mCylinderRot,avTempArray1[i]);
 //					vPoint[0] += vCylinderCirclePos[0];

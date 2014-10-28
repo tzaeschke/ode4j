@@ -818,12 +818,8 @@ public class DxBody extends DObject implements DBody, Cloneable {
 		}
 		if(adis.average_samples > 0)
 		{
-			average_lvel_buffer = new DVector3[adis.average_samples];
-			for (int i = 0; i < average_lvel_buffer.length; i++) 
-				average_lvel_buffer[i] = new DVector3();
-			average_avel_buffer = new DVector3[adis.average_samples];
-			for (int i = 0; i < average_avel_buffer.length; i++) 
-				average_avel_buffer[i] = new DVector3();
+			average_lvel_buffer = DVector3.newArray(adis.average_samples);
+			average_avel_buffer = DVector3.newArray(adis.average_samples);
 		}
 		else
 		{
