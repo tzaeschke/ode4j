@@ -284,7 +284,7 @@ public class DxJointLimitMotor {
 					{
 	                    b1 = joint.node[1].body;
 						if ( b1 != null) {
-							b1.dBodyAddTorque( fm*ax1.get0(), fm*ax1.get1(), fm*ax1.get2() );
+							b1.dBodyAddTorque( fm_ax1_0, fm_ax1_1, fm_ax1_2 );
 						}
 	                    b0.dBodyAddTorque( -fm_ax1_0, -fm_ax1_1, -fm_ax1_2 );
 					}
@@ -293,13 +293,12 @@ public class DxJointLimitMotor {
 	                    b1 = joint.node[1].body;
 						if ( b1 != null)
 						{
-							b1.dBodyAddForce( fm*ax1.get0(), fm*ax1.get1(), fm*ax1.get2() );
-
+	                        DVector3 neg_fm_ltd_0 = ltd.scale(-fm); 
 							// linear limot torque decoupling step: refer to above discussion
-							b0.dBodyAddTorque( -fm*ltd.get0(), -fm*ltd.get1(),
-									-fm*ltd.get2() );
-							b1.dBodyAddTorque( -fm*ltd.get0(), -fm*ltd.get1(),
-									-fm*ltd.get2() );
+							b0.dBodyAddTorque( neg_fm_ltd_0 );
+							b1.dBodyAddTorque( neg_fm_ltd_0 );
+
+							b1.dBodyAddForce( fm_ax1_0, fm_ax1_1, fm_ax1_2 );
 						}
 	                    b0.dBodyAddForce( -fm_ax1_0, -fm_ax1_1, -fm_ax1_2 );
 					}
