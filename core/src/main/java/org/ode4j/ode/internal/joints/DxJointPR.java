@@ -633,9 +633,9 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		axis.scale(torque);
 
 		if ( node[0].body != null )
-			node[0].body.dBodyAddTorque( axis.get0(), axis.get1(), axis.get2() );
+			node[0].body.dBodyAddTorque( axis );
 		if ( node[1].body != null )
-			node[1].body.dBodyAddTorque( -axis.get0(), -axis.get1(), -axis.get2() );
+			node[1].body.dBodyAddTorque( axis.scale(-1) );
 	}
 
 

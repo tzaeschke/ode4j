@@ -354,8 +354,8 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 			c.eqDiff(node[1].body.posr().pos(), node[0].body.posr().pos()).scale(0.5);
 			dCalcVectorCross3 ( ltd, c, axis );
 
-			node[0].body.dBodyAddTorque ( ltd.get0(), ltd.get1(), ltd.get2() );
-			node[1].body.dBodyAddTorque ( ltd.get0(), ltd.get1(), ltd.get2() );
+			node[0].body.dBodyAddTorque ( ltd );
+			node[1].body.dBodyAddTorque ( ltd );
 		}
 	}
 
