@@ -974,7 +974,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    //dJointWithInfo1[] const jointinfos = memarena.AllocateArray<dJointWithInfo1>(_nj);
 	    memarena.dummy();
 	    DJointWithInfo1[] jointinfos = new DJointWithInfo1[_nj];
-	    //TZ: init TODO is this necessary?
+	    //TODO this is done in dxQuickStepIsland_Stage0_Joints()
 //	    for (int i = 0; i < jointinfos.length; i++) {
 //	    	jointinfos[i] = new DJointWithInfo1();
 //	    }
@@ -999,56 +999,56 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    		//(dxQuickStepperStage0JointsCallContext)memarena.AllocateBlock(sizeof(dxQuickStepperStage0JointsCallContext));
 	    stage0JointsCallContext.Initialize(callContext, jointinfos, stage1CallContext.m_stage0Outputs);
 
-	    if (allowedThreads == 1)
-	    {
+//	    if (allowedThreads == 1)
+//	    {
 	        dxQuickStepIsland_Stage0_Bodies(stage0BodiesCallContext);
 	        dxQuickStepIsland_Stage0_Joints(stage0JointsCallContext);
 	        dxQuickStepIsland_Stage1(stage1CallContext);
-	    }
-	    else
-	    {
-			//TODO
-//			try {
-//				ArrayList<Callable<Boolean>> tasks = new ArrayList<>(); 
-//				for (int i = 0; i < THREADS; i++) {
-//					tasks.add(new Callable<Boolean>() {
-//						@Override
-//						public Boolean call() {
-//							dxQuickStepIsland_Stage0_Bodies(stage0BodiesCallContext);
-//							return Boolean.TRUE;
-//						}
-//					});
-//				}
-//				for (Future<Boolean> f: POOL.invokeAll(tasks, 1, TimeUnit.HOURS)) {
-//					f.get();
-//				}
+//	    }
+//	    else
+//	    {
+//			//TODO
+////			try {
+////				ArrayList<Callable<Boolean>> tasks = new ArrayList<>(); 
+////				for (int i = 0; i < THREADS; i++) {
+////					tasks.add(new Callable<Boolean>() {
+////						@Override
+////						public Boolean call() {
+////							dxQuickStepIsland_Stage0_Bodies(stage0BodiesCallContext);
+////							return Boolean.TRUE;
+////						}
+////					});
+////				}
+////				for (Future<Boolean> f: POOL.invokeAll(tasks, 1, TimeUnit.HOURS)) {
+////					f.get();
+////				}
+////
+////				dxQuickStepIsland_Stage0_Joints(stage0JointsCallContext);
+////				dxQuickStepIsland_Stage1(stage1CallContext);
+////			} catch (InterruptedException e) {
+////				throw new RuntimeException(e);
+////			} catch (ExecutionException e) {
+////				throw new RuntimeException(e);
+////			}
 //
-//				dxQuickStepIsland_Stage0_Joints(stage0JointsCallContext);
-//				dxQuickStepIsland_Stage1(stage1CallContext);
-//			} catch (InterruptedException e) {
-//				throw new RuntimeException(e);
-//			} catch (ExecutionException e) {
-//				throw new RuntimeException(e);
-//			}
-
-			int bodyThreads = allowedThreads;
-	        int jointThreads = 1;
-
-	        Ref<DCallReleasee> stage1CallReleasee = new Ref<DCallReleasee>();
-	        world.threading().PostThreadedCallForUnawareReleasee(null, stage1CallReleasee, 
-	        		bodyThreads + jointThreads, callContext.m_finalReleasee(), 
-	        		null, dxQuickStepIsland_Stage1_Callback, stage1CallContext, 0, 
-	        		"QuickStepIsland Stage1");
-
-	        world.threading().PostThreadedCallsGroup(null, bodyThreads, stage1CallReleasee.get(), 
-	        		dxQuickStepIsland_Stage0_Bodies_Callback, stage0BodiesCallContext, 
-	        		"QuickStepIsland Stage0-Bodies");
-
-	        world.threading().PostThreadedCall(null, null, 0, stage1CallReleasee.get(), null, 
-	        		dxQuickStepIsland_Stage0_Joints_Callback, stage0JointsCallContext, 0, 
-	        		"QuickStepIsland Stage0-Joints");
-	        dIASSERT(jointThreads == 1);
-	    }
+//			int bodyThreads = allowedThreads;
+//	        int jointThreads = 1;
+//
+//	        Ref<DCallReleasee> stage1CallReleasee = new Ref<DCallReleasee>();
+//	        world.threading().PostThreadedCallForUnawareReleasee(null, stage1CallReleasee, 
+//	        		bodyThreads + jointThreads, callContext.m_finalReleasee(), 
+//	        		null, dxQuickStepIsland_Stage1_Callback, stage1CallContext, 0, 
+//	        		"QuickStepIsland Stage1");
+//
+//	        world.threading().PostThreadedCallsGroup(null, bodyThreads, stage1CallReleasee.get(), 
+//	        		dxQuickStepIsland_Stage0_Bodies_Callback, stage0BodiesCallContext, 
+//	        		"QuickStepIsland Stage0-Bodies");
+//
+//	        world.threading().PostThreadedCall(null, null, 0, stage1CallReleasee.get(), null, 
+//	        		dxQuickStepIsland_Stage0_Joints_Callback, stage0JointsCallContext, 0, 
+//	        		"QuickStepIsland Stage0-Joints");
+//	        dIASSERT(jointThreads == 1);
+//	    }
 	}    
 
 	private static dThreadedCallFunction dxQuickStepIsland_Stage0_Bodies_Callback = new dThreadedCallFunction() {
@@ -1314,6 +1314,9 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				mindex[mcurrO+1] = mfboffs;
 				mcurrO += 2;
 
+				//for (int i = 0; i < nj; i++) {
+					//DJointWithInfo1 jicurr = jointinfos[i];
+				//TODO fix issue #18
 				for (DJointWithInfo1 jicurr: jointinfos) {
 					//const dJointWithInfo1 *const jiend = jointinfos + nj;
 					//for (const dJointWithInfo1 *jicurr = jointinfos; jicurr != jiend; ++jicurr) {
