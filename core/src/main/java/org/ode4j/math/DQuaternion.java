@@ -22,6 +22,12 @@
 package org.ode4j.math;
 
 
+/**
+ * A quaternion consists of four numbers, [w, x, y, z].
+ * They are used top represent rigid body orientations. 
+ * 
+ * @author Tilmann Zaeschke
+ */
 public class DQuaternion implements DQuaternionC {
 
 	private final double[] v;
