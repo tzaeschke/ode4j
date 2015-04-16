@@ -23,7 +23,7 @@ package org.ode4j.math;
 
 
 public class DQuaternion implements DQuaternionC {
-//public class DQuaternion implements DQuaternionC {
+
 	private final double[] v;
 	public static final int LEN = 4;
 
@@ -96,20 +96,36 @@ public class DQuaternion implements DQuaternionC {
 		return LEN;
 	}
 
-	public void set0(double d) {
-		v[0] = d;
+	/**
+	 * Sets w of [w, x, y, z].
+	 * @param w
+	 */
+	public void set0(double w) {
+		v[0] = w;
 	}
 
-	public void set1(double d) {
-		v[1] = d;
+	/**
+	 * Sets x of [w, x, y, z].
+	 * @param x
+	 */
+	public void set1(double x) {
+		v[1] = x;
 	}
 
-	public void set2(double d) {
-		v[2] = d;
+	/**
+	 * Sets y of [w, x, y, z].
+	 * @param y
+	 */
+	public void set2(double y) {
+		v[2] = y;
 	}
 
-	public void set3(double d) {
-		v[3] = d;
+	/**
+	 * Sets z of [w, x, y, z].
+	 * @param z
+	 */
+	public void set3(double z) {
+		v[3] = z;
 	}
 
 	public boolean isEq(DQuaternion q) {

@@ -22,9 +22,13 @@
 package org.ode4j.math;
 
 /**
- * Constant (unmodifiable) interface for dQuaternion.
+ * Constant (unmodifiable) interface for DQuaternion.
  * 
  * This returns an unmodifiable view of an (most likely) modifiable object.
+ * 
+ * A quaternion consists of four numbers, [w, x, y, z].
+ * They are used top represent rigid body orientations. 
+ *  
  * 
  * WARNING: This is only unmodifiable for the user. The class that returned
  * this object may continue to modify it, these changes will also reflect in
@@ -40,8 +44,28 @@ public interface DQuaternionC {
 	 * @param i The row to return [0, 1, 2].
 	 */
 	public double get(int i);
+
+	/**
+	 * w of [w, x, y, z].
+	 * @return w
+	 */
 	public double get0();
+
+	/**
+	 * x of [w, x, y, z].
+	 * @return x
+	 */
 	public double get1();
+
+	/**
+	 * y of [w, x, y, z].
+	 * @return y
+	 */
 	public double get2();
+
+	/**
+	 * z of [w, x, y, z].
+	 * @return z
+	 */
 	public double get3();
 }
