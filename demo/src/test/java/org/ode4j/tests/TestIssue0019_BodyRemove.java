@@ -40,6 +40,7 @@ import org.ode4j.ode.OdeHelper;
  */
 public class TestIssue0019_BodyRemove {
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testDestroyFirst() {
 		OdeHelper.initODE2(0);
@@ -63,6 +64,7 @@ public class TestIssue0019_BodyRemove {
 		Assert.assertNotEquals(geoms.get(1), geom1);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testDestroyMiddle() {
 		OdeHelper.initODE2(0);
@@ -86,6 +88,7 @@ public class TestIssue0019_BodyRemove {
 		Assert.assertNotEquals(geoms.get(1), geom2);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testDestroyLast() {
 		OdeHelper.initODE2(0);

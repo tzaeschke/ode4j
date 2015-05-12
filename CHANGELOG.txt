@@ -1,4 +1,6 @@
 
+- Fixed issue #19 (thanks to Piotr)
+
 0.3.1
 =====
 - Fixed issue #17
