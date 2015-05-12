@@ -492,24 +492,47 @@ public abstract class DxGeom extends DBase implements DGeom {
 	/**
 	 * 
 	 */
-	private void bodyRemove()
-	{
-		if (body != null) {
-			// delete this geom from body list
-		    //dxGeom **last = &body->geom, *g = body->geom;
-			DxGeom g = body.geom;
-			while (g != null) {
-				if (g == this) {
-					body.geom = g.body_next;//last = g.body_next;
-					break;
-				}
-				body.geom = g.body_next; //last = g.body_next;
-				g = g.body_next;
-			}
-			body = null;
-			body_next = null;
-		}
-	}
+    private void bodyRemove()
+    {
+        if (body != null) {
+            DxGeom last = null;
+            DxGeom g = body.geom;
+            while (g != null) {
+                if (g == this) {
+                    if (last == null) {
+                        body.geom = g.body_next;
+                    } else {
+                        last.body_next = g.body_next;
+                    }
+                    break;
+                }
+                last = g;
+                g = g.body_next;
+            }
+            body = null;
+            body_next = null;
+        }
+    }
+
+    //TODO remove, replaced with above fix for issue #19.
+//	private void bodyRemoveOld()
+//	{
+//		if (body != null) {
+//			// delete this geom from body list
+//		    //dxGeom **last = &body->geom, *g = body->geom;
+//			DxGeom g = body.geom;
+//			while (g != null) {
+//				if (g == this) {
+//					body.geom = g.body_next;//last = g.body_next;
+//					break;
+//				}
+//				body.geom = g.body_next; //last = g.body_next;
+//				g = g.body_next;
+//			}
+//			body = null;
+//			body_next = null;
+//		}
+//	}
 
 	//	private void myswap(dReal& a, dReal& b) { 
 //	private void myswap(double a, double b) { 
