@@ -24,6 +24,9 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.ode4j.math.DVector4;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.ode.DContactGeom;
@@ -197,6 +200,12 @@ public class CollideTrimeshPlane implements DColliderFn {
 		int contactmax = (flags & DxGeom.NUMC_MASK);
 		if (contactcount > contactmax)
 		{
+			Arrays.sort((Object[])collision_result.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
+				@Override
+				public int compare(Object o1, Object o2) {
+					return Float.compare(((vec4f) o2).f[3], ((vec4f) o1).f[3]);
+				}
+			});
 			contactcount = contactmax;
 		}
 
