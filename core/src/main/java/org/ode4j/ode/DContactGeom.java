@@ -41,10 +41,6 @@ import org.ode4j.math.DVector3;
  */
 public class DContactGeom {
 	
-	DContactGeom() {
-		// Non-public
-	}
-	
 	/** contact position */
 	public final DVector3 pos = new DVector3();          
     /** normal vector */
