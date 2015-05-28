@@ -29,6 +29,9 @@ import static org.ode4j.ode.internal.Common.dAASSERT;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dNextAfter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAABBC;
 import org.ode4j.ode.DGeom;
@@ -374,7 +377,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	//struct dxQuadTreeSpace : public dxSpace{
 	private Block[] Blocks;//Block* Blocks;	// Blocks[0] is the root
 
-	private DArray<DxGeom> DirtyList = new DArray<DxGeom>();//dArray<dxGeom*> DirtyList;
+	private List<DxGeom> DirtyList = new ArrayList<DxGeom>();//dArray<dxGeom*> DirtyList;
 
 	//	dxQuadTreeSpace(dSpace _space, dVector3 Center, dVector3 Extents, int Depth);
 	//	~dxQuadTreeSpace();
@@ -555,7 +558,7 @@ PARENTRECURSE:
 		Common.dUASSERT(g._qtIdxEx == null && g.getNextEx() == null, 
 		"geom is already in a space");
 
-		DirtyList.push(g);
+		DirtyList.add(g);
 
 		// add
 		Blocks[0].GetBlock(g._aabb).AddObject(g);	// Add to best block
@@ -588,7 +591,7 @@ PARENTRECURSE:
 	//void dxQuadTreeSpace::dirty(dxGeom* g){
 	@Override
 	void dirty(DxGeom g){
-		DirtyList.push(g);
+		DirtyList.add(g);
 	}
 
 	//void dxQuadTreeSpace::computeAABB(){
@@ -615,7 +618,7 @@ PARENTRECURSE:
 			//TZ XXX ((Block)g.tome).Traverse(g);
 			g._qtIdxEx.Traverse(g);
 		}
-		DirtyList.setSize(0);
+		DirtyList.clear();
 
 		lock_count--;
 	}

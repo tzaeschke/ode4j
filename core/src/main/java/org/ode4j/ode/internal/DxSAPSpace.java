@@ -29,6 +29,7 @@ import static org.ode4j.ode.internal.Common.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DSapSpace;
@@ -107,15 +108,15 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	// We have two lists (arrays of pointers) to dirty and clean
 	// geoms. Each geom knows it's index into the corresponding list
 	// (see macros above).
-	private DArray<DxGeom> DirtyList = new DArray<DxGeom>(); // dirty geoms
-	private DArray<DxGeom> GeomList = new DArray<DxGeom>();	// clean geoms
+	private List<DxGeom> DirtyList = new ArrayList<DxGeom>(); // dirty geoms
+	private List<DxGeom> GeomList = new ArrayList<DxGeom>();	// clean geoms
 
 	// For SAP, we ultimately separate "normal" geoms and the ones that have
 	// infinite AABBs. No point doing SAP on infinite ones (and it doesn't handle
 	// infinite geoms anyway).
 	//private dArray<dxGeom> TmpGeomList;	// temporary for normal geoms
 	private ArrayList<DxGeom> TmpGeomList = new ArrayList<DxGeom>();	// temporary for normal geoms
-	private DArray<DxGeom> TmpInfGeomList = new DArray<DxGeom>();	// temporary for geoms with infinite AABBs
+	private List<DxGeom> TmpInfGeomList = new ArrayList<DxGeom>();	// temporary for geoms with infinite AABBs
 
 	// Our sorting axes. (X,Z,Y is often best). Stored *2 for minor speedup
 	// Axis indices into geom's aabb are: min=idx, max=idx+1
@@ -266,7 +267,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		// add to dirty list
 		GEOM_SET_DIRTY_IDX( g, DirtyList.size() );
 		GEOM_SET_GEOM_IDX( g, GEOM_INVALID_IDX );
-		DirtyList.push( g );
+		DirtyList.add( g );
 
 		super.add(g);
 	}
@@ -294,7 +295,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 			DirtyList.set(dirtyIdx, lastG);
 			GEOM_SET_DIRTY_IDX(lastG,dirtyIdx);
 			GEOM_SET_DIRTY_IDX(g,GEOM_INVALID_IDX);
-			DirtyList.setSize( dirtySize-1 );
+			DirtyList.remove( dirtySize-1 );
 		} else {
 			// we're in geom list, remove
 			int geomSize = GeomList.size();
@@ -302,7 +303,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 			GeomList.set(geomIdx, lastG);
 			GEOM_SET_GEOM_IDX(lastG,geomIdx);
 			GEOM_SET_GEOM_IDX(g,GEOM_INVALID_IDX);
-			GeomList.setSize( geomSize-1 );
+			GeomList.remove( geomSize-1 );
 		}
 		
 		super.remove(g);
@@ -334,7 +335,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		// add to dirty list
 		GEOM_SET_GEOM_IDX( g, GEOM_INVALID_IDX );
 		GEOM_SET_DIRTY_IDX( g, DirtyList.size() );
-		DirtyList.push( g );
+		DirtyList.add( g );
 	}
 
 	//void dxSAPSpace::computeAABB()
@@ -357,7 +358,6 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		lock_count++;
 
 		int geomSize = GeomList.size();
-		GeomList.setSize( geomSize + dirtySize ); // ensure space in geom list
 
 		for( int i = 0; i < dirtySize; ++i ) {
 			DxGeom g = DirtyList.get(i);
@@ -370,10 +370,10 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 			// remove from dirty list, add to geom list
 			GEOM_SET_DIRTY_IDX( g, GEOM_INVALID_IDX );
 			GEOM_SET_GEOM_IDX( g, geomSize + i );
-			GeomList.set(geomSize+i, g);
+			GeomList.add(g);
 		}
 		// clear dirty list
-		DirtyList.setSize( 0 );
+		DirtyList.clear();
 
 		lock_count--;
 	}
@@ -394,7 +394,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 		// separate all ENABLED geoms into infinite AABBs and normal AABBs
 		TmpGeomList.clear();//setSize(0);
-		TmpInfGeomList.setSize(0);
+		TmpInfGeomList.clear();
 		int axis0max = ax0id;// + 1;
 		for( int i = 0; i < geom_count; ++i ) {
 			DxGeom g = GeomList.get(i);
@@ -402,7 +402,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 				continue;
 			final double amax = g._aabb.getMax(axis0max);
 			if( amax == dInfinity ) // HACK? probably not...
-				TmpInfGeomList.push( g );
+				TmpInfGeomList.add( g );
 			else
 				TmpGeomList.add( g );//push( g );
 		}
