@@ -41,6 +41,7 @@ import org.ode4j.ode.DColliderFn;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
@@ -49,7 +50,6 @@ import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 
-import static org.ode4j.ode.OdeConstants.*;
 import static org.ode4j.ode.internal.Common.*;
 
 /*************************************************************************
@@ -1510,12 +1510,14 @@ public class CollideTrimeshBox implements DColliderFn {
 		int contactmax = (Flags & DxGeom.NUMC_MASK);
 		if (contactcount > contactmax)
 		{
-			Collections.sort(cData.m_TempContactGeoms, new Comparator<DContactGeom>() {
-				@Override
-				public int compare(DContactGeom o1, DContactGeom o2) {
-					return Double.compare(o2.depth, o1.depth);
-				}
-			});
+			if (OdeConfig.ENABLE_CONTACT_SORTING) {
+				Collections.sort(cData.m_TempContactGeoms, new Comparator<DContactGeom>() {
+					@Override
+					public int compare(DContactGeom o1, DContactGeom o2) {
+						return Double.compare(o2.depth, o1.depth);
+					}
+				});
+			}
 			contactcount = contactmax;
 		}
 

@@ -31,6 +31,7 @@ import org.ode4j.ode.DColliderFn;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
@@ -85,12 +86,14 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 		int maxcontacts = Flags & DxGeom.NUMC_MASK;
 		if (contactcount > maxcontacts)
 		{
-			Arrays.sort((Object[])trimeshcontacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
-				@Override
-				public int compare(Object o1, Object o2) {
-					return Float.compare(((GimContact) o2).getDepth(), ((GimContact) o1).getDepth());
-				}
-			});
+			if (OdeConfig.ENABLE_CONTACT_SORTING) {
+				Arrays.sort((Object[])trimeshcontacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
+					@Override
+					public int compare(Object o1, Object o2) {
+						return Float.compare(((GimContact) o2).getDepth(), ((GimContact) o1).getDepth());
+					}
+				});
+			}
 			contactcount = maxcontacts;
 		}
 

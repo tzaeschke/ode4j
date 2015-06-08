@@ -35,6 +35,19 @@ public class OdeConfig {
 	private static final boolean dDOUBLE = true;
 	private static boolean dLIBCCD = true;
 	
+	/** 
+	 * This enables contact sorting by penetration depth. 
+	 * This is related to Issue #36 in ODE, but has not been fixed there.
+	 * This flag can be removed once the fix on ODE is available.
+	 * 
+	 * See issue #22 in ode4j.
+	 * 
+	 * https://bitbucket.org/odedevs/ode/issue/36/fix-gimpact-contacts-handling
+	 * 
+	 * WARNING This is likely to be removed at some point.
+	 */
+	public static boolean ENABLE_CONTACT_SORTING = true;
+	
 	public static enum TRIMESH {
 		DISABLED,
 		GIMPACT;

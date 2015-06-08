@@ -73,7 +73,6 @@ import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.internal.DxGeom;
 import org.ode4j.ode.internal.DxTrimeshHeightfield;
 
 
