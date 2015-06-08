@@ -22,35 +22,21 @@
  * details.                                                              *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.ode;
+package org.ode4j.ode.internal;
 
-import org.ode4j.math.DVector3;
+import org.ode4j.ode.DContactGeomBuffer;
+import org.ode4j.ode.DHeightfield;
 
+public abstract class DxAbstractHeightfield extends DxGeom implements DHeightfield {
 
-/**
- * Describe the contact point between two geoms.
- *
- * If two bodies touch, or if a body touches a static feature in its 
- * environment, the contact is represented by one or more "contact 
- * points", described by dContactGeom.
- *
- * The convention is that if body 1 is moved along the normal vector by 
- * a distance depth (or equivalently if body 2 is moved the same distance 
- * in the opposite direction) then the contact depth will be reduced to 
- * zero. This means that the normal vector points "in" to body 1.
- */
-public class DContactGeom {
-	
-	/** contact position */
-	public final DVector3 pos = new DVector3();          
-    /** normal vector */
-	public final DVector3 normal = new DVector3();
-    /** penetration depth */
-	public double depth;
-	/** the colliding geoms */
-	public DGeom g1;        
-	public DGeom g2;
-	/** (to be documented) */
-	public int side1;       
-	public int side2;
+	//dxHeightfieldData* m_p_data;
+	protected DxHeightfieldData m_p_data;
+
+	protected DxAbstractHeightfield(DxSpace space, boolean isPlaceable) {
+		super(space, isPlaceable);
+	}
+
+	abstract int dCollideHeightfieldZone(int nMinX, int nMaxX, int nMinZ, int nMaxZ, DxGeom o2, int i, int flags,
+			DContactGeomBuffer createView, int skip);
+
 }

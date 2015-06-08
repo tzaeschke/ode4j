@@ -24,6 +24,9 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DColliderFn;
@@ -1221,6 +1224,12 @@ public class CollideTrimeshCCylinder implements DColliderFn {
 		int contactmax = (flags & DxGeom.NUMC_MASK);
 		if (contactcount > contactmax)
 		{
+			Arrays.sort((Object[])trimeshcontacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
+				@Override
+				public int compare(Object o1, Object o2) {
+					return Float.compare(((GimContact) o2).getDepth(), ((GimContact) o1).getDepth());
+				}
+			});
 			contactcount = contactmax;
 		}
 

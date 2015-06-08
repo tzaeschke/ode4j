@@ -24,6 +24,12 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -181,7 +187,7 @@ public class CollideTrimeshBox implements DColliderFn {
 	private class sTrimeshBoxColliderData
 	{
 		//sTrimeshBoxColliderData(): m_iBestAxis(0), m_iExitAxis(0), m_ctContacts(0) {}
-		sTrimeshBoxColliderData() { m_iBestAxis=(0); m_iExitAxis=(0); m_ctContacts=new RefInt(0); }
+		sTrimeshBoxColliderData() { m_iBestAxis=(0); m_iExitAxis=(0); }
 
 		//		void SetupInitialContext(dxTriMesh *TriMesh, dxGeom *BoxGeom,
 		//			int Flags, dContactGeom* Contacts, int Stride);
@@ -223,7 +229,7 @@ public class CollideTrimeshBox implements DColliderFn {
 		//		dxGeom *m_Geom2;
 		DxGeom m_Geom1;
 		DxGeom m_Geom2;
-		RefInt m_ctContacts;
+		List<DContactGeom> m_TempContactGeoms;
 		//	};
 
 		// Test normal of mesh face as separating axis for intersection
@@ -795,7 +801,6 @@ public class CollideTrimeshBox implements DColliderFn {
 		// clip and generate contacts
 		//	void sTrimeshBoxColliderData::_cldClipping(const dVector3 &v0, const dVector3 &v1, const dVector3 &v2, int TriIndex) {
 		void _cldClipping(final DVector3C v0, final DVector3C v1, final DVector3C v2, final int TriIndex) {
-			dIASSERT( ((m_iFlags & CONTACTS_UNIMPORTANT)==0) || m_ctContacts.i < (m_iFlags & DxGeom.NUMC_MASK) ); // Do not call the function if there is no room to store results
 
 			// if we have edge/edge intersection
 			if (m_iBestAxis > 4 ) {
@@ -874,8 +879,8 @@ public class CollideTrimeshBox implements DColliderFn {
 				//		Contact->side2 = -1;
 				//		m_ctContacts++;
 				//	#endif
-				GenerateContact(m_iFlags, m_ContactGeoms, m_iStride, m_Geom1, m_Geom2, TriIndex,
-						vPntTmp, m_vBestNormal, m_fBestDepth, m_ctContacts);
+				GenerateContact(m_iFlags, m_TempContactGeoms, m_iStride, m_Geom1, m_Geom2, TriIndex,
+						vPntTmp, m_vBestNormal, m_fBestDepth);
 
 
 				// if triangle is the referent face then clip box to triangle face
@@ -1066,12 +1071,9 @@ public class CollideTrimeshBox implements DColliderFn {
 					//		  Contact->side2 = -1;
 					//	      m_ctContacts++;
 					//	#endif
-					GenerateContact(m_iFlags, m_ContactGeoms, m_iStride,  m_Geom1, m_Geom2, TriIndex,
-							vPntTmp, m_vBestNormal, -fTempDepth, m_ctContacts);
+					GenerateContact(m_iFlags, m_TempContactGeoms, m_iStride,  m_Geom1, m_Geom2, TriIndex,
+							vPntTmp, m_vBestNormal, -fTempDepth);
 
-					if ((m_ctContacts.i | CONTACTS_UNIMPORTANT) == (m_iFlags & (DxGeom.NUMC_MASK | CONTACTS_UNIMPORTANT))) {
-						break;
-					}
 				}
 
 				//dAASSERT(m_ctContacts>0);
@@ -1195,12 +1197,9 @@ public class CollideTrimeshBox implements DColliderFn {
 					//		  Contact->side2 = -1;
 					//	      m_ctContacts++;
 					//	#endif
-					GenerateContact(m_iFlags, m_ContactGeoms, m_iStride,  m_Geom1, m_Geom2, TriIndex,
-							vPntTmp, m_vBestNormal, -fTempDepth, m_ctContacts);
+					GenerateContact(m_iFlags, m_TempContactGeoms, m_iStride,  m_Geom1, m_Geom2, TriIndex,
+							vPntTmp, m_vBestNormal, -fTempDepth);
 
-					if ((m_ctContacts.i | CONTACTS_UNIMPORTANT) == (m_iFlags & (DxGeom.NUMC_MASK | CONTACTS_UNIMPORTANT))) {
-						break;
-					}
 				}
 
 				//dAASSERT(m_ctContacts>0);
@@ -1264,7 +1263,7 @@ public class CollideTrimeshBox implements DColliderFn {
 			m_vHullDstPos.set(TriMesh.getPosition());
 
 			// global info for contact creation
-			m_ctContacts.i = 0;
+			m_TempContactGeoms = new ArrayList<DContactGeom>();
 			if (Stride != 1) throw new IllegalArgumentException("stride = " + Stride);
 			m_iStride=Stride;
 			m_iFlags=Flags;
@@ -1289,20 +1288,12 @@ public class CollideTrimeshBox implements DColliderFn {
 			_cldTestOneTriangle(dv[0],dv[1],dv[2],Triint);
 
 			// fill-in tri index for generated contacts
-			for (; ctContacts0 < m_ctContacts.i; ctContacts0++) {
+			for (; ctContacts0 < m_TempContactGeoms.size(); ctContacts0++) {
 				//DContactGeom pContact = SAFECONTACT(m_iFlags, m_ContactGeoms, ctContacts0, m_iStride);
-				DContactGeom pContact = m_ContactGeoms.getSafe(m_iFlags, ctContacts0);
+				DContactGeom pContact = m_TempContactGeoms.get(ctContacts0);
 				pContact.side1 = Triint;
 				pContact.side2 = -1;
 			}
-
-			/*
-		NOTE by Oleh_Derevenko:
-		The function continues checking triangles after maximal number
-		of contacts is reached because it selects maximal penetration depths.
-		See also comments in GenerateContact()
-			 */
-			bOutFinishSearching.b = ((m_ctContacts.i | CONTACTS_UNIMPORTANT) == (m_iFlags & (DxGeom.NUMC_MASK | CONTACTS_UNIMPORTANT)));
 
 			return ctContacts0;
 		}
@@ -1514,128 +1505,69 @@ public class CollideTrimeshBox implements DColliderFn {
 			dvTZ[1].set(dv[1].f);
 			dvTZ[2].set(dv[2].f);
 			ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dvTZ, bFinishSearching);
-
-			if (bFinishSearching.b)
-			{
-				break;
-			}
+		}
+		int contactcount = cData.m_TempContactGeoms.size();
+		int contactmax = (Flags & DxGeom.NUMC_MASK);
+		if (contactcount > contactmax)
+		{
+			Collections.sort(cData.m_TempContactGeoms, new Comparator<DContactGeom>() {
+				@Override
+				public int compare(DContactGeom o1, DContactGeom o2) {
+					return Double.compare(o2.depth, o1.depth);
+				}
+			});
+			contactcount = contactmax;
 		}
 
 		ptrimesh.gim_trimesh_unlocks_work_data();
 		collision_result.GIM_DYNARRAY_DESTROY();
-
-		return cData.m_ctContacts.i;
+		for (int i = 0; i < contactcount; i++) {
+			cData.m_ContactGeoms.get(i).depth = cData.m_TempContactGeoms.get(i).depth;
+			cData.m_ContactGeoms.get(i).g1 = cData.m_TempContactGeoms.get(i).g1;
+			cData.m_ContactGeoms.get(i).g2 = cData.m_TempContactGeoms.get(i).g2;
+			cData.m_ContactGeoms.get(i).normal.set(cData.m_TempContactGeoms.get(i).normal);
+			cData.m_ContactGeoms.get(i).pos.set(cData.m_TempContactGeoms.get(i).pos);
+			cData.m_ContactGeoms.get(i).side1 = cData.m_TempContactGeoms.get(i).side1;
+			cData.m_ContactGeoms.get(i).side2 = cData.m_TempContactGeoms.get(i).side2;
+		}
+		return contactcount;
 	}
 	//	#endif  //GIMPACT
 
 
-	// GenerateContact - Written by Jeff Smith (jeff@burri.to)
-	//   Generate a "unique" contact.  A unique contact has a unique
-	//   position or normal.  If the potential contact has the same
-	//   position and normal as an existing contact, but a larger
-	//   penetration depth, this new depth is used instead
-	//
-	//	static void
-	//	GenerateContact(int in_Flags, dContactGeom* in_Contacts, int in_Stride,
-	//	                dxGeom* in_g1,  dxGeom* in_g2, int TriIndex,
-	//	                const dVector3 in_ContactPos, const dVector3 in_Normal, dReal in_Depth,
-	//	                int& OutTriCount)
 	static void
-	GenerateContact(int in_Flags, DContactGeomBuffer in_Contacts, int in_Stride,
+	GenerateContact(int in_Flags, List<DContactGeom> in_Contacts, int in_Stride,
 			DxGeom in_g1,  DxGeom in_g2, final int TriIndex,
-			DVector3C in_ContactPos, DVector3C in_Normal, final double in_Depth,
-			RefInt OutTriCount)
+			DVector3C in_ContactPos, DVector3C in_Normal, final double in_Depth)
 	{
 		if (in_Stride != 1) throw new IllegalArgumentException("in_Stride = " + in_Stride);
-		/*
-			NOTE by Oleh_Derevenko:
-			This function is called after maximal number of contacts has already been 
-			collected because it has a side effect of replacing penetration depth of
-			existing contact with larger penetration depth of another matching normal contact.
-			If this logic is not necessary any more, you can bail out on reach of contact
-			number maximum immediately in dCollideBTL(). You will also need to correct 
-			conditional statements after invocations of GenerateContact() in _cldClipping().
-		 */
-		do 
+		boolean duplicate = false;
+		DVector3 diff = new DVector3();
+		for (DContactGeom contact : in_Contacts)
 		{
-			DContactGeom Contact;
-			DVector3 diff = new DVector3();
-
-			//if (!(in_Flags & CONTACTS_UNIMPORTANT))
-			if (0==(in_Flags & CONTACTS_UNIMPORTANT))
+			diff.eqDiff(in_ContactPos, contact.pos);
+			if (diff.dot(diff) < dEpsilon)
 			{
-				boolean duplicate = false;
-				for (int i=0; i<OutTriCount.i; i++)
+				// same normal?
+				if (1.0 - dFabs(in_Normal.dot(contact.normal)) < dEpsilon)
 				{
-					//Contact = SAFECONTACT(in_Flags, in_Contacts, i, in_Stride);
-					Contact = in_Contacts.getSafe(in_Flags, i);
-
-					// same position?
-					//					for (int j=0; j<3; j++)
-					//						diff[j] = in_ContactPos[j] - Contact.pos[j];
-					diff.eqDiff(in_ContactPos, Contact.pos);
-					if (diff.dot(diff) < dEpsilon)
-					{
-						// same normal?
-	                    if (1.0 - dFabs(in_Normal.dot(Contact.normal)) < dEpsilon)
-						{
-							if (in_Depth > Contact.depth)
-								Contact.depth = in_Depth;
+					if (in_Depth > contact.depth)
+						contact.depth = in_Depth;
 							duplicate = true;
-							/*
-								NOTE by Oleh_Derevenko:
-								There may be a case when two normals are close to each other but not duplicate
-								while third normal is detected to be duplicate for both of them.
-								This is the only reason I can think of, there is no "break" statement.
-								Perhaps author considered it to be logical that the third normal would 
-								replace the depth in both of initial contacts. 
-								However, I consider it a questionable practice which should not
-								be applied without deep understanding of underlaying physics.
-								Even more, is this situation with close normal triplet acceptable at all?
-								Should not be two initial contacts reduced to one (replaced with the latter)?
-								If you know the answers for these questions, you may want to change this code.
-								See the same statement in GenerateContact() of collision_trimesh_trimesh.cpp
-							 */
-						}
-					}
-				}
-				if (duplicate || OutTriCount.i == (in_Flags & DxGeom.NUMC_MASK))
-				{
-					break;
 				}
 			}
-			else
-			{
-				dIASSERT(OutTriCount.i < (in_Flags & DxGeom.NUMC_MASK));
-			}
-
-			// Add a new contact
-			//Contact = SAFECONTACT(in_Flags, in_Contacts, OutTriCount, in_Stride);
-			Contact = in_Contacts.getSafe(in_Flags, OutTriCount.i);
-
-			//			Contact.pos[0] = in_ContactPos[0];
-			//			Contact.pos[1] = in_ContactPos[1];
-			//			Contact.pos[2] = in_ContactPos[2];
-			//			Contact.pos[3] = 0.0;
+		}
+		if (!duplicate) {
+			DContactGeom Contact = new DContactGeom();
 			Contact.pos.set( in_ContactPos );
-
-			//			Contact.normal[0] = in_Normal[0];
-			//			Contact.normal[1] = in_Normal[1];
-			//			Contact.normal[2] = in_Normal[2];
-			//			Contact.normal[3] = 0.0;
 			Contact.normal.set( in_Normal );
-
 			Contact.depth = in_Depth;
-
 			Contact.g1 = in_g1;
 			Contact.g2 = in_g2;
-
 			Contact.side1 = TriIndex;
 			Contact.side2 = -1;
-
-			OutTriCount.i++;
+			in_Contacts.add(Contact);
 		}
-		while (false);
 	}
 
 

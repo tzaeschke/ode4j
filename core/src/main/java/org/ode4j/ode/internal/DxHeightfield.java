@@ -42,7 +42,6 @@ import org.ode4j.ode.DColliderFn;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DHeightfield;
 import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 
@@ -50,7 +49,7 @@ import org.ode4j.ode.internal.cpp4j.java.ObjArray;
  *
  * @author Tilmann Zaeschke
  */
-public class DxHeightfield extends DxGeom implements DHeightfield {
+public class DxHeightfield extends DxAbstractHeightfield {
 
 	static final int HEIGHTFIELDMAXCONTACTPERCELL = 10;
 
@@ -130,8 +129,6 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 	////////dxHeightfield /////////////////////////////////////////////////////////////////
 
-	//dxHeightfieldData* m_p_data;
-	private DxHeightfieldData m_p_data;
 
 	//	    dxHeightfield( dSpaceID space, dHeightfieldDataID data, int bPlaceable );
 	//	    ~dxHeightfield();
@@ -1476,7 +1473,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 	}
 
 	static class CollideHeightfield implements DColliderFn {
-		int dCollideHeightfield( DxHeightfield o1, DxGeom o2, int flags, DContactGeomBuffer contacts, int skip )
+		int dCollideHeightfield( DxAbstractHeightfield o1, DxGeom o2, int flags, DContactGeomBuffer contacts, int skip )
 		{
 			dIASSERT( skip >= 1);//(int)sizeof(dContactGeom) );
 			//dIASSERT( o1.type == dHeightfieldClass );
@@ -1489,7 +1486,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 
 			int numMaxTerrainContacts = (flags & NUMC_MASK);
 
-			DxHeightfield terrain = o1;
+			DxAbstractHeightfield terrain = o1;
 
 			DVector3 posbak = new DVector3();
 			DMatrix3 Rbak = new DMatrix3();
@@ -1686,7 +1683,7 @@ public class DxHeightfield extends DxGeom implements DHeightfield {
 		@Override
 		public int dColliderFn(DGeom o1, DGeom o2, int flags,
 				DContactGeomBuffer contacts) {
-			return dCollideHeightfield((DxHeightfield)o1, (DxGeom)o2, flags, contacts, 1);
+			return dCollideHeightfield((DxAbstractHeightfield)o1, (DxGeom)o2, flags, contacts, 1);
 		}
 	}
 
