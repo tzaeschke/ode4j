@@ -1,5 +1,6 @@
 
 
+- Added Ragdoll support and ConstrainedBallJoint (Piotr)
 - Added sorting of contact by penetration depth (Piotr), see issue #22
 - Added TrimeshHeightfield provided by Piotr
 - Fixed issue #19 (thanks to Piotr)
