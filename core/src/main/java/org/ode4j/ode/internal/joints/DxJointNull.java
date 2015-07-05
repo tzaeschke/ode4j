@@ -26,7 +26,7 @@ package org.ode4j.ode.internal.joints;
 
 import org.ode4j.ode.DNullJoint;
 import org.ode4j.ode.internal.DxWorld;
-import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.ErrorHandler.*;
 
 
 /** 

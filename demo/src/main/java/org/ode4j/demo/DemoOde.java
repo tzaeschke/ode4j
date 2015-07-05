@@ -27,6 +27,7 @@ package org.ode4j.demo;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.dDOUBLE;
+import static org.ode4j.ode.internal.ErrorHandler.*;
 
 import java.util.ArrayList;
 

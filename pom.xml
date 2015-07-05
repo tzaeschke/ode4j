@@ -157,6 +157,7 @@
 	          				<exclude>**/tests/JavaMultiThreadTest.java</exclude>
 	          				<exclude>**/tests/bugs/Test_Bug0019_OdeRayToCylinder.java</exclude>
 	          				<exclude>**/tests/CollisionTest.java</exclude>
+	          				<exclude>**/tests/TestIssue0018_NpeInQuickstep.java</exclude>
 	          			</excludes>
         			</configuration>
 			   	</plugin>

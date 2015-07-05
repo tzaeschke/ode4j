@@ -28,6 +28,8 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.dAASSERT;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dNextAfter;
+import static org.ode4j.ode.internal.Common.dUASSERT;
+import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DQuadTreeSpace;
 import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
+
 
 
 /**
@@ -478,10 +481,10 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	//dxGeom* dxQuadTreeSpace::getGeom(int Index){
 	@Override
 	public DxGeom getGeom(int Index) {
-		Common.dUASSERT(Index >= 0 && Index < count, "index out of range");
+		dUASSERT(Index >= 0 && Index < count, "index out of range");
 
 		//@@@
-		Common.dDebug (0,"dxQuadTreeSpace::getGeom() not yet implemented");
+		dDebug (0,"dxQuadTreeSpace::getGeom() not yet implemented");
 
 		return null;
 

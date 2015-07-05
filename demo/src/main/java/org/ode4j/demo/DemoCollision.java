@@ -24,24 +24,11 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawLine;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsSetCapsuleQuality;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
-import static org.ode4j.drawstuff.DrawStuff.dsSetSphereQuality;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
-import static org.ode4j.ode.DGeom.dBoxClass;
-import static org.ode4j.ode.DGeom.dCapsuleClass;
-import static org.ode4j.ode.DGeom.dCylinderClass;
-import static org.ode4j.ode.DGeom.dPlaneClass;
-import static org.ode4j.ode.DGeom.dSphereClass;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.ode.DGeom.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.ErrorHandler.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

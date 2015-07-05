@@ -30,6 +30,7 @@ import org.ode4j.ode.internal.DxWorld;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
+import static org.ode4j.ode.internal.ErrorHandler.*;
 
 public class DxWorldProcessIslandsInfo {
 
@@ -195,10 +196,10 @@ public class DxWorldProcessIslandsInfo {
             {
                 for (DxBody b=world.firstbody.get(); b!=null; b=(DxBody)b.getNext()) {
                     if (!b.isEnabled()) {
-                        if (b.tag > 0) Common.dDebug (0,"disabled body tagged");
+                        if (b.tag > 0) dDebug (0,"disabled body tagged");
                     }
                     else {
-                        if (b.tag <= 0) Common.dDebug (0,"enabled body not tagged");
+                        if (b.tag <= 0) dDebug (0,"enabled body not tagged");
                     }
                 }
                 for (DxJoint j=world.firstjoint.get(); j!=null; j=(DxJoint)j.getNext()) {
@@ -206,10 +207,10 @@ public class DxWorldProcessIslandsInfo {
                             (j.node[1].body!=null && j.node[1].body.isEnabled() ))
                             && 
                             j.isEnabled() ) {
-                        if (j.tag <= 0) Common.dDebug (0,"attached enabled joint not tagged");
+                        if (j.tag <= 0) dDebug (0,"attached enabled joint not tagged");
                     }
                     else {
-                        if (j.tag > 0) Common.dDebug (0,"unattached or disabled joint tagged");
+                        if (j.tag > 0) dDebug (0,"unattached or disabled joint tagged");
                     }
                 }
             }

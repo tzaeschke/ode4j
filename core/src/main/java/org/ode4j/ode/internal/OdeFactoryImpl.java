@@ -30,6 +30,7 @@ import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.ErrorHandler.*;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 

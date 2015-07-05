@@ -44,6 +44,7 @@ import static org.ode4j.ode.internal.cpp4j.Cstdio.vsprintf;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 import static org.ode4j.ode.internal.cpp4j.Cstring.strcmp;
 import static org.ode4j.ode.internal.cpp4j.Cstring.strlen;
+import static org.ode4j.ode.internal.ErrorHandler.*;
 
 import java.util.ArrayList;
 

@@ -27,12 +27,16 @@ package org.ode4j.ode.internal;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.ode4j.ode.OdeConstants;
+
+import static org.ode4j.ode.internal.ErrorHandler.*;
+
 
 /**
  * configuration stuff.
  */
 @SuppressWarnings("unused")
-public class Common extends ErrorHandler { 
+public class Common extends OdeConstants { 
 
 	/** configuration stuff */
 
