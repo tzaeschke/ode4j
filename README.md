@@ -17,6 +17,9 @@ ode4j:
 Copyright  (c) 2009-2014 Tilmann Zaeschke <ode4j(AT)gmx.de>
 All rights reserved.
 
+
+### ode4j contains Java ports of the following software
+
 ODE/OpenDE:
 Copyright  (c) 2001,2002 Russell L. Smith
 All rights reserved.
@@ -27,6 +30,15 @@ email: projectileman(AT)yahoo.com
 
 LIBCCD:
 Copyright (c) 2010 Daniel Fiser <danfis(AT)danfis.cz>
+
+
+### ode4j uses the following libraries
+
+JUnit: 
+Copyright © 2002-2014 JUnit. All Rights Reserved. 
+
+slf4j: 
+Copyright © 2004-2015 QOS.ch
 
 
 Contact
