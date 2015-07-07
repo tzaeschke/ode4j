@@ -1,5 +1,6 @@
 
 
+- Added support for heightfiels with holes (DxTrimeshHeightField)
 - Added support for the slf4j loggin API (TZ)
 - Added Ragdoll support and ConstrainedBallJoint (Piotr)
 - Added sorting of contact by penetration depth (Piotr), see issue #22
