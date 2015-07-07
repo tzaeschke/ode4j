@@ -130,10 +130,13 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
     private int              tempHeightBufferSizeX;
     private int              tempHeightBufferSizeZ;
 
+    private boolean	layered;
 
+    public DxTrimeshHeightfield(DSpace space, DHeightfieldData data, boolean bPlaceable) {
+        this(space, data, bPlaceable, false);
+    }
 
-    // dxHeightfield constructor
-    public DxTrimeshHeightfield(DSpace space, DHeightfieldData data, boolean bPlaceable) {            //:
+    public DxTrimeshHeightfield(DSpace space, DHeightfieldData data, boolean bPlaceable, boolean layered) {
         //      dxGeom( space, bPlaceable ),
         //      tempPlaneBuffer(0),
         //      tempPlaneInstances(0),
@@ -154,6 +157,7 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
 
         type = dHeightfieldClass;
         m_p_data = (DxHeightfieldData) data;
+        this.layered = layered;
     }
 
 
@@ -367,6 +371,10 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
         return new DxTrimeshHeightfield( space, data, bPlaceable );
     }
 
+    public static DxTrimeshHeightfield dCreateHeightfield( DxSpace space, DxHeightfieldData data, boolean bPlaceable, boolean layered )
+    {
+        return new DxTrimeshHeightfield( space, data, bPlaceable, layered );
+    }
 
     //  void dGeomHeightfieldSetHeightfieldData( dGeom g, dHeightfieldData d )
     void dGeomHeightfieldSetHeightfieldData( DHeightfieldData d )
@@ -489,6 +497,8 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
             }
             if (minY - maxO2Height > -dEpsilon )
             {
+                if (layered)
+                    return 0;
                 // totally under heightfield
                 //pContact = CONTACT(contact, 0);
                 pContact = contacts.get(0); 
@@ -554,6 +564,9 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
                 final boolean isCCollide = CHeight > minO2Height;
                 final boolean isDCollide = DHeight > minO2Height;
 
+                if (Double.isNaN(AHeight) || Double.isNaN(BHeight) || Double.isNaN(CHeight) || Double.isNaN(DHeight))
+                    continue;
+
                 if (isACollide || isBCollide || isCCollide)
                 {
                     HeightFieldTriangle CurrTriUp = tempTriangleBuffer[numTri++];// final ?? TZ
@@ -569,6 +582,9 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
                     CurrTriDown.vertices[2] = C;
                 }
             }
+        }
+        if (numTri == 0) {
+        	return 0;
         }
         float[] vertices = new float[numTri * 9];
         int[] faces = new int[numTri * 3];
@@ -804,7 +820,6 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
             return dCollideHeightfield((DxTrimeshHeightfield)o1, (DxGeom)o2, flags, contacts, 1);
         }
     }
-
 
     @Override
     public DHeightfieldData getHeightfieldData() {
