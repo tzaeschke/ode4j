@@ -11,6 +11,10 @@ Version 0.2.4 up to 0.2.9 are ports of ODE 0.12.1, Version 0.3.0 is a port of OD
 
 ode4j contains also some features that are not present in ODE, such as a ragdoll and heightfields with holes. See [Wiki](https://github.com/tzaeschke/ode4j/wiki/Non-ODE-Functionality).
 
+The [ODE forum](https://groups.google.com/forum/#!forum/ode-users) is useful for questions around physics and general API usage: 
+
+The [ode4j forum](https://groups.google.com/forum/?hl=en#!forum/ode4j) is for problems and functionality specific to ode4j/Java. 
+
 
 LEGAL
 =====
