@@ -323,8 +323,8 @@ public class DxRagdoll {
             joint.destroy();
         }
         for (DxRagdollBody bone : bones) {
-            bone.body.destroy();
             bone.body.getFirstGeom().destroy();
+            bone.body.destroy();
         }
     }
 
