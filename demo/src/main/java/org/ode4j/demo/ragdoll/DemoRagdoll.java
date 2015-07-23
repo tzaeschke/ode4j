@@ -106,6 +106,7 @@ public class DemoRagdoll extends dsFunctions {
 	@Override
 	public void stop()
 	{
+		ragdoll.destroy();
 		contactgroup.destroy();
 		space.destroy();
 		world.destroy();
@@ -205,7 +206,7 @@ public class DemoRagdoll extends dsFunctions {
 
 		// run demo
 		dsSimulationLoop (args, 800, 600, this);
-
+		
 		OdeHelper.closeODE();
 	}
 
