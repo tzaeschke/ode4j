@@ -1,7 +1,7 @@
 
-- Fixed Common.__ASSERT methods to act correctly if parameter is '0' or 'false' 
-- Removed unnecessary Common.__ASSERT calls if NPE would trivially be thrown by code below 
-- Fixed mode checking in dJointSetTransmissionAxis2()
+- Fixed Common.__ASSERT methods to act correctly if parameter is '0' or 'false', see issue #32
+- Removed unnecessary Common.__ASSERT calls if NPE would trivially be thrown by code below, see #32 
+- Fixed mode checking in dJointSetTransmissionAxis2(), see issue #33
 - Test and fix for issue #31  (NPE in ragdoll)
 - Added support for heightfiels with holes (DxTrimeshHeightField)
 - Added support for the slf4j loggin API (TZ)

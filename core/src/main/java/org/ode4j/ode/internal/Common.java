@@ -137,6 +137,7 @@ public class Common extends OdeConstants {
 		}
 	}
 
+	//TODO remove these checks?
 	public static void dUASSERT(DVector3 a, String msg) {
 		if (a == null) {
 			dDebug (d_ERR_UASSERT, msg);
