@@ -479,7 +479,7 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
 
     void dJointSetTransmissionAxis2( DVector3C xyz )
     {    
-        dUASSERT(mode = TRANSMISSION.dTransmissionIntersectingAxes,
+        dUASSERT(mode == TRANSMISSION.dTransmissionIntersectingAxes,
                  "can't set individual axes in current mode" );
 
         if (node[1].body != null) {

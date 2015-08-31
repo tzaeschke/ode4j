@@ -1,5 +1,5 @@
 
-
+- Fixed mode checking in dJointSetTransmissionAxis2()
 - Added support for heightfiels with holes (DxTrimeshHeightField)
 - Added support for the slf4j loggin API (TZ)
 - Added Ragdoll support and ConstrainedBallJoint (Piotr)
