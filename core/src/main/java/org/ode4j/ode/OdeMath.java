@@ -1443,7 +1443,7 @@ else {
 	//ODE_API void dPlaneSpace (const dVector3 n, dVector3 p, dVector3 q);
 	public static void dPlaneSpace (DVector3C n, DVector3 p, DVector3 q)
 	{
-	    Common.dAASSERT (n, p, q);
+	    //Common.dAASSERT (n, p, q);
 		if (Math.abs(n.get2()) > Common.M_SQRT1_2) {
 			// choose p in y-z plane
 			double a = n.get1()*n.get1() + n.get2()*n.get2();

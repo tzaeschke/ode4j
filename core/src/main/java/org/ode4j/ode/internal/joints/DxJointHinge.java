@@ -30,7 +30,6 @@ import static org.ode4j.ode.OdeMath.dMultiply0_331;
 import static org.ode4j.ode.OdeMath.dMultiply1_331;
 import static org.ode4j.ode.OdeMath.dPlaneSpace;
 import static org.ode4j.ode.internal.Common.M_PI;
-import static org.ode4j.ode.internal.Common.dUASSERT;
 import static org.ode4j.ode.internal.Rotation.dQFromAxisAndAngle;
 import static org.ode4j.ode.internal.Rotation.dQMultiply1;
 import static org.ode4j.ode.internal.Rotation.dQMultiply3;
@@ -209,8 +208,6 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	void dJointSetHingeAnchorDelta( DxJointHinge joint, double x, double y, 
 			double z, double dx, double dy, double dz )
 	{
-		dUASSERT( joint, "bad joint argument" );
-
 		if ( joint.node[0].body != null)
 		{
 			//double q[4];

@@ -1663,7 +1663,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	public static int dCollide (DxGeom o1, DxGeom o2, int flags, 
 			DContactGeomBuffer contacts, int skip)
 	{
-		dAASSERT(o1, o2, contacts);
+		dAASSERT(contacts);
 		dUASSERT(colliders_initialized,
 				"Please call ODE initialization (dInitODE() or similar) before using the library");
 		dUASSERT(o1.type >= 0 && o1.type < dGeomNumClasses,"bad o1 class number");

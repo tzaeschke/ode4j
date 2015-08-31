@@ -557,7 +557,7 @@ PARENTRECURSE:
 	@Override
 	void add(DxGeom g){
 		CHECK_NOT_LOCKED (this);
-		Common.dAASSERT(g);
+		//Common.dAASSERT(g);
 		Common.dUASSERT(g._qtIdxEx == null && g.getNextEx() == null, 
 		"geom is already in a space");
 
@@ -573,7 +573,7 @@ PARENTRECURSE:
 	@Override
 	void remove(DxGeom g){
 		CHECK_NOT_LOCKED(this);
-		Common.dAASSERT(g);
+		//Common.dAASSERT(g);
 		Common.dUASSERT(g.parent_space == this,"object is not in this space");
 
 		// remove
@@ -680,7 +680,7 @@ PARENTRECURSE:
 	//dNearCallback* Callback){
 	@Override
 	void collide2(Object UserData, DxGeom g2, DNearCallback Callback){
-		dAASSERT(g2, Callback);
+		dAASSERT(Callback);
 
 		lock_count++;
 		cleanGeoms();

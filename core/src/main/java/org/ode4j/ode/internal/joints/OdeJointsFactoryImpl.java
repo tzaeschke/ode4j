@@ -204,7 +204,7 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	
 	protected static void dJointDestroy (DxJoint j)
 	{
-	    dAASSERT (j);
+	    //dAASSERT (j);
 	    if ((j.flags & DxJoint.dJOINT_INGROUP)==0) {
 	        j.FinalizeAndDestroyJointInstance(true);
 	    }

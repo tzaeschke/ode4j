@@ -103,7 +103,7 @@ public class DxSimpleSpace extends DxSpace implements DSimpleSpace {
 	void collide2 (Object data, DxGeom geom,
 			DNearCallback callback)
 	{
-		dAASSERT (geom, callback);
+		dAASSERT (callback);
 
 		lock_count++;
 		cleanGeoms();

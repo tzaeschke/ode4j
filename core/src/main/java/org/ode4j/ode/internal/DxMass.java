@@ -580,7 +580,7 @@ public class DxMass implements DMass {
 //	public void dMassAdd (dxMass a, final dxMass b)
 	public void dMassAdd (DMassC b)
 	{
-		dAASSERT (b);
+		//dAASSERT (b);
 		double denom = dRecip (_mass + b.getMass());
 		//for (i=0; i<3; i++) a._c.v[i] = (a._c.v[i]*a._mass + b._c.v[i]*b._mass)*denom;
 		_c.eqSum( _c, _mass, b.getC(), b.getMass() ).scale( denom );

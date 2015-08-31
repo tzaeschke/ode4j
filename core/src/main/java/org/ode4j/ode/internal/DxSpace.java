@@ -213,7 +213,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	public static void dSpaceCollide2 (DxGeom g1, DxGeom g2, Object data,
 			DNearCallback callback)
 	{
-		dAASSERT (g1, g2, callback);
+		dAASSERT (callback);
 		DxSpace s1,s2;
 
 		// see if either geom is a space
@@ -450,7 +450,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	void add (DxGeom geom)
 	{
 		CHECK_NOT_LOCKED ();
-		dAASSERT (geom);
+		//dAASSERT (geom);
 		dUASSERT (geom.parent_space == null && geom.getNext() == null,
 				"geom is already in a space");
 
@@ -475,7 +475,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	void remove (DxGeom geom)
 	{
 		CHECK_NOT_LOCKED ();
-		dAASSERT (geom);
+		//dAASSERT (geom);
 		dUASSERT (geom.parent_space == this,"object is not in this space");
 
 		// remove

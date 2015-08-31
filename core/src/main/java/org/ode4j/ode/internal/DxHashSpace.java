@@ -201,7 +201,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 	@Override
 	public void collide (Object data, DNearCallback callback)
 	{
-		dAASSERT(this, callback);
+		dAASSERT(callback);
 		//dxGeom geom; //*
 		int i,maxlevel;
 

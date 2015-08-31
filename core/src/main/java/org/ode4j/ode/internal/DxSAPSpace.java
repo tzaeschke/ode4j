@@ -261,7 +261,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	void add( DxGeom g )
 	{
 		CHECK_NOT_LOCKED (this);
-		dAASSERT(g);
+		//dAASSERT(g);
 		dUASSERT(g._sapIdxGeomEx == 0 && g.getNextEx() == null, "geom is already in a space");
 
 		// add to dirty list
@@ -277,7 +277,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	void remove( DxGeom g )
 	{
 		CHECK_NOT_LOCKED(this);
-		dAASSERT(g);
+		//dAASSERT(g);
 		dUASSERT(g.parent_space == this,"object is not in this space");
 
 		// remove
@@ -313,7 +313,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	@Override
 	void dirty( DxGeom g )
 	{
-		dAASSERT(g);
+		//dAASSERT(g);
 		dUASSERT(g.parent_space == this,"object is not in this space");
 
 		// check if already dirtied

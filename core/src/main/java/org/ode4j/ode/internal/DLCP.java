@@ -732,7 +732,7 @@ public class DLCP {
 	{
 		//	  dAASSERT (n>0 && A && x && b && w && lo && hi && nub >= 0 && nub <= n);
 		dAASSERT (n>0 && nub >= 0 && nub <= n);
-		dAASSERT (A, x, b, lo, hi);
+		//dAASSERT (A, x, b, lo, hi);
 		if(!dNODEBUG) {//# ifndef dNODEBUG
 		  {
 		    // check restrictions on lo and hi

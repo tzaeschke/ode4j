@@ -27,7 +27,11 @@ package org.ode4j.ode.internal;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.ode4j.math.DVector3;
+import org.ode4j.ode.DGeom.DNearCallback;
+import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
+import org.ode4j.ode.internal.joints.DxJoint;
 
 import static org.ode4j.ode.internal.ErrorHandler.*;
 
@@ -127,7 +131,13 @@ public class Common extends OdeConstants {
 		}
 	}
 
-	public static void dUASSERT(Object  a, String msg) {
+	public static void dUASSERT(DxBody  a, String msg) {
+		if (a == null) {
+			dDebug (d_ERR_UASSERT, msg);
+		}
+	}
+
+	public static void dUASSERT(DVector3 a, String msg) {
 		if (a == null) {
 			dDebug (d_ERR_UASSERT, msg);
 		}
@@ -155,14 +165,35 @@ public class Common extends OdeConstants {
 
 	/** Assert 'not-null'. */
 	public static void dAASSERT(Object ... aa) {
-		for (Object a: aa)
-			dUASSERT(a, "Bad argument(s)");
+		for (Object a: aa) {
+			if (a == null) {
+				dUASSERT(0, "Bad argument(s)");
+			}
+			if (a instanceof Integer) {
+				dUASSERT((Integer)a, "Bad argument(s)");
+			}
+			if (a instanceof Boolean) {
+				dUASSERT((Boolean)a, "Bad argument(s)");
+			}
+		}
+	}
+
+	public static void dAASSERT(DNearCallback a) {
+		if (a == null) {
+			dUASSERT(0, "Bad argument(s)");
+		}
+	}
+
+	public static void dAASSERT(DWorld a) {
+		if (a == null) {
+			dUASSERT(0, "Bad argument(s)");
+		}
 	}
 
 	/** Assert 'true'. */
 	public static void dAASSERT(boolean b) {
 		if (!b)
-			dUASSERT(null, "Bad argument(s)");
+			dUASSERT(b, "Bad argument(s)");
 	}
 
 //	#  ifdef __GNUC__
