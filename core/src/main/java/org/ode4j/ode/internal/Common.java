@@ -133,6 +133,18 @@ public class Common extends OdeConstants {
 		}
 	}
 
+	public static void dUASSERT(boolean  a, String msg) {
+		if (!a) {
+			dDebug (d_ERR_UASSERT, msg);
+		}
+	}
+
+	public static void dUASSERT(int  a, String msg) {
+		if (a == 0) {
+			dDebug (d_ERR_UASSERT, msg);
+		}
+	}
+
 	public static void dDEBUGMSG(String msg) {
 		StringWriter sw = new StringWriter();
 		new PrintWriter(sw);
