@@ -39,7 +39,7 @@ public class DContact {
 		// Nothing
 	}
 	
-	public class DSurfaceParameters {
+	public static class DSurfaceParameters {
 		/* must always be defined */
 		public int mode;
 		public double mu;
