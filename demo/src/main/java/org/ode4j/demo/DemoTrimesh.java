@@ -36,6 +36,7 @@ import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DJoint;
@@ -64,7 +65,6 @@ class DemoTrimesh extends dsFunctions {
 	private static final double DENSITY = (5.0);		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 40;		// maximum number of contact points per body
-
 
 	// dynamics and collision objects
 
@@ -163,6 +163,7 @@ class DemoTrimesh extends dsFunctions {
 		System.out.println ("   s for sphere.");
 		System.out.println ("   c for capsule.");
 		System.out.println ("   y for cylinder.");
+		System.out.println ("   v for a convex object.");
 		System.out.println ("   x for a composite object.");
 		System.out.println ("To select an object, press space.");
 		System.out.println ("To disable the selected object, press d.");
@@ -183,7 +184,7 @@ class DemoTrimesh extends dsFunctions {
 		boolean setBody = false;
 
 		cmd = Character.toLowerCase (cmd);
-		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'y' ) {
+		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'y' || cmd == 'v') {
 			if (num < NUM) {
 				i = num;
 				num++;
@@ -231,6 +232,14 @@ class DemoTrimesh extends dsFunctions {
 				sides[0] *= 0.5;
 				m.setCapsule (DENSITY,3,sides[0],sides[1]);
 				obj[i].geom[0] = OdeHelper.createCapsule (space,sides[0],sides[1]);
+			} else if (cmd == 'v') {
+				m.setBox (DENSITY,0.25,0.25,0.25);
+				obj[i].geom[0] = OdeHelper.createConvex (space,
+						ConvexCubeGeom.planes,
+						ConvexCubeGeom.planecount,
+						ConvexCubeGeom.points,
+						ConvexCubeGeom.pointcount,
+						ConvexCubeGeom.polygons);
 			}
 			else if (cmd == 'y') {
 				sides[1] *= 0.5;
@@ -346,6 +355,13 @@ class DemoTrimesh extends dsFunctions {
 		} else if (g instanceof DCylinder) {
 			DCylinder c = (DCylinder) g;
 			dsDrawCylinder (pos, R, c.getLength(), c.getRadius());
+		} else if (g instanceof DConvex) {
+			//dVector3 sides={0.50,0.50,0.50};
+			dsDrawConvex(pos,R,ConvexCubeGeom.planes,
+					ConvexCubeGeom.planecount,
+					ConvexCubeGeom.points,
+					ConvexCubeGeom.pointcount,
+					ConvexCubeGeom.polygons);
 		}
 
 		if (show_aabb) {

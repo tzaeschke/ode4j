@@ -47,6 +47,7 @@ public class OdeConfig {
 	 * WARNING This is likely to be removed at some point.
 	 */
 	public static boolean ENABLE_CONTACT_SORTING = true;
+	public static boolean ENABLE_TRIMESH_CONVEX_COLLISIONS = true;
 	
 	public static enum TRIMESH {
 		DISABLED,
