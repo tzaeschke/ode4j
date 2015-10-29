@@ -46,6 +46,7 @@ import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -74,6 +75,12 @@ import org.ode4j.ode.threading.Threading_H.dThreadedCallFunction;
  */
 public class DxQuickStep extends AbstractStepper implements dstepper_fn_t,
 dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
+
+	//TODO evaluate this
+	/**
+	 * Experimental improvement to reduce GC, see issue #36
+	 */
+	public static boolean REUSE_OBJECTS = false;
 	
 	public static final int THREADS = 4;
 	static final ThreadPoolExecutor POOL = new ThreadPoolExecutor(
@@ -958,8 +965,40 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			}
 		}
 	}
-	
 
+	
+	private double[] buf_invI = new double[100];
+	private double[] ensureSize_invI(int size) {
+		if (buf_invI.length < size || !REUSE_OBJECTS) {
+			buf_invI = new double[size];
+		} else {
+			Arrays.fill(buf_invI, 0);
+		}
+		return buf_invI;
+	}
+	private DJointWithInfo1[] buf_jointinfos = new DJointWithInfo1[0];
+	private DJointWithInfo1[] ensureSize_jointinfos(int size) {
+		if (buf_jointinfos.length < size || !REUSE_OBJECTS) {
+			//TODO we could partially copy the old array...
+			buf_jointinfos = new DJointWithInfo1[size];
+			for (int i = 0; i < size; i++) {
+				buf_jointinfos[i] = new DJointWithInfo1();
+			}
+		} else {
+			//Obviously this doesn't reset all objects, only the
+			//ones that are likely to be needed.
+			for (int i = 0; i < size; i++) {
+				DJointWithInfo1 j = buf_jointinfos[i];
+				if (j != null) {
+					j.joint = null;
+					j.info.m = 0;
+					j.info.nub = 0;
+				}
+			}
+		}
+		return buf_jointinfos;
+	}
+	
 	/*extern */
 	private void dxQuickStepIsland(DxStepperProcessingCallContext callContext)
 	{
@@ -970,10 +1009,13 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    int nb = callContext.m_islandBodiesCount();
 	    int _nj = callContext.m_islandJointsCount();
 
-	    double[] invI = memarena.AllocateArrayDReal(nb*3*4);//new double[3*4*nb];//dRealAllocaArray (invI,3*4*nb);
+	    //double[] invI = memarena.AllocateArrayDReal(nb*3*4);//new double[3*4*nb];//dRealAllocaArray (invI,3*4*nb);
+	    double[] invI = ensureSize_invI(nb*3*4);
+	    
 	    //dJointWithInfo1[] const jointinfos = memarena.AllocateArray<dJointWithInfo1>(_nj);
 	    memarena.dummy();
-	    DJointWithInfo1[] jointinfos = new DJointWithInfo1[_nj];
+	    //DJointWithInfo1[] jointinfos = new DJointWithInfo1[_nj];
+	    DJointWithInfo1[] jointinfos = ensureSize_jointinfos(_nj);	    
 	    //TODO this is done in dxQuickStepIsland_Stage0_Joints()
 //	    for (int i = 0; i < jointinfos.length; i++) {
 //	    	jointinfos[i] = new DJointWithInfo1();
@@ -1237,8 +1279,9 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    	int mcurr = 0, mfbcurr = 0;
 	    	DJointWithInfo1[] jicurrA = callContext.m_jointinfos;
 	    	int jicurrP=0; //jicurr = 0;
-	    	DJointWithInfo1 jicurrO = new DJointWithInfo1();
+	    	//DJointWithInfo1 jicurrO = new DJointWithInfo1();
 	    	for (int i=0; i<_nj; i++) {	// i=dest, j=src
+	    		DJointWithInfo1 jicurrO = jicurrA[jicurrP];
 	    		DxJoint j = _jointP[i+_jointOfs];
 	    		j.getInfo1(jicurrO.info);
 	    		dIASSERT (/*jicurr->info.m >= 0 && */jicurrO.info.m <= 6 && /*jicurr->info.nub >= 0 && */jicurrO.info.nub <= jicurrO.info.m);
@@ -1250,9 +1293,9 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    				mfbcurr += jm;
 	    			}
 	    			jicurrO.joint = j;
-	    			jicurrA[jicurrP] = jicurrO;   
+	    			//jicurrA[jicurrP] = jicurrO;   
 	    			jicurrP++;
-	    			jicurrO = new DJointWithInfo1();
+	    			//jicurrO = new DJointWithInfo1();
 	    		}
 	    	}
 	    	callContext.m_stage0Outputs.nj = jicurrP;// - callContext.m_jointinfos;
@@ -1314,10 +1357,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				mindex[mcurrO+1] = mfboffs;
 				mcurrO += 2;
 
-				//for (int i = 0; i < nj; i++) {
-					//DJointWithInfo1 jicurr = jointinfos[i];
+				for (int i = 0; i < nj; i++) {
+					DJointWithInfo1 jicurr = jointinfos[i];
 				//TODO fix issue #18
-				for (DJointWithInfo1 jicurr: jointinfos) {
+				//for (DJointWithInfo1 jicurr: jointinfos) {
 					//const dJointWithInfo1 *const jiend = jointinfos + nj;
 					//for (const dJointWithInfo1 *jicurr = jointinfos; jicurr != jiend; ++jicurr) {
 					DxJoint joint = jicurr.joint;
