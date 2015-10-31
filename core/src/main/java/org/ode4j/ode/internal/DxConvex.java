@@ -48,6 +48,10 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DTriMesh;
+import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.OdeConfig;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
@@ -84,6 +88,8 @@ public class DxConvex extends DxGeom implements DConvex {
 	/** Amount of edges in convex. */
 	//unsigned
 	private int edgecount;
+
+	private DTriMesh trimesh;
 	/**  */
 	//private double[] saabb=new double[6];/*!< Static AABB */
 	//dxConvex(dSpace space,
@@ -298,6 +304,11 @@ public class DxConvex extends DxGeom implements DConvex {
 			tmp.eqSum( point, final_posr().pos() );
 			_aabb.expand( tmp );
 		}
+		if (trimesh != null) {
+			((DxGeom) trimesh)._final_posr.pos.set(_final_posr.pos);
+			((DxGeom) trimesh)._final_posr.Rw().set(_final_posr.R());
+			((DxGeom) trimesh).computeAABB();
+		}
 	}
 
 	/** 
@@ -352,6 +363,7 @@ public class DxConvex extends DxGeom implements DConvex {
 			indexPos=points_in_polyPos+1;//index=points_in_poly+1;
 		}
 	}
+
 	//#if 0
 	//dxConvex::BSPNode* dxConvex::CreateNode(std::vector<Arc> Arcs,std::vector<Polygon> Polygons)
 	//{
@@ -2087,4 +2099,58 @@ Helper struct
 	public int getPointcount() {
 		return pointcount;
 	}
+
+	public int collideTriMesh(DGeom geom, int flags, DContactGeomBuffer contacts) {
+		int contactcount = 0;
+		if (OdeConfig.ENABLE_TRIMESH_CONVEX_COLLISIONS) {
+			if (trimesh == null) {
+				trimesh = OdeHelper.createTriMesh(null, getTriMeshData(), null, null, null);
+				((DxGeom) trimesh)._final_posr.pos.set(_final_posr.pos);
+				((DxGeom) trimesh)._final_posr.Rw().set(_final_posr.R());
+				((DxGeom) trimesh).computeAABB();
+			}
+			contactcount = OdeHelper.collide(geom, trimesh, flags, contacts);
+			for (int i = 0; i < contactcount; i++) {
+				DContactGeom contact = contacts.get(i);
+				contact.g2 = this;
+			}
+		}
+		return contactcount;
+	}
+
+	public DTriMeshData getTriMeshData() {
+		DTriMeshData trimeshdata = OdeHelper.createTriMeshData();
+		float[] tmvertices = new float[pointcount * 3];
+		for (int i = 0; i < pointcount * 3; i++) {
+			tmvertices[i] = (float) points[i];
+		}
+		int trianglecount = 0;
+		for (int i = 0; i < polygons.length;) {
+			trianglecount += polygons[i] - 2;
+			i += polygons[i] + 1;
+		}
+		int j = 0;
+		int[] triangles = new int[trianglecount * 3];
+		for (int i = 0; i < polygons.length;) {
+			int count = polygons[i] - 2;
+			for (int t = 0; t < count; t++) {
+				triangles[j] = polygons[i + 1];
+				triangles[j + 1] = polygons[i + t + 2];
+				triangles[j + 2] = polygons[i + t + 3];
+				j += 3;
+			}
+			i += polygons[i] + 1;
+		}
+		trimeshdata.build(tmvertices, triangles);
+		return trimeshdata;
+	}
+
+	@Override
+	public void DESTRUCTOR() {
+		super.DESTRUCTOR();
+		if (trimesh != null) {
+			trimesh.destroy();
+		}
+	}
+
 }
