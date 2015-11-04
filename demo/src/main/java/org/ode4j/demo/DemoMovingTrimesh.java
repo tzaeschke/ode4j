@@ -35,6 +35,7 @@ import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DContactJoint;
+import org.ode4j.ode.DConvex;
 import org.ode4j.ode.DCylinder;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DJoint;
@@ -144,6 +145,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 		System.out.println ("   b for box.");
 		System.out.println ("   s for sphere.");
 		System.out.println ("   y for cylinder.");
+		System.out.println ("   v for a convex object.");
 		System.out.println ("   c for capsule.");
 		System.out.println ("   x for a composite object.");
 		System.out.println ("   m for a trimesh.");
@@ -167,7 +169,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 		boolean setBody = false;
 
 		cmd = Character.toLowerCase (cmd);
-		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'm' || cmd == 'y' ) {
+		if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'm' || cmd == 'y' || cmd == 'v') {
 			if (num < NUM) {
 				i = num;
 				num++;
@@ -219,6 +221,14 @@ public class DemoMovingTrimesh extends dsFunctions {
 				sides[0] *= 0.5;
 				m.setCapsule (DENSITY,3,sides[0],sides[1]);
 				obj[i].geom[0] = OdeHelper.createCapsule (space,sides[0],sides[1]);
+			} else if (cmd == 'v') {
+				m.setBox (DENSITY,0.25,0.25,0.25);
+				obj[i].geom[0] = OdeHelper.createConvex (space,
+						ConvexCubeGeom.planes,
+						ConvexCubeGeom.planecount,
+						ConvexCubeGeom.points,
+						ConvexCubeGeom.pointcount,
+						ConvexCubeGeom.polygons);
 			}
 			else if (cmd == 'y') {
 				sides[1] *= 0.5;
@@ -360,6 +370,14 @@ public class DemoMovingTrimesh extends dsFunctions {
 			DCylinder c = (DCylinder) g;
 			dsDrawCylinder (pos,R, c.getLength(), c.getRadius());
 			
+		} else if (g instanceof DConvex) {
+			//dVector3 sides={0.50,0.50,0.50};
+			dsDrawConvex(pos,R,
+					ConvexCubeGeom.planes,
+					ConvexCubeGeom.planecount,
+					ConvexCubeGeom.points,
+					ConvexCubeGeom.pointcount,
+					ConvexCubeGeom.polygons);
 		}
 
 		if (show_aabb) {

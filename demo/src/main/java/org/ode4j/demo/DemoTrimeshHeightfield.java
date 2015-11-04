@@ -94,47 +94,6 @@ class DemoTrimeshHeightfield extends dsFunctions {
 	private static final float HFIELD_WSAMP =			( HFIELD_WIDTH / ( HFIELD_WSTEP-1 ) );
 	private static final float HFIELD_DSAMP =			( HFIELD_DEPTH / ( HFIELD_DSTEP-1 ) );
 
-
-
-	//<---- Convex Object
-	private double[] planes= // planes for a cube
-	{
-			1.0f ,0.0f ,0.0f ,0.25f,
-			0.0f ,1.0f ,0.0f ,0.25f,
-			0.0f ,0.0f ,1.0f ,0.25f,
-			0.0f ,0.0f ,-1.0f,0.25f,
-			0.0f ,-1.0f,0.0f ,0.25f,
-			-1.0f,0.0f ,0.0f ,0.25f
-	};
-	private final int planecount=6;
-
-	private double points[]= // points for a cube
-	{
-			0.25f,0.25f,0.25f,  //  point 0
-			-0.25f,0.25f,0.25f, //  point 1
-
-			0.25f,-0.25f,0.25f, //  point 2
-			-0.25f,-0.25f,0.25f,//  point 3
-
-			0.25f,0.25f,-0.25f, //  point 4
-			-0.25f,0.25f,-0.25f,//  point 5
-
-			0.25f,-0.25f,-0.25f,//  point 6
-			-0.25f,-0.25f,-0.25f,// point 7
-	};
-	private final int pointcount=8;
-	private int polygons[] = //Polygons for a cube (6 squares)
-	{
-			4,0,2,6,4, // positive X
-			4,1,0,4,5, // positive Y
-			4,0,1,3,2, // positive Z
-			4,3,1,5,7, // negative X
-			4,2,3,7,6, // negative Y
-			4,5,4,6,7, // negative Z
-	};
-	//----> Convex Object
-
-
 	// some constants
 
 	private static final int NUM = 100;			// max number of objects
@@ -342,11 +301,11 @@ class DemoTrimeshHeightfield extends dsFunctions {
 			} else if (cmd == 'v') {
 				m.setBox (DENSITY,0.25,0.25,0.25);
 				obj[i].geom[0] = OdeHelper.createConvex (space,
-						planes,
-						planecount,
-						points,
-						pointcount,
-						polygons);
+						IcosahedronGeom.Sphere_planes,
+						IcosahedronGeom.Sphere_planecount,
+						IcosahedronGeom.Sphere_points,
+						IcosahedronGeom.Sphere_pointcount,
+						IcosahedronGeom.Sphere_polygons);
 			} else if (cmd == 'y') {
 				m.setCylinder (DENSITY,3,sides[0],sides[1]);
 				obj[i].geom[0] = OdeHelper.createCylinder (space,sides[0],sides[1]);
@@ -480,11 +439,12 @@ class DemoTrimeshHeightfield extends dsFunctions {
 			
 		} else if (g instanceof DConvex) {
 			//dVector3 sides={0.50,0.50,0.50};
-			dsDrawConvex(pos,R,planes,
-					planecount,
-					points,
-					pointcount,
-					polygons);
+			dsDrawConvex(pos,R,
+					IcosahedronGeom.Sphere_planes,
+					IcosahedronGeom.Sphere_planecount,
+					IcosahedronGeom.Sphere_points,
+					IcosahedronGeom.Sphere_pointcount,
+					IcosahedronGeom.Sphere_polygons);
 			
 		} else if (g instanceof DCylinder) {
 			DCylinder cyl = (DCylinder) g;
