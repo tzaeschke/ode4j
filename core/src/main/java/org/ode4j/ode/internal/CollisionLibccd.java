@@ -46,9 +46,6 @@ import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 import static org.ode4j.ode.internal.Rotation.dQFromAxisAndAngle;
 import static org.ode4j.ode.internal.Rotation.dQMultiply0;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Lib ccd.
  *
@@ -527,30 +524,26 @@ public class CollisionLibccd {
 			int maxcontacts = (flags & 0xffff);
 			final DVector3[] triangle = new DVector3[] { new DVector3(), new DVector3(), new DVector3() };
 			int contactcount = 0;
+			DContactGeomBuffer tempContacts = new DContactGeomBuffer(1);
 			for (int i : triindices) {
-				DContactGeomBuffer tempContacts = new DContactGeomBuffer(1);
 				((DxTriMesh) o2).FetchTransformedTriangle(i, triangle);
 				for (int j = 0; j < 3; j++) {
 					c2.vertices[j].set(triangle[j].get0(), triangle[j].get1(), triangle[j].get2());
 				}
 				if (ccdCollide(o1, o2, flags, tempContacts, c1, ccdSupportConvex, ccdCenter, c2, ccdSupportTriangle,
 						ccdCenter) == 1) {
-					if ((flags & OdeConstants.CONTACTS_UNIMPORTANT) == 0) {
-						DContactGeom c = tempContacts.get();
-						c.side2 = i;
-						contactcount = addUniqueContact(contacts, c, contactcount, maxcontacts);
-					} else {
-						contactcount++;
+					DContactGeom c = tempContacts.get();
+					c.side2 = i;
+					contactcount = addUniqueContact(contacts, c, contactcount, maxcontacts);
+					if ((flags & OdeConstants.CONTACTS_UNIMPORTANT) != 0) {
+						break;
 					}
 				}
 			}
 			if (contactcount == 1 && (flags & OdeConstants.CONTACTS_UNIMPORTANT) == 0) {
-				((DxTriMesh) o2).FetchTransformedTriangle(contacts.get(0).side2, triangle);
-				for (int j = 0; j < 3; j++) {
-					c2.vertices[j].set(triangle[j].get0(), triangle[j].get1(), triangle[j].get2());
-				}
-				contactcount = addPerturbedContacts(o1, o2, flags, c1, c2, contacts, triangle, contacts.get(0),
-						contactcount);
+				DContactGeom contact = contacts.get(0);
+				((DxTriMesh) o2).FetchTransformedTriangle(contact.side2, triangle);
+				contactcount = addPerturbedContacts(o1, o2, flags, c1, c2, contacts, triangle, contact, contactcount);
 			}
 			return contactcount;
 		}
@@ -563,10 +556,7 @@ public class CollisionLibccd {
 				if (Math.abs(c.pos.get0() - pc.pos.get0()) < CONTACT_POS_EPSILON
 						&& Math.abs(c.pos.get1() - pc.pos.get1()) < CONTACT_POS_EPSILON
 						&& Math.abs(c.pos.get2() - pc.pos.get2()) < CONTACT_POS_EPSILON) {
-					index = maxcontacts;
-					if (c.depth > pc.depth + CONTACT_DEPTH_EPSILON) {
-						index = k;
-					}
+					index = pc.depth + CONTACT_DEPTH_EPSILON < c.depth ? k : maxcontacts;
 					break;
 				}
 				if (contactcount == maxcontacts && pc.depth < minDepth && pc.depth < c.depth) {
@@ -583,7 +573,7 @@ public class CollisionLibccd {
 				contact.side2 = c.side2;
 				contact.pos.set(c.pos);
 				contact.normal.set(c.normal);
-				contactcount = Math.max(index + 1, contactcount);
+				contactcount = index == contactcount ? contactcount + 1 : contactcount;
 			}
 			return contactcount;
 		}
@@ -605,17 +595,18 @@ public class CollisionLibccd {
 			DQuaternion qr = new DQuaternion();
 			DVector3 p = new DVector3();
 			DVector3 perturbed = new DVector3();
+			DVector3 pos = new DVector3(contact.pos);
+			DContactGeomBuffer perturbedContacts = new DContactGeomBuffer(1);
 			for (int k = 0; k < 4; k++) {
 				dQFromAxisAndAngle(q1, upAxis, k % 2 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
 				dQFromAxisAndAngle(q2, cross, k / 2 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
 				dQMultiply0(qr, q1, q2);
 				for (int j = 0; j < 3; j++) {
-					p.eqDiff(triangle[j], contact.pos);
+					p.eqDiff(triangle[j], pos);
 					dQuatTransform(qr, p, perturbed);
-					perturbed.add(contact.pos);
+					perturbed.add(pos);
 					c2.vertices[j].set(perturbed.get0(), perturbed.get1(), perturbed.get2());
 				}
-				DContactGeomBuffer perturbedContacts = new DContactGeomBuffer(1);
 				if (ccdCollide(o1, o2, flags, perturbedContacts, c1, ccdSupportConvex, ccdCenter, c2,
 						ccdSupportTriangle, ccdCenter) == 1) {
 					perturbedContacts.get().side2 = contact.side2;
