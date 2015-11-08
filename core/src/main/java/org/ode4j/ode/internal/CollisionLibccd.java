@@ -591,10 +591,8 @@ public class CollisionLibccd {
 		private int addPerturbedContacts(DGeom o1, DGeom o2, int flags, ccd_convex_t c1, ccd_triangle_t c2,
 				DContactGeomBuffer contacts, DVector3[] triangle, DContactGeom contact, int contactcount,
 				int maxcontacts) {
-			DVector3 upAxis = new DVector3();
-			if (Math.abs(contact.normal.dot(new DVector3(0.0, 1.0, 0.0))) < 0.7) {
-				upAxis.set(0, 1, 0);
-			} else {
+			DVector3 upAxis = new DVector3(0, 1, 0);
+			if (Math.abs(contact.normal.dot(upAxis)) > 0.7) {
 				upAxis.set(0, 0, 1);
 			}
 			DVector3 cross = new DVector3();
@@ -608,8 +606,8 @@ public class CollisionLibccd {
 			DVector3 p = new DVector3();
 			DVector3 perturbed = new DVector3();
 			for (int k = 0; k < 4; k++) {
-				dQFromAxisAndAngle(q1, upAxis, k % 1 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
-				dQFromAxisAndAngle(q2, cross, k % 2 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
+				dQFromAxisAndAngle(q1, upAxis, k % 2 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
+				dQFromAxisAndAngle(q2, cross, k / 2 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
 				dQMultiply3(qr, q1, q2);
 				for (int j = 0; j < 3; j++) {
 					p.eqDiff(triangle[j], contact.pos);
