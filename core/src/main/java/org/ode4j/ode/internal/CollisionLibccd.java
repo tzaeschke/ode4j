@@ -44,7 +44,7 @@ import static org.ode4j.ode.internal.libccd.CCDMPR.*;
 import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 import static org.ode4j.ode.internal.Rotation.dQFromAxisAndAngle;
-import static org.ode4j.ode.internal.Rotation.dQMultiply3;
+import static org.ode4j.ode.internal.Rotation.dQMultiply0;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -550,7 +550,7 @@ public class CollisionLibccd {
 					c2.vertices[j].set(triangle[j].get0(), triangle[j].get1(), triangle[j].get2());
 				}
 				contactcount = addPerturbedContacts(o1, o2, flags, c1, c2, contacts, triangle, contacts.get(0),
-						contactcount, maxcontacts);
+						contactcount);
 			}
 			return contactcount;
 		}
@@ -589,8 +589,8 @@ public class CollisionLibccd {
 		}
 
 		private int addPerturbedContacts(DGeom o1, DGeom o2, int flags, ccd_convex_t c1, ccd_triangle_t c2,
-				DContactGeomBuffer contacts, DVector3[] triangle, DContactGeom contact, int contactcount,
-				int maxcontacts) {
+				DContactGeomBuffer contacts, DVector3[] triangle, DContactGeom contact, int contactcount) {
+			int maxcontacts = (flags & 0xffff);
 			DVector3 upAxis = new DVector3(0, 1, 0);
 			if (Math.abs(contact.normal.dot(upAxis)) > 0.7) {
 				upAxis.set(0, 0, 1);
@@ -608,7 +608,7 @@ public class CollisionLibccd {
 			for (int k = 0; k < 4; k++) {
 				dQFromAxisAndAngle(q1, upAxis, k % 2 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
 				dQFromAxisAndAngle(q2, cross, k / 2 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
-				dQMultiply3(qr, q1, q2);
+				dQMultiply0(qr, q1, q2);
 				for (int j = 0; j < 3; j++) {
 					p.eqDiff(triangle[j], contact.pos);
 					dQuatTransform(qr, p, perturbed);
