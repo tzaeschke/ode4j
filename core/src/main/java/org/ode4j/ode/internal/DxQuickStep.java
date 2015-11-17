@@ -1881,9 +1881,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		    for (int i=0; i<nb; invIrowP += 12, i++) {
 		        DxBody b = bodyA[i+bodyOfs]; 
 		        double body_invMass_mul_stepsize = stepsize * b.invMass;
-		        for (int j=0; j<3; j++) {
-		            b.lvel.add(j, body_invMass_mul_stepsize * b.facc.get(j) );
-		        }
+		        b.lvel.addScaled(b.facc, body_invMass_mul_stepsize);
 		        b.tacc.scale( stepsize );
 		        dMultiplyAdd0_331 (b.avel, invI,invIrowP, b.tacc);
 		    }
