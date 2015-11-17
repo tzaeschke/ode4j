@@ -1883,8 +1883,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		        double body_invMass_mul_stepsize = stepsize * b.invMass;
 		        for (int j=0; j<3; j++) {
 		            b.lvel.add(j, body_invMass_mul_stepsize * b.facc.get(j) );
-		            b.tacc.scale( stepsize );
 		        }
+		        b.tacc.scale( stepsize );
 		        dMultiplyAdd0_331 (b.avel, invI,invIrowP, b.tacc);
 		    }
 		}
