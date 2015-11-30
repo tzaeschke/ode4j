@@ -1574,6 +1574,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 			setCollider (dTriMeshClass,dCapsuleClass, new CollideTrimeshCCylinder());// dCollideCCTL);
 			setCollider (dTriMeshClass,dPlaneClass, new CollideTrimeshPlane());// dCollideTrimeshPlane);
 			setCollider (dCylinderClass,dTriMeshClass, new CollideCylinderTrimesh());// dCollideCylinderTrimesh);
+			setCollider (dConvexClass,dTriMeshClass, new CollideConvexTrimesh());
 //		}
 
 		if (dLIBCCD_BOX_CYL) {//#ifdef dLIBCCD_BOX_CYL
