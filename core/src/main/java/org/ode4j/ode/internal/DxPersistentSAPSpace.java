@@ -253,22 +253,12 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
         lock_count++;
         cleanGeoms();
         geom.recomputeAABB();
-        int index = Collections.binarySearch(normGeomList, geom, new GeomComparator());
-        if (index < 0) {
-        	index = -index - 1;
-        }
-        for (int i = index - 1; i >= 0; i--) {
+        int geom_count = normGeomList.size();
+        for (int i = 0; i < geom_count; i++) {
             DxGeom g = normGeomList.get(i);
             if (g._aabb.getMax(ax0id) < geom._aabb.getMin(ax0id)) {
-                break;
+                continue;
             }
-            if (GEOM_ENABLED(g)) {
-            	collideAABBs(g, geom, data, callback);
-            }
-        }
-        int geom_count = normGeomList.size();
-        for (int i = index; i < geom_count; ++i) {
-            DxGeom g = normGeomList.get(i);
             if (g._aabb.getMin(ax0id) > geom._aabb.getMax(ax0id)) {
                 break;
             }
