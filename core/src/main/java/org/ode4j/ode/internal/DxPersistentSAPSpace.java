@@ -226,7 +226,7 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 
         for (int m = 0; m < infSize; ++m) {
             DxGeom g1 = infGeomList.get(m);
-            if (GEOM_ENABLED(g1))
+            if (!GEOM_ENABLED(g1))
             	continue;
 
             // collide infinite ones
