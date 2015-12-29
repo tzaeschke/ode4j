@@ -32,9 +32,9 @@ import static org.ode4j.ode.internal.Common.dUASSERT;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DSapSpace;
@@ -45,18 +45,20 @@ import org.ode4j.ode.DSpace;
  * Copyright (C) 2001 Pierre Terdiman Homepage:
  * http://www.codercorner.com/Opcode.htm
  *
- * Temporarily coherent version of SAPSpace.
+ * Temporally coherent version of SAPSpace.
  * @author Piotr Piastucki
  *
  */
 public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 
     private List<DxGeom> geoms = new ArrayList<DxGeom>();
-    private Set<Integer> dirty = new HashSet<Integer>(); // dirty geoms
-    // temporary for geoms with infinite AABBs
-    private List<DxGeom> TmpInfGeomList = new ArrayList<DxGeom>(); 
-    // temporary for geoms with finite AABBs
-    private List<DxGeom> TmpGeomList = new ArrayList<DxGeom>();
+    private Set<Integer> dirty = new TreeSet<Integer>(); // dirty geoms
+    // geoms with infinite AABBs
+    private List<DxGeom> infGeomList = new ArrayList<DxGeom>(); 
+    // geoms with normal AABBs
+    private List<DxGeom> normGeomList = new ArrayList<DxGeom>();
+    // temporary storage for enabled geoms with normal AABBs
+    private List<DxGeom> tempGeomList = new ArrayList<DxGeom>();
     // Our sorting axes. (X,Z,Y is often best). Stored *2 for minor speedup
     // Axis indices into geom's aabb are: min=idx, max=idx+1
     private int ax0id;
@@ -144,14 +146,7 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
         // remove
         int geomIdx = GEOM_GET_GEOM_IDX(g);
         dUASSERT(geomIdx >= 0 && geomIdx < geoms.size(), "geom indices messed up");
-        DxGeom lastG = geoms.remove(geoms.size() - 1);
-        if (geomIdx != geoms.size()) {
-            geoms.set(geomIdx, lastG);
-            GEOM_SET_GEOM_IDX(lastG, geomIdx);
-            if (dirty.remove(geoms.size())) {
-                dirty.add(geomIdx);
-            }
-        }
+        dirty.add(geomIdx);
         GEOM_SET_GEOM_IDX(g, -1);
         super.remove(g);
     }
@@ -177,20 +172,35 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
         // remove from dirty list
         lock_count++;
         if (!dirty.isEmpty()) {
+        	int removed = 0;
             for (int i : dirty) {
-                DxGeom g = geoms.get(i);
-                if (g instanceof DSpace) {
-                    ((DSpace) g).cleanGeoms();
+                DxGeom g = geoms.get(i - removed);
+                if (GEOM_GET_GEOM_IDX(g) == -1) {
+                	geoms.remove(i - removed);
+                	removed++;
+                } else {
+	                if (g instanceof DSpace) {
+	                    ((DSpace) g).cleanGeoms();
+	                }
+	                g.recomputeAABB();
+	                g.unsetFlagDirtyAndBad();
                 }
-                g.recomputeAABB();
-                g.unsetFlagDirtyAndBad();
             }
             dirty.clear();
             Collections.sort(geoms, new GeomComparator());
             // update geom IDs based on the sort result
+            int axis0max = ax0id;// + 1;
+            infGeomList.clear();
+            normGeomList.clear();
             for (int i = 0; i < geoms.size(); i++) {
                 DxGeom g = geoms.get(i);
                 GEOM_SET_GEOM_IDX(g, i);
+                final double amax = g._aabb.getMax(axis0max);
+                if (amax == dInfinity) {
+                	infGeomList.add(g);
+                } else {
+                	normGeomList.add(g);
+                }
             }
         }
         lock_count--;
@@ -203,45 +213,33 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
         lock_count++;
 
         cleanGeoms();
-
-        // separate all ENABLED geoms into infinite AABBs and normal AABBs
-
-        TmpInfGeomList.clear();
-        TmpGeomList.clear();
-        int axis0max = ax0id;// + 1;
-        for (DxGeom g : geoms) {
-            if (!GEOM_ENABLED(g)) // skip disabled ones
-                continue;
-            final double amax = g._aabb.getMax(axis0max);
-            if (amax == dInfinity) // HACK? probably not...
-                TmpInfGeomList.add(g);
-            else
-                TmpGeomList.add(g);
+        tempGeomList.clear();
+        for (DxGeom g : normGeomList) {
+            if (GEOM_ENABLED(g)) {
+            	tempGeomList.add(g);
+            }
         }
-
         // do SAP on normal AABBs
-        int tmp_geom_count = TmpGeomList.size();
-        if (tmp_geom_count > 0) {
-        	boxPruning(TmpGeomList, data, callback);
-        }
+    	boxPruning(tempGeomList, data, callback);
 
-        int infSize = TmpInfGeomList.size();
-        int normSize = TmpGeomList.size();
-        int m, n;
+        int infSize = infGeomList.size();
 
-        for (m = 0; m < infSize; ++m) {
-            DxGeom g1 = TmpInfGeomList.get(m);
+        for (int m = 0; m < infSize; ++m) {
+            DxGeom g1 = infGeomList.get(m);
+            if (GEOM_ENABLED(g1))
+            	continue;
 
             // collide infinite ones
-            for (n = m + 1; n < infSize; ++n) {
-                DxGeom g2 = TmpInfGeomList.get(n);
-                collideGeomsNoAABBs(g1, g2, data, callback);
+            for (int n = m + 1; n < infSize; ++n) {
+                DxGeom g2 = infGeomList.get(n);
+                if (GEOM_ENABLED(g2)) {
+                	collideGeomsNoAABBs(g1, g2, data, callback);
+                }
             }
 
             // collide infinite ones with normal ones
-            for (n = 0; n < normSize; ++n) {
-                DxGeom g2 = TmpGeomList.get(n);
-                collideGeomsNoAABBs(g1, g2, data, callback);
+            for (DxGeom g2 : tempGeomList) {
+            	collideGeomsNoAABBs(g1, g2, data, callback);
             }
         }
 
@@ -255,30 +253,34 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
         lock_count++;
         cleanGeoms();
         geom.recomputeAABB();
-        int index = Collections.binarySearch(geoms, geom, new GeomComparator());
+        int index = Collections.binarySearch(normGeomList, geom, new GeomComparator());
         if (index < 0) {
         	index = -index - 1;
         }
         for (int i = index - 1; i >= 0; i--) {
-            DxGeom g = geoms.get(i);
+            DxGeom g = normGeomList.get(i);
             if (g._aabb.getMax(ax0id) < geom._aabb.getMin(ax0id)) {
                 break;
             }
             if (GEOM_ENABLED(g)) {
-                collideAABBs(g, geom, data, callback);
+            	collideAABBs(g, geom, data, callback);
             }
         }
-        int geom_count = geoms.size();
+        int geom_count = normGeomList.size();
         for (int i = index; i < geom_count; ++i) {
-            DxGeom g = geoms.get(i);
+            DxGeom g = normGeomList.get(i);
             if (g._aabb.getMin(ax0id) > geom._aabb.getMax(ax0id)) {
                 break;
             }
             if (GEOM_ENABLED(g)) {
-                collideAABBs(g, geom, data, callback);
+            	collideAABBs(g, geom, data, callback);
             }
         }
-
+        for (DxGeom g : infGeomList) {
+            if (GEOM_ENABLED(g)) {
+            	collideAABBs(g, geom, data, callback);
+            }
+        }
         lock_count--;
     }
 
