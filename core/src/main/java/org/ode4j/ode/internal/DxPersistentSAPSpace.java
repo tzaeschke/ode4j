@@ -44,7 +44,7 @@ import org.ode4j.ode.DSpace;
  * Original code: OPCODE - Optimized Collision Detection Copyright (C) 2001
  * Pierre Terdiman Homepage: http://www.codercorner.com/Opcode.htm
  *
- * Temporally coherent version of SAPSpace.
+ * Temporally coherent version of SAPSpace with additional BVH tree for collide2 performance improvement.
  * 
  * @author Piotr Piastucki
  *
