@@ -5,12 +5,24 @@ import java.util.Random;
 import org.junit.Test;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DHashSpace;
 import org.ode4j.ode.DSapSpace.AXES;
-import org.ode4j.ode.DSimpleSpace;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.DxPersistentSAPSpace;
+import org.ode4j.ode.internal.DxSAPSpace;
+
+/*
+ * Results (in microseconds):
+ * collide2
+ * iterations   geoms        old          new       gain
+ *     500000      10    7830177       5886252       20%
+ *     100000     100    4349950       2012539       50%
+ *      40000     200    4052088       1195051       70%
+ *       5000    1000    3776681        398865       85%
+ *       1200    2000    2650909        208568       90%
+ *        250    5000    1613238        125016       90%
+ *        100   10000    1399499        177928       85%
+ */
 
 public class SpacePerformanceTest {
 
@@ -21,29 +33,29 @@ public class SpacePerformanceTest {
     public void test() {
         OdeHelper.initODE2(0);
         // Warmup
-        DSpace space0 = OdeHelper.createSapSpace(AXES.XZY);
-        testSpace(space0, 1000);
-        space0 = DxPersistentSAPSpace.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode());
-        testSpace(space0, 1000);
-        space0 = OdeHelper.createHashSpace();
-        testSpace(space0, 1000);
+        testSpaces(1000, 100);
         System.out.println("---------------");
-       // DSimpleSpace simple = OdeHelper.createSimpleSpace();
-       // testSpace(simple);
-        DSpace space = OdeHelper.createSapSpace(AXES.XZY);
-        testSpace(space, 10000);
-        DSpace space2 = DxPersistentSAPSpace.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode());
-        testSpace(space2, 10000);
-        DHashSpace hash = OdeHelper.createHashSpace();
-        hash.setLevels(-1, 8);
-        testSpace(hash, 10000);
+        testSpaces(500000, 20);
+        testSpaces(100000, 100);
+        testSpaces(40000, 200);
+        testSpaces(5000, 1000);
+        testSpaces(1200, 2000);
+        testSpaces(250, 5000);
+        testSpaces(100, 10000);
     }
 
-    private void testSpace(DSpace space, int num) {
+    private void testSpaces(int iterations, int geomnum) {
+        System.out.println("-=" + iterations + "   " + geomnum + " =-");
+        DxSAPSpace space = (DxSAPSpace) OdeHelper.createSapSpace(AXES.XZY);
+        testSpace(space, iterations, geomnum);
+        DxPersistentSAPSpace spaceTC = DxPersistentSAPSpace.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode());
+        testSpace(spaceTC, iterations, geomnum);
+    }
+    
+    private void testSpace(DSpace space, int iterations, int geomnum) {
         spaceCollisions = 0;
         geomCollisions = 0;
         System.out.println("==== " + space.getClass().getSimpleName());
-        int geomnum = 1000;
         DGeom[] geoms = new DGeom[geomnum];
         Random r = new Random(123);
         for (int i = 0; i < geomnum; i++) {
@@ -57,7 +69,7 @@ public class SpacePerformanceTest {
         }
         long timer1 = 0;
         long timer2 = 0;
-        for (int j = 0; j < num; j++) {
+        for (int j = 0; j < iterations; j++) {
             long time1 = System.nanoTime();
             space.collide(null, new DNearCallback() {
                 @Override
@@ -66,7 +78,7 @@ public class SpacePerformanceTest {
                 }
             });
             long time2 = System.nanoTime();
-            for (int k = 0; k < 10; k++) {
+            for (int k = 0; k < 100; k++) {
                 int i = r.nextInt(geoms2.length);
                 space.collide2(geoms2[i], null, new DNearCallback() {
                     @Override
@@ -99,3 +111,4 @@ public class SpacePerformanceTest {
         System.out.println(spaceCollisions + "   " + geomCollisions + "   " + timer1 / 1000 + "  " + timer2 / 1000);
     }
 }
+
