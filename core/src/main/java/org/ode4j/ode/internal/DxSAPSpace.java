@@ -59,47 +59,8 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	// --------------------------------------------------------------------------
 
 	//--------------------------------------------------------------------------
-	// Local Declarations
-	//--------------------------------------------------------------------------
-
-	//! A generic couple structure
-	private static class Pair
-	{
-		//		uint32 id0;	//!< First index of the pair
-		//		uint32 id1;	//!< Second index of the pair
-//		int id0;	//!< First index of the pair
-//		int id1;	//!< Second index of the pair
-		DxGeom g0;
-		DxGeom g1;
-
-		// Default and Value Constructor
-		//Pair() {}
-		//Pair( uint32 i0, uint32 i1 ) : id0( i0 ), id1( i1 ) {}
-//		Pair(int i0, int i1) {
-//			id0 = i0;
-//			id1 = i1;
-//		}
-		Pair(DxGeom geom0, DxGeom geom1) {
-			g0 = geom0;
-			g1 = geom1;
-		}
-	};
-
-	//--------------------------------------------------------------------------
 	// Helpers
 	//--------------------------------------------------------------------------
-
-	//	/**
-	//	 *	Complete box pruning.
-	//	 *  Returns a list of overlapping pairs of boxes, each box of the pair
-	//	 *  belongs to the same set.
-	//	 *
-	//	 *	@param	count	[in] number of boxes.
-	//	 *	@param	geoms	[in] geoms of boxes.
-	//	 *	@param	pairs	[out] array of overlapping pairs.
-	//	 */
-	//	void BoxPruning( int count, const dxGeom** geoms, dArray< Pair >& pairs );
-	//TODO remove, doc was moved further down.
 
 	//--------------------------------------------------------------------------
 	// Implementation Data
@@ -211,7 +172,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		//	_aabb[3] = dInfinity;
 		//	_aabb[4] = -dInfinity;
 		//	_aabb[5] = dInfinity;
-		_aabb.set(-dInfinity, dInfinity, -dInfinity, dInfinity, -dInfinity, dInfinity);
+		_aabb.setZero();
 
 //		ax0idx = ( ( axisorder ) & 3 ) << 1;
 //		ax1idx = ( ( axisorder >> 2 ) & 3 ) << 1;
@@ -262,7 +223,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	{
 		CHECK_NOT_LOCKED (this);
 		//dAASSERT(g);
-		dUASSERT(g._sapIdxGeomEx == 0 && g.getNextEx() == null, "geom is already in a space");
+		dUASSERT(g.parent_space == null && g.getNext() == null, "geom is already in a space");
 
 		// add to dirty list
 		GEOM_SET_DIRTY_IDX( g, DirtyList.size() );
@@ -338,13 +299,6 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		DirtyList.add( g );
 	}
 
-	//void dxSAPSpace::computeAABB()
-	@Override
-	void computeAABB()
-	{
-		// TODO?
-	}
-
 	//void dxSAPSpace::cleanGeoms()
 	@Override
 	public void cleanGeoms()
@@ -408,9 +362,8 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		}
 
 		// do SAP on normal AABBs
-		ArrayList< Pair > overlapBoxes = new ArrayList<Pair>();
-		int tmp_geom_count = TmpGeomList.size();
-		if ( tmp_geom_count > 0 )
+		int normSize = TmpGeomList.size();
+		if ( normSize > 0 )
 		{
 			// Size the poslist (+1 for infinity end cap)
 			//poslist.setSize( tmp_geom_count + 1 );
@@ -420,23 +373,10 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 			// Generate a list of overlapping boxes
 			//BoxPruning( tmp_geom_count, (final dxGeom**)TmpGeomList.data(), overlapBoxes );
-			BoxPruning( tmp_geom_count, TmpGeomList, overlapBoxes );
-		}
-
-		// collide overlapping
-		int overlapCount = overlapBoxes.size();
-		for( int j = 0; j < overlapCount; ++j )
-		{
-			final Pair pair = overlapBoxes.get( j );
-			//TODO clean up
-//			dxGeom g1 = TmpGeomList.get( pair.id0 );
-//			dxGeom g2 = TmpGeomList.get( pair.id1 );
-//			collideGeomsNoAABBs( g1, g2, data, callback );
-			collideGeomsNoAABBs( pair.g0, pair.g1, data, callback );
+			BoxPruning( TmpGeomList, data, callback );
 		}
 
 		int infSize = TmpInfGeomList.size();
-		int normSize = TmpGeomList.size();
 		int m, n;
 
 		for ( m = 0; m < infSize; ++m )
@@ -503,27 +443,26 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	 *  O(N) and O(N*log(N)), the second is always O(N*log(N)), so not much lost.
 	 *  This greatly simplifies the code.
 	 *
-	 *	@param	count	[in] number of boxes.
 	 *	@param	geoms	[in] geoms of boxes.
 	 *	@param	pairs	[out] array of overlapping pairs.
 	 */
 	//void dxSAPSpace::BoxPruning( int count, const dxGeom** geoms, dArray< Pair >& pairs )
-	void BoxPruning( int count, final ArrayList<DxGeom> geoms, ArrayList< Pair > pairs )
+	void BoxPruning(final List<DxGeom> geoms, Object data, DNearCallback callback)
 	{
 		// 1) Build main list using the primary axis
 		//  NOTE: uses floats instead of dReals because that's what radix sort wants
 		//TZ: not required in this implementation
 
 		// 2) Sort the list
-		ArrayList<DxGeom> buffer = new ArrayList<DxGeom>(geoms);
+		List<DxGeom> buffer = geoms;
 		Collections.sort(buffer, new GeomComparator());
-
+		int size = buffer.size();
 		// 3) Prune the list
-		for (int i = 0; i < buffer.size(); i++) {
+		for (int i = 0; i < size; i++) {
 			DxGeom g0 = buffer.get(i);
 			DAABB aabb0 = g0._aabb;
 			final double idx0ax0max = aabb0.getMax(ax0id);//(ax0idx+1);
-			for (int j = i+1; j < buffer.size(); j++) {
+			for (int j = i+1; j < size; j++) {
 				DxGeom g1 = buffer.get(j);
 				if (g1._aabb.getMin(ax0id) > idx0ax0max) {
 					//This and following elements can not intersect with g1.
@@ -537,7 +476,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 					if (g1._aabb.getMax(ax1id) >= aabb0.getMin(ax1id) )
 						if ( aabb0.getMax(ax2id) >= g1._aabb.getMin(ax2id))
 							if (g1._aabb.getMax(ax2id) >= aabb0.getMin(ax2id) )
-								pairs.add(new Pair(g0, g1));
+								collideGeomsNoAABBs(g0, g1, data, callback);
 			}
 		}
 	}
