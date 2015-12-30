@@ -59,6 +59,9 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
     private List<DxGeom> normGeomList = new ArrayList<DxGeom>();
     // temporary storage for enabled geoms with normal AABBs
     private List<DxGeom> tempGeomList = new ArrayList<DxGeom>();
+    // temporary storage for tracking overlapping geoms
+    private int[] overlaps = new int[0];
+    private boolean dirtyOverlaps;
     // Our sorting axes. (X,Z,Y is often best). Stored *2 for minor speedup
     // Axis indices into geom's aabb are: min=idx, max=idx+1
     private int ax0id;
@@ -161,11 +164,6 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
     }
 
     @Override
-    void computeAABB() {
-        // TODO?
-    }
-
-    @Override
     public void cleanGeoms() {
         dUASSERT(geoms.size() == count, "geom counts messed up");
         // compute the AABBs of all dirty geoms, clear the dirty flags,
@@ -187,6 +185,7 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
                 }
             }
             dirty.clear();
+            dirtyOverlaps = true;
             Collections.sort(geoms, new GeomComparator());
             // update geom IDs based on the sort result
             int axis0max = ax0id;// + 1;
@@ -254,11 +253,33 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
         cleanGeoms();
         geom.recomputeAABB();
         int geom_count = normGeomList.size();
-        for (int i = 0; i < geom_count; i++) {
-            DxGeom g = normGeomList.get(i);
-            if (g._aabb.getMax(ax0id) < geom._aabb.getMin(ax0id)) {
-                continue;
+        if (dirtyOverlaps) {
+        	if (overlaps.length < normGeomList.size()) {
+        		overlaps = new int[normGeomList.size()];
+        	}
+        	int o = 0;
+            for (int i = 0; i < geom_count; i++) {
+                DxGeom g0 = normGeomList.get(i);
+                final double idx0ax0max = g0._aabb.getMax(ax0id);
+                for (int j = o; j < geom_count; j++) {
+                    if (normGeomList.get(j)._aabb.getMin(ax0id) > idx0ax0max) {
+                        break;
+                    }
+                    overlaps[o++] = i; 
+                }
             }
+        	dirtyOverlaps = false;
+        }
+        int index = Collections.binarySearch(normGeomList, geom, new GeomComparator());
+        if (index < 0) {
+        	index = -index - 1;
+            if (index > geom_count - 1) {
+            	index = geom_count - 1;
+            }
+        }
+        int start = overlaps[index];
+        for (int i = start; i < geom_count; i++) {
+            DxGeom g = normGeomList.get(i);
             if (g._aabb.getMin(ax0id) > geom._aabb.getMax(ax0id)) {
                 break;
             }
@@ -292,11 +313,12 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
      */
     void boxPruning(final List<DxGeom> geoms, Object data, DNearCallback callback) {
         // Prune the list
-        for (int i = 0; i < geoms.size(); i++) {
+    	int size = geoms.size();
+        for (int i = 0; i < size; i++) {
             DxGeom g0 = geoms.get(i);
             DAABB aabb0 = g0._aabb;
             final double idx0ax0max = aabb0.getMax(ax0id);// (ax0idx+1);
-            for (int j = i + 1; j < geoms.size(); j++) {
+            for (int j = i + 1; j < size; j++) {
                 DxGeom g1 = geoms.get(j);
                 if (g1._aabb.getMin(ax0id) > idx0ax0max) {
                     // This and following elements can not intersect with g1.
