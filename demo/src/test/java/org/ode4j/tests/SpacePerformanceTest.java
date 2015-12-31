@@ -3,7 +3,6 @@ package org.ode4j.tests;
 import java.util.Random;
 
 import org.junit.Test;
-import org.ode4j.ode.DBox;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DSapSpace.AXES;

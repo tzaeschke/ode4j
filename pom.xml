@@ -161,7 +161,7 @@
 	          			</excludes>
         			</configuration>
 			   	</plugin>
-            </plugins>
+ 	        </plugins>
         </pluginManagement>
     </build>
 

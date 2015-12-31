@@ -1,4 +1,7 @@
 
+- Added new SAP space, PR #43
+- Fixes on SAP space, PR #42 (Piotr)
+- Fixes on removing geoms from space, PR #41 (Piotr)
 - Added support for convex-trimesh collision (Piotr)
 - Fixed scaling of tacc in quickstep (issue #38, Eduard Nicodei)
 - Fixed Common.__ASSERT methods to act correctly if parameter is '0' or 'false', see issue #32
