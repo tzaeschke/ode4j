@@ -30,8 +30,10 @@ import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dUASSERT;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -49,7 +51,7 @@ import org.ode4j.ode.DSpace;
  * @author Piotr Piastucki
  *
  */
-public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
+public class DxSAPSpace2 extends DxSpace implements DSapSpace {
 
 	private static class BVHNode {
 		DAABB aabb;
@@ -64,6 +66,7 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 	}
 
 	private boolean dirtyGeoms;
+	private List<DxGeom> dirty = new ArrayList<DxGeom>();
 	// geoms with infinite AABBs
 	private List<DxGeom> infGeomList = new ArrayList<DxGeom>();
 	// geoms with normal AABBs
@@ -81,8 +84,8 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 	/**
 	 * Creation.
 	 */
-	public static DxPersistentSAPSpace dSweepAndPruneSpaceCreate(DxSpace space, int axisorder) {
-		return new DxPersistentSAPSpace(space, axisorder);
+	public static DxSAPSpace2 dSweepAndPruneSpaceCreate(DxSpace space, int axisorder) {
+		return new DxSAPSpace2(space, axisorder);
 	}
 
 	/**
@@ -117,7 +120,7 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 		callback.call(data, g1, g2);
 	}
 
-	private DxPersistentSAPSpace(DxSpace space, int axisorder) {
+	private DxSAPSpace2(DxSpace space, int axisorder) {
 		super(space);
 		type = dSweepAndPruneSpaceClass;
 		// Init AABB to infinity
@@ -133,6 +136,7 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 		dAASSERT(g);
 		dUASSERT(g.parent_space == null, "geom is already in a space");
 		infGeomList.add(g);
+		dirty.add(g);
 		dirtyGeoms = true;
 		super.add(g);
 	}
@@ -146,6 +150,7 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 		if (!infGeomList.remove(g)) {
 			normGeomList.remove(g);
 		}
+		dirty.remove(g);
 		dirtyGeoms = true;
 		super.remove(g);
 	}
@@ -154,6 +159,7 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 	void dirty(DxGeom g) {
 		dAASSERT(g);
 		dUASSERT(g.parent_space == this, "object is not in this space");
+		dirty.add(g);
 		dirtyGeoms = true;
 	}
 
@@ -163,7 +169,7 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 		// remove from dirty list
 		lock_count++;
 		if (dirtyGeoms) {
-			for (DxGeom g : normGeomList) {
+			for (DxGeom g : dirty) {
 				if (g instanceof DSpace) {
 					((DSpace) g).cleanGeoms();
 				}
@@ -172,17 +178,13 @@ public class DxPersistentSAPSpace extends DxSpace implements DSapSpace {
 			}
 			for (Iterator<DxGeom> iter = infGeomList.iterator(); iter.hasNext();) {
 				DxGeom g = iter.next();
-				if (g instanceof DSpace) {
-					((DSpace) g).cleanGeoms();
-				}
-				g.recomputeAABB();
-				g.unsetFlagDirtyAndBad();
 				if (g._aabb.getMax(ax0id) != dInfinity) {
 					iter.remove();
 					normGeomList.add(g);
 				}
 			}
 			Collections.sort(normGeomList, new GeomComparator());
+			dirty.clear();
 			dirtyGeoms = false;
 			bvhNodes.clear();
 		}
