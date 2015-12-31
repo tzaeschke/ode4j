@@ -382,8 +382,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 		if (_next != null) {
 			_next._prev = _prev;
 		}
-		parent.setFirst(_next);
-//		parent_space.
+        if (_prev != null) {
+            _prev._next = _next;
+        } else {
+            parent.setFirst(_next);
+        }
 		
 		//TODO use HashSet or IdentitySet or ArrayList? Check call hierarchy for type of usage!
 		geoms.remove(this);
