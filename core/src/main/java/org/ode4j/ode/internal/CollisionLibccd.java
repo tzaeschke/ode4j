@@ -77,7 +77,7 @@ public class CollisionLibccd {
 	};
 	//typedef struct _ccd_cyl_t ccd_cyl_t;
 
-	private static class ccd_sphere_t extends ccd_obj_t {
+	static class ccd_sphere_t extends ccd_obj_t {
 		//ccd_obj_t o;
 		double radius;
 	};
@@ -250,21 +250,13 @@ public class CollisionLibccd {
 		}
 	};
 
-	private static final ccd_support_fn ccdSupportSphere = new ccd_support_fn() {
+	static final ccd_support_fn ccdSupportSphere = new ccd_support_fn() {
 		@Override
 		public void run(Object obj, ccd_vec3_t _dir, ccd_vec3_t v) {
 			final ccd_sphere_t s = (ccd_sphere_t )obj;
-			final ccd_vec3_t dir = new ccd_vec3_t();
-
-			ccdVec3Copy(dir, _dir);
-			ccdQuatRotVec(dir, s.rot_inv);
-
-			ccdVec3Copy(v, dir);
-			ccdVec3Scale(v, s.radius);
-			ccdVec3Scale(v, CCD_ONE / CCD_SQRT(ccdVec3Len2(dir)));
-
+			ccdVec3Copy(v, _dir);
+			ccdVec3Scale(v, s.radius / CCD_SQRT(ccdVec3Len2(v)));
 			// transform support vertex
-			ccdQuatRotVec(v, s.rot);
 			ccdVec3Add(v, s.pos);
 		}
 	};
