@@ -244,7 +244,7 @@ public class CCDVec3 {
 	/**
 	 * Normalizes given vector to unit length.
 	 */
-	static final void ccdVec3Normalize(ccd_vec3_t d)
+	public static final void ccdVec3Normalize(ccd_vec3_t d)
 	{
 	    double k = CCD_ONE / CCD_SQRT(ccdVec3Len2(d));
 	    ccdVec3Scale(d, k);

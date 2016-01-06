@@ -65,15 +65,21 @@ public class CollisionLibccd {
 	};
 	//typedef struct _ccd_box_t ccd_box_t;
 
-	private static class ccd_cap_t extends ccd_obj_t {
+	static class ccd_cap_t extends ccd_obj_t {
 		//ccd_obj_t o;
-		double radius, height;
+		double radius;
+		final ccd_vec3_t axis = new ccd_vec3_t();
+		final ccd_vec3_t p1 = new ccd_vec3_t();
+		final ccd_vec3_t p2 = new ccd_vec3_t();
 	};
 	//typedef struct _ccd_cap_t ccd_cap_t;
 
-	private static class ccd_cyl_t extends ccd_obj_t {
+	static class ccd_cyl_t extends ccd_obj_t {
 		//ccd_obj_t o;
-		double radius, height;
+		double radius;
+		final ccd_vec3_t axis = new ccd_vec3_t();
+		final ccd_vec3_t p1 = new ccd_vec3_t();
+		final ccd_vec3_t p2 = new ccd_vec3_t();
 	};
 	//typedef struct _ccd_cyl_t ccd_cyl_t;
 
@@ -148,7 +154,13 @@ public class CollisionLibccd {
 
 		//dGeomCapsuleGetParams(g, r, h);
 		cap.radius = g.getRadius();
-		cap.height = g.getLength() / 2.;
+		ccdVec3Set(cap.axis, 0.0, 0.0, g.getLength() / 2);
+		ccdQuatRotVec(cap.axis, cap.rot);
+		ccdVec3Copy(cap.p1, cap.axis);
+		ccdVec3Copy(cap.p2, cap.axis);
+		ccdVec3Scale(cap.p2, -1.0);
+		ccdVec3Add(cap.p1, cap.pos);
+		ccdVec3Add(cap.p2, cap.pos);
 	}
 
 	static void ccdGeomToCyl(final DxCylinder g, ccd_cyl_t cyl)
@@ -158,7 +170,14 @@ public class CollisionLibccd {
 
 		//dGeomCylinderGetParams(g, &r, &h);
 		cyl.radius = g.getRadius();
-		cyl.height = g.getLength() / 2.;
+		ccdVec3Set(cyl.axis, 0.0, 0.0, g.getLength() / 2);
+		ccdQuatRotVec(cyl.axis, cyl.rot);
+		ccdVec3Copy(cyl.p1, cyl.axis);
+		ccdVec3Copy(cyl.p2, cyl.axis);
+		ccdVec3Normalize(cyl.axis);
+		ccdVec3Scale(cyl.p2, -1.0);
+		ccdVec3Add(cyl.p1, cyl.pos);
+		ccdVec3Add(cyl.p2, cyl.pos);
 	}
 
 	static void ccdGeomToSphere(final DxSphere g, ccd_sphere_t s)
@@ -193,60 +212,42 @@ public class CollisionLibccd {
 		}
 	};
 
-	private static final ccd_support_fn ccdSupportCap = new ccd_support_fn() {
+	static final ccd_support_fn ccdSupportCap = new ccd_support_fn() {
 		@Override
 		public void run(Object obj, ccd_vec3_t _dir, ccd_vec3_t v) {
 			final ccd_cap_t o = (ccd_cap_t)obj;
-			final ccd_vec3_t dir = new ccd_vec3_t(), pos1 = new ccd_vec3_t(), pos2 = new ccd_vec3_t();
-
-			ccdVec3Copy(dir, _dir);
-			ccdQuatRotVec(dir, o.rot_inv);
-
-			ccdVec3Set(pos1, CCD_ZERO, CCD_ZERO, o.height);
-			ccdVec3Set(pos2, CCD_ZERO, CCD_ZERO, -o.height);
-
-			ccdVec3Copy(v, dir);
+			ccdVec3Copy(v, _dir);
 			ccdVec3Scale(v, o.radius);
-			ccdVec3Add(pos1, v);
-			ccdVec3Add(pos2, v);
-
-			if (ccdVec3Dot(dir, pos1) > ccdVec3Dot(dir, pos2)){
-				ccdVec3Copy(v, pos1);
+			if (ccdVec3Dot(_dir, o.axis) > 0.0){
+				ccdVec3Add(v, o.p1);
 			}else{
-				ccdVec3Copy(v, pos2);
+				ccdVec3Add(v, o.p2);
 			}
-
-			// transform support vertex
-			ccdQuatRotVec(v, o.rot);
-			ccdVec3Add(v, o.pos);
 		}
 	};
 
-	private static final ccd_support_fn ccdSupportCyl = new ccd_support_fn() {
+	static final ccd_support_fn ccdSupportCyl = new ccd_support_fn() {
 		@Override
 		public void run(Object obj, ccd_vec3_t _dir, ccd_vec3_t v) {
 			final ccd_cyl_t cyl = (ccd_cyl_t)obj;
 			final ccd_vec3_t dir = new ccd_vec3_t();
-			double zdist, rad;
 
-			ccdVec3Copy(dir, _dir);
-			ccdQuatRotVec(dir, cyl.rot_inv);
-
-			zdist = dir.get0() * dir.get0() + dir.get1() * dir.get1();
-			zdist = Math.sqrt(zdist);
-			if (ccdIsZero(zdist)){
-				ccdVec3Set(v, 0., 0., ccdSign(ccdVec3Z(dir)) * cyl.height);
-			}else{
-				rad = cyl.radius / zdist;
-
-				ccdVec3Set(v, rad * ccdVec3X(dir),
-						rad * ccdVec3Y(dir),
-						ccdSign(ccdVec3Z(dir)) * cyl.height);
+			double dot = ccdVec3Dot(_dir, cyl.axis);
+			if (dot > 0.0){
+				ccdVec3Copy(v, cyl.p1);
+			} else{
+				ccdVec3Copy(v, cyl.p2);
 			}
-
-			// transform support vertex
-			ccdQuatRotVec(v, cyl.rot);
-			ccdVec3Add(v, cyl.pos);
+			// project dir onto cylinder 'top'/'bottom' plane
+			ccdVec3Copy(dir, cyl.axis);
+			ccdVec3Scale(dir, -dot);
+			ccdVec3Add(dir, _dir);
+			double len = CCD_SQRT(ccdVec3Len2(dir));
+			if (!ccdIsZero(len)) {
+				ccdVec3Normalize(dir);
+				ccdVec3Scale(dir, cyl.radius);
+				ccdVec3Add(v, dir);
+			}
 		}
 	};
 
@@ -255,8 +256,7 @@ public class CollisionLibccd {
 		public void run(Object obj, ccd_vec3_t _dir, ccd_vec3_t v) {
 			final ccd_sphere_t s = (ccd_sphere_t )obj;
 			ccdVec3Copy(v, _dir);
-			ccdVec3Scale(v, s.radius / CCD_SQRT(ccdVec3Len2(v)));
-			// transform support vertex
+			ccdVec3Scale(v, s.radius);
 			ccdVec3Add(v, s.pos);
 		}
 	};
