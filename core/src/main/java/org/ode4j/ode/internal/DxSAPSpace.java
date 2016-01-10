@@ -205,25 +205,13 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		super.DESTRUCTOR();
 	}
 
-	//dxGeom* dxSAPSpace::getGeom( int i )
-	@Override
-	public DxGeom getGeom( int i )
-	{
-		dUASSERT( i >= 0 && i < count, "index out of range" );
-		int dirtySize = DirtyList.size();
-		if( i < dirtySize )
-			return DirtyList.get(i);
-		else
-			return GeomList.get(i-dirtySize);
-	}
-
 	//void dxSAPSpace::add( dxGeom* g )
 	@Override
 	void add( DxGeom g )
 	{
 		CHECK_NOT_LOCKED (this);
 		//dAASSERT(g);
-		dUASSERT(g.parent_space == null && g.getNext() == null, "geom is already in a space");
+		dUASSERT(g.parent_space == null, "geom is already in a space");
 
 		// add to dirty list
 		GEOM_SET_DIRTY_IDX( g, DirtyList.size() );
@@ -344,7 +332,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 		// by now all geoms are in GeomList, and DirtyList must be empty
 		int geom_count = GeomList.size();
-		dUASSERT( geom_count == count, "geom counts messed up" );
+		dUASSERT( geom_count == getNumGeoms(), "geom counts messed up" );
 
 		// separate all ENABLED geoms into infinite AABBs and normal AABBs
 		TmpGeomList.clear();//setSize(0);

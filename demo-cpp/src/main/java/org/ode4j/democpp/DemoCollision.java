@@ -55,8 +55,8 @@ import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSphereSetRadius;
 import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSimpleSpaceCreate;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceAdd;
-import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceGetGeom;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceGetNumGeoms;
+import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceGetGeoms;
 import static org.ode4j.cpp.internal.ApiCppOdeInit.dCloseODE;
 import static org.ode4j.cpp.internal.ApiCppOdeInit.dInitODE2;
 import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
@@ -283,8 +283,7 @@ class DemoCollision extends dsFunctions {
 		dSpaceCollide (space,0,nearCallback);
 
 		// draw all rays
-		for (i=0; i<nGeoms; i++) {
-			DGeom g = dSpaceGetGeom (space,i);
+		for (DGeom g : dSpaceGetGeoms(space)) {
 			if (g instanceof DRay) {
 				dsSetColor (1,1,1);
 				DVector3 origin = new DVector3(),dir=new DVector3();
@@ -300,8 +299,7 @@ class DemoCollision extends dsFunctions {
 		}
 
 		// draw all other objects
-		for (i=0; i<nGeoms; i++) {
-			DGeom g = dSpaceGetGeom (space,i);
+		for (DGeom g : dSpaceGetGeoms(space)) {
 			DVector3 pos = new DVector3();
 			if (!(g instanceof DPlane)) {//dGeomGetClass (g) != dPlaneClass) {
 				//memcpy (pos,dGeomGetPosition(g),sizeof(pos));

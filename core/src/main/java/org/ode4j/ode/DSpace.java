@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode;
 
+import org.ode4j.ode.internal.DxGeom;
 
 /**
  * collision space.
@@ -45,7 +46,10 @@ public interface DSpace extends DGeom {
 	boolean query (DGeom x);
 
 	int getNumGeoms();
+	/** @deprecated Use getGeoms() instead */
+	@Deprecated
 	DGeom getGeom (int i);
+	Iterable<DxGeom> getGeoms();
 
 	/** This is equivalent to OdeHelper.spaceCollide(...) */
 	void collide (Object data, DNearCallback callback);

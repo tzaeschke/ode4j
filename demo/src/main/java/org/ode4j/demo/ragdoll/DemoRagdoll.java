@@ -186,9 +186,7 @@ public class DemoRagdoll extends dsFunctions {
 		contactgroup.empty();
 
 		// now we draw everything
-		int ngeoms = space.getNumGeoms();
-		for (int i=0; i<ngeoms; ++i) {
-			DGeom g = space.getGeom(i);
+		for (DGeom g : space.getGeoms()) {
 
 			drawGeom(g);
 		}

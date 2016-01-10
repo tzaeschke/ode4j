@@ -363,9 +363,7 @@ public class DemoMovingConvex extends dsFunctions {
 
 		if ( !pause ) world.quickStep( 0.05 );
 
-		for ( int j = 0; j < space.getNumGeoms(); j++ )
-		{
-			space.getGeom( j );
+		for (DGeom g : space.getGeoms()) {
 		}
 
 		// remove all contact joints

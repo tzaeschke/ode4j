@@ -216,8 +216,7 @@ class DemoCollision extends dsFunctions {
 		space.collide(null,nearCallback);
 
 		// draw all rays
-		for (i=0; i<nGeoms; i++) {
-			DGeom g = space.getGeom (i);
+		for (DGeom g : space.getGeoms()) {
 			if (g instanceof DRay) {
 				dsSetColor (1,1,1);
 				DVector3 origin = new DVector3(),dir=new DVector3();
@@ -233,8 +232,7 @@ class DemoCollision extends dsFunctions {
 		}
 
 		// draw all other objects
-		for (i=0; i<nGeoms; i++) {
-			DGeom g = space.getGeom (i);
+		for (DGeom g : space.getGeoms()) {
 			DVector3 pos = new DVector3();
 			if (!(g instanceof DPlane)) {//dGeomGetClass (g) != dPlaneClass) {
 				//memcpy (pos,dGeomGetPosition(g),sizeof(pos));
