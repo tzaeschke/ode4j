@@ -170,9 +170,7 @@ public class DemoDHinge extends dsFunctions {
 		}
 
 		// now we draw everything
-		int ngeoms = space.getNumGeoms();
-		for (int i=0; i<ngeoms; ++i) {
-			DGeom g = space.getGeom(i);
+		for (DGeom g : space.getGeoms()) {
 			drawGeom(g);
 		}
 

@@ -31,7 +31,6 @@ import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
 
 import org.junit.Test;
 import org.ode4j.drawstuff.DrawStuff;
-import org.ode4j.drawstuff.internal.DrawStuffNull;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
@@ -100,9 +99,7 @@ public class TestIssue0018_NpeInQuickstep extends DrawStuff.dsFunctions {
 			}
 
 			// now we draw everything
-			int ngeoms = space.getNumGeoms();
-			for (int i = 0; i < ngeoms; ++i) {
-				DGeom g = space.getGeom(i);
+			for (DGeom g : space.getGeoms()) {
 				drawGeom(g);
 			}
 

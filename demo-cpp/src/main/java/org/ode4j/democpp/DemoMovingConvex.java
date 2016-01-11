@@ -371,9 +371,8 @@ public class DemoMovingConvex extends dsFunctions {
 
 		if ( !pause ) dWorldQuickStep( world,0.05 );
 
-		for ( int j = 0; j < dSpaceGetNumGeoms( space ); j++ )
-		{
-			dSpaceGetGeom( space, j );
+		for (DGeom g : dSpaceGetGeoms(space)) {
+			
 		}
 
 		// remove all contact joints

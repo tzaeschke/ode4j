@@ -24,8 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DGeom;
@@ -71,8 +70,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 //	dxGeom first;		// first geom in list
 //	protected final Ref<dxGeom> first = 
 //		new Ref<dxGeom>();		// first geom in list
-	protected DxGeom _first1 = null;		// first geom in list
-	protected List<DxGeom> _geoms = new ArrayList<DxGeom>();
+	protected DxGeom _first = null;		// first geom in list
 	boolean cleanup;			// cleanup mode, 1=destroy geoms on exit
 	int sublevel;         // space sublevel (used in dSpaceCollide2). NOT TRACKED AUTOMATICALLY!!!
 	//unsigned
@@ -246,7 +244,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 					if (s1.count < s2.count) {
 						DataCallback dc = new DataCallback(data, callback);
 						//for (dxGeom g = s1._first; g != null; g=g.getNext()) {
-						for (DxGeom g: s1._geoms) {
+						for (DxGeom g: s1.getGeoms()) {
 							s2.collide2 (dc,g,new DNearCallback() {
 								@Override
 								public void call(Object data, DGeom g1,
@@ -257,7 +255,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 					}
 					else {
 						//for (dxGeom g = s2._first; g != null; g=g.getNext()) {
-						for (DxGeom g: s2._geoms) {
+						for (DxGeom g: s2.getGeoms()) {
 							s1.collide2 (data,g,callback);
 						}
 					}
@@ -313,23 +311,18 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		CHECK_NOT_LOCKED ();
 		if (cleanup) {
 			// note that destroying each geom will call remove()
-//			dxGeom g,n;
-//			for (g = _first; g != null; g=n) {
-//				n = g.getNext();
-//				g.dGeomDestroy ();
-//			}
-//			for (dxGeom g: _geoms) g.dGeomDestroy();
-			//TODO is this correct? It is definitely not nice -> dangerous
-			while (!_geoms.isEmpty()) _geoms.get(0).dGeomDestroy();
+			DxGeom g,n;
+			for (g = _first; g != null; g=n) {
+				n = g.getNext();
+				g.dGeomDestroy ();
+			}
 		}
 		else {
-//			dxGeom g,n;
-//			for (g = _first; g != null; g=n) {
-//				n = g.getNext();
-//				remove (g);
-//			}
-//			for (DxGeom g: _geoms) remove(g);
-			while (!_geoms.isEmpty()) remove(_geoms.get(0));
+			DxGeom g,n;
+			for (g = _first; g != null; g=n) {
+				n = g.getNext();
+				remove (g);
+			}
 		}
 		super.DESTRUCTOR();
 	}
@@ -338,8 +331,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	@Override
 	void computeAABB()
 	{
-		//if (_first != null) {
-		if (!_geoms.isEmpty()) {
+		if (_first != null) {
 //			int i;
 //			double[] a = new double[6];
 			DAABB aabb = new DAABB();
@@ -352,8 +344,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 //			a[3] = -dInfinity;
 //			a[4] = dInfinity;
 //			a[5] = -dInfinity;
-			//for (dxGeom g=_first; g != null; g=g.getNext()) {
-			for (DxGeom g: _geoms) {
+			for (DxGeom g=_first; g != null; g=g.getNext()) {
 				g.recomputeAABB();
 //				for (i=0; i<6; i += 2) if (g._aabb.get(i) < a[i]) a[i] = g._aabb.get(i);
 //				for (i=1; i<6; i += 2) if (g._aabb.get(i) > a[i]) a[i] = g._aabb.get(i);
@@ -428,21 +419,20 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	public DGeom getGeom (int i)
 	{
 		dUASSERT (i >= 0 && i < count,"index out of range");
-//		if (current_geom!=null && current_index == i-1) {
-//			current_geom = current_geom.getNext();
-//			current_index = i;
-//			return current_geom;
-//		}
-//		else {
-//			dxGeom g=_first;
-//			for (int j=0; j<i; j++) {
-//				if (g != null) g = g.getNext(); else return null;
-//			}
-			DxGeom g = _geoms.get(i);
+		if (current_geom!=null && current_index == i-1) {
+			current_geom = current_geom.getNext();
+			current_index = i;
+			return current_geom;
+		}
+		else {
+			DxGeom g=_first;
+			for (int j=0; j<i; j++) {
+				if (g != null) g = g.getNext(); else return null;
+			}
 			current_geom = g;
 			current_index = i;
 			return g;
-//		}
+		}
 	}
 
 
@@ -456,7 +446,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 
 		// add
 		geom.parent_space = this;
-		geom.spaceAdd (_first1, this, _geoms);
+		geom.spaceAdd (_first, this);
 		count++;
 
 		// enumerator has been invalidated
@@ -479,7 +469,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		dUASSERT (geom.parent_space == this,"object is not in this space");
 
 		// remove
-		geom.spaceRemove(this, _geoms);
+		geom.spaceRemove(this);
 		count--;
 
 		// safeguard
@@ -500,8 +490,8 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 
 	void dirty (DxGeom geom)
 	{
-		geom.spaceRemove(this, _geoms);
-		geom.spaceAdd (_first1, this, _geoms);
+		geom.spaceRemove(this);
+		geom.spaceAdd (_first, this);
 	}
 
     public void CHECK_NOT_LOCKED() {
@@ -513,7 +503,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
     }
 
 	public void setFirst(DxGeom dxGeom) {
-		_first1 = dxGeom;
+		_first = dxGeom;
 	}
 	
 	// *********************************************
@@ -539,4 +529,33 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 //	{ return dSpaceGetNumGeoms (id()); }
 //	public dGeom getGeom (int i)
 //	{ return dSpaceGetGeom (id(),i); }
+
+	@Override
+	public Iterable<DxGeom> getGeoms() {
+		return new Iterable<DxGeom>() {
+			@Override
+			public Iterator<DxGeom> iterator() {
+				return new Iterator<DxGeom>() {
+
+					private DxGeom current = _first;
+
+					@Override
+					public boolean hasNext() {
+						return current != null;
+					}
+
+					@Override
+					public DxGeom next() {
+						DxGeom g = current;
+						current = current.getNext();
+						return g;
+					}
+
+					public void remove() {
+						throw new UnsupportedOperationException("remove");
+					}
+				};
+			}
+		};
+	}
 }

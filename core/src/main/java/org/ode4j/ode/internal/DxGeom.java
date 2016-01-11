@@ -24,8 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.util.List;
-
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Rotation.dQfromR;
 
@@ -164,7 +162,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 * For the first element, it is a pointer to (container.first).
 	 */
 //	private final Ref<dxGeom> tome = new Ref<dxGeom>();
-	DxGeom _next = null;// next geom in linked list of geoms
+	private DxGeom _next = null;// next geom in linked list of geoms
 	private DxGeom _prev = null;
 	//dxGeom tome;	// linked list backpointer
     private DxGeom _next_ex;	// next geom in extra linked list of geoms (for higher level structures)
@@ -351,7 +349,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 //		tome.set(next);
 //	}
 
-	void spaceAdd (DxGeom next, DxSpace parent, List<DxGeom> geoms) {
+	void spaceAdd (DxGeom next, DxSpace parent) {
 //		next = *first_ptr;
 //		tome = first_ptr;
 //		if (*first_ptr) (*first_ptr).tome = &next;
@@ -371,10 +369,9 @@ public abstract class DxGeom extends DBase implements DGeom {
 		parent.setFirst(this);
 //		parent_space = parent;
 		
-		geoms.add(0, this);
 	}
 
-	void spaceRemove(DxSpace parent, List<DxGeom> geoms) {
+	void spaceRemove(DxSpace parent) {
 //		   if (next) next->tome = tome;
 //		    *tome = next;
 //		if (next != null) next.tome = tome;
@@ -388,8 +385,6 @@ public abstract class DxGeom extends DBase implements DGeom {
             parent.setFirst(_next);
         }
 		
-		//TODO use HashSet or IdentitySet or ArrayList? Check call hierarchy for type of usage!
-		geoms.remove(this);
 	}
 
 	

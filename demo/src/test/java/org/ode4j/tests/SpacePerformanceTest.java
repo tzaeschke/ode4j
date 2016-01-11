@@ -8,6 +8,7 @@ import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DSapSpace.AXES;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.internal.DxSAPSpace2;
 
 /*
  * Results (in microseconds):
@@ -46,8 +47,8 @@ public class SpacePerformanceTest {
         System.out.println("-=" + iterations + "   " + geomnum + " =-");
         DSpace space = OdeHelper.createSapSpace(AXES.XZY); 
         testSpace(space, iterations, geomnum);
-     //   DSpace spaceOld = DxSAPSpaceOld.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode());
-     //   testSpace(spaceOld, iterations, geomnum);
+        space = DxSAPSpace2.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode());
+        testSpace(space, iterations, geomnum);
     }
     
     private void testSpace(DSpace space, int iterations, int geomnum) {

@@ -28,8 +28,6 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.dAASSERT;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dNextAfter;
-import static org.ode4j.ode.internal.Common.dUASSERT;
-import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -476,81 +474,6 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		//	dFree(CurrentChild, (Depth + 1));// * sizeof(int));
 
 		super.DESTRUCTOR();
-	}
-
-	//dxGeom* dxQuadTreeSpace::getGeom(int Index){
-	@Override
-	public DxGeom getGeom(int Index) {
-		dUASSERT(Index >= 0 && Index < count, "index out of range");
-
-		//@@@
-		dDebug (0,"dxQuadTreeSpace::getGeom() not yet implemented");
-
-		return null;
-
-		// This doesnt work
-
-		/*if (CurrentIndex == Index){
-		// Loop through all objects in the local list
-CHILDRECURSE:
-		if (CurrentObject){
-			dGeom g = CurrentObject;
-			CurrentObject = CurrentObject->next;
-			CurrentIndex++;
-
-#ifdef DRAWBLOCKS
-			DrawBlock(CurrentBlock);
-#endif	//DRAWBLOCKS
-			return g;
-		}
-		else{
-			// Now lets loop through our children. Starting at index 0.
-			if (CurrentBlock->Children){
-				CurrentChild[CurrentLevel] = 0;
-PARENTRECURSE:
-				for (int& i = CurrentChild[CurrentLevel]; i < SPLITS; i++){
-					if (CurrentBlock->Children[i].GeomCount == 0){
-						continue;
-					}
-					CurrentBlock = &CurrentBlock->Children[i];
-					CurrentObject = CurrentBlock->First;
-
-					i++;
-
-					CurrentLevel++;
-					goto CHILDRECURSE;
-				}
-			}
-		}
-
-		// Now lets go back to the parent so it can continue processing its other children.
-		if (CurrentBlock->Parent){
-			CurrentBlock = CurrentBlock->Parent;
-			CurrentLevel--;
-			goto PARENTRECURSE;
-		}
-	}
-	else{
-		CurrentBlock = &Blocks[0];
-		CurrentLevel = 0;
-		CurrentObject = CurrentObject;
-		CurrentIndex = 0;
-
-		// Other states are already set
-		CurrentObject = CurrentBlock->First;
-	}
-
-
-	if (current_geom && current_index == Index - 1){
-		//current_geom = current_geom->next; // next
-		current_index = Index;
-		return current_geom;
-	}
-	else for (int i = 0; i < Index; i++){	// this will be verrrrrrry slow
-		getGeom(i);
-	}*/
-
-		//TODO return null;
 	}
 
 	//void dxQuadTreeSpace::add(dxGeom* g){
