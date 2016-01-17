@@ -1,5 +1,6 @@
 
-- Added new SAP space, PR #43
+- Ported libccd updates, PR #45 (Piotr)
+- Added new SAP space, PR #43 (Piotr)
 - Fixes on SAP space, PR #42 (Piotr)
 - Fixes on removing geoms from space, PR #41 (Piotr)
 - Added support for convex-trimesh collision (Piotr)
