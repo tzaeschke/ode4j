@@ -168,7 +168,8 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		return getNumGeoms();
 	}
 
-
+	/** @deprecated 2016-01-17 */
+	@Deprecated
 	public DxGeom dSpaceGetGeom (int i)
 	{
 		//TODO remove this cast if possible
@@ -415,6 +416,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 
 	// the dirty geoms are numbered 0..k, the clean geoms are numbered k+1..count-1
 
+	/** @deprecated 2016-01-17 */
 	@Override
 	public DGeom getGeom (int i)
 	{
