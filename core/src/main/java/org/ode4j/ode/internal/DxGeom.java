@@ -682,7 +682,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	public void dGeomSetBody (DxBody b)
 	{
 		//dAASSERT (g);
-		dUASSERT (b == null || (_gflags & GEOM_PLACEABLE) == 0,
+		dUASSERT (b == null || (_gflags & GEOM_PLACEABLE) != 0,
 		"geom must be placeable");
 		DxSpace.CHECK_NOT_LOCKED (parent_space);
 
