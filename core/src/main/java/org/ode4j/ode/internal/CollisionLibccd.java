@@ -244,8 +244,7 @@ public class CollisionLibccd {
 			ccdVec3Add(dir, _dir);
 			double len = CCD_SQRT(ccdVec3Len2(dir));
 			if (!ccdIsZero(len)) {
-				ccdVec3Normalize(dir);
-				ccdVec3Scale(dir, cyl.radius);
+				ccdVec3Scale(dir, cyl.radius / len);
 				ccdVec3Add(v, dir);
 			}
 		}
@@ -362,9 +361,13 @@ public class CollisionLibccd {
 			ccdGeomToCyl((DxCylinder) o1, cyl1);
 			ccdGeomToCyl((DxCylinder) o2, cyl2);
 
-			return ccdCollide(o1, o2, flags, contacts,
-					cyl1, ccdSupportCyl, ccdCenter,
-					cyl2, ccdSupportCyl, ccdCenter);
+			int numContacts = CollisionLibccdCylinderStacking.collideCylCyl(o1, o2, cyl1, cyl2, flags, contacts);
+			if (numContacts < 0) {
+				numContacts =  ccdCollide(o1, o2, flags, contacts,
+						cyl1, ccdSupportCyl, ccdCenter,
+						cyl2, ccdSupportCyl, ccdCenter);
+			}
+			return numContacts;
 		}
 	}; 
 
