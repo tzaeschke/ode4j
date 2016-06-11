@@ -205,7 +205,7 @@ public class CCDVec3 {
 	/**
 	 * Substracts coordinates of vector w from vector v. v = v - w
 	 */
-	static final void ccdVec3Sub(ccd_vec3_t v, final ccd_vec3_t w)
+	public static final void ccdVec3Sub(ccd_vec3_t v, final ccd_vec3_t w)
 	{
 	    v.v0 -= w.v0;
 	    v.v1 -= w.v1;
