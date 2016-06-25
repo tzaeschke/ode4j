@@ -130,23 +130,6 @@ public class OdeMath extends DRotation {
 //	  res[1] = -res[1];
 //	  res[2] = -res[2];
 //	}
-	public static void dNegateVector3(double[] a, int ofs) {
-	    a[ofs+0] = -a[ofs+0];
-	    a[ofs+1] = -a[ofs+1];
-	    a[ofs+2] = -a[ofs+2];
-	}
-
-	public static void dCopyVector3(double[] a, int ofs, final DVector3C b) {
-        a[0+ofs] = b.get0(); 
-        a[1+ofs] = b.get1(); 
-        a[2+ofs] = b.get2();
-//	  dReal res_0, res_1, res_2;
-//	  res_0 = a[0];
-//	  res_1 = a[1];
-//	  res_2 = a[2];
-//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
-//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
-	}
     public static void dCopyVector3(float[] a, int ofs, final DVector3C b) {
         a[0+ofs] = (float) b.get0(); 
         a[1+ofs] = (float) b.get1(); 
@@ -162,18 +145,6 @@ public class OdeMath extends DRotation {
 //	  // Only assign after all the calculations are over to avoid incurring memory aliasing
 //	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
 //	}
-
-	public static void dCopyNegatedVector3(double[] a, int ofs, DVector3C b) {
-        a[0+ofs] = -b.get0(); 
-        a[1+ofs] = -b.get1(); 
-        a[2+ofs] = -b.get2();
-//	  dReal res_0, res_1, res_2;
-//	  res_0 = -a[0];
-//	  res_1 = -a[1];
-//	  res_2 = -a[2];
-//	  // Only assign after all the calculations are over to avoid incurring memory aliasing
-//	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
-	}
 
 //	PURE_INLINE void dCopyVector4(dReal *res, const dReal *a)
 //	{
@@ -576,16 +547,6 @@ public class OdeMath extends DRotation {
 //			throw new UnsupportedOperationException(op.name());
 //		}
 //	}
-	public static void dCalcVectorCross3(double[] a, int ofs, DVector3C b, DVector3C c) {
-	    a[0+ofs] = (b.get1()*c.get2() - b.get2()*c.get1()); 
-	    a[1+ofs] = (b.get2()*c.get0() - b.get0()*c.get2()); 
-	    a[2+ofs] = (b.get0()*c.get1() - b.get1()*c.get0());
-	}
-	public static void dCalcVectorCross3(double[] a, int ofs1, DVector3C b, double[] c, int ofs2) {
-	    a[0+ofs1] = (b.get1()*c[2+ofs1] - b.get2()*c[1+ofs1]); 
-	    a[1+ofs1] = (b.get2()*c[0+ofs1] - b.get0()*c[2+ofs1]); 
-	    a[2+ofs1] = (b.get0()*c[1+ofs1] - b.get1()*c[0+ofs1]);
-	}
 //	public static void dSubtractVectorCross3(double[] a, int ofs, DVector3C b, DVector3C c) {
 //	    a[0+ofs] = -(b.get1()*c.get2() - b.get2()*c.get1()); 
 //	    a[1+ofs] = -(b.get2()*c.get0() - b.get0()*c.get2()); 
@@ -689,20 +650,6 @@ public class OdeMath extends DRotation {
         A[ofs+2*skip+0] = -a.get1(); 
         A[ofs+2*skip+1] = +a.get0(); 
     }
-    /**
-     * Set a 3x3 submatrix of A to a matrix such that submatrix(A)*b = a x b.
-     * A is stored by rows, and has `skip' elements per row. the matrix is
-     * assumed to be already zero, so this does not write zero elements!
-     * A negative version will be written.
-     */
-    public static void dSetCrossMatrixMinus(double[] A, int ofs, DVector3C a, int skip) {
-        A[ofs+1] = +a.get2(); 
-        A[ofs+2] = -a.get1(); 
-        A[ofs+skip+0] = -a.get2(); 
-        A[ofs+skip+2] = +a.get0(); 
-        A[ofs+2*skip+0] = +a.get1(); 
-        A[ofs+2*skip+1] = -a.get0(); 
-    }
 	
 	//#define dCROSSMAT(A,a,skip,plus,minus) \
 	//do { \
@@ -725,19 +672,6 @@ public class OdeMath extends DRotation {
 		A.set20( minus * a.get1() ); 
 		A.set21( plus  * a.get0() ); 
 	}
-    /**
-     * For +1/-1 use dSetCrossMatrixPlus(), for -1/+1 use dSetCrossMatrixMinus().
-     * @deprecated
-     */
-	public static void dCROSSMAT(double[] A, int ofs, DVector3C a, int skip, int plus, int minus) {
-		A[ofs+1] = minus * a.get2(); 
-		A[ofs+2] = plus * a.get1(); 
-		A[ofs+skip+0] = plus * a.get2(); 
-		A[ofs+skip+2] = minus * a.get0(); 
-		A[ofs+2*skip+0] = minus * a.get1(); 
-		A[ofs+2*skip+1] = plus * a.get0(); 
-	}
-
 
 
 	//#ifdef __cplusplus
@@ -839,14 +773,6 @@ public class OdeMath extends DRotation {
 		A.set0( B.dotCol(0, C) ); 
 		A.set1( B.dotCol(1, C) ); 
 		A.set2( B.dotCol(2, C) ); 
-	} 
-	private static void dMULTIPLYOP1_331(double[] Aa, int aPos, DMatrix3C B, DVector3C C) {
-//		A.set0( dDOT41(B.v, 0, C) ); 
-//		A.set1( dDOT41(B.v, 1, C) ); 
-//		A.set2( dDOT41(B.v, 2, C) ); 
-		Aa[aPos + 0] = B.dotCol(0, C); 
-		Aa[aPos + 1] = B.dotCol(1, C); 
-		Aa[aPos + 2] = B.dotCol(2, C); 
 	} 
 	private static void dMULTIPLYOP0_133(DVector3 A, DVector3C B, DMatrix3C C) {
 //		A.set0( dDOT14(B, C.v,0) ); 
@@ -984,21 +910,9 @@ public class OdeMath extends DRotation {
 	public static void dMULTIPLY0_331(DVector3 A, DMatrix3C B, double[] C, int c) {
 	    dMultiply0_331(A, B, C, c);
 	}
-	@Deprecated
-	public static void dMULTIPLY0_331(double[] A, int a, double[] B, int b,
-	        DVector3C C) {
-	    dMultiply0_331(A, a, B, b, C);
-	}
-	@Deprecated
-	public static void dMULTIPLY0_331(double[] A, int a, double[] B, int b,
-	        double[] C, int c) {
-	    dMultiply0_331(A, a, B, b, C, c);
-	}
 
 	public static void dMultiply1_331(DVector3 A, DMatrix3C B, DVector3C C) { 
 		dMULTIPLYOP1_331(A,B,C); }
-	public static void dMultiply1_331(double[] A, int a, DMatrix3C B, DVector3C C) { 
-		dMULTIPLYOP1_331(A,a,B,C); }
 	public static void dMultiply0_133(DVector3 A, DVector3C B, DMatrix3C C) { 
 		dMULTIPLYOP0_133(A,B,C); }
 	public static void dMultiply0_133(double[] A, int a, double[] B, int b, 
@@ -1020,17 +934,8 @@ public class OdeMath extends DRotation {
 	    dMultiply0_133(A, B, C);
 	}
 	@Deprecated
-	public static void dMULTIPLY0_133(double[] A, int a, double[] B, int b, 
-	        double[] C, int c) {
-	    dMultiply0_133(A, a, B, b, C, c);
-	}
-	@Deprecated
 	public static void dMULTIPLY0_333(DMatrix3 A, DMatrix3C B, DMatrix3C C) {
 	    dMultiply0_333(A, B, C);
-	}
-	@Deprecated
-	public static void dMULTIPLY0_333(double[] A, int a, DMatrix3C B, DMatrix3C C) {
-	    dMultiply0_333(A, a, B, C);
 	}
 
 //	public static void dMULTIPLY0_333(double[] A, int a, double[] B, int b,

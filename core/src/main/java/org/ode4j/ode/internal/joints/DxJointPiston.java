@@ -27,8 +27,6 @@ package org.ode4j.ode.internal.joints;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.OdeMath.dCopyNegatedVector3;
-import static org.ode4j.ode.OdeMath.dCopyVector3;
 import static org.ode4j.ode.OdeMath.dMultiply0_331;
 import static org.ode4j.ode.OdeMath.dMultiply1_331;
 import static org.ode4j.ode.OdeMath.dPlaneSpace;
@@ -296,9 +294,6 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	public void
 	getInfo2 ( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
-		final int s0 = 0;
-		final int s1 = info.rowskip();
-		final int s2 = 2 * s1, s3 = 3 * s1 /*, s4=4*s1*/;
 
 		final double k = worldFPS * worldERP;
 
@@ -388,16 +383,16 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		dPlaneSpace ( ax1, p, q );
 
 		// LHS
-		dCopyVector3 ( info._J, ( info.J1ap ) + s0, p );
-		dCopyVector3 ( info._J, ( info.J1ap ) + s1, q );
+		info.setJ1a(0, p);
+		info.setJ1a(1, q);
 
 		DVector3 b = new DVector3();
 		if ( node[1].body !=null)
 		{
 			// LHS
 			//  info.J2a[s0+i] = -p[i]
-		    dCopyNegatedVector3 ( info._J, ( info.J2ap ) + s0, p );
-		    dCopyNegatedVector3 ( info._J, ( info.J2ap ) + s1, q );
+			info.setJ2aNegated(0, p);
+			info.setJ2aNegated(1, q);
 
 
 			// Some math for the RHS
@@ -441,25 +436,29 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		// Coeff for 2er line of: J1l => q, J2l => -q
 		// Coeff for 1er line of: J1a => dist x p, J2a => p x anchor2
 		// Coeff for 2er line of: J1a => dist x q, J2a => q x anchor2
+		DVector3 v = new DVector3();
+		dCalcVectorCross3 ( v, dist, p );
+		info.setJ1a(2, v);
+		
+		dCalcVectorCross3 ( v, dist, q );
+		info.setJ1a(3, v);
 
-		dCalcVectorCross3 ( info._J, info.J1ap + s2, dist, p );
-
-		dCalcVectorCross3 ( info._J, ( info.J1ap ) + s3, dist, q );
-
-		dCopyVector3 ( info._J, ( info.J1lp ) + s2 , p );
-		dCopyVector3 ( info._J, ( info.J1lp ) + s3, q );
+		info.setJ1l(2, p);
+		info.setJ1l(3, q);
 
 		if ( node[1].body!=null )
 		{
 			// q x anchor2 instead of anchor2 x q since we want the negative value
-		    dCalcVectorCross3 ( info._J, ( info.J2ap ) + s2, p, lanchor2 );
+		    dCalcVectorCross3 ( v, p, lanchor2 );
+			info.setJ2a(2, v);
 
 			// The cross product is in reverse order since we want the negative value
-		    dCalcVectorCross3 ( info._J, ( info.J2ap ) + s3, q, lanchor2 );
+		    dCalcVectorCross3 ( v, q, lanchor2 );
+			info.setJ2a(3, v);
 
 			// info.J2l[s2+i] = -p[i];
-		    dCopyNegatedVector3 ( info._J, ( info.J2lp ) + s2, p );
-		    dCopyNegatedVector3 ( info._J, ( info.J2lp ) + s3, q );
+			info.setJ2lNegated(2, p);
+			info.setJ2lNegated(3, q);
 		}
 
 

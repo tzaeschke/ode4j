@@ -296,10 +296,6 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	public void
 	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
-		int s = info.rowskip();
-		int s2 = 2 * s;
-		int s3 = 3 * s;
-		//int s4= 4*s;
 
 		double k = worldFPS * worldERP;
 
@@ -371,21 +367,13 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		dMultiply0_331( ax1, node[0].body.posr().R(), axisR1 );
 		dCalcVectorCross3( q, ax1, axP );
 
-		info._J[info.J1ap+0] = axP.get0();
-		info._J[info.J1ap+1] = axP.get1();
-		info._J[info.J1ap+2] = axP.get2();
-		info._J[info.J1ap+s+0] = q.get0();
-		info._J[info.J1ap+s+1] = q.get1();
-		info._J[info.J1ap+s+2] = q.get2();
+		info.setJ1a(0, axP);
+		info.setJ1a(1, q);
 
 		if ( node[1].body!=null )
 		{
-			info._J[info.J2ap+0] = -axP.get0();
-			info._J[info.J2ap+1] = -axP.get1();
-			info._J[info.J2ap+2] = -axP.get2();
-			info._J[info.J2ap+s+0] = -q.get0();
-			info._J[info.J2ap+s+1] = -q.get1();
-			info._J[info.J2ap+s+2] = -q.get2();
+			info.setJ2aNegated(0, axP);
+			info.setJ2aNegated(1, q);
 		}
 
 
@@ -453,34 +441,29 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// Coeff for 2er line of: J1a => dist x q,   J2a => - anchor2 x q
 
 
-		dCalcVectorCross3(info._J, ( info.J1ap ) + s2, dist, ax1 );
+		DVector3 v = new DVector3();
+		dCalcVectorCross3(v, dist, ax1 );
+		info.setJ1a(2, v);
 
-		dCalcVectorCross3(info._J, ( info.J1ap ) + s3, dist, q );
+		dCalcVectorCross3(v, dist, q );
+		info.setJ1a(3, v);
 
-
-		info._J[info.J1lp+s2+0] = ax1.get0();
-		info._J[info.J1lp+s2+1] = ax1.get1();
-		info._J[info.J1lp+s2+2] = ax1.get2();
-
-		info._J[info.J1lp+s3+0] = q.get0();
-		info._J[info.J1lp+s3+1] = q.get1();
-		info._J[info.J1lp+s3+2] = q.get2();
+		info.setJ1l(2, ax1);
+		info.setJ1l(3, q);
 
 		if ( node[1].body!=null )
 		{
 			// ax2 x anchor2 instead of anchor2 x ax2 since we want the negative value
-		    dCalcVectorCross3(info._J, ( info.J2ap ) + s2, ax2, wanchor2 );   // since ax1 == ax2
+		    dCalcVectorCross3(v, ax2, wanchor2 );   // since ax1 == ax2
+			info.setJ2a(2, v);
 
 			// The cross product is in reverse order since we want the negative value
-		    dCalcVectorCross3(info._J, ( info.J2ap ) + s3, q, wanchor2 );
+		    dCalcVectorCross3(v, q, wanchor2 );
+			info.setJ2a(3, v);
 
-			info._J[info.J2lp+s2+0] = -ax1.get0();
-			info._J[info.J2lp+s2+1] = -ax1.get1();
-			info._J[info.J2lp+s2+2] = -ax1.get2();
+			info.setJ2lNegated(2, ax1);
+			info.setJ2lNegated(3, q);
 
-			info._J[info.J2lp+s3+0] = -q.get0();
-			info._J[info.J2lp+s3+1] = -q.get1();
-			info._J[info.J2lp+s3+2] = -q.get2();
 		}
 
 

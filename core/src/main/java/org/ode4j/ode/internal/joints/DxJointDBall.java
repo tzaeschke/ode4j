@@ -72,7 +72,7 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 	public void
 	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
-		info._cfmA[0] = this.cfm;
+		info.setCfm(0, this.cfm);
 
 		DVector3 globalA1 = new DVector3(), globalA2 = new DVector3();
 		//dBodyGetRelPointPos(node[0].body, anchor1[0], anchor1[1], anchor1[2], globalA1);
@@ -120,9 +120,7 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 		}
 		OdeMath.dNormalize3(q);
 
-		info._J[info.J1lp+0] = q.get0();
-		info._J[info.J1lp+1] = q.get1();
-		info._J[info.J1lp+2] = q.get2();
+		info.setJ1l(0, q);
 
 		DVector3 relA1 = new DVector3();
 		//        dBodyVectorToWorld(node[0].body,
@@ -133,13 +131,12 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 		DMatrix3 a1m = new DMatrix3();
 		//dSetZero(a1m, 12);
 		dSetCrossMatrixMinus(a1m, relA1);//, 4);
-
-		dMultiply1_331(info._J,info.J1ap, a1m, q);
+		DVector3 v = new DVector3();
+		dMultiply1_331(v, a1m, q);
+		info.setJ1a(0, v);
 
 		if (node[1].body != null) {
-			info._J[info.J2lp+0] = -q.get0();
-			info._J[info.J2lp+1] = -q.get1();
-			info._J[info.J2lp+2] = -q.get2();
+			info.setJ2lNegated(0, q);
 
 			DVector3 relA2 = new DVector3();
 			//            dBodyVectorToWorld(node[1].body,
@@ -149,7 +146,8 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 			DMatrix3 a2m = new DMatrix3();
 			//dSetZero(a2m, 12);
 			dSetCrossMatrixPlus(a2m, relA2);//, 4);
-			dMultiply1_331(info._J,info.J2ap, a2m, q);
+			dMultiply1_331(v, a2m, q);
+			info.setJ2a(0, v);
 		}
 
 		final double k = worldFPS * this.erp;

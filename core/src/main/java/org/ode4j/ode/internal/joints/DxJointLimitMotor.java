@@ -169,7 +169,6 @@ public class DxJointLimitMotor {
 			Info2Descr info, int row,
 			final DVector3C ax1, boolean rotational )
 	{
-		int srow = row * info.rowskip();
 
 		// if the joint is powered, or has joint limits, add in the extra row
 		boolean powered = fmax > 0;
@@ -189,24 +188,16 @@ public class DxJointLimitMotor {
 //			}
 			DxBody b1 = joint.node[1].body;
 			if (rotational) {
-				info._J[info.J1ap+srow+0] = ax1.get0();
-				info._J[info.J1ap+srow+1] = ax1.get1();
-				info._J[info.J1ap+srow+2] = ax1.get2();
+				info.setJ1a(row, ax1);
 				if ( b1 != null )
 				{
-					info._J[info.J2ap+srow+0] = -ax1.get0();
-					info._J[info.J2ap+srow+1] = -ax1.get1();
-					info._J[info.J2ap+srow+2] = -ax1.get2();
+					info.setJ2aNegated(row, ax1);
 				}
 			} else {
-				info._J[info.J1lp+srow+0] = ax1.get0();
-				info._J[info.J1lp+srow+1] = ax1.get1();
-				info._J[info.J1lp+srow+2] = ax1.get2();
+				info.setJ1l(row, ax1);
 				if ( b1 != null )
 				{
-					info._J[info.J2lp+srow+0] = -ax1.get0();
-					info._J[info.J2lp+srow+1] = -ax1.get1();
-					info._J[info.J2lp+srow+2] = -ax1.get2();
+					info.setJ2lNegated(row, ax1);
 				}
 			}
 
@@ -234,12 +225,8 @@ public class DxJointLimitMotor {
 //				c.v[2] = 0.5 * ( joint.node[1].body._posr.pos.v[2] - joint.node[0].body._posr.pos.v[2] );
 				c.eqDiff(b1.posr().pos(), b0.posr().pos()).scale(0.5);
 				dCalcVectorCross3( ltd, c, ax1 );
-				info._J[info.J1ap+srow+0] = ltd.get0();
-				info._J[info.J1ap+srow+1] = ltd.get1();
-				info._J[info.J1ap+srow+2] = ltd.get2();
-				info._J[info.J2ap+srow+0] = ltd.get0();
-				info._J[info.J2ap+srow+1] = ltd.get1();
-				info._J[info.J2ap+srow+2] = ltd.get2();
+				info.setJ1a(row, ltd);
+				info.setJ2a(row, ltd);
 			}
 
 			// if we're limited low and high simultaneously, the joint motor is
@@ -399,26 +386,33 @@ public class DxJointLimitMotor {
 			Info2Descr info, int row,
 			DVector3C ax1, DVector3C pt1, DVector3C pt2 )
 	{
-		int srow = row * info.rowskip();
 
 		// if the joint is powered, or has joint limits, add in the extra row
 		boolean powered = fmax > 0;
+		DVector3 j1l = new DVector3();
+		DVector3 j1a = new DVector3();
+		DVector3 j2l = new DVector3();
+		DVector3 j2a = new DVector3();
 		if ( powered || limit != 0)
 		{
 			// Set the linear portion
 			//dCopyVector3((info.J1l[srow]),ax1);
-			OdeMath.dCopyVector3(info._J, info.J1lp+srow, ax1);
+			j1l.set(ax1);
+			info.setJ1l(row, j1l);
 			
 			// Set the angular portion (to move the linear constraint 
 			// away from the center of mass).  
 			//dCalcVectorCross3((info.J1a[srow]),pt1,ax1);
-			dCalcVectorCross3(info._J,info.J1ap+srow,pt1,ax1);
+			dCalcVectorCross3(j1a,pt1,ax1);
+			info.setJ1a(row, j1a);
 			// Set the constraints for the second body
 			if ( joint.node[1].body != null ) {
-				OdeMath.dCopyNegatedVector3(info._J, info.J2lp+srow, ax1);
+				j2l.set(ax1);
+				j2l.scale(-1);
+				info.setJ2l(row, j2l);
 				//dCalcVectorCross3(&(info->J2a[srow]),pt2,&(info->J2l[srow]));
-				OdeMath.dCalcVectorCross3(info._J, info.J2ap+srow, pt2, 
-						info._J, info.J2lp+srow);
+				OdeMath.dCalcVectorCross3(j2a, pt2, j2l);
+				info.setJ2a(row, j2a);
 			}
 
 			// if we're limited low and high simultaneously, the joint motor is
@@ -460,18 +454,15 @@ public class DxJointLimitMotor {
 					DxBody b0 = joint.node[0].body; 
 					b0.dBodyAddForce( -fm*ax1.get0(), -fm*ax1.get1(), -fm*ax1.get2() );
 					//b0.dBodyAddTorque( -fm*tAx1[0], -fm*tAx1[1], -fm*tAx1[2] );
-					double[] J = info.getJ();
-					int j1a = info.J1ap + srow;
-					b0.dBodyAddTorque( -fm*J[j1a+0], -fm*J[j1a+1], -fm*J[j1a+2] );
+					b0.dBodyAddTorque( -fm*j1a.get0(), -fm*j1a.get1(), -fm*j1a.get2() );
 
 					DxBody b1 = joint.node[1].body; 
 					if ( b1 != null )
 					{
 						//const dReal* tAx2 = &(info.J2a[srow]);
 						b1.dBodyAddForce( fm*ax1.get0(), fm*ax1.get1(), fm*ax1.get2() );
-						int j2a = info.J2ap + srow;
 						//b1.dBodyAddTorque( -fm*tAx2[0], -fm*tAx2[1], -fm*tAx2[2] );
-						b1.dBodyAddTorque( -fm*J[j2a+0], -fm*J[j2a+1], -fm*J[j2a+2] );
+						b1.dBodyAddTorque( -fm*j2a.get0(), -fm*j2a.get1(), -fm*j2a.get2() );
 					}
 
 				}
@@ -512,15 +503,15 @@ public class DxJointLimitMotor {
 						double vel = 
 //								dCalcVectorDot3( joint.node[0].body.lvel, &(info.J1l[srow])) +
 //								dCalcVectorDot3( joint.node[0].body.avel, &(info.J1a[srow]));
-								b0.lvel.dot (info._J, info.J1lp+srow) +
-								b0.avel.dot (info._J, info.J1ap+srow);
+								b0.lvel.dot (j1l) +
+								b0.avel.dot (j1a);
 						DxBody b1 = joint.node[1].body; 
 						if (joint.node[1].body != null) {
 							vel +=
 //									dCalcVectorDot3( joint.node[1].body.lvel, &(info.J2l[srow])) +
 //									dCalcVectorDot3( joint.node[1].body.avel, &(info.J2a[srow]));
-									b1.lvel.dot (info._J, info.J2lp+srow) +
-									b1.avel.dot (info._J, info.J2ap+srow);
+									b1.lvel.dot (j2l) +
+									b1.avel.dot (j2a);
 						}
 
 						// only apply bounce if the velocity is incoming, and if the

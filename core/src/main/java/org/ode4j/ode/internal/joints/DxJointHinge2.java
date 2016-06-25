@@ -195,17 +195,16 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		setBall2( this, worldFPS, worldERP, info, anchor1, anchor2, ax1, susp_erp );
 
 		// set the hinge row
-		int s3 = 3 * info.rowskip();
 //		info._J[info.J1ap+s3+0] = q.v[0];
 //		info._J[info.J1ap+s3+1] = q.v[1];
 //		info._J[info.J1ap+s3+2] = q.v[2];
-		q.wrapSet( info._J, info.J1ap+s3 );
+		info.setJ1a(3, q);
 		if ( joint.node[1].body != null)
 		{
 //			info._J[info.J2ap+s3+0] = -q.v[0];
 //			info._J[info.J2ap+s3+1] = -q.v[1];
 //			info._J[info.J2ap+s3+2] = -q.v[2];
-			q.wrapSub( info._J, info.J2ap+s3 );
+			info.setJ2aNegated(3, q);
 		}
 
 		// compute the right hand side for the constrained rotational DOF.

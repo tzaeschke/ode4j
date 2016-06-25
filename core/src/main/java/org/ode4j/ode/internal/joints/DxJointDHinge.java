@@ -78,11 +78,6 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
     {
         super.getInfo2( worldFPS, worldERP, info ); // sets row0
         
-        final int skip = info.rowskip();
-        final int row1 = skip;
-        final int row2 = 2*skip;
-        final int row3 = 3*skip;
-        
         DVector3 globalAxis1 = new DVector3();
         //dBodyVectorToWorld(node[0].body, axis1[0], axis1[1], axis1[2], globalAxis1);
         node[0].body.vectorToWorld(axis1, globalAxis1);
@@ -90,20 +85,12 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
         // angular constraints, perpendicular to axis
         DVector3 p = new DVector3(), q = new DVector3();
         dPlaneSpace(globalAxis1, p, q);
-        info._J[info.J1ap+row1+0] = p.get0();
-        info._J[info.J1ap+row1+1] = p.get1();
-        info._J[info.J1ap+row1+2] = p.get2();
-        info._J[info.J1ap+row2+0] = q.get0();
-        info._J[info.J1ap+row2+1] = q.get1();
-        info._J[info.J1ap+row2+2] = q.get2();
+        info.setJ1a(1, p);
+        info.setJ1a(2, q);
 
         if ( node[1].body != null ) {
-            info._J[info.J2ap+row1+0] = -p.get0();
-            info._J[info.J2ap+row1+1] = -p.get1();
-            info._J[info.J2ap+row1+2] = -p.get2();
-            info._J[info.J2ap+row2+0] = -q.get0();
-            info._J[info.J2ap+row2+1] = -q.get1();
-            info._J[info.J2ap+row2+2] = -q.get2();
+            info.setJ2aNegated(1, p);
+            info.setJ2aNegated(2, q);
         }
 
         DVector3 globalAxis2 = new DVector3();
@@ -144,7 +131,7 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
         //info.J1l[row3+0] = globalAxis1[0];
         //info.J1l[row3+1] = globalAxis1[1];
         //info.J1l[row3+2] = globalAxis1[2];
-        globalAxis1.wrapSet(info._J, info.J1lp+row3);
+        info.setJ1l(3, globalAxis1);
 
         if ( node[1].body != null ) {
 
@@ -157,17 +144,17 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
             //info.J1a[row3+0] = omega[0];
             //info.J1a[row3+1] = omega[1];
             //info.J1a[row3+2] = omega[2];
-            omega.wrapSet(info._J, info.J1ap+row3);
+            info.setJ1a(3, omega);
 
             //info.J2l[row3+0] = -globalAxis1[0];
             //info.J2l[row3+1] = -globalAxis1[1];
             //info.J2l[row3+2] = -globalAxis1[2];
-            globalAxis1.wrapSet(info._J,  info.J2lp+row3);
+            info.setJ2lNegated(3, globalAxis1); 
 
             //info.J2a[row3+0] = omega[0];
             //info.J2a[row3+1] = omega[1];
             //info.J2a[row3+2] = omega[2];
-            omega.wrapSet(info._J, info.J2ap+row3);
+            info.setJ2a(3, omega);
         }
 
         // error correction: both anchors should lie on the same plane perpendicular to the axis

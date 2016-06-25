@@ -118,9 +118,6 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	public void
 	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
-		int r0 = 0;
-		int r1 = info.rowskip();
-		int r2 = 2 * r1;
 		double       eps = worldFPS * worldERP;
 
 		/*
@@ -147,20 +144,25 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 		//    VoXYZ( info.J1a.v[r0], OP.EQ , 0, 0, 0 );
 		//    VoXYZ( info.J1a.v[r1], OP.EQ , 1, 0, 0 );
 		//    VoXYZ( info.J1a.v[r2], OP.EQ , 0, 1, 0 );
-		int rx = info.J1lp + r0; 
-		info._J[rx] = 0; info._J[rx+1] = 0; info._J[rx+2] = 1;
-		rx = info.J1lp + r1;
-		info._J[rx] = 0; info._J[rx+1] = 0; info._J[rx+2] = 0;
-		rx = info.J1lp + r2;
-		info._J[rx] = 0; info._J[rx+1] = 0; info._J[rx+2] = 0;
-//		info.J1l.set(0, 0, 1,  0,0,0,   0,0,0);
-//		info.J1a.set(0, 0, 0,  1,0,0,   0,1,0 );
-		rx = info.J1ap + r0;
-		info._J[rx] = 0; info._J[rx+1] = 0; info._J[rx+2] = 0;
-		rx = info.J1ap + r1;
-		info._J[rx] = 1; info._J[rx+1] = 0; info._J[rx+2] = 0;
-		rx = info.J1ap + r2;
-		info._J[rx] = 0; info._J[rx+1] = 1; info._J[rx+2] = 0;
+		info.setJ1l(0, 0, 0);
+		info.setJ1l(0, 1, 0);
+		info.setJ1l(0, 2, 1);
+		info.setJ1l(1, 0, 0);
+		info.setJ1l(1, 1, 0);
+		info.setJ1l(1, 2, 0);
+		info.setJ1l(2, 0, 0);
+		info.setJ1l(2, 1, 0);
+		info.setJ1l(2, 2, 0);
+
+		info.setJ1a(0, 0, 0);
+		info.setJ1a(0, 1, 0);
+		info.setJ1a(0, 2, 0);
+		info.setJ1a(1, 0, 1);
+		info.setJ1a(1, 1, 0);
+		info.setJ1a(1, 2, 0);
+		info.setJ1a(2, 0, 0);
+		info.setJ1a(2, 1, 1);
+		info.setJ1a(2, 2, 0);
 
 		// error correction (against drift):
 
