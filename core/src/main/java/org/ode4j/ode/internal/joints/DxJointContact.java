@@ -299,20 +299,20 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		// second friction direction
 		if ( mu2 > 0 )
 		{
-			info.setJ1l(2, t2);
+			info.setJ1l(rowFriction2, t2);
 			DVector3 j1a_2 = new DVector3();
 			dCalcVectorCross3( j1a_2, c1, t2 );
-			info.setJ1a(2, j1a_2);
+			info.setJ1a(rowFriction2, j1a_2);
 			
 			if ( node[1].body != null)
 			{
-				info.setJ2lNegated(2, t2);
+				info.setJ2lNegated(rowFriction2, t2);
 //				dReal *J2a_plus_s2 = info->J2a + s2;
 //				dCalcVectorCross3( J2a_plus_s2, c2, t2 );
 //				dNegateVector3( J2a_plus_s2 );
 				DVector3 j2a_2 = new DVector3();
 				dCalcVectorCross3( j2a_2, c2, t2 );
-				info.setJ2aNegated(2, j2a_2);
+				info.setJ2aNegated(rowFriction2, j2a_2);
 			}
 			
 			// set right hand side
