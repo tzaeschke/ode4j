@@ -240,7 +240,6 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			System.out.println("_findexA: " + Arrays.toString(_findexA));
 			return super.toString();
 		}
-
 		public void setJ1l(int row, int i, double d) {
 			_J[J1lp + row * _rowskip + i] = d;
 		}
@@ -254,34 +253,42 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			_J[J2ap + row * _rowskip + i] = d;
 		}
 		public void setJ1l(int row, DVector3C v) {
-			setJ1l(row, 0, v.get0());
-			setJ1l(row, 1, v.get1());
-			setJ1l(row, 2, v.get2());
+			setJ1l(row, v.get0(), v.get1(), v.get2());
 		}
 		public void setJ1a(int row, DVector3C v) {
-			setJ1a(row, 0, v.get0());
-			setJ1a(row, 1, v.get1());
-			setJ1a(row, 2, v.get2());
+			setJ1a(row, v.get0(), v.get1(), v.get2());
 		}
 		public void setJ2l(int row, DVector3C v) {
-			setJ2l(row, 0, v.get0());
-			setJ2l(row, 1, v.get1());
-			setJ2l(row, 2, v.get2());
+			setJ2l(row, v.get0(), v.get1(), v.get2());
 		}
 		public void setJ2a(int row, DVector3C v) {
-			setJ2a(row, 0, v.get0());
-			setJ2a(row, 1, v.get1());
-			setJ2a(row, 2, v.get2());
+			setJ2a(row, v.get0(), v.get1(), v.get2());
 		}
 		public void setJ2lNegated(int row, DVector3C v) {
-			setJ2l(row, 0, -v.get0());
-			setJ2l(row, 1, -v.get1());
-			setJ2l(row, 2, -v.get2());
+			setJ2l(row, -v.get0(), -v.get1(), -v.get2());
 		}
 		public void setJ2aNegated(int row, DVector3C v) {
-			setJ2a(row, 0, -v.get0());
-			setJ2a(row, 1, -v.get1());
-			setJ2a(row, 2, -v.get2());
+			setJ2a(row, -v.get0(), -v.get1(), -v.get2());
+		}
+		public void setJ1l(int row, double x, double y, double z) {
+			setJ1l(row, 0, x);
+			setJ1l(row, 1, y);
+			setJ1l(row, 2, z);
+		}
+		public void setJ1a(int row, double x, double y, double z) {
+			setJ1a(row, 0, x);
+			setJ1a(row, 1, y);
+			setJ1a(row, 2, z);
+		}
+		public void setJ2l(int row, double x, double y, double z) {
+			setJ2l(row, 0, x);
+			setJ2l(row, 1, y);
+			setJ2l(row, 2, z);
+		}
+		public void setJ2a(int row, double x, double y, double z) {
+			setJ2a(row, 0, x);
+			setJ2a(row, 1, y);
+			setJ2a(row, 2, z);
 		}
 	    public void setJ1aCrossMatrix(int row, DVector3C a, double sign) {
 			setJ1a(row, 1, -sign * a.get2());

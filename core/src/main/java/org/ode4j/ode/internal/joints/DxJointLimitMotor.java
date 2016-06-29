@@ -389,7 +389,6 @@ public class DxJointLimitMotor {
 
 		// if the joint is powered, or has joint limits, add in the extra row
 		boolean powered = fmax > 0;
-		DVector3 j1l = new DVector3();
 		DVector3 j1a = new DVector3();
 		DVector3 j2l = new DVector3();
 		DVector3 j2a = new DVector3();
@@ -397,7 +396,7 @@ public class DxJointLimitMotor {
 		{
 			// Set the linear portion
 			//dCopyVector3((info.J1l[srow]),ax1);
-			j1l.set(ax1);
+			DVector3C j1l = ax1;
 			info.setJ1l(row, j1l);
 			
 			// Set the angular portion (to move the linear constraint 

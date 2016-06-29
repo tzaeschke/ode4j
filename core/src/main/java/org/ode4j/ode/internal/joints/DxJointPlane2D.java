@@ -144,25 +144,13 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 		//    VoXYZ( info.J1a.v[r0], OP.EQ , 0, 0, 0 );
 		//    VoXYZ( info.J1a.v[r1], OP.EQ , 1, 0, 0 );
 		//    VoXYZ( info.J1a.v[r2], OP.EQ , 0, 1, 0 );
-		info.setJ1l(0, 0, 0);
-		info.setJ1l(0, 1, 0);
-		info.setJ1l(0, 2, 1);
-		info.setJ1l(1, 0, 0);
-		info.setJ1l(1, 1, 0);
-		info.setJ1l(1, 2, 0);
-		info.setJ1l(2, 0, 0);
-		info.setJ1l(2, 1, 0);
-		info.setJ1l(2, 2, 0);
+		info.setJ1l(0, 0, 0, 1);
+		info.setJ1l(1, 0, 0, 0);
+		info.setJ1l(2, 0, 0, 0);
 
-		info.setJ1a(0, 0, 0);
-		info.setJ1a(0, 1, 0);
-		info.setJ1a(0, 2, 0);
-		info.setJ1a(1, 0, 1);
-		info.setJ1a(1, 1, 0);
-		info.setJ1a(1, 2, 0);
-		info.setJ1a(2, 0, 0);
-		info.setJ1a(2, 1, 1);
-		info.setJ1a(2, 2, 0);
+		info.setJ1a(0, 0, 0, 0);
+		info.setJ1a(1, 1, 0, 0);
+		info.setJ1a(2, 0, 1, 0);
 
 		// error correction (against drift):
 
