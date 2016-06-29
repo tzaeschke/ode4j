@@ -365,17 +365,11 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 		dCalcVectorCross3( p, ax1, ax2_temp );
 		dNormalize3( p );
 
-		int s3 = 3 * info.rowskip();
-
-		info._J[info.J1ap+s3+0] = p.get0();
-		info._J[info.J1ap+s3+1] = p.get1();
-		info._J[info.J1ap+s3+2] = p.get2();
+		info.setJ1a(3, p);
 
 		if ( node[1].body != null)
 		{
-			info._J[info.J2ap+s3+0] = -p.get0();
-			info._J[info.J2ap+s3+1] = -p.get1();
-			info._J[info.J2ap+s3+2] = -p.get2();
+			info.setJ2aNegated(3, p);
 		}
 
 		// compute the right hand side of the constraint equation. set relative

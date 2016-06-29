@@ -27,7 +27,6 @@ package org.ode4j.ode.internal.joints;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.OdeMath.dCopyNegatedVector3;
 import static org.ode4j.ode.OdeMath.dMultiply0_331;
 import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.ode.OdeMath.dPlaneSpace;
@@ -335,8 +334,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	public void
 	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
-		final int s1 = info.rowskip();
-		final int s2 = 2 * s1;
 		final double k = worldFPS * worldERP;
 
 	    // ======================================================================
@@ -350,12 +347,11 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	    dCalcVectorCross3(uniPerp,ax1,ax2);
 	    dNormalize3( uniPerp );
 	    //dCopyVector3( info.J1a , uniPerp );
-	    uniPerp.wrapSet(info._J, info.J1ap);
+	    info.setJ1a(0, uniPerp);
 	    if ( node[1].body != null )
 	    {
 	    	//dCopyNegatedVector3( info.J2a , uniPerp );
-		    uniPerp.scale(-1).wrapSet(info._J, info.J2ap);
-		    //TODO this changes uniPerp!!!! (TZ)
+	    	info.setJ2aNegated(0, uniPerp);
 	    }
 	    // Corrective velocity attempting to keep uni axes perpendicular
 	    double val = dCalcVectorDot3( ax1, ax2 );
@@ -382,23 +378,28 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	    dPlaneSpace(axP,p,q);
 
 	    //dCopyVector3(( info.J1l ) + s1, p );
-	    p.wrapSet(info._J, info.J1lp + s1);
-	    //dCopyVector3(( info.J1l ) + s2, q );
-	    p.wrapSet(info._J, info.J1lp + s2);
+	    info.setJ1l(1, p);
+	    //dCopyVector3(( info.J1l ) + s2, q ); 
+	    info.setJ1l(2, q);
 	    // Make the anchors be body local
 	    // Aliasing isn't a problem here.
 	    //dSubtractVectors3(an1,an1,node[0].body.posr().pos());
 	    an1.sub(node[0].body.posr().pos());
-	    dCalcVectorCross3(info._J, info.J1ap + s1, an1, p );
-	    dCalcVectorCross3(info._J, info.J1ap + s2, an1, q );
+	    DVector3 v = new DVector3();
+	    dCalcVectorCross3(v, an1, p );
+	    info.setJ1a(1, v);
+	    dCalcVectorCross3(v, an1, q );
+	    info.setJ1a(2, v);
 
 	    if (node[1].body != null) {
-	        dCopyNegatedVector3(info._J, info.J2lp + s1, p );
-	        dCopyNegatedVector3(info._J, info.J2lp + s2, q );
+		    info.setJ2lNegated(1, p);
+		    info.setJ2lNegated(2, q);
 	        //dSubtractVectors3(an2,an2,node[1].body.posr().pos());
 	        an2.sub(node[1].body.posr().pos());
-	        dCalcVectorCross3(info._J, info.J2ap + s1, p, an2 );
-	        dCalcVectorCross3(info._J, info.J2ap + s2, q, an2 );
+	        dCalcVectorCross3(v, p, an2 );
+		    info.setJ2a(1, v);
+	        dCalcVectorCross3(v, q, an2 );
+		    info.setJ2a(2, v);
 	    }
 
 	    info.setC(1, k * dCalcVectorDot3( p, sep ) );

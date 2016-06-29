@@ -128,28 +128,13 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		dMultiply0_331( ax1, node[0].body.posr().R(), _axis1 );
 		dPlaneSpace( ax1, p, q );
 
-		int s3 = 3 * info.rowskip();
-		int s4 = 4 * info.rowskip();
-
-//		info._J[info.J1ap+s3+0] = p.v[0];
-//		info._J[info.J1ap+s3+1] = p.v[1];
-//		info._J[info.J1ap+s3+2] = p.v[2];
-		p.wrapSet( info._J, info.J1ap+s3 );
-//		info._J[info.J1ap+s4+0] = q.v[0];
-//		info._J[info.J1ap+s4+1] = q.v[1];
-//		info._J[info.J1ap+s4+2] = q.v[2];
-		q.wrapSet( info._J, info.J1ap+s4 );
+		info.setJ1a(3, p);
+		info.setJ1a(4, q);
 
 		if ( node[1].body!= null )
 		{
-//			info._J[info.J2ap+s3+0] = -p.v[0];
-//			info._J[info.J2ap+s3+1] = -p.v[1];
-//			info._J[info.J2ap+s3+2] = -p.v[2];
-			p.wrapSub( info._J, info.J2ap+s3 );
-//			info._J[info.J2ap+s4+0] = -q.v[0];
-//			info._J[info.J2ap+s4+1] = -q.v[1];
-//			info._J[info.J2ap+s4+2] = -q.v[2];
-			q.wrapSub( info._J, info.J2ap+s4 );
+			info.setJ2aNegated(3, p);
+			info.setJ2aNegated(4, q);
 		}
 
 		// compute the right hand side of the constraint equation. set relative

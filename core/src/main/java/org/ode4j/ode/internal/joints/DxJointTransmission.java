@@ -410,12 +410,14 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
                 r[i].eqDiff(c[i], p[i]);//dSubtractVectors3 (r[i], c[i], p[i]);
             }
 
-            dCalcVectorCross3(info._J, info.J1ap, r[0], l[0]);
-            dCalcVectorCross3(info._J, info.J2ap, l[1], r[1]);
+            dCalcVectorCross3(v, r[0], l[0]);
+    	    info.setJ1a(0, v);
+            dCalcVectorCross3(v, l[1], r[1]);
+    	    info.setJ2a(0, v);
 
-            l[0].wrapSet(info._J,  info.J1lp);//dCopyVector3(info.J1l, l[0]);
+    	    info.setJ1l(0, l[0]);
             //dCopyNegatedVector3(info.J2l, l[1]);
-            l[1].scale(-1).wrapSet(info._J,  info.J2lp);
+    	    info.setJ2lNegated(0, l[1]);
 
             if (delta > 0) {
                 if (backlash > 0) {

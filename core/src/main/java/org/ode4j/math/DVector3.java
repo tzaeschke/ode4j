@@ -502,43 +502,6 @@ public class DVector3 implements DVector3I, DVector3C {
 		return new DVector3(this).add(c);
 	}
 	
-	
-	/**
-	 * Writes the content of this vector into 
-	 * <tt>array</tt> at position <tt>pos</tt>.  
-	 * @param array
-	 * @param pos
-	 */
-	public final void wrapSet(double[] array, int pos) {
-		array[pos] = get0();
-		array[pos + 1] = get1();
-		array[pos + 2] = get2();
-	}
-	
-	/**
-	 * Adds the content of this vector to the elements of 
-	 * <tt>array</tt> at position <tt>pos</tt>.  
-	 * @param array
-	 * @param pos
-	 */
-	public final void wrapAdd(double[] array, int pos) {
-		array[pos] += get0();
-		array[pos + 1] += get1();
-		array[pos + 2] += get2();
-	}
-	
-	/**
-	 * Subtracts the content of this vector from the elements of 
-	 * <tt>array</tt> at position <tt>pos</tt>.  
-	 * @param array
-	 * @param pos
-	 */
-	public final void wrapSub(double[] array, int pos) {
-		array[pos] -= get0();
-		array[pos + 1] -= get1();
-		array[pos + 2] -= get2();
-	}
-
     /**
      * Returns a new vector which equals (this)*d.
      * @param d

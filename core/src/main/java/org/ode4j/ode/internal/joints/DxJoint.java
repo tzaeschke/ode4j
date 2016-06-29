@@ -28,11 +28,8 @@ import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
 import static org.ode4j.ode.OdeMath.dMultiply0_331;
 import static org.ode4j.ode.OdeMath.dMultiply1_331;
-import static org.ode4j.ode.OdeMath.dNegateVector3;
 import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.ode.OdeMath.dPlaneSpace;
-import static org.ode4j.ode.OdeMath.dSetCrossMatrixMinus;
-import static org.ode4j.ode.OdeMath.dSetCrossMatrixPlus;
 import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.ode.internal.Common.dAtan2;
 import static org.ode4j.ode.internal.Common.dIASSERT;
@@ -152,8 +149,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		private int _rowskip;
 		public int rowskip() { return _rowskip; }
 		public void setRowskip(int rs) {_rowskip = rs;} 
-		double[] _J;
-		public double[] getJ() { return _J; }
+		private double[] _J;
 		public void setJ(double[] J) {_J = J;} 
 
 		// right hand sides of the equation J*v = c + cfm * lambda. cfm is the
@@ -161,9 +157,9 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		// set to a constant value (typically very small or zero) value on entry.
 //		public dVector3 c = new dVector3();//double[] c;  //TZ: [4] ? 0,1,2,3
 //		public dVector3 cfm = new dVector3();  //TZ: [3] ?
-		protected double[] _cA;
+		private double[] _cA;
 		int _cP;
-		protected double[] _cfmA;
+		private double[] _cfmA;
 		int _cfmP;
 		public void setC(int i, double d) {
 			_cA[_cP+i] = d;
@@ -230,7 +226,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		}
 		@Override
 		public String toString() {
-			System.out.println("rowskip : " + rowskip());
+			System.out.println("rowskip : " + _rowskip);
 			System.out.println("Jxxp    : " + J1lp + "/" + J1ap + "  /  " + J2lp + "/" + J2ap);
 			for (int i = 0; i < _J.length; i+=8) {
 				System.out.println("_J      : " + 
@@ -244,6 +240,72 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			System.out.println("_findexA: " + Arrays.toString(_findexA));
 			return super.toString();
 		}
+		public void setJ1l(int row, int i, double d) {
+			_J[J1lp + row * _rowskip + i] = d;
+		}
+		public void setJ1a(int row, int i, double d) {
+			_J[J1ap + row * _rowskip + i] = d;
+		}
+		public void setJ2l(int row, int i, double d) {
+			_J[J2lp + row * _rowskip + i] = d;
+		}
+		public void setJ2a(int row, int i, double d) {
+			_J[J2ap + row * _rowskip + i] = d;
+		}
+		public void setJ1l(int row, DVector3C v) {
+			setJ1l(row, v.get0(), v.get1(), v.get2());
+		}
+		public void setJ1a(int row, DVector3C v) {
+			setJ1a(row, v.get0(), v.get1(), v.get2());
+		}
+		public void setJ2l(int row, DVector3C v) {
+			setJ2l(row, v.get0(), v.get1(), v.get2());
+		}
+		public void setJ2a(int row, DVector3C v) {
+			setJ2a(row, v.get0(), v.get1(), v.get2());
+		}
+		public void setJ2lNegated(int row, DVector3C v) {
+			setJ2l(row, -v.get0(), -v.get1(), -v.get2());
+		}
+		public void setJ2aNegated(int row, DVector3C v) {
+			setJ2a(row, -v.get0(), -v.get1(), -v.get2());
+		}
+		public void setJ1l(int row, double x, double y, double z) {
+			setJ1l(row, 0, x);
+			setJ1l(row, 1, y);
+			setJ1l(row, 2, z);
+		}
+		public void setJ1a(int row, double x, double y, double z) {
+			setJ1a(row, 0, x);
+			setJ1a(row, 1, y);
+			setJ1a(row, 2, z);
+		}
+		public void setJ2l(int row, double x, double y, double z) {
+			setJ2l(row, 0, x);
+			setJ2l(row, 1, y);
+			setJ2l(row, 2, z);
+		}
+		public void setJ2a(int row, double x, double y, double z) {
+			setJ2a(row, 0, x);
+			setJ2a(row, 1, y);
+			setJ2a(row, 2, z);
+		}
+	    public void setJ1aCrossMatrix(int row, DVector3C a, double sign) {
+			setJ1a(row, 1, -sign * a.get2());
+			setJ1a(row, 2, sign * a.get1());
+			setJ1a(row + 1, 0, sign * a.get2());
+			setJ1a(row + 1, 2, -sign * a.get0());
+			setJ1a(row + 2, 0, -sign * a.get1());
+			setJ1a(row + 2, 1, sign * a.get0());
+	    }
+	    public void setJ2aCrossMatrix(int row, DVector3C a, double sign) {
+			setJ2a(row, 1, -sign * a.get2());
+			setJ2a(row, 2, sign * a.get1());
+			setJ2a(row + 1, 0, sign * a.get2());
+			setJ2a(row + 1, 2, -sign * a.get0());
+			setJ2a(row + 2, 0, -sign * a.get1());
+			setJ2a(row + 2, 1, sign * a.get0());
+	    }
 	}
 
     // info returned by getSureMaxInfo function. 
@@ -404,24 +466,22 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		// anchor points in global coordinates with respect to body PORs.
 		DVector3 a1 = new DVector3(), a2 = new DVector3();
 
-		int s = info.rowskip();
-
 		// set jacobian
-		info._J[info.J1lp+0] = 1;
-		info._J[info.J1lp+s+1] = 1;
-		info._J[info.J1lp+2*s+2] = 1;
+		info.setJ1l(0, 0, 1);
+		info.setJ1l(1, 1, 1);
+		info.setJ1l(2, 2, 1);
 		dMultiply0_331( a1, joint.node[0].body.posr().R(), anchor1 );
 		//    dCROSSMAT( info.J1a, a1, s, -, + );
-		dSetCrossMatrixMinus( info._J, info.J1ap, a1, s );
+		info.setJ1aCrossMatrix(0, a1, -1);
 		
 		DxBody b1 = joint.node[1].body; 
 		if ( b1 != null)
 		{
-			info._J[info.J2lp+0] = -1;
-			info._J[info.J2lp+s+1] = -1;
-			info._J[info.J2lp+2*s+2] = -1;
+			info.setJ2l(0, 0, -1);
+			info.setJ2l(1, 1, -1);
+			info.setJ2l(2, 2, -1);
 			dMultiply0_331( a2, b1.posr().R(), anchor2 );
-			dSetCrossMatrixPlus( info._J, info.J2ap, a2, s );
+			info.setJ2aCrossMatrix(0, a2, 1);
 		}
 
 		
@@ -471,8 +531,6 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		// anchor points in global coordinates with respect to body PORs.
 		DVector3 a1 = new DVector3(), a2 = new DVector3();
 
-		int s = info.rowskip();
-
 		// get vectors normal to the axis. in setBall() axis,q1,q2 is [1 0 0],
 		// [0 1 0] and [0 0 1], which makes everything much easier.
 		DVector3 q1 = new DVector3(), q2 = new DVector3();
@@ -482,13 +540,17 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //		for ( i = 0; i < 3; i++ ) info._J[info.J1lp+i] = axis.get(i);
 //		for ( i = 0; i < 3; i++ ) info._J[info.J1lp+s+i] = q1.get(i);
 //		for ( i = 0; i < 3; i++ ) info._J[info.J1lp+2*s+i] = q2.get(i);
-		axis.wrapSet( info._J, info.J1lp );
-		q1.wrapSet( info._J, info.J1lp+s );
-		q2.wrapSet( info._J, info.J1lp+2*s );
+		info.setJ1l(0, axis);
+		info.setJ1l(1, q1);
+		info.setJ1l(2, q2);
 		dMultiply0_331( a1, joint.node[0].body.posr().R(), anchor1 );
-		dCalcVectorCross3( info._J, info.J1ap, a1, axis );
-		dCalcVectorCross3( info._J, info.J1ap + s, a1, q1 );
-		dCalcVectorCross3( info._J, info.J1ap + 2*s, a1, q2 );
+		DVector3 v = new DVector3();
+		dCalcVectorCross3( v, a1, axis );
+		info.setJ1a(0, v);
+		dCalcVectorCross3( v, a1, q1 );
+		info.setJ1a(1, v);
+		dCalcVectorCross3( v, a1, q2 );
+		info.setJ1a(2, v);
 		
 		DxBody b1 = joint.node[1].body;
 		if ( b1 != null)
@@ -496,9 +558,9 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //			for ( i = 0; i < 3; i++ ) info._J[info.J2lp+i] = -axis.v[i];
 //			for ( i = 0; i < 3; i++ ) info._J[info.J2lp+s+i] = -q1.v[i];
 //			for ( i = 0; i < 3; i++ ) info._J[info.J2lp+2*s+i] = -q2.v[i];
-			axis.wrapSub( info._J, info.J2lp );
-			q1.wrapSub( info._J, info.J2lp+s );
-			q2.wrapSub( info._J, info.J2lp+2*s );
+			info.setJ2lNegated(0, axis);
+			info.setJ2lNegated(1, q1);
+			info.setJ2lNegated(2, q2);
 //	        dMultiply0_331( a2, joint->node[1].body->posr.R, anchor2 );
 //	        dReal *J2a = info->J2a;
 //	        dCalcVectorCross3( J2a, a2, axis );
@@ -510,17 +572,15 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 //	        dCalcVectorCross3( J2a_plus_2s, a2, q2 );
 //	        dNegateVector3( J2a_plus_2s );
 	        dMultiply0_331( a2, b1._posr.R(), anchor2 );
-	        double[] J = info._J;  //TZ
-	        int J2ap = info.J2ap; //TZ
 	        //dReal *J2a = info->J2a;
-	        dCalcVectorCross3( J, J2ap, a2, axis );
-	        dNegateVector3( J, J2ap );
+	        dCalcVectorCross3( v, a2, axis );
+	        info.setJ2aNegated(0, v);
 	        //dReal *J2a_plus_s = J2a + s;
-	        dCalcVectorCross3( J, J2ap+s, a2, q1 );
-	        dNegateVector3( J, J2ap+s );
+	        dCalcVectorCross3( v, a2, q1 );
+	        info.setJ2aNegated(1, v);
 	        //dReal *J2a_plus_2s = J2a_plus_s + s;
-	        dCalcVectorCross3( J, J2ap+2*s, a2, q2 );
-	        dNegateVector3( J, J2ap+2*s );
+	        dCalcVectorCross3( v, a2, q2 );
+	        info.setJ2aNegated(2, v);
 		}
 
 		// set right hand side - measure error along (axis,q1,q2)
@@ -562,19 +622,17 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	void setFixedOrientation( DxJoint joint, double fps, double erp, Info2Descr info, 
 			DQuaternion qrel, int start_row )
 	{
-		int s = info.rowskip();
-		int start_index = start_row * s;
 		// 3 rows to make body rotations equal
-		info._J[info.J1ap+start_index] = 1;
-		info._J[info.J1ap+start_index + s + 1] = 1;
-		info._J[info.J1ap+start_index + s*2+2] = 1;
+		info.setJ1a(start_row, 0, 1);
+		info.setJ1a(start_row + 1, 1, 1);
+		info.setJ1a(start_row + 2, 2, 1);
 
 		DxBody b1 = joint.node[1].body;
 		if ( b1 != null)
 		{
-			info._J[info.J2ap+start_index] = -1;
-			info._J[info.J2ap+start_index + s+1] = -1;
-			info._J[info.J2ap+start_index + s*2+2] = -1;
+			info.setJ2a(start_row, 0, -1);
+			info.setJ2a(start_row + 1, 1, -1);
+			info.setJ2a(start_row + 2, 2, -1);
 		}
 
 		// compute the right hand side. the first three elements will result in

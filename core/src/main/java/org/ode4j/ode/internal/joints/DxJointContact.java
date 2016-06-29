@@ -41,13 +41,11 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
 import static org.ode4j.ode.OdeMath.dPlaneSpace;
-import static org.ode4j.ode.OdeMath.dNegateVector3;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
 
@@ -129,8 +127,6 @@ public class DxJointContact extends DxJoint implements DContactJoint
 	public void
 	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
-		int s = info.rowskip();
-		int s2 = 2 * s;
 
 	    final int rowNormal = 0;
 	    final int rowFriction1 = 1;
@@ -162,24 +158,28 @@ public class DxJointContact extends DxJoint implements DContactJoint
 //		c1.v[2] = contact.geom.pos.v[2] - node[0].body._posr.pos.v[2];
 		c1.eqDiff( contact.geom.pos, node[0].body.posr().pos() );
 
+		DVector3 j1l = new DVector3();
+		DVector3 j1a = new DVector3();
 		// set jacobian for normal
-		info._J[info.J1lp+0] = normal.get0();
-		info._J[info.J1lp+1] = normal.get1();
-		info._J[info.J1lp+2] = normal.get2();
-		dCalcVectorCross3( info._J, info.J1ap, c1, normal );
+		info.setJ1l(0, normal);
+		j1l.set(normal);
+		dCalcVectorCross3( j1a, c1, normal );
+		info.setJ1a(0, j1a);
 
 		DxBody b1 = node[1].body;
+		DVector3 j2l = new DVector3();
+		DVector3 j2a = new DVector3();
 		if ( b1 != null)
 		{
 //			c2.v[0] = contact.geom.pos.v[0] - node[1].body._posr.pos.v[0];
 //			c2.v[1] = contact.geom.pos.v[1] - node[1].body._posr.pos.v[1];
 //			c2.v[2] = contact.geom.pos.v[2] - node[1].body._posr.pos.v[2];
 			c2.eqDiff( contact.geom.pos, b1.posr().pos() );
-			info._J[info.J2lp+0] = -normal.get0();
-			info._J[info.J2lp+1] = -normal.get1();
-			info._J[info.J2lp+2] = -normal.get2();
-	        dCalcVectorCross3( info._J, info.J2ap, c2, normal );
-	        dNegateVector3( info._J, info.J2ap );
+			j2l.set(normal).scale(-1);
+			info.setJ2l(0, j2l);
+	        dCalcVectorCross3( j2a, c2, normal );
+	        j2a.scale(-1);
+			info.setJ2a(0, j2a);
 		}
 
 		// set right hand side and cfm value for normal
@@ -211,13 +211,13 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		{
 			// calculate outgoing velocity (-ve for incoming contact)
 			double outgoing = 
-				dCalcVectorDot3( info._J, info.J1lp, node[0].body.lvel )
-				+ dCalcVectorDot3( info._J, info.J1ap, node[0].body.avel );
+				dCalcVectorDot3( j1l, node[0].body.lvel )
+				+ dCalcVectorDot3( j1a, node[0].body.avel );
 			if ( b1 != null)
 			{
 				outgoing += 
-					dCalcVectorDot3( info._J, info.J2lp, node[1].body.lvel )
-					+ dCalcVectorDot3( info._J, info.J2ap, node[1].body.avel );
+					dCalcVectorDot3( j2l, node[1].body.lvel )
+					+ dCalcVectorDot3( j2a, node[1].body.avel );
 			}
 			outgoing -= motionN;
 			// only apply bounce if the outgoing velocity is greater than the
@@ -256,21 +256,20 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		// first friction direction
 	    if ( contact.surface.mu > 0 )
 	    {
-	    	info._J[info.J1lp+s+0] = t1.get0();
-	    	info._J[info.J1lp+s+1] = t1.get1();
-	    	info._J[info.J1lp+s+2] = t1.get2();
-	    	dCalcVectorCross3( info._J, info.J1ap + s, c1, t1 );
+	    	info.setJ1l(1, t1);
+			DVector3 j1a_1 = new DVector3();
+	    	dCalcVectorCross3( j1a_1, c1, t1 );
+    		info.setJ1a(1, j1a_1);
 	    	
 	    	if ( node[1].body != null)
 	    	{
-	    		info._J[info.J2lp+s+0] = -t1.get0();
-	    		info._J[info.J2lp+s+1] = -t1.get1();
-	    		info._J[info.J2lp+s+2] = -t1.get2();
+				DVector3 j2a_1 = new DVector3();
+		    	info.setJ2lNegated(1, t1);
 	    		//			    dReal *J2a_plus_s = info->J2a + s;
 	    		//	            dCalcVectorCross3( J2a_plus_s, c2, t1 );
 	    		//	            dNegateVector3( J2a_plus_s );
-	    		dCalcVectorCross3( info._J, info.J2ap+s, c2, t1 );
-	    		dNegateVector3( info._J, info.J2ap+s );
+	    		dCalcVectorCross3( j2a_1, c2, t1 );
+	    		info.setJ2aNegated(1, j2a_1);
 	    	}
 	    	
 	    	// set right hand side
@@ -292,7 +291,6 @@ public class DxJointContact extends DxJoint implements DContactJoint
 	    } else {
 	        // there was no friction for direction 1, so the second friction constraint
 	        // has to be on this line instead
-	        s2 = s;
 	        rowFriction2 = rowFriction1;
 	    }
 
@@ -301,21 +299,20 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		// second friction direction
 		if ( mu2 > 0 )
 		{
-			info._J[info.J1lp+s2+0] = t2.get0();
-			info._J[info.J1lp+s2+1] = t2.get1();
-			info._J[info.J1lp+s2+2] = t2.get2();
-			dCalcVectorCross3( info._J, info.J1ap + s2, c1, t2 );
+			info.setJ1l(2, t2);
+			DVector3 j1a_2 = new DVector3();
+			dCalcVectorCross3( j1a_2, c1, t2 );
+			info.setJ1a(2, j1a_2);
 			
 			if ( node[1].body != null)
 			{
-				info._J[info.J2lp+s2+0] = -t2.get0();
-				info._J[info.J2lp+s2+1] = -t2.get1();
-				info._J[info.J2lp+s2+2] = -t2.get2();
+				info.setJ2lNegated(2, t2);
 //				dReal *J2a_plus_s2 = info->J2a + s2;
 //				dCalcVectorCross3( J2a_plus_s2, c2, t2 );
 //				dNegateVector3( J2a_plus_s2 );
-				dCalcVectorCross3( info._J, info.J2ap+s2, c2, t2 );
-				dNegateVector3( info._J, info.J2ap+s2 );
+				DVector3 j2a_2 = new DVector3();
+				dCalcVectorCross3( j2a_2, c2, t2 );
+				info.setJ2aNegated(2, j2a_2);
 			}
 			
 			// set right hand side
@@ -366,9 +363,9 @@ public class DxJointContact extends DxJoint implements DContactJoint
 	        for (int ii=0;ii<3;++ii) {
 	            if (rho[ii]>0) {
 	              // Set the angular axis
-	              OdeMath.dCopyVector3(info._J, info.J1ap+rollRow*s, ax[ii]);
+	              info.setJ1a(rollRow, ax[ii]);
 	              if ( b1!=null ) {
-	                OdeMath.dCopyNegatedVector3(info._J, info.J2ap+rollRow*s, ax[ii]);
+		              info.setJ2aNegated(rollRow, ax[ii]);
 	              }
 	              // Set the lcp limits
 	              info.setLo( rollRow, -rho[ii]);

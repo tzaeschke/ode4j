@@ -90,16 +90,15 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 	@Override
 	public void getInfo2 ( double worldFPS, double worldERP, Info2Descr info )
 	{
-		int s = info.rowskip();
 
 		// Three rows for orientation
 		setFixedOrientation ( this, worldFPS, worldERP, info, qrel, 3 );
 
 		// Three rows for position.
 		// set jacobian
-		info._J[info.J1lp+0] = 1;
-		info._J[info.J1lp+s+1] = 1;
-		info._J[info.J1lp+2*s+2] = 1;
+		info.setJ1l(0, 0, 1);
+		info.setJ1l(1, 1, 1);
+		info.setJ1l(2, 2, 1);
 
 		info.setCfm(0, cfm);
 		info.setCfm(1, cfm);
@@ -111,10 +110,10 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 		dMultiply0_331 ( ofs, b0.posr().R(), offset );
 		if ( b1 != null )
 		{
-		    dSetCrossMatrixPlus ( info._J, info.J1ap, ofs, s);
-			info._J[info.J2lp+0] = -1;
-			info._J[info.J2lp+s+1] = -1;
-			info._J[info.J2lp+2*s+2] = -1;
+		    info.setJ1aCrossMatrix(0, ofs, 1);
+			info.setJ2l(0, 0, -1);
+			info.setJ2l(1, 1, -1);
+			info.setJ2l(2, 2, -1);
 		}
 
 		// set right hand side for the first three rows (linear)

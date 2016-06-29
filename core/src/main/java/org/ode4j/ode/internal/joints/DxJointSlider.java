@@ -174,8 +174,6 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 	public void
 	getInfo2 ( double worldFPS, double worldERP, DxJoint.Info2Descr info )
 	{
-		int i, s = info.rowskip();
-		int s3 = 3 * s, s4 = 4 * s;
 
 		// pull out pos and R for both bodies. also get the `connection'
 		// vector pos2-pos1.
@@ -218,19 +216,19 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 			dCalcVectorCross3 ( tmp, c, p );
 			tmp.scale(0.5);
 
-			for ( i = 0; i < 3; i++ ) info._J[info.J1ap+s3+i] = tmp.get(i);
-			for ( i = 0; i < 3; i++ ) info._J[info.J2ap+s3+i] = tmp.get(i);
+			info.setJ1a(3, tmp);
+			info.setJ2a(3, tmp);
 			//dCalcVectorCross3 ( tmp, = 0.5 * , c, q );
 			dCalcVectorCross3 ( tmp, c, p );
 			tmp.scale(0.5);
 
-			for ( i = 0; i < 3; i++ ) info._J[info.J1ap+s4+i] = tmp.get(i);
-			for ( i = 0; i < 3; i++ ) info._J[info.J2ap+s4+i] = tmp.get(i);
-			for ( i = 0; i < 3; i++ ) info._J[info.J2lp+s3+i] = -p.get(i);
-			for ( i = 0; i < 3; i++ ) info._J[info.J2lp+s4+i] = -q.get(i);
+			info.setJ1a(4, tmp);
+			info.setJ2a(4, tmp);
+			info.setJ2lNegated(3, p);
+			info.setJ2lNegated(4, q);
 		}
-		for ( i = 0; i < 3; i++ ) info._J[info.J1lp+s3+i] = p.get(i);
-		for ( i = 0; i < 3; i++ ) info._J[info.J1lp+s4+i] = q.get(i);
+		info.setJ1l(3, p);
+		info.setJ1l(4, q);
 
 		// compute last two elements of right hand side. we want to align the offset
 		// point (in body 2's frame) with the center of body 1.
