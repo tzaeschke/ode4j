@@ -1,5 +1,7 @@
 package org.ode4j.ode.internal;
 
+import java.util.Arrays;
+
 import org.ode4j.ode.DAABBC;
 import org.ode4j.ode.DColliderFn;
 import org.ode4j.ode.DContactGeomBuffer;
@@ -30,7 +32,7 @@ public class CollideConvexTrimesh implements DColliderFn {
 		ptrimesh.getAabbSet().gim_aabbset_box_collision(test_aabb, collision_result);
 		int contactcount = 0;
 		if (collision_result.size() != 0) {
-			int[] boxesresult = collision_result.GIM_DYNARRAY_POINTER();
+			int[] boxesresult = Arrays.copyOf(collision_result.GIM_DYNARRAY_POINTER(), collision_result.size());
 			ptrimesh.gim_trimesh_locks_work_data();
 			CollideConvexTrimeshTrianglesCCD collideFn = new CollideConvexTrimeshTrianglesCCD();
 			contactcount = collideFn.collide(o1, o2, boxesresult, flags, contacts);

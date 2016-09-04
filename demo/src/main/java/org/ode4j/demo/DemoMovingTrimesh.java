@@ -530,8 +530,10 @@ public class DemoMovingTrimesh extends dsFunctions {
 		// note: can't share tridata if intending to trimesh-trimesh collide
 		TriData1 = OdeHelper.createTriMeshData();
 		TriData1.build(Vertices, Indices);
+		TriData1.preprocess();
 		TriData2 = OdeHelper.createTriMeshData();
 		TriData2.build(Vertices, Indices);
+		TriData2.preprocess();
 
 		TriMesh1 = OdeHelper.createTriMesh(space, TriData1, null, null, null);
 		TriMesh2 = OdeHelper.createTriMesh(space, TriData2, null, null, null);

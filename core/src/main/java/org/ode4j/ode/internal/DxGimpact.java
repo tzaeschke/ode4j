@@ -393,4 +393,9 @@ public class DxGimpact extends DxTriMesh {
 	public void setTriMergeCallback(DTriTriMergeCallback Callback) {
 		dGeomTriMeshSetTriMergeCallback(Callback);
 	}
+
+	@Override
+	public float getEdgeAngle(int triangle, int edge) {
+		return _Data.getEdgeAngle(triangle, edge);
+	}
 }

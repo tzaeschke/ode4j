@@ -476,7 +476,7 @@ class DemoTrimesh extends dsFunctions {
 		//		Data.build(Data, Vertices[0], 3,// * sizeof(float), 
 		//				VertexCount, Indices[0], IndexCount, 3);// * sizeof(dTriIndex));
 		Data.build(Vertices, Indices);// * sizeof(dTriIndex));
-
+		Data.preprocess();
 		TriMesh = OdeHelper.createTriMesh(space, Data, null, null, null);
 
 		//TriMesh.setPosition(0, 0, 1.0);
