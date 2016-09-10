@@ -172,7 +172,7 @@ public class DxJointSlider extends DxJoint implements DSliderJoint
 
 	@Override
 	public void
-	getInfo2 ( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2 ( double worldFPS, double worldERP, Info2Descr info )
 	{
 
 		// pull out pos and R for both bodies. also get the `connection'

@@ -68,7 +68,7 @@ public class DxJointBall extends DxJoint implements DBallJoint
 
 	@Override
 	public void
-	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
 		info.setCfm(0, cfm);
 		info.setCfm(1, cfm);

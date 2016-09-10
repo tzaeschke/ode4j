@@ -108,7 +108,7 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 
 	@Override
 	public void
-	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
 		int row = 0;
 		DVector3[] ax = new DVector3[]{new DVector3(), new DVector3(), new DVector3()};

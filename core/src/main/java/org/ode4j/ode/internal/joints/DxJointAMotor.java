@@ -255,7 +255,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	@Override
 	public void
-	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
 		int i;
 

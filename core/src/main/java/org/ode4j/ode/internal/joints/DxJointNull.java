@@ -60,7 +60,7 @@ public class DxJointNull extends DxJoint implements DNullJoint
 
 	@Override
 	public void
-	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
 		dDebug( 0, "this should never get called" );
 	}

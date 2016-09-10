@@ -37,7 +37,6 @@ import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dIVERIFY;
 import static org.ode4j.ode.internal.Common.dRecip;
-import static org.ode4j.ode.internal.Matrix.dSetValue;
 import static org.ode4j.ode.internal.Matrix.dSetZero;
 import static org.ode4j.ode.internal.Misc.dRandInt;
 import static org.ode4j.ode.internal.Timer.dTimerEnd;
@@ -45,6 +44,7 @@ import static org.ode4j.ode.internal.Timer.dTimerNow;
 import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
+import static org.ode4j.ode.internal.QuickStepEnums.*;
 
 import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -58,6 +58,7 @@ import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
+import org.ode4j.ode.internal.joints.Info2DescrQuickStep;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dmaxcallcountestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
@@ -297,7 +298,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 //				dReal *J, dReal *cfm, dReal *lo, dReal *hi, int *jb, dReal *rhs, dReal *Jcopy)
 		void Initialize(double[] invI, DJointWithInfo1[] jointinfos, int nj, 
 				int m, int mfb, final int[] mindex, int[] findex, 
-				double[] J, double[] cfm, double[] lo, double[] hi, int[] jb, double[] rhs, double[] Jcopy)
+				double[] J, int[] jb, double[] Jcopy)
 		{
 			m_invI = invI;
 			m_jointinfos = jointinfos;
@@ -307,11 +308,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			m_mindex = mindex;
 			m_findex = findex; 
 			m_J = J;
-			m_cfm = cfm;
-			m_lo = lo;
-			m_hi = hi;
 			m_jb = jb;
-			m_rhs = rhs;
 			m_Jcopy = Jcopy;
 		}
 
@@ -322,12 +319,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		int                    m_mfb;
 		int[]              m_mindex;
 		int[]                            m_findex;
-		double[]                         m_J;
-		double[]                         m_cfm;
-		double[]                         m_lo;
-		double[]                         m_hi;
 		int[]                            m_jb;
-		double[]                         m_rhs;
+		double[]                         m_J;
 		double[]                         m_Jcopy;
 	};
 
@@ -404,22 +397,22 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			final DxBody[]bodyP, final int bodyOfs, final double[] invI)
 	{
 		int iMJ_ofs = 0;//TZ
-		int J_ofs = 0;//TZ
-		for (int i=0; i<m; J_ofs +=12, iMJ_ofs += 12, i++) {
+		int j_ofs = 0;//TZ
+		for (int i=0; i<m; i++) {
 			int b1 = jb[i*2];
 			int b2 = jb[i*2+1];
 			double k1 = bodyP[b1+bodyOfs].invMass;
-//TZ			for (j=0; j<3; j++) iMJ_ptr[j] = k*J_ptr[j];
-			for (int j=0; j<3; j++) iMJ[j + iMJ_ofs] = k1*J[j + J_ofs];
-//			dMULTIPLY0_331 (iMJ_ptr + 3, invI + 12*b1, J_ptr + 3);
-			dMultiply0_331 (iMJ, iMJ_ofs + 3, invI, 12*b1, J,J_ofs + 3);
+            for (int j = 0; j != JVE__L_COUNT; j++) iMJ[iMJ_ofs + IMJ__1L_MIN + j] = k1 * J[j_ofs + JME__J1L_MIN + j];
+            int invIrow1 = b1 * IIE__MAX + IIE__MATRIX_MIN;
+            dMultiply0_331 (iMJ, iMJ_ofs + IMJ__1A_MIN, invI, invIrow1, J, j_ofs + JME__J1A_MIN);
 			if (b2 != -1) {
 				double k2 = bodyP[b2+bodyOfs].invMass;
-				//for (j=0; j<3; j++) iMJ_ptr[j+6] = k*J_ptr[j+6];
-				for (int j=0; j<3; j++) iMJ[j+6+iMJ_ofs] = k2*J[j+6+J_ofs];
-				//dMULTIPLY0_331 (iMJ_ptr + 9, invI + 12*b2, J_ptr + 9);
-				dMultiply0_331 (iMJ, iMJ_ofs + 9, invI, 12*b2, J, J_ofs + 9);
+	            for (int j = 0; j != JVE__L_COUNT; j++) iMJ[iMJ_ofs + IMJ__2L_MIN + j] = k2 * J[j_ofs + JME__J2L_MIN + j];
+	            int invIrow2 = b2 * IIE__MAX + IIE__MATRIX_MIN;
+	            dMultiply0_331 (iMJ, iMJ_ofs + IMJ__2A_MIN, invI, invIrow2, J, j_ofs + JME__J2A_MIN);
 			}
+			iMJ_ofs += IMJ__MAX;
+			j_ofs += JME__MAX;
 		}
 	}
 
@@ -462,23 +455,23 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	 * @param out double[m]
 	 */
 	private static void multiplyAdd_J (AtomicInteger mi_storage, 
-			int m, final double[] J, final int[] jb, final double[] in, double[] out)
+			int m, int in_offset, int in_stride, final double[] J, final int[] jb, final double[] in)
 	{
 		int mi;
 		while ((mi = ThreadingUtils.ThrsafeIncrementIntUpToLimit(mi_storage, m)) != m) {
+			int j_ofs = mi * JME__MAX;
 			int b1 = jb[mi*2];
 			int b2 = jb[mi*2+1];
-			int J_ofs = mi*12;//const dReal *J_ptr = J + mi * 12;
 			double sum = 0.0;
-			int in_ofs = b1*6;//const dReal *in_ptr = in + (size_t)(unsigned)b1*6;
-			for (int j = 0; j < 6; ++j) sum += J[J_ofs+j]*in[in_ofs+j];//J_ptr[j] * in_ptr[j];
+			int in_ofs = b1 * in_stride + in_offset;//const dReal *in_ptr = in + (size_t)(unsigned)b1*6;
+			for (int j = 0; j != JME__J1_COUNT; ++j) sum += J[j_ofs + j + JME__J1_MIN] * in[in_ofs+j];
 			if (b2 != -1) {
 				//in_ptr = in + (size_t)(unsigned)b2*6;
-				in_ofs = b2*6;
-				//for (int j=0; j<6; j++) sum += J_ptr[6 + j] * in_ptr[j];
-				for (int j=0; j<6; j++) sum += J[J_ofs + 6 + j] * in[in_ofs + j];
+				in_ofs = b2 * in_stride + in_offset;
+				for (int j = 0; j != JME__J2_COUNT; ++j) sum += J[j_ofs + j + JME__J2_MIN] * in[in_ofs+j];
 			}
-			out[mi] += sum;
+			J[j_ofs + JME_RHS] += sum;
+			j_ofs += JME__MAX;
 		}
 	}
 
@@ -696,10 +689,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	//		dxQuickStepParameters *qs)
 	private static void SOR_LCP (DxWorldProcessMemArena memarena,
 	        final int m, final int nb, double[] J, int[] jb, final DxBody []bodyP,
-	        final int bodyOfs,
-			final double[] invI, double[] lambda, double[] fc, double[] b,
-			final double[] lo, final double[] hi, final double[] cfm, final int []findex,
-			dxQuickStepParameters qs)
+	        final int bodyOfs, final double[] invI, double[] lambda, double[] fc, 
+			final int []findex, dxQuickStepParameters qs)
 	{
 		//TZ not defined
 //		if (WARM_STARTING) {//#ifdef WARM_STARTING
@@ -726,40 +717,38 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			dSetZero (fc,nb*6);
 //		}//#endif
 
-        double[] Ad = memarena.AllocateArrayDReal (m);
         {
             final double sor_w = qs.w;      // SOR over-relaxation parameter
             // precompute 1 / diagonals of A
             int iMJ_ofs = 0;//final double[] iMJ_ptr = iMJ;
-            int J_ofs = 0;//double[] J_ptr = J;
-            for (int i=0; i<m; iMJ_ofs +=12, J_ofs +=12, i++ ) {
+            int j_ptr = 0;//double[] J_ptr = J;
+            for (int i=0; i<m; i++ ) {
                 double sum = 0;
-                for (int j=0; j<6; j++) sum += iMJ[j+iMJ_ofs] * J[j+J_ofs];//iMJ_ptr[j] * J_ptr[j];
-                if (jb[i*2+1] != -1) {
-                    for (int j=6; j<12; j++) sum += iMJ[j+iMJ_ofs] * J[j+J_ofs];//iMJ_ptr[j] * J_ptr[j];
+                for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ofs + j + IMJ__1_MIN] * J[j_ptr + j + JME__J1_MIN];
+                int b2 = jb[i*2+1];
+                if (b2 != -1) {
+                    for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ofs + j + IMJ__2_MIN] * J[j_ptr + j + JME__J2_MIN];
                 }
-                Ad[i] = sor_w / (sum + cfm[i]);
+                double cfm_i = J[j_ptr + JME_CFM];
+                double Ad_i = sor_w / (sum + cfm_i);
+
+                // NOTE: This may seem unnecessary but it's indeed an optimization 
+                // to move multiplication by Ad[i] and cfm[i] out of iteration loop.
+                
+                // scale J and b by Ad
+                J[j_ptr + JME_CFM] = cfm_i * Ad_i;
+                J[j_ptr + JME_RHS] *= Ad_i;
+
+                for (int j = JVE__MIN; j != JVE__MAX; ++j) J[j_ptr + JME__J1_MIN + j] *= Ad_i;
+
+                if (b2 != -1) {
+                    for (int k = JVE__MIN; k != JVE__MAX; ++k) J[j_ptr + JME__J2_MIN + k] *= Ad_i;
+                }
+                iMJ_ofs += IMJ__MAX;
+                j_ptr += JME__MAX;
             }
         }
 
-        {
-            // NOTE: This may seem unnecessary but it's indeed an optimization 
-            // to move multiplication by Ad[i] and cfm[i] out of iteration loop.
-            
-            // scale J and b by Ad
-            int J_ofs = 0;//J_ptr = J;
-            for (int i=0; i<m; J_ofs += 12, i++) {
-                double Ad_i = Ad[i];
-                for (int j=0; j<12; j++) {
-                    J[J_ofs+j] *= Ad_i;//J_ptr[0] *= Ad[i];
-                }
-                b[i] *= Ad_i;
-
-                // scale Ad by CFM. N.B. this should be done last since it is used above
-                Ad[i] = Ad_i * cfm[i];
-            }
-        }
-        
 		// order to solve constraint rows in
 		//IndexError *order = (IndexError*) ALLOCA (m*sizeof(IndexError));
 		IndexError[] order = new IndexError[m];
@@ -863,104 +852,89 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				//     like a win, but we should think carefully about our memory
 				//     access pattern.
 				int index = order[i].index;
-
-				int fc_ofs1;//dReal *fc_ptr1;
-				int fc_ofs2;//dReal *fc_ptr2;
+				int j_ofs = index * JME__MAX;
 				double delta;
 				final int NULL = -1;
 				
-				{
-				    int b1 = jb[index*2];
-				    int b2 = jb[index*2+1];
-				    fc_ofs1 = 0 + 6*b1;//fc_ptr1 = fc + 6*b1;
-				    fc_ofs2 = (b2 != -1) ? 0 + 6*b2 : NULL; //fc_ptr2 = (b2 != -1) ? fc + 6*b2 : NULL;
-				}
+			    int b1 = jb[index*2];
+			    int b2 = jb[index*2+1];
+		        int fc_ofs1 = b1 * CFE__MAX;
+		        int fc_ofs2 = (b2 != -1) ? b2 * CFE__MAX : NULL;
 
 				double old_lambda = lambda[index];
 
-				{
-				    delta = b[index] - old_lambda*Ad[index];
+			    delta = J[j_ofs + JME_RHS] - old_lambda * J[j_ofs + JME_CFM];
 
-				    //dRealPtr J_ptr = J + index*12;
-				    final int J_ofs = index*12;
-				    // @@@ potential optimization: SIMD-ize this and the b2 >= 0 case
-				    //delta -=fc_ptr1[0] * J_ptr[0] + fc_ptr1[1] * J_ptr[1] +
-				    delta -=fc[fc_ofs1] * J[J_ofs] + fc[fc_ofs1+1] * J[J_ofs+1] +
-				    //fc_ptr1[2] * J_ptr[2] + fc_ptr1[3] * J_ptr[3] +
-				    fc[fc_ofs1+2] * J[J_ofs+2] + fc[fc_ofs1+3] * J[J_ofs+3] +
-				    //fc_ptr1[4] * J_ptr[4] + fc_ptr1[5] * J_ptr[5];
-				    fc[fc_ofs1+4] * J[J_ofs+4] + fc[fc_ofs1+5] * J[J_ofs+5];
-				    // @@@ potential optimization: handle 1-body constraints in a separate
-				    //     loop to avoid the cost of test & jump?
-				    if (fc_ofs2 != NULL) {
-				        //delta -=fc_ptr2[0] * J_ptr[6] + fc_ptr2[1] * J_ptr[7] +
-				        delta -=fc[fc_ofs2+0] * J[J_ofs+6] + fc[fc_ofs2+1] * J[J_ofs+7] +
-				        //fc_ptr2[2] * J_ptr[8] + fc_ptr2[3] * J_ptr[9] +
-				        fc[fc_ofs2+2] * J[J_ofs+8] + fc[fc_ofs2+3] * J[J_ofs+9] +
-				        //fc_ptr2[4] * J_ptr[10] + fc_ptr2[5] * J_ptr[11];
-				        fc[fc_ofs2+4] * J[J_ofs+10] + fc[fc_ofs2+5] * J[J_ofs+11];
-				    }
-				}
+			    //dRealPtr J_ptr = J + index*12;
+			    final int J_ofs = index * JME__MAX;
+			    // @@@ potential optimization: SIMD-ize this and the b2 >= 0 case
+		        delta -= fc[fc_ofs1 + CFE_LX] * J[J_ofs + JME_J1LX] + fc[fc_ofs1 + CFE_LY] * J[J_ofs + JME_J1LY] +
+		        		fc[fc_ofs1 + CFE_LZ] * J[J_ofs + JME_J1LZ] + fc[fc_ofs1 + CFE_AX] * J[J_ofs + JME_J1AX] +
+		        		fc[fc_ofs1 + CFE_AY] * J[J_ofs + JME_J1AY] + fc[fc_ofs1 + CFE_AZ] * J[J_ofs + JME_J1AZ];
+		        // @@@ potential optimization: handle 1-body constraints in a separate
+			    // @@@ potential optimization: handle 1-body constraints in a separate
+			    //     loop to avoid the cost of test & jump?
+			    if (fc_ofs2 != NULL) {
+			        delta -= fc[fc_ofs2 + CFE_LX] * J[J_ofs + JME_J2LX] + fc[fc_ofs2 + CFE_LY] * J[J_ofs + JME_J2LY] +
+			        		fc[fc_ofs2 + CFE_LZ] * J[J_ofs + JME_J2LZ] + fc[fc_ofs2 + CFE_AX] * J[J_ofs + JME_J2AX] +
+			        		fc[fc_ofs2 + CFE_AY] * J[J_ofs + JME_J2AY] + fc[fc_ofs2 + CFE_AZ] * J[J_ofs + JME_J2AZ];
+			    }
 
-				{
-				    double hi_act, lo_act;
-				
-				    // set the limits for this constraint. note that 'hicopy' is used.
-				    // this is the place where the QuickStep method differs from the
-				    // direct LCP solving method, since that method only performs this
-				    // limit adjustment once per time step, whereas this method performs
-				    // once per iteration per constraint row.
-				    // the constraints are ordered so that all lambda[] values needed have
-				    // already been computed.
-				    if (findex[index] != -1) {
-				        hi_act = dFabs (hi[index] * lambda[findex[index]]);
-				        lo_act = -hi_act;
-				    } else {
-				        hi_act = hi[index];
-				        lo_act = lo[index];
-				    }
+			    double hi_act, lo_act;
+			
+			    // set the limits for this constraint. note that 'hicopy' is used.
+			    // this is the place where the QuickStep method differs from the
+			    // direct LCP solving method, since that method only performs this
+			    // limit adjustment once per time step, whereas this method performs
+			    // once per iteration per constraint row.
+			    // the constraints are ordered so that all lambda[] values needed have
+			    // already been computed.
+			    if (findex[index] != -1) {
+			        hi_act = dFabs (J[j_ofs + JME_HI] * lambda[findex[index]]);
+			        lo_act = -hi_act;
+			    } else {
+			        hi_act = J[j_ofs + JME_HI];
+			        lo_act = J[j_ofs + JME_LO];
+			    }
 
-				    // compute lambda and clamp it to [lo,hi].
-				    // @@@ potential optimization: does SSE have clamping instructions
-				    //     to save test+jump penalties here?
-				    double new_lambda = old_lambda + delta;
-				    if (new_lambda < lo_act) {
-				        delta = lo_act-old_lambda;
-				        lambda[index] = lo_act;
-				    }
-				    else if (new_lambda > hi_act) {
-				        delta = hi_act-old_lambda;
-				        lambda[index] = hi_act;
-				    }
-				    else {
-				        lambda[index] = new_lambda;
-				    }
-				}
+			    // compute lambda and clamp it to [lo,hi].
+			    // @@@ potential optimization: does SSE have clamping instructions
+			    //     to save test+jump penalties here?
+			    double new_lambda = old_lambda + delta;
+			    if (new_lambda < lo_act) {
+			        delta = lo_act-old_lambda;
+			        lambda[index] = lo_act;
+			    }
+			    else if (new_lambda > hi_act) {
+			        delta = hi_act-old_lambda;
+			        lambda[index] = hi_act;
+			    }
+			    else {
+			        lambda[index] = new_lambda;
+			    }
 
 				//@@@ a trick that may or may not help
 				//dReal ramp = (1-((dReal)(iteration+1)/(dReal)num_iterations));
 				//delta *= ramp;
 
-				{
-				    final int iMJ_ofs = 0+index*12; //dRealPtr iMJ_ptr = iMJ + (size_t)index*12;
-    				// update fc.
-    				// @@@ potential optimization: SIMD for this and the b2 >= 0 case
-				    fc[fc_ofs1 + 0] += delta * iMJ[iMJ_ofs + 0];//fc_ptr[0] += delta * iMJ_ptr[0];
-    				fc[fc_ofs1 + 1] += delta * iMJ[iMJ_ofs + 1];//fc_ptr[1] += delta * iMJ_ptr[1];
-    				fc[fc_ofs1 + 2] += delta * iMJ[iMJ_ofs + 2];//fc_ptr[2] += delta * iMJ_ptr[2];
-    				fc[fc_ofs1 + 3] += delta * iMJ[iMJ_ofs + 3];//fc_ptr[3] += delta * iMJ_ptr[3];
-    				fc[fc_ofs1 + 4] += delta * iMJ[iMJ_ofs + 4];//fc_ptr[4] += delta * iMJ_ptr[4];
-    				fc[fc_ofs1 + 5] += delta * iMJ[iMJ_ofs + 5];//fc_ptr[5] += delta * iMJ_ptr[5];
-    				// @@@ potential optimization: handle 1-body constraints in a separate
-    				//     loop to avoid the cost of test & jump?
-    				if (fc_ofs2 != NULL) {
-    					fc[fc_ofs2 + 0] += delta * iMJ[iMJ_ofs + 6];//fc_ptr[0] += delta * iMJ_ptr[6];
-    					fc[fc_ofs2 + 1] += delta * iMJ[iMJ_ofs + 7];//fc_ptr[1] += delta * iMJ_ptr[7];
-    					fc[fc_ofs2 + 2] += delta * iMJ[iMJ_ofs + 8];//fc_ptr[2] += delta * iMJ_ptr[8];
-    					fc[fc_ofs2 + 3] += delta * iMJ[iMJ_ofs + 9];//fc_ptr[3] += delta * iMJ_ptr[9];
-    					fc[fc_ofs2 + 4] += delta * iMJ[iMJ_ofs + 10];//fc_ptr[4] += delta * iMJ_ptr[10];
-    					fc[fc_ofs2 + 5] += delta * iMJ[iMJ_ofs + 11];//fc_ptr[5] += delta * iMJ_ptr[11];
-    				}
+			    final int iMJ_ofs = index*IMJ__MAX; //dRealPtr iMJ_ptr = iMJ + (size_t)index*12;
+				// update fc.
+				// @@@ potential optimization: SIMD for this and the b2 >= 0 case
+			    fc[fc_ofs1 + CFE_LX] += delta * iMJ[iMJ_ofs + 0];//fc_ptr[0] += delta * iMJ_ptr[0];
+				fc[fc_ofs1 + CFE_LY] += delta * iMJ[iMJ_ofs + 1];//fc_ptr[1] += delta * iMJ_ptr[1];
+				fc[fc_ofs1 + CFE_LZ] += delta * iMJ[iMJ_ofs + 2];//fc_ptr[2] += delta * iMJ_ptr[2];
+				fc[fc_ofs1 + CFE_AX] += delta * iMJ[iMJ_ofs + 3];//fc_ptr[3] += delta * iMJ_ptr[3];
+				fc[fc_ofs1 + CFE_AY] += delta * iMJ[iMJ_ofs + 4];//fc_ptr[4] += delta * iMJ_ptr[4];
+				fc[fc_ofs1 + CFE_AZ] += delta * iMJ[iMJ_ofs + 5];//fc_ptr[5] += delta * iMJ_ptr[5];
+				// @@@ potential optimization: handle 1-body constraints in a separate
+				//     loop to avoid the cost of test & jump?
+				if (fc_ofs2 != NULL) {
+					fc[fc_ofs2 + CFE_LX] += delta * iMJ[iMJ_ofs + 6];//fc_ptr[0] += delta * iMJ_ptr[6];
+					fc[fc_ofs2 + CFE_LY] += delta * iMJ[iMJ_ofs + 7];//fc_ptr[1] += delta * iMJ_ptr[7];
+					fc[fc_ofs2 + CFE_LZ] += delta * iMJ[iMJ_ofs + 8];//fc_ptr[2] += delta * iMJ_ptr[8];
+					fc[fc_ofs2 + CFE_AX] += delta * iMJ[iMJ_ofs + 9];//fc_ptr[3] += delta * iMJ_ptr[9];
+					fc[fc_ofs2 + CFE_AY] += delta * iMJ[iMJ_ofs + 10];//fc_ptr[4] += delta * iMJ_ptr[10];
+					fc[fc_ofs2 + CFE_AZ] += delta * iMJ[iMJ_ofs + 11];//fc_ptr[5] += delta * iMJ_ptr[11];
 				}
 			}
 		}
@@ -1342,7 +1316,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		int nb = callContext.m_islandBodiesCount();
 
 		int[] mindex = null;
-		double[] J = null, cfm = null, lo = null, hi = null, rhs = null, Jcopy = null;
+		double[] J = null, Jcopy = null;
 		int[] jb = null, findex = null;
 
 		// if there are constraints, compute the constraint force
@@ -1381,19 +1355,15 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			memarena.dummy();
 			memarena.dummy();
 			findex = new int[m];//memarena.AllocateArray<int>(m);
-			J = new double[m*12];//memarena.AllocateArray<dReal>((size_t)m*12);
-			cfm = new double[m];//memarena.AllocateArray<dReal>(m);
-			lo = new double[m];//memarena.AllocateArray<dReal>(m);
-			hi = new double[m];//memarena.AllocateArray<dReal>(m);
+			J = new double[m * JME__MAX];
 			jb = new int[m*2];//memarena.AllocateArray<int>((size_t)m*2);
-			rhs = new double[m];//memarena.AllocateArray<dReal>(m);
-			Jcopy = new double[mfb*12];//memarena.AllocateArray<dReal>((size_t)mfb*12);
+			Jcopy = new double[m * JME__MAX];
 		}
 
 		memarena.dummy();
 		dxQuickStepperLocalContext localContext = new dxQuickStepperLocalContext(); 
 		//(dxQuickStepperLocalContext *)memarena.AllocateBlock(sizeof(dxQuickStepperLocalContext));
-		localContext.Initialize(invI, jointinfos, nj, m, mfb, mindex, findex, J, cfm, lo, hi, jb, rhs, Jcopy);
+		localContext.Initialize(invI, jointinfos, nj, m, mfb, mindex, findex, J, jb, Jcopy);
 
 		BlockPointer stage1MemarenaState = memarena.SaveState();
 		memarena.dummy();
@@ -1477,11 +1447,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    {
 	        int[] findex = localContext.m_findex;
 	        double[] J = localContext.m_J;
-	        double[] cfm = localContext.m_cfm;
-	        double[] lo = localContext.m_lo;
-	        double[] hi = localContext.m_hi;
 	        double[] Jcopy = localContext.m_Jcopy;
-	        double[] rhs = localContext.m_rhs;
+            int jCopy_ofs = 0;
 
 	        if (TIMING) dTimerNow ("create J");
 	        // get jacobian data from constraints. an m*12 matrix will be created
@@ -1498,52 +1465,37 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        //   (aaa) = angular jacobian data
 	        //
 	        final double worldERP = world.getERP();
+	        final double worldCFM = world.getCFM();
 
-	        DxJoint.Info2Descr Jinfo = new DxJoint.Info2Descr();
-	        Jinfo.setRowskip(12);
-	        Jinfo.setArrays(J, rhs, cfm, lo, hi, findex);
+	        Info2DescrQuickStep Jinfo = new Info2DescrQuickStep();
+	        Jinfo.setRowskip(JME__MAX, JME__MAX);
+	        Jinfo.setArrays(J, findex);
 		            
 	        int ji;
 	        while ((ji = ThreadingUtils.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_J, nj)) != nj) {
 	            final int ofsi = mindex[ji * 2 + 0];
 	            final int infom = mindex[ji * 2 + 2] - ofsi;
-
-//		            int JcopyrowP = 0;//double[] Jcopyrow = Jcopy;
-//		            int ofsi = 0;
-//		            // const dJointWithInfo1 *jicurr = jointiinfos;
-//		            for (int i = 0; i < njXXX; i++) {
-//		                DJointWithInfo1 jicurr = jointiinfos[i];
-	            int JrowP = 0 + ofsi * 12;		                
-	            Jinfo.J1lp = JrowP;
-	            Jinfo.J1ap = JrowP + 3;
-	            Jinfo.J2lp = JrowP + 6;
-	            Jinfo.J2ap = JrowP + 9;
-	            Jinfo.setAllP(ofsi);
-	            dSetZero (J, JrowP, infom*12);
-	            //Jinfo.c = rhs + ofsi;
-	            //dSetZero (Jinfo.c, infom);
-	            dSetZero(rhs, ofsi, infom);
-	            //Jinfo.cfm = cfm + ofsi;
-	            dSetValue (cfm, ofsi, infom, world.global_cfm);
-	            //Jinfo.lo = lo + ofsi;
-	            dSetValue (lo, ofsi, infom, -dInfinity);
-	            //Jinfo.hi = hi + ofsi;
-	            dSetValue (hi, ofsi, infom, dInfinity);
-	            //Jinfo.findex = findex + ofsi;
+	            int jRow = ofsi * JME__MAX;
+	            int jEnd = jRow + infom * JME__MAX;
+	            for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
+	            	dSetZero(J, jCurr + JME__J1_MIN, JME__J1_COUNT);
+	            	J[jCurr + JME_RHS] = 0.0;
+	            	J[jCurr + JME_CFM] = worldCFM;
+	            	dSetZero(J, jCurr + JME__J2_MIN, JME__J2_COUNT);
+	            	J[jCurr + JME_LO] = -dInfinity;
+	            	J[jCurr + JME_HI] = dInfinity;
+	            }
+	            Jinfo.setAllP(jRow + JME__J1_MIN, jRow + JME__J2_MIN, jRow + JME__RHS_CFM_MIN, jRow + JME__LO_HI_MIN, ofsi);
 	            dSetValue(findex, ofsi, infom, -1);
 
 	            DxJoint joint = jointinfos[ji].joint;
 	            joint.getInfo2(stepsizeRecip, worldERP, Jinfo);
 
-	            //double *rhs_row = Jinfo.c;
-	            //double *cfm_row = Jinfo.cfm;
-	            for (int i = 0; i != infom; ++i) {
-//	            	rhs_row[i] *= stepsizeRecip;
-//	            	cfm_row[i] *= stepsizeRecip;
-	            	rhs[i+ofsi] *= stepsizeRecip;
-	            	cfm[i+ofsi] *= stepsizeRecip;
+	            for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
+	            	J[jCurr + JME_RHS] *= stepsizeRecip;
+	            	J[jCurr + JME_CFM] *= stepsizeRecip;
+	            	
 	            }
-
 	            // adjust returned findex values for global index numbering
 	            //int *findex_row = Jinfo.findex;
 	            for (int j = infom; j != 0; ) {
@@ -1558,11 +1510,15 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	            // instead of saving all Jacobian, we can save just rows
 	            // for joints, that requested feedback (which is normally much less)
 	            int mfbcurr = mindex[ji * 2 + 1], mfbnext = mindex[ji * 2 + 3];
-	            if (mfbcurr != mfbnext) {
-	            	//dReal *Jcopyrow = Jcopy + mfbcurr * 12;
-	            	//memcpy(Jcopyrow, Jrow, (mfbnext - mfbcurr) * 12 * sizeof(dReal));
-	            	System.arraycopy(Jcopy, mfbcurr * 12, J, JrowP, (mfbnext - mfbcurr) * 12);
-	            }
+                int mfbCount = mfbnext - mfbcurr;
+                if (mfbCount != 0) {
+                    int jEndMfb = jRow + mfbCount * JME__MAX;
+                    for (int jCurr = jRow; jCurr < jEndMfb ;jCurr += JME__MAX) {
+                    	System.arraycopy(J, jCurr + JME__J1_MIN, Jcopy, jCopy_ofs + JCE__J1_MIN, JME__J1_COUNT);
+                    	System.arraycopy(J, jCurr + JME__J2_MIN, Jcopy, jCopy_ofs + JCE__J2_MIN, JME__J2_COUNT);
+                    	jCopy_ofs += JCE__MAX;
+                    }	        
+                }
 	        }
 	    }
 
@@ -1703,14 +1659,13 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        // from rhs_tmp calculation in Stage2b to ensure proper synchronization 
 	        // and avoid accessing numbers being modified.
 	        // Warning!!!
-	        double[] rhs = localContext.m_rhs;
 	        double[] J = localContext.m_J;
 	        int[] jb = localContext.m_jb;
 	        double[] rhs_tmp = stage2CallContext.m_rhs_tmp;
 	        final int m = localContext.m_m;
 
 	        // add J*rhs_tmp to rhs
-	        multiplyAdd_J(stage2CallContext.m_Jrhsi, m, J, jb, rhs_tmp, rhs);
+	        multiplyAdd_J(stage2CallContext.m_Jrhsi, m, RHS__DYNAMICS_MIN, RHS__MAX, J, jb, rhs_tmp);
 	    }
 	}
 
@@ -1747,12 +1702,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    //const unsigned int *mindex = localContext->m_mindex;
 	    int[] findex = localContext.m_findex;
 	    double[] J = localContext.m_J;
-	    double[] cfm = localContext.m_cfm;
-	    double[] lo = localContext.m_lo;
-	    double[] hi = localContext.m_hi;
 	    int[] jb = localContext.m_jb;
-	    double[] rhs = localContext.m_rhs;
-	    double[] Jcopy = localContext.m_Jcopy;
+        double[] Jcopy = localContext.m_Jcopy;
 
 	    DxWorld world = callContext.m_world();
 	    DxBody[] bodyA = callContext.m_islandBodiesStartA();
@@ -1781,7 +1732,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			{
 	            if (TIMING) dTimerNow ("solving LCP problem");
 	            // solve the LCP problem and get lambda and invM*constraint_force
-	            SOR_LCP (memarena,m,nb,J,jb,bodyA,bodyOfs,invI,lambda,cforce,rhs,lo,hi,cfm,findex,world.qs);
+	            SOR_LCP (memarena,m,nb,J,jb,bodyA,bodyOfs,invI,lambda,cforce,findex,world.qs);
 			}
 			memarena.END_STATE_SAVE(lcpstate);
 			    
@@ -1837,7 +1788,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			    // where feedback was requested
 			    //double[] data = new double[6];
 			    int lambdacurrP = 0;//lambda;
-			    int JcopyrowP = 0;//Jcopy;
+			    int jcopycurr = 0;//mindex[ji].fbIndex * JCE__MAX;
 			    //int jicurrP = 0;//jointiinfos;
 				//mfb = 0;
 				for (int i=0; i<nj; i++) {
@@ -1846,7 +1797,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 					if (joint.feedback != null) {
 						DJoint.DJointFeedback fb = joint.feedback;
 //						double[] data = new double[6];
-			          Multiply1_12q1 (fb.f1, fb.t1, Jcopy, JcopyrowP, lambda, lambdacurrP, infom);
+			          Multiply1_12q1 (fb.f1, fb.t1, Jcopy, jcopycurr + JCE__J1_MIN, lambda, lambdacurrP, infom);
 ////						fb.f1.v[0] = data[0];
 ////						fb.f1.v[1] = data[1];
 ////						fb.f1.v[2] = data[2];
@@ -1856,7 +1807,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 						if (joint.node[1].body != null)
 						{
 						    //Multiply1_12q1 (data, Jcopyrow+6, lambdacurr, infom);
-				            Multiply1_12q1 (fb.f2, fb.t2, Jcopy, JcopyrowP+6, lambda, lambdacurrP, infom);
+					        Multiply1_12q1 (fb.f2, fb.t2, Jcopy, jcopycurr + JCE__J2_MIN, lambda, lambdacurrP, infom);
 ////							fb.f2.v[0] = data[0];
 ////							fb.f2.v[1] = data[1];
 ////							fb.f2.v[2] = data[2];
@@ -1864,7 +1815,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 ////							fb.t2.v[1] = data[4];
 ////							fb.t2.v[2] = data[5];
 						}
-				          JcopyrowP += infom * 12;
+				          jcopycurr += infom * JCE__MAX;
 			        }
 			      
 			        lambdacurrP += infom;

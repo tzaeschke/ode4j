@@ -116,7 +116,7 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 
 	@Override
 	public void
-	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
 		double       eps = worldFPS * worldERP;
 
