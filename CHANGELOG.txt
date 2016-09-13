@@ -1,6 +1,7 @@
 
+- Quickstep improvements, also fixes issue with DemoFeedback, PR #50 (Piotr)
 - Added more stable cylinder stacking, PR #47 (Piotr)
-- Deprected DxSpace.getGeom(i) to fix compilation failure (TZ)
+- Deprecated DxSpace.getGeom(i) to fix compilation failure (TZ)
 - Ported libccd updates, PR #45 (Piotr)
 - Added new SAP space, PR #43 (Piotr)
 - Fixes on SAP space, PR #42 (Piotr)
