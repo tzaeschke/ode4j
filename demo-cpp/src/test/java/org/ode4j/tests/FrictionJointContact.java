@@ -40,8 +40,8 @@ import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJoint.Info1;
-import org.ode4j.ode.internal.joints.DxJoint.Info2Descr;
 import org.ode4j.ode.internal.joints.DxJointContact;
+import org.ode4j.ode.internal.joints.Info2DescrStep;
 import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 //234567890123456789012345678901234567890123456789012345678901234567890123456789
@@ -114,7 +114,7 @@ public class FrictionJointContact extends TestSuperClass
     {
     	
         DxJoint.Info1 info1 = new Info1();
-        DxJoint.Info2Descr info2 = new Info2Descr();
+        Info2DescrStep info2 = new Info2DescrStep();
         //double[][] dummy_J = new double[3][12];// = new double = {{0}};
         double[] dummy_J = new double[3*12];// = new double = {{0}};
         double[] dummy_c = new double[3];

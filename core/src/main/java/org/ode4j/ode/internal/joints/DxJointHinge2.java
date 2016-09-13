@@ -180,7 +180,7 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	
 	@Override
 	public void
-	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
 		// get information we need to set the hinge row
 		DVector3 q = new DVector3();

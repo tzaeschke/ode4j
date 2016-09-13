@@ -33,7 +33,6 @@ import org.ode4j.ode.DJoint.PARAM;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.internal.joints.DxJoint.Info2Descr;
 import org.ode4j.ode.internal.processmem.DxWorldProcessContext;
 
 /**

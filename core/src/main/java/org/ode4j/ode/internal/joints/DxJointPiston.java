@@ -292,7 +292,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 
 	@Override
 	public void
-	getInfo2 ( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2 ( double worldFPS, double worldERP, Info2Descr info )
 	{
 
 		final double k = worldFPS * worldERP;

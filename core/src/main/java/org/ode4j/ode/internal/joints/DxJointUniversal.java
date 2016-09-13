@@ -333,7 +333,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint
 
 	@Override
 	public void
-	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
 		// set the three ball-and-socket rows
 		setBall( this, worldFPS, worldERP, info, _anchor1, _anchor2 );

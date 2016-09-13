@@ -56,6 +56,7 @@ import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
+import org.ode4j.ode.internal.joints.Info2DescrStep;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dmaxcallcountestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
@@ -1139,7 +1140,7 @@ dmaxcallcountestimate_fn_t {
 
 			final double worldERP = world.getERP();
 
-			DxJoint.Info2Descr Jinfo = new DxJoint.Info2Descr();
+			Info2DescrStep Jinfo = new Info2DescrStep();
 			Jinfo.setRowskip(8);
 			Jinfo.setArrays(J, rhs, cfm, lo, hi, findex); //TZ
 

@@ -294,7 +294,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 
 	@Override
 	public void
-	getInfo2( double worldFPS, double worldERP, DxJoint.Info2Descr info )
+	getInfo2( double worldFPS, double worldERP, Info2Descr info )
 	{
 
 		double k = worldFPS * worldERP;
