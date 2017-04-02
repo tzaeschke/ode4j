@@ -244,10 +244,14 @@ public class CCDVec3 {
 	/**
 	 * Normalizes given vector to unit length.
 	 */
-	public static final void ccdVec3Normalize(ccd_vec3_t d)
+	public static final boolean ccdVec3Normalize(ccd_vec3_t d)
 	{
-	    double k = CCD_ONE / CCD_SQRT(ccdVec3Len2(d));
-	    ccdVec3Scale(d, k);
+	    double len = CCD_SQRT(ccdVec3Len2(d));
+	    if (len > CCD_EPS) {
+		    ccdVec3Scale(d, CCD_ONE / len);
+		    return true;
+	    }
+	    return false;
 	}
 
 	/**
@@ -266,7 +270,7 @@ public class CCDVec3 {
 	/**
 	 * Cross product: d = a x b.
 	 */
-	static final void ccdVec3Cross(ccd_vec3_t d, final ccd_vec3_t a, final ccd_vec3_t b)
+	public static final void ccdVec3Cross(ccd_vec3_t d, final ccd_vec3_t a, final ccd_vec3_t b)
 	{
 	    d.v0 = (a.v1 * b.v2) - (a.v2 * b.v1);
 	    d.v1 = (a.v2 * b.v0) - (a.v0 * b.v2);

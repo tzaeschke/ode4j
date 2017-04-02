@@ -137,7 +137,7 @@ public interface DTriMeshData {
 //
 //	/** Preprocess the trimesh data to remove mark unnecessary edges and vertices */
 //	//ODE_API 
-//	void preprocess(DTriMeshData g);
+	void preprocess();
 //	/** Get and set the internal preprocessed trimesh data buffer, for loading and saving */
 //	//ODE_API 
 //	//void dGeomTriMeshDataGetBuffer(dTriMeshData g, unsigned char** buf, int* bufLen) {

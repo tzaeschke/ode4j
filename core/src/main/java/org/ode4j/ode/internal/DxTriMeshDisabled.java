@@ -33,7 +33,7 @@ class DxTriMeshDisabled extends DxTriMesh {
 
 	static class dxTriMeshDisabledData extends DxTriMeshData {
 		@Override
-		void Preprocess() {
+		public void preprocess() {
 			throw new UnsupportedOperationException();
 		}
 
@@ -187,6 +187,11 @@ class DxTriMeshDisabled extends DxTriMesh {
 	public void setTriMergeCallback(DTriTriMergeCallback Callback) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public float getEdgeAngle(int triangle, int edge) {
+		return (float) (Math.PI * 2);
 	}
 
 	//#endif // !dTRIMESH_ENABLED

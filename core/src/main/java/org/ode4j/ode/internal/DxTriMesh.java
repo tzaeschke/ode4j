@@ -81,5 +81,14 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 	abstract public int FetchTriangleCount();
 
 	abstract public void FetchTransformedTriangle(int i, DVector3[] v);
+
+	/*
+	 * Returns the following values:
+	 * between -PI and 0 for concave edges
+	 * 0 for flat edges
+	 * between 0 and PI for convex edges 
+	 * > PI for boundary edges
+	 */
+	abstract public float getEdgeAngle(int triangle, int edge);
 }
 

@@ -45,6 +45,7 @@ public class DxGimpactData extends DxTriMeshData {
 //	int m_TriangleCount;
 //	int m_TriStride;
 //	boolean m_single;
+	private float[] m_Angles;
 
     DxGimpactData()//dxTriMeshData()
 	{
@@ -119,7 +120,6 @@ public class DxGimpactData extends DxTriMeshData {
  		//TODO remove?
  		//check();
   	}
-    
 	void GetVertex(int i, DVector4 Out)
 	{
 		//TZ commented out, special treatment not required (?)
@@ -156,10 +156,8 @@ public class DxGimpactData extends DxTriMeshData {
 //#endif  // dTRIMESH_GIMPACT
 
 	@Override
-	void Preprocess() {
-//		void dxTriMeshData::Preprocess(){	// stub
-//		}
-		throw new UnsupportedOperationException(); //??????
+	public void preprocess() {
+		m_Angles = new GimpactDataPreprocessor(this).buildAngles();
 	}
 
 	@Override
@@ -286,11 +284,6 @@ public class DxGimpactData extends DxTriMeshData {
 //				null);//(const int*)NULL);
 //	}
 
-	//void dGeomTriMeshDataPreprocess(dTriMeshDataID g)
-	void dGeomTriMeshDataPreprocess()
-	{
-		Preprocess();
-	}
 
 	//void dGeomTriMeshDataGetBuffer(dTriMeshDataID g, unsigned char** buf, int* bufLen)
 	void dGeomTriMeshDataGetBuffer(Ref<Object> buf, RefInt bufLen)
@@ -404,6 +397,11 @@ public class DxGimpactData extends DxTriMeshData {
 			
 		}
 		System.out.println(nE);
+	}
+
+
+	public float getEdgeAngle(int triangle, int edge) {
+    	return (float) (m_Angles != null ? m_Angles[triangle * 3 + edge] : Math.PI * 2);
 	}
 	
 }

@@ -489,10 +489,6 @@ public class CollisionLibccd {
 		@Override
 		public void run(Object obj, ccd_vec3_t _dir, ccd_vec3_t v) {
 			final ccd_triangle_t o = (ccd_triangle_t) obj;
-			// Not needed as trimesh already returns transformed vertices
-			// final ccd_vec3_t dir = new ccd_vec3_t();
-			// ccdVec3Copy(dir, _dir);
-			// ccdQuatRotVec(dir, o.rot_inv);
 			double maxdot = -CCD_REAL_MAX;
 			for (int i = 0; i < 3; i++) {
 				double dot = ccdVec3Dot(_dir, o.vertices[i]);
@@ -501,14 +497,11 @@ public class CollisionLibccd {
 					maxdot = dot;
 				}
 			}
-			// ccdQuatRotVec(v, o.rot);
-			// ccdVec3Add(v, o.pos);
 		}
 	};
 	
-	private static final float CONTACT_DEPTH_EPSILON = 0.0001f;
-	private static final float CONTACT_POS_EPSILON = 0.0001f;
-	private static final float CONTACT_PERTURBATION_ANGLE = 0.001f;
+	private static final float CONTACT_POS_EPSILON = 0.001f;
+	private static final float CONTACT_PERTURBATION_ANGLE = 0.005f;
 
 	public static class CollideConvexTrimeshTrianglesCCD {
 		public int collide(DGeom o1, DGeom o2, int[] triindices, int flags, DContactGeomBuffer contacts) {
@@ -525,41 +518,145 @@ public class CollisionLibccd {
 				for (int j = 0; j < 3; j++) {
 					c2.vertices[j].set(triangle[j].get0(), triangle[j].get1(), triangle[j].get2());
 				}
+				setObjPosToTriangleCenter(c2);
 				if (ccdCollide(o1, o2, flags, tempContacts, c1, ccdSupportConvex, ccdCenter, c2, ccdSupportTriangle,
 						ccdCenter) == 1) {
-					DContactGeom c = tempContacts.get();
-					c.side2 = i;
-					contactcount = addUniqueContact(contacts, c, contactcount, maxcontacts);
-					if ((flags & OdeConstants.CONTACTS_UNIMPORTANT) != 0) {
-						break;
+					DContactGeom tempContact = tempContacts.get();
+					tempContact.side2 = i;
+					if (correctContactNormal(c2, tempContact, triangle, o2, triindices)) {
+						contactcount = addUniqueContact(contacts, tempContact, contactcount, maxcontacts);
+						if ((flags & OdeConstants.CONTACTS_UNIMPORTANT) != 0) {
+							break;
+						}
 					}
 				}
 			}
 			if (contactcount == 1 && (flags & OdeConstants.CONTACTS_UNIMPORTANT) == 0) {
 				DContactGeom contact = contacts.get(0);
 				((DxTriMesh) o2).FetchTransformedTriangle(contact.side2, triangle);
-				contactcount = addPerturbedContacts(o1, o2, flags, c1, c2, contacts, triangle, contact, contactcount);
+				contactcount = addPerturbedContacts(o1, o2, flags, c1, c2, contacts, triangle, contact, contactcount,
+						triindices);
+			    // Normalize accumulated normals
+				for (int i = 0; i < contactcount; i++) {
+					contact = contacts.get(i);
+					contact.normal.safeNormalize();
+				}
 			}
 			return contactcount;
 		}
 
+		private void setObjPosToTriangleCenter(ccd_triangle_t t) {
+			ccdVec3Set(t.pos, 0, 0, 0);
+			for (int j = 0; j < 3; j++) {
+				ccdVec3Add(t.pos, t.vertices[j]);
+			}
+			ccdVec3Scale(t.pos, 1.0f / 3.0f);
+		}
+		
+		private boolean correctContactNormal(ccd_triangle_t t, DContactGeom contact, DVector3[] triangle, DGeom geom,
+				int[] indices) {
+			ccd_vec3_t edge1 = new ccd_vec3_t();
+			ccd_vec3_t edge2 = new ccd_vec3_t();
+			ccdVec3Copy(edge1, t.vertices[1]);
+			ccdVec3Sub(edge1, t.vertices[0]);
+			ccdVec3Copy(edge2, t.vertices[2]);
+			ccdVec3Sub(edge2, t.vertices[1]);
+			ccd_vec3_t triangleNormal = new ccd_vec3_t();
+			ccdVec3Cross(triangleNormal, edge1, edge2);
+			// Triangle face normal
+			if (!ccdVec3Normalize(triangleNormal)) {
+				return false;
+			}
+			ccd_vec3_t contactNormal = new ccd_vec3_t();
+			ccdVec3Set(contactNormal, contact.normal);
+			ccd_vec3_t scaledContactNormal = new ccd_vec3_t();
+			ccdVec3Copy(scaledContactNormal, contactNormal);
+			ccdVec3Scale(scaledContactNormal, contact.depth);
+			boolean edgeContact = false;
+			// Check the edges to see if one of them is involved
+			for (int i = 0; i < 3; i++) {
+				ccd_vec3_t edgeAxis = new ccd_vec3_t();
+				ccdVec3Copy(edgeAxis, t.vertices[(i + 1) % 3]);
+				ccdVec3Sub(edgeAxis, t.vertices[i]);
+				// Edge axis
+				if (!ccdVec3Normalize(edgeAxis)) {
+					return false;
+				}
+				// Edge Normal
+				ccd_vec3_t edgeNormal = new ccd_vec3_t();
+				ccdVec3Cross(edgeNormal, edgeAxis, triangleNormal);
+				ccdVec3Normalize(edgeNormal);
+				// Check if the contact point is located close to any edge -
+				// move it
+				// back and forth and check the resulting segment for
+				// intersection
+				// with the edge plane
+				ccd_vec3_t v = new ccd_vec3_t();
+				ccdVec3Set(v, contact.pos);
+				ccdVec3Sub(v, t.vertices[i]);
+				ccdVec3Sub(v, scaledContactNormal);
+				if (ccdVec3Dot(edgeNormal, v) < 0) {
+					ccdVec3Set(v, contact.pos);
+					ccdVec3Sub(v, t.vertices[i]);
+					ccdVec3Add(v, scaledContactNormal);
+					if (ccdVec3Dot(edgeNormal, v) > 0) {
+						// Edge contact, check the edge angle now 
+						double x = ccdVec3Dot(triangleNormal, contactNormal);
+						double y = ccdVec3Dot(edgeNormal, contactNormal);
+						double contactNormalToTriangleNormalAngle = Math.atan2(y, x);
+						double edgeAngle = ((DxTriMesh) geom).getEdgeAngle(contact.side2, i);
+						double targetAngle;
+						edgeContact = true;
+						if (edgeAngle > 0) {
+							// Convex edge - ensure the contact normal is within
+							// the allowed range formed by the two triangles' normals, if not rotate it
+							targetAngle = Math.min(contactNormalToTriangleNormalAngle, edgeAngle);
+						} else {
+							// Concave edge
+							targetAngle = 0.0;
+						}
+						double angle = targetAngle - contactNormalToTriangleNormalAngle;
+						if (angle != 0.0) {
+							ccd_quat_t q = new ccd_quat_t();
+							ccdQuatSetAngleAxis(q, angle, edgeAxis);
+							ccdQuatRotVec(contactNormal, q);
+						}
+						break;
+					}
+				}
+			}
+			// If no edge contact detected, set contact normal to triangle normal
+			ccd_vec3_t origContactNormal = new ccd_vec3_t();
+			ccdVec3Set(origContactNormal, contact.normal);
+			ccd_vec3_t contactNormalToUse = edgeContact ? contactNormal : triangleNormal;
+			contact.normal.set(ccdVec3X(contactNormalToUse), ccdVec3Y(contactNormalToUse),
+					ccdVec3Z(contactNormalToUse));
+			// Reduce the depth as the normal changed
+			contact.depth *= Math.max(0.0, ccdVec3Dot(origContactNormal, contactNormalToUse));
+			return true;
+		}
+
 		private int addUniqueContact(DContactGeomBuffer contacts, DContactGeom c, int contactcount, int maxcontacts) {
-			double minDepth = Double.MAX_VALUE;
+			double minDepth = c.depth;
 			int index = contactcount;
+			boolean unique = true;
 			for (int k = 0; k < contactcount; k++) {
 				DContactGeom pc = contacts.get(k);
 				if (Math.abs(c.pos.get0() - pc.pos.get0()) < CONTACT_POS_EPSILON
 						&& Math.abs(c.pos.get1() - pc.pos.get1()) < CONTACT_POS_EPSILON
 						&& Math.abs(c.pos.get2() - pc.pos.get2()) < CONTACT_POS_EPSILON) {
-					index = pc.depth + CONTACT_DEPTH_EPSILON < c.depth ? k : maxcontacts;
+					// Accumulate similar contacts
+					pc.normal.add(c.normal);
+					pc.depth = Math.max(pc.depth, c.depth);
+					unique = false;
 					break;
 				}
-				if (contactcount == maxcontacts && pc.depth < minDepth && pc.depth < c.depth) {
+				if (contactcount == maxcontacts && pc.depth < minDepth) {
 					minDepth = pc.depth;
 					index = k;
 				}
 			}
-			if (index < maxcontacts) {
+			if (unique && index < maxcontacts) {
 				DContactGeom contact = contacts.get(index);
 				contact.g1 = c.g1;
 				contact.g2 = c.g2;
@@ -574,7 +671,8 @@ public class CollisionLibccd {
 		}
 
 		private int addPerturbedContacts(DGeom o1, DGeom o2, int flags, ccd_convex_t c1, ccd_triangle_t c2,
-				DContactGeomBuffer contacts, DVector3[] triangle, DContactGeom contact, int contactcount) {
+				DContactGeomBuffer contacts, DVector3[] triangle, DContactGeom contact, int contactcount,
+				int[] indices) {
 			int maxcontacts = (flags & 0xffff);
 			DVector3 upAxis = new DVector3(0, 1, 0);
 			if (Math.abs(contact.normal.dot(upAxis)) > 0.7) {
@@ -585,27 +683,36 @@ public class CollisionLibccd {
 			cross.safeNormalize();
 			upAxis.eqCross(cross, contact.normal);
 			upAxis.safeNormalize();
-			DQuaternion q1 = new DQuaternion();
-			DQuaternion q2 = new DQuaternion();
-			DQuaternion qr = new DQuaternion();
-			DVector3 p = new DVector3();
 			DVector3 perturbed = new DVector3();
 			DVector3 pos = new DVector3(contact.pos);
 			DContactGeomBuffer perturbedContacts = new DContactGeomBuffer(1);
+			
+			DQuaternion[] q1 = new DQuaternion[]{ new DQuaternion(), new DQuaternion()};
+			DQuaternion[] q2 = new DQuaternion[]{ new DQuaternion(), new DQuaternion()};
+	        double perturbationAngle = CONTACT_PERTURBATION_ANGLE;
+		    for (int j = 0; j < 2; ++j) {
+				dQFromAxisAndAngle(q1[j], upAxis, perturbationAngle);
+		        dQFromAxisAndAngle(q2[j], cross, perturbationAngle);
+		        perturbationAngle = -perturbationAngle;
+		    }			
+			DQuaternion qr = new DQuaternion();
+			DVector3 p = new DVector3();
 			for (int k = 0; k < 4; k++) {
-				dQFromAxisAndAngle(q1, upAxis, k % 2 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
-				dQFromAxisAndAngle(q2, cross, k / 2 == 0 ? CONTACT_PERTURBATION_ANGLE : -CONTACT_PERTURBATION_ANGLE);
-				dQMultiply0(qr, q1, q2);
+				dQMultiply0(qr, q1[k % 2], q2[k / 2]);
 				for (int j = 0; j < 3; j++) {
 					p.eqDiff(triangle[j], pos);
 					dQuatTransform(qr, p, perturbed);
 					perturbed.add(pos);
 					c2.vertices[j].set(perturbed.get0(), perturbed.get1(), perturbed.get2());
 				}
+				setObjPosToTriangleCenter(c2);
 				if (ccdCollide(o1, o2, flags, perturbedContacts, c1, ccdSupportConvex, ccdCenter, c2,
 						ccdSupportTriangle, ccdCenter) == 1) {
-					perturbedContacts.get().side2 = contact.side2;
-					contactcount = addUniqueContact(contacts, perturbedContacts.get(), contactcount, maxcontacts);
+					DContactGeom perturbedContact = perturbedContacts.get();
+					perturbedContact.side2 = contact.side2;
+					if (correctContactNormal(c2, perturbedContact, triangle, o2, indices)) {
+						contactcount = addUniqueContact(contacts, perturbedContact, contactcount, maxcontacts);
+					}
 				}
 			}
 			return contactcount;

@@ -44,7 +44,7 @@ public abstract class DxTriMeshData implements DTriMeshData {
 //    };
 
     /* Setup the UseFlags array */
-    abstract void Preprocess();
+    public abstract void preprocess();
     /* For when app changes the vertices */
     abstract void UpdateData();
 
