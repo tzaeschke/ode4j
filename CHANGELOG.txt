@@ -1,4 +1,4 @@
-
+- Convex vs trimesh collision improvement for concave trimeshes, PR #51 (Piotr)
 - Quickstep improvements, also fixes issue with DemoFeedback, PR #50 (Piotr)
 - Added more stable cylinder stacking, PR #47 (Piotr)
 - Deprecated DxSpace.getGeom(i) to fix compilation failure (TZ)
