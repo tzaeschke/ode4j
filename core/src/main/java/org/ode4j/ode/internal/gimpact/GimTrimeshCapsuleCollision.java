@@ -198,7 +198,7 @@ public class GimTrimeshCapsuleCollision {
 	        //POST closest_points[0] and closest_points[1] are inside the triangle, if out_edge>2
 	        if(out_edge>2) // Over triangle
 	        {
-	            dis = VEC_DOT(closest_points[0],triangle.m_planes.m_planes[0]);
+	            dis = DISTANCE_PLANE_POINT(triangle.m_planes.m_planes[0],closest_points[0]);
 	            GimContact.GIM_PUSH_CONTACT(contacts,closest_points[0] ,triangle.m_planes.m_planes[0] ,dis,null,null, 0,0);
 	            GimContact.GIM_PUSH_CONTACT(contacts,closest_points[1] ,triangle.m_planes.m_planes[0] ,dis,null,null, 0,0);
 	            return;
