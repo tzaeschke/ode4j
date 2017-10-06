@@ -1,5 +1,9 @@
+0.3.2-SNAPSHOT
+==============
+- Changed to Java 7
 
-0.3.2
+
+0.3.1
 =====
 - Announcement: This will be the last release build with Java 6! 
 - Convex vs trimesh collision improvement for concave trimeshes, PR #51 (Piotr)
@@ -23,8 +27,6 @@
 - Added TrimeshHeightfield provided by Piotr
 - Fixed issue #19 (thanks to Piotr)
 
-0.3.1
-=====
 - Fixed issue #17
 - Fixed NPE in DemoBoxStack-'x'
 - Added newArray(size) methods to DVector3 and DMatrix3
