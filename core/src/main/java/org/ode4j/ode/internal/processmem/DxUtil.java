@@ -147,10 +147,6 @@ public class DxUtil {
         void setTo(DxWorldProcessMemArena x) {
         	o = x;
         }
-		public void setSize(int block_smaller_size) {
-			this.pointer = block_smaller_size;
-			
-		}
     }
 
     

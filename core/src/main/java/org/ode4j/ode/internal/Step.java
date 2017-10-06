@@ -44,8 +44,8 @@ import static org.ode4j.ode.internal.Timer.dTimerNow;
 import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
-import static org.ode4j.ode.threading.ThreadingUtils.ThrsafeExchange;
-import static org.ode4j.ode.threading.ThreadingUtils.ThrsafeIncrementIntUpToLimit;
+import static org.ode4j.ode.threading.Atomics.ThrsafeExchange;
+import static org.ode4j.ode.threading.Atomics.ThrsafeIncrementIntUpToLimit;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -53,7 +53,6 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint.DJointFeedback;
 import org.ode4j.ode.internal.cpp4j.FILE;
-import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.ode.internal.joints.Info2DescrStep;
@@ -63,10 +62,6 @@ import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
-import org.ode4j.ode.threading.Threading_H.CallContext;
-import org.ode4j.ode.threading.Threading_H.DCallReleasee;
-import org.ode4j.ode.threading.Threading_H.dThreadedCallFunction;
-
 
 class Step extends AbstractStepper implements dstepper_fn_t, dmemestimate_fn_t, 
 dmaxcallcountestimate_fn_t {
@@ -123,7 +118,7 @@ dmaxcallcountestimate_fn_t {
 		int                    nub;
 	}
 
-	private static class dxStepperStage1CallContext implements CallContext
+	private static class dxStepperStage1CallContext
 	{
 		dxStepperStage1CallContext(final DxStepperProcessingCallContext stepperCallContext, 
 				BlockPointer stageMemArenaState, double[] invI, 
@@ -143,7 +138,7 @@ dmaxcallcountestimate_fn_t {
 		final dxStepperStage0Outputs          m_stage0Outputs = new dxStepperStage0Outputs();
 	}
 
-	private static class dxStepperStage0BodiesCallContext implements CallContext
+	private static class dxStepperStage0BodiesCallContext
 	{
 		dxStepperStage0BodiesCallContext(final DxStepperProcessingCallContext stepperCallContext, 
 				double[] invI)
@@ -163,7 +158,7 @@ dmaxcallcountestimate_fn_t {
 		final AtomicInteger                     m_inertiaBodyIndex = new AtomicInteger();
 	}
 
-	private static class dxStepperStage0JointsCallContext implements CallContext
+	private static class dxStepperStage0JointsCallContext
 	{
 		dxStepperStage0JointsCallContext(final DxStepperProcessingCallContext stepperCallContext, 
 				dJointWithInfo1[] jointinfosA, int jointinfosOfs, 
@@ -228,7 +223,7 @@ dmaxcallcountestimate_fn_t {
 		double[]                           m_rhs;
 	}
 
-	private static class dxStepperStage3CallContext implements CallContext
+	private static class dxStepperStage3CallContext
 	{
 		void Initialize(final DxStepperProcessingCallContext callContext, 
 				final dxStepperLocalContext localContext, 
@@ -244,7 +239,7 @@ dmaxcallcountestimate_fn_t {
 		BlockPointer                           m_stage1MemArenaState;
 	}
 
-	private static class dxStepperStage2CallContext implements CallContext
+	private static class dxStepperStage2CallContext
 	{
 		void Initialize(final DxStepperProcessingCallContext callContext, 
 				final dxStepperLocalContext localContext, 
@@ -496,20 +491,6 @@ dmaxcallcountestimate_fn_t {
 			int bodyThreads = allowedThreads;
 			int jointThreads = 1;
 
-			Ref<DCallReleasee> stage1CallReleasee = new Ref<DCallReleasee>();
-			world.threading().PostThreadedCallForUnawareReleasee(null, stage1CallReleasee, 
-					bodyThreads + jointThreads, callContext.m_finalReleasee(), 
-					null, dxStepIsland_Stage1_Callback, stage1CallContext, 0, 
-					"StepIsland Stage1");
-
-			world.threading().PostThreadedCallsGroup(null, bodyThreads, stage1CallReleasee.get(), 
-					dxStepIsland_Stage0_Bodies_Callback, stage0BodiesCallContext, 
-					"StepIsland Stage0-Bodies");
-
-			world.threading().PostThreadedCall(null, null, 0, stage1CallReleasee.get(), null, 
-					dxStepIsland_Stage0_Joints_Callback, stage0JointsCallContext, 0, 
-					"StepIsland Stage0-Joints");
-			dIASSERT(jointThreads == 1);
 		}
 //		{
 //			//TODO
@@ -537,19 +518,6 @@ dmaxcallcountestimate_fn_t {
 //				throw new RuntimeException(e);
 //			}
 	}    
-
-	private static dThreadedCallFunction dxStepIsland_Stage0_Bodies_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _callContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxStepperStage0BodiesCallContext callContext = (dxStepperStage0BodiesCallContext )_callContext;
-			dxStepIsland_Stage0_Bodies(callContext);
-			return true;
-		}
-	};
 
 	private
 	static 
@@ -701,19 +669,6 @@ dmaxcallcountestimate_fn_t {
 			}
 		}
 	}
-
-	private static dThreadedCallFunction dxStepIsland_Stage0_Joints_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _callContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxStepperStage0JointsCallContext callContext = (dxStepperStage0JointsCallContext)_callContext;
-			dxStepIsland_Stage0_Joints(callContext);
-			return true;
-		}
-	};
 
 	private static 
 	void dxStepIsland_Stage0_Joints(dxStepperStage0JointsCallContext callContext)
@@ -920,19 +875,6 @@ dmaxcallcountestimate_fn_t {
 		callContext.m_stage0Outputs.ji_end = ji_end;
 	}
 
-	private static dThreadedCallFunction dxStepIsland_Stage1_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage1CallContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxStepperStage1CallContext stage1CallContext = (dxStepperStage1CallContext )_stage1CallContext;
-			dxStepIsland_Stage1(stage1CallContext);
-			return true;
-		}
-	};
-
 	static 
 	void dxStepIsland_Stage1(dxStepperStage1CallContext stage1CallContext)
 	{
@@ -1059,21 +1001,6 @@ dmaxcallcountestimate_fn_t {
 			}
 			else
 			{
-				Ref<DCallReleasee> stage3CallReleasee = new Ref<DCallReleasee>();
-				world.threading().PostThreadedCallForUnawareReleasee(null, stage3CallReleasee, 1, 
-						callContext.m_finalReleasee(), 
-						null, dxStepIsland_Stage3_Callback, stage3CallContext, 0, "StepIsland Stage3");
-
-				Ref<DCallReleasee> stage2bSyncReleasee = new Ref<DCallReleasee>();
-				world.threading().PostThreadedCall(null, stage2bSyncReleasee, 1, stage3CallReleasee.get(), 
-						null, dxStepIsland_Stage2bSync_Callback, stage2CallContext, 0, "StepIsland Stage2b Sync");
-
-				Ref<DCallReleasee> stage2aSyncReleasee = new Ref<DCallReleasee>();
-				world.threading().PostThreadedCall(null, stage2aSyncReleasee, allowedThreads, stage2bSyncReleasee.get(), 
-						null, dxStepIsland_Stage2aSync_Callback, stage2CallContext, 0, "StepIsland Stage2a Sync");
-
-				world.threading().PostThreadedCallsGroup(null, allowedThreads, stage2aSyncReleasee.get(), 
-						dxStepIsland_Stage2a_Callback, stage2CallContext, "StepIsland Stage2a");
 			}
 		}
 		else {
@@ -1081,22 +1008,6 @@ dmaxcallcountestimate_fn_t {
 		}
 	}
 
-
-	//	static 
-	//	int dxStepIsland_Stage2a_Callback(CallContext _stage2CallContext, 
-	//			int /*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-	private static dThreadedCallFunction dxStepIsland_Stage2a_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, 
-				int /*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxStepperStage2CallContext stage2CallContext = (dxStepperStage2CallContext )_stage2CallContext;
-			dxStepIsland_Stage2a(stage2CallContext);
-			return true;
-		}
-	};
 
 	static 
 	void dxStepIsland_Stage2a(dxStepperStage2CallContext stage2CallContext)
@@ -1200,38 +1111,6 @@ dmaxcallcountestimate_fn_t {
 			}
 		}
 	}
-
-	private static dThreadedCallFunction dxStepIsland_Stage2aSync_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			dxStepperStage2CallContext stage2CallContext = (dxStepperStage2CallContext )_stage2CallContext;
-			final DxStepperProcessingCallContext callContext = stage2CallContext.m_stepperCallContext;
-			DxWorld world = callContext.m_world();
-			final int allowedThreads = callContext.m_stepperAllowedThreads();
-
-			world.threading().AlterThreadedCallDependenciesCount(callThisReleasee, allowedThreads);
-			world.threading().PostThreadedCallsGroup(null, allowedThreads, callThisReleasee, 
-					dxStepIsland_Stage2b_Callback, stage2CallContext, "StepIsland Stage2b");
-
-			return true;
-		}
-	};
-
-	private static dThreadedCallFunction dxStepIsland_Stage2b_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxStepperStage2CallContext stage2CallContext = (dxStepperStage2CallContext )_stage2CallContext;
-			dxStepIsland_Stage2b(stage2CallContext);
-			return true;
-		}
-	};
 
 	static 
 	void dxStepIsland_Stage2b(dxStepperStage2CallContext stage2CallContext)
@@ -1365,39 +1244,6 @@ dmaxcallcountestimate_fn_t {
 		}
 	}
 
-	private static dThreadedCallFunction dxStepIsland_Stage2bSync_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			dxStepperStage2CallContext stage2CallContext = (dxStepperStage2CallContext)_stage2CallContext;
-			final DxStepperProcessingCallContext callContext = stage2CallContext.m_stepperCallContext;
-			DxWorld world = callContext.m_world();
-			final int allowedThreads = callContext.m_stepperAllowedThreads();
-
-			world.threading().AlterThreadedCallDependenciesCount(callThisReleasee, allowedThreads);
-			world.threading().PostThreadedCallsGroup(null, allowedThreads, callThisReleasee, 
-					dxStepIsland_Stage2c_Callback, stage2CallContext, "StepIsland Stage2c");
-
-			return true;
-		}
-	};
-
-
-	private static dThreadedCallFunction dxStepIsland_Stage2c_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, 
-				int /*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxStepperStage2CallContext stage2CallContext = (dxStepperStage2CallContext)_stage2CallContext;
-			dxStepIsland_Stage2c(stage2CallContext);
-			return true;
-		}
-	};
-
 	static 
 	void dxStepIsland_Stage2c(dxStepperStage2CallContext stage2CallContext)
 	{
@@ -1520,20 +1366,6 @@ dmaxcallcountestimate_fn_t {
 			}
 		}
 	}
-
-
-	private static dThreadedCallFunction dxStepIsland_Stage3_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage3CallContext, 
-				int /*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxStepperStage3CallContext stage3CallContext = (dxStepperStage3CallContext)_stage3CallContext;
-			dxStepIsland_Stage3(stage3CallContext);
-			return true;
-		}
-	};
 
 	static 
 	void dxStepIsland_Stage3(dxStepperStage3CallContext stage3CallContext)

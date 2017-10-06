@@ -28,9 +28,6 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.threading.DThreadingImplementation;
-import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
-
 
 /**
  *  object, body, and world structs.
@@ -48,9 +45,6 @@ public class Objects_H {
 //	#else
 //	#error dSINGLE or dDOUBLE must be defined
 //	#endif
-
-	static DThreadingImplementation g_world_default_threading_impl = null;
-	static DThreadingFunctionsInfo g_world_default_threading_functions = null;
 
 	/** auto disable parameters. */
 	public static class dxAutoDisable implements Cloneable {

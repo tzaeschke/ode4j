@@ -39,24 +39,18 @@ import static org.ode4j.ode.internal.Common.dIVERIFY;
 import static org.ode4j.ode.internal.Common.dRecip;
 import static org.ode4j.ode.internal.Matrix.dSetZero;
 import static org.ode4j.ode.internal.Misc.dRandInt;
-import static org.ode4j.ode.internal.Timer.dTimerEnd;
 import static org.ode4j.ode.internal.Timer.dTimerNow;
-import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
+import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.QuickStepEnums.*;
 
 import java.util.Arrays;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
-import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.Info2DescrQuickStep;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
@@ -65,10 +59,10 @@ import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
-import org.ode4j.ode.threading.ThreadingUtils;
-import org.ode4j.ode.threading.Threading_H.CallContext;
-import org.ode4j.ode.threading.Threading_H.DCallReleasee;
-import org.ode4j.ode.threading.Threading_H.dThreadedCallFunction;
+import org.ode4j.ode.threading.Atomics;
+import org.ode4j.ode.threading.Threading;
+import org.ode4j.ode.threading.task.Task;
+import org.ode4j.ode.threading.task.TaskGroup;
 
 /**
  *
@@ -82,96 +76,31 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	 * Experimental improvement to reduce GC, see issue #36
 	 */
 	public static boolean REUSE_OBJECTS = false;
-	
-	public static final int THREADS = 4;
-	static final ThreadPoolExecutor POOL = new ThreadPoolExecutor(
-			THREADS, THREADS, 0, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-	//TZ where is this defined???
+	private static final int dxQUICKSTEPISLAND_STAGE2B_STEP = 16;
+	private static final int dxQUICKSTEPISLAND_STAGE2C_STEP = 32;
+	private static final int dxQUICKSTEPISLAND_STAGE4A_STEP = 512;
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP = 8;
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_AD_STEP = 8;
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP = dxQUICKSTEPISLAND_STAGE4A_STEP / 2;
+	private static final int dxQUICKSTEPISLAND_STAGE4B_STEP = 256;
+	private static final int dxQUICKSTEPISLAND_STAGE6A_STEP = 16;
+	private static final int dxQUICKSTEPISLAND_STAGE6B_STEP = 1;
+	
     private static final boolean CHECK_VELOCITY_OBEYS_CONSTRAINT = false;
     
 	/** DxQuickStep singleton instance. */
 	public static final DxQuickStep INSTANCE = new DxQuickStep();
 	
-	//void dxQuickStepper (dxWorld *world, dxBody * const *body, int nb,
-	//	     dxJoint * const *_joint, int nj, dReal stepsize);
-
-
 	private static final boolean TIMING = false;
 	
-	//#define dMIN(A,B)  ((A)>(B) ? (B) : (A))
-	//#define dMAX(A,B)  ((B)>(A) ? (B) : (A))
-	//TZ not used...
-	//private static final int dMIN(int A, int B) { return ((A)>(B) ? (B) : (A)); }
-	//private static final int dMAX(int A, int B) { return ((B)>(A) ? (B) : (A)); }
+	private enum ReorderingMethod {
+		REORDERING_METHOD__DONT_REORDER,
+		REORDERING_METHOD__BY_ERROR,
+		REORDERING_METHOD__RANDOMLY
+	}
 
-	//***************************************************************************
-	// configuration
-
-	/** for the SOR and CG methods:
-	 * uncomment the following line to use warm starting. this definitely
-	 * help for motor-driven joints. unfortunately it appears to hurt
-	 * with high-friction contacts using the SOR method. use with care
-	 */
-	//not defined because 'ifdef 0' around 'multiply_invM_JT' causes comp error.
-	//private static boolean WARM_STARTING = false;
-
-	/** for the SOR method:
-	 * uncomment the following line to determine a new constraint-solving
-	 * order for each iteration. however, the qsort per iteration is expensive,
-	 * and the optimal order is somewhat problem dependent.
-	 * @@@ try the leaf.root ordering.
-	 */
-	private static final boolean REORDER_CONSTRAINTS = false;
-
-
-	/** for the SOR method:
-	 * uncomment the following line to randomly reorder constraint rows
-	 * during the solution. depending on the situation, this can help a lot
-	 * or hardly at all, but it doesn't seem to hurt.
-	 */
-	private static final boolean RANDOMLY_REORDER_CONSTRAINTS = true;
-
-	//****************************************************************************
-	// special matrix multipliers
-
-	// multiply block of B matrix (q x 6) with 12 dReal per row with C vektor (q)
-//	private static void Multiply1_12q1 (double[] A, double[] B, final int ofsB, 
-//			double[] C, final int ofsC, final int q)
-//	{
-//		//int i, k;
-//		//dIASSERT (q>0 && A!=null && B!=null && C!=null);
-//		if (q < 0) throw new IllegalArgumentException();
-//
-//		double a = 0;
-//		double b = 0;
-//		double c = 0;
-//		double d = 0;
-//		double e = 0;
-//		double f = 0;
-//		double s;
-//
-////		for(i=0, k = 0; i<q; i++, k += 12)
-//		for(int i=ofsC, k = ofsB; i<q+ofsC; i++, k += 12)
-//		{
-//			s = C[i]; //C[i] and B[n+k] cannot overlap because its value has been read into a temporary.
-//
-//			//For the rest of the loop, the only memory dependency (array) is from B[]
-//			a += B[  k] * s;
-//			b += B[1+k] * s;
-//			c += B[2+k] * s;
-//			d += B[3+k] * s;
-//			e += B[4+k] * s;
-//			f += B[5+k] * s;
-//		}
-//
-//		A[0] = a;
-//		A[1] = b;
-//		A[2] = c;
-//		A[3] = d;
-//		A[4] = e;
-//		A[5] = f;
-//	}
+	private static final ReorderingMethod CONSTRAINTS_REORDERING_METHOD = ReorderingMethod.REORDERING_METHOD__RANDOMLY;
 
 	// multiply block of B matrix (q x 6) with 12 dReal per row with C vektor (q)
 	private static void Multiply1_12q1 (DVector3 A1, DVector3 A2, double[] B, final int ofsB, 
@@ -205,17 +134,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		A2.set(d, e, f);
 	}
 
-	//***************************************************************************
-	// testing stuff
-
-	//#ifdef TIMING
-	//#define IFTIMING(x) x
-	//#else
-	//#define IFTIMING(x) /* */
-	//#endif
-
-
-
 	private static class DJointWithInfo1
 	{
 		DxJoint joint;
@@ -229,7 +147,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		int                    mfb;
 	}
 
-	private static class dxQuickStepperStage1CallContext implements CallContext
+	private static class dxQuickStepperStage1CallContext
 	{
 		void Initialize(DxStepperProcessingCallContext stepperCallContext, 
 				BlockPointer stageMemArenaState, double[] invI, DJointWithInfo1[] jointinfos)
@@ -247,27 +165,26 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		final dxQuickStepperStage0Outputs     m_stage0Outputs = new dxQuickStepperStage0Outputs();
 	}
 
-	private static class dxQuickStepperStage0BodiesCallContext implements CallContext
+	private static class dxQuickStepperStage0BodiesCallContext
 	{
 		void Initialize(final DxStepperProcessingCallContext stepperCallContext, 
 				double[] invI)
 		{
 			m_stepperCallContext = stepperCallContext;
 			m_invI = invI;
-			//m_tagsTaken = 0;
-			//m_gravityTaken = 0;
-			//m_inertiaBodyIndex = 0;
+			m_tagsTaken.set(0);
+			m_gravityTaken.set(0);
+			m_inertiaBodyIndex.set(0);
 		}
 
 		DxStepperProcessingCallContext m_stepperCallContext;
 		double[]                           m_invI;
 		final AtomicInteger                     m_tagsTaken = new AtomicInteger();
 		final AtomicInteger                     m_gravityTaken = new AtomicInteger();
-		//unsigned int                    volatile m_inertiaBodyIndex;
 		final AtomicInteger                    m_inertiaBodyIndex = new AtomicInteger();
 	}
 
-	private static class dxQuickStepperStage0JointsCallContext implements CallContext
+	private static class dxQuickStepperStage0JointsCallContext
 	{
 		void Initialize(DxStepperProcessingCallContext stepperCallContext, 
 				DJointWithInfo1[] jointinfos, dxQuickStepperStage0Outputs stage0Outputs)
@@ -282,20 +199,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		dxQuickStepperStage0Outputs     m_stage0Outputs;
 	}
 
-	//static int dxQuickStepIsland_Stage0_Bodies_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
-	//static int dxQuickStepIsland_Stage0_Joints_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
-	//static int dxQuickStepIsland_Stage1_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
-
-	//static void dxQuickStepIsland_Stage0_Bodies(dxQuickStepperStage0BodiesCallContext *callContext);
-	//static void dxQuickStepIsland_Stage0_Joints(dxQuickStepperStage0JointsCallContext *callContext);
-	//static void dxQuickStepIsland_Stage1(dxQuickStepperStage1CallContext *callContext);
-
-
 	private static class dxQuickStepperLocalContext
 	{
-//		void Initialize(dReal *invI, dJointWithInfo1 *jointinfos, unsigned int nj, 
-//				unsigned int m, unsigned int mfb, const unsigned int *mindex, int *findex, 
-//				dReal *J, dReal *cfm, dReal *lo, dReal *hi, int *jb, dReal *rhs, dReal *Jcopy)
 		void Initialize(double[] invI, DJointWithInfo1[] jointinfos, int nj, 
 				int m, int mfb, final int[] mindex, int[] findex, 
 				double[] J, int[] jb, double[] Jcopy)
@@ -305,6 +210,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			m_nj = nj;
 			m_m = m;
 			m_mfb = mfb;
+			m_valid_findices.set(0);
 			m_mindex = mindex;
 			m_findex = findex; 
 			m_J = J;
@@ -322,9 +228,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		int[]                            m_jb;
 		double[]                         m_J;
 		double[]                         m_Jcopy;
+		final AtomicInteger m_valid_findices = new AtomicInteger();
 	};
 
-	private static class dxQuickStepperStage3CallContext implements CallContext
+	private static class dxQuickStepperStage3CallContext
 	{
 		void Initialize(DxStepperProcessingCallContext callContext, 
 				dxQuickStepperLocalContext localContext, 
@@ -340,7 +247,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		BlockPointer                            m_stage1MemArenaState;
 	};
 
-	private static class dxQuickStepperStage2CallContext implements CallContext
+	private static class dxQuickStepperStage2CallContext
 	{
 		void Initialize(DxStepperProcessingCallContext callContext, 
 				dxQuickStepperLocalContext localContext, 
@@ -349,39 +256,141 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			m_stepperCallContext = callContext;
 			m_localContext = localContext;
 			m_rhs_tmp = rhs_tmp;
-			//m_ji_J = 0;
-			//m_ji_jb = 0;
-			//m_bi = 0;
-			//m_Jrhsi = 0;
+			m_ji_J.set(0);
+			m_ji_jb.set(0);
+			m_bi.set(0);
+			m_Jrhsi.set(0);
 		}
 
 		DxStepperProcessingCallContext m_stepperCallContext;
 		dxQuickStepperLocalContext   m_localContext;
 		double[]                           m_rhs_tmp;
-//		volatile unsigned int           m_ji_J;
-//		volatile unsigned int           m_ji_jb;
-//		volatile unsigned int           m_bi;
-//		volatile unsigned int           m_Jrhsi;
 		final AtomicInteger           m_ji_J = new AtomicInteger();
 		final AtomicInteger           m_ji_jb = new AtomicInteger();
 		final AtomicInteger           m_bi = new AtomicInteger();
 		final AtomicInteger           m_Jrhsi = new AtomicInteger();
 	};
 
-	//static int dxQuickStepIsland_Stage2a_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
-	//static int dxQuickStepIsland_Stage2aSync_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
-	//static int dxQuickStepIsland_Stage2b_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
-	//static int dxQuickStepIsland_Stage2bSync_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
-	//static int dxQuickStepIsland_Stage2c_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
-	//static int dxQuickStepIsland_Stage3_Callback(void *callContext, dcallindex_t callInstanceIndex, dCallReleaseeID callThisReleasee);
+    private static class dxQuickStepperStage4CallContext {
+        void Initialize(DxStepperProcessingCallContext callContext, dxQuickStepperLocalContext localContext,
+                double[] lambda, double[] cforce, double[] iMJ, IndexError[] order, double[] last_lambda,
+                AtomicInteger[] bi_links_or_mi_levels, AtomicInteger[] mi_links) {
+            m_stepperCallContext = callContext;
+            m_localContext = localContext;
+            m_lambda = lambda;
+            m_cforce = cforce;
+            m_iMJ = iMJ;
+            m_order = order;
+            m_last_lambda = last_lambda;
+            m_bi_links_or_mi_levels = bi_links_or_mi_levels;
+            m_mi_links = mi_links;
+            m_LCP_IterationSyncReleasee = null;
+            m_LCP_IterationAllowedThreads = 0;
+            m_LCP_fcStartReleasee = null;
+            m_ji_4a.set(0);
+            m_mi_iMJ.set(0);
+            m_mi_fc.set(0);
+            m_mi_Ad.set(0);
+            m_LCP_iteration = 0;
+            m_cf_4b.set(0);
+            m_ji_4b.set(0);
+        }
 
-	//static void dxQuickStepIsland_Stage2a(dxQuickStepperStage2CallContext *callContext);
-	//static void dxQuickStepIsland_Stage2b(dxQuickStepperStage2CallContext *callContext);
-	//static void dxQuickStepIsland_Stage2c(dxQuickStepperStage2CallContext *callContext);
-	//static void dxQuickStepIsland_Stage3(dxQuickStepperStage3CallContext *callContext);
+        void AssignLCP_IterationData(TaskGroup releaseeInstance, int iterationAllowedThreads) {
+            m_LCP_IterationSyncReleasee = releaseeInstance;
+            m_LCP_IterationAllowedThreads = iterationAllowedThreads;
+        }
 
+        void AssignLCP_fcStartReleasee(TaskGroup releaseeInstance) {
+            m_LCP_fcStartReleasee = releaseeInstance;
+        }
 
-	//***************************************************************************
+        void AssignLCP_fcAllowedThreads(int prepareThreads, int completeThreads) {
+            m_LCP_fcPrepareThreadsRemaining.set(prepareThreads);
+            m_LCP_fcCompleteThreadsTotal = completeThreads;
+        }
+
+        void ResetLCP_fcComputationIndex() {
+            m_mi_fc.set(0);
+        }
+
+        void ResetSOR_ConstraintsReorderVariables(int reorderThreads) {
+            m_SOR_reorderHeadTaken.set(0);
+            m_SOR_reorderTailTaken.set(0);
+            m_SOR_bi_zeroHeadTaken.set(0);
+            m_SOR_bi_zeroTailTaken.set(0);
+            m_SOR_mi_zeroHeadTaken.set(0);
+            m_SOR_mi_zeroTailTaken.set(0);
+            m_SOR_reorderThreadsRemaining.set(reorderThreads);
+        }
+
+        void RecordLCP_IterationStart(int totalThreads, TaskGroup nextReleasee) {
+            m_LCP_iterationThreadsTotal = totalThreads;
+            m_LCP_iterationThreadsRemaining.set(totalThreads);
+            m_LCP_iterationNextReleasee = nextReleasee;
+        }
+
+        DxStepperProcessingCallContext m_stepperCallContext;
+        dxQuickStepperLocalContext m_localContext;
+        double[] m_lambda;
+        double[] m_cforce;
+        double[] m_iMJ;
+        IndexError[] m_order;
+        double[] m_last_lambda;
+        AtomicInteger[] m_bi_links_or_mi_levels;
+        AtomicInteger[] m_mi_links;
+        TaskGroup m_LCP_IterationSyncReleasee;
+        int m_LCP_IterationAllowedThreads;
+        TaskGroup m_LCP_fcStartReleasee;
+        final AtomicInteger m_ji_4a = new AtomicInteger();
+        final AtomicInteger m_mi_iMJ = new AtomicInteger();
+        final AtomicInteger m_mi_fc = new AtomicInteger();
+        final AtomicInteger m_LCP_fcPrepareThreadsRemaining = new AtomicInteger();
+        int m_LCP_fcCompleteThreadsTotal;
+        final AtomicInteger m_mi_Ad = new AtomicInteger();
+        int m_LCP_iteration;
+        int m_LCP_iterationThreadsTotal;
+        final AtomicInteger m_LCP_iterationThreadsRemaining = new AtomicInteger();
+        TaskGroup m_LCP_iterationNextReleasee;
+        final AtomicInteger m_SOR_reorderHeadTaken = new AtomicInteger();
+        final AtomicInteger m_SOR_reorderTailTaken = new AtomicInteger();
+        final AtomicInteger m_SOR_bi_zeroHeadTaken = new AtomicInteger();
+        final AtomicInteger m_SOR_bi_zeroTailTaken = new AtomicInteger();
+        final AtomicInteger m_SOR_mi_zeroHeadTaken = new AtomicInteger();
+        final AtomicInteger m_SOR_mi_zeroTailTaken = new AtomicInteger();
+        final AtomicInteger m_SOR_reorderThreadsRemaining = new AtomicInteger();
+        final AtomicInteger m_cf_4b = new AtomicInteger();
+        final AtomicInteger m_ji_4b = new AtomicInteger();
+    };
+
+    private static class dxQuickStepperStage5CallContext {
+        void Initialize(DxStepperProcessingCallContext callContext, dxQuickStepperLocalContext localContext,
+                BlockPointer stage3MemArenaState) {
+            m_stepperCallContext = callContext;
+            m_localContext = localContext;
+            m_stage3MemArenaState = stage3MemArenaState;
+        }
+
+        DxStepperProcessingCallContext m_stepperCallContext;
+        dxQuickStepperLocalContext m_localContext;
+        BlockPointer m_stage3MemArenaState;
+    };
+
+    private static class dxQuickStepperStage6CallContext {
+    	void Initialize(DxStepperProcessingCallContext callContext, dxQuickStepperLocalContext localContext) {
+            m_stepperCallContext = callContext;
+            m_localContext = localContext;
+            m_bi_6a.set(0);
+            m_bi_6b.set(0);
+        }
+
+        DxStepperProcessingCallContext m_stepperCallContext;
+        dxQuickStepperLocalContext m_localContext;
+        final AtomicInteger            m_bi_6a = new AtomicInteger();
+        final AtomicInteger            m_bi_6b = new AtomicInteger();
+    };
+
+    //***************************************************************************
 	// various common computations involving the matrix J
 
 	/** 
@@ -389,60 +398,38 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	 * (TZ) Performs a 331 multiplication on the 3-5 and 9-11 parts of
 	 * each row and writes the result into iMJ.  
 	 */
-
-	//static void compute_invM_JT (int m, dRealMutablePtr J, dRealMutablePtr iMJ, int *jb,
-	//	dxBody * const *body, dRealPtr invI)
-	private static void compute_invM_JT (final int m, final double[] J, final double[] iMJ, 
+	private static void compute_invM_JT (AtomicInteger mi_storage, final int m, final double[] J, final double[] iMJ, 
 	        final int[]jb,
-			final DxBody[]bodyP, final int bodyOfs, final double[] invI)
+			final DxBody[]bodyP, final int bodyOfs, final double[] invI, int step_size)
 	{
-		int iMJ_ofs = 0;//TZ
-		int j_ofs = 0;//TZ
-		for (int i=0; i<m; i++) {
-			int b1 = jb[i*2];
-			int b2 = jb[i*2+1];
-			double k1 = bodyP[b1+bodyOfs].invMass;
-            for (int j = 0; j != JVE__L_COUNT; j++) iMJ[iMJ_ofs + IMJ__1L_MIN + j] = k1 * J[j_ofs + JME__J1L_MIN + j];
-            int invIrow1 = b1 * IIE__MAX + IIE__MATRIX_MIN;
-            dMultiply0_331 (iMJ, iMJ_ofs + IMJ__1A_MIN, invI, invIrow1, J, j_ofs + JME__J1A_MIN);
-			if (b2 != -1) {
-				double k2 = bodyP[b2+bodyOfs].invMass;
-	            for (int j = 0; j != JVE__L_COUNT; j++) iMJ[iMJ_ofs + IMJ__2L_MIN + j] = k2 * J[j_ofs + JME__J2L_MIN + j];
-	            int invIrow2 = b2 * IIE__MAX + IIE__MATRIX_MIN;
-	            dMultiply0_331 (iMJ, iMJ_ofs + IMJ__2A_MIN, invI, invIrow2, J, j_ofs + JME__J2A_MIN);
-			}
-			iMJ_ofs += IMJ__MAX;
-			j_ofs += JME__MAX;
+		int m_steps = (m + (step_size - 1)) / step_size;
+	    int mi_step;
+	    while ((mi_step = Atomics.ThrsafeIncrementIntUpToLimit(mi_storage, m_steps)) != m_steps) {
+	        int mi = mi_step * step_size;
+	        int miend = mi + Math.min(step_size, m - mi);
+	        int iMJ_ptr = mi * IMJ__MAX;
+	        int J_ptr = mi * JME__MAX;
+	        while (true) {
+		        int b1 = jb[mi * 2];
+				int b2 = jb[mi * 2 + 1];
+				double k1 = bodyP[b1+bodyOfs].invMass;
+	            for (int j = 0; j != JVE__L_COUNT; j++) iMJ[iMJ_ptr + IMJ__1L_MIN + j] = k1 * J[J_ptr + JME__J1L_MIN + j];
+	            int invIrow1 = b1 * IIE__MAX + IIE__MATRIX_MIN;
+	            dMultiply0_331 (iMJ, iMJ_ptr + IMJ__1A_MIN, invI, invIrow1, J, J_ptr + JME__J1A_MIN);
+				if (b2 != -1) {
+					double k2 = bodyP[b2+bodyOfs].invMass;
+		            for (int j = 0; j != JVE__L_COUNT; j++) iMJ[iMJ_ptr + IMJ__2L_MIN + j] = k2 * J[J_ptr + JME__J2L_MIN + j];
+		            int invIrow2 = b2 * IIE__MAX + IIE__MATRIX_MIN;
+		            dMultiply0_331 (iMJ, iMJ_ptr + IMJ__2A_MIN, invI, invIrow2, J, J_ptr + JME__J2A_MIN);
+				}
+	            if (++mi == miend) {
+	                break;
+	            }			
+	            iMJ_ptr += IMJ__MAX;
+	            J_ptr += JME__MAX;
+	        }
 		}
 	}
-
-
-	// compute out = inv(M)*J'*in.
-	//#if WARM_STARTING
-	//static void multiply_invM_JT (int m, int nb, dRealMutablePtr iMJ, int[] *jb,
-	//		dRealMutablePtr in, dRealMutablePtr out)
-//	private static void multiply_invM_JT (int m, int nb, double[] iMJ, int[] jb,
-//			double[] in, double[] out)
-//	{
-//		dSetZero (out,6*nb);
-//		int iMJ_ofs = 0;//final double[] iMJ_ptr = iMJ;
-//		for (int i=0; i<m; i++) {
-//			int b1 = jb[i*2];
-//			int b2 = jb[i*2+1];
-//			final double in_i = in[i];
-//			int out_ofs = b1*6;//double[] out_ptr = out + b1*6;
-//			//for (j=0; j<6; j++) out_ptr[j] += iMJ_ptr[j] * in[i];
-//			for (int j=0; j<6; j++) out[j + out_ofs] += iMJ[j + iMJ_ofs] * in_i;
-//			iMJ_ofs +=6;//iMJ_ptr += 6;
-//			if (b2 != -1) {
-//				out_ofs = b2*6;//out_ptr = out + b2*6;
-//				//for (j=0; j<6; j++) out_ptr[j] += iMJ_ptr[j] * in[i];
-//				for (int j=0; j<6; j++) out[j + out_ofs] += iMJ[j + iMJ_ofs] * in_i;
-//			}
-//			iMJ_ofs +=6;//iMJ_ptr += 6;
-//		}
-//	}
-	//#endif
 
 	/** 
 	 * compute out = J*in. 
@@ -455,189 +442,32 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	 * @param out double[m]
 	 */
 	private static void multiplyAdd_J (AtomicInteger mi_storage, 
-			int m, int in_offset, int in_stride, final double[] J, final int[] jb, final double[] in)
+			int m, int in_offset, int in_stride, final double[] J, final int[] jb, final double[] in, int step_size)
 	{
-		int mi;
-		while ((mi = ThreadingUtils.ThrsafeIncrementIntUpToLimit(mi_storage, m)) != m) {
-			int j_ofs = mi * JME__MAX;
-			int b1 = jb[mi*2];
-			int b2 = jb[mi*2+1];
-			double sum = 0.0;
-			int in_ofs = b1 * in_stride + in_offset;//const dReal *in_ptr = in + (size_t)(unsigned)b1*6;
-			for (int j = 0; j != JME__J1_COUNT; ++j) sum += J[j_ofs + j + JME__J1_MIN] * in[in_ofs+j];
-			if (b2 != -1) {
-				//in_ptr = in + (size_t)(unsigned)b2*6;
-				in_ofs = b2 * in_stride + in_offset;
-				for (int j = 0; j != JME__J2_COUNT; ++j) sum += J[j_ofs + j + JME__J2_MIN] * in[in_ofs+j];
-			}
-			J[j_ofs + JME_RHS] += sum;
-			j_ofs += JME__MAX;
+		int m_steps = (m + (step_size - 1)) / step_size;
+	    int mi_step;
+	    while ((mi_step = Atomics.ThrsafeIncrementIntUpToLimit(mi_storage, m_steps)) != m_steps) {
+	        int mi = mi_step * step_size;
+	        int miend = mi + Math.min(step_size, m - mi);
+	        int J_ptr = mi * JME__MAX;
+	        while (true) {
+				int b1 = jb[mi * 2];
+				int b2 = jb[mi * 2 + 1];
+				double sum = 0.0;
+				int in_ofs = b1 * in_stride + in_offset;
+				for (int j = 0; j != JME__J1_COUNT; ++j) sum += J[J_ptr + j + JME__J1_MIN] * in[in_ofs+j];
+				if (b2 != -1) {
+					in_ofs = b2 * in_stride + in_offset;
+					for (int j = 0; j != JME__J2_COUNT; ++j) sum += J[J_ptr + j + JME__J2_MIN] * in[in_ofs+j];
+				}
+				J[J_ptr + JME_RHS] += sum;
+	            if (++mi == miend) {
+	                break;
+	            }
+	            J_ptr += JME__MAX;
+	        }
 		}
 	}
-
-	// Single threaded versionto be removed later
-	//#if defined(WARM_STARTING) || defined(CHECK_VELOCITY_OBEYS_CONSTRAINT)
-	//TZ: not used...
-//	private static void _multiply_J (int m, final double[] J, final int[]jb,
-//			final double[] in, final double[] out)
-//	{
-//		int J_ofs = 0;//final double[] J_ptr = J;
-//		for (int i=0; i<m; i++) {
-//			int b1 = jb[i*2];
-//			int b2 = jb[i*2+1];
-//			double sum = 0;
-//			int in_ofs = b1*6; //double[] in_ptr = in + b1*6;
-//			for (int j=0; j<6; j++) sum += J[j + J_ofs] * in[j + in_ofs];//J_ptr[j]*in_ptr[j];
-//			J_ofs += 6;//J_ptr += 6;
-//			if (b2 != -1) {
-//				in_ofs = b2*6;//in_ptr = in + b2*6;
-//				for (int j=0; j<6; j++) sum += J[j + J_ofs] * in[j + in_ofs];//J_ptr[j] * in_ptr[j];
-//			}
-//			J_ofs += 6;//J_ptr += 6;
-//			out[i] = sum;
-//		}
-//	}
-	//#endif
-
-	// compute out = (J*inv(M)*J' + cfm)*in.
-	// use z as an nb*6 temporary.
-	//#if WARM_STARTING
-	//static void multiply_J_invM_JT (int m, int nb, dRealMutablePtr J, dRealMutablePtr iMJ, int *jb,
-	//		dRealPtr cfm, dRealMutablePtr z, dRealMutablePtr in, dRealMutablePtr out)
-//	private static void multiply_J_invM_JT (int m, int nb, final double[] J, final double[] iMJ, 
-//			final int []jb,
-//			final double[] cfm, final double[] z, final double[] in, final double[] out)
-//	{
-//		multiply_invM_JT (m,nb,iMJ,jb,in,z);
-//		_multiply_J (m,J,jb,z,out);
-//
-//		// add cfm
-//		for (int i=0; i<m; i++) out[i] += cfm[i] * in[i];
-//	}
-	//#endif
-
-	//***************************************************************************
-	// conjugate gradient method with jacobi preconditioner
-	// THIS IS EXPERIMENTAL CODE that doesn't work too well, so it is ifdefed out.
-	//
-	// adding CFM seems to be critically important to this method.
-
-	//TZ#if 0
-	//
-	////static inline dReal dot (int n, dRealPtr x, dRealPtr y)
-	//static double dot (int n, dRealPtr x, dRealPtr y)
-	//{
-	//	double sum=0;
-	//	for (int i=0; i<n; i++) sum += x[i]*y[i];
-	//	return sum;
-	//}
-	//
-	//
-	//// x = y + z*alpha
-	//
-	//static inline void add (int n, dRealMutablePtr x, dRealPtr y, dRealPtr z, dReal alpha)
-	//{
-	//	for (int i=0; i<n; i++) x[i] = y[i] + z[i]*alpha;
-	//}
-	//
-	//
-	//	static void CG_LCP (dxWorldProcessMemArena *memarena,
-	//	        unsigned int m, unsigned int nb, dRealMutablePtr J, int *jb, dxBody * const *body,
-	//	        dRealPtr invI, dRealMutablePtr lambda, dRealMutablePtr fc, dRealMutablePtr b,
-	//	        dRealMutablePtr lo, dRealMutablePtr hi, dRealPtr cfm, int *findex,
-	//	        dxQuickStepParameters *qs)
-	//	      {
-	//	        const unsigned int num_iterations = qs->num_iterations;
-	//
-	//	        // precompute iMJ = inv(M)*J'
-	//	        dReal *iMJ = memarena->AllocateArray<dReal> ((size_t)m*12);
-	//	        compute_invM_JT (m,J,iMJ,jb,body,invI);
-	//
-	//	        dReal last_rho = 0;
-	//	        dReal *r = memarena->AllocateArray<dReal> (m);
-	//	        dReal *z = memarena->AllocateArray<dReal> (m);
-	//	        dReal *p = memarena->AllocateArray<dReal> (m);
-	//	        dReal *q = memarena->AllocateArray<dReal> (m);
-	//
-	//	        // precompute 1 / diagonals of A
-	//	        dReal *Ad = memarena->AllocateArray<dReal> (m);
-	//			const dReal *iMJ_ptr = iMJ;
-	//			const dReal *J_ptr = J;
-	//	        for (unsigned int i=0; i<m; i++) {
-	//	          dReal sum = 0;
-	//	          for (unsigned int j=0; j<6; j++) sum += iMJ_ptr[j] * J_ptr[j];
-	//	          if (jb[(size_t)i*2+1] != -1) {
-	//	            for (unsigned int j=6; j<12; j++) sum += iMJ_ptr[j] * J_ptr[j];
-	//	          }
-	//	          iMJ_ptr += 12;
-	//	          J_ptr += 12;
-	//	          Ad[i] = REAL(1.0) / (sum + cfm[i]);
-	//	        }
-	//
-	//	      #ifdef WARM_STARTING
-	//	        // compute residual r = b - A*lambda
-	//	        multiply_J_invM_JT (m,nb,J,iMJ,jb,cfm,fc,lambda,r);
-	//	        for (unsigned int k=0; k<m; k++) r[k] = b[k] - r[k];
-	//	      #else
-	//	        dSetZero (lambda,m);
-	//	        memcpy (r,b,(size_t)m*sizeof(dReal));     // residual r = b - A*lambda
-	//	      #endif
-	//
-	//	        for (unsigned int iteration=0; iteration < num_iterations; iteration++) {
-	//	          for (unsigned int i=0; i<m; i++) z[i] = r[i]*Ad[i]; // z = inv(M)*r
-	//	          dReal rho = dot (m,r,z);        // rho = r'*z
-	//
-	//	          // @@@
-	//	          // we must check for convergence, otherwise rho will go to 0 if
-	//	          // we get an exact solution, which will introduce NaNs into the equations.
-	//	          if (rho < 1e-10) {
-	//	            printf ("CG returned at iteration %d\n",iteration);
-	//	            break;
-	//	          }
-	//
-	//	          if (iteration==0) {
-	//	            memcpy (p,z,(size_t)m*sizeof(dReal)); // p = z
-	//	          }
-	//	          else {
-	//	            add (m,p,z,p,rho/last_rho);   // p = z + (rho/last_rho)*p
-	//	          }
-	//
-	//	          // compute q = (J*inv(M)*J')*p
-	//	          multiply_J_invM_JT (m,nb,J,iMJ,jb,cfm,fc,p,q);
-	//
-	//	          dReal alpha = rho/dot (m,p,q);      // alpha = rho/(p'*q)
-	//	          add (m,lambda,lambda,p,alpha);      // lambda = lambda + alpha*p
-	//	          add (m,r,r,q,-alpha);           // r = r - alpha*q
-	//	          last_rho = rho;
-	//	        }
-	//
-	//	        // compute fc = inv(M)*J'*lambda
-	//	        multiply_invM_JT (m,nb,iMJ,jb,lambda,fc);
-	//
-	////TZ#if 0
-	////	// measure solution error
-	////	multiply_J_invM_JT (m,nb,J,iMJ,jb,cfm,fc,lambda,r);
-	////	double error = 0;
-	////	for (i=0; i<m; i++) error += dFabs(r[i] - b[i]);
-	////	printf ("lambda error = %10.6e\n",error);
-	////#endif
-	//}
-	//
-	//#endif
-
-	//***************************************************************************
-	// SOR-LCP method
-
-	// nb is the number of bodies in the body array.
-	// J is an m*12 matrix of constraint rows
-	// jb is an array of first and second body numbers for each constraint row
-	// invI is the global frame inverse inertia for each body (stacked 3x3 matrices)
-	//
-	// this returns lambda and fc (the constraint force).
-	// note: fc is returned as inv(M)*J'*lambda, the constraint force is actually J'*lambda
-	//
-	// b, lo and hi are modified on exit
-
 
 	private static class IndexError {
 //		double error;		// error to sort on
@@ -645,324 +475,32 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		int index;		// row index
 	}
 
-
-	//#ifdef REORDER_CONSTRAINTS
-
-	static {
-		if (REORDER_CONSTRAINTS) {
-			throw new UnsupportedOperationException();
-		}
-	}
-	//static int compare_index_error (const void *a, const void *b)
-//	private static class IndexErrorComparator implements Comparator<IndexError> {
-////	static int compare_index_error (final IndexError a, final IndexError b)
-////	{
-////		//	if (!REORDER_CONSTRAINTS) { return;} //TZ
-////		if (!REORDER_CONSTRAINTS) { throw new IllegalStateException();} //TZ
-////		final IndexError i1 = (IndexError) a;
-////		final IndexError i2 = (IndexError) b;
-////		if (i1.findex == -1 && i2.findex != -1) return -1;
-////		if (i1.findex != -1 && i2.findex == -1) return 1;
-////		if (i1.error < i2.error) return -1;
-////		if (i1.error > i2.error) return 1;
-////		return 0;
-////	}
-//
-//		//TODO is sort order correct (-1,0,1)??
-//		public int compare(IndexError a, IndexError b) {
-//			if (!REORDER_CONSTRAINTS) { throw new IllegalStateException();} //TZ
-//			final IndexError i1 = (IndexError) a;
-//			final IndexError i2 = (IndexError) b;
-//			if (i1.findex == -1 && i2.findex != -1) return -1;
-//			if (i1.findex != -1 && i2.findex == -1) return 1;
-//			if (i1.error < i2.error) return -1;
-//			if (i1.error > i2.error) return 1;
-//			return 0;
-//		}
-//	}
-	//#endif
-
-	
-	//static void SOR_LCP (int m, int nb, dRealMutablePtr J, int *jb, dxBody * const *body,
-	//		dRealPtr invI, dRealMutablePtr lambda, dRealMutablePtr fc, dRealMutablePtr b,
-	//		dRealMutablePtr lo, dRealMutablePtr hi, dRealPtr cfm, int *findex,
-	//		dxQuickStepParameters *qs)
-	private static void SOR_LCP (DxWorldProcessMemArena memarena,
-	        final int m, final int nb, double[] J, int[] jb, final DxBody []bodyP,
-	        final int bodyOfs, final double[] invI, double[] lambda, double[] fc, 
-			final int []findex, dxQuickStepParameters qs)
-	{
-		//TZ not defined
-//		if (WARM_STARTING) {//#ifdef WARM_STARTING
-//			// for warm starting, this seems to be necessary to prevent
-//			// jerkiness in motor-driven joints. i have no idea why this works.
-//			for (int i=0; i<m; i++) lambda[i] *= 0.9;
-//		} else { //#else
-			dSetZero (lambda,m);
-//		}//#endif
-
-		// precompute iMJ = inv(M)*J'
-		//double[] iMJ = new double[m*12];//dRealAllocaArray (iMJ,m*12);
-		double[] iMJ = memarena.AllocateArrayDReal (m*12);
-		compute_invM_JT (m,J,iMJ,jb,bodyP,bodyOfs,invI);
-
-		// compute fc=(inv(M)*J')*lambda. we will incrementally maintain fc
-		// as we change lambda.
-		//not defined:
-//		if (WARM_STARTING) {//TZ #ifdef WARM_STARTING
-//			throw new UnsupportedOperationException();
-//			//multiply_invM_JT (m,nb,iMJ,jb,lambda,fc);
-//		} else {//#else
-		//TODO (TZ) should not be necessary (is created just before given to this method)
-			dSetZero (fc,nb*6);
-//		}//#endif
-
-        {
-            final double sor_w = qs.w;      // SOR over-relaxation parameter
-            // precompute 1 / diagonals of A
-            int iMJ_ofs = 0;//final double[] iMJ_ptr = iMJ;
-            int j_ptr = 0;//double[] J_ptr = J;
-            for (int i=0; i<m; i++ ) {
-                double sum = 0;
-                for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ofs + j + IMJ__1_MIN] * J[j_ptr + j + JME__J1_MIN];
-                int b2 = jb[i*2+1];
-                if (b2 != -1) {
-                    for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ofs + j + IMJ__2_MIN] * J[j_ptr + j + JME__J2_MIN];
-                }
-                double cfm_i = J[j_ptr + JME_CFM];
-                double Ad_i = sor_w / (sum + cfm_i);
-
-                // NOTE: This may seem unnecessary but it's indeed an optimization 
-                // to move multiplication by Ad[i] and cfm[i] out of iteration loop.
-                
-                // scale J and b by Ad
-                J[j_ptr + JME_CFM] = cfm_i * Ad_i;
-                J[j_ptr + JME_RHS] *= Ad_i;
-
-                for (int j = JVE__MIN; j != JVE__MAX; ++j) J[j_ptr + JME__J1_MIN + j] *= Ad_i;
-
-                if (b2 != -1) {
-                    for (int k = JVE__MIN; k != JVE__MAX; ++k) J[j_ptr + JME__J2_MIN + k] *= Ad_i;
-                }
-                iMJ_ofs += IMJ__MAX;
-                j_ptr += JME__MAX;
-            }
-        }
-
-		// order to solve constraint rows in
-		//IndexError *order = (IndexError*) ALLOCA (m*sizeof(IndexError));
-		IndexError[] order = new IndexError[m];
-		for (int iii=0; iii<m; iii++) order[iii] = new IndexError();
-		int head_size = 0;
-
-		if (!REORDER_CONSTRAINTS) {//TZ #ifndef REORDER_CONSTRAINTS
-		    // make sure constraints with findex < 0 come first.
-		    //IndexError *orderhead = order, *ordertail = order + (m - 1);
-		    int orderhead = 0, ordertail = m-1;
-
-		    // Fill the array from both ends
-		    for (int i=0; i<m; i++) {
-		        if (findex[i] == -1) {
-		            order[orderhead].index = i; // Place them at the front
-		            ++orderhead;
-		        } else {
-		            order[ordertail].index = i; // Place them at the end
-		            --ordertail;
-		        }
-		    }
-	        head_size = orderhead;// - order;
-		    dIASSERT (orderhead-ordertail==1);
-		} //#endif
-
-		if (REORDER_CONSTRAINTS) { //#ifdef 
-		  // the lambda computed at the previous iteration.
-		  // this is used to measure error for when we are reordering the indexes.
-		  double[] last_lambda = memarena.AllocateArrayDReal(m);
-		} //#endif
-		
-		
-		final int num_iterations = qs.num_iterations;
-		for (int iteration=0; iteration < num_iterations; iteration++) {
-
-			//TODO commented out for now because it's 'false'
-			if (REORDER_CONSTRAINTS) {//#ifdef REORDER_CONSTRAINTS
-				throw new UnsupportedOperationException(); //May work but is not tested
-//				// constraints with findex < 0 always come first.
-//				if (iteration < 2) {
-//					// for the first two iterations, solve the constraints in
-//					// the given order
-//				    head_size = 0;
-//					for (int i=0; i<m; i++) {
-//						int findex_i = findex[i];				
-//						order[i].error = i;
-//						order[i].findex = findex_i;
-//						order[i].index = i;
-//		                if (findex_i == -1) { ++head_size; }
-//					}
-//				}
-//				else {
-//					// sort the constraints so that the ones converging slowest
-//					// get solved last. use the absolute (not relative) error.
-//					for (int i=0; i<m; i++) {
-//						double v1 = dFabs (lambda[i]);
-//						double v2 = dFabs (last_lambda[i]);
-//						double max = (v1 > v2) ? v1 : v2;
-//						if (max > 0) {
-//							//@@@ relative error: order[i].error = dFabs(lambda[i]-last_lambda[i])/max;
-//							order[i].error = dFabs(lambda[i]-last_lambda[i]);
-//						}
-//						else {
-//							order[i].error = dInfinity;
-//						}
-//		                int findex_i = findex[i];
-//						order[i].findex = findex_i;
-//						order[i].index = i;
-//		                if (findex_i == -1) { ++head_size; }
-//					}
-//				}
-//				//qsort (order,m,sizeof(IndexError),&compare_index_error);
-//				Arrays.sort(order, new IndexErrorComparator());
-//
-//				//@@@ potential optimization: swap lambda and last_lambda pointers rather
-//				//    than copying the data. we must make sure lambda is properly
-//				//    returned to the caller
-//				memcpy (last_lambda,lambda,m);//*sizeof(dReal));
-			}//TZ #endif
-			if (RANDOMLY_REORDER_CONSTRAINTS) {//#ifdef RANDOMLY_REORDER_CONSTRAINTS
-				if ((iteration & 7) == 0) {
-					for (int i=1; i<head_size; i++) {
-					    int swapi = dRandInt(i+1);
-                        IndexError tmp = order[i];
-						order[i] = order[swapi];
-						order[swapi] = tmp;
-					}
-		            int tail_size = m - head_size;
-		            for (int j=1; j<tail_size; j++) {
-		                int swapj = dRandInt(j+1);
-		                IndexError tmp = order[head_size + j];
-		                order[head_size + j] = order[head_size + swapj];
-		                order[head_size + swapj] = tmp;
-		            }
-				}
-			}//#endif
-
-			for (int i=0; i<m; i++) {
-				// @@@ potential optimization: we could pre-sort J and iMJ, thereby
-				//     linearizing access to those arrays. hmmm, this does not seem
-				//     like a win, but we should think carefully about our memory
-				//     access pattern.
-				int index = order[i].index;
-				int j_ofs = index * JME__MAX;
-				double delta;
-				final int NULL = -1;
-				
-			    int b1 = jb[index*2];
-			    int b2 = jb[index*2+1];
-		        int fc_ofs1 = b1 * CFE__MAX;
-		        int fc_ofs2 = (b2 != -1) ? b2 * CFE__MAX : NULL;
-
-				double old_lambda = lambda[index];
-
-			    delta = J[j_ofs + JME_RHS] - old_lambda * J[j_ofs + JME_CFM];
-
-			    //dRealPtr J_ptr = J + index*12;
-			    final int J_ofs = index * JME__MAX;
-			    // @@@ potential optimization: SIMD-ize this and the b2 >= 0 case
-		        delta -= fc[fc_ofs1 + CFE_LX] * J[J_ofs + JME_J1LX] + fc[fc_ofs1 + CFE_LY] * J[J_ofs + JME_J1LY] +
-		        		fc[fc_ofs1 + CFE_LZ] * J[J_ofs + JME_J1LZ] + fc[fc_ofs1 + CFE_AX] * J[J_ofs + JME_J1AX] +
-		        		fc[fc_ofs1 + CFE_AY] * J[J_ofs + JME_J1AY] + fc[fc_ofs1 + CFE_AZ] * J[J_ofs + JME_J1AZ];
-		        // @@@ potential optimization: handle 1-body constraints in a separate
-			    // @@@ potential optimization: handle 1-body constraints in a separate
-			    //     loop to avoid the cost of test & jump?
-			    if (fc_ofs2 != NULL) {
-			        delta -= fc[fc_ofs2 + CFE_LX] * J[J_ofs + JME_J2LX] + fc[fc_ofs2 + CFE_LY] * J[J_ofs + JME_J2LY] +
-			        		fc[fc_ofs2 + CFE_LZ] * J[J_ofs + JME_J2LZ] + fc[fc_ofs2 + CFE_AX] * J[J_ofs + JME_J2AX] +
-			        		fc[fc_ofs2 + CFE_AY] * J[J_ofs + JME_J2AY] + fc[fc_ofs2 + CFE_AZ] * J[J_ofs + JME_J2AZ];
-			    }
-
-			    double hi_act, lo_act;
-			
-			    // set the limits for this constraint. note that 'hicopy' is used.
-			    // this is the place where the QuickStep method differs from the
-			    // direct LCP solving method, since that method only performs this
-			    // limit adjustment once per time step, whereas this method performs
-			    // once per iteration per constraint row.
-			    // the constraints are ordered so that all lambda[] values needed have
-			    // already been computed.
-			    if (findex[index] != -1) {
-			        hi_act = dFabs (J[j_ofs + JME_HI] * lambda[findex[index]]);
-			        lo_act = -hi_act;
-			    } else {
-			        hi_act = J[j_ofs + JME_HI];
-			        lo_act = J[j_ofs + JME_LO];
-			    }
-
-			    // compute lambda and clamp it to [lo,hi].
-			    // @@@ potential optimization: does SSE have clamping instructions
-			    //     to save test+jump penalties here?
-			    double new_lambda = old_lambda + delta;
-			    if (new_lambda < lo_act) {
-			        delta = lo_act-old_lambda;
-			        lambda[index] = lo_act;
-			    }
-			    else if (new_lambda > hi_act) {
-			        delta = hi_act-old_lambda;
-			        lambda[index] = hi_act;
-			    }
-			    else {
-			        lambda[index] = new_lambda;
-			    }
-
-				//@@@ a trick that may or may not help
-				//dReal ramp = (1-((dReal)(iteration+1)/(dReal)num_iterations));
-				//delta *= ramp;
-
-			    final int iMJ_ofs = index*IMJ__MAX; //dRealPtr iMJ_ptr = iMJ + (size_t)index*12;
-				// update fc.
-				// @@@ potential optimization: SIMD for this and the b2 >= 0 case
-			    fc[fc_ofs1 + CFE_LX] += delta * iMJ[iMJ_ofs + 0];//fc_ptr[0] += delta * iMJ_ptr[0];
-				fc[fc_ofs1 + CFE_LY] += delta * iMJ[iMJ_ofs + 1];//fc_ptr[1] += delta * iMJ_ptr[1];
-				fc[fc_ofs1 + CFE_LZ] += delta * iMJ[iMJ_ofs + 2];//fc_ptr[2] += delta * iMJ_ptr[2];
-				fc[fc_ofs1 + CFE_AX] += delta * iMJ[iMJ_ofs + 3];//fc_ptr[3] += delta * iMJ_ptr[3];
-				fc[fc_ofs1 + CFE_AY] += delta * iMJ[iMJ_ofs + 4];//fc_ptr[4] += delta * iMJ_ptr[4];
-				fc[fc_ofs1 + CFE_AZ] += delta * iMJ[iMJ_ofs + 5];//fc_ptr[5] += delta * iMJ_ptr[5];
-				// @@@ potential optimization: handle 1-body constraints in a separate
-				//     loop to avoid the cost of test & jump?
-				if (fc_ofs2 != NULL) {
-					fc[fc_ofs2 + CFE_LX] += delta * iMJ[iMJ_ofs + 6];//fc_ptr[0] += delta * iMJ_ptr[6];
-					fc[fc_ofs2 + CFE_LY] += delta * iMJ[iMJ_ofs + 7];//fc_ptr[1] += delta * iMJ_ptr[7];
-					fc[fc_ofs2 + CFE_LZ] += delta * iMJ[iMJ_ofs + 8];//fc_ptr[2] += delta * iMJ_ptr[8];
-					fc[fc_ofs2 + CFE_AX] += delta * iMJ[iMJ_ofs + 9];//fc_ptr[3] += delta * iMJ_ptr[9];
-					fc[fc_ofs2 + CFE_AY] += delta * iMJ[iMJ_ofs + 10];//fc_ptr[4] += delta * iMJ_ptr[10];
-					fc[fc_ofs2 + CFE_AZ] += delta * iMJ[iMJ_ofs + 11];//fc_ptr[5] += delta * iMJ_ptr[11];
-				}
-			}
-		}
-	}
-
-	
 	private double[] buf_invI = new double[100];
+
 	private double[] ensureSize_invI(int size) {
-		if (buf_invI.length < size || !REUSE_OBJECTS) {
-			buf_invI = new double[size];
+		double[] a = buf_invI;
+		if (a.length < size || !REUSE_OBJECTS) {
+			a = new double[size];
 		} else {
-			Arrays.fill(buf_invI, 0);
+			Arrays.fill(a, 0);
 		}
-		return buf_invI;
+		return a;
 	}
 	private DJointWithInfo1[] buf_jointinfos = new DJointWithInfo1[0];
+
 	private DJointWithInfo1[] ensureSize_jointinfos(int size) {
-		if (buf_jointinfos.length < size || !REUSE_OBJECTS) {
+		DJointWithInfo1[] a = buf_jointinfos;
+		if (a.length < size || !REUSE_OBJECTS) {
 			//TODO we could partially copy the old array...
-			buf_jointinfos = new DJointWithInfo1[size];
+			a = new DJointWithInfo1[size];
 			for (int i = 0; i < size; i++) {
-				buf_jointinfos[i] = new DJointWithInfo1();
+				a[i] = new DJointWithInfo1();
 			}
 		} else {
 			//Obviously this doesn't reset all objects, only the
 			//ones that are likely to be needed.
 			for (int i = 0; i < size; i++) {
-				DJointWithInfo1 j = buf_jointinfos[i];
+				DJointWithInfo1 j = a[i];
 				if (j != null) {
 					j.joint = null;
 					j.info.m = 0;
@@ -970,7 +508,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				}
 			}
 		}
-		return buf_jointinfos;
+		return a;
 	}
 	
 	/*extern */
@@ -979,7 +517,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		if (TIMING) dTimerStart("preprocessing");
 
 	    DxWorldProcessMemArena memarena = callContext.m_stepperArena();
-	    DxWorld world = callContext.m_world();
 	    int nb = callContext.m_islandBodiesCount();
 	    int _nj = callContext.m_islandJointsCount();
 
@@ -990,10 +527,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    memarena.dummy();
 	    //DJointWithInfo1[] jointinfos = new DJointWithInfo1[_nj];
 	    DJointWithInfo1[] jointinfos = ensureSize_jointinfos(_nj);	    
-	    //TODO this is done in dxQuickStepIsland_Stage0_Joints()
-//	    for (int i = 0; i < jointinfos.length; i++) {
-//	    	jointinfos[i] = new DJointWithInfo1();
-//	    }
 	    
 	    final int allowedThreads = callContext.m_stepperAllowedThreads();
 	    dIASSERT(allowedThreads != 0);
@@ -1015,85 +548,55 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    		//(dxQuickStepperStage0JointsCallContext)memarena.AllocateBlock(sizeof(dxQuickStepperStage0JointsCallContext));
 	    stage0JointsCallContext.Initialize(callContext, jointinfos, stage1CallContext.m_stage0Outputs);
 
-//	    if (allowedThreads == 1)
-//	    {
+	    if (allowedThreads == 1)
+	    {
 	        dxQuickStepIsland_Stage0_Bodies(stage0BodiesCallContext);
 	        dxQuickStepIsland_Stage0_Joints(stage0JointsCallContext);
 	        dxQuickStepIsland_Stage1(stage1CallContext);
-//	    }
-//	    else
-//	    {
-//			//TODO
-////			try {
-////				ArrayList<Callable<Boolean>> tasks = new ArrayList<>(); 
-////				for (int i = 0; i < THREADS; i++) {
-////					tasks.add(new Callable<Boolean>() {
-////						@Override
-////						public Boolean call() {
-////							dxQuickStepIsland_Stage0_Bodies(stage0BodiesCallContext);
-////							return Boolean.TRUE;
-////						}
-////					});
-////				}
-////				for (Future<Boolean> f: POOL.invokeAll(tasks, 1, TimeUnit.HOURS)) {
-////					f.get();
-////				}
-////
-////				dxQuickStepIsland_Stage0_Joints(stage0JointsCallContext);
-////				dxQuickStepIsland_Stage1(stage1CallContext);
-////			} catch (InterruptedException e) {
-////				throw new RuntimeException(e);
-////			} catch (ExecutionException e) {
-////				throw new RuntimeException(e);
-////			}
-//
-//			int bodyThreads = allowedThreads;
-//	        int jointThreads = 1;
-//
-//	        Ref<DCallReleasee> stage1CallReleasee = new Ref<DCallReleasee>();
-//	        world.threading().PostThreadedCallForUnawareReleasee(null, stage1CallReleasee, 
-//	        		bodyThreads + jointThreads, callContext.m_finalReleasee(), 
-//	        		null, dxQuickStepIsland_Stage1_Callback, stage1CallContext, 0, 
-//	        		"QuickStepIsland Stage1");
-//
-//	        world.threading().PostThreadedCallsGroup(null, bodyThreads, stage1CallReleasee.get(), 
-//	        		dxQuickStepIsland_Stage0_Bodies_Callback, stage0BodiesCallContext, 
-//	        		"QuickStepIsland Stage0-Bodies");
-//
-//	        world.threading().PostThreadedCall(null, null, 0, stage1CallReleasee.get(), null, 
-//	        		dxQuickStepIsland_Stage0_Joints_Callback, stage0JointsCallContext, 0, 
-//	        		"QuickStepIsland Stage0-Joints");
-//	        dIASSERT(jointThreads == 1);
-//	    }
+	    }
+	    else
+	    {
+	        TaskGroup stage1 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage1", new Runnable() {
+                @Override
+                public void run() {
+                    dxQuickStepIsland_Stage1(stage1CallContext);
+                }
+            });
+            Task joints = stage1.subtask("QuickStepIsland Stage0-Joints", new Runnable() {
+                @Override
+                public void run() {
+                    dxQuickStepIsland_Stage0_Joints(stage0JointsCallContext);
+                }
+            });
+            joints.submit();
+            for (int i = 1; i < allowedThreads; i ++) {
+    	        Task bodies = stage1.subtask("QuickStepIsland Stage0-Bodies", new Runnable() {
+                    @Override
+                    public void run() {
+                        dxQuickStepIsland_Stage0_Bodies(stage0BodiesCallContext);
+                    }
+                });
+    	        bodies.submit();
+            }
+            dxQuickStepIsland_Stage0_Bodies(stage0BodiesCallContext);
+            stage1.submit();
+	    }
 	}    
 
-	private static dThreadedCallFunction dxQuickStepIsland_Stage0_Bodies_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _callContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxQuickStepperStage0BodiesCallContext callContext = (dxQuickStepperStage0BodiesCallContext)_callContext;
-			dxQuickStepIsland_Stage0_Bodies(callContext);
-			return true;
-		}
-	};
-
-	private static 
+	private static
 	void dxQuickStepIsland_Stage0_Bodies(dxQuickStepperStage0BodiesCallContext callContext)
 	{
 	    DxBody[] bodyP = callContext.m_stepperCallContext.m_islandBodiesStartA();
 	    int bodyOfs = callContext.m_stepperCallContext.m_islandBodiesStartOfs();
 	    int nb = callContext.m_stepperCallContext.m_islandBodiesCount();
 
-	    if (ThreadingUtils.ThrsafeExchange(callContext.m_tagsTaken, 1) == 0)
+	    if (Atomics.ThrsafeExchange(callContext.m_tagsTaken, 1) == 0)
 	    {
 	        // number all bodies in the body list - set their tag values
 	        for (int i=0; i<nb; i++) bodyP[bodyOfs+i].tag = i;
 	    }
 
-	    if (ThreadingUtils.ThrsafeExchange(callContext.m_gravityTaken, 1) == 0)
+	    if (Atomics.ThrsafeExchange(callContext.m_gravityTaken, 1) == 0)
 	    {
 	        DxWorld world = callContext.m_stepperCallContext.m_world();
 
@@ -1132,114 +635,94 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    // for all bodies, compute the inertia tensor and its inverse in the global
 	    // frame, and compute the rotational force and add it to the torque
 	    // accumulator. I and invI are a vertical stack of 3x4 matrices, one per body.
-	    {
-	        double[] invIrowA = callContext.m_invI;
-	        int invIrowP = 0;
-	        int bodyIndex = ThreadingUtils.ThrsafeIncrementIntUpToLimit(callContext.m_inertiaBodyIndex, nb);
+        double[] invIrowA = callContext.m_invI;
+        int bodyIndex ;
+        while ((bodyIndex = Atomics.ThrsafeIncrementIntUpToLimit(callContext.m_inertiaBodyIndex, nb)) != nb) {
+            int invIrowP = bodyIndex * IIE__MAX;
+            DMatrix3 tmp = new DMatrix3();
+            DxBody b = bodyP[bodyIndex + bodyOfs];
 
-	        for (int i = 0; i != nb; invIrowP += 12, ++i) {
-	            if (i == bodyIndex) {
-	                DMatrix3 tmp = new DMatrix3();
-	                DxBody b = bodyP[bodyOfs+i];
+            // compute inverse inertia tensor in global frame
+            dMultiply2_333 (tmp,b.invI,b.posr().R());
+            dMultiply0_333 (invIrowA, invIrowP,b.posr().R(),tmp);
 
-	                // compute inverse inertia tensor in global frame
-	                dMultiply2_333 (tmp,b.invI,b.posr().R());
-	                dMultiply0_333 (invIrowA, invIrowP,b.posr().R(),tmp);
-
-	                // Don't apply gyroscopic torques to bodies
-	                // if not flagged or the body is kinematic
-	                if (b.isFlagsGyroscopic() && (b.invMass>0)) {
-	                    DMatrix3 I = new DMatrix3();
-	                    // compute inertia tensor in global frame
-	                    dMultiply2_333 (tmp,b.mass._I,b.posr().R());
-	                    dMultiply0_333 (I,b.posr().R(),tmp);
-	                    // compute rotational force
+            // Don't apply gyroscopic torques to bodies
+            // if not flagged or the body is kinematic
+            if (b.isFlagsGyroscopic() && (b.invMass>0)) {
+                DMatrix3 I = new DMatrix3();
+                // compute inertia tensor in global frame
+                dMultiply2_333 (tmp,b.mass._I,b.posr().R());
+                dMultiply0_333 (I,b.posr().R(),tmp);
+                // compute rotational force
 //	#if 0
 //	                    // Explicit computation
 //	                    dMultiply0_331 (tmp,I,b.avel);
 //	                    dSubtractVectorCross3(b.tacc,b.avel,tmp);
 //	#else
-	                    // Do the implicit computation based on 
-	                    //"Stabilizing Gyroscopic Forces in Rigid Multibody Simulations"
-	                    // (LacoursiÃ¨re 2006)
-	                    double h = callContext.m_stepperCallContext.m_stepSize(); // Step size
-	                    DVector3 L = new DVector3(); // Compute angular momentum
-	                    dMultiply0_331(L,I,b.avel);
-	                    
-	                    // Compute a new effective 'inertia tensor'
-	                    // for the implicit step: the cross-product 
-	                    // matrix of the angular momentum plus the
-	                    // old tensor scaled by the timestep.  
-	                    // Itild may not be symmetric pos-definite, 
-	                    // but we can still use it to compute implicit
-	                    // gyroscopic torques.
-	                    DMatrix3 Itild= new DMatrix3();//{0};  
-	                    dSetCrossMatrixMinus(Itild,L);//,4);
+                // Do the implicit computation based on 
+                //"Stabilizing Gyroscopic Forces in Rigid Multibody Simulations"
+                // (LacoursiÃ¨re 2006)
+                double h = callContext.m_stepperCallContext.m_stepSize(); // Step size
+                DVector3 L = new DVector3(); // Compute angular momentum
+                dMultiply0_331(L,I,b.avel);
+                
+                // Compute a new effective 'inertia tensor'
+                // for the implicit step: the cross-product 
+                // matrix of the angular momentum plus the
+                // old tensor scaled by the timestep.  
+                // Itild may not be symmetric pos-definite, 
+                // but we can still use it to compute implicit
+                // gyroscopic torques.
+                DMatrix3 Itild= new DMatrix3();//{0};  
+                dSetCrossMatrixMinus(Itild,L);//,4);
 //	                    for (int ii=0;ii<12;++ii) {
 //	                      Itild[ii]=Itild[ii]*h+I[ii];
 //	                    }
-	                    Itild.scale(h);
-	                    Itild.add(I);
+                Itild.scale(h);
+                Itild.add(I);
 
-	                    // Scale momentum by inverse time to get 
-	                    // a sort of "torque"
-	                    L.scale(dRecip(h));//dScaleVector3(L,dRecip(h)); 
-	                    // Invert the pseudo-tensor
-	                    DMatrix3 itInv = new DMatrix3();
-	                    // This is a closed-form inversion.
-	                    // It's probably not numerically stable
-	                    // when dealing with small masses with
-	                    // a large asymmetry.
-	                    // An LU decomposition might be better.
-	                    if (dInvertMatrix3(itInv,Itild)!=0) {
-	                        // "Divide" the original tensor
-	                        // by the pseudo-tensor (on the right)
-	                        dMultiply0_333(Itild,I,itInv);
-	                        // Subtract an identity matrix
-	                        //Itild[0]-=1; Itild[5]-=1; Itild[10]-=1;
-	                        Itild.sub(0, 0, 1);
-	                        Itild.sub(1, 1, 1);
-	                        Itild.sub(2, 2, 1);
+                // Scale momentum by inverse time to get 
+                // a sort of "torque"
+                L.scale(dRecip(h));//dScaleVector3(L,dRecip(h)); 
+                // Invert the pseudo-tensor
+                DMatrix3 itInv = new DMatrix3();
+                // This is a closed-form inversion.
+                // It's probably not numerically stable
+                // when dealing with small masses with
+                // a large asymmetry.
+                // An LU decomposition might be better.
+                if (dInvertMatrix3(itInv,Itild)!=0) {
+                    // "Divide" the original tensor
+                    // by the pseudo-tensor (on the right)
+                    dMultiply0_333(Itild,I,itInv);
+                    // Subtract an identity matrix
+                    //Itild[0]-=1; Itild[5]-=1; Itild[10]-=1;
+                    Itild.sub(0, 0, 1);
+                    Itild.sub(1, 1, 1);
+                    Itild.sub(2, 2, 1);
 
-	                        // This new inertia matrix rotates the 
-	                        // momentum to get a new set of torques
-	                        // that will work correctly when applied
-	                        // to the old inertia matrix as explicit
-	                        // torques with a semi-implicit update
-	                        // step.
-	                        DVector3 tau0 = new DVector3();
-	                        dMultiply0_331(tau0,Itild,L);
-	                        
-	                        // Add the gyro torques to the torque 
-	                        // accumulator
-	                        //for (int ii=0;ii<3;++ii) {
-	                        //  b.tacc[ii]+=tau0[ii];
-	                        //}
-	                        b.tacc.add(tau0);
-	                    }
+                    // This new inertia matrix rotates the 
+                    // momentum to get a new set of torques
+                    // that will work correctly when applied
+                    // to the old inertia matrix as explicit
+                    // torques with a semi-implicit update
+                    // step.
+                    DVector3 tau0 = new DVector3();
+                    dMultiply0_331(tau0,Itild,L);
+                    
+                    // Add the gyro torques to the torque 
+                    // accumulator
+                    //for (int ii=0;ii<3;++ii) {
+                    //  b.tacc[ii]+=tau0[ii];
+                    //}
+                    b.tacc.add(tau0);
+                }
 //	#endif
-	                }
-
-	                bodyIndex = ThreadingUtils.ThrsafeIncrementIntUpToLimit(callContext.m_inertiaBodyIndex, nb);
-	            }
-	        }
+            }
 	    }
 	}
 
-	private static dThreadedCallFunction dxQuickStepIsland_Stage0_Joints_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _callContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxQuickStepperStage0JointsCallContext callContext = (dxQuickStepperStage0JointsCallContext)_callContext;
-			dxQuickStepIsland_Stage0_Joints(callContext);
-			return true;
-		}
-	};
-
-	private static 
+	private static
 	void dxQuickStepIsland_Stage0_Joints(dxQuickStepperStage0JointsCallContext callContext)
 	{
 	    DxJoint[] _jointP = callContext.m_stepperCallContext.m_islandJointsStartA();
@@ -1278,19 +761,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    }
 	}
 
-	private static dThreadedCallFunction dxQuickStepIsland_Stage1_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage1CallContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxQuickStepperStage1CallContext stage1CallContext = (dxQuickStepperStage1CallContext)_stage1CallContext;
-			dxQuickStepIsland_Stage1(stage1CallContext);
-			return true;
-		}
-	};
-
 	private static 
 	void dxQuickStepIsland_Stage1(dxQuickStepperStage1CallContext stage1CallContext)
 	{
@@ -1311,7 +781,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			memarena.ShrinkArrayDJointWithInfo1(jointinfos, _nj, nj);
 		}
 
-		DxWorld world = callContext.m_world();
 		//dxBody * const *body = callContext.m_islandBodiesStart;
 		int nb = callContext.m_islandBodiesCount();
 
@@ -1321,7 +790,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 		// if there are constraints, compute the constraint force
 		if (m > 0) {
-			//mindex = memarena.AllocateArray<unsigned int>(2 * (size_t)(nj + 1));
+			//mindex = memarena.AllocateArray<int int>(2 * (size_t)(nj + 1));
 			memarena.dummy();
 			mindex = new int[2 * (nj + 1)];
 			{
@@ -1346,18 +815,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				}
 			}
 
-			memarena.dummy();
-			memarena.dummy();
-			memarena.dummy();
-			memarena.dummy();
-			memarena.dummy();
-			memarena.dummy();
-			memarena.dummy();
-			memarena.dummy();
-			findex = new int[m];//memarena.AllocateArray<int>(m);
-			J = new double[m * JME__MAX];
-			jb = new int[m*2];//memarena.AllocateArray<int>((size_t)m*2);
-			Jcopy = new double[m * JME__MAX];
+			jb = memarena.AllocateArrayInt(m*2);
+			findex = memarena.AllocateArrayInt(m);
+			J = memarena.AllocateArrayDReal(m * JME__MAX);
+			Jcopy = memarena.AllocateArrayDReal(m * JME__MAX);
 		}
 
 		memarena.dummy();
@@ -1367,7 +828,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 		BlockPointer stage1MemarenaState = memarena.SaveState();
 		memarena.dummy();
-		dxQuickStepperStage3CallContext stage3CallContext = new dxQuickStepperStage3CallContext();
+		final dxQuickStepperStage3CallContext stage3CallContext = new dxQuickStepperStage3CallContext();
 		//(dxQuickStepperStage3CallContext*)memarena.AllocateBlock(sizeof(dxQuickStepperStage3CallContext));
 		stage3CallContext.Initialize(callContext, localContext, stage1MemarenaState);
 
@@ -1380,7 +841,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			double[] rhs_tmp = new double[nb*6];
 
 			memarena.dummy();
-			dxQuickStepperStage2CallContext stage2CallContext = new dxQuickStepperStage2CallContext(); 
+			final dxQuickStepperStage2CallContext stage2CallContext = new dxQuickStepperStage2CallContext(); 
 			//(dxQuickStepperStage2CallContext*)memarena.AllocateBlock(sizeof(dxQuickStepperStage2CallContext));
 			stage2CallContext.Initialize(callContext, localContext, rhs_tmp);
 
@@ -1396,22 +857,38 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			}
 			else
 			{
-				final Ref<DCallReleasee> stage3CallReleasee = new Ref<DCallReleasee>();
-				world.threading().PostThreadedCallForUnawareReleasee(null, stage3CallReleasee, 1, callContext.m_finalReleasee(), 
-						null, dxQuickStepIsland_Stage3_Callback, stage3CallContext, 0, "QuickStepIsland Stage3");
-
-				final Ref<DCallReleasee> stage2bSyncReleasee = new Ref<DCallReleasee>();
-				world.threading().PostThreadedCall(
-						null, stage2bSyncReleasee, 1, stage3CallReleasee.get(), 
-						null, dxQuickStepIsland_Stage2bSync_Callback, stage2CallContext, 0, "QuickStepIsland Stage2b Sync");
-
-				final Ref<DCallReleasee> stage2aSyncReleasee = new Ref<DCallReleasee>();
-				world.threading().PostThreadedCall(
-						null, stage2aSyncReleasee, allowedThreads, stage2bSyncReleasee.get(), 
-						null, dxQuickStepIsland_Stage2aSync_Callback, stage2CallContext, 0, "QuickStepIsland Stage2a Sync");
-
-				world.threading().PostThreadedCallsGroup(null, allowedThreads, stage2aSyncReleasee.get(), 
-						dxQuickStepIsland_Stage2a_Callback, stage2CallContext, "QuickStepIsland Stage2a");
+	            final TaskGroup stage3 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage3", new Runnable() {
+	                @Override
+	                public void run() {
+	                    dxQuickStepIsland_Stage3(stage3CallContext);
+	                }
+	            });
+	            final TaskGroup stage2bSync = stage3.subgroup("QuickStepIsland Stage2b Sync", new Runnable() {
+	                @Override
+	                public void run() {
+	                    dxQuickStepIsland_Stage2bSync(stage2CallContext, stage3);
+	                }
+	            });
+                TaskGroup stage2aSync = stage2bSync.subgroup("QuickStepIsland Stage2a Sync", new Runnable() {
+                    @Override
+                    public void run() {
+                        dxQuickStepIsland_Stage2aSync(stage2CallContext, stage2bSync);
+                    }
+                });
+                int stage2a_allowedThreads = CalculateOptimalThreadsCount(nj, allowedThreads, 1);
+                for (int i = 1; i < stage2a_allowedThreads; i ++) {
+                    Task bodies = stage2aSync.subtask("QuickStepIsland Stage2a", new Runnable() {
+                        @Override
+                        public void run() {
+                            dxQuickStepIsland_Stage2a(stage2CallContext);
+                        }
+                    });
+                    bodies.submit();
+                }
+                dxQuickStepIsland_Stage2a(stage2CallContext);
+                stage2aSync.submit();
+                stage2bSync.submit();
+                stage3.submit();
 			}
 		}
 		else {
@@ -1419,20 +896,50 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		}
 	}
 
+	private static 
+	void dxQuickStepIsland_Stage2aSync(final dxQuickStepperStage2CallContext stage2CallContext, TaskGroup group)
+	{
+	    DxStepperProcessingCallContext callContext = stage2CallContext.m_stepperCallContext;
+	    int nb = callContext.m_islandBodiesCount();
 
-	private static dThreadedCallFunction dxQuickStepIsland_Stage2a_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
-			dxQuickStepIsland_Stage2a(stage2CallContext);
-			return true;
-		}
-	};
+	    int allowedThreads = callContext.m_stepperAllowedThreads();
+	    int stage2b_allowedThreads = CalculateOptimalThreadsCount(nb, allowedThreads, dxQUICKSTEPISLAND_STAGE2B_STEP);
 
+        for (int i = 1; i < stage2b_allowedThreads; i ++) {
+	        Task task = group.subtask("QuickStepIsland Stage2b", new Runnable() {
+                @Override
+                public void run() {
+                    dxQuickStepIsland_Stage2b(stage2CallContext);
+                }
+            });
+	        task.submit();	        
+	    }
+	    dxQuickStepIsland_Stage2b(stage2CallContext);
+	}
+
+	private static 
+	void dxQuickStepIsland_Stage2bSync(final dxQuickStepperStage2CallContext stage2CallContext, TaskGroup group)
+	{
+        DxStepperProcessingCallContext callContext = stage2CallContext.m_stepperCallContext;
+        int allowedThreads = callContext.m_stepperAllowedThreads();
+
+	    dxQuickStepperLocalContext localContext = stage2CallContext.m_localContext;
+	    int m = localContext.m_m;
+
+	    int stage2c_allowedThreads = CalculateOptimalThreadsCount(m, allowedThreads, dxQUICKSTEPISLAND_STAGE2C_STEP);
+
+        for (int i = 1; i < stage2c_allowedThreads; i ++) {
+            Task task = group.subtask("QuickStepIsland Stage2c", new Runnable() {
+                @Override
+                public void run() {
+                    dxQuickStepIsland_Stage2c(stage2CallContext);
+                }
+            });
+            task.submit();
+        }
+	    dxQuickStepIsland_Stage2c(stage2CallContext);
+	}
+	
 	private static 
 	void dxQuickStepIsland_Stage2a(dxQuickStepperStage2CallContext stage2CallContext)
 	{
@@ -1467,12 +974,14 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        final double worldERP = world.getERP();
 	        final double worldCFM = world.getCFM();
 
+	        int validFIndices = 0;
+
 	        Info2DescrQuickStep Jinfo = new Info2DescrQuickStep();
 	        Jinfo.setRowskip(JME__MAX, JME__MAX);
 	        Jinfo.setArrays(J, findex);
 		            
 	        int ji;
-	        while ((ji = ThreadingUtils.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_J, nj)) != nj) {
+	        while ((ji = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_J, nj)) != nj) {
 	            final int ofsi = mindex[ji * 2 + 0];
 	            final int infom = mindex[ji * 2 + 2] - ofsi;
 	            int jRow = ofsi * JME__MAX;
@@ -1491,18 +1000,21 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	            DxJoint joint = jointinfos[ji].joint;
 	            joint.getInfo2(stepsizeRecip, worldERP, Jinfo);
 
+	            // findex iteration is compact and is not going to pollute caches - do it first
+	            // adjust returned findex values for global index numbering
+	            for (int j = infom; j != 0; ) {
+	            	--j;
+	            	int fival = findex[j+ofsi];
+	            	if (fival != -1)  {
+	            		findex[j+ofsi] = fival + ofsi;
+	            		validFIndices++;
+	            	}
+	            }
+
 	            for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
 	            	J[jCurr + JME_RHS] *= stepsizeRecip;
 	            	J[jCurr + JME_CFM] *= stepsizeRecip;
 	            	
-	            }
-	            // adjust returned findex values for global index numbering
-	            //int *findex_row = Jinfo.findex;
-	            for (int j = infom; j != 0; ) {
-	            	--j;
-	            	int fival = findex[j+ofsi];
-	            	if (fival != -1) 
-	            		findex[j+ofsi] = fival + ofsi;
 	            }
 
 	            // we need a copy of Jacobian for joint feedbacks
@@ -1520,6 +1032,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
                     }	        
                 }
 	        }
+    	    Atomics.ThrsafeAdd(localContext.m_valid_findices, validFIndices);
 	    }
 
 	    {
@@ -1527,7 +1040,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	        // create an array of body numbers for each joint row
 	        int ji;
-	        while ((ji = ThreadingUtils.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_jb, nj)) != nj) {
+	        while ((ji = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_jb, nj)) != nj) {
 	        	DxJoint joint = jointinfos[ji].joint;
 		                
 	        	int b1 = (joint.node[0].body!=null) ? (joint.node[0].body.tag) : -1;
@@ -1536,44 +1049,12 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        	int jb_end = 2 * mindex[ji * 2 + 2];
 	        	int jb_ptr = 2 * mindex[ji * 2 + 0];
 	        	for (; jb_ptr != jb_end; jb_ptr += 2) {
-	        		jb[jb_ptr] = b1;//jb_ptr[0] = b1;
-	        		jb[jb_ptr+1] = b2;//jb_ptr[1] = b2;
+	        		jb[jb_ptr] = b1;
+	        		jb[jb_ptr+1] = b2;
 	        	}
 	        }
 	    }
 	}
-
-	private static 
-	dThreadedCallFunction dxQuickStepIsland_Stage2aSync_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, int callInstanceIndex,
-				DCallReleasee callThisReleasee) {
-			//callInstanceIndex; // unused
-			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
-			final DxStepperProcessingCallContext callContext = stage2CallContext.m_stepperCallContext;
-			DxWorld world = callContext.m_world();
-			final int allowedThreads = callContext.m_stepperAllowedThreads();
-
-			world.threading().AlterThreadedCallDependenciesCount(callThisReleasee, allowedThreads);
-			world.threading().PostThreadedCallsGroup(null, allowedThreads, callThisReleasee, 
-					dxQuickStepIsland_Stage2b_Callback, stage2CallContext, "QuickStepIsland Stage2b");
-
-			return true;
-		}
-	};
-
-	private static 
-	dThreadedCallFunction dxQuickStepIsland_Stage2b_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, int callInstanceIndex,
-				DCallReleasee callThisReleasee) {
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
-			dxQuickStepIsland_Stage2b(stage2CallContext);
-			return true;
-		}
-	};
 
 	private static 
 	void dxQuickStepIsland_Stage2b(dxQuickStepperStage2CallContext stage2CallContext)
@@ -1598,61 +1079,39 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        // compute the right hand side `rhs'
 	        if (TIMING) dTimerNow ("compute rhs_tmp");
 
+	        int step_size = dxQUICKSTEPISLAND_STAGE2B_STEP;
+	        int nb_steps = (nb + (step_size - 1)) / step_size;
+
 	        // put -(v/h + invM*fe) into rhs_tmp
-	        int bi;
-	        while ((bi = ThreadingUtils.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_bi, nb)) != nb) {
-	            int tmp1currOfs = bi * 6; //+rhs_tmp
-	            int invIrowOfs = bi * (6 * 2); //+invI
-	            DxBody b = bodyA[bodyOfs+bi];
-	            double body_invMass = b.invMass;
-	            for (int j=0; j<3; ++j) 
-	            	rhs_tmp[tmp1currOfs+j] = -(b.facc.get(j) * body_invMass + b.lvel.get(j) * stepsizeRecip);
-	            dMultiply0_331 (rhs_tmp, tmp1currOfs + 3, invI, invIrowOfs, b.tacc);
-	            for (int k=0; k<3; ++k) 
-	            	rhs_tmp[tmp1currOfs+3+k] = -(b.avel.get(k) * stepsizeRecip) - rhs_tmp[tmp1currOfs+3+k];
+	        int bi_step;
+	        while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_bi, nb_steps)) != nb_steps) {
+	            int bi = bi_step * step_size;
+	            int biend = bi + Math.min(step_size, nb - bi);
+	            int rhscurr = bi * RHS__MAX;
+	            int invIrow = bi * IIE__MAX;
+	            while (true) {
+	            	DxBody b = bodyA[bodyOfs+bi];
+		            double body_invMass = b.invMass;
+		            for (int j=dSA__MIN; j<dSA__MAX; ++j) 
+		            	rhs_tmp[rhscurr + RHS__L_MIN + j] = -(b.facc.get(dV3E__AXES_MIN + j) * body_invMass + b.lvel.get(dV3E__AXES_MIN + j) * stepsizeRecip);
+		            dMultiply0_331 (rhs_tmp, rhscurr + RHS__A_MIN, invI, invIrow + IIE__MATRIX_MIN, b.tacc);
+		            for (int k=dSA__MIN; k<dSA__MAX; ++k) 
+		            	rhs_tmp[rhscurr + RHS__A_MIN + k] = -(b.avel.get(dV3E__AXES_MIN + k) * stepsizeRecip) - rhs_tmp[rhscurr + RHS__A_MIN + k];
+	                if (++bi == biend) {
+	                    break;
+	                }
+	                rhscurr += RHS__MAX;
+	                invIrow += IIE__MAX;
+	            }
 	        }
 	    }
 	}
 
 	private static 
-	dThreadedCallFunction dxQuickStepIsland_Stage2bSync_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, int callInstanceIndex,
-				DCallReleasee callThisReleasee) {
-			//(void)callInstanceIndex; // unused
-			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
-			final DxStepperProcessingCallContext callContext = stage2CallContext.m_stepperCallContext;
-			DxWorld world = callContext.m_world();
-			final int allowedThreads = callContext.m_stepperAllowedThreads();
-
-			world.threading().AlterThreadedCallDependenciesCount(callThisReleasee, allowedThreads);
-			world.threading().PostThreadedCallsGroup(null, allowedThreads, callThisReleasee, 
-					dxQuickStepIsland_Stage2c_Callback, stage2CallContext, "QuickStepIsland Stage2c");
-
-			return true;
-		}
-	};
-
-	private static 
-	dThreadedCallFunction dxQuickStepIsland_Stage2c_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage2CallContext, int callInstanceIndex,
-				DCallReleasee callThisReleasee) {
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxQuickStepperStage2CallContext stage2CallContext = (dxQuickStepperStage2CallContext)_stage2CallContext;
-			dxQuickStepIsland_Stage2c(stage2CallContext);
-			return true;
-		}
-	};
-
-	private static 
 	void dxQuickStepIsland_Stage2c(dxQuickStepperStage2CallContext stage2CallContext)
 	{
-	    //const dxStepperProcessingCallContext *callContext = stage2CallContext->m_stepperCallContext;
 		final dxQuickStepperLocalContext localContext = stage2CallContext.m_localContext;
 
-	    //const dReal stepsizeRecip = dRecip(callContext->m_stepSize);
 	    {
 	        // Warning!!!
 	        // This code depends on rhs_tmp and therefore must be in different sub-stage 
@@ -1665,346 +1124,1209 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        final int m = localContext.m_m;
 
 	        // add J*rhs_tmp to rhs
-	        multiplyAdd_J(stage2CallContext.m_Jrhsi, m, RHS__DYNAMICS_MIN, RHS__MAX, J, jb, rhs_tmp);
+	        multiplyAdd_J(stage2CallContext.m_Jrhsi, m, RHS__DYNAMICS_MIN, RHS__MAX, J, jb, rhs_tmp, dxQUICKSTEPISLAND_STAGE2C_STEP);
 	    }
 	}
 
+    private static 
+    void dxQuickStepIsland_Stage3(dxQuickStepperStage3CallContext stage3CallContext)
+    {
+        final DxStepperProcessingCallContext callContext = stage3CallContext.m_stepperCallContext;
+        final dxQuickStepperLocalContext localContext = stage3CallContext.m_localContext;
 
-	private static 
-	dThreadedCallFunction dxQuickStepIsland_Stage3_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext _stage3CallContext, int callInstanceIndex,
-				DCallReleasee callThisReleasee) {
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			dxQuickStepperStage3CallContext stage3CallContext = (dxQuickStepperStage3CallContext)_stage3CallContext;
-			dxQuickStepIsland_Stage3(stage3CallContext);
-			return true;
-		}
-	};
+        DxWorldProcessMemArena memarena = callContext.m_stepperArena();
+        memarena.RestoreState(stage3CallContext.m_stage1MemArenaState);
+        stage3CallContext = null; // WARNING! stage3CallContext is not valid after this point!
+        dIVERIFY(stage3CallContext == null); // To suppress unused variable assignment warnings
+	    BlockPointer stage3MemarenaState = memarena.SaveState();
+	    final dxQuickStepperStage5CallContext stage5CallContext = new dxQuickStepperStage5CallContext();
+	    stage5CallContext.Initialize(callContext, localContext, stage3MemarenaState);
+	    
+        int m = localContext.m_m;
 
-	private static 
-	void dxQuickStepIsland_Stage3(dxQuickStepperStage3CallContext stage3CallContext)
-	{
-	    final DxStepperProcessingCallContext callContext = stage3CallContext.m_stepperCallContext;
-	    final dxQuickStepperLocalContext localContext = stage3CallContext.m_localContext;
+        if (m > 0) {
+            // load lambda from the value saved on the previous iteration
+	        double[] lambda = memarena.AllocateArrayDReal(m);
+            int nb = callContext.m_islandBodiesCount();
 
-	    DxWorldProcessMemArena memarena = callContext.m_stepperArena();
-	    memarena.RestoreState(stage3CallContext.m_stage1MemArenaState);
-	    stage3CallContext = null; // WARNING! stage3CallContext is not valid after this point!
-	    dIVERIFY(stage3CallContext == null); // To suppress unused variable assignment warnings
+            double[] cforce = memarena.AllocateArrayDReal(nb * CFE__MAX);
+            double[] iMJ = memarena.AllocateArrayDReal(m * IMJ__MAX);//, INVMJ_ALIGNMENT);
+	        // order to solve constraint rows in
+	        IndexError[] order = new IndexError[m];
+	        for (int i = 0; i < m; i++) {
+	        	order[i] = new IndexError();
+	        }
+	        double[] last_lambda = null;
+	        if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__BY_ERROR) {
+		        // the lambda computed at the previous iteration.
+		        // this is used to measure error for when we are reordering the indexes.
+	        	last_lambda = memarena.AllocateArrayDReal(m);
+	        }
 
-	    double[] invI = localContext.m_invI;
-	    DJointWithInfo1[] jointinfos = localContext.m_jointinfos;
-	    int nj = localContext.m_nj;
-	    int m = localContext.m_m;
-	    int mfb = localContext.m_mfb;
-	    //const unsigned int *mindex = localContext->m_mindex;
-	    int[] findex = localContext.m_findex;
-	    double[] J = localContext.m_J;
-	    int[] jb = localContext.m_jb;
-        double[] Jcopy = localContext.m_Jcopy;
+	        int allowedThreads = callContext.m_stepperAllowedThreads();
+	        boolean singleThreadedExecution = allowedThreads == 1;
 
-	    DxWorld world = callContext.m_world();
-	    DxBody[] bodyA = callContext.m_islandBodiesStartA();
-	    int bodyOfs = callContext.m_islandBodiesStartOfs();
-	    int nb = callContext.m_islandBodiesCount();
+	        AtomicInteger[] bi_links_or_mi_levels = null;
+	        AtomicInteger[] mi_links = null;
 
-	    if (m > 0) {
-    			
-			// load lambda from the value saved on the previous iteration
-			double[] lambda = memarena.AllocateArrayDReal(m);//new double[m];//dRealAllocaArray (lambda,m);
-			
-			//TZ not defined
-//			if (WARM_STARTING) {//#ifdef WARM_STARTING
-//	           dReal *lambdscurr = lambda;
-//	            const dJointWithInfo1 *jicurr = jointinfos;
-//	            const dJointWithInfo1 *const jiend = jicurr + nj;
-//	            for (; jicurr != jiend; jicurr++) {
-//	                unsigned int infom = jicurr->info.m;
-//	                memcpy (lambdscurr, jicurr->joint->lambda, infom * sizeof(dReal));
-//	                lambdscurr += infom;
-//	            }
-//			}//#endif
+	        if (!singleThreadedExecution && !Threading.JAVA_OPTIMIZED_MULTITHREADING) {
+	        	bi_links_or_mi_levels = new AtomicInteger[Math.max(nb, m)];// memarena->AllocateArray<atomicord32>(dMAX(nb, m));
+	        	mi_links = new AtomicInteger[2 * (m + 1)];// memarena->AllocateArray<atomicord32>(2 * (m + 1));
+	        }
 
-			double[] cforce = memarena.AllocateArrayDReal(nb*6);
-			BlockPointer lcpstate = memarena.BEGIN_STATE_SAVE(); 
-			{
-	            if (TIMING) dTimerNow ("solving LCP problem");
-	            // solve the LCP problem and get lambda and invM*constraint_force
-	            SOR_LCP (memarena,m,nb,J,jb,bodyA,bodyOfs,invI,lambda,cforce,findex,world.qs);
-			}
-			memarena.END_STATE_SAVE(lcpstate);
-			    
-//			System.err.println("SOR_LCP m=" + m + " nb=" + nb + " ");
-//			System.err.println("SOR_LCP J=" + Arrays.toString(J));
-//			System.err.println("SOR_LCP jb=" + Arrays.toString(jb));
-//			System.err.println("SOR_LCP invI=" + Arrays.toString(invI));
-//			System.err.println("SOR_LCP lambda=" + Arrays.toString(lambda));
-//			System.err.println("SOR_LCP cforce=" + Arrays.toString(cforce));
-//			System.err.println("SOR_LCP rhs=" + Arrays.toString(rhs));
-//			System.err.println("SOR_LCP lo=" + Arrays.toString(lo));
-//			System.err.println("SOR_LCP hi=" + Arrays.toString(hi));
-//			System.err.println("SOR_LCP cfm=" + Arrays.toString(cfm));
-//			System.err.println("SOR_LCP findex=" + Arrays.toString(findex));
-//			System.err.println("SOR_LCP qs=" + world.qs.num_iterations + " w=" + world.qs.w);
-			
-			//TZ not defined
-//			if (WARM_STARTING) {//#ifdef WARM_STARTING
-//		    {
-//            // save lambda for the next iteration
-//            //@@@ note that this doesn't work for contact joints yet, as they are
-//            // recreated every iteration
-//            const dReal *lambdacurr = lambda;
-//            const dJointWithInfo1 *jicurr = jointinfos;
-//            const dJointWithInfo1 *const jiend = jicurr + nj;
-//            for (; jicurr != jiend; jicurr++) {
-//                unsigned int infom = jicurr->info.m;
-//                memcpy (jicurr->joint->lambda, lambdacurr, infom * sizeof(dReal));
-//                lambdacurr += infom;
-//            }
-//		      }
-//				//#endif
+	        final dxQuickStepperStage4CallContext stage4CallContext = new dxQuickStepperStage4CallContext();
+	        stage4CallContext.Initialize(callContext, localContext, lambda, cforce, iMJ, order, last_lambda, bi_links_or_mi_levels, mi_links);
+        
+	        if (singleThreadedExecution) {
+	            dxQuickStepIsland_Stage4a(stage4CallContext);
+	            dxQuickStepIsland_Stage4LCP_iMJComputation(stage4CallContext);
+	            dxQuickStepIsland_Stage4LCP_STfcComputation(stage4CallContext);
+	            dxQuickStepIsland_Stage4LCP_AdComputation(stage4CallContext);
+	            dxQuickStepIsland_Stage4LCP_ReorderPrep(stage4CallContext);
+	            
+	            DxWorld world = callContext.m_world();
+	            int num_iterations = world.qs.num_iterations;
+				for (int iteration = 0; iteration < num_iterations; iteration++) {
+					if (IsSORConstraintsReorderRequiredForIteration(iteration)) {
+						stage4CallContext.ResetSOR_ConstraintsReorderVariables(0);
+						dxQuickStepIsland_Stage4LCP_ConstraintsShuffling(stage4CallContext, iteration);
+					}
+					dxQuickStepIsland_Stage4LCP_STIteration(stage4CallContext);
+	            }
+	            dxQuickStepIsland_Stage4b(stage4CallContext);
+	            dxQuickStepIsland_Stage5(stage5CallContext);
+	        } else {
+	            final TaskGroup stage5 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage5", new Runnable() {
+                    @Override
+                    public void run() {
+                        dxQuickStepIsland_Stage5(stage5CallContext);
+                    }
+                });
+	            TaskGroup stage4LCP_IterationSync = stage5.subgroup("QuickStepIsland Stage4LCP_Iteration Sync", new Runnable() {
+	                @Override
+	                public void run() {
+	                    dxQuickStepIsland_Stage4LCP_IterationSync(stage4CallContext, stage5);
+	                }
+	            });
+	            int stage4LCP_Iteration_allowedThreads = CalculateOptimalThreadsCount(m, allowedThreads, 1);
+	            stage4CallContext.AssignLCP_IterationData(stage4LCP_IterationSync, stage4LCP_Iteration_allowedThreads);
 
-			// note that the SOR method overwrites rhs and J at this point, so
-			// they should not be used again.
+	            final TaskGroup stage4LCP_IterationStart = stage4LCP_IterationSync.subgroup("QuickStepIsland Stage4LCP_Iteration Start", new Runnable() {
+                    @Override
+                    public void run() {
+                    	if (Threading.JAVA_OPTIMIZED_MULTITHREADING) {
+                    		dxQuickStepIsland_Stage4LCP_IterationStartJava(stage4CallContext);
+                    	} else {
+                    		dxQuickStepIsland_Stage4LCP_IterationStart(stage4CallContext);
+                    	}
+                    }
+                });
+	            TaskGroup stage4LCP_fcStart = stage4LCP_IterationStart.subgroup("QuickStepIsland Stage4LCP_fc Start", new Runnable() {
+                    @Override
+                    public void run() {
+                        dxQuickStepIsland_Stage4LCP_fcStart(stage4CallContext, stage4LCP_IterationStart);                        
+                    }
+                });
+	            TaskGroup stage4LCP_iMJSync = stage4LCP_IterationStart.subgroup("QuickStepIsland Stage4LCP_iMJ Sync", new Runnable() {
+                    @Override
+                    public void run() {
+                        dxQuickStepIsland_Stage4LCP_iMJSync(stage4CallContext, stage4LCP_IterationStart);
+                    }
+                });
+	            Task stage4LCP_ReorderPrep = stage4LCP_IterationStart.subtask("QuickStepIsland Stage4LCP_ReorderPrep", new Runnable() {
+                    @Override
+                    public void run() {
+                        dxQuickStepIsland_Stage4LCP_ReorderPrep(stage4CallContext);
+                    }
+                });
+	            stage4LCP_ReorderPrep.submit();
+                int nj = localContext.m_nj;
+                int stage4a_allowedThreads = CalculateOptimalThreadsCount(nj, allowedThreads, dxQUICKSTEPISLAND_STAGE4A_STEP);
+                for (int i = 0; i < stage4a_allowedThreads; i++) {
+                    Task stage4a = stage4LCP_fcStart.subtask("QuickStepIsland Stage4a", new Runnable() {
+                        @Override
+                        public void run() {
+                            dxQuickStepIsland_Stage4a(stage4CallContext);
+                        }
+                    });
+                    stage4a.submit();
+                }
+                stage4LCP_fcStart.submit();
+                int stage4LCP_iMJ_allowedThreads = CalculateOptimalThreadsCount(m, allowedThreads, dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP);
+                if (stage4LCP_iMJ_allowedThreads > 1) {
+                    for (int i = 1; i < stage4LCP_iMJ_allowedThreads; i++) {
+                        Task stage4LCP_iMJComputation = stage4LCP_iMJSync.subtask("QuickStepIsland Stage4LCP_iMJ", new Runnable() {
+                            @Override
+                            public void run() {
+                                dxQuickStepIsland_Stage4LCP_iMJComputation(stage4CallContext);
+                            }
+                        });
+                        stage4LCP_iMJComputation.submit();
+                    }
+                }
+                dxQuickStepIsland_Stage4LCP_iMJComputation(stage4CallContext);
+                stage4LCP_iMJSync.submit();
+                stage4LCP_IterationStart.submit();
+                stage4LCP_IterationSync.submit();
+                stage5.submit();
+	        }
+        } else {
+        	dxQuickStepIsland_Stage5(stage5CallContext);
+        }
+    }
 
-			{
-	            double stepsize = callContext.m_stepSize();
-			    // add stepsize * cforce to the body velocity
-			    int cforcecurrP = 0; //cforce
-			    for (int i=0; i<nb; cforcecurrP+=6, i++) {
-			        DxBody b = bodyA[i+bodyOfs];
-			        for (int j=0; j<3; j++) {
-			            b.lvel.add(j, stepsize * cforce[cforcecurrP+j] );
-			            b.avel.add(j, stepsize * cforce[cforcecurrP+3+j] );
-			        }
-			    }
-			}
+    private static 
+    void dxQuickStepIsland_Stage4a(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+        double[] lambda = stage4CallContext.m_lambda;
+        int[] mindex = localContext.m_mindex;
 
-			if (mfb > 0) {
-			    // straightforward computation of joint constraint forces:
-			    // multiply related lambdas with respective J' block for joints
-			    // where feedback was requested
-			    //double[] data = new double[6];
-			    int lambdacurrP = 0;//lambda;
-			    int jcopycurr = 0;//mindex[ji].fbIndex * JCE__MAX;
-			    //int jicurrP = 0;//jointiinfos;
-				//mfb = 0;
-				for (int i=0; i<nj; i++) {
-				    DxJoint joint = jointinfos[i].joint;
-				    int infom = jointinfos[i].info.m;
-					if (joint.feedback != null) {
-						DJoint.DJointFeedback fb = joint.feedback;
-//						double[] data = new double[6];
-			          Multiply1_12q1 (fb.f1, fb.t1, Jcopy, jcopycurr + JCE__J1_MIN, lambda, lambdacurrP, infom);
-////						fb.f1.v[0] = data[0];
-////						fb.f1.v[1] = data[1];
-////						fb.f1.v[2] = data[2];
-////						fb.t1.v[0] = data[3];
-////						fb.t1.v[1] = data[4];
-////						fb.t1.v[2] = data[5];
-						if (joint.node[1].body != null)
-						{
-						    //Multiply1_12q1 (data, Jcopyrow+6, lambdacurr, infom);
-					        Multiply1_12q1 (fb.f2, fb.t2, Jcopy, jcopycurr + JCE__J2_MIN, lambda, lambdacurrP, infom);
-////							fb.f2.v[0] = data[0];
-////							fb.f2.v[1] = data[1];
-////							fb.f2.v[2] = data[2];
-////							fb.t2.v[0] = data[3];
-////							fb.t2.v[1] = data[4];
-////							fb.t2.v[2] = data[5];
-						}
-				          jcopycurr += infom * JCE__MAX;
-			        }
-			      
-			        lambdacurrP += infom;
-				}
-			}
-		}
+        int nj = localContext.m_nj;
+        int step_size = dxQUICKSTEPISLAND_STAGE4A_STEP;
+        int nj_steps = (nj + (step_size - 1)) / step_size;
+        
+        int ji_step;
+        while ((ji_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_ji_4a, nj_steps)) != nj_steps) {
+            int ji = ji_step * step_size;
+            int lambdacurr = mindex[ji * 2];
+            int lambdsnext = mindex[2 * (ji + Math.min(step_size, nj - ji))];
+            dSetZero(lambda, lambdacurr, lambdsnext - lambdacurr);
+        }
+    }
 
-		{
-		    if (TIMING) dTimerNow ("compute velocity update");
-	        double stepsize = callContext.m_stepSize();
-		    // compute the velocity update:
-		    // add stepsize * invM * fe to the body velocity
-		    int invIrowP = 0;//invI
-		    for (int i=0; i<nb; invIrowP += 12, i++) {
-		        DxBody b = bodyA[i+bodyOfs]; 
-		        double body_invMass_mul_stepsize = stepsize * b.invMass;
-		        b.lvel.addScaled(b.facc, body_invMass_mul_stepsize);
-		        b.tacc.scale( stepsize );
-		        dMultiplyAdd0_331 (b.avel, invI,invIrowP, b.tacc);
-		    }
-		}
+    private static 
+    int dxQuickStepIsland_Stage4LCP_IterationSync(final dxQuickStepperStage4CallContext stage4CallContext, TaskGroup group)
+    {
+    	DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+        dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+        
+        int stage4b_allowedThreads = 1;
+        if (IsStage4bJointInfosIterationRequired(localContext)) {
+            int allowedThreads = callContext.m_stepperAllowedThreads();
+            stage4b_allowedThreads += CalculateOptimalThreadsCount(localContext.m_nj, allowedThreads - stage4b_allowedThreads, dxQUICKSTEPISLAND_STAGE4B_STEP);
+        }
 
-		if (CHECK_VELOCITY_OBEYS_CONSTRAINT) {//#ifdef CHECK_VELOCITY_OBEYS_CONSTRAINT
-		    throw new UnsupportedOperationException();
-//		  if (m > 0) {
-//		    BEGIN_STATE_SAVE(memarena, velstate) {
-//		      dReal *vel = memarena->AllocateArray<dReal>((size_t)nb*6);
-//
-//		      // check that the updated velocity obeys the constraint (this check needs unmodified J)
-//		      dReal *velcurr = vel;
-//		      dxBody *bodycurr = body, *const bodyend = body + nb;
-//		      for (; bodycurr != bodyend; velcurr += 6, bodycurr++) {
-//		        for (unsigned int j=0; j<3; j++) {
-//		          velcurr[j] = bodycurr->lvel[j];
-//		          velcurr[3+j] = bodycurr->avel[j];
-//		        }
-//		      }
-//		      dReal *tmp = memarena->AllocateArray<dReal> (m);
-//		      _multiply_J (m,J,jb,vel,tmp);
-//		      dReal error = 0;
-//		      for (unsigned int i=0; i<m; i++) error += dFabs(tmp[i]);
-//		      printf ("velocity error = %10.6e\n",error);
-//		    
-//		    } END_STATE_SAVE(memarena, velstate)
-//		  }
-		} //#endif
-
-		{
-	        double stepsize = callContext.m_stepSize();
-    		// update the position and orientation from the new linear/angular velocity
-    		// (over the given timestep)
-		    if (TIMING) dTimerNow ("update position");
-		    for (int i=0; i<nb; i++) {
-		        bodyA[i+bodyOfs].dxStepBody (stepsize);
-		    }
-		}
-		
-		{
-		    if (TIMING) dTimerNow ("tidy up");
+        for (int i = 1; i < stage4b_allowedThreads; i ++) {
+            Task task = group.subtask("QuickStepIsland Stage4b", new Runnable() {
+                @Override
+                public void run() {
+                    dxQuickStepIsland_Stage4b(stage4CallContext);
+                }
+            });
+            task.submit();
+        }
+        dxQuickStepIsland_Stage4b(stage4CallContext);
+        return 1;
+    }
     
-    		// zero all force accumulators
-    		for (int i=0; i<nb; i++) {
-    		    DxBody b = bodyA[i+bodyOfs];
-    			b.facc.setZero();//dSetZero (body[i].facc,3);
-    			b.tacc.setZero();//dSetZero (body[i].tacc,3);
-    		}
-		}
-
-		if (TIMING) dTimerEnd();
-		if (TIMING) if (m > 0) dTimerReport (stdout,1);
+    private static 
+	void dxQuickStepIsland_Stage4LCP_iMJComputation(dxQuickStepperStage4CallContext stage4CallContext)
+	{
+	    DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+	    dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+	
+	    double[]iMJ = stage4CallContext.m_iMJ;
+	    int m = localContext.m_m;
+	    double[]J = localContext.m_J;
+	    int[]jb = localContext.m_jb;
+	    DxBody[] body = callContext.m_islandBodiesStartA();
+	    int bodyOfs = callContext.m_islandBodiesStartOfs();
+	    double[]invI = localContext.m_invI;
+	
+	    // precompute iMJ = inv(M)*J'
+	    compute_invM_JT(stage4CallContext.m_mi_iMJ, m, J, iMJ, jb, body, bodyOfs, invI, dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP);
 	}
 
-//	static size_t EstimateGR_LCPMemoryRequirements(unsigned int m)
-//	{
-//	    //TZ not defined
-//	    #ifdef USE_CG_LCP
-//	  size_t res = dEFFICIENT_SIZE(sizeof(dReal) * 12 * (size_t)m); // for iMJ
-//	  res += 5 * dEFFICIENT_SIZE(sizeof(dReal) * (size_t)m); // for r, z, p, q, Ad
-//	  return res;
-//	    #endif
-//	}
+    private static
+    void dxQuickStepIsland_Stage4LCP_iMJSync(final dxQuickStepperStage4CallContext stage4CallContext, TaskGroup group)
+    {
+        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+        dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+        
+        int m = localContext.m_m;
+        int allowedThreads = callContext.m_stepperAllowedThreads();
 
-//	private static final int sizeof(Class<?> c) {
-//	    if (c == double.class) {
-//	        return 8;
-//	    } else if (c == int.class) {
-//	        return 4;
-//	    } else {
-//	        throw new IllegalArgumentException(c.getName());
-//	    }
-//	}
+        int stage4LCP_Ad_allowedThreads = CalculateOptimalThreadsCount(m, allowedThreads, dxQUICKSTEPISLAND_STAGE4LCP_AD_STEP);
+
+        for (int i = 1; i < stage4LCP_Ad_allowedThreads; i ++) {
+            Task task = group.subtask("QuickStepIsland Stage4LCP_Ad", new Runnable() {
+                @Override
+                public void run() {
+                    dxQuickStepIsland_Stage4LCP_AdComputation(stage4CallContext);
+                }
+            });
+            task.submit();
+        }
+        dxQuickStepIsland_Stage4LCP_AdComputation(stage4CallContext);
+    }
+
+    private static 
+    void dxQuickStepIsland_Stage4LCP_fcStart(final dxQuickStepperStage4CallContext stage4CallContext, TaskGroup group)
+    {
+        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+        dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+
+        int fcPrepareComplexity = localContext.m_m;
+        int fcCompleteComplexity = 0;
+
+        int allowedThreads = callContext.m_stepperAllowedThreads();
+        int stage4LCP_fcPrepare_allowedThreads = CalculateOptimalThreadsCount(fcPrepareComplexity, allowedThreads, dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP);
+        int stage4LCP_fcComplete_allowedThreads = CalculateOptimalThreadsCount(fcCompleteComplexity, allowedThreads, dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP);
+        stage4CallContext.AssignLCP_fcAllowedThreads(stage4LCP_fcPrepare_allowedThreads, stage4LCP_fcComplete_allowedThreads);
+
+        for (int i = 1; i < stage4LCP_fcPrepare_allowedThreads; i ++) {
+            Task task = group.subtask("QuickStepIsland Stage4LCP_fc", new Runnable() {
+                @Override
+                public void run() {
+                	dxQuickStepIsland_Stage4LCP_MTfcComputation(stage4CallContext);
+                }
+            });
+            task.submit();
+        }
+        dxQuickStepIsland_Stage4LCP_MTfcComputation(stage4CallContext);
+    }
+
+    private static 
+    void dxQuickStepIsland_Stage4LCP_MTfcComputation(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        dxQuickStepIsland_Stage4LCP_MTfcComputation_cold(stage4CallContext);
+    }
+
+    private static 
+    void dxQuickStepIsland_Stage4LCP_MTfcComputation_cold(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+    
+        double[] fc = stage4CallContext.m_cforce;
+        int nb = callContext.m_islandBodiesCount();
+        int step_size = dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP;
+        int nb_steps = (nb + (step_size - 1)) / step_size;
+    
+        int bi_step;
+        while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_mi_fc, nb_steps)) != nb_steps) {
+            int bi = bi_step * step_size;
+            int bicnt = Math.min(step_size, nb - bi);
+            dSetZero(fc, bi * CFE__MAX, bicnt * CFE__MAX);
+        }
+    }
+
+    // TODO: not needed if we stick to allocating m_cforce on each call
+    private static
+    void dxQuickStepIsland_Stage4LCP_STfcComputation(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+    	double[] fc = stage4CallContext.m_cforce;
+        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+        int nb = callContext.m_islandBodiesCount();
+        dSetZero(fc, nb * CFE__MAX);
+    }
+    
+    private static
+    void dxQuickStepIsland_Stage4LCP_AdComputation(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+	    dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+
+	    int[]jb = localContext.m_jb;
+	    double[]J = localContext.m_J;
+	    int m = localContext.m_m;
+
+        DxWorld world = callContext.m_world();
+        dxQuickStepParameters qs = world.qs;
+        double sor_w = qs.w;		// SOR over-relaxation parameter
+
+        double[]iMJ = stage4CallContext.m_iMJ;
+
+        int step_size = dxQUICKSTEPISLAND_STAGE4LCP_AD_STEP;
+        int m_steps = (m + (step_size - 1)) / step_size;
+
+        int mi_step;
+        while ((mi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_mi_Ad, m_steps)) != m_steps) {
+            int mi = mi_step * step_size;
+            int miend = mi + Math.min(step_size, m - mi);
+
+            int iMJ_ptr = mi * IMJ__MAX;
+            int j_ptr = mi * JME__MAX;
+            while (true) {
+                double sum = 0;
+                for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ptr + j + IMJ__1_MIN] * J[j_ptr + j + JME__J1_MIN];
+                int b2 = jb[mi*2+1];
+                if (b2 != -1) {
+                    for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ptr + j + IMJ__2_MIN] * J[j_ptr + j + JME__J2_MIN];
+                }
+                double cfm_i = J[j_ptr + JME_CFM];
+                double Ad_i = sor_w / (sum + cfm_i);
+
+                // NOTE: This may seem unnecessary but it's indeed an optimization 
+                // to move multiplication by Ad[i] and cfm[i] out of iteration loop.
+                
+                // scale J and b by Ad
+                J[j_ptr + JME_CFM] = cfm_i * Ad_i;
+                J[j_ptr + JME_RHS] *= Ad_i;
+
+                for (int j = JVE__MIN; j != JVE__MAX; ++j) J[j_ptr + JME__J1_MIN + j] *= Ad_i;
+
+                if (b2 != -1) {
+                    for (int k = JVE__MIN; k != JVE__MAX; ++k) J[j_ptr + JME__J2_MIN + k] *= Ad_i;
+                }
+                if (++mi == miend) {
+                    break;
+                }
+                iMJ_ptr += IMJ__MAX;
+                j_ptr += JME__MAX;
+            }
+            
+        }
+    }
+    
+    private static
+    void dxQuickStepIsland_Stage4LCP_ReorderPrep(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+	    dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+	    int m = localContext.m_m;
+        int valid_findices = localContext.m_valid_findices.get();
+
+        IndexError []order = stage4CallContext.m_order;
+        // make sure constraints with findex < 0 come first.
+        int orderhead = 0;
+        int ordertail = (m - valid_findices);
+        int[] findex = localContext.m_findex;
+
+        // Fill the array from both ends
+        for (int i = 0; i != m; ++i) {
+            if (findex[i] == -1) {
+                order[orderhead].index = i; // Place them at the front
+                ++orderhead;
+            } else {
+                order[ordertail].index = i; // Place them at the end
+                ++ordertail;
+            }
+        }
+    }
+
+    private static
+    void dxQuickStepIsland_Stage4LCP_IterationStartJava(final dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+        DxWorld world = callContext.m_world();
+        int num_iterations = world.qs.num_iterations;
+		for (int iteration = 0; iteration < num_iterations; iteration++) {
+			if (IsSORConstraintsReorderRequiredForIteration(iteration)) {
+				stage4CallContext.ResetSOR_ConstraintsReorderVariables(0);
+				dxQuickStepIsland_Stage4LCP_ConstraintsShuffling(stage4CallContext, iteration);
+			}
+			dxQuickStepIsland_Stage4LCP_STIteration(stage4CallContext);
+        }
+
+    }
+    
+    private static
+    int dxQuickStepIsland_Stage4LCP_IterationStart(final dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+
+        DxWorld world = callContext.m_world();
+        dxQuickStepParameters qs = world.qs;
+
+        int num_iterations = qs.num_iterations;
+        int iteration = stage4CallContext.m_LCP_iteration;
+        
+        if (iteration < num_iterations)
+        {
+            int stage4LCP_Iteration_allowedThreads = stage4CallContext.m_LCP_IterationAllowedThreads;
+
+            boolean reorderRequired = false;
+
+            if (IsSORConstraintsReorderRequiredForIteration(iteration))
+            {
+                reorderRequired = true;
+            }
+
+            // Increment iterations counter in advance as anyway it needs to be incremented 
+            // before independent tasks (the reordering or the iteration) are posted
+            // (otherwise next iteration may complete before the increment 
+            // and the same iteration index may be used again).
+            stage4CallContext.m_LCP_iteration = iteration + 1;
+
+            TaskGroup iterationSync = stage4CallContext.m_LCP_IterationSyncReleasee;
+            TaskGroup stage4LCP_IterationStart = null;
+            if (iteration + 1 != num_iterations) {
+            	stage4LCP_IterationStart = iterationSync.subgroup("QuickStepIsland Stage4LCP_Iteration Start", new Runnable() {
+                    @Override
+                    public void run() {
+                        dxQuickStepIsland_Stage4LCP_IterationStart(stage4CallContext);
+                    }
+                });
+            }
+            final TaskGroup finalGroup = stage4LCP_IterationStart != null ? stage4LCP_IterationStart : iterationSync;
+            
+            if (reorderRequired) {
+                int reorderThreads = 2;
+
+                stage4CallContext.ResetSOR_ConstraintsReorderVariables(reorderThreads);
+
+                TaskGroup stage4LCP_ConstraintsReorderingSync = finalGroup.subgroup("QuickStepIsland Stage4LCP_ConstraintsReordering Sync", new Runnable() {
+                    @Override
+                    public void run() {
+                        dxQuickStepIsland_Stage4LCP_ConstraintsReorderingSync(stage4CallContext, finalGroup);                        
+                    }
+                });
+                for (int i = 1; i < reorderThreads; i++) {
+                    Task stage4LCP_ConstraintsReordering = stage4LCP_ConstraintsReorderingSync.subtask("QuickStepIsland Stage4LCP_ConstraintsReordering", new Runnable() {
+                        @Override
+                        public void run() {
+                            dxQuickStepIsland_Stage4LCP_ConstraintsReordering(stage4CallContext);
+                        }
+                    });
+                    stage4LCP_ConstraintsReordering.submit();
+                }
+                dxQuickStepIsland_Stage4LCP_ConstraintsReordering(stage4CallContext);
+                stage4LCP_ConstraintsReorderingSync.submit();
+            } else {
+                dxQuickStepIsland_Stage4LCP_DependencyMapFromSavedLevelsReconstruction(stage4CallContext);
+                stage4CallContext.RecordLCP_IterationStart(stage4LCP_Iteration_allowedThreads, finalGroup);
+                final int knownToBeCompletedLevel = dxHEAD_INDEX;
+                for (int i = 1; i < stage4LCP_Iteration_allowedThreads; i ++) {
+                    Task task = finalGroup.subtask("QuickStepIsland Stage4LCP_Iteration", new Runnable() {
+                        @Override
+                        public void run() {
+                        	dxQuickStepIsland_Stage4LCP_MTIteration(stage4CallContext, knownToBeCompletedLevel);
+                        }
+                    });
+                    task.submit();
+                }
+                dxQuickStepIsland_Stage4LCP_MTIteration(stage4CallContext, knownToBeCompletedLevel);
+            }
+            if (stage4LCP_IterationStart != null) {
+            	stage4LCP_IterationStart.submit();
+            }
+        }
+
+        return 1;
+    }
+    
+    private static 
+    void dxQuickStepIsland_Stage4LCP_ConstraintsReordering(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        int iteration = stage4CallContext.m_LCP_iteration - 1; // Iteration is pre-incremented before scheduled tasks are released for execution
+        if (dxQuickStepIsland_Stage4LCP_ConstraintsShuffling(stage4CallContext, iteration)) {
+            dxQuickStepIsland_Stage4LCP_LinksArraysZeroing(stage4CallContext);
+            if (Atomics.ThrsafeExchangeAdd(stage4CallContext.m_SOR_reorderThreadsRemaining, -1) == 1) { // If last thread has exited the reordering routine...
+                // Rebuild the object dependency map
+                dxQuickStepIsland_Stage4LCP_DependencyMapForNewOrderRebuilding(stage4CallContext);
+            }
+        }
+    }
+
+    private static 
+    boolean dxQuickStepIsland_Stage4LCP_ConstraintsShuffling(dxQuickStepperStage4CallContext stage4CallContext, int iteration)
+    {
+        boolean result = false;
+        if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__BY_ERROR) {
+            /*
+            #if CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__BY_ERROR
+                struct ConstraintsReorderingHelper
+                {
+                    void operator ()(dxQuickStepperStage4CallContext *stage4CallContext, int int startIndex, int int endIndex)
+                    {
+                        const dReal *lambda = stage4CallContext->m_lambda;
+                        dReal *last_lambda = stage4CallContext->m_last_lambda;
+                        IndexError *order = stage4CallContext->m_order;
+
+                        for (int int index = startIndex; index != endIndex; ++index) {
+                            int int i = order[index].index;
+                            dReal lambda_i = lambda[i];
+                            if (lambda_i != REAL(0.0)) {
+                                //@@@ relative error: order[i].error = dFabs(lambda[i]-last_lambda[i])/max;
+                                order[index].error = dFabs(lambda_i - last_lambda[i]);
+                            }
+                            else if (last_lambda[i] != REAL(0.0)) {
+                                //@@@ relative error: order[i].error = dFabs(lambda[i]-last_lambda[i])/max;
+                                order[index].error = dFabs(last_lambda[i]); // lambda_i == 0
+                            }
+                            else {
+                                order[index].error = dInfinity;
+                            }
+                            // Finally copy the lambda for the next iteration
+                            last_lambda[i] = lambda_i;
+                        }
+                        qsort (order + startIndex, endIndex - startIndex, sizeof(IndexError), &compare_index_error);
+                    }
+                };
+
+                if (iteration > 1) { // Only reorder starting from iteration #2
+                    // sort the constraints so that the ones converging slowest
+                    // get solved last. use the absolute (not relative) error.
+                    if (ThrsafeExchange(&stage4CallContext->m_SOR_reorderHeadTaken, 1) == 0) {
+                        // Process the head
+                        const dxQuickStepperLocalContext *localContext = stage4CallContext->m_localContext;
+                        ConstraintsReorderingHelper()(stage4CallContext, 0, localContext->m_m - localContext->m_valid_findices);
+                    }
+                    
+                    if (ThrsafeExchange(&stage4CallContext->m_SOR_reorderTailTaken, 1) == 0) {
+                        // Process the tail
+                        const dxQuickStepperLocalContext *localContext = stage4CallContext->m_localContext;
+                        ConstraintsReorderingHelper()(stage4CallContext, localContext->m_m - localContext->m_valid_findices, localContext->m_m);
+                    }
+
+                    result = true;
+                }
+                else if (iteration == 1) {
+                    if (ThrsafeExchange(&stage4CallContext->m_SOR_reorderHeadTaken, 1) == 0) {
+                        // Process the first half
+                        const dxQuickStepperLocalContext *localContext = stage4CallContext->m_localContext;
+                        int int startIndex = 0;
+                        int int indicesCount = localContext->m_m / 2;
+                        // Just copy the lambdas for the next iteration
+                        memcpy(stage4CallContext->m_last_lambda + startIndex, stage4CallContext->m_lambda + startIndex, indicesCount * sizeof(dReal));
+                    }
+
+                    if (ThrsafeExchange(&stage4CallContext->m_SOR_reorderTailTaken, 1) == 0) {
+                        // Process the second half
+                        const dxQuickStepperLocalContext *localContext = stage4CallContext->m_localContext;
+                        int int startIndex = localContext->m_m / 2;
+                        int int indicesCount = localContext->m_m - startIndex;
+                        // Just copy the lambdas for the next iteration
+                        memcpy(stage4CallContext->m_last_lambda + startIndex, stage4CallContext->m_lambda + startIndex, indicesCount * sizeof(dReal));
+                    }
+
+                    // result = false; -- already 'false'
+                } 
+                else if (iteration < 1) {
+                    result = true; // return true on 0th iteration to build dependency map for initial order 
+                }
+            #elif CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__RANDOMLY
+        */
+        } else if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__RANDOMLY) {
+			if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_reorderHeadTaken, 1) == 0) {
+				// Process the head
+				dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+				ConstraintsReorderingHelper(stage4CallContext, 0,
+						localContext.m_m - localContext.m_valid_findices.get());
+			}
+
+			if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_reorderTailTaken, 1) == 0) {
+				// Process the tail
+				dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+				ConstraintsReorderingHelper(stage4CallContext, localContext.m_m - localContext.m_valid_findices.get(),
+						localContext.m_valid_findices.get());
+			}
+			result = true;
+        } else {
+        	if (iteration == 0) {
+        		result = true; // return true on 0th iteration to build dependency map for initial order 
+        	}
+        }
+        return result;
+    }
+
+	private static void ConstraintsReorderingHelper(dxQuickStepperStage4CallContext stage4CallContext, int startIndex,
+			int indicesCount) {
+		IndexError[] order = stage4CallContext.m_order;
+		for (int index = 1; index < indicesCount; ++index) {
+			int swapIndex = dRandInt(index + 1);
+			IndexError tmp = order[startIndex + index];
+			order[startIndex + index] = order[startIndex + swapIndex];
+			order[startIndex + swapIndex] = tmp;
+		}
+	}
+
+	// NOTE: Respective loop called a single thread only
+	private static 
+	void dxQuickStepIsland_Stage4LCP_LinksArraysZeroing(dxQuickStepperStage4CallContext stage4CallContext)
+	{
+        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+        dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+	    if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_bi_zeroHeadTaken, 1) == 0) {
+	        AtomicInteger[] bi_links = stage4CallContext.m_bi_links_or_mi_levels;/*=[nb]*/
+	        int nb = callContext.m_islandBodiesCount();
+	        int m = localContext.m_m;
+	        int l = Math.max(m, nb) / 2;
+            for (int i = 0; i < l; i++) {
+	            bi_links[i] = new AtomicInteger();
+	        }
+	    }
+	    if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_bi_zeroTailTaken, 1) == 0) {
+            AtomicInteger[] bi_links = stage4CallContext.m_bi_links_or_mi_levels;/*=[nb]*/
+            int nb = callContext.m_islandBodiesCount();
+	        int m = localContext.m_m;
+	        int max = Math.max(m, nb);
+	        int l = max / 2;
+            for (int i = l; i < max; i++) {
+                bi_links[i] = new AtomicInteger();
+            }
+	    }
+	    if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_mi_zeroHeadTaken, 1) == 0) {
+	        AtomicInteger[] mi_links = stage4CallContext.m_mi_links;/*=[2*(m + 1)]*/
+	        int m = localContext.m_m;
+            for (int i = 0; i < m + 1; i++) {
+                mi_links[i] = new AtomicInteger();
+            }
+	    }
+	    if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_mi_zeroTailTaken, 1) == 0) {
+            AtomicInteger[] mi_links = stage4CallContext.m_mi_links;/*=[2*(m + 1)]*/
+	        int m = localContext.m_m;
+            for (int i = 0; i < m + 1; i++) {
+                mi_links[i + m + 1] = new AtomicInteger();
+            }
+	    }
+	}
+
+	// NOTE: Run in a single thread only
+    private static 
+    void dxQuickStepIsland_Stage4LCP_DependencyMapForNewOrderRebuilding(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+        
+        AtomicInteger[] bi_links = stage4CallContext.m_bi_links_or_mi_levels;
+        AtomicInteger[] mi_links = stage4CallContext.m_mi_links;
+
+        IndexError[] order = stage4CallContext.m_order;
+        int[] jb = localContext.m_jb;
+
+        int m = localContext.m_m;
+        for (int i = 0; i != m; ++i) {
+            int index = order[i].index;
+
+            int b1 = jb[index * 2];
+            int b2 = jb[index * 2 + 1];
+
+            int encioded_i = dxENCODE_INDEX(i);
+
+            int encoded_depi = bi_links[b1].get();
+            bi_links[b1].set(encioded_i);
+
+            if (b2 != -1 && b2 != b1) {
+                if (encoded_depi < bi_links[b2].get()) {
+                    encoded_depi = bi_links[b2].get();
+                }
+                bi_links[b2].set(encioded_i);
+            }
+
+            // OD: There is also a dependency on findex[index],
+            // however the findex can only refer to the rows of the same joint 
+            // and hence that index is going to have the same bodies. Since the 
+            // indices are sorted in a way that the meaningful findex values 
+            // always come last, the dependency of findex[index] is going to
+            // be implicitly satisfied via matching bodies at smaller "i"s.
+
+            // Check that the dependency targets an earlier "i"
+            dIASSERT(encoded_depi < encioded_i);
+
+            int encoded_downi = mi_links[encoded_depi * 2 + 1].get();
+            mi_links[encoded_depi * 2 + 1].set(encioded_i); // Link i as down-dependency for depi
+            mi_links[encioded_i * 2].set(encoded_downi); // Link previous down-chain as the level-dependency with i
+        }
+    }
+
+	private final static int dxHEAD_INDEX = 0;
+    private final static int INVALID_LINK= dxENCODE_INDEX(-1);
+
+	static int dxENCODE_INDEX(int index) {
+		return index + 1;
+	}
+
+	static int dxDECODE_INDEX(int index) {
+		return index - 1;
+	}
+
+    private static 
+    void dxQuickStepIsland_Stage4LCP_DependencyMapFromSavedLevelsReconstruction(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+
+        AtomicInteger[] mi_levels = stage4CallContext.m_bi_links_or_mi_levels;
+        AtomicInteger[] mi_links = stage4CallContext.m_mi_links;
+
+        int m = localContext.m_m;
+        for (int i = 0; i != m; ++i) {
+            int currentLevelRoot = mi_levels[i].get();
+            int currentLevelFirstLink = mi_links[2 * currentLevelRoot + 1].get();
+            int encoded_i = dxENCODE_INDEX(i);
+            mi_links[2 * currentLevelRoot + 1].set(encoded_i);
+            mi_links[2 * encoded_i + 0].set(currentLevelFirstLink);
+        }
+
+        // Additionally reset available level root's list head
+        mi_links[2 * dxHEAD_INDEX + 0].set(dxHEAD_INDEX);
+    }
+
+    private static 
+    void dxQuickStepIsland_Stage4LCP_ConstraintsReorderingSync(final dxQuickStepperStage4CallContext stage4CallContext, TaskGroup group)
+    {
+        int stage4LCP_Iteration_allowedThreads = stage4CallContext.m_LCP_IterationAllowedThreads;
+
+        stage4CallContext.RecordLCP_IterationStart(stage4LCP_Iteration_allowedThreads, group);
+
+        final int knownToBeCompletedLevel = dxHEAD_INDEX;
+        for (int i = 1; i < stage4LCP_Iteration_allowedThreads; i ++) {
+            Task task = group.subtask("QuickStepIsland Stage4LCP_Iteration", new Runnable() {
+                @Override
+                public void run() {
+                	dxQuickStepIsland_Stage4LCP_MTIteration(stage4CallContext, knownToBeCompletedLevel);
+                }
+            });
+            task.submit();
+        }
+        dxQuickStepIsland_Stage4LCP_MTIteration(stage4CallContext, knownToBeCompletedLevel);
+    }
 	
-//	static int EstimateSOR_LCPMemoryRequirements(int m)
-//	{
-//	    int res = dEFFICIENT_SIZE(sizeof(double.class) * 12 * m); // for iMJ
-//	    res += dEFFICIENT_SIZE(sizeof(double.class) * m); // for Ad
-//	    res += dEFFICIENT_SIZE(sizeof(IndexError.class) * m); // for order
-//	    if (REORDER_CONSTRAINTS) {//	#ifdef REORDER_CONSTRAINTS
-//	        res += dEFFICIENT_SIZE(sizeof(double.class) * m); // for last_lambda
-//	    }//#endif
-//	    return res;
-//	}
-//
-//	//	size_t dxEstimateQuickStepMemoryRequirements (
-//	//	  dxBody * const *body, unsigned int nb, dxJoint * const *_joint, unsigned int _nj)
+    public static AtomicInteger mtIterations = new AtomicInteger();
+    
+    private static 
+    void dxQuickStepIsland_Stage4LCP_MTIteration(final dxQuickStepperStage4CallContext stage4CallContext, final int initiallyKnownToBeCompletedLevel)
+    {
+    	mtIterations.incrementAndGet();
+        AtomicInteger[] mi_levels = stage4CallContext.m_bi_links_or_mi_levels;
+        AtomicInteger[] mi_links = stage4CallContext.m_mi_links;
+
+        int knownToBeCompletedLevel = initiallyKnownToBeCompletedLevel;
+
+        while (true) {
+            int initialLevelRoot = mi_links[2 * dxHEAD_INDEX + 0].get();
+            if (initialLevelRoot != dxHEAD_INDEX && initialLevelRoot == knownToBeCompletedLevel) {
+                // No work is (currently) available
+                break;
+            }
+            
+            for (int currentLevelRoot = initialLevelRoot; ; currentLevelRoot = mi_links[2 * currentLevelRoot + 0].get()) {
+                while (true) {
+
+                    int currentLevelFirstLink = mi_links[2 * currentLevelRoot + 1].get();
+                    if (currentLevelFirstLink == INVALID_LINK) {
+                        break;
+                    }
+                    
+                    // Try to extract first record from linked list
+                    int currentLevelNextLink = mi_links[2 * currentLevelFirstLink + 0].get();
+                    if (Atomics.ThrsafeCompareExchange(mi_links[2 * currentLevelRoot + 1], currentLevelFirstLink, currentLevelNextLink)) {
+                        // if succeeded, execute selected iteration step...
+                        dxQuickStepIsland_Stage4LCP_IterationStep(stage4CallContext, dxDECODE_INDEX(currentLevelFirstLink));
+
+                        // Check if there are any dependencies
+                        int level0DownLink = mi_links[2 * currentLevelFirstLink + 1].get();
+                        if (level0DownLink != INVALID_LINK) {
+                    		// ...and if yes, insert the record into the list of available level roots
+                    		int levelRootsFirst;
+                    		do {
+                    		    levelRootsFirst = mi_links[2 * dxHEAD_INDEX + 0].get();
+                    		    mi_links[2 * currentLevelFirstLink + 0].set(levelRootsFirst);
+                    		}
+                    		while (!Atomics.ThrsafeCompareExchange(mi_links[2 * dxHEAD_INDEX + 0], levelRootsFirst, currentLevelFirstLink));
+
+                    		// If another level was added and some threads have already exited...
+                    		int threadsTotal = stage4CallContext.m_LCP_iterationThreadsTotal;
+                    		int threadsRemaining = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_LCP_iterationThreadsRemaining, threadsTotal);
+                    		if (threadsRemaining != threadsTotal) {
+                    			/* PP: This can easily result in creation of too many tasks 
+                    		    // ...go on an schedule one more...
+                    		    DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+                    		    // ...passing knownToBeCompletedLevel as the initial one for the spawned call
+                    		    final int index = knownToBeCompletedLevel;
+                    		    Task stage4LCP_Iteration = stage4CallContext.m_LCP_iterationNextReleasee.subtask("QuickStepIsland Stage4LCP_Iteration", new Runnable() {
+                    				@Override
+                    				public void run() {
+                    					dxQuickStepIsland_Stage4LCP_MTIteration(stage4CallContext, index);
+                    			}
+                    			});
+                    		    stage4LCP_Iteration.submit();
+                    		    */
+                    		    // NOTE: it's hard to predict whether it is reasonable to re-post a call
+                    		    // each time a new level is added (provided some calls have already exited, of course).
+                    		    // The efficiency very much depends on dependencies patterns between levels 
+                    		    // (i.e. it depends on the amount of available work added with each level).
+                    		    // The strategy of re-posting exited calls as frequently as possible
+                    		    // leads to potential wasting execution cycles in some cores for the aid
+                    		    // of keeping other cores busy as much as possible and not letting all the
+                    		    // work be executed by just a partial cores subset. With emergency of large
+                    		    // available work amounts (the work that is not dependent on anything and 
+                    		    // ready to be executed immediately) this strategy is going to transit into 
+                    		    // full cores set being busy executing useful work. If amounts of work 
+                    		    // emerging from added levels are small, the strategy should lead to 
+                    		    // approximately the same efficiency as if the work was done by only a cores subset 
+                    		    // with the remaining cores wasting (some) cycles for re-scheduling calls 
+                    		    // to those busy cores rather than being idle or handling other islands. 
+                    		}
+                        }
+
+                        // Finally record the root index of current record's level
+                        mi_levels[dxDECODE_INDEX(currentLevelFirstLink)].set(currentLevelRoot);
+                    }
+                }
+
+                if (currentLevelRoot == knownToBeCompletedLevel) {
+                    break;
+                }
+                dIASSERT(currentLevelRoot != dxHEAD_INDEX); // Zero level is expected to be the deepest one in the list and execution must not loop past it.
+            }
+            // Save the level root we started from as known to be completed
+            knownToBeCompletedLevel = initialLevelRoot;
+        }
+
+        // Decrement running threads count on exit
+        Atomics.ThrsafeAdd(stage4CallContext.m_LCP_iterationThreadsRemaining, -1);
+    }
+
+	private static
+    void dxQuickStepIsland_Stage4LCP_STIteration(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+	    dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+	    int m = localContext.m_m;
+        for (int i = 0; i != m; ++i) {
+            dxQuickStepIsland_Stage4LCP_IterationStep(stage4CallContext, i);
+        }
+    }
+    
+    private static 
+    void dxQuickStepIsland_Stage4LCP_IterationStep(dxQuickStepperStage4CallContext stage4CallContext, int i)
+    {
+    	
+    	dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+        IndexError[ ]order = stage4CallContext.m_order;
+        int index = order[i].index;
+
+        double delta = 0;
+        
+        double[] lambda = stage4CallContext.m_lambda;
+		double old_lambda = lambda[index];
+
+		double[] J = localContext.m_J;
+        int J_ptr = index * JME__MAX;
+
+        delta = J[J_ptr + JME_RHS] - old_lambda * J[J_ptr + JME_CFM];
+
+        double[] fc = stage4CallContext.m_cforce;
+
+        int[] jb = localContext.m_jb;
+        int b1 = jb[index * 2];
+        int b2 = jb[index * 2 + 1];
+        
+	    // @@@ potential optimization: SIMD-ize this and the b2 >= 0 case
+        int fc_ptr1 = b1 * CFE__MAX;
+        delta -= fc[fc_ptr1 + CFE_LX] * J[J_ptr + JME_J1LX] + fc[fc_ptr1 + CFE_LY] * J[J_ptr + JME_J1LY] +
+        		fc[fc_ptr1 + CFE_LZ] * J[J_ptr + JME_J1LZ] + fc[fc_ptr1 + CFE_AX] * J[J_ptr + JME_J1AX] +
+        		fc[fc_ptr1 + CFE_AY] * J[J_ptr + JME_J1AY] + fc[fc_ptr1 + CFE_AZ] * J[J_ptr + JME_J1AZ];
+        // @@@ potential optimization: handle 1-body constraints in a separate
+	    // @@@ potential optimization: handle 1-body constraints in a separate
+	    //     loop to avoid the cost of test & jump?
+	    if (b2 != -1) {
+	        int fc_ptr2 = b2 * CFE__MAX;
+	        delta -= fc[fc_ptr2 + CFE_LX] * J[J_ptr + JME_J2LX] + fc[fc_ptr2 + CFE_LY] * J[J_ptr + JME_J2LY] +
+	        		fc[fc_ptr2 + CFE_LZ] * J[J_ptr + JME_J2LZ] + fc[fc_ptr2 + CFE_AX] * J[J_ptr + JME_J2AX] +
+	        		fc[fc_ptr2 + CFE_AY] * J[J_ptr + JME_J2AY] + fc[fc_ptr2 + CFE_AZ] * J[J_ptr + JME_J2AZ];
+	    }
+
+	    double hi_act, lo_act;
+		
+	    // set the limits for this constraint. note that 'hicopy' is used.
+	    // this is the place where the QuickStep method differs from the
+	    // direct LCP solving method, since that method only performs this
+	    // limit adjustment once per time step, whereas this method performs
+	    // once per iteration per constraint row.
+	    // the constraints are ordered so that all lambda[] values needed have
+	    // already been computed.
+        int[] findex = localContext.m_findex;
+	    if (findex[index] != -1) {
+	        hi_act = dFabs (J[J_ptr + JME_HI] * lambda[findex[index]]);
+	        lo_act = -hi_act;
+	    } else {
+	        hi_act = J[J_ptr + JME_HI];
+	        lo_act = J[J_ptr + JME_LO];
+	    }
+	    // compute lambda and clamp it to [lo,hi].
+	    // @@@ potential optimization: does SSE have clamping instructions
+	    //     to save test+jump penalties here?
+	    double new_lambda = old_lambda + delta;
+	    if (new_lambda < lo_act) {
+	        delta = lo_act-old_lambda;
+	        lambda[index] = lo_act;
+	    }
+	    else if (new_lambda > hi_act) {
+	        delta = hi_act-old_lambda;
+	        lambda[index] = hi_act;
+	    }
+	    else {
+	        lambda[index] = new_lambda;
+	    }
+
+		//@@@ a trick that may or may not help
+		//dReal ramp = (1-((dReal)(iteration+1)/(dReal)num_iterations));
+		//delta *= ramp;
+	    double[] iMJ = stage4CallContext.m_iMJ;
+	    final int iMJ_ptr = index * IMJ__MAX;
+		// update fc.
+		// @@@ potential optimization: SIMD for this and the b2 >= 0 case
+	    fc[fc_ptr1 + CFE_LX] += delta * iMJ[iMJ_ptr + 0];
+		fc[fc_ptr1 + CFE_LY] += delta * iMJ[iMJ_ptr + 1];
+		fc[fc_ptr1 + CFE_LZ] += delta * iMJ[iMJ_ptr + 2];
+		fc[fc_ptr1 + CFE_AX] += delta * iMJ[iMJ_ptr + 3];
+		fc[fc_ptr1 + CFE_AY] += delta * iMJ[iMJ_ptr + 4];
+		fc[fc_ptr1 + CFE_AZ] += delta * iMJ[iMJ_ptr + 5];
+		// @@@ potential optimization: handle 1-body constraints in a separate
+		//     loop to avoid the cost of test & jump?
+	    if (b2 != -1) {
+	        int fc_ptr2 = b2 * CFE__MAX;
+			fc[fc_ptr2 + CFE_LX] += delta * iMJ[iMJ_ptr + 6];
+			fc[fc_ptr2 + CFE_LY] += delta * iMJ[iMJ_ptr + 7];
+			fc[fc_ptr2 + CFE_LZ] += delta * iMJ[iMJ_ptr + 8];
+			fc[fc_ptr2 + CFE_AX] += delta * iMJ[iMJ_ptr + 9];
+			fc[fc_ptr2 + CFE_AY] += delta * iMJ[iMJ_ptr + 10];
+			fc[fc_ptr2 + CFE_AZ] += delta * iMJ[iMJ_ptr + 11];
+		}
+    }  
+
+	private static boolean IsStage4bJointInfosIterationRequired(dxQuickStepperLocalContext localContext) {
+		return localContext.m_mfb > 0;
+	}
+    
+	private static
+    void dxQuickStepIsland_Stage4b(dxQuickStepperStage4CallContext stage4CallContext)
+    {
+        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+	    dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+
+        if (Atomics.ThrsafeExchange(stage4CallContext.m_cf_4b, 1) == 0) {
+            DxBody[] bodyA = callContext.m_islandBodiesStartA();
+            int bodyOfs = callContext.m_islandBodiesStartOfs();
+            int nb = callContext.m_islandBodiesCount();
+            double[] cforce = stage4CallContext.m_cforce;
+            double stepsize = callContext.m_stepSize();
+            // add stepsize * cforce to the body velocity
+            int cforcecurr = 0;
+            int bodyend = nb;
+            for (int bodycurr = 0; bodycurr != bodyend; cforcecurr += CFE__MAX, bodycurr++) {
+                DxBody b = bodyA[bodyOfs + bodycurr];
+                for (int j = dSA__MIN; j != dSA__MAX; j++) {
+                    b.lvel.add(dV3E__AXES_MIN + j, stepsize * cforce[cforcecurr + CFE__L_MIN + j]);
+                    b.avel.add(dV3E__AXES_MIN + j, stepsize * cforce[cforcecurr + CFE__A_MIN + j]);
+                }
+            }
+        }
+
+        // note that the SOR method overwrites rhs and J at this point, so
+        // they should not be used again.
+
+        if (IsStage4bJointInfosIterationRequired(localContext)) {
+            double[] Jcopy = localContext.m_Jcopy;
+            double[] lambda = stage4CallContext.m_lambda;
+            int[] mindex = localContext.m_mindex;
+            DJointWithInfo1[] jointinfos = localContext.m_jointinfos;
+
+            int nj = localContext.m_nj;
+            int step_size = dxQUICKSTEPISLAND_STAGE4B_STEP;
+            int nj_steps = (nj + (step_size - 1)) / step_size;
+
+            int ji_step;
+            while ((ji_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_ji_4b, nj_steps)) != nj_steps) {
+                int ji = ji_step * step_size;
+                int lambdacurr = mindex[ji * 2];
+                int Jcopycurr = mindex[ji * 2 + 1] * JCE__MAX;
+                int jicurr = ji;
+                int jiend = jicurr + Math.min(step_size, nj - ji);
+
+                while (true) {
+                    DxJoint joint = jointinfos[jicurr].joint;
+                    int infom = jointinfos[jicurr].info.m;
+
+                    // straightforward computation of joint constraint forces:
+                    // multiply related lambdas with respective J' block for joints
+                    // where feedback was requested
+            		DJoint.DJointFeedback fb = joint.feedback;
+                    if (fb != null) {
+                        Multiply1_12q1 (fb.f1, fb.t1, Jcopy, Jcopycurr + JCE__J1_MIN, lambda, lambdacurr, infom);
+                        if (joint.node[1].body != null) {
+                	        Multiply1_12q1 (fb.f2, fb.t2, Jcopy, Jcopycurr + JCE__J2_MIN, lambda, lambdacurr, infom);
+                        }
+                        Jcopycurr += infom * JCE__MAX;
+                    }
+
+                    if (++jicurr == jiend) {
+                        break;
+                    }
+                    lambdacurr += infom;
+                }
+            }
+        }
+    }
+    
+	private static
+	void dxQuickStepIsland_Stage5(dxQuickStepperStage5CallContext stage5CallContext)
+	{
+		final DxStepperProcessingCallContext callContext = stage5CallContext.m_stepperCallContext;
+	    dxQuickStepperLocalContext localContext = stage5CallContext.m_localContext;
+
+	    DxWorldProcessMemArena memarena = callContext.m_stepperArena();
+	    memarena.RestoreState(stage5CallContext.m_stage3MemArenaState);
+
+	    final dxQuickStepperStage6CallContext stage6CallContext = new dxQuickStepperStage6CallContext();
+	    stage6CallContext.Initialize(callContext, localContext);
+
+	    int allowedThreads = callContext.m_stepperAllowedThreads();
+
+	    if (allowedThreads == 1) {
+	        dxQuickStepIsland_Stage6a(stage6CallContext);
+	        dxQuickStepIsland_Stage6_VelocityCheck(stage6CallContext);
+	        dxQuickStepIsland_Stage6b(stage6CallContext);
+	    } else {
+	        int nb = callContext.m_islandBodiesCount();
+	        int stage6a_allowedThreads = CalculateOptimalThreadsCount(nb, allowedThreads, dxQUICKSTEPISLAND_STAGE6A_STEP);
+	        TaskGroup stage6aSync = callContext.m_taskGroup().subgroup("QuickStepIsland Stage6a Sync", new Runnable() {
+                @Override
+                public void run() {
+                    dxQuickStepIsland_Stage6aSync(stage6CallContext, callContext.m_taskGroup());                    
+                }
+            });
+            for (int i = 1; i < stage6a_allowedThreads; i++) {
+                Task stage6a = stage6aSync.subtask("QuickStepIsland Stage6a", new Runnable() {
+                    @Override
+                    public void run() {
+                        dxQuickStepIsland_Stage6a(stage6CallContext);
+                    }
+                });
+                stage6a.submit();
+            }
+            dxQuickStepIsland_Stage6a(stage6CallContext);
+            stage6aSync.submit();
+	    }
+	}
+	
+	private static
+	void dxQuickStepIsland_Stage6a(dxQuickStepperStage6CallContext stage6CallContext)
+	{
+        DxStepperProcessingCallContext callContext = stage6CallContext.m_stepperCallContext;
+	    dxQuickStepperLocalContext localContext = stage6CallContext.m_localContext;
+
+	    double stepsize = callContext.m_stepSize();
+	    double[] invI = localContext.m_invI;
+	    DxBody[] bodyA = callContext.m_islandBodiesStartA();
+        int bodyOfs = callContext.m_islandBodiesStartOfs();
+
+	    int nb = callContext.m_islandBodiesCount();
+	    int step_size = dxQUICKSTEPISLAND_STAGE6A_STEP;
+	    int nb_steps = (nb + (step_size - 1)) / step_size;
+
+	    int bi_step;
+	    while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage6CallContext.m_bi_6a, nb_steps)) != nb_steps) {
+	        int bi = bi_step * step_size;
+	        int bicnt = Math.min(step_size, nb - bi);
+
+	        int invIrow = bi * IIE__MAX;
+	        int bodycurr = bi;
+	        int bodyend = bodycurr + bicnt;
+	        while (true) {
+	            // compute the velocity update:
+	            // add stepsize * invM * fe to the body velocity
+	            DxBody b = bodyA[bodyOfs + bodycurr];
+	            double body_invMass_mul_stepsize = stepsize * b.invMass;
+	            b.lvel.addScaled(b.facc, body_invMass_mul_stepsize);
+                b.tacc.scale(stepsize);
+                dMultiplyAdd0_331 (b.avel, invI, invIrow + IIE__MATRIX_MIN, b.tacc);
+
+                if (++bodycurr == bodyend) {
+	                break;
+	            }
+	            invIrow += IIE__MAX;
+	        }
+	    }
+	}
+
+	private static 
+    void dxQuickStepIsland_Stage6aSync(final dxQuickStepperStage6CallContext stage6CallContext, TaskGroup group)
+    {
+	    dxQuickStepIsland_Stage6_VelocityCheck(stage6CallContext);
+
+        DxStepperProcessingCallContext callContext = stage6CallContext.m_stepperCallContext;
+
+        int allowedThreads = callContext.m_stepperAllowedThreads();
+        int nb = callContext.m_islandBodiesCount();
+        int stage6b_allowedThreads = CalculateOptimalThreadsCount(nb, allowedThreads, dxQUICKSTEPISLAND_STAGE6B_STEP);
+
+        for (int i = 1; i < stage6b_allowedThreads; i++) {
+            Task stage6b = group.subtask("QuickStepIsland Stage6b", new Runnable() {
+                @Override
+                public void run() {
+                    dxQuickStepIsland_Stage6b(stage6CallContext);
+                }
+            });
+            stage6b.submit();
+        }
+        dxQuickStepIsland_Stage6b(stage6CallContext);
+    }
+
+
+	private static 
+	void dxQuickStepIsland_Stage6_VelocityCheck(dxQuickStepperStage6CallContext stage6CallContext)
+	{
+	    if (CHECK_VELOCITY_OBEYS_CONSTRAINT) {
+    	    dxQuickStepperLocalContext localContext = stage6CallContext.m_localContext;
+            /*
+    	    int int m = localContext->m_m;
+    	    if (m > 0) {
+    	        const dxStepperProcessingCallContext *callContext = stage6CallContext->m_stepperCallContext;
+    	        dxBody * const *body = callContext->m_islandBodiesStart;
+    	        dReal *J = localContext->m_J;
+    	        const dxJBodiesItem *jb = localContext->m_jb;
+    
+    	        dReal error = 0;
+    	        const dReal* J_ptr = J;
+    	        for (int i = 0; i < m; ++i) {
+    	            int b1 = jb[i].first;
+    	            int b2 = jb[i].second;
+    	            dReal sum = 0;
+    	            dxBody *bodycurr = body[(int)b1];
+    	            for (int j = dSA__MIN; j != dSA__MAX; ++j) sum += J_ptr[JME__J1L_MIN + j] * bodycurr->lvel[dV3E__AXES_MIN + j] + J_ptr[JME__J1A_MIN + j] * bodycurr->avel[dV3E__AXES_MIN + j];
+    	            if (b2 != -1) {
+    	                dxBody *bodycurr = body[(int)b2];
+    	                for (int k = dSA__MIN; k != dSA__MAX; ++k) sum += J_ptr[JME__J2L_MIN + k] * bodycurr->lvel[dV3E__AXES_MIN + k] + J_ptr[JME__J2A_MIN + k] * bodycurr->avel[dV3E__AXES_MIN + k];
+    	            }
+    	            J_ptr += JME__MAX;
+    	            error += dFabs(sum);
+    	        }
+    	        printf ("velocity error = %10.6e\n", error);
+    	    }
+        */
+	    }
+	}
+
+	private static
+	void dxQuickStepIsland_Stage6b(dxQuickStepperStage6CallContext stage6CallContext)
+	{
+        DxStepperProcessingCallContext callContext = stage6CallContext.m_stepperCallContext;
+
+	    double stepsize = callContext.m_stepSize();
+	    DxBody[] bodyA = callContext.m_islandBodiesStartA();
+        int bodyOfs = callContext.m_islandBodiesStartOfs();
+
+	    // update the position and orientation from the new linear/angular velocity
+	    // (over the given timestep)
+	    int nb = callContext.m_islandBodiesCount();
+	    int step_size = dxQUICKSTEPISLAND_STAGE6B_STEP;
+	    int nb_steps = (nb + (step_size - 1)) / step_size;
+
+	    int bi_step;
+	    while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage6CallContext.m_bi_6b, nb_steps)) != nb_steps) {
+	        int bi = bi_step * step_size;
+	        int bicnt = Math.min(step_size, nb - bi);
+
+	        int bodycurr = bi;
+	        int bodyend = bodycurr + bicnt;
+	        while (true) {
+	            DxBody b = bodyA[bodyOfs + bodycurr];
+        		b.dxStepBody (stepsize);
+	        	b.facc.setZero();
+	        	b.tacc.setZero();
+	            if (++bodycurr == bodyend) {
+	                break;
+	            }
+	        }
+	    }
+	}
+
 	@Override
 	public int dxEstimateMemoryRequirements (
 	        DxBody[] body, int bodyOfs, int nb, 
 	        DxJoint[] _joint, int jointOfs, int _nj)
 	{
-//	    int nj, m, mfb;
-//
-//	    {
-//	        int njcurr = 0, mcurr = 0, mfbcurr = 0;
-//	        DxJoint.SureMaxInfo info;
-//	        //	    DxJoint *const *const _jend = _joint + _nj;
-//	        //	    for (dxJoint *const *_jcurr = _joint; _jcurr != _jend; _jcurr++) {
-//	        for (int i = 0; i < _nj; i++) {
-//	            DxJoint j = _joint[i];//_jcurr;
-//	            j.getSureMaxInfo (&info);
-//
-//	            int jm = info.max_m;
-//	            if (jm > 0) {
-//	                njcurr++;
-//
-//	                mcurr += jm;
-//	                if (j.feedback != null) {
-//	                    mfbcurr += jm;
-//	                }
-//	            }
-//	        }
-//	        nj = njcurr; m = mcurr; mfb = mfbcurr;
-//	    }
-//
-//	    int res = 0;
-//
-//	    res += dEFFICIENT_SIZE(sizeof(double.class) * 3 * 4 * nb); // for invI
-//
-//	    {
-//	        int sub1_res1 = dEFFICIENT_SIZE(sizeof(DJointWithInfo1.class) * _nj); // for initial jointiinfos
-//
-//	        int sub1_res2 = dEFFICIENT_SIZE(sizeof(DJointWithInfo1.class) * nj); // for shrunk jointiinfos
-//        sub1_res2 += dEFFICIENT_SIZE(sizeof(dxQuickStepperLocalContext)); // for dxQuickStepLocalContext
-//	        if (m > 0) {
-//	            sub1_res2 += dEFFICIENT_SIZE(sizeof(double.class) * 12 * m); // for J
-//        sub1_res2 += dEFFICIENT_SIZE(sizeof(dReal) * 12 * m); // for J
-//	            sub1_res2 += dEFFICIENT_SIZE(sizeof(int.class) * 12 * m); // for jb
-//	            sub1_res2 += 4 * dEFFICIENT_SIZE(sizeof(double.class) * m); // for cfm, lo, hi, rhs
-//	            sub1_res2 += dEFFICIENT_SIZE(sizeof(int.class) * m); // for findex
-//	            sub1_res2 += dEFFICIENT_SIZE(sizeof(double.class) * 12 * mfb); // for Jcopy
-//	            {
-//        size_t sub2_res1 = dEFFICIENT_SIZE(sizeof(dxQuickStepperStage3CallContext)); // for dxQuickStepperStage3CallContext
-//        sub2_res1 += dEFFICIENT_SIZE(sizeof(dReal) * 6 * nb); // for rhs_tmp
-//        sub2_res1 += dEFFICIENT_SIZE(sizeof(dxQuickStepperStage2CallContext)); // for dxQuickStepperStage2CallContext
-//
-//        size_t sub2_res2 = dEFFICIENT_SIZE(sizeof(dReal) * m); // for lambda
-//        sub2_res2 += dEFFICIENT_SIZE(sizeof(dReal) * 6 * nb); // for cforce
-//	        {
-//	            int sub3_res1 = EstimateSOR_LCPMemoryRequirements(m); // for SOR_LCP
-//
-//	            int sub3_res2 = 0;
-//	if (CHECK_VELOCITY_OBEYS_CONSTRAINT) {//#ifdef CHECK_VELOCITY_OBEYS_CONSTRAINT
-//	          {
-//	              int sub4_res1 = dEFFICIENT_SIZE(sizeof(double.class) * 6 * nb); // for vel
-//	            sub4_res1 += dEFFICIENT_SIZE(sizeof(double.class) * m); // for tmp
-//
-//	            int sub4_res2 = 0;
-//
-//	            sub3_res2 += dMax(sub4_res1, sub4_res2);
-//	          }
-//	}//#endif
-//	          sub2_res2 += dMax(sub3_res1, sub3_res2);
-//	        }
-//
-//	        sub1_res2 += dMax(sub2_res1, sub2_res2);
-//	      }
-//	}
-//        else {
-//            sub1_res2 += dEFFICIENT_SIZE(sizeof(dxQuickStepperStage3CallContext)); // for dxQuickStepperStage3CallContext
-//	    }
-//	    
-//        size_t sub1_res12_max = dMAX(sub1_res1, sub1_res2);
-//        size_t stage01_contexts = dEFFICIENT_SIZE(sizeof(dxQuickStepperStage0BodiesCallContext))
-//            + dEFFICIENT_SIZE(sizeof(dxQuickStepperStage0JointsCallContext))
-//            + dEFFICIENT_SIZE(sizeof(dxQuickStepperStage1CallContext));
-//        res += dMAX(sub1_res12_max, stage01_contexts);
-//	  }
-//
-//	  return res;
 	    return -1;
 	}
 
@@ -2027,5 +2349,23 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	@Override
 	public void run(DxStepperProcessingCallContext callContext) {
 		dxQuickStepIsland(callContext);
+	}
+
+	private static int CalculateOptimalThreadsCount(int complexity, int max_threads, int step_size) {
+		int raw_threads = Math.max(complexity, step_size) / step_size; // Round down on division
+		int optimum = Math.min(raw_threads, max_threads);
+		return optimum;
+	}
+
+	private static boolean IsSORConstraintsReorderRequiredForIteration(int iteration) {
+		boolean result = false;
+		if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__BY_ERROR) {
+			result = true;
+		} else if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__RANDOMLY) {
+		    result = (iteration & 7) == 0; 
+		} else {
+			result = iteration == 0;
+		}
+		return result;
 	}
 }

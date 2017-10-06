@@ -24,51 +24,15 @@
  *************************************************************************/
 package org.ode4j.ode.internal.processmem;
 
-import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.DxWorld;
 
 public class DxStepWorkingMemory {
     //public:
     public DxStepWorkingMemory() {
         //: 
-        m_uiRefCount = 1;//(1), 
         m_ppcProcessingContext = null; 
         m_priReserveInfo = null;//(NULL), 
         m_pmmMemoryManager = null;//(NULL) {}
-    }
-
-    //private:
-    //private /*friend*/ struct dBase; // To avoid GCC warning regarding private destructor
-    private void DESTRUCTOR()//~dxStepWorkingMemory() // Use Release() instead
-    {
-        //          delete m_ppcProcessingContext;
-        //          delete m_priReserveInfo;
-        //          delete m_pmmMemoryManager;
-    }
-
-    //  public:
-    public void Addref()
-    {
-        Common.dIASSERT(~m_uiRefCount != 0);
-        ++m_uiRefCount;
-    }
-
-    public void Release()
-    {
-        Common.dIASSERT(m_uiRefCount != 0);
-        if (--m_uiRefCount == 0)
-        {
-            //delete
-            this.DESTRUCTOR();
-        }
-    }
-
-    //public:
-    public void CleanupMemory()
-    {
-        //delete 
-        m_ppcProcessingContext.DESTRUCTOR();
-        m_ppcProcessingContext = null;
     }
 
     public void CleanupWorldReferences(DxWorld world)
@@ -147,7 +111,6 @@ public class DxStepWorkingMemory {
     }
 
     //private:
-        private int m_uiRefCount;
     private DxWorldProcessContext m_ppcProcessingContext;
     private DxWorldProcessMemoryReserveInfo m_priReserveInfo;
     private DxWorldProcessMemoryManager m_pmmMemoryManager;

@@ -29,16 +29,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
-import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
-import org.ode4j.ode.threading.ThreadingUtils;
-import org.ode4j.ode.threading.Threading_H.CallContext;
-import org.ode4j.ode.threading.Threading_H.DCallReleasee;
-import org.ode4j.ode.threading.Threading_H.dThreadedCallFunction;
+import org.ode4j.ode.threading.Atomics;
+import org.ode4j.ode.threading.task.Task;
+import org.ode4j.ode.threading.task.TaskGroup;
 
-public class DxIslandsProcessingCallContext implements CallContext {
+public class DxIslandsProcessingCallContext {
 
 	public DxIslandsProcessingCallContext(DxWorld world, DxWorldProcessIslandsInfo islandsInfo, 
 			double stepSize, dstepper_fn_t stepper) {
@@ -46,72 +44,22 @@ public class DxIslandsProcessingCallContext implements CallContext {
 		m_islandsInfo = islandsInfo;
 		m_stepSize = stepSize;
 		m_stepper = stepper;
-		m_groupReleasee = null;
 		//m_islandToProcessStorage = 0;
 		m_stepperAllowedThreads = 0;
 	}
 
-	public void AssignGroupReleasee(DCallReleasee groupReleasee) { m_groupReleasee = groupReleasee; }
 	public void SetStepperAllowedThreads(int allowedThreadsLimit) { m_stepperAllowedThreads = allowedThreadsLimit; }
-
-//    static int ThreadedProcessGroup_Callback(void callContext, 
-//    		dcallindex_t callInstanceIndex, DCallReleasee callThisReleasee);
-//    boolean ThreadedProcessGroup();
-//
-//    static int ThreadedProcessJobStart_Callback(void callContext, 
-//    		dcallindex_t callInstanceIndex, DCallReleasee callThisReleasee);
-//    void ThreadedProcessJobStart();
-//
-//    static int ThreadedProcessIslandSearch_Callback(void callContext, 
-//    		dcallindex_t callInstanceIndex, DCallReleasee callThisReleasee);
-//    void ThreadedProcessIslandSearch(DxSingleIslandCallContext stepperCallContext);
-//
-//    static int ThreadedProcessIslandStepper_Callback(void callContext, 
-//    		dcallindex_t callInstanceIndex, DCallReleasee callThisReleasee);
-//    void ThreadedProcessIslandStepper(DxSingleIslandCallContext stepperCallContext);
-//
-//    int ObtainNextIslandToBeProcessed(int islandsCount);
 
     final DxWorld                   m_world;
     final DxWorldProcessIslandsInfo m_islandsInfo;
     final double                    m_stepSize;
     final dstepper_fn_t             m_stepper;
-    DCallReleasee                 m_groupReleasee;
     //volatile int                  m_islandToProcessStorage;
     final AtomicInteger             m_islandToProcessStorage = new AtomicInteger();
     int                        m_stepperAllowedThreads;
 
     
-    public static dThreadedCallFunction ThreadedProcessGroup_Callback = new dThreadedCallFunction() {
-    	@Override
-    	public boolean run(CallContext callContext, 
-    			int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-    	{
-    		//(void)callInstanceIndex; // unused
-    		//(void)callThisReleasee; // unused
-    		return ((DxIslandsProcessingCallContext)callContext).ThreadedProcessGroup();
-    	}
-    };
-
-    private boolean ThreadedProcessGroup()
-    {
-        // Do nothing - it's just a wrapper call
-        return true;
-    }
-
-    public static dThreadedCallFunction ThreadedProcessJobStart_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext callContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			((DxIslandsProcessingCallContext)callContext).ThreadedProcessJobStart();
-			return true;
-		}
-    };
-
-    private void ThreadedProcessJobStart()
+    public void ThreadedProcessJobStart(final TaskGroup parent)
     {
         DxWorldProcessContext context = m_world.UnsafeGetWorldProcessingContext(); 
 
@@ -122,35 +70,23 @@ public class DxIslandsProcessingCallContext implements CallContext {
         DxBody[] islandBodiesStart = islandsInfo.GetBodiesArray();
         DxJoint[] islandJointsStart = islandsInfo.GetJointsArray();
         
-        DxSingleIslandCallContext stepperCallContext = null;//TZ (DxSingleIslandCallContext)stepperArena.AllocateBlock(sizeof(dxSingleIslandCallContext));
         // Save area state after context allocation to be restored for the stepper
         BlockPointer arenaState = stepperArena.SaveState();
         //new(stepperCallContext) DxSingleIslandCallContext(this, stepperArena, arenaState, islandBodiesStart, islandJointsStart);
         //stepperCallContext = new DxSingleIslandCallContext(this, stepperArena, arenaState, islandBodiesStart, islandJointsStart);
-        stepperCallContext = new DxSingleIslandCallContext(this, stepperArena, arenaState, 
-        		islandBodiesStart, 
-    			islandJointsStart);
+        final DxSingleIslandCallContext stepperCallContext = new DxSingleIslandCallContext(this, stepperArena, arenaState, 
+        		islandBodiesStart, islandJointsStart);
         
-        // Summary fault flag may be omitted as any failures will automatically propagate to dependent releasee (i.e. to m_groupReleasee)
-        m_world.threading().PostThreadedCallForUnawareReleasee(null, null, 0, m_groupReleasee, null, 
-            DxIslandsProcessingCallContext.ThreadedProcessIslandSearch_Callback, stepperCallContext, 0, "World Islands Stepping Selection");
+        Task task = parent.subtask("World Islands Stepping Selection", new Runnable() {
+			@Override
+			public void run() {
+				stepperCallContext.m_islandsProcessingContext.ThreadedProcessIslandSearch(stepperCallContext, parent);
+			}
+		});
+        task.submit();
     }
 
-    public static dThreadedCallFunction ThreadedProcessIslandSearch_Callback = 
-    		new dThreadedCallFunction() {
-    	@Override
-    	public boolean run(CallContext callContext, 
-    			int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-    	{
-    		//(void)callInstanceIndex; // unused
-    		//(void)callThisReleasee; // unused
-    		DxSingleIslandCallContext stepperCallContext = (DxSingleIslandCallContext)(callContext);
-    		stepperCallContext.m_islandsProcessingContext.ThreadedProcessIslandSearch(stepperCallContext);
-    		return true;
-    	}
-    };
-
-    private void ThreadedProcessIslandSearch(DxSingleIslandCallContext stepperCallContext)
+    private void ThreadedProcessIslandSearch(final DxSingleIslandCallContext stepperCallContext, final TaskGroup parent)
     {
         boolean finalizeJob = false;
 
@@ -184,18 +120,21 @@ public class DxIslandsProcessingCallContext implements CallContext {
 
                     // Restore saved stepper memory arena position
                     stepperCallContext.RestoreSavedMemArenaStateForStepper();
-
-                    Ref<DCallReleasee> nextSearchReleasee = new Ref<DCallReleasee>();
-
-                    // Summary fault flag may be omitted as any failures will automatically propagate to dependent releasee (i.e. to m_groupReleasee)
-                    m_world.threading().PostThreadedCallForUnawareReleasee(null, nextSearchReleasee, 1, m_groupReleasee, null, 
-                        DxIslandsProcessingCallContext.ThreadedProcessIslandSearch_Callback, stepperCallContext, 0, "World Islands Stepping Selection");
-
-                    stepperCallContext.AssignStepperCallFinalReleasee(nextSearchReleasee.get());
-
-                    m_world.threading().PostThreadedCall(null, null, 0, nextSearchReleasee.get(), null, 
-                        DxIslandsProcessingCallContext.ThreadedProcessIslandStepper_Callback, stepperCallContext, 0, "Island Stepping Job Start");
-
+                    TaskGroup searchTask = parent.subgroup("World Islands Stepping Selection", new Runnable() {
+						@Override
+						public void run() {
+							stepperCallContext.m_islandsProcessingContext.ThreadedProcessIslandSearch(stepperCallContext, parent);
+						}
+                    });
+                    stepperCallContext.m_stepperCallContext.AssignStepperTaskGroup(searchTask);
+                    Task stepperTask = searchTask.subtask("Island Stepping Job Start", new Runnable() {
+						@Override
+						public void run() {
+							stepperCallContext.m_islandsProcessingContext.ThreadedProcessIslandStepper(stepperCallContext);
+						}
+					});
+                    stepperTask.submit();
+                    searchTask.submit();
                     break;
                 }
 
@@ -209,26 +148,10 @@ public class DxIslandsProcessingCallContext implements CallContext {
 
         if (finalizeJob) {
             DxWorldProcessMemArena stepperArena = stepperCallContext.m_stepperArena;
-            //stepperCallContext.dxSingleIslandCallContext::~dxSingleIslandCallContext();
-            stepperCallContext.DESTRUCTOR();//dxSingleIslandCallContext.DESTRUCTOR();
-
             DxWorldProcessContext context = m_world.UnsafeGetWorldProcessingContext(); 
             context.ReturnStepperMemArena(stepperArena);
         }
     }
-
-    public static dThreadedCallFunction ThreadedProcessIslandStepper_Callback = new dThreadedCallFunction() {
-		@Override
-		public boolean run(CallContext callContext, 
-				int/*dcallindex_t*/ callInstanceIndex, DCallReleasee callThisReleasee)
-		{
-			//(void)callInstanceIndex; // unused
-			//(void)callThisReleasee; // unused
-			DxSingleIslandCallContext stepperCallContext = (DxSingleIslandCallContext)(callContext);
-			stepperCallContext.m_islandsProcessingContext.ThreadedProcessIslandStepper(stepperCallContext);
-			return true;
-		}
-    };
 
     private void ThreadedProcessIslandStepper(DxSingleIslandCallContext stepperCallContext)
     {
@@ -237,7 +160,7 @@ public class DxIslandsProcessingCallContext implements CallContext {
 
     int ObtainNextIslandToBeProcessed(int islandsCount)
     {
-        return ThreadingUtils.ThrsafeIncrementSizeUpToLimit(m_islandToProcessStorage, islandsCount);
+        return Atomics.ThrsafeIncrementSizeUpToLimit(m_islandToProcessStorage, islandsCount);
     }
 
 

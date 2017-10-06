@@ -32,8 +32,6 @@ import static org.ode4j.ode.internal.Common.dRecip;
 import static org.ode4j.ode.internal.Common.dSqrt;
 import static org.ode4j.ode.internal.Common.dUASSERT;
 import static org.ode4j.ode.internal.ErrorHandler.dMessage;
-import static org.ode4j.ode.internal.Objects_H.g_world_default_threading_functions;
-import static org.ode4j.ode.internal.Objects_H.g_world_default_threading_impl;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -59,21 +57,15 @@ import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryManager;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemoryReserveInfo;
-import org.ode4j.ode.threading.DThreadingImplementation;
-import org.ode4j.ode.threading.DxThreadingBase;
-import org.ode4j.ode.threading.DxThreadingBase.DxIThreadingDefaultImplProvider;
-import org.ode4j.ode.threading.DxThreadingImplementation;
-import org.ode4j.ode.threading.Threading_H;
-import org.ode4j.ode.threading.Threading_H.DCallReleasee;
-import org.ode4j.ode.threading.Threading_H.DCallWait;
-import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
-import org.ode4j.ode.threading.Threading_H.DxThreadingFunctionsInfo;
+import org.ode4j.ode.threading.Threading;
+import org.ode4j.ode.threading.task.SameThreadTaskExecutor;
+import org.ode4j.ode.threading.task.Task;
+import org.ode4j.ode.threading.task.TaskExecutor;
+import org.ode4j.ode.threading.task.TaskGroup;
 
-public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplProvider {
+public class DxWorld extends DBase implements DWorld {
 
-	//TZ these are super-classes, but I made them delegates.
-	private DxThreadingBase dxThreadingBase;
-	//private DxIThreadingDefaultImplProvider dxIThreadingDefaultImplProvider;
+	private TaskExecutor executor = new SameThreadTaskExecutor();
 	
 	//TODO
 	public final Ref<DxBody> firstbody = new Ref<DxBody>();
@@ -117,7 +109,6 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	private DxWorld() {
 		//private
 		super();
-		dxThreadingBase = new DxThreadingBase();  //super-constr.
 		firstbody.set( null );
 		firstjoint.set( null );
 		nb = 0;
@@ -133,7 +124,6 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 		dampingp = null;
 		max_angular_speed = dInfinity;
 		userdata = 0;
-	    dxThreadingBase.SetThreadingDefaultImplProvider(this);
 
 	    //dSetZero (gravity, 4);
 		gravity = new DVector3();
@@ -291,60 +281,6 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	    return islands_max_threads;
 	}
 
-	boolean dWorldUseSharedWorkingMemory(DxWorld from_world)
-	{
-	    boolean result = false;
-
-	    if (from_world!=null)
-	    {
-	        dUASSERT (this.wmem==null, "world does already have working memory allocated"); // Prevent replacement of one memory object with another to avoid cases when smaller buffer replaces a larger one or memory manager changes.
-
-	        //(TZ)DxStepWorkingMemory wmem = AllocateOnDemand(from_world.wmem);
-	        if (from_world.wmem == null) {
-	            from_world.wmem = new DxStepWorkingMemory();
-	        }
-            DxStepWorkingMemory wmem = this.wmem;
-
-	        if (wmem!=null)
-	        {
-	            // Even though there is an assertion check on entry still release existing
-	            // memory object for extra safety.
-	            if (this.wmem!=null)
-	            {
-	                this.wmem.Release();
-	                this.wmem = null;
-	            }
-
-	            wmem.Addref();
-	            this.wmem = wmem;
-
-	            result = true;
-	        }
-	    }
-	    else
-	    {
-	        DxStepWorkingMemory wmem = this.wmem;
-
-	        if (wmem != null)
-	        {
-	            wmem.Release();
-	            this.wmem = null;
-	        }
-
-	        result = true;
-	    }
-
-	    return result;
-	}
-
-	void dWorldCleanupWorkingMemory()
-	{
-	    if (wmem!=null)
-	    {
-	        wmem.CleanupMemory();
-	    }
-	}
-
 	boolean dWorldSetStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo)
 	{
 	    dUASSERT (policyinfo==null || (policyinfo.struct_size >= DxUtil.sizeof(policyinfo) && policyinfo.reserve_factor >= 1.0f), "Bad policy info");
@@ -383,58 +319,16 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	    return result;
 	}
 
-	@SuppressWarnings({ "static-access" })
-	//TODO remove, doesn't seem to be used
-	boolean dWorldSetStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs)
-	{
-	    dUASSERT (memfuncs==null || memfuncs.struct_size >= DxUtil.sizeof(memfuncs), "Bad memory functions info");
-
-	    boolean result = false;
-
-	    //(TZ) DxStepWorkingMemory wmem = memfuncs!=null ? AllocateOnDemand(this.wmem) : this.wmem;
-	    DxStepWorkingMemory wmem;
-	    if (memfuncs!=null) {
-	        if (this.wmem == null) {
-	            this.wmem = new DxStepWorkingMemory();
-	        }
-	        wmem = this.wmem;
-	    } else {
-	        wmem = this.wmem;
-	    }
-
-	    
-	    if (wmem!=null)
-	    {
-	        if (memfuncs!=null)
-	        {
-	            wmem.SetMemoryManager(memfuncs.alloc_block, memfuncs.shrink_block, memfuncs.free_block);
-	            result = wmem.GetMemoryManager() != null;
-	        }
-	        else
-	        {
-	            wmem.ResetMemoryManagerToDefault();
-	            result = true;
-	        }
-	    }
-	    else if (memfuncs==null)
-	    {
-	        result = true;
-	    }
-
-	    return result;
-	}
-
 
 	void dWorldSetStepThreadingImplementation( 
-			final DxThreadingFunctionsInfo functions_info, 
-			DThreadingImplementation threading_impl)
+			Threading threading_impl)
 	{
 		//dUASSERT (!functions_info || functions_info.struct_size >= sizeof(*functions_info), "Bad threading functions info");
 
-		if (Threading_H.dTHREADING_INTF_DISABLED) {
-			dUASSERT(functions_info == null && threading_impl == null, "Threading interface is not available");
+		if (Threading.dTHREADING_INTF_DISABLED) {
+			dUASSERT(threading_impl == null, "Threading interface is not available");
 		} else {
-			AssignThreadingImpl(functions_info, threading_impl);
+			AssignThreadingImpl(threading_impl);
 		} 
 	}
 
@@ -445,6 +339,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	    boolean result = false;
 
 	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
+	    long t1 = System.nanoTime();
         if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
         		Step.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
         {
@@ -454,7 +349,8 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
                 result = true;
             }
 	    }
-
+        long t2 = System.nanoTime();
+        System.err.println("Time: " + (t2 - t1) / 1000); // FIXME: Remove!!!
 	    return result;
 	}
 
@@ -465,6 +361,7 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	    boolean result = false;
 
 	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
+	    long t1 = System.nanoTime();
 	    if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
 	            DxQuickStep.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
 	    {
@@ -474,7 +371,8 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	        	result = true;
 	        }
 	    }
-
+        long t2 = System.nanoTime();
+        System.err.println("Time: " + (t2 - t1) / 1000); // FIXME: Remove!!!
 	    return result;
 	}
 
@@ -794,64 +692,47 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 			double stepSize, dstepper_fn_t stepper, 
 			dmaxcallcountestimate_fn_t maxCallCountEstimator)
 	{
-		boolean result = false;
 
-		DxIslandsProcessingCallContext callContext = new DxIslandsProcessingCallContext(this, 
+		final DxIslandsProcessingCallContext callContext = new DxIslandsProcessingCallContext(this, 
 				islandsInfo, stepSize, stepper);
 
-		do {
-			//DxStepWorkingMemory wmem = world.wmem;
-			dIASSERT(wmem != null);
-			DxWorldProcessContext context = wmem.GetWorldProcessingContext(); 
-			dIASSERT(context != null);
-			DCallWait pcwGroupCallWait = context.GetIslandsSteppingWait();
+		//DxStepWorkingMemory wmem = world.wmem;
+		dIASSERT(wmem != null);
+		DxWorldProcessContext context = wmem.GetWorldProcessingContext(); 
+		dIASSERT(context != null);
 
-			RefInt summaryFault = new RefInt();
+		RefInt summaryFault = new RefInt();
 
-			RefInt activeThreadCount = new RefInt();
-			final int islandsAllowedThreadCount = GetThreadingIslandsMaxThreadsCount(activeThreadCount);
-			dIASSERT(islandsAllowedThreadCount != 0);
-			dIASSERT(activeThreadCount.get() >= islandsAllowedThreadCount);
+		RefInt activeThreadCount = new RefInt();
+		final int islandsAllowedThreadCount = GetThreadingIslandsMaxThreadsCount(activeThreadCount);
+		dIASSERT(islandsAllowedThreadCount != 0);
+		dIASSERT(activeThreadCount.get() >= islandsAllowedThreadCount);
 
-			// For now, set stepper allowed threads equal to island stepping threads
-			int stepperAllowedThreadCount = islandsAllowedThreadCount; 
+		// For now, set stepper allowed threads equal to island stepping threads
+		int stepperAllowedThreadCount = islandsAllowedThreadCount; 
 
-			int simultaneousCallsCount = EstimateIslandProcessingSimultaneousCallsMaximumCount(
-					activeThreadCount.get(), islandsAllowedThreadCount, 
-					stepperAllowedThreadCount, maxCallCountEstimator);
-			if (!dxThreadingBase.PreallocateResourcesForThreadedCalls(simultaneousCallsCount)) {
-				break;
-			}
+		callContext.SetStepperAllowedThreads(Threading.STEPPER_THREADING_DISABLED ? 1 : stepperAllowedThreadCount);
 
-			Ref<DCallReleasee> groupReleasee = new Ref<DCallReleasee>();
-			// First post a group call with dependency count set to number of expected threads
-			threading().PostThreadedCall(summaryFault, groupReleasee, islandsAllowedThreadCount, null, 
-					pcwGroupCallWait, 
-					DxIslandsProcessingCallContext.ThreadedProcessGroup_Callback, 
-					callContext, 0, "World Islands Stepping Group");
+		final TaskGroup group = executor.group("World Islands Stepping Group", new Runnable() {
+			@Override
+			public void run() {}
+		});
 
-			callContext.AssignGroupReleasee(groupReleasee.get());
-			callContext.SetStepperAllowedThreads(stepperAllowedThreadCount);
-
-			// Summary fault flag may be omitted as any failures will automatically propagate to 
-			// dependent releasee (i.e. to groupReleasee)
-			threading().PostThreadedCallsGroup(null, islandsAllowedThreadCount, groupReleasee.get(), 
-					DxIslandsProcessingCallContext.ThreadedProcessJobStart_Callback, 
-					callContext, "World Islands Stepping Start");
-
-			// Wait until group completes (since jobs were the dependencies of the group the group 
-			// is going to complete only after all the jobs end)
-			dxThreadingBase.WaitThreadedCallExclusively(null, pcwGroupCallWait, null, "World Islands Stepping Wait");
-
-			if (summaryFault.get() != 0) {
-				break;
-			}
-
-			result = true;
-		}
-		while (false);
-
-		return result;
+		for (int i = 0; i < islandsAllowedThreadCount; i++) {
+    		Task task = group.subtask("World Islands Stepping Start", new Runnable() {
+				@Override
+				public void run() {
+					callContext.ThreadedProcessJobStart(group);
+				}
+			});
+			task.submit();
+    	}
+		group.submit();
+		// Wait until group completes (since jobs were the dependencies of the group the group 
+		// is going to complete only after all the jobs end)
+    	group.awaitCompletion();
+	
+		return summaryFault.get() == 0;
 	}
 
 
@@ -1017,7 +898,6 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 		if (wmem != null)
 		{
 			wmem.CleanupWorldReferences(this);
-			wmem.Release();
 			wmem = null;
 		}
 		super.DESTRUCTOR(); 
@@ -1025,39 +905,14 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 
 	static boolean InitializeDefaultThreading()
 	{
-	    dIASSERT(g_world_default_threading_impl == null);
-
-	    boolean init_result = false;
-
-	    DThreadingImplementation threading_impl = 
-	    		DxThreadingImplementation.dThreadingAllocateSelfThreadedImplementation();
-
-	    if (threading_impl != null)
-	    {
-	        g_world_default_threading_functions = threading_impl.dThreadingImplementationGetFunctions();
-	        g_world_default_threading_impl = threading_impl;
-
-	        init_result = true;
-	    }
-
-	    return init_result;
+		return true;
 	}
 
 	static void FinalizeDefaultThreading()
 	{
-	    DThreadingImplementation threading_impl = g_world_default_threading_impl;
-
-	    if (threading_impl != null)
-	    {
-	    	threading_impl.free();
-
-	        g_world_default_threading_functions = null;
-	        g_world_default_threading_impl = null;
-	    }
 	}
 
-	private void AssignThreadingImpl(DxThreadingFunctionsInfo functions_info, 
-			DThreadingImplementation threading_impl)
+	private void AssignThreadingImpl(Threading threading_impl)
 	{
 	    if (wmem != null)
 	    {
@@ -1065,12 +920,11 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	        wmem.CleanupWorldReferences(this);
 	    }
 
-	    dxThreadingBase.AssignThreadingImpl(functions_info, threading_impl);
 	}
 
 	public int GetThreadingIslandsMaxThreadsCount(RefInt out_active_thread_count_ptr/*=NULL*/)
 	{
-	    int active_thread_count = dxThreadingBase.RetrieveThreadingThreadCount();
+	    int active_thread_count = executor.getThreadCount();
 	    if (out_active_thread_count_ptr != null)
 	    {
 	        out_active_thread_count_ptr.set( active_thread_count );
@@ -1086,18 +940,12 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 	    return wmem.GetWorldProcessingContext();
 	}
 
-	//private!
-	@Override
-	public DxThreadingFunctionsInfo RetrieveThreadingDefaultImpl(Ref<DThreadingImplementation> out_default_impl)
-	{
-	    out_default_impl.set( g_world_default_threading_impl );
-	    return (DxThreadingFunctionsInfo) g_world_default_threading_functions;
+	public TaskExecutor executor() {
+		return executor;
 	}
-
-	public DxThreadingBase threading() {
-		return dxThreadingBase;
+	public void setExecutor(TaskExecutor executor) {
+		this.executor = executor;
 	}
-
 	@Override
 	public void setGravity (double x, double y, double z)
 	{ dWorldSetGravity (x,y,z); }
@@ -1277,24 +1125,6 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 //	}
 
 
-    @Override
-    public boolean useSharedWorkingMemory(DWorld from_world) {
-        return dWorldUseSharedWorkingMemory((DxWorld) from_world);
-    }
-
-
-    @Override
-    public void cleanupWorkingMemory() {
-        dWorldCleanupWorkingMemory();
-    }
-
-
-    @Override
-    public boolean setStepMemoryReservationPolicy(DWorldStepReserveInfo policyinfo) {
-        return dWorldSetStepMemoryReservationPolicy(policyinfo);
-    }
-
-
 	@Override
 	public void setData(Object data) {
 		dWorldSetData(data);
@@ -1329,17 +1159,6 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 //	}
 
 
-	@Override
-	@Deprecated
-	public void setStepThreadingImplementation(
-			DThreadingFunctionsInfo functions_info,
-			DThreadingImplementation threading_impl) {
-				dWorldSetStepThreadingImplementation(
-				(DxThreadingFunctionsInfo) functions_info, 
-				threading_impl);
-	}
-	
-	
 	//Moved from DWorld (TZ)
 	
 	/**
@@ -1389,32 +1208,5 @@ public class DxWorld extends DBase implements DWorld, DxIThreadingDefaultImplPro
 			}
 		};
 	};
-
-	/**
-	* Set memory manager for world to be used with simulation stepping functions
-	*
-	* The function allows to customize memory manager to be used for internal
-	* memory allocation during simulation for a world. By default, 
-	* <code> dAlloc dRealloc dFree</code>
-	* based memory manager is used.
-	*
-	* Passing <code>memfuncs</code> argument as NULL results in memory manager being
-	* reset to default one as if the world has been just created. The content of 
-	* <code>memfuncs</code> structure is copied internally and does not need to remain valid
-	* after the call returns.
-	*
-	* If the world uses working memory sharing, changing memory manager
-	* affects all the worlds linked together. 
-	*
-	* Failure result status means a memory allocation failure.
-	*
-	* @param memfuncs Null or a pointer to memory manager descriptor structure.
-	* @return 1 for success and 0 for failure.
-	*
-	* @see #useSharedWorkingMemory(DWorld)
-	*/
-	public boolean setStepMemoryManager(final DWorldStepMemoryFunctionsInfo memfuncs) {
-        return dWorldSetStepMemoryManager(memfuncs);
-	}
 
 }
