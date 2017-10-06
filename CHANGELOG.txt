@@ -1,3 +1,7 @@
+
+0.3.2
+=====
+- Announcement: This will be the last release build with Java 6! 
 - Convex vs trimesh collision improvement for concave trimeshes, PR #51 (Piotr)
 - Quickstep improvements, also fixes issue with DemoFeedback, PR #50 (Piotr)
 - Added more stable cylinder stacking, PR #47 (Piotr)

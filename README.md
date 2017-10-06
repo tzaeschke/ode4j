@@ -18,12 +18,23 @@ The [ode4j forum](https://groups.google.com/forum/?hl=en#!forum/ode4j) is for pr
 There is also the [old website](http://www.zaeschke.com/ode4j/), including some [screenshots](http://www.zaeschke.com/ode4j/ode4j-features.html).
 
 
-LEGAL
+News
+====
+2017-10-06: Release of ode4j 0.3.1
+
+ * Numerous bugfixes and improvement, see CHANGELOG
+ * This is the last release built with Java 6.
+
+
+Legal
 =====
 
 ode4j:
-Copyright  (c) 2009-2015 Tilmann Zäschke <ode4j(AT)gmx.de>.
+Copyright (c) 2009-2017 Tilmann Zäschke <ode4j(AT)gmx.de>.
 All rights reserved.
+
+
+
 
 Like the original ODE, ode4j is licensed under GPL v2.1 and BSD 3-clause. Choose whichever license suits your needs. 
 
