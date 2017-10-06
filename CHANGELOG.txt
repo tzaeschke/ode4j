@@ -1,6 +1,6 @@
 0.3.2-SNAPSHOT
 ==============
-- Changed to Java 7
+- Changed to Java 7 and updated some maven dependencies
 
 
 0.3.1
