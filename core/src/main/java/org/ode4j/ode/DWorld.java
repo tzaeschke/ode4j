@@ -601,5 +601,5 @@ public interface DWorld {
 	 */
 	void setMaxAngularSpeed (double max_speed);
 
-	void setExecutor(TaskExecutor executor);
+	void setTaskExecutor(TaskExecutor executor);
 }

@@ -30,12 +30,12 @@ package org.ode4j.ode.threading;
  */
 public interface Threading {
 
-	static final boolean dTHREADING_INTF_DISABLED = true;
-
-	static final boolean dBUILTIN_THREADING_IMPL_ENABLED = false;
-
-    public static boolean JAVA_OPTIMIZED_MULTITHREADING = true;
-
-    public static boolean STEPPER_THREADING_DISABLED = true;
+    /**
+     * Enabling stepper multithreading might result in performance improvements in some case,
+     * however, as long as the number of islands is reasonably high compared to the number of available threads
+     * it is more efficient to rely solely on a per-island thrading and disable multithreading in the stepper completely to avoid 
+     * the creation of many small tasks and the related overhead of scheduling and context switching.
+     */
+    public static boolean ENABLE_STEPPER_MULTITHREADING = false;
 	
 }

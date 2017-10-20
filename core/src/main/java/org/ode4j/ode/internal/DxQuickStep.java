@@ -60,7 +60,6 @@ import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.threading.Atomics;
-import org.ode4j.ode.threading.Threading;
 import org.ode4j.ode.threading.task.Task;
 import org.ode4j.ode.threading.task.TaskGroup;
 
@@ -76,6 +75,13 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	 * Experimental improvement to reduce GC, see issue #36
 	 */
 	public static boolean REUSE_OBJECTS = false;
+    /**
+     * Due to too many small tasks created for LCP iterations,
+     * the overhead involved in submitting a single task to the scheduler 
+     * and context switching it turns out to be much more efficient to run the iterations
+     * as a simple loop rather than related tasks executed concurrently.
+     */
+    public static boolean ENABLE_LCP_ITERATIONS_MULTITHREADING = false;
 
 	private static final int dxQUICKSTEPISLAND_STAGE2B_STEP = 16;
 	private static final int dxQUICKSTEPISLAND_STAGE2C_STEP = 32;
@@ -1169,7 +1175,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        AtomicInteger[] bi_links_or_mi_levels = null;
 	        AtomicInteger[] mi_links = null;
 
-	        if (!singleThreadedExecution && !Threading.JAVA_OPTIMIZED_MULTITHREADING) {
+	        if (!singleThreadedExecution && ENABLE_LCP_ITERATIONS_MULTITHREADING) {
 	        	bi_links_or_mi_levels = new AtomicInteger[Math.max(nb, m)];// memarena->AllocateArray<atomicord32>(dMAX(nb, m));
 	        	mi_links = new AtomicInteger[2 * (m + 1)];// memarena->AllocateArray<atomicord32>(2 * (m + 1));
 	        }
@@ -1214,10 +1220,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	            final TaskGroup stage4LCP_IterationStart = stage4LCP_IterationSync.subgroup("QuickStepIsland Stage4LCP_Iteration Start", new Runnable() {
                     @Override
                     public void run() {
-                    	if (Threading.JAVA_OPTIMIZED_MULTITHREADING) {
-                    		dxQuickStepIsland_Stage4LCP_IterationStartJava(stage4CallContext);
-                    	} else {
+                    	if (ENABLE_LCP_ITERATIONS_MULTITHREADING) {
                     		dxQuickStepIsland_Stage4LCP_IterationStart(stage4CallContext);
+                    	} else {
+                    		dxQuickStepIsland_Stage4LCP_IterationStartSingleThread(stage4CallContext);
                     	}
                     }
                 });
@@ -1253,16 +1259,14 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
                 }
                 stage4LCP_fcStart.submit();
                 int stage4LCP_iMJ_allowedThreads = CalculateOptimalThreadsCount(m, allowedThreads, dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP);
-                if (stage4LCP_iMJ_allowedThreads > 1) {
-                    for (int i = 1; i < stage4LCP_iMJ_allowedThreads; i++) {
-                        Task stage4LCP_iMJComputation = stage4LCP_iMJSync.subtask("QuickStepIsland Stage4LCP_iMJ", new Runnable() {
-                            @Override
-                            public void run() {
-                                dxQuickStepIsland_Stage4LCP_iMJComputation(stage4CallContext);
-                            }
-                        });
-                        stage4LCP_iMJComputation.submit();
-                    }
+                for (int i = 1; i < stage4LCP_iMJ_allowedThreads; i++) {
+                    Task stage4LCP_iMJComputation = stage4LCP_iMJSync.subtask("QuickStepIsland Stage4LCP_iMJ", new Runnable() {
+                        @Override
+                        public void run() {
+                            dxQuickStepIsland_Stage4LCP_iMJComputation(stage4CallContext);
+                        }
+                    });
+                    stage4LCP_iMJComputation.submit();
                 }
                 dxQuickStepIsland_Stage4LCP_iMJComputation(stage4CallContext);
                 stage4LCP_iMJSync.submit();
@@ -1505,7 +1509,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     }
 
     private static
-    void dxQuickStepIsland_Stage4LCP_IterationStartJava(final dxQuickStepperStage4CallContext stage4CallContext)
+    void dxQuickStepIsland_Stage4LCP_IterationStartSingleThread(final dxQuickStepperStage4CallContext stage4CallContext)
     {
         DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
         DxWorld world = callContext.m_world();
@@ -1519,7 +1523,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         }
 
     }
-    
+
     private static
     int dxQuickStepIsland_Stage4LCP_IterationStart(final dxQuickStepperStage4CallContext stage4CallContext)
     {

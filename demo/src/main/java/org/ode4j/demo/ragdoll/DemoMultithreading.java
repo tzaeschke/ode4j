@@ -79,7 +79,7 @@ public class DemoMultithreading extends dsFunctions {
 		world = OdeHelper.createWorld();
 		world.setGravity(0,0,-9.8);
 		world.setDamping(1e-4, 1e-5);
-		world.setExecutor(new MultiThreadTaskExecutor(4));
+		world.setTaskExecutor(new MultiThreadTaskExecutor(4));
 		world.setQuickStepNumIterations(200);
 		//    dWorldSetERP(world, 1);
 		space = OdeHelper.createSimpleSpace();

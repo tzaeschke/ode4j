@@ -65,7 +65,7 @@ import org.ode4j.ode.threading.task.TaskGroup;
 
 public class DxWorld extends DBase implements DWorld {
 
-	private TaskExecutor executor = new SameThreadTaskExecutor();
+	private TaskExecutor taskExecutor = new SameThreadTaskExecutor();
 	
 	//TODO
 	public final Ref<DxBody> firstbody = new Ref<DxBody>();
@@ -319,18 +319,6 @@ public class DxWorld extends DBase implements DWorld {
 	    return result;
 	}
 
-
-	void dWorldSetStepThreadingImplementation( 
-			Threading threading_impl)
-	{
-		//dUASSERT (!functions_info || functions_info.struct_size >= sizeof(*functions_info), "Bad threading functions info");
-
-		if (Threading.dTHREADING_INTF_DISABLED) {
-			dUASSERT(threading_impl == null, "Threading interface is not available");
-		} else {
-			AssignThreadingImpl(threading_impl);
-		} 
-	}
 
 	boolean dWorldStep (double stepsize)
 	{
@@ -711,9 +699,9 @@ public class DxWorld extends DBase implements DWorld {
 		// For now, set stepper allowed threads equal to island stepping threads
 		int stepperAllowedThreadCount = islandsAllowedThreadCount; 
 
-		callContext.SetStepperAllowedThreads(Threading.STEPPER_THREADING_DISABLED ? 1 : stepperAllowedThreadCount);
+		callContext.SetStepperAllowedThreads(Threading.ENABLE_STEPPER_MULTITHREADING ? stepperAllowedThreadCount : 1);
 
-		final TaskGroup group = executor.group("World Islands Stepping Group", new Runnable() {
+		final TaskGroup group = taskExecutor.group("World Islands Stepping Group", new Runnable() {
 			@Override
 			public void run() {}
 		});
@@ -912,19 +900,9 @@ public class DxWorld extends DBase implements DWorld {
 	{
 	}
 
-	private void AssignThreadingImpl(Threading threading_impl)
-	{
-	    if (wmem != null)
-	    {
-	        // Free objects allocated with old threading
-	        wmem.CleanupWorldReferences(this);
-	    }
-
-	}
-
 	public int GetThreadingIslandsMaxThreadsCount(RefInt out_active_thread_count_ptr/*=NULL*/)
 	{
-	    int active_thread_count = executor.getThreadCount();
+	    int active_thread_count = taskExecutor.getThreadCount();
 	    if (out_active_thread_count_ptr != null)
 	    {
 	        out_active_thread_count_ptr.set( active_thread_count );
@@ -940,11 +918,8 @@ public class DxWorld extends DBase implements DWorld {
 	    return wmem.GetWorldProcessingContext();
 	}
 
-	public TaskExecutor executor() {
-		return executor;
-	}
-	public void setExecutor(TaskExecutor executor) {
-		this.executor = executor;
+	public void setTaskExecutor(TaskExecutor executor) {
+		this.taskExecutor = executor;
 	}
 	@Override
 	public void setGravity (double x, double y, double z)
