@@ -271,11 +271,6 @@ public class OdeInit {
 
             if (!bAnyModeAlreadyInitialized)
             {
-                if (!DxWorld.InitializeDefaultThreading())
-                {
-                    break;
-                }
-
                 bWorldThreadingInitialized = true;
 
 //    #if dTRIMESH_ENABLED && dTRIMESH_OPCODE
@@ -301,7 +296,6 @@ public class OdeInit {
         {
             if (bWorldThreadingInitialized)
             {
-                DxWorld.FinalizeDefaultThreading();
             }
 
 //    #if dTLS_ENABLED

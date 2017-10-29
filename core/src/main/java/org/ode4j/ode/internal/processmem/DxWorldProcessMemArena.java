@@ -43,11 +43,6 @@ public final class DxWorldProcessMemArena {
         return DxUtil.SIZE_MAX - BUFFER_TO_ARENA_EXTRA() >= nBufferSize; // This ensures there will be no overflow
     }
 
-    static int MakeBufferSize(int nArenaSize)
-    {
-        return nArenaSize - BUFFER_TO_ARENA_EXTRA();
-    }
-
     static int MakeArenaSize(int nBufferSize)
     {
         return BUFFER_TO_ARENA_EXTRA() + nBufferSize;
@@ -88,38 +83,6 @@ public final class DxWorldProcessMemArena {
     {
         return m_pAllocCurrentOrNextArena;
     }
-
-    BlockPointer AllocateBlock(int size)
-    {
-        BlockPointer block = m_pAllocCurrentOrNextArena;
-        m_pAllocCurrentOrNextArena = DxUtil.dOFFSET_EFFICIENTLY(block, size);
-        Common.dIASSERT(m_pAllocCurrentOrNextArena.toInt() <= m_pAllocEnd.toInt());
-        return block;
-    }
-
-    //          //template<typename ElementType>
-    //          Class<?> AllocateArray(int count)
-    //          {
-    //            return (ElementType *)AllocateBlock(count * sizeof(ElementType));
-    //          }
-    //
-    //          //template<typename ElementType>
-    //          void ShrinkArray(Class<?> arr, int oldcount, int newcount)
-    //          {
-    //            dIASSERT(newcount <= oldcount);
-    //            dIASSERT(dOFFSET_EFFICIENTLY(arr, oldcount * sizeof(ElementType)) == m_pAllocCurrentOrNextArena);
-    //            m_pAllocCurrentOrNextArena = dOFFSET_EFFICIENTLY(arr, newcount * sizeof(ElementType));
-    //          }
-
-    //       public:
-    //    public static void FreeMemArena (DxWorldProcessMemArena arena) {
-    //        throw new UnsupportedOperationException();
-    //    }
-    //
-    //    private static int AdjustArenaSizeForReserveRequirements(
-    //            int arenareq, float rsrvfactor, int rsrvminimum) {
-    //        throw new UnsupportedOperationException();
-    //    }
 
     //dxWorldProcessMemArena *GetNextMemArena() const { return (dxWorldProcessMemArena *)m_pAllocCurrentOrNextArena; }
     DxWorldProcessMemArena GetNextMemArena() { return m_pAllocCurrentOrNextArena.asDxWorldProcessMemArena(); }
@@ -228,24 +191,6 @@ public final class DxWorldProcessMemArena {
         int boundedarena = (adjustedarena > rsrvminimum) ? adjustedarena : rsrvminimum;
         return DxUtil.dEFFICIENT_SIZE(boundedarena);
     }
-
-    static DxWorldProcessMemArena dxAllocateTemporaryWorldProcessMemArena(
-            int memreq, final DxWorldProcessMemoryManager memmgr/*=NULL*/, 
-            final DxWorldProcessMemoryReserveInfo reserveinfo/*=NULL*/)
-    {
-        final DxWorldProcessMemoryManager surememmgr = memmgr!=null ? memmgr : DxUtil.g_WorldProcessMallocMemoryManager;
-        final DxWorldProcessMemoryReserveInfo surereserveinfo = reserveinfo!=null ? reserveinfo : DxUtil.g_WorldProcessDefaultReserveInfo;
-        DxWorldProcessMemArena arena = DxWorldProcessMemArena.ReallocateMemArena(
-                null, memreq, surememmgr, surereserveinfo.m_fReserveFactor, 
-                surereserveinfo.m_uiReserveMinimum);
-        return arena;
-    }
-
-    static void dxFreeTemporaryWorldProcessMemArena(DxWorldProcessMemArena arena)
-    {
-        DxWorldProcessMemArena.FreeMemArena(arena);
-    }
-
 
     // ***********************************************
     // Java methods to simulate the C++ manager (TZ)

@@ -57,9 +57,6 @@ import org.ode4j.ode.internal.OdeFactoryImpl;
 import org.ode4j.ode.internal.OdeInit;
 import org.ode4j.ode.internal.joints.DxJointGroup;
 import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
-import org.ode4j.ode.threading.DThreadingImplementation;
-import org.ode4j.ode.threading.DThreadingThreadPool;
-import org.ode4j.ode.threading.DxThreadingImplementation;
 
 /**
  * This is the general helper class for ode4j.
@@ -1028,55 +1025,4 @@ public abstract class OdeHelper {
 		return OdeJointsFactoryImpl.dConnectingJointList((DxBody)b1, (DxBody)b2);
 	}
 	
-	/**
-	 * Allocates built-in multi-threaded threading implementation object.
-	 *
-	 * A multi-threaded implementation is a type of implementation that has to be 
-	 * served with a thread pool. The thread pool can be either the built-in ODE object
-	 * or set of external threads that dedicate themselves to this purpose and stay
-	 * in ODE until implementation releases them.
-	 * 
-	 * @return allocated object or NULL on failure
-	 * 
-	 * @see DThreadingThreadPool#serveMultiThreadedImplementation
-	 * @see DThreadingImplementation#dExternalThreadingServeMultiThreadedImplementation
-	 * @see DThreadingImplementation#free()
-	 */
-	@Deprecated
-	public static DThreadingImplementation allocateMultiThreaded() {
-		return DxThreadingImplementation.dThreadingAllocateMultiThreadedImplementation();
-	}
-	
-	/**
-	 * Creates an instance of built-in thread pool object that can be used to serve
-	 * multi-threaded threading implementations.
-	 *
-	 * The threads allocated inherit priority of caller thread. Their affinity is not
-	 * explicitly adjusted and gets the value the system assigns by default. Threads 
-	 * have their stack memory fully committed immediately on start. On POSIX platforms 
-	 * threads are started with all the possible signals blocked. Threads execute 
-	 * calls to {@code dAllocateODEDataForThread} with {@code ode_data_allocate_flags} 
-	 * on initialization.
-	 *
-	 * On POSIX platforms this function must be called with signals masked 
-	 * or other measures must be taken to prevent reception of signals by calling thread 
-	 * for the duration of the call.
-	 * 
-	 * @param thread_count Number of threads to start in pool
-	 * @param stack_size Size of stack to be used for every thread or 0 for system default value
-//	 * @param ode_data_allocate_flags Flags to be passed to {@code dAllocateODEDataForThread} on 
-//	 * behalf of each thread
-	 * @return the allocated object or NULL on failure
-	 *
-	 * @see OdeHelper#allocateMultiThreaded()
-	 * @see DThreadingImplementation#shutdownProcessing()
-	 * @see DThreadingThreadPool#freeThreadPool()
-	 */
-	@Deprecated
-	public static DThreadingThreadPool allocateThreadPool(int thread_count, int stack_size, 
-			//int ode_data_allocate_flags, 
-			Object[][] reserved) {
-		return DThreadingThreadPool.allocateThreadPool(thread_count, stack_size, 
-				OdeInit.dAllocateFlagBasicData, reserved);
-	}
 }

@@ -29,10 +29,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.DxWorld;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
-import org.ode4j.ode.threading.DxThreadingBase.DxMutexGroupLockHelper;
-import org.ode4j.ode.threading.ThreadingUtils;
-import org.ode4j.ode.threading.Threading_H.DCallWait;
-import org.ode4j.ode.threading.Threading_H.DMutexGroup;
+import org.ode4j.ode.threading.Atomics;
+import org.ode4j.ode.threading.MutexGroup;
+import org.ode4j.ode.threading.MutexGroup.dxProcessContextMutex;
+import org.ode4j.ode.threading.MutexGroupImpl;
 
 
 public class DxWorldProcessContext {
@@ -42,9 +42,6 @@ public class DxWorldProcessContext {
     //public DESTRUCTOR();
 
     //void CleanupWorldReferences(dxWorld *pswWorldInstance);
-
-    //public boolean EnsureStepperSyncObjectsAreAllocated(dxWorld *pswWorldInstance);
-    public DCallWait GetIslandsSteppingWait() { return m_pcwIslandsSteppingWait; }
 
     //public DxWorldProcessMemArena *ObtainStepperMemArena();
     //public void ReturnStepperMemArena(dxWorldProcessMemArena *pmaArenaInstance);
@@ -79,24 +76,7 @@ public class DxWorldProcessContext {
     //void UnlockForStepbodySerialization();
 
     //private:
-    public enum dxProcessContextMutex
-    {
-        dxPCM_STEPPER_ARENA_OBTAIN,
-        dxPCM_STEPPER_ADDLIMOT_SERIALIZE,
-        dxPCM_STEPPER_STEPBODY_SERIALIZE,
 
-        dxPCM__MAX
-    };
-
-    //static const char *const m_aszContextMutexNames[dxPCM__MAX];
-    private static final String[] m_aszContextMutexNames = //new String[dxPCM__MAX];
-	{
-	    "Stepper Arena Obtain Lock" , // dxPCM_STEPPER_ARENA_OBTAIN,
-	    "Joint addLimot Serialize Lock" , // dxPCM_STEPPER_ADDLIMOT_SERIALIZE
-	    "Stepper StepBody Serialize Lock" , // dxPCM_STEPPER_STEPBODY_SERIALIZE,
-	};
-   
-    
     //private:
     //private DxWorldProcessMemArena m_pmaIslandsArena;
     //private DxWorldProcessMemArena m_pmaStepperArena;
@@ -105,8 +85,7 @@ public class DxWorldProcessContext {
     final AtomicReference<DxWorldProcessMemArena>  m_pmaStepperArenas = 
     		new AtomicReference<DxWorldProcessMemArena>();
     DxWorld                 m_pswObjectsAllocWorld;
-    DMutexGroup           m_pmgStepperMutexGroup;
-    DCallWait             m_pcwIslandsSteppingWait;
+    MutexGroup           m_pmgStepperMutexGroup;
 
 
 
@@ -118,7 +97,6 @@ public class DxWorldProcessContext {
         //m_pmaStepperArenas = null;//(NULL)
         m_pswObjectsAllocWorld = null;//(NULL),
         m_pmgStepperMutexGroup = null;//(NULL),
-        m_pcwIslandsSteppingWait = null;//(NULL)
        // Do nothing
     }
 
@@ -126,13 +104,6 @@ public class DxWorldProcessContext {
     public void DESTRUCTOR()
     {
     	Common.dIASSERT((m_pswObjectsAllocWorld != null) == (m_pmgStepperMutexGroup != null));
-    	Common.dIASSERT((m_pswObjectsAllocWorld != null) == (m_pcwIslandsSteppingWait != null));
-
-        if (m_pswObjectsAllocWorld != null)
-        {
-            m_pswObjectsAllocWorld.threading().FreeMutexGroup(m_pmgStepperMutexGroup);
-            m_pswObjectsAllocWorld.threading().FreeThreadedCallWait(m_pcwIslandsSteppingWait);
-        }
 
         DxWorldProcessMemArena pmaStepperArenas = m_pmaStepperArenas.get();
         if (pmaStepperArenas != null)
@@ -149,64 +120,34 @@ public class DxWorldProcessContext {
     void CleanupWorldReferences(DxWorld pswWorldInstance)
     {
         Common.dIASSERT((m_pswObjectsAllocWorld != null) == (m_pmgStepperMutexGroup != null));
-        Common.dIASSERT((m_pswObjectsAllocWorld != null) == (m_pcwIslandsSteppingWait != null));
 
         if (m_pswObjectsAllocWorld == pswWorldInstance)
         {
-            m_pswObjectsAllocWorld.threading().FreeMutexGroup(m_pmgStepperMutexGroup);
-            m_pswObjectsAllocWorld.threading().FreeThreadedCallWait(m_pcwIslandsSteppingWait);
-
             m_pswObjectsAllocWorld = null;
             m_pmgStepperMutexGroup = null;
-            m_pcwIslandsSteppingWait = null;
         }
     }
 
     boolean EnsureStepperSyncObjectsAreAllocated(DxWorld pswWorldInstance)
     {
     	Common.dIASSERT((m_pswObjectsAllocWorld != null) == (m_pmgStepperMutexGroup != null));
-    	Common.dIASSERT((m_pswObjectsAllocWorld != null) == (m_pcwIslandsSteppingWait != null));
 
         boolean bResult = false;
 
-        DMutexGroup pmbStepperMutexGroup = null;
-        boolean bStepperMutexGroupAllocated = false;
+        MutexGroup pmbStepperMutexGroup = null;
 
         do
         {
             if (m_pswObjectsAllocWorld == null)
             {
-                pmbStepperMutexGroup = pswWorldInstance.threading().AllocMutexGroup(
-                		dxProcessContextMutex.dxPCM__MAX, m_aszContextMutexNames);
-                if (pmbStepperMutexGroup == null)
-                {
-                    break;
-                }
-
-                bStepperMutexGroupAllocated = true;
-
-                DCallWait pcwIslandsSteppingWait = pswWorldInstance.threading().AllocThreadedCallWait();
-                if (pcwIslandsSteppingWait == null)
-                {
-                    break;
-                }
-
+                pmbStepperMutexGroup = new MutexGroupImpl();
                 m_pswObjectsAllocWorld = pswWorldInstance;
                 m_pmgStepperMutexGroup = pmbStepperMutexGroup;
-                m_pcwIslandsSteppingWait = pcwIslandsSteppingWait;
             }
 
             bResult = true;
         }
         while (false);
-
-        if (!bResult)
-        {
-            if (bStepperMutexGroupAllocated)
-            {
-                pswWorldInstance.threading().FreeMutexGroup(pmbStepperMutexGroup);
-            }
-        }
 
         return bResult;
     }
@@ -226,15 +167,12 @@ public class DxWorldProcessContext {
 
             // Extraction must be locked so that other thread does not "steal" head arena,
             // use it and then reinsert back with a different "next"
-            DxMutexGroupLockHelper lhLockHelper = 
-            		new DxMutexGroupLockHelper(m_pswObjectsAllocWorld.threading(), 
-            				m_pmgStepperMutexGroup, 
-            				dxProcessContextMutex.dxPCM_STEPPER_ARENA_OBTAIN);
+            m_pmgStepperMutexGroup.lock(dxProcessContextMutex.dxPCM_STEPPER_ARENA_OBTAIN);
 
             DxWorldProcessMemArena pmaArenasHead = GetStepperArenasHead(); // Arenas head must be re-extracted after mutex has been locked
             boolean bExchangeResult = pmaArenasHead != null && TryExtractingStepperArenasHead(pmaArenasHead);
 
-            lhLockHelper.UnlockMutex();
+            m_pmgStepperMutexGroup.unlock(dxProcessContextMutex.dxPCM_STEPPER_ARENA_OBTAIN);
 
             if (bExchangeResult)
             {
@@ -377,39 +315,35 @@ public class DxWorldProcessContext {
     boolean TryExtractingStepperArenasHead(DxWorldProcessMemArena pmaHeadInstance)
     {
     	DxWorldProcessMemArena pmaNextInstance = pmaHeadInstance.GetNextMemArena();
-    	return ThreadingUtils.ThrsafeCompareExchangePointer(m_pmaStepperArenas, pmaHeadInstance, pmaNextInstance);
+    	return Atomics.ThrsafeCompareExchangePointer(m_pmaStepperArenas, pmaHeadInstance, pmaNextInstance);
     }
 
     boolean TryInsertingStepperArenasHead(DxWorldProcessMemArena pmaArenaInstance, 
     		DxWorldProcessMemArena pmaExistingHead)
     {
-    	return ThreadingUtils.ThrsafeCompareExchangePointer(m_pmaStepperArenas, pmaExistingHead, pmaArenaInstance);
+    	return Atomics.ThrsafeCompareExchangePointer(m_pmaStepperArenas, pmaExistingHead, pmaArenaInstance);
     }
 
 
     public void LockForAddLimotSerialization()
     {
-    	m_pswObjectsAllocWorld.threading().LockMutexGroupMutex(m_pmgStepperMutexGroup, 
-    			dxProcessContextMutex.dxPCM_STEPPER_ADDLIMOT_SERIALIZE);
+    	m_pmgStepperMutexGroup.lock(dxProcessContextMutex.dxPCM_STEPPER_ADDLIMOT_SERIALIZE);
     }
 
     public void UnlockForAddLimotSerialization()
     {
-    	m_pswObjectsAllocWorld.threading().UnlockMutexGroupMutex(m_pmgStepperMutexGroup, 
-    			dxProcessContextMutex.dxPCM_STEPPER_ADDLIMOT_SERIALIZE);
+    	m_pmgStepperMutexGroup.unlock(dxProcessContextMutex.dxPCM_STEPPER_ADDLIMOT_SERIALIZE);
     }
 
 
     public void LockForStepbodySerialization()
     {
-    	m_pswObjectsAllocWorld.threading().LockMutexGroupMutex(m_pmgStepperMutexGroup, 
-    			dxProcessContextMutex.dxPCM_STEPPER_STEPBODY_SERIALIZE);
+    	m_pmgStepperMutexGroup.lock(dxProcessContextMutex.dxPCM_STEPPER_STEPBODY_SERIALIZE);
     }
 
     public void UnlockForStepbodySerialization()
     {
-    	m_pswObjectsAllocWorld.threading().UnlockMutexGroupMutex(m_pmgStepperMutexGroup, 
-    			dxProcessContextMutex.dxPCM_STEPPER_STEPBODY_SERIALIZE);
+    	m_pmgStepperMutexGroup.unlock(dxProcessContextMutex.dxPCM_STEPPER_STEPBODY_SERIALIZE);
     }
 
 

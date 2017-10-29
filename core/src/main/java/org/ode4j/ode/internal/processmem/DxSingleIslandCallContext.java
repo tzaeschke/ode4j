@@ -26,10 +26,8 @@ package org.ode4j.ode.internal.processmem;
 
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.threading.Threading_H.CallContext;
-import org.ode4j.ode.threading.Threading_H.DCallReleasee;
 
-public class DxSingleIslandCallContext implements CallContext {
+public class DxSingleIslandCallContext {
 	DxSingleIslandCallContext(DxIslandsProcessingCallContext islandsProcessingContext, 
 			DxWorldProcessMemArena stepperArena, DxUtil.BlockPointer arenaInitialState, 
 			DxBody[] islandBodiesStart, 
@@ -45,11 +43,6 @@ public class DxSingleIslandCallContext implements CallContext {
 				islandBodiesStart, islandJointsStart);
 	}
 
-	//TZ
-	public void DESTRUCTOR() {
-		//nothing
-	}
-	
 	void AssignIslandSearchProgress(int islandIndex)
 	{
 		m_islandIndex = islandIndex; 
@@ -80,11 +73,6 @@ public class DxSingleIslandCallContext implements CallContext {
 	void RestoreSavedMemArenaStateForStepper()
 	{
 		m_stepperArena.RestoreState(m_arenaInitialState);
-	}
-
-	void AssignStepperCallFinalReleasee(DCallReleasee finalReleasee)
-	{
-		m_stepperCallContext.AssignStepperCallFinalReleasee(finalReleasee);
 	}
 
 	DxIslandsProcessingCallContext  m_islandsProcessingContext;

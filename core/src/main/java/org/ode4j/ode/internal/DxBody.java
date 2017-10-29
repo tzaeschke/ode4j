@@ -1114,8 +1114,6 @@ public class DxBody extends DObject implements DBody, Cloneable {
 
 
 		// notify all attached geoms that this body has moved
-		for (DxGeom geom2 = geom; geom2 != null; geom2 = geom2.dGeomGetBodyNext ())
-			geom2.dGeomMoved ();
 	    DxWorldProcessContext world_process_context = world.UnsafeGetWorldProcessingContext(); 
 	    for (DxGeom geom2 = geom; geom2 != null; geom2 = geom2.dGeomGetBodyNext ()) {
 	        world_process_context.LockForStepbodySerialization();

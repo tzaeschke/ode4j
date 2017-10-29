@@ -27,7 +27,7 @@ package org.ode4j.ode.internal.processmem;
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
 import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.threading.Threading_H.DCallReleasee;
+import org.ode4j.ode.threading.task.TaskGroup;
 
 public final class DxStepperProcessingCallContext {
 
@@ -39,8 +39,6 @@ public final class DxStepperProcessingCallContext {
 	public interface dmaxcallcountestimate_fn_t {
 		public int run(int activeThreadCount, int allowedThreadCount);
 	}
-
-	
 	
 	DxStepperProcessingCallContext(DxWorld world, double stepSize, int stepperAllowedThreads, 
 			DxWorldProcessMemArena stepperArena, 
@@ -49,7 +47,6 @@ public final class DxStepperProcessingCallContext {
 		m_world = world;
 		m_stepSize = stepSize;
 		m_stepperArena = stepperArena;
-		m_finalReleasee = null; 
 		m_islandBodiesStartA = islandBodiesStart;
 		m_islandBodiesStartOfs = 0;
 		m_islandJointsStartA = islandJointsStart;
@@ -74,15 +71,9 @@ public final class DxStepperProcessingCallContext {
 	int/*DxBody[]*/ GetSelectedIslandBodiesEnd() { return m_islandBodiesStartOfs + m_islandBodiesCount; }
 	int/*DxJoint[]*/ GetSelectedIslandJointsEnd() { return m_islandJointsStartOfs + m_islandJointsCount; }
 
-	void AssignStepperCallFinalReleasee(DCallReleasee finalReleasee)
-	{
-		m_finalReleasee = finalReleasee;
-	}
-
 	private DxWorld            m_world;
 	private double             m_stepSize;
 	private DxWorldProcessMemArena  m_stepperArena;
-	private DCallReleasee         m_finalReleasee;
 	private DxBody[]           m_islandBodiesStartA;
 	private int         	   m_islandBodiesStartOfs;
 	private DxJoint[]          m_islandJointsStartA;
@@ -90,8 +81,9 @@ public final class DxStepperProcessingCallContext {
 	private int                m_islandBodiesCount;
 	private int                m_islandJointsCount;
 	private int                m_stepperAllowedThreads;
+	private TaskGroup          m_taskGroup;
 	
-	public DxWorldProcessMemArena m_stepperArena() {
+    public DxWorldProcessMemArena m_stepperArena() {
 		return m_stepperArena;
 	}
 
@@ -109,10 +101,6 @@ public final class DxStepperProcessingCallContext {
 
 	public int m_stepperAllowedThreads() {
 		return m_stepperAllowedThreads;
-	}
-
-	public DCallReleasee m_finalReleasee() {
-		return m_finalReleasee;
 	}
 
 	public DxBody[] m_islandBodiesStartA() {
@@ -134,5 +122,13 @@ public final class DxStepperProcessingCallContext {
 	public double m_stepSize() {
 		return m_stepSize;
 	}
+
+    public TaskGroup m_taskGroup() {
+        return m_taskGroup;
+    }
+
+    public void AssignStepperTaskGroup(TaskGroup group) {
+        m_taskGroup = group;
+    }
 
 }

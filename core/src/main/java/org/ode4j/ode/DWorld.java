@@ -26,8 +26,7 @@ package org.ode4j.ode;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.threading.DThreadingImplementation;
-import org.ode4j.ode.threading.Threading_H.DThreadingFunctionsInfo;
+import org.ode4j.ode.threading.task.TaskExecutor;
 
 /**
  * The world object is a container for rigid bodies and joints. Objects in
@@ -218,66 +217,6 @@ public interface DWorld {
 	@Deprecated
 	int getStepIslandsProcessingMaxThreadCount();
 
-	/**
-	 * Set the world to use shared working memory along with another world.
-	 *
-	 * The worlds allocate working memory internally for simulation stepping. This
-	 * memory is cached among the calls to <code>dWordStep</code> and <code>dWorldQuickStep</code>. 
-	 * Similarly, several worlds can be set up to share this memory caches thus 
-	 * reducing overall memory usage by cost of making worlds inappropriate for 
-	 * simultaneous simulation in multiple threads.
-	 *
-	 * If null value is passed for <code>from_world</code> parameter the world is detached from 
-	 * sharing and returns to defaults for working memory, reservation policy and 
-	 * memory manager as if just created. This can also be used to enable use of shared 
-	 * memory for a world that has already had working memory allocated privately.
-	 * Normally using shared memory after a world has its private working memory allocated
-	 * is prohibited.
-	 *
-	 * Allocation policy used can only increase world's internal reserved memory size
-	 * and never decreases it. <code>dWorldCleanupWorkingMemory</code> can be used to release 
-	 * working memory for a world in case if number of objects/joint decreases 
-	 * significantly in it.
-	 *
-	 * With sharing working memory worlds also automatically share memory reservation 
-	 * policy and memory manager. Thus, these parameters need to be customized for
-	 * initial world to be used as sharing source only.
-	 *
-	 * If worlds share working memory they must also use compatible threading implementations
-	 * (i.e. it is illegal for one world to perform stepping with self-threaded implementation
-	 * when the other world is assigned a multi-threaded implementation). 
-	 * For more information read section about threading approaches in ODE.
-	 *
-	 * Failure result status means a memory allocation failure.
-	 *
-	 * @param from_world Null or the world the shared memory is to be used from.
-	 * @return 1 for success and 0 for failure.
-	 *
-	 * @see #cleanupWorkingMemory()
-	 * @see #setStepMemoryReservationPolicy(DWorldStepReserveInfo)
-//	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
-	 */
-	boolean useSharedWorkingMemory(DWorld from_world/*=NULL*/);
-
-	/**
-	 * Release internal working memory allocated for world
-	 *
-	 * The worlds allocate working memory internally for simulation stepping. This 
-	 * function can be used to free world's internal memory cache in case if number of
-	 * objects/joints in the world decreases significantly. By default, internal 
-	 * allocation policy is used to only increase cache size as necessary and never 
-	 * decrease it.
-	 *
-	 * If a world shares its working memory with other worlds the cache deletion 
-	 * affects all the linked worlds. However the shared status itself remains intact.
-	 *
-	 * The function call does affect neither memory reservation policy nor memory manager.
-	 *
-	 * @see #useSharedWorkingMemory(DWorld)
-	 * @see #setStepMemoryReservationPolicy(DWorldStepReserveInfo)
-//	 * @see #setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
-	 */
-	void cleanupWorkingMemory();
 
 	public static final double dWORLDSTEP_RESERVEFACTOR_DEFAULT = 1.2f;
 	public static final int dWORLDSTEP_RESERVESIZE_DEFAULT = 65536;
@@ -302,47 +241,6 @@ public interface DWorld {
 	    public int reserve_minimum;
 	};
 
-	/**
-	 * Set memory reservation policy for world to be used with simulation stepping functions
-	 *
-	 * The function allows to customize reservation policy to be used for internal
-	 * memory which is allocated to aid simulation for a world. By default, values
-	 * of <code>dWORLDSTEP_RESERVEFACTOR_DEFAULT</code> and <code>dWORLDSTEP_RESERVESIZE_DEFAULT</code>
-	 * are used.
-	 *
-	 * Passing <code>policyinfo</code> argument as NULL results in reservation policy being
-	 * reset to defaults as if the world has been just created. The content of 
-	 * <code>policyinfo</code> structure is copied internally and does not need to remain valid
-	 * after the call returns.
-	 *
-	 * If the world uses working memory sharing, changing memory reservation policy
-	 * affects all the worlds linked together.
-	 *
-	 * Failure result status means a memory allocation failure.
-	 *
-	 * @param policyinfo Null or a pointer to policy descriptor structure.
-	 * @return 1 for success and 0 for failure.
-	 *
-	 * @see #useSharedWorkingMemory(DWorld)
-	 */
-	boolean setStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo/*=NULL*/);
-
-
-	/**
-	 * Assign threading implementation to be used for [quick]stepping the world.
-	 *
-	 * <p>WARNING: It is not recommended to assign the same threading implementation to
-	 * different worlds if they are going to be called in parallel. In particular this
-	 * makes resources preallocation for threaded calls to lose its sense. 
-	 * Built-in threading implementation is likely to crash if misused this way.
-	 * 
-	 * @param w The world to change threading implementation for.
-	 * @param functions_info Pointer to threading functions structure
-	 * @param threading_impl ID of threading implementation object
-	 * @deprecated This is not supported by ode4j.
-	 */
-	void setStepThreadingImplementation(final DThreadingFunctionsInfo functions_info, 
-			DThreadingImplementation threading_impl);
 
 	/**
 	 * Step the world.
@@ -702,4 +600,6 @@ public interface DWorld {
 	 * @see DBody#setMaxAngularSpeed(double)
 	 */
 	void setMaxAngularSpeed (double max_speed);
+
+	void setTaskExecutor(TaskExecutor executor);
 }
