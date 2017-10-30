@@ -327,7 +327,6 @@ public class DxWorld extends DBase implements DWorld {
 	    boolean result = false;
 
 	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
-	    long t1 = System.nanoTime();
         if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
         		Step.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
         {
@@ -337,8 +336,6 @@ public class DxWorld extends DBase implements DWorld {
                 result = true;
             }
 	    }
-        long t2 = System.nanoTime();
-        System.err.println("Time: " + (t2 - t1) / 1000); // FIXME: Remove!!!
 	    return result;
 	}
 
@@ -349,7 +346,6 @@ public class DxWorld extends DBase implements DWorld {
 	    boolean result = false;
 
 	    DxWorldProcessIslandsInfo islandsinfo = new DxWorldProcessIslandsInfo();
-	    long t1 = System.nanoTime();
 	    if (DxWorldProcessContext.dxReallocateWorldProcessContext (this, islandsinfo, stepsize, 
 	            DxQuickStep.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
 	    {
@@ -359,8 +355,6 @@ public class DxWorld extends DBase implements DWorld {
 	        	result = true;
 	        }
 	    }
-        long t2 = System.nanoTime();
-        System.err.println("Time: " + (t2 - t1) / 1000); // FIXME: Remove!!!
 	    return result;
 	}
 
