@@ -8,63 +8,54 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DSapSpace.AXES;
 import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
 import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.internal.DxBVHSpace;
 import org.ode4j.ode.internal.DxSAPSpace2;
-
-/*
- * Results (in microseconds):
- * 
- * iterations   geoms        old          new       gain
- *     500000      10    1933846       1635831       15%
- *     100000     100    1668035       1334365       20%
- *      40000     200    1544012       1113094       25%
- *       5000    1000    2257900       1348609       40%
- *       1200    2000    1908258       1063400       40%
- *        250    5000    4848528       1039026       75%
- *        100   10000    2657288       1339070       50%
- */
 
 public class SpacePerformanceTest {
 
     private final static int STATIC_CATEGORY = 1;
     private final static int DYNAMIC_CATEGORY = 2;
-
-    int spaceCollisions = 0;
+    private int spaceCollisions;
+    private int geomCollisions;
 
     @Test
-    public void test() {
+    public void test_performance_with_dynamic_world() {
         OdeHelper.initODE2(0);
         // Warmup
-        testSpaces(1000, 100, 100);
+        test_performance_with_dynamic_world(1000, 100, 100);
         System.out.println("---------------");
-        testSpaces(500000, 0, 20);
-        testSpaces(100000, 0, 100);
-        testSpaces(40000, 200, 10);
-        testSpaces(5000, 1000, 100);
-        testSpaces(1200, 2000, 200);
-        testSpaces(250, 5000, 250);
-        testSpaces(100, 10000, 500);
-        testSpaces(100, 15000, 100);
+        test_performance_with_dynamic_world(10000, 0, 20);
+        test_performance_with_dynamic_world(4000, 0, 100);
+        test_performance_with_dynamic_world(1000, 400, 10);
+        test_performance_with_dynamic_world(500, 1000, 100);
+        test_performance_with_dynamic_world(150, 2000, 200);
+        test_performance_with_dynamic_world(80, 4000, 200);
+        test_performance_with_dynamic_world(25, 10000, 300);
+        test_performance_with_dynamic_world(16, 15000, 100);
     }
 
-    private void testSpaces(int iterations, int staticGeoms, int geoms) {
+    private void test_performance_with_dynamic_world(int iterations, int staticGeoms, int geoms) {
         System.out.println("-= Iterations: " + iterations + "  Static: " + staticGeoms + " Dynamic: " + geoms + " =-");
         DSpace space = OdeHelper.createSapSpace(AXES.XZY);
-        testSpace(space, iterations, staticGeoms, geoms);
-        space = DxSAPSpace2.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode(), 0);
-        testSpace(space, iterations, staticGeoms, geoms);
+        test_performance_with_dynamic_world(space, iterations, staticGeoms, geoms);
         space = DxSAPSpace2.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode(), STATIC_CATEGORY);
-        testSpace(space, iterations, staticGeoms, geoms);
+        test_performance_with_dynamic_world(space, iterations, staticGeoms, geoms);
+        space = DxBVHSpace.bvhSpaceCreate(null, 16, false, 0.2, STATIC_CATEGORY);
+        test_performance_with_dynamic_world(space, iterations, staticGeoms, geoms);
     }
 
-    private void testSpace(DSpace space, int iterations, int passiveGeomNum, int geomNum) {
+    private void test_performance_with_dynamic_world(DSpace space, int iterations, int passiveGeomNum, int geomNum) {
         spaceCollisions = 0;
+        geomCollisions = 0;
         System.out.println("==== " + space.getClass().getSimpleName());
         DGeom[] passiveGeoms = new DGeom[passiveGeomNum];
         Random r = new Random(123);
         for (int i = 0; i < passiveGeomNum; i++) {
-            passiveGeoms[i] = OdeHelper.createBox(space, 3, 1, 0.25f);
-            passiveGeoms[i].setPosition(r.nextInt(100), r.nextInt(100), r.nextInt(100));
+            passiveGeoms[i] = OdeHelper.createBox(space, 0.25 + 6 * r.nextDouble(), 0.25 + 6 * r.nextDouble(),
+                    0.25 + 6 * r.nextDouble());
+            passiveGeoms[i].setPosition(250 * r.nextDouble(), 250 * r.nextDouble(), 250 * r.nextDouble());
             double angle = 0.5 * r.nextDouble() * Math.PI;
             passiveGeoms[i].setQuaternion(new DQuaternion(0, Math.sin(angle), 0, Math.cos(angle)));
             passiveGeoms[i].setCategoryBits(STATIC_CATEGORY);
@@ -72,10 +63,7 @@ public class SpacePerformanceTest {
         }
         DGeom[] geoms = new DGeom[geomNum];
         for (int i = 0; i < geomNum; i++) {
-            geoms[i] = OdeHelper.createSphere(space, 4);
-            geoms[i].setPosition(10 + r.nextInt(80), 10 + r.nextInt(80), 10 + r.nextInt(80));
-            geoms[i].setCategoryBits(DYNAMIC_CATEGORY);
-            geoms[i].setCollideBits(~0);
+            geoms[i] = createGeom(space, r);
         }
         long timer1 = 0;
         long timer2 = 0;
@@ -88,15 +76,26 @@ public class SpacePerformanceTest {
                 }
             });
             long time2 = System.nanoTime();
-            for (int k = 0; k < geomNum; k++) {
-                geoms[k].setPosition(10 + r.nextInt(80), 10 + r.nextInt(80), 10 + r.nextInt(80));
+
+            for (int k = 0; k < 50; k++) {
+                int i = r.nextInt(geoms.length);
+                space.collide2(geoms[i], null, new DNearCallback() {
+                    @Override
+                    public void call(Object data, DGeom o1, DGeom o2) {
+                        geomCollisions++;
+                    }
+                });
             }
+
             long time3 = System.nanoTime();
             timer1 += time2 - time1;
             timer2 += time3 - time2;
-            for (int k = 0; k < 40; k++) {
-                int i = r.nextInt(geoms.length);
-                geoms[i].setPosition(r.nextInt(100), r.nextInt(100), r.nextInt(100));
+            for (int i = 0; i < geomNum; i++) {
+                double ms = 0.5;
+                double mx = geoms[i].getPosition().get0() + ms * (r.nextDouble() - 0.5);
+                double my = geoms[i].getPosition().get1() + ms * (r.nextDouble() - 0.5);
+                double mz = geoms[i].getPosition().get2() + ms * (r.nextDouble() - 0.5);
+                geoms[i].setPosition(mx, my, mz);
             }
             for (int k = 0; k < 20; k++) {
                 int i = r.nextInt(geoms.length);
@@ -109,12 +108,90 @@ public class SpacePerformanceTest {
             for (int k = 0; k < 10; k++) {
                 int i = r.nextInt(geoms.length);
                 geoms[i].destroy();
-                geoms[i] = OdeHelper.createSphere(space, 4);
-                geoms[i].setCategoryBits(DYNAMIC_CATEGORY);
-                geoms[i].setCollideBits(~0);
+                geoms[i] = createGeom(space, r);
             }
         }
-        System.out.println(spaceCollisions + "   " + (double) timer1 / 1000_000 / iterations + "   "
-                + (double) timer2 / 1000_000 / iterations);
+        System.out.println("Collisions: " + spaceCollisions + " Geom Collisions: " + geomCollisions + "  Collide Time: " + timer1 / 1000 / iterations + " Collide2 Time: "
+                + timer2 / 1000 / iterations);
+    }
+
+    @Test
+    public void test_performance_with_static_world() {
+        OdeHelper.initODE2(0);
+        // Warmup
+        test_performance_with_static_world(1000, 100, 100);
+        System.out.println("---------------");
+        test_performance_with_static_world(100, 1000, 1);
+        test_performance_with_static_world(100, 1000, 10);
+        test_performance_with_static_world(100, 2500, 1);
+        test_performance_with_static_world(100, 2500, 5);
+        test_performance_with_static_world(100, 5000, 5);
+        test_performance_with_static_world(100, 5000, 20);
+        test_performance_with_static_world(100, 10000, 50);
+    }
+
+    private void test_performance_with_static_world(int iterations, int staticGeoms, int geoms) {
+        System.out.println("-= Iterations: " + iterations + "  Static: " + staticGeoms + " Dynamic: " + geoms + " =-");
+        DSpace space = DxSAPSpace2.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode(), STATIC_CATEGORY);
+        test_performance_with_static_world(space, iterations, staticGeoms, geoms);
+        space = DxBVHSpace.bvhSpaceCreate(null, 4, false, 0.2, STATIC_CATEGORY);
+        test_performance_with_static_world(space, iterations, staticGeoms, geoms);
+    }
+
+    private void test_performance_with_static_world(DSpace space, int iterations, int passiveGeomNum, int geomNum) {
+        spaceCollisions = 0;
+        geomCollisions = 0;
+        System.out.println("==== " + space.getClass().getSimpleName());
+        DGeom[] passiveGeoms = new DGeom[passiveGeomNum];
+        Random r = new Random(123);
+        for (int i = 0; i < passiveGeomNum; i++) {
+            passiveGeoms[i] = OdeHelper.createBox(space, 0.25 + 6 * r.nextDouble(), 0.25 + 6 * r.nextDouble(),
+                    0.25 + 6 * r.nextDouble());
+            passiveGeoms[i].setPosition(250 * r.nextDouble(), 250 * r.nextDouble(), 250 * r.nextDouble());
+            double angle = 0.5 * r.nextDouble() * Math.PI;
+            passiveGeoms[i].setQuaternion(new DQuaternion(0, Math.sin(angle), 0, Math.cos(angle)));
+            passiveGeoms[i].setCategoryBits(STATIC_CATEGORY);
+            passiveGeoms[i].setCollideBits(0);
+        }
+        DGeom[] geoms = new DGeom[geomNum];
+        for (int i = 0; i < geomNum; i++) {
+            geoms[i] = createGeom(space, r);
+        }
+        long timer1 = 0;
+        long timer2 = 0;
+        for (int j = 0; j < iterations; j++) {
+            long time1 = System.nanoTime();
+            space.collide(null, new DNearCallback() {
+                @Override
+                public void call(Object data, DGeom o1, DGeom o2) {
+                    spaceCollisions++;
+                }
+            });
+            long time2 = System.nanoTime();
+
+            for (int k = 0; k < 50; k++) {
+                int i = r.nextInt(geoms.length);
+                space.collide2(geoms[i], null, new DNearCallback() {
+                    @Override
+                    public void call(Object data, DGeom o1, DGeom o2) {
+                        geomCollisions++;
+                    }
+                });
+            }
+
+            long time3 = System.nanoTime();
+            timer1 += time2 - time1;
+            timer2 += time3 - time2;
+        }
+        System.out.println("Collisions: " + spaceCollisions + " Geom Collisions: " + geomCollisions + "  Collide Time: " + timer1 / 1000 / iterations + " Collide2 Time: "
+                + timer2 / 1000 / iterations);
+    }
+
+    private DSphere createGeom(DSpace space, Random r) {
+        DSphere g = OdeHelper.createSphere(space, 4);
+        g.setPosition(250 * r.nextDouble(), 250 * r.nextDouble(), 250 * r.nextDouble());
+        g.setCategoryBits(DYNAMIC_CATEGORY);
+        g.setCollideBits(~0);
+        return g;
     }
 }
