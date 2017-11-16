@@ -1,6 +1,8 @@
 0.3.2-SNAPSHOT
 ==============
 - Changed to Java 7 and updated some maven dependencies
+- Implemented/migrated multi-threading for the stepper (Pjotr)
+- SAP-Space optimization: Avoid collision detection for immobile bodies (Pjotr)
 
 
 0.3.1

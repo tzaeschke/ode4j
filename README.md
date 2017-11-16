@@ -20,6 +20,13 @@ There is also the [old website](http://www.zaeschke.com/ode4j/), including some 
 
 News
 ====
+
+2017-11-16: Snapshot release 0.3.2
+ * Java 7 and updated dependencies
+ * Implemented/migrated multi-threading for the stepper (Pjotr)
+ * SAP-Space optimization: Avoid collision detection for immobile bodies (Pjotr)
+ 
+
 2017-10-06: Release of ode4j 0.3.1
 
  * Numerous bugfixes and improvement, see CHANGELOG
