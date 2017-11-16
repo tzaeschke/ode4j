@@ -821,7 +821,7 @@ public abstract class OdeHelper {
 	 * @return The version String.
 	 */
 	public static String getVersion() {
-		return "0.3.0";
+		return "0.4.0";
 	}
 	
 	
