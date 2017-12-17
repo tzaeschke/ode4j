@@ -122,7 +122,7 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 class DemoSpaceStress extends dsFunctions {
 	// some constants
 
-	private static final int NUM = 10000;			// max number of objects
+	private static final int NUM = 5000;			// max number of objects
 	private static final float DENSITY = 5.0f;		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 4;		// maximum number of contact points per body
@@ -500,24 +500,27 @@ class DemoSpaceStress extends dsFunctions {
 		world = dWorldCreate();
 
 
-		for (int i=1; i<args.length; ++i) {
-			String arg = args[i];
-			if (arg.equals("quad")) {
-				DVector3 Center = new DVector3(0, 0, 0);
-				DVector3 Extents = new DVector3(WORLD_SIZE * 0.55, WORLD_SIZE * 0.55, WORLD_SIZE * 0.55);
-				System.out.println(":::: Using DQuadTreeSpace");
-				space = OdeHelper.createQuadTreeSpace(Center, Extents, 6);
-			} else if (arg.equals("hash")) {
-				System.out.println(":::: Using DHashSpace");
-				space = OdeHelper.createHashSpace();
-			} else if (arg.equals("sap")) {
-				System.out.println(":::: Using DSweepAndPruneSpace");
-				space = OdeHelper.createSapSpace(AXES.XYZ);
-			} else if (arg.equals("simple")) {
-				System.out.println(":::: Using DSimpleSpace");
-				space = OdeHelper.createSimpleSpace();
-			}
-		}
+//		for (int i=1; i<args.length; ++i) {
+//			String arg = args[i];
+//			if (arg.equals("quad")) {
+//				DVector3 Center = new DVector3(0, 0, 0);
+//				DVector3 Extents = new DVector3(WORLD_SIZE * 0.55, WORLD_SIZE * 0.55, WORLD_SIZE * 0.55);
+//				System.out.println(":::: Using DQuadTreeSpace");
+//				space = OdeHelper.createQuadTreeSpace(Center, Extents, 6);
+//			} else if (arg.equals("bhv")) {
+				System.out.println(":::: Using DBhvSpace");
+				space = OdeHelper.createBHVSpace(0);
+//			} else if (arg.equals("hash")) {
+//				System.out.println(":::: Using DHashSpace");
+//				space = OdeHelper.createHashSpace();
+//			} else if (arg.equals("sap")) {
+//				System.out.println(":::: Using DSweepAndPruneSpace");
+//				space = OdeHelper.createSapSpace(AXES.XYZ);
+//			} else if (arg.equals("simple")) {
+//				System.out.println(":::: Using DSimpleSpace");
+//				space = OdeHelper.createSimpleSpace();
+//			}
+//		}
 
 		if (space == null) {
 			System.out.println(":::: You can specify 'quad', 'hash', 'sap' or 'simple' in the");

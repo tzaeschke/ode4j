@@ -25,6 +25,7 @@ News
  * Java 7 and updated dependencies
  * Implemented/migrated multi-threading for the stepper (Pjotr)
  * SAP-Space optimization: Avoid collision detection for immobile bodies (Pjotr)
+ * New BVH tree for [better scalability with 10'000 bodies or more](https://github.com/tzaeschke/ode4j/pull/58), ported from the [Turbulenz Engine](https://github.com/turbulenz/turbulenz_engine) (Pjotr)
  
 
 2017-10-06: Release of ode4j 0.3.1
@@ -48,17 +49,20 @@ Like the original ODE, ode4j is licensed under GPL v2.1 and BSD 3-clause. Choose
 
 ### ode4j contains Java ports of the following software
 
-ODE/OpenDE:
+[ODE/OpenDE](http://www.ode.org/):
 Copyright  (c) 2001,2002 Russell L. Smith
 All rights reserved.
 
-GIMPACT:
+GIMPACT (part of ODE/OpenDE):
 Copyright of GIMPACT (c) 2006 Francisco Leon. C.C. 80087371.
 email: projectileman(AT)yahoo.com
 
-LIBCCD:
-Copyright (c) 2010 Daniel Fiser <danfis(AT)danfis.cz>
+[LIBCCD](https://github.com/danfis/libccd):
+Copyright (c) 2010 Daniel Fiser <danfis(AT)danfis.cz>;
+3-clause BSD License
 
+[Turbulenz Engine](https://github.com/turbulenz/turbulenz_engine):
+Copyright (c) 2009-2014 Turbulenz Limited; MIT License
 
 ### ode4j uses the following libraries
 

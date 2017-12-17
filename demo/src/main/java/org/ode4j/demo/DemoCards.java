@@ -24,6 +24,13 @@
  *************************************************************************/
 package org.ode4j.demo;
 
+import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
+import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
+import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
+import static org.ode4j.ode.OdeConstants.dContactApprox1;
+import static org.ode4j.ode.internal.Common.M_PI;
+
 import java.util.ArrayList;
 
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
@@ -33,16 +40,13 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContactBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJointGroup;
+import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.DJointGroup;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.DGeom.DNearCallback;
-
-import static org.ode4j.drawstuff.DrawStuff.*;
-import static org.ode4j.ode.OdeMath.*;
 
 
 /**
@@ -248,6 +252,8 @@ public class DemoCards extends dsFunctions {
 		world.setQuickStepNumIterations(50); // <-- increase for more stability
 
 		space = OdeHelper.createSimpleSpace(null);
+		//space = OdeHelper.createSapSpace(AXES.XYZ);
+		//space = OdeHelper.createBHVSpace(0);
 		contactgroup = OdeHelper.createJointGroup();
 		DGeom ground = OdeHelper.createPlane(space, 0, 0, 1, 0);
 

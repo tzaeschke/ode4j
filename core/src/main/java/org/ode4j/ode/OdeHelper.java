@@ -33,6 +33,7 @@ import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DTriMesh.DTriArrayCallback;
 import org.ode4j.ode.DTriMesh.DTriCallback;
 import org.ode4j.ode.DTriMesh.DTriRayCallback;
+import org.ode4j.ode.internal.DxBVHSpace;
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxBox;
 import org.ode4j.ode.internal.DxCapsule;
@@ -47,6 +48,7 @@ import org.ode4j.ode.internal.DxPlane;
 import org.ode4j.ode.internal.DxQuadTreeSpace;
 import org.ode4j.ode.internal.DxRay;
 import org.ode4j.ode.internal.DxSAPSpace;
+import org.ode4j.ode.internal.DxSAPSpace2;
 import org.ode4j.ode.internal.DxSimpleSpace;
 import org.ode4j.ode.internal.DxSpace;
 import org.ode4j.ode.internal.DxSphere;
@@ -477,6 +479,25 @@ public abstract class OdeHelper {
 	public static DSapSpace createSapSpace (DSpace space, DSapSpace.AXES axes) {
 		return DxSAPSpace.dSweepAndPruneSpaceCreate((DxSpace) space, axes.getCode());
 	}
+	/**
+	 * @param axes DSapSpace.AXES
+	 * @param staticGeomCategoryMask Geoms that are marked as static are not checked
+	 * for mutual collision. See SpacePerformanceTest for an example.
+	 * @return SAP Space
+	 */
+	public static DSapSpace createSapSpace2 (DSapSpace.AXES axes, long staticGeomCategoryMask) {
+		return DxSAPSpace2.dSweepAndPruneSpaceCreate(null, axes.getCode(), staticGeomCategoryMask);
+	}
+	/**
+	 * @param space
+     * @param axes DSapSpace.AXES
+	 * @param staticGeomCategoryMask Geoms that are marked as static are not checked
+	 * for mutual collision. See SpacePerformanceTest for an example.
+	 * @return SAP space
+	 */
+	public static DSapSpace createSapSpace2 (DSpace space, DSapSpace.AXES axes, long staticGeomCategoryMask) {
+		return DxSAPSpace2.dSweepAndPruneSpaceCreate((DxSpace) space, axes.getCode(), staticGeomCategoryMask);
+	}
 	//ODE_API 
 	public static DHashSpace createHashSpace () {
 		return DxHashSpace.dHashSpaceCreate(null);
@@ -496,6 +517,28 @@ public abstract class OdeHelper {
 			DVector3C Center, DVector3C Extents, int Depth) {
 		return DxQuadTreeSpace.dQuadTreeSpaceCreate((DxSpace) space, 
 				Center, Extents, Depth);
+	}
+	/**
+	 * @param staticGeomCategoryMask Geoms that are marked as static are not checked
+	 * for mutual collision. See SpacePerformanceTest for an example.
+	 * @return SAP Space
+	 */
+	public static DBhvSpace createBHVSpace (long staticGeomCategoryMask) {
+		return DxBVHSpace.bvhSpaceCreate(null, 16, false, 0.2, staticGeomCategoryMask);
+	}
+	/**
+	 * @param space
+	 * @param nodesPerLeaf Suggested default: 4-16
+	 * @param highQuality Suggested default: false
+	 * @param fatAabbMargin Suggested default: 0.2
+	 * @param staticGeomCategoryMask Geoms that are marked as static are not checked
+	 * for mutual collision. See SpacePerformanceTest for an example.
+	 * @return SAP space
+	 */
+	public static DBhvSpace createBHVSpace (DSpace space, int nodesPerLeaf, boolean highQuality, 
+			double fatAabbMargin, long staticGeomCategoryMask) {
+		return DxBVHSpace.bvhSpaceCreate((DxSpace) space, nodesPerLeaf, highQuality, fatAabbMargin, 
+				staticGeomCategoryMask);
 	}
 
 	/**

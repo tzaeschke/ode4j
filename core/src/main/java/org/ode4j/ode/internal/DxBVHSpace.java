@@ -32,13 +32,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.ode4j.ode.DAABB;
+import org.ode4j.ode.DBhvSpace;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.internal.aabbtree.AABBTree;
 import org.ode4j.ode.internal.aabbtree.AABBTreeNodeCallback;
 import org.ode4j.ode.internal.aabbtree.AABBTreePairCallback;
 import org.ode4j.ode.internal.aabbtree.ExternalObjectHandler;
 
-public class DxBVHSpace extends DxSpace {
+public class DxBVHSpace extends DxSpace implements DBhvSpace {
 
 	private final AABBTree<DxGeom> bvhTree;
 	private boolean dirtyGeoms;
