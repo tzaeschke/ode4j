@@ -290,7 +290,7 @@ public class AABBTree<T> {
             if (numExternalNodes == endNode) {
                 buildNodes = nodes;
                 numBuildNodes = endNode;
-                nodes = new AABBTreeNode[0];
+                nodes = new AABBTreeNode[FREE_NODES_POOL_SIZE];
             } else {
                 buildNodes = new AABBTreeNode[numExternalNodes];
                 int endNodeIndex = endNode;
