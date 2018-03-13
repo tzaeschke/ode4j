@@ -373,7 +373,8 @@ public class DMatrixN {
 	 * @param n
 	 * @param msg
 	 */
-	private void dDebug(int n, String msg) {
+	@Deprecated
+    private void dDebug(int n, String msg) {
 		throw new IllegalStateException(msg);
 	}
 }

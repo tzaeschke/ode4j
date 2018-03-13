@@ -43,7 +43,8 @@ public class Ctime extends Ctype {
 	 * @author Tilmann Zaeschke
 	 * @deprecated In Java, simply use 'long'.
 	 */
-	public static class time_t {
+	@Deprecated
+    public static class time_t {
 		/** Current time */
 		public long seconds;
 

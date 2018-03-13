@@ -467,6 +467,7 @@ public class OdeMath extends DRotation {
 	/**
 	 * @deprecated Use dCalcVetorCross3, dAddVectorCross3 or  dSubtractVectorCross3.
 	 */
+    @Deprecated
     public static void dCROSS(DVector3 a, OP op, DVector3C b, DVector3C c) {
         if (op == OP.EQ) {
             dCalcVectorCross3(a, b, c);
@@ -664,7 +665,8 @@ public class OdeMath extends DRotation {
      * For +1/-1 use dSetCrossMatrixPlus(), for -1/+1 use dSetCrossMatrixMinus().
      * @deprecated
      */
-	public static void dCROSSMAT(DMatrix3 A, DVector3C a, int skip, int plus, int minus) {
+	@Deprecated
+    public static void dCROSSMAT(DMatrix3 A, DVector3C a, int skip, int plus, int minus) {
 		A.set01( minus * a.get2() ); 
 		A.set02( plus  * a.get1() ); 
 		A.set10( plus  * a.get2() ); 

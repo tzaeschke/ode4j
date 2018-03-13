@@ -715,7 +715,8 @@ public interface DBody {
 	 * @return the first geom attached to this body, or 0.
 	 * @deprecated May be replaced by a more Java-like API.
 	 */
-	DGeom getFirstGeom ();
+    @Deprecated
+    DGeom getFirstGeom ();
 
 
 	/**
@@ -725,7 +726,8 @@ public interface DBody {
 	 * @see DBody#getFirstGeom()
 	 * @deprecated May be replaced by a more Java-like API.
 	 */
-	DGeom getNextGeom (DGeom geom);
+    @Deprecated
+    DGeom getNextGeom (DGeom geom);
 
 
 }

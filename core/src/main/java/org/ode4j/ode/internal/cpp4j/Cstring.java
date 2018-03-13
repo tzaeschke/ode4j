@@ -50,7 +50,8 @@ public class Cstring extends Ctime {
 	 * @param l number of values to set
 	 * @deprecated Do not user for c=0
 	 */
-	public static void memset(int[] data, int c, int l) {
+	@Deprecated
+    public static void memset(int[] data, int c, int l) {
 		for (int i = 0; i < l; i++) {
 			data[i] = c;
 		}

@@ -68,7 +68,8 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 
 
 	/** @deprecated TZ: find a better name. */
-	enum TRIMESH1 { TRIMESH_FACE_NORMALS };
+    @Deprecated
+    enum TRIMESH1 { TRIMESH_FACE_NORMALS };
 	//ODE_API 
 	void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data) {
 		throw new UnsupportedOperationException();
