@@ -21,7 +21,7 @@
  *************************************************************************/
 
 module ord.ode4j.cpp {
-    requires org.ode4j;
+    requires transitive org.ode4j;
 
     exports org.ode4j.cpp.internal;
     exports org.ode4j.cpp;
