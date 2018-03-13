@@ -1,0 +1,10 @@
+language: java
+
+jdk:
+  - oraclejdk9
+
+install: true
+
+script:
+  - mvn --errors clean package
+
