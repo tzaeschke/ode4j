@@ -20,7 +20,8 @@
  *                                                                       *
  *************************************************************************/
 
-module org.ode4j.cpp {
+module org.ode4j.cpp
+{
     requires transitive org.ode4j;
 
     exports org.ode4j.cpp.internal;
