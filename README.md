@@ -21,6 +21,12 @@ There is also the [old website](http://www.zaeschke.com/ode4j/), including some 
 News
 ====
 
+2018-03-26: Snapshot release 0.4.0
+ * Java 9 / modularization (generated jar files are Java 7) (io7m)
+ * Implemented/migrated multi-threading for the stepper (Pjotr)
+ * SAP-Space optimization: Avoid collision detection for immobile bodies (Pjotr)
+ * New BVH tree for [better scalability with 10'000 bodies or more](https://github.com/tzaeschke/ode4j/pull/58), ported from the [Turbulenz Engine](https://github.com/turbulenz/turbulenz_engine) (Pjotr)
+ 
 2017-11-16: Snapshot release 0.4.0
  * Java 7 and updated dependencies
  * Implemented/migrated multi-threading for the stepper (Pjotr)
