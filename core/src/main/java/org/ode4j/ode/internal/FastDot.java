@@ -44,7 +44,8 @@ public class FastDot extends Misc {
 	 * @return xxx
 	 * @deprecated use other method
 	 */
-	public static double dDot (final double[] a, int aOfs, final double[] b, int n)
+	@Deprecated
+    public static double dDot (final double[] a, int aOfs, final double[] b, int n)
 	{  
 		double p0,q0,m0,p1,q1,m1,sum;
 		int aPos = aOfs, bPos = 0;

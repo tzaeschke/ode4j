@@ -99,7 +99,8 @@ public abstract class ApiCppMathRotation extends ApiCppMathMisc {
 		OdeMath.dRfromQ(R, q);
 	}
 	/** @deprecated */
-	public static void dQtoR (final DQuaternion q, DMatrix3 R) {
+	@Deprecated
+    public static void dQtoR (final DQuaternion q, DMatrix3 R) {
 		OdeMath.dRfromQ(R, q);
 	}
 	//ODE_API 

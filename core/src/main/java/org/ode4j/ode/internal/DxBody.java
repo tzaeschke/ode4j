@@ -1518,14 +1518,16 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	}
 
 	/** @deprecated */
-	@Override
+	@Deprecated
+    @Override
 	public DGeom getFirstGeom() {
 		return dBodyGetFirstGeom();
 	}
 
 
 	/** @deprecated */
-	@Override
+	@Deprecated
+    @Override
 	public DGeom getNextGeom(DGeom geom) {
 		return dBodyGetNextGeom((DxGeom) geom);
 	}

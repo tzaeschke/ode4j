@@ -86,7 +86,8 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	 * @deprecated Please use dInitOde2() instead.
 	 */
 	//ODE_API 
-	public static void dInitODE() {
+	@Deprecated
+    public static void dInitODE() {
 		OdeHelper.initODE();
 	}
 
@@ -170,7 +171,8 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 //	 * @see #dCleanupODEAllDataForThread
 	//ODE_API 
 	//	int dAllocateODEDataForThread(unsigned int uiAllocateFlags) {
-	public static int dAllocateODEDataForThread(int uiAllocateFlags) {
+	@Deprecated
+    public static int dAllocateODEDataForThread(int uiAllocateFlags) {
 		return OdeHelper.allocateODEDataForThread(uiAllocateFlags);
 	}
 

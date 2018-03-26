@@ -1410,7 +1410,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 * Frees memory ?
 	 * @deprecated
 	 */
-	private void dFreePosr(DxPosR oldPosR) {
+	@Deprecated
+    private void dFreePosr(DxPosR oldPosR) {
 		//TODO see collision_kernel.h:73
 		//#if dATOMICS_ENABLED
 		//		if (!AtomicCompareExchangePointer(&s_cachedPosR, NULL, (atomicptr)oldPosR))

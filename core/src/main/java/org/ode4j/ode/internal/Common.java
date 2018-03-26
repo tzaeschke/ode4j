@@ -106,7 +106,8 @@ public class Common extends OdeConstants {
 //From config-defaults.h
 	//TODO ???
 	/** @deprecated TZ this can be removed? */
-	public static final boolean  dATOMICS_ENABLED = false;
+	@Deprecated
+    public static final boolean  dATOMICS_ENABLED = false;
 	public static final boolean  dTRIMESH_16BIT_INDICES = false;
 
 	public static final boolean  dTRIMESH_OPCODE_USE_OLD_TRIMESH_TRIMESH_COLLIDER = false;

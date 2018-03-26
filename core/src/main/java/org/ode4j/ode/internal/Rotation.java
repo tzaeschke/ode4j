@@ -41,7 +41,8 @@ import org.ode4j.ode.OdeMath;
 public class Rotation extends Matrix {
 
 	/** @deprecated Use DMatrix.setIdentity() instead. */
-	public static void dRSetIdentity (DMatrix3 R)
+	@Deprecated
+    public static void dRSetIdentity (DMatrix3 R)
 	{
 		//dAASSERT (R); 
 		//SET_3x3_IDENTITY;
@@ -98,8 +99,9 @@ public class Rotation extends Matrix {
 	}
 	
 	/** @deprecated (TZ) */
-	public static void dRFrom2Axes (DMatrix3 R, double ax, double ay, double az,
-			double bx, double by, double bz)
+	@Deprecated
+    public static void dRFrom2Axes (DMatrix3 R, double ax, double ay, double az,
+                                    double bx, double by, double bz)
 	{
 		double l,k;
 		//dAASSERT (R);
@@ -185,7 +187,8 @@ public class Rotation extends Matrix {
 	}
 
 	/** @deprecated */
-	public static void dQSetIdentity (DQuaternion q)
+	@Deprecated
+    public static void dQSetIdentity (DQuaternion q)
 	{
 		//dAASSERT (q);
 		q.setIdentity();
@@ -309,7 +312,8 @@ public class Rotation extends Matrix {
 	 * @param q
 	 * @param R
 	 */
-	public static void dQtoR(final DQuaternionC q, DMatrix3 R) {
+	@Deprecated
+    public static void dQtoR(final DQuaternionC q, DMatrix3 R) {
 		dRfromQ(R, q);
 	}
 
@@ -318,7 +322,8 @@ public class Rotation extends Matrix {
 	 * @param q
 	 * @param R
 	 */
-	public static void dRtoQ(final DMatrix3C R, DQuaternion q) {
+	@Deprecated
+    public static void dRtoQ(final DMatrix3C R, DQuaternion q) {
 		dQfromR(q, R);
 	}
 
@@ -393,7 +398,8 @@ public class Rotation extends Matrix {
 	 * @param dq
 	 * @deprecated
 	 */
-	public static void dWtoDQ(final DVector3C w, final DQuaternionC q, DQuaternion dq)
+	@Deprecated
+    public static void dWtoDQ(final DVector3C w, final DQuaternionC q, DQuaternion dq)
 	{
 		dDQfromW(dq, w, q);
 	}

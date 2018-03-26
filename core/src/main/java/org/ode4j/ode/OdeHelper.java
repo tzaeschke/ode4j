@@ -875,7 +875,8 @@ public abstract class OdeHelper {
 	 * @param string
 	 * @deprecated TZ: Currently not implemented.
 	 */
-	public static void worldExportDIF(DWorld world, File f, String string) {
+	@Deprecated
+    public static void worldExportDIF(DWorld world, File f, String string) {
 		throw new UnsupportedOperationException(); //TODO
 	}
 
@@ -903,7 +904,8 @@ public abstract class OdeHelper {
 	 */
 //	 * @see #dAllocateODEDataFlags
 //	 * @see #dCleanupODEAllDataForThread
-	public static int allocateODEDataForThread(int uiAllocateFlags) {
+	@Deprecated
+    public static int allocateODEDataForThread(int uiAllocateFlags) {
 		return OdeInit.dAllocateODEDataForThread(uiAllocateFlags) ? 1 : 0;
 	}
 

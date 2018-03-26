@@ -77,5 +77,6 @@ public class OdeConstants {
 	 * or will be defined in the future.
 	 * @deprecated TZ: probably not required. 
 	 */
-	public static final int dAllocateMaskAll = 0xFFFFFFFF; //~0U,
+	@Deprecated
+    public static final int dAllocateMaskAll = 0xFFFFFFFF; //~0U,
 }

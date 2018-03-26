@@ -106,7 +106,8 @@ public class GimBufferArrayFloat implements GimConstants { //formerly GBUFFER_AR
 //	  final GBUFFER_ID<vec3f> m_buffer_id = new GBUFFER_ID<vec3f>(this);
 	  private vec3f[] m_buffer_data = {new vec3f()};  //TODO make final ? TZ  //TODO Why init? Was pointer!!??? TZ
 		/** @deprecated TZ remove */
-	  private int m_byte_stride = 1;
+	  @Deprecated
+      private int m_byte_stride = 1;
 	  private int m_byte_offset = 0;
 	  /** GUINT m_element_count; */
 	  private int m_element_count;

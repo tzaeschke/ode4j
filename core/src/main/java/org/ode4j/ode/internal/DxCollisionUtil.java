@@ -261,7 +261,8 @@ public class DxCollisionUtil {
 
 	//inline void dMatrix3Copy(final double* source,dMatrix3& dest)
 	/** @deprecated TZ Use dVector instead */
-	static void dMatrix3Copy(final DMatrix3C source,DMatrix3 dest)
+	@Deprecated
+    static void dMatrix3Copy(final DMatrix3C source, DMatrix3 dest)
 	{
 		//		dest.v[0]	=	source[0];
 		//		dest.v[1]	=	source[1];

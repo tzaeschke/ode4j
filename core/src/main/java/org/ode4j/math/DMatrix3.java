@@ -37,9 +37,10 @@ public final class DMatrix3 implements DMatrix3C {
 	public static final DMatrix3C ZERO = new DMatrix3();
 
 	/** @deprecated */
-	public DMatrix3(double d, double e, double f,
-			double g, double h, double i, double j, double k, double l,
-			double m, double n, double o) {
+	@Deprecated
+    public DMatrix3(double d, double e, double f,
+                    double g, double h, double i, double j, double k, double l,
+                    double m, double n, double o) {
 		this();
 		v[0] = d; v[1] = e; v[2] = f; v[3] = g;
 		v[4] = h; v[5] = i; v[6] = j; v[7] = k;

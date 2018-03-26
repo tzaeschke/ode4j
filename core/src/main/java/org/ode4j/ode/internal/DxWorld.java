@@ -1149,7 +1149,8 @@ public class DxWorld extends DBase implements DWorld {
 //	* @see DWorld#setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	* @deprecated Do not use ! (TZ)
 	*/
-	public static class DWorldStepMemoryFunctionsInfo 
+	@Deprecated
+    public static class DWorldStepMemoryFunctionsInfo
 	{
 	    public int struct_size;
 	    //TODO, already in DxUtil (TZ) -> Should not be public in Java.

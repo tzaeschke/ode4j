@@ -104,7 +104,8 @@ public class GimBufferArray<T> implements GimConstants { //formerly GBUFFER_ARRA
 //	  final GBUFFER_ID<vec3f> m_buffer_id = new GBUFFER_ID<vec3f>(this);
 	  Object[] m_buffer_data;//{new vec3f()};  //TODO make final ? TZ  //TODO Why init? Was pointer!!??? TZ
 		/** @deprecated TZ remove */
-	  int m_byte_stride = 1;
+        @Deprecated
+        int m_byte_stride = 1;
 	  int m_byte_offset = 0;
 	  /** GUINT m_element_count; */
 	  int m_element_count;
