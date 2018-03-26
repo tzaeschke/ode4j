@@ -202,8 +202,7 @@
 						<execution>
 							<id>default-compile</id>
 							<configuration>
-								<source>1.7</source>
-								<release>9</release>
+  								<release>9</release> 
 							</configuration>
 						</execution>
 
@@ -218,7 +217,6 @@
 								<goal>compile</goal>
 							</goals>
 							<configuration>
-								<source>1.7</source>
 								<excludes>
 									<exclude>module-info.java</exclude>
 								</excludes>
