@@ -1,6 +1,9 @@
 ODE4J
 =====
 
+[![Build Status](https://travis-ci.org/tzaeschke/ode4j.svg?branch=master)](https://travis-ci.org/tzaeschke/ode4j)
+
+
 ode4j is a Java port of [ODE](http://www.ode.org/).
 
 ODE is an open source, high performance library for simulating rigid body dynamics. It is fully featured, stable, mature and platform independent with an easy to use C/C++ API. It has advanced joint types and integrated collision detection with friction. ODE is useful for simulating vehicles, objects in virtual reality environments and virtual creatures.
