@@ -108,7 +108,8 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.8.0-beta1</version>
+<!--  Reenable for Java 9    <version>1.8.0-beta1</version>   -->				
+				<version>1.7.0</version>
 			</dependency>
 
 			<dependency>
@@ -202,7 +203,7 @@
 						<execution>
 							<id>default-compile</id>
 							<configuration>
-  								<release>9</release> 
+<!-- Reenable for Java 9  								<release>9</release> --> 
 							</configuration>
 						</execution>
 
@@ -226,7 +227,9 @@
 
 					<!-- These are the default settings for all executions. -->
 					<configuration>
-						<release>7</release>
+<!-- Reenable for Java 9						<release>7</release> -->
+						<source>1.7</source>
+						<target>1.7</target>
 						<compilerArgument>-Xlint:all</compilerArgument>
 						<showWarnings>true</showWarnings>
 						<showDeprecation>true</showDeprecation>
@@ -294,7 +297,8 @@
 							<rules>
 								<!-- Require JDK 9+ -->
 								<requireJavaVersion>
-									<version>[9,)</version>
+<!--  Reenable for Java 9									<version>[9,)</version>   -->
+									<version>[1.7,)</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>
