@@ -272,7 +272,12 @@
 				</executions>
 			</plugin>
 
-			<!-- Set the default source level to 1.7 -->
+			<!--
+				Set the default source level to 1.7.
+
+				This is overridden when running on JDK 9 and above (see the
+				on-jdk-9-plus profile).
+			-->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
@@ -307,6 +312,12 @@
 
 			<build>
 				<plugins>
+
+					<!--
+						When running on JDK 9, add src/main/java9 directories to the
+						directories considered by the compiler.
+					-->
+
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>build-helper-maven-plugin</artifactId>
@@ -326,14 +337,45 @@
 						</executions>
 					</plugin>
 
-					<!-- Set the default source level to 9 -->
+					<!--
+						Conditionally compile the available sources. First, all of
+						the sources are compiled as Java 9 in order to ensure that the
+						module descriptor is correct. Then, all of the sources except
+						for the module descriptor are recompiled as Java 7 code.
+					-->
+
 					<plugin>
 						<artifactId>maven-compiler-plugin</artifactId>
-						<configuration>
-							<source>9</source>
-							<target>9</target>
-							<release>9</release>
-						</configuration>
+						<executions>
+							<execution>
+								<id>default-compile</id>
+								<configuration>
+									<!-- Compile everything to ensure module-info contains the
+									     right entries -->
+									<release>9</release>
+									<source>9</source>
+									<target>9</target>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>base-compile</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+
+								<!-- Recompile everything for the target VM except the
+										 module-info.java -->
+								<configuration>
+									<excludes>
+										<exclude>module-info.java</exclude>
+									</excludes>
+									<release>7</release>
+									<source>7</source>
+									<target>7</target>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
