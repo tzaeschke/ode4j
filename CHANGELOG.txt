@@ -1,11 +1,6 @@
 0.4.0-SNAPSHOT
 ==============
-- Reverted back to Java 7, see issue#63. For future reference here are the changes for Java 7
-        renamed:    core-cpp/src/main/java/module-info.java -> core-cpp/src/main/java/module-info.java.java9
-        renamed:    core/src/main/java/module-info.java -> core/src/main/java/module-info.java.java9
-        modified:   core-cpp/pom.xml
-        modified:   core/pom.xml
-        modified:   pom.xml
+- Java 9 compatibility automatically detected and used with Maven profiles 
 - Changed to Java 9 (output still Java 7) and modularization (io7m)
 - Changed to Java 7 and updated some maven dependencies
 - Implemented/migrated multi-threading for the stepper (Pjotr)

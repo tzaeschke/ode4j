@@ -53,7 +53,7 @@ All rights reserved.
 
 
 
-Like the original ODE, ode4j is licensed under GPL v2.1 and BSD 3-clause. Choose whichever license suits your needs. 
+Like the original ODE, ode4j is licensed under LGPL v2.1 and BSD 3-clause. Choose whichever license suits your needs. 
 
 
 ### ode4j contains Java ports of the following software
