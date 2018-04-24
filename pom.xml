@@ -40,6 +40,7 @@
 		<ode4j.maven-enforcer-plugin.version>3.0.0-M1</ode4j.maven-enforcer-plugin.version>
 		<ode4j.maven-nativedependencies-plugin.version>0.0.7</ode4j.maven-nativedependencies-plugin.version>
 		<ode4j.maven-plugin-plugin.version>3.2</ode4j.maven-plugin-plugin.version>
+		<ode4j.build-helper-maven-plugin.version>3.0.0</ode4j.build-helper-maven-plugin.version>
 	</properties>
 
 	<prerequisites>
@@ -105,10 +106,10 @@
 				<version>2.9.3</version>
 			</dependency>
 
+			<!-- Note that this is upgraded in the on-jdk-9 profile below -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-<!--  Reenable for Java 9    <version>1.8.0-beta1</version>   -->				
 				<version>1.7.0</version>
 			</dependency>
 
@@ -152,6 +153,16 @@
 				</plugin>
 
 				<!--
+					Build helper plugin.
+					http://www.mojohaus.org/build-helper-maven-plugin/index.html
+				-->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>${ode4j.build-helper-maven-plugin.version}</version>
+				</plugin>
+
+				<!--
 					Enforcer plugin.
 					https://maven.apache.org/enforcer/maven-enforcer-plugin/
 				-->
@@ -191,49 +202,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>${ode4j.maven-compiler-plugin.version}</version>
-					<executions>
-
-						<!--
-						  Compile everything as JDK 9 bytecode: This ensures
-						  that we get decent compilation errors such as
-						  missing "requires" directives in the module
-						  descriptor.
-						-->
-
-						<execution>
-							<id>default-compile</id>
-							<configuration>
-<!-- Reenable for Java 9  								<release>9</release> --> 
-							</configuration>
-						</execution>
-
-						<!--
-						  Recompile everything except for the module
-						  descriptor as JDK 7 bytecode.
-						-->
-
-						<execution>
-							<id>compile-7</id>
-							<goals>
-								<goal>compile</goal>
-							</goals>
-							<configuration>
-								<excludes>
-									<exclude>module-info.java</exclude>
-								</excludes>
-							</configuration>
-						</execution>
-					</executions>
-
-					<!-- These are the default settings for all executions. -->
-					<configuration>
-<!-- Reenable for Java 9						<release>7</release> -->
-						<source>1.7</source>
-						<target>1.7</target>
-						<compilerArgument>-Xlint:all</compilerArgument>
-						<showWarnings>true</showWarnings>
-						<showDeprecation>true</showDeprecation>
-					</configuration>
 				</plugin>
 
 				<plugin>
@@ -278,7 +246,6 @@
 						</excludes>
 					</configuration>
 				</plugin>
-
 			</plugins>
 		</pluginManagement>
 
@@ -295,9 +262,8 @@
 						</goals>
 						<configuration>
 							<rules>
-								<!-- Require JDK 9+ -->
+								<!-- Require JDK 7+ -->
 								<requireJavaVersion>
-<!--  Reenable for Java 9									<version>[9,)</version>   -->
 									<version>[1.7,)</version>
 								</requireJavaVersion>
 							</rules>
@@ -305,7 +271,115 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!--
+				Set the default source level to 1.7.
+
+				This is overridden when running on JDK 9 and above (see the
+				on-jdk-9-plus profile).
+			-->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+
+		<!--
+			A profile activated when the building JDK is >= JDK 9.
+		-->
+		<profile>
+			<id>on-jdk-9-plus</id>
+			<activation>
+				<jdk>[9, )</jdk>
+			</activation>
+
+			<!-- Upgrade SLF4J to a newer version for JDK 9 -->
+			<dependencyManagement>
+				<dependencies>
+					<dependency>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+						<version>1.8.0-beta1</version>
+					</dependency>
+				</dependencies>
+			</dependencyManagement>
+
+			<build>
+				<plugins>
+
+					<!--
+						When running on JDK 9, add src/main/java9 directories to the
+						directories considered by the compiler.
+					-->
+
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>add-source</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>add-source</goal>
+								</goals>
+								<configuration>
+									<sources>
+										<source>${project.basedir}/src/main/java9</source>
+									</sources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--
+						Conditionally compile the available sources. First, all of
+						the sources are compiled as Java 9 in order to ensure that the
+						module descriptor is correct. Then, all of the sources except
+						for the module descriptor are recompiled as Java 7 code.
+					-->
+
+					<plugin>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>default-compile</id>
+								<configuration>
+									<!-- Compile everything to ensure module-info contains the
+									     right entries -->
+									<release>9</release>
+									<source>9</source>
+									<target>9</target>
+								</configuration>
+							</execution>
+
+							<execution>
+								<id>base-compile</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+
+								<!-- Recompile everything for the target VM except the
+										 module-info.java -->
+								<configuration>
+									<excludes>
+										<exclude>module-info.java</exclude>
+									</excludes>
+									<release>7</release>
+									<source>7</source>
+									<target>7</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
