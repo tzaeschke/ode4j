@@ -26,9 +26,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<ode4j.bnd-maven-plugin.version>4.0.0</ode4j.bnd-maven-plugin.version>
+		<ode4j.bnd-maven-plugin.version>3.5.0</ode4j.bnd-maven-plugin.version>
 		<ode4j.build-helper-maven-plugin.version>3.0.0</ode4j.build-helper-maven-plugin.version>
-		<ode4j.maven-bundle-plugin.version>3.3.0</ode4j.maven-bundle-plugin.version>
 		<ode4j.maven-clean-plugin.version>3.0.0</ode4j.maven-clean-plugin.version>
 		<ode4j.maven-compiler-plugin.version>3.7.0</ode4j.maven-compiler-plugin.version>
 		<ode4j.maven-deploy-plugin.version>2.8.2</ode4j.maven-deploy-plugin.version>
