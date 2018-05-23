@@ -26,21 +26,23 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<ode4j.maven-clean-plugin.version>3.0.0</ode4j.maven-clean-plugin.version>
-		<ode4j.maven-resources-plugin.version>3.0.0</ode4j.maven-resources-plugin.version>
-		<ode4j.maven-deploy-plugin.version>2.8.2</ode4j.maven-deploy-plugin.version>
-		<ode4j.maven-install-plugin.version>2.5.2</ode4j.maven-install-plugin.version>
-		<ode4j.maven-compiler-plugin.version>3.7.0</ode4j.maven-compiler-plugin.version>
-		<ode4j.maven-surefire-plugin.version>2.19.1</ode4j.maven-surefire-plugin.version>
-		<ode4j.maven-source-plugin.version>3.0.1</ode4j.maven-source-plugin.version>
+		<ode4j.bnd-maven-plugin.version>4.0.0</ode4j.bnd-maven-plugin.version>
+		<ode4j.build-helper-maven-plugin.version>3.0.0</ode4j.build-helper-maven-plugin.version>
 		<ode4j.maven-bundle-plugin.version>3.3.0</ode4j.maven-bundle-plugin.version>
-		<ode4j.maven-javadoc-plugin.version>3.0.0-M1</ode4j.maven-javadoc-plugin.version>
-		<ode4j.nexus-staging-maven-plugin.version>1.6.8</ode4j.nexus-staging-maven-plugin.version>
-		<ode4j.maven-gpg-plugin.version>1.6</ode4j.maven-gpg-plugin.version>
+		<ode4j.maven-clean-plugin.version>3.0.0</ode4j.maven-clean-plugin.version>
+		<ode4j.maven-compiler-plugin.version>3.7.0</ode4j.maven-compiler-plugin.version>
+		<ode4j.maven-deploy-plugin.version>2.8.2</ode4j.maven-deploy-plugin.version>
 		<ode4j.maven-enforcer-plugin.version>3.0.0-M1</ode4j.maven-enforcer-plugin.version>
+		<ode4j.maven-gpg-plugin.version>1.6</ode4j.maven-gpg-plugin.version>
+		<ode4j.maven-install-plugin.version>2.5.2</ode4j.maven-install-plugin.version>
+		<ode4j.maven-jar-plugin.version>3.1.0</ode4j.maven-jar-plugin.version>
+		<ode4j.maven-javadoc-plugin.version>3.0.0-M1</ode4j.maven-javadoc-plugin.version>
 		<ode4j.maven-nativedependencies-plugin.version>0.0.7</ode4j.maven-nativedependencies-plugin.version>
 		<ode4j.maven-plugin-plugin.version>3.2</ode4j.maven-plugin-plugin.version>
-		<ode4j.build-helper-maven-plugin.version>3.0.0</ode4j.build-helper-maven-plugin.version>
+		<ode4j.maven-resources-plugin.version>3.0.0</ode4j.maven-resources-plugin.version>
+		<ode4j.maven-source-plugin.version>3.0.1</ode4j.maven-source-plugin.version>
+		<ode4j.maven-surefire-plugin.version>2.19.1</ode4j.maven-surefire-plugin.version>
+		<ode4j.nexus-staging-maven-plugin.version>1.6.8</ode4j.nexus-staging-maven-plugin.version>
 	</properties>
 
 	<prerequisites>
@@ -246,6 +248,53 @@
 						</excludes>
 					</configuration>
 				</plugin>
+
+				<!--
+				  Bnd Maven Plugin
+				  Produces OSGi manifests
+
+				  https://github.com/bndtools/bnd
+				-->
+				<plugin>
+					<groupId>biz.aQute.bnd</groupId>
+					<artifactId>bnd-maven-plugin</artifactId>
+					<version>${ode4j.bnd-maven-plugin.version}</version>
+					<configuration>
+						<bnd><![CDATA[
+							Bundle-DocURL: ${project.url}
+							Bundle-Name: ${project.name} ${project.version} - ${project.description}
+							Bundle-Description: ${project.description}
+							Bundle-SCM: ${project.scm.url}
+							Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=7.0))"
+]]></bnd>
+					</configuration>
+				</plugin>
+
+				<!--
+				  Maven Jar plugin
+
+				  https://maven.apache.org/plugins/maven-jar-plugin/index.html
+				-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${ode4j.maven-jar-plugin.version}</version>
+					<executions>
+
+						<!-- Produce jar file with custom manifest -->
+						<execution>
+							<id>default-jar</id>
+							<configuration>
+								<archive>
+									<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+								</archive>
+							</configuration>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -284,6 +333,23 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
+			</plugin>
+
+			<!--
+			  Produce an OSGi manifest
+			-->
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-osgi-manifest</id>
+						<goals>
+							<goal>bnd-process</goal>
+						</goals>
+						<phase>process-classes</phase>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

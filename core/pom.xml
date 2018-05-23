@@ -4,18 +4,6 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>7</source>
-					<target>7</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 	<parent>
 		<groupId>org.ode4j</groupId>
@@ -32,5 +20,22 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- Produce an OSGi manifest -->
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-maven-plugin</artifactId>
+				<configuration>
+					<bnd><![CDATA[
+						Bundle-SymbolicName: org.ode4j.core
+						Export-Package: org.ode4j.*
+]]></bnd>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
