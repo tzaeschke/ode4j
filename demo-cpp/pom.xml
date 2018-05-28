@@ -1,50 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.ode4j</groupId>
-        <artifactId>parent</artifactId>
-        <version>0.4.0-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>org.ode4j</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.4.0-SNAPSHOT</version>
+	</parent>
 
-    <artifactId>demo-cpp</artifactId>
-    <packaging>jar</packaging>
+	<artifactId>demo-cpp</artifactId>
+	<packaging>jar</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>demo</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>demo</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>core-cpp</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>core-cpp</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.googlecode.mavennatives</groupId>
-                <artifactId>maven-nativedependencies-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.googlecode.mavennatives</groupId>
+				<artifactId>maven-nativedependencies-plugin</artifactId>
+			</plugin>
+
+			<!-- Produce an OSGi manifest -->
+			<plugin>
+				<groupId>biz.aQute.bnd</groupId>
+				<artifactId>bnd-maven-plugin</artifactId>
+				<configuration>
+					<bnd><![CDATA[
+						Bundle-SymbolicName: org.ode4j.demo-cpp
+						Export-Package: org.ode4j.*
+]]></bnd>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
