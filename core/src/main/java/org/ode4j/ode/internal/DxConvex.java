@@ -1949,14 +1949,17 @@ Helper struct
 			contact.side2 = -1; // TODO: set plane index?
 	
 			double alpha, beta, nsign;
-			boolean flag;
 	
 			//
 			// Compute some useful info
 			//
 	
-			flag = false;	// Assume start point is behind all planes.
-	
+			DVector3 ray_pos = new DVector3();
+			DVector3 ray_dir = new DVector3();
+
+			dMultiply1_331(ray_pos, convex.final_posr().R(), new DVector3(ray.final_posr().pos()).sub(convex.final_posr().pos()));
+			dMultiply1_331(ray_dir, convex.final_posr().R(), ray.final_posr().R().columnAsNewVector(2));
+			boolean flag = false;
 			for ( int i = 0; i < convex.planecount; ++i )
 			{
 				// Alias this plane.
@@ -1964,8 +1967,7 @@ Helper struct
 				int planePos = i;//*4;
 	
 				// If alpha >= 0 then start point is outside of plane.
-				//alpha = dDOT( convex.planes, planePos, ray._final_posr.pos.v, 0 ) - convex.planes[planePos+3];//] - plane[3];
-				alpha = dCalcVectorDot3( convex.planesV[planePos], ray.final_posr().pos() ) - convex.planesD[planePos];//] - plane[3];
+				alpha = dCalcVectorDot3( convex.planesV[planePos], ray_pos ) - convex.planesD[planePos];//] - plane[3];
 	
 				// If any alpha is positive, then
 				// the ray start is _outside_ of the hull
@@ -1975,7 +1977,6 @@ Helper struct
 					break;
 				}
 			}
-	
 			// If the ray starts inside the convex hull, then everything is flipped.
 			nsign = ( flag ) ? ( 1.0 ) : ( -1.0 );
 	
@@ -1994,14 +1995,10 @@ Helper struct
 				int planePos = i;//*4;
 	
 				// If alpha >= 0 then point is outside of plane.
-				//alpha = nsign * ( dDOT( plane, ray.final_posr.pos ) - plane[3] );
-				alpha = nsign * ( dCalcVectorDot3( convex.planesV[planePos], ray.final_posr().pos() ) - convex.planesD[planePos] );
-	
+				alpha = nsign * ( dCalcVectorDot3( convex.planesV[planePos], ray_pos ) - convex.planesD[planePos] );
 				// Compute [ plane-normal DOT ray-normal ], (/flip)
-				//beta = dDOT13( convex.planes, planePos, ray._final_posr.R.v,2 ) * nsign;
-				//beta = dDOT13( convex.planesV[planePos], ray._final_posr.R.viewCol(2) ) * nsign;
-				beta = convex.planesV[planePos].dot( ray.final_posr().R().viewCol(2) ) * nsign;
-	
+				beta = convex.planesV[planePos].dot( ray_dir ) * nsign;
+
 				// Ray is pointing at the plane? ( beta < 0 )
 				// Ray start to plane is within maximum ray length?
 				// Ray start to plane is closer than the current best distance?
@@ -2010,10 +2007,7 @@ Helper struct
 						alpha < contact.depth )
 				{
 					// Compute contact point on convex hull surface.
-	//				contact.pos[0] = ray.final_posr.pos[0] + alpha * ray.final_posr.R[0*4+2];
-	//				contact.pos[1] = ray.final_posr.pos[1] + alpha * ray.final_posr.R[1*4+2];
-	//				contact.pos[2] = ray.final_posr.pos[2] + alpha * ray.final_posr.R[2*4+2];
-					contact.pos.eqSum(ray.final_posr().pos(), 0, ray.final_posr().R().columnAsNewVector(2), alpha);
+					contact.pos.eqSum(ray_pos, 1, ray_dir, alpha);
 	
 					flag = false;
 	
@@ -2031,7 +2025,7 @@ Helper struct
 						//beta = dDOT( planej, contact.pos ) - plane[3];
 						//TODO use planePos+3 or planePosJ+3 ???
 						//beta = dDOT( convex.planesV[planePosJ], contact.pos) - convex.planesD[planePosJ];
-						beta = dCalcVectorDot3( convex.planesV[planePosJ], contact.pos) - convex.planesD[planePos];
+						beta = dCalcVectorDot3( convex.planesV[planePosJ], contact.pos) - convex.planesD[planePosJ];
 	
 						// If any beta is positive, then the contact point
 						// is not on the surface of the convex hull - it's just
@@ -2047,9 +2041,6 @@ Helper struct
 					if ( flag == false )
 					{
 						// Store the contact normal, possibly flipped.
-	//					contact.normal[0] = nsign * plane[0];
-	//					contact.normal[1] = nsign * plane[1];
-	//					contact.normal[2] = nsign * plane[2];
 						contact.normal.set(convex.planesV[planePos]).scale(nsign);
 	
 						// Store depth
@@ -2064,7 +2055,14 @@ Helper struct
 				}
 			}
 			// Contact?
-			return ( contact.depth <= ray.getLength() ? 1 : 0 );
+			if (contact.depth <= ray.getLength()) {
+				// Adjust contact position and normal back to global space
+				dMultiply0_331(contact.pos, convex.final_posr().R(), contact.pos);
+				dMultiply0_331(contact.normal, convex.final_posr().R(), contact.normal);
+				contact.pos.add(convex.final_posr().pos());
+				return 1;				
+			}
+			return 0;
 		}
 
 		@Override

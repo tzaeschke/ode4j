@@ -708,34 +708,30 @@ public class OdeMath extends DRotation {
 	 * special case matrix multipication, with operator selection
 	 */
 
-	//#define dMULTIPLYOP0_331(A,op,B,C) \
-	//do { \
-	//  (A)[0] op dDOT((B),(C)); \
-	//  (A)[1] op dDOT((B+4),(C)); \
-	//  (A)[2] op dDOT((B+8),(C)); \
-	//} while(0)
-	//#define dMULTIPLYOP1_331(A,op,B,C) \
-	//do { \
-	//  (A)[0] op dDOT41((B),(C)); \
-	//  (A)[1] op dDOT41((B+1),(C)); \
-	//  (A)[2] op dDOT41((B+2),(C)); \
-	//} while(0)
-	//#define dMULTIPLYOP0_133(A,op,B,C) \
-	//do { \
-	//  (A)[0] op dDOT14((B),(C)); \
-	//  (A)[1] op dDOT14((B),(C+1)); \
-	//  (A)[2] op dDOT14((B),(C+2)); \
-	//} while(0)
-	private static void dMULTIPLYOP0_331(DVector3 A, DMatrix3C B, DVector3C C) {
-		//DMatrix3 B = (DMatrix3) B2;
-//		A.set0( dDOT(B.v, 0, C) ); 
-//		A.set1( dDOT(B.v, 4, C) );
-//		A.set2( dDOT(B.v, 8, C) );
-		A.set0( B.dotRow(0, C) ); 
-		A.set1( B.dotRow(1, C) );
-		A.set2( B.dotRow(2, C) );
-	} 
-	//TZ
+	private static void dMultiplyHelper0_331(DVector3 res, DMatrix3C a, DVector3C b) {
+		double res_0 = a.dotRow(0, b);
+		double res_1 = a.dotRow(1, b);
+		double res_2 = a.dotRow(2, b);
+		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+		res.set(res_0, res_1, res_2);
+	}
+
+	private static void dMultiplyHelper1_331(DVector3 res, DMatrix3C a, DVector3C b) {
+		double res_0 = a.dotCol(0, b);
+		double res_1 = a.dotCol(1, b);
+		double res_2 = a.dotCol(2, b);
+		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+		res.set(res_0, res_1, res_2);
+	}
+
+	private static void dMultiplyHelper0_133(DVector3 res, DVector3C a, DMatrix3C b) {
+		double res_0 = a.dotCol(b, 0);
+		double res_1 = a.dotCol(b, 1);
+		double res_2 = a.dotCol(b, 2);
+		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+		res.set(res_0, res_1, res_2);
+	}
+
 	private static void dMULTIPLYOP0_331(DMatrix3 A, DMatrix3C B, DVector3C C) {
 		//DMatrix3 B = (DMatrix3) B2;
 		A.set00( B.dotRow(0, C) ); 
@@ -768,23 +764,6 @@ public class OdeMath extends DRotation {
 		A[1+a] = dCalcVectorDot3(B, 4+b, C);
 		A[2+a] = dCalcVectorDot3(B, 8+b, C);
 	}
-	private static void dMULTIPLYOP1_331(DVector3 A, DMatrix3C B, DVector3C C) {
-//		A.set0( dDOT41(B.v, 0, C) ); 
-//		A.set1( dDOT41(B.v, 1, C) ); 
-//		A.set2( dDOT41(B.v, 2, C) ); 
-		A.set0( B.dotCol(0, C) ); 
-		A.set1( B.dotCol(1, C) ); 
-		A.set2( B.dotCol(2, C) ); 
-	} 
-	private static void dMULTIPLYOP0_133(DVector3 A, DVector3C B, DMatrix3C C) {
-//		A.set0( dDOT14(B, C.v,0) ); 
-//		A.set1( dDOT14(B, C.v,1) ); 
-//		A.set2( dDOT14(B, C.v,2) ); 
-		A.set0( B.dotCol(C, 0) ); 
-		A.set1( B.dotCol(C, 1) ); 
-		A.set2( B.dotCol(C, 2) ); 
-	} 
-
 
 	private static void dMULTIPLYOP0_333(double[] A, int a, DMatrix3C B, DMatrix3C C) {
 		A[0+a] =  B.dotRowCol(0, C, 0);//dDOT14(B.v,0,C.v,0); 
@@ -882,8 +861,8 @@ public class OdeMath extends DRotation {
 	//#define dMULTIPLY0_333(A,B,C) dMULTIPLYOP0_333(A,=,B,C)
 	//#define dMULTIPLY1_333(A,B,C) dMULTIPLYOP1_333(A,=,B,C)
 	//#define dMULTIPLY2_333(A,B,C) dMULTIPLYOP2_333(A,=,B,C)
-	public static void dMultiply0_331(DVector3 A, DMatrix3C B, DVector3C C) { 
-		dMULTIPLYOP0_331(A,B,C); }
+	public static void dMultiply0_331(DVector3 res, DMatrix3C a, DVector3C b) { 
+		dMultiplyHelper0_331(res, a, b); }
 	public static void dMultiply0_331(DMatrix3 A, DMatrix3C B, DVector3C C) { 
 		dMULTIPLYOP0_331(A,B,C); }
 //	public static void dMULTIPLY0_331(DVector3 A, DMatrix3 B, DVector4 C) {
@@ -913,10 +892,10 @@ public class OdeMath extends DRotation {
 	    dMultiply0_331(A, B, C, c);
 	}
 
-	public static void dMultiply1_331(DVector3 A, DMatrix3C B, DVector3C C) { 
-		dMULTIPLYOP1_331(A,B,C); }
-	public static void dMultiply0_133(DVector3 A, DVector3C B, DMatrix3C C) { 
-		dMULTIPLYOP0_133(A,B,C); }
+	public static void dMultiply1_331(DVector3 res, DMatrix3C a, DVector3C b) { 
+		dMultiplyHelper1_331(res, a, b); }
+	public static void dMultiply0_133(DVector3 res, DVector3C a, DMatrix3C b) { 
+		dMultiplyHelper0_133(res, a, b); }
 	public static void dMultiply0_133(double[] A, int a, double[] B, int b, 
 			double[] C, int c) {		
 		A[0+a] = dCalcVectorDot3_14(B, b, C, 0 + c); 
