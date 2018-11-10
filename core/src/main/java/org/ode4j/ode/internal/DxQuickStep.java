@@ -82,6 +82,12 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
      * as a simple loop rather than related tasks executed concurrently.
      */
     public static boolean ENABLE_LCP_ITERATIONS_MULTITHREADING = false;
+    
+    public static int RANDOM_CONSTRAINTS_REORDERING_FREQUENCY = 8;
+    public static int RRS_REORDERING = 0;
+    public static int RRS_REVERSAL = 1;
+    public static int RRS_MIN = 0;
+    public static int RRS_MAX = 2;
 
 	private static final int dxQUICKSTEPISLAND_STAGE2B_STEP = 16;
 	private static final int dxQUICKSTEPISLAND_STAGE2C_STEP = 32;
@@ -1488,12 +1494,11 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     {
 	    dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
 	    int m = localContext.m_m;
-        int valid_findices = localContext.m_valid_findices.get();
 
         IndexError []order = stage4CallContext.m_order;
         // make sure constraints with findex < 0 come first.
         int orderhead = 0;
-        int ordertail = (m - valid_findices);
+        int ordertail = m;
         int[] findex = localContext.m_findex;
 
         // Fill the array from both ends
@@ -1502,8 +1507,12 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
                 order[orderhead].index = i; // Place them at the front
                 ++orderhead;
             } else {
-                order[ordertail].index = i; // Place them at the end
-                ++ordertail;
+            	// WARNING!!!
+            	// The dependent constraints are put in reverse order here (backwards to front).
+            	// They MUST be ordered this way.
+            	// Putting them in normal order makes simulation less stable for some mysterious reason.
+            	--ordertail;
+            	order[ordertail].index = i; // Place them at the end
             }
         }
     }
@@ -1604,6 +1613,11 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
             if (stage4LCP_IterationStart != null) {
             	stage4LCP_IterationStart.submit();
             }
+        } else {
+        	// NOTE: So far, this branch is only called in CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__BY_ERROR case
+			if (Atomics.ThrsafeExchangeAdd(stage4CallContext.m_SOR_reorderThreadsRemaining, -1) == 1) { // If last thread has exited the
+				dxQuickStepIsland_Stage4LCP_DependencyMapFromSavedLevelsReconstruction(stage4CallContext);
+			}
         }
 
         return 1;
@@ -1696,30 +1710,36 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
                     // result = false; -- already 'false'
                 } 
-                else if (iteration < 1) {
-                    result = true; // return true on 0th iteration to build dependency map for initial order 
+                else {
+                    result = true; // return true on 0th iteration to build dependency map for the initial order 
                 }
             #elif CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__RANDOMLY
         */
         } else if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__RANDOMLY) {
-			if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_reorderHeadTaken, 1) == 0) {
-				// Process the head
-				dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
-				ConstraintsReorderingHelper(stage4CallContext, 0,
-						localContext.m_m - localContext.m_valid_findices.get());
-			}
-
-			if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_reorderTailTaken, 1) == 0) {
-				// Process the tail
-				dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
-				ConstraintsReorderingHelper(stage4CallContext, localContext.m_m - localContext.m_valid_findices.get(),
-						localContext.m_valid_findices.get());
-			}
+        	if (iteration != 0) {
+	        	if (iteration % RANDOM_CONSTRAINTS_REORDERING_FREQUENCY == RRS_REORDERING) {
+					if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_reorderHeadTaken, 1) == 0) {
+						// Process the head
+						dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+						ConstraintsReorderingHelper(stage4CallContext, 0,
+								localContext.m_m - localContext.m_valid_findices.get());
+					}					
+					if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_reorderTailTaken, 1) == 0) {
+						// Process the tail
+						dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+						ConstraintsReorderingHelper(stage4CallContext, localContext.m_m - localContext.m_valid_findices.get(),
+								localContext.m_valid_findices.get());
+					}
+	        	} else {
+	        		// Revert to the normal order on the next step after the shuffling
+	        		dxQuickStepIsland_Stage4LCP_ReorderPrep(stage4CallContext);
+	        	}
+        	} else {
+        	// Just return true and skip the randomization for the very first iteration
+        	}
 			result = true;
         } else {
-        	if (iteration == 0) {
-        		result = true; // return true on 0th iteration to build dependency map for initial order 
-        	}
+        	result = true;
         }
         return result;
     }
@@ -2366,7 +2386,11 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__BY_ERROR) {
 			result = true;
 		} else if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__RANDOMLY) {
-		    result = (iteration & 7) == 0; 
+			 // This logic is intended to skip randomization on the very first iteration
+			if (iteration < RANDOM_CONSTRAINTS_REORDERING_FREQUENCY ? iteration == 0
+					: iteration % RANDOM_CONSTRAINTS_REORDERING_FREQUENCY < RRS_MAX) {
+				result = true;
+			}
 		} else {
 			result = iteration == 0;
 		}
