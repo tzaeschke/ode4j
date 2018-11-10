@@ -6,7 +6,7 @@
 - Implemented/migrated multi-threading for the stepper (Pjotr)
 - SAP-Space optimization: Avoid collision detection for immobile bodies (Pjotr)
 - New BVH tree for better scalability with many bodies, ported from the Turbulenz Engine (Pjotr)
-
+- Some fixes, including new random reordering in quickstep, see PR #67, #68 (Pjotr)
 
 
 0.3.1
