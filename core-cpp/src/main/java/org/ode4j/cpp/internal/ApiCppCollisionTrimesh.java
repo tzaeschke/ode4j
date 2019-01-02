@@ -54,8 +54,9 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	//typedef struct dxTriMeshData* dTriMeshDataID;
 
 	/**
-	 * These dont make much sense now, but they will later when we add more
+	 * These don't make much sense now, but they will later when we add more
 	 * features.
+	 * @return trimesh data
 	 */
 	//ODE_API 
 	public static DTriMeshData dGeomTriMeshDataCreate() {
@@ -85,6 +86,8 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * We need to set the last transform after each time step for 
 	 * accurate collision response. These functions get and set that transform.
 	 * It is stored per geom instance, rather than per dTriMeshData.
+	 * @param g trimesh
+	 * @param last_trans 
 	 */
 	//ODE_API 
 	//void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {
@@ -100,6 +103,13 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 
 	/**
 	 * Build a TriMesh data object with single precision vertex data.
+	 * @param g g
+	 * @param Vertices vertices 
+	 * @param VertexStride stride
+	 * @param VertexCount count
+	 * @param Indices indices
+	 * @param IndexCount count
+	 * @param TriStride tri stride
 	 */
 	//ODE_API 
 	//	 void dGeomTriMeshDataBuildSingle(dTriMeshData g,
@@ -266,6 +276,12 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	/**
 	 * Trimesh class
 	 * Construction. Callbacks are optional.
+	 * @param space space
+	 * @param Data data
+	 * @param Callback callback
+	 * @param ArrayCallback callback
+	 * @param RayCallback callback
+	 * @return trimesh
 	 */
 	//ODE_API 
 	public static DTriMesh dCreateTriMesh(DSpace space, DTriMeshData Data, DTriCallback Callback, 

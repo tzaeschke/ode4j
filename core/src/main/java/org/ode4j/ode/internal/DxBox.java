@@ -446,6 +446,19 @@ public class DxBox extends DxGeom implements DBox {
 	 * `contact' and `skip' are the contact array information provided to the
 	 * collision functions. this function only fills in the position and depth
 	 * fields.
+	 * @param p1 p1
+	 * @param R1 R1
+	 * @param side1 side1
+	 * @param p2 p2
+	 * @param R2 R2
+	 * @param side2 side2 
+	 * @param normal normal
+	 * @param depth depth
+	 * @param return_code return code (set by method)
+	 * @param flags flags
+	 * @param contacts contacts
+	 * @param skip skip
+	 * @return number of penetrating contacts
 	 */
 
 	//	int dBoxBox (const dVector3 p1, const dMatrix3 R1,

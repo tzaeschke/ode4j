@@ -82,6 +82,10 @@ public class DxSAPSpace2 extends DxSpace implements DSapSpace {
 
     /**
      * Creation.
+     * @param space space
+     * @param axisorder axis order
+     * @param staticGeomCategoryMask mask
+     * @return SAPSpace
      */
     public static DxSAPSpace2 dSweepAndPruneSpaceCreate(DxSpace space, int axisorder, long staticGeomCategoryMask) {
         return new DxSAPSpace2(space, axisorder, staticGeomCategoryMask);

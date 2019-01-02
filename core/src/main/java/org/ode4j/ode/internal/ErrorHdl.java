@@ -54,6 +54,7 @@ public class ErrorHdl {
 	/**
 	 * set a new error, debug or warning handler. if fn is 0, the default handlers
 	 * are used.
+	 * @param fn message function
 	 */
 	public static void dSetErrorHandler (dMessageFunction fn) {
 		error_function = fn;
@@ -63,6 +64,7 @@ public class ErrorHdl {
 	/**
 	 * set a new error, debug or warning handler. if fn is 0, the default handlers
 	 * are used.
+	 * @param fn message function
 	 */
 	public static void dSetDebugHandler (dMessageFunction fn) {
 		debug_function = fn;
@@ -72,6 +74,7 @@ public class ErrorHdl {
 	/**
 	 * set a new error, debug or warning handler. if fn is 0, the default handlers
 	 * are used.
+	 * @param fn message function
 	 */
 	public static void dSetMessageHandler (dMessageFunction fn) {
 		message_function = fn;
@@ -79,7 +82,7 @@ public class ErrorHdl {
 
 
 	/**
-	 *  return the current error, debug or warning handler. if the return value is
+	 * @return the current error, debug or warning handler. if the return value is
 	 * 0, the default handlers are in place.
 	 */
 	public static dMessageFunction dGetErrorHandler() {
@@ -88,7 +91,7 @@ public class ErrorHdl {
 
 
 	/**
-	 * return the current error, debug or warning handler. if the return value is
+	 * @return the current error, debug or warning handler. if the return value is
 	 * 0, the default handlers are in place.
 	 */
 	public static dMessageFunction dGetDebugHandler() {
@@ -97,7 +100,7 @@ public class ErrorHdl {
 
 
 	/**
-	 * return the current error, debug or warning handler. if the return value is
+	 * @return the current error, debug or warning handler. if the return value is
 	 * 0, the default handlers are in place.
 	 */
 	public static dMessageFunction dGetMessageHandler() {
@@ -107,6 +110,9 @@ public class ErrorHdl {
 
 	/**
 	 * generate a fatal error, debug trap or a message. 
+	 * @param num error number
+	 * @param msg message
+	 * @param ap objects 
 	 */
 	public static void dError (int num, String msg, Object ... ap) {
 		//  va_list ap;
@@ -122,6 +128,9 @@ public class ErrorHdl {
 
 	/**
 	 * generate a fatal error, debug trap or a message. 
+	 * @param num error number
+	 * @param msg message
+	 * @param ap objects 
 	 */
 	public static void dDebug (int num, String msg, Object ... ap) {
 		//  va_list ap;
@@ -141,6 +150,9 @@ public class ErrorHdl {
 
 	/**
 	 * generate a fatal error, debug trap or a message. 
+	 * @param num error number
+	 * @param msg message
+	 * @param ap objects 
 	 */
 	public static void dMessage (int num, String msg, Object ... ap) {
 		//  va_list ap;

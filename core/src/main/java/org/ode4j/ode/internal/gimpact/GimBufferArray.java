@@ -54,7 +54,7 @@ int main()
     GBUFFER_ID bufferhandle;
 
     //Create a memory buffer of 100 float numbers
-    gim_create_common_buffer(100*sizeof(float), &bufferhandle);
+    gim_create_common_buffer(100*sizeof(float), &amp;bufferhandle);
 
     //Create a buffer array from the bufferhandle
     GBUFFER_ARRAY buffer_float_array;
@@ -65,16 +65,16 @@ int main()
     int i, count;
     count = buffer_float_array.m_element_count;
     //Locks the array
-    gim_buffer_array_lock(&buffer_float_array,G_MA_READ_WRITE);
+    gim_buffer_array_lock(&amp; buffer_float_array,G_MA_READ_WRITE);
     float  * pelements = GIM_BUFFER_ARRAY_POINTER(float, buffer_float_array, 0); // A pointer to the buffer memory
 
     //fill the array with random numbers
-    for (i = 0;i < count;i++ )
+    for (i = 0;i &lt; count;i++ )
     {
         pelements[i] = gim_unit_random();
     }
     //unlock buffer
-    gim_buffer_array_unlock(&buffer_float_array);
+    gim_buffer_array_unlock(&amp; buffer_float_array);
 
     //Program code
         ....

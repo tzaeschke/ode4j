@@ -97,7 +97,10 @@ public class CCDVec3 {
 
 
 	/**** INLINES ****/
-	/** Returns sign of value. */
+	/** 
+	 * @param val val
+	 * @return sign of value. 
+	 */
 	public static final int ccdSign(double val)
 	{
 	    if (ccdIsZero(val)){
@@ -108,13 +111,20 @@ public class CCDVec3 {
 	    return 1;
 	}
 
-	/** Returns true if val is zero. **/
+	/** 
+	 * @param val value
+	 * @return true if val is zero. 
+	 **/
 	public static final boolean ccdIsZero(double val)
 	{
 	    return CCD_FABS(val) < CCD_EPS;
 	}
 
-	/** Returns true if a and b equal. **/
+	/** 
+	 * @param _a a
+	 * @param _b b
+	 * @return true if a and b equal. 
+	 **/
 	public static final boolean ccdEq(double _a, double _b)
 	{
 	    double ab;
@@ -150,7 +160,9 @@ public class CCDVec3 {
 	}
 
 	/**
-	 * Returns true if a and b equal.
+	 * @param a a
+	 * @param b b
+	 * @return true if a and b equal.
 	 */
 	public static final boolean ccdVec3Eq(final ccd_vec3_t a, final ccd_vec3_t b)
 	{
@@ -160,7 +172,8 @@ public class CCDVec3 {
 	}
 
 	/**
-	 * Returns squared length of vector.
+	 * @param v v
+	 * @return squared length of vector.
 	 */
 	public static final double ccdVec3Len2(final ccd_vec3_t v)
 	{
@@ -168,7 +181,9 @@ public class CCDVec3 {
 	}
 
 	/**
-	 * Returns distance between a and b.
+	 * @param a a
+	 * @param b b
+	 * @return distance between a and b.
 	 */
 	public static final double ccdVec3Dist2(final ccd_vec3_t a, final ccd_vec3_t b)
 	{
@@ -193,6 +208,8 @@ public class CCDVec3 {
 
 	/**
 	 * v = w
+	 * @param v v
+	 * @param w w
 	 */
 	public static final void ccdVec3Copy(ccd_vec3_t v, final ccd_vec3_t w)
 	{
@@ -204,6 +221,8 @@ public class CCDVec3 {
 
 	/**
 	 * Substracts coordinates of vector w from vector v. v = v - w
+	 * @param v v
+	 * @param w w
 	 */
 	public static final void ccdVec3Sub(ccd_vec3_t v, final ccd_vec3_t w)
 	{
@@ -223,6 +242,8 @@ public class CCDVec3 {
 
 	/**
 	 * Adds coordinates of vector w to vector v. v = v + w
+	 * @param v v
+	 * @param w w
 	 */
 	public static final void ccdVec3Add(ccd_vec3_t v, final ccd_vec3_t w)
 	{
@@ -233,6 +254,8 @@ public class CCDVec3 {
 
 	/**
 	 * d = d * k;
+	 * @param d d
+	 * @param k k
 	 */
 	public static final void ccdVec3Scale(ccd_vec3_t d, double k)
 	{
@@ -243,6 +266,8 @@ public class CCDVec3 {
 
 	/**
 	 * Normalizes given vector to unit length.
+	 * @param d d
+	 * @return 'false' if normalization failed.
 	 */
 	public static final boolean ccdVec3Normalize(ccd_vec3_t d)
 	{
@@ -255,7 +280,9 @@ public class CCDVec3 {
 	}
 
 	/**
-	 * Dot product of two vectors.
+	 * @param a a
+	 * @param b b
+	 * @return Dot product of two vectors.
 	 */
 	public static final double ccdVec3Dot(final ccd_vec3_t a, final ccd_vec3_t b)
 	{
@@ -269,6 +296,9 @@ public class CCDVec3 {
 
 	/**
 	 * Cross product: d = a x b.
+	 * @param d d
+	 * @param a a
+	 * @param b b
 	 */
 	public static final void ccdVec3Cross(ccd_vec3_t d, final ccd_vec3_t a, final ccd_vec3_t b)
 	{
@@ -398,6 +428,11 @@ public class CCDVec3 {
 	 * Returns distance2 of point P to segment ab.
 	 * If witness is non-NULL it is filled with coordinates of point from which
 	 * was computed distance to point P.
+	 * @param P P
+	 * @param x0 x0
+	 * @param b b
+	 * @param witness witness 
+	 * @return distance distance
 	 */
 	public static double ccdVec3PointSegmentDist2(final ccd_vec3_t P,
 	                                    final ccd_vec3_t x0, final ccd_vec3_t b,
@@ -410,6 +445,12 @@ public class CCDVec3 {
 	 * Returns distance2 of point P from triangle formed by triplet a, b, c.
 	 * If witness vector is provided it is filled with coordinates of point
 	 * from which was computed distance to point P.
+	 * @param P PO
+	 * @param x0 x0
+	 * @param B B
+	 * @param C C
+	 * @param witness witness 
+	 * @return distance
 	 */
 	public static double ccdVec3PointTriDist2(final ccd_vec3_t P,
 	                                final ccd_vec3_t x0, final ccd_vec3_t B,

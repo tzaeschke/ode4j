@@ -56,7 +56,7 @@ public class OdeConstants {
 	public static final int 	  dContactApprox0	= 0x0000;
 	public static final int 	  dContactApprox1_1	= 0x1000;
 	public static final int 	  dContactApprox1_2	= 0x2000;
-	/**< For rolling friction */
+	/** For rolling friction */
 	public static final int		  dContactApprox1_N = 0x4000;
 	public static final int		  dContactApprox1   = 0x7000;
 	

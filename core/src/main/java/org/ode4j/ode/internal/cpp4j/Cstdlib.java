@@ -78,7 +78,7 @@ public class Cstdlib extends Cstring {
 	 * uses a seed to generate the series, which should be initialized to some 
 	 * distinctive value using srand.
 	 * 
-	 * RAND_MAX is a constant defined in <cstdlib>. Its default value may vary 
+	 * RAND_MAX is a constant defined in C's cstdlib. Its default value may vary 
 	 * between implementations but it is granted to be at least 32767.
 	 * 
 	 * A typical way to generate pseudo-random numbers in a determined range 

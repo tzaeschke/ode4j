@@ -54,6 +54,7 @@ public class Misc extends Common {
 	/** 
 	 * Return next 32 bit random number. this uses a not-very-random linear
 	 * congruential method.
+	 * @return ramdom number
 	 */
 	//unsigned long dRand()
 	public static long
@@ -69,7 +70,11 @@ public class Misc extends Common {
 	}
 
 
-	/** get and set the current random number seed. */
+	/** 
+	 * get and set the current random number seed. 
+	 * 
+	 * @return seed
+	 */
 	//unsigned long  dRandGetSeed()
 	public static long  dRandGetSeed()
 	{
@@ -84,7 +89,9 @@ public class Misc extends Common {
 	}
 
 
-	/** return 1 if the random number generator is working. */
+	/** return 1 if the random number generator is working. 
+	 * @return 'true' if it works 
+	 */
 	public static boolean dTestRand()
 	{
 		//	  unsigned long oldseed = seed;
@@ -110,6 +117,8 @@ public class Misc extends Common {
 	 * <p>
 	 *  adam's all-int straightforward(?) dRandInt (0..n-1)
 	 * TODO TZ Check whether this is ported correctly from unsigned long.
+	 * @param n max value
+	 * @return random value
 	 */
 	public static int dRandInt (long n)
 	{
@@ -205,7 +214,10 @@ public class Misc extends Common {
 	}
 
 
-	/** return a random real number between 0..1 */
+	/** 
+	 * return a random real number between 0..1 
+	 * @return random number
+	 */
 	public static double dRandReal()
 	{
 		return ((double) dRand()) / ((double) 0xffffffffL);
@@ -227,28 +239,51 @@ public class Misc extends Common {
 	}
 
 
-	/** make a random vector with entries between +/- range. A has 3 elements. */
+	/** 
+	 * make a random vector with entries between +/- range. A has 3 elements. 
+	 * @param A A
+	 * @param range range 
+	 */
 	public static void dMakeRandomVector (DVector3 A, double range) {
 		for (int i=0; i<3; i++) A.set(i, (dRandReal()*2.0-1.0)*range );
 	}
-	/** make a random vector with entries between +/- range. A has 4 elements. */
+	/** 
+	 * make a random vector with entries between +/- range. A has 4 elements. 
+	 * @param A A 
+	 * @param range range
+	 */
 	public static void dMakeRandomVector (DQuaternion A, double range) {
 		for (int i=0; i<4; i++) A.set(i, (dRandReal()*2.0-1.0)*range );
 	}
-	/** make a random vector with entries between +/- range. A has n elements. */
+	/** 
+	 * make a random vector with entries between +/- range. A has n elements. 
+	 * @param A A
+	 * @param n n 
+	 * @param range range
+	 */
 	public static void dMakeRandomVector (double[]A, int n, double range)
 	{
 		for (int i=0; i<n; i++) A[i] = (dRandReal()*2.0-1.0)*range;
 	}
 
 
-	/** make a random matrix with entries between +/- range. A has size 3*3. */
+	/** 
+	 * make a random matrix with entries between +/- range. A has size 3*3. 
+	 * @param A A
+	 * @param range range
+	 */
 	public static void dMakeRandomMatrix (DMatrix3 A, double range) {
 		for (int i=0; i<3; i++) {
 			for (int j=0; j<3; j++) A.set(i, j, (dRandReal()*2.0-1.0)*range );
 		}
 	}
-	/** make a random matrix with entries between +/- range. A has size n*m. */
+	/** 
+	 * make a random matrix with entries between +/- range. A has size n*m. 
+	 * @param A A
+	 * @param n n 
+	 * @param m m 
+	 * @param range range
+	 */
 	public static void dMakeRandomMatrix (double[]A, int n, int m, double range)
 	{
 		int skip = dPAD(m);
@@ -260,7 +295,11 @@ public class Misc extends Common {
 	}
 
 
-	/** clear the upper triangle of a square matrix */
+	/** 
+	 * clear the upper triangle of a square matrix.
+	 * @param A A
+	 * @param n n
+	 */
 	public static void dClearUpperTriangle (double[]A, int n)
 	{
 	    int skip = dPAD(n);
@@ -271,7 +310,10 @@ public class Misc extends Common {
 	}
 
 
-	/** clear the upper triangle of a square matrix */
+	/** 
+	 * clear the upper triangle of a square matrix. 
+	 * @param A A
+	 */
 	public static void dClearUpperTriangle (DMatrix3 A)
 	{
 		A.set01(0);
@@ -280,7 +322,14 @@ public class Misc extends Common {
 	}
 
 
-	/** return the maximum element difference between the two n*m matrices */
+	/** 
+	 * return the maximum element difference between the two n*m matrices. 
+	 * @param A A
+	 * @param B B
+	 * @param n n
+	 * @param m m
+	 * @return difference 
+	 */
 	public static double dMaxDifference (final double[]A, final double[]B, int n, int m)
 	{
 	    int skip = dPAD(m);
@@ -294,7 +343,12 @@ public class Misc extends Common {
 	    }
 		return max;
 	}
-	/** return the maximum element difference between the two 3*3 matrices */
+	/** 
+	 * return the maximum element difference between the two 3*3 matrices. 
+	 * @param A A
+	 * @param B B
+	 * @return difference 
+	 */
 	public static double dMaxDifference (final DMatrix3C A, final DMatrix3C B)
 	{
 		double diff,max;
@@ -310,7 +364,12 @@ public class Misc extends Common {
 		}
 		return max;
 	}
-	/** return the maximum element difference between the two 3*1 matrices */
+	/** 
+	 * return the maximum element difference between the two 3*1 matrices. 
+	 * @param A A
+	 * @param B B
+	 * @return difference 
+	 */
 	public static double dMaxDifference (final DVector3C A, final DVector3C B) {
 		double max = Math.abs(A.get0() - B.get0());
 		double diff = Math.abs(A.get1() - B.get1());
@@ -319,7 +378,14 @@ public class Misc extends Common {
 		if (diff > max) max = diff;
 		return max;
 	}
-	/** return the maximum element difference between the two 4*1 matrices */
+	/** 
+	 * return the maximum element difference between the two 4*1 matrices. 
+	 * @param A A
+	 * @param B B
+	 * @param n n
+	 * @param m m
+	 * @return difference 
+	 */
 	public static double dMaxDifference (final DQuaternionC A, 
 			final DQuaternionC B, int n, int m) {
 		double max = Math.abs(A.get0() - B.get0());
@@ -333,8 +399,14 @@ public class Misc extends Common {
 	}
 
 
-	/** return the maximum element difference between the lower triangle of two
-	 * n*n matrices */
+	/** 
+	 * return the maximum element difference between the lower triangle of two
+	 * n*n matrices.
+	 * @param A A
+	 * @param B B
+	 * @param n n
+	 * @return difference
+	 */
 	//double dMaxDifferenceLowerTriangle (final double *A, final double *B, int n)
 	public static double dMaxDifferenceLowerTriangle (final double[]A, final double[]B, int n)
 	{

@@ -449,6 +449,10 @@ public class CCDPolyTope {
 
 	/**
 	 * Adds edge to polytope.
+	 * @param pt pt
+	 * @param v1 v1
+	 * @param v2 v2
+	 * @return edge
 	 */
 	public static final ccd_pt_edge_t ccdPtAddEdge(ccd_pt_t pt, ccd_pt_vertex_t v1,
 	                                          ccd_pt_vertex_t v2)
@@ -480,6 +484,11 @@ public class CCDPolyTope {
 
 	/**
 	 * Adds face to polytope.
+	 * @param pt pt
+	 * @param e1 e1
+	 * @param e2 e2
+	 * @param e3 e3
+	 * @return face
 	 */
 	public static final ccd_pt_face_t ccdPtAddFace(ccd_pt_t pt, ccd_pt_edge_t e1,
 	                                          ccd_pt_edge_t e2,
@@ -573,6 +582,8 @@ public class CCDPolyTope {
 
 	/**
 	 * Returns nearest element to origin.
+	 * @param pt pt
+	 * @return pt.nearest
 	 */
 	public static final ccd_pt_el_t<?> ccdPtNearest(ccd_pt_t pt)
 	{

@@ -68,7 +68,7 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 	//Calling trimesh create function
 
 	gim_trimesh_create_from_data(
-	&mytrimesh,
+	mytrimesh,
 	trimeshvertices,200,
 	0 ,//copy_vertices is 0
 	trimeshindices,
@@ -85,7 +85,7 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 	<li> Updating vertices directly. You need to access to the \ref GIM_TRIMESH.m_source_vertex_buffer member; a vertex buffer which has access to the source vertices.
 	<pre>
 	// Access to the source vertices
-	gim_buffer_array_lock(&mytrimesh.m_source_vertex_buffer, G_MA_READ_WRITE);
+	gim_buffer_array_lock(mytrimesh.m_source_vertex_buffer, G_MA_READ_WRITE);
 
 	//Get a pointer to the vertex buffer
 	vec3f * vertexpointer = GIM_BUFFER_ARRAY_POINTER(vec3f,mytrimesh.m_source_vertex_buffer,0);
@@ -94,7 +94,7 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 	int veccount = mytrimesh.m_source_vertex_buffer.m_element_count;
 
 	//Modify vertices
-	for (int i=0;i<veccount ;i++ )
+	for (int i=0;i &lt; veccount ;i++ )
 	{
 	    .....
 	    .....
@@ -104,10 +104,10 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 	}
 
 	// Don't forget to unlock the source vertex array
-	gim_buffer_array_unlock(&mytrimesh.m_source_vertex_buffer);
+	gim_buffer_array_unlock(mytrimesh.m_source_vertex_buffer);
 
 	// Notify that the state of the trimesh is changed
-	gim_trimesh_post_update(&mytrimesh.m_source_vertex_buffer);
+	gim_trimesh_post_update(mytrimesh.m_source_vertex_buffer);
 
 	</pre>
 	For making trimeshes that allow to update their vertices, use \ref gim_trimesh_create_from_data with parameter <strong>transformed_reply</strong> = 0.
@@ -182,7 +182,7 @@ public class GimTrimesh implements GimConstants {
 	 *     GIM_CREATE_CONTACT_LIST(trimeshcontacts);
 	 *     
 	 *     //Collide trimeshes
-	 *     gim_trimesh_trimesh_collision(TriMesh1,TriMesh2,&trimeshcontacts);
+	 *     gim_trimesh_trimesh_collision(TriMesh1,TriMesh2,&amp; trimeshcontacts);
 	 *     
 	 *     if(trimeshcontacts.m_size == 0) //do  nothing
 	 *     {
@@ -196,7 +196,7 @@ public class GimTrimesh implements GimConstants {
 	 *     int contactcount = trimeshcontacts.m_size;
 	 *     int i;
 	 *     //Process contacts
-	 *     for (i=0;i<contactcount ;i++)
+	 *     for (i=0;i &lt; contactcount ;i++)
 	 *     {
 	 *         //Do something with the contact (ptrimeshcontacts)
 	 *         ......

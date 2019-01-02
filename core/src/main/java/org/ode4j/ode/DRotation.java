@@ -75,6 +75,9 @@ public class DRotation extends DMatrix {
     /**
      * Quaternion multiplication, analogous to the matrix multiplication routines. 
      * qa = rotate by qc, then qb 
+     * @param qa qa
+     * @param qb qb
+     * @param qc qc
      */
     public static void dQMultiply0 (DQuaternion qa, DQuaternionC qb, DQuaternionC qc) {
         Rotation.dQMultiply0(qa, qb, qc);
@@ -82,6 +85,9 @@ public class DRotation extends DMatrix {
     /**
      * Quaternion multiplication, analogous to the matrix multiplication routines. 
      * qa = rotate by qc, then by inverse of qb 
+     * @param qa qa
+     * @param qb qb
+     * @param qc qc
      */
     public static void dQMultiply1 (DQuaternion qa, DQuaternionC qb, DQuaternionC qc) {
         Rotation.dQMultiply1(qa, qb, qc);
@@ -89,6 +95,9 @@ public class DRotation extends DMatrix {
     /**
      * Quaternion multiplication, analogous to the matrix multiplication routines. 
      * qa = rotate by inverse of qc, then by qb 
+     * @param qa qa
+     * @param qb qb
+     * @param qc qc
      */
     public static void dQMultiply2 (DQuaternion qa, DQuaternionC qb, DQuaternionC qc) {
         Rotation.dQMultiply2(qa, qb, qc);
@@ -96,6 +105,9 @@ public class DRotation extends DMatrix {
     /**
      * Quaternion multiplication, analogous to the matrix multiplication routines. 
      * qa = rotate by inverse of qc, then by inverse of qb 
+     * @param qa qa
+     * @param qb qb
+     * @param qc qc
      */
     public static void dQMultiply3 (DQuaternion qa, DQuaternionC qb, DQuaternionC qc) {
         Rotation.dQMultiply3(qa, qb, qc);

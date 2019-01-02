@@ -726,7 +726,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
     }
 
     /**
-     * flags &= ~dxBodyDisabled.
+     * flags &amp;= ~dxBodyDisabled.
      */
     //(TZ)
     public void dBodyEnable_noAdis ()
@@ -743,7 +743,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 
 
 	/**
-	 * @return (flags & dxBodyDisabled) == 0
+	 * @return (flags &amp; dxBodyDisabled) == 0
 	 */
 	//	public boolean dBodyIsEnabled (dxBody b)
 	public boolean dBodyIsEnabled ()

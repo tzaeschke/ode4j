@@ -101,7 +101,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	// to one body then the second body is 0.
 
 	/** 
-	 * info returned by getInfo1 function. the constraint dimension is m (<=6).
+	 * info returned by getInfo1 function. the constraint dimension is m ( &le; 6).
 	 * i.e. that is the total number of rows in the jacobian. `nub' is the
 	 * number of unbounded variables (which have lo,hi = -/+ infinity).
 	 */
@@ -165,7 +165,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	 * (TZ) This method is used solely to extract information required by the stepping algorithms.
      * @param worldFPS world FPS
      * @param worldERP world ERP
-     * @param info 
+     * @param info info
 	 */
 	public abstract void getInfo2( double worldFPS, double worldERP, Info2Descr info );
     // This call quickly!!! estimates maximum value of "m" that could be returned by getInfo1()

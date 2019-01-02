@@ -29,32 +29,55 @@ import org.ode4j.math.DVector3C;
 
 public interface DRay extends DGeom {
 
-	  void setLength (double length);
-	  double getLength();
+	void setLength (double length);
+	double getLength();
 
-	  /** Set origin and direction. Origin is the same as setPosition(). */
-	  void set (double px, double py, double pz, double dx, double dy, double dz);
-	  /** Set origin and direction. Origin is the same as setPosition(). */
-	  void set (DVector3C p, DVector3C d);
-	  /** Get origin and direction. Origin is the same as getPosition(). 
-	   * Direction is the same as getDirection(). */
-	  void get (DVector3 start, DVector3 dir);
-	  /** Get direction. Direction is the same as the 2nd parameter in get(). */ 
-	  DVector3C getDirection();
+	/** 
+	 * Set origin and direction. Origin is the same as setPosition(). 
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
+	 * @param dx dx
+	 * @param dy dy
+	 * @param dz dz
+	 */
+	void set (double px, double py, double pz, double dx, double dy, double dz);
 
-	  /**
-	   * Set/get ray flags that influence ray collision detection.
-	   * These flags are currently only noticed by the trimesh collider, because
-	   * they can make a major differences there.
-	   */
-	  boolean getFirstContact();
-	  void setFirstContact(boolean firstContact);
-	  boolean getBackfaceCull();
-	  void setBackfaceCull(boolean backfaceCull);
-	  void setClosestHit (boolean closestHit);
-	  boolean getClosestHit();
+	/** 
+	 * Set origin and direction. Origin is the same as setPosition(). 
+	 * @param p p
+	 * @param d d
+	 */
+	void set (DVector3C p, DVector3C d);
+	
+	/** 
+	 * Get origin and direction. Origin is the same as getPosition(). 
+	 * Direction is the same as getDirection(). 
+	 * @param start start 
+	 * @param dir direction
+	 */
+	void get (DVector3 start, DVector3 dir);
 
-	  
+	/** 
+	 * Get direction. Direction is the same as the 2nd parameter in get(). 
+	 * @return direction
+	 */ 
+	DVector3C getDirection();
+
+	/**
+	 * Set/get ray flags that influence ray collision detection.
+	 * These flags are currently only noticed by the trimesh collider, because
+	 * they can make a major differences there.
+	 * @return first contact setting
+	 */
+	boolean getFirstContact();
+	void setFirstContact(boolean firstContact);
+	boolean getBackfaceCull();
+	void setBackfaceCull(boolean backfaceCull);
+	void setClosestHit (boolean closestHit);
+	boolean getClosestHit();
+
+
 //	  // intentionally undefined, don't use these
 //	  dRay (dRay &);
 //	  void operator= (dRay &);

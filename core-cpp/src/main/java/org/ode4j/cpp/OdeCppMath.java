@@ -42,13 +42,19 @@ public abstract class OdeCppMath extends ApiCppMathMatrix {
 		return OdeMath.dSafeNormalize4(a);
 	}
 	
-	/** Potentially asserts on zero vec. */
+	/** 
+	 * Potentially asserts on zero vec. 
+	 * @param a vector
+	 */
 	//ODE_API 
 	public static void dNormalize3 (DVector3 a) {
 		OdeMath.dNormalize3(a);
 	}
 	
-	/** Potentially asserts on zero vec. */
+	/** 
+	 * Potentially asserts on zero vec.
+	 * @param a vector 
+	 */
 	//ODE_API 
 	public static void dNormalize4 (DVector4 a) {
 		OdeMath.dNormalize4(a);
@@ -62,6 +68,9 @@ public abstract class OdeCppMath extends ApiCppMathMatrix {
 	 * i.e. this makes p,q such that n,p,q are all perpendicular to each other.
 	 * q will equal n x p. if n is not unit length then p will be unit length but
 	 * q wont be.
+	 * @param n n
+	 * @param p p
+	 * @param q q
 	 */
 	//ODE_API 
 	public static void dPlaneSpace (final DVector3 n, DVector3 p, DVector3 q) {

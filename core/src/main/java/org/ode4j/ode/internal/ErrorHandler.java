@@ -45,6 +45,7 @@ public abstract class ErrorHandler extends OdeConstants {
 
 	/** set a new error, debug or warning handler. if fn is 0, the default handlers
 	 * are used.
+	 * @param fn fn
 	 */
 	////ODE_API
 	public static void dSetErrorHandler (dMessageFunction fn) {
@@ -59,36 +60,54 @@ public abstract class ErrorHandler extends OdeConstants {
 		ErrorHdl.dSetMessageHandler(fn);
 	}
 
-	/** return the current error, debug or warning handler. if the return value is
+	/**
+	 * @return the current error, debug or warning handler. if the return value is
 	 * 0, the default handlers are in place.
 	 */
 	//ODE_API
 	public static dMessageFunction dGetErrorHandler() {
 		return ErrorHdl.dGetErrorHandler();
 	}
-	/** return the current error, debug or warning handler. if the return value is
+	/** 
+	 * @return the current error, debug or warning handler. if the return value is
 	 * 0, the default handlers are in place.
 	 */
 	public static  dMessageFunction dGetDebugHandler() {
 		return ErrorHdl.dGetDebugHandler();
 	}
-	/** return the current error, debug or warning handler. if the return value is
+	/** 
+	 * @return the current error, debug or warning handler. if the return value is
 	 * 0, the default handlers are in place.
 	 */
 	public static  dMessageFunction dGetMessageHandler() {
 		return ErrorHdl.dGetMessageHandler();
 	}
 
-	/** generate a fatal error, debug trap or a message. */
+	/** 
+	 * generate a fatal error, debug trap or a message. 
+	 * @param num error number
+	 * @param msg message
+	 * @param ap objects 
+	 */
 	//ODE_API
 	public static void dError (int num, final String msg, Object ... ap) {
 		ErrorHdl.dError(num, msg, ap);
 	}
-	/** generate a fatal error, debug trap or a message. */
+	/** 
+	 * generate a fatal error, debug trap or a message. 
+	 * @param num error number
+	 * @param msg message
+	 * @param ap objects 
+	 */
 	public static void dDebug (int num, final String msg, Object ... ap) {
 		ErrorHdl.dDebug(num, msg, ap);
 	}
-	/** generate a fatal error, debug trap or a message. */
+	/** 
+	 * generate a fatal error, debug trap or a message. 
+	 * @param num error number
+	 * @param msg message
+	 * @param ap objects 
+	 */
 	public static void dMessage (int num, final String msg, Object ... ap) {
 		ErrorHdl.dMessage(num, msg, ap);
 	}

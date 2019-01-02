@@ -36,7 +36,7 @@ public final class Performator {
 
     /**
      * Start time measurement.
-     * @param key
+     * @param key key
      */
     public static final void begin(String key) {
         Entry e = data.get(key);
@@ -51,7 +51,7 @@ public final class Performator {
 
     /**
      * Stop time measurement.
-     * @param key
+     * @param key key
      */
     public static final void end(String key) {
         data.get(key).end();

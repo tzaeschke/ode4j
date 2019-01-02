@@ -114,7 +114,7 @@ public class CCD {
 	 * Returns true if two given objects interest.
 	 * @param obj1 object 1
 	 * @param obj2 object 2
-	 * @param ccd 
+	 * @param ccd ccd
 	 * @return true or false
 	 */
 	public static boolean ccdGJKIntersect(final Object obj1, final Object obj2, final ccd_t ccd)

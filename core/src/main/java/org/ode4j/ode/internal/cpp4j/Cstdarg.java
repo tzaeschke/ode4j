@@ -33,7 +33,7 @@ public class Cstdarg extends Cstdio {
 	public static class va_list {
 		final Object[] l;
 		/**
-		 * @param varArgsOfCallingMethod
+		 * @param varArgsOfCallingMethod args
 		 */
 		public va_list(Object[] varArgsOfCallingMethod) {
 			l = varArgsOfCallingMethod;
@@ -42,8 +42,8 @@ public class Cstdarg extends Cstdio {
 	
 	/**
 	 * This method does nothing.
-	 * @param ap
-	 * @param argToStartAfter_isIgnored
+	 * @param ap args
+	 * @param argToStartAfter_isIgnored ...
 	 */
 	public static void va_start(va_list ap, Object argToStartAfter_isIgnored ) {
 		
@@ -51,7 +51,7 @@ public class Cstdarg extends Cstdio {
 	
 	/**
 	 * This method does nothing.
-	 * @param ap
+	 * @param ap ap
 	 */
 	public static void va_end(va_list ap) {
 		

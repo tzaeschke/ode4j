@@ -71,8 +71,8 @@ public class Cmath extends Csetjmp {
 	 * TODO make it faster. Use log2?
 	 * http://www.opengroup.org/onlinepubs/007908799/xsh/frexp.html
 	 * 
-	 * @param num 
-	 * @param exp 
+	 * @param num num
+	 * @param exp  exp
 	 * @return frexp()
 	 */
 	public static double frexp(double num, RefInt exp) {

@@ -32,7 +32,7 @@ public class FloatArray {
     private int _ofs;
     
     /**
-     * @param size
+     * @param size size
      */
     public FloatArray(int size) {
         _data = new float[size];
@@ -41,7 +41,7 @@ public class FloatArray {
     
     /**
      * Create a new FloatArray referencing the given float array.
-     * @param array
+     * @param array array
      */
     public FloatArray(float[] array) {
         _data = array;
@@ -50,8 +50,8 @@ public class FloatArray {
     
     /**
      * Create a new FloatArray referencing the given float array.
-     * @param array
-     * @param ofs 
+     * @param array array
+     * @param ofs offset
      */
     public FloatArray(float[] array, int ofs) {
         _data = array;
@@ -61,7 +61,7 @@ public class FloatArray {
     /**
      * Create a new FloatArray referencing the same FloatArray referenced by
      * the argument.
-     * @param array
+     * @param array array
      */
     public FloatArray(FloatArray array) {
         _data = array._data;
@@ -71,8 +71,8 @@ public class FloatArray {
     /**
      * Create a new FloatArray referencing the same FloatArray referenced by
      * the argument, starting at the given offset.
-     * @param array
-     * @param ofs 
+     * @param array array
+     * @param ofs offset
      */
     public FloatArray(FloatArray array, int ofs) {
         _data = array._data;
@@ -91,7 +91,7 @@ public class FloatArray {
     }
     
     /**
-     * @param ofs 
+     * @param ofs offset
      * @return float value at position ofs;
      */
     public float at(int ofs) {
@@ -100,7 +100,7 @@ public class FloatArray {
     
     /**
      * Set float value at position 0;
-     * @param d 
+     * @param d value
      */
     public void setAt0(float d) {
         _data[_ofs] = d;
@@ -108,15 +108,15 @@ public class FloatArray {
     
     /**
      * Set float value at position ofs;
-     * @param ofs 
-     * @param d 
+     * @param ofs offset
+     * @param d value
      */
     public void setAt(int ofs, float d) {
         _data[_ofs + ofs] = d;
     }
     
     /**
-     * @param data
+     * @param data data
      */
     public void setData(float[] data) {
         if (data.length + _ofs >= _data.length) {
@@ -127,7 +127,7 @@ public class FloatArray {
     }
     
     /**
-     * @param array
+     * @param array array
      */
     public void setData(FloatArray array) {
     	float[] data = array._data;
@@ -150,8 +150,8 @@ public class FloatArray {
     }
     
     /**
-     * @param ofs
-     * @param len
+     * @param ofs offset
+     * @param len length
      * @return cloned float[]
      */
     public float[] cloneData(int ofs, int len) {
@@ -169,7 +169,7 @@ public class FloatArray {
     
     /**
      * Decrement offset by n.
-     * @param n 
+     * @param n n
      */
     public void dec(int n) {
         _ofs -= n;
@@ -184,7 +184,7 @@ public class FloatArray {
     
     /**
      * Increment offset by n.
-     * @param n 
+     * @param n n
      */
     public void inc(int n) {
         _ofs += n;

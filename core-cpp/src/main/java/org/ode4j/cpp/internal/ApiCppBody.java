@@ -42,6 +42,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Get auto disable linear average threshold.
 	 * 
+	 * @param b body
 	 * @return the threshold
 	 */
 	//ODE_API 
@@ -52,6 +53,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Set auto disable linear average threshold.
 	 * 
+	 * @param b body
 	 * @param linear_average_threshold the threshold
 	 */
 	//ODE_API 
@@ -63,6 +65,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Get auto disable angular average threshold.
 	 * 
+	 * @param b body
 	 * @return the threshold
 	 */
 	//ODE_API 
@@ -73,6 +76,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Set auto disable angular average threshold.
 	 * 
+	 * @param b body
 	 * @param angular_average_threshold the threshold
 	 */
 	//ODE_API 
@@ -84,6 +88,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Get auto disable average size (samples count).
 	 * 
+	 * @param b body
 	 * @return the nr of steps/size.
 	 */
 	//ODE_API 
@@ -94,6 +99,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Set auto disable average buffer size (average steps).
 	 * 
+	 * @param b body
 	 * @param average_samples_count the nr of samples to review.
 	 */
 	//ODE_API 
@@ -108,6 +114,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Get auto steps a body must be thought of as idle to disable
 	 * 
+	 * @param b body
 	 * @return the nr of steps
 	 */
 	//ODE_API 
@@ -118,6 +125,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Set auto disable steps.
 	 * 
+	 * @param b body
 	 * @param steps the nr of steps.
 	 */
 	//ODE_API 
@@ -128,6 +136,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Get auto disable time.
 	 * 
+	 * @param b body
 	 * @return nr of seconds
 	 */
 	//ODE_API 
@@ -138,6 +147,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Set auto disable time.
 	 * 
+	 * @param b body
 	 * @param time nr of seconds.
 	 */
 	//ODE_API 
@@ -148,6 +158,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Get auto disable flag.
 	 * 
+	 * @param b body
 	 * @return 0 or 1
 	 */
 	//ODE_API 
@@ -158,6 +169,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	/**
 	 * Set auto disable flag.
 	 * 
+	 * @param b body
 	 * @param do_auto_disable 0 or 1
 	 */
 	//ODE_API 
@@ -170,6 +182,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * <p>REMARKS:
 	 * Set the values for the body to those set as default for the world.
 	 * 
+	 * @param b body
 	 */
 	//ODE_API 
 	public static void dBodySetAutoDisableDefaults (DBody b){
@@ -179,6 +192,8 @@ public abstract class ApiCppBody extends ApiCppJoint {
 
 	/**
 	 * Retrieves the world attached to te given body.
+	 * @param b body
+	 * @return World
 	 */
 	//ODE_API 
 	public static DWorld dBodyGetWorld (DBody b){

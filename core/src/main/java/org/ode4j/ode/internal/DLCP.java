@@ -59,25 +59,27 @@ import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 
 given (A,b,lo,hi), solve the LCP problem: A*x = b+w, where each x(i),w(i)
 satisfies one of
-	(1) x = lo, w >= 0
-	(2) x = hi, w <= 0
-	(3) lo < x < hi, w = 0
+<ol>
+  <li> x = lo, w &ge; 0 </li>
+  <li> x = hi, w &le; 0 </li>
+  <li> lo &lt; x &lt; hi, w = 0 </li>
+</ol>  
 A is a matrix of dimension n*n, everything else is a vector of size n*1.
 lo and hi can be +/- dInfinity as needed. the first `nub' variables are
 unbounded, i.e. hi and lo are assumed to be +/- dInfinity.
 
-we restrict lo(i) <= 0 and hi(i) >= 0.
+we restrict lo(i) &le; 0 and hi(i) &ge; 0.
 
 the original data (A,b) may be modified by this function.
 
 if the `findex' (friction index) parameter is nonzero, it points to an array
-of index values. in this case constraints that have findex[i] >= 0 are
+of index values. in this case constraints that have findex[i] &ge; 0 are
 special. all non-special constraints are solved for, then the lo and hi values
 for the special constraints are set:
   hi[i] = abs( hi[i] * x[findex[i]] )
   lo[i] = -hi[i]
 and the solution continues. this mechanism allows a friction approximation
-to be implemented. the first `nub' variables are assumed to have findex < 0.
+to be implemented. the first `nub' variables are assumed to have findex &lt; 0.
 
 
 
@@ -86,53 +88,59 @@ THE ALGORITHM
 
 solve A*x = b+w, with x and w subject to certain LCP conditions.
 each x(i),w(i) must lie on one of the three line segments in the following
-diagram. each line segment corresponds to one index set :
+diagram. each line segment corresponds to one index set : <br>
+ <br>
+ <PRE>
+     w(i)                                             
+     /|\      |           :                                      
+      |       |           :                                      
+      |       |i in N     :                                       
+  w&gt;  |       |state[i]=0 :                                       
+      |       |           :                                      
+      |       |           :  i in C                              
+  w=0 +       +-----------------------+                         
+      |                   :           |                          
+      |                   :           |                          
+  w&lt;  |                   :           |i in N                    
+      |                   :           |state[i]=1                
+      |                   :           |                         
+      |                   :           |                          
+      +-------|-----------|-----------|----------&gt; x(i)       
+             lo           0           hi                        
+                                                                 
+ </PRE>
 
-     w(i)
-     /|\      |           :
-      |       |           :
-      |       |i in N     :
-  w>0 |       |state[i]=0 :
-      |       |           :
-      |       |           :  i in C
-  w=0 +       +-----------------------+
-      |                   :           |
-      |                   :           |
-  w<0 |                   :           |i in N
-      |                   :           |state[i]=1
-      |                   :           |
-      |                   :           |
-      +-------|-----------|-----------|----------> x(i)
-             lo           0           hi
-
-the Dantzig algorithm proceeds as follows:
-  for i=1:n
+the Dantzig algorithm proceeds as follows: <br>
+  for i=1:n <br>
  * if (x(i),w(i)) is not on the line, push x(i) and w(i) positive or
       negative towards the line. as this is done, the other (x(j),w(j))
-      for j<i are constrained to be on the line. if any (x,w) reaches the
-      end of a line segment then it is switched between index sets.
+      for j &lt; i are constrained to be on the line. if any (x,w) reaches the
+      end of a line segment then it is switched between index sets. <br>
  * i is added to the appropriate index set depending on what line segment
-      it hits.
+      it hits. <br>
 
-we restrict lo(i) <= 0 and hi(i) >= 0. this makes the algorithm a bit
+we restrict lo(i) &le; 0 and hi(i) &ge; 0. this makes the algorithm a bit
 simpler, because the starting point for x(i),w(i) is always on the dotted
 line x=0 and x will only ever increase in one direction, so it can only hit
 two out of the three line segments.
 
+<p>
 
-NOTES
+NOTES <br>
 -----
+
+<p> 
 
 this is an implementation of "lcp_dantzig2_ldlt.m" and "lcp_dantzig_lohi.m".
 the implementation is split into an LCP problem object (dLCP) and an LCP
 driver function. most optimization occurs in the dLCP object.
-
+<p>
 a naive implementation of the algorithm requires either a lot of data motion
 or a lot of permutation-array lookup, because we are constantly re-ordering
 rows and columns. to avoid this and make a more optimized algorithm, a
 non-trivial data structure is used to represent the matrix A (this is
 implemented in the fast version of the dLCP object).
-
+<p>
 during execution of this algorithm, some indexes in A are clamped (set C),
 some are non-clamped (set N), and some are "don't care" (where x=0).
 A,x,b,w (and other problem vectors) are permuted such that the clamped
@@ -140,29 +148,32 @@ indexes are first, the unclamped indexes are next, and the don't-care
 indexes are last. this permutation is recorded in the array `p'.
 initially p = 0..n-1, and as the rows and columns of A,x,b,w are swapped,
 the corresponding elements of p are swapped.
-
+<p>
 because the C and N elements are grouped together in the rows of A, we can do
 lots of work with a fast dot product function. if A,x,etc were not permuted
 and we only had a permutation array, then those dot products would be much
 slower as we would have a permutation array lookup in some inner loops.
-
+<p>
 A is accessed through an array of row pointers, so that element (i,j) of the
 permuted matrix is A[i][j]. this makes row swapping fast. for column swapping
 we still have to actually move the data.
-
+<p>
 during execution of this algorithm we maintain an L*D*L' factorization of
 the clamped submatrix of A (call it `AC') which is the top left nC*nC
 submatrix of A. there are two ways we could arrange the rows/columns in AC.
 
-(1) AC is always permuted such that L*D*L' = AC. this causes a problem
+<ol>
+
+<li> AC is always permuted such that L*D*L' = AC. this causes a problem
     when a row/column is removed from C, because then all the rows/columns of A
     between the deleted index and the end of C need to be rotated downward.
-    this results in a lot of data motion and slows things down.
-(2) L*D*L' is actually a factorization of a *permutation* of AC (which is
+    this results in a lot of data motion and slows things down.  </li>
+<li> L*D*L' is actually a factorization of a *permutation* of AC (which is
     itself a permutation of the underlying A). this is what we do - the
     permutation is recorded in the vector C. call this permutation A[C,C].
     when a row/column is removed from C, all we have to do is swap two
-    rows/columns and manipulate C.
+    rows/columns and manipulate C.   </li>
+</ol>
 
  */
 public class DLCP {

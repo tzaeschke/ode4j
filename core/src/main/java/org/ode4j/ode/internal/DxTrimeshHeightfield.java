@@ -361,9 +361,9 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
     //////// Heightfield geom interface ////////////////////////////////////////////////////
 
     /**
-     * @param space 
-     * @param data 
-     * @param bPlaceable 
+     * @param space space
+     * @param data data
+     * @param bPlaceable placeable flag 
      * @return New DHeightfield
      */
     public static DxTrimeshHeightfield dCreateHeightfield( DxSpace space, DxHeightfieldData data, boolean bPlaceable )
@@ -435,7 +435,8 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
     //            dxGeom* o2, final int numMaxContactsPossible,
     //            int flags, dContactGeom* contact,
     //            int skip )
-    int dCollideHeightfieldZone( final int minX, final int maxX, final int minZ, final int maxZ,
+    @Override
+	int dCollideHeightfieldZone( final int minX, final int maxX, final int minZ, final int maxZ,
             DxGeom o2, final int numMaxContactsPossible,
             int flags, DContactGeomBuffer contacts,
             int skip )

@@ -37,11 +37,11 @@ public class FastDot extends Misc {
 	
 	/**
 	 * 
-	 * @param a
-	 * @param aOfs
-	 * @param b
-	 * @param n
-	 * @return xxx
+	 * @param a a
+	 * @param aOfs aOfs
+	 * @param b b
+	 * @param n n
+	 * @return xxx xxx
 	 * @deprecated use other method
 	 */
 	@Deprecated

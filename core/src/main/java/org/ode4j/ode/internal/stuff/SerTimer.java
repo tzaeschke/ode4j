@@ -48,7 +48,7 @@ public final class SerTimer {
     
     /**
      * Get elapsed time since last take() or start().
-     * @param key
+     * @param key key
      */
     public final void take(String key) {
     	long now = System.currentTimeMillis();
@@ -91,6 +91,7 @@ public final class SerTimer {
         }
 
         /**
+         * @param time time
          * 
          */
         public final void add(long time) {
@@ -108,6 +109,7 @@ public final class SerTimer {
     }
     
     /**
+     * @return number of 'starts'.
      * 
      */
     public final int getNStart() {

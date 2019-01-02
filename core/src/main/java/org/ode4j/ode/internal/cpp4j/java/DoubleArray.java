@@ -32,7 +32,7 @@ public class DoubleArray {
     private int _ofs;
     
     /**
-     * @param size
+     * @param size size
      */
     public DoubleArray(int size) {
         _data = new double[size];
@@ -41,7 +41,7 @@ public class DoubleArray {
     
     /**
      * Create a new DoubleArray referencing the given double array.
-     * @param array
+     * @param array array
      */
     public DoubleArray(double[] array) {
         _data = array;
@@ -50,8 +50,8 @@ public class DoubleArray {
     
     /**
      * Create a new DoubleArray referencing the given double array.
-     * @param array
-     * @param ofs 
+     * @param array array
+     * @param ofs offset
      */
     public DoubleArray(double[] array, int ofs) {
         _data = array;
@@ -61,7 +61,7 @@ public class DoubleArray {
     /**
      * Create a new DoubleArray referencing the same DoubleArray referenced by
      * the argument.
-     * @param array
+     * @param array array
      */
     public DoubleArray(DoubleArray array) {
         _data = array._data;
@@ -71,8 +71,8 @@ public class DoubleArray {
     /**
      * Create a new DoubleArray referencing the same DoubleArray referenced by
      * the argument, starting at the given offset.
-     * @param array
-     * @param ofs 
+     * @param array array
+     * @param ofs offset
      */
     public DoubleArray(DoubleArray array, int ofs) {
         _data = array._data;
@@ -91,7 +91,7 @@ public class DoubleArray {
     }
     
     /**
-     * @param ofs 
+     * @param ofs offset
      * @return double value at position ofs;
      */
     public double getAt(int ofs) {
@@ -100,7 +100,7 @@ public class DoubleArray {
     
     /**
      * Set double value at position 0;
-     * @param d 
+     * @param d value
      */
     public void setAt0(double d) {
         _data[_ofs] = d;
@@ -108,15 +108,15 @@ public class DoubleArray {
     
     /**
      * Set double value at position ofs;
-     * @param ofs 
-     * @param d 
+     * @param ofs offset
+     * @param d value
      */
     public void setAt(int ofs, double d) {
         _data[_ofs + ofs] = d;
     }
     
     /**
-     * @param data
+     * @param data data
      */
     public void setData(double[] data) {
         if (data.length + _ofs >= _data.length) {
@@ -127,7 +127,7 @@ public class DoubleArray {
     }
     
     /**
-     * @param array
+     * @param array array
      */
     public void setData(DoubleArray array) {
         double[] data = array._data;
@@ -150,8 +150,8 @@ public class DoubleArray {
     }
     
     /**
-     * @param ofs
-     * @param len
+     * @param ofs offset
+     * @param len length
      * @return cloned double[]
      */
     public double[] cloneData(int ofs, int len) {
@@ -169,7 +169,7 @@ public class DoubleArray {
     
     /**
      * Decrement offset by n.
-     * @param n 
+     * @param n  n
      */
     public void dec(int n) {
         _ofs -= n;
@@ -184,7 +184,7 @@ public class DoubleArray {
     
     /**
      * Increment offset by n.
-     * @param n 
+     * @param n n
      */
     public void inc(int n) {
         _ofs += n;

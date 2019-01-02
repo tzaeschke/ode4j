@@ -31,18 +31,23 @@ public interface DSliderJoint extends DJoint {
 
 	/**
 	 * Set the joint axis.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis (double x, double y, double z);
 	
 	
 	/**
 	 * Set the joint axis.
+	 * @param a a
 	 */
 	void setAxis (DVector3C a);
 
 	
 	/**
 	 * Get the slider axis.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxis (DVector3 result);
 
@@ -56,12 +61,14 @@ public interface DSliderJoint extends DJoint {
 	 * The position is the distance, with respect to the zero position,
 	 * along the slider axis of body 1 with respect to
 	 * body 2. (A NULL body is replaced by the world).
+	 * @return position
 	 */
 	double getPosition();
 	
 	
 	/**
 	 * Get the slider linear position's time derivative.
+	 * @return rate
 	 */
 	double getPositionRate();
 
@@ -72,6 +79,7 @@ public interface DSliderJoint extends DJoint {
 	 * That is, it applies a force with specified magnitude, in the direction of
 	 * slider's axis, to body1, and with the same magnitude but opposite
 	 * direction to body2.  This function is just a wrapper for dBodyAddForce().
+	 * @param force force
 	 */
 	void addForce (double force);
 	void setParamFMax(double d);
@@ -82,6 +90,12 @@ public interface DSliderJoint extends DJoint {
 	
 	
 	/**
+	 * @param x x
+	 * @param y y
+	 * @param z z
+	 * @param dx dx
+	 * @param dy dy
+	 * @param dz dz
 	 */
 	void setAxisDelta(double x, double y, double z, 
 			double dx, double dy, double dz);

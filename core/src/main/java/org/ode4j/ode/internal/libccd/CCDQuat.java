@@ -130,6 +130,8 @@ public class CCDQuat {
 	
 	/**
 	 * q = q * q2
+	 * @param q q
+	 * @param q2 q2
 	 */
 	public static final void ccdQuatMul(ccd_quat_t q, final ccd_quat_t q2)
 	{
@@ -182,9 +184,12 @@ public class CCDQuat {
 
 	    return 0;
 	}
+	
 	/**
 	 * Inverts quaternion.
-	 * Returns 0 on success.
+	 * @param dest dest 
+	 * @param src src
+	 * @return 0 on success.
 	 */
 	public static final int ccdQuatInvert2(ccd_quat_t dest, final ccd_quat_t src)
 	{
@@ -192,11 +197,10 @@ public class CCDQuat {
 	    return ccdQuatInvert(dest);
 	}
 
-
-
-
 	/**
 	 * Rotate vector v by quaternion q.
+	 * @param v v
+	 * @param q q
 	 */
 	public static final void ccdQuatRotVec(ccd_vec3_t v, final ccd_quat_t q)
 	{

@@ -81,7 +81,7 @@ public class OdeConfig {
 	
 	/**
 	 * Enable or disable LIBCCD colliders.
-	 * @param enable
+	 * @param enable enable/disable
 	 */
 	public static void setLibCCDEndabled(boolean enable) {
 		dLIBCCD = enable;

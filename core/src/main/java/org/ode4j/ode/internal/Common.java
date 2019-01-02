@@ -46,10 +46,6 @@ public class Common extends OdeConstants {
 
 	/** constants */
 
-	/** pi and 1/sqrt(2) are defined here if necessary because they don't get
-	 * defined in <math.h> on some platforms (like MS-Windows)
-	 */
-
 	public static final double M_PI = 3.1415926535897932384626433832795029;
 	public static final double M_PI_2 = 1.5707963267948966192313216916398;
 	public static final double M_SQRT1_2 = 0.7071067811865475244008443621048490;

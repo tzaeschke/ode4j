@@ -33,7 +33,7 @@ public class Ctime extends Ctype {
 	 * 
 	 * Type capable of representing times and support arithmetical operations.
 	 * This type is returned by the time function and is used as parameter by 
-	 * some other functions of the <ctime> header.
+	 * some other functions of the 'ctime' header.
 	 * 
 	 * It is almost universally expected to be an integral value representing 
 	 * the number of seconds elapsed since 00:00 hours, Jan 1, 1970 UTC. This 
@@ -50,7 +50,7 @@ public class Ctime extends Ctype {
 
 		/**
 		 * Set time.
-		 * @param n
+		 * @param n time
 		 */
 		public time_t(int n) {
 			seconds = n;

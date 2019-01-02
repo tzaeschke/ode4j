@@ -28,7 +28,7 @@ package org.ode4j.ode.internal.cpp4j;
  */
 public class Ctype {
 	/**
-	 * @param ch
+	 * @param ch char
 	 * @return True if the character is a digit.
 	 */
 	public static boolean isdigit(char ch) {

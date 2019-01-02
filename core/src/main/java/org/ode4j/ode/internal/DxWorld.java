@@ -281,6 +281,13 @@ public class DxWorld extends DBase implements DWorld {
 	    return islands_max_threads;
 	}
 
+	/**
+	 * 
+	 * @param policyinfo
+	 * @return x
+	 * @deprecated Not used anymore: remove TODO
+	 */
+	@Deprecated
 	boolean dWorldSetStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo)
 	{
 	    dUASSERT (policyinfo==null || (policyinfo.struct_size >= DxUtil.sizeof(policyinfo) && policyinfo.reserve_factor >= 1.0f), "Bad policy info");

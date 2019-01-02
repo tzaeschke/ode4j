@@ -106,6 +106,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Get the user-defined data pointer stored in the geom.
 	 *
 	 * @param geom the geom containing the data
+	 * @return user data
 	 */
 	//ODE_API 
 	// void *dGeomGetData (dGeom geom) {
@@ -140,6 +141,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	/**
 	 * Get the body associated with a placeable geom.
 	 * @param geom the geom to query.
+	 * @return body
 	 * @see #dGeomSetBody(DGeom, DBody)
 	 */
 	//ODE_API 
@@ -937,6 +939,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Retrieves the radius of a sphere geom.
 	 *
 	 * @param sphere  the sphere to query.
+	 * @return radius
 	 *
 	 * @see #dGeomSphereSetRadius(DSphere, double)
 	 */
@@ -1155,6 +1158,9 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * Set/get ray flags that influence ray collision detection.
 	 * These flags are currently only noticed by the trimesh collider, because
 	 * they can make a major differences there.
+	 * @param g ray
+	 * @param firstContact first contact 
+	 * @param backfaceCull cull
 	 */
 	//ODE_API 
 	public static void dGeomRaySetParams (DRay g, 
@@ -1256,6 +1262,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the height of a given element of it's shape.
 	 *
 	 * @param d A new dHeightfieldData created by dGeomHeightfieldDataCreate
+	 * @param pUserData user data
+	 * @param pCallback callback
 	 *
 	 * @param width Specifies the total 'width' of the heightfield along
 	 * the geom's local x axis.

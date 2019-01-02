@@ -31,48 +31,64 @@ public interface DPUJoint extends DJoint {
 
 	/**
 	 * Set anchor.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor (double x, double y, double z);
 
 
 	/**
 	 * Set anchor.
+	 * @param a a
 	 */
 	void setAnchor (DVector3C a);
 
 	
 	/**
 	 * Set the axis for the first axis or the universal articulation.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis1 (double x, double y, double z);
 
 	
 	/**
 	 * Set the axis for the first axis or the universal articulation.
+	 * @param a a
 	 */
 	void setAxis1 (DVector3C a);
 
 	
 	/**
 	 * Set the axis for the second axis or the universal articulation.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis2 (double x, double y, double z);
 
 	
 	/**
 	 * Set the axis for the second axis or the universal articulation.
+	 * @param a a
 	 */
 	void setAxis2 (DVector3C a);
 	
 	
 	/**
 	 * Set the axis for the prismatic articulation.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis3 (double x, double y, double z);
 
 	
 	/**
 	 * Set the axis for the prismatic articulation.
+	 * @param a a
 	 */
 	void setAxis3 (DVector3C a);
 	
@@ -82,6 +98,9 @@ public interface DPUJoint extends DJoint {
 	 * 
 	 * <p>NOTE: This function was added for convenience it is the same as
 	 *       dJointSetPUAxis3
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxisP (double x, double y, double z);
 
@@ -91,6 +110,7 @@ public interface DPUJoint extends DJoint {
 	 * 
 	 * <p>NOTE: This function was added for convenience it is the same as
 	 *       dJointSetPUAxis3
+	 * @param a a
 	 */
 	void setAxisP (DVector3C a);
 
@@ -99,24 +119,28 @@ public interface DPUJoint extends DJoint {
 	 * Get the joint anchor point, in world coordinates.
 	 * Return the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAnchor (DVector3 result);
 
 
 	/**
 	 * Get the first axis of the universal component of the joint.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxis1 (DVector3 result);
 
 
 	/**
 	 * Get the second axis of the Universal component of the joint.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxis2 (DVector3 result);
 
 
 	/**
 	 * Get the prismatic axis.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxis3 (DVector3 result);
 
@@ -126,6 +150,7 @@ public interface DPUJoint extends DJoint {
 	 *
 	 * <p>NOTE: This function was added for convenience it is the same as
 	 *       dJointGetPUAxis3
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxisP (DVector3 result);
 
@@ -142,24 +167,28 @@ public interface DPUJoint extends DJoint {
 //	 */
 	/**
 	 * Get angle between the body1 and the axis 1.
+	 * @return angle
 	 */
 	double getAngle1();
 
 	
 	/**
 	 * Get time derivative of angle1.
+	 * @return rate
 	 */
 	double getAngle1Rate();
 	
 	
 	/**
 	 * Get angle between the body2 and the axis 2.
+	 * @return angle 2
 	 */
 	double getAngle2();
 	
 	
 	/**
 	 * Get time derivative of angle2.
+	 * @return rate 2
 	 */
 	double getAngle2Rate();
 
@@ -172,12 +201,14 @@ public interface DPUJoint extends DJoint {
 	 * <p>
 	 * The position is the "oriented" length between the
 	 * position = (Prismatic axis) dot_product [(body1 + offset) - (body2 + anchor2)]
+	 * @return position
 	 */
 	double getPosition();
 
 	
 	/**
 	 * Get the PR linear position's time derivative.
+	 * @return rate
 	 */
 	double getPositionRate();
 

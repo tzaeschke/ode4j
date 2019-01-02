@@ -31,36 +31,48 @@ public interface DUniversalJoint extends DJoint {
 
 	/**
 	 * Set anchor.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor (double x, double y, double z);
 	
 	
 	/**
 	 * Set anchor.
+	 * @param a a
 	 */
 	void setAnchor (DVector3C a);
 	
 	
 	/**
 	 * Set axis.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis1 (double x, double y, double z);
 	
 	
 	/**
 	 * Set axis.
+	 * @param a a
 	 */
 	void setAxis1 (DVector3C a);
 	
 	
 	/**
 	 * Set axis.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis2 (double x, double y, double z);
 	
 	
 	/**
 	 * Set axis.
+	 * @param a a
 	 */
 	void setAxis2 (DVector3C a);
 
@@ -69,6 +81,7 @@ public interface DUniversalJoint extends DJoint {
 	 * Get the joint anchor point, in world coordinates.
 	 * Return the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAnchor (DVector3 result);
 
@@ -85,18 +98,21 @@ public interface DUniversalJoint extends DJoint {
 	 * as dJointGetUniversalAnchor() to within roundoff errors.
 	 * dJointGetUniversalAnchor2() can be used, along with
 	 * dJointGetUniversalAnchor(), to see how far the joint has come apart.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAnchor2 (DVector3 result);
 
 	
 	/**
 	 * Get axis.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxis1 (DVector3 result);
 
 	
 	/**
 	 * Get axis.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxis2 (DVector3 result);
 
@@ -113,24 +129,28 @@ public interface DUniversalJoint extends DJoint {
 //	 */
 	/**
 	 * Get angle between body the 1 and the axis 1.
+	 * @return angle
 	 */
 	double getAngle1();
 
 	
 	/**
 	 * Get angle between body the 2 and the axis 2.
+	 * @return angle
 	 */
 	double getAngle2();
 	
 	
 	/**
 	 * Get time derivative of angle.
+	 * @return rate
 	 */
 	double getAngle1Rate();
 
 	
 	/**
 	 * Get time derivative of angle.
+	 * @return rate
 	 */
 	double getAngle2Rate();
 
@@ -139,6 +159,8 @@ public interface DUniversalJoint extends DJoint {
 	 * universal's axis 2.
 	 * 
 	 * <p>REMARK: This function is just a wrapper for dBodyAddTorque().
+	 * @param torque1 torque
+	 * @param torque2 torque
 	 */
 	void addTorques (double torque1, double torque2);
 	
@@ -176,7 +198,7 @@ public interface DUniversalJoint extends DJoint {
 	 * @param offset1 The angle for the offset of the relative orientation.
 	 *              As if body1 was rotated by angle when the Axis was set (see below).
 	 *              The rotation is around the new Hinge axis.
-	 * @param offset2
+	 * @param offset2 offset 2
 	 */
 	void setAxis1Offset(double x, double y, double z, double offset1,
 			double offset2);
@@ -215,7 +237,7 @@ public interface DUniversalJoint extends DJoint {
 	 * @param offset1 The angle for the offset of the relative orientation.
 	 *              As if body1 was rotated by angle when the Axis was set (see below).
 	 *              The rotation is around the new Hinge axis.
-	 * @param offset2
+	 * @param offset2 offset 2
 	 */
 	void setAxis2Offset(double x, double y, double z, double offset1,
 			double offset2);

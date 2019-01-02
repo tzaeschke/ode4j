@@ -195,7 +195,11 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 		return s.getNumGeoms();
 	}
 	//ODE_API
-	/** @deprecated Use dSpaceGetGeoms() instead */
+	/** 
+	 * @param s space 
+	 * @param i i
+	 * @return geom
+	 * @deprecated Use dSpaceGetGeoms() instead */
 	@Deprecated
 	public static DGeom dSpaceGetGeom (DSpace s, int i) {
 		return s.getGeom(i);

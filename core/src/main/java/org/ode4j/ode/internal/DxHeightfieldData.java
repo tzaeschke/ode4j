@@ -38,7 +38,7 @@ import static org.ode4j.ode.OdeMath.*;
  * dHeightfield Collider
  * Paul Cheyrou-Lagreze aka Tuan Kuranes 2006 Speed enhancements http://www.pop-3d.com
  * Martijn Buijs 2006 http://home.planet.nl/~buijs512/
- * Based on Terrain & Cone contrib by:
+ * Based on Terrain and Cone contrib by:
  * Benoit CHAPEROT 2003-2004 http://www.jstarlab.com
  * Some code inspired by Magic Software
  */ 

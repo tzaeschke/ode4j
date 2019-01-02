@@ -397,8 +397,8 @@ public class OdeMath extends DRotation {
 	public static double dDOT(DVector3C a, DVector3C b) { return a.dot(b); }
 	/**
 	 * Instead, please use a.dot(b).
-	 * @param a
-	 * @param b
+	 * @param a a
+	 * @param b b
 	 * @return dot product
 	 */
 	public static double dCalcVectorDot3(DVector3C a, DVector3C b) {
@@ -465,6 +465,10 @@ public class OdeMath extends DRotation {
 	//  (a)[2*p] op ((b)[  0]*(c)[  r] - (b)[  q]*(c)[  0]); \
 	//} while(0)
 	/**
+	 * @param a a
+	 * @param op op
+	 * @param b b
+	 * @param c c
 	 * @deprecated Use dCalcVetorCross3, dAddVectorCross3 or  dSubtractVectorCross3.
 	 */
     @Deprecated
@@ -481,6 +485,9 @@ public class OdeMath extends DRotation {
     }
     /**
      * Cross product, set a = b x c.
+     * @param a a
+     * @param b b
+     * @param c c
      */
     public static void dCalcVectorCross3(DVector3 a, DVector3C b, DVector3C c) {
         a.set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
@@ -489,6 +496,9 @@ public class OdeMath extends DRotation {
     }
     /**
      * Cross product, set a += b x c.
+     * @param a a
+     * @param b b
+     * @param c c
      */
     public static void dAddVectorCross3(DVector3 a, DVector3C b, DVector3C c) {
         a.add0( b.get1()*c.get2() - b.get2()*c.get1() ); 
@@ -497,6 +507,9 @@ public class OdeMath extends DRotation {
     }
     /**
      * Cross product, set a -= b x c.
+     * @param a a
+     * @param b b
+     * @param c c
      */
     public static void dSubtractVectorCross3(DVector3 a, DVector3C b, DVector3C c) {
         a.add0( -b.get1()*c.get2() + b.get2()*c.get1() ); 
@@ -521,9 +534,9 @@ public class OdeMath extends DRotation {
 //			throw new UnsupportedOperationException(op.name());
 //		}
 //	}
-    /**
-     * Cross product, set a = b x c.
-     */
+//    /**
+//     * Cross product, set a = b x c.
+//     */
 //	public static void dAddVectorCross3(float[] a, float[] b, float[] c) {
 //	    a[0] += ((b)[1]*(c)[2] - (b)[2]*(c)[1]); 
 //	    a[1] += ((b)[2]*(c)[0] - (b)[0]*(c)[2]); 
@@ -554,6 +567,12 @@ public class OdeMath extends DRotation {
 //	    a[2+ofs] = -(b.get0()*c.get1() - b.get1()*c.get0());
 //    }
 
+    /**
+     * Cross product, set a = b x c.
+     * @param a a
+     * @param b b
+     * @param c c
+     */
 	public static void dCalcVectorCross3(DVector3View a, DVector3View b, DVector3View c) {
 		a.set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
 		a.set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
@@ -614,6 +633,8 @@ public class OdeMath extends DRotation {
 	 * Set a 3x3 submatrix of A to a matrix such that submatrix(A)*b = a x b.
 	 * The matrix is assumed to be already zero, so this does not write zero elements!
      * A positive version will be written.
+	 * @param A A
+	 * @param a a
 	 */
 	public static void dSetCrossMatrixPlus(DMatrix3 A, DVector3C a) {
         A.set01( -a.get2() ); 
@@ -628,6 +649,8 @@ public class OdeMath extends DRotation {
      * Set a 3x3 submatrix of A to a matrix such that submatrix(A)*b = a x b.
      * The matrix is assumed to be already zero, so this does not write zero elements!
      * A negative version will be written.
+     * @param A A
+     * @param a a
      */
 	public static void dSetCrossMatrixMinus(DMatrix3 A, DVector3C a) {
         A.set01( +a.get2() ); 
@@ -642,6 +665,10 @@ public class OdeMath extends DRotation {
 	 * A is stored by rows, and has `skip' elements per row. the matrix is
 	 * assumed to be already zero, so this does not write zero elements!
 	 * A positive version will be written.
+	 * @param A A
+	 * @param ofs ofs 
+	 * @param a a
+	 * @param skip skip 
 	 */
     public static void dSetCrossMatrixPlus(double[] A, int ofs, DVector3C a, int skip) {
         A[ofs+1] = -a.get2(); 
@@ -663,6 +690,11 @@ public class OdeMath extends DRotation {
 	//} while(0)
     /**
      * For +1/-1 use dSetCrossMatrixPlus(), for -1/+1 use dSetCrossMatrixMinus().
+     * @param A A
+     * @param a a
+     * @param skip skip 
+     * @param plus plus
+     * @param minus minus
      * @deprecated
      */
 	@Deprecated
@@ -995,6 +1027,9 @@ public class OdeMath extends DRotation {
 	 * 
 	 * Returns the determinant.
 	 * returns 0 and does nothing if the matrix is singular.
+	 * @param dst dst
+	 * @param ma ma
+	 * @return determinant
 	 */
 	public static double dInvertMatrix3( DMatrix3 dst, final DMatrix3C ma) {
 	    double det;  
@@ -1204,6 +1239,8 @@ else {
 
 	/**
 	 * Normalize 3x1 vectors (i.e. scale them to unit length).
+	 * @param a a
+	 * @return 'false' if normalization failed
 	 */
 	public static boolean  dSafeNormalize3 (DVector3 a)
 	{
@@ -1212,6 +1249,8 @@ else {
 
     /**
      * Normalize 3x1 vectors (i.e. scale them to unit length).
+     * @param a a
+     * @return 'false' if normalization failed
      */
 	public static boolean  dSafeNormalize3 (DVector3View a)
 	{
@@ -1221,6 +1260,7 @@ else {
     /**
      * normalize 3x1 vectors (i.e. scale them to unit length).
      * Potentially asserts on zero vec. 
+     * @param a a
      */
 	public static void dNormalize3(DVector3 a)
 	{
@@ -1302,14 +1342,20 @@ else {
 		return a.safeNormalize4();
 	}
 
-	/** Potentially asserts on zero vec. */
+	/** 
+	 * Potentially asserts on zero vec. 
+	 * @param a a
+	 */
 	public static void dNormalize4(DVector4 a)
 	{
 		a.normalize();
 //		if (!_dSafeNormalize4(a)) throw new IllegalStateException(
 //				"Normalization failed: " + a);
 	}
-	/** Potentially asserts on zero vec. */
+	/** 
+	 * Potentially asserts on zero vec. 
+	 * @param a a
+	 */
 	public static void dNormalize4(DQuaternion a)
 	{
 		//_dNormalize4(a.v);
@@ -1325,6 +1371,9 @@ else {
 	 * i.e. this makes p,q such that n,p,q are all perpendicular to each other.
 	 * q will equal n x p. if n is not unit length then p will be unit length but
 	 * q wont be.
+	 * @param n n
+	 * @param p p
+	 * @param q q
 	 */
 	//ODE_API void dPlaneSpace (const dVector3 n, dVector3 p, dVector3 q);
 	public static void dPlaneSpace (DVector3C n, DVector3 p, DVector3 q)
@@ -1364,6 +1413,7 @@ else {
 	 * and make sure it is correct.
 	 * Note: this operates on rows, not columns, because for rotations
 	 * both ways give equivalent results.
+	 * @param m m
 	 */
 	public static void dOrthogonalizeR(DMatrix3 m)
 	{

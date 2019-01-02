@@ -54,8 +54,10 @@ import org.ode4j.ode.threading.task.TaskExecutor;
  * <p>
  * If a body has its auto-disable flag turned on, it will automatically disable
  * itself when
+ * <ul>
  *   <li> It has been idle for a given number of simulation steps.</li>
  *   <li> It has also been idle for a given amount of simulation time.</li>
+ * </ul>
  * <p>
  * A body is considered to be idle when the magnitudes of both its
  * linear average velocity and angular average velocity are below given thresholds.
@@ -67,7 +69,7 @@ import org.ode4j.ode.threading.task.TaskExecutor;
  * average samples count.
  * <p>
  * Newly created bodies get these parameters from world.
- * <p>
+ * 
  * <p>
  * 
  * <b>Damping</b><br>
@@ -93,12 +95,12 @@ import org.ode4j.ode.threading.task.TaskExecutor;
  * (like cars' wheels), so you may want to give them a very high (like the default,
  * dInfinity) limit.
  * <p>
- * <p>NOTE: The velocities are damped after the stepper function has moved the
+ * NOTE: The velocities are damped after the stepper function has moved the
  * object. Otherwise the damping could introduce errors in joints. First the
  * joint constraints are processed by the stepper (moving the body), then
  * the damping is applied.
  * <p>
- * <p>NOTE: The damping happens right after the moved callback is called; this way
+ * NOTE: The damping happens right after the moved callback is called; this way
  * it still possible use the exact velocities the body has acquired during the
  * step. You can even use the callback to create your own customized damping.
  */
@@ -110,16 +112,14 @@ public interface DWorld {
 
 	/**
 	 * Set the user-data pointer.
-	 * @param world the world to set the data on
-	 * @param data
+	 * @param data user data
 	 */
 	void setData (Object data);
 
 
 	/**
 	 * Get the user-data pointer.
-	 * @param world the world to set the data on
-	 * @param data
+	 * @return User data
 	 */
 	Object getData ();
 
@@ -129,6 +129,9 @@ public interface DWorld {
 	 *
 	 * The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
 	 * assuming that +z is up. The default is no gravity, i.e. (0,0,0).
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setGravity (double x, double y, double z);
 
@@ -138,14 +141,16 @@ public interface DWorld {
 	 *
 	 * The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
 	 * assuming that +z is up. The default is no gravity, i.e. (0,0,0).
+	 * @param g vector
 	 */
 	void setGravity (DVector3C g);
 
 	
 	/**
 	 * Get the gravity vector for a given world.
+	 * @param result Contains the result after calling the function
 	 */
-	void getGravity (DVector3 g) ;
+	void getGravity (DVector3 result) ;
 
 
 	/**
@@ -197,7 +202,6 @@ public interface DWorld {
 	 * levels in stepper functions. The sub-calls scheduled from them can be executed
 	 * in as many threads as there are available in the pool.
 	 *
-	 * @param w The world affected
 	 * @param count Thread count limit value for island stepping
 	 * @see #getStepIslandsProcessingMaxThreadCount()
 	 */
@@ -210,7 +214,6 @@ public interface DWorld {
 	 * Please read commentaries to {@code setStepIslandsProcessingMaxThreadCount} for 
 	 * important information regarding the value returned.
 	 *
-	 * @param w The world queried
 	 * @return Current thread count limit value for island stepping
 	 * @see #setStepIslandsProcessingMaxThreadCount(int)
 	 */
@@ -233,7 +236,7 @@ public interface DWorld {
 	 * is needed to allocate expected working memory minimum at once without extra 
 	 * reallocations as number of bodies/joints grows.
 	 *
-	 * @see DWorld#setStepMemoryReservationPolicy(DWorldStepReserveInfo)
+	 * See DxWorld.setStepMemoryReservationPolicy(DWorldStepReserveInfo)
 	 */
 	public class DWorldStepReserveInfo	{
 	    public int struct_size;
@@ -278,6 +281,7 @@ public interface DWorld {
 	 * 
 	 * There are ways to help overcome QuickStep's inaccuracy problems:
 	 * 
+	 * <ul>
 	 * <li> Increase CFM. </li>
 	 * <li> Reduce the number of contacts in your system (e.g. use the minimum
 	 *     number of contacts for the feet of a robot or creature). </li>
@@ -287,6 +291,7 @@ public interface DWorld {
 	 *     legged creatures). </li>
 	 * <li> Don't use excessive motor strength. </li>
 	 * <li> Use force-based motors instead of velocity-based motors. </li>
+	 * </ul>
 	 * <p>
 	 * Increasing the number of QuickStep iterations may help a little bit, but
 	 * it is not going to help much if your system is really near singular.
@@ -312,6 +317,11 @@ public interface DWorld {
 	* This function is given a dWorldID because, in the future, the force
 	* computation may depend on integrator parameters that are set as
 	* properties of the world.
+	 * @param stepsize stepsize
+	 * @param ix ix
+	 * @param iy iy
+	 * @param iz iz
+	 * @param force force 
 	*/
 	void impulseToForce(double stepsize, double ix, double iy, double iz, 
 	        DVector3 force);
@@ -465,6 +475,7 @@ public interface DWorld {
 	/**
 	 * Get the maximum correcting velocity that contacts are allowed
 	 * to generated.
+	 * @return maximum correcting velocity
 	 */
 	//ODE_API 
 	double getContactMaxCorrectingVel();
@@ -526,6 +537,7 @@ public interface DWorld {
 
 	/**
 	 * Get the world's linear damping threshold.
+	 * @return threshold
 	 */
 	double getLinearDampingThreshold ();
 
@@ -540,6 +552,7 @@ public interface DWorld {
 
 	/**
 	 * Get the world's angular damping threshold.
+	 * @return threshold
 	 */
 	double getAngularDampingThreshold ();
 
@@ -554,6 +567,7 @@ public interface DWorld {
 
 	/**
 	 * Get the world's linear damping scale.
+	 * @return damping
 	 */
 	double getLinearDamping ();
 
@@ -568,6 +582,7 @@ public interface DWorld {
 
 	/**
 	 * Get the world's angular damping scale.
+	 * @return damping
 	 */
 	double getAngularDamping ();
 
@@ -590,6 +605,7 @@ public interface DWorld {
 
 	/**
 	 * Get the default maximum angular speed.
+	 * @return max angular speed
 	 * @see DBody#getMaxAngularSpeed()
 	 */
 	double getMaxAngularSpeed ();
@@ -597,6 +613,7 @@ public interface DWorld {
 
 	/**
 	 * Set the default maximum angular speed for new bodies.
+	 * @param max_speed max speed
 	 * @see DBody#setMaxAngularSpeed(double)
 	 */
 	void setMaxAngularSpeed (double max_speed);

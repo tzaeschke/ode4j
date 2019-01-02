@@ -41,6 +41,7 @@ public interface DSphere extends DGeom {
 	
 	/**
 	 * Retrieves the radius of a sphere geom.
+	 * @return radius
 	 *
 	 * @see #setRadius(double)
 	 */

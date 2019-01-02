@@ -98,6 +98,9 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 	/**
 	 * Creation.
+	 * @param space space
+	 * @param axisorder axis order
+	 * @return SAPSpace
 	 */
 	public static DxSAPSpace dSweepAndPruneSpaceCreate( DxSpace space, int axisorder ) {
 		return new DxSAPSpace( space, axisorder );

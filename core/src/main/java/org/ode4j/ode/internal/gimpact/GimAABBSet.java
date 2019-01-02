@@ -706,7 +706,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 	/**
 	 * Collides two sets. Returns a list of overlapping pairs of boxes, each box of the pair belongs to a different set.
-	 * @pre aabbset1 and aabbset2 must be allocated and updated. See gim_aabbset_update.
+	 * Precondition: aabbset1 and aabbset2 must be allocated and updated. See gim_aabbset_update.
 	 * @param aabbset1 Must be sorted, Global bound is required.
 	 * @param aabbset2 Must be sorted, Global bound is required.
 	 * @param collision_pairs Array of GIM_PAIR elements. Must be initialized before (Reserve size ~ 100)
@@ -728,7 +728,8 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 	/**
 	 * Finds intersections between a box and a set. Return the colliding boxes of the set
-	 * @pre aabbset must be allocated and initialized.
+	 * 
+	 * Precondition: aabbset must be allocated and initialized.
 	 * @param test_aabb Box for collision query
 	 * @param collided Array of GUINT elements, indices of boxes. Must be initialized before (Reserve size ~ 100)
 	 */
@@ -758,7 +759,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 	/**
 	 * Finds intersections between a box and a set. Return the colliding boxes of the set
-	 * @pre aabbset must be allocated and initialized.
+	 * Precondition: aabbset must be allocated and initialized.
 	 * @param vorigin Origin point of ray.
 	 * @param vdir Direction vector of ray.
 	 * @param tmax Max distance param for ray.

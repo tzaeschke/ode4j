@@ -65,9 +65,9 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
  *                                |                ..     ..
  *          Body 1                v             ..      ..
  *          +--------------+    --|        __..      ..  anchor2
- * <--------|      x       | .....|.......(__)     ..
- * axisP    +--------------+    --|         ^     <
- *                 |----------------------->|
+ * &lt;--------|      x       | .....|.......(__)     ..
+ * axisP    +--------------+    --|         ^     &lt;
+ *                 |-----------------------&gt;|
  *                     anchor1              |--- Universal articulation
  *                                               axis1 going out of the plane
  *                                               axis2 is perpendicular to axis1

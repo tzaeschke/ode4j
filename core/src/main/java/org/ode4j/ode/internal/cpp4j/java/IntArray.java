@@ -32,7 +32,7 @@ public class IntArray {
     private int _ofs;
     
     /**
-     * @param size
+     * @param size size
      */
     public IntArray(int size) {
         _data = new int[size];
@@ -41,7 +41,7 @@ public class IntArray {
     
     /**
      * Create a new DoubleArray referencing the given int array.
-     * @param array
+     * @param array array
      */
     public IntArray(int[] array) {
         _data = array;
@@ -50,8 +50,8 @@ public class IntArray {
     
     /**
      * Create a new DoubleArray referencing the given int array.
-     * @param array
-     * @param ofs 
+     * @param array array
+     * @param ofs offset
      */
     public IntArray(int[] array, int ofs) {
         _data = array;
@@ -61,7 +61,7 @@ public class IntArray {
     /**
      * Create a new DoubleArray referencing the same DoubleArray referenced by
      * the argument.
-     * @param array
+     * @param array array
      */
     public IntArray(IntArray array) {
         _data = array._data;
@@ -71,8 +71,8 @@ public class IntArray {
     /**
      * Create a new DoubleArray referencing the same DoubleArray referenced by
      * the argument, starting at the given offset.
-     * @param array
-     * @param ofs 
+     * @param array array
+     * @param ofs offset
      */
     public IntArray(IntArray array, int ofs) {
         _data = array._data;
@@ -91,7 +91,7 @@ public class IntArray {
     }
     
     /**
-     * @param ofs 
+     * @param ofs offset
      * @return int value at position ofs;
      */
     public int at(int ofs) {
@@ -100,7 +100,7 @@ public class IntArray {
     
     /**
      * Set int value at position 0;
-     * @param d 
+     * @param d value
      */
     public void setAt0(int d) {
         _data[_ofs] = d;
@@ -108,15 +108,15 @@ public class IntArray {
     
     /**
      * Set int value at position ofs;
-     * @param ofs 
-     * @param d 
+     * @param ofs offset
+     * @param d value
      */
     public void setAt(int ofs, int d) {
         _data[_ofs + ofs] = d;
     }
     
     /**
-     * @param data
+     * @param data data
      */
     public void setData(int[] data) {
         if (data.length + _ofs >= _data.length) {
@@ -127,7 +127,7 @@ public class IntArray {
     }
     
     /**
-     * @param array
+     * @param array array
      */
     public void setData(IntArray array) {
         int[] data = array._data;
@@ -150,8 +150,8 @@ public class IntArray {
     }
     
     /**
-     * @param ofs
-     * @param len
+     * @param ofs offset
+     * @param len length
      * @return cloned int[]
      */
     public int[] cloneData(int ofs, int len) {
@@ -169,7 +169,7 @@ public class IntArray {
     
     /**
      * Decrement offset by n.
-     * @param n 
+     * @param n n
      */
     public void dec(int n) {
         _ofs -= n;
@@ -184,7 +184,7 @@ public class IntArray {
     
     /**
      * Increment offset by n.
-     * @param n 
+     * @param n n
      */
     public void inc(int n) {
         _ofs += n;

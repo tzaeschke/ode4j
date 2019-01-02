@@ -38,8 +38,8 @@ public class Csetjmp extends Cstdarg {
 	};
 	
 	/**
-	 * @param jump_buffer
-	 * @param i
+	 * @param jump_buffer jump buffer
+	 * @param i i
 	 */
 	public static void longjmp(jmp_buf jump_buffer, int i) {
 		throw new CppLongJump("" + i);
@@ -48,7 +48,7 @@ public class Csetjmp extends Cstdarg {
 	}
 
 	/**
-	 * @param jump_buffer
+	 * @param jump_buffer jump buffer
 	 * @return jump parameter i.
 	 */
 	public static int setjmp(jmp_buf jump_buffer) {

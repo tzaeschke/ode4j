@@ -31,11 +31,13 @@ public interface DTransmissionJoint extends DJoint {
 
 	/**
 	 * Get the contact point of the first wheel of the Transmission joint.
+	 * @param result Contains the result after calling the function
 	 */
 	void getContactPoint1(DVector3 result);
 
 	/**
 	 * Get contact point of the second wheel of the Transmission joint.
+	 * @param result Contains the result after calling the function
 	 */
 	void getContactPoint2(DVector3 result);
 	 
@@ -46,9 +48,13 @@ public interface DTransmissionJoint extends DJoint {
 	 * and can only be set explicitly in intersecting-axes mode.  For the
 	 * parallel-axes and chain modes which share one common axis of
 	 * revolution for both gears setAxis should be used.
+	 * @param xyz xyz
 	 */
 	void setAxis1(DVector3C xyz);
 	/**
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 * @see #setAxis1(DVector3C)
 	 */
 	void setAxis1(double x, double y, double z);
@@ -59,6 +65,7 @@ public interface DTransmissionJoint extends DJoint {
 	 * respect to the first body is returned.  If the joint constraint is
 	 * satisfied it should be the same as the axis return with
 	 * getAxis2 or getAxis.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxis1(DVector3 result);
 	 
@@ -70,9 +77,13 @@ public interface DTransmissionJoint extends DJoint {
 	 * mode.  For the parallel-axes and chain modes which share one common
 	 * axis of revolution for both gears setAxis should
 	 * be used.
+	 * @param xyz xyz
 	 */
 	void setAxis2(DVector3C xyz);
 	/**
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 * @see #setAxis2(DVector3C)
 	 */
 	void setAxis2(double x, double y, double z);
@@ -83,6 +94,7 @@ public interface DTransmissionJoint extends DJoint {
 	 * respect to the second body is returned.  If the joint constraint is
 	 * satisfied it should be the same as the axis return with
 	 * getAxis1 or getAxis.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxis2(DVector3 result);
 	 
@@ -90,15 +102,20 @@ public interface DTransmissionJoint extends DJoint {
 	 * Set the first anchor for the Transmission joint.
 	 * <p>REMARK: This is the point of attachment of the wheel on the
 	 * first body.  It is given in global coordinates.
+	 * @param xyz xyz
 	 */
 	void setAnchor1(DVector3C xyz);
 	/**
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 * @see #setAnchor1(DVector3C)
 	 */
 	void setAnchor1(double x, double y, double z);
 
 	/**
 	 * Get the first anchor of the Transmission joint.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAnchor1(DVector3 result);
 	 
@@ -106,15 +123,20 @@ public interface DTransmissionJoint extends DJoint {
 	 * Set the second anchor for the Transmission joint.
 	 * <p>REMARK: This is the point of attachment of the wheel on the
 	 * second body.  It is given in global coordinates.
+	 * @param xyz xyz
 	 */
 	void setAnchor2(DVector3C xyz);
 	/**
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 * @see #setAnchor2(DVector3C)
 	 */
 	void setAnchor2(double x, double y, double z);
 
 	/**
 	 * Get the second anchor for the Transmission joint.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAnchor2(DVector3 result);
 
@@ -137,11 +159,13 @@ public interface DTransmissionJoint extends DJoint {
 	 * dTransmissionIntersectingAxes and dTransmissionChainDrive simulating a
 	 * set of parallel-axes gears, intersecting-axes beveled gears or
 	 * chain and sprockets respectively.
+	 * @param mode mode
 	 */
 	void setMode(TRANSMISSION mode );
 
 	/**
 	 * Get the Transmission joint mode.
+	 * @return mode
 	 */
 	TRANSMISSION getMode();
 
@@ -152,11 +176,13 @@ public interface DTransmissionJoint extends DJoint {
 	 * parallel-axes mode.  In intersecting-axes mode the ratio is defined
 	 * implicitly by the initial configuration of the wheels and in chain
 	 * mode it is defined implicitly be the wheel radii.
+	 * @param ratio ratio
 	 */
 	void setRatio(double ratio );
 
 	/**
 	 * Get the Transmission joint ratio.
+	 * @return ratio
 	 */
 	double getRatio();
 
@@ -167,38 +193,47 @@ public interface DTransmissionJoint extends DJoint {
 	 * intersecting-axes mode where each wheel axis needs to be specified
 	 * individually dJointSetTransmissionAxis1 and
 	 * dJointSetTransmissionAxis2 should be used.  The axis is given in
-	 * global coordinates
+	 * global coordinates.
+	 * @param xyz xyz
 	 */
 	void setAxis(DVector3C xyz);
 	/**
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 * @see #setAxis(DVector3C)
 	 */
 	void setAxis(double x, double y, double z );
 
 	/**
 	 * Get the common axis for both wheels of the Transmission joint.
+	 * @param result Contains the result after calling the function
 	 */
 	void getAxis(DVector3 result );
 
 	/**
 	 * Get the phase, that is the traversed angle for the first
 	 * wheel of the Transmission joint.
+	 * @return angle 1
 	 */
 	double getAngle1();
 
 	/**
 	 * Get the phase, that is the traversed angle for the second
 	 * wheel of the Transmission joint.
+	 * @return angle 2
 	 */
 	double getAngle2();
 
 	/**
 	 * Get the radius of the first wheel of the Transmission joint.
+	 * @return radius 1
 	 */
 	double getRadius1();
 
 	/**
 	 * Get the radius of the second wheel of the Transmission joint.
+	 * @return radius 2
 	 */
 	double getRadius2();
 
@@ -207,6 +242,7 @@ public interface DTransmissionJoint extends DJoint {
 	 * <p>REMARK: The wheel radii can only be set explicitly in chain mode.
 	 * In the other modes they're defined implicitly by the initial
 	 * configuration and ratio of the wheels.
+	 * @param radius radius 1
 	 */
 	void setRadius1(double radius );
 
@@ -215,11 +251,13 @@ public interface DTransmissionJoint extends DJoint {
 	 * <p>REMARK: The wheel radii can only be set explicitly in chain mode.
 	 * In the other modes they're defined implicitly by the initial
 	 * configuration and ratio of the wheels.
+	 * @param radius radius 2
 	 */
 	void setRadius2(double radius );
 
 	/**
 	 * Get the backlash of the Transmission joint.
+	 * @return backlas
 	 */
 	double getBacklash();
 
@@ -239,6 +277,7 @@ public interface DTransmissionJoint extends DJoint {
 	 * up and contact restored with the relationship of driving and driven
 	 * wheel reversed.  The backlash is therefore given in untis of
 	 * length.
+	 * @param backlash backlash
 	 */
 	void setBacklash(double backlash );
 

@@ -27,7 +27,7 @@ import java.util.Arrays;
  * Class to simulate pointer operations on object arrays.
  *
  * @author Tilmann Zaeschke
- * @param <T> 
+ * @param <T> type
  */
 public class ObjArray<T> {
     
@@ -36,7 +36,7 @@ public class ObjArray<T> {
     
     /**
      * Create a new Array referencing the given array.
-     * @param array
+     * @param array array
      */
     public ObjArray(T[] array) {
         _data = array;
@@ -45,8 +45,8 @@ public class ObjArray<T> {
     
     /**
      * Create a new Array referencing the given array.
-     * @param array
-     * @param ofs 
+     * @param array array
+     * @param ofs offset
      */
     public ObjArray(T[] array, int ofs) {
         _data = array;
@@ -56,7 +56,7 @@ public class ObjArray<T> {
     /**
      * Create a new Array referencing the same Array referenced by
      * the argument.
-     * @param array
+     * @param array array
      */
     public ObjArray(ObjArray<T> array) {
         _data = array._data;
@@ -66,8 +66,8 @@ public class ObjArray<T> {
     /**
      * Create a new Array referencing the same Array referenced by
      * the argument, starting at the given offset.
-     * @param array
-     * @param ofs 
+     * @param array array
+     * @param ofs offset
      */
     public ObjArray(ObjArray<T> array, int ofs) {
         _data = array._data;
@@ -86,7 +86,7 @@ public class ObjArray<T> {
     }
     
     /**
-     * @param ofs 
+     * @param ofs offset
      * @return value at position ofs;
      */
     public T at(int ofs) {
@@ -95,7 +95,7 @@ public class ObjArray<T> {
     
     /**
      * Set value at position 0;
-     * @param d 
+     * @param d d
      */
     public void setAt0(T d) {
         _data[_ofs] = d;
@@ -103,15 +103,15 @@ public class ObjArray<T> {
     
     /**
      * Set value at position ofs;
-     * @param ofs 
-     * @param d 
+     * @param ofs offset
+     * @param d d
      */
     public void setAt(int ofs, T d) {
         _data[_ofs + ofs] = d;
     }
     
     /**
-     * @param data
+     * @param data data
      */
     public void setData(T[] data) {
         if (data.length + _ofs >= _data.length) {
@@ -122,7 +122,7 @@ public class ObjArray<T> {
     }
     
     /**
-     * @param array
+     * @param array array
      */
     public void setData(ObjArray<T> array) {
         T[] data = array._data;
@@ -145,8 +145,8 @@ public class ObjArray<T> {
     }
     
     /**
-     * @param ofs
-     * @param len
+     * @param ofs offset
+     * @param len length
      * @return cloned []
      */
     public T[] cloneData(int ofs, int len) {
@@ -164,7 +164,7 @@ public class ObjArray<T> {
     
     /**
      * Decrement offset by n.
-     * @param n 
+     * @param n n
      */
     public void dec(int n) {
         _ofs -= n;
@@ -179,7 +179,7 @@ public class ObjArray<T> {
     
     /**
      * Increment offset by n.
-     * @param n 
+     * @param n n
      */
     public void inc(int n) {
         _ofs += n;
@@ -200,9 +200,9 @@ public class ObjArray<T> {
 	}
 
 	/**
-	 * @param destPos
-	 * @param srcPos
-	 * @param len
+	 * @param destPos dest pos
+	 * @param srcPos source pos
+	 * @param len length
 	 */
 	public void memcpy(int destPos, int srcPos, int len) {
 		if (destPos > srcPos) {

@@ -180,13 +180,21 @@ public interface DTriMesh extends DGeom {
 //	}
 //
 //
-	/** Enable/disable temporal coherence. */
+	/** 
+	 * Enable/disable temporal coherence. 
+	 * @param cls Geometry class
+	 * @param enable enable/disable
+	 */
 	//ODE_API 
 	//void dGeomTriMeshEnableTC(DGeom g, int geomClass, int enable) {
-	void enableTC(Class<? extends DGeom> cls, boolean b);
+	void enableTC(Class<? extends DGeom> cls, boolean enable);
 
 
-	/** Check temporal coherence. */
+	/** 
+	 * Check temporal coherence. 
+	 * @param cls Geometry class
+	 * @return enabled/disabled
+	 */
 	//ODE_API 
 	//	int dGeomTriMeshIsTCEnabled(DGeom g, int geomClass) {
 	boolean isTCEnabled(Class<? extends DGeom> cls);
@@ -197,6 +205,7 @@ public interface DTriMesh extends DGeom {
 	 * collision checked with a trimesh once, data is stored inside the trimesh.
 	 * With large worlds with lots of seperate objects this list could get huge.
 	 * We should be able to do this automagically.
+	 * @param g trimesh
 	 */
 	//ODE_API 
 	void clearTCCache(DTriMesh g);

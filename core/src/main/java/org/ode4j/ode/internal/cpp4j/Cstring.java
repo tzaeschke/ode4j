@@ -45,7 +45,7 @@ public class Cstring extends Ctime {
 
 	/**
 	 * 
-	 * @param data
+	 * @param data data
 	 * @param c value to set
 	 * @param l number of values to set
 	 * @deprecated Do not user for c=0
@@ -82,7 +82,7 @@ public class Cstring extends Ctime {
 	}
 
 	/**
-	 * @param s
+	 * @param s s
 	 * @return length of the string
 	 */
 	public static int strlen(String s) {

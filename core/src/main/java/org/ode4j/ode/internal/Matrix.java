@@ -46,8 +46,8 @@ public class Matrix extends FastDot {
 	/**
 	 * TODO use length of array.
 	 * 
-	 * @param a
-	 * @param n
+	 * @param a a
+	 * @param n n
 	 */
 	public static void dSetZero(double[] a, int n) {
 		// dAASSERT (a);
@@ -189,12 +189,12 @@ public class Matrix extends FastDot {
 	 * This method should take vectors as parameters A,C, but because it is
 	 * widely used for matrices, we supply this helper method.
 	 * 
-	 * @param A
-	 * @param B
-	 * @param C
-	 * @param p
-	 * @param q
-	 * @param r
+	 * @param A A
+	 * @param B B
+	 * @param C C
+	 * @param p p
+	 * @param q q
+	 * @param r r
 	 */
 	public static void dMultiply0_OLD(double[] A, final double[] B,
 			final double[] C, int p, int q, int r) {
@@ -773,7 +773,7 @@ public class Matrix extends FastDot {
 
 	/**
 	 * check whether an n*n matrix A is positive definite, return 1/0 (yes/no).
-	 * positive definite means that x'*A*x > 0 for any x. this performs a
+	 * positive definite means that x'*A*x &gt; 0 for any x. this performs a
 	 * cholesky decomposition of A. if the decomposition fails then the matrix
 	 * is not positive definite. A is stored by rows. A is not altered.
 	 * @param A A
@@ -798,7 +798,7 @@ public class Matrix extends FastDot {
     
 	/**
 	 * check whether an n*n matrix A is positive definite, return 1/0 (yes/no).
-	 * positive definite means that x'*A*x > 0 for any x. this performs a
+	 * positive definite means that x'*A*x &gt; 0 for any x. this performs a
 	 * cholesky decomposition of A. if the decomposition fails then the matrix
 	 * is not positive definite. A is stored by rows. A is not altered.
 	 * @param A A
@@ -808,12 +808,12 @@ public class Matrix extends FastDot {
 		return dFactorCholesky(A.clone());
 	}
 
-	/*****
-	 * this has been replaced by a faster version void dSolveL1T (const double
-	 * *L, double *b, int n, int nskip) { int i,j; dAASSERT (L && b && n >= 0 &&
-	 * nskip >= n); double sum; for (i=n-2; i>=0; i--) { sum = 0; for (j=i+1;
-	 * j<n; j++) sum += L[j*nskip+i]*b[j]; b[i] -= sum; } }
-	 */
+//	/**
+//	 * this has been replaced by a faster version void dSolveL1T (const double
+//	 * *L, double *b, int n, int nskip) { int i,j; dAASSERT (L && b && n >= 0 &&
+//	 * nskip >= n); double sum; for (i=n-2; i>=0; i--) { sum = 0; for (j=i+1;
+//	 * j<n; j++) sum += L[j*nskip+i]*b[j]; b[i] -= sum; } }
+//	 */
 
 	/** in matlab syntax: a(1:n) = a(1:n) .* d(1:n) */
 	private static void dVectorScale(double[] a, final double[] d, int n) {
@@ -858,7 +858,7 @@ public class Matrix extends FastDot {
 	 * @param d d
 	 * @param a a
 	 * @param n n
-	 * @param nskip 
+	 * @param nskip nskip
 	 */
 	public static void dLDLTAddTL(double[] L, double[] d, final double[] a,
 			int n, int nskip) {

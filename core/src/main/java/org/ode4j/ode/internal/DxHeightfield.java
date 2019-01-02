@@ -446,9 +446,9 @@ public class DxHeightfield extends DxAbstractHeightfield {
 	//////// Heightfield geom interface ////////////////////////////////////////////////////
 
 	/**
-	 * @param space 
-	 * @param data 
-	 * @param bPlaceable 
+	 * @param space space
+	 * @param data data
+	 * @param bPlaceable placeable flag 
 	 * @return New DHeightfield
 	 */
 	public static DxHeightfield dCreateHeightfield( DxSpace space, DxHeightfieldData data, boolean bPlaceable )

@@ -30,7 +30,6 @@ import static org.ode4j.ode.OdeMath.dMultiply0_333;
 import static org.ode4j.ode.OdeMath.dMultiply2_333;
 import static org.ode4j.ode.OdeMath.dSetCrossMatrixPlus;
 import static org.ode4j.ode.internal.Common.M_PI;
-import static org.ode4j.ode.internal.Common.dAASSERT;
 import static org.ode4j.ode.internal.Common.dDEBUGMSG;
 import static org.ode4j.ode.internal.Common.dNODEBUG;
 import static org.ode4j.ode.internal.Common.dRecip;
@@ -274,6 +273,8 @@ public class DxMass implements DMass {
 	 * Based on Brian Mirtich, "Fast and Accurate Computation of
 	 * Polyhedral Mass Properties," journal of graphics tools, volume 1,
 	 * number 2, 1996.
+	 * @param density density
+	 * @param g g
 	 */
 //	public void dMassSetTrimesh( dxMass m, double density, dxGeom g )
 	public void dMassSetTrimesh( double density, DTriMesh g )

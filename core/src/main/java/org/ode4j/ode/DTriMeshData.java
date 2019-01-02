@@ -49,6 +49,8 @@ public interface DTriMeshData {
 	 * In Java, the number of vertices and indices are derived from
 	 * the length of the arrays. Strides can not be set because
 	 * GIMPACT assumes strides to be 3.
+	 * @param vertices vertices
+	 * @param indices indices
 	 */
 	//void buildSingle(
 	void build(

@@ -33,6 +33,7 @@ public abstract class ApiCppMass extends ApiCppOdeInit {
 
 	/** 
 	 * Not in the original API. By TZ. 
+	 * @return Mass object
 	 */
 	public static DMass dMassCreate() {
 		return OdeHelper.createMass();

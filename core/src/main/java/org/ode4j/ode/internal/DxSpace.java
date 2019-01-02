@@ -168,7 +168,11 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		return getNumGeoms();
 	}
 
-	/** @deprecated 2016-01-17 */
+	/** 
+	 * @param i id
+	 * @return geometry object
+	 * @deprecated 2016-01-17 
+	 */
 	@Deprecated
 	public DxGeom dSpaceGetGeom (int i)
 	{
@@ -554,6 +558,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 						return g;
 					}
 
+					@Override
 					public void remove() {
 						throw new UnsupportedOperationException("remove");
 					}
