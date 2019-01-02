@@ -457,7 +457,7 @@ public class JavaMultiThreadTest extends TestCase {
      * Executing this tool will list all warnings and errors, and will produce
      * a list of all mutable classes. Instances of mutable classes may not
      * be safe to be shared amongst multiple threads.
-     * @param args
+     * @param args args
      */
     public static void main(String[] args) {
         _verbose = true;

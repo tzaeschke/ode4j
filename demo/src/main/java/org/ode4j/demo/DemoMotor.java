@@ -158,7 +158,7 @@ public class DemoMotor extends dsFunctions {
 
 
 	/**
-	 * @param args
+	 * @param args args
 	 */
 	public static void main (String[] args)
 	{

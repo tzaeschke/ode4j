@@ -809,9 +809,9 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * function. Its meaning is user defined. The o1 and o2 arguments are the
 	 * geoms that may be near each other.
 	 *
-	 * @param callback A callback function is of type @ref dNearCallback.
+	 * @param callback A callback function is of type {@link DNearCallback}.
 	 *
-	 * @see #dSpaceCollide2(DGeom, DGeom, Object, DNearCallback)
+	 * @see #dSpaceCollide2(DGeom, DGeom, Object, DGeom.DNearCallback)
 	 */
 	//ODE_API 
 	// void dSpaceCollide (dSpace space, void *data, dNearCallback *callback) {
@@ -854,9 +854,9 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * function. Its meaning is user defined. The o1 and o2 arguments are the
 	 * geoms that may be near each other.
 	 *
-	 * @param callback A callback function is of type @ref dNearCallback.
+	 * @param callback A callback function is of type {@link DNearCallback}.
 	 *
-	 * @see #dSpaceCollide(DSpace, Object, DNearCallback)
+	 * @see #dSpaceCollide(DSpace, Object, DGeom.DNearCallback)
 	 * @see #dSpaceSetSublevel(DSpace, int)
 	 */
 	//ODE_API 

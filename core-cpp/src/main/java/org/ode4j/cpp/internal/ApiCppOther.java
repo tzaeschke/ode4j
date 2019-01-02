@@ -30,6 +30,9 @@ import org.ode4j.ode.OdeHelper;
 public abstract class ApiCppOther extends ApiCppMass {
 	
 	/**
+	 * @param b1 b1
+	 * @param b2 b2
+	 * @return ret
 	 */
 	//ODE_API 
 //	int dConnectingJointList (dBody b1, dBody b2, dJoint*);
@@ -39,6 +42,8 @@ public abstract class ApiCppOther extends ApiCppMass {
 
 	/**
 	 * Utility function.
+	 * @param b1 b1
+	 * @param b2 b2
 	 * @return 1 if the two bodies are connected together by
 	 * a joint, otherwise return 0.
 	 */

@@ -233,7 +233,7 @@ class DemoPlane2d extends dsFunctions {
 
 
 	/**
-	 * @param args 
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		int         b;

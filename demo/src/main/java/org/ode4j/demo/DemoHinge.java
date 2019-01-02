@@ -137,7 +137,7 @@ public class DemoHinge extends dsFunctions {
 
 
 	/**
-	 * @param args
+	 * @param args args
 	 */
 	public static void main(String[] args)
 	{

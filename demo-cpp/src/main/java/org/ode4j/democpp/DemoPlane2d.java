@@ -275,7 +275,9 @@ class DemoPlane2d extends dsFunctions {
 
 
 
-	/******************/
+	/**
+	 * @param args arguments 
+	**/
 	public static void main(String[] args)
 	{
 		new DemoPlane2d().demo(args);

@@ -410,7 +410,7 @@ public class DemoTransmission extends dsFunctions {
 	}
 
 	/**
-	 * @param args
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		new DemoTransmission().demo(args);

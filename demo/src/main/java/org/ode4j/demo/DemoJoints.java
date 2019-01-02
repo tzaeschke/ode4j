@@ -66,7 +66,7 @@ import static org.ode4j.ode.internal.ErrorHandler.*;
  *   e: turn on occasional error perturbations
  *   n: perform test XYZ
  * some tests compute and display error values. these values are scaled so
- * <1 is good and >1 is bad. other tests just show graphical results which
+ * less than 1 is good and greater than 1 is bad. other tests just show graphical results which
  * you must verify visually.
  */
 public class DemoJoints extends dsFunctions {
@@ -1117,7 +1117,7 @@ public class DemoJoints extends dsFunctions {
 	
 	/** ***************************************************************************
 	 * main
-	 * @param args 
+	 * @param args args
 	 */
 	public static void main (String[] args)
 	{

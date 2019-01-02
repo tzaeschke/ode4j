@@ -194,7 +194,7 @@ public class DemoGyro2 extends dsFunctions {
 
 
 	/**
-	 * @param args
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		new DemoGyro2().demo(args);

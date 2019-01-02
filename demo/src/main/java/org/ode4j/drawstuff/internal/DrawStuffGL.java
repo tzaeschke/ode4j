@@ -51,7 +51,7 @@ import static org.ode4j.drawstuff.DrawStuff.*;
  * 	-notex		Do not use any textures
  * 	-noshadow[s]	Do not draw any shadows
  * 	-pause		Start the simulation paused
- *  -texturepath <path> Inform an alternative textures path
+ *  -texturepath [path] Inform an alternative textures path
  *
  * TODO
  * ----

@@ -65,6 +65,10 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 *
 	 * The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
 	 * assuming that +z is up. The default is no gravity, i.e. (0,0,0).
+	 * @param w w
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	//ODE_API 
 	public static void dWorldSetGravity (DWorld w, double x, double y, double z) {
@@ -75,6 +79,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the gravity vector for a given world.
+	 * @param w w
+	 * @param gravity gravity
 	 */
 	//ODE_API 
 	public static void dWorldGetGravity (DWorld w, DVector3 gravity) {
@@ -97,6 +103,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the error reduction parameter.
+	 * @param w w
 	 * @return ERP value
 	 */
 	//ODE_API 
@@ -108,6 +115,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set the global CFM (constraint force mixing) value.
+	 * @param w w
 	 * @param cfm Typical values are in the range @m{10^{-9}} -- 1.
 	 * The default is 10^-5 if single precision is being used, or 10^-10
 	 * if double precision is being used.
@@ -120,6 +128,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the constraint force mixing value.
+	 * @param w w
 	 * @return CFM value
 	 */
 	//ODE_API 
@@ -136,6 +145,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * and memory on the order of m^2, where m is the total number of constraint
 	 * rows. For large systems this will use a lot of memory and can be very slow,
 	 * but this is currently the most accurate method.
+	 * @param w w
 	 * 
 	 * @param stepsize The number of seconds that the simulation has to advance.
 	 */
@@ -158,6 +168,12 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * This function is given a dWorld because, in the future, the force
 	 * computation may depend on integrator parameters that are set as
 	 * properties of the world.
+	 * @param w w
+	 * @param stepsize stepsize 
+	 * @param ix ix
+	 * @param iy iy
+	 * @param iz iz
+	 * @param force force 
 	 */
 	//ODE_API 
 	public static void dWorldImpulseToForce(
@@ -187,20 +203,23 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * sitting on the ground may be near-singular.
 	 * 
 	 * <p>REMARK:
-	 * There are ways to help overcome QuickStep's inaccuracy problems: <ul>
-	 * <li> Increase CFM.</il>
+	 * There are ways to help overcome QuickStep's inaccuracy problems: 
+	 * <ul>
+	 * <li> Increase CFM.</li>
 	 * <li> Reduce the number of contacts in your system (e.g. use the minimum
-	 *     number of contacts for the feet of a robot or creature).</il>
-	 * <li> Don't use excessive friction in the contacts.</il>
-	 * <li> Use contact slip if appropriate</il>
+	 *     number of contacts for the feet of a robot or creature).</li>
+	 * <li> Don't use excessive friction in the contacts.</li>
+	 * <li> Use contact slip if appropriate</li>
 	 * <li> Avoid kinematic loops (however, kinematic loops are inevitable in
-	 *     legged creatures).</il>
-	 * <li> Don't use excessive motor strength.</il>
-	 * <li> Use force-based motors instead of velocity-based motors.</il>
+	 *     legged creatures).</li>
+	 * <li> Don't use excessive motor strength.</li>
+	 * <li> Use force-based motors instead of velocity-based motors.</li>
 	 * </ul>
 	 *
 	 * Increasing the number of QuickStep iterations may help a little bit, but
 	 * it is not going to help much if your system is really near singular.
+	 * @param w w
+	 * @param stepsize stepsize 
 	 */
 	//ODE_API 
 	public static void dWorldQuickStep (DWorld w, double stepsize) {
@@ -215,6 +234,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * <p>REMARK:
 	 * More iterations will give a more accurate solution, but will take
 	 * longer to compute.
+	 * @param w w
 	 * @param num The default is 20 iterations.
 	 */
 	//ODE_API 
@@ -227,6 +247,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * Get the number of iterations that the QuickStep method performs per
 	 *        step.
+	 * @param w w
 	 * @return nr of iterations
 	 */
 	//ODE_API 
@@ -237,6 +258,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set the SOR over-relaxation parameter
+	 * @param w w
 	 * @param over_relaxation value to use by SOR
 	 */
 	//ODE_API 
@@ -247,6 +269,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the SOR over-relaxation parameter
+	 * @param w w
 	 * @return the over-relaxation setting
 	 */
 	//ODE_API 
@@ -260,6 +283,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * Set the maximum correcting velocity that contacts are allowed
 	 * to generate.
+	 * @param w w
 	 * @param vel The default value is infinity (i.e. no limit).
 	 * Reducing this value can help prevent "popping" of deeply embedded objects.
 	 */
@@ -272,6 +296,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	/**
 	 * Get the maximum correcting velocity that contacts are allowed
 	 * to generated.
+	 * @param w w
+	 * @return ret
 	 */
 	//ODE_API 
 	public static double dWorldGetContactMaxCorrectingVel (DWorld w) {
@@ -284,6 +310,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * <p>REMARK:
 	 * Contacts are allowed to sink into the surface layer up to the given
 	 * depth before coming to rest.
+	 * @param w w
 	 * @param depth The default value is zero.
 	 * Increasing this to some small value (e.g. 0.001) can help prevent
 	 * jittering problems due to contacts being repeatedly made and broken.
@@ -296,6 +323,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the depth of the surface layer around all geometry objects.
+	 * @param w w
 	 * @return the depth
 	 */
 	//ODE_API 
@@ -337,6 +365,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get auto disable linear threshold for newly created bodies.
+	 * @param w w
 	 * @return the threshold
 	 */
 	//ODE_API 
@@ -347,6 +376,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set auto disable linear threshold for newly created bodies.
+	 * @param w w
 	 * @param linear_threshold default is 0.01
 	 */
 	//ODE_API 
@@ -358,6 +388,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get auto disable angular threshold for newly created bodies.
+	 * @param w w
 	 * @return the threshold
 	 */
 	//ODE_API 
@@ -368,6 +399,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set auto disable angular threshold for newly created bodies.
+	 * @param w w
 	 * @param angular_threshold default is 0.01
 	 */
 	//ODE_API 
@@ -423,6 +455,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get auto disable sample count for newly created bodies.
+	 * @param w w
 	 * @return number of samples used
 	 */
 	//ODE_API 
@@ -433,6 +466,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set auto disable average sample count for newly created bodies.
+	 * @param w w
 	 * @param average_samples_count Default is 1, meaning only instantaneous velocity is used.
 	 * Set to zero to disable sampling and thus prevent any body from auto-disabling.
 	 */
@@ -447,6 +481,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get auto disable steps for newly created bodies.
+	 * @param w w
 	 * @return nr of steps
 	 */
 	//ODE_API 
@@ -457,6 +492,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set auto disable steps for newly created bodies.
+	 * @param w w
 	 * @param steps default is 10
 	 */
 	//ODE_API 
@@ -467,6 +503,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get auto disable time for newly created bodies.
+	 * @param w w
 	 * @return nr of seconds
 	 */
 	//ODE_API 
@@ -477,6 +514,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set auto disable time for newly created bodies.
+	 * @param w w
 	 * @param time default is 0 seconds
 	 */
 	//ODE_API 
@@ -487,6 +525,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get auto disable flag for newly created bodies.
+	 * @param w w
 	 * @return 0 or 1
 	 */
 	//ODE_API 
@@ -497,6 +536,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set auto disable flag for newly created bodies.
+	 * @param w w
 	 * @param do_auto_disable default is false.
 	 */
 	//ODE_API 
@@ -542,6 +582,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the world's linear damping threshold.
+	 * @param w w
+	 * @return ret
 	 */
 	//ODE_API 
 	public static double dWorldGetLinearDampingThreshold (DWorld w) {
@@ -551,6 +593,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set the world's linear damping threshold.
+	 * @param w w
 	 * @param threshold The damping won't be applied if the linear speed is
 	 *        below this threshold. Default is 0.01.
 	 */
@@ -562,6 +605,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the world's angular damping threshold.
+	 * @param w w
+	 * @return ret
 	 */
 	//ODE_API 
 	public static double dWorldGetAngularDampingThreshold (DWorld w) {
@@ -571,6 +616,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set the world's angular damping threshold.
+	 * @param w w
 	 * @param threshold The damping won't be applied if the angular speed is
 	 *        below this threshold. Default is 0.01.
 	 */
@@ -582,6 +628,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the world's linear damping scale.
+	 * @param w w
+	 * @return ret
 	 */
 	//ODE_API 
 	public static double dWorldGetLinearDamping (DWorld w) {
@@ -591,6 +639,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set the world's linear damping scale.
+	 * @param w w
 	 * @param scale The linear damping scale that is to be applied to bodies.
 	 * Default is 0 (no damping). Should be in the interval [0, 1].
 	 */
@@ -602,6 +651,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the world's angular damping scale.
+	 * @param w w
+	 * @return ret
 	 */
 	//ODE_API 
 	public static double dWorldGetAngularDamping (DWorld w) {
@@ -611,6 +662,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set the world's angular damping scale.
+	 * @param w w
 	 * @param scale The angular damping scale that is to be applied to bodies.
 	 * Default is 0 (no damping). Should be in the interval [0, 1].
 	 */
@@ -622,6 +674,7 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Convenience function to set body linear and angular scales.
+	 * @param w w
 	 * @param linear_scale The linear damping scale that is to be applied to bodies.
 	 * @param angular_scale The angular damping scale that is to be applied to bodies.
 	 */
@@ -635,6 +688,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Get the default maximum angular speed.
+	 * @param w w
+	 * @return ret
 	 * @see #dBodyGetMaxAngularSpeed(org.ode4j.ode.DBody)
 	 */
 	//ODE_API 
@@ -646,6 +701,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 
 	/**
 	 * Set the default maximum angular speed for new bodies.
+	 * @param w w
+	 * @param max_speed max speed 
 	 * @see #dBodySetMaxAngularSpeed(org.ode4j.ode.DBody, double)
 	 */
 	//ODE_API 

@@ -161,6 +161,8 @@ public class DrawStuff {
 	 * If you filter out arguments beforehand, simply set them to "".
 	 * To extend the help, overload dsPrintHelp().
 	 * @param args supports flags like '-notex' '-noshadow' '-pause'
+	 * @param window_width width
+	 * @param window_height height
 	 * @param fn Callback functions.
 	 */
 	//DS_API 
@@ -204,6 +206,7 @@ public class DrawStuff {
 	/**
 	 * Print log message.
 	 * @param msg format string, like printf, without the \n.
+	 * @param objs objects
 	 */
 	//DS_API 
 	public static void dsPrint  (String msg, Object ... objs) { //(const char *msg, ...);
@@ -262,6 +265,7 @@ public class DrawStuff {
 	 * Get the elapsed time (on wall-clock).
 	 * 
 	 * It returns the nr of seconds since the last call to this function.
+	 * @return time
 	 */
 	//DS_API 
 	public static double dsElapsedTime() {
@@ -301,6 +305,9 @@ public class DrawStuff {
 
 	/**
 	 * Set the color and transparency with which geometry is drawn.
+	 * @param red red
+	 * @param green green
+	 * @param blue blue
 	 * 
 	 * @param alpha Note that alpha transparency is a misnomer: it is alpha opacity.
 	 * 1.0 means fully opaque, and 0.0 means fully transparent.
@@ -337,7 +344,7 @@ public class DrawStuff {
 	 * 
 	 * @param pos Position of center.
 	 * @param R orientation.
-	 * @param radius
+	 * @param radius radius
 	 */
 	//DS_API 
 	//public static  void dsDrawSphere (final float pos[3], final float R[12], float radius) {
@@ -385,6 +392,10 @@ public class DrawStuff {
 
 	/**
 	 * Draw a z-aligned cylinder.
+	 * @param pos pos
+	 * @param R R
+	 * @param length length 
+	 * @param radius radius
 	 */
 	//DS_API 
 //	public static  void dsDrawCylinder (final float pos[3], final float R[12],
@@ -401,6 +412,10 @@ public class DrawStuff {
 	
 	/**
 	 * Draw a z-aligned capsule.
+	 * @param pos pos
+	 * @param R R
+	 * @param length length 
+	 * @param radius radius
 	 */
 	//DS_API 
 //	public static  void dsDrawCapsule (final float pos[3], final float R[12],
@@ -417,6 +432,8 @@ public class DrawStuff {
 	
 	/**
 	 * Draw a line.
+	 * @param pos1 pos 1
+	 * @param pos2 pos 2
 	 */
 	//DS_API 
 //	public static  void dsDrawLine (final float pos1[3], final float pos2[3]) {
@@ -430,6 +447,13 @@ public class DrawStuff {
 
 	/**
 	 * Draw a convex shape.
+	 * @param pos pos
+	 * @param R R
+	 * @param _planes planes 
+	 * @param _planecount plane count
+	 * @param _points points
+	 * @param _pointcount point count
+	 * @param _polygons polygons
 	 */
 	//DS_API 
 //	public static  void dsDrawConvex(final float pos[3], final float R[12],
@@ -505,6 +529,7 @@ public class DrawStuff {
 	 * Higher numbers are higher quality, but slower to draw. 
 	 * This must be set before the first objects are drawn to be effective.
 	 * Default sphere quality is 1, default capsule quality is 3.
+	 * @param n n
 	 */
 	//DS_API 
 	public static  void dsSetSphereQuality (int n) {		/* default = 1 */
@@ -520,6 +545,7 @@ public class DrawStuff {
 	/**
 	 * Set Drawmode (0=Polygon Fill,1=Wireframe).
 	 * Use the DS_POLYFILL and DS_WIREFRAME macros.
+	 * @param mode mode
 	 */
 	//DS_API 
 	public static  void dsSetDrawMode(int mode) {

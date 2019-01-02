@@ -398,7 +398,7 @@ public class DemoMovingConvex extends dsFunctions {
 
 
 	/**
-	 * @param args
+	 * @param args args
 	 */
 	public static void main(String[] args) {
 		new DemoMovingConvex().demo(args);

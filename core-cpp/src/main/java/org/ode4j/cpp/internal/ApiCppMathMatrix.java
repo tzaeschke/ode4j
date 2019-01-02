@@ -33,7 +33,10 @@ import org.ode4j.ode.internal.Matrix;
  */
 public abstract class ApiCppMathMatrix extends ApiCppMathRotation {
 
-	/** set a vector/matrix of size n to all zeros, or to a specific value. */
+	/** set a vector/matrix of size n to all zeros, or to a specific value. 
+	 * @param a a
+	 * @param n n
+	 */
 
 	//ODE_API 
 	//	void dSetZero (double *a, int n);
@@ -48,8 +51,12 @@ public abstract class ApiCppMathMatrix extends ApiCppMathRotation {
 
 
 	/** 
-	 * get the dot product of two n*1 vectors. if n <= 0 then
+	 * get the dot product of two n*1 vectors. if n &le; 0 then
 	 * zero will be returned (in which case a and b need not be valid).
+	 * @param a a
+	 * @param b b
+	 * @param n n
+	 * @return ret
 	 */
 
 	//ODE_API 
@@ -89,6 +96,12 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 *   2:   A = B  * C'  (sizes: A:p*r B:p*q C:r*q)
 	 * case 1,2 are equivalent to saying that the operation is A=B*C but
 	 * B or C are stored in standard column format.
+	 * @param A A
+	 * @param B B
+	 * @param C C
+	 * @param p p
+	 * @param q q
+	 * @param r r
 	 */
 	//ODE_API 
 	//	 void dMultiply0 (double *A, final double *B, final double *C, int p,int q,int r);
@@ -111,6 +124,9 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 * symmetric matrix A (which is stored by rows). the resulting lower triangle
 	 * will be such that L*L'=A. return 1 on success and 0 on failure (on failure
 	 * the matrix is not positive definite).
+	 * @param A A
+	 * @param n n
+	 * @return ret
 	 */
 
 	//ODE_API 
@@ -121,6 +137,9 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 	/** solve for x: L*L'*x = b, and put the result back into x.
 	 * L is size n*n, b is size n*1. only the lower triangle of L is considered.
+	 * @param L L
+	 * @param b b
+	 * @param n n
 	 */
 
 	//ODE_API 
@@ -133,6 +152,10 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	/** compute the inverse of the n*n positive definite matrix A and put it in
 	 * Ainv. this is not especially fast. this returns 1 on success (A was
 	 * positive definite) or 0 on failure (not PD).
+	 * @param A A
+	 * @param Ainv Ainv 
+	 * @param n n
+	 * @return ret
 	 */
 
 	//ODE_API 
@@ -142,9 +165,12 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 
 
 	/** check whether an n*n matrix A is positive definite, return 1/0 (yes/no).
-	 * positive definite means that x'*A*x > 0 for any x. this performs a
+	 * positive definite means that x'*A*x &gt; 0 for any x. this performs a
 	 * cholesky decomposition of A. if the decomposition fails then the matrix
 	 * is not positive definite. A is stored by rows. A is not altered.
+	 * @param A A
+	 * @param n n
+	 * @return ret
 	 */
 
 	//ODE_API 
@@ -159,6 +185,10 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 * up to 4. L is written into the strict lower triangle of A (the ones are not
 	 * written) and the reciprocal of the diagonal elements of D are written into
 	 * d.
+	 * @param A A
+	 * @param d d
+	 * @param n n
+	 * @param nskip nskip 
 	 */
 	//ODE_API 
 	//	 void dFactorLDLT (double *A, double *d, int n, int nskip) {
@@ -202,8 +232,12 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 * and `d', a n*1 vector of the reciprocal diagonal elements of an n*n matrix
 	 * D, solve L*D*L'*x=b where x,b are n*1. x overwrites b.
 	 * the leading dimension of L is `nskip'.
+	 * @param L L
+	 * @param d d
+	 * @param b b
+	 * @param n n
+	 * @param nskip nskip 
 	 */
-
 	//ODE_API 
 	//	 void dSolveLDLT (final double *L, final double *d, double *b, int n, int nskip) {
 	public static void dSolveLDLT (final double[] L, final double[] d, double[] b, int n, int nskip) {
@@ -214,8 +248,8 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	/** given an L*D*L' factorization of an n*n matrix A, return the updated
 	 * factorization L2*D2*L2' of A plus the following "top left" matrix:
 	 *
-	 *    [ b a' ]     <-- b is a[0]
-	 *    [ a 0  ]     <-- a is a[1..n-1]
+	 *    [ b a' ]     &lt;-- b is a[0]
+	 *    [ a 0  ]     &lt;-- a is a[1..n-1]
 	 *
 	 *   - L has size n*n, its leading dimension is nskip. L is lower triangular
 	 *     with ones on the diagonal. only the lower triangle of L is referenced.
@@ -223,6 +257,11 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 *   - a has size n.
 	 * the result is written into L, except that the left column of L and d[0]
 	 * are not actually modified. see ldltaddTL.m for further comments. 
+	 * @param L L
+	 * @param d d
+	 * @param a a
+	 * @param n n
+	 * @param nskip nskip 
 	 */
 	//ODE_API 
 	//	 void dLDLTAddTL (double *L, double *d, final double *a, int n, int nskip) {
@@ -247,6 +286,14 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	 * undefined on exit.
 	 *
 	 * a fast O(n^2) algorithm is used. see ldltremove.m for further comments.
+	 * @param A A
+	 * @param p p
+	 * @param L L
+	 * @param d d
+	 * @param n1 n1
+	 * @param n2 n2
+	 * @param r r
+	 * @param nskip nskip 
 	 */
 	//ODE_API 
 	//	 void dLDLTRemove (double **A, final int *p, double *L, double *d,
@@ -259,6 +306,10 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 	/** given an n*n matrix A (with leading dimension nskip), remove the r'th row
 	 * and column by moving elements. the new matrix will have the same leading
 	 * dimension. the last row and column of A are untouched on exit.
+	 * @param A A
+	 * @param n n
+	 * @param nskip nskip 
+	 * @param r r
 	 */
 	//ODE_API 
 	public static void dRemoveRowCol (double[] A, int n, int nskip, int r) {

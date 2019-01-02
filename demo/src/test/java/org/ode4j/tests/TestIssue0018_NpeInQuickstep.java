@@ -258,7 +258,7 @@ public class TestIssue0018_NpeInQuickstep extends DrawStuff.dsFunctions {
 	}
 
 	/**
-	 * @param args
+	 * @param args args
 	 */
 	public static void main(final String[] args) {
 		new TestIssue0018_NpeInQuickstep().demo(args);

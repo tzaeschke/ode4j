@@ -220,7 +220,7 @@ public class DemoBasketConvex extends dsFunctions {
 
 
 	/**
-	 * @param args
+	 * @param args args
 	 */
 	public static void main(final String[] args) {
 		new DemoBasketConvex().demo(args);

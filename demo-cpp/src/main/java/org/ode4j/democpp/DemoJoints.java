@@ -156,7 +156,7 @@ import org.ode4j.ode.internal.cpp4j.Ctype;
  *   e: turn on occasional error perturbations
  *   n: perform test XYZ
  * some tests compute and display error values. these values are scaled so
- * <1 is good and >1 is bad. other tests just show graphical results which
+ * less than 1 is good and greater than 1 is bad. other tests just show graphical results which
  * you must verify visually.
  */
 public class DemoJoints extends dsFunctions {

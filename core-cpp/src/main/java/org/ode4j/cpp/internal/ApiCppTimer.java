@@ -50,12 +50,18 @@ void dStopwatchReset (DStopwatch sw) {
 
 
 /** code timers */
-/** pass a static string here */
+/** 
+ * pass a static string here 
+ * @param description description
+ */
 //ODE_API 
 public static void dTimerStart (final String description) {
 	Timer.dTimerStart(description);
 }
- /** pass a static string here */
+ /** 
+  * pass a static string here. 
+ * @param description description
+ */
 //ODE_API 
 public static void dTimerNow (final String description) {
 	Timer.dTimerNow(description);
@@ -66,9 +72,12 @@ public static void dTimerEnd() {
 	 Timer.dTimerEnd();
  }
 
-/** print out a timer report. if `average' is nonzero, print out the average
+/** 
+ * print out a timer report. if `average' is nonzero, print out the average
  * time for each slot (this is only meaningful if the same start-now-end
  * calls are being made repeatedly.
+ * @param fout file out
+ * @param average average
  */
 //ODE_API 
 public static void dTimerReport (FILE fout, int average) {

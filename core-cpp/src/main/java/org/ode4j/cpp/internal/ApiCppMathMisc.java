@@ -31,13 +31,15 @@ import org.ode4j.ode.internal.cpp4j.FILE;
  */
 public abstract class ApiCppMathMisc {
 
-	/** return 1 if the random number generator is working. */
+	/** 
+	 * @return 1 if the random number generator is working. 
+	 */
 	//ODE_API 
 	public static boolean dTestRand() {
 		return OdeMath.dTestRand();
 	}
 
-	/** return next 32 bit random number. this uses a not-very-random linear
+	/** @return next 32 bit random number. this uses a not-very-random linear
 	 * congruential method.
 	 */
 	//ODE_API unsigned 
@@ -45,7 +47,7 @@ public abstract class ApiCppMathMisc {
 		return OdeMath.dRand();
 	}
 
-	/** get and set the current random number seed. */
+	/** @return the current random number seed. */
 	//ODE_API unsigned 
 	public static long  dRandGetSeed() {
 		return OdeMath.dRandGetSeed();
@@ -56,7 +58,9 @@ public abstract class ApiCppMathMisc {
 		OdeMath.dRandSetSeed(s);
 	}
 
-	/** return a random integer between 0..n-1. the distribution will get worse
+	/** 
+	 * @param n n
+	 * @return a random integer between 0..n-1. the distribution will get worse
 	 * as n approaches 2^32.
 	 */
 	//ODE_API 
@@ -64,7 +68,7 @@ public abstract class ApiCppMathMisc {
 		return OdeMath.dRandInt(n);
 	}
 
-	/** return a random real number between 0..1 */
+	/** @return a random real number between 0..1 */
 	//ODE_API dReal double dRandReal(void);
 	public static double dRandReal() {
 		return OdeMath.dRandReal();
@@ -84,35 +88,57 @@ public abstract class ApiCppMathMisc {
 		throw new UnsupportedOperationException();
 	}
 
-	/** make a random vector with entries between +/- range. A has n elements. */
+	/** make a random vector with entries between +/- range. A has n elements. 
+	 * @param A A
+	 * @param n n
+	 * @param range range
+	 */
 	//ODE_API 
 	//	void dMakeRandomVector (dReal *A, int n, dReal range);
 	public static void dMakeRandomVector (double []A, int n, double range) {
 		OdeMath.dMakeRandomVector(A, n, range);
 	}
 
-	/** make a random matrix with entries between +/- range. A has size n*m. */
+	/** make a random matrix with entries between +/- range. A has size n*m. 
+	 * @param A A
+	 * @param n n
+	 * @param m m
+	 * @param range range 
+	 */
 	//ODE_API 
 	//	void dMakeRandomMatrix (dReal *A, int n, int m, dReal range);
 	public static void dMakeRandomMatrix (double []A, int n, int m, double range) {
 		OdeMath.dMakeRandomMatrix(A, n, m, range);
 	}
 
-	/** clear the upper triangle of a square matrix */
+	/** 
+	 * clear the upper triangle of a square matrix.
+	 * @param A A
+	 * @param n n
+	 */
 	//ODE_API 
 	//	void dClearUpperTriangle (dReal *A, int n);
 	public static void dClearUpperTriangle (double []A, int n) {
 		OdeMath.dClearUpperTriangle(A, n);
 	}
 
-	/** return the maximum element difference between the two n*m matrices */
+	/** 
+	 * @param A A 
+	 * @param B B
+	 * @param n n
+	 * @param m m
+	 * @return the maximum element difference between the two n*m matrices */
 	//ODE_API 
 	//	dReal dMaxDifference (const dReal *A, const dReal *B, int n, int m);
 	public static double dMaxDifference (final double []A, final double []B, int n, int m) {
 		return OdeMath.dMaxDifference(A, B, n, m);
 	}
 
-	/** return the maximum element difference between the lower triangle of two
+	/** 
+	 * @param A A
+	 * @param B B
+	 * @param n n
+	 * @return the maximum element difference between the lower triangle of two
 	 * n*n matrices */
 	//ODE_API 
 	//	dReal dMaxDifferenceLowerTriangle (const dReal *A, const dReal *B, int n);

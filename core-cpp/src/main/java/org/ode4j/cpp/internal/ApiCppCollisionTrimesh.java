@@ -87,7 +87,7 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 	 * accurate collision response. These functions get and set that transform.
 	 * It is stored per geom instance, rather than per dTriMeshData.
 	 * @param g trimesh
-	 * @param last_trans 
+	 * @param last_trans last transform
 	 */
 	//ODE_API 
 	//void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {

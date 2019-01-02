@@ -71,24 +71,40 @@ public abstract class ApiCppMathRotation extends ApiCppMathMisc {
 
 	/** Quaternion multiplication, analogous to the matrix multiplication routines.
 	 * qa = rotate by qc, then qb 
+	 * @param qa qa
+	 * @param qb qb
+	 * @param qc qc
 	 */
 	//ODE_API 
 	public static void dQMultiply0 (DQuaternion qa, final DQuaternion qb, final DQuaternion qc) {
 		OdeMath.dQMultiply0(qa, qb, qc);
 	}
-	/** Quaternion multiplication, analogous to the matrix multiplication routines.
-	 * qa = rotate by qc, then by inverse of qb */
+	/** 
+	 * Quaternion multiplication, analogous to the matrix multiplication routines.
+	 * qa = rotate by qc, then by inverse of qb 
+	 * @param qa qa
+	 * @param qb qb
+	 * @param qc qc
+	 */
 	//ODE_API 
 	public static void dQMultiply1 (DQuaternion qa, final DQuaternion qb, final DQuaternion qc) {
 		OdeMath.dQMultiply1(qa, qb, qc);
 	}
 	/** Quaternion multiplication, analogous to the matrix multiplication routines.
-	 * qa = rotate by inverse of qc, then by qb */
+	 * qa = rotate by inverse of qc, then by qb 
+	 * @param qa qa
+	 * @param qb qb
+	 * @param qc qc
+	 */
 	//ODE_API 
 	public static void dQMultiply2 (DQuaternion qa, final DQuaternion qb, final DQuaternion qc) {
 		OdeMath.dQMultiply2(qa, qb, qc);
 	}
-	/** qa = rotate by inverse of qc, then by inverse of qb */
+	/** qa = rotate by inverse of qc, then by inverse of qb 
+	 * @param qa qa
+	 * @param qb qb
+	 * @param qc qc 
+	 */
 	//ODE_API 
 	public static void dQMultiply3 (DQuaternion qa, final DQuaternion qb, final DQuaternion qc) {
 		OdeMath.dQMultiply3(qa, qb, qc);
@@ -98,7 +114,11 @@ public abstract class ApiCppMathRotation extends ApiCppMathMisc {
 	public static void dRfromQ (DMatrix3 R, final DQuaternion q) {
 		OdeMath.dRfromQ(R, q);
 	}
-	/** @deprecated */
+	/** 
+	 * @param q q
+	 * @param R R
+	 * @deprecated 
+	 */
 	@Deprecated
     public static void dQtoR (final DQuaternion q, DMatrix3 R) {
 		OdeMath.dRfromQ(R, q);
