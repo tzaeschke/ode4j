@@ -36,7 +36,22 @@ public final class DMatrix3 implements DMatrix3C {
 	public static final int LEN = MAX_I*MAX_J;
 	public static final DMatrix3C ZERO = new DMatrix3();
 
-	/** @deprecated */
+	/** 
+	 * 
+	 * @param d row 0 column 0 
+	 * @param e row 0 column 1 
+	 * @param f row 0 column 2
+	 * @param g row 0 column 3 (must be 0) 
+	 * @param h row 1 column 0
+	 * @param i row 1 column 1
+	 * @param j row 1 column 2
+	 * @param k row 1 column 3 (must be 0)
+	 * @param l row 2 column 0
+	 * @param m row 2 column 1
+	 * @param n row 2 column 2
+	 * @param o row 2 column 3
+	 * @deprecated 
+	 */
 	@Deprecated
     public DMatrix3(double d, double e, double f,
                     double g, double h, double i, double j, double k, double l,
@@ -162,6 +177,8 @@ public final class DMatrix3 implements DMatrix3C {
 	/** 
 	 * Initialises this matrix from a 3*4 double [] with 12 fields, ignoring 
 	 * the 4th, 8th and 12th field. This is useful when using padded arrays.
+	 * @param da Initialisztion matrix
+	 * @param da_ofs Reading offset
 	 */
 	public void set12(double[] da, int da_ofs) {
 		System.arraycopy(da, da_ofs, v, 0, da.length);
@@ -210,6 +227,8 @@ public final class DMatrix3 implements DMatrix3C {
 	 *   2:   A = B  * C'  (sizes: A:p*r B:p*q C:r*q)
 	 * case 1,2 are equivalent to saying that the operation is A=B*C but
 	 * B or C are stored in standard column format.
+	 * @param B source B
+	 * @param C source C
 	 */
 	public void dMultiply0 (final DMatrix3C B, 
 			final DMatrix3C C) {
@@ -629,6 +648,8 @@ public final class DMatrix3 implements DMatrix3C {
 
 	/**
 	 * Please use isEq() instead.
+	 * @param m other matrix
+	 * @return 'true' if both matrices are equal
 	 */
 	@Deprecated
 	public final boolean isEqual(DMatrix3C m) {
@@ -677,6 +698,7 @@ public final class DMatrix3 implements DMatrix3C {
 	/**
 	 * Make the matrix an identity matrix.
 	 * Same as eqIdenity().
+	 * @return This matrix.
 	 */
 	public final DMatrix3 setIdentity() {
 		eqIdentity();
@@ -751,8 +773,8 @@ public final class DMatrix3 implements DMatrix3C {
 	/**
 	 * Calculates the dot product of the the specified column of this matrix
 	 * with the given vector.
-	 * @param col
-	 * @param v3
+	 * @param col column pos
+	 * @param v3 vector
 	 */
 	@Override
 	public final double dotCol(int col, DVector3C v3) {
@@ -770,8 +792,8 @@ public final class DMatrix3 implements DMatrix3C {
 	/**
 	 * Calculates the dot product of the the specified row of this matrix
 	 * with the given vector.
-	 * @param row
-	 * @param v3
+	 * @param row row pos
+	 * @param v3 vector
 	 */
 	@Override
 	public final double dotRow(int row, DVector3C v3) {
@@ -790,9 +812,9 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Calculates the dot product of the the specified column <tt>col</tt> 
 	 * of this matrix with the specified column <tt>col2</tt> of the second 
 	 * matrix <tt>m2</tt>.
-	 * @param col
-	 * @param m2
-	 * @param col2
+	 * @param col column pos
+	 * @param m2 matrix M2
+	 * @param col2 column pos in matrix M2
 	 */
 	@Override
 	public final double dotColCol(int col, DMatrix3C m2, int col2) {
@@ -829,9 +851,9 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Calculates the dot product of the the specified row <tt>row</tt> 
 	 * of this matrix with the specified column <tt>col2</tt> of the second 
 	 * matrix <tt>m2</tt>.
-	 * @param row
-	 * @param m2
-	 * @param col2
+	 * @param row Row pos
+	 * @param m2 Matrix M2
+	 * @param col2 Col pos in Matrix m2
 	 */
 	@Override
 	public double dotRowCol(int row, DMatrix3C m2, int col2) {
@@ -889,9 +911,9 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Calculates the dot product of the the specified row <tt>row</tt> 
 	 * of this matrix with the specified row <tt>row2</tt> of the second 
 	 * matrix <tt>m2</tt>.
-	 * @param row
-	 * @param m2
-	 * @param row2
+	 * @param row row pos
+	 * @param m2 Matrix M2
+	 * @param row2 row pos in M2
 	 */
 	@Override
 	public double dotRowRow(int row, DMatrix3C m2, int row2) {
@@ -925,7 +947,7 @@ public final class DMatrix3 implements DMatrix3C {
 
 
 	/**
-	 * @param i row
+	 * @param i row 
 	 * @param j column
 	 * @return Value at (i,j).
 	 */
@@ -971,8 +993,8 @@ public final class DMatrix3 implements DMatrix3C {
 	
 	/**
 	 * Create an array of DVector instances.
-	 * @param size
-	 * @return AN array of DVector
+	 * @param size Size of array
+	 * @return An array of DVector
 	 */
 	public final static DMatrix3[] newArray(int size) {
 		DMatrix3[] a = new DMatrix3[size];

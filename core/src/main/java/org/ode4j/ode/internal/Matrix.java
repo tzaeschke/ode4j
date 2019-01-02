@@ -89,6 +89,9 @@ public class Matrix extends FastDot {
 	 * are stored in standard column format.
 	 * <p>
 	 * This method is equivalent to dMultiply0(A, B, C, 3, 3, 1).
+	 * @param A A
+	 * @param B B
+	 * @param C C
 	 */
 	public static void dMultiply0(DVector3 A, final DMatrix3C B,
 			final DVector3C C) {
@@ -108,6 +111,9 @@ public class Matrix extends FastDot {
 	 * are stored in standard column format.
 	 * <p>
 	 * This method is equivalent to dMultiply0(A, B, C, 1, 3, 3).
+	 * @param a a
+	 * @param b b
+	 * @param C C
 	 */
 	public static void dMultiply0(DVector3 a, final DVector3C b,
 			final DMatrix3C C) {
@@ -162,6 +168,9 @@ public class Matrix extends FastDot {
 	 * are stored in standard column format.
 	 * <p>
 	 * This method is equivalent to dMultiply0(A, B, C, 3, 3, 3).
+	 * @param A A
+	 * @param B B
+	 * @param C C
 	 */
 	public static void dMultiply0(DMatrix3 A, final DMatrix3C B,
 			final DMatrix3C C) {
@@ -255,6 +264,9 @@ public class Matrix extends FastDot {
 	 * are stored in standard column format.
 	 * <p>
 	 * This method is equivalent to dMultiply1(A, B, C, 3, 3, 1).
+	 * @param A A
+	 * @param B B
+	 * @param C C
 	 */
 	public static void dMultiply1(DVector3 A, final DMatrix3C B,
 			final DVector3C C) {
@@ -274,6 +286,9 @@ public class Matrix extends FastDot {
 	 * are stored in standard column format.
 	 * <p>
 	 * This method is equivalent to dMultiply1(A, B, C, 3, 3, 3).
+	 * @param A A
+	 * @param B B
+	 * @param C C
 	 */
 	public static void dMultiply1(DMatrix3 A, final DMatrix3C B,
 			final DMatrix3C C) {
@@ -302,6 +317,12 @@ public class Matrix extends FastDot {
 	 * 2: A = B * C' (sizes: A:p*r B:p*q C:r*q) <br>
 	 * case 1,2 are equivalent to saying that the operation is A=B*C but B or C
 	 * are stored in standard column format.
+	 * @param A A
+	 * @param B B
+	 * @param C C
+	 * @param p p
+	 * @param q q
+	 * @param r r
 	 */
 	public static void dMultiply1(double[] A, final double[] B,
 			final double[] C, int p, int q, int r) {
@@ -335,6 +356,9 @@ public class Matrix extends FastDot {
 	 * are stored in standard column format.
 	 * <p>
 	 * This method is equivalent to dMultiply2(A, B, C, 3, 3, 3).
+	 * @param A A
+	 * @param B B
+	 * @param C C
 	 */
 	public static void dMultiply2(DMatrix3 A, final DMatrix3C B,
 			final DMatrix3C C) {
@@ -352,6 +376,9 @@ public class Matrix extends FastDot {
 	 * are stored in standard column format.
 	 * <p>
 	 * This method is equivalent to dMultiply2(A, B, C, 3, 3, 1).
+	 * @param A A
+	 * @param B B
+	 * @param C C
 	 */
 	public static void dMultiply2(DVector3 A, final DMatrix3C B,
 			final DVector3C C) {
@@ -370,6 +397,12 @@ public class Matrix extends FastDot {
 	 * 2: A = B * C' (sizes: A:p*r B:p*q C:r*q) <br>
 	 * case 1,2 are equivalent to saying that the operation is A=B*C but B or C
 	 * are stored in standard column format.
+	 * @param A A
+	 * @param B B
+	 * @param C C
+	 * @param p p
+	 * @param q q
+	 * @param r r
 	 * 
 	 */
 	public static void dMultiply2(double[] A, final double[] B,
@@ -429,6 +462,10 @@ public class Matrix extends FastDot {
 	 * symmetric matrix A (which is stored by rows). the resulting lower
 	 * triangle will be such that L*L'=A. return 1 on success and 0 on failure
 	 * (on failure the matrix is not positive definite).
+	 * @param A A
+	 * @param n n
+	 * @param tmpbuf tmpBuf 
+	 * @return 'false' if it fails 
 	 */
 	public static boolean dFactorCholesky(double[] A, int n, double[] tmpbuf) {
 	    //dAASSERT (n > 0 && A);
@@ -514,6 +551,8 @@ public class Matrix extends FastDot {
 	 * symmetric matrix A (which is stored by rows). the resulting lower
 	 * triangle will be such that L*L'=A. return 1 on success and 0 on failure
 	 * (on failure the matrix is not positive definite).
+	 * @param A matrix
+	 * @return 'false'if it failed
 	 */
 	public static boolean dFactorCholesky (DMatrix3 A)
 	{
@@ -589,6 +628,10 @@ public class Matrix extends FastDot {
 	/**
 	 * solve for x: L*L'*x = b, and put the result back into x. L is size n*n, b
 	 * is size n*1. only the lower triangle of L is considered.
+	 * @param L L
+	 * @param b b
+	 * @param n n
+	 * @param tmpbuf buffer 
 	 */
 	public static void dSolveCholesky(final double[] L, double[] b, int n, double[] tmpbuf) {
 		int nskip = dPAD(n);
@@ -617,6 +660,8 @@ public class Matrix extends FastDot {
 	/**
 	 * solve for x: L*L'*x = b, and put the result back into x. L is size 3*3, b
 	 * is size 3*1. only the lower triangle of L is considered.
+	 * @param L L
+	 * @param b b
 	 */
 	public static void dSolveCholesky(final DMatrix3C L, DVector3 b) {
 		// int i,k,nskip;
@@ -657,6 +702,9 @@ public class Matrix extends FastDot {
 	 * compute the inverse of the n*n positive definite matrix A and put it in
 	 * Ainv. this is not especially fast. this returns 1 on success (A was
 	 * positive definite) or 0 on failure (not PD).
+	 * @param A A
+	 * @param Ainv Ainv result 
+	 * @return 'false' on failure
 	 */
 	public static boolean dInvertPDMatrix(final DMatrix3C A, DMatrix3 Ainv) {
 		int i;//, j, nskip;
@@ -690,6 +738,11 @@ public class Matrix extends FastDot {
 	 * compute the inverse of the n*n positive definite matrix A and put it in
 	 * Ainv. this is not especially fast. this returns 1 on success (A was
 	 * positive definite) or 0 on failure (not PD).
+	 * @param A A
+	 * @param Ainv Ainv result 
+	 * @param n n
+	 * @param tmpbuf buf 
+	 * @return 'false' on failure
 	 */
 	public static boolean dInvertPDMatrix(final double[] A, double[] Ainv, int n, double[] tmpbuf) {
 		int nskip;
@@ -723,6 +776,10 @@ public class Matrix extends FastDot {
 	 * positive definite means that x'*A*x > 0 for any x. this performs a
 	 * cholesky decomposition of A. if the decomposition fails then the matrix
 	 * is not positive definite. A is stored by rows. A is not altered.
+	 * @param A A
+	 * @param n n
+	 * @param tmpbuf buf 
+	 * @return 'false' on failure
 	 */
 	public static boolean dIsPositiveDefinite(final double[] A, int n, double[] tmpbuf) {
 		double[] Acopy;
@@ -744,6 +801,8 @@ public class Matrix extends FastDot {
 	 * positive definite means that x'*A*x > 0 for any x. this performs a
 	 * cholesky decomposition of A. if the decomposition fails then the matrix
 	 * is not positive definite. A is stored by rows. A is not altered.
+	 * @param A A
+	 * @return 'false' on failure
 	 */
 	public static boolean dIsPositiveDefinite(DMatrix3C A) {
 		return dFactorCholesky(A.clone());
@@ -769,6 +828,11 @@ public class Matrix extends FastDot {
 	 * `d', a n*1 vector of the reciprocal diagonal elements of an n*n matrix D,
 	 * solve L*D*L'*x=b where x,b are n*1. x overwrites b. the leading dimension
 	 * of L is `nskip'.
+	 * @param L L
+	 * @param d d
+	 * @param b b
+	 * @param n n
+	 * @param nskip nskip 
 	 */
 	public static void dSolveLDLT(final double[] L, final double[] d,
 			double[] b, int n, int nskip) {
@@ -783,13 +847,18 @@ public class Matrix extends FastDot {
 	 * Given an L*D*L' factorization of an n*n matrix A, return the updated
 	 * factorization L2*D2*L2' of A plus the following "top left" matrix:
 	 * 
-	 * [ b a' ] <-- b is a[0] [ a 0 ] <-- a is a[1..n-1]
+	 * [ b a' ] &lt;-- b is a[0] [ a 0 ] &lt;-- a is a[1..n-1]
 	 * 
 	 * - L has size n*n, its leading dimension is nskip. L is lower triangular
 	 * with ones on the diagonal. only the lower triangle of L is referenced. -
 	 * d has size n. d contains the reciprocal diagonal elements of D. - a has
 	 * size n. the result is written into L, except that the left column of L
 	 * and d[0] are not actually modified. see ldltaddTL.m for further comments.
+	 * @param L L
+	 * @param d d
+	 * @param a a
+	 * @param n n
+	 * @param nskip 
 	 */
 	public static void dLDLTAddTL(double[] L, double[] d, final double[] a,
 			int n, int nskip) {
@@ -800,13 +869,21 @@ public class Matrix extends FastDot {
 	 * Given an L*D*L' factorization of an n*n matrix A, return the updated
 	 * factorization L2*D2*L2' of A plus the following "top left" matrix:
 	 * 
-	 * [ b a' ] <-- b is a[0] [ a 0 ] <-- a is a[1..n-1]
+	 * [ b a' ] &lt;-- b is a[0] [ a 0 ] &lt;-- a is a[1..n-1]
 	 * 
 	 * - L has size n*n, its leading dimension is nskip. L is lower triangular
 	 * with ones on the diagonal. only the lower triangle of L is referenced. -
 	 * d has size n. d contains the reciprocal diagonal elements of D. - a has
 	 * size n. the result is written into L, except that the left column of L
 	 * and d[0] are not actually modified. see ldltaddTL.m for further comments.
+	 * @param L L
+	 * @param lOfs offset 
+	 * @param d d
+	 * @param dOfs offset 
+	 * @param a a
+	 * @param n n
+	 * @param nskip nskip 
+	 * @param tmpbuf buffer
 	 */
 	public static void dLDLTAddTL(double[] L, int lOfs, double[] d, int dOfs,
 			final double[] a, int n, int nskip, double[] tmpbuf) {
@@ -916,6 +993,15 @@ public class Matrix extends FastDot {
 	 * element of d, are undefined on exit.
 	 * 
 	 * a fast O(n^2) algorithm is used. see ldltremove.m for further comments.
+	 * @param A A
+	 * @param p p
+	 * @param L L
+	 * @param d d
+	 * @param n1 n1
+	 * @param n2 n2
+	 * @param r r
+	 * @param nskip nskip 
+	 * @param tmpbuf buf
 	 */
 	// void dLDLTRemove (double [][]A, final int []p, double []L, double []d,
 	// int n1, int n2, int r, int nskip)
@@ -989,6 +1075,10 @@ public class Matrix extends FastDot {
 	 * Given an n*n matrix A (with leading dimension nskip), remove the r'th row
 	 * and column by moving elements. the new matrix will have the same leading
 	 * dimension. the last row and column of A are untouched on exit.
+	 * @param A A
+	 * @param n n
+	 * @param nskip nskip 
+	 * @param r r
 	 */
 	public static void dRemoveRowCol(double[] A, int n, int nskip, int r) {
 		dAASSERT((A != null) && n > 0 && nskip >= n && r >= 0 && r < n);
@@ -1588,6 +1678,10 @@ public class Matrix extends FastDot {
 	 * with a leading dimension of n rounded up to 4. L is written into the
 	 * strict lower triangle of A (the ones are not written) and the reciprocal
 	 * of the diagonal elements of D are written into d.
+	 * @param A A
+	 * @param d d
+	 * @param n n
+	 * @param nskip1 nskip 
 	 */
 	public static void dFactorLDLT(double[] A, double[] d, int n, int nskip1) {
 		D_LDLT.dFactorLDLT(A, d, n, nskip1);

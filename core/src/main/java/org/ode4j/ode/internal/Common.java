@@ -124,7 +124,10 @@ public class Common extends OdeConstants {
 	    dIASSERT(a);
 	}
 
-	/** Internal assertion */
+	/** 
+	 * Internal assertion 
+	 * @param b Fail if 'false'
+	 */
 	public static final void dIASSERT(boolean b) {
 		if (!b) {
 			dDebug(d_ERR_IASSERT, "assertion failed ");
@@ -165,7 +168,10 @@ public class Common extends OdeConstants {
 		dMessage (d_ERR_UASSERT, msg2);
 	}
 
-	/** Assert 'not-null'. */
+	/** 
+	 * Assert 'not-null'. 
+	 * @param aa Object to assert 
+	 */
 	public static void dAASSERT(Object ... aa) {
 		for (Object a: aa) {
 			if (a == null) {
@@ -192,7 +198,10 @@ public class Common extends OdeConstants {
 		}
 	}
 
-	/** Assert 'true'. */
+	/** 
+	 * Assert 'true'. 
+	 * @param b Fail if 'false' 
+	 */
 	public static void dAASSERT(boolean b) {
 		if (!b)
 			dUASSERT(b, "Bad argument(s)");
@@ -262,6 +271,8 @@ public class Common extends OdeConstants {
 	 * are unmodified (used to compute matrix leading dimensions).
 	 * TODO Check that returned value is used!! (NOT Call by reference).
 	 * deprecated-keep for now (Remove this if possible) (TZ)
+	 * @param a a
+	 * @return Padded offset
 	 */
 	public static final int dPAD(int a) {
 		return (a > 1) ? ((((a)-1)|3)+1) : a;

@@ -37,6 +37,8 @@ public interface DHeightfieldData {
 	 * This call specifies that the heightfield data is computed by
 	 * the user and it should use the given callback when determining
 	 * the height of a given element of it's shape.
+	 * @param pUserData user data
+	 * @param pCallback callback
 	 *
 	 * @param width Specifies the total 'width' of the heightfield along
 	 * the geom's local x axis.
@@ -250,12 +252,12 @@ public interface DHeightfieldData {
 	 * This call specifies that the heightfield data is stored as a rectangular
 	 * array of double precision floats representing the height at each
 	 * sample point.
-	 * <p>
+	 * 
 	 * <pre>
 	 * DHeightfieldData heightData = OdeHelper.createHeightfieldData();
 	 * double[] data = new double[MAX_X*MAX_Z];
-	 * for (int x = 0; x < MAX_X; x++) {
-	 *    for (int z = 0; z < MAX_Z; z++) {
+	 * for (int x = 0; x &lt; MAX_X; x++) {
+	 *    for (int z = 0; z &lt; MAX_Z; z++) {
 	 *        data[x+MAX_X*z] = heightfieldFunction(x, z);
 	 *    }
 	 * }

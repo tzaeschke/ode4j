@@ -90,6 +90,7 @@ int main()
  * 
  * Ported to Java by Tilmann Zaeschke
  * @author Francisco Leon
+ * @param <T> Type
  */
 public class GimBufferArray<T> implements GimConstants { //formerly GBUFFER_ARRAY
 

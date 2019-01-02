@@ -43,6 +43,7 @@ public interface DVector4C {
 
 	/**
 	 * @param i The row to return [0, 1, 2].
+	 * @return value at position i
 	 */
 	public double get(int i);
 	public double get0();
@@ -54,6 +55,8 @@ public interface DVector4C {
 	public double lengthSquared();
 	public double length();
 	/** 
+	 * @param b b
+	 * @return Dot product of (this)*b
 	 * @see DVector4#dot(DVector4C)
 	 */
 	public double dot(DVector4C b);

@@ -106,6 +106,7 @@ public class DVector4 implements DVector4C {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
+	 * @return 'false' if normalization failed.
 	 */
 	public final boolean safeNormalize4 ()
 	{
@@ -167,7 +168,7 @@ public class DVector4 implements DVector4C {
 	/**
 	 * Return the 'dot' product of two vectors.
 	 * r = a0*b0 + a1*b1 + a2*b2 + a3*b3;
-	 * @param b 
+	 * @param b b
 	 * @return (this) * b
 	 */
 	@Override

@@ -163,6 +163,9 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
      * fps=frames per second (1/stepsize), 
      * erp=default error reduction parameter (0..1).
 	 * (TZ) This method is used solely to extract information required by the stepping algorithms.
+     * @param worldFPS world FPS
+     * @param worldERP world ERP
+     * @param info 
 	 */
 	public abstract void getInfo2( double worldFPS, double worldERP, Info2Descr info );
     // This call quickly!!! estimates maximum value of "m" that could be returned by getInfo1()
@@ -876,14 +879,20 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		node[1].next = null;
 	}
 
-	/** deprecated */
+	/** 
+	 * deprecated 
+	 * @param data user data
+	 */
 	public void dJointSetData (Object data)
 	{
 		userdata = data;
 	}
 
 
-	/** deprecated */
+	/** 
+	 * deprecated 
+	 * @return user data 
+	 */
 	public Object dJointGetData ()
 	{
 		return userdata;

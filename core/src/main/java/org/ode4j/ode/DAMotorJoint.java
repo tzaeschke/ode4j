@@ -46,6 +46,7 @@ public interface DAMotorJoint extends DJoint {
 
 	/**
 	 * Set mode.
+	 * @param mode mode
 	 */
 	void setMode (AMotorMode mode);
 
@@ -53,14 +54,17 @@ public interface DAMotorJoint extends DJoint {
 	/**
 	 * Get the angular motor mode.
 	 * Mode must be one of the following constants:
+	 * <ul>
 	 * <li> dAMotorUser The AMotor axes and joint angle settings are entirely
 	 * controlled by the user.  This is the default mode.</li>
 	 * <li> dAMotorEuler Euler angles are automatically computed.
 	 * The axis a1 is also automatically computed.
 	 * The AMotor axes must be set correctly when in this mode,
 	 * as described below.</li>
+	 * </ul>
 	 * When this mode is initially set the current relative orientations
 	 * of the bodies will correspond to all euler angles at zero.
+	 * @return mode
 	 */
 	AMotorMode getMode();
 
@@ -77,17 +81,26 @@ public interface DAMotorJoint extends DJoint {
 	 * AMotor. <p>
 	 * Num can range from 0 (which effectively deactivates the joint) to 3.
 	 * This is automatically set to 3 in dAMotorEuler mode.
+	 * @return number of axes
 	 */
 	int getNumAxes();
 
 	/**
 	 * Set axis.
+	 * @param anum anum
+	 * @param rel rel
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis (int anum, int rel, double x, double y, double z);
 
 	
 	/**
 	 * Set axis.
+	 * @param anum anum
+	 * @param rel  rel
+	 * @param a a
 	 */
 	void setAxis (int anum, int rel, DVector3C a);
 
@@ -95,9 +108,11 @@ public interface DAMotorJoint extends DJoint {
 	/**
 	 * Get the AMotor axes.
 	 * @param anum selects the axis to change (0,1 or 2).
+	 * <ul>
 	 * <li> 0: The axis is anchored to the global frame. </li>
 	 * <li> 1: The axis is anchored to the first body. </li>
 	 * <li> 2: The axis is anchored to the second body. </li>
+	 * </ul>
 	 * @param result Each axis can have one of three ``relative orientation'' modes.
 	 */
 	void getAxis (int anum, DVector3 result);
@@ -112,11 +127,15 @@ public interface DAMotorJoint extends DJoint {
 	 * return the relative mode.
 	 * <p>
 	 * For dAMotorEuler mode:
+	 * <ul>
 	 * <li>	Only axes 0 and 2 need to be set. Axis 1 will be determined
 		automatically at each time step. </li>
 	 * <li>	Axes 0 and 2 must be perpendicular to each other. </li>
 	 * <li>	Axis 0 must be anchored to the first body, axis 2 must be anchored
 		to the second body. </li>
+		</ul>
+	 * @param anum axis number
+	 * @return rel rel
 	 */
 	int getAxisRel (int anum);
 
@@ -127,6 +146,8 @@ public interface DAMotorJoint extends DJoint {
 	 * mode the AMotor has no other way of knowing the joint angles.
 	 * The angle information is needed if stops have been set along the axis,
 	 * but it is not needed for axis motors.
+	 * @param anum axis number
+	 * @param angle angle
 	 */
 	void setAngle (int anum, double angle);
 
@@ -137,6 +158,8 @@ public interface DAMotorJoint extends DJoint {
 	 * In dAMotorUser mode this is simply the value that was set with
 	 * dJointSetAMotorAngle().
 	 * In dAMotorEuler mode this is the corresponding euler angle.
+	 * @param anum axis number
+	 * @return angle
 	 */
 	double getAngle (int anum);
 	
@@ -147,6 +170,8 @@ public interface DAMotorJoint extends DJoint {
 	 * In dAMotorUser mode this is always zero, as not enough information is
 	 * available.
 	 * In dAMotorEuler mode this is the corresponding euler angle rate.
+	 * @param anum axis number
+	 * @return rate
 	 */
 	double getAngleRate (int anum);
 
@@ -157,6 +182,9 @@ public interface DAMotorJoint extends DJoint {
 	 * <p>
 	 * If the motor has fewer than three axes, the higher torques are ignored.
 	 * This function is just a wrapper for dBodyAddTorque().
+	 * @param torque1 torque 1
+	 * @param torque2 torque 2
+	 * @param torque3 torque 3
 	 */
 	void addTorques(double torque1, double torque2, double torque3);
 	
@@ -182,6 +210,8 @@ public interface DAMotorJoint extends DJoint {
 
 	/**
 	 * Set joint parameter.
+	 * @param parameter parameter indicator
+	 * @param value value
 	 */
 	@Override
 	void setParam (PARAM_N parameter, double value);
@@ -189,6 +219,7 @@ public interface DAMotorJoint extends DJoint {
 
 	/**
 	 * Get joint parameter.
+	 * @return parameter value
 	 */
 	@Override
 	double getParam (PARAM_N parameter);

@@ -29,6 +29,7 @@ public class Info2DescrQuickStep implements Info2Descr {
 	private int rowskip;
 	private int pairskip;
 
+	@Override
 	public void setFindex(int i, int val) {
 		_findexA[findex + i] = val;
 	}
@@ -53,22 +54,27 @@ public class Info2DescrQuickStep implements Info2Descr {
 		return super.toString();
 	}
 
+	@Override
 	public void setC(int i, double d) {
 		_J[pairRhsCfm + i * pairskip + JointEnums.GI2_RHS] = d;
 	}
 
+	@Override
 	public double getC(int i) {
 		return _J[pairRhsCfm + i * pairskip + JointEnums.GI2_RHS];
 	}
 
+	@Override
 	public void setCfm(int i, double d) {
 		_J[pairRhsCfm + i * pairskip + JointEnums.GI2_CFM] = d;
 	}
 
+	@Override
 	public void setLo(int i, double d) {
 		_J[pairLoHi + i * pairskip + JointEnums.GI2_LO] = d;
 	}
 
+	@Override
 	public void setHi(int i, double d) {
 		_J[pairLoHi + i * pairskip + JointEnums.GI2_HI] = d;
 	}
@@ -78,30 +84,37 @@ public class Info2DescrQuickStep implements Info2Descr {
 		this.pairskip = pairskip;
 	}
 
+	@Override
 	public void setJ1l(int row, DVector3C v) {
 		setJ1l(row, v.get0(), v.get1(), v.get2());
 	}
 
+	@Override
 	public void setJ1a(int row, DVector3C v) {
 		setJ1a(row, v.get0(), v.get1(), v.get2());
 	}
 
+	@Override
 	public void setJ2l(int row, DVector3C v) {
 		setJ2l(row, v.get0(), v.get1(), v.get2());
 	}
 
+	@Override
 	public void setJ2a(int row, DVector3C v) {
 		setJ2a(row, v.get0(), v.get1(), v.get2());
 	}
 
+	@Override
 	public void setJ2lNegated(int row, DVector3C v) {
 		setJ2l(row, -v.get0(), -v.get1(), -v.get2());
 	}
 
+	@Override
 	public void setJ2aNegated(int row, DVector3C v) {
 		setJ2a(row, -v.get0(), -v.get1(), -v.get2());
 	}
 
+	@Override
 	public void setJ1aCrossMatrix(int row, DVector3C a, double sign) {
 		setJ1(row, GI2_JAY, -sign * a.get2());
 		setJ1(row, GI2_JAZ, sign * a.get1());
@@ -111,6 +124,7 @@ public class Info2DescrQuickStep implements Info2Descr {
 		setJ1(row + 2, GI2_JAY, sign * a.get0());
 	}
 
+	@Override
 	public void setJ2aCrossMatrix(int row, DVector3C a, double sign) {
 		setJ2(row, GI2_JAY, -sign * a.get2());
 		setJ2(row, GI2_JAZ, sign * a.get1());

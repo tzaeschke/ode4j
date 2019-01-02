@@ -44,6 +44,7 @@ import org.ode4j.ode.internal.cpp4j.java.ObjArray;
  * 
  * Ported to Java by Tilmann Zaeschke
  * @author Francisco Leon
+ * @param <T> Type
  */
 public class GimDynArray<T> {//extends GimBufferArray<T> {
 	//! @{

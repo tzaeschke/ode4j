@@ -36,8 +36,8 @@ import org.ode4j.math.DVector3;
  * constraint are often used interchangeably.
  * <p>
  * A joint has a set of parameters that can be set. These include:
- * <p>
- *
+ * 
+ *<ul>
  * <li>  dParamLoStop Low stop angle or position. Setting this to
  *	-dInfinity (the default value) turns off the low stop.
  *	For rotational joints, this stop must be greater than -pi to be
@@ -81,6 +81,7 @@ import org.ode4j.math.DVector3;
  *	Currently this is only implemented on the hinge-2 joint.
  * <li>  dParamSuspensionCFM Suspension constraint force mixing (CFM) value.
  *	Currently this is only implemented on the hinge-2 joint.
+ * </ul>
  *
  * If a particular parameter is not implemented by a given joint, setting it
  * will have no effect.
@@ -115,6 +116,7 @@ public interface DJoint {
 	
 	/**
 	 * Return the number of bodies attached to the joint.
+	 * @return number of bodies
 	 */
 	int getNumBodies();
 
@@ -131,18 +133,22 @@ public interface DJoint {
 	 * 
 	 * <p>REMARK:
 	 * Some joints, like hinge-2 need to be attached to two bodies to work.
+	 * @param body1 body 1
+	 * @param body2 body 2
 	 */
 	void attach (DBody body1, DBody body2);
 	
 
 	/**
 	 * Set the user-data pointer.
+	 * @param data User data
 	 */
 	void setData (Object data);
 	
 	
 	/**
 	 * Get the user-data pointer.
+	 * @return user data
 	 */
 	Object getData();
 
@@ -158,6 +164,7 @@ public interface DJoint {
 	 * the simulation.
 	 * 
 	 * @param index return the first (0) or second (1) body.
+	 * @return Body at connection 'index'
 	 */
 	DBody getBody (int index);
 	
@@ -167,16 +174,21 @@ public interface DJoint {
 	 * <p>
 	 * The feedback can be used by the user, so that it is known how
 	 * much force an individual joint exerts.
+	 * @param fb Joint feedback
 	 */
 	void setFeedback(DJoint.DJointFeedback fb);
 	
 	
 	/**
 	 * Gets the datastructure that is to receive the feedback.
+	 * @return Joint feedback
 	 */
 	DJoint.DJointFeedback getFeedback();
 
-	/** If not implemented it will do nothing as describe in the doc. */
+	/** If not implemented it will do nothing as describe in the doc. 
+	 * @param type Parameter selector
+	 * @param value value 
+	 */
 	void setParam (PARAM_N type, double value);
 	
 	
@@ -184,6 +196,8 @@ public interface DJoint {
 	 * Get joint parameter.
 	 * <p>
 	 * If not implemented it will do nothing as describe in the doc. 
+	 * @param type parameter selector
+	 * @return value
 	 */
 	double getParam (PARAM_N type);
 

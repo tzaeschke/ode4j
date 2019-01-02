@@ -36,36 +36,36 @@ import org.ode4j.math.DVector3C;
  * <PRE>
  *                              |- Anchor point
  *      Body_1                  |                       Body_2
- *      +---------------+       V                       +------------------+
+ *      +---------------+       V                      +------------------+
  *     /               /|                             /                  /|
  *    /               / +       |--      ______      /                  / +
- *   /      x        /./........x.......(_____()..../         x        /.......> axis
+ *   /      x        /./........x.......(_____()..../         x        /.......&gt; axis
  *  +---------------+ /         |--                +------------------+ /
  *  |               |/                             |                  |/
  *  +---------------+                              +------------------+
  *          |                                                 |
  *          |                                                 |
- *          |------------------> <----------------------------|
+ *          |------------------&gt; &lt;----------------------------|
  *              anchor1                  anchor2
  *
  *
  * </PRE>
  *
  * When the prismatic joint as been elongated (i.e. dJointGetPistonPosition)
- * return a value >  0
+ * return a value &gt; 0
  * <PRE>
  *                                   |- Anchor point
  *      Body_1                       |                       Body_2
- *      +---------------+            V                       +------------------+
+ *      +---------------+            V                      +------------------+
  *     /               /|                                  /                  /|
  *    /               / +            |--      ______      /                  / +
- *   /      x        /./........_____x.......(_____()..../         x        /.......> axis
+ *   /      x        /./........_____x.......(_____()..../         x        /.......&gt; axis
  *  +---------------+ /              |--                +------------------+ /
  *  |               |/                                  |                  |/
  *  +---------------+                                   +------------------+
  *          |                                                      |
  *          |                                                      |
- *          |----------------.>      <----------------------------|
+ *          |----------------.&gt;       &lt;----------------------------|
  *              anchor1         |----|         anchor2
  *                                ^
  *                                |-- This is what dJointGetPistonPosition will
@@ -77,12 +77,16 @@ public interface DPistonJoint extends DJoint {
 
 	/**
 	 * Set the joint anchor.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor (double x, double y, double z);
 
 	
 	/**
 	 * Set the joint anchor.
+	 * @param a a
 	 */
 	void setAnchor (DVector3C a);
 
@@ -93,6 +97,7 @@ public interface DPistonJoint extends DJoint {
 	 * This returns the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2 in direction perpendicular
 	 * to the prismatic axis.
+	 * @param result Object that returns the result after calling this method
 	 */
 	void getAnchor (DVector3 result);
 	
@@ -107,6 +112,7 @@ public interface DPistonJoint extends DJoint {
 	 * this function will return the same value as dJointGetPistonAnchor() to
 	 * within roundoff errors. dJointGetPistonAnchor2() can be used, along with
 	 * dJointGetPistonAnchor(), to see how far the joint has come apart.
+	 * @param result Object that returns the result after calling this method
 	 */
 	void getAnchor2 (DVector3 result);
 
@@ -141,18 +147,23 @@ public interface DPistonJoint extends DJoint {
 
 	/**
 	 * Set the joint axis.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis (double x, double y, double z);
 
 	
 	/**
 	 * Set the joint axis.
+	 * @param a a
 	 */
 	void setAxis (DVector3C a);
 
 	
 	/**
 	 * Get the prismatic axis (This is also the rotoide axis.
+	 * @param result Object that returns the result after calling this method
 	 */
 	void getAxis (DVector3 result);
 
@@ -162,12 +173,14 @@ public interface DPistonJoint extends DJoint {
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
+	 * @return position
 	 */
 	double getPosition();
 
 	
 	/**
 	 * Get the piston linear position's time derivative.
+	 * @return rate
 	 */
 	double getPositionRate();
 
@@ -177,6 +190,7 @@ public interface DPistonJoint extends DJoint {
 	 * That is, it applies a force with specified magnitude, in the direction of
 	 * prismatic's axis, to body1, and with the same magnitude but opposite
 	 * direction to body2.  This function is just a wrapper for dBodyAddForce().
+	 * @param force force
 	 */
 	void addForce (double force);
 	
@@ -191,12 +205,14 @@ public interface DPistonJoint extends DJoint {
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
+	 * @return angle
 	 */
 	double getAngle();
 
 	
 	/**
 	 * Get the piston angular position's time derivative.
+	 * @return angle
 	 */
 	double getAngleRate();
 

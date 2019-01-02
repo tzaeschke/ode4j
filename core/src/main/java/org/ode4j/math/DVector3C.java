@@ -43,6 +43,7 @@ public interface DVector3C {
 
 	/**
 	 * @param i The row to return [0, 1, 2].
+	 * @return Value ot position i
 	 */
 	public double get(int i);
 	public double get0();
@@ -54,23 +55,30 @@ public interface DVector3C {
 	public double lengthSquared();
 	public double length();
 	/** 
+	 * @param a Other vector
 	 * @return Distance between this vector and b).
 	 * @see DVector3#distance(DVector3C) 
 	 */
 	public double distance(DVector3C a);
 	/** 
+	 * @param b Other vector
+	 * @return dot product of (this) and b
 	 * @see DVector3#dot(DVector3C)
 	 */
 	public double dot(DVector3C b);
 	/** 
+	 * @param b Other vector
+	 * @return dot product of (this) and b
 	 * @see DVector3#dot(DVector3C) 
 	 */
 	public double dot(DVector3View b);
 
     /** 
+     * @param v2 other vector
+     * @return return difference of (this)-v2
      * @see DVector3#reSub(DVector3C) 
      */
-	public DVector3 reSub(DVector3C pos);
+	public DVector3 reSub(DVector3C v2);
 	public DVector3 reScale(double s);
 	public float[] toFloatArray4();
 	public double dotCol(DMatrix3C m, int col);

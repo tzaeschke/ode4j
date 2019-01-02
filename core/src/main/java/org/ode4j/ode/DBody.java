@@ -32,7 +32,7 @@ import org.ode4j.math.DVector3C;
 /**
  * A rigid body has various properties from the point of view of the
  * simulation. Some properties change over time:
- * <p>
+ * <ul>
  *  <li> Position vector (x,y,z) of the body's point of reference.
  *      Currently the point of reference must correspond to the body's center of mass.
  *  <li> Linear velocity of the point of reference, a vector (vx,vy,vz).
@@ -40,9 +40,10 @@ import org.ode4j.math.DVector3C;
  *      a 3x3 rotation matrix.
  *  <li> Angular velocity vector (wx,wy,wz) which describes how the orientation
  *      changes over time.
+ * </ul>
  * <p>
  * Other body properties are usually constant over time:
- * <p>
+ * <ul>
  *  <li> Mass of the body.
  *  <li> Position of the center of mass with respect to the point of reference.
  *      In the current implementation the center of mass and the point of
@@ -50,6 +51,7 @@ import org.ode4j.math.DVector3C;
  *  <li> Inertia matrix. This is a 3x3 matrix that describes how the body's mass
  *      is distributed around the center of mass. Conceptually each body has an
  *      x-y-z coordinate frame embedded in it that moves and rotates with the body.
+ * </ul>
  * <p>
  * The origin of this coordinate frame is the body's point of reference. Some values
  * in ODE (vectors, matrices etc) are relative to the body coordinate frame, and others
@@ -103,6 +105,9 @@ public interface DBody {
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setPosition (double x, double y, double z);
 	/**
@@ -111,6 +116,7 @@ public interface DBody {
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
+	 * @param p p
 	 */
 	void setPosition (DVector3C p);
 
@@ -120,6 +126,7 @@ public interface DBody {
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
+	 * @param R R
 	 */
 	void setRotation (DMatrix3C R);
 	/**
@@ -128,22 +135,31 @@ public interface DBody {
 	 * After setting, the outcome of the simulation is undefined
 	 * if the new configuration is inconsistent with the joints/constraints
 	 * that are present.
+	 * @param q q
 	 */
 	void setQuaternion (DQuaternionC q);
 	/**
 	 * Set the linear velocity of a body.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setLinearVel (double x, double y, double z);
 	/**
 	 * Set the linear velocity of a body.
+	 * @param v v
 	 */
 	void setLinearVel (DVector3C v);
 	/**
 	 * Set the angular velocity of a body.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAngularVel (double x, double y, double z);
 	/**
 	 * Set the angular velocity of a body.
+	 * @param v v
 	 */
 	void setAngularVel (DVector3C v);
 
@@ -153,6 +169,7 @@ public interface DBody {
 	 * When getting, the returned values are pointers to internal data structures,
 	 * so the vectors are valid until any changes are made to the rigid body
 	 * system structure.
+	 * @return position vector
 	 */
 	DVector3C getPosition();
 	/**
@@ -167,10 +184,12 @@ public interface DBody {
 	DQuaternionC getQuaternion();
 	/**
 	 * Get the linear velocity of a body.
+	 * @return vector
 	 */
 	DVector3C getLinearVel();
 	/**
 	 * Get the angular velocity of a body.
+	 * @return vector
 	 */
 	DVector3C getAngularVel();
 
@@ -180,22 +199,26 @@ public interface DBody {
 	//  { setMass (&mass); }
 	/**
 	 * Set the mass of a body.
+	 * @param mass mass
 	 */
 	void setMass (DMassC mass);
 	/**
 	 * Get the mass of a body.
+	 * @return mas
 	 */
 	DMassC getMass ();
 
 
 	/**
 	 * Retrieves the world attached to the given body.
+	 * @return World object
 	 */
 	DWorld getWorld();
 
 
 	/**
 	 * Set auto disable linear average threshold.
+	 * @param threshold threshold
 	 */
 	void setAutoDisableLinearThreshold (double threshold);
 	/**
@@ -205,6 +228,7 @@ public interface DBody {
 	double getAutoDisableLinearThreshold();
 	/**
 	 * Set auto disable angular average threshold.
+	 * @param threshold threshold
 	 */
 	void setAutoDisableAngularThreshold (double threshold);
 	/**
@@ -262,75 +286,123 @@ public interface DBody {
 
 	/**
 	 * Add force at centre of mass of body in absolute coordinates.
+	 * @param fx fx
+	 * @param fy fy
+	 * @param fz fz
 	 */
 	void addForce (double fx, double fy, double fz);
 	/**
 	 * Add force at centre of mass of body in absolute coordinates.
+	 * @param f f
 	 */
 	void addForce (DVector3C f);
 	/**
 	 * Add torque at centre of mass of body in absolute coordinates.
+	 * @param fx fx
+	 * @param fy fy
+	 * @param fz fz
 	 */
 	void addTorque (double fx, double fy, double fz);
 	/**
 	 * Add torque at centre of mass of body in absolute coordinates.
+	 * @param t t
 	 */
 	void addTorque (DVector3C t);
 
 	/**
 	 * Add force at centre of mass of body in coordinates relative to body.
+	 * @param fx fx
+	 * @param fy fy
+	 * @param fz fz
 	 */
 	void addRelForce (double fx, double fy, double fz);
 	/**
 	 * Add force at centre of mass of body in coordinates relative to body.
+	 * @param f f
 	 */
 	void addRelForce (DVector3C f);
 	/**
 	 * Add torque at centre of mass of body in coordinates relative to body.
+	 * @param fx fx
+	 * @param fy fy
+	 * @param fz fz
 	 */
 	void addRelTorque (double fx, double fy, double fz);
 	/**
 	 * Add torque at centre of mass of body in coordinates relative to body.
+	 * @param t t
 	 */
 	void addRelTorque (DVector3C t);
 
 	/**
 	 * Add force at specified point in body in global coordinates.
+	 * @param fx fx
+	 * @param fy fy
+	 * @param fz fz
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 */
 	void addForceAtPos (double fx, double fy, double fz,
 			double px, double py, double pz);
 	/**
 	 * Add force at specified point in body in global coordinates.
+	 * @param f f
+	 * @param p p
 	 */
 	void addForceAtPos (DVector3C f, DVector3C p);
 
 	/**
 	 * Add force at specified point in body in local coordinates.
+	 * @param fx fx
+	 * @param fy fy
+	 * @param fz fz
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 */
 	void addForceAtRelPos (double fx, double fy, double fz,
 			double px, double py, double pz);
 	/**
 	 * Add force at specified point in body in local coordinates.
+	 * @param f f
+	 * @param p p
 	 */
 	void addForceAtRelPos (DVector3C f, DVector3C p);
 
 	/**
 	 * Add force at specified point in body in global coordinates.
+	 * @param fx fx
+	 * @param fy fy
+	 * @param fz fz
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 */
 	void addRelForceAtPos (double fx, double fy, double fz,
 			double px, double py, double pz);
 	/**
 	 * Add force at specified point in body in global coordinates.
+	 * @param f f
+	 * @param p p
 	 */
 	void addRelForceAtPos (DVector3C f, DVector3C p);
 
 	/**
 	 * Add force at specified point in body in local coordinates.
+	 * @param fx fx
+	 * @param fy fy
+	 * @param fz fz
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 */
 	void addRelForceAtRelPos (double fx, double fy, double fz,
 			double px, double py, double pz);
 	/**
 	 * Add force at specified point in body in local coordinates.
+	 * @param f f
+	 * @param p p
 	 */
 	void addRelForceAtRelPos (DVector3C f, DVector3C p);
 
@@ -358,6 +430,9 @@ public interface DBody {
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
+	 * @param x x
+	 * @param y y
+	 * @param z Z
 	 */
 	void setForce (double x, double y, double z);
 	/**
@@ -366,6 +441,7 @@ public interface DBody {
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
+	 * @param f f
 	 */
 	void setForce (DVector3C f);
 	/**
@@ -374,6 +450,9 @@ public interface DBody {
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setTorque (double x, double y, double z);
 	/**
@@ -382,28 +461,37 @@ public interface DBody {
 	 * This is mostly useful to zero the force and torque for deactivated bodies
 	 * before they are reactivated, in the case where the force-adding functions
 	 * were called on them while they were deactivated.
+	 * @param t t
 	 */
 	void setTorque (DVector3C t);
 
 
 	/**
 	 * Get world position of a relative point on body.
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 * @param result will contain the result.
 	 */
 	void getRelPointPos (double px, double py, double pz, DVector3 result);
 	/**
 	 * Get world position of a relative point on body.
+	 * @param p p
 	 * @param result will contain the result.
 	 */
 	void getRelPointPos (DVector3C p, DVector3 result);
 
 	/**
 	 * Get velocity vector in global coords of a relative point on body.
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 * @param result will contain the result.
 	 */
 	void getRelPointVel (double px, double py, double pz, DVector3 result);
 	/**
 	 * Get velocity vector in global coords of a relative point on body.
+	 * @param p p
 	 * @param result will contain the result.
 	 */
 	void getRelPointVel (DVector3C p, DVector3 result);
@@ -411,12 +499,16 @@ public interface DBody {
 	/**
 	 * Get velocity vector in global coords of a globally
 	 * specified point on a body.
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 * @param result will contain the result.
 	 */
 	void getPointVel (double px, double py, double pz, DVector3 result);
 	/**
 	 * Get velocity vector in global coords of a globally
 	 * specified point on a body.
+	 * @param p p
 	 * @param result will contain the result.
 	 */
 	void getPointVel (DVector3C p, DVector3 result);
@@ -426,6 +518,9 @@ public interface DBody {
 	 * the point's position in body-relative coordinates.
 	 * <p>REMARK:
 	 * This is the inverse of dBodyGetRelPointPos()
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 * @param result will contain the result.
 	 */
 	void getPosRelPoint (double px, double py, double pz, DVector3 result);
@@ -434,28 +529,37 @@ public interface DBody {
 	 * the point's position in body-relative coordinates.
 	 * <p>REMARK:
 	 * This is the inverse of dBodyGetRelPointPos()
+	 * @param p p
 	 * @param result will contain the result.
 	 */
 	void getPosRelPoint (DVector3C p, DVector3 result);
 
 	/**
 	 * Convert from local to world coordinates.
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 * @param result will contain the result.
 	 */
 	void vectorToWorld (double px, double py, double pz, DVector3 result);
 	/**
 	 * Convert from local to world coordinates.
+	 * @param p p
 	 * @param result will contain the result.
 	 */
 	void vectorToWorld (DVector3C p, DVector3 result);
 
 	/**
 	 * Convert from world to local coordinates.
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 * @param result will contain the result.
 	 */
 	void vectorFromWorld (double px, double py, double pz, DVector3 result);
 	/**
 	 * Convert from world to local coordinates.
+	 * @param p p
 	 * @param result will contain the result.
 	 */
 	void vectorFromWorld (DVector3C p, DVector3 result);
@@ -469,6 +573,7 @@ public interface DBody {
 	 * sources of error.
 	 * 
 	 * @param mode can be 0 or 1:
+	 * <ul>
 	 * <li> 0: An ``infinitesimal'' orientation update is used.
 	 * This is fast to compute, but it can occasionally cause inaccuracies
 	 * for bodies that are rotating at high speed, especially when those
@@ -477,6 +582,7 @@ public interface DBody {
 	 * <li> 1: A ``finite'' orientation update is used. 
 	 * This is more costly to compute, but will be more accurate for high
 	 * speed rotations.</li>
+	 * </ul>
 	 */
 	void setFiniteRotationMode (boolean mode);
 
@@ -496,6 +602,9 @@ public interface DBody {
 	 * spinning bodies. For example, if a car wheel is rotating at high speed
 	 * you can call this function with the wheel's hinge axis as the argument to
 	 * try and improve its behavior.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setFiniteRotationAxis (double x, double y, double z);
 	/**
@@ -514,6 +623,7 @@ public interface DBody {
 	 * spinning bodies. For example, if a car wheel is rotating at high speed
 	 * you can call this function with the wheel's hinge axis as the argument to
 	 * try and improve its behavior.
+	 * @param a a
 	 */
 	void setFiniteRotationAxis (DVector3C a);
 
@@ -537,6 +647,7 @@ public interface DBody {
 	 * Return a joint attached to this body, given by index.
 	 * @param index valid range is  0 to n-1 where n is the value returned by
 	 * dBodyGetNumJoints().
+	 * @return Joint object
 	 */
 	DJoint getJoint (int index);
 
@@ -598,6 +709,7 @@ public interface DBody {
 
 	/**
 	 * Get the body's linear damping scale.
+	 * @return damping value
 	 */
 	double getLinearDamping();
 	/**
@@ -614,6 +726,7 @@ public interface DBody {
 	 * 
 	 * <p>REMARK: If the body's angular damping scale was not set, this function
 	 * returns the world's angular damping scale.
+	 * @return damping value
 	 */
 	double getAngularDamping();
 	/**
@@ -634,6 +747,7 @@ public interface DBody {
 	void setDamping(double linear_scale, double angular_scale);
 	/**
 	 * Get the body's linear damping threshold.
+	 * @return threshold value
 	 */
 	double getLinearDampingThreshold();
 	/**
@@ -644,6 +758,7 @@ public interface DBody {
 	void setLinearDampingThreshold(double threshold);
 	/**
 	 * Get the body's angular damping threshold.
+	 * @return threshold value
 	 */
 	double getAngularDampingThreshold();
 	/**
@@ -659,6 +774,7 @@ public interface DBody {
 
 	/**
 	 * Get the body's maximum angular speed.
+	 * @return speed limit
 	 * @see DWorld#getMaxAngularSpeed()
 	 */
 	double getMaxAngularSpeed();
@@ -668,6 +784,7 @@ public interface DBody {
 	 * The default value is dInfinity, but it's a good idea to limit
 	 * it at less than 500 if the body has the gyroscopic term
 	 * enabled.
+	 * @param max_speed speed limit
 	 * @see DWorld#setMaxAngularSpeed(double) 
 	 */
 	void setMaxAngularSpeed(double max_speed);

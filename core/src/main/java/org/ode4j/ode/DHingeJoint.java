@@ -31,12 +31,16 @@ public interface DHingeJoint extends DJoint {
 
 	/**
 	 * Set hinge anchor parameter.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor (double x, double y, double z);
 	
 	
 	/**
 	 * Set hinge anchor parameter.
+	 * @param a a
 	 */
 	void setAnchor (DVector3C a);
 	
@@ -46,6 +50,7 @@ public interface DHingeJoint extends DJoint {
 	 * <p>
 	 * This returns the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
+	 * @param result Vector containing the result
 	 */
 	void getAnchor (DVector3 result);
 
@@ -56,24 +61,30 @@ public interface DHingeJoint extends DJoint {
 	 * this will return the same value as dJointGetHingeAnchor().
 	 * If not, this value will be slightly different.
 	 * This can be used, for example, to see how far the joint has come apart.
+	 * @param result Vector containing the result
 	 */
 	void getAnchor2 (DVector3 result);
 
 	
 	/**
 	 * Set hinge axis.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis (double x, double y, double z);
 	
 	
 	/**
 	 * Set hinge axis.
+	 * @param a a
 	 */
 	void setAxis (DVector3C a);
 	
 	
 	/**
 	 * Get axis.
+	 * @param result Vector containing the result
 	 */
 	void getAxis (DVector3 result);
 	
@@ -117,12 +128,14 @@ public interface DHingeJoint extends DJoint {
 	 * respect to Body 2.
 	 * When the hinge anchor or axis is set, the current position of the attached
 	 * bodies is examined and that position will be the zero angle.
+	 * @return angle
 	 */
 	double getAngle();
 	
 	
 	/**
 	 * Get the hinge angle time derivative.
+	 * @return rate
 	 */
 	double getAngleRate();
 
@@ -133,6 +146,7 @@ public interface DHingeJoint extends DJoint {
 	 * That is, it applies a torque with specified magnitude in the direction
 	 * of the hinge axis, to body 1, and with the same magnitude but in opposite
 	 * direction to body 2. This function is just a wrapper for dBodyAddTorque()}
+	 * @param torque torque
 	 */
 	void addTorque (double torque);
 	

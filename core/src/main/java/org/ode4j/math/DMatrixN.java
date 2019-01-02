@@ -48,7 +48,9 @@ public class DMatrixN {
 
 	/**
 	 * Private to enforce usage of wrap().
-	 * @param a
+	 * @param a a
+	 * @param i i 
+	 * @param j j 
 	 */
 	private DMatrixN(double[] a, int i, int j) {
 		v = a;
@@ -120,10 +122,10 @@ public class DMatrixN {
 	/**
 	 * This returns a new Matrix containing a copy of the selected
 	 * sub-matrix.
-	 * @param np
-	 * @param p
-	 * @param nq
-	 * @param q
+	 * @param np np
+	 * @param p p
+	 * @param nq nq
+	 * @param q q
 	 * @return New sub-matrix.
 	 */
 	public DMatrixN newSubMatrix (int np, int []p, int nq, int []q)

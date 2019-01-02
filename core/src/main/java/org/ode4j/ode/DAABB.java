@@ -52,6 +52,9 @@ public class DAABB implements DAABBC {
 	
 	/**
 	 * Set the minimum and maximum values to -+ the given parameters.
+	 * @param mm0 min/max 0
+	 * @param mm1 min/max 1
+	 * @param mm2 min/max 2
 	 */
 	public void setMinMax(double mm0, double mm1, double mm2) {
 		//set(-mm0, mm0, -mm1, mm1, -mm2, mm2);
@@ -61,7 +64,7 @@ public class DAABB implements DAABBC {
 
 	/**
 	 * Move this AABB by <tt>pos</tt>.
-	 * @param pos
+	 * @param pos pos
 	 */
 	public void shiftPos(DVector3C pos) {
 		_min.add(pos);
@@ -111,7 +114,7 @@ public class DAABB implements DAABBC {
 
 	/**
 	 * Checks whether the to AABBs are disjoint.
-	 * @param aabb2
+	 * @param aabb2 aabb2
 	 * @return <tt>false</tt> if the two AABBs overlap.
 	 */
 	@Override
@@ -129,8 +132,8 @@ public class DAABB implements DAABBC {
 
 	/**
 	 * Determines the AABB from a box defined by the two vectors.
-	 * @param v1
-	 * @param v2
+	 * @param v1 v1
+	 * @param v2 v2
 	 */
 	public void setMinMax(DVector3C v1, DVector3C v2) {
 		if (v1.get0() < v2.get0()) {
@@ -184,6 +187,7 @@ public class DAABB implements DAABBC {
 	
 	/**
 	 * get[0].
+	 * @return min[0]
 	 */
 	@Override
 	public double getMin0() {
@@ -192,6 +196,7 @@ public class DAABB implements DAABBC {
 	
     /**
      * get[2].
+	 * @return min[1]
      */
 	@Override
 	public double getMin1() {
@@ -200,6 +205,7 @@ public class DAABB implements DAABBC {
 	
     /**
      * get[4].
+	 * @return min[2]
      */
 	@Override
 	public double getMin2() {
@@ -208,6 +214,7 @@ public class DAABB implements DAABBC {
 	
     /**
      * get[1].
+	 * @return max[0]
      */
 	@Override
 	public double getMax0() {
@@ -216,6 +223,7 @@ public class DAABB implements DAABBC {
 	
     /**
      * get[3].
+	 * @return max[1]
      */
 	@Override
 	public double getMax1() {
@@ -224,6 +232,7 @@ public class DAABB implements DAABBC {
 	
     /**
      * get[5].
+	 * @return max[2]
      */
 	@Override
 	public double getMax2() {
@@ -280,7 +289,7 @@ public class DAABB implements DAABBC {
 
 	/**
 	 * Expand this AABB to include the given point.
-	 * @param point
+	 * @param point point 
 	 */
 	public void expand(DVector3C point) {
 		if (point.get0() < _min.get0()) _min.set0(point.get0());
@@ -293,7 +302,7 @@ public class DAABB implements DAABBC {
 
 	/**
 	 * Expand this AABB to include the given AABB.
-	 * @param aabb
+	 * @param aabb aabb
 	 */
 	public void expand(DAABBC aabb) {
 		if (aabb.getMin0() < _min.get0()) _min.set0(aabb.getMin0());

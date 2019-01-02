@@ -40,8 +40,8 @@ import org.ode4j.math.DVector3C;
  *                      \/              ..      ..
  * +--------------+    --|        __..      ..  anchor2
  * |      x       | .....|.......(__)     ..
- * +--------------+    --|         ^     <
- *        |----------------------->|
+ * +--------------+    --|         ^     &lt;
+ *        |-----------------------&gt;|
  *            Offset               |--- Rotoide articulation
  * </PRE>
  */
@@ -49,36 +49,48 @@ public interface DPRJoint extends DJoint {
 
 	/**
 	 * Set anchor.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor (double x, double y, double z);
 
 	
 	/**
 	 * Set anchor.
+	 * @param a a
 	 */
 	void setAnchor (DVector3C a);
 
 	
 	/**
 	 * Set the axis for the prismatic articulation.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis1 (double x, double y, double z);
 	
 	
 	/**
 	 * Set the axis for the prismatic articulation.
+	 * @param a a
 	 */
 	void setAxis1 (DVector3C a);
 
 	
 	/**
 	 * Set the axis for the rotoide articulation.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis2 (double x, double y, double z);
 
 	
 	/**
 	 * Set the axis for the rotoide articulation.
+	 * @param a a
 	 */
 	void setAxis2 (DVector3C a);
 
@@ -87,18 +99,21 @@ public interface DPRJoint extends DJoint {
 	 * Get the joint anchor point, in world coordinates.
 	 * Return the point on body 1. If the joint is perfectly satisfied, 
 	 * this will be the same as the point on body 2.
+	 * @param result Object that returns the result after calling this method
 	 */
 	void getAnchor (DVector3 result);
 
 	
 	/**
 	 * Get the prismatic axis.
+	 * @param result Object that returns the result after calling this method
 	 */
 	void getAxis1 (DVector3 result);
 
 	
 	/**
 	 * Get the Rotoide axis.
+	 * @param result Object that returns the result after calling this method
 	 */
 	void getAxis2 (DVector3 result);
 
@@ -111,12 +126,14 @@ public interface DPRJoint extends DJoint {
 	 * <p>
 	 * The position is the "oriented" length between the
 	 * position = (Prismatic axis) dot_product [(body1 + offset) - (body2 + anchor2)]
+	 * @return position
 	 */
 	double getPosition();
 
 	
 	/**
 	 * Get the PR linear position's time derivative.
+	 * @return rate
 	 */
 	double getPositionRate();
 	void setParamLoStop(double d);
@@ -132,12 +149,14 @@ public interface DPRJoint extends DJoint {
 	 *
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.
+	 * @return angle
 	 */
 	double getAngle();
 
 	
 	/**
 	 * Get the PR angular position's time derivative.
+	 * @return rate
 	 */
 	double getAngleRate();
 
@@ -164,6 +183,7 @@ public interface DPRJoint extends DJoint {
 	 * That is, it applies a torque with specified magnitude in the direction 
 	 * of the rotoide axis, to body 1, and with the same magnitude but in opposite
 	 * direction to body 2. This function is just a wrapper for dBodyAddTorque()}
+	 * @param torque torque
 	 */
 	void addTorque(double torque);
 }

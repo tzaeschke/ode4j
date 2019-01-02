@@ -112,6 +112,10 @@ public class CCD {
 
 	/**
 	 * Returns true if two given objects interest.
+	 * @param obj1 object 1
+	 * @param obj2 object 2
+	 * @param ccd 
+	 * @return true or false
 	 */
 	public static boolean ccdGJKIntersect(final Object obj1, final Object obj2, final ccd_t ccd)
 	{
@@ -125,6 +129,12 @@ public class CCD {
 	 * vector is minimal translation of obj2 to get obj1 and obj2 speparated
 	 * (without intersection).
 	 * Returns 0 if obj1 and obj2 intersect and sep is filled with translation
+	 * vector. If obj1 and obj2 don't intersect -1 is returned.
+	 * @param obj1 object 1
+	 * @param obj2 object 2
+	 * @param ccd ccd
+	 * @param sep sep vector
+	 * @return 0 if obj1 and obj2 intersect and sep is filled with translation
 	 * vector. If obj1 and obj2 don't intersect -1 is returned.
 	 */
 	public static int ccdGJKSeparate(final Object obj1, final Object obj2, final ccd_t ccd,
@@ -216,6 +226,15 @@ public class CCD {
 	 * CCD+EPA algorithm is used.
 	 *
 	 * Returns 0 if obj1 and obj2 intersect and depth, dir and pos are filled
+	 * if given non-NULL pointers.
+	 * If obj1 and obj2 don't intersect -1 is returned.
+	 * @param obj1 object 1
+	 * @param obj2 object 2
+	 * @param ccd ccd
+	 * @param depth depth
+	 * @param dir direction
+	 * @param pos pos
+	 * @return 0 if obj1 and obj2 intersect and depth, dir and pos are filled
 	 * if given non-NULL pointers.
 	 * If obj1 and obj2 don't intersect -1 is returned.
 	 */

@@ -42,6 +42,7 @@ public interface DQuaternionC {
 
 	/**
 	 * @param i The row to return [0, 1, 2].
+	 * @return The value at position i
 	 */
 	public double get(int i);
 

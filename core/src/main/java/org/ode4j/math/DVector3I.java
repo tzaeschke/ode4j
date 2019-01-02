@@ -31,6 +31,7 @@ interface DVector3I {
 
 	/**
 	 * @param i The row to return [0, 1, 2].
+	 * @return Value at position i
 	 */
 	double get(int i);
 	double get0();

@@ -31,36 +31,47 @@ public interface DDoubleBallJoint extends DJoint {
 
 	/**
 	 * Set anchor1 for double ball joint.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor1(double x, double y, double z);
 
 	/**
 	 * Set anchor2 for double ball joint.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor2(double x, double y, double z);
 
 	/**
 	 * Set anchor1 for double ball joint.
+	 * @param xyz xyz
 	 */
 	void setAnchor1(DVector3C xyz);
 
 	/**
 	 * Set anchor2 for double ball joint.
+	 * @param xyz xyz
 	 */
 	void setAnchor2(DVector3C xyz);
 
 	/**
 	 * Get anchor1 from double ball joint.
+	 * @param result Vector containing the result
 	 */
 	void getAnchor1(DVector3 result);
 
 	/**
 	 * Get anchor2 from double ball joint.
+	 * @param result Vector containing the result
 	 */
 	void getAnchor2(DVector3 result);
 
 	/**
 	 * Get the set distance from double ball joint.
+	 * @return distance
 	 */
 	double getDistance();
 

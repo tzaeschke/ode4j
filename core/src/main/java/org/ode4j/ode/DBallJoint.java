@@ -34,12 +34,18 @@ public interface DBallJoint extends DJoint {
 	 * <p>
 	 * The joint will try to keep this point on each body
 	 * together. The input is specified in world coordinates.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor (double x, double y, double z);
 	
 	
 	/**
 	 * Set the joint anchor point.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor2(double x, double y, double z);
 	
@@ -49,12 +55,14 @@ public interface DBallJoint extends DJoint {
 	 * <p>
 	 * The joint will try to keep this point on each body
 	 * together. The input is specified in world coordinates.
+	 * @param a vector a
 	 */
 	void setAnchor (DVector3C a);
 	
 	
 	/**
 	 * Set the joint anchor point on body 2.
+	 * @param a vector a
 	 */
 	void setAnchor2 (DVector3C a);
 	
@@ -64,6 +72,7 @@ public interface DBallJoint extends DJoint {
 	 * <p>
 	 * This returns the point on body 1. If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
+	 * @param result Vector with result
 	 */
 	void getAnchor (DVector3 result);
 	
@@ -77,6 +86,7 @@ public interface DBallJoint extends DJoint {
 	 * this function will return the same value as {@code dJointGetBallAnchor()} to
 	 * within roundoff errors. {@code dJointGetBallAnchor2()} can be used, along with
 	 * {@code dJointGetBallAnchor()}, to see how far the joint has come apart.
+	 * @param result Vector with result
 	 */
 	void getAnchor2 (DVector3 result);
 

@@ -42,6 +42,7 @@ public class CCDPolyTope {
 	/**
 	 * General polytope element.
 	 * Could be vertex, edge or triangle.
+	 * @param <T> type
 	 */
 	public static class ccd_pt_el_t<T> {
 //	    __CCD_PT_EL
@@ -148,7 +149,9 @@ public class CCDPolyTope {
 	};
 
 
-	/**** INLINES ****/
+	//// **** INLINES ****
+	
+	
 	public static final ccd_pt_vertex_t ccdPtAddVertexCoords(ccd_pt_t pt,
 	                                                  double x, double y, double z)
 	{
@@ -159,7 +162,9 @@ public class CCDPolyTope {
 
 	/**
 	 * Deletes vertex from polytope.
-	 * Returns 0 on success, -1 otherwise.
+	 * @param pt pt
+	 * @param v v
+	 * @return 0 on success, -1 otherwise.
 	 */
 	public static final int ccdPtDelVertex(ccd_pt_t pt, ccd_pt_vertex_t v)
 	{

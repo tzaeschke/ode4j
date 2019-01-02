@@ -1659,6 +1659,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 *	NOTE!
 	 *	If it is necessary to add special processing mode without contact generation
 	 *	use NULL contact parameter value as indicator, not zero in flags.
+	 * @param o1 o1
+	 * @param o2 o2
+	 * @param flags flags
+	 * @param contacts contacts
+	 * @param skip skip
+	 * @return count
 	 */
 	public static int dCollide (DxGeom o1, DxGeom o2, int flags, 
 			DContactGeomBuffer contacts, int skip)

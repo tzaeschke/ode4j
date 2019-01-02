@@ -105,6 +105,7 @@ public class DVectorN {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
+	 * @return 'false' if vector could not be normalized
 	 */
 	public final boolean safeNormalizeN ()
 	{
@@ -153,6 +154,8 @@ public class DVectorN {
 
 	/**
 	 *  Set a vector/matrix at position i to a specific value.
+	 * @param i position of new value
+	 * @param d new value
 	 */
 	public final void set(int i, double d) {
 		v[i] = d;

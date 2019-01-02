@@ -45,14 +45,34 @@ public interface DMass extends DMassC {
  	void setTrimesh(double density, DTriMesh geom);
  	void setTrimeshTotal(double total, DTriMesh geom);
 	
-	/** @param direction 1=x; 2=y; 3=z */
+	/** 
+	 * @param density density 
+	 * @param direction 1=x; 2=y; 3=z 
+	 * @param radius radius
+	 * @param length length 
+	 */
 	void setCapsule (double density, int direction, double radius, double length);
-	/** @param direction 1=x; 2=y; 3=z */
+	/** 
+	 * @param total total 
+	 * @param direction 1=x; 2=y; 3=z 
+	 * @param radius radius
+	 * @param length length
+	 */
 	void setCapsuleTotal (double total, int direction, double radius, double length);
 	
-	/** @param direction 1=x; 2=y; 3=z */
+	/** 
+	 * @param density density
+	 * @param direction 1=x; 2=y; 3=z 
+	 * @param radius radius 
+	 * @param length length
+	 */
 	void setCylinder (double density, int direction, double radius, double length);
-	/** @param direction 1=x; 2=y; 3=z */
+	/** 
+	 * @param total total 
+	 * @param direction 1=x; 2=y; 3=z 
+	 * @param radius radius
+	 * @param length length
+	 */
 	void setCylinderTotal (double total, int direction, double radius, double length);
 
 	void setBox (double density, double lx, double ly, double lz);

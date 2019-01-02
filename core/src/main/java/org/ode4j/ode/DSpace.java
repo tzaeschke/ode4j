@@ -46,12 +46,21 @@ public interface DSpace extends DGeom {
 	boolean query (DGeom x);
 
 	int getNumGeoms();
-	/** @deprecated Use getGeoms() instead */
+	/**
+	 *  
+	 * @param i geom id
+	 * @return geometry object
+	 * @deprecated Use getGeoms() instead 
+	 */
 	@Deprecated
 	DGeom getGeom (int i);
 	Iterable<DxGeom> getGeoms();
 
-	/** This is equivalent to OdeHelper.spaceCollide(...) */
+	/** 
+	 * This is equivalent to OdeHelper.spaceCollide(...) 
+	 * @param data data 
+	 * @param callback callback
+	 */
 	void collide (Object data, DNearCallback callback);
 	
 	

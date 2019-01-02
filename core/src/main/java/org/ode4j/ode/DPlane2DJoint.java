@@ -59,8 +59,6 @@ public interface DPlane2DJoint extends DJoint {
 	void setYParamVel(double d);
 
 
-	/**
-	 */
 	void setAngleParam(PARAM parameter, double value);
 	
 }

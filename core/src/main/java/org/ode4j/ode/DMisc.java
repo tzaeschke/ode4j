@@ -56,15 +56,20 @@ public class DMisc extends Common {
 
     /** 
      * Get and set the current random number seed. 
+     * @return seed
      */
     public static long dRandGetSeed() {
         return Misc.dRandGetSeed();
     }
+    /**
+     * @param s seed
+     */
     public static void dRandSetSeed (long s) {
         Misc.dRandSetSeed(s);
     }
 
     /**
+     * @param n max
      * @return a random integer between 0..n-1. the distribution will get worse
      * as n approaches 2^32.
      */
@@ -81,6 +86,8 @@ public class DMisc extends Common {
 
     /**
      * Print out a matrix. 
+     * @param A Matrix
+     * @return String
      */
     public static String dPrintMatrix(DMatrix3C A) {
         return A.toString();
@@ -94,18 +101,25 @@ public class DMisc extends Common {
 
     /**
      * Make a random vector with entries between +/- range. A has n elements. 
+     * @param A Vector
+     * @param range range
      */
     public static void dMakeRandomVector (DVector3 A, double range) {
         Misc.dMakeRandomVector(A, range);
     }
     /**
      * Make a random vector with entries between +/- range. A has n elements. 
+     * @param A Quaternion
+     * @param range range
      */
     public static void dMakeRandomVector (DQuaternion A, double range) {
         Misc.dMakeRandomVector(A, range);
     }
     /**
      * Make a random vector with entries between +/- range. A has n elements. 
+     * @param A vector
+     * @param n n
+     * @param range range 
      */
     public static void dMakeRandomVector (double[] A, int n, double range) {
         Misc.dMakeRandomVector(A, n, range);
@@ -113,12 +127,18 @@ public class DMisc extends Common {
 
     /**
      * Make a random matrix with entries between +/- range. A has size n*m. 
+     * @param A Matrix
+     * @param range range
      */
     public static void dMakeRandomMatrix (DMatrix3 A, double range) {
         Misc.dMakeRandomMatrix(A, range);
     }
     /**
      * Make a random matrix with entries between +/- range. A has size n*m. 
+     * @param A Matrix
+     * @param n n
+     * @param m m
+     * @param range range 
      */
     public static void dMakeRandomMatrix (double[] A, int n, int m, double range) {
         Misc.dMakeRandomMatrix(A, n, m, range);
@@ -126,36 +146,51 @@ public class DMisc extends Common {
 
     /**
      * Clear the upper triangle of a square matrix. 
+     * @param A Matrix
      */
     public static void dClearUpperTriangle (DMatrix3 A) {
         Misc.dClearUpperTriangle(A);
     }
     /**
      * Clear the upper triangle of a square matrix. 
+     * @param A Matrix
+     * @param n n
      */
     public static void dClearUpperTriangle (double[] A, int n) {
         Misc.dClearUpperTriangle(A, n);
     }
 
     /**
+     * @param A Matrix A
+     * @param B Matrix B
      * @return the maximum element difference between the two n*m matrices 
      */
     public static double dMaxDifference (DMatrix3C A, DMatrix3C B) {
         return Misc.dMaxDifference(A, B);
     }
     /**
+     * @param A Matrix A 
+     * @param B Matrix B
      * @return the maximum element difference between the two n*m matrices 
      */
     public static double dMaxDifference (DVector3C A, DVector3C B) {
         return Misc.dMaxDifference(A, B);
     }
     /**
+     * @param A Quaternion A
+     * @param B Quaternion B
+     * @param n n
+     * @param m m
      * @return the maximum element difference between the two n*m matrices 
      */
     public static double dMaxDifference (DQuaternionC A, DQuaternionC B, int n, int m) {
         return Misc.dMaxDifference(A, B, n, m);
     }
     /**
+     * @param A Matrix A
+     * @param B Matrix B
+     * @param n n
+     * @param m m
      * @return the maximum element difference between the two n*m matrices 
      */
     public static double dMaxDifference (double[] A, double[] B, int n, int m) {
@@ -163,6 +198,9 @@ public class DMisc extends Common {
     }
 
     /**
+     * @param A Matrix A
+     * @param B Matrix B
+     * @param n n
      * @return the maximum element difference between the lower triangle of two
      * n*n matrices 
      */

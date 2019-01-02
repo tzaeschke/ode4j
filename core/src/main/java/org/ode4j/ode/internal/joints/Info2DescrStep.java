@@ -45,6 +45,7 @@ public class Info2DescrStep implements Info2Descr {
 	private double[] _cfmA;
 	int _cfmP;
 
+	@Override
 	public void setC(int i, double d) {
 		_cA[_cP + i] = d;
 	}
@@ -57,10 +58,12 @@ public class Info2DescrStep implements Info2Descr {
 		_cA[_cP + i] = v.get0();
 	}
 
+	@Override
 	public double getC(int i) {
 		return _cA[_cP + i];
 	}
 
+	@Override
 	public void setCfm(int i, double d) {
 		_cfmA[_cfmP + i] = d;
 	}
@@ -73,10 +76,12 @@ public class Info2DescrStep implements Info2Descr {
 	private double[] _hiA;
 	int _hiP;
 
+	@Override
 	public void setLo(int i, double d) {
 		_loA[_loP + i] = d;
 	}
 
+	@Override
 	public void setHi(int i, double d) {
 		_hiA[_hiP + i] = d;
 	}
@@ -89,6 +94,7 @@ public class Info2DescrStep implements Info2Descr {
 	private int _findexP;
 	private int[] _findexA;
 
+	@Override
 	public void setFindex(int i, int val) {
 		_findexA[_findexP + i] = val;
 	}
@@ -99,6 +105,7 @@ public class Info2DescrStep implements Info2Descr {
 
 	/**
 	 * Set POS for c, cfm, lo, hi, findex.
+	 * @param i POS
 	 */
 	public void setAllP(int i) {
 		_cP = i;
@@ -133,70 +140,85 @@ public class Info2DescrStep implements Info2Descr {
 		return super.toString();
 	}
 
+	@Override
 	public void setJ1l(int row, int i, double d) {
 		_J[J1lp + row * _rowskip + i] = d;
 	}
 
+	@Override
 	public void setJ1a(int row, int i, double d) {
 		_J[J1ap + row * _rowskip + i] = d;
 	}
 
+	@Override
 	public void setJ2l(int row, int i, double d) {
 		_J[J2lp + row * _rowskip + i] = d;
 	}
 
+	@Override
 	public void setJ2a(int row, int i, double d) {
 		_J[J2ap + row * _rowskip + i] = d;
 	}
 
+	@Override
 	public void setJ1l(int row, DVector3C v) {
 		setJ1l(row, v.get0(), v.get1(), v.get2());
 	}
 
+	@Override
 	public void setJ1a(int row, DVector3C v) {
 		setJ1a(row, v.get0(), v.get1(), v.get2());
 	}
 
+	@Override
 	public void setJ2l(int row, DVector3C v) {
 		setJ2l(row, v.get0(), v.get1(), v.get2());
 	}
 
+	@Override
 	public void setJ2a(int row, DVector3C v) {
 		setJ2a(row, v.get0(), v.get1(), v.get2());
 	}
 
+	@Override
 	public void setJ2lNegated(int row, DVector3C v) {
 		setJ2l(row, -v.get0(), -v.get1(), -v.get2());
 	}
 
+	@Override
 	public void setJ2aNegated(int row, DVector3C v) {
 		setJ2a(row, -v.get0(), -v.get1(), -v.get2());
 	}
 
+	@Override
 	public void setJ1l(int row, double x, double y, double z) {
 		setJ1l(row, 0, x);
 		setJ1l(row, 1, y);
 		setJ1l(row, 2, z);
 	}
 
+	@Override
 	public void setJ1a(int row, double x, double y, double z) {
 		setJ1a(row, 0, x);
 		setJ1a(row, 1, y);
 		setJ1a(row, 2, z);
 	}
 
+	@Override
 	public void setJ2l(int row, double x, double y, double z) {
 		setJ2l(row, 0, x);
 		setJ2l(row, 1, y);
 		setJ2l(row, 2, z);
 	}
 
+	@Override
 	public void setJ2a(int row, double x, double y, double z) {
 		setJ2a(row, 0, x);
 		setJ2a(row, 1, y);
 		setJ2a(row, 2, z);
 	}
 
+	@Override
 	public void setJ1aCrossMatrix(int row, DVector3C a, double sign) {
 		setJ1a(row, 1, -sign * a.get2());
 		setJ1a(row, 2, sign * a.get1());
@@ -206,6 +228,7 @@ public class Info2DescrStep implements Info2Descr {
 		setJ1a(row + 2, 1, sign * a.get0());
 	}
 
+	@Override
 	public void setJ2aCrossMatrix(int row, DVector3C a, double sign) {
 		setJ2a(row, 1, -sign * a.get2());
 		setJ2a(row, 2, sign * a.get1());

@@ -104,7 +104,7 @@ public class DQuaternion implements DQuaternionC {
 
 	/**
 	 * Sets w of [w, x, y, z].
-	 * @param w
+	 * @param w w
 	 */
 	public void set0(double w) {
 		v[0] = w;
@@ -112,7 +112,7 @@ public class DQuaternion implements DQuaternionC {
 
 	/**
 	 * Sets x of [w, x, y, z].
-	 * @param x
+	 * @param x x 
 	 */
 	public void set1(double x) {
 		v[1] = x;
@@ -120,7 +120,7 @@ public class DQuaternion implements DQuaternionC {
 
 	/**
 	 * Sets y of [w, x, y, z].
-	 * @param y
+	 * @param y y
 	 */
 	public void set2(double y) {
 		v[2] = y;
@@ -128,7 +128,7 @@ public class DQuaternion implements DQuaternionC {
 
 	/**
 	 * Sets z of [w, x, y, z].
-	 * @param z
+	 * @param z z
 	 */
 	public void set3(double z) {
 		v[3] = z;
@@ -140,6 +140,9 @@ public class DQuaternion implements DQuaternionC {
 
 	/**
 	 * Do not use. This can be slow, use isEq() instead.
+	 * @param obj object
+	 * @return true if equal
+	 * @deprecated 
 	 */
 	@Override
 	@Deprecated
@@ -175,7 +178,9 @@ public class DQuaternion implements DQuaternionC {
 	}
 
 	/**
-	 *  Set a vector/matrix at position i to a specific value.
+	 * Set a vector/matrix at position i to a specific value.
+	 * @param i position
+	 * @param d value
 	 */
 	public final void set(int i, double d) {
 		v[i] = d;
@@ -210,6 +215,7 @@ public class DQuaternion implements DQuaternionC {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
+	 * @return 'false' if normnalization failed (returns unit vector)
 	 */
 	public final boolean safeNormalize4 ()
 	{

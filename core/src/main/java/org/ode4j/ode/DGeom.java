@@ -72,7 +72,7 @@ public interface DGeom {
 	 * <b>These IDs may change between software releases!</b><br>
 	 * To avoid problem, user defined classes should have their IDs allocated 
 	 * based on <tt>dFirstUserClass</tt>, for example: 
-	 * <tt>int myCLassID = dFirstUserClass + x;</tt>, where (x >= 1). 
+	 * <tt>int myCLassID = dFirstUserClass + x;</tt>, where (x &ge; 1). 
 	 */
 	public static final int   dFirstUserClass = 14;
 	public static final int   dLastUserClass = dFirstUserClass + dMaxUserClasses - 1;
@@ -100,6 +100,7 @@ public interface DGeom {
 	 * Given a geom, this returns its class.
 	 * <p>
 	 * The ODE classes are:
+	 * <ul>
 	 *  <li> dSphereClass </li>
 	 *  <li> dBoxClass </li>
 	 *  <li> dCylinderClass </li>
@@ -113,6 +114,7 @@ public interface DGeom {
 	 *  <li> dQuadTreeSpaceClass </li>
 	 *  <li> dFirstUserClass </li>
 	 *  <li> dLastUserClass </li>
+	 * </ul>
 	 * <p>
 	 * User-defined class will return their own number.
 	 *
@@ -140,6 +142,7 @@ public interface DGeom {
 	
 	/**
 	 * Get the user-defined data pointer stored in the geom.
+	 * @return user data
 	 */
 	Object getData();
 
@@ -165,6 +168,7 @@ public interface DGeom {
 	
 	/**
 	 * Get the body associated with a placeable geom.
+	 * @return body object
 	 * @see #setBody(DBody)
 	 */
 	DBody getBody();
@@ -289,6 +293,7 @@ public interface DGeom {
 	 * <p>
 	 * Calling this function on a non-placeable geom results in a runtime error in
 	 * the debug build of ODE.
+	 * @return Rotation quaternion
 	 *
 	 * @see DBody#getQuaternion()
 	 */
@@ -306,6 +311,7 @@ public interface DGeom {
 	 * This function may return a pre-computed cached bounding box, if it can
 	 * determine that the geom has not moved since the last time the bounding
 	 * box was computed.
+	 * @return bounding box
 	 */
 	DAABBC getAABB ();
 
@@ -488,6 +494,9 @@ public interface DGeom {
 	 *
 	 * Calling this function on a non-placeable geom results in the same point being
 	 * returned.
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 *
 	 * @param result will contain the result.
 	 */
@@ -503,6 +512,9 @@ public interface DGeom {
 	 * <p>REMARK:
 	 * This is the inverse of dGeomGetRelPointPos()
 	 * 
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 * @param result will contain the result.
 	 */
 	void getPosRelPoint(double px, double py, double pz, DVector3 result);
@@ -513,6 +525,9 @@ public interface DGeom {
 	 * Calling this function on a non-placeable geom results in the same vector being
 	 * returned.
 	 *
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 * @param result will contain the result.
 	 */
 	void vectorToWorld(double px, double py, double pz, DVector3 result);
@@ -523,6 +538,9 @@ public interface DGeom {
 	 * Calling this function on a non-placeable geom results in the same vector being
 	 * returned.
 	 *
+	 * @param px px
+	 * @param py py
+	 * @param pz pz
 	 * @param result will contain the result.
 	 */
 	void vectorFromWorld(double px, double py, double pz, DVector3 result);
@@ -570,7 +588,7 @@ public interface DGeom {
 	void setOffsetPosition(double x, double y, double z);
 	/**
 	 * 
-	 * @param xyz
+	 * @param xyz xyz
 	 * @see #setOffsetPosition(double, double, double) 
 	 */
 	void setOffsetPosition(DVector3C xyz);

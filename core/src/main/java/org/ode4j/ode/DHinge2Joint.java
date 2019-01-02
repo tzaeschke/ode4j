@@ -31,36 +31,48 @@ public interface DHinge2Joint extends DJoint {
 
 	/**
 	 * Set anchor.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAnchor (double x, double y, double z);
 	
 	
 	/**
 	 * Set anchor.
+	 * @param a a
 	 */
 	void setAnchor (DVector3C a);
 	
 	
 	/**
 	 * Set axis.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis1 (double x, double y, double z);
 	
 	
 	/**
 	 * Set axis.
+	 * @param a a
 	 */
 	void setAxis1 (DVector3C a);
 	
 	
 	/**
 	 * Set axis.
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis2 (double x, double y, double z);
 	
 	
 	/**
 	 * Set axis.
+	 * @param a a
 	 */
 	void setAxis2 (DVector3C a);
 
@@ -70,6 +82,7 @@ public interface DHinge2Joint extends DJoint {
 	 * <p>
 	 * Return the point on body 1.  If the joint is perfectly satisfied,
 	 * this will be the same as the point on body 2.
+	 * @param result Vector containing the result
 	 */
 	void getAnchor (DVector3 result);
 
@@ -81,42 +94,49 @@ public interface DHinge2Joint extends DJoint {
 	 * this will return the same value as dJointGetHinge2Anchor.
 	 * If not, this value will be slightly different.
 	 * This can be used, for example, to see how far the joint has come apart.
+	 * @param result Vector containing the result
 	 */
 	void getAnchor2 (DVector3 result);
 
 	
 	/**
 	 * Get joint axis.
+	 * @param result Vector containing the result
 	 */
 	void getAxis1 (DVector3 result);
 
 	
 	/**
 	 * Get joint axis.
+	 * @param result Vector containing the result
 	 */
 	void getAxis2 (DVector3 result);
 
 
 	/**
 	 * Get angle.
+	 * @return angle
 	 */
 	double getAngle1();
 
 	
 	/**
 	 * Get angle.
+	 * @return angle
 	 */
 	double getAngle2();
 
 	
 	/**
 	 * Get time derivative of angle.
+	 * @return rate
 	 */
 	double getAngle1Rate();
 
 	
 	/**
 	 * Get time derivative of angle.
+	 * @return rate
 	 */
 	double getAngle2Rate();
 
@@ -126,6 +146,8 @@ public interface DHinge2Joint extends DJoint {
 	 * hinge2's axis 2.
 	 * <p>
 	 * This function is just a wrapper for {@code dBodyAddTorque()}.
+	 * @param torque1 torque 1
+	 * @param torque2 torque 2
 	 */
 	void addTorques(double torque1, double torque2);
 	void setParamVel2(double d);

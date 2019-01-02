@@ -38,6 +38,7 @@ public interface DLMotorJoint extends DJoint {
 	
 	/**
 	 * Get nr of axes.
+	 * @return number of axes
 	 */
 	int getNumAxes();
 
@@ -49,9 +50,14 @@ public interface DLMotorJoint extends DJoint {
 	 * 
 	 * @param anum selects the axis to change (0,1 or 2).
 	 * @param rel Each axis can have one of three ``relative orientation'' modes
+	 * <ul>
 	 * <li> 0: The axis is anchored to the global frame.
 	 * <li> 1: The axis is anchored to the first body.
 	 * <li> 2: The axis is anchored to the second body.
+	 * </ul>
+	 * @param x x
+	 * @param y y
+	 * @param z z
 	 */
 	void setAxis (int anum, int rel, double x, double y, double z);
 
@@ -63,15 +69,20 @@ public interface DLMotorJoint extends DJoint {
 	 * 
 	 * @param anum selects the axis to change (0,1 or 2).
 	 * @param rel Each axis can have one of three ``relative orientation'' modes
+	 * <ul>
 	 * <li> 0: The axis is anchored to the global frame.
 	 * <li> 1: The axis is anchored to the first body.
 	 * <li> 2: The axis is anchored to the second body.
+	 * </ul>
+	 * @param a a
 	 */
 	void setAxis (int anum, int rel, DVector3C a);
 
 	
 	/**
 	 * Get axis.
+	 * @param anum axis number
+	 * @param result Vector containing the result
 	 */
 	void getAxis (int anum, DVector3 result);
 

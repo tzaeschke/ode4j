@@ -31,16 +31,21 @@ public interface DDoubleHingeJoint extends DDoubleBallJoint {
 
 	/**
 	 * Set axis for double hinge joint.
+	 * @param x x
+	 * @param y y
+	 * @param z Z
 	 */
 	void setAxis(double x, double y, double z);
 
 	/**
 	 * Set axis for double hinge joint.
+	 * @param xyz xyz
 	 */
 	void setAxis(DVector3C xyz);
 
 	/**
 	 * Get axis for double hinge joint.
+	 * @param result Vector containing the result
 	 */
 	void getAxis(DVector3 result);
 
