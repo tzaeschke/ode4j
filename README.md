@@ -34,12 +34,13 @@ The following artifact contains the complete physics engine (examples etc are [n
 News
 ====
 
-2019-01-02: Release 0.4.0. This release contains most of the changes that happened between ODE 0.13.1 and ODE 0.16.0, plus some original features: 
+2019-01-03: Release 0.4.0. This release contains most of the changes that happened between ODE 0.13.1 and ODE 0.16.0, plus some original features: 
  * Java 9 / modularization (generated jar files are Java 7) (io7m)
  * Implemented/migrated multi-threading for the stepper (Pjotr)
  * SAP-Space optimization: Avoid collision detection for immobile bodies (Pjotr)
  * New BVH tree for [better scalability with 10'000 bodies or more](https://github.com/tzaeschke/ode4j/pull/58), ported from the [Turbulenz Engine](https://github.com/turbulenz/turbulenz_engine) (Pjotr)
-  
+ * Fixed javadoc to compile without warnings
+ 
 
 2018-03-26: Snapshot release 0.4.0
  * Java 9 / modularization (generated jar files are Java 7) (io7m)

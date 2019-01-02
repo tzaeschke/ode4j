@@ -1,5 +1,6 @@
-0.4.0-SNAPSHOT
-==============
+0.4.0
+=====
+- Fixed javadoc to compile without warnings
 - Java 9 compatibility automatically detected and used with Maven profiles 
 - Changed to Java 9 (output still Java 7) and modularization (io7m)
 - Changed to Java 7 and updated some maven dependencies
