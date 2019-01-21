@@ -72,8 +72,20 @@ public interface DRay extends DGeom {
 	 */
 	boolean getFirstContact();
 	void setFirstContact(boolean firstContact);
+	/**
+	 * Set/get ray flags that influence ray collision detection.
+	 * These flags are currently only noticed by the trimesh collider, because
+	 * they can make a major differences there.
+	 * @return backface cull setting
+	 */
 	boolean getBackfaceCull();
 	void setBackfaceCull(boolean backfaceCull);
+	/**
+	 * Set/get ray flags that influence ray collision detection.
+	 * These flags are currently only noticed by the trimesh collider, because
+	 * they can make a major differences there.
+	 * @return closest hit setting
+	 */
 	void setClosestHit (boolean closestHit);
 	boolean getClosestHit();
 

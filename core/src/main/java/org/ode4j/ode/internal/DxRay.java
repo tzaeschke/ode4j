@@ -252,8 +252,9 @@ public class DxRay extends DxGeom implements DRay {
 		//dUASSERT (g!=null && g.type == dRayClass,"argument not a ray");
 		if (closestHit){
 			setFlagCustom(RAY_CLOSEST_HIT);//_gflags |= RAY_CLOSEST_HIT;
+		} else {
+			unsetFlagCustom(RAY_CLOSEST_HIT);//_gflags &= ~RAY_CLOSEST_HIT;
 		}
-		else unsetFlagCustom(RAY_CLOSEST_HIT);//_gflags &= ~RAY_CLOSEST_HIT;
 	}
 
 
