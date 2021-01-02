@@ -106,6 +106,16 @@ public class OdeMath extends DRotation {
 //	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
 //	}
 
+
+//	ODE_PURE_INLINE void dAddVectorScaledVector3(dReal *res, const dReal *a, const dReal *b, dReal b_scale)
+//	{
+//    const dReal res_0 = a[0] + b_scale * b[0];
+//    const dReal res_1 = a[1] + b_scale * b[1];
+//    const dReal res_2 = a[2] + b_scale * b[2];
+//		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+//		res[0] = res_0; res[1] = res_1; res[2] = res_2;
+//	}
+
 	public static void dAddScaledVectors3(DVector3 res, DVector3C a, DVector3C b, 
 	        double a_scale, double b_scale)
 	{
@@ -117,7 +127,17 @@ public class OdeMath extends DRotation {
 	  res.set( res_0, res_1, res_2 );
 	}
 
-//	PURE_INLINE void dScaleVector3(dReal *res, dReal nScale)
+
+//	ODE_PURE_INLINE void dAddThreeScaledVectors3(dReal *res, const dReal *a, const dReal *b, const dReal *c, dReal a_scale, dReal b_scale, dReal c_scale)
+//	{
+//    const dReal res_0 = a_scale * a[0] + b_scale * b[0] + c_scale * c[0];
+//    const dReal res_1 = a_scale * a[1] + b_scale * b[1] + c_scale * c[1];
+//    const dReal res_2 = a_scale * a[2] + b_scale * b[2] + c_scale * c[2];
+//		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+//		res[0] = res_0; res[1] = res_1; res[2] = res_2;
+//	}
+
+	//	PURE_INLINE void dScaleVector3(dReal *res, dReal nScale)
 //	{
 //	  res[0] *= nScale ;
 //	  res[1] *= nScale ;
@@ -1415,7 +1435,7 @@ else {
 	 * both ways give equivalent results.
 	 * @param m m
 	 */
-	public static void dOrthogonalizeR(DMatrix3 m)
+	public static int dOrthogonalizeR(DMatrix3 m)
 	{
 		//double n0 = dLENGTHSQUARED(m);
 		DVector3RowTView row0 = m.viewRowT(0); 

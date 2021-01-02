@@ -43,40 +43,68 @@ public interface DHinge2Joint extends DJoint {
 	 * @param a a
 	 */
 	void setAnchor (DVector3C a);
-	
-	
-	/**
-	 * Set axis.
-	 * @param x x
-	 * @param y y
-	 * @param z z
-	 */
-	void setAxis1 (double x, double y, double z);
-	
-	
-	/**
-	 * Set axis.
-	 * @param a a
-	 */
-	void setAxis1 (DVector3C a);
-	
-	
-	/**
-	 * Set axis.
-	 * @param x x
-	 * @param y y
-	 * @param z z
-	 */
-	void setAxis2 (double x, double y, double z);
-	
-	
-	/**
-	 * Set axis.
-	 * @param a a
-	 */
-	void setAxis2 (DVector3C a);
 
-	
+	/**
+	 * Set both axes (optionally).
+	 * <p>
+	 * This can change both axes at once avoiding transitions via invalid states
+	 * while changing axes one by one and having the first changed axis coincide
+	 * with the other axis existing direction.
+	 * <p>
+	 * At least one of the axes must be not NULL. If NULL is passed, the corresponding
+	 * axis retains its existing value.
+	 */
+	void setAxes(DVector3C axis1, DVector3C axis2);
+
+	/**
+	 * Set both axes.
+	 * <p>
+	 * This can change both axes at once avoiding transitions via invalid states
+	 * while changing axes one by one and having the first changed axis coincide
+	 * with the other axis existing direction.
+	 */
+	void setAxes(double x1, double y1, double z1, double x2, double y2, double z2);
+
+	/**
+	 * Set axis.
+	 *
+	 * @param x x
+	 * @param y y
+	 * @param z z
+	 * @deprecated Please use setAxes() instead
+	 */
+	@Deprecated
+	void setAxis1(double x, double y, double z);
+
+	/**
+	 * Set axis.
+	 *
+	 * @param a a
+	 * @deprecated Please use setAxes() instead
+	 */
+	@Deprecated
+	void setAxis1(DVector3C a);
+
+	/**
+	 * Set axis.
+	 *
+	 * @param x x
+	 * @param y y
+	 * @param z z
+	 * @deprecated Please use setAxes() instead
+	 */
+	@Deprecated
+	void setAxis2(double x, double y, double z);
+
+	/**
+	 * Set axis.
+	 *
+	 * @param a a
+	 * @deprecated Please use setAxes() instead
+	 */
+	@Deprecated
+	void setAxis2(DVector3C a);
+
 	/**
 	 * Get the joint anchor point, in world coordinates.
 	 * <p>

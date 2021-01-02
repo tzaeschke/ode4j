@@ -38,7 +38,11 @@ public class CCDVec3 {
 	//private static final double CCD_FMAX(double x, double y) { return x > y ? x : y; }
 	/* minimum of two floats */
 	static final double CCD_FMIN(double x, double y) { return x < y ? x : y; }
-	
+
+	static double CCD_ATAN2(double x, double y) {
+		return Math.atan2(x, y);
+	}
+
 	//#define CCD_ONE CCD_REAL(1.)
 	public static final double CCD_ONE = 1;
 	//#define CCD_ZERO CCD_REAL(0.)
@@ -220,24 +224,15 @@ public class CCDVec3 {
 	}
 
 	/**
-	 * Substracts coordinates of vector w from vector v. v = v - w
+	 * Subtracts coordinates of vector w from vector v. v = v - w
 	 * @param v v
 	 * @param w w
 	 */
-	public static final void ccdVec3Sub(ccd_vec3_t v, final ccd_vec3_t w)
+	public static void ccdVec3Sub(ccd_vec3_t v, final ccd_vec3_t w)
 	{
 	    v.v0 -= w.v0;
 	    v.v1 -= w.v1;
 	    v.v2 -= w.v2;
-	}
-	/**
-	 * d = v - w
-	 */
-	static final void ccdVec3Sub2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w)
-	{
-	    d.v0 = v.v0 - w.v0;
-	    d.v1 = v.v1 - w.v1;
-	    d.v2 = v.v2 - w.v2;
 	}
 
 	/**
@@ -245,23 +240,60 @@ public class CCDVec3 {
 	 * @param v v
 	 * @param w w
 	 */
-	public static final void ccdVec3Add(ccd_vec3_t v, final ccd_vec3_t w)
+	public static void ccdVec3Add(ccd_vec3_t v, final ccd_vec3_t w)
 	{
-	    v.v0 += w.v0;
-	    v.v1 += w.v1;
-	    v.v2 += w.v2;
+		v.v0 += w.v0;
+		v.v1 += w.v1;
+		v.v2 += w.v2;
+	}
+
+	/**
+	 * d = v - w
+	 */
+	static void ccdVec3Sub2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w)
+	{
+	    d.v0 = v.v0 - w.v0;
+	    d.v1 = v.v1 - w.v1;
+	    d.v2 = v.v2 - w.v2;
+	}
+
+	/**
+	 * d = v + w
+	 */
+	static void ccdVec3Add2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w) {
+		d.v0 = v.v0 + w.v0;
+		d.v1 = v.v1 + w.v1;
+		d.v2 = v.v2 + w.v2;
 	}
 
 	/**
 	 * d = d * k;
+	 *
 	 * @param d d
 	 * @param k k
 	 */
-	public static final void ccdVec3Scale(ccd_vec3_t d, double k)
-	{
-	    d.v0 *= k;
-	    d.v1 *= k;
-	    d.v2 *= k;
+	public static void ccdVec3Scale(ccd_vec3_t d, double k) {
+		d.v0 *= k;
+		d.v1 *= k;
+		d.v2 *= k;
+	}
+
+	/**
+	 * d = s * k;
+	 */
+	static void ccdVec3CopyScaled(ccd_vec3_t d, final ccd_vec3_t s, double k) {
+		d.v0 = s.v0 * k;
+		d.v1 = s.v1 * k;
+		d.v2 = s.v2 * k;
+	}
+
+	/**
+	 * d = v + s * k;
+	 */
+	static void ccdVec3AddScaled(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t s, double k) {
+		d.v0 = v.v0 + s.v0 * k;
+		d.v1 = v.v1 + s.v1 * k;
+		d.v2 = v.v2 + s.v2 * k;
 	}
 
 	/**
@@ -269,7 +301,7 @@ public class CCDVec3 {
 	 * @param d d
 	 * @return 'false' if normalization failed.
 	 */
-	public static final boolean ccdVec3Normalize(ccd_vec3_t d)
+	public static boolean ccdVec3Normalize(ccd_vec3_t d)
 	{
 	    double len = CCD_SQRT(ccdVec3Len2(d));
 	    if (len > CCD_EPS) {

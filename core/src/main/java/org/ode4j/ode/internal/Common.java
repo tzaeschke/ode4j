@@ -270,10 +270,141 @@ public class Common extends OdeConstants {
 	 * @param a a
 	 * @return Padded offset
 	 */
-	public static final int dPAD(int a) {
-		return (a > 1) ? ((((a)-1)|3)+1) : a;
+	public static int dPAD(int a) {
+		return (((a) > 1) ? (((a) + 3) & (int)(~3)) : (a));
 	}
-	//#define dPAD(a) (((a) > 1) ? ((((a)-1)|3)+1) : (a))
+	//#define dPAD(a) (((a) > 1) ? (((a) + 3) & (int)(~3)) : (a))
+
+	static class dSpaceAxis {
+		public static final int dSA__MIN = 0;
+		public static final int dSA_X = dSA__MIN;
+		public static final int dSA_Y = 1;
+		public static final int dSA_Z = 2;
+		public static final int dSA__MAX = 3;
+	}
+
+	static class dMotionDynamics {
+		public static final int dMD__MIN = 0;
+		public static final int dMD_LINEAR = dMD__MIN;
+		public static final int dMD_ANGULAR = 1;
+		public static final int dMD__MAX = 2;
+	}
+
+	static class dDynamicsAxis {
+		public static final int dDA__MIN = 0;
+		public static final int dDA__L_MIN = dDA__MIN + dMotionDynamics.dMD_LINEAR * dSpaceAxis.dSA__MAX;
+		public static final int dDA_LX = dDA__L_MIN + dSpaceAxis.dSA_X;
+		public static final int dDA_LY = dDA__L_MIN + dSpaceAxis.dSA_Y;
+		public static final int dDA_LZ = dDA__L_MIN + dSpaceAxis.dSA_Z;
+		public static final int dDA__L_MAX = dDA__L_MIN + dSpaceAxis.dSA__MAX;
+		public static final int dDA__A_MIN = dDA__MIN + dMotionDynamics.dMD_ANGULAR * dSpaceAxis.dSA__MAX;
+		public static final int dDA_AX = dDA__A_MIN + dSpaceAxis.dSA_X;
+		public static final int dDA_AY = dDA__A_MIN + dSpaceAxis.dSA_Y;
+		public static final int dDA_AZ = dDA__A_MIN + dSpaceAxis.dSA_Z;
+		public static final int dDA__A_MAX = dDA__A_MIN + dSpaceAxis.dSA__MAX;
+		public static final int dDA__MAX = dDA__MIN + dMotionDynamics.dMD__MAX * dSpaceAxis.dSA__MAX;
+	}
+
+	static class dVec3Element {
+		public static final int dV3E__MIN = 0;
+		public static final int dV3E__AXES_MIN = dV3E__MIN;
+		public static final int dV3E_X = dV3E__AXES_MIN + dSpaceAxis.dSA_X;
+		public static final int dV3E_Y = dV3E__AXES_MIN + dSpaceAxis.dSA_Y;
+		public static final int dV3E_Z = dV3E__AXES_MIN + dSpaceAxis.dSA_Z;
+		public static final int dV3E__AXES_MAX = dV3E__AXES_MIN + dSpaceAxis.dSA__MAX;
+		public static final int dV3E_PAD = dV3E__AXES_MAX;
+		@Deprecated
+		public static final int dV3E__MAX = dV3E_PAD + 1;
+		public static final int dV3E__AXES_COUNT = dV3E__AXES_MAX - dV3E__AXES_MIN;
+	}
+
+	static class dVec4Element {
+		public static final int dV4E__MIN = 0;
+		public static final int dV4E_X = dV4E__MIN + dSpaceAxis.dSA_X;
+		public static final int dV4E_Y = dV4E__MIN + dSpaceAxis.dSA_Y;
+		public static final int dV4E_Z = dV4E__MIN + dSpaceAxis.dSA_Z;
+		public static final int dV4E_O = dV4E__MIN + dSpaceAxis.dSA__MAX;
+		@Deprecated
+		public static final int dV4E__MAX = dV4E_O + 1;
+	}
+
+	static class dMat3Element {
+		public static final int dM3E__MIN = 0;
+		public static final int dM3E__X_MIN = dM3E__MIN + dSpaceAxis.dSA_X * dVec3Element.dV3E__MAX;
+		public static final int dM3E__X_AXES_MIN = dM3E__X_MIN + dVec3Element.dV3E__AXES_MIN;
+		public static final int dM3E_XX = dM3E__X_MIN + dVec3Element.dV3E_X;
+		public static final int dM3E_XY = dM3E__X_MIN + dVec3Element.dV3E_Y;
+		public static final int dM3E_XZ = dM3E__X_MIN + dVec3Element.dV3E_Z;
+		public static final int dM3E__X_AXES_MAX = dM3E__X_MIN + dVec3Element.dV3E__AXES_MAX;
+		public static final int dM3E_XPAD = dM3E__X_MIN + dVec3Element.dV3E_PAD;
+		public static final int dM3E__X_MAX = dM3E__X_MIN + dVec3Element.dV3E__MAX;
+		public static final int dM3E__Y_MIN = dM3E__MIN + dSpaceAxis.dSA_Y * dVec3Element.dV3E__MAX;
+		public static final int dM3E__Y_AXES_MIN = dM3E__Y_MIN + dVec3Element.dV3E__AXES_MIN;
+		public static final int dM3E_YX = dM3E__Y_MIN + dVec3Element.dV3E_X;
+		public static final int dM3E_YY = dM3E__Y_MIN + dVec3Element.dV3E_Y;
+		public static final int dM3E_YZ = dM3E__Y_MIN + dVec3Element.dV3E_Z;
+		public static final int dM3E__Y_AXES_MAX = dM3E__Y_MIN + dVec3Element.dV3E__AXES_MAX;
+		public static final int dM3E_YPAD = dM3E__Y_MIN + dVec3Element.dV3E_PAD;
+		public static final int dM3E__Y_MAX = dM3E__Y_MIN + dVec3Element.dV3E__MAX;
+		public static final int dM3E__Z_MIN = dM3E__MIN + dSpaceAxis.dSA_Z * dVec3Element.dV3E__MAX;
+		public static final int dM3E__Z_AXES_MIN = dM3E__Z_MIN + dVec3Element.dV3E__AXES_MIN;
+		public static final int dM3E_ZX = dM3E__Z_MIN + dVec3Element.dV3E_X;
+		public static final int dM3E_ZY = dM3E__Z_MIN + dVec3Element.dV3E_Y;
+		public static final int dM3E_ZZ = dM3E__Z_MIN + dVec3Element.dV3E_Z;
+		public static final int dM3E__Z_AXES_MAX = dM3E__Z_MIN + dVec3Element.dV3E__AXES_MAX;
+		public static final int dM3E_ZPAD = dM3E__Z_MIN + dVec3Element.dV3E_PAD;
+		public static final int dM3E__Z_MAX = dM3E__Z_MIN + dVec3Element.dV3E__MAX;
+		public static final int dM3E__MAX = dM3E__MIN + dSpaceAxis.dSA__MAX * dVec3Element.dV3E__MAX;
+	}
+
+	static class dMat4Element {
+		public static final int dM4E__MIN = 0;
+		public static final int dM4E__X_MIN = dM4E__MIN + dVec4Element.dV4E_X * dVec4Element.dV4E__MAX;
+		public static final int dM4E_XX = dM4E__X_MIN + dVec4Element.dV4E_X;
+		public static final int dM4E_XY = dM4E__X_MIN + dVec4Element.dV4E_Y;
+		public static final int dM4E_XZ = dM4E__X_MIN + dVec4Element.dV4E_Z;
+		public static final int dM4E_XO = dM4E__X_MIN + dVec4Element.dV4E_O;
+		public static final int dM4E__X_MAX = dM4E__X_MIN + dVec4Element.dV4E__MAX;
+		public static final int dM4E__Y_MIN = dM4E__MIN + dVec4Element.dV4E_Y * dVec4Element.dV4E__MAX;
+		public static final int dM4E_YX = dM4E__Y_MIN + dVec4Element.dV4E_X;
+		public static final int dM4E_YY = dM4E__Y_MIN + dVec4Element.dV4E_Y;
+		public static final int dM4E_YZ = dM4E__Y_MIN + dVec4Element.dV4E_Z;
+		public static final int dM4E_YO = dM4E__Y_MIN + dVec4Element.dV4E_O;
+		public static final int dM4E__Y_MAX = dM4E__Y_MIN + dVec4Element.dV4E__MAX;
+		public static final int dM4E__Z_MIN = dM4E__MIN + dVec4Element.dV4E_Z * dVec4Element.dV4E__MAX;
+		public static final int dM4E_ZX = dM4E__Z_MIN + dVec4Element.dV4E_X;
+		public static final int dM4E_ZY = dM4E__Z_MIN + dVec4Element.dV4E_Y;
+		public static final int dM4E_ZZ = dM4E__Z_MIN + dVec4Element.dV4E_Z;
+		public static final int dM4E_ZO = dM4E__Z_MIN + dVec4Element.dV4E_O;
+		public static final int dM4E__Z_MAX = dM4E__Z_MIN + dVec4Element.dV4E__MAX;
+		public static final int dM4E__O_MIN = dM4E__MIN + dVec4Element.dV4E_O * dVec4Element.dV4E__MAX;
+		public static final int dM4E_OX = dM4E__O_MIN + dVec4Element.dV4E_X;
+		public static final int dM4E_OY = dM4E__O_MIN + dVec4Element.dV4E_Y;
+		public static final int dM4E_OZ = dM4E__O_MIN + dVec4Element.dV4E_Z;
+		public static final int dM4E_OO = dM4E__O_MIN + dVec4Element.dV4E_O;
+		public static final int dM4E__O_MAX = dM4E__O_MIN + dVec4Element.dV4E__MAX;
+		public static final int dM4E__MAX = dM4E__MIN + dVec4Element.dV4E__MAX * dVec4Element.dV4E__MAX;
+	}
+
+	static class dQuatElement {;
+		public static final int dQUE__MIN = 0;
+		public static final int dQUE_R = dQUE__MIN;
+		@Deprecated
+		public static final int dQUE__AXIS_MIN = dQUE_R + 1;
+		public static final int dQUE_I = dQUE__AXIS_MIN + dSpaceAxis.dSA_X;
+		public static final int dQUE_J = dQUE__AXIS_MIN + dSpaceAxis.dSA_Y;
+		public static final int dQUE_K = dQUE__AXIS_MIN + dSpaceAxis.dSA_Z;
+		public static final int dQUE__AXIS_MAX = dQUE__AXIS_MIN + dSpaceAxis.dSA__MAX;
+		public static final int dQUE__MAX = dQUE__AXIS_MAX;
+	}
+
+	/* these types are mainly just used in headers */
+//	typedef dReal dVector3[dV3E__MAX];
+//	typedef dReal dVector4[dV4E__MAX];
+//	typedef dReal dMatrix3[dM3E__MAX];
+//	typedef dReal dMatrix4[dM4E__MAX];
+//	typedef dReal dMatrix6[(dMD__MAX * dV3E__MAX) * (dMD__MAX * dSA__MAX)];
+//	typedef dReal dQuaternion[dQUE__MAX];
 
 //	/** 
 //	 * These types are mainly just used in headers. 
@@ -291,13 +422,6 @@ public class Common extends OdeConstants {
 //
 //		public double[] v = new double[4*4]; 
 //	}
-	//private static class dMatrix6 { public double[] v = new double[8*6]; }
-	//typedef dReal dVector3[4];
-	//typedef dReal dVector4[4];
-	//typedef dReal dMatrix3[4*3];
-	//typedef dReal dMatrix4[4*4];
-	//typedef dReal dMatrix6[8*6];
-	//typedef dReal dQuaternion[4];
 
 
 	/* precision dependent scalar math functions */
@@ -357,6 +481,10 @@ public class Common extends OdeConstants {
 	public static final double dAtan2(double y, double x) {
 		return Math.atan2(y, x);
 	}
+	//#define dAsin(x) (asinf(x))
+	public static double dAsin(double x) {
+		return Math.asin(x);
+	}
 	//#define dAcos(x) acos(x)
 	public static final double dAcos(double x) {
 		return Math.acos(x);
@@ -400,6 +528,9 @@ public class Common extends OdeConstants {
 	public final double dCopySign(double a, double b) {
 		throw new UnsupportedOperationException();
 	}
+
+	public static double dMin(double x, double y) { return x <= y ? x : y; }
+	public static double dMax(double x, double y) { return x <= y ? y : x; }
 
 	/* error numbers */
 

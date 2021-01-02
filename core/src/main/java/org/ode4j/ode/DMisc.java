@@ -92,12 +92,7 @@ public class DMisc extends Common {
     public static String dPrintMatrix(DMatrix3C A) {
         return A.toString();
     }
-//    #ifdef __cplusplus
-//    public static void dPrintMatrix (const dReal *A, int n, int m, char *fmt = "%10.4f ",
-//               FILE *f=stdout);
-//    #else
 //        public static void dPrintMatrix (const dReal *A, int n, int m, char *fmt, FILE *f);
-//    #endif
 
     /**
      * Make a random vector with entries between +/- range. A has n elements. 
