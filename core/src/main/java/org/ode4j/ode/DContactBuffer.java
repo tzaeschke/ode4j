@@ -65,4 +65,10 @@ public class DContactBuffer implements Iterable<DContact> {
 		buf.set(pos1, buf.get(pos2));
 		buf.set(pos2, c);
 	}
+
+	public void nullify() {
+		for (int i = 0; i < buf.size(); i++) {
+			buf.get(i).nullify();
+		}
+	}
 }

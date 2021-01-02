@@ -32,6 +32,8 @@
 - Nothing?
 
 ## 0.5.0 (unreleased)
+- Issue #35: Avoid garbage collection of DContact. This is now implemented without pooling but with reusing
+  DContact instances in place.
 - Fixed Java module warning; added `-Werror`; new default `OdeConfig.dDEBUG = false`
   [#122](https://github.com/tzaeschke/ode4j/pull/122)
 - BREAKING CHANGE: DSpace.getGeoms() not returns `DGeom` instead of `DxGeom`.

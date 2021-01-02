@@ -98,6 +98,9 @@ plus some original features:
 * Please use `DWorld.quickStep(...)` instead of `DWorld.step()`. The latter is slower and appears to be less stable.
 * Set `OdeConfig.dDEBUG = true` for debugging and `= false` for best performance.
 * When compiling with JDK 9 or later, `mvn` will automatically use the`on-jdk-9-plus` profile and create modules.
+* Performance Tip: 
+  One issue may be excessive garbage collection due to frequent allocation of `DContact` objects.
+  To avoid this, these objects can be nullified and reused. See `DemoCards.nearCallback()` for an example.
 
 ## ODE vs od4j
 
