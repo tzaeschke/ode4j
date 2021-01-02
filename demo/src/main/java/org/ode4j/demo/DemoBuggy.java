@@ -66,6 +66,9 @@ class DemoBuggy extends dsFunctions {
 	private final double CMASS = 1;		// chassis mass
 	private final double WMASS = 0.2;	// wheel mass
 
+	private static final DVector3C yunit = new DVector3(0, 1, 0);
+	private static final DVector3C zunit = new DVector3(0, 0, 1);
+
 
 	// dynamics and collision objects (chassis, 3 wheels, environment)
 
@@ -267,8 +270,7 @@ class DemoBuggy extends dsFunctions {
 			final DVector3C a = body[i+1].getPosition();
 			DHinge2Joint h2 = joint[i];
 			h2.setAnchor (a);
-			h2.setAxis1 (0,0,1);
-			h2.setAxis2 (0,1,0);
+			h2.setAxes (zunit, yunit);
 		}
 
 		// set joint suspension

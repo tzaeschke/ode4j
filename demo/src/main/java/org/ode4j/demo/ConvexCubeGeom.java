@@ -2,8 +2,12 @@ package org.ode4j.demo;
 
 class ConvexCubeGeom {
 	static final double[] planes = // planes for a cube
-	{ 1.0f, 0.0f, 0.0f, 0.25f, 0.0f, 1.0f, 0.0f, 0.25f, 0.0f, 0.0f, 1.0f, 0.25f, 0.0f, 0.0f, -1.0f, 0.25f, 0.0f, -1.0f,
-			0.0f, 0.25f, -1.0f, 0.0f, 0.0f, 0.25f };
+			{1.0f, 0.0f, 0.0f, 0.25f,
+					0.0f, 1.0f, 0.0f, 0.25f,
+					0.0f, 0.0f, 1.0f, 0.25f,
+					0.0f, 0.0f, -1.0f, 0.25f,
+					0.0f, -1.0f, 0.0f, 0.25f,
+					-1.0f, 0.0f, 0.0f, 0.25f};
 	static final int planecount = 6;
 	static final double points[] = // points for a cube
 	{ 0.25f, 0.25f, 0.25f, // point 0

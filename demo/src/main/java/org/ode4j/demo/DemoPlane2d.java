@@ -73,13 +73,25 @@ class DemoPlane2d extends dsFunctions {
 	//private static final double K_SPRING = 10.0;
 	//private static final double K_DAMP = 10.0; 
 
-	private static DWorld   dyn_world;
-	private static DBody[]    dyn_bodies = new DBody[N_BODIES];
-	private static DVector3[]    bodies_sides = new DVector3[N_BODIES];
+	private static class GlobalVars {
+		DWorld dyn_world;
+		DBody[] dyn_bodies = new DBody[N_BODIES];
+		DVector3[] bodies_sides = new DVector3[N_BODIES];
 
-	private static DSpace coll_space_id;
-	private static DPlane2DJoint[] plane2d_joint_ids=new DPlane2DJoint[N_BODIES];
-	private static DJointGroup coll_contacts;
+		DSpace coll_space_id;
+		DPlane2DJoint[] plane2d_joint_ids = new DPlane2DJoint[N_BODIES];
+		DJointGroup coll_contacts;
+	}
+
+	private static GlobalVars g_globals_ptr = null;
+
+//	private static DWorld   dyn_world;
+//	private static DBody[]    dyn_bodies = new DBody[N_BODIES];
+//	private static DVector3[]    bodies_sides = new DVector3[N_BODIES];
+//
+//	private static DSpace coll_space_id;
+//	private static DPlane2DJoint[] plane2d_joint_ids=new DPlane2DJoint[N_BODIES];
+//	private static DJointGroup coll_contacts;
 
 
 	private static float[]    xyz = { 0.5f*STAGE_SIZE, 0.5f*STAGE_SIZE, 0.65f*STAGE_SIZE};
@@ -113,8 +125,8 @@ class DemoPlane2d extends dsFunctions {
 
 		if (OdeHelper.collide (o1, o2, 1, contacts.getGeomBuffer())!=0);//, sizeof (dContactGeom)))
 		{
-			DJoint c = OdeHelper.createContactJoint (dyn_world,
-					coll_contacts, contacts.get(0));
+			DJoint c = OdeHelper.createContactJoint (g_globals_ptr.dyn_world,
+					g_globals_ptr.coll_contacts, contacts.get(0));
 			c.attach (b1, b2);
 		}
 	}
@@ -147,7 +159,7 @@ class DemoPlane2d extends dsFunctions {
 
 			angle +=  0.01 ;
 
-			track_to_pos (dyn_bodies[0], plane2d_joint_ids[0],
+			track_to_pos (g_globals_ptr.dyn_bodies[0], g_globals_ptr.plane2d_joint_ids[0],
 					( STAGE_SIZE/2 + STAGE_SIZE/2.0 * Math.cos (angle) ),
 					( STAGE_SIZE/2 + STAGE_SIZE/2.0 * Math.sin (angle) ));
 
@@ -164,9 +176,9 @@ class DemoPlane2d extends dsFunctions {
 			for (int i = 0; i < n; i ++)
 			{
 				//dSpaceCollide (coll_space_id, 0, cb_near_collision);
-				OdeHelper.spaceCollide (coll_space_id, null, myNearCallBack );
-				dyn_world.step (TIME_STEP/n);
-				coll_contacts.empty ();
+				OdeHelper.spaceCollide (g_globals_ptr.coll_space_id, null, myNearCallBack );
+				g_globals_ptr.dyn_world.step (TIME_STEP/n);
+				g_globals_ptr.coll_contacts.empty ();
 			}
 		}
 
@@ -175,14 +187,14 @@ class DemoPlane2d extends dsFunctions {
 			// @@@ hack Plane2D constraint error reduction here:
 			for (int b = 0; b < N_BODIES; b ++)
 			{
-				DVector3C rot = dyn_bodies[b].getAngularVel();
+				DVector3C rot = g_globals_ptr.dyn_bodies[b].getAngularVel();
 				//final double     []quat_ptr;
 				DQuaternionC     quat_ptr;
 				DQuaternion           quat= new DQuaternion();
 				double                quat_len;
 
 				double q0, q3;
-				quat_ptr = dyn_bodies[b].getQuaternion();
+				quat_ptr = g_globals_ptr.dyn_bodies[b].getQuaternion();
 				//            quat[0] = quat_ptr[0];
 				//            quat[1] = 0;
 				//            quat[2] = 0;
@@ -193,8 +205,8 @@ class DemoPlane2d extends dsFunctions {
 				q0 /= quat_len;
 				q3 /= quat_len;
 				quat.set(q0, 0, 0, q3);
-				dyn_bodies[b].setQuaternion (quat);
-				dyn_bodies[b].setAngularVel (0, 0, rot.get2());
+				g_globals_ptr.dyn_bodies[b].setQuaternion (quat);
+				g_globals_ptr.dyn_bodies[b].setAngularVel (0, 0, rot.get2());
 			}
 		}//# endif  /* ] */
 
@@ -204,13 +216,13 @@ class DemoPlane2d extends dsFunctions {
 			// @@@ friction
 			for (int b = 0; b < N_BODIES; b ++)
 			{
-				DVector3C vel = dyn_bodies[b].getLinearVel(),
-				rot = dyn_bodies[b].getAngularVel();
+				DVector3C vel = g_globals_ptr.dyn_bodies[b].getLinearVel(),
+				rot = g_globals_ptr.dyn_bodies[b].getAngularVel();
 				double       s = 1.00;
 				double       t = 0.99;
 
-				dyn_bodies[b].setLinearVel ( vel.reScale(s) );
-				dyn_bodies[b].setAngularVel( rot.reScale(t));
+				g_globals_ptr.dyn_bodies[b].setLinearVel ( vel.reScale(s) );
+				g_globals_ptr.dyn_bodies[b].setAngularVel( rot.reScale(t));
 			}
 		}//# endif  /* ] */
 
@@ -222,10 +234,12 @@ class DemoPlane2d extends dsFunctions {
 			for (int b = 0; b < N_BODIES; b ++)
 			{
 				if (b == 0)
-					dsSetColor (1.0f, 0.5f, 1.0f);
+					dsSetColor(1.0f, 0.5f, 1.0f);
 				else
-					dsSetColor (0f, 0.5f, 1.0f);
-				dsDrawBox (dyn_bodies[b].getPosition(), dyn_bodies[b].getRotation(), bodies_sides[b]);
+					dsSetColor(0f, 0.5f, 1.0f);
+				dsDrawBox(g_globals_ptr.dyn_bodies[b].getPosition(),
+						g_globals_ptr.dyn_bodies[b].getRotation(),
+						g_globals_ptr.bodies_sides[b]);
 			}
 		}
 	}
@@ -240,7 +254,9 @@ class DemoPlane2d extends dsFunctions {
 		dsFunctions drawstuff_functions = new DemoPlane2d();
 
 
-		OdeHelper.initODE();
+		OdeHelper.initODE2(0);
+
+		g_globals_ptr = new GlobalVars();
 
 		// dynamic world
 
@@ -249,12 +265,12 @@ class DemoPlane2d extends dsFunctions {
 		err_reduct =  0.5 ;
 		cf_mixing =  0.001 ;
 		//TZ
-		dyn_world = OdeHelper.createWorld();
-		dyn_world.setERP (err_reduct);
-		dyn_world.setCFM (cf_mixing);
-		dyn_world.setGravity (0, 0.0, -1.0);
+		g_globals_ptr.dyn_world = OdeHelper.createWorld();
+		g_globals_ptr.dyn_world.setERP (err_reduct);
+		g_globals_ptr.dyn_world.setCFM (cf_mixing);
+		g_globals_ptr.dyn_world.setGravity (0, 0.0, -1.0);
 
-		coll_space_id = OdeHelper.createSimpleSpace (null);
+		g_globals_ptr.coll_space_id = OdeHelper.createSimpleSpace (null);
 		//coll_space_id = dSweepAndPruneSpaceCreate(null, dSAP_AXES_XYZ);
 		//coll_space_id = dHashSpaceCreate(null);
 
@@ -274,50 +290,49 @@ class DemoPlane2d extends dsFunctions {
 //					z);
 			double r2 = drand48();
 			double r1 = drand48();
-			bodies_sides[b] = new DVector3(
+			g_globals_ptr.bodies_sides[b] = new DVector3(
 					5. * (0.2 + 0.7*r2) / Math.sqrt(N_BODIES),
 					5. * (0.2 + 0.7*r1) / Math.sqrt(N_BODIES),
 					z);
 
-			dyn_bodies[b] = OdeHelper.createBody(dyn_world);
-			dyn_bodies[b].setPosition (x, y, z/2);
-			dyn_bodies[b].setData (b);//(void*) (size_t)b);
+			g_globals_ptr.dyn_bodies[b] = OdeHelper.createBody(g_globals_ptr.dyn_world);
+			g_globals_ptr.dyn_bodies[b].setPosition (x, y, z/2);
+			g_globals_ptr.dyn_bodies[b].setData (b);//(void*) (size_t)b);
 //			dBodySetLinearVel (dyn_bodies[b],
 //			(double)( 3. * (drand48 () - 0.5) ), 
 //			(double)( 3. * (drand48 () - 0.5) ), 0);
 			r2 = drand48();
 			r1 = drand48();
-			dyn_bodies[b].setLinearVel (
+			g_globals_ptr.dyn_bodies[b].setLinearVel (
 			3. * (r1 - 0.5), 
 			3. * (r2 - 0.5), 0);
 
 			DMass m = OdeHelper.createMass();
-			m.setBox (1, bodies_sides[b].get0(),bodies_sides[b].get1(),bodies_sides[b].get2());
-			m.adjust (0.1 * bodies_sides[b].get0() * bodies_sides[b].get1());
-			dyn_bodies[b].setMass (m);
+			m.setBox(1, g_globals_ptr.bodies_sides[b]);
+			m.adjust(0.1 * g_globals_ptr.bodies_sides[b].get0() * g_globals_ptr.bodies_sides[b].get1());
+			g_globals_ptr.dyn_bodies[b].setMass(m);
 
-			plane2d_joint_ids[b] = OdeHelper.createPlane2DJoint (dyn_world, null);
-			plane2d_joint_ids[b].attach (dyn_bodies[b], null);
+			g_globals_ptr.plane2d_joint_ids[b] = OdeHelper.createPlane2DJoint(g_globals_ptr.dyn_world, null);
+			g_globals_ptr.plane2d_joint_ids[b].attach(g_globals_ptr.dyn_bodies[b], null);
 		}
-		plane2d_joint_ids[0].setXParamFMax (10);
-		plane2d_joint_ids[0].setYParamFMax (10);
+		g_globals_ptr.plane2d_joint_ids[0].setXParamFMax(10);
+		g_globals_ptr.plane2d_joint_ids[0].setYParamFMax(10);
 
 
 		// collision geoms and joints
-		OdeHelper.createPlane (coll_space_id,  1, 0, 0, 0);
-		OdeHelper.createPlane (coll_space_id, -1, 0, 0, -STAGE_SIZE);
-		OdeHelper.createPlane (coll_space_id,  0,  1, 0, 0);
-		OdeHelper.createPlane (coll_space_id,  0, -1, 0, -STAGE_SIZE);
+		OdeHelper.createPlane (g_globals_ptr.coll_space_id,  1, 0, 0, 0);
+		OdeHelper.createPlane (g_globals_ptr.coll_space_id, -1, 0, 0, -STAGE_SIZE);
+		OdeHelper.createPlane (g_globals_ptr.coll_space_id,  0,  1, 0, 0);
+		OdeHelper.createPlane (g_globals_ptr.coll_space_id,  0, -1, 0, -STAGE_SIZE);
 
 		for (b = 0; b < N_BODIES; b ++)
 		{
 			DGeom coll_box_id;
-			coll_box_id = OdeHelper.createBox (coll_space_id,
-					bodies_sides[b].get0(), bodies_sides[b].get1(), bodies_sides[b].get2());
-			coll_box_id.setBody (dyn_bodies[b]);
+			coll_box_id = OdeHelper.createBox (g_globals_ptr.coll_space_id, g_globals_ptr.bodies_sides[b]);
+			coll_box_id.setBody (g_globals_ptr.dyn_bodies[b]);
 		}
 
-		coll_contacts = OdeHelper.createJointGroup();
+		g_globals_ptr.coll_contacts = OdeHelper.createJointGroup();
 
 		dsSimulationLoop (args, 352,288,drawstuff_functions);
 

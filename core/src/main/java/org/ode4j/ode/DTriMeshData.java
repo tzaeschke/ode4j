@@ -144,9 +144,9 @@ public interface DTriMeshData {
 	/*
 	 * Data preprocessing build request flags.
 	 */
-	enum dTRIDATAPREPROCESS_BUILD {
-		CONCAVE_EDGES, // Used to optimize OPCODE trimesh-capsule collisions; allocates 1 byte per triangle; no extra data associated
-		FACE_ANGLES,   // Used to aid trimesh-convex collisions; memory requirements depend on extra data
+	static class dTRIDATAPREPROCESS_BUILD {
+		public static final int CONCAVE_EDGES = 0; // Used to optimize OPCODE trimesh-capsule collisions; allocates 1 byte per triangle; no extra data associated
+		public static final int FACE_ANGLES = 1;   // Used to aid trimesh-convex collisions; memory requirements depend on extra data
 	}
 //	enum
 //	{
