@@ -91,6 +91,10 @@ public abstract class DxTriMeshData implements DTriMeshData {
 //
 //	abstract void dGeomTriMeshDataPreprocess(DTriMeshData g);
 //
+    /*
+     * Get and set the internal preprocessed trimesh data buffer (see the enumerated type above), for loading and saving
+     * These functions are deprecated. Use dGeomTriMeshDataSet/dGeomTriMeshDataGet2 with dTRIMESHDATA_USE_FLAGS instead.
+     */
 //	//void dGeomTriMeshDataGetBuffer(dTriMeshData g, unsigned char** buf, int* bufLen) { *buf = NULL; *bufLen=0; }
 //	//void dGeomTriMeshDataSetBuffer(dTriMeshData g, unsigned char* buf) {}
 //	abstract void dGeomTriMeshDataGetBuffer(DTriMeshData g, ByteBuffer buf, RefInt bufLen);

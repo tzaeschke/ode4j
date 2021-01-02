@@ -38,7 +38,9 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
+import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
+import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
@@ -1701,7 +1703,22 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		GL11.glPopMatrix();
 	}
 
-	
+	//	extern "C" void dsDrawTriangles (const float pos[3], const float R[12],
+//				const float *v, int n, int solid)
+	@Override
+	public void dsDrawTriangles(final float[] pos, final float[] R,
+								final float[][] v, boolean solid) {
+		if (current_state != 2) dsError("drawing function called outside simulation loop");
+		setupDrawingMode();
+		GL11.glShadeModel(GL11.GL_FLAT);
+		setTransform(pos, R);
+		int n = v.length / 3;
+		for (int i = 0; i < n; ++i) {
+			drawTriangle(v[3 * i], v[3 * i + 1], v[3 * i + 2], solid);
+		}
+		GL11.glPopMatrix();
+	}
+
 	//extern "C" 
 //	void dsDrawCylinder (final float pos[3], final float R[12],
 //			float length, float radius)
@@ -1868,6 +1885,25 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		GL11.glShadeModel (GL11.GL_FLAT);
 		setTransform (pos,R);
 		drawTriangle (v0, v1, v2, solid);
+		GL11.glPopMatrix();
+	}
+
+	//	extern "C" void dsDrawTrianglesD (const double pos[3], const double R[12],
+//				const double *v, int n, int solid)
+	public void dsDrawTriangles(final DVector3C pos, final DMatrix3C R,
+								final DVector3C[] v, boolean solid) {
+		int i;
+		DVector3C pos2 = new DVector3(pos);
+		DMatrix3C R2 = new DMatrix3(R);
+//		for (i=0; i<3; i++) pos2[i]=(float)pos[i];
+//		for (i=0; i<12; i++) R2[i]=(float)R[i];
+
+		if (current_state != 2) dsError("drawing function called outside simulation loop");
+		setupDrawingMode();
+		GL11.glShadeModel(GL11.GL_FLAT);
+		setTransform(pos2, R2);
+		for (i = 0; i < v.length; ++i)
+			drawTriangle(v[3 * i], v[3 * i + 1], v[3 * i + 2], solid);
 		GL11.glPopMatrix();
 	}
 

@@ -67,14 +67,57 @@ public interface DTriMesh extends DGeom {
 	interface DTriCallback {
 		int call(DGeom TriMesh, DGeom RefObject, int TriangleIndex);
 	}
-	
-	
-	
-	
-	
-//	void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data);
-//	Object dGeomTriMeshDataGet(DTriMeshData g, int data_id);
 
+
+	//	enum dMeshTriangleVertex {
+	//		dMTV__MIN,
+	//		dMTV_FIRST =dMTV__MIN,
+	//		dMTV_SECOND,
+	//		dMTV_THIRD,
+	//		dMTV__MAX,
+	//	}
+	class dMeshTriangleVertex {
+		public static final int dMTV__MIN = 0;
+		public static final int dMTV_FIRST = dMTV__MIN;
+		public static final int dMTV_SECOND = 1;
+		public static final int dMTV_THIRD = 2;
+		public static final int dMTV__MAX = 3;
+	}
+
+	/*
+	 * The values of data_id that can be used with dGeomTriMeshDataSet/dGeomTriMeshDataGet
+	 */
+	enum dTRIMESHDATA {
+		FACE_NORMALS,
+		USE_FLAGS;
+		//public static final dTRIMESHDATA _MIN = 0;
+		//public static final dTRIMESHDATA dTRIMESHDATA__MAX = 2;
+//#ifndef TRIMESH_FACE_NORMALS // Define this name during the header inclusion if you need it for something else
+//		// Included for backward compatibility -- please use the corrected name above. Sorry.
+//		TRIMESH_FACE_NORMALS = dTRIMESHDATA_FACE_NORMALS,
+//#endif
+	}
+
+	/*
+	 * The flags of the dTRIMESHDATA_USE_FLAGS data elements
+	 */
+	class dMESHDATAUSE
+	{
+		public static final int dMESHDATAUSE_EDGE1      = 0x01;
+		public static final int dMESHDATAUSE_EDGE2      = 0x02;
+		public static final int dMESHDATAUSE_EDGE3      = 0x04;
+		public static final int dMESHDATAUSE_VERTEX1    = 0x08;
+		public static final int dMESHDATAUSE_VERTEX2    = 0x10;
+		public static final int dMESHDATAUSE_VERTEX3    = 0x20;
+	};
+
+	/*
+	 *	Set and get the TriMeshData additional data
+	 * Note: The data is NOT COPIED on assignment
+	 */
+	//	void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data);
+	//	Object dGeomTriMeshDataGet(DTriMeshData g, int data_id);
+	//  void *dGeomTriMeshDataGet2(dTriMeshDataID g, int data_id, size_t *pout_size/*=NULL*/);
 
 //The following is not ported to Java because it is not supported by GIMPACT (TZ).
 //	/**

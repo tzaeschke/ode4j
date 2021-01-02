@@ -264,7 +264,19 @@ public class DrawStuffNull implements DrawStuffApi {
 		// Nothing
 	}
 
-    @Override
+	@Override
+	public void dsDrawTriangles(final float[] pos, final float[] R,
+								final float[][] v, boolean solid) {
+		// Nothing
+	}
+
+	@Override
+	public void dsDrawTriangles(final DVector3C pos, final DMatrix3C R,
+								final DVector3C[] v, boolean solid) {
+		// Nothing
+	}
+
+	@Override
     public void dsSetSphereQuality(int n) {
         // Nothing
     }

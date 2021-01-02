@@ -912,11 +912,17 @@ public class GimTrimesh implements GimConstants {
 
 	    //int[] triangle_indices = GIM_BUFFER_ARRAY_POINTER(GUINT32,trimesh.m_tri_index_buffer,triangle_index*3);
 	    IntArray triangle_indices = m_tri_index_buffer.GIM_BUFFER_ARRAY_POINTER(triangle_index*3);
-	    
-	    //Copy the vertices
-	    VEC_COPY(v1,transformed_vertices.at( triangle_indices.at(0) ));
-	    VEC_COPY(v2,transformed_vertices.at( triangle_indices.at(1) ));
-	    VEC_COPY(v3,transformed_vertices.at( triangle_indices.at(2) ));
+
+		//Copy the vertices
+		if (v1 != null) {
+			VEC_COPY(v1, transformed_vertices.at(triangle_indices.at(0)));
+		}
+		if (v2 != null) {
+			VEC_COPY(v2, transformed_vertices.at(triangle_indices.at(1)));
+		}
+		if (v3 != null) {
+			VEC_COPY(v3, transformed_vertices.at(triangle_indices.at(2)));
+		}
 	}
 
 	
