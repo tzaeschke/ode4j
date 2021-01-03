@@ -459,11 +459,6 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		// enumerator has been invalidated
 		current_geom = null;
 
-		// new geoms are added to the front of the list and are always
-		// considered to be dirty. as a consequence, this space and all its
-		// parents are dirty too.
-		//geom._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
-		geom.setFlagDirtyAndBad();
 		//TZ TODO why (this) and not geom??
 		dGeomMoved ();
 	}

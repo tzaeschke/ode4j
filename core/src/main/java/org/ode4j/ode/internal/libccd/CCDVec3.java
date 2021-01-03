@@ -31,15 +31,15 @@ public class CCDVec3 {
 
 	//# define CCD_REAL(x) (x)       /*!< form a finalant */
 	//# define CCD_SQRT(x) (sqrt(x)) /*!< square root */
-	public static final double CCD_SQRT(double x) { return Math.sqrt(x); }
+	public static double CCD_SQRT(double x) { return Math.sqrt(x); }
 	/* absolute value */
-	private static final double CCD_FABS(double x) { return Math.abs(x); }
+	private static double CCD_FABS(double x) { return Math.abs(x); }
 	/* maximum of two floats */
-	//private static final double CCD_FMAX(double x, double y) { return x > y ? x : y; }
+	public static double CCD_FMAX(double x, double y) { return x > y ? x : y; }
 	/* minimum of two floats */
-	static final double CCD_FMIN(double x, double y) { return x < y ? x : y; }
+	static double CCD_FMIN(double x, double y) { return x < y ? x : y; }
 
-	static double CCD_ATAN2(double x, double y) {
+	public static double CCD_ATAN2(double x, double y) {
 		return Math.atan2(x, y);
 	}
 
@@ -250,7 +250,7 @@ public class CCDVec3 {
 	/**
 	 * d = v - w
 	 */
-	static void ccdVec3Sub2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w)
+	public static void ccdVec3Sub2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w)
 	{
 	    d.v0 = v.v0 - w.v0;
 	    d.v1 = v.v1 - w.v1;
@@ -260,7 +260,7 @@ public class CCDVec3 {
 	/**
 	 * d = v + w
 	 */
-	static void ccdVec3Add2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w) {
+	public static void ccdVec3Add2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w) {
 		d.v0 = v.v0 + w.v0;
 		d.v1 = v.v1 + w.v1;
 		d.v2 = v.v2 + w.v2;
@@ -281,7 +281,7 @@ public class CCDVec3 {
 	/**
 	 * d = s * k;
 	 */
-	static void ccdVec3CopyScaled(ccd_vec3_t d, final ccd_vec3_t s, double k) {
+	public static void ccdVec3CopyScaled(ccd_vec3_t d, final ccd_vec3_t s, double k) {
 		d.v0 = s.v0 * k;
 		d.v1 = s.v1 * k;
 		d.v2 = s.v2 * k;

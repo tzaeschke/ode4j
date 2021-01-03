@@ -243,17 +243,21 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		if( dirtyIdx != GEOM_INVALID_IDX ) {
 			// we're in dirty list, remove
 			int dirtySize = DirtyList.size();
-			DxGeom lastG = DirtyList.get(dirtySize-1);
-			DirtyList.set(dirtyIdx, lastG);
-			GEOM_SET_DIRTY_IDX(lastG,dirtyIdx);
+			if (dirtyIdx != dirtySize-1) {
+				DxGeom lastG = DirtyList.get(dirtySize - 1);
+				DirtyList.set(dirtyIdx, lastG);
+				GEOM_SET_DIRTY_IDX(lastG, dirtyIdx);
+			}
 			GEOM_SET_DIRTY_IDX(g,GEOM_INVALID_IDX);
 			DirtyList.remove( dirtySize-1 );
 		} else {
 			// we're in geom list, remove
 			int geomSize = GeomList.size();
-			DxGeom lastG = GeomList.get(geomSize-1);
-			GeomList.set(geomIdx, lastG);
-			GEOM_SET_GEOM_IDX(lastG,geomIdx);
+			if (geomIdx != geomSize-1) {
+				DxGeom lastG = GeomList.get(geomSize - 1);
+				GeomList.set(geomIdx, lastG);
+				GEOM_SET_GEOM_IDX(lastG, geomIdx);
+			}
 			GEOM_SET_GEOM_IDX(g,GEOM_INVALID_IDX);
 			GeomList.remove( geomSize-1 );
 		}
@@ -266,7 +270,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	void dirty( DxGeom g )
 	{
 		//dAASSERT(g);
-		dUASSERT(g.parent_space == this,"object is not in this space");
+		dUASSERT(g.parent_space == this, "object is not in this space");
 
 		// check if already dirtied
 		int dirtyIdx = GEOM_GET_DIRTY_IDX(g);
@@ -278,9 +282,11 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 		// remove from geom list, place last in place of this
 		int geomSize = GeomList.size();
-		DxGeom lastG = GeomList.get(geomSize-1);
-		GeomList.set(geomIdx, lastG);
-		GEOM_SET_GEOM_IDX(lastG,geomIdx);
+		if (geomIdx != geomSize-1) {
+			DxGeom lastG = GeomList.get(geomSize - 1);
+			GeomList.set(geomIdx, lastG);
+			GEOM_SET_GEOM_IDX(lastG, geomIdx);
+		}
 		//GeomList.setSize( geomSize-1 );
 		GeomList.remove(geomSize-1);
 
@@ -306,12 +312,16 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 		for( int i = 0; i < dirtySize; ++i ) {
 			DxGeom g = DirtyList.get(i);
-			if( g instanceof DxSpace ) {//IS_SPACE(g) ) {
-				((DxSpace)g).cleanGeoms();
+			if (g instanceof DxSpace) {//IS_SPACE(g) ) {
+				((DxSpace) g).cleanGeoms();
 			}
+
 			g.recomputeAABB();
-			//g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
-			g.unsetFlagDirtyAndBad();
+//			dIASSERT((g->gflags & GEOM_AABB_BAD) == 0);
+//			g->gflags &= ~GEOM_DIRTY;
+			dIASSERT(!g.hasFlagAabbBad());
+			g.unsetFlagDirty();
+
 			// remove from dirty list, add to geom list
 			GEOM_SET_DIRTY_IDX( g, GEOM_INVALID_IDX );
 			GEOM_SET_GEOM_IDX( g, geomSize + i );
@@ -353,15 +363,9 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		}
 
 		// do SAP on normal AABBs
-		int normSize = TmpGeomList.size();
-		if ( normSize > 0 )
+		int tmp_geom_count = TmpGeomList.size();
+		if ( tmp_geom_count > 0 )
 		{
-			// Size the poslist (+1 for infinity end cap)
-			//poslist.setSize( tmp_geom_count + 1 );
-			//TODO TZ not used at the moment
-			//poslist = new float[ tmp_geom_count + 1 ];
-			//poslist = new float[ tmp_geom_count ];
-
 			// Generate a list of overlapping boxes
 			//BoxPruning( tmp_geom_count, (final dxGeom**)TmpGeomList.data(), overlapBoxes );
 			BoxPruning( TmpGeomList, data, callback );
@@ -381,7 +385,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 			}
 
 			// collide infinite ones with normal ones
-			for( n = 0; n < normSize; ++n ) {
+			for( n = 0; n < tmp_geom_count; ++n ) {
 				DxGeom g2 = TmpGeomList.get(n);
 				collideGeomsNoAABBs( g1, g2, data, callback );
 			}
@@ -435,7 +439,6 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	 *  This greatly simplifies the code.
 	 *
 	 *	@param	geoms	[in] geoms of boxes.
-	 *	@param	pairs	[out] array of overlapping pairs.
 	 */
 	//void dxSAPSpace::BoxPruning( int count, const dxGeom** geoms, dArray< Pair >& pairs )
 	void BoxPruning(final List<DxGeom> geoms, Object data, DNearCallback callback)
@@ -495,7 +498,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 //		//final uint32* Sorted = sortContext.RadixSort( poslist.data(), count );
 //		//final IntArray Sorted = new IntArray( sortContext.RadixSort( poslist, count ) );
 //		//TODO
-//		//TODO
+//		//TODO Also: THis code is outdated, check GIT for latest version!
 //		//TODO
 //		ArrayList<dxGeom> buffer = new ArrayList<dxGeom>(geoms);
 //		Collections.sort(buffer, new GeomComparator());

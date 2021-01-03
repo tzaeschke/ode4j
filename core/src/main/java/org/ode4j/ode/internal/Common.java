@@ -115,16 +115,20 @@ public class Common extends OdeConstants {
 	//#define FLOAT_EQ(x,v) (((v - EPSILON) < x) && (x <( v + EPSILON)))
 	//public static final double DBL_EPSILON = 2.22045e-16;
 	public static final double DBL_EPSILON = 2.2204460492503131e-016;
-	
-	public static final void dIVERIFY(boolean a) {
-	    dIASSERT(a);
+
+	public static void dIVERIFY(boolean a) {
+		dIASSERT(a);
 	}
 
-	/** 
+	public static void dIVERIFY(boolean a, String msg) {
+		dUASSERT(a, msg);
+	}
+
+	/**
 	 * Internal assertion 
 	 * @param b Fail if 'false'
 	 */
-	public static final void dIASSERT(boolean b) {
+	public static void dIASSERT(boolean b) {
 		if (!b) {
 			dDebug(d_ERR_IASSERT, "assertion failed ");
 			new RuntimeException().printStackTrace();
@@ -305,98 +309,102 @@ public class Common extends OdeConstants {
 		public static final int dDA__MAX = dDA__MIN + dMotionDynamics.dMD__MAX * dSpaceAxis.dSA__MAX;
 	}
 
-	static class dVec3Element {
-		public static final int dV3E__MIN = 0;
-		public static final int dV3E__AXES_MIN = dV3E__MIN;
-		public static final int dV3E_X = dV3E__AXES_MIN + dSpaceAxis.dSA_X;
-		public static final int dV3E_Y = dV3E__AXES_MIN + dSpaceAxis.dSA_Y;
-		public static final int dV3E_Z = dV3E__AXES_MIN + dSpaceAxis.dSA_Z;
-		public static final int dV3E__AXES_MAX = dV3E__AXES_MIN + dSpaceAxis.dSA__MAX;
-		public static final int dV3E_PAD = dV3E__AXES_MAX;
-		@Deprecated
-		public static final int dV3E__MAX = dV3E_PAD + 1;
-		public static final int dV3E__AXES_COUNT = dV3E__AXES_MAX - dV3E__AXES_MIN;
-	}
+	// **********************************
+	// The following can be found in CommonEnums.java
+	// **********************************
 
-	static class dVec4Element {
-		public static final int dV4E__MIN = 0;
-		public static final int dV4E_X = dV4E__MIN + dSpaceAxis.dSA_X;
-		public static final int dV4E_Y = dV4E__MIN + dSpaceAxis.dSA_Y;
-		public static final int dV4E_Z = dV4E__MIN + dSpaceAxis.dSA_Z;
-		public static final int dV4E_O = dV4E__MIN + dSpaceAxis.dSA__MAX;
-		@Deprecated
-		public static final int dV4E__MAX = dV4E_O + 1;
-	}
-
-	static class dMat3Element {
-		public static final int dM3E__MIN = 0;
-		public static final int dM3E__X_MIN = dM3E__MIN + dSpaceAxis.dSA_X * dVec3Element.dV3E__MAX;
-		public static final int dM3E__X_AXES_MIN = dM3E__X_MIN + dVec3Element.dV3E__AXES_MIN;
-		public static final int dM3E_XX = dM3E__X_MIN + dVec3Element.dV3E_X;
-		public static final int dM3E_XY = dM3E__X_MIN + dVec3Element.dV3E_Y;
-		public static final int dM3E_XZ = dM3E__X_MIN + dVec3Element.dV3E_Z;
-		public static final int dM3E__X_AXES_MAX = dM3E__X_MIN + dVec3Element.dV3E__AXES_MAX;
-		public static final int dM3E_XPAD = dM3E__X_MIN + dVec3Element.dV3E_PAD;
-		public static final int dM3E__X_MAX = dM3E__X_MIN + dVec3Element.dV3E__MAX;
-		public static final int dM3E__Y_MIN = dM3E__MIN + dSpaceAxis.dSA_Y * dVec3Element.dV3E__MAX;
-		public static final int dM3E__Y_AXES_MIN = dM3E__Y_MIN + dVec3Element.dV3E__AXES_MIN;
-		public static final int dM3E_YX = dM3E__Y_MIN + dVec3Element.dV3E_X;
-		public static final int dM3E_YY = dM3E__Y_MIN + dVec3Element.dV3E_Y;
-		public static final int dM3E_YZ = dM3E__Y_MIN + dVec3Element.dV3E_Z;
-		public static final int dM3E__Y_AXES_MAX = dM3E__Y_MIN + dVec3Element.dV3E__AXES_MAX;
-		public static final int dM3E_YPAD = dM3E__Y_MIN + dVec3Element.dV3E_PAD;
-		public static final int dM3E__Y_MAX = dM3E__Y_MIN + dVec3Element.dV3E__MAX;
-		public static final int dM3E__Z_MIN = dM3E__MIN + dSpaceAxis.dSA_Z * dVec3Element.dV3E__MAX;
-		public static final int dM3E__Z_AXES_MIN = dM3E__Z_MIN + dVec3Element.dV3E__AXES_MIN;
-		public static final int dM3E_ZX = dM3E__Z_MIN + dVec3Element.dV3E_X;
-		public static final int dM3E_ZY = dM3E__Z_MIN + dVec3Element.dV3E_Y;
-		public static final int dM3E_ZZ = dM3E__Z_MIN + dVec3Element.dV3E_Z;
-		public static final int dM3E__Z_AXES_MAX = dM3E__Z_MIN + dVec3Element.dV3E__AXES_MAX;
-		public static final int dM3E_ZPAD = dM3E__Z_MIN + dVec3Element.dV3E_PAD;
-		public static final int dM3E__Z_MAX = dM3E__Z_MIN + dVec3Element.dV3E__MAX;
-		public static final int dM3E__MAX = dM3E__MIN + dSpaceAxis.dSA__MAX * dVec3Element.dV3E__MAX;
-	}
-
-	static class dMat4Element {
-		public static final int dM4E__MIN = 0;
-		public static final int dM4E__X_MIN = dM4E__MIN + dVec4Element.dV4E_X * dVec4Element.dV4E__MAX;
-		public static final int dM4E_XX = dM4E__X_MIN + dVec4Element.dV4E_X;
-		public static final int dM4E_XY = dM4E__X_MIN + dVec4Element.dV4E_Y;
-		public static final int dM4E_XZ = dM4E__X_MIN + dVec4Element.dV4E_Z;
-		public static final int dM4E_XO = dM4E__X_MIN + dVec4Element.dV4E_O;
-		public static final int dM4E__X_MAX = dM4E__X_MIN + dVec4Element.dV4E__MAX;
-		public static final int dM4E__Y_MIN = dM4E__MIN + dVec4Element.dV4E_Y * dVec4Element.dV4E__MAX;
-		public static final int dM4E_YX = dM4E__Y_MIN + dVec4Element.dV4E_X;
-		public static final int dM4E_YY = dM4E__Y_MIN + dVec4Element.dV4E_Y;
-		public static final int dM4E_YZ = dM4E__Y_MIN + dVec4Element.dV4E_Z;
-		public static final int dM4E_YO = dM4E__Y_MIN + dVec4Element.dV4E_O;
-		public static final int dM4E__Y_MAX = dM4E__Y_MIN + dVec4Element.dV4E__MAX;
-		public static final int dM4E__Z_MIN = dM4E__MIN + dVec4Element.dV4E_Z * dVec4Element.dV4E__MAX;
-		public static final int dM4E_ZX = dM4E__Z_MIN + dVec4Element.dV4E_X;
-		public static final int dM4E_ZY = dM4E__Z_MIN + dVec4Element.dV4E_Y;
-		public static final int dM4E_ZZ = dM4E__Z_MIN + dVec4Element.dV4E_Z;
-		public static final int dM4E_ZO = dM4E__Z_MIN + dVec4Element.dV4E_O;
-		public static final int dM4E__Z_MAX = dM4E__Z_MIN + dVec4Element.dV4E__MAX;
-		public static final int dM4E__O_MIN = dM4E__MIN + dVec4Element.dV4E_O * dVec4Element.dV4E__MAX;
-		public static final int dM4E_OX = dM4E__O_MIN + dVec4Element.dV4E_X;
-		public static final int dM4E_OY = dM4E__O_MIN + dVec4Element.dV4E_Y;
-		public static final int dM4E_OZ = dM4E__O_MIN + dVec4Element.dV4E_Z;
-		public static final int dM4E_OO = dM4E__O_MIN + dVec4Element.dV4E_O;
-		public static final int dM4E__O_MAX = dM4E__O_MIN + dVec4Element.dV4E__MAX;
-		public static final int dM4E__MAX = dM4E__MIN + dVec4Element.dV4E__MAX * dVec4Element.dV4E__MAX;
-	}
-
-	static class dQuatElement {;
-		public static final int dQUE__MIN = 0;
-		public static final int dQUE_R = dQUE__MIN;
-		@Deprecated
-		public static final int dQUE__AXIS_MIN = dQUE_R + 1;
-		public static final int dQUE_I = dQUE__AXIS_MIN + dSpaceAxis.dSA_X;
-		public static final int dQUE_J = dQUE__AXIS_MIN + dSpaceAxis.dSA_Y;
-		public static final int dQUE_K = dQUE__AXIS_MIN + dSpaceAxis.dSA_Z;
-		public static final int dQUE__AXIS_MAX = dQUE__AXIS_MIN + dSpaceAxis.dSA__MAX;
-		public static final int dQUE__MAX = dQUE__AXIS_MAX;
-	}
+//	static class dVec3Element {
+//		public static final int dV3E__MIN = 0;
+//		public static final int dV3E__AXES_MIN = dV3E__MIN;
+//		public static final int dV3E_X = dV3E__AXES_MIN + dSpaceAxis.dSA_X;
+//		public static final int dV3E_Y = dV3E__AXES_MIN + dSpaceAxis.dSA_Y;
+//		public static final int dV3E_Z = dV3E__AXES_MIN + dSpaceAxis.dSA_Z;
+//		public static final int dV3E__AXES_MAX = dV3E__AXES_MIN + dSpaceAxis.dSA__MAX;
+//		public static final int dV3E_PAD = dV3E__AXES_MAX;
+//		@Deprecated
+//		public static final int dV3E__MAX = dV3E_PAD + 1;
+//		public static final int dV3E__AXES_COUNT = dV3E__AXES_MAX - dV3E__AXES_MIN;
+//	}
+//
+//	static class dVec4Element {
+//		public static final int dV4E__MIN = 0;
+//		public static final int dV4E_X = dV4E__MIN + dSpaceAxis.dSA_X;
+//		public static final int dV4E_Y = dV4E__MIN + dSpaceAxis.dSA_Y;
+//		public static final int dV4E_Z = dV4E__MIN + dSpaceAxis.dSA_Z;
+//		public static final int dV4E_O = dV4E__MIN + dSpaceAxis.dSA__MAX;
+//		@Deprecated
+//		public static final int dV4E__MAX = dV4E_O + 1;
+//	}
+//
+//	static class dMat3Element {
+//		public static final int dM3E__MIN = 0;
+//		public static final int dM3E__X_MIN = dM3E__MIN + dSpaceAxis.dSA_X * dVec3Element.dV3E__MAX;
+//		public static final int dM3E__X_AXES_MIN = dM3E__X_MIN + dVec3Element.dV3E__AXES_MIN;
+//		public static final int dM3E_XX = dM3E__X_MIN + dVec3Element.dV3E_X;
+//		public static final int dM3E_XY = dM3E__X_MIN + dVec3Element.dV3E_Y;
+//		public static final int dM3E_XZ = dM3E__X_MIN + dVec3Element.dV3E_Z;
+//		public static final int dM3E__X_AXES_MAX = dM3E__X_MIN + dVec3Element.dV3E__AXES_MAX;
+//		public static final int dM3E_XPAD = dM3E__X_MIN + dVec3Element.dV3E_PAD;
+//		public static final int dM3E__X_MAX = dM3E__X_MIN + dVec3Element.dV3E__MAX;
+//		public static final int dM3E__Y_MIN = dM3E__MIN + dSpaceAxis.dSA_Y * dVec3Element.dV3E__MAX;
+//		public static final int dM3E__Y_AXES_MIN = dM3E__Y_MIN + dVec3Element.dV3E__AXES_MIN;
+//		public static final int dM3E_YX = dM3E__Y_MIN + dVec3Element.dV3E_X;
+//		public static final int dM3E_YY = dM3E__Y_MIN + dVec3Element.dV3E_Y;
+//		public static final int dM3E_YZ = dM3E__Y_MIN + dVec3Element.dV3E_Z;
+//		public static final int dM3E__Y_AXES_MAX = dM3E__Y_MIN + dVec3Element.dV3E__AXES_MAX;
+//		public static final int dM3E_YPAD = dM3E__Y_MIN + dVec3Element.dV3E_PAD;
+//		public static final int dM3E__Y_MAX = dM3E__Y_MIN + dVec3Element.dV3E__MAX;
+//		public static final int dM3E__Z_MIN = dM3E__MIN + dSpaceAxis.dSA_Z * dVec3Element.dV3E__MAX;
+//		public static final int dM3E__Z_AXES_MIN = dM3E__Z_MIN + dVec3Element.dV3E__AXES_MIN;
+//		public static final int dM3E_ZX = dM3E__Z_MIN + dVec3Element.dV3E_X;
+//		public static final int dM3E_ZY = dM3E__Z_MIN + dVec3Element.dV3E_Y;
+//		public static final int dM3E_ZZ = dM3E__Z_MIN + dVec3Element.dV3E_Z;
+//		public static final int dM3E__Z_AXES_MAX = dM3E__Z_MIN + dVec3Element.dV3E__AXES_MAX;
+//		public static final int dM3E_ZPAD = dM3E__Z_MIN + dVec3Element.dV3E_PAD;
+//		public static final int dM3E__Z_MAX = dM3E__Z_MIN + dVec3Element.dV3E__MAX;
+//		public static final int dM3E__MAX = dM3E__MIN + dSpaceAxis.dSA__MAX * dVec3Element.dV3E__MAX;
+//	}
+//
+//	static class dMat4Element {
+//		public static final int dM4E__MIN = 0;
+//		public static final int dM4E__X_MIN = dM4E__MIN + dVec4Element.dV4E_X * dVec4Element.dV4E__MAX;
+//		public static final int dM4E_XX = dM4E__X_MIN + dVec4Element.dV4E_X;
+//		public static final int dM4E_XY = dM4E__X_MIN + dVec4Element.dV4E_Y;
+//		public static final int dM4E_XZ = dM4E__X_MIN + dVec4Element.dV4E_Z;
+//		public static final int dM4E_XO = dM4E__X_MIN + dVec4Element.dV4E_O;
+//		public static final int dM4E__X_MAX = dM4E__X_MIN + dVec4Element.dV4E__MAX;
+//		public static final int dM4E__Y_MIN = dM4E__MIN + dVec4Element.dV4E_Y * dVec4Element.dV4E__MAX;
+//		public static final int dM4E_YX = dM4E__Y_MIN + dVec4Element.dV4E_X;
+//		public static final int dM4E_YY = dM4E__Y_MIN + dVec4Element.dV4E_Y;
+//		public static final int dM4E_YZ = dM4E__Y_MIN + dVec4Element.dV4E_Z;
+//		public static final int dM4E_YO = dM4E__Y_MIN + dVec4Element.dV4E_O;
+//		public static final int dM4E__Y_MAX = dM4E__Y_MIN + dVec4Element.dV4E__MAX;
+//		public static final int dM4E__Z_MIN = dM4E__MIN + dVec4Element.dV4E_Z * dVec4Element.dV4E__MAX;
+//		public static final int dM4E_ZX = dM4E__Z_MIN + dVec4Element.dV4E_X;
+//		public static final int dM4E_ZY = dM4E__Z_MIN + dVec4Element.dV4E_Y;
+//		public static final int dM4E_ZZ = dM4E__Z_MIN + dVec4Element.dV4E_Z;
+//		public static final int dM4E_ZO = dM4E__Z_MIN + dVec4Element.dV4E_O;
+//		public static final int dM4E__Z_MAX = dM4E__Z_MIN + dVec4Element.dV4E__MAX;
+//		public static final int dM4E__O_MIN = dM4E__MIN + dVec4Element.dV4E_O * dVec4Element.dV4E__MAX;
+//		public static final int dM4E_OX = dM4E__O_MIN + dVec4Element.dV4E_X;
+//		public static final int dM4E_OY = dM4E__O_MIN + dVec4Element.dV4E_Y;
+//		public static final int dM4E_OZ = dM4E__O_MIN + dVec4Element.dV4E_Z;
+//		public static final int dM4E_OO = dM4E__O_MIN + dVec4Element.dV4E_O;
+//		public static final int dM4E__O_MAX = dM4E__O_MIN + dVec4Element.dV4E__MAX;
+//		public static final int dM4E__MAX = dM4E__MIN + dVec4Element.dV4E__MAX * dVec4Element.dV4E__MAX;
+//	}
+//
+//	static class dQuatElement {;
+//		public static final int dQUE__MIN = 0;
+//		public static final int dQUE_R = dQUE__MIN;
+//		@Deprecated
+//		public static final int dQUE__AXIS_MIN = dQUE_R + 1;
+//		public static final int dQUE_I = dQUE__AXIS_MIN + dSpaceAxis.dSA_X;
+//		public static final int dQUE_J = dQUE__AXIS_MIN + dSpaceAxis.dSA_Y;
+//		public static final int dQUE_K = dQUE__AXIS_MIN + dSpaceAxis.dSA_Z;
+//		public static final int dQUE__AXIS_MAX = dQUE__AXIS_MIN + dSpaceAxis.dSA__MAX;
+//		public static final int dQUE__MAX = dQUE__AXIS_MAX;
+//	}
 
 	/* these types are mainly just used in headers */
 //	typedef dReal dVector3[dV3E__MAX];

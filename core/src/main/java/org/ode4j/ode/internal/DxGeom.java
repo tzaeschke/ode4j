@@ -68,11 +68,11 @@ public abstract class DxGeom extends DBase implements DGeom {
 	public static final int NUMC_MASK = 0xffff;  //TODO long?
 
 	//	#define IS_SPACE(geom) \
-	//	  ((geom)->type >= dFirstSpaceClass && (geom)->type <= dLastSpaceClass)
-//	protected static boolean IS_SPACE(dxGeom geom) {
-//		//return ((geom).type >= dFirstSpaceClass && (geom).type <= dLastSpaceClass);
-//		return (geom instanceof dSpace);
-//	}
+	//	  dIN_RANGE((geom)->type, dFirstSpaceClass, dLastSpaceClass + 1)
+	//	protected static boolean IS_SPACE(dxGeom geom) {
+	//		//return ((geom).type >= dFirstSpaceClass && (geom).type <= dLastSpaceClass xxxx);
+	//		return (geom instanceof dSpace);
+	//	}
 
 	// should not be necessary, is also expensive to create a new view.
 //	protected dContactGeomBuffer CONTACT(dContactGeomBuffer b, int skip) {
@@ -185,8 +185,17 @@ public abstract class DxGeom extends DBase implements DGeom {
 		_gflags = is_zero_sized ? (_gflags | GEOM_ZERO_SIZED) : (_gflags & ~GEOM_ZERO_SIZED); 
 	}
 
-	// calculate our new final position from our offset and body
-	//	  void computePosr();
+    private DVector3C buildUpdatedPosition() {
+		dIASSERT((_gflags & GEOM_PLACEABLE) != 0);
+		recomputePosr();
+		return _final_posr.pos();
+	}
+
+    private DMatrix3C buildUpdatedRotation() {
+		dIASSERT((_gflags & GEOM_PLACEABLE) != 0);
+		recomputePosr();
+		return _final_posr.R();
+	}
 
 	// recalculate our new final position if needed
 	void recomputePosr()
@@ -196,6 +205,9 @@ public abstract class DxGeom extends DBase implements DGeom {
 			_gflags &= ~GEOM_POSR_BAD;
 		}
 	}
+
+	// calculate our new final position from our offset and body
+	//	  void computePosr();
 
 	/**
 	 * compute the AABB for this object and put it in aabb. this function
@@ -284,6 +296,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 		}
 	}
 
+	//void markAABBBad();
+	void markAABBBad() {
+		_gflags |= (GEOM_DIRTY | GEOM_AABB_BAD);
+		DxSpace.CHECK_NOT_LOCKED(parent_space);
+	}
+
 	/** _gflags |= (GEOM_DIRTY|GEOM_AABB_BAD); */
 	final void setFlagDirtyAndBad() {
 		_gflags |= (GEOM_DIRTY|GEOM_AABB_BAD);
@@ -293,7 +311,12 @@ public abstract class DxGeom extends DBase implements DGeom {
 	final void unsetFlagDirtyAndBad() {
 		_gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
 	}
-	
+
+	/** _gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD)); */
+	final void unsetFlagDirty() {
+		_gflags &= ~GEOM_DIRTY;
+	}
+
 	/** (_gflags & GEOM_DIRTY)!=0; */
 	final boolean hasFlagDirty() {
 		return (_gflags & GEOM_DIRTY)!=0;
@@ -828,28 +851,26 @@ public abstract class DxGeom extends DBase implements DGeom {
 	DVector3C dGeomGetPosition ()
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
-		recomputePosr();
-		return _final_posr.pos();
+		return buildUpdatedPosition();
 	}
 
 
 	private void dGeomCopyPosition(DVector3 pos)
 	{
-		pos.set(dGeomGetPosition());
+		pos.set(buildUpdatedPosition());
 	}
 
 
 	DMatrix3C dGeomGetRotation ()
 	{
 		dUASSERT (_gflags & GEOM_PLACEABLE,"geom must be placeable");
-		recomputePosr();
-		return _final_posr.R();
+		return buildUpdatedRotation();
 	}
 
 
 	private void dGeomCopyRotation(DMatrix3 R)
 	{
-		R.set(dGeomGetRotation());
+		R.set(buildUpdatedRotation());
 	}
 
 
@@ -1447,8 +1468,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 		DxGeom geom = this;
 		while (parent != null && (geom._gflags & GEOM_DIRTY)==0) {
-			parent.CHECK_NOT_LOCKED ();
-			geom._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
+			geom.markAABBBad();
 			parent.dirty (geom);
 			geom = parent;
 			parent = parent.parent_space;
@@ -1457,8 +1477,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 		// all the remaining dirty geoms must have their AABB_BAD flags set, to
 		// ensure that their AABBs get recomputed
 		while (geom != null) {
-			geom._gflags |= GEOM_DIRTY | GEOM_AABB_BAD;
-			DxSpace.CHECK_NOT_LOCKED (geom.parent_space);
+			geom.markAABBBad();
 			geom = geom.parent_space;
 		}
 	}

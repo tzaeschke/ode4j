@@ -537,9 +537,13 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 			if (g instanceof DxSpace){
 				((DxSpace)g).cleanGeoms();
 			}
+
 			g.recomputeAABB();
-			//g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
-			g.unsetFlagDirtyAndBad();
+
+			dIASSERT(!g.hasFlagAabbBad());
+
+			//g->gflags &= ~GEOM_DIRTY;
+			g.unsetFlagDirty();
 
 			//TZ XXX ((Block)g.tome).Traverse(g);
 			g._qtIdxEx.Traverse(g);

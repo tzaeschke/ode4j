@@ -117,17 +117,10 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 	// factors could be better designed to avoid collisions, and they should
 	// probably depend on the hash table physical size.
 
-	//	static unsigned long getVirtualAddress (int level, int x, int y, int z)
-	private static int getVirtualAddress (int level, int x, int y, int z)
-	{
-		int r = level*1000 + x*100 + y*10 + z;
-		//TODO remove check ?!?
-		if (r>=Integer.MAX_VALUE) {
-		    throw new IllegalArgumentException("level: " + level + " x=" + x + 
-		            " y=" + y + " z="+ z);
-		}
-		return Math.abs(r);
-		//return level*1000 + x*100 + y*10 + z;
+	private static long getVirtualAddressBase(int level, int x, int y) {
+		long r = level * 1000L + x * 100L + y * 10L;
+		assert (r >= 0);
+		return r;
 	}
 
 	//****************************************************************************
@@ -189,9 +182,12 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 			if (g instanceof DxSpace) {
 				((DxSpace)g).cleanGeoms();
 			}
+
 			g.recomputeAABB();
-			//g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
-			g.unsetFlagDirtyAndBad();
+			// dIASSERT((g->gflags & GEOM_AABB_BAD) == 0);
+			// g->gflags &= ~GEOM_DIRTY;
+			dIASSERT(!g.hasFlagAabbBad());
+			g.unsetFlagDirty();;
 		}
 		lock_count--;
 	}
@@ -231,11 +227,12 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 				aabb.level = level;
 				if (level > maxlevel) maxlevel = level;
 				// cellsize = 2^level
-				double cellsize = ldexp (1.0,level);
+				double cellSizeRecip = dRecip(ldexp(1.0, level));
+				// discretize AABB position to cell size
 				// discretize AABB position to cell size
 				for (i=0; i < 3; i++) {
-					aabb.dbounds[2*i] = (int)Math.floor (geom._aabb.getMin(i)/cellsize);
-					aabb.dbounds[2*i+1] = (int)Math.floor (geom._aabb.getMax(i)/cellsize);
+					aabb.dbounds[2*i] = (int)Math.floor (geom._aabb.getMin(i) * cellSizeRecip);
+					aabb.dbounds[2*i+1] = (int)Math.floor (geom._aabb.getMax(i) * cellSizeRecip);
 				}
 				// set AABB index
 				aabb.index = hash_boxes.size();
@@ -279,11 +276,16 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		//for (aabb=first_aabb; aabb != null; aabb=aabb.next) {
 		for (dxAABB aabb: hash_boxes) {
 			int[] dbounds = aabb.dbounds;
-			for (int xi = dbounds[0]; xi <= dbounds[1]; xi++) {
-				for (int yi = dbounds[2]; yi <= dbounds[3]; yi++) {
-					for (int zi = dbounds[4]; zi <= dbounds[5]; zi++) {
+			int xend = dbounds[1];
+			for (int xi = dbounds[0]; xi <= xend; xi++) {
+				int yend = dbounds[3];
+				for (int yi = dbounds[2]; yi <= yend; yi++) {
+					int zbegin = dbounds[4];
+					// TZ: cast to int after modulo with int should be fine
+					int hi = (int) ((getVirtualAddressBase (aabb.level,xi,yi) + zbegin) % sz);
+					int zend = dbounds[5];
+					for (int zi = zbegin; zi <= zend; hi = hi + 1 != sz ? hi + 1 : 0, zi++) {
 						// get the hash index  TODO TZ: cast to int
-						int hi = getVirtualAddress (aabb.level,xi,yi,zi) % sz;
 						// add a new node to the hash table
 						Node node = new Node();//(Node) ALLOCA (sizeof (Node));
 						node.x = xi;
@@ -306,13 +308,18 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		for (dxAABB aabb: hash_boxes) {
 			// we are searching for collisions with aabb
 			for (i=0; i<6; i++) db[i] = aabb.dbounds[i];
-			for (int level = aabb.level; level <= maxlevel; level++) {
-				for (int xi = db[0]; xi <= db[1]; xi++) {
-					for (int yi = db[2]; yi <= db[3]; yi++) {
-						for (int zi = db[4]; zi <= db[5]; zi++) {
-							// get the hash index
-							//int TZ long 
-							int hi = getVirtualAddress (level,xi,yi,zi) % sz;
+			for (int level = aabb.level; ; ) {
+				dIASSERT(level <= maxlevel);
+	            final int xend = db[1];
+				for (int xi = db[0]; xi <= xend; xi++) {
+					final int yend = db[3];
+					for (int yi = db[2]; yi <= yend; yi++) {
+						int zbegin = db[4];
+						// get the hash index
+						// TZ: cast to int after modulo with int should be fine
+						int hi = (int) ((getVirtualAddressBase(level, xi, yi) + zbegin) % sz);
+						final int zend = db[5];
+						for (int zi = zbegin; zi <= zend; hi = hi + 1 != sz ? hi + 1 : 0, zi++) {
 							// search all nodes at this index
 							for (Node node = table[hi]; node != null; node=node.next) {
 								// node points to an AABB that may intersect aabb
@@ -334,14 +341,19 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 									}
 									dIASSERT (i >= 0 && i < (tested_rowsize*n));
 									if ((tested[i] & mask)==0) {
+										tested[i] |= mask;
 										collideAABBs (aabb.geom,node.aabb.geom,data,callback);
 									}
-									tested[i] |= mask;
 								}
 							}
 						}
 					}
 				}
+
+				if (level == maxlevel) {
+					break;
+				}
+				++level;
 				// get the discrete bounds for the next level up
 				for (i=0; i<6; i++) 
 					db[i] >>= 1;

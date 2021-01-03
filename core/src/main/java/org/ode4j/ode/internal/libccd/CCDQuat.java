@@ -200,7 +200,7 @@ public class CCDQuat {
 	/**
 	 * Rotate vector s by quaternion q and put result into d.
 	 */
-	public void ccdQuatRotVec2(ccd_vec3_t d, final ccd_vec3_t s, final ccd_quat_t q) {
+	public static void ccdQuatRotVec2(ccd_vec3_t d, final ccd_vec3_t s, final ccd_quat_t q) {
 		// original version: 31 mul + 21 add
 		// optimized version: 18 mul + 12 add
 		// formula: d = s + 2 * cross(q.xyz, cross(q.xyz, v) + q.w * s)
@@ -229,7 +229,7 @@ public class CCDQuat {
 	/**
 	 * Rotate vector v by quaternion q.
 	 */
-	public void ccdQuatRotVec(ccd_vec3_t v, final ccd_quat_t q) {
+	public static void ccdQuatRotVec(ccd_vec3_t v, final ccd_quat_t q) {
 		ccdQuatRotVec2(v, v, q);
 	}
 

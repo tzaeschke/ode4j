@@ -76,7 +76,7 @@ public interface DTriMesh extends DGeom {
 	//		dMTV_THIRD,
 	//		dMTV__MAX,
 	//	}
-	class dMeshTriangleVertex {
+	public static class dMeshTriangleVertex {
 		public static final int dMTV__MIN = 0;
 		public static final int dMTV_FIRST = dMTV__MIN;
 		public static final int dMTV_SECOND = 1;
