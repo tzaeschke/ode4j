@@ -116,16 +116,19 @@ public class FrictionJointContact extends TestSuperClass
         DxJoint.Info1 info1 = new Info1();
         Info2DescrStep info2 = new Info2DescrStep();
         //double[][] dummy_J = new double[3][12];// = new double = {{0}};
-        double[] dummy_J = new double[3*12];// = new double = {{0}};
-        double[] dummy_c = new double[3];
-        double[] dummy_cfm = new double[3];
-        double[] dummy_lo = new double[3];
-        double[] dummy_hi = new double[3];
+        double[] dummy_J = new double[3*16];// = new double = {{0}};
         int[] dummy_findex = new int[3];
 
         double info2_fps = 100;
         double info2_erp = 0;
-//        info2.J1l = dummy_J[0];
+//        dReal *J1 = dummy_J[0];
+//        dReal *J2 = dummy_J[0] + 8;
+//        dReal *rhscfm = dummy_J[0] + 6;
+//        dReal *lohi = dummy_J[0] + 14;
+//        unsigned rowskip = 16;
+//        int *findex = dummy_findex;
+
+        //        info2.J1l = dummy_J[0];
 //        info2.J1a = dummy_J[0] + 3;
 //        info2.J2l = dummy_J[0] + 6;
 //        info2.J2a = dummy_J[0] + 9;
@@ -139,7 +142,7 @@ public class FrictionJointContact extends TestSuperClass
 //        info2.lo = dummy_lo;
 //        info2.hi = dummy_hi;
 //        info2.findex = dummy_findex;
-        info2.setRowskip(12);
+        info2.setRowskip(16);
         info2.setArrays(dummy_J, dummy_c, dummy_cfm, dummy_lo, dummy_hi, dummy_findex);
 
         //TZ moved to above

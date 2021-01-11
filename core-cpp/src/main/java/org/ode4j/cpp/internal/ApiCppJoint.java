@@ -21,6 +21,7 @@
  *************************************************************************/
 package org.ode4j.cpp.internal;
 
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAMotorJoint;
 import org.ode4j.ode.DBallJoint;
 import org.ode4j.ode.DBody;
@@ -596,6 +597,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 		j.setAnchor2(x, y, z);
 	}
 
+	//ODE_API
+	public static void dJointSetBallDistance (DBallJoint j, double distance) {
+		j.setDistance(distance);
+	}
 
 	/**
 	 * Param setting for Ball joints.
@@ -794,6 +799,12 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	//ODE_API 
 	public static void dJointSetHinge2Axis2 (DHinge2Joint j, double x, double y, double z) {
 		j.setAxis2(x, y, z);
+	}
+
+
+	//ODE_API
+	public static void dJointSetHinge2Axes (DHinge2Joint j, DVector3C axis1, DVector3C axis2) {
+		j.setAxes(axis1, axis2);
 	}
 
 
@@ -1534,6 +1545,10 @@ public abstract class ApiCppJoint extends ApiCppOther {
 		j.getAnchor2(result);
 	}
 
+	//ODE_API
+	public static double dJointGetBallDistance (DBallJoint j) {
+		return j.getDistance();
+	}
 
 	/**
 	 * Get joint parameter.
@@ -1545,7 +1560,6 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	public static double dJointGetBallParam (DBallJoint j, int parameter) {
 		return j.getParam(PARAM_N.toEnum(parameter));
 	}
-
 
 	/**
 	 * Get the hinge anchor point, in world coordinates.

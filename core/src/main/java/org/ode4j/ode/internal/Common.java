@@ -40,7 +40,7 @@ import static org.ode4j.ode.internal.ErrorHandler.*;
  * configuration stuff.
  */
 @SuppressWarnings("unused")
-public class Common extends OdeConstants { 
+public class Common extends OdeConstants {
 
 	/** configuration stuff */
 
@@ -62,7 +62,7 @@ public class Common extends OdeConstants {
 
 	public static final boolean dNODEBUG = false;
 
-	
+
 	public static final boolean dDOUBLE = true;
 	public static final boolean dSINGLE = false;
 	public static final double dEpsilon;
@@ -80,7 +80,7 @@ public class Common extends OdeConstants {
 			MAX_FLOAT = Float.MAX_VALUE;
 		}
 	}
-	
+
 	// Use the error-checking memory allocation system.  Because this system uses heap
 	//  (malloc) instead of stack (alloca), it is slower.  However, it allows you to
 	//  simulate larger scenes, as well as handle out-of-memory errors in a somewhat
@@ -94,9 +94,9 @@ public class Common extends OdeConstants {
 	//#endif
 	//TODO why check for dUSE_MALLOC_FOR_ALLOCA
 	/** no memory errors. */
-	public static final int d_MEMORY_OK = 0;             
+	public static final int d_MEMORY_OK = 0;
 	/** malloc failed due to out of memory error. */
-	public static final int d_MEMORY_OUT_OF_MEMORY = 1;  
+	public static final int d_MEMORY_OUT_OF_MEMORY = 1;
 
 
 //From config-defaults.h
@@ -120,12 +120,12 @@ public class Common extends OdeConstants {
 		dIASSERT(a);
 	}
 
-	public static void dIVERIFY(boolean a, String msg) {
+	public static void dUVERIFY(boolean a, String msg) {
 		dUASSERT(a, msg);
 	}
 
 	/**
-	 * Internal assertion 
+	 * Internal assertion
 	 * @param b Fail if 'false'
 	 */
 	public static void dIASSERT(boolean b) {
@@ -168,9 +168,38 @@ public class Common extends OdeConstants {
 		dMessage (d_ERR_UASSERT, msg2);
 	}
 
-	/** 
-	 * Assert 'not-null'. 
-	 * @param aa Object to assert 
+//	#ifdef __GNUC__
+//#define dUNUSED(Name) Name __attribute__((unused))
+//			#else // not __GNUC__
+//			#define dUNUSED(Name) Name
+//#endif
+//
+//#if __cplusplus >= 201103L
+//			#define dSASSERT(e)  static_assert(e, #e)
+//			#define dSMSGASSERT(e, message)  static_assert(e, message)
+//			#else
+//			#define d_SASSERT_INNER_TOKENPASTE(x, y) x ## y
+//#define d_SASSERT_TOKENPASTE(x, y) d_SASSERT_INNER_TOKENPASTE(x, y)
+//			#define dSASSERT(e) typedef char dUNUSED(d_SASSERT_TOKENPASTE(d_StaticAssertionFailed_, __LINE__)[(e)?1:-1])
+//			#define dSMSGASSERT(e, message)  dSASSERT(e)
+//			#endif
+
+	//	#  ifdef __GNUC__
+//	#    define dICHECK(a) { if (!(a)) { dDebug (d_ERR_IASSERT, \
+//	      "assertion \"" #a "\" failed in %s() [%s:%u]",__FUNCTION__,__FILE__,__LINE__); *(int *)0 = 0; } }
+//	#  else // not __GNUC__
+//	#    define dICHECK(a) { if (!(a)) { dDebug (d_ERR_IASSERT, \
+//	      "assertion \"" #a "\" failed in %s:%u",__FILE__,__LINE__); *(int *)0 = 0; } }
+//	#  endif
+	public static void dICHECK(boolean a) {
+		if (!a) {
+			dDebug(d_ERR_IASSERT, "", (Object[])null);
+		}
+	}
+
+	/**
+	 * Assert 'not-null'.
+	 * @param aa Object to assert
 	 */
 	public static void dAASSERT(Object ... aa) {
 		for (Object a: aa) {
@@ -198,26 +227,17 @@ public class Common extends OdeConstants {
 		}
 	}
 
-	/** 
-	 * Assert 'true'. 
-	 * @param b Fail if 'false' 
+	/**
+	 * Assert 'true'.
+	 * @param b Fail if 'false'
 	 */
 	public static void dAASSERT(boolean b) {
 		if (!b)
 			dUASSERT(b, "Bad argument(s)");
 	}
 
-//	#  ifdef __GNUC__
-//	#    define dICHECK(a) { if (!(a)) { dDebug (d_ERR_IASSERT, \
-//	      "assertion \"" #a "\" failed in %s() [%s:%u]",__FUNCTION__,__FILE__,__LINE__); *(int *)0 = 0; } }
-//	#  else // not __GNUC__
-//	#    define dICHECK(a) { if (!(a)) { dDebug (d_ERR_IASSERT, \
-//	      "assertion \"" #a "\" failed in %s:%u",__FILE__,__LINE__); *(int *)0 = 0; } }
-//	#  endif
-	public static void dICHECK(boolean a) {
-		if (!a) {
-			dDebug(d_ERR_IASSERT, "", (Object[])null);
-		}
+	public static void dAVERIFY(Object a) {
+		dUVERIFY(a != null, "Bad argument(s)");
 	}
 
 	/* floating point data type, vector, matrix and quaternion types */
@@ -266,8 +286,8 @@ public class Common extends OdeConstants {
 	//#endif // dTRIMESH_16BIT_INDICES
 //	public static final Class<?> dTRIMESH = Integer.TYPE;
 
-	/** 
-	 * Round an integer up to a multiple of 4, except that 0 and 1 
+	/**
+	 * Round an integer up to a multiple of 4, except that 0 and 1
 	 * are unmodified (used to compute matrix leading dimensions).
 	 * TODO Check that returned value is used!! (NOT Call by reference).
 	 * deprecated-keep for now (Remove this if possible) (TZ)
@@ -497,7 +517,7 @@ public class Common extends OdeConstants {
 	public static final double dAcos(double x) {
 		return Math.acos(x);
 	}
-	
+
 	//#define dFMod(a,b) (fmod((a),(b))) //TODO replace
 	public static final double dFMod(double x) {
 		throw new UnsupportedOperationException();
@@ -505,18 +525,18 @@ public class Common extends OdeConstants {
 	}
 	//#define dFloor(x) floor(x) //TODO replace
 	public static final double dFloor(double x) { return Math.floor(x); }
-	
+
 	//#define dCeil(x) ceilf(x)          /* ceil */
 	public static final double dCeil(double x) { return Math.ceil(x); }
-	
+
 	//#define dCopySign(a,b) ((dReal)copysignf(a,b)) /* copy value sign */
-    public static final double dCopysign(double magnitude, double sign) { 
-        return Math.copySign(magnitude, sign); 
+    public static final double dCopysign(double magnitude, double sign) {
+        return Math.copySign(magnitude, sign);
     }
 
     //#define dNextAfter(x, y) nextafterf(x, y) /* next value after */
-    public static final double dNextAfter(double start, double direction) { 
-        return Math.nextAfter(start, direction); 
+    public static final double dNextAfter(double start, double direction) {
+        return Math.nextAfter(start, direction);
     }
 
 
@@ -641,5 +661,206 @@ enum {
 	//   */
 	//  dParamGroup=0x100
 	//}
+
+
+
+	// Private common.h
+
+//	#ifndef SIZE_MAX
+//#define SIZE_MAX  ((size_t)(-1))
+//			#endif
+	static int SIZE_MAX = Integer.MAX_VALUE;
+
+
+//#ifndef offsetof
+//#define offsetof(s, m) ((size_t)&(((s *)8)->m) - (size_t)8)
+//			#endif
+//#ifndef membersize
+//#define membersize(s, m) (sizeof(((s *)8)->m))
+//			#endif
+//#ifndef endoffsetof
+//#define endoffsetof(s, m)   ((size_t)((size_t)&(((s *)8)->m) - (size_t)8) + sizeof(((s *)8)->m))
+//			#endif
+
+//#define dMACRO_MAX(a, b) ((a) > (b) ? (a) : (b))
+//			#define dMACRO_MIN(a, b) ((a) < (b) ? (a) : (b))
+//
+//			#define dMAKE_PADDING_SIZE(DataType, ElementType) ((sizeof(DataType) + sizeof(ElementType) - 1) / sizeof(ElementType))
+
+
+//	template<typename DstType, typename SrcType>
+//	inline
+//	bool _cast_to_smaller(DstType &dtOutResult, const SrcType &stArgument)
+//	{
+//		return (SrcType)(dtOutResult = (DstType)stArgument) == stArgument;
+//	}
+
+//#if defined(__GNUC__)
+//
+//#define dCAST_TO_SMALLER(TargetType, SourceValue) ({ TargetType ttCastSmallerValue; dIVERIFY(_cast_to_smaller(ttCastSmallerValue, SourceValue)); ttCastSmallerValue; })
+//
+//
+//			#else // #if !defined(__GNUC__)
+//
+//			#define dCAST_TO_SMALLER(TargetType, SourceValue) templateCAST_TO_SMALLER<TargetType>(SourceValue)
+//
+//	template <typename TTargetType, typename TSourceType>
+//	inline TTargetType templateCAST_TO_SMALLER(const TSourceType &stSourceValue)
+//	{
+//		TTargetType ttCastSmallerValue;
+//		dIVERIFY(_cast_to_smaller(ttCastSmallerValue, stSourceValue));
+//		return ttCastSmallerValue;
+//	}
+//
+//
+//#endif // #if !defined(__GNUC__)
+
+
+//	template<typename value_type>
+//	inline
+//	void dxSwap(value_type &one, value_type &another)
+//	{
+//		std::swap(one, another);
+//	}
+	@Deprecated
+	public void dxSwap() {
+		throw new UnsupportedOperationException();
+	}
+
+//	template<typename value_type, typename lo_type, typename hi_type>
+//	inline
+//	value_type dxClamp(const value_type &value, const lo_type &lo, const hi_type &hi)
+//	{
+//		return value < lo ? (value_type)lo : value > hi ? (value_type)hi : value;
+//	}
+	static double dxClamp(double value, double lo, double hi) {
+		return value < lo ? lo : value > hi ? hi : value;
+	}
+
+
+//	template <typename Type>
+//	union _const_type_cast_union
+//	{
+//		explicit _const_type_cast_union(const void *psvCharBuffer): m_psvCharBuffer(psvCharBuffer) {}
+//
+//		operator const Type *() const { return m_pstTypedPointer; }
+//    const Type &operator *() const { return *m_pstTypedPointer; }
+//    const Type *operator ->() const { return m_pstTypedPointer; }
+//    const Type &operator [](ptrdiff_t diElementIndex) const { return m_pstTypedPointer[diElementIndex]; }
+//    const Type &operator [](size_t siElementIndex) const { return m_pstTypedPointer[siElementIndex]; }
+//
+//    const void 		*m_psvCharBuffer;
+//    const Type		*m_pstTypedPointer;
+//	};
+//
+//	template <typename Type>
+//	union _type_cast_union
+//	{
+//		explicit _type_cast_union(void *psvCharBuffer): m_psvCharBuffer(psvCharBuffer) {}
+//
+//		operator Type *() const { return m_pstTypedPointer; }
+//		Type &operator *() const { return *m_pstTypedPointer; }
+//		Type *operator ->() const { return m_pstTypedPointer; }
+//		Type &operator [](ptrdiff_t diElementIndex) const { return m_pstTypedPointer[diElementIndex]; }
+//		Type &operator [](size_t siElementIndex) const { return m_pstTypedPointer[siElementIndex]; }
+//
+//		void			*m_psvCharBuffer;
+//		Type			*m_pstTypedPointer;
+//	};
+
+
+//	template<size_t tsiTypeSize>
+//	struct _sized_signed;
+//
+//	template<>
+//	struct _sized_signed<sizeof(uint8)>
+//	{
+//		typedef int8 type;
+//	};
+//
+//	template<>
+//	struct _sized_signed<sizeof(uint16)>
+//	{
+//		typedef int16 type;
+//	};
+//
+//	template<>
+//	struct _sized_signed<sizeof(uint32)>
+//	{
+//		typedef int32 type;
+//	};
+//
+//	template<>
+//	struct _sized_signed<sizeof(uint64)>
+//	{
+//		typedef int64 type;
+//	};
+//
+//	template<typename tintergraltype>
+//	struct _make_signed
+//	{
+//		typedef typename _sized_signed<sizeof(tintergraltype)>::type type;
+//	};
+//
+//
+//	template<size_t tsiTypeSize>
+//	struct _sized_unsigned;
+//
+//	template<>
+//	struct _sized_unsigned<sizeof(int8)>
+//	{
+//		typedef uint8 type;
+//	};
+//
+//	template<>
+//	struct _sized_unsigned<sizeof(int16)>
+//	{
+//		typedef uint16 type;
+//	};
+//
+//	template<>
+//	struct _sized_unsigned<sizeof(int32)>
+//	{
+//		typedef uint32 type;
+//	};
+//
+//	template<>
+//	struct _sized_unsigned<sizeof(int64)>
+//	{
+//		typedef uint64 type;
+//	};
+//
+//	template<typename tintergraltype>
+//	struct _make_unsigned
+//	{
+//		typedef typename _sized_unsigned<sizeof(tintergraltype)>::type type;
+//	};
+
+
+// template<typename tvalueint, typename tminint, typename tmaxint>
+// inline
+// bool dxInRange(tvalueint viValue, tminint miMin, tmaxint miMax)
+// {
+//     return (typename _sized_unsigned<dMACRO_MAX(sizeof(tvalueint), sizeof(tminint))>::type)(viValue - miMin) < (typename _sized_unsigned<dMACRO_MAX(sizeof(tmaxint), sizeof(tminint))>::type)(miMax - miMin);
+// }
+// #define dIN_RANGE(aval, amin, amax) dxInRange(aval, amin, amax)
+
+//#define dIN_RANGE(aval, amin, amax) ((_sized_unsigned<dMACRO_MAX(sizeof(aval), sizeof(amin))>::type)((_sized_unsigned<dMACRO_MAX(sizeof(aval), sizeof(amin))>::type)(aval) - (_sized_unsigned<dMACRO_MAX(sizeof(aval), sizeof(amin))>::type)(amin)) < (_sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)((_sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)(amax) - (_sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)(amin)))
+//			#define dTMPL_IN_RANGE(aval, amin, amax) ((typename _sized_unsigned<dMACRO_MAX(sizeof(aval), sizeof(amin))>::type)((typename _sized_unsigned<dMACRO_MAX(sizeof(aval), sizeof(amin))>::type)(aval) - (typename _sized_unsigned<dMACRO_MAX(sizeof(aval), sizeof(amin))>::type)(amin)) < (typename _sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)((typename _sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)(amax) - (typename _sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)(amin)))
+//			#define dCLAMP(aval, alo, ahi) dxClamp(aval, alo, ahi)
+//			#define dARRAY_SIZE(aarr) (sizeof(aarr) / sizeof((aarr)[0]))
+//			#define dSTATIC_ARRAY_SIZE(aclass, aarr) dARRAY_SIZE(((aclass *)sizeof(void *))->aarr)
+//static bool dIN_RANGE(aval, amin, amax) {
+//	((_sized_unsigned < dMACRO_MAX(sizeof(aval), sizeof(amin)) >::type)
+//	((_sized_unsigned < dMACRO_MAX(sizeof(aval), sizeof(amin)) >::type)
+//	(aval) - (_sized_unsigned < dMACRO_MAX(sizeof(aval), sizeof(amin)) >::type)(amin)) <
+//	(_sized_unsigned < dMACRO_MAX(sizeof(amax), sizeof(amin)) >::type)
+//	((_sized_unsigned < dMACRO_MAX(sizeof(amax), sizeof(amin)) >::type)
+//	(amax) - (_sized_unsigned < dMACRO_MAX(sizeof(amax), sizeof(amin)) >::type)(amin)))
+//}
+
+	public static double dCLAMP(double aval, double alo, double ahi) {
+		return dxClamp(aval, alo, ahi);
+	}
 
 }

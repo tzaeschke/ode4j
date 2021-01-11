@@ -31,12 +31,7 @@ import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
 import static org.ode4j.ode.OdeMath.dMultiply0_331;
 import static org.ode4j.ode.OdeMath.dMultiply1_331;
 import static org.ode4j.ode.OdeMath.dNormalize3;
-import static org.ode4j.ode.internal.Common.dAASSERT;
-import static org.ode4j.ode.internal.Common.dEpsilon;
-import static org.ode4j.ode.internal.Common.dFabs;
-import static org.ode4j.ode.internal.Common.dIASSERT;
-import static org.ode4j.ode.internal.Common.dNODEBUG;
-import static org.ode4j.ode.internal.Common.dSqrt;
+import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.cpp4j.Cmath.fabs;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.fprintf;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
@@ -522,14 +517,7 @@ public class DxConvex extends DxGeom implements DConvex {
 //		return true;
 //	}
 
-	/** Clamp n to lie within the range [min, max]. */
-	private static double Clamp(double n, double min, double max)
-	{
-	    if (n < min) return min;
-	    if (n > max) return max;
-	    return n;
-	}
-	/** 
+	/**
 	 * Returns the Closest Points from Segment 1 to Segment 2.
 	 * <p>NOTE: Adapted from Christer Ericson's Real Time Collision Detection Book.
 	 * @param p1 start of segment 1
@@ -582,7 +570,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	        // First segment degenerates into a point
 	        s = 0.0f;
 	        t = f / e; // s = 0 => t = (b*s + f) / e = f / e
-	        t = Clamp(t, 0.0f, 1.0f);
+	        t = dxClamp(t, 0.0f, 1.0f);
 	    }
 	    else
 	    {
@@ -591,7 +579,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	        {
 	            // Second segment degenerates into a point
 	            t = 0.0f;
-	            s = Clamp(-c / a, 0.0f, 1.0f); // t = 0 => s = (b*t - c) / a = -c / a
+	            s = dxClamp(-c / a, 0.0f, 1.0f); // t = 0 => s = (b*t - c) / a = -c / a
 	        }
 	        else
 	        {
@@ -603,7 +591,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	            // clamp to segment S1. Else pick arbitrary s (here 0)
 	            if (denom != 0.0f)
 	            {
-	                s = Clamp((b*f - c*e) / denom, 0.0f, 1.0f);
+	                s = dxClamp((b*f - c*e) / denom, 0.0f, 1.0f);
 	            }
 	            else s = 0.0f;
 //	if (false) {//#if 0
@@ -626,12 +614,12 @@ public class DxConvex extends DxGeom implements DConvex {
 	            if (tnom < 0.0f)
 	            {
 	                t = 0.0f;
-	                s = Clamp(-c / a, 0.0f, 1.0f);
+	                s = dxClamp(-c / a, 0.0f, 1.0f);
 	            }
 	            else if (tnom > e)
 	            {
 	                t = 1.0f;
-	                s = Clamp((b - c) / a, 0.0f, 1.0f);
+	                s = dxClamp((b - c) / a, 0.0f, 1.0f);
 	            }
 	            else
 	            {
@@ -735,7 +723,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	/** 
 	 * Finds out if a point lies inside a 2D polygon.
 	 * @param p Point to test
-	 * @param polygon a pointer to the start of the convex polygon index buffer
+	 * @param polygonA a pointer to the start of the convex polygon index buffer
 	 * @param out the closest point in the polygon if the point is not inside
 	 * @return true if the point lies inside of the polygon, false if not.
 	 */
@@ -743,7 +731,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	//			     unsigned int *polygon,
 	//			     dxConvex *convex,
 	//			     dVector3 out)
-	private static final boolean IsPointInPolygon(DVector3C p,
+	private static boolean IsPointInPolygon(DVector3C p,
 			int[] polygonA, int polyPos,
 			DVector3C plane,
 			DxConvex convex,
@@ -1821,7 +1809,6 @@ Helper struct
 //			++contacts;
 
 		    DVector3 c1 = new DVector3(), c2 = new DVector3();
-		    //float s,t;
 			DContactGeom contact = contactBuf.getSafe(flags, contacts);
 		    //SAFECONTACT(flags, contact, contacts, skip)->depth = 
 			contact.depth = dSqrt(ClosestPointBetweenSegments(ccso.e1a,ccso.e1b,ccso.e2a,ccso.e2b,c1,c2));

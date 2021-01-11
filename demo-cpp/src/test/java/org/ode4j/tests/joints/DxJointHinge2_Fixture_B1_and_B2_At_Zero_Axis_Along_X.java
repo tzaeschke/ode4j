@@ -136,12 +136,13 @@ public class DxJointHinge2_Fixture_B1_and_B2_At_Zero_Axis_Along_X extends TestSu
 		dJointGetHinge2Anchor(jId[1], anchor);
 		dJointSetHinge2Anchor(jId[1], anchor.get0(), anchor.get1(), anchor.get2());
 
-		DVector3 axis = new DVector3();
-		dJointGetHinge2Axis1(jId[1], axis);
-		dJointSetHinge2Axis1(jId[1], axis.get0(), axis.get1(), axis.get2());
-
-		dJointGetHinge2Axis2(jId[1], axis);
-		dJointSetHinge2Axis2(jId[1], axis.get0(), axis.get1(), axis.get2());
+		DVector3 axis1 = new DVector3();
+		DVector3 axis2 = new DVector3();
+		dJointGetHinge2Axis1(jId[1], axis1);
+		dJointGetHinge2Axis2(jId[1], axis2);
+		dJointSetHinge2Axes(jId[1], axis1, axis2);
+		dJointSetHinge2Axes(jId[1], axis1, null);
+		dJointSetHinge2Axes(jId[1], null, axis2);
 
 
 		for (int b=0; b<2; ++b) {
