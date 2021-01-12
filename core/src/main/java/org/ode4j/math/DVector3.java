@@ -22,6 +22,10 @@
 package org.ode4j.math;
 
 import org.ode4j.math.DMatrix3.DVector3ColView;
+import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.internal.Common;
+
+import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 
 /**
  * This class provides functionality for DVector3 math.
@@ -430,10 +434,13 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * 
 	 * This method throws an IllegalArgumentEception if no normal can be determined.
 	 */
-	public final void normalize()
-	{
-		if (!safeNormalize()) throw new IllegalStateException(
-				"Normalization failed: " + this);
+	public final void normalize() {
+		// TODO CHECK-TZ Use internal safe-normalize?
+		if (OdeMath.dSafeNormalize3(this)) {
+		//if (!safeNormalize()) {
+			dDebug(Common.d_ERR_IASSERT, "Normalization failed");
+			set(1, 0, 0);
+		}
 	}
 
 	/**

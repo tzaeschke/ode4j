@@ -801,7 +801,9 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			node[1].next = body1.firstjoint.get();
 			body1.firstjoint.set(node[1]);
 		}
-		else node[1].next = null;
+		else {
+			node[1].next = null;
+		}
 		if (body2 != null) {
 			node[0].next = body2.firstjoint.get();
 			body2.firstjoint.set(node[0]);

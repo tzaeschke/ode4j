@@ -38,6 +38,17 @@ public class OdeInit {
     private static int g_uiODEInitCounter = 0;
     private static int g_uiODEInitModes = 0;
 
+    //#if dTRIMESH_ENABLED && dTRIMESH_OPCODE
+    //
+    //    static
+    //    void OPCODEAbort()
+    //    {
+    //        dICHECK(!"OPCODE Library Abort");
+    //    }
+    //
+    //
+    //#endif // #if dTRIMESH_ENABLED && dTRIMESH_OPCODE
+
     enum EODEINITMODE
     {
         //OIM__MIN,
@@ -274,7 +285,7 @@ public class OdeInit {
                 bWorldThreadingInitialized = true;
 
 //    #if dTRIMESH_ENABLED && dTRIMESH_OPCODE
-//                if (!Opcode::InitOpcode())
+//                if (!Opcode::InitOpcode(&OPCODEAbort))
 //                {
 //                    break;
 //                }

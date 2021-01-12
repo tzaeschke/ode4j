@@ -29,10 +29,9 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 import static org.ode4j.ode.internal.ErrorHandler.dMessage;
+import static org.ode4j.ode.internal.FastDLT2.dxtFactorLDLT;
 import static org.ode4j.ode.internal.FastDot.dDot;
-import static org.ode4j.ode.internal.Matrix.dFactorLDLT;
-import static org.ode4j.ode.internal.Matrix.dSetZero;
-import static org.ode4j.ode.internal.Matrix.dSolveLDLT;
+import static org.ode4j.ode.internal.Matrix.*;
 import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
 import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
 import static org.ode4j.ode.internal.Misc.dMaxDifference;
@@ -374,8 +373,8 @@ public class DLCP {
 	private double AiC_times_qC (int i, double[] q) { return FastDot.dDot (m_A, AROWp(i),q,0,m_nC); }
 	@Deprecated // TODO CHECK-TZ remove
 	private double AiN_times_qN (int i, double[] q) { return FastDot.dDot (m_A, AROWp(i)+m_nC,q,m_nC,m_nN); }
-	private double AiC_times_qC (int i, double[] qA, int qP, int q_stride) { return dxtDot (AROWp(i), qA, qP, m_nC, q_stride); }
-	private double AiN_times_qN (int i, double[] qA, int qP, int q_stride) { return dxtDot (AROWp(i) + m_nC, qA, qP + m_nC * q_stride, m_nN, q_stride); }
+	private double AiC_times_qC (int i, double[] qA, int qP, int q_stride) { return dxtDot (m_A, AROWp(i), qA, qP, m_nC, q_stride); }
+	private double AiN_times_qN (int i, double[] qA, int qP, int q_stride) { return dxtDot (m_A,AROWp(i) + m_nC, qA, qP + m_nC * q_stride, m_nN, q_stride); }
 	//  void pN_equals_ANC_times_qC (dReal *p, dReal *q);
 	//  void pN_plusequals_ANi (dReal *p, int i, int sign=1);
 //	private void pC_plusequals_s_times_qC (double[] p, double s, double[] q)
@@ -396,7 +395,7 @@ public class DLCP {
 	DLCP (int _n, int _nskip, int _nub, double []_Adata, double[] _pairsbxA, double[] _w,
 			double[] m_pairslh, double[] _L, double[] _d,
 			double[] _Dell, double[] _ell, double[] _tmp,
-			boolean []_state, int []_findex, int []_p, int []_C, double[][]Arows)
+			boolean []_state, int []_findex, int []_p, int []_C, double[][] Arows)
 			{
 	    m_n = _n;
 	    m_nskip = _nskip;
@@ -409,7 +408,7 @@ public class DLCP {
 	    } //#endif
 	    m_pairsbxA = _pairsbxA;
 	    m_w = _w;
-	    m_pairslh = m_pairslh;
+	    m_pairslhA = m_pairslh;
 	    m_L = _L;
 	    m_d = _d;
 	    m_Dell = _Dell;
@@ -500,7 +499,7 @@ public class DLCP {
 //		    dSolveLDLT (m_L,m_d,m_x,nub,m_nskip);
             transfer_b_to_x(m_pairsbxA, 0, nub, false);
             dxtFactorLDLT(m_L, m_d, nub, m_nskip, 1);
-            dxtSolveLDLT(m_L, m_d, m_pairsbxA[0 + PBX_X], nub, m_nskip, 1, PBX__MAX);
+            dxtSolveLDLT(m_L, m_d, 0, m_pairsbxA, 0 + PBX_X, nub, m_nskip, 1, PBX__MAX);
             dSetZero (m_w,nub);
 		    {
 		        int[] C = m_C;
@@ -514,7 +513,7 @@ public class DLCP {
 		    final int nub = m_nub;
 		    int[] findex = m_findex;
 		    int num_at_end = 0;
-		    for (int k=m_n; k >= nub;) {
+		    for (int k=m_n; k > nub;) {
 		        --k;
 		        if (findex[k] >= 0) {
 		            swapProblem (m_A,m_pairsbxA,0,m_w,m_pairslh,0,m_p,m_state,findex,m_n,k,m_n-1-num_at_end,m_nskip,true);
@@ -643,7 +642,7 @@ public class DLCP {
 	                last_idx = j;
 	            }
 	            if (C[j]==i) {
-	                Matrix.dxLDLTRemove (m_A,C,m_L,m_d,m_n,nC,j,m_nskip,tmpbuf);
+	                Matrix.dLDLTRemove (m_A,C,m_L,m_d,m_n,nC,j,m_nskip,tmpbuf);
 	                int k;
 	                if (last_idx == -1) {
 	                    for (k=j+1 ; k<nC; ++k) {
@@ -854,7 +853,8 @@ public class DLCP {
 		transfer_b_to_x (pairsbxA, pairsbxP, n, true);
 
 		int nskip = dPAD(n);
-		dxtFactorLDLT (A, pairsbxA, pairsbxP + PBX_B, n, nskip, PBX__MAX);
+		dAASSERT(pairsbxP + PBX_B == 0); // TZ: If this is != 0 then we need to adapt the following method call:
+		dxtFactorLDLT (A, pairsbxA, /* pairsbxP + PBX_B,*/ n, nskip, PBX__MAX);
 		dxtSolveLDLT (A, pairsbxA, pairsbxP + PBX_B, pairsbxA, pairsbxP + PBX_X, n, nskip, PBX__MAX, PBX__MAX);
 	}
 
@@ -1564,7 +1564,7 @@ public class DLCP {
 		DMatrixN L = new DMatrixN(nC, nC);
 		L.set(_L, nskip, 1);//new dMatrixN(nC,nC,_L,nskip,1);
 		DMatrixN D = new DMatrixN(nC,nC);
-		for (i=0; i<nC; i++) D.set(i, i, 1/_d[i]);//D(i,i) = 1/_d[i];
+		for (i=0; i<nC; i++) D.set(i, i, 1.0/_d[i]);//D(i,i) = 1/_d[i];
 		L.clearUpperTriangle();
 		for (i=0; i<nC; i++) L.set(i, i, 1);//L(i,i) = 1;
 		//TODO is this correct? dMatrixN A3 = L * D * L.transpose();

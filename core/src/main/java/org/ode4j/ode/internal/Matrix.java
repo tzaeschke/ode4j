@@ -24,6 +24,8 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.FastLSolve.dxtSolveL1;
+import static org.ode4j.ode.internal.FastLTSolve.dxtSolveL1T;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memmove;
 
@@ -33,6 +35,7 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DMatrix;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 
@@ -45,18 +48,12 @@ public class Matrix extends FastDot {
 
 	/**
 	 * TODO use length of array.
-	 * 
+	 *
 	 * @param a a
 	 * @param n n
 	 */
 	public static void dSetZero(double[] a, int n) {
-		// dAASSERT (a);
-		dAASSERT(n >= 0);
-		while (n > 0) {
-			// *(a++) = 0;
-			a[n - 1] = 0;
-			n--;
-		}
+		Arrays.fill(a, 0, n, 0);
 	}
 
 	public static void dSetZero(double[] a) {
@@ -64,19 +61,11 @@ public class Matrix extends FastDot {
 	}
 
 	public static void dSetValue(double[] a, int n, double value) {
-		// dAASSERT (a);
-		dAASSERT(n >= 0);
-		while (n > 0) {
-			// *(a++) = value;
-			a[n - 1] = value;
-			n--;
-		}
+		Arrays.fill(a, 0, n, value);
 	}
 
 	public static void dSetValue(double[] a, int pos, int len, double value) {
-    	for (int i = pos; i < len+pos; i++) {
-    		a[i] = value;
-    	}
+		Arrays.fill(a, pos, pos + len, value);
     }
 
 	/**
@@ -503,47 +492,6 @@ public class Matrix extends FastDot {
 	        }
 	    }
 	    return !failure;//failure ? 0 : 1;
-
-	    //TODO remove, is from 0.11.1
-//	    int i, j, k, nskip;
-//		double sum;
-//		// double[] a,b,aa,bb;
-//		int aPos, bPos, aaPos, bbPos;
-//		// double[] cc;
-//		int ccPos = 0; // TZ
-//		double[] recip;
-//		dAASSERT(n > 0);
-//		// dAASSERT(A);
-//		nskip = dPAD(n);
-//		recip = new double[n]; // TZ (double*) ALLOCA (n * sizeof(double));
-//		// TZaa = A;
-//		aaPos = 0;
-//		for (i = 0; i < n; i++) {
-//			bbPos = 0;// bb = A;
-//			ccPos = i * nskip;// cc = A + i*nskip;
-//			for (j = 0; j < i; j++) {
-//				sum = A[ccPos]; // TZsum = *cc;
-//				aPos = aaPos;// a = aa;
-//				bPos = bbPos;// b = bb;
-//				// for (k=j; k > 0; k--) sum -= (*(a++))*(*(b++));
-//				for (k = j; k > 0; k--)
-//					sum -= (A[aPos++]) * (A[bPos++]);
-//				A[ccPos] = sum * recip[j];// *cc = sum * recip[j];
-//				bbPos += nskip;// bb += nskip;
-//				ccPos++;// cc++;
-//			}
-//			sum = A[ccPos];// sum = *cc;
-//			aPos = aaPos;// a = aa;
-//			// for (k=i; k > 0; k--, a++) sum -= (*a)*(*a);
-//			for (k = i; k > 0; k--, aPos++)
-//				sum -= A[aPos] * A[aPos];
-//			if (sum <= 0.0)
-//				return false;
-//			A[ccPos] = dSqrt(sum);// *cc = COM.dSqrt(sum);
-//			recip[i] = dRecip(A[ccPos]);// recip[i] = COM.dRecip (*cc);
-//			aaPos += nskip;// aa += nskip;
-//		}
-//		return true;
 	}
 
 	/**
@@ -556,49 +504,6 @@ public class Matrix extends FastDot {
 	 */
 	public static boolean dFactorCholesky (DMatrix3 A)
 	{
-	    //port from 0.12
-//        //dAASSERT (n > 0 && A);
-//        double recip0;
-//        double recip1;
-//        double sum, sumsqrt;
-//
-//        //round 1
-//        sum = A.get00();//[cc];//dReal sum = *cc;
-//        if (sum <= 0.0) {
-//            return false;
-//        }
-//        sumsqrt = dSqrt(sum);
-//        A.set00( sumsqrt );
-//        recip0 = dRecip (sumsqrt);
-//
-//        //round 2
-//        sum = A.get11() - A.get10()*A.get10();//[a]*A[a];//(*a)*(*a);
-//        if (sum <= 0.0) {
-//            return false;
-//        }
-//        sumsqrt = dSqrt(sum);
-//        A.set11( sumsqrt );
-//        recip1 = dRecip (sumsqrt);
-//
-//        //round 3
-//        sum = A.get20();//dReal sum = *cc;
-//        A.set20( sum*recip0 );//*cc = sum * recip[j];
-//
-//        sum = A.get21() - A.get20()*A.get10();//[a]*A[b];//(*a)*(*b);
-//        A.set21( sum*recip1 );//*cc = sum * recip[j];
-//
-//        sum = A.get22() - A.get20()*A.get20() - A.get21()*A.get21();
-//        if (sum <= 0.0) {
-//            return false;
-//        }
-//        sumsqrt = dSqrt(sum);
-//        A.set22( sumsqrt );
-//        return true;
-
-	    
-	    
-	    
-	    
 	    double sum, recip0, recip1;
 		//********************
 		//i=0; aaPos = 0; bbPos = 0; ccPos = 0
@@ -646,7 +551,8 @@ public class Matrix extends FastDot {
 			y[i] = (b[i] - sum) / L[ll + i];
 		}
 	    ll = (n - 1) * (nskip + 1);
-	    for (int i=n-1; i>=0; ll-=nskip+1, --i) {
+	    for (int i=n; i>0; ll-=nskip+1) {
+	    	--i;
 	        double sum = 0.0;
 	        int l = ll + nskip;
 	        for (int k=i+1; k<n; l+=nskip, ++k) {
@@ -817,10 +723,7 @@ public class Matrix extends FastDot {
 
 	/** in matlab syntax: a(1:n) = a(1:n) .* d(1:n) */
 	private static void dVectorScale(double[] a, final double[] d, int n) {
-		// dAASSERT (a != null, d != null, n >= 0);
-		for (int i = 0; i < n; i++) {
-			a[i] *= d[i];
-		}
+		dxtVectorScale (a, 0, d, 0, n, 1, 1);
 	}
 
 	/**
@@ -836,11 +739,9 @@ public class Matrix extends FastDot {
 	 */
 	public static void dSolveLDLT(final double[] L, final double[] d,
 			double[] b, int n, int nskip) {
-		// dAASSERT (L, d, b);
-		dAASSERT(n > 0 && nskip >= n);
-		dSolveL1(L, b, n, nskip);
-		dVectorScale(b, d, n);
-		dSolveL1T(L, b, n, nskip);
+		dIASSERT(n != 0);
+
+		dxtSolveLDLT(L, d, 0, b, 0, n, nskip, 1, 1);
 	}
 
 	/**
@@ -1008,7 +909,7 @@ public class Matrix extends FastDot {
 	public static void dLDLTRemove(double[] A, final int[] p, double[] L,
 			double[] d, int n1, int n2, int r, int nskip, BlockPointer tmpbuf) {
 		// dAASSERT(A, p, L, d);
-		dAASSERT(n1 > 0 && n2 > 0 && r >= 0 && r < n2 && n1 >= n2
+		dAASSERT(n1 > 0 && n2 > 0 /*&& r >= 0*/ && r < n2 && n1 >= n2
 				&& nskip >= n1);
 		if (!dNODEBUG) {// #ifndef dNODEBUG
 			for (int i = 0; i < n2; i++)
@@ -1019,7 +920,7 @@ public class Matrix extends FastDot {
 			return; // deleting last row/col is easy
 		} else {
 		DxWorldProcessMemArena.dummyStatic();
-//		    int LDLTAddTL_size = _dEstimateLDLTAddTLTmpbufSize(nskip);
+//		    int LDLTAddTL_size = dxEstimateLDLTAddTLTmpbufSize(nskip);
 //		    dIASSERT(LDLTAddTL_size % 8 /*sizeof(dReal)*/ == 0);
 //		    double[] tmp = tmpbuf!=null ? tmpbuf : new double[LDLTAddTL_size + n2];
 		    if (r == 0) {
@@ -1050,7 +951,7 @@ public class Matrix extends FastDot {
 		            }
 		        }
 		        a[0] += (1.0);
-		        dLDLTAddTL (L,r*nskip+r, d,r, a, n2-r, nskip, null);
+				dLDLTAddTL(L, (nskip + 1) * r, d, r, a, n2 - r, nskip, null);
 		    }
 		}
 //		        double[] a = new double[n2 - r]; // TZ (double*) ALLOCA ((n2-r) * sizeof(double));
@@ -1095,8 +996,9 @@ public class Matrix extends FastDot {
 		    }
 		    {
 		        final int cpy_size = r;//*sizeof(dReal);
-		        int Adst = r*nskip;//dReal *Adst = A + r * nskip;
-		        for (int i=r; i<(n-1); ++i) {
+				int Adst = nskip * r;//dReal *Adst = A + r * nskip;
+				int n1 = n - 1;
+				for (int i = r; i < n1; ++i) {
 		            int Asrc = Adst + nskip;//dReal *Asrc = Adst + nskip;
 		            memcpy (A,Adst,A,Asrc,cpy_size);
 		            Adst = Asrc;
@@ -1105,8 +1007,9 @@ public class Matrix extends FastDot {
 		}
 		{
 		    final int cpy_size = (n-r-1);//*sizeof(dReal);
-		    int Adst = r * (nskip+1);//dReal *Adst = A + r * (nskip + 1);
-		    for (int i=r; i<(n-1); ++i) {
+			int Adst = (nskip + 1) * r;//dReal *Adst = A + r * (nskip + 1);
+			int n1 = n - 1;
+			for (int i = r; i < n1; ++i) {
 		        int Asrc = Adst + (nskip + 1);//dReal *Asrc = Adst + (nskip + 1);
 		        memcpy (A,Adst,A,Asrc,cpy_size);
 		        Adst = Asrc - 1;
@@ -1114,11 +1017,90 @@ public class Matrix extends FastDot {
 		}
 	}
 
+//	template <unsigned a_stride, typename element_type>
+//	ODE_INLINE
+	public static void dxtSetZero (double[] aA, int aP, int n, int a_stride)
+	{
+		int aend = aP + n * a_stride;
+		for (int acurr = aP; acurr != aend; acurr += a_stride) {
+        	aA[acurr] = 0;
+		}
+	}
+	//	/*extern */
+	public static void dxSetZero (double[] a, int n)
+	{
+		dSetZero (a, n);
+	}
+
+	public static void dxSetZero (double[] a, int aPos, int n)
+	{
+		Arrays.fill(a, aPos, n + aPos, 0);
+	}
+
+
+//	/*extern */
+//	void dSetZero (double[] a, int n)
+//	{
+//		dxSetZero (a, n);
+//	}
+//
+//	/*extern */
+//	void dSetValue (dReal *a, int n, dReal value)
+//	{
+//		dxSetValue (a, n, value);
+//	}
+//
+//// dReal dDot (const dReal *a, const dReal *b, int n);
+//
+//	/*extern */
+//	void dMultiply0 (dReal *A, const dReal *B, const dReal *C, int p,int q,int r)
+//	{
+//		dxMultiply0 (A, B, C, p, q, r);
+//	}
+//
+//	/*extern */
+//	void dMultiply1 (dReal *A, const dReal *B, const dReal *C, int p,int q,int r)
+//	{
+//		dxMultiply1 (A, B, C, p, q, r);
+//	}
+//
+//	/*extern */
+//	void dMultiply2 (dReal *A, const dReal *B, const dReal *C, int p,int q,int r)
+//	{
+//		dxMultiply2 (A, B, C, p, q, r);
+//	}
+
+	/*extern */
+	public static int dFactorCholesky (double[] A, int n)
+	{
+		return dxFactorCholesky (A, n, null);
+	}
+
+	/*extern */
+	public static void dSolveCholesky (final double[] L, double[] b, int n)
+	{
+		dxSolveCholesky (L, b, n, null);
+	}
+
+	/*extern */
+	public static int dInvertPDMatrix (final double[] A, double[] Ainv, int n)
+	{
+		return dxInvertPDMatrix (A, Ainv, n, null);
+	}
+
+	/*extern */
+	//	public static int dIsPositiveDefinite (final double[] A, int n)
+	//	{
+	//		return dxIsPositiveDefinite (A, n, null);
+	//	}
+
+
+
 	static void dxSolveL1(final double[] L, double[] b, int n, int lskip1)
 	{
 		dIASSERT(n != 0);
 
-		FastLSolve.dxtSolveL1(L, b, n, lskip1, 1);
+		dxtSolveL1(L, b, n, lskip1, 1);
 	}
 
 	public static void dSolveL1(final double[] L, double[] B, int n, int lskip1)
@@ -1457,7 +1439,7 @@ public class Matrix extends FastDot {
 
 	static void dxSolveL1T(final double[] L, double[] b, int n, int lskip1)
 	{
-		FastLTSolve.dxtSolveL1T(L, b, n, lskip1, 1);
+		dxtSolveL1T(L, b, 0, n, lskip1, 1);
 	}
 
 	public static void dSolveL1T (final double[] L, double[] B, int n, int lskip1)
@@ -1758,4 +1740,79 @@ public class Matrix extends FastDot {
 	public static final int dEstimateLDLTAddTLTmpbufSize(int nskip) { return _dEstimateLDLTAddTLTmpbufSize(nskip); }
 	public static final int dEstimateLDLTRemoveTmpbufSize(int n2, int nskip) { return _dEstimateLDLTRemoveTmpbufSize(n2, nskip); }
 
+
+	// matrix_impl.h
+
+	//	template<unsigned int a_stride, unsigned int d_stride>
+	//	void dxtVectorScale (dReal *aStart, const dReal *dStart, unsigned elementCount)
+	public static void dxtVectorScale(double[] A, final int aStart, final double[] D, int dStart, int elementCount, int a_stride, int d_stride) {
+		dAASSERT(aStart >= 0 && dStart >= 0 && elementCount >= 0);
+
+		final int step = 4;
+		//		dReal *ptrA = aStart;
+		//    const dReal *ptrD = dStart;
+		//    const dReal *const dStepsEnd = dStart + (size_t)(elementCount & ~(step - 1)) * d_stride;
+		int ptrA = aStart;
+		int ptrD = dStart;
+		final int dStepsEnd = dStart + (elementCount & ~(step - 1)) * d_stride;
+
+		for (; ptrD != dStepsEnd; ptrA += step * a_stride, ptrD += step * d_stride) {
+			double a0 = A[ptrA + 0], a1 = A[ptrA + 1 * a_stride], a2 = A[ptrA + 2 * a_stride], a3 = A[ptrA + 3 * a_stride];
+			double d0 = D[ptrD + 0], d1 = D[ptrD + 1 * d_stride], d2 = D[ptrD + 2 * d_stride], d3 = D[ptrD + 3 * d_stride];
+			a0 *= d0;
+			a1 *= d1;
+			a2 *= d2;
+			a3 *= d3;
+			A[ptrA + 0] = a0;
+			A[ptrA + 1 * a_stride] = a1;
+			A[ptrA + 2 * a_stride] = a2;
+			A[ptrA + 3 * a_stride] = a3;
+			//dSASSERT(step == 4);
+		}
+
+		switch (elementCount & (step - 1)) {
+			case 3: {
+				double a2 = A[ptrA + 2 * a_stride];
+				double d2 = D[ptrD + 2 * d_stride];
+				A[ptrA + 2 * a_stride] = a2 * d2;
+				// break; -- proceed to case 2
+			}
+
+			case 2: {
+				double a1 = A[ptrA + 1 * a_stride];
+				double d1 = D[ptrD + 1 * d_stride];
+				A[ptrA + 1 * a_stride] = a1 * d1;
+				// break; -- proceed to case 1
+			}
+
+			case 1: {
+				double a0 = A[ptrA + 0];
+				double d0 = D[ptrD + 0];
+				A[ptrA + 0] = a0 * d0;
+				break;
+			}
+		}
+	}
+
+
+	//	template<unsigned int d_stride, unsigned int b_stride>
+	//	void dxtSolveLDLT (const dReal *L, const dReal *d, dReal *b, unsigned rowCount, unsigned rowSkip)
+	public static void dxtSolveLDLT(final double[] L, double[] dArray, int dPos, double[] bArray, int bPos, int rowCount, int rowSkip, int d_stride, int b_stride) {
+		dAASSERT(L != null);
+		dAASSERT(dArray != null);
+		dAASSERT(bArray != null);
+		dAASSERT(rowCount > 0);
+		dAASSERT(rowSkip >= rowCount);
+
+		dxtSolveL1(L, bArray, bPos, rowCount, rowSkip, b_stride);
+		dxtVectorScale(bArray, bPos, dArray, dPos, rowCount, b_stride, d_stride);
+		dxtSolveL1T(L, bArray, bPos, rowCount, rowSkip, b_stride);
+	}
+
+	public static double dxDot(final double[] a, final double[] b, int n) {
+		return dDot(a, b, n);
+	}
+	public static double dxDot(final double[] a, int aOfs, final double[] b, int bOfs, int n) {
+		return dDot(a, aOfs, b, bOfs, n);
+	}
 }

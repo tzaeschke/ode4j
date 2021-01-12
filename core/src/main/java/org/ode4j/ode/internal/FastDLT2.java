@@ -27,6 +27,8 @@ import static org.ode4j.ode.internal.Common.*;
 
 // Code style improvements and optimizations by Oleh Derevenko ????-2017
 
+// TODO CHECK-TZ Why do we have two implementation of FastDLT ?!?!?!?
+
 /**
  * Implementation of FastDLTImpl
  */
@@ -47,9 +49,8 @@ public class FastDLT2 {
 //    inline void dxScaleAndFactorizeFirstL1Row_1(dReal *ARow, dReal *d);
 
 
-//    template<unsigned int d_stride>
-    void dxtFactorLDLT(double[] A, double[] d, int rowCount, int rowSkip, int d_stride)
-    {
+    //    template<unsigned int d_stride>
+    public static void dxtFactorLDLT(double[] A, double[] d, int rowCount, int rowSkip, int d_stride) {
         if (rowCount < 1) return;
 
         final int lastRowIndex = rowCount - 1;
@@ -58,31 +59,23 @@ public class FastDLT2 {
         int blockStartRow = 0;
         /* compute blocks of 2 rows */
         boolean subsequentPass = false;
-        for (; blockStartRow < lastRowIndex; subsequentPass = true, ARow_pos += 2 * rowSkip, blockStartRow += 2)
-        {
-            if (subsequentPass)
-            {
+        for (; blockStartRow < lastRowIndex; subsequentPass = true, ARow_pos += 2 * rowSkip, blockStartRow += 2) {
+            if (subsequentPass) {
                 /* solve L*(D*l)=a, l is scaled elements in 2 x i block at A(i,0) */
-                dxSolveL1_2(A, A,  ARow_pos, blockStartRow, rowSkip);
+                dxSolveL1_2(A, A, ARow_pos, blockStartRow, rowSkip);
                 dxScaleAndFactorizeL1_2(A, ARow_pos, d, blockStartRow, rowSkip, d_stride);
-            }
-            else
-            {
+            } else {
                 dxScaleAndFactorizeFirstL1Row_2(A, ARow_pos, d, rowSkip, d_stride);
             }
             /* done factorizing 2 x 2 block */
         }
 
         /* compute the (less than 2) rows at the bottom */
-        if (!subsequentPass || blockStartRow == lastRowIndex)
-        {
-            if (subsequentPass)
-            {
+        if (!subsequentPass || blockStartRow == lastRowIndex) {
+            if (subsequentPass) {
                 dxSolveL1_1(A, A, ARow_pos, blockStartRow, rowSkip);
                 dxScaleAndFactorizeL1_1(A, ARow_pos, d, blockStartRow, d_stride);
-            }
-            else
-            {
+            } else {
                 dxScaleAndFactorizeFirstL1Row_1(A, ARow_pos, d, d_stride);
             }
             /* done factorizing 1 x 1 block */
@@ -98,16 +91,13 @@ public class FastDLT2 {
      * this processes blocks of 2*2.
      * if this is in the factorizer source file, n must be a multiple of 2.
      */
-    static
-    void dxSolveL1_2(final double[] L, double[] B, int bPos, int rowCount, int rowSkip)
-    {
+    static void dxSolveL1_2(final double[] L, double[] B, int bPos, int rowCount, int rowSkip) {
         dIASSERT(rowCount != 0);
         dIASSERT(rowCount % 2 == 0);
 
         /* compute all 2 x 2 blocks of X */
         int blockStartRow = 0;
-        for (boolean exitLoop = false, subsequentPass = false; !exitLoop; subsequentPass = true, exitLoop = (blockStartRow += 2) == rowCount)
-        {
+        for (boolean exitLoop = false, subsequentPass = false; !exitLoop; subsequentPass = true, exitLoop = (blockStartRow += 2) == rowCount) {
             int ptrLElement = 0;// dReal *ptrLElement;
             int ptrBElement = 0;//            dReal *ptrBElement;
 
@@ -115,19 +105,20 @@ public class FastDLT2 {
             double Z11, Z12, Z21, Z22;
 
             /* compute all 2 x 2 block of X, from rows i..i+2-1 */
-            if (subsequentPass)
-            {
+            if (subsequentPass) {
                 // ptrLElement = L + blockStartRow * rowSkip;
                 ptrLElement = blockStartRow * rowSkip;
                 ptrBElement = bPos;//B;
 
                 /* set Z matrix to 0 */
-                Z11 = 0; Z12 = 0; Z21 = 0; Z22 = 0;
+                Z11 = 0;
+                Z12 = 0;
+                Z21 = 0;
+                Z22 = 0;
 
                 /* the inner loop that computes outer products and adds them to Z */
                 // The iteration starts with even number and decreases it by 2. So, it must end in zero
-                for (int columnCounter = blockStartRow; ;)
-                {
+                for (int columnCounter = blockStartRow; ; ) {
                     /* declare p and q vectors, etc */
                     double p1, q1, p2, q2;
 
@@ -151,8 +142,7 @@ public class FastDLT2 {
                     Z21 += p2 * q1;
                     Z22 += p2 * q2;
 
-                    if (columnCounter > 6)
-                    {
+                    if (columnCounter > 6) {
                         columnCounter -= 6;
 
                         /* advance pointers */
@@ -198,29 +188,27 @@ public class FastDLT2 {
                         p2 = L[ptrLElement + -1 + rowSkip];
                         Z21 += p2 * q1;
                         Z22 += p2 * q2;
-                    }
-                    else
-                    {
+                    } else {
                         /* advance pointers */
                         ptrLElement += 2;
                         ptrBElement += 2;
 
-                        if ((columnCounter -= 2) == 0)
-                        {
+                        if ((columnCounter -= 2) == 0) {
                             break;
                         }
                     }
                     /* end of inner loop */
                 }
-            }
-            else
-            {
+            } else {
                 ptrLElement = 0;//L/* + blockStartRow * rowSkip*/;
                 dIASSERT(blockStartRow == 0);
                 ptrBElement = bPos;//B;
 
                 /* set Z matrix to 0 */
-                Z11 = 0; Z12 = 0; Z21 = 0; Z22 = 0;
+                Z11 = 0;
+                Z12 = 0;
+                Z21 = 0;
+                Z22 = 0;
             }
 
             /* finish computing the X(i) block */
@@ -243,8 +231,7 @@ public class FastDLT2 {
     }
 
     //template<unsigned int d_stride>
-    void dxScaleAndFactorizeL1_2(double[] ARow, int aPos, double[] d, int factorizationRow, int rowSkip, int d_stride)
-    {
+    private static void dxScaleAndFactorizeL1_2(double[] ARow, int aPos, double[] d, int factorizationRow, int rowSkip, int d_stride) {
         dIASSERT(factorizationRow != 0);
         dIASSERT(factorizationRow % 2 == 0);
 
@@ -255,8 +242,7 @@ public class FastDLT2 {
         /* compute Z = the outer product matrix that we'll need. */
         double Z11 = 0, Z21 = 0, Z22 = 0;
 
-        for (int columnCounter = factorizationRow; ; )
-        {
+        for (int columnCounter = factorizationRow; ; ) {
             double p1, q1, p2, q2, dd;
 
             p1 = ARow[ptrAElement + 0];
@@ -281,8 +267,7 @@ public class FastDLT2 {
             Z21 += p2 * q1;
             Z22 += p2 * q2;
 
-            if (columnCounter > 6)
-            {
+            if (columnCounter > 6) {
                 columnCounter -= 6;
 
                 ptrAElement += 6;
@@ -290,7 +275,7 @@ public class FastDLT2 {
 
                 p1 = ARow[ptrAElement + -4];
                 p2 = ARow[ptrAElement + -4 + rowSkip];
-                dd = d[ptrDElement + -4 * (int)d_stride];
+                dd = d[ptrDElement + -4 * (int) d_stride];
                 q1 = p1 * dd;
                 q2 = p2 * dd;
                 ARow[ptrAElement + -4] = q1;
@@ -301,7 +286,7 @@ public class FastDLT2 {
 
                 p1 = ARow[ptrAElement + -3];
                 p2 = ARow[ptrAElement + -3 + rowSkip];
-                dd = d[ptrDElement + -3 * (int)d_stride];
+                dd = d[ptrDElement + -3 * (int) d_stride];
                 q1 = p1 * dd;
                 q2 = p2 * dd;
                 ARow[ptrAElement + -3] = q1;
@@ -312,7 +297,7 @@ public class FastDLT2 {
 
                 p1 = ARow[ptrAElement + -2];
                 p2 = ARow[ptrAElement + -2 + rowSkip];
-                dd = d[ptrDElement + -2 * (int)d_stride];
+                dd = d[ptrDElement + -2 * (int) d_stride];
                 q1 = p1 * dd;
                 q2 = p2 * dd;
                 ARow[ptrAElement + -2] = q1;
@@ -323,7 +308,7 @@ public class FastDLT2 {
 
                 p1 = ARow[ptrAElement + -1];
                 p2 = ARow[ptrAElement + -1 + rowSkip];
-                dd = d[ptrDElement + -1 * (int)d_stride];
+                dd = d[ptrDElement + -1 * (int) d_stride];
                 q1 = p1 * dd;
                 q2 = p2 * dd;
                 ARow[ptrAElement + -1] = q1;
@@ -331,14 +316,11 @@ public class FastDLT2 {
                 Z11 += p1 * q1;
                 Z21 += p2 * q1;
                 Z22 += p2 * q2;
-            }
-            else
-            {
+            } else {
                 ptrAElement += 2;
                 ptrDElement += 2 * d_stride;
 
-                if ((columnCounter -= 2) == 0)
-                {
+                if ((columnCounter -= 2) == 0) {
                     break;
                 }
             }
@@ -366,8 +348,7 @@ public class FastDLT2 {
     }
 
     //template<unsigned int d_stride>
-    void dxScaleAndFactorizeFirstL1Row_2(double[] ARow, int aPos, double[] d, int rowSkip, int d_stride)
-    {
+    private static void dxScaleAndFactorizeFirstL1Row_2(double[] ARow, int aPos, double[] d, int rowSkip, int d_stride) {
         int ptrAElement = aPos; //ARow;
         double[] ptrDElement = d;
 
@@ -401,37 +382,33 @@ public class FastDLT2 {
      * this processes blocks of 2*2.
      * if this is in the factorizer source file, n must be a multiple of 2.
      */
-    static
-    void dxSolveL1_1(final double[] L, double[] B, int bPos, int rowCount, int rowSkip)
-    {
+    static void dxSolveL1_1(final double[] L, double[] B, int bPos, int rowCount, int rowSkip) {
         dIASSERT(rowCount != 0);
         dIASSERT(rowCount % 2 == 0);
 
         /* compute all 2 x 1 blocks of X */
         int blockStartRow = 0;
-        for (boolean exitLoop = false, subsequentPass = false; !exitLoop; subsequentPass = true, exitLoop = (blockStartRow += 2) == rowCount)
-        {
+        for (boolean exitLoop = false, subsequentPass = false; !exitLoop; subsequentPass = true, exitLoop = (blockStartRow += 2) == rowCount) {
             int ptrLElement;//final double[] ptrLElement;
             int ptrBElement; //double[] ptrBElement;
 
             /* declare variables - Z matrix */
             double Z11, Z21;
 
-            if (subsequentPass)
-            {
+            if (subsequentPass) {
                 //ptrLElement = L + (int)blockStartRow * rowSkip;
                 ptrLElement = blockStartRow * rowSkip;
                 ptrBElement = bPos;//B;
 
                 /* set the Z matrix to 0 */
-                Z11 = 0; Z21 = 0;
+                Z11 = 0;
+                Z21 = 0;
 
                 /* compute all 2 x 1 block of X, from rows i..i+2-1 */
 
                 /* the inner loop that computes outer products and adds them to Z */
                 // The iteration starts with even number and decreases it by 2. So, it must end in zero
-                for (int columnCounter = blockStartRow; ; )
-                {
+                for (int columnCounter = blockStartRow; ; ) {
                     /* declare p and q vectors, etc */
                     double p1, q1, p2;
 
@@ -449,8 +426,7 @@ public class FastDLT2 {
                     p2 = L[ptrLElement + 1 + rowSkip];
                     Z21 += p2 * q1;
 
-                    if (columnCounter > 6)
-                    {
+                    if (columnCounter > 6) {
                         columnCounter -= 6;
 
                         /* advance pointers */
@@ -484,28 +460,24 @@ public class FastDLT2 {
                         Z11 += p1 * q1;
                         p2 = L[ptrLElement + -1 + rowSkip];
                         Z21 += p2 * q1;
-                    }
-                    else
-                    {
+                    } else {
                         /* advance pointers */
                         ptrLElement += 2;
                         ptrBElement += 2;
 
-                        if ((columnCounter -= 2) == 0)
-                        {
+                        if ((columnCounter -= 2) == 0) {
                             break;
                         }
                     }
                     /* end of inner loop */
                 }
-            }
-            else
-            {
+            } else {
                 ptrLElement = 0;//L/* + (size_t)blockStartRow * rowSkip*/; dIASSERT(blockStartRow == 0);
                 ptrBElement = bPos;//B;
 
                 /* set the Z matrix to 0 */
-                Z11 = 0; Z21 = 0;
+                Z11 = 0;
+                Z21 = 0;
             }
 
             /* finish computing the X(i) block */
@@ -521,8 +493,7 @@ public class FastDLT2 {
     }
 
     //template<unsigned int d_stride>
-    void dxScaleAndFactorizeL1_1(double[] ARow, int APos, double[] d, int factorizationRow, int d_stride)
-    {
+    private static void dxScaleAndFactorizeL1_1(double[] ARow, int APos, double[] d, int factorizationRow, int d_stride) {
         int ptrAElement = APos;//ARow;
         int ptrDElement = 0;//d;
 
@@ -530,8 +501,7 @@ public class FastDLT2 {
         /* compute Z = the outer product matrix that we'll need. */
         double Z11 = 0, Z22 = 0;
 
-        for (int columnCounter = factorizationRow; ; )
-        {
+        for (int columnCounter = factorizationRow; ; ) {
             double p1, p2, q1, q2, dd1, dd2;
 
             p1 = ARow[ptrAElement + 0];
@@ -545,8 +515,7 @@ public class FastDLT2 {
             Z11 += p1 * q1;
             Z22 += p2 * q2;
 
-            if (columnCounter > 6)
-            {
+            if (columnCounter > 6) {
                 columnCounter -= 6;
 
                 ptrAElement += 6;
@@ -554,8 +523,8 @@ public class FastDLT2 {
 
                 p1 = ARow[ptrAElement + -4];
                 p2 = ARow[ptrAElement + -3];
-                dd1 = d[ptrDElement + -4 * (int)d_stride];
-                dd2 = d[ptrDElement + -3 * (int)d_stride];
+                dd1 = d[ptrDElement + -4 * (int) d_stride];
+                dd2 = d[ptrDElement + -3 * (int) d_stride];
                 q1 = p1 * dd1;
                 q2 = p2 * dd2;
                 ARow[ptrAElement + -4] = q1;
@@ -565,22 +534,19 @@ public class FastDLT2 {
 
                 p1 = ARow[ptrAElement + -2];
                 p2 = ARow[ptrAElement + -1];
-                dd1 = d[ptrDElement + -2 * (int)d_stride];
-                dd2 = d[ptrDElement + -1 * (int)d_stride];
+                dd1 = d[ptrDElement + -2 * (int) d_stride];
+                dd2 = d[ptrDElement + -1 * (int) d_stride];
                 q1 = p1 * dd1;
                 q2 = p2 * dd2;
                 ARow[ptrAElement + -2] = q1;
                 ARow[ptrAElement + -1] = q2;
                 Z11 += p1 * q1;
                 Z22 += p2 * q2;
-            }
-            else
-            {
+            } else {
                 ptrAElement += 2;
                 ptrDElement += 2 * d_stride;
 
-                if ((columnCounter -= 2) == 0)
-                {
+                if ((columnCounter -= 2) == 0) {
                     break;
                 }
             }
@@ -597,8 +563,7 @@ public class FastDLT2 {
     }
 
     //template<unsigned int d_stride>
-    void dxScaleAndFactorizeFirstL1Row_1(double[] ARow, int APos, double[] d, int d_stride)
-    {
+    private static void dxScaleAndFactorizeFirstL1Row_1(double[] ARow, int APos, double[] d, int d_stride) {
         int ptrAElement = APos; //ARow;
         double[] ptrDElement = d;
 

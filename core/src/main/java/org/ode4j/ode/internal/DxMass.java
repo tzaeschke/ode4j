@@ -285,7 +285,7 @@ public class DxMass implements DMass {
 
 		DxTriMesh TriMesh = (DxTriMesh )g;
 		//unsigned 
-		int triangles = TriMesh.FetchTriangleCount();
+		int triangles = TriMesh.getMeshTriangleCount();
 
 		double nx, ny, nz;
 		//unsigned 
@@ -304,7 +304,7 @@ public class DxMass implements DMass {
 		for( i = 0; i < triangles; i++ )	 	
 		{
 			DVector3[] v = {new DVector3(), new DVector3(), new DVector3()};//[3];
-			TriMesh.FetchTransformedTriangle( i, v);
+			TriMesh.fetchMeshTransformedTriangle(v, i);
 
 			DVector3 n = new DVector3(), a = new DVector3(), b = new DVector3();
 //			dOP( a.v, OP.SUB, v[1].v, v[0].v ); 

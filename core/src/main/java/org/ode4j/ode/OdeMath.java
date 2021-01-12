@@ -24,15 +24,11 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.ode4j.math.DMatrix3;
+import org.ode4j.math.*;
 import org.ode4j.math.DMatrix3.DVector3RowTView;
-import org.ode4j.math.DMatrix3C;
-import org.ode4j.math.DQuaternion;
-import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector3View;
-import org.ode4j.math.DVector4;
 import org.ode4j.ode.internal.Common;
+
+import static org.ode4j.ode.internal.CommonEnums.*;
 
 /**
  * ODE math functions.
@@ -1104,10 +1100,13 @@ public class OdeMath extends DRotation {
 	//int  _dSafeNormalize4 (dVector4 a);
 
 	//static __inline void _dNormalize3(dVector3 a)
-	private static void _dNormalize3(DVector3 a)
-	{
-		boolean bNormalizationResult = _dSafeNormalize3(a);
-		Common.dIVERIFY(bNormalizationResult);
+	private static void dxNormalize3(DVector3 a) {
+		boolean bSafeNormalize3Fault;
+		if ((bSafeNormalize3Fault = !dxSafeNormalize3(a))) {
+			dIVERIFY(!bSafeNormalize3Fault);
+
+			a.set(1.0, 0.0, 0.0);
+		}
 	}
 
 	//static __inline void _dNormalize4(dVector4 a)
@@ -1147,7 +1146,55 @@ public class OdeMath extends DRotation {
 
 	///  FROM odemath.cpp
 
+	// Please us DVector.safeNormalize instead
+	//	int  dSafeNormalize3 (dVector3 a)
+	//	{
+	//		return dxSafeNormalize3(a);
+	//	}
+	//
+	//	int dSafeNormalize4 (dVector4 a)
+	//	{
+	//		return dxSafeNormalize4(a);
+	//	}
+	//
+	//	void dNormalize3(dVector3 a)
+	//	{
+	//		dxNormalize3(a);
+	//	}
+	//
+	//	void dNormalize4(dVector4 a)
+	//	{
+	//		dxNormalize4(a);
+	//	}
 
+
+	public static void dPlaneSpace(DVector3C n, DVector3 p, DVector3 q)
+	{
+		dxPlaneSpace(n, p, q);
+	}
+
+	public static boolean dOrthogonalizeR(DMatrix3 m)
+	{
+		return dxOrthogonalizeR(m);
+	}
+
+
+	/*extern */
+	boolean dxCouldBeNormalized3(DVector3C a)
+	{
+		dAASSERT (a);
+
+		boolean ret = false;
+
+		for (int axis = dV3E__AXES_MIN; axis != dV3E__AXES_MAX; ++axis) {
+			if (a.get(axis) != 0.0) {
+				ret = true;
+				break;
+			}
+		}
+
+		return ret;
+	}
 
 	/**
 	 * this may be called for vectors `a' with extremely small magnitude, for
@@ -1157,104 +1204,235 @@ public class OdeMath extends DRotation {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
+	 * TODO TZ: This "new" version may be slower than the old one. Verify this.
 	 */
-	static boolean _dSafeNormalize3 (DVector3 a)
-	{
-		double s;
-		double aa0 = Math.abs(a.get0());
-		double aa1 = Math.abs(a.get1());
-		double aa2 = Math.abs(a.get2());
-		if (aa1 > aa0) {
-			if (aa2 > aa1) { // aa[2] is largest
-				s = aa2;
-			}
-			else {              // aa[1] is largest
-				s = aa1;
-			}
-		}
-		else {
-			if (aa2 > aa0) {// aa[2] is largest
-				s = aa2;
-			}
-			else {              // aa[0] might be the largest
-				if (aa0 <= 0) { // aa[0] might is largest
-//					a.v[0] = 1;	// if all a's are zero, this is where we'll end up.
-//					a.v[1] = 0;	// return a default unit length vector.
-//					a.v[2] = 0;
-					a.set(1, 0, 0);
-					return false;
-				}
-				else {
-					s = aa0;
-				}
-			}
-		}
+	static boolean dxSafeNormalize3(DVector3 a) {
+		dAASSERT(a);
 
-//		a.v[0] /= aa[idx];
-//		a.v[1] /= aa[idx];
-//		a.v[2] /= aa[idx];
-		a.scale(1./s);
-		//l = dRecipSqrt (a.v[0]*a.v[0] + a.v[1]*a.v[1] + a.v[2]*a.v[2]);
-//		a.v[0] *= l;
-//		a.v[1] *= l;
-//		a.v[2] *= l;
-		a.scale(1./a.length());
-		return true;
-	}
-	static boolean _dSafeNormalize3 (DVector3View a)
-	{
-		double s;
-		double aa0 = Math.abs(a.get0());
-		double aa1 = Math.abs(a.get1());
-		double aa2 = Math.abs(a.get2());
-		if (aa1 > aa0) {
-			if (aa2 > aa1) { // aa[2] is largest
-				s = aa2;
-			}
-			else {              // aa[1] is largest
-				s = aa1;
-			}
-		}
-		else {
-			if (aa2 > aa0) {// aa[2] is largest
-				s = aa2;
-			}
-			else {              // aa[0] might be the largest
-				if (aa0 <= 0) { // aa[0] might is largest
+		boolean ret = false;
+
+		do {
+			double abs_a0 = dFabs(a.get(dV3E_X));
+			double abs_a1 = dFabs(a.get(dV3E_Y));
+			double abs_a2 = dFabs(a.get(dV3E_Z));
+
+			//dVec3Element idx;
+			int idx = 0;
+
+			if (abs_a1 > abs_a0) {
+				if (abs_a2 > abs_a1) { // abs_a2 is the largest
+					idx = dV3E_Z;
+				} else {              // abs_a1 is the largest
+					idx = dV3E_Y;
+				}
+			} else if (abs_a2 > abs_a0) {// abs_a2 is the largest
+				idx = dV3E_Z;
+			} else {              // aa[0] might be the largest
+				if (!(abs_a0 > (0.0))) {
 					// if all a's are zero, this is where we'll end up.
-					// return a default unit length vector.
-					a.set(1, 0, 0);
-					return false;
+					// return the vector unchanged.
+					break;
 				}
-				else {
-					s = aa0;
-				}
-			}
-		}
 
-		a.scale(1./s);
-		a.scale(1./a.length());
-		return true;
+				// abs_a0 is the largest
+				idx = dV3E_X;
+			}
+
+			if (idx == dV3E_X) {
+				double aa0_recip = dRecip(abs_a0);
+				double a1 = a.get(dV3E_Y) * aa0_recip;
+				double a2 = a.get(dV3E_Z) * aa0_recip;
+				double l = dRecipSqrt((1.0) + a1 * a1 + a2 * a2);
+				a.set(dV3E_Y, a1 * l);
+				a.set(dV3E_Z, a2 * l);
+				a.set(dV3E_X, dCopySign(l, a.get(dV3E_X)));
+			} else if (idx == dV3E_Y) {
+				double aa1_recip = dRecip(abs_a1);
+				double a0 = a.get(dV3E_X) * aa1_recip;
+				double a2 = a.get(dV3E_Z) * aa1_recip;
+				double l = dRecipSqrt((1.0) + a0 * a0 + a2 * a2);
+				a.set(dV3E_X, a0 * l);
+				a.set(dV3E_Z, a2 * l);
+				a.set(dV3E_Y, dCopySign(l, a.get(dV3E_Y)));
+			} else {
+				double aa2_recip = dRecip(abs_a2);
+				double a0 = a.get(dV3E_X) * aa2_recip;
+				double a1 = a.get(dV3E_Y) * aa2_recip;
+				double l = dRecipSqrt((1.0) + a0 * a0 + a1 * a1);
+				a.set(dV3E_X, a0 * l);
+				a.set(dV3E_Y, a1 * l);
+				a.set(dV3E_Z, dCopySign(l, a.get(dV3E_Z)));
+			}
+
+			ret = true;
+		}
+		while (false);
+
+		return ret;
 	}
+
+	static boolean dxSafeNormalize3(DVector3View a) {
+		dAASSERT(a);
+
+		boolean ret = false;
+
+		do {
+			double abs_a0 = dFabs(a.get(dV3E_X));
+			double abs_a1 = dFabs(a.get(dV3E_Y));
+			double abs_a2 = dFabs(a.get(dV3E_Z));
+
+			//dVec3Element idx;
+			int idx = 0;
+
+			if (abs_a1 > abs_a0) {
+				if (abs_a2 > abs_a1) { // abs_a2 is the largest
+					idx = dV3E_Z;
+				} else {              // abs_a1 is the largest
+					idx = dV3E_Y;
+				}
+			} else if (abs_a2 > abs_a0) {// abs_a2 is the largest
+				idx = dV3E_Z;
+			} else {              // aa[0] might be the largest
+				if (!(abs_a0 > (0.0))) {
+					// if all a's are zero, this is where we'll end up.
+					// return the vector unchanged.
+					break;
+				}
+
+				// abs_a0 is the largest
+				idx = dV3E_X;
+			}
+
+			if (idx == dV3E_X) {
+				double aa0_recip = dRecip(abs_a0);
+				double a1 = a.get(dV3E_Y) * aa0_recip;
+				double a2 = a.get(dV3E_Z) * aa0_recip;
+				double l = dRecipSqrt((1.0) + a1 * a1 + a2 * a2);
+				a.set(dV3E_Y, a1 * l);
+				a.set(dV3E_Z, a2 * l);
+				a.set(dV3E_X, dCopySign(l, a.get(dV3E_X)));
+			} else if (idx == dV3E_Y) {
+				double aa1_recip = dRecip(abs_a1);
+				double a0 = a.get(dV3E_X) * aa1_recip;
+				double a2 = a.get(dV3E_Z) * aa1_recip;
+				double l = dRecipSqrt((1.0) + a0 * a0 + a2 * a2);
+				a.set(dV3E_X, a0 * l);
+				a.set(dV3E_Z, a2 * l);
+				a.set(dV3E_Y, dCopySign(l, a.get(dV3E_Y)));
+			} else {
+				double aa2_recip = dRecip(abs_a2);
+				double a0 = a.get(dV3E_X) * aa2_recip;
+				double a1 = a.get(dV3E_Y) * aa2_recip;
+				double l = dRecipSqrt((1.0) + a0 * a0 + a1 * a1);
+				a.set(dV3E_X, a0 * l);
+				a.set(dV3E_Y, a1 * l);
+				a.set(dV3E_Z, dCopySign(l, a.get(dV3E_Z)));
+			}
+
+			ret = true;
+		}
+		while (false);
+
+		return ret;
+	}
+
+	//	static boolean dxSafeNormalize3 (DVector3 a)
+//	{
+//		double s;
+//		double aa0 = Math.abs(a.get0());
+//		double aa1 = Math.abs(a.get1());
+//		double aa2 = Math.abs(a.get2());
+//		if (aa1 > aa0) {
+//			if (aa2 > aa1) { // aa[2] is largest
+//				s = aa2;
+//			}
+//			else {              // aa[1] is largest
+//				s = aa1;
+//			}
+//		}
+//		else {
+//			if (aa2 > aa0) {// aa[2] is largest
+//				s = aa2;
+//			}
+//			else {              // aa[0] might be the largest
+//				if (aa0 <= 0) { // aa[0] might is largest
+////					a.v[0] = 1;	// if all a's are zero, this is where we'll end up.
+////					a.v[1] = 0;	// return a default unit length vector.
+////					a.v[2] = 0;
+//					a.set(1, 0, 0);
+//					return false;
+//				}
+//				else {
+//					s = aa0;
+//				}
+//			}
+//		}
+//
+////		a.v[0] /= aa[idx];
+////		a.v[1] /= aa[idx];
+////		a.v[2] /= aa[idx];
+//		a.scale(1./s);
+//		//l = dRecipSqrt (a.v[0]*a.v[0] + a.v[1]*a.v[1] + a.v[2]*a.v[2]);
+////		a.v[0] *= l;
+////		a.v[1] *= l;
+////		a.v[2] *= l;
+//		a.scale(1./a.length());
+//		return true;
+//	}
+//	static boolean _dSafeNormalize3 (DVector3View a)
+//	{
+//		double s;
+//		double aa0 = Math.abs(a.get0());
+//		double aa1 = Math.abs(a.get1());
+//		double aa2 = Math.abs(a.get2());
+//		if (aa1 > aa0) {
+//			if (aa2 > aa1) { // aa[2] is largest
+//				s = aa2;
+//			}
+//			else {              // aa[1] is largest
+//				s = aa1;
+//			}
+//		}
+//		else {
+//			if (aa2 > aa0) {// aa[2] is largest
+//				s = aa2;
+//			}
+//			else {              // aa[0] might be the largest
+//				if (aa0 <= 0) { // aa[0] might is largest
+//					// if all a's are zero, this is where we'll end up.
+//					// return a default unit length vector.
+//					a.set(1, 0, 0);
+//					return false;
+//				}
+//				else {
+//					s = aa0;
+//				}
+//			}
+//		}
+//
+//		a.scale(1./s);
+//		a.scale(1./a.length());
+//		return true;
+//	}
 
 	/* OLD VERSION */
 	/*
-void dNormalize3 (dVector3 a)
-{
-dIASSERT (a);
-dReal l = dDOT(a,a);
-if (l > 0) {
- l = dRecipSqrt(l);
- a[0] *= l;
- a[1] *= l;
- a[2] *= l;
-}
-else {
- a[0] = 1;
- a[1] = 0;
- a[2] = 0;
-}
-}
+	void dNormalize3 (dVector3 a)
+	{
+	dIASSERT (a);
+	dReal l = dDOT(a,a);
+	if (l > 0) {
+	 l = dRecipSqrt(l);
+	 a[0] *= l;
+	 a[1] *= l;
+	 a[2] *= l;
+	}
+	else {
+	 a[0] = 1;
+	 a[1] = 0;
+	 a[2] = 0;
+	}
+	}
 	 */
 
 	/**
@@ -1264,7 +1442,7 @@ else {
 	 */
 	public static boolean  dSafeNormalize3 (DVector3 a)
 	{
-		return _dSafeNormalize3(a);
+		return dxSafeNormalize3(a);
 	}
 
     /**
@@ -1274,7 +1452,7 @@ else {
      */
 	public static boolean  dSafeNormalize3 (DVector3View a)
 	{
-		return _dSafeNormalize3(a);
+		return dxSafeNormalize3(a);
 	}
 
     /**
@@ -1284,77 +1462,50 @@ else {
      */
 	public static void dNormalize3(DVector3 a)
 	{
-		_dNormalize3(a);
+		a.normalize();
 	}
 
+	/*extern */
+	boolean dxCouldBeNormalized4(DVector4C a) {
+		dAASSERT(a);
 
-//	//private int _dSafeNormalize4 (dVector4 a)
-//	//{
-//	//}
-//	private static boolean _dSafeNormalize4 (double[] a)
-//	{
-//		dAASSERT (a);
-//		double l = dDOT(a,a)+a[3]*a[3];
-//		if (l > 0) {
-//			l = dRecipSqrt(l);
-//			a[0] *= l;
-//			a[1] *= l;
-//			a[2] *= l;
-//			a[3] *= l;
-//			return true;
-//		}
-//		else {
-//			a[0] = 1;
-//			a[1] = 0;
-//			a[2] = 0;
-//			a[3] = 0;
-//			return false;
-//		}
-//	}
-//	private static boolean _dSafeNormalize4 (DQuaternion a)
-//	{
-//		//dAASSERT (a);
-//		double l = a.lengthSquared();//dDOT(a,a)+a[3]*a[3];
-//		if (l > 0) {
-//			l = dRecipSqrt(l);
-////			a[0] *= l;
-////			a[1] *= l;
-////			a[2] *= l;
-////			a[3] *= l;
-//			a.scale(l);
-//			return true;
-//		}
-//		else {
-////			a[0] = 1;
-////			a[1] = 0;
-////			a[2] = 0;
-////			a[3] = 0;
-//			a.set(1, 0, 0, 0);
-//			return false;
-//		}
-//	}
-//	private static boolean _dSafeNormalize4 (DVector4 a)
-//	{
-//		//dAASSERT (a);
-//		double l = a.lengthSquared();//dDOT(a,a)+a[3]*a[3];
-//		if (l > 0) {
-//			l = dRecipSqrt(l);
-////			a[0] *= l;
-////			a[1] *= l;
-////			a[2] *= l;
-////			a[3] *= l;
-//			a.scale(l);
-//			return true;
-//		}
-//		else {
-////			a[0] = 1;
-////			a[1] = 0;
-////			a[2] = 0;
-////			a[3] = 0;
-//			a.set(1, 0, 0, 0);
-//			return false;
-//		}
-//	}
+		boolean ret = false;
+
+		for (int axis = dV4E__MIN; axis != dV4E__MAX; ++axis) {
+			if (a.get(axis) != (0.0)) {
+				ret = true;
+				break;
+			}
+		}
+
+		return ret;
+	}
+
+	/*extern */
+	@Deprecated // use a.safeNormalize() instead
+	public static boolean dxSafeNormalize4(DVector4 a) {
+		dAASSERT(a);
+
+		boolean ret = false;
+
+		double l = a.get(dV4E_X) * a.get(dV4E_X)
+				+ a.get(dV4E_Y) * a.get(dV4E_Y)
+				+ a.get(dV4E_Z) * a.get(dV4E_Z)
+				+ a.get(dV4E_O) * a.get(dV4E_O);
+		if (l > 0) {
+			l = dRecipSqrt(l);
+			a.scale(l);
+			dAssertVec3Element();
+			//			a[dV4E_X] *= l;
+			//			a[dV4E_Y] *= l;
+			//			a[dV4E_Z] *= l;
+			//			a[dV4E_O] *= l;
+
+			ret = true;
+		}
+
+		return ret;
+	}
 
 	public static boolean dSafeNormalize4 (DVector4 a)
 	{
@@ -1366,11 +1517,8 @@ else {
 	 * Potentially asserts on zero vec. 
 	 * @param a a
 	 */
-	public static void dNormalize4(DVector4 a)
-	{
+	public static void dNormalize4(DVector4 a) {
 		a.normalize();
-//		if (!_dSafeNormalize4(a)) throw new IllegalStateException(
-//				"Normalization failed: " + a);
 	}
 	/** 
 	 * Potentially asserts on zero vec. 
@@ -1396,7 +1544,7 @@ else {
 	 * @param q q
 	 */
 	//ODE_API void dPlaneSpace (const dVector3 n, dVector3 p, dVector3 q);
-	public static void dPlaneSpace (DVector3C n, DVector3 p, DVector3 q)
+	public static void dxPlaneSpace (DVector3C n, DVector3 p, DVector3 q)
 	{
 	    //Common.dAASSERT (n, p, q);
 		if (Math.abs(n.get2()) > Common.M_SQRT1_2) {
@@ -1435,39 +1583,102 @@ else {
 	 * both ways give equivalent results.
 	 * @param m m
 	 */
-	public static int dOrthogonalizeR(DMatrix3 m)
-	{
-		//double n0 = dLENGTHSQUARED(m);
-		DVector3RowTView row0 = m.viewRowT(0); 
-		double n0 = row0.length();
-		if (n0 != 1)
-			//dSafeNormalize3(m);
-			dSafeNormalize3(row0);
+	public static boolean dxOrthogonalizeR(DMatrix3 m) {
+		boolean ret = false;
+		dAssertVec3Element(); // because this is the old version, the new Version with dM3E__X_MIN is below
+		do {
+			//double n0 = dLENGTHSQUARED(m);
+			DVector3RowTView row0 = m.viewRowT(0);
+			double n0 = row0.length();
+			if (n0 != 1)
+				//dSafeNormalize3(m);
+				dSafeNormalize3(row0);
 
-		// project row[0] on row[1], should be zero
-		//double proj = dDOT(m, m+4);
-		DVector3View row1 = m.viewRowT(1);
-		double proj = row0.dot( row1 );
-		if (proj != 0) {
-			// Gram-Schmidt step on row[1]
+			// project row[0] on row[1], should be zero
+			//double proj = dDOT(m, m+4);
+			DVector3View row1 = m.viewRowT(1);
+			double proj = row0.dot(row1);
+			if (proj != 0) {
+				// Gram-Schmidt step on row[1]
 //			m[4] -= proj * m[0];
 //			m[5] -= proj * m[1];
 //			m[6] -= proj * m[2];
-			m.set10( m.get10() - proj * m.get00() );
-			m.set11( m.get11() - proj * m.get01() );
-			m.set12( m.get12() - proj * m.get02() );
-		}
-		double n1 = row1.dot(row1);//dLENGTHSQUARED(m+4);
-		if (n1 != 1)
-			//dSafeNormalize3(m+4);
-			dSafeNormalize3(row1);
+				m.set10(m.get10() - proj * m.get00());
+				m.set11(m.get11() - proj * m.get01());
+				m.set12(m.get12() - proj * m.get02());
+			}
+			double n1 = row1.dot(row1);//dLENGTHSQUARED(m+4);
+			if (n1 != 1)
+				//dSafeNormalize3(m+4);
+				dSafeNormalize3(row1);
 
 		/* just overwrite row[2], this makes sure the matrix is not
 		a reflection */
-		//dCROSS(m+8, =, m, m+4);
-		//dCROSS(m, 8, OP.EQ, m, 0, m, 4);
-		DVector3View row2 = m.viewRowT(2);
-		dCalcVectorCross3(row2, row0, row1);
-		//TZ m[3] = m[4+3] = m[8+3] = 0;
+			//dCROSS(m+8, =, m, m+4);
+			//dCROSS(m, 8, OP.EQ, m, 0, m, 4);
+			DVector3View row2 = m.viewRowT(2);
+			dCalcVectorCross3(row2, row0, row1);
+			//TZ m[3] = m[4+3] = m[8+3] = 0;
+
+			ret = true;
+		}
+		while (false);
+
+		return ret;
 	}
+
+	// TZ: This is the new version, but it is hard to translate to Java...
+//	boolean dxOrthogonalizeR(DMatrix3 m)
+//	{
+//		boolean ret = false;
+//
+//		do {
+//			if (!dxCouldBeNormalized3(m + dM3E__X_MIN)) {
+//				break;
+//			}
+//
+//			double n0 = dCalcVectorLengthSquare3(m + dM3E__X_MIN);
+//
+//			DVector3 row2_store;
+//			dReal *row2 = m + dM3E__Y_MIN;
+//			// project row[0] on row[1], should be zero
+//			double proj = dCalcVectorDot3(m + dM3E__X_MIN, m + dM3E__Y_MIN);
+//			if (proj != 0) {
+//				// Gram-Schmidt step on row[1]
+//				double proj_div_n0 = proj / n0;
+//				row2_store[dV3E_X] = m[dM3E__Y_MIN + dV3E_X] - proj_div_n0 * m[dM3E__X_MIN + dV3E_X] ;
+//				row2_store[dV3E_Y] = m[dM3E__Y_MIN + dV3E_Y] - proj_div_n0 * m[dM3E__X_MIN + dV3E_Y];
+//				row2_store[dV3E_Z] = m[dM3E__Y_MIN + dV3E_Z] - proj_div_n0 * m[dM3E__X_MIN + dV3E_Z];
+//				row2 = row2_store;
+//			}
+//
+//			if (!dxCouldBeNormalized3(row2)) {
+//				break;
+//			}
+//
+//			if (n0 != (1.0)) {
+//				boolean row0_norm_fault = !dxSafeNormalize3(m + dM3E__X_MIN);
+//				dIVERIFY(!row0_norm_fault);
+//			}
+//
+//			double n1 = dCalcVectorLengthSquare3(row2);
+//			if (n1 != (1.0)) {
+//				boolean row1_norm_fault = !dxSafeNormalize3(row2);
+//				dICHECK(!row1_norm_fault);
+//			}
+//
+//			dIASSERT(dFabs(dCalcVectorDot3(m + dM3E__X_MIN, row2)) < 1e-6);
+//
+//        /* just overwrite row[2], this makes sure the matrix is not
+//        a reflection */
+//			dCalcVectorCross3(m + dM3E__Z_MIN, m + dM3E__X_MIN, row2);
+//
+//			m[dM3E_XPAD] = m[dM3E_YPAD] = m[dM3E_ZPAD] = 0;
+//
+//			ret = true;
+//		}
+//		while (false);
+//
+//		return ret;
+//	}
 }
