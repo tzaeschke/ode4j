@@ -73,7 +73,7 @@ public class DxUtil {
         return sizeof(o.getClass());
     }
     
-    static final int EFFICIENT_ALIGNMENT = 16;
+    public static final int EFFICIENT_ALIGNMENT = 16;
     
 //  #define dEFFICIENT_SIZE(x) (((x)+(EFFICIENT_ALIGNMENT-1)) & ~((size_t)(EFFICIENT_ALIGNMENT-1)))
     static final int dEFFICIENT_SIZE(int x) {

@@ -31,6 +31,7 @@ import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.joints.DxJoint;
 
 import static org.ode4j.ode.internal.ErrorHandler.*;
@@ -183,6 +184,13 @@ public class Common extends OdeConstants {
 //			#define dSASSERT(e) typedef char dUNUSED(d_SASSERT_TOKENPASTE(d_StaticAssertionFailed_, __LINE__)[(e)?1:-1])
 //			#define dSMSGASSERT(e, message)  dSASSERT(e)
 //			#endif
+
+	public static void dSASSERT(boolean  a) {
+		assert(a);
+		if (!a) {
+			dDebug (d_ERR_SASSERT, "Static assert failed");
+		}
+	}
 
 	//	#  ifdef __GNUC__
 //	#    define dICHECK(a) { if (!(a)) { dDebug (d_ERR_IASSERT, \
@@ -553,8 +561,8 @@ public class Common extends OdeConstants {
 	public static final double dNaN = Double.NaN;
 
 	//#define dCopySign(a,b) (copysign((a),(b)))
-	public final double dCopySign(double a, double b) {
-		throw new UnsupportedOperationException();
+	public static double dCopySign(double a, double b) {
+		return Math.copySign(a, b);
 	}
 
 	public static double dMin(double x, double y) { return x <= y ? x : y; }
@@ -572,6 +580,7 @@ public class Common extends OdeConstants {
 	public static final int d_ERR_IASSERT = 1;		/* internal assertion failed */
 	public static final int d_ERR_UASSERT = 2;		/* user assertion failed */
 	public static final int d_ERR_LCP = 3;			/* user assertion failed */
+	public static final int d_ERR_SASSERT = 4;		/* TZ: static assertion failed */
 
 
 
@@ -725,6 +734,27 @@ enum {
 	@Deprecated
 	public void dxSwap() {
 		throw new UnsupportedOperationException();
+	}
+	public static void dxSwap(double[] one, int oneP, double[] another, int anotherP) {
+		double tmp = one[oneP];
+		one[oneP] = another[anotherP];
+		another[anotherP] = tmp;
+	}
+
+	public static void dxSwap(RefDouble one, double[] another, int anotherP) {
+		double tmp = one.get();
+		one.set(another[anotherP]);
+		another[anotherP] = tmp;
+	}
+	public static void dxSwap(int[] one, int oneP, int[] another, int anotherP) {
+		int tmp = one[oneP];
+		one[oneP] = another[anotherP];
+		another[anotherP] = tmp;
+	}
+	public static void dxSwap(boolean[] one, int oneP, boolean[] another, int anotherP) {
+		boolean tmp = one[oneP];
+		one[oneP] = another[anotherP];
+		another[anotherP] = tmp;
 	}
 
 //	template<typename value_type, typename lo_type, typename hi_type>
