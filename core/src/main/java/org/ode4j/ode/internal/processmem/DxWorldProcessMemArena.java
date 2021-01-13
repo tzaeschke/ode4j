@@ -29,6 +29,8 @@ import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 
+import java.util.concurrent.atomic.AtomicIntegerArray;
+
 public final class DxWorldProcessMemArena {
 	
     //   public:
@@ -74,7 +76,7 @@ public final class DxWorldProcessMemArena {
     	m_pAllocCurrentOrNextArena = state;
     }
 
-    void ResetState()
+    public void ResetState()
     {
     	m_pAllocCurrentOrNextArena = m_pAllocBegin;
     }
@@ -202,6 +204,18 @@ public final class DxWorldProcessMemArena {
 
     public final int[] AllocateArrayInt(int size) {
         return new int[size];
+    }
+
+    public double[] AllocateOveralignedArrayDReal(int count, int alignment)
+    {
+        //return (ElementType *)AllocateOveralignedBlock(count * sizeof(ElementType), alignment);
+        // TZ: we assume that alignment is for the whole block so it can be safely ignored.
+        //     Do we have to make sure to have size be a multiple of alignment?
+        return new double[count];
+    }
+
+    public final AtomicIntegerArray AllocateArrayAtomicord32(int size) {
+        return new AtomicIntegerArray(size);
     }
 
     /**

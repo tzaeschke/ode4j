@@ -526,56 +526,64 @@ public class DxRay extends DxGeom implements DRay {
 				//				r[2] = uv*ccyl.final_posr.R[2*4+2] - ray.final_posr.R[2*4+2];
 				r.eqSum(ccyl.final_posr().R().viewCol(2), uv, ray.final_posr().R().viewCol(2), -1);
 				double A = dCalcVectorDot3(r,r);
-				double B = 2*dCalcVectorDot3(q,r);
-				k = B*B-4*A*C;
-				if (k < 0) {
-					// the ray does not intersect the infinite cylinder, but if the ray is
-					// inside and parallel to the cylinder axis it may intersect the end
-					// caps. set k to cap position to check.
-					if (!inside_ccyl) return 0;
+				// A == 0 means that the ray and ccylinder axes are parallel
+				if (A == 0) { // There is a division by A below...
+					// set k to cap position to check
 					if (uv < 0) k = -lz2; else k = lz2;
 				}
 				else {
-					k = dSqrt(k);
-					A = dRecip (2*A);
-					double alpha = (-B-k)*A;
-					if (alpha < 0) {
-						alpha = (-B+k)*A;
-						if (alpha < 0) return 0;
+					double B = 2*dCalcVectorDot3(q,r);
+					k = B*B-4*A*C;
+					if (k < 0) {
+						// the ray does not intersect the infinite cylinder, but if the ray is
+						// inside and parallel to the cylinder axis it may intersect the end
+						// caps. set k to cap position to check.
+						if (!inside_ccyl) return 0;
+						if (uv < 0) k = -lz2; else k = lz2;
 					}
-					if (alpha > ray._length) return 0;
+					else {
+						k = dSqrt(k);
+						A = dRecip(2 * A);
+						double alpha = (-B - k) * A;
+						if (alpha < 0) {
+							alpha = (-B + k) * A;
+							if (alpha < 0) return 0;
+						}
+						if (alpha > ray._length) return 0;
 
-					// the ray intersects the infinite cylinder. check to see if the
-					// intersection point is between the caps
-					//					contact.pos[0] = ray.final_posr.pos[0] + alpha*ray.final_posr.R[0*4+2];
-					//					contact.pos[1] = ray.final_posr.pos[1] + alpha*ray.final_posr.R[1*4+2];
-					//					contact.pos[2] = ray.final_posr.pos[2] + alpha*ray.final_posr.R[2*4+2];
-					contact.pos.eqSum( ray.final_posr().R().viewCol(2), alpha, ray.final_posr().pos(), 1);
-					//					q[0] = contact.pos[0] - ccyl.final_posr.pos[0];
-					//					q[1] = contact.pos[1] - ccyl.final_posr.pos[1];
-					//					q[2] = contact.pos[2] - ccyl.final_posr.pos[2];
-					q.eqDiff(contact.pos, ccyl.final_posr().pos());
-					k = dCalcVectorDot3_14(q,ccyl.final_posr().R(),2);
-					double nsign = inside_ccyl ? (-1.0) : (1.0);
-					if (k >= -lz2 && k <= lz2) {
-						//						contact.normal[0] = nsign * (contact.pos[0] -
-						//								(ccyl.final_posr.pos[0] + k*ccyl.final_posr.R[0*4+2]));
-						//						contact.normal[1] = nsign * (contact.pos[1] -
-						//								(ccyl.final_posr.pos[1] + k*ccyl.final_posr.R[1*4+2]));
-						//						contact.normal[2] = nsign * (contact.pos[2] -
-						//								(ccyl.final_posr.pos[2] + k*ccyl.final_posr.R[2*4+2]));
-						contact.normal.eqSum( ccyl.final_posr().R().viewCol(2), -k, ccyl.final_posr().pos(), -1);
-						//TODO while scale() if normalized afterwards?
-						contact.normal.add(contact.pos).scale(nsign);
-						//dNormalize3 (contact.normal);
-						contact.normal.normalize();
-						contact.depth = alpha;
-						return 1;
+						// the ray intersects the infinite cylinder. check to see if the
+						// intersection point is between the caps
+						//					contact.pos[0] = ray.final_posr.pos[0] + alpha*ray.final_posr.R[0*4+2];
+						//					contact.pos[1] = ray.final_posr.pos[1] + alpha*ray.final_posr.R[1*4+2];
+						//					contact.pos[2] = ray.final_posr.pos[2] + alpha*ray.final_posr.R[2*4+2];
+						contact.pos.eqSum(ray.final_posr().R().viewCol(2), alpha, ray.final_posr().pos(), 1);
+						//					q[0] = contact.pos[0] - ccyl.final_posr.pos[0];
+						//					q[1] = contact.pos[1] - ccyl.final_posr.pos[1];
+						//					q[2] = contact.pos[2] - ccyl.final_posr.pos[2];
+						q.eqDiff(contact.pos, ccyl.final_posr().pos());
+						k = dCalcVectorDot3_14(q, ccyl.final_posr().R(), 2);
+						double nsign = inside_ccyl ? (-1.0) : (1.0);
+						if (k >= -lz2 && k <= lz2) {
+							//						contact.normal[0] = nsign * (contact.pos[0] -
+							//								(ccyl.final_posr.pos[0] + k*ccyl.final_posr.R[0*4+2]));
+							//						contact.normal[1] = nsign * (contact.pos[1] -
+							//								(ccyl.final_posr.pos[1] + k*ccyl.final_posr.R[1*4+2]));
+							//						contact.normal[2] = nsign * (contact.pos[2] -
+							//								(ccyl.final_posr.pos[2] + k*ccyl.final_posr.R[2*4+2]));
+							contact.normal.eqSum(ccyl.final_posr().R().viewCol(2), -k, ccyl.final_posr().pos(), -1);
+							//TODO while scale() if normalized afterwards?
+							contact.normal.add(contact.pos).scale(nsign);
+							//dNormalize3 (contact.normal);
+							contact.normal.normalize();
+							contact.depth = alpha;
+							return 1;
+						}
+
+						// the infinite cylinder intersection point is not between the caps.
+						// set k to cap position to check.
+						if (k < 0) k = -lz2;
+						else k = lz2;
 					}
-
-					// the infinite cylinder intersection point is not between the caps.
-					// set k to cap position to check.
-					if (k < 0) k = -lz2; else k = lz2;
 				}
 			}
 

@@ -190,13 +190,13 @@ public class DLCP {
 	//		PLH__MAX,
 	//	};
 	private static final int PBX__MIN = 0;
-	private static final int PBX_B = PBX__MIN;
-	private static final int PBX_X = 1;
-	private static final int PBX__MAX = 2;
-	private static final int PLH__MIN = 9
-	private static final int PLH_LO = PLH__MIN;
-	private static final int PLH_HI = 1;
-	private static final int PLH__MAX = 2;
+	public static final int PBX_B = PBX__MIN;
+	public static final int PBX_X = 1;
+	public static final int PBX__MAX = 2;
+	private static final int PLH__MIN = 0;
+	public static final int PLH_LO = PLH__MIN;
+	public static final int PLH_HI = 1;
+	public static final int PLH__MAX = 2;
 
 
 	//***************************************************************************
@@ -349,7 +349,7 @@ public class DLCP {
 	protected final double AROW(int i, int j) { return m_A[i*m_nskip+j]; };
 	//private void pN_plusequals_ANi (double[] p, int i) { pN_plusequals_ANi(p, i, 1); } ;
 	void solve1(double[] a, int i, boolean dir) { solve1(a, i, dir, false); }
-	void solve1(double[] a, int i) { solve1(a, i, 1, false); }
+	void solve1(double[] a, int i) { solve1(a, i, true, false); }
 
 
 	//TODO
@@ -475,7 +475,7 @@ public class DLCP {
 		    for (int k = m_nub; k<n; ++k) {
 		        if (findex!=null && findex[k] >= 0) continue;
                 if (pairslhA[pairslhP + k * PLH__MAX + PLH_LO] == -dInfinity && pairslhA[pairslhP + k * PLH__MAX + PLH_HI] == dInfinity) {
-                    swapProblem(m_A, m_pairsbxA, m_pairsbxP, m_w, pairslhA, pairslhP, m_p, m_state, findex, n, m_nub, k, m_nskip, 0);
+                    swapProblem(m_A, m_pairsbxA, m_pairsbxP, m_w, pairslhA, pairslhP, m_p, m_state, findex, n, m_nub, k, m_nskip, false);
 		            m_nub++;
 		        }
 		    }
@@ -880,7 +880,7 @@ public class DLCP {
 		}//# endif
 
 		final int nskip = dPAD(n);
-		double[] L = memarena.AllocateOveralignedArray(nskip * n, LMATRIX_ALIGNMENT);
+		double[] L = memarena.AllocateOveralignedArrayDReal(nskip * n, LMATRIX_ALIGNMENT);
 		double[] d =  memarena.AllocateArrayDReal(n);//ALLOCA (dReal,d,n*sizeof(dReal));
 		double[] w = outer_w != null ? outer_w : memarena.AllocateArrayDReal(n);
 		double[] delta_x =  memarena.AllocateArrayDReal(n);//ALLOCA (dReal,delta_x,n*sizeof(dReal));
