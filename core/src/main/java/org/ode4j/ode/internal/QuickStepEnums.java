@@ -24,7 +24,10 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.Common.dSASSERT;
 import static org.ode4j.ode.internal.CommonEnums.*;
+import static org.ode4j.ode.internal.processmem.DxUtil.EFFICIENT_ALIGNMENT;
+import static org.ode4j.ode.internal.processmem.DxUtil.dMAX;
 
 import org.ode4j.ode.internal.joints.JointEnums;
 
@@ -100,6 +103,11 @@ public class QuickStepEnums {
 	public static final int JME__J1_COUNT = JME__J1_MAX - JME__J1_MIN;
 	public static final int JME__J2_COUNT = JME__J2_MAX - JME__J2_MIN;
 	public static final int JME__J_COUNT = JVE__MAX;
+
+	static {
+		dSASSERT(JME__J_COUNT == JME__J1_COUNT);
+		dSASSERT(JME__J_COUNT == JME__J2_COUNT);
+	}
 
 	// dxJacobiCopyElement
 	public static final int JCE__MIN = 0;
@@ -192,4 +200,17 @@ public class QuickStepEnums {
 	public static final int RHS__DYNAMICS_MAX = RHS__DYNAMICS_MIN + dDA__MAX;
 	public static final int RHS__MAX = RHS__DYNAMICS_MAX;
 
+	//	#define JACOBIAN_ALIGNMENT  dMAX(JME__MAX * sizeof(dReal), EFFICIENT_ALIGNMENT)
+	//		dSASSERT(((JME__MAX - 1) & JME__MAX) == 0); // Otherwise there is no reason to over-align the Jacobian
+	//
+	//	#define JCOPY_ALIGNMENT    dMAX(32, EFFICIENT_ALIGNMENT)
+	//	#define INVI_ALIGNMENT     dMAX(32, EFFICIENT_ALIGNMENT)
+	//	#define INVMJ_ALIGNMENT    dMAX(32, EFFICIENT_ALIGNMENT)
+	public static final int JACOBIAN_ALIGNMENT = dMAX(JME__MAX /* * sizeof(dReal)*/, EFFICIENT_ALIGNMENT);
+	static {
+		dSASSERT(((JME__MAX - 1) & JME__MAX) == 0); // Otherwise there is no reason to over-align the Jacobian
+	}
+	public static final int JCOPY_ALIGNMENT = dMAX(32, EFFICIENT_ALIGNMENT);
+	public static final int INVI_ALIGNMENT  = dMAX(32, EFFICIENT_ALIGNMENT);
+	public static final int INVMJ_ALIGNMENT = dMAX(32, EFFICIENT_ALIGNMENT);
 }
