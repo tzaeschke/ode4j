@@ -24,17 +24,14 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
-import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
-import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dMultiply1_331;
-import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.ode.internal.Common.dAtan2;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DHinge2Joint;
+import org.ode4j.ode.internal.CommonEnums;
 import org.ode4j.ode.internal.DxWorld;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
@@ -163,9 +160,9 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	 * 
 	 * @param ax1 Will contain the joint axis1 in world frame
 	 * @param ax2 Will contain the joint axis2 in world frame
-	 * @param axis Will contain the cross product of ax1 x ax2
-	 * @param sin_angle
-	 * @param cos_angle
+	 * @param axCross Will contain the cross product of ax1 x ax2
+	 * @param sin_angle result sin angle
+	 * @param cos_angle result cos angle
 	 */
 	private void getAxisInfo(DVector3 ax1, DVector3 ax2, DVector3 axCross,
 	                           RefDouble sin_angle, RefDouble cos_angle)
@@ -176,35 +173,34 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	    sin_angle.d = axCross.length();//dSqrt (axCross[0]*axCross[0] + axCross[1]*axCross[1] + axCross[2]*axCross[2]);
 	    cos_angle.d = ax1.dot(ax2);//dDOT (ax1,ax2);
 	}
-	
-	
+
+
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2( double worldFPS, double worldERP, Info2Descr info )
-	{
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
 		// get information we need to set the hinge row
-		DVector3 q = new DVector3();
-		final DxJointHinge2 joint = this;
-		DVector3 ax1 = new DVector3(), ax2 = new DVector3();
-		//double s = 0, c = 0;
 		RefDouble s = new RefDouble(0), c = new RefDouble(0);
+		DVector3 q = new DVector3();
+
+		DVector3 ax1 = new DVector3(), ax2 = new DVector3();
 		getAxisInfo( ax1, ax2, q, s, c);
 		dNormalize3( q );   // @@@ quicker: divide q by s ?
 
 		// set the three ball-and-socket rows (aligned to the suspension axis ax1)
-		setBall2( this, worldFPS, worldERP, info, anchor1, anchor2, ax1, susp_erp );
+		setBall2(this, worldFPS, worldERP, rowskip, J1A, J1Ofs, J2A, J2Ofs, pairskip, pairRhsCfmA, pairRhsCfmOfs,
+				anchor1, anchor2, ax1, susp_erp);
+		// set parameter for the suspension
+		pairRhsCfmA[pairRhsCfmOfs + GI2_CFM] = susp_cfm;
 
 		// set the hinge row
-//		info._J[info.J1ap+s3+0] = q.v[0];
-//		info._J[info.J1ap+s3+1] = q.v[1];
-//		info._J[info.J1ap+s3+2] = q.v[2];
-		info.setJ1a(3, q);
-		if ( joint.node[1].body != null)
-		{
-//			info._J[info.J2ap+s3+0] = -q.v[0];
-//			info._J[info.J2ap+s3+1] = -q.v[1];
-//			info._J[info.J2ap+s3+2] = -q.v[2];
-			info.setJ2aNegated(3, q);
+		int currRowSkip = 3 * rowskip;
+		dCopyVector3(J1A, J1Ofs + currRowSkip + GI2__JA_MIN, q);
+		if (node[1].body != null) {
+			dCopyNegatedVector3(J2A, J2Ofs + currRowSkip + GI2__JA_MIN, q);
 		}
 
 		// compute the right hand side for the constrained rotational DOF.
@@ -223,16 +219,22 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		//       c0 = cos(theta0), s0 = sin(theta0)
 
 		double k = worldFPS * worldERP;
-		info.setC(3, k * ( c0 * s.get() - joint.s0 * c.get() ) );
 
+		int currPairSkip = 3 * pairskip;
+		pairRhsCfmA[pairRhsCfmOfs + currPairSkip + GI2_RHS] = k * (c0 * s.get() - this.s0 * c.get());
+
+		currRowSkip += rowskip;
+		currPairSkip += pairskip;
 		// if the axis1 hinge is powered, or has joint limits, add in more stuff
-		int row = 4 + limot1.addLimot( this, worldFPS, info, 4, ax1, true );
+		if (limot1.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+				pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, ax1, true)) {
+			currRowSkip += rowskip;
+			currPairSkip += pairskip;
+		}
 
 		// if the axis2 hinge is powered, add in more stuff
-		limot2.addLimot( this, worldFPS, info, row, ax2, true );
-
-		// set parameter for the suspension
-		info.setCfm(0, susp_cfm);
+		limot2.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+				pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, ax2, true);
 	}
 
 
@@ -248,21 +250,18 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 			dMultiply0_331( ax1, node[0].body.posr().R(), _axis1 );
 			dMultiply0_331( ax2, node[1].body.posr().R(), _axis2 );
 
-			// don't do anything if the axis1 or axis2 vectors are zero or the same
-			if (( ax1.get0() == 0 && ax1.get1() == 0 && ax1.get2() == 0 ) ||
-					( ax2.get0() == 0 && ax2.get1() == 0 && ax2.get2() == 0 ) ||
-					( ax1.get0() == ax2.get0() && ax1.get1() == ax2.get1() && ax1.get2() == ax2.get2() ) ) return;
-
 			// modify axis 2 so it's perpendicular to axis 1
-			double k = ax1.dot( ax2 );
-			//for ( int i = 0; i < 3; i++ ) ax2.v[i] -= k * ax1.v[i];
-			ax2.eqSum( ax2, ax1, -k);
-			dNormalize3( ax2 );
+			double k = dCalcVectorDot3(ax1, ax2);
+			dAddVectorScaledVector3(ax2, ax2, ax1, -k);
 
-			// make v1 = modified axis2, v2 = axis1 x (modified axis2)
-			dCalcVectorCross3( v, ax1, ax2 );
-			dMultiply1_331( v1, node[0].body.posr().R(), ax2 );
-			dMultiply1_331( v2, node[0].body.posr().R(), v );
+			if (dxSafeNormalize3(ax2)) {
+				// make v1 = modified axis2, v2 = axis1 x (modified axis2)
+				dCalcVectorCross3(v, ax1, ax2);
+				dMultiply1_331(v1, node[0].body.posr().R(), ax2);
+				dMultiply1_331(v2, node[0].body.posr().R(), v);
+			} else {
+				dUASSERT(false, "Hinge2 axes must be chosen to be linearly independent");
+			}
 		}
 	}
 
@@ -276,23 +275,18 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	        dMultiply0_331( ax1, node[0].body.posr().R(), _axis1 );
 	        dMultiply0_331( ax2, node[1].body.posr().R(), _axis2 );
 
-	        // don't do anything if the axis1 or axis2 vectors are zero or the same
-	        if (( ax1.get0() == 0 && ax1.get1() == 0 && ax1.get2() == 0 ) ||
-	            ( ax2.get0() == 0 && ax2.get1() == 0 && ax2.get2() == 0 ) ||
-	            ( ax1.get0() == ax2.get0() && ax1.get1() == ax2.get1() && ax1.get2() == ax2.get2() ) ) {
-	        	return;
-	        }
-
 	        // modify axis 1 so it's perpendicular to axis 2
 	        double k = dCalcVectorDot3( ax2, ax1 );
-	        //for ( int i = 0; i < 3; i++ ) ax1[i] -= k * ax2[i];
-	        ax1.eqSum(ax1, ax2, -k);
-	        dNormalize3( ax1 );
+			dAddVectorScaledVector3(ax1, ax1, ax2, -k);
 
-	        // make w1 = modified axis1, w2 = axis2 x (modified axis1)
-	        dCalcVectorCross3( w, ax2, ax1 );
-	        dMultiply1_331( w1, node[1].body.posr().R(), ax1 );
-	        dMultiply1_331( w2, node[1].body.posr().R(), w );
+			if (dxSafeNormalize3(ax1)) {
+				// make w1 = modified axis1, w2 = axis2 x (modified axis1)
+				dCalcVectorCross3(w, ax2, ax1);
+				dMultiply1_331(w1, node[1].body.posr().R(), ax1);
+				dMultiply1_331(w2, node[1].body.posr().R(), w);
+			} else {
+				dUASSERT(false, "Hinge2 axes must be chosen to be linearly independent");
+			}
 	    }
 	}
 
@@ -302,46 +296,58 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		makeW1andW2();
 	}
 
+	/*ODE_API */
+	void dJointSetHinge2Axes(final DVector3C axis1/*=[dSA__MAX],=NULL*/, final DVector3C axis2/*=[dSA__MAX],
+	=NULL*/) {
+		dAASSERT(axis1 != null || axis2 != null);
+		dAASSERT(node[0].body != null || axis1 == null);
+		dAASSERT(node[1].body != null || axis2 == null);
 
-//	private void dJointSetHinge2Axis1( dJoint j, double x, double y, double z )
-	public void dJointSetHinge2Axis1( double x, double y, double z )
-	{
-		if ( node[0].body != null)
-		{
-			setAxes(x, y, z, _axis1, null);
-
-	        // compute the sin and cos of the angle between axis 1 and axis 2
-	        DVector3 ax1 = new DVector3(), ax2 = new DVector3(), ax = new DVector3();
-			RefDouble s0MD = new RefDouble(s0), c0MD = new RefDouble(c0);
-	        getAxisInfo( ax1, ax2, ax, s0MD, c0MD );
-			c0 = c0MD.get();
-			s0 = s0MD.get();
+		CommonEnums.dAssertVec3Element();
+		if (axis1 != null) {
+			// setAxes(axis1[dSA_X], axis1[dSA_Y], axis1[dSA_Z], axis1, null);
+			setAxes(axis1.get0(), axis1.get1(), axis1.get2(), this._axis1, null);
 		}
+
+		if (axis2 != null) {
+			// setAxes(axis2[dSA_X], axis2[dSA_Y], axis2[dSA_Z], null, axis2);
+			setAxes(axis2.get0(), axis2.get1(), axis2.get2(), null, this._axis2);
+		}
+
+		// compute the sin and cos of the angle between axis 1 and axis 2
+		DVector3 ax1 = new DVector3(), ax2 = new DVector3(), ax = new DVector3();
+		RefDouble s0Ref = new RefDouble(s0), c0Ref = new RefDouble(c0);
+		getAxisInfo(ax1, ax2, ax, s0Ref, c0Ref);
+		s0 = s0Ref.get();
+		c0 = c0Ref.get();
+
 		makeV1andV2();
 		makeW1andW2();
 	}
 
 
-//	private void dJointSetHinge2Axis2( dJoint j, double x, double y, double z )
-	public void dJointSetHinge2Axis2( double x, double y, double z )
-	{
-		if ( node[1].body != null)
-		{
-			setAxes(x, y, z, null, _axis2);
+	/*ODE_API_DEPRECATED ODE_API */
+	public void dJointSetHinge2Axis1(double x, double y, double z) {
+		CommonEnums.dAssertVec3Element();
+		DVector3 axis1 = new DVector3(x, y, z);
+		//		axis1[dSA_X] = x;
+		//		axis1[dSA_Y] = y;
+		//		axis1[dSA_Z] = z;
+		dJointSetHinge2Axes(axis1, null);
+	}
 
-	        // compute the sin and cos of the angle between axis 1 and axis 2
-	        DVector3 ax1 = new DVector3(), ax2 = new DVector3(), ax = new DVector3();
-			RefDouble s0MD = new RefDouble(s0), c0MD = new RefDouble(c0);
-	        getAxisInfo( ax1, ax2, ax, s0MD, c0MD );
-			c0 = c0MD.get();
-			s0 = s0MD.get();
-		}
-		makeV1andV2();
-		makeW1andW2();
+	/*ODE_API_DEPRECATED ODE_API */
+	void dJointSetHinge2Axis2(double x, double y, double z) {
+		CommonEnums.dAssertVec3Element();
+		DVector3 axis2 = new DVector3(x, y, z);
+		//		axis2[dSA_X] = x;
+		//		axis2[dSA_Y] = y;
+		//		axis2[dSA_Z] = z;
+		dJointSetHinge2Axes(null, axis2);
 	}
 
 
-//	public void dJointSetHinge2Param( dxJointHinge2 j, 
+	//	public void dJointSetHinge2Param( dxJointHinge2 j,
 //			D_PARAM_NAMES parameter, double value )
 	public void dJointSetHinge2Param( PARAM_N parameter, double value )
 	{
@@ -523,6 +529,12 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	@Override
 	public void setAnchor (final DVector3C a)
 	{ dJointSetHinge2Anchor(a); }
+	@Override
+	public void setAxes (final DVector3C a, final DVector3C b)
+	{ dJointSetHinge2Axes(a, b); }
+	@Override
+	public void setAxes (double ax, double ay, double az, double bx, double by, double bz)
+	{ dJointSetHinge2Axes(new DVector3(ax, ay, az), new DVector3(bx, by, bz)); }
 	@Override
 	public void setAxis1 (double x, double y, double z)
 	{ dJointSetHinge2Axis1 (x, y, z); }

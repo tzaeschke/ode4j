@@ -82,6 +82,9 @@ public class OdeMath extends DRotation {
 
 
 	// Some vector math
+	public static void dAddVectors3(DVector3 res, DVector3C a, DVector3C b) {
+		res.eqSum(a, b);
+	}
 //	PURE_INLINE void dAddVectors3(dReal *res, const dReal *a, const dReal *b)
 //	{
 //	  dReal res_0, res_1, res_2;
@@ -92,6 +95,10 @@ public class OdeMath extends DRotation {
 //	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
 //	}
 //
+	public static void dSubtractVectors3(DVector3 res, DVector3C a, DVector3C b) {
+		res.eqDiff(a, b);
+	}
+
 //	PURE_INLINE void dSubtractVectors3(dReal *res, const dReal *a, const dReal *b)
 //	{
 //	  dReal res_0, res_1, res_2;
@@ -112,7 +119,13 @@ public class OdeMath extends DRotation {
 //		res[0] = res_0; res[1] = res_1; res[2] = res_2;
 //	}
 
-	public static void dAddScaledVectors3(DVector3 res, DVector3C a, DVector3C b, 
+	public static void dAddVectorScaledVector3(DVector3 res, DVector3C a, DVector3C b, double b_scale) {
+		res.set0(a.get0() + b_scale * b.get0());
+		res.set1(a.get1() + b_scale * b.get1());
+		res.set2(a.get2() + b_scale * b.get2());
+	}
+
+	public static void dAddScaledVectors3(DVector3 res, DVector3C a, DVector3C b,
 	        double a_scale, double b_scale)
 	{
 	  double res_0, res_1, res_2;
@@ -146,13 +159,48 @@ public class OdeMath extends DRotation {
 //	  res[1] = -res[1];
 //	  res[2] = -res[2];
 //	}
+	public static void dCopyVector3(DVector3 a, final DVector3C b) {
+		a.set(b);
+	}
+
     public static void dCopyVector3(float[] a, int ofs, final DVector3C b) {
         a[0+ofs] = (float) b.get0(); 
         a[1+ofs] = (float) b.get1(); 
         a[2+ofs] = (float) b.get2();
     }
-    
-//	PURE_INLINE void dCopyScaledVector3(dReal *res, const dReal *a, dReal nScale)
+
+	public static void dCopyVector3(double[] resA, int resOfs, final DVector3C a) {
+		final double res_0 = a.get0();
+		final double res_1 = a.get1();
+		final double res_2 = a.get2();
+		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+		resA[resOfs + 0] = res_0;
+		resA[resOfs + 1] = res_1;
+		resA[resOfs + 2] = res_2;
+	}
+
+	public static void dCopyVector3(double[] resA, int resOfs, final double[] aA, final int aOfs) {
+		resA[resOfs + 0] = aA[aOfs + 0];
+		resA[resOfs + 1] = aA[aOfs + 1];
+		resA[resOfs + 2] = aA[aOfs + 2];
+	}
+
+	public static void dCopyNegatedVector3(DVector3 res, final DVector3C a) {
+		res.set(-a.get0(), -a.get1(), -a.get2());
+	}
+
+	public static void dCopyNegatedVector3(double[] resA, int resOfs, final DVector3C a) {
+		final double res_0 = -a.get0();
+		final double res_1 = -a.get1();
+		final double res_2 = -a.get2();
+		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+		resA[resOfs + 0] = res_0;
+		resA[resOfs + 1] = res_1;
+		resA[resOfs + 2] = res_2;
+	}
+
+
+	//	PURE_INLINE void dCopyScaledVector3(dReal *res, const dReal *a, dReal nScale)
 //	{
 //	  dReal res_0, res_1, res_2;
 //	  res_0 = a[0] * nScale;
@@ -510,7 +558,36 @@ public class OdeMath extends DRotation {
         a.set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
         a.set2( b.get0()*c.get1() - b.get1()*c.get0() );
     }
-    /**
+
+	/*
+	 * cross product, set res = a x b. _dCalcVectorCross3 means that elements of `res', `a'
+	 * and `b' are spaced step_res, step_a and step_b indexes apart respectively.
+	 * dCalcVectorCross3() means dCross3111.
+	 */
+	public static void dCalcVectorCross3(double[] resA, int resOfs, DVector3C a, DVector3C b) {
+		final double res_0 = a.get1() * b.get2() - a.get2() * b.get1();
+		final double res_1 = a.get2() * b.get0() - a.get0() * b.get2();
+		final double res_2 = a.get0() * b.get1() - a.get1() * b.get0();
+		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+		resA[resOfs + 0] = res_0;
+		resA[resOfs + 1] = res_1;
+		resA[resOfs + 2] = res_2;
+	}
+
+	public static void dCalcVectorCross3(double[] resA, int resOfs, DVector3C a, double[] bA, int bOfs) {
+		double b0 = bA[bOfs + 0];
+		double b1 = bA[bOfs + 1];
+		double b2 = bA[bOfs + 2];
+		final double res_0 = a.get1() * b2 - a.get2() * b1;
+		final double res_1 = a.get2() * b0 - a.get0() * b2;
+		final double res_2 = a.get0() * b1 - a.get1() * b0;
+		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+		resA[resOfs + 0] = res_0;
+		resA[resOfs + 1] = res_1;
+		resA[resOfs + 2] = res_2;
+	}
+
+	/**
      * Cross product, set a += b x c.
      * @param a a
      * @param b b
@@ -676,6 +753,17 @@ public class OdeMath extends DRotation {
         A.set20( +a.get1() ); 
         A.set21( -a.get0() ); 
 	}
+
+	public static void dSetCrossMatrixMinus(double[] resA, int resOfs, final DVector3C a, int skip) {
+		final double a_0 = a.get0(), a_1 = a.get1(), a_2 = a.get2();
+		resA[resOfs + 1] = +a_2;
+		resA[resOfs + 2] = -a_1;
+		resA[resOfs + skip + 0] = -a_2;
+		resA[resOfs + skip + 2] = +a_0;
+		resA[resOfs + 2 * skip + 0] = +a_1;
+		resA[resOfs + 2 * skip + 1] = -a_0;
+	}
+
 	/**
 	 * set a 3x3 submatrix of A to a matrix such that submatrix(A)*b = a x b.
 	 * A is stored by rows, and has `skip' elements per row. the matrix is
@@ -940,9 +1028,20 @@ public class OdeMath extends DRotation {
 	    dMultiply0_331(A, B, C, c);
 	}
 
-	public static void dMultiply1_331(DVector3 res, DMatrix3C a, DVector3C b) { 
+	public static void dMultiply1_331(DVector3 res, DMatrix3C a, DVector3C b) {
 		dMultiplyHelper1_331(res, a, b); }
-	public static void dMultiply0_133(DVector3 res, DVector3C a, DMatrix3C b) { 
+
+	public static void dMultiply1_331(double[] resA, int resOfs, DMatrix3C a, DVector3C b) {
+		double res_0 = a.dotCol(0, b);
+		double res_1 = a.dotCol(1, b);
+		double res_2 = a.dotCol(2, b);
+		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+		resA[resOfs + 0] = res_0;
+		resA[resOfs + 1] = res_1;
+		resA[resOfs + 2] = res_2;
+	}
+
+	public static void dMultiply0_133(DVector3 res, DVector3C a, DMatrix3C b) {
 		dMultiplyHelper0_133(res, a, b); }
 	public static void dMultiply0_133(double[] A, int a, double[] B, int b, 
 			double[] C, int c) {		
@@ -1206,7 +1305,7 @@ public class OdeMath extends DRotation {
 	 * containing the smallest representable numbers.
 	 * TODO TZ: This "new" version may be slower than the old one. Verify this.
 	 */
-	static boolean dxSafeNormalize3(DVector3 a) {
+	public static boolean dxSafeNormalize3(DVector3 a) {
 		dAASSERT(a);
 
 		boolean ret = false;

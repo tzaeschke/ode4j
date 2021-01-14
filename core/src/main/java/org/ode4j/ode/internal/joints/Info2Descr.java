@@ -5,6 +5,7 @@ import org.ode4j.math.DVector3C;
 /**
  * info returned by getInfo2 function
  */
+// TODO CHECK-TZ remove this class
 public interface Info2Descr {
 	void setCfm(int i, double d);
 	void setLo(int i, double d);

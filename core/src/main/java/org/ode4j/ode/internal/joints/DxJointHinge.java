@@ -24,11 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
-import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
-import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dMultiply1_331;
-import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.ode.internal.Rotation.dQFromAxisAndAngle;
 import static org.ode4j.ode.internal.Rotation.dQMultiply1;
@@ -38,6 +34,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DHingeJoint;
+import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
 
 
@@ -50,8 +47,8 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 {
 	private DVector3 anchor1;   // anchor w.r.t first body
 	private DVector3 anchor2;   // anchor w.r.t second body
-	private DVector3 _axis1;     // axis w.r.t first body
-	private DVector3 _axis2;     // axis w.r.t second body
+	private DVector3 axis1;     // axis w.r.t first body
+	private DVector3 axis2;     // axis w.r.t second body
 	private DQuaternion qrel;   // initial relative rotation body1 -> body2
 	private DxJointLimitMotor limot; // limit and motor information
 
@@ -62,16 +59,16 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		super(w);
 		anchor1 = new DVector3();
 		anchor2 = new DVector3();
-		_axis1 = new DVector3();
-		_axis2 = new DVector3();
+		axis1 = new DVector3();
+		axis2 = new DVector3();
 		qrel = new DQuaternion();
 		limot = new DxJointLimitMotor();
 //		dSetZero( anchor1, 4 );
 //		dSetZero( anchor2, 4 );
 //		dSetZero( _axis1, 4 );
-		_axis1.set0( 1 );
+		axis1.set0( 1 );
 //		dSetZero( _axis2, 4 );
-		_axis2.set0( 1 );
+		axis2.set0( 1 );
 //		dSetZero( qrel, 4 );
 		limot.init( world );
 	}
@@ -101,19 +98,23 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		{
 			double angle = getHingeAngle( node[0].body,
 					node[1].body,
-					_axis1, qrel );
+					axis1, qrel );
 			if ( limot.testRotationalLimit( angle ) )
 				info.setM(6);
 		}
 	}
 
 
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2( double worldFPS, double worldERP, Info2Descr info )
-	{
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
 		// set the three ball-and-socket rows
-		setBall( this, worldFPS, worldERP, info, anchor1, anchor2 );
+		setBall(this, worldFPS, worldERP, rowskip, J1A, J1Ofs, J2A, J2Ofs, pairskip, pairRhsCfmA, pairRhsCfmOfs,
+				anchor1, anchor2);
 
 		// set the two hinge rows. the hinge axis should be the only unconstrained
 		// rotational axis, the angular velocity of the two bodies perpendicular to
@@ -125,16 +126,21 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 		DVector3 ax1 = new DVector3();  // length 1 joint axis in global coordinates, from 1st body
 		DVector3 p = new DVector3(), q = new DVector3(); // plane space vectors for ax1
-		dMultiply0_331( ax1, node[0].body.posr().R(), _axis1 );
+		dMultiply0_331( ax1, node[0].body.posr().R(), axis1 );
 		dPlaneSpace( ax1, p, q );
 
-		info.setJ1a(3, p);
-		info.setJ1a(4, q);
+		DxBody body1 = node[1].body;
 
-		if ( node[1].body!= null )
-		{
-			info.setJ2aNegated(3, p);
-			info.setJ2aNegated(4, q);
+		int currRowSkip = 3 * rowskip;
+		dCopyVector3(J1A, J1Ofs + currRowSkip + GI2__JA_MIN, p);
+		if (body1 != null) {
+			dCopyNegatedVector3(J2A, J2Ofs + currRowSkip + GI2__JA_MIN, p);
+		}
+
+		currRowSkip += rowskip;
+		dCopyVector3(J1A, J1Ofs + currRowSkip + GI2__JA_MIN, q);
+		if (body1 != null) {
+			dCopyNegatedVector3(J2A, J2Ofs + currRowSkip + GI2__JA_MIN, q);
 		}
 
 		// compute the right hand side of the constraint equation. set relative
@@ -153,25 +159,26 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		// ax1 x ax2 is in the plane space of ax1, so we project the angular
 		// velocity to p and q to find the right hand side.
 
-		DVector3 ax2 = new DVector3(), b = new DVector3();
-		if ( node[1].body != null)
-		{
-			dMultiply0_331( ax2, node[1].body.posr().R(), _axis2 );
+		DVector3 b = new DVector3();
+		if (body1 != null) {
+			DVector3 ax2 = new DVector3();
+			dMultiply0_331(ax2, body1.posr().R(), axis2);
+			dCalcVectorCross3(b, ax1, ax2);
+		} else {
+			dCalcVectorCross3(b, ax1, axis2);
 		}
-		else
-		{
-			ax2.set(_axis2);
-			//        ax2[0] = axis2[0];
-			//        ax2[1] = axis2[1];
-			//        ax2[2] = axis2[2];
-		}
-		dCalcVectorCross3( b, ax1, ax2 );
+
 		double k = worldFPS * worldERP;
-		info.setC(3, k * b.dot( p ) );
-		info.setC(4, k * b.dot( q ) );
+		int currPairSkip = 3 * pairskip;
+		pairRhsCfmA[pairRhsCfmOfs + currPairSkip + GI2_RHS] = k * dCalcVectorDot3(b, p);
+		currPairSkip += pairskip;
+		pairRhsCfmA[pairRhsCfmOfs + currPairSkip + GI2_RHS] = k * dCalcVectorDot3(b, q);
 
 		// if the hinge is powered, or has joint limits, add in the stuff
-		limot.addLimot( this, worldFPS, info, 5, ax1, true );
+		currRowSkip += rowskip;
+		currPairSkip += pairskip;
+		limot.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+				pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, ax1, true);
 	}
 
 
@@ -232,7 +239,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 
 	public void dJointSetHingeAxis( double x, double y, double z )
 	{
-		setAxes( x, y, z, _axis1, _axis2 );
+		setAxes( x, y, z, axis1, axis2 );
 		computeInitialRelativeRotation();
 	}
 
@@ -240,7 +247,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	//void dJointSetHingeAxisOffset( dxJointHinge j, double x, double y, double z, double dangle )
 	public void dJointSetHingeAxisOffset( double x, double y, double z, double dangle )
 	{
-		setAxes( x, y, z, _axis1, _axis2 );
+		setAxes( x, y, z, axis1, axis2 );
 		computeInitialRelativeRotation();
 
 		if ( isFlagsReverse() ) dangle = -dangle;
@@ -280,7 +287,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 //	void dJointGetHingeAxis( dxJointHinge j, dVector3 result )
 	void dJointGetHingeAxis( DVector3 result )
 	{
-		getAxis( result, _axis1 );
+		getAxis( result, axis1 );
 	}
 
 
@@ -305,7 +312,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		{
 			double ang = getHingeAngle( node[0].body,
 					node[1].body,
-					_axis1,
+					axis1,
 					qrel );
 			if ( isFlagsReverse() )
 				return -ang;
@@ -321,7 +328,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		if ( node[0].body!=null )
 		{
 			DVector3 axis = new DVector3();
-			dMultiply0_331( axis, node[0].body.posr().R(), _axis1 );
+			dMultiply0_331( axis, node[0].body.posr().R(), axis1 );
 			double rate = dCalcVectorDot3( axis, node[0].body.avel );
 			if ( node[1].body!=null ) rate -= dCalcVectorDot3( axis, node[1].body.avel );
 			if ( isFlagsReverse() ) rate = - rate;
@@ -339,7 +346,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 		if ( isFlagsReverse() )
 			torque = -torque;
 
-		getAxis( axis, _axis1 );
+		getAxis( axis, axis1 );
 //		axis.v[0] *= torque;
 //		axis.v[1] *= torque;
 //		axis.v[2] *= torque;
@@ -359,7 +366,7 @@ public class DxJointHinge extends DxJoint implements DHingeJoint
 	    setAnchors( vec, anchor1, anchor2 );
 
 	    dJointGetHingeAxis(vec);
-	    setAxes( vec.get0(), vec.get1(), vec.get2(), _axis1, _axis2 );
+	    setAxes( vec.get0(), vec.get1(), vec.get2(), axis1, axis2 );
 	    computeInitialRelativeRotation();
 	}
 

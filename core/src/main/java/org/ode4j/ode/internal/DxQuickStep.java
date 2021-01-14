@@ -2425,11 +2425,9 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     }
 
 
-	private static 
-	void dxQuickStepIsland_Stage6_VelocityCheck(dxQuickStepperStage6CallContext stage6CallContext)
-	{
-	    if (CHECK_VELOCITY_OBEYS_CONSTRAINT) {
-    	    dxQuickStepperLocalContext localContext = stage6CallContext.m_localContext;
+	private static void dxQuickStepIsland_Stage6_VelocityCheck(dxQuickStepperStage6CallContext stage6CallContext) {
+		if (CHECK_VELOCITY_OBEYS_CONSTRAINT) {
+			dxQuickStepperLocalContext localContext = stage6CallContext.m_localContext;
             /*
     	    int int m = localContext->m_m;
     	    if (m > 0) {
@@ -2445,10 +2443,13 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     	            int b2 = jb[i].second;
     	            dReal sum = 0;
     	            dxBody *bodycurr = body[(int)b1];
-    	            for (int j = dSA__MIN; j != dSA__MAX; ++j) sum += J_ptr[JME__J1L_MIN + j] * bodycurr->lvel[dV3E__AXES_MIN + j] + J_ptr[JME__J1A_MIN + j] * bodycurr->avel[dV3E__AXES_MIN + j];
+    	            for (int j = dSA__MIN; j != dSA__MAX; ++j) sum += J_ptr[JME__J1L_MIN + j] *
+    	            bodycurr->lvel[dV3E__AXES_MIN + j] + J_ptr[JME__J1A_MIN + j] * bodycurr->avel[dV3E__AXES_MIN + j];
     	            if (b2 != -1) {
     	                dxBody *bodycurr = body[(int)b2];
-    	                for (int k = dSA__MIN; k != dSA__MAX; ++k) sum += J_ptr[JME__J2L_MIN + k] * bodycurr->lvel[dV3E__AXES_MIN + k] + J_ptr[JME__J2A_MIN + k] * bodycurr->avel[dV3E__AXES_MIN + k];
+    	                for (int k = dSA__MIN; k != dSA__MAX; ++k) sum += J_ptr[JME__J2L_MIN + k] *
+    	                bodycurr->lvel[dV3E__AXES_MIN + k] + J_ptr[JME__J2A_MIN + k] * bodycurr->avel[dV3E__AXES_MIN +
+    	                 k];
     	            }
     	            J_ptr += JME__MAX;
     	            error += dFabs(sum);
@@ -2457,7 +2458,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     	    }
         */
 			throw new UnsupportedOperationException();
-	    }
+		}
 	}
 
 	private static

@@ -766,6 +766,9 @@ enum {
 	static double dxClamp(double value, double lo, double hi) {
 		return value < lo ? lo : value > hi ? hi : value;
 	}
+	static int dxClamp(int value, int lo, int hi) {
+		return value < lo ? lo : value > hi ? hi : value;
+	}
 
 
 //	template <typename Type>
@@ -895,6 +898,10 @@ enum {
 //}
 
 	public static double dCLAMP(double aval, double alo, double ahi) {
+		return dxClamp(aval, alo, ahi);
+	}
+
+	public static int dCLAMP(int aval, int alo, int ahi) {
 		return dxClamp(aval, alo, ahi);
 	}
 
