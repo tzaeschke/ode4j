@@ -50,11 +50,11 @@ public class GImpactPlaneContactAccessor implements GImpactContactsExportHelper.
         final GimGeometry.vec4f planecontact = m_planecontact_results[index];
 
         pcontact.pos.set(planecontact.f[0], planecontact.f[1], planecontact.f[2]);
-        pcontact.pos[3] = 1.0;
+        pcontact.pos3(1.0); //pos[3] = 1.0;
 
         final double[] plane = m_plane;
         pcontact.normal.set(plane[0], plane[1], plane[2]);
-        pcontact.normal[3] = 0;
+        pcontact.normal3(0); //normal[3] = 0;
 
         pcontact.depth = planecontact.f[3];
         pcontact.g1 = m_g1; // trimesh geom

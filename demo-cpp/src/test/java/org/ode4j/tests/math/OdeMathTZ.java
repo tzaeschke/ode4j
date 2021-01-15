@@ -249,11 +249,11 @@ public class OdeMathTZ {
         };
         
         assertTrue(Matrix.dFactorCholesky(r1));
-        assertTrue(Matrix.dFactorCholesky(r1a, 3, null));
+        assertTrue(Matrix.dFactorCholesky(r1a, 3));
         CHECK_ARRAY_CLOSE(r1, r1a, 12, 0.00000);
         
         assertFalse(Matrix.dFactorCholesky(r2));
-        assertFalse(Matrix.dFactorCholesky(r2a, 3, null));
+        assertFalse(Matrix.dFactorCholesky(r2a, 3));
         CHECK_ARRAY_CLOSE(r2, r2a, 12, 0.00000);
 	}
     
@@ -283,11 +283,11 @@ public class OdeMathTZ {
         double[] v1a = {7, 8, 9};
         
         Matrix.dSolveCholesky(r1, v1);
-        Matrix.dSolveCholesky(r1a, v1a, 3, null);
+        Matrix.dSolveCholesky(r1a, v1a, 3);
         CHECK_ARRAY_CLOSE(r1, r1a, 12, 0.00000);
         
         Matrix.dSolveCholesky(r2, v1);
-        Matrix.dSolveCholesky(r2a, v1a, 3, null);
+        Matrix.dSolveCholesky(r2a, v1a, 3);
         CHECK_ARRAY_CLOSE(r2, r2a, 12, 0.00000);
     }
 }

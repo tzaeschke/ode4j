@@ -66,12 +66,12 @@ public class GImpactContactAccessor implements GImpactContactsExportHelper.GImpa
         pcontact.pos.set0(ptrimeshcontact.getPoint().f[0]);
         pcontact.pos.set1(ptrimeshcontact.getPoint().f[1]);
         pcontact.pos.set2(ptrimeshcontact.getPoint().f[2]);
-        pcontact.pos[3] = 1.0;
+        pcontact.pos3(1.0); //pos[3] = 1.0;
 
         pcontact.normal.set0(ptrimeshcontact.getNormal().f[0]);
         pcontact.normal.set1(ptrimeshcontact.getNormal().f[1]);
         pcontact.normal.set2(ptrimeshcontact.getNormal().f[2]);
-        pcontact.normal[3] = 0;
+        pcontact.normal3(0); //normal[3] = 0.0;
 
         pcontact.depth = ptrimeshcontact.getDepth();
         pcontact.g1 = m_g1;

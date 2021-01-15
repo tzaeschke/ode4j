@@ -195,7 +195,7 @@ public class CollisionLibccdCylinderStacking {
                         RefDouble depth = new RefDouble();
                         double a = minB + nMinRecip * i;
                         if (testAndPrepareDiscContactForAngle(a, rmin, lmin, lSum, minCyl, maxCyl, p, depth)) {
-                            contactCount = addCylCylContact(o1, o2, maxCyl.axis, contacts, p, normaldir, depth, contactCount, flags, skip);
+                            contactCount = addCylCylContact(o1, o2, maxCyl.axis, contacts, p, normaldir, depth.get(), contactCount, flags);
                             if ((flags & CONTACTS_UNIMPORTANT) != 0) {
                                 dIASSERT(contactCount != 0);
                                 break;
@@ -213,7 +213,7 @@ public class CollisionLibccdCylinderStacking {
                             RefDouble depth = new RefDouble();
                             double a = adjustedMinA + nMaxRecip * i;
                             if (testAndPrepareDiscContactForAngle(a, rmax, lmax, lSum, maxCyl, minCyl, p, depth)) {
-                                contactCount = addCylCylContact(o1, o2, maxCyl.axis, contacts, p, normaldir, depth, contactCount, flags, skip);
+                                contactCount = addCylCylContact(o1, o2, maxCyl.axis, contacts, p, normaldir, depth.get(), contactCount, flags);
                                 if ((flags & CONTACTS_UNIMPORTANT) != 0) {
                                     dIASSERT(contactCount != 0);
                                     break;

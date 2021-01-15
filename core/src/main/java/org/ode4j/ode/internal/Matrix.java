@@ -456,7 +456,7 @@ public class Matrix extends FastDot {
 	 * @param tmpbuf tmpBuf 
 	 * @return 'false' if it fails 
 	 */
-	public static boolean dFactorCholesky(double[] A, int n, double[] tmpbuf) {
+	public static boolean dxFactorCholesky(double[] A, int n, double[] tmpbuf) {
 	    //dAASSERT (n > 0 && A);
 	    boolean failure = false;
 	    final int nskip = dPAD (n);
@@ -538,7 +538,7 @@ public class Matrix extends FastDot {
 	 * @param n n
 	 * @param tmpbuf buffer 
 	 */
-	public static void dSolveCholesky(final double[] L, double[] b, int n, double[] tmpbuf) {
+	public static void dxSolveCholesky(final double[] L, double[] b, int n, double[] tmpbuf) {
 		int nskip = dPAD(n);
 		double[] y = (tmpbuf != null?tmpbuf : new double[n]);
 		dAASSERT(n > 0);
@@ -650,7 +650,7 @@ public class Matrix extends FastDot {
 	 * @param tmpbuf buf 
 	 * @return 'false' on failure
 	 */
-	public static boolean dInvertPDMatrix(final double[] A, double[] Ainv, int n, double[] tmpbuf) {
+	public static boolean dxInvertPDMatrix(final double[] A, double[] Ainv, int n, double[] tmpbuf) {
 		int nskip;
 		double[] L, X;
 		dAASSERT(n > 0);
@@ -661,7 +661,7 @@ public class Matrix extends FastDot {
 		//memcpy(L, A, nskip * n);// *sizeof(double));
 		System.arraycopy(A, 0, L, 0, nskip * n);
 		X = new double[n]; // TZ (double*) ALLOCA (n*sizeof(double));
-		if (!dFactorCholesky(L, n, tmpbuf))
+		if (!dxFactorCholesky(L, n, tmpbuf))
 			return false;
 		dSetZero(Ainv, n * nskip); // make sure all padding elements set to 0
 		int aa = 0;
@@ -669,7 +669,7 @@ public class Matrix extends FastDot {
 			for (int j = 0; j < n; j++)
 				X[j] = 0;
 			X[xi] = 1;
-			dSolveCholesky(L, X, n, tmpbuf);
+			dxSolveCholesky(L, X, n, tmpbuf);
 			int a = aa;
 			for (int x = 0; x < n; a += nskip, x++)
 				Ainv[a] = X[x];
@@ -696,7 +696,7 @@ public class Matrix extends FastDot {
 										// sizeof(double));
 		//memcpy(Acopy, A, nskip * n);// * sizeof(double));
 		System.arraycopy(A, 0, Acopy, 0, nskip * n);
-		return dFactorCholesky(Acopy, n, tmpbuf);// != false;
+		return dxFactorCholesky(Acopy, n, tmpbuf);// != false;
 	}
     public static boolean dIsPositiveDefinite(final double[] A, int n) {
         return dIsPositiveDefinite(A, n, null);
@@ -1071,7 +1071,7 @@ public class Matrix extends FastDot {
 //	}
 
 	/*extern */
-	public static int dFactorCholesky (double[] A, int n)
+	public static boolean dFactorCholesky (double[] A, int n)
 	{
 		return dxFactorCholesky (A, n, null);
 	}
@@ -1083,7 +1083,7 @@ public class Matrix extends FastDot {
 	}
 
 	/*extern */
-	public static int dInvertPDMatrix (final double[] A, double[] Ainv, int n)
+	public static boolean dInvertPDMatrix (final double[] A, double[] Ainv, int n)
 	{
 		return dxInvertPDMatrix (A, Ainv, n, null);
 	}
@@ -1100,7 +1100,7 @@ public class Matrix extends FastDot {
 	{
 		dIASSERT(n != 0);
 
-		dxtSolveL1(L, b, n, lskip1, 1);
+		dxtSolveL1(L, b, n, lskip1, 1, 1);
 	}
 
 	public static void dSolveL1(final double[] L, double[] B, int n, int lskip1)

@@ -1115,10 +1115,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	        int validFIndices = 0;
 
-	        Info2DescrQuickStep Jinfo = new Info2DescrQuickStep();
-	        Jinfo.setRowskip(JME__MAX, JME__MAX);
-	        Jinfo.setArrays(J, findex);
-		            
 	        int ji;
 	        while ((ji = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_J, nj)) != nj) {
 	            final int ofsi = mindex[ji * 2 + 0];
@@ -1134,15 +1130,16 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	            	J[jCurr + JME_HI] = dInfinity;
 	            }
 				dSASSERT(JME__J1_COUNT + 2 + JME__J2_COUNT + 2 == JME__MAX);
-	            Jinfo.setAllP(jRow + JME__J1_MIN, jRow + JME__J2_MIN, jRow + JME__RHS_CFM_MIN, jRow + JME__LO_HI_MIN, ofsi);
-	            dSetValue(findex, ofsi, infom, -1);
+	            int findexRow = ofsi;
+	            dSetValue(findex, findexRow, infom, -1);
 
 	            DxJoint joint = jointinfos[ji].joint;
 				joint.getInfo2(stepsizeRecip, worldERP, JME__MAX, J, jRow + JME__J1_MIN, J, jRow + JME__J2_MIN,
-						JME__MAX, J, jRow + JME__RHS_CFM_MIN, J, jRow + JME__LO_HI_MIN, findex, ofsi);
+						JME__MAX, J, jRow + JME__RHS_CFM_MIN, J, jRow + JME__LO_HI_MIN, findex, findexRow);
 
 	            // findex iteration is compact and is not going to pollute caches - do it first
 	            // adjust returned findex values for global index numbering
+				// TODO CHECK-TZ This looks alright, but is different from the original where we use findexRow
 	            for (int j = infom; j != 0; ) {
 	            	--j;
 	            	int fival = findex[j+ofsi];
@@ -1155,7 +1152,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	            for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
 	            	J[jCurr + JME_RHS] *= stepsizeRecip;
 	            	J[jCurr + JME_CFM] *= stepsizeRecip;
-	            	
 	            }
 
 	            // we need a copy of Jacobian for joint feedbacks
