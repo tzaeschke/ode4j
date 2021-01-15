@@ -52,6 +52,7 @@ public class JointEnums {
 	public static final int dJBR__DEFAULT = dJBR_GLOBAL;
 	public static final int dJBR__BODIES_COUNT = dJBR__BODIES_MAX - dJBR__BODIES_MIN;
 
+	// TODO CHECK-TZ remove this (or comment out?)
 	enum dJointBodyRelativity {
 		dJBR_GLOBAL, dJBR_BODY1, dJBR_BODY2;
 
@@ -64,16 +65,17 @@ public class JointEnums {
 	}
 
 
-	boolean dJBREncodeBodyRelativityStatus(int relativity) {
+	public static boolean dJBREncodeBodyRelativityStatus(int relativity) {
 		return dIN_RANGE(relativity, dJBR__BODIES_MIN, dJBR__BODIES_MAX);
 	}
 
 	// dJointBodyRelativity dJBRSwapBodyRelativity(int relativity)
-	int dJBRSwapBodyRelativity(int relativity) {
+	public static int dJBRSwapBodyRelativity(int relativity) {
 		dIASSERT(dIN_RANGE(relativity, dJBR__BODIES_MIN, dJBR__BODIES_MAX));
 		return dJBR_BODY1 + dJBR_BODY2 - relativity;
 	}
 
+	// TODO CHECK-TZ remove these
 	public static boolean dJBREncodeBodyRelativityStatus(dJointBodyRelativity relativity) {
 		return relativity == dJointBodyRelativity.dJBR_BODY1 || relativity == dJointBodyRelativity.dJBR_BODY2;
 	}

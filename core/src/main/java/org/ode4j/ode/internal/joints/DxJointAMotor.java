@@ -28,6 +28,7 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAMotorJoint;
 import org.ode4j.ode.internal.DxWorld;
+import org.ode4j.ode.ou.CEnumUnsortedElementArray;
 
 import java.util.Arrays;
 
@@ -120,7 +121,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	// number of axes (0..3)
 	private int m_num;
 	// what the axes are relative to (global,b1,b2)
-	private final dJointBodyRelativity[] m_rel = new dJointBodyRelativity[dSA__MAX];
+	private final int[] m_rel = new int[dSA__MAX];
 	// three axes
 	private final DVector3[] m_axis = DVector3.newArray(dSA__MAX);
 
@@ -153,7 +154,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		anum = dCLAMP(anum, dSA__MIN, dSA__MAX - 1);
 
-		setAxisValue(anum, (dJointBodyRelativity) rel, x, y, z);
+		setAxisValue(anum, rel, x, y, z);
 	}
 
 	void dJointSetAMotorAxis(int anum, int rel/*=dJointBodyRelativity*/, DVector3C xyz) {
@@ -162,7 +163,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		anum = dCLAMP(anum, dSA__MIN, dSA__MAX - 1);
 
-		setAxisValue(anum, (dJointBodyRelativity) rel, xyz);
+		setAxisValue(anum, rel, xyz);
 	}
 
 	/*extern */
@@ -176,18 +177,15 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 	/*extern */
 	void dJointSetAMotorParam(PARAM_N parameter, double value) {
-		int anum = parameter >> 8;
+		//int anum = parameter >> 8;
+		int anum = parameter.toGROUP().getIndex();
 		dAASSERT(dIN_RANGE(anum, dSA__MIN, dSA__MAX));
 
 		anum = dCLAMP(anum, dSA__MIN, dSA__MAX - 1);
 
-		int limotParam = parameter & 0xff;
+		//int limotParam = parameter & 0xff;
+		PARAM limotParam = parameter.toSUB();
 		setLimotParameter(anum, limotParam, value);
-
-		//TODO remove -> 0.11 code:
-		//		int anum = parameter.toGROUP().getIndex();
-		//		//parameter &= 0xff;
-		//		limot[anum].set( parameter.toSUB(), value );
 	}
 
 	/*extern */
@@ -215,8 +213,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		anum = dCLAMP(anum, dSA__MIN, dSA__MAX - 1);
 
-		int result = getAxisBodyRelativity(anum);
-		return result;
+		return getAxisBodyRelativity(anum);
 	}
 
 	/*extern */
@@ -225,8 +222,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		anum = dCLAMP(anum, dSA__MIN, dSA__MAX - 1);
 
-		double result = getAngleValue(anum);
-		return result;
+		return getAngleValue(anum);
 	}
 
 	/*extern */
@@ -235,26 +231,24 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		anum = dCLAMP(anum, dSA__MIN, dSA__MAX - 1);
 
-		double result = calculateAngleRate(anum);
-		return result;
+		return calculateAngleRate(anum);
 	}
 
 	/*extern */
 	double dJointGetAMotorParam(PARAM_N parameter) {
-		int anum = parameter >> 8;
+		int anum = parameter.toGROUP().getIndex();// >> 8;
 		dAASSERT(dIN_RANGE(anum, dSA__MIN, dSA__MAX));
 
 		anum = dCLAMP(anum, dSA__MIN, dSA__MAX - 1);
 
-		int limotParam = parameter & 0xff;
-		double result = getLimotParameter(anum, limotParam);
-		return result;
+		//int limotParam = parameter & 0xff;
+		PARAM limotParam = parameter.toSUB();
+		return getLimotParameter(anum, limotParam);
 	}
 
 	/*extern */
 	AMotorMode dJointGetAMotorMode() {
-		AMotorMode result = getOperationMode();
-		return result;
+		return getOperationMode();
 	}
 
 	/*extern */
@@ -266,16 +260,21 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	//****************************************************************************
 
 	// BEGIN_NAMESPACE_OU();
-	//template<>
-	//const dJointBodyRelativity CEnumUnsortedElementArray<dSpaceAxis, dSA__MAX, dJointBodyRelativity, 0x160703D5>::m_aetElementArray[] =
-	dJointBodyRelativity CEnumUnsortedElementArray<dSpaceAxis, dSA__MAX, dJointBodyRelativity, 0x160703D5>::m_aetElementArray[] =
-	{
-		dJBR_BODY1, // dSA_X,
-				dJBR_GLOBAL, // dSA_Y,
-				dJBR_BODY2, // dSA_Z,
-	};
+	//EnumType=dSpaceAxis, EnumType.EnumMax = dSA__MAX, ElementType=dJointBodyRelativity, Instance=0x160703D5
+		//const dJointBodyRelativity CEnumUnsortedElementArray<dSpaceAxis, dSA__MAX, dJointBodyRelativity, 0x160703D5>::m_aetElementArray[] =
+	private static final CEnumUnsortedElementArray g_abrEulerAxisAllowedBodyRelativities =
+			new CEnumUnsortedElementArray(new int[]{dJBR_BODY1, // dSA_X,
+			dJBR_GLOBAL, // dSA_Y,
+			dJBR_BODY2 // dSA_Z,
+	}, dSA__MAX);
+	//	dJointBodyRelativity CEnumUnsortedElementArray<dSpaceAxis, dSA__MAX, dJointBodyRelativity, 0x160703D5>::m_aetElementArray[] =
+	//	{
+	//		dJBR_BODY1, // dSA_X,
+	//				dJBR_GLOBAL, // dSA_Y,
+	//				dJBR_BODY2, // dSA_Z,
+	//	};
 	//END_NAMESPACE_OU();
-	static CEnumUnsortedElementArray<dSpaceAxis, dSA__MAX, dJointBodyRelativity, 0x160703D5> g_abrEulerAxisAllowedBodyRelativities;
+	//  static CEnumUnsortedElementArray<dSpaceAxis, dSA__MAX, dJointBodyRelativity, 0x160703D5> g_abrEulerAxisAllowedBodyRelativities;
 
 	static
 	// dSpaceAxis EncodeJointConnectedBodyEulerAxis(dJointConnectedBody cbBodyIndex)
@@ -385,7 +384,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		DVector3[] axptr = DVector3.newArray( dSA__MAX);
 		for (int j = dSA__MIN; j != dSA__MAX; ++j) {
-			axptr[j] = &ax[j];
+			axptr[j] = ax[j];//&ax[j]; Copy pointer instead of vector
 		}
 
 		DVector3 ax0_cross_ax1 = new DVector3();
@@ -393,9 +392,9 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		if (m_mode == dAMotorEuler) {
 			dCalcVectorCross3(ax0_cross_ax1, ax[dSA_X], ax[dSA_Y]);
-			axptr[dSA_Z] = &ax0_cross_ax1;
+			axptr[dSA_Z] = ax0_cross_ax1;//&ax0_cross_ax1; Copy pointer instead of vector
 			dCalcVectorCross3(ax1_cross_ax2, ax[dSA_Y], ax[dSA_Z]);
-			axptr[dSA_X] = &ax1_cross_ax2;
+			axptr[dSA_X] = ax0_cross_ax1;//&ax1_cross_ax2; Copy pointer instead of vector
 		}
 
 		int rowTotalSkip = 0, pairTotalSkip = 0;
@@ -403,8 +402,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		final int num = m_num;
 		for (int i = 0; i != num; ++i) {
 			if (m_limot[i].addLimot(this, worldFPS, J1A, J1Ofs + rowTotalSkip, J2A, J2Ofs + rowTotalSkip, pairRhsCfmA,
-					pairRhsCfmOfs + pairTotalSkip, pairLoHiA, pairLoHiOfs + pairTotalSkip, * (axptr[i]),
-			1))
+					pairRhsCfmOfs + pairTotalSkip, pairLoHiA, pairLoHiOfs + pairTotalSkip, axptr[i], true))
 			{
 				rowTotalSkip += rowskip;
 				pairTotalSkip += pairskip;
@@ -441,10 +439,10 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	}
 
 
-	dJointBodyRelativity getAxisBodyRelativity(int anum) {
+	int getAxisBodyRelativity(int anum) {
 		dAASSERT(dIN_RANGE(anum, dSA__MIN, dSA__MAX));
 
-		dJointBodyRelativity rel = m_rel[anum];
+		int rel = m_rel[anum];
 		if (dJBREncodeBodyRelativityStatus(rel) && GetIsJointReverse()) {
 			rel = dJBRSwapBodyRelativity(rel); // turns 1 into 2, 2 into 1
 		}
@@ -453,13 +451,18 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 	}
 
 
-	void setAxisValue(int anum, dJointBodyRelativity rel, double x, double y, double z) {
+	void setAxisValue(int anum, int rel, double x, double y, double z) {
+		setAxisValue(anum, rel, new DVector3(x, y, z));
+	}
+
+
+	void setAxisValue(int anum, int rel, DVector3C xyz) {
 		dAASSERT(dIN_RANGE(anum, dSA__MIN, dSA__MAX));
 		dAASSERT(m_mode != dAMotorEuler || !dJBREncodeBodyRelativityStatus(rel) || rel == g_abrEulerAxisAllowedBodyRelativities.Encode(anum));
 
 		// x,y,z is always in global coordinates regardless of rel, so we may have
 		// to convert it to be relative to a body
-		DVector3 r = new DVector3(x, y, z);
+		DVector3C r = xyz;
 
 		// adjust rel to match the internal body order
 		if (dJBREncodeBodyRelativityStatus(rel) && GetIsJointReverse()) {
@@ -541,7 +544,7 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 		// that, find the actual effective axis.
 		// Likewise, the actual axis of rotation for the
 		// the other axes is different from what's stored.
-		DVector3[] axes = new DVector3[ dSA__MAX] {new DVector3(), new DVector3(), new DVector3()};
+		DVector3[] axes = DVector3.newArray( dSA__MAX);
 		computeGlobalAxes(axes);
 
 		if (anum == dSA_Y) {

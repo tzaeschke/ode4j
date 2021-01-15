@@ -801,7 +801,8 @@ public class CollisionLibccd {
 					// Accumulate similar contacts
 					pc.normal.add(c.normal); //dAddVectors3(pc.normal, pc.normal, c.normal);
 					pc.depth = dMax(pc.depth, c.depth);
-                _type_cast_union<bool>(pc.normal[dV3E_PAD]) = true; // Mark the contact as a merged one
+					if (true) throw new UnsupportedOperationException(); // TODO CHECK-TZ fix the following!
+ //               _type_cast_union<bool>(pc.normal[dV3E_PAD]) = true; // Mark the contact as a merged one
 
 					isDuplicate = true;
 					break;
@@ -822,7 +823,8 @@ public class CollisionLibccd {
 				contact.side2 = c.side2;
 				contact.pos.set(c.pos); //dCopyVector3(contact.pos, c.pos);
 				contact.normal.set(c.normal);//dCopyVector3(contact.normal, c.normal);
-        *_type_cast_union<bool>(contact.normal[dV3E_PAD]) = false; // Indicates whether the contact is merged or not
+				if (true) throw new UnsupportedOperationException(); // TODO CHECK-TZ fix the following!
+//        *_type_cast_union<bool>(contact.normal[dV3E_PAD]) = false; // Indicates whether the contact is merged or not
 				contactcount = index == contactcount ? contactcount + 1 : contactcount;
 			}
 

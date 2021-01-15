@@ -146,6 +146,15 @@ public class OdeMath extends DRotation {
 //		res[0] = res_0; res[1] = res_1; res[2] = res_2;
 //	}
 
+	public static void dAddThreeScaledVectors3(DVector3 res, DVector3C a, DVector3C b, DVector3C c, double a_scale,
+											   double b_scale, double c_scale) {
+		double res_0 = a_scale * a.get0() + b_scale * b.get0() + c_scale * c.get0();
+		double res_1 = a_scale * a.get1() + b_scale * b.get1() + c_scale * c.get1();
+		double res_2 = a_scale * a.get2() + b_scale * b.get2() + c_scale * c.get2();
+		/* Only assign after all the calculations are over to avoid incurring memory aliasing*/
+		res.set(res_0, res_1, res_2);
+	}
+
 	//	PURE_INLINE void dScaleVector3(dReal *res, dReal nScale)
 //	{
 //	  res[0] *= nScale ;
@@ -159,6 +168,13 @@ public class OdeMath extends DRotation {
 //	  res[1] = -res[1];
 //	  res[2] = -res[2];
 //	}
+
+	public static void dNegateVector3(DVector3 res) {
+		res.set0(-res.get0());
+		res.set1(-res.get1());
+		res.set2(-res.get2());
+	}
+
 	public static void dCopyVector3(DVector3 a, final DVector3C b) {
 		a.set(b);
 	}
@@ -199,7 +215,6 @@ public class OdeMath extends DRotation {
 		resA[resOfs + 2] = res_2;
 	}
 
-
 	//	PURE_INLINE void dCopyScaledVector3(dReal *res, const dReal *a, dReal nScale)
 //	{
 //	  dReal res_0, res_1, res_2;
@@ -210,7 +225,19 @@ public class OdeMath extends DRotation {
 //	  res[0] = res_0; res[1] = res_1; res[2] = res_2;
 //	}
 
-//	PURE_INLINE void dCopyVector4(dReal *res, const dReal *a)
+	public static void dCopyScaledVector3(double[] resA, int resOfs, final DVector3C a, double nScale) {
+		resA[resOfs + 0] = a.get0() * nScale;
+		resA[resOfs + 1] = a.get1() * nScale;
+		resA[resOfs + 2] = a.get2() * nScale;
+	}
+
+	public static void dCopyScaledVector3(DVector3 res, final DVector3C a, double nScale) {
+		res.set0( a.get0() * nScale);
+		res.set1( a.get1() * nScale);
+		res.set2( a.get2() * nScale);
+	}
+
+	//	PURE_INLINE void dCopyVector4(dReal *res, const dReal *a)
 //	{
 //	  dReal res_0, res_1, res_2, res_3;
 //	  res_0 = a[0];
