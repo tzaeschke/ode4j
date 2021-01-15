@@ -868,19 +868,7 @@ public class CollideTrimeshBox implements DColliderFn {
 				vPntTmp.scale( 0.5 );
 
 				// generate contact point between two closest points
-				//	#if 0 //#ifdef ORIG -- if to use conditional define, GenerateContact must be moved into #else
-				//		dContactGeom* Contact = SAFECONTACT(m_iFlags, m_ContactGeoms, m_ctContacts, m_iStride);
-				//		Contact->depth = m_fBestDepth;
-				//		SET(Contact->normal,m_vBestNormal);
-				//		SET(Contact->pos,vPntTmp);
-				//		Contact->g1 = Geom1;
-				//		Contact->g2 = Geom2;
-				//		Contact->side1 = TriIndex;
-				//		Contact->side2 = -1;
-				//		m_ctContacts++;
-				//	#endif
-				GenerateContact(m_iFlags, m_TempContactGeoms, m_iStride, m_Geom1, m_Geom2, TriIndex,
-						vPntTmp, m_vBestNormal, m_fBestDepth);
+				GenerateContact(TriIndex, vPntTmp, m_vBestNormal, m_fBestDepth);
 
 
 				// if triangle is the referent face then clip box to triangle face
@@ -1059,21 +1047,15 @@ public class CollideTrimeshBox implements DColliderFn {
 					DVector3 vPntTmp = new DVector3();
 					ADD(avTempArray2[i],v0,vPntTmp);
 
-					//	#if 0 //#ifdef ORIG -- if to use conditional define, GenerateContact must be moved into #else
-					//	      dContactGeom* Contact = SAFECONTACT(m_iFlags, m_ContactGeoms, m_ctContacts, m_iStride);
-					//		  
-					//	      Contact->depth = -fTempDepth;
-					//	      SET(Contact->normal,m_vBestNormal);
-					//	      SET(Contact->pos,vPntTmp);
-					//	      Contact->g1 = Geom1;
-					//	      Contact->g2 = Geom2;
-					//		  Contact->side1 = TriIndex;
-					//		  Contact->side2 = -1;
-					//	      m_ctContacts++;
-					//	#endif
-					GenerateContact(m_iFlags, m_TempContactGeoms, m_iStride,  m_Geom1, m_Geom2, TriIndex,
-							vPntTmp, m_vBestNormal, -fTempDepth);
+					GenerateContact(TriIndex, vPntTmp, m_vBestNormal, -fTempDepth);
 
+					// TODO CHECK-TZ This check had been removed...
+					if	((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (DxGeom.NUMC_MASK | CONTACTS_UNIMPORTANT))) {
+						break;
+					}
+//					if ((m_ctContacts | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT))) {
+//						break;
+//					}
 				}
 
 				//dAASSERT(m_ctContacts>0);
@@ -1185,52 +1167,157 @@ public class CollideTrimeshBox implements DColliderFn {
 					DVector3 vPntTmp = new DVector3();
 					ADD(avTempArray1[i],m_vHullBoxPos,vPntTmp);
 
-					//	#if 0 //#ifdef ORIG -- if to use conditional define, GenerateContact must be moved into #else
-					//	      dContactGeom* Contact = SAFECONTACT(m_iFlags, m_ContactGeoms, m_ctContacts, m_iStride);
-					//
-					//	      Contact->depth = -fTempDepth;
-					//	      SET(Contact->normal,m_vBestNormal);
-					//	      SET(Contact->pos,vPntTmp);
-					//	      Contact->g1 = Geom1;
-					//	      Contact->g2 = Geom2;
-					//		  Contact->side1 = TriIndex;
-					//		  Contact->side2 = -1;
-					//	      m_ctContacts++;
-					//	#endif
-					GenerateContact(m_iFlags, m_TempContactGeoms, m_iStride,  m_Geom1, m_Geom2, TriIndex,
-							vPntTmp, m_vBestNormal, -fTempDepth);
+					GenerateContact(TriIndex, vPntTmp, m_vBestNormal, -fTempDepth);
 
+					// TODO CHECK-TZ This check had been removed...
+					if ((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (DxGeom.NUMC_MASK | CONTACTS_UNIMPORTANT))) {
+						break;
+					}
 				}
 
 				//dAASSERT(m_ctContacts>0);
 			}
 		}
 
+	// GenerateContact - Written by Jeff Smith (jeff@burri.to)
+	//   Generate a "unique" contact.  A unique contact has a unique
+	//   position or normal.  If the potential contact has the same
+	//   position and normal as an existing contact, but a larger
+	//   penetration depth, this new depth is used instead
+	//
+		//void sTrimeshBoxColliderData::GenerateContact(int TriIndex, const dVector3 in_ContactPos, const dVector3 in_Normal, dReal in_Depth)
+	void GenerateContact(int TriIndex, final DVector3C in_ContactPos, final DVector3C in_Normal, double in_Depth)
+	{
+		int TriCount = m_TempContactGeoms.size();
 
-
-
-
-		// test one mesh triangle on intersection with given box
-		//	void sTrimeshBoxColliderData::_cldTestOneTriangle(const dVector3 &v0, const dVector3 &v1, const dVector3 &v2, int TriIndex)//, void *pvUser)
-		private void _cldTestOneTriangle(final DVector3C v0, final DVector3C v1, 
-				final DVector3C v2, int TriIndex)//, void *pvUser)
+		do
 		{
-			// do intersection test and find best separating axis
-			if(!_cldTestSeparatingAxes(v0, v1, v2)) {
-				// if not found do nothing
-				return;
+			DContactGeom TgtContact = null;
+			boolean deeper = false;
+
+			if ((m_iFlags & CONTACTS_UNIMPORTANT) == 0)
+			{
+				double MinDepth = dInfinity;
+				DContactGeom MinContact = null;
+
+				boolean duplicate = false;
+				for (int i = 0; i < TriCount; i++)
+				{
+					DContactGeom Contact = m_ContactGeoms.getSafe(m_iFlags, i);
+
+					// same position?
+					DVector3 diff = in_ContactPos.reSub(Contact.pos);
+					//dSubtractVectors3(diff, in_ContactPos, Contact.pos);
+
+					//if (dCalcVectorDot3(diff, diff) < dEpsilon)
+					if (diff.dot(diff) < dEpsilon)
+					{
+						// same normal?
+						//if (1.0 - dCalcVectorDot3(in_Normal, Contact.normal) < dEpsilon)
+						if (1.0 - in_Normal.dot(Contact.normal) < dEpsilon)
+						{
+							if (in_Depth > Contact.depth)
+							{
+								Contact.depth = in_Depth;
+								Contact.side1 = TriIndex;
+							}
+
+							duplicate = true;
+							break;
+						}
+					}
+
+					if (Contact.depth < MinDepth)
+					{
+						MinDepth = Contact.depth;
+						MinContact = Contact;
+					}
+				}
+				if (duplicate)
+				{
+					break;
+				}
+
+				if (TriCount == (m_iFlags & DxGeom.NUMC_MASK))
+				{
+					if (!(MinDepth < in_Depth))
+					{
+						break;
+					}
+
+					TgtContact = MinContact;
+					deeper = true;
+				}
+			}
+			else
+			{
+				dIASSERT(TriCount < (m_iFlags & DxGeom.NUMC_MASK));
 			}
 
-			// if best separation axis is not found
-			if (m_iBestAxis == 0) {
-				// this should not happen (we should already exit in that case)
-				//dMessage (0, "best separation axis not found");
-				// do nothing
-				return;
+			if (!deeper)
+			{
+				// Add a new contact
+				// TODO CHECK-TZ This may attempt to ADD an ENTRY!!! See a few lines below
+				TgtContact = m_ContactGeoms.getSafe(m_iFlags, TriCount);
+				TriCount++;
+
+				//TgtContact.pos[3] = 0.0;
+
+				//TgtContact.normal[3] = 0.0;
+
+				TgtContact.g1 = m_Geom1;
+				TgtContact.g2 = m_Geom2;
+
+				TgtContact.side2 = -1;
 			}
 
-			_cldClipping(v0, v1, v2, TriIndex);
+//			TgtContact->pos[0] = in_ContactPos[0];
+//			TgtContact->pos[1] = in_ContactPos[1];
+//			TgtContact->pos[2] = in_ContactPos[2];
+			TgtContact.pos.set(in_ContactPos);
+
+//			TgtContact->normal[0] = in_Normal[0];
+//			TgtContact->normal[1] = in_Normal[1];
+//			TgtContact->normal[2] = in_Normal[2];
+			TgtContact.normal.set(in_Normal);
+
+			TgtContact.depth = in_Depth;
+
+			TgtContact.side1 = TriIndex;
+
+			// TODO CHECK-TZ This may attempt to ADD an ENTRY!!! See a few lines below
+			//m_ctContacts = TriCount;
 		}
+		while (false);
+	}
+
+
+
+
+
+
+
+//		// test one mesh triangle on intersection with given box
+//		//	void sTrimeshBoxColliderData::_cldTestOneTriangle(const dVector3 &v0, const dVector3 &v1, const dVector3 &v2, int TriIndex)//, void *pvUser)
+//		private void _cldTestOneTriangle(final DVector3C v0, final DVector3C v1,
+//				final DVector3C v2, int TriIndex)//, void *pvUser)
+//		{
+//			// do intersection test and find best separating axis
+//			if(!_cldTestSeparatingAxes(v0, v1, v2)) {
+//				// if not found do nothing
+//				return;
+//			}
+//
+//			// if best separation axis is not found
+//			if (m_iBestAxis == 0) {
+//				// this should not happen (we should already exit in that case)
+//				//dMessage (0, "best separation axis not found");
+//				// do nothing
+//				return;
+//			}
+//
+//			_cldClipping(v0, v1, v2, TriIndex);
+//		}
 
 
 		//	void sTrimeshBoxColliderData::SetupInitialContext(dxTriMesh *TriMesh, dxGeom *BoxGeom,
@@ -1282,7 +1369,7 @@ public class CollideTrimeshBox implements DColliderFn {
 		//	int sTrimeshBoxColliderData::TestCollisionForSingleTriangle(int ctContacts0, int Triint, 
 		//		dVector3 dv[3], bool &bOutFinishSearching)
 		private int TestCollisionForSingleTriangle(int ctContacts0, int Triint, 
-				DVector3 dv[], RefBoolean bOutFinishSearching)
+				DVector3[] dv, RefBoolean bOutFinishSearching)
 		{
 			// test this triangle
 			_cldTestOneTriangle(dv[0],dv[1],dv[2],Triint);
