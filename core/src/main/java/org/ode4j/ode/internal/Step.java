@@ -1365,7 +1365,7 @@ dmaxcallcountestimate_fn_t {
 						for (int k = dSA__MIN; k != dSA__MAX; ++k)
 							JinvM[Jdst + JIM__L_AXES_MIN + k] = J[Jsrc + JME__JL_MIN + k] * body_invMass0;
 						// TODO CHECK-TZ The second used to 4 4, now it is three...?
-						dMultiply0_133 (JinvM,Jdst+JIM__A_AXES_MIN,J,Jsrc+JME__JA_MIN,invI,body_invI0);
+						dMultiply0_133(JinvM, Jdst + JIM__A_AXES_MIN, J, Jsrc + JME__JA_MIN, invI, body_invI0);
 						// TODO CHECK-TZ This used to be '8'
 						Jsrc += JME__MAX;
 						Jdst += JIM__MAX;
@@ -1375,14 +1375,13 @@ dmaxcallcountestimate_fn_t {
 				DxBody jb1 = joint.node[1].body;
 				if (jb1 != null) {
 					double body_invMass1 = jb1.invMass;
-					int body_invI1 = jb1.tag*12;//invI + (int)jb1.tag*12;
-					for (int j=infom; j>0; ) {
-						j--;
-						//for (int k=0; k<3; ++k) Jdst[k] = Jsrc[k] * body_invMass1;
-						for (int k=0; k<3; ++k) JinvM[Jdst+k] = J[Jsrc+k] * body_invMass1;
-						dMultiply0_133 (JinvM,Jdst+4,J,Jsrc+4,invI,body_invI1);
-						Jsrc += 8;
-						Jdst += 8;
+					int body_invI1 = jb1.tag * dM3E__MAX; //invI + (size_t)(unsigned int)jb1->tag * dM3E__MAX;
+					for (int j = infom; j != 0; --j) {
+						for (int k = dSA__MIN; k != dSA__MAX; ++k)
+							JinvM[Jdst + JIM__L_AXES_MIN + k] = J[Jsrc + JME__JL_MIN + k] * body_invMass1;
+						dMultiply0_133(JinvM, Jdst + JIM__A_AXES_MIN, J, Jsrc + JME__JA_MIN, invI, body_invI1);
+						Jsrc += JME__MAX;
+						Jdst += JIM__MAX;
 					}
 				}
 			}
@@ -1416,12 +1415,15 @@ dmaxcallcountestimate_fn_t {
 				DxBody b = bodyA[bodyP + bi];
 				// dSetZero(tmp1curr, 8); -- not needed
 				for (int j = dSA__MIN; j != dSA__MAX; ++j)
-					tmp1currA[tmp1currP + dDA__L_MIN + j] = b.facc.get(dV3E__AXES_MIN + j) * b.invMass + b.lvel.get(dV3E__AXES_MIN + j) * stepsizeRecip;
-				// TODO CHECK-TZ This used to be 4
+					tmp1currA[tmp1currP + dDA__L_MIN + j] =
+							b.facc.get(dV3E__AXES_MIN + j) * b.invMass +
+									b.lvel.get(dV3E__AXES_MIN + j) * stepsizeRecip;
 				dMultiply0_331(tmp1currA, tmp1currP + dDA__A_MIN, invIrowA, invIrowP, b.tacc);
 				for (int k = dSA__MIN; k != dSA__MAX; ++k)
-					// TODO CHECK-TZ This used to be 4
 					tmp1currA[tmp1currP + dDA__A_MIN + k] += b.avel.get(dV3E__AXES_MIN + k) * stepsizeRecip;
+				// Initialize body start joint indices -- this will be needed later for building body related joint
+				// list in dxStepIsland_Stage2c
+				bodyStartJoints.set(bi, 0);
 			}
 		}
 	}

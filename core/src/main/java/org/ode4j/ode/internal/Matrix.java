@@ -1100,7 +1100,7 @@ public class Matrix extends FastDot {
 	{
 		dIASSERT(n != 0);
 
-		dxtSolveL1(L, b, n, lskip1, 1, 1);
+		dxtSolveL1(L, b, 0, n, lskip1, 1);
 	}
 
 	public static void dSolveL1(final double[] L, double[] B, int n, int lskip1)
