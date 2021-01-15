@@ -41,6 +41,7 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.*;
 
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DContactJoint;
 import org.ode4j.ode.OdeConstants;
@@ -132,7 +133,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 
 		// get normal, with sign adjusted for body1/body2 polarity
 		DVector3 normal = new DVector3();
-		if ((flags & dJOINT_REVERSE) != 0) {
+		if (isFlagsReverse()) {
 			dCopyNegatedVector3(normal, contact.geom.normal);
 		} else {
 			dCopyVector3(normal, contact.geom.normal);
@@ -174,10 +175,12 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		if ((surface_mode & dContactBounce) != 0) {
 			// calculate outgoing velocity (-ve for incoming contact)
 			double outgoing =
-					dCalcVectorDot3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, node[0].body.lvel) + dCalcVectorDot3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, node[0].body.avel);
+					dCalcVectorDot3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, node[0].body.lvel)
+							+ dCalcVectorDot3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, node[0].body.avel);
 
 			if (b1 != null) {
-				outgoing += dCalcVectorDot3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, node[1].body.lvel) + dCalcVectorDot3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, node[1].body.avel);
+				outgoing += dCalcVectorDot3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, node[1].body.lvel)
+						+ dCalcVectorDot3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, node[1].body.avel);
 			}
 
 			outgoing -= motionN;
@@ -297,7 +300,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 					rho[2] = rho[0];
 				}
 
-				final DVector3[] ax = new DVector3[3];
+				final DVector3C[] ax = new DVector3[3];
 				ax[0] = t1; // Rolling around t1 creates movement parallel to t2
 				ax[1] = t2;
 				ax[2] = normal; // Spinning axis
