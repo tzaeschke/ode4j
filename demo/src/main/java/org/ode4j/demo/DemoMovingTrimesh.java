@@ -246,7 +246,8 @@ public class DemoMovingTrimesh extends dsFunctions {
 				//      dGeomTriMeshDataBuildSingle(new_tmdata, Vertices[0], 3 * sizeof(float), VertexCount, 
 				//		  (dTriIndex*)&Indices[0], IndexCount, 3 * sizeof(dTriIndex));
 				new_tmdata.build( Vertices, Indices );
-				new_tmdata.preprocess2((1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES), null);
+				if (true) throw new UnsupportedOperationException(); // TODO CHECK-TZ
+				//new_tmdata.preprocess2((1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES), null);
 
 				obj[i].geom[0] = OdeHelper.createTriMesh(space, new_tmdata, null, null, null);
 
@@ -530,13 +531,14 @@ public class DemoMovingTrimesh extends dsFunctions {
 		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject(); 
 
 		// note: can't share tridata if intending to trimesh-trimesh collide
-		final int preprocessFlags = (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES) | (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES);
-		TriData1 = OdeHelper.createTriMeshData();
-		TriData1.build(Vertices, Indices);
-		TriData1.preprocess2(preprocessFlags, null);
-		TriData2 = OdeHelper.createTriMeshData();
-		TriData2.build(Vertices, Indices);
-		TriData2.preprocess2(preprocessFlags, null);
+		if (true) throw new UnsupportedOperationException(); // TODO CHECK-TZ
+		//		final int preprocessFlags = (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES) | (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES);
+		//		TriData1 = OdeHelper.createTriMeshData();
+		//		TriData1.build(Vertices, Indices);
+		//		TriData1.preprocess2(preprocessFlags, null);
+		//		TriData2 = OdeHelper.createTriMeshData();
+		//		TriData2.build(Vertices, Indices);
+		//		TriData2.preprocess2(preprocessFlags, null);
 
 		TriMesh1 = OdeHelper.createTriMesh(space, TriData1, null, null, null);
 		TriMesh2 = OdeHelper.createTriMesh(space, TriData2, null, null, null);

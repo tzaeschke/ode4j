@@ -22,26 +22,7 @@
 package org.ode4j.cpp.internal;
 
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DAMotorJoint;
-import org.ode4j.ode.DBallJoint;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DContact;
-import org.ode4j.ode.DContactJoint;
-import org.ode4j.ode.DFixedJoint;
-import org.ode4j.ode.DHinge2Joint;
-import org.ode4j.ode.DHingeJoint;
-import org.ode4j.ode.DJoint;
-import org.ode4j.ode.DJointGroup;
-import org.ode4j.ode.DLMotorJoint;
-import org.ode4j.ode.DNullJoint;
-import org.ode4j.ode.DPRJoint;
-import org.ode4j.ode.DPUJoint;
-import org.ode4j.ode.DPistonJoint;
-import org.ode4j.ode.DPlane2DJoint;
-import org.ode4j.ode.DSliderJoint;
-import org.ode4j.ode.DUniversalJoint;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeHelper;
+import org.ode4j.ode.*;
 import org.ode4j.ode.DAMotorJoint.AMotorMode;
 import org.ode4j.ode.DJoint.PARAM;
 import org.ode4j.ode.DJoint.PARAM_N;
@@ -172,6 +153,19 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	//ODE_API 
 	public static DBallJoint dJointCreateBall (DWorld w, DJointGroup g) {
 		return OdeHelper.createBallJoint(w, g);
+	}
+
+
+	/**
+	 * Create a new joint of the double ball type.
+	 *
+	 * @param w world
+	 * @param g set to 0 to allocate the joint normally.
+	 * If it is nonzero the joint is allocated in the given joint group.
+	 */
+	//ODE_API
+	public static DDoubleBallJoint dJointCreateDBall (DWorld w, DJointGroup g) {
+		return OdeHelper.createDBallJoint(w, g);
 	}
 
 	/**
@@ -597,11 +591,6 @@ public abstract class ApiCppJoint extends ApiCppOther {
 		j.setAnchor2(x, y, z);
 	}
 
-	//ODE_API
-	public static void dJointSetBallDistance (DBallJoint j, double distance) {
-		j.setDistance(distance);
-	}
-
 	/**
 	 * Param setting for Ball joints.
 	 * @param j j
@@ -611,6 +600,14 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	//ODE_API 
 	public static void dJointSetBallParam (DBallJoint j, int parameter, double value) {
 		j.setParam(PARAM_N.toEnum(parameter), value);
+	}
+
+	/**
+	 * Set the target distance for the double ball joint.
+	 */
+	//ODE_API
+	public static void dJointSetDBallDistance (DDoubleBallJoint j, double distance) {
+		j.setDistance(distance);
 	}
 
 
@@ -1545,11 +1542,6 @@ public abstract class ApiCppJoint extends ApiCppOther {
 		j.getAnchor2(result);
 	}
 
-	//ODE_API
-	public static double dJointGetBallDistance (DBallJoint j) {
-		return j.getDistance();
-	}
-
 	/**
 	 * Get joint parameter.
 	 * @param j j
@@ -1559,6 +1551,14 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	//ODE_API 
 	public static double dJointGetBallParam (DBallJoint j, int parameter) {
 		return j.getParam(PARAM_N.toEnum(parameter));
+	}
+
+	/**
+	 * Get the target distance from double ball joint.
+	 */
+	//ODE_API
+	public static double dJointGetDBallDistance (DDoubleBallJoint j) {
+		return j.getDistance();
 	}
 
 	/**

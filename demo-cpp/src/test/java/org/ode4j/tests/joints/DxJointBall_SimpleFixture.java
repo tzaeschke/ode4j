@@ -31,10 +31,7 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBallJoint;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DHinge2Joint;
-import org.ode4j.ode.DWorld;
+import org.ode4j.ode.*;
 import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 import static org.ode4j.cpp.internal.ApiCppBody.*;
@@ -54,7 +51,7 @@ public class DxJointBall_SimpleFixture extends TestSuperClass {
 		w = dWorldCreate();
 		b1 = dBodyCreate(w);
 		b2 = dBodyCreate(w);
-		j = dJointCreateBall(w, null);
+		j = dJointCreateDBall(w, null);
 		dJointAttach(j, b1, b2);
 	}
 
@@ -69,7 +66,7 @@ public class DxJointBall_SimpleFixture extends TestSuperClass {
 
 	private	DWorld w;
 	private DBody b1, b2;
-	private DBallJoint j;
+	private DDoubleBallJoint j;
 	//  };
 
 	// TEST_FIXTURE(SimpleFixture, testTargetDistance)
@@ -78,14 +75,14 @@ public class DxJointBall_SimpleFixture extends TestSuperClass {
 		dBodySetPosition(b1, -1, -2, -3);
 		dBodySetPosition(b2, 3, 5, 7);
 		dJointAttach(j, b1, b2); // this recomputes the deduced target distance
-		CHECK_CLOSE(dJointGetBallDistance(j), dSqrt(165.0), 1e-4);
+		CHECK_CLOSE(dJointGetDBallDistance(j), dSqrt(165.0), 1e-4);
 
 		// moving body should not change target distance
 		dBodySetPosition(b1, 2,3,4);
-		CHECK_CLOSE(dJointGetBallDistance(j), dSqrt(165.0), 1e-4);
+		CHECK_CLOSE(dJointGetDBallDistance(j), dSqrt(165.0), 1e-4);
 
 		// setting target distance manually should override the deduced one
-		dJointSetBallDistance(j, 6.0);
-		CHECK_EQUAL(dJointGetBallDistance(j), 6.0);
+		dJointSetDBallDistance(j, 6.0);
+		CHECK_EQUAL(dJointGetDBallDistance(j), 6.0);
 	}
 }

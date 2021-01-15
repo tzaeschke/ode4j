@@ -436,7 +436,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 */
 	public final void normalize() {
 		// TODO CHECK-TZ Use internal safe-normalize?
-		if (OdeMath.dSafeNormalize3(this)) {
+		if (!OdeMath.dSafeNormalize3(this)) {
 		//if (!safeNormalize()) {
 			dDebug(Common.d_ERR_IASSERT, "Normalization failed");
 			set(1, 0, 0);
