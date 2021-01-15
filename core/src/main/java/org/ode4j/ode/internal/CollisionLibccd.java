@@ -28,15 +28,16 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.*;
+import org.ode4j.ode.DColliderFn;
+import org.ode4j.ode.DContactGeom;
+import org.ode4j.ode.DContactGeomBuffer;
+import org.ode4j.ode.DGeom;
+import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.libccd.CCD.ccd_center_fn;
 import org.ode4j.ode.internal.libccd.CCD.ccd_support_fn;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;
 
-import static org.ode4j.ode.DTriMesh.dMeshTriangleVertex.*;
-import static org.ode4j.ode.internal.Common.*;
-import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.DxCollisionUtil.dQuatTransform;
 import static org.ode4j.ode.internal.libccd.CCD.*;
 import static org.ode4j.ode.internal.libccd.CCDMPR.*;
@@ -93,12 +94,6 @@ public class CollisionLibccd {
 		DxConvex convex;
 	};
 	//typedef struct _ccd_convex_t ccd_convex_t;
-
-
-	private static class ccd_triangle_t extends ccd_obj_t {
-		ccd_vec3_t[] vertices = new ccd_vec3_t[]{new ccd_vec3_t(), new ccd_vec3_t(), new ccd_vec3_t()};
-	};
-	//typedef struct _ccd_triangle_t ccd_triangle_t;
 
 	/** Transforms geom to ccd struct */
 	//    static void ccdGeomToObj(const dGeomID g, ccd_obj_t *);
@@ -190,8 +185,6 @@ public class CollisionLibccd {
 		ccdQuatRotVec(cyl.axis, cyl.rot);
 		ccdVec3Copy(cyl.p1, cyl.axis);
 		ccdVec3Copy(cyl.p2, cyl.axis);
-		boolean cylAxisNormalizationResult = ccdVec3Normalize(cyl.axis);
-		dUVERIFY(cylAxisNormalizationResult == false, "Invalid cylinder has been passed");
 		ccdVec3Normalize(cyl.axis);
 		ccdVec3Scale(cyl.p2, -1.0);
 		ccdVec3Add(cyl.p1, cyl.pos);
@@ -274,8 +267,6 @@ public class CollisionLibccd {
 			final ccd_sphere_t s = (ccd_sphere_t )obj;
 			ccdVec3Copy(v, _dir);
 			ccdVec3Scale(v, s.radius);
-			if (!dNODEBUG)
-				dIASSERT(Common.dFabs(CCD_SQRT(ccdVec3Len2(_dir)) - 1.0) < 1e-6); // ccdVec3Scale(v, CCD_ONE / CCD_SQRT(ccdVec3Len2(_dir)));
 			ccdVec3Add(v, s.pos);
 		}
 	};
@@ -329,7 +320,7 @@ public class CollisionLibccd {
 		int res;
 		final RefDouble depth = new RefDouble();
 		final ccd_vec3_t dir = new ccd_vec3_t(), pos = new ccd_vec3_t();
-		int max_contacts = (flags & DxGeom.NUMC_MASK);
+		int max_contacts = (flags & 0xffff);
 
 		if (max_contacts < 1)
 			return 0;
@@ -371,6 +362,25 @@ public class CollisionLibccd {
 
 		return 0;
 	}
+
+	public static class CollideCylinderCylinder implements DColliderFn {
+		@Override
+		public int dColliderFn(DGeom o1, DGeom o2, int flags,
+				DContactGeomBuffer contacts) {
+			final ccd_cyl_t cyl1 = new ccd_cyl_t(), cyl2 = new ccd_cyl_t();
+
+			ccdGeomToCyl((DxCylinder) o1, cyl1);
+			ccdGeomToCyl((DxCylinder) o2, cyl2);
+
+			int numContacts = CollisionLibccdCylinderStacking.collideCylCyl(o1, o2, cyl1, cyl2, flags, contacts);
+			if (numContacts < 0) {
+				numContacts =  ccdCollide(o1, o2, flags, contacts,
+						cyl1, ccdSupportCyl, ccdCenter,
+						cyl2, ccdSupportCyl, ccdCenter);
+			}
+			return numContacts;
+		}
+	};
 
 	public static class CollideBoxCylinderCCD implements DColliderFn {
 		@Override
@@ -480,27 +490,26 @@ public class CollisionLibccd {
 					c1, ccdSupportConvex, ccdCenter,
 					c2, ccdSupportConvex, ccdCenter);
 		}
-	}
+	};
 
-	public static class CollideCylinderCylinder implements DColliderFn {
+	private static class ccd_triangle_t extends ccd_obj_t {
+		ccd_vec3_t[] vertices = new ccd_vec3_t[]{new ccd_vec3_t(), new ccd_vec3_t(), new ccd_vec3_t()};
+	};
+
+	private static final ccd_support_fn ccdSupportTriangle = new ccd_support_fn() {
 		@Override
-		public int dColliderFn(DGeom o1, DGeom o2, int flags,
-							   DContactGeomBuffer contacts) {
-			final ccd_cyl_t cyl1 = new ccd_cyl_t(), cyl2 = new ccd_cyl_t();
-
-			ccdGeomToCyl((DxCylinder) o1, cyl1);
-			ccdGeomToCyl((DxCylinder) o2, cyl2);
-
-			int numContacts = CollisionLibccdCylinderStacking.collideCylCyl(o1, o2, cyl1, cyl2, flags, contacts);
-			if (numContacts < 0) {
-				numContacts = ccdCollide(o1, o2, flags, contacts,
-						cyl1, ccdSupportCyl, ccdCenter,
-						cyl2, ccdSupportCyl, ccdCenter);
+		public void run(Object obj, ccd_vec3_t _dir, ccd_vec3_t v) {
+			final ccd_triangle_t o = (ccd_triangle_t) obj;
+			double maxdot = -CCD_REAL_MAX;
+			for (int i = 0; i < 3; i++) {
+				double dot = ccdVec3Dot(_dir, o.vertices[i]);
+				if (dot > maxdot) {
+					ccdVec3Copy(v, o.vertices[i]);
+					maxdot = dot;
+				}
 			}
-			return numContacts;
 		}
-	}
-
+	};
 
 	private static final float CONTACT_POS_EPSILON = 0.001f;
 	private static final float CONTACT_PERTURBATION_ANGLE = 0.005f;
@@ -509,15 +518,11 @@ public class CollisionLibccd {
 		public int collide(DGeom o1, DGeom o2, int[] triindices, int flags, DContactGeomBuffer contacts) {
 			ccd_convex_t c1 = new ccd_convex_t();
 			ccd_triangle_t c2 = new ccd_triangle_t();
-			final DVector3[] triangle = new DVector3[] { new DVector3(), new DVector3(), new DVector3() };
-			int maxContacts = (flags & DxGeom.NUMC_MASK);
-			int contactCount = 0;
 			ccdGeomToConvex((DxConvex) o1, c1);
 			ccdGeomToObj(o2, c2);
-
-			IFaceAngleStorageView meshFaceAngleView = dxGeomTriMeshGetFaceAngleView(o2);
-			dUASSERT(meshFaceAngleView != null, "Please preprocess the trimesh data with dTRIDATAPREPROCESS_BUILD_FACE_ANGLES");
-
+			int maxcontacts = (flags & 0xffff);
+			final DVector3[] triangle = new DVector3[] { new DVector3(), new DVector3(), new DVector3() };
+			int contactcount = 0;
 			DContactGeomBuffer tempContacts = new DContactGeomBuffer(1);
 			for (int i : triindices) {
 				((DxTriMesh) o2).FetchTransformedTriangle(i, triangle);
@@ -529,309 +534,29 @@ public class CollisionLibccd {
 						ccdCenter) == 1) {
 					DContactGeom tempContact = tempContacts.get();
 					tempContact.side2 = i;
-					if (meshFaceAngleView == null && correctContactNormal(c2, tempContact, triangle, o2, triindices)) {
-						contactCount = addUniqueContact(contacts, tempContact, contactCount, maxContacts);
+					if (correctContactNormal(c2, tempContact, triangle, o2, triindices)) {
+						contactcount = addUniqueContact(contacts, tempContact, contactcount, maxcontacts);
 						if ((flags & OdeConstants.CONTACTS_UNIMPORTANT) != 0) {
 							break;
 						}
 					}
 				}
 			}
-			if (contactCount == 1 && (flags & OdeConstants.CONTACTS_UNIMPORTANT) == 0) {
-				DContactGeom contact = contacts.getSafe(flags,0);
+			if (contactcount == 1 && (flags & OdeConstants.CONTACTS_UNIMPORTANT) == 0) {
+				DContactGeom contact = contacts.get(0);
 				((DxTriMesh) o2).FetchTransformedTriangle(contact.side2, triangle);
-				contactCount = addPerturbedContacts(o1, o2, flags, c1, c2, contacts, triangle, contact, contactCount,
+				contactcount = addPerturbedContacts(o1, o2, flags, c1, c2, contacts, triangle, contact, contactcount,
 						triindices);
 			    // Normalize accumulated normals
-//				for (int i = 0; i < contactcount; i++) {
-//					contact = contacts.get(i);
-//					contact.normal.safeNormalize();
-//				}
-			}
-			// Normalize accumulated normals, if necessary
-			for (int k = 0; k != contactCount; ) {
-				DContactGeom contact = contacts.getSafe(flags, k);
-				boolean stayWithinThisIndex = false;
-
-				// Only the merged contact normals need to be normalized
-				if (_const_type_cast_union<bool>(contact.normal[dV3E_PAD])) {
-
-					if (!contact.normal.safeNormalize()) {
-						// If the contact normals have added up to zero, erase the contact
-						// Normally the time step is to be shorter so that the objects do not get into each other that deep
-						--contactCount;
-
-						if (k != contactCount) {
-							DContactGeom lastContact = contacts.getSafe(flags, contactCount);
-                    		contact = lastContact;
-						}
-
-						stayWithinThisIndex = true;
-					}
-				}
-
-				if (!stayWithinThisIndex) {
-					++k;
+				for (int i = 0; i < contactcount; i++) {
+					contact = contacts.get(i);
+					contact.normal.safeNormalize();
 				}
 			}
-
-			return contactCount;
-		}
-
-		private static
-		int addTrianglePerturbedContacts(DxGeom o1, DxGeom o2, IFaceAngleStorageView meshFaceAngleView,
-    final int[] indices, int numIndices, int flags, DContactGeomBuffer contacts, int skip,
-											  ccd_convex_t c1, ccd_triangle_t c2, DVector3[] triangle, DContactGeom contact,
-										 int contacCount)
-		{
-			int maxContacts = (flags & DxGeom.NUMC_MASK);
-
-			DVector3 pos = new DVector3(contact.pos);
-
-			final DQuaternion[] q1 = new DQuaternion[]{new DQuaternion(), new DQuaternion()};
-			final DQuaternion[] q2 = new DQuaternion[]{new DQuaternion(), new DQuaternion()};
-			double perturbationAngle = CONTACT_PERTURBATION_ANGLE;
-
-			DVector3 upAxis = new DVector3();
-			boolean upAvailable = false;
-			if (Math.abs(contact.normal.get(dV3E_Y)) > 0.7) {
-				upAxis.set(0, 0, 1);
-			}
-			else {
-				upAxis.set(0, 1, 0);
-			}
-
-			DVector3 cross = new DVector3();
-			OdeMath.dCalcVectorCross3(cross, contact.normal, upAxis);
-
-			if (cross.safeNormalize()) {
-				OdeMath.dCalcVectorCross3(upAxis, cross, contact.normal);
-
-				if (upAxis.safeNormalize()) {
-					upAvailable = true;
-				}
-			}
-
-			for (int j = upAvailable ? 0 : 2; j != 2; ++j) {
-//				dQFromAxisAndAngle(q1[j], upAxis[dV3E_X], upAxis[dV3E_Y], upAxis[dV3E_Z], perturbationAngle);
-//				dQFromAxisAndAngle(q2[j], cross[dV3E_X], cross[dV3E_Y], cross[dV3E_Z], perturbationAngle);
-				dAssertVec3Element();
-				dQFromAxisAndAngle(q1[j], upAxis, perturbationAngle);
-				dQFromAxisAndAngle(q2[j], cross, perturbationAngle);
-				perturbationAngle = -perturbationAngle;
-			}
-
-			for (int k = upAvailable ? 0 : 4; k != 4; ++k) {
-				DQuaternion qr = new DQuaternion();
-				dQMultiply0(qr, q1[k % 2], q2[k / 2]);
-
-				for (int j = dMTV__MIN; j != dMTV__MAX; ++j) {
-					DVector3 p = new DVector3();
-					DVector3 perturbed = new DVector3();
-					p.eqDiff(triangle[j], pos); //dSubtractVectors3(p, triangle[j], pos);
-					dQuatTransform(qr, p, perturbed);
-					perturbed.add(pos); //dAddVectors3(perturbed, perturbed, pos);
-
-					dAssertVec3Element();
-					// ccdVec3Set(c2.vertices[j], perturbed[dV3E_X], perturbed[dV3E_Y], perturbed[dV3E_Z]);
-					ccdVec3Set(c2.vertices[j], perturbed);
-				}
-
-				DContactGeom perturbedContact = new DContactGeom();
-				setObjPosToTriangleCenter(c2);
-
-				if (ccdCollide(o1, o2, flags, perturbedContact, c1, ccdSupportConvex, ccdCenter, c2, ccdSupportTriangle, ccdCenter) == 1) {
-					perturbedContact.side2 = contact.side2;
-
-					if (meshFaceAngleView == null || correctTriangleContactNormal(c2, perturbedContact, meshFaceAngleView, indices, numIndices)) {
-						contacCount = addUniqueContact(contacts, perturbedContact, contacCount, maxContacts, flags, skip);
-					}
-				}
-			}
-
-			return contacCount;
-		}
-
-		static boolean correctTriangleContactNormal(ccd_triangle_t t, DContactGeom contact,
-										  IFaceAngleStorageView meshFaceAngleView, final int[] indices, int numIndices)
-		{
-			dIASSERT(meshFaceAngleView != null);
-
-			boolean anyFault = false;
-
-			ccd_vec3_t cntOrigNormal = new ccd_vec3_t(), cntNormal = new ccd_vec3_t();
-			ccdVec3Set(cntNormal, contact.normal);
-			ccdVec3Copy(cntOrigNormal, cntNormal);
-
-			// Check if the contact point is located close to any edge - move it back and forth
-			// and check the resulting segment for intersection with the edge plane
-			ccd_vec3_t cntScaledNormal = new ccd_vec3_t();
-			ccdVec3CopyScaled(cntScaledNormal, cntNormal, contact.depth);
-
-			ccd_vec3_t[] edges = new ccd_vec3_t[]{new ccd_vec3_t(), new ccd_vec3_t()};
-			assert (dMTV__MAX == 2);
-			ccdVec3Sub2(edges[dMTV_THIRD], t.vertices[0], t.vertices[2]);
-			ccdVec3Sub2(edges[dMTV_SECOND], t.vertices[2], t.vertices[1]);
-			ccdVec3Sub2(edges[dMTV_FIRST], t.vertices[1], t.vertices[0]);
-			dAASSERT(dMTV__MAX == 3);
-
-			boolean contactGenerated = false;
-			boolean contactPreserved = false;
-			// Triangle face normal
-			ccd_vec3_t triNormal = new ccd_vec3_t();
-			ccdVec3Cross(triNormal, edges[dMTV_FIRST], edges[dMTV_SECOND]);
-			if (ccdVec3Normalize(triNormal)) {
-				anyFault = true;
-			}
-
-			// Check the edges to see if one of them is involved
-			for (int testEdgeIndex = !anyFault ? dMTV__MIN : dMTV__MAX; testEdgeIndex != dMTV__MAX; ++testEdgeIndex) {
-				ccd_vec3_t edgeNormal = new ccd_vec3_t(), vertexToPos = new ccd_vec3_t(), v = new ccd_vec3_t();
-				ccd_vec3_t edgeAxis = edges[testEdgeIndex];
-
-				// Edge axis
-				if (ccdVec3Normalize(edgeAxis)) {
-					// This should not happen normally as in the case on of edges is degenerated
-					// the triangle normal calculation would have to fail above. If for some
-					// reason the above calculation succeeds and this one would not, it is
-					// OK to break as this point as well.
-					anyFault = true;
-					break;
-				}
-
-				// Edge Normal
-				ccdVec3Cross(edgeNormal, edgeAxis, triNormal);
-				// ccdVec3Normalize(&edgeNormal); -- the two vectors above were already normalized and perpendicular
-
-				// Check if the contact point is located close to any edge - move it back and forth
-				// and check the resulting segment for intersection with the edge plane
-				ccdVec3Set(vertexToPos, contact.pos);
-				ccdVec3Sub(vertexToPos, t.vertices[testEdgeIndex]);
-				ccdVec3Sub2(v, vertexToPos, cntScaledNormal);
-
-				if (ccdVec3Dot(edgeNormal, v) < 0) {
-					ccdVec3Add2(v, vertexToPos, cntScaledNormal);
-
-					if (ccdVec3Dot(edgeNormal, v) > 0) {
-						// This is an edge contact
-
-						double x = ccdVec3Dot(triNormal, cntNormal);
-						double y = ccdVec3Dot(edgeNormal, cntNormal);
-						double contactNormalToTriangleNormalAngle = CCD_ATAN2(y, x);
-
-						RefDouble angleValueAsDRead = new RefDouble();
-						FaceAngleDomain angleDomain = meshFaceAngleView.retrieveFacesAngleFromStorage(angleValueAsDRead, contact.side2, (dMeshTriangleVertex)testEdgeIndex);
-						double angleValue = angleValueAsDRead.get();
-
-						double targetAngle = 0;
-						contactGenerated = false;
-						contactPreserved = false; // re-assign to make optimizer's task easier
-
-						if (angleDomain != FAD_CONCAVE) {
-							// Convex or flat - ensure the contact normal is within the allowed range
-							// formed by the two triangles' normals.
-							if (contactNormalToTriangleNormalAngle < CCD_ZERO) {
-								targetAngle = CCD_ZERO;
-							}
-							else if (contactNormalToTriangleNormalAngle > angleValue) {
-								targetAngle = angleValue;
-							}
-							else {
-								contactPreserved = true;
-							}
-						}
-						else {
-							// Concave - rotate the contact normal to the face angle bisect plane
-							// (or to triangle normal-edge plane if negative angles are not stored)
-							targetAngle = angleValue != 0 ? 0.5 * angleValue : CCD_ZERO;
-							// There is little chance the normal will initially match the correct plane, but still, a small check could save lots of calculations
-							if (contactNormalToTriangleNormalAngle == targetAngle) {
-								contactPreserved = true;
-							}
-						}
-
-						if (!contactPreserved) {
-							ccd_quat_t q = new ccd_quat_t();
-							ccdQuatSetAngleAxis(q, targetAngle - contactNormalToTriangleNormalAngle, edgeAxis);
-							ccdQuatRotVec2(cntNormal, cntNormal, q);
-							contactGenerated = true;
-						}
-
-						// Calculated successfully
-						break;
-					}
-				}
-			}
-
-			if (!anyFault && !contactPreserved) {
-				// No edge contact detected, set contact normal to triangle normal
-        final ccd_vec3_t cntNormalToUse = !contactGenerated ? triNormal : cntNormal;
-				dAssertVec3Element();
-				contact.normal.set(ccdVec3X(cntNormalToUse), ccdVec3Y(cntNormalToUse), ccdVec3Z(cntNormalToUse));
-				contact.depth *= CCD_FMAX(0.0, ccdVec3Dot(cntOrigNormal, cntNormalToUse));
-			}
-
-			boolean result = !anyFault;
-			return result;
-		}
-
-
-		static
-		int addUniqueContact(DContactGeomBuffer contacts, DContactGeom c, int contactcount, int maxcontacts, int flags, int skip)
-		{
-			double minDepth = c.depth;
-			int index = contactcount;
-			boolean isDuplicate = false;
-
-			dAssertVec3Element();
-			//double c_posX = c.pos[dVec3Element.dV3E_X], c_posY = c.pos[dVec3Element.dV3E_Y], c_posZ = c.pos[dVec3Element.dV3E_Z];
-			double c_posX = c.pos.get0(), c_posY = c.pos.get1(), c_posZ = c.pos.get2();
-			for (int k = 0; k != contactcount; k++) {
-				DContactGeom pc = contacts.getSafe(flags, k);
-
-//				if (Math.abs(c_posX - pc.pos[dV3E_X]) < CONTACT_POS_EPSILON
-//						&& Math.abs(c_posY - pc.pos[dV3E_Y]) < CONTACT_POS_EPSILON
-//						&& Math.abs(c_posZ - pc.pos[dV3E_Z]) < CONTACT_POS_EPSILON) {
-//					dAASSERT(dV3E__AXES_MAX - dV3E__AXES_MIN == 3);
-				dAssertVec3Element();
-				if (Math.abs(c_posX - pc.pos.get0()) < CONTACT_POS_EPSILON
-						&& Math.abs(c_posY - pc.pos.get1()) < CONTACT_POS_EPSILON
-						&& Math.abs(c_posZ - pc.pos.get2()) < CONTACT_POS_EPSILON) {
-
-					// Accumulate similar contacts
-					pc.normal.add(c.normal); //dAddVectors3(pc.normal, pc.normal, c.normal);
-					pc.depth = dMax(pc.depth, c.depth);
-					if (true) throw new UnsupportedOperationException(); // TODO CHECK-TZ fix the following!
- //               _type_cast_union<bool>(pc.normal[dV3E_PAD]) = true; // Mark the contact as a merged one
-
-					isDuplicate = true;
-					break;
-				}
-
-				if (contactcount == maxcontacts && pc.depth < minDepth) {
-					minDepth = pc.depth;
-					index = k;
-				}
-			}
-
-			if (!isDuplicate && index < maxcontacts) {
-				DContactGeom contact = contacts.getSafe(flags, index);
-				contact.g1 = c.g1;
-				contact.g2 = c.g2;
-				contact.depth = c.depth;
-				contact.side1 = c.side1;
-				contact.side2 = c.side2;
-				contact.pos.set(c.pos); //dCopyVector3(contact.pos, c.pos);
-				contact.normal.set(c.normal);//dCopyVector3(contact.normal, c.normal);
-				if (true) throw new UnsupportedOperationException(); // TODO CHECK-TZ fix the following!
-//        *_type_cast_union<bool>(contact.normal[dV3E_PAD]) = false; // Indicates whether the contact is merged or not
-				contactcount = index == contactcount ? contactcount + 1 : contactcount;
-			}
-
 			return contactcount;
 		}
 
-		private static void setObjPosToTriangleCenter(ccd_triangle_t t) {
+		private void setObjPosToTriangleCenter(ccd_triangle_t t) {
 			ccdVec3Set(t.pos, 0, 0, 0);
 			for (int j = 0; j < 3; j++) {
 				ccdVec3Add(t.pos, t.vertices[j]);
@@ -1002,21 +727,6 @@ public class CollisionLibccd {
 				}
 			}
 			return contactcount;
-		}
-	};
-
-	private static final ccd_support_fn ccdSupportTriangle = new ccd_support_fn() {
-		@Override
-		public void run(Object obj, ccd_vec3_t _dir, ccd_vec3_t v) {
-			final ccd_triangle_t o = (ccd_triangle_t) obj;
-			double maxdot = -CCD_REAL_MAX;
-			for (int i = 0; i < 3; i++) {
-				double dot = ccdVec3Dot(_dir, o.vertices[i]);
-				if (dot > maxdot) {
-					ccdVec3Copy(v, o.vertices[i]);
-					maxdot = dot;
-				}
-			}
 		}
 	};
 
