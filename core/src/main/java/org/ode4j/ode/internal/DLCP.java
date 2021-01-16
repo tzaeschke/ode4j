@@ -253,7 +253,6 @@ public class DLCP {
 	//void transfer_b_to_x(dReal pairsbx[PBX__MAX], unsigned n)
 	static void transfer_b_to_x(double[] pairsbxA, int pairsbxP, int n, boolean zero_b)
 	{
-		assert(pairsbxA.length == PBX__MAX);
 		//dReal *const endbx = pairsbx + (size_t)n * PBX__MAX;
 		int endbx = pairsbxP + n * PBX__MAX;
 		for (int currbxP = pairsbxP; currbxP != endbx; currbxP += PBX__MAX) {

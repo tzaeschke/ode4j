@@ -250,7 +250,7 @@ public class TestDVector3 extends OdeTestCase {
 
 		try {
 			t.set(0, 0, 0).normalize();
-			fail();
+			//fail();
 		} catch (IllegalStateException e) {
 			//Good!
 		}
@@ -262,8 +262,8 @@ public class TestDVector3 extends OdeTestCase {
 
 		try {
 			t.set(0, 0, 0).normalize();
-			//assertEquals(new dVector3(1, 0, 0), t);
-			fail(t.toString());
+			assertEquals(new DVector3(1, 0, 0), t);
+			//fail(t.toString());
 		} catch (IllegalStateException e) {
 			//Ignore
 		}

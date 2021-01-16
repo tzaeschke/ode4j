@@ -1,3 +1,14 @@
+0.5.0
+=====
+- Update to ODE 0.15.1
+  - This includes incrrewsed stability, e.g. the DemoCards won't collapse anymore when 30 levels high.
+  - WARNING: Still missing: libccd and trimesh collider updates.
+- Changed CI build requirements:
+  - Removed openjdk7: Not required. source compatibility is still set to 7, but should
+    be safe to change to 8 now (Android Nougat is mostly 8 compatible), this covers > 80% users.
+  - Changed oraclejdk build to 11
+
+
 0.4.0
 =====
 - Fixed javadoc to compile without warnings

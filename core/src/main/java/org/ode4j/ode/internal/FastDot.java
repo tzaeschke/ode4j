@@ -108,7 +108,7 @@ public class FastDot extends Misc {
 	public static double dxtDot (final double[] a, int a_pos, final double[] b, int b_pos, int n, int b_stride)
 	{
 		double sum = 0;
-    	int a_end = (n & (int)(~3));
+    	int a_end = a_pos + (n & (int)(~3));
 		for (; a_pos != a_end; b_pos += 4 * b_stride, a_pos += 4) {
 			double p0 = a[a_pos + 0], p1 = a[a_pos + 1], p2 = a[a_pos + 2], p3 = a[a_pos + 3];
 			double q0 = b[b_pos + 0 * b_stride], q1 = b[b_pos + 1 * b_stride], q2 = b[b_pos + 2 * b_stride], q3 = b[b_pos + 3 * b_stride];
