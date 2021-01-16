@@ -90,30 +90,8 @@ public class FrictionJointContact extends TestSuperClass
             world.destroy();
         }
 //    };
-    
-        //TZ copied from below
-        private void ZERO_ALL(double[] dummy_J, double[] dummy_c, double[] dummy_cfm, double[] dummy_lo, double[] dummy_hi, int[] dummy_findex) {               
-//            memset(dummy_J, 0, sizeof dummy_J);                 
-//            memset(dummy_c, 0, sizeof dummy_c);                 
-//            memset(dummy_cfm, 0, sizeof dummy_cfm);             
-//            memset(dummy_lo, 0, sizeof dummy_lo);               
-//            memset(dummy_hi, 0, sizeof dummy_hi);               
-//            std::fill(dummy_findex, dummy_findex+3, -1);
-       		Arrays.fill(dummy_J, 0);
-    		Arrays.fill(dummy_c, 0);
-    		Arrays.fill(dummy_cfm, 0);
-    		Arrays.fill(dummy_lo, 0);
-    		Arrays.fill(dummy_hi, 0);
-    		Arrays.fill(dummy_findex, 0, 3, -1);
-        }
 
     private void ZERO_ALL(double[] dummy_J, int[] dummy_findex) {
-        //            memset(dummy_J, 0, sizeof dummy_J);
-        //            memset(dummy_c, 0, sizeof dummy_c);
-        //            memset(dummy_cfm, 0, sizeof dummy_cfm);
-        //            memset(dummy_lo, 0, sizeof dummy_lo);
-        //            memset(dummy_hi, 0, sizeof dummy_hi);
-        //            std::fill(dummy_findex, dummy_findex+3, -1);
         Arrays.fill(dummy_J, 0);
         Arrays.fill(dummy_findex, 0, 3, -1);
     }
@@ -139,11 +117,11 @@ public class FrictionJointContact extends TestSuperClass
         int findexOfs = 0;//int *findex = dummy_findex;
 
         //TZ moved to above
-//#define ZERO_ALL do {                                           \
-//            memset(dummy_J, 0, sizeof dummy_J);                 \
-//            std::fill(dummy_findex, dummy_findex+3, -1);;       \
-//        }                                                       \
-//        while (0)
+        //#define ZERO_ALL do {                                           \
+        //            memset(dummy_J, 0, sizeof dummy_J);                 \
+        //            std::fill(dummy_findex, dummy_findex+3, -1);;       \
+        //        }                                                       \
+        //        while (0)
         	
         DContactBuffer b = new DContactBuffer(1);
         DContact contact = b.get(0);
@@ -187,30 +165,19 @@ public class FrictionJointContact extends TestSuperClass
         ZERO_ALL(dummy_J, dummy_findex);
         ((DxJointContact)joint).getInfo2(info2_fps, info2_erp, rowskip, dummy_J, J1Ofs, dummy_J, J2Ofs,
                 rowskip, dummy_J, rhscfmOfs, dummy_J, lohiOfs, dummy_findex, findexOfs);
-//        CHECK_CLOSE(0, dummy_J[1][0], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][1], 1e-6);
-//        CHECK_CLOSE(-1, dummy_J[1][2], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][3], 1e-6);
-//        CHECK_CLOSE(1, dummy_J[1][4], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][5], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][6], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][7], 1e-6);
-//        CHECK_CLOSE(1, dummy_J[1][8], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][9], 1e-6);
-//        CHECK_CLOSE(1, dummy_J[1][10], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][11], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+0], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+1], 1e-6);
-        CHECK_CLOSE(-1, dummy_J[1*12+2], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+3], 1e-6);
-        CHECK_CLOSE(1, dummy_J[1*12+4], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+5], 1e-6);
-        CHECK_CLOSE(8, dummy_J[1*12+8], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+9], 1e-6);
-        CHECK_CLOSE(1, dummy_J[1*12+10], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+11], 1e-6);
-        CHECK_CLOSE(1, dummy_J[1*12+12], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+13], 1e-6);
+        int ofs = 1 * rowskip;
+        CHECK_CLOSE(0, dummy_J[ofs+0], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+1], 1e-6);
+        CHECK_CLOSE(-1, dummy_J[ofs+2], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+3], 1e-6);
+        CHECK_CLOSE(1, dummy_J[ofs+4], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+5], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+8], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+9], 1e-6);
+        CHECK_CLOSE(1, dummy_J[ofs+10], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+11], 1e-6);
+        CHECK_CLOSE(1, dummy_J[ofs+12], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+13], 1e-6);
         CHECK_EQUAL(0, dummy_findex[1]); // because of dContactApprox1
         joint.destroy();
 
@@ -229,32 +196,19 @@ public class FrictionJointContact extends TestSuperClass
         ZERO_ALL(dummy_J, dummy_findex);
         ((DxJointContact)joint).getInfo2(info2_fps, info2_erp, rowskip, dummy_J, J1Ofs, dummy_J, J2Ofs,
                 rowskip, dummy_J, rhscfmOfs, dummy_J, lohiOfs, dummy_findex, findexOfs);
-//        CHECK_CLOSE(0, dummy_J[1][0], 1e-6);
-//        CHECK_CLOSE(1, dummy_J[1][1], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][2], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][3], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][4], 1e-6);
-//        CHECK_CLOSE(1, dummy_J[1][5], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][6], 1e-6);
-//        CHECK_CLOSE(-1, dummy_J[1][7], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][8], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][9], 1e-6);
-//        CHECK_CLOSE(0, dummy_J[1][10], 1e-6);
-//        CHECK_CLOSE(1, dummy_J[1][11], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+0], 1e-6);
-        CHECK_CLOSE(1, dummy_J[1*12+1], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+2], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+3], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+4], 1e-6);
-        CHECK_CLOSE(1, dummy_J[1*12+5], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+8], 1e-6);
-        CHECK_CLOSE(-1, dummy_J[1*12+9], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+10], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+11], 1e-6);
-        CHECK_CLOSE(0, dummy_J[1*12+12], 1e-6);
-        CHECK_CLOSE(1, dummy_J[1*12+13], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+0], 1e-6);
+        CHECK_CLOSE(1, dummy_J[ofs+1], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+2], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+3], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+4], 1e-6);
+        CHECK_CLOSE(1, dummy_J[ofs+5], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+8], 1e-6);
+        CHECK_CLOSE(-1, dummy_J[ofs+9], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+10], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+11], 1e-6);
+        CHECK_CLOSE(0, dummy_J[ofs+12], 1e-6);
+        CHECK_CLOSE(1, dummy_J[ofs+13], 1e-6);
         CHECK_EQUAL(0, dummy_findex[1]);  // because of dContactApprox1
         joint.destroy();
     }
-
 }
