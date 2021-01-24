@@ -148,7 +148,8 @@ public class DxGimpact extends DxTriMesh {
 
 
 	@Override
-	//void dxTriMesh::computeAABB()
+    protected
+        //void dxTriMesh::computeAABB()
 	void computeAABB()
 	{
 		//update trimesh transform

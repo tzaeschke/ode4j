@@ -266,7 +266,7 @@ public class DxConvex extends DxGeom implements DConvex {
 
 
 	@Override
-	void computeAABB()
+    protected void computeAABB()
 	{
 		// this can, and should be optimized
 		DVector3 point = new DVector3();

@@ -47,7 +47,7 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 	abstract void ClearTCCache();
 
 	@Override
-	abstract void computeAABB();
+    protected abstract void computeAABB();
 
 
 	//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){ type = dTriMeshClass; }
@@ -90,5 +90,9 @@ public abstract class DxTriMesh extends DxGeom implements DTriMesh {
 	 * > PI for boundary edges
 	 */
 	abstract public float getEdgeAngle(int triangle, int edge);
+
+	public DTriRayCallback RayCallback() {
+		return RayCallback;
+	}
 }
 

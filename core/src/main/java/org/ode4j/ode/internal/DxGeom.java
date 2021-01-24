@@ -214,7 +214,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 * always performs a fresh computation, it does not inspect the
 	 * GEOM_AABB_BAD flag.
 	 */
-	abstract void computeAABB();
+	protected abstract void computeAABB();
 
 	/** 
 	 * Calculate oriented bounding box.
@@ -297,7 +297,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 
 	//void markAABBBad();
-	void markAABBBad() {
+	protected void markAABBBad() {
 		_gflags |= (GEOM_DIRTY | GEOM_AABB_BAD);
 		DxSpace.CHECK_NOT_LOCKED(parent_space);
 	}

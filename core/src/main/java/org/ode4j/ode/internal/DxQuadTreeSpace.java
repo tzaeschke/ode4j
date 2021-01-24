@@ -522,7 +522,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 
 	//void dxQuadTreeSpace::computeAABB(){
 	@Override
-	void computeAABB(){
+    protected void computeAABB(){
 		//
 	}
 

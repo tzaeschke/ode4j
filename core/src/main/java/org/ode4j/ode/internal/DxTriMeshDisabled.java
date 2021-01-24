@@ -94,7 +94,7 @@ class DxTriMeshDisabled extends DxTriMesh {
 
 	//void dxTriMesh::computeAABB() { dSetZero (aabb,6); }
 	@Override
-	void computeAABB() {
+    protected void computeAABB() {
 		_aabb.setZero();
 	}
 

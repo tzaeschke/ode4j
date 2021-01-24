@@ -179,7 +179,10 @@ public class CollideTrimeshRay implements DColliderFn {
 		DxGimpact TriMesh = (DxGimpact) g1;
 
 		double Length = RayGeom.getLength();
-//TODO remove/report?		boolean FirstContact = RayGeom.getFirstContact();
+		boolean FirstContact = RayGeom.getFirstContact();
+		boolean BackfaceCull = RayGeom.getBackfaceCull();
+		//TODO CHECK-TZ GimPAct is ignoring first contact AND BackfaceCull
+		//TODO remove/report?		boolean FirstContact = RayGeom.getFirstContact();
 //TODO remove/report?		boolean BackfaceCull = RayGeom.getBackfaceCull();
 		boolean ClosestHit = RayGeom.getClosestHit();//dGeomRayGetClosestHit(RayGeom);
 		DVector3 Origin = new DVector3(), Direction = new DVector3();
@@ -205,9 +208,9 @@ public class CollideTrimeshRay implements DColliderFn {
 		}
 
 
-		if(TriMesh.RayCallback==null || 
-				TriMesh.RayCallback.call(TriMesh, RayGeom, contact_data.getFaceID(), 
-						contact_data.getU() , contact_data.getV()) != 0)
+		if (TriMesh.RayCallback() == null ||
+				TriMesh.RayCallback().call(TriMesh, RayGeom, contact_data.getFaceID(),
+				contact_data.getU(), contact_data.getV()) != 0)
 		{
 			DContactGeom Contact = Contacts.get();//&( Contacts[ 0 ] );
 			Contact.pos.set(contact_data.getPoint().f);//VEC_COPY(Contact.pos,contact_data.getPoint());

@@ -219,7 +219,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 
 	// compute axis aligned bounding box
 	@Override
-	void computeAABB()
+    protected void computeAABB()
 	{
 		final DxHeightfieldData d = m_p_data;
 

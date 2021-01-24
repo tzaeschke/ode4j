@@ -334,7 +334,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 
 
 	@Override
-	void computeAABB()
+    protected void computeAABB()
 	{
 		if (_first != null) {
 //			int i;

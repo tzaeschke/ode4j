@@ -27,14 +27,14 @@ package org.ode4j.ode.internal;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.internal.gimpact.GimContact;
 
-public class GImpactContactAccessor implements GImpactContactsExportHelper.GImpactContactAccessorI {
+public class DxGIMCContactAccessor implements DxGImpactContactsExportHelper.GImpactContactAccessorI {
     // #ifndef _ODE_GIMPACT_GIM_CONTACT_ACCESSOR_H_
     // #define _ODE_GIMPACT_GIM_CONTACT_ACCESSOR_H_
 
     //    struct dxGIMCContactAccessor
     //    {
     //        dxGIMCContactAccessor(GIM_CONTACT *ptrimeshcontacts, dGeomID g1, dGeomID g2) : m_ptrimeshcontacts(ptrimeshcontacts), m_g1(g1), m_g2(g2), m_gotside2ovr(false), m_side2ovr() {}
-    public GImpactContactAccessor(GimContact[] ptrimeshcontacts, DxGeom g1, DxGeom g2) {
+    public DxGIMCContactAccessor(GimContact[] ptrimeshcontacts, DxGeom g1, DxGeom g2) {
         m_ptrimeshcontacts = ptrimeshcontacts;
         m_g1 = g1;
         m_g2 = g2;
@@ -44,7 +44,7 @@ public class GImpactContactAccessor implements GImpactContactsExportHelper.GImpa
 
 
     //        dxGIMCContactAccessor(GIM_CONTACT *ptrimeshcontacts, dGeomID g1, dGeomID g2, int side2ovr) : m_ptrimeshcontacts(ptrimeshcontacts), m_g1(g1), m_g2(g2), m_gotside2ovr(true), m_side2ovr(side2ovr) {}
-    public GImpactContactAccessor(GimContact[] ptrimeshcontacts, DxGeom g1, DxGeom g2, int side2ovr) {
+    public DxGIMCContactAccessor(GimContact[] ptrimeshcontacts, DxGeom g1, DxGeom g2, int side2ovr) {
         m_ptrimeshcontacts = ptrimeshcontacts;
         m_g1 = g1;
         m_g2 = g2;

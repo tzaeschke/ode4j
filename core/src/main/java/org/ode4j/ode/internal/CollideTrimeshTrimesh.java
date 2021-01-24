@@ -36,6 +36,10 @@ import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.DxGeom.NUMC_MASK;
+import static org.ode4j.ode.internal.gimpact.GimDynArray.GIM_DYNARRAY_POINTER;
+
 /**
  *
  * @author Tilmann Zaeschke
@@ -48,7 +52,63 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 		return dCollideTTL((DxGimpact)o1, (DxGimpact)o2, flags, contacts, 1);
 	}
 
-	
+	/////////////////////////////////////////////////////////////////////////
+
+	//#if dTRIMESH_GIMPACT
+
+	//
+	// GIMPACT TRIMESH-TRIMESH COLLIDER
+	//
+
+	/*extern */
+	int dCollideTTL(DxGeom g1, DxGeom g2, int Flags, DContactGeomBuffer Contacts, int Stride)
+	{
+		dIASSERT (Stride >= 1);//(int)sizeof(dContactGeom));
+		// dIASSERT (g1->type == dTriMeshClass);
+		// dIASSERT (g2->type == dTriMeshClass);
+		dIASSERT ((Flags & NUMC_MASK) >= 1);
+
+		int result = 0;
+
+		DxTriMesh triMesh1 = (DxTriMesh) g1;
+		DxTriMesh triMesh2 = (DxTriMesh) g2;
+		//Create contact list
+		GimDynArray<GimContact> trimeshContacts;
+		trimeshContacts = GimContact.GIM_CREATE_CONTACT_LIST();
+
+		triMesh1.recomputeAABB();
+		triMesh2.recomputeAABB();
+
+		//Collide trimeshes
+		// TODO make static?
+		//gim_trimesh_trimesh_collision(triMesh1.m_collision_trimesh, triMesh2.m_collision_trimesh, trimeshContacts);
+		triMesh1.m_collision_trimesh.gim_trimesh_trimesh_collision(triMesh1.m_collision_trimesh, triMesh2.m_collision_trimesh, trimeshContacts);
+
+		int contactCount = trimeshContacts.size();
+
+		if (contactCount != 0)
+		{
+			GimContact[] pTriMeshContacts = GIM_DYNARRAY_POINTER(trimeshContacts);
+
+			DxGImpactContactsExportHelper.GImpactContactAccessorI contactAccessor = new DxGIMCContactAccessor(pTriMeshContacts, g1, g2);
+			int culledContactCount = DxGImpactContactsExportHelper.ExportMaxDepthGImpactContacts(contactAccessor, contactCount, Flags, Contacts, Stride);
+
+			result = culledContactCount;
+		}
+
+		trimeshContacts.GIM_DYNARRAY_DESTROY();
+
+		return result;
+	}
+
+
+	//#endif // dTRIMESH_GIMPACT
+
+	//#endif // dTRIMESH_ENABLED
+
+
+
+	// TODO CHECK-TZ remove this
 	//
 	// GIMPACT TRIMESH-TRIMESH COLLIDER
 	//
@@ -56,10 +116,10 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 //	int dCollideTTL(dxGeom* g1, dxGeom* g2, int Flags, dContactGeom* Contacts, int Stride)
 	int dCollideTTL(DxGimpact g1, DxGimpact g2, int Flags, DContactGeomBuffer Contacts, int Stride)
 	{
-		Common.dIASSERT (Stride == 1);//(int)sizeof(dContactGeom));
+		dIASSERT (Stride == 1);//(int)sizeof(dContactGeom));
 		//dIASSERT (g1->type == dTriMeshClass);
 		//dIASSERT (g2->type == dTriMeshClass);
-		Common.dIASSERT ((Flags & DxGeom.NUMC_MASK) >= 1);
+		dIASSERT ((Flags & NUMC_MASK) >= 1);
 
 	    DxGimpact TriMesh1 = g1;
 	    DxGimpact TriMesh2 = g2;
@@ -83,7 +143,7 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 
 
 		int contactcount = trimeshcontacts.size();
-		int maxcontacts = Flags & DxGeom.NUMC_MASK;
+		int maxcontacts = Flags & NUMC_MASK;
 		if (contactcount > maxcontacts)
 		{
 			if (OdeConfig.ENABLE_CONTACT_SORTING) {

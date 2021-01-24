@@ -61,7 +61,7 @@ public class DxSphere extends DxGeom implements DSphere {
 
 
 	@Override
-	void computeAABB()
+    protected void computeAABB()
 	{
 //		_aabb.v[0] = _final_posr.pos.v[0] - _radius;
 //		_aabb.v[1] = _final_posr.pos.v[0] + _radius;

@@ -27,14 +27,14 @@ package org.ode4j.ode.internal;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.internal.gimpact.GimGeometry;
 
-public class GImpactPlaneContactAccessor implements GImpactContactsExportHelper.GImpactContactAccessorI {
+public class DxPlaneContactAccessor implements DxGImpactContactsExportHelper.GImpactContactAccessorI {
     //#ifndef _ODE_GIMPACT_PLANE_CONTACT_ACCESSOR_H_
     //#define _ODE_GIMPACT_PLANE_CONTACT_ACCESSOR_H_
 
     //    struct dxPlaneContactAccessor
     //    {
     //        dxPlaneContactAccessor(const vec4f *planecontact_results, const dReal *plane, dGeomID g1, dGeomID g2) : m_planecontact_results(planecontact_results), m_plane(plane), m_g1(g1), m_g2(g2) {}
-    public GImpactPlaneContactAccessor(final GimGeometry.vec4f[] planecontact_results, final double[] plane, DxGeom g1, DxGeom g2) {
+    public DxPlaneContactAccessor(final GimGeometry.vec4f[] planecontact_results, final double[] plane, DxGeom g1, DxGeom g2) {
         m_planecontact_results = planecontact_results;
         m_plane = plane;
         m_g1 = g1;

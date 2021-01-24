@@ -91,7 +91,7 @@ public class DxPlane extends DxGeom implements DPlane {
 
 
 	@Override
-	void computeAABB()
+    protected void computeAABB()
 	{
 		_aabb.setToInfinity();
 

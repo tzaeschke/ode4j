@@ -67,7 +67,7 @@ public class DxRay extends DxGeom implements DRay {
 
 
 	@Override
-	void computeAABB()
+	protected void computeAABB()
 	{
 		DVector3 e = new DVector3();
 		//  e[0] = final_posr.pos[0] + final_posr.R[0*4+2]*length;

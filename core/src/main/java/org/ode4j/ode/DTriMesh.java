@@ -76,13 +76,11 @@ public interface DTriMesh extends DGeom {
 	//		dMTV_THIRD,
 	//		dMTV__MAX,
 	//	}
-	public static class dMeshTriangleVertex {
-		public static final int dMTV__MIN = 0;
-		public static final int dMTV_FIRST = dMTV__MIN;
-		public static final int dMTV_SECOND = 1;
-		public static final int dMTV_THIRD = 2;
-		public static final int dMTV__MAX = 3;
-	}
+	public static final int dMTV__MIN = 0;
+	public static final int dMTV_FIRST = dMTV__MIN;
+	public static final int dMTV_SECOND = 1;
+	public static final int dMTV_THIRD = 2;
+	public static final int dMTV__MAX = 3;
 
 	/*
 	 * The values of data_id that can be used with dGeomTriMeshDataSet/dGeomTriMeshDataGet

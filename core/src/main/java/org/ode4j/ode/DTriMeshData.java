@@ -170,16 +170,17 @@ public interface DTriMeshData {
 	}
 //	enum
 //	{
-//		dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN,
-//
-//				dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_POSITIVE = dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, // Build angles for convex edges only and store as bytes; allocates 3 bytes per triangle; stores angles (0..180] in 1/254 fractions leaving two values for the flat and all the concaves
-//				dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_ALL, // Build angles for all the edges and store in bytes; allocates 3 bytes per triangle; stores angles [-180..0) and (0..180] in 1/127 fractions plus a value for the flat angle
-//				dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_WORD_ALL, // Build angles for all the edges and store in words; allocates 6 bytes per triangle; stores angles [-180..0) and (0..180] in 1/32767 fractions plus a value for the flat angle
-//
-//				dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX,
-//
-//				dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__DEFAULT = dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_POSITIVE, // The default value assumed if the extra data is not provided
-//	};
+	public static final int dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN = 0;
+	// Build angles for convex edges only and store as bytes; allocates 3 bytes per triangle; stores angles (0..180] in 1/254 fractions leaving two values for the flat and all the concaves
+	public static final int dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_POSITIVE = dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN;
+	// Build angles for all the edges and store in bytes; allocates 3 bytes per triangle; stores angles [-180..0) and (0..180] in 1/127 fractions plus a value for the flat angle
+	public static final int dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_ALL = dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_POSITIVE + 1;
+	// Build angles for all the edges and store in words; allocates 6 bytes per triangle; stores angles [-180..0) and (0..180] in 1/32767 fractions plus a value for the flat angle
+	public static final int dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_WORD_ALL = dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_ALL + 1;
+	public static final int dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX = dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_WORD_ALL + 1;
+	// The default value assumed if the extra data is not provided
+	public static final int dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__DEFAULT = dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_POSITIVE;
+
 
 
 	/*

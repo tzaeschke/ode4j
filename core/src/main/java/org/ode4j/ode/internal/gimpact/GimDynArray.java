@@ -125,6 +125,7 @@ public class GimDynArray<T> {//extends GimBufferArray<T> {
 	//! Gets a pointer from the beginning of the array
 	//#define GIM_DYNARRAY_POINTER(type, array_data) ((type *)((array_data).m_pdata))
 	public T[] GIM_DYNARRAY_POINTER() { return m_pdata; }
+	public static <T> T[] GIM_DYNARRAY_POINTER(GimDynArray<T> array) { return array.m_pdata; }
 	public ObjArray<T> GIM_DYNARRAY_POINTER_V() { return new ObjArray<T>(m_pdata); }
 
 	//! Gets a pointer from the last elemento of the array

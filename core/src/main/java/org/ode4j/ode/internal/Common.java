@@ -678,7 +678,7 @@ enum {
 //	#ifndef SIZE_MAX
 //#define SIZE_MAX  ((size_t)(-1))
 //			#endif
-	static int SIZE_MAX = Integer.MAX_VALUE;
+	public static int SIZE_MAX = Integer.MAX_VALUE;
 
 
 //#ifndef offsetof

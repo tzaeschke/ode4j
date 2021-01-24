@@ -547,14 +547,14 @@ public class CollideTrimeshSphere implements DColliderFn {
 	int dCollideSTL(DxGimpact g1, DxSphere SphereGeom, int Flags, DContactGeomBuffer Contacts, int Stride)
 	{
 		Common.dIASSERT (Stride == 1);//(int)sizeof(dContactGeom));
-//		dIASSERT (g1->type == dTriMeshClass);
-//		dIASSERT (SphereGeom->type == dSphereClass);
+		//		dIASSERT (g1->type == dTriMeshClass);
+		//		dIASSERT (SphereGeom->type == dSphereClass);
 		Common.dIASSERT ((Flags & DxGeom.NUMC_MASK) >= 1);
 		
 		DxGimpact TriMesh = g1;
 	    DVector3C Position = SphereGeom.getPosition();
 		double Radius = SphereGeom.getRadius();
-	 //Create contact list
+	 	//Create contact list
 	    GimDynArray<GimContact> trimeshcontacts;
 	    trimeshcontacts = GimContact.GIM_CREATE_CONTACT_LIST();
 
@@ -570,49 +570,10 @@ public class CollideTrimeshSphere implements DColliderFn {
 	        return 0;
 	    }
 
-	    ObjArray<GimContact> ptrimeshcontacts = trimeshcontacts.GIM_DYNARRAY_POINTER_V();
-
+	    GimContact[] ptrimeshcontacts = trimeshcontacts.GIM_DYNARRAY_POINTER();
 		int contactcount = trimeshcontacts.size();
-		int maxcontacts = (Flags & DxGeom.NUMC_MASK);
-		if (contactcount > maxcontacts)
-		{
-			if (OdeConfig.ENABLE_CONTACT_SORTING) {
-				Arrays.sort((Object[])trimeshcontacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
-					@Override
-					public int compare(Object o1, Object o2) {
-						return Float.compare(((GimContact) o2).getDepth(), ((GimContact) o1).getDepth());
-					}
-				});
-			}
-			contactcount = maxcontacts;
-		}
-
-	    DContactGeom pcontact;
-		
-		for (int i=0;i<contactcount;i++)
-		{
-	        pcontact = Contacts.getSafe(Flags, i);//SAFECONTACT(Flags, Contacts, i, Stride);
-
-//	        pcontact->pos[0] = ptrimeshcontacts->m_point[0];
-//	        pcontact->pos[1] = ptrimeshcontacts->m_point[1];
-//	        pcontact->pos[2] = ptrimeshcontacts->m_point[2];
-//	        pcontact->pos[3] = REAL(1.0); //TODO TZ ?
-	        pcontact.pos.set(ptrimeshcontacts.at0().getPoint().f);
-
-//	        pcontact->normal[0] = ptrimeshcontacts->m_normal[0];
-//	        pcontact->normal[1] = ptrimeshcontacts->m_normal[1];
-//	        pcontact->normal[2] = ptrimeshcontacts->m_normal[2];
-//	        pcontact->normal[3] = 0;
-	        pcontact.normal.set(ptrimeshcontacts.at0().getNormal().f);
-
-	        pcontact.depth = ptrimeshcontacts.at0().getDepth();
-	        pcontact.g1 = g1;
-	        pcontact.g2 = SphereGeom;
-	        pcontact.side1 = ptrimeshcontacts.at0().getFeature1();
-	        pcontact.side2 = -1;
-
-	        ptrimeshcontacts.inc();//++;
-		}
+		DxGIMCContactAccessor contactaccessor = new DxGIMCContactAccessor(ptrimeshcontacts, g1, SphereGeom, -1);
+		contactcount = DxGImpactContactsExportHelper.ExportMaxDepthGImpactContacts(contactaccessor, contactcount, Flags, Contacts, Stride);
 
 		trimeshcontacts.GIM_DYNARRAY_DESTROY();
 
