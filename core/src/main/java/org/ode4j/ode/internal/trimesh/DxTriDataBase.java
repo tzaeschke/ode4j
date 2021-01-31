@@ -2,20 +2,26 @@ package org.ode4j.ode.internal.trimesh;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DGeom;
+import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
-import org.ode4j.ode.internal.DBase;
-import org.ode4j.ode.internal.DxGeom;
-import org.ode4j.ode.internal.DxSpace;
-import org.ode4j.ode.internal.DxTriMeshData;
+import org.ode4j.ode.internal.*;
+import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
+import org.ode4j.ode.internal.cpp4j.java.RefInt;
+import org.ode4j.ode.ou.CEnumSortedElementArray;
 import org.ode4j.ode.ou.CEnumUnsortedElementArray;
 
 import java.util.Arrays;
 
 import static org.ode4j.ode.DTriMesh.*;
 import static org.ode4j.ode.DTriMesh.dMESHDATAUSE.*;
+import static org.ode4j.ode.DTriMeshData.dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX;
+import static org.ode4j.ode.DTriMeshData.dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.CommonEnums.*;
+import static org.ode4j.ode.internal.DxGimpactCollision.GetPointFromBarycentric;
+import static org.ode4j.ode.internal.trimesh.DxMeshBase.TTC__MAX;
 
 public class DxTriDataBase extends DBase {
 
@@ -788,8 +794,8 @@ public class DxTriDataBase extends DBase {
 
         int triangleCount = m_triangleCount;
 
-        FAngleStorageAllocProc *allocProc = g_AngleStorageAllocProcs.Encode(storageMethod);
-        IFaceAngleStorageControl *storageInstance = allocProc(triangleCount, storageView);
+        FAngleStorageAllocProc allocProc = g_AngleStorageAllocProcs.Encode(storageMethod);
+        IFaceAngleStorageControl storageInstance = allocProc(triangleCount, storageView);
 
         if (storageInstance != null)
         {
@@ -851,58 +857,72 @@ public class DxTriDataBase extends DBase {
     //////////////////////////////////////////////////////////////////////////
 
     /*extern ODE_API */
-    void dGeomTriMeshDataBuildSimple1(dTriMeshDataID g,
-    const dReal* Vertices, int VertexCount,
-    const dTriIndex* Indices, int IndexCount,
-    const int *Normals)
+//    void dGeomTriMeshDataBuildSimple1(dTriMeshDataID g,
+//    const dReal* Vertices, int VertexCount,
+//    const dTriIndex* Indices, int IndexCount,
+//    const int *Normals)
+    void dGeomTriMeshDataBuildSimple1(DTriMeshData g,
+    final double[] Vertices, int VertexCount,
+    final int[] Indices, int IndexCount,
+    final int[] Normals)
     {
-#ifdef dSINGLE
-        dGeomTriMeshDataBuildSingle1(g,
-                Vertices, 4 * sizeof(dReal), VertexCount,
-                Indices, IndexCount, 3 * sizeof(dTriIndex),
+//#ifdef dSINGLE
+//        dGeomTriMeshDataBuildSingle1(g,
+//                Vertices, 4 * sizeof(dReal), VertexCount,
+//                Indices, IndexCount, 3 * sizeof(dTriIndex),
+//                Normals);
+//#else
+//        dGeomTriMeshDataBuildDouble1(g, Vertices, 4 * sizeof(dReal), VertexCount,
+//                Indices, IndexCount, 3 * sizeof(dTriIndex),
+//                Normals);
+        dGeomTriMeshDataBuildDouble1(g, Vertices, 4 * 1, VertexCount,
+                Indices, IndexCount, 3 * 1,
                 Normals);
-#else
-        dGeomTriMeshDataBuildDouble1(g, Vertices, 4 * sizeof(dReal), VertexCount,
-                Indices, IndexCount, 3 * sizeof(dTriIndex),
-                Normals);
-#endif
+//#endif
     }
 
 
     /*extern ODE_API */
-    void dGeomTriMeshDataBuildSingle(dTriMeshDataID g,
-    const void* Vertices, int VertexStride, int VertexCount,
-    const void* Indices, int IndexCount, int TriStride)
-    {
-        dGeomTriMeshDataBuildSingle1(g, Vertices, VertexStride, VertexCount,
-                Indices, IndexCount, TriStride, (const void *)NULL);
-    }
+    //    void dGeomTriMeshDataBuildSingle(dTriMeshDataID g,
+    //    const void* Vertices, int VertexStride, int VertexCount,
+    //    const void* Indices, int IndexCount, int TriStride)
+    //    {
+    //        dGeomTriMeshDataBuildSingle1(g, Vertices, VertexStride, VertexCount,
+    //                Indices, IndexCount, TriStride, (const void *)NULL);
+    //    }
 
     /*extern ODE_API */
-    void dGeomTriMeshDataBuildDouble(dTriMeshDataID g,
-    const void* Vertices, int VertexStride, int VertexCount,
-    const void* Indices, int IndexCount, int TriStride)
+    //    void dGeomTriMeshDataBuildDouble(dTriMeshDataID g,
+    //    const void* Vertices, int VertexStride, int VertexCount,
+    //    const void* Indices, int IndexCount, int TriStride)
+    void dGeomTriMeshDataBuildDouble(DTriMeshData g,
+    final double[] Vertices, int VertexStride, int VertexCount,
+    final int[] Indices, int IndexCount, int TriStride)
     {
         dGeomTriMeshDataBuildDouble1(g, Vertices, VertexStride, VertexCount,
-                Indices, IndexCount, TriStride, NULL);
+                Indices, IndexCount, TriStride, null);
     }
 
     /*extern ODE_API */
-    void dGeomTriMeshDataBuildSimple(dTriMeshDataID g,
-    const dReal* Vertices, int VertexCount,
-    const dTriIndex* Indices, int IndexCount)
+    //    void dGeomTriMeshDataBuildSimple(dTriMeshDataID g,
+    //    const dReal* Vertices, int VertexCount,
+    //    const dTriIndex* Indices, int IndexCount)
+    void dGeomTriMeshDataBuildSimple(DTriMeshData g,
+    final double[] Vertices, int VertexCount,
+    final int[] Indices, int IndexCount)
     {
         dGeomTriMeshDataBuildSimple1(g,
                 Vertices, VertexCount, Indices, IndexCount,
-                (int *)NULL);
+                (int[]) null);
     }
 
 
     /*extern ODE_API */
-    int dGeomTriMeshDataPreprocess(dTriMeshDataID g)
+    int dGeomTriMeshDataPreprocess(DTriMeshData g)
     {
-        unsigned buildRequestFlags = (1U << dTRIDATAPREPROCESS_BUILD_CONCAVE_EDGES);
-        return dGeomTriMeshDataPreprocess2(g, buildRequestFlags, NULL);
+        //unsigned buildRequestFlags = (1U << dTRIDATAPREPROCESS_BUILD_CONCAVE_EDGES);
+        int buildRequestFlags = (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES);
+        return dGeomTriMeshDataPreprocess2(g, buildRequestFlags, null);
     }
 
 
@@ -925,14 +945,19 @@ public class DxTriDataBase extends DBase {
 
 
     /*extern ODE_API */
-    int dGeomTriMeshDataPreprocess2(dTriMeshDataID g, unsigned int buildRequestFlags, const dintptr *requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/)
+    //int dGeomTriMeshDataPreprocess2(dTriMeshDataID g, unsigned int buildRequestFlags, const dintptr *requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/)
+    int dGeomTriMeshDataPreprocess2(DTriMeshData g, int buildRequestFlags, final int[] requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/)
     {
-        dUASSERT(g, "The argument is not a trimesh data");
-        dAASSERT((buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_FACE_ANGLES)) == 0 || requestExtraData == NULL || dIN_RANGE(requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES], dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX));
+        dUASSERT(g != null, "The argument is not a trimesh data");
+        //dAASSERT((buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_FACE_ANGLES)) == 0 || requestExtraData == NULL || dIN_RANGE(requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES], dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX));
+        dAASSERT((buildRequestFlags & (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES)) == 0
+                || requestExtraData == null
+                || dIN_RANGE(requestExtraData[DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES],
+                    dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX));
 
-        dxTriMeshData *data = g;
+        DxTriMeshData data = g;
 
-        bool buildUseFlags = (buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_CONCAVE_EDGES)) != 0;
+        boolean buildUseFlags = (buildRequestFlags & (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES)) != 0;
         //        FaceAngleStorageMethod faceAnglesRequirement = (buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_FACE_ANGLES)) != 0
         //            ? g_TriMeshDataPreprocess_FaceAndlesExtraDataAngleStorageMethods.Encode(requestExtraData != NULL && dIN_RANGE(requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES], dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX) ? (unsigned)requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES] : dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__DEFAULT)
         //            : ASM__INVALID;
@@ -956,202 +981,227 @@ public class DxTriDataBase extends DBase {
     //////////////////////////////////////////////////////////////////////////
 
     /*extern ODE_API */
-    void dGeomTriMeshSetCallback(dGeomID g, dTriCallback* Callback)
+    //void dGeomTriMeshSetCallback(dGeomID g, dTriCallback* Callback)
+    void dGeomTriMeshSetCallback(DTriMesh g, DTriCallback Callback)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        mesh->assignCallback(Callback);
+        DxTriMesh mesh = g;
+        mesh.assignCallback(Callback);
     }
 
     /*extern ODE_API */
-    dTriCallback* dGeomTriMeshGetCallback(dGeomID g)
+    //dTriCallback* dGeomTriMeshGetCallback(dGeomID g)
+    DTriCallback dGeomTriMeshGetCallback(DTriMesh g)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-    const dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        return mesh->retrieveCallback();
+        DxTriMesh mesh = g;
+        return mesh.retrieveCallback();
     }
 
     /*extern ODE_API */
-    void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback)
+    //void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback)
+    void dGeomTriMeshSetArrayCallback(DTriMesh g, DTriArrayCallback ArrayCallback)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        mesh->assignArrayCallback(ArrayCallback);
+        DxTriMesh mesh = g;
+        mesh.assignArrayCallback(ArrayCallback);
     }
 
     /*extern ODE_API */
     //dTriArrayCallback *dGeomTriMeshGetArrayCallback(dGeomID g)
-    DTriArrayCallback dGeomTriMeshGetArrayCallback(DGeomID g)
+    DTriArrayCallback dGeomTriMeshGetArrayCallback(DTriMesh g)
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        //const dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
+        DxTriMesh mesh = g;
         return mesh.retrieveArrayCallback();
     }
 
     /*extern ODE_API */
-    void dGeomTriMeshSetRayCallback(dGeomID g, dTriRayCallback* Callback)
+    //void dGeomTriMeshSetRayCallback(dGeomID g, dTriRayCallback* Callback)
+    void dGeomTriMeshSetRayCallback(DTriMesh g, DTriRayCallback Callback)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        mesh->assignRayCallback(Callback);
+        DxTriMesh mesh = g;
+        mesh.assignRayCallback(Callback);
     }
 
     /*extern ODE_API */
-    dTriRayCallback* dGeomTriMeshGetRayCallback(dGeomID g)
+    //dTriRayCallback* dGeomTriMeshGetRayCallback(dGeomID g)
+    DTriRayCallback dGeomTriMeshGetRayCallback(DTriMesh g)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-    const dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        return mesh->retrieveRayCallback();
+        DxTriMesh mesh = g;
+        return mesh.retrieveRayCallback();
     }
 
     /*extern ODE_API */
-    void dGeomTriMeshSetTriMergeCallback(dGeomID g, dTriTriMergeCallback* Callback)
+    //void dGeomTriMeshSetTriMergeCallback(dGeomID g, dTriTriMergeCallback* Callback)
+    void dGeomTriMeshSetTriMergeCallback(DTriMesh g, DTriTriMergeCallback Callback)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        mesh->assignTriMergeCallback(Callback);
+        DxTriMesh mesh = g;
+        mesh.assignTriMergeCallback(Callback);
     }
 
     /*extern ODE_API */
-    dTriTriMergeCallback *dGeomTriMeshGetTriMergeCallback(dGeomID g)
+    //dTriTriMergeCallback *dGeomTriMeshGetTriMergeCallback(dGeomID g)
+    DTriTriMergeCallback dGeomTriMeshGetTriMergeCallback(DTriMesh g)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-    const dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        return mesh->retrieveTriMergeCallback();
+        DxTriMesh mesh = g;
+        return mesh.retrieveTriMergeCallback();
     }
 
     /*extern ODE_API */
-    void dGeomTriMeshSetData(dGeomID g, dTriMeshDataID Data)
+    //void dGeomTriMeshSetData(dGeomID g, dTriMeshDataID Data)
+    void dGeomTriMeshSetData(DTriMesh g, DTriMeshData Data)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        mesh->assignMeshData(Data);
+        DxTriMesh mesh = g;
+        mesh.assignMeshData(Data);
     }
 
     /*extern ODE_API */
-    dTriMeshDataID dGeomTriMeshGetData(dGeomID g)
+    //dTriMeshDataID dGeomTriMeshGetData(dGeomID g)
+    DTriMeshData dGeomTriMeshGetData(DTriMesh g)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-    const dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        return mesh->retrieveMeshData();
+        DxTriMesh mesh = g;
+        return mesh.retrieveMeshData();
     }
 
 
-    BEGIN_NAMESPACE_OU();
-    template<>
-const int CEnumSortedElementArray<dxTriMesh::TRIMESHTC, dxTriMesh::TTC__MAX, int, 0x161003D5>::m_aetElementArray[] =
-    {
-        dSphereClass, // TTC_SPHERE,
-                dBoxClass, // TTC_BOX,
-                dCapsuleClass, // TTC_CAPSULE,
-    };
-    END_NAMESPACE_OU();
-    static const CEnumSortedElementArray<dxTriMesh::TRIMESHTC, dxTriMesh::TTC__MAX, int, 0x161003D5> g_asiMeshTCGeomClasses;
+    //    BEGIN_NAMESPACE_OU();
+    //    template<>
+    //    const int CEnumSortedElementArray<dxTriMesh::TRIMESHTC, dxTriMesh::TTC__MAX, int, 0x161003D5>::m_aetElementArray[] =
+    //    {
+    //        dSphereClass, // TTC_SPHERE,
+    //                dBoxClass, // TTC_BOX,
+    //                dCapsuleClass, // TTC_CAPSULE,
+    //    };
+    //    END_NAMESPACE_OU();
+    //    static const CEnumSortedElementArray<dxTriMesh::TRIMESHTC, dxTriMesh::TTC__MAX, int, 0x161003D5> g_asiMeshTCGeomClasses;
+    static final CEnumSortedElementArray g_asiMeshTCGeomClasses = new CEnumSortedElementArray(new int[]{
+            dSphereClass, // TTC_SPHERE,
+            dBoxClass, // TTC_BOX,
+            dCapsuleClass, // TTC_CAPSULE,
+    }, TTC__MAX);
+
 
     /*extern ODE_API */
-    void dGeomTriMeshEnableTC(dGeomID g, int geomClass, int enable)
+    //void dGeomTriMeshEnableTC(dGeomID g, int geomClass, int enable)
+    void dGeomTriMeshEnableTC(DTriMesh g, int geomClass, int enable)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
+        DxTriMesh mesh = g;
 
-        dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+        //dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+        int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
 
         if (g_asiMeshTCGeomClasses.IsValidDecode(tc))
         {
-            mesh->assignDoTC(tc, enable != 0);
+            mesh.assignDoTC(tc, enable != 0);
         }
     }
 
     /*extern ODE_API */
-    int dGeomTriMeshIsTCEnabled(dGeomID g, int geomClass)
+    //int dGeomTriMeshIsTCEnabled(dGeomID g, int geomClass)
+    int dGeomTriMeshIsTCEnabled(DTriMesh g, int geomClass)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-    const dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
+        DxTriMesh mesh = g;
 
-        dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+        //dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+        int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
 
-        bool result = g_asiMeshTCGeomClasses.IsValidDecode(tc)
-                && mesh->retrieveDoTC(tc);
+        boolean result = g_asiMeshTCGeomClasses.IsValidDecode(tc)
+                && mesh.retrieveDoTC(tc);
         return result;
     }
 
 
     /*extern ODE_API */
-    dTriMeshDataID dGeomTriMeshGetTriMeshDataID(dGeomID g)
+    //dTriMeshDataID dGeomTriMeshGetTriMeshDataID(dGeomID g)
+    DTriMeshData dGeomTriMeshGetTriMeshDataID(DTriMesh g)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-    const dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        return mesh->retrieveMeshData();
+        DxTriMesh mesh = g;
+        return mesh.retrieveMeshData();
     }
 
 
     /*extern ODE_API */
-    void dGeomTriMeshClearTCCache(dGeomID g)
+    //void dGeomTriMeshClearTCCache(dGeomID g)
+    void dGeomTriMeshClearTCCache(DTriMesh g)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        mesh->clearTCCache();
+        DxTriMesh mesh = g;
+        mesh.clearTCCache();
     }
 
 
     /*extern ODE_API */
-    int dGeomTriMeshGetTriangleCount(dGeomID g)
+    //int dGeomTriMeshGetTriangleCount(dGeomID g)
+    int dGeomTriMeshGetTriangleCount(DTriMesh g)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-    const dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
-        unsigned result = mesh->getMeshTriangleCount();
+        DxTriMesh mesh = g;
+        int result = mesh.getMeshTriangleCount();
         return result;
     }
 
 
     /*extern ODE_API */
-    void dGeomTriMeshGetTriangle(dGeomID g, int index, dVector3 *v0/*=NULL*/, dVector3 *v1/*=NULL*/, dVector3 *v2/*=NULL*/)
+    //void dGeomTriMeshGetTriangle(dGeomID g, int index, dVector3 *v0/*=NULL*/, dVector3 *v1/*=NULL*/, dVector3 *v2/*=NULL*/)
+    void dGeomTriMeshGetTriangle(DTriMesh g, int index, DVector3 v0/*=NULL*/, DVector3 v1/*=NULL*/, DVector3 v2/*=NULL*/)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
-        dUASSERT(v0 != NULL || v1 != NULL || v2 != NULL, "A meaningless call");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        dUASSERT(v0 != null || v1 != null || v2 != null, "A meaningless call");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
+        DxTriMesh mesh = g;
 
-        dVector3 *pv[3] = { v0, v1, v2 };
-        mesh->fetchMeshTransformedTriangle(pv, index);
+        DVector3[] pv = new DVector3[]{ v0, v1, v2 };
+        mesh.fetchMeshTransformedTriangle(pv, index);
     }
 
     /*extern ODE_API */
-    void dGeomTriMeshGetPoint(dGeomID g, int index, dReal u, dReal v, dVector3 Out)
+    //void dGeomTriMeshGetPoint(dGeomID g, int index, dReal u, dReal v, dVector3 Out)
+    void dGeomTriMeshGetPoint(DTriMesh g, int index, double u, double v, DVector3 Out)
     {
-        dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(g);
+        DxTriMesh mesh = g;
 
-        dVector3 dv[3];
-        mesh->fetchMeshTransformedTriangle(dv, index);
+        DVector3[] dv = DVector3.newArray(3);
+        mesh.fetchMeshTransformedTriangle(dv, index);
 
         GetPointFromBarycentric(dv, u, v, Out);
     }
 
 
     /*extern */
-    IFaceAngleStorageView *dxGeomTriMeshGetFaceAngleView(dxGeom *triMeshGeom)
+    //IFaceAngleStorageView *dxGeomTriMeshGetFaceAngleView(dxGeom *triMeshGeom)
+    IFaceAngleStorageView dxGeomTriMeshGetFaceAngleView(DTriMesh triMeshGeom)
     {
-        dUASSERT(triMeshGeom && triMeshGeom->type == dTriMeshClass, "The argument is not a trimesh");
+        //dUASSERT(triMeshGeom && triMeshGeom->type == dTriMeshClass, "The argument is not a trimesh");
 
-        dxTriMesh *mesh = static_cast<dxTriMesh *>(triMeshGeom);
-        return mesh->retrieveFaceAngleView();
+        DxTriMesh mesh = triMeshGeom;
+        return mesh.retrieveFaceAngleView();
     }
 
 
@@ -1162,26 +1212,33 @@ const int CEnumSortedElementArray<dxTriMesh::TRIMESHTC, dxTriMesh::TTC__MAX, int
     // Deprecated functions
 
     /*extern */
-    void dGeomTriMeshDataGetBuffer(dTriMeshDataID g, unsigned char **buf, int *bufLen)
+    //void dGeomTriMeshDataGetBuffer(dTriMeshDataID g, unsigned char **buf, int *bufLen)
+    @Deprecated // Deprecated in ODE
+    void dGeomTriMeshDataGetBuffer(DTriMeshData g, Ref<byte[]> buf, RefInt bufLen)
     {
-        size_t dataSizeStorage;
-        void *dataPointer = dGeomTriMeshDataGet2(g, dTRIMESHDATA_USE_FLAGS, (bufLen != NULL ? &dataSizeStorage : NULL));
+        RefInt dataSizeStorage = new RefInt();
+        //void *dataPointer = dGeomTriMeshDataGet2(g, dTRIMESHDATA_USE_FLAGS, (bufLen != NULL ? &dataSizeStorage : NULL));
+        byte[] dataPointer = dGeomTriMeshDataGet2(g, dTRIMESHDATA.USE_FLAGS, (bufLen != null ? dataSizeStorage : null));
 
-        if (bufLen != NULL)
+        if (bufLen != null)
         {
-        *bufLen = (int)dataSizeStorage;
+            //*bufLen = (int)dataSizeStorage;
+            bufLen.set( dataSizeStorage.get() );
         }
 
-        if (buf != NULL)
+        if (buf != null)
         {
-        *buf = (unsigned char *)dataPointer;
+            buf.set( dataPointer );
         }
     }
 
     /*extern */
-    void dGeomTriMeshDataSetBuffer(dTriMeshDataID g, unsigned char* buf)
+    @Deprecated // Deprecated in ODE
+    //void dGeomTriMeshDataSetBuffer(dTriMeshDataID g, unsigned char* buf)
+    void dGeomTriMeshDataSetBuffer(DTriMeshData g, byte[] buf)
     {
-        dGeomTriMeshDataSet(g, dTRIMESHDATA_USE_FLAGS, (void *)buf);
+        //dGeomTriMeshDataSet(g, dTRIMESHDATA_USE_FLAGS, (void *)buf);
+        dGeomTriMeshDataSet(g, dTRIMESHDATA.USE_FLAGS, buf);
     }
 
 
