@@ -32,7 +32,8 @@ public class DxTriDataBase extends DBase {
 
     //#if !dTLS_ENABLED
     // Have collider cache instance unconditionally of OPCODE or GIMPACT selection
-    public static final TrimeshCollidersCache g_ccTrimeshCollidersCache;
+    // TODO This appears not to be necessary
+    // public static final TrimeshCollidersCache g_ccTrimeshCollidersCache;
     //#endif
 
 
@@ -59,16 +60,17 @@ public class DxTriDataBase extends DBase {
 
     //    static inline
     //    TrimeshCollidersCache *GetTrimeshCollidersCache(unsigned uiTLSKind)
-    static TrimeshCollidersCache GetTrimeshCollidersCache(int uiTLSKind) {
-        //    #if dTLS_ENABLED
-        //            EODETLSKIND tkTLSKind = (EODETLSKIND)uiTLSKind;
-        //            return COdeTls::GetTrimeshCollidersCache(tkTLSKind);
-        //    #else // dTLS_ENABLED
-        //(void)uiTLSKind; // unused
-        //extern TrimeshCollidersCache g_ccTrimeshCollidersCache;
-        return g_ccTrimeshCollidersCache;
-        // #endif // dTLS_ENABLED
-    }
+    // TODO THis appears not to be necessary
+    //    static TrimeshCollidersCache GetTrimeshCollidersCache(int uiTLSKind) {
+    //        //    #if dTLS_ENABLED
+    //        //            EODETLSKIND tkTLSKind = (EODETLSKIND)uiTLSKind;
+    //        //            return COdeTls::GetTrimeshCollidersCache(tkTLSKind);
+    //        //    #else // dTLS_ENABLED
+    //        //(void)uiTLSKind; // unused
+    //        //extern TrimeshCollidersCache g_ccTrimeshCollidersCache;
+    //        return g_ccTrimeshCollidersCache;
+    //        // #endif // dTLS_ENABLED
+    //    }
 
 
     //enum FaceAngleStorageMethod {
@@ -505,14 +507,14 @@ public class DxTriDataBase extends DBase {
                             edges[vertIdx1].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
                             // Also remember the index the vertex flags are going to be applied to
                             // to allow easily clear the vertex from the use flags if any concave edges are found to connect to it
-                            vertices[vertIdx1].m_UsedFromEdgeIndex = (unsigned) (edgeToUse - edges);
+                            vertices[vertIdx1].m_UsedFromEdgeIndex = (int) (edgeToUse - edges);
                             triUseFlags |= edgeToUse0.m_vert1Flags;
                         }
 
                         // Same processing for the second vertex...
                         if ((edges[vertIdx2].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0) {
                             edges[vertIdx2].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
-                            vertices[vertIdx2].m_UsedFromEdgeIndex = (unsigned) (edgeToUse - edges);
+                            vertices[vertIdx2].m_UsedFromEdgeIndex = (int) (edgeToUse - edges);
                             triUseFlags |= edgeToUse0.m_vert2Flags;
                         }
 
@@ -536,13 +538,13 @@ public class DxTriDataBase extends DBase {
 
                     if ((edges[vertIdx1].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0) {
                         edges[vertIdx1].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
-                        vertices[vertIdx1].m_UsedFromEdgeIndex = (unsigned) (currEdge - edges);
+                        vertices[vertIdx1].m_UsedFromEdgeIndex = (int) (currEdge - edges);
                         triUseExtraFlags |= currEdge0.m_vert1Flags;
                     }
 
                     if ((edges[vertIdx2].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0) {
                         edges[vertIdx2].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
-                        vertices[vertIdx2].m_UsedFromEdgeIndex = (unsigned) (currEdge - edges);
+                        vertices[vertIdx2].m_UsedFromEdgeIndex = (int) (currEdge - edges);
                         triUseExtraFlags |= currEdge0.m_vert2Flags;
                     }
 
@@ -643,10 +645,10 @@ public class DxTriDataBase extends DBase {
                                        DVector3C triangleNormal, DVector3C secondOppositeVertexSegment,
                                        DVector3C[] pSecondTriangleMatchingEdge/*=NULL*/, DVector3C[] pFirstTriangle
             /*=NULL*/, final TMeshDataAccessor dataAccessor) {
-        dIASSERT(lengthSquareProduct >= (0.0));
+        dIASSERT(lengthSquareProduct.get() >= (0.0));
 
         double result;
-        double angleCosine = normalSegmentDot / dSqrt(lengthSquareProduct);
+        double angleCosine = normalSegmentDot.get() / dSqrt(lengthSquareProduct.get());
 
         if (angleCosine < (1.0)) {
             DVector3 normalSecondOppositeSegmentCross = new DVector3();
@@ -666,7 +668,7 @@ public class DxTriDataBase extends DBase {
                 // Retrieve the first triangle points if necessary
                 DVector3[] firstTriangleStorage[ dMTV__MAX];
                 //const dVector3 *pFirstTriangleToUse = pFirstTriangle;
-                int pFirstTriangleToUse = pFirstTriangle;
+                int pFirstTriangleToUse = 0;//pFirstTriangle;
 
                 if (pFirstTriangle == null) {
                     dataAccessor.getTriangleVertexPoints(firstTriangleStorage, currEdge[0].m_triIdx);
@@ -736,7 +738,7 @@ public class DxTriDataBase extends DBase {
     //    END_NAMESPACE_OU();
     //    static const CEnumUnsortedElementArray<FaceAngleStorageMethod, ASM__MAX, FAngleStorageAllocProc *, 0x161211AD> g_AngleStorageAllocProcs;
     private static class CEnumUnsortedElementArrayASAP {
-        public FaceAngleStorageCodec Encode(int i) {
+        public FaceAnglesWrapper Encode(int i) {
             if (i != ASM_WORD_SIGNED) {
                 throw new UnsupportedOperationException("We only support ASM_WORD_SIGNED");
             }

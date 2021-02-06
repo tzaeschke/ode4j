@@ -5,14 +5,13 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 import static org.ode4j.ode.DTriMesh.dMTV__MAX;
 import static org.ode4j.ode.DTriMesh.dMTV__MIN;
-import static org.ode4j.ode.internal.Common.SIZE_MAX;
-import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.Common.*;
 
 //    template<class TStorageCodec>
 //        :
 //public DxTriDataBase.IFaceAngleStorageControl,
 //public IFaceAngleStorageView
-class FaceAnglesWrapper<TStorageCodec> implements IFaceAngleStorageControl, IFaceAngleStorageView {
+class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements IFaceAngleStorageControl, IFaceAngleStorageView {
 
 
     protected FaceAnglesWrapper(int triangleCount) {
@@ -31,8 +30,9 @@ class FaceAnglesWrapper<TStorageCodec> implements IFaceAngleStorageControl, IFac
     //void freeInstance();
 
     //private:
-    typedef typename TStorageCodec::storage_type storage_type;
-    typedef storage_type TriangleFaceAngles[dMTV__MAX];
+    //typedef typename TStorageCodec::storage_type storage_type;
+    //typedef storage_type TriangleFaceAngles[dMTV__MAX];
+
 
     static class StorageRecord {
         StorageRecord() {
@@ -40,22 +40,22 @@ class FaceAnglesWrapper<TStorageCodec> implements IFaceAngleStorageControl, IFac
         }
 
         int m_triangleCount;
-        TriangleFaceAngles[] m_triangleFaceAngles = new TriangleFaceAngles[1];
+        //TriangleFaceAngles[] m_triangleFaceAngles = new TriangleFaceAngles[1];
+        double[][] m_triangleFaceAngles = new double[1][3];
     }
 
-    ;
-
-    static int calculateStorageSizeForTriangleCount(int triangleCount) {
-        final int baseIncludedTriangleCount = dSTATIC_ARRAY_SIZE(FaceAnglesWrapper<TStorageCodec>::StorageRecord,
-                m_triangleFaceAngles);
+    //static
+    int calculateStorageSizeForTriangleCount(int triangleCount) {
+        final int baseIncludedTriangleCount = m_triangleFaceAngles.length ;
+                //dSTATIC_ARRAY_SIZE(FaceAnglesWrapper<TStorageCodec>::StorageRecord, m_triangleFaceAngles);
         final int singleTriangleSize = membersize(FaceAnglesWrapper<TStorageCodec>::StorageRecord,
                 m_triangleFaceAngles[0]);
         return sizeof(FaceAnglesWrapper < TStorageCodec >) + (triangleCount > baseIncludedTriangleCount ?
-                (triangleCount - baseIncludedTriangleCount) * singleTriangleSize : 0
-        U);
+                (triangleCount - baseIncludedTriangleCount) * singleTriangleSize : 0U);
     }
 
-    static int calculateTriangleCountForStorageSize(int storageSize) {
+    //static
+    int calculateTriangleCountForStorageSize(int storageSize) {
         dIASSERT(storageSize >= sizeof(FaceAnglesWrapper < TStorageCodec >));
 
         final int baseIncludedTriangleCount = dSTATIC_ARRAY_SIZE(FaceAnglesWrapper<TStorageCodec>::StorageRecord,
@@ -81,7 +81,7 @@ class FaceAnglesWrapper<TStorageCodec> implements IFaceAngleStorageControl, IFac
         dIASSERT(dTMPL_IN_RANGE(triangleIndex, 0, getAllocatedTriangleCount()));
         dIASSERT(dTMPL_IN_RANGE(vertexIndex, dMTV__MIN, dMTV__MAX));
 
-        m_record.m_triangleFaceAngles[triangleIndex][vertexIndex] = TStorageCodec::encodeForStorage (dAngleValue);
+        m_record.m_triangleFaceAngles[triangleIndex][vertexIndex] = TStorageCodec.encodeForStorage (dAngleValue);
     }
 
     // FaceAngleDomain getFaceAngle(dReal &out_angleValue, unsigned triangleIndex, dMeshTriangleVertex vertexIndex)
@@ -90,12 +90,13 @@ class FaceAnglesWrapper<TStorageCodec> implements IFaceAngleStorageControl, IFac
         dIASSERT(dTMPL_IN_RANGE(triangleIndex, 0, getAllocatedTriangleCount()));
         dIASSERT(dTMPL_IN_RANGE(vertexIndex, dMTV__MIN, dMTV__MAX));
 
-        storage_type storedValue = m_record.m_triangleFaceAngles[triangleIndex][vertexIndex];
+        //storage_type storedValue = m_record.m_triangleFaceAngles[triangleIndex][vertexIndex];
+        double storedValue = m_record.m_triangleFaceAngles[triangleIndex][vertexIndex];
         //FaceAngleDomain
-        int resultDomain = TStorageCodec::classifyStorageValue (storedValue);
+        int resultDomain = TStorageCodec.classifyStorageValue (storedValue);
 
-        out_angleValue = TStorageCodec::isAngleDomainStored (resultDomain) ? TStorageCodec::decodeStorageValue
-        (storedValue) :REAL(0.0);
+        out_angleValue.set(TStorageCodec.isAngleDomainStored(resultDomain) ?
+                TStorageCodec.decodeStorageValue(storedValue) : 0.0);
         return resultDomain;
     }
 
@@ -125,12 +126,12 @@ class FaceAnglesWrapper<TStorageCodec> implements IFaceAngleStorageControl, IFac
     //DxTriDataBase.IFaceAngleStorageControl *FaceAnglesWrapper<DxTriDataBase.TStorageCodec>::allocateInstance
     // (unsigned triangleCount, DxTriDataBase.IFaceAngleStorageView *&out_storageView)
     IFaceAngleStorageControl allocateInstance(int triangleCount, IFaceAngleStorageView[] out_storageView) {
-        FaceAnglesWrapper<DxTriDataBase.TStorageCodec> *result = NULL;
+        //FaceAnglesWrapper<DxTriDataBase.TStorageCodec> *result = NULL;
+        FaceAnglesWrapper<DxTriDataBase.TStorageCodec> result = NULL;
 
         do {
             int sizeRequired;
-            if (!FaceAnglesWrapper<DxTriDataBase.TStorageCodec>::calculateInstanceSizeRequired
-            (sizeRequired, triangleCount))
+            if (!FaceAnglesWrapper<DxTriDataBase.TStorageCodec>.calculateInstanceSizeRequired(sizeRequired, triangleCount))
             {
                 break;
             }
@@ -197,7 +198,7 @@ class FaceAnglesWrapper<TStorageCodec> implements IFaceAngleStorageControl, IFac
     /*virtual */
     //boolean FaceAnglesWrapper<TStorageCodec>::areNegativeAnglesStored() const
     public boolean areNegativeAnglesStored() {
-        return DxTriDataBase.TStorageCodec::areNegativeAnglesCoded ();
+        return DxTriDataBase.TStorageCodec.areNegativeAnglesCoded ();
     }
 
     //template<class TStorageCodec>

@@ -693,6 +693,9 @@ enum {
 
 //#define dMACRO_MAX(a, b) ((a) > (b) ? (a) : (b))
 //			#define dMACRO_MIN(a, b) ((a) < (b) ? (a) : (b))
+	public static int dMACRO_MIN(int a, int b) {
+		return Math.min(a, b);
+	}
 //
 //			#define dMAKE_PADDING_SIZE(DataType, ElementType) ((sizeof(DataType) + sizeof(ElementType) - 1) / sizeof(ElementType))
 
@@ -897,12 +900,34 @@ enum {
 //	(amax) - (_sized_unsigned < dMACRO_MAX(sizeof(amax), sizeof(amin)) >::type)(amin)))
 //}
 
+	public static boolean dTMPL_IN_RANGE(int aval, int amin, int amax) {
+		//		((typename _sized_unsigned<dMACRO_MAX(sizeof(aval), sizeof(amin))>::type)(
+		//				(typename _sized_unsigned<dMACRO_MAX(sizeof(aval), sizeof(amin))>::type)(aval)
+		//				-
+		//				(typename _sized_unsigned<dMACRO_MAX(sizeof(aval), sizeof(amin))>::type)(amin))
+		//		<
+		//		(typename _sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)
+		//		((typename _sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)(amax)
+		//				-
+		//				(typename _sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)(amin)))
+		// TODO CHECK-TZ ???
+		return aval >= amin && aval < amax;
+	}
+
 	public static double dCLAMP(double aval, double alo, double ahi) {
 		return dxClamp(aval, alo, ahi);
 	}
 
 	public static int dCLAMP(int aval, int alo, int ahi) {
 		return dxClamp(aval, alo, ahi);
+	}
+
+	public static int dARRAY_SIZE(int[] aarr) {
+		return aarr.length;
+	}
+
+	public static int dSTATIC_ARRAY_SIZE(aclass, aarr) {
+		dARRAY_SIZE(((aclass *)sizeof(void *))->aarr);
 	}
 
 }
