@@ -97,7 +97,7 @@ public class DxTriDataBase extends DBase {
     //class dxTriDataBase extends dxTriDataBase_Parent
     //class DxTriDataBase extends DBase {
         //public:
-        DxTriDataBase() {
+        public DxTriDataBase() {
             super();
             m_vertices = null;
             m_vertexStride = 0;

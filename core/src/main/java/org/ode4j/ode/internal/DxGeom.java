@@ -185,13 +185,13 @@ public abstract class DxGeom extends DBase implements DGeom {
 		_gflags = is_zero_sized ? (_gflags | GEOM_ZERO_SIZED) : (_gflags & ~GEOM_ZERO_SIZED); 
 	}
 
-    private DVector3C buildUpdatedPosition() {
+    DVector3C buildUpdatedPosition() {
 		dIASSERT((_gflags & GEOM_PLACEABLE) != 0);
 		recomputePosr();
 		return _final_posr.pos();
 	}
 
-    private DMatrix3C buildUpdatedRotation() {
+    DMatrix3C buildUpdatedRotation() {
 		dIASSERT((_gflags & GEOM_PLACEABLE) != 0);
 		recomputePosr();
 		return _final_posr.R();
