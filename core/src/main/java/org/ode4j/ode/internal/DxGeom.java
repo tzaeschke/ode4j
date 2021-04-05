@@ -173,7 +173,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	Block _qtIdxEx; // TZ: Used by QuadTree-Space.
 	
 	//double[] aabb = new double[6];	// cached AABB for this space
-	DAABB _aabb = new DAABB();	// cached AABB for this space
+	protected DAABB _aabb = new DAABB();	// cached AABB for this space
 	//TODO unsigned
 	long category_bits,collide_bits;
 

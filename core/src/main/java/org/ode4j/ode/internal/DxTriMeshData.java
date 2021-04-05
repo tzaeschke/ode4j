@@ -27,7 +27,7 @@ package org.ode4j.ode.internal;
 import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.DTriMeshData;
 
-public abstract class DxTriMeshData implements DTriMeshData {
+public abstract class DxTriMeshData2 implements DTriMeshData {
 	//TZ from "collision_trimesh_internal.h"
 	
     /** Array of flags for which edges and verts should be used on each triangle */

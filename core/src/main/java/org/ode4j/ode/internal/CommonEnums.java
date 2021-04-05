@@ -131,9 +131,9 @@ public class CommonEnums {
     public static final int dQUE__MAX = dQUE__AXIS_MAX;
 
 	public static void dAssertVec3Element() {
-		// TZ: Using this elaborate construct of constants to acces an array is inefficient with
+		// TZ: Using this elaborate construct of constants to access an array is inefficient with
 		//     ode4j's DVector3 implementation. Therefore, we do not use these constants but
-		//     asert() that they are as we expect them to be.
+		//     assert() that they are as we expect them to be.
 		assert(dV3E_X == 0 && dV3E_Y == 1 && dV3E_Z == 2);
 	}
 

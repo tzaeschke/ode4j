@@ -1,3 +1,27 @@
+/*************************************************************************
+ *                                                                       *
+ * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
+ * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2009-2014 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
+ *                                                                       *
+ * This library is free software; you can redistribute it and/or         *
+ * modify it under the terms of EITHER:                                  *
+ *   (1) The GNU Lesser General Public License as published by the Free  *
+ *       Software Foundation; either version 2.1 of the License, or (at  *
+ *       your option) any later version. The text of the GNU Lesser      *
+ *       General Public License is included with this library in the     *
+ *       file LICENSE.TXT.                                               *
+ *   (2) The BSD-style license that is included with this library in     *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
+ *                                                                       *
+ * This library is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
+ *                                                                       *
+ *************************************************************************/
 package org.ode4j.ode.internal.trimesh;
 
 import org.ode4j.math.DVector3;
@@ -295,7 +319,7 @@ public class DxTriDataBase extends DBase {
     //    const tcoordfloat *vertexInstances, int vertexStride, const tindexint *triangleVertexIndices, int triangleStride)
     //<tcoordfloat, tindexint>
     /*static */
-    void retrieveTriangleVertexPoints(DVector3[] out_Points, int triangleIndex, final double[] vertexInstances, int vertexStride, final int[] triangleVertexIndices, int triangleStride) {
+    static void retrieveTriangleVertexPoints(DVector3[] out_Points, int triangleIndex, final double[] vertexInstances, int vertexStride, final int[] triangleVertexIndices, int triangleStride) {
         //final tindexint[] triangleIndicesOfInterest = (const tindexint *)((uint8 *)triangleVertexIndices + (size_t)triangleIndex * triangleStride);
         final int triangleIndicesOfInterestPos = triangleIndex * triangleStride;
         for (int trianglePoint = dMTV__MIN; trianglePoint != dMTV__MAX; ++trianglePoint) {
@@ -948,7 +972,7 @@ public class DxTriDataBase extends DBase {
 
     /*extern ODE_API */
     //int dGeomTriMeshDataPreprocess2(dTriMeshDataID g, unsigned int buildRequestFlags, const dintptr *requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/)
-    int dGeomTriMeshDataPreprocess2(DTriMeshData g, int buildRequestFlags, final int[] requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/)
+    boolean dGeomTriMeshDataPreprocess2(DTriMeshData g, int buildRequestFlags, final int[] requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/)
     {
         dUASSERT(g != null, "The argument is not a trimesh data");
         //dAASSERT((buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_FACE_ANGLES)) == 0 || requestExtraData == NULL || dIN_RANGE(requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES], dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX));
@@ -957,7 +981,7 @@ public class DxTriDataBase extends DBase {
                 || dIN_RANGE(requestExtraData[DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES],
                     dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX));
 
-        DxTriMeshData data = g;
+        DxTriMeshData data = (DxTriMeshData) g;
 
         boolean buildUseFlags = (buildRequestFlags & (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES)) != 0;
         //        FaceAngleStorageMethod faceAnglesRequirement = (buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_FACE_ANGLES)) != 0
@@ -988,7 +1012,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         mesh.assignCallback(Callback);
     }
 
@@ -998,7 +1022,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         return mesh.retrieveCallback();
     }
 
@@ -1008,7 +1032,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         mesh.assignArrayCallback(ArrayCallback);
     }
 
@@ -1018,7 +1042,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         return mesh.retrieveArrayCallback();
     }
 
@@ -1028,7 +1052,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         mesh.assignRayCallback(Callback);
     }
 
@@ -1038,7 +1062,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         return mesh.retrieveRayCallback();
     }
 
@@ -1048,7 +1072,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         mesh.assignTriMergeCallback(Callback);
     }
 
@@ -1058,7 +1082,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         return mesh.retrieveTriMergeCallback();
     }
 
@@ -1068,7 +1092,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         mesh.assignMeshData(Data);
     }
 
@@ -1078,7 +1102,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         return mesh.retrieveMeshData();
     }
 
@@ -1106,7 +1130,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
 
         //dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
         int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
@@ -1119,11 +1143,11 @@ public class DxTriDataBase extends DBase {
 
     /*extern ODE_API */
     //int dGeomTriMeshIsTCEnabled(dGeomID g, int geomClass)
-    int dGeomTriMeshIsTCEnabled(DTriMesh g, int geomClass)
+    boolean dGeomTriMeshIsTCEnabled(DTriMesh g, int geomClass)
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
 
         //dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
         int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
@@ -1140,7 +1164,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         return mesh.retrieveMeshData();
     }
 
@@ -1151,7 +1175,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         mesh.clearTCCache();
     }
 
@@ -1162,7 +1186,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
         int result = mesh.getMeshTriangleCount();
         return result;
     }
@@ -1175,7 +1199,7 @@ public class DxTriDataBase extends DBase {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
         dUASSERT(v0 != null || v1 != null || v2 != null, "A meaningless call");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
 
         DVector3[] pv = new DVector3[]{ v0, v1, v2 };
         mesh.fetchMeshTransformedTriangle(pv, index);
@@ -1187,7 +1211,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = g;
+        DxTriMesh mesh = (DxTriMesh) g;
 
         DVector3[] dv = DVector3.newArray(3);
         mesh.fetchMeshTransformedTriangle(dv, index);
@@ -1202,7 +1226,7 @@ public class DxTriDataBase extends DBase {
     {
         //dUASSERT(triMeshGeom && triMeshGeom->type == dTriMeshClass, "The argument is not a trimesh");
 
-        DxTriMesh mesh = triMeshGeom;
+        DxTriMesh mesh = (DxTriMesh) triMeshGeom;
         return mesh.retrieveFaceAngleView();
     }
 
@@ -1242,8 +1266,5 @@ public class DxTriDataBase extends DBase {
         //dGeomTriMeshDataSet(g, dTRIMESHDATA_USE_FLAGS, (void *)buf);
         dGeomTriMeshDataSet(g, dTRIMESHDATA.USE_FLAGS, buf);
     }
-
-
-
 
 }
