@@ -66,12 +66,14 @@ public class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
     //        const vec3f * retrieveVertexInstances() const{
     //            return (const vec3f *)dxTriMeshData_Parent::retrieveVertexInstances ();
     //        }
-    public GimGeometry.vec3f[] retrieveVertexInstances() {
-        return (GimGeometry.vec3f[]) super.retrieveVertexInstances ();
+    @Override
+    public float[] retrieveVertexInstances() {
+        return super.retrieveVertexInstances ();
     }
     //        const GUINT32 * retrieveTriangleVertexIndices() const{
     //            return (const GUINT32 *)dxTriMeshData_Parent::retrieveTriangleVertexIndices ();
     //        }
+    @Override
     public int[] retrieveTriangleVertexIndices(){
         return super.retrieveTriangleVertexIndices ();
     }
@@ -81,20 +83,20 @@ public class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
     //        void assignNormals (const dReal * normals){
     //            dxTriMeshData_Parent::assignNormals (normals);
     //        }
-    public void assignNormals (final double[] normals){
+    public void assignNormals (final float[] normals){
         super.assignNormals (normals);
     }
 
     //        const dReal * retrieveNormals() const{
     //            return (const dReal *)dxTriMeshData_Parent::retrieveNormals ();
     //        }
-    public double[] retrieveNormals() {
-        return (double[])super.retrieveNormals ();
+    public float[] retrieveNormals() {
+        return super.retrieveNormals ();
     }
     //        size_t calculateNormalsMemoryRequirement () const{
     //            return retrieveTriangleCount() * (sizeof(dReal) * dSA__MAX);
     //        }
-    int calculateNormalsMemoryRequirement () {
+    public int calculateNormalsMemoryRequirement () {
         throw new UnsupportedOperationException();
         //return retrieveTriangleCount() * (Double.BYTES * dSA__MAX);
     }
@@ -115,11 +117,13 @@ public class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
         }
 
         // If this mesh has already been preprocessed, exit
-        boolean result = faceAndgesRequirementToUse == ASM__INVALID || retrieveTriangleCount() == 0 || meaningfulPreprocessData(faceAndgesRequirementToUse);
+        boolean result = faceAndgesRequirementToUse == ASM__INVALID ||
+                retrieveTriangleCount() == 0 ||
+                meaningfulPreprocessData(faceAndgesRequirementToUse);
         return result;
     }
 
-    static class TrimeshDataVertexIndexAccessor_GIMPACT {
+    static class TrimeshDataVertexIndexAccessor_GIMPACT implements TMeshDataAccessorI {
         //enum {
         //TRIANGLEINDEX_STRIDE = dxTriMesh::TRIANGLEINDEX_STRIDE,
         //} ;
@@ -135,7 +139,8 @@ public class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
         }
 
         //void getTriangleVertexIndices(unsigned out_VertexIndices[dMTV__MAX], unsigned triangleIdx) const
-        void getTriangleVertexIndices(int[] out_VertexIndices, int triangleIdx) {
+        @Override
+        public void getTriangleVertexIndices(int[] out_VertexIndices, int triangleIdx) {
             //const GUINT32 * triIndicesBegin = m_TriangleVertexIndices;
             //final int triStride = TRIANGLEINDEX_STRIDE;
 
@@ -149,7 +154,7 @@ public class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
         final int[] m_TriangleVertexIndices;
     }
 
-    static class TrimeshDataTrianglePointAccessor_GIMPACT
+    static class TrimeshDataTrianglePointAccessor_GIMPACT implements TMeshDataAccessorP
     {
         //enum {
         //VERTEXINSTANCE_STRIDE = dxTriMesh::VERTEXINSTANCE_STRIDE, TRIANGLEINDEX_STRIDE = dxTriMesh::TRIANGLEINDEX_STRIDE,
@@ -167,7 +172,8 @@ public class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
         }
 
         //void getTriangleVertexPoints (dVector3 out_Points[dMTV__MAX], unsigned triangleIndex) const
-        void getTriangleVertexPoints (DVector3[] out_Points, int triangleIndex) {
+        @Override
+        public void getTriangleVertexPoints (DVector3[] out_Points, int triangleIndex) {
             DxTriMeshData.retrieveTriangleVertexPoints (out_Points, triangleIndex,
                 m_VertexInstances, VERTEXINSTANCE_STRIDE,
                     m_TriangleVertexIndices, TRIANGLEINDEX_STRIDE);
@@ -175,7 +181,7 @@ public class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
 
         //            const vec3f * m_VertexInstances;
         //            const GUINT32 * m_TriangleVertexIndices;
-        final GimGeometry.vec3f[] m_VertexInstances;
+        final float[] m_VertexInstances;
         final int[] m_TriangleVertexIndices;
 
     }
@@ -226,8 +232,8 @@ public class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
             Arrays.sort(edges);
 
             TrimeshDataTrianglePointAccessor_GIMPACT pointAccessor  = new TrimeshDataTrianglePointAccessor_GIMPACT(this);
-            final double[] externalNormals = retrieveNormals();
-            IFaceAngleStorageControl[] faceAngles = retrieveFaceAngles();
+            final float[] externalNormals = retrieveNormals();
+            IFaceAngleStorageControl faceAngles = retrieveFaceAngles();
             meaningfulPreprocess_buildEdgeFlags(null, faceAngles, edges, numEdges, vertices, externalNormals, pointAccessor);
 
             //dFree(tempBuffer, totalTempMemoryRequired);

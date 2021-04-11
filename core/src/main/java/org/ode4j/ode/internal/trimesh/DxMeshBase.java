@@ -112,7 +112,8 @@ public abstract class DxMeshBase extends DxGeom {
         return m_TriMergeCallback;
     }
 
-    public void assignMeshData(DxTriDataBase instance) {
+    //public void assignMeshData(DxTriDataBase instance) {
+    void assignMeshData(DxTriMeshData instance) {
         setMeshData(instance);
         // I changed my data -- I know nothing about my own AABB anymore.
         markAABBBad();
@@ -125,11 +126,11 @@ public abstract class DxMeshBase extends DxGeom {
 
     //        IFaceAngleStorageControl *retrieveFaceAngleStorage() { return m_Data.retrieveFaceAngles(); }
     //        IFaceAngleStorageView *retrieveFaceAngleView() { return m_Data.retrieveFaceAngleView(); }
-    public IFaceAngleStorageControl[] retrieveFaceAngleStorage() {
+    public IFaceAngleStorageControl retrieveFaceAngleStorage() {
         return m_Data.retrieveFaceAngles();
     }
 
-    public IFaceAngleStorageView[] retrieveFaceAngleView() {
+    public IFaceAngleStorageView retrieveFaceAngleView() {
         return m_Data.retrieveFaceAngleView();
     }
 
@@ -172,6 +173,16 @@ public abstract class DxMeshBase extends DxGeom {
     public DTriMesh.DTriArrayCallback m_ArrayCallback;
     public DTriMesh.DTriRayCallback m_RayCallback;
     public DTriMesh.DTriTriMergeCallback m_TriMergeCallback;
+
+    public DTriMesh.DTriCallback Callback() { return m_Callback; }
+    public DTriMesh.DTriArrayCallback ArrayCallback() { return m_ArrayCallback; }
+    public DTriMesh.DTriRayCallback RayCallback() { return m_RayCallback; }
+    public DTriMesh.DTriTriMergeCallback TriMergeCallback() { return m_TriMergeCallback; }
+    public void setCallback(DTriMesh.DTriCallback callback) { m_Callback = callback; }
+    public void setArrayCallback(DTriMesh.DTriArrayCallback callback) { m_ArrayCallback = callback; }
+    public void setRayCallback(DTriMesh.DTriRayCallback callback) { m_RayCallback = callback; }
+    public void setTriMergeCallback(DTriMesh.DTriTriMergeCallback callback) { m_TriMergeCallback = callback; }
+
 
     // Data types
     private DxTriDataBase m_Data;

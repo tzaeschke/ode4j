@@ -49,6 +49,13 @@ import static org.ode4j.ode.internal.trimesh.DxMeshBase.TTC__MAX;
 
 public class DxTriDataBase extends DBase {
 
+    // TZ: FAke Interface to represent templates
+    interface TMeshDataAccessorP {
+        void getTriangleVertexPoints(DVector3[] firstTriangleStorage, int m_triIdx);
+    }
+    interface TMeshDataAccessorI {
+        void getTriangleVertexIndices(int[] vertexIndices, int triangleIdx);
+    }
 
     // **************************************************
     //  collision_trimesh_trimesh.cpp
@@ -168,15 +175,12 @@ public class DxTriDataBase extends DBase {
         //protected:
         //    const void *retrieveVertexInstances() const { return m_vertices; }
         //    const void *retrieveTriangleVertexIndices() const { return m_indices; }
-        @Deprecated
-        private class Void {
-        }
 
-        protected Void[] retrieveVertexInstances() {
+        protected float[] retrieveVertexInstances() {
             return m_vertices;
         }
 
-        protected Void[] retrieveTriangleVertexIndices() {
+        protected int[] retrieveTriangleVertexIndices() {
             return m_indices;
         }
 
@@ -192,21 +196,21 @@ public class DxTriDataBase extends DBase {
 
         //const void assignNormals(const void *normals) { m_normals = normals; }
         //const void *retrieveNormals() const { return m_normals; }
-        public void assignNormals(Void[] normals) {
+        public void assignNormals(float[] normals) {
             m_normals = normals;
         }
 
-        public Void[] retrieveNormals() {
+        public float[] retrieveNormals() {
             return m_normals;
         }
 
         //        IFaceAngleStorageControl *retrieveFaceAngles() const { return m_faceAngles; }
         //        IFaceAngleStorageView *retrieveFaceAngleView() const { return m_faceAngleView; }
-        public IFaceAngleStorageControl[] retrieveFaceAngles() {
+        public IFaceAngleStorageControl retrieveFaceAngles() {
             return m_faceAngles;
         }
 
-        public IFaceAngleStorageView[] retrieveFaceAngleView() {
+        public IFaceAngleStorageView retrieveFaceAngleView() {
             return m_faceAngleView;
         }
 
@@ -279,11 +283,11 @@ public class DxTriDataBase extends DBase {
 
         //        private:
         //    const void *m_vertices;
-        private final Void[] m_vertices;
+        private final float[] m_vertices;
         private int m_vertexStride;
         private int m_vertexCount;
         //const void *m_indices;
-        private final Void[] m_indices;
+        private final int[] m_indices;
         private int m_triangleCount;
         private int m_triStride;
         private boolean m_single;
@@ -292,9 +296,9 @@ public class DxTriDataBase extends DBase {
         //        const void *m_normals;
         //        IFaceAngleStorageControl *m_faceAngles;
         //        IFaceAngleStorageView *m_faceAngleView;
-        private final Void[] m_normals;
-        private IFaceAngleStorageControl[] m_faceAngles;
-        private IFaceAngleStorageView[] m_faceAngleView;
+        private final float[] m_normals;
+        private IFaceAngleStorageControl m_faceAngles;
+        private IFaceAngleStorageView m_faceAngleView;
     //}
 
 
@@ -319,7 +323,7 @@ public class DxTriDataBase extends DBase {
     //    const tcoordfloat *vertexInstances, int vertexStride, const tindexint *triangleVertexIndices, int triangleStride)
     //<tcoordfloat, tindexint>
     /*static */
-    static void retrieveTriangleVertexPoints(DVector3[] out_Points, int triangleIndex, final double[] vertexInstances, int vertexStride, final int[] triangleVertexIndices, int triangleStride) {
+    static void retrieveTriangleVertexPoints(DVector3[] out_Points, int triangleIndex, final float[] vertexInstances, int vertexStride, final int[] triangleVertexIndices, int triangleStride) {
         //final tindexint[] triangleIndicesOfInterest = (const tindexint *)((uint8 *)triangleVertexIndices + (size_t)triangleIndex * triangleStride);
         final int triangleIndicesOfInterestPos = triangleIndex * triangleStride;
         for (int trianglePoint = dMTV__MIN; trianglePoint != dMTV__MAX; ++trianglePoint) {
@@ -342,9 +346,8 @@ public class DxTriDataBase extends DBase {
     //    template<class TMeshDataAccessor>
     //    /*static */
     //    void dxTriDataBase::meaningfulPreprocess_SetupEdgeRecords(EdgeRecord *edges, size_t numEdges, const TMeshDataAccessor &dataAccessor)
-    <TMeshDataAccessor>
     /*static */
-    void meaningfulPreprocess_SetupEdgeRecords(EdgeRecord[] edges, int numEdges, final TMeshDataAccessor dataAccessor) {
+    void meaningfulPreprocess_SetupEdgeRecords(EdgeRecord[] edges, int numEdges, final TMeshDataAccessorI dataAccessor) {
         int[] vertexIndices = new int[dMTV__MAX];
         // Make a list of every edge in the mesh
         int triangleIdx = 0;
@@ -361,11 +364,10 @@ public class DxTriDataBase extends DBase {
     //    void dxTriDataBase::meaningfulPreprocess_buildEdgeFlags(uint8 *useFlags/*=NULL*/, IFaceAngleStorageControl *faceAngles/*=NULL*/,
     //                                                            EdgeRecord *edges, size_t numEdges, VertexRecord *vertices,
     //    const dReal *externalNormals/*=NULL*/, const TMeshDataAccessor &dataAccessor)
-    <TMeshDataAccessor>
     /*static */
-    void meaningfulPreprocess_buildEdgeFlags(byte[] useFlags/*=NULL*/, IFaceAngleStorageControl[] faceAngles/*=NULL*/
-            , EdgeRecord[] edges, int numEdges, VertexRecord[] vertices, final double[] externalNormals/*=NULL*/,
-                                             final TMeshDataAccessor dataAccessor) {
+    void meaningfulPreprocess_buildEdgeFlags(byte[] useFlags/*=NULL*/, IFaceAngleStorageControl faceAngles/*=NULL*/
+            , EdgeRecord[] edges, int numEdges, VertexRecord[] vertices, final float[] externalNormals/*=NULL*/,
+                                             final TMeshDataAccessorP dataAccessor) {
         dIASSERT(useFlags != null || faceAngles != null);
         dIASSERT(numEdges != 0);
 
@@ -581,7 +583,7 @@ public class DxTriDataBase extends DBase {
     /*static */
     //    void dxTriDataBase::buildBoundaryEdgeAngle(IFaceAngleStorageControl *faceAngles,
     //                                               EdgeRecord *currEdge)
-    void buildBoundaryEdgeAngle(IFaceAngleStorageControl[] faceAngles, EdgeRecord currEdge0) {
+    void buildBoundaryEdgeAngle(IFaceAngleStorageControl faceAngles, EdgeRecord currEdge0) {
         final double faceAngle = (0.0);
 
         // DMeshTriangleVertex
@@ -599,9 +601,17 @@ public class DxTriDataBase extends DBase {
     //    const dVector3 &triangleNormal, const dVector3 &secondOppositeVertexSegment,
     //    const dVector3 *pSecondTriangleMatchingEdge/*=NULL*/, const dVector3 *pFirstTriangle/*=NULL*/,
     //    const TMeshDataAccessor &dataAccessor)
-    <TMeshDataAccessor>
     /*static */
-    void buildConcaveEdgeAngle(IFaceAngleStorageControl[] faceAngles, boolean negativeAnglesStored, EdgeRecord[] currEdge, final RefDouble normalSegmentDot, final RefDouble lengthSquareProduct, DVector3C triangleNormal, DVector3C secondOppositeVertexSegment, DVector3C pSecondTriangleMatchingEdge/*=NULL*/, DVector3C pFirstTriangle/*=NULL*/, final TMeshDataAccessor dataAccessor) {
+    void buildConcaveEdgeAngle(IFaceAngleStorageControl faceAngles,
+                               boolean negativeAnglesStored,
+                               EdgeRecord[] currEdge,
+                               final RefDouble normalSegmentDot,
+                               final RefDouble lengthSquareProduct,
+                               DVector3C triangleNormal,
+                               DVector3C secondOppositeVertexSegment,
+                               DVector3C pSecondTriangleMatchingEdge/*=NULL*/,
+                               DVector3C pFirstTriangle/*=NULL*/,
+                               final TMeshDataAccessorP dataAccessor) {
         double faceAngle;
         //DMeshTriangleVertex
         int firstVertexStartIndex = currEdge[0].getEdgeStartVertexIndex();
@@ -610,7 +620,7 @@ public class DxTriDataBase extends DBase {
         if (negativeAnglesStored) {
             // The length square product can become zero due to precision loss
             // when both the normal and the opposite edge vectors are very small.
-            if (lengthSquareProduct != (0.0)) {
+            if (lengthSquareProduct.get() != (0.0)) {
                 faceAngle = -calculateEdgeAngleValidated(firstVertexStartIndex, currEdge, normalSegmentDot, lengthSquareProduct, triangleNormal, secondOppositeVertexSegment, pSecondTriangleMatchingEdge, pFirstTriangle, dataAccessor);
             } else {
                 faceAngle = (0.0);
@@ -633,9 +643,8 @@ public class DxTriDataBase extends DBase {
     //    const dVector3 &triangleNormal, const dVector3 &secondOppositeVertexSegment,
     //    const dVector3 *pSecondTriangleMatchingEdge/*=NULL*/, const dVector3 *pFirstTriangle/*=NULL*/,
     //    const TMeshDataAccessor &dataAccessor)
-    <TMeshDataAccessor>
     /*static */
-    void buildConvexEdgeAngle(IFaceAngleStorageControl[] faceAngles, EdgeRecord[] currEdge, final RefDouble normalSegmentDot, final RefDouble lengthSquareProduct, DVector3C triangleNormal, DVector3 secondOppositeVertexSegment, DVector3C[] pSecondTriangleMatchingEdge/*=NULL*/, final DVector3C[] pFirstTriangle
+    void buildConvexEdgeAngle(IFaceAngleStorageControl faceAngles, EdgeRecord[] currEdge, final RefDouble normalSegmentDot, final RefDouble lengthSquareProduct, DVector3C triangleNormal, DVector3 secondOppositeVertexSegment, DVector3C[] pSecondTriangleMatchingEdge/*=NULL*/, final DVector3C[] pFirstTriangle
             /*=NULL*/, final TMeshDataAccessor dataAccessor) {
         double faceAngle;
         //dMeshTriangleVertex
@@ -643,8 +652,8 @@ public class DxTriDataBase extends DBase {
 
         // The length square product can become zero due to precision loss
         // when both the normal and the opposite edge vectors are very small.
-        if (normalSegmentDot < (0.0) && lengthSquareProduct != (0.0)) {
-            faceAngle = calculateEdgeAngleValidated(firstVertexStartIndex, currEdge, -normalSegmentDot, lengthSquareProduct, triangleNormal, secondOppositeVertexSegment, pSecondTriangleMatchingEdge, pFirstTriangle, dataAccessor);
+        if (normalSegmentDot.get() < (0.0) && lengthSquareProduct.get() != (0.0)) {
+            faceAngle = calculateEdgeAngleValidated(firstVertexStartIndex, currEdge, -normalSegmentDot.get(), lengthSquareProduct, triangleNormal, secondOppositeVertexSegment, pSecondTriangleMatchingEdge, pFirstTriangle, dataAccessor);
         } else {
             faceAngle = (0.0);
         }
@@ -662,13 +671,12 @@ public class DxTriDataBase extends DBase {
     //    const dVector3 &triangleNormal, const dVector3 &secondOppositeVertexSegment,
     //    const dVector3 *pSecondTriangleMatchingEdge/*=NULL*/, const dVector3 *pFirstTriangle/*=NULL*/,
     //    const TMeshDataAccessor &dataAccessor)
-    <TMeshDataAccessor>
     /*static */
     double calculateEdgeAngleValidated(int firstVertexStartIndex, EdgeRecord[] currEdge,
                                        final RefDouble normalSegmentDot, final RefDouble lengthSquareProduct,
                                        DVector3C triangleNormal, DVector3C secondOppositeVertexSegment,
                                        DVector3C[] pSecondTriangleMatchingEdge/*=NULL*/, DVector3C[] pFirstTriangle
-            /*=NULL*/, final TMeshDataAccessor dataAccessor) {
+            /*=NULL*/, final TMeshDataAccessorP dataAccessor) {
         dIASSERT(lengthSquareProduct.get() >= (0.0));
 
         double result;
@@ -690,20 +698,22 @@ public class DxTriDataBase extends DBase {
                 // first triangle normal by vector from the degenerate edge to its opposite vertex.
 
                 // Retrieve the first triangle points if necessary
-                DVector3[] firstTriangleStorage[ dMTV__MAX];
+                DVector3[] firstTriangleStorage = DVector3.newArray(dMTV__MAX); //[ dMTV__MAX];
                 //const dVector3 *pFirstTriangleToUse = pFirstTriangle;
                 int pFirstTriangleToUse = 0;//pFirstTriangle;
 
                 if (pFirstTriangle == null) {
                     dataAccessor.getTriangleVertexPoints(firstTriangleStorage, currEdge[0].m_triIdx);
-                    pFirstTriangleToUse = &firstTriangleStorage[dMTV__MIN];
+                    pFirstTriangleToUse = dMTV__MIN;//&firstTriangleStorage[dMTV__MIN];
                 }
 
                 // Calculate the opposite vector
                 int firstTriangleOppositeIndex = firstVertexStartIndex != dMTV__MIN ? firstVertexStartIndex - 1 : dMTV__MAX - 1;
 
                 DVector3 firstOppositeVertexSegment = new DVector3();
-                dSubtractVectors3(firstOppositeVertexSegment, pFirstTriangleToUse[firstTriangleOppositeIndex], pFirstTriangleToUse[firstVertexStartIndex]);
+                dSubtractVectors3(firstOppositeVertexSegment,
+                        firstTriangleStorage[pFirstTriangleToUse + firstTriangleOppositeIndex],
+                        firstTriangleStorage[pFirstTriangleToUse + firstVertexStartIndex]);
 
                 DVector3 normalFirstOppositeSegmentCross = new DVector3();
                 dCalcVectorCross3(normalFirstOppositeSegmentCross, triangleNormal, firstOppositeVertexSegment);
@@ -748,7 +758,7 @@ public class DxTriDataBase extends DBase {
 
     //typedef IFaceAngleStorageControl *(FAngleStorageAllocProc)(unsigned triangleCount, IFaceAngleStorageView *&out_storageView);
     interface FAngleStorageAllocProc {
-        IFaceAngleStorageControl allocateInstance(int triangleCount, IFaceAngleStorageView[] out_storageView);
+        IFaceAngleStorageControl allocateInstance(int triangleCount, Ref<IFaceAngleStorageView> out_storageView);
     }
 
     //    BEGIN_NAMESPACE_OU();
@@ -787,8 +797,8 @@ public class DxTriDataBase extends DBase {
     //    const void *indices, unsigned indexCount, int triStride,
     //    const void *normals,
     //                                  bool single)
-    void buildData(final Void[] vertices, int vertexStride, int vertexCount, final Void[] indices, int indexCount,
-                   int triStride, final Void[] normals, boolean single)
+    void buildData(final float[] vertices, int vertexStride, int vertexCount, final int[] indices, int indexCount,
+                   int triStride, final float[] normals, boolean single)
     {
         dIASSERT(vertices != null);
         dIASSERT(indices != null);
@@ -816,17 +826,17 @@ public class DxTriDataBase extends DBase {
 
         dIASSERT(m_faceAngles == null);
 
-        IFaceAngleStorageView[] storageView;
+        Ref<IFaceAngleStorageView> storageView = new Ref<>();
 
         int triangleCount = m_triangleCount;
 
         FAngleStorageAllocProc allocProc = g_AngleStorageAllocProcs.Encode(storageMethod);
-        IFaceAngleStorageControl storageInstance = allocProc(triangleCount, storageView);
+        IFaceAngleStorageControl storageInstance = allocProc.allocateInstance(triangleCount, storageView);
 
         if (storageInstance != null)
         {
             m_faceAngles = storageInstance;
-            m_faceAngleView = storageView;
+            m_faceAngleView = storageView.get();
             result = true;
         }
 
@@ -882,32 +892,34 @@ public class DxTriDataBase extends DBase {
 
     //////////////////////////////////////////////////////////////////////////
 
-    /*extern ODE_API */
-//    void dGeomTriMeshDataBuildSimple1(dTriMeshDataID g,
-//    const dReal* Vertices, int VertexCount,
-//    const dTriIndex* Indices, int IndexCount,
-//    const int *Normals)
-    void dGeomTriMeshDataBuildSimple1(DTriMeshData g,
-    final double[] Vertices, int VertexCount,
-    final int[] Indices, int IndexCount,
-    final int[] Normals)
-    {
-//#ifdef dSINGLE
-//        dGeomTriMeshDataBuildSingle1(g,
-//                Vertices, 4 * sizeof(dReal), VertexCount,
-//                Indices, IndexCount, 3 * sizeof(dTriIndex),
-//                Normals);
-//#else
-//        dGeomTriMeshDataBuildDouble1(g, Vertices, 4 * sizeof(dReal), VertexCount,
-//                Indices, IndexCount, 3 * sizeof(dTriIndex),
-//                Normals);
-        dGeomTriMeshDataBuildDouble1(g, Vertices, 4 * 1, VertexCount,
-                Indices, IndexCount, 3 * 1,
-                Normals);
-//#endif
-    }
+    // TZ(2021-04-11) These methods don't appear to have ever been available.
+    //    /*extern ODE_API */
+    ////    void dGeomTriMeshDataBuildSimple1(dTriMeshDataID g,
+    ////    const dReal* Vertices, int VertexCount,
+    ////    const dTriIndex* Indices, int IndexCount,
+    ////    const int *Normals)
+    //    void dGeomTriMeshDataBuildSimple1(DTriMeshData g,
+    //    final double[] Vertices, int VertexCount,
+    //    final int[] Indices, int IndexCount,
+    //    final int[] Normals)
+    //    {
+    ////#ifdef dSINGLE
+    ////        dGeomTriMeshDataBuildSingle1(g,
+    ////                Vertices, 4 * sizeof(dReal), VertexCount,
+    ////                Indices, IndexCount, 3 * sizeof(dTriIndex),
+    ////                Normals);
+    ////#else
+    ////        dGeomTriMeshDataBuildDouble1(g, Vertices, 4 * sizeof(dReal), VertexCount,
+    ////                Indices, IndexCount, 3 * sizeof(dTriIndex),
+    ////                Normals);
+    //        dGeomTriMeshDataBuildDouble1(g, Vertices, 4 * 1, VertexCount,
+    //                Indices, IndexCount, 3 * 1,
+    //                Normals);
+    ////#endif
+    //    }
 
 
+    // TZ(2021-04-11) These methods don't appear to have ever been available.
     /*extern ODE_API */
     //    void dGeomTriMeshDataBuildSingle(dTriMeshDataID g,
     //    const void* Vertices, int VertexStride, int VertexCount,
@@ -917,34 +929,36 @@ public class DxTriDataBase extends DBase {
     //                Indices, IndexCount, TriStride, (const void *)NULL);
     //    }
 
-    /*extern ODE_API */
-    //    void dGeomTriMeshDataBuildDouble(dTriMeshDataID g,
-    //    const void* Vertices, int VertexStride, int VertexCount,
-    //    const void* Indices, int IndexCount, int TriStride)
-    void dGeomTriMeshDataBuildDouble(DTriMeshData g,
-    final double[] Vertices, int VertexStride, int VertexCount,
-    final int[] Indices, int IndexCount, int TriStride)
-    {
-        dGeomTriMeshDataBuildDouble1(g, Vertices, VertexStride, VertexCount,
-                Indices, IndexCount, TriStride, null);
-    }
+    // TZ(2021-04-11) These methods don't appear to have ever been available.
+    //    /*extern ODE_API */
+    //    //    void dGeomTriMeshDataBuildDouble(dTriMeshDataID g,
+    //    //    const void* Vertices, int VertexStride, int VertexCount,
+    //    //    const void* Indices, int IndexCount, int TriStride)
+    //    void dGeomTriMeshDataBuildDouble(DTriMeshData g,
+    //    final double[] Vertices, int VertexStride, int VertexCount,
+    //    final int[] Indices, int IndexCount, int TriStride)
+    //    {
+    //        dGeomTriMeshDataBuildDouble1(g, Vertices, VertexStride, VertexCount,
+    //                Indices, IndexCount, TriStride, null);
+    //    }
+    //
+    //    /*extern ODE_API */
+    //    //    void dGeomTriMeshDataBuildSimple(dTriMeshDataID g,
+    //    //    const dReal* Vertices, int VertexCount,
+    //    //    const dTriIndex* Indices, int IndexCount)
+    //    void dGeomTriMeshDataBuildSimple(DTriMeshData g,
+    //    final double[] Vertices, int VertexCount,
+    //    final int[] Indices, int IndexCount)
+    //    {
+    //        dGeomTriMeshDataBuildSimple1(g,
+    //                Vertices, VertexCount, Indices, IndexCount,
+    //                (int[]) null);
+    //    }
+
 
     /*extern ODE_API */
-    //    void dGeomTriMeshDataBuildSimple(dTriMeshDataID g,
-    //    const dReal* Vertices, int VertexCount,
-    //    const dTriIndex* Indices, int IndexCount)
-    void dGeomTriMeshDataBuildSimple(DTriMeshData g,
-    final double[] Vertices, int VertexCount,
-    final int[] Indices, int IndexCount)
-    {
-        dGeomTriMeshDataBuildSimple1(g,
-                Vertices, VertexCount, Indices, IndexCount,
-                (int[]) null);
-    }
-
-
-    /*extern ODE_API */
-    int dGeomTriMeshDataPreprocess(DTriMeshData g)
+    //int
+    boolean dGeomTriMeshDataPreprocess(DTriMeshData g)
     {
         //unsigned buildRequestFlags = (1U << dTRIDATAPREPROCESS_BUILD_CONCAVE_EDGES);
         int buildRequestFlags = (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES);
@@ -1093,7 +1107,7 @@ public class DxTriDataBase extends DBase {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
         DxTriMesh mesh = (DxTriMesh) g;
-        mesh.assignMeshData(Data);
+        mesh.assignMeshData((DxTriMeshData) Data);
     }
 
     /*extern ODE_API */
@@ -1237,34 +1251,34 @@ public class DxTriDataBase extends DBase {
     //////////////////////////////////////////////////////////////////////////
     // Deprecated functions
 
-    /*extern */
-    //void dGeomTriMeshDataGetBuffer(dTriMeshDataID g, unsigned char **buf, int *bufLen)
-    @Deprecated // Deprecated in ODE
-    void dGeomTriMeshDataGetBuffer(DTriMeshData g, Ref<byte[]> buf, RefInt bufLen)
-    {
-        RefInt dataSizeStorage = new RefInt();
-        //void *dataPointer = dGeomTriMeshDataGet2(g, dTRIMESHDATA_USE_FLAGS, (bufLen != NULL ? &dataSizeStorage : NULL));
-        byte[] dataPointer = dGeomTriMeshDataGet2(g, dTRIMESHDATA.USE_FLAGS, (bufLen != null ? dataSizeStorage : null));
-
-        if (bufLen != null)
-        {
-            //*bufLen = (int)dataSizeStorage;
-            bufLen.set( dataSizeStorage.get() );
-        }
-
-        if (buf != null)
-        {
-            buf.set( dataPointer );
-        }
-    }
-
-    /*extern */
-    @Deprecated // Deprecated in ODE
-    //void dGeomTriMeshDataSetBuffer(dTriMeshDataID g, unsigned char* buf)
-    void dGeomTriMeshDataSetBuffer(DTriMeshData g, byte[] buf)
-    {
-        //dGeomTriMeshDataSet(g, dTRIMESHDATA_USE_FLAGS, (void *)buf);
-        dGeomTriMeshDataSet(g, dTRIMESHDATA.USE_FLAGS, buf);
-    }
+//    /*extern */
+//    //void dGeomTriMeshDataGetBuffer(dTriMeshDataID g, unsigned char **buf, int *bufLen)
+//    @Deprecated // Deprecated in ODE
+//    void dGeomTriMeshDataGetBuffer(DTriMeshData g, Ref<byte[]> buf, RefInt bufLen)
+//    {
+//        RefInt dataSizeStorage = new RefInt();
+//        //void *dataPointer = dGeomTriMeshDataGet2(g, dTRIMESHDATA_USE_FLAGS, (bufLen != NULL ? &dataSizeStorage : NULL));
+//        byte[] dataPointer = dGeomTriMeshDataGet2(g, dTRIMESHDATA.USE_FLAGS, (bufLen != null ? dataSizeStorage : null));
+//
+//        if (bufLen != null)
+//        {
+//            //*bufLen = (int)dataSizeStorage;
+//            bufLen.set( dataSizeStorage.get() );
+//        }
+//
+//        if (buf != null)
+//        {
+//            buf.set( dataPointer );
+//        }
+//    }
+//
+//    /*extern */
+//    @Deprecated // Deprecated in ODE
+//    //void dGeomTriMeshDataSetBuffer(dTriMeshDataID g, unsigned char* buf)
+//    void dGeomTriMeshDataSetBuffer(DTriMeshData g, byte[] buf)
+//    {
+//        //dGeomTriMeshDataSet(g, dTRIMESHDATA_USE_FLAGS, (void *)buf);
+//        dGeomTriMeshDataSet(g, dTRIMESHDATA.USE_FLAGS, buf);
+//    }
 
 }

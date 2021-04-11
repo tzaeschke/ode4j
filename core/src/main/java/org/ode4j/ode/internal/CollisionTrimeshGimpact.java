@@ -34,6 +34,8 @@ import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimTriCollision;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.trimesh.DxMeshBase;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
+import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 import static org.ode4j.ode.DTriMesh.dMTV__MAX;
 import static org.ode4j.ode.internal.Common.dAASSERT;
@@ -325,132 +327,134 @@ public class CollisionTrimeshGimpact {
 
     /*extern */
     void dGeomTriMeshDataDestroy(DTriMeshData g) {
-        DxTriMeshData data = g;
+        DxTriMeshData data = (DxTriMeshData) g;
         //delete data;
         data.DESTRUCTOR();
     }
 
-    /*extern */
-    //void dGeomTriMeshDataSet(DTriMeshData g, int dataId, void *pDataLocation) {
-    void dGeomTriMeshDataSet(DTriMeshData g, DTriMesh.dTRIMESHDATA dataId, Void[] pDataLocation) {
-        dUASSERT(g, "The argument is not a trimesh data");
-
-        DxTriMeshData data = g;
-
-        switch (dataId) {
-            case FACE_NORMALS: {
-                data.assignNormals((const dReal *)pDataLocation);
-                break;
-            }
-
-            case USE_FLAGS: // Not used for GIMPACT
-            {
-                break;
-            }
-
-            // case dTRIMESHDATA__MAX: -- To be located by Find in Files
-            default: {
-                dUASSERT(dataId.ordinal(), "invalid data type");
-                break;
-            }
-        }
-    }
+    //    /*extern */
+    //    //void dGeomTriMeshDataSet(DTriMeshData g, int dataId, void *pDataLocation) {
+    //    void dGeomTriMeshDataSet(DTriMeshData g, DTriMesh.dTRIMESHDATA dataId, Void[] pDataLocation) {
+    //        //dUASSERT(g, "The argument is not a trimesh data");
+    //
+    //        DxTriMeshData data = (DxTriMeshData) g;
+    //
+    //        switch (dataId) {
+    //            case FACE_NORMALS: {
+    //                data.assignNormals((const dReal *)pDataLocation);
+    //                break;
+    //            }
+    //
+    //            case USE_FLAGS: // Not used for GIMPACT
+    //            {
+    //                break;
+    //            }
+    //
+    //            // case dTRIMESHDATA__MAX: -- To be located by Find in Files
+    //            default: {
+    //                dUASSERT(dataId.ordinal(), "invalid data type");
+    //                break;
+    //            }
+    //        }
+    //    }
 
     //static void *
     //geomTriMeshDataGet(dTriMeshDataID g, int dataId, size_t *pOutDataSize);
 
-    /*extern */
-    //void *
-    RefInt
-    dGeomTriMeshDataGet(DTriMeshData g, DTriMesh.dTRIMESHDATA dataId) {
-        return geomTriMeshDataGet(g, dataId, new RefInt()); //null);
-    }
+    // TZ the following methods are disabled, they don't appear to be used (or have ever been available in ode4j)
+//    /*extern */
+//    //void *
+//    RefInt
+//    dGeomTriMeshDataGet(DTriMeshData g, DTriMesh.dTRIMESHDATA dataId) {
+//        return geomTriMeshDataGet(g, dataId, new RefInt()); //null);
+//    }
+//
+//    /*extern */
+//    //void *
+//    //dGeomTriMeshDataGet2(DTriMeshData g, int dataId, size_t *pOutDataSize) {
+//    RefInt
+//    dGeomTriMeshDataGet2(DTriMeshData g, DTriMesh.dTRIMESHDATA dataId, RefInt pOutDataSize) {
+//        return geomTriMeshDataGet(g, dataId, pOutDataSize);
+//    }
+//
+//    //    static void *
+//    //    geomTriMeshDataGet(dTriMeshDataID g, int dataId, size_t *pOutDataSize) {
+//    static RefInt
+//    geomTriMeshDataGet(DTriMeshData g, DTriMesh.dTRIMESHDATA dataId, RefInt pOutDataSize) {
+//
+//        //dUASSERT(g, "The argument is not a trimesh data");
+//
+//        final DxTriMeshData data = (DxTriMeshData) g;
+//
+//        //void *result = NULL;
+//        RefInt result = null;
+//
+//        switch (dataId) {
+//            case FACE_NORMALS: {
+//                if (pOutDataSize != null) {
+//                    pOutDataSize.set( data.calculateNormalsMemoryRequirement() );
+//                }
+//
+//                //result = ( void *)data.retrieveNormals();
+//                result = data.retrieveNormals();
+//                break;
+//            }
+//
+//            case USE_FLAGS: // Not not used for GIMPACT
+//            {
+//                if (pOutDataSize != null) {
+//                    pOutDataSize.set(0);
+//                }
+//
+//                break;
+//            }
+//
+//            // case dTRIMESHDATA__MAX: -- To be located by Find in Files
+//            default: {
+//                if (pOutDataSize != null) {
+//                    pOutDataSize.set(0);
+//                }
+//
+//                dUASSERT(dataId.ordinal(), "invalid data type");
+//                break;
+//            }
+//        }
+//
+//        return result;
+//    }
 
-    /*extern */
-    //void *
-    //dGeomTriMeshDataGet2(DTriMeshData g, int dataId, size_t *pOutDataSize) {
-    RefInt
-    dGeomTriMeshDataGet2(DTriMeshData g, DTriMesh.dTRIMESHDATA dataId, RefInt pOutDataSize) {
-        return geomTriMeshDataGet(g, dataId, pOutDataSize);
-    }
-
-    //    static void *
-    //    geomTriMeshDataGet(dTriMeshDataID g, int dataId, size_t *pOutDataSize) {
-    static RefInt
-    geomTriMeshDataGet(DTriMeshData g, DTriMesh.dTRIMESHDATA dataId, RefInt pOutDataSize) {
-
-        dUASSERT(g, "The argument is not a trimesh data");
-
-        final DxTriMeshData data = g;
-
-        //void *result = NULL;
-        RefInt result = null;
-
-        switch (dataId) {
-            case FACE_NORMALS: {
-                if (pOutDataSize != null) {
-                    pOutDataSize.set( data.calculateNormalsMemoryRequirement() );
-                }
-
-                //result = ( void *)data.retrieveNormals();
-                result = data.retrieveNormals();
-                break;
-            }
-
-            case USE_FLAGS: // Not not used for GIMPACT
-            {
-                if (pOutDataSize != null) {
-                    pOutDataSize.set(0);
-                }
-
-                break;
-            }
-
-            // case dTRIMESHDATA__MAX: -- To be located by Find in Files
-            default: {
-                if (pOutDataSize != null) {
-                    pOutDataSize.set(0);
-                }
-
-                dUASSERT(dataId.ordinal(), "invalid data type");
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    /*extern */
-    void dGeomTriMeshDataBuildSingle1(DTriMeshData g,
-        final Void[] Vertices, int VertexStride, int VertexCount,
-        final Void[] Indices, int IndexCount, int TriStride,
-        final Void[] Normals) {
-        dUASSERT(g, "The argument is not a trimesh data");
-        dAASSERT(Vertices);
-        dAASSERT(Indices);
-
-        DxTriMeshData data = g;
-
-        data.buildData(Vertices, VertexStride, VertexCount, Indices, IndexCount, TriStride, Normals, true);
-    }
-
-    /*extern */
+    // TZ (2021-04-11) THis doesn't appear to be used (or have been available in earlier ode4j)
+//    /*extern */
+//    void dGeomTriMeshDataBuildSingle1(DTriMeshData g,
+//        final float[] Vertices, int VertexStride, int VertexCount,
+//        final int[] Indices, int IndexCount, int TriStride,
+//        final Void[] Normals) {
+//        //dUASSERT(g, "The argument is not a trimesh data");
+//        dAASSERT(Vertices);
+//        dAASSERT(Indices);
+//
+//        DxTriMeshData data = (DxTriMeshData) g;
+//
+//        data.buildData(Vertices, VertexStride, VertexCount, Indices, IndexCount, TriStride, Normals, true);
+//    }
+//
+//    /*extern */
+////    void dGeomTriMeshDataBuildDouble1(DTriMeshData g,
+////        const void*Vertices, int VertexStride, int VertexCount,
+////        const void*Indices, int IndexCount, int TriStride,
+////        const void*Normals) {
 //    void dGeomTriMeshDataBuildDouble1(DTriMeshData g,
-//        const void*Vertices, int VertexStride, int VertexCount,
-//        const void*Indices, int IndexCount, int TriStride,
-//        const void*Normals) {
-    void dGeomTriMeshDataBuildDouble1(DTriMeshData g,
-        final Void[] Vertices, int VertexStride, int VertexCount,
-        final Void[]Indices, int IndexCount, int TriStride,
-        final Void[] Normals) {
-        dUASSERT(g, "The argument is not a trimesh data");
-        dAASSERT(Vertices);
-        dAASSERT(Indices);
-
-        DxTrimeshData data = g;
-
-        data.buildData(Vertices, VertexStride, VertexCount, Indices, IndexCount, TriStride, Normals, false);
-    }
+//        final double[] Vertices, int VertexStride, int VertexCount,
+//        final int[]Indices, int IndexCount, int TriStride,
+//        final Void[] Normals) {
+//        //dUASSERT(g, "The argument is not a trimesh data");
+//        dAASSERT(Vertices);
+//        dAASSERT(Indices);
+//
+//        DxTriMeshData data = (DxTriMeshData) g;
+//
+//        data.buildData(Vertices, VertexStride, VertexCount, Indices, IndexCount, TriStride, Normals, false);
+//    }
 
 
     //////////////////////////////////////////////////////////////////////////
@@ -459,8 +463,22 @@ public class CollisionTrimeshGimpact {
     //dGeomID dCreateTriMesh(dSpaceID space, dTriMeshDataID Data, dTriCallback*Callback, dTriArrayCallback*ArrayCallback, dTriRayCallback*RayCallback) {
     DGeom dCreateTriMesh(DSpace space, DTriMeshData Data, DTriMesh.DTriCallback Callback,
                          DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
-        DxTriMesh mesh = new DxTriMesh(space, Data, Callback, ArrayCallback, RayCallback);
-        return mesh;
+        //DxTriMesh mesh = new DxTriMesh(space, Data, Callback, ArrayCallback, RayCallback);
+        DxTriMesh Geom;
+        switch (OdeConfig.dTRIMESH_TYPE) {
+            // TODO TZ-CHECK remove TrimeshDisabled construction here?
+            //      move this method into DxTrimesh!!! (?)
+            // TZ: is it correct to check for TriMeshDisabled here in the GimPact collider?
+            //     This is new and wasn't in the original ode4j code or ODE code.
+            case DISABLED: Geom = new DxTriMeshDisabled((DxSpace)space, (DxTriMeshData) Data); break;
+            case GIMPACT: Geom = new DxGimpact((DxSpace)space, (DxGimpactData) Data); break;
+            default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
+        }
+        Geom.setCallback(Callback);
+        Geom.setArrayCallback(ArrayCallback);
+        Geom.setRayCallback(RayCallback);
+
+        return Geom;
     }
 
 

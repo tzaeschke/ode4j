@@ -40,6 +40,7 @@ import org.ode4j.ode.internal.gimpact.GimGeometry;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.gimpact.GimGeometry.mat4f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
  * 
@@ -97,16 +98,27 @@ public class DxGimpact extends DxTriMesh {
 
 	// Trimesh
 
+	// TODO TZ_CHECK
+	// TODO TZ_CHECK
+	// TODO TZ_CHECK
+	// TODO TZ_CHECK
+	// TODO TZ_CHECK
+	// TODO TZ_CHECK
+	// TODO TZ_CHECK The following are DxTrimesh:: methods, they should be move to DxTrimesh!!!
+	// TODO TZ_CHECK This also helpw with the callbacks and booleans in the constructor +getters + setters
+	// TODO TZ_CHECK
+	// TODO TZ_CHECK
+
 	//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){
 	DxGimpact(DxSpace Space, DxGimpactData Data) { 
 		super(Space);
 		_Data = Data;
 		type = dTriMeshClass;
 
-		Callback = null;
-		ArrayCallback = null;
-		RayCallback = null;
-		TriMergeCallback = null; // Not initialized in dCreateTriMesh
+		setCallback(null);
+		setArrayCallback(null);
+		setRayCallback(null);
+		setTriMergeCallback(null); // Not initialized in dCreateTriMesh
 
 //		for (int i=0; i < m_buffer_managers.length; i++) { 
 //			m_buffer_managers[i] = new GBUFFER_MANAGER_DATA(); 

@@ -39,13 +39,13 @@ import static org.ode4j.ode.internal.gimpact.GimGeometry.IDENTIFY_MATRIX_4X4;
 
 //    typedef dxMeshBase dxTriMesh_Parent;
 //    struct dxTriMesh: public dxTriMesh_Parent {
-abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
+public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
 
     //public:
     // Functions
     //dxTriMesh(dxSpace * Space, dxTriMeshData * Data, dTriCallback * Callback, dTriArrayCallback * ArrayCallback, dTriRayCallback * RayCallback):
     //dxTriMesh_Parent(Space, NULL, Callback, ArrayCallback, RayCallback, true) // TC has speed/space 'issues' that don't make it a clear win by default on spheres/boxes.
-    DxTriMesh(DxSpace Space, DxTriMeshData Data, DTriMesh.DTriCallback Callback,
+    protected DxTriMesh(DxSpace Space, DxTriMeshData Data, DTriMesh.DTriCallback Callback,
               DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
         // TC has speed/space 'issues' that don't make it a clear win by default on spheres/boxes.
         super(Space, null, Callback, ArrayCallback, RayCallback, true);
@@ -151,7 +151,7 @@ abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
         GIM_AABB_COPY( m_collision_trimesh.getAabbSet().getGlobalBound(), _aabb );
     }
 
-
+    @Override
     //void dxTriMesh::
     void assignMeshData(DxTriMeshData Data) {
         // GIMPACT only supports stride 12, so we need to catch the error early.
@@ -162,7 +162,7 @@ abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
         "Change the stride, or use Opcode trimeshes instead.\n");
 
         //        dxTriMesh_Parent::assignMeshData (Data);
-        DxMeshBase.assignMeshData (Data);
+        super.assignMeshData (Data);
 
         //Create trimesh
 //            const vec3f * vertexInstances = Data -> retrieveVertexInstances();
@@ -182,7 +182,8 @@ abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
 //                    1                                               // transformed reply
 //        );
 //        }
-          final GimGeometry.vec3f  vertexInstances = Data.retrieveVertexInstances();
+          //final GimGeometry.vec3f  vertexInstances = Data.retrieveVertexInstances();
+        final float[] vertexInstances = Data.retrieveVertexInstances();
         if (vertexInstances != null) {
             final int[] triangleVertexIndices = Data.retrieveTriangleVertexIndices();
 
@@ -192,9 +193,13 @@ abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
             // TODO TZ-CHECK Important, we are reallocating the mesh here, is this useful?
             //    Can we avoid it? Should we avoid it?
             m_collision_trimesh =
-            GimTrimesh.gim_trimesh_create_from_data(
-                    vertexInstances, vertexInstanceCount, false,
-                    triangleVertexIndices, triangleVertexCount, false, true);
+                    GimTrimesh.gim_trimesh_create_from_data(
+                            vertexInstances, false,
+                            triangleVertexIndices, false, true);
+            //GimTrimesh.gim_trimesh_create_from_data(
+            //        vertexInstances, vertexInstanceCount, false,
+            //        triangleVertexIndices, triangleVertexCount, false, true);
+
             //            gim_trimesh_create_from_data(m_buffer_managers, & m_collision_trimesh,                           // gimpact mesh
             //                    const_cast < vec3f * > (vertexInstances),           // vertices
             //                    dCAST_TO_SMALLER(GUINT32, vertexInstanceCount), // nr of verts

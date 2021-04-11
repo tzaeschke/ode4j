@@ -28,6 +28,8 @@ import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
+import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 class DxTriMeshDisabled extends DxTriMesh {
 
@@ -110,8 +112,8 @@ class DxTriMeshDisabled extends DxTriMesh {
 	DTriMeshData dGeomTriMeshDataCreate() { return null; }
 	void dGeomTriMeshDataDestroy() {}
 
-	public void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data) {}
-	public Object dGeomTriMeshDataGet(DTriMeshData g, int data_id) { return null; }
+	//	public void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data) {}
+	//	public Object dGeomTriMeshDataGet(DTriMeshData g, int data_id) { return null; }
 
 	//ODE_API 
 	//void dGeomTriMeshSetLastTransform( DGeom g, DMatrix4 last_trans ) {}

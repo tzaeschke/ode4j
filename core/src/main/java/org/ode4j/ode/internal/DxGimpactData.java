@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import org.ode4j.math.DVector4;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
+import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 /**
  *
@@ -285,20 +286,20 @@ public class DxGimpactData extends DxTriMeshData {
 //	}
 
 
-	//void dGeomTriMeshDataGetBuffer(dTriMeshDataID g, unsigned char** buf, int* bufLen)
-	void dGeomTriMeshDataGetBuffer(Ref<Object> buf, RefInt bufLen)
-	{
-		buf.r = null;
-		bufLen.i = 0;
-		throw new UnsupportedOperationException();
-	}
-
-	//void dGeomTriMeshDataSetBuffer(dTriMeshDataID g, unsigned char* buf)
-	void dGeomTriMeshDataSetBuffer(Ref<Object> buf)
-	{
-		//g->UseFlags = buf;
-		throw new UnsupportedOperationException();
-	}
+	//	//void dGeomTriMeshDataGetBuffer(dTriMeshDataID g, unsigned char** buf, int* bufLen)
+	//	void dGeomTriMeshDataGetBuffer(Ref<Object> buf, RefInt bufLen)
+	//	{
+	//		buf.r = null;
+	//		bufLen.i = 0;
+	//		throw new UnsupportedOperationException();
+	//	}
+	//
+	//	//void dGeomTriMeshDataSetBuffer(dTriMeshDataID g, unsigned char* buf)
+	//	void dGeomTriMeshDataSetBuffer(Ref<Object> buf)
+	//	{
+	//		//g->UseFlags = buf;
+	//		throw new UnsupportedOperationException();
+	//	}
 	
 	
 	void dGeomTriMeshDataUpdate() {

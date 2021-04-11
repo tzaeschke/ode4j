@@ -40,6 +40,7 @@ import org.ode4j.ode.internal.gimpact.GimGeometry.mat4f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec4f;
 import org.ode4j.ode.internal.gimpact.GimTriCollision.GIM_TRIANGLE_RAY_CONTACT_DATA;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 public class DxGimpactCollision {
 	

@@ -28,7 +28,7 @@ import org.ode4j.math.DVector3;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.OdeConfig;
 
-public abstract class DxTriMesh extends DxGeom implements DTriMesh {
+public abstract class DxTriMesh2 extends DxGeom implements DTriMesh {
 
 	//TZ from "collision_trimesh_internal.h":
 	// Callbacks

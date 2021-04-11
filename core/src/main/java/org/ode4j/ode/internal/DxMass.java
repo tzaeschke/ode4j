@@ -44,6 +44,7 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DMassC;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.internal.cpp4j.java.FormattedStringBuilder;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
  * DxMass.
