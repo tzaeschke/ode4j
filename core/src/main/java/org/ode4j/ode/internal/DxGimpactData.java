@@ -162,8 +162,9 @@ public class DxGimpactData extends DxTriMeshData {
 	}
 
 	@Override
-	//void dxTriMeshData::UpdateData()
-	void UpdateData() {
+	public
+		//void dxTriMeshData::UpdateData()
+	void updateData() {
 		//  BVTree.Refit();
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException();
@@ -303,7 +304,7 @@ public class DxGimpactData extends DxTriMeshData {
 	
 	
 	void dGeomTriMeshDataUpdate() {
-	    UpdateData();
+	    updateData();
 	}
 	
 

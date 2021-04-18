@@ -49,6 +49,7 @@ import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 import static org.ode4j.ode.internal.Common.*;
 
@@ -1297,27 +1298,27 @@ public class CollideTrimeshBox implements DColliderFn {
 
 
 
-//		// test one mesh triangle on intersection with given box
-//		//	void sTrimeshBoxColliderData::_cldTestOneTriangle(const dVector3 &v0, const dVector3 &v1, const dVector3 &v2, int TriIndex)//, void *pvUser)
-//		private void _cldTestOneTriangle(final DVector3C v0, final DVector3C v1,
-//				final DVector3C v2, int TriIndex)//, void *pvUser)
-//		{
-//			// do intersection test and find best separating axis
-//			if(!_cldTestSeparatingAxes(v0, v1, v2)) {
-//				// if not found do nothing
-//				return;
-//			}
-//
-//			// if best separation axis is not found
-//			if (m_iBestAxis == 0) {
-//				// this should not happen (we should already exit in that case)
-//				//dMessage (0, "best separation axis not found");
-//				// do nothing
-//				return;
-//			}
-//
-//			_cldClipping(v0, v1, v2, TriIndex);
-//		}
+		// test one mesh triangle on intersection with given box
+		//	void sTrimeshBoxColliderData::_cldTestOneTriangle(const dVector3 &v0, const dVector3 &v1, const dVector3 &v2, int TriIndex)//, void *pvUser)
+		private void _cldTestOneTriangle(final DVector3C v0, final DVector3C v1,
+				final DVector3C v2, int TriIndex)//, void *pvUser)
+		{
+			// do intersection test and find best separating axis
+			if(!_cldTestSeparatingAxes(v0, v1, v2)) {
+				// if not found do nothing
+				return;
+			}
+
+			// if best separation axis is not found
+			if (m_iBestAxis == 0) {
+				// this should not happen (we should already exit in that case)
+				//dMessage (0, "best separation axis not found");
+				// do nothing
+				return;
+			}
+
+			_cldClipping(v0, v1, v2, TriIndex);
+		}
 
 
 		//	void sTrimeshBoxColliderData::SetupInitialContext(dxTriMesh *TriMesh, dxGeom *BoxGeom,
@@ -1577,8 +1578,8 @@ public class CollideTrimeshBox implements DColliderFn {
 
 		int ctContacts0 = 0;
 
-		DVector3[] dvTZ = { new DVector3(), new DVector3(), new DVector3() };
-		vec3f[] dv = new vec3f[] { new vec3f(), new vec3f(), new vec3f() };//[3];
+		DVector3[] dv = { new DVector3(), new DVector3(), new DVector3() };
+		//vec3f[] dv = new vec3f[] { new vec3f(), new vec3f(), new vec3f() };//[3];
 		for(int i=0;i<collision_result.size();i++)
 		{
 			//			DVector3[] dvTZ = new DVector3[3];
@@ -1588,10 +1589,10 @@ public class CollideTrimeshBox implements DColliderFn {
 			ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv[0], dv[1], dv[2]);
 
 			RefBoolean bFinishSearching = new RefBoolean(false);
-			dvTZ[0].set(dv[0].f);
-			dvTZ[1].set(dv[1].f);
-			dvTZ[2].set(dv[2].f);
-			ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dvTZ, bFinishSearching);
+			//dvTZ[0].set(dv[0].f);
+			//dvTZ[1].set(dv[1].f);
+			//dvTZ[2].set(dv[2].f);
+			ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dv, bFinishSearching);
 		}
 		int contactcount = cData.m_TempContactGeoms.size();
 		int contactmax = (Flags & DxGeom.NUMC_MASK);

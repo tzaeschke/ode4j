@@ -27,6 +27,8 @@ package org.ode4j.ode.internal;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.OdeConfig;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
+import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 public abstract class DxTriMesh2 extends DxGeom implements DTriMesh {
 
@@ -59,13 +61,13 @@ public abstract class DxTriMesh2 extends DxGeom implements DTriMesh {
 	}
 	//dxTriMesh::~dxTriMesh(){}
 
-	public static DxTriMesh dCreateTriMesh(DxSpace space, 
+	public static DxTriMesh2 dCreateTriMesh(DxSpace space,
 			DxTriMeshData Data,
 			DTriCallback Callback,
 			DTriArrayCallback ArrayCallback,
 			DTriRayCallback RayCallback)
 	{
-		DxTriMesh Geom;
+		DxTriMesh2 Geom;
 		switch (OdeConfig.dTRIMESH_TYPE) {
 		case DISABLED: Geom = new DxTriMeshDisabled(space, Data); break;
 		case GIMPACT: Geom = new DxGimpact(space, (DxGimpactData) Data); break;

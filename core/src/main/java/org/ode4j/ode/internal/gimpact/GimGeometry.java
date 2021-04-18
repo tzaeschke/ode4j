@@ -31,6 +31,7 @@
  */
 package org.ode4j.ode.internal.gimpact;
 
+import org.ode4j.math.DVector3;
 import org.ode4j.ode.internal.cpp4j.java.FloatArray;
 import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.cpp4j.java.RefFloat;
@@ -131,7 +132,7 @@ public class GimGeometry extends GimMath {
 
 
 	/** Copy 3D vector from <tt>a</tt> to <tt>b</tt>. */
-	static final void VEC_COPY(vec3f b, vec3f a)				
+	static void VEC_COPY(vec3f b, vec3f a)
 	{						
 	   (b).f[0] = (a).f[0];				
 	   (b).f[1] = (a).f[1];				
@@ -148,6 +149,9 @@ public class GimGeometry extends GimMath {
 	   (b).f[0] = (a).f[0];				
 	   (b).f[1] = (a).f[1];				
 	   (b).f[2] = (a).f[2];				
+	}
+	static void VEC_COPY(DVector3 b, vec3f a) {
+		b.set(a.f[0], a.f[1], a.f[2]);
 	}
 
 

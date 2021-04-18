@@ -44,7 +44,6 @@ import static org.ode4j.ode.DTriMeshData.dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__M
 import static org.ode4j.ode.DTriMeshData.dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.CommonEnums.*;
-import static org.ode4j.ode.internal.DxGimpactCollision.GetPointFromBarycentric;
 import static org.ode4j.ode.internal.trimesh.DxMeshBase.TTC__MAX;
 
 public class DxTriDataBase extends DBase {
@@ -283,11 +282,11 @@ public class DxTriDataBase extends DBase {
 
         //        private:
         //    const void *m_vertices;
-        private final float[] m_vertices;
+        private float[] m_vertices;
         private int m_vertexStride;
         private int m_vertexCount;
         //const void *m_indices;
-        private final int[] m_indices;
+        private int[] m_indices;
         private int m_triangleCount;
         private int m_triStride;
         private boolean m_single;
@@ -296,7 +295,7 @@ public class DxTriDataBase extends DBase {
         //        const void *m_normals;
         //        IFaceAngleStorageControl *m_faceAngles;
         //        IFaceAngleStorageView *m_faceAngleView;
-        private final float[] m_normals;
+        private float[] m_normals;
         private IFaceAngleStorageControl m_faceAngles;
         private IFaceAngleStorageView m_faceAngleView;
     //}
@@ -329,7 +328,7 @@ public class DxTriDataBase extends DBase {
         for (int trianglePoint = dMTV__MIN; trianglePoint != dMTV__MAX; ++trianglePoint) {
             int vertexIndex = triangleVertexIndices[triangleIndicesOfInterestPos + trianglePoint];
             //tcoordfloat * pointVertex = (tcoordfloat *) ((uint8 *) vertexInstances + (size_t) vertexIndex * vertexStride)
-            int pointVertexPos = /*vertexInstances +*/ vertexIndex * vertexStride)
+            int pointVertexPos = /*vertexInstances +*/ vertexIndex * vertexStride;
 
             //dAssignVector3(out_Points[trianglePoint], (double) pointVertex[dSA_X], (double) pointVertex[dSA_Y], (double) pointVertex[dSA_Z]);
             out_Points[trianglePoint].set(
@@ -378,8 +377,8 @@ public class DxTriDataBase extends DBase {
         final int lastEdgeOfs = (numEdges - 1);
         //for (EdgeRecord * currEdge = edges; ; ++currEdge) {
         for (int currEdgeOfs = 0; ; ++currEdgeOfs) {
-            EdgeRecord currEdge0 = edges[currEdgeOfs];
-            EdgeRecord currEdge1 = edges[currEdgeOfs + 1];
+            final EdgeRecord currEdge0 = edges[currEdgeOfs];
+            final EdgeRecord currEdge1 = edges[currEdgeOfs + 1];
             // Handle the last edge separately to have an optimizer friendly loop
             if (currEdgeOfs >= lastEdgeOfs) {
                 // This is a boundary edge
@@ -406,10 +405,11 @@ public class DxTriDataBase extends DBase {
                 final float kConcaveThreshold = 0.000001f;
 
                 //const dVector3 *pSecondTriangleEdgeToUse = NULL, *pFirstTriangleToUse = NULL;
-                DVector3C pSecondTriangleEdgeToUse = null, pFirstTriangleToUse = null;
-                DVector3 secondTriangleMatchingEdge;
+                DVector3C pSecondTriangleEdgeToUse = null;
+                int pFirstTriangleToUse = -1;
+                DVector3 secondTriangleMatchingEdge = new DVector3();
                 DVector3[] firstTriangle = DVector3.newArray( dMTV__MAX);
-                DVector3 secondOppositeVertexSegment, triangleNormal;
+                DVector3 secondOppositeVertexSegment = new DVector3(), triangleNormal = new DVector3();
                 double lengthSquareProduct, secondOppositeSegmentLengthSquare;
 
                 // Calculate orthogonal vector from the matching edge of the second triangle to its opposite point
@@ -443,7 +443,7 @@ public class DxTriDataBase extends DBase {
                 if (externalNormals == null) {
                     // Get the normal of the first triangle
                     dataAccessor.getTriangleVertexPoints(firstTriangle, currEdge0.m_triIdx);
-                    pFirstTriangleToUse = &firstTriangle[dMTV__MIN];
+                    pFirstTriangleToUse = dMTV__MIN;//firstTriangle[dMTV__MIN];
 
                     DVector3 firstEdge = new DVector3(), secondEdge = new DVector3();
                     dSubtractVectors3(secondEdge, firstTriangle[dMTV_THIRD], firstTriangle[dMTV_SECOND]);
@@ -454,8 +454,13 @@ public class DxTriDataBase extends DBase {
                 }
                 // ...or use the externally supplied normals
                 else {
-                    const dReal * pTriangleExternalNormal = externalNormals + currEdge0.m_triIdx * dSA__MAX;
-                    dAssignVector3(triangleNormal, pTriangleExternalNormal[dSA_X], pTriangleExternalNormal[dSA_Y], pTriangleExternalNormal[dSA_Z]);
+                    //const dReal * pTriangleExternalNormal = externalNormals + currEdge0.m_triIdx * dSA__MAX;
+                    final int pTriangleExternalNormalPos = currEdge0.m_triIdx * dSA__MAX;
+                    //dAssignVector3(triangleNormal, pTriangleExternalNormal[dSA_X], pTriangleExternalNormal[dSA_Y], pTriangleExternalNormal[dSA_Z]);
+                    triangleNormal.set(
+                            externalNormals[pTriangleExternalNormalPos + dSA_X],
+                            externalNormals[pTriangleExternalNormalPos + dSA_Y],
+                            externalNormals[pTriangleExternalNormalPos + dSA_Z]);
                     // normalLengthSuqare = REAL(1.0);
                     dUASSERT(dFabs(dCalcVectorLengthSquare3(triangleNormal) - (1.0)) < (0.25) * kConcaveThreshold * kConcaveThreshold, "Mesh triangle normals must be normalized");
 
@@ -471,34 +476,44 @@ public class DxTriDataBase extends DBase {
                 // as it can mark all edges on potentially large (nearly) flat surfaces concave.
                 if (normalSegmentDot > 0.0 && normalSegmentDot * normalSegmentDot >= kConcaveThreshold * kConcaveThreshold * lengthSquareProduct) {
                     if (faceAngles != null) {
-                        buildConcaveEdgeAngle(faceAngles, negativeAnglesStored, currEdge, normalSegmentDot, lengthSquareProduct, triangleNormal, secondOppositeVertexSegment, pSecondTriangleEdgeToUse, pFirstTriangleToUse, dataAccessor);
+                        buildConcaveEdgeAngle(faceAngles, negativeAnglesStored, currEdge0, currEdge1, normalSegmentDot,
+                                lengthSquareProduct, triangleNormal, secondOppositeVertexSegment,
+                                pSecondTriangleEdgeToUse, firstTriangle, pFirstTriangleToUse, dataAccessor);
                     }
 
                     if (useFlags != null) {
                         // Mark the vertices of a concave edge to prevent their use
                         int absVertexFlags1 = edges[vertIdx1].m_absVertexFlags;
-                        edges[vertIdx1].m_absVertexFlags |= absVertexFlags1 | EdgeRecord.AVF_VERTEX_HAS_CONCAVE_EDGE | EdgeRecord.AVF_VERTEX_USED;
+                        edges[vertIdx1].m_absVertexFlags |= absVertexFlags1 | EdgeRecord.AVF_VERTEX_HAS_CONCAVE_EDGE |
+                                EdgeRecord.AVF_VERTEX_USED;
 
-                        if ((absVertexFlags1 & (EdgeRecord.AVF_VERTEX_HAS_CONCAVE_EDGE | EdgeRecord.AVF_VERTEX_USED)) == EdgeRecord.AVF_VERTEX_USED) {
+                        if ((absVertexFlags1 & (EdgeRecord.AVF_VERTEX_HAS_CONCAVE_EDGE | EdgeRecord.AVF_VERTEX_USED)) ==
+                                EdgeRecord.AVF_VERTEX_USED) {
                             // If the vertex was already used from other triangles but then discovered
                             // to have a concave edge, unmark the previous use
                             int usedFromEdgeIndex = vertices[vertIdx1].m_UsedFromEdgeIndex;
-                            const EdgeRecord * usedFromEdge = edges + usedFromEdgeIndex;
+                            //const EdgeRecord * usedFromEdge = edges + usedFromEdgeIndex;
+                            final EdgeRecord usedFromEdge = edges[usedFromEdgeIndex];
                             int usedInTriangleIndex = usedFromEdge.m_triIdx;
-                            byte usedVertFlags = usedFromEdge.m_vertIdx1 == vertIdx1 ? usedFromEdge.m_vert1Flags : usedFromEdge.m_vert2Flags;
+                            byte usedVertFlags = usedFromEdge.m_vertIdx1 == vertIdx1 ?
+                                    usedFromEdge.m_vert1Flags : usedFromEdge.m_vert2Flags;
                             useFlags[usedInTriangleIndex] ^= usedVertFlags;
                             dIASSERT((useFlags[usedInTriangleIndex] & usedVertFlags) == 0);
                         }
 
                         int absVertexFlags2 = edges[vertIdx2].m_absVertexFlags;
-                        edges[vertIdx2].m_absVertexFlags = absVertexFlags2 | EdgeRecord.AVF_VERTEX_HAS_CONCAVE_EDGE | EdgeRecord.AVF_VERTEX_USED;
+                        edges[vertIdx2].m_absVertexFlags = (byte) (absVertexFlags2 | EdgeRecord.AVF_VERTEX_HAS_CONCAVE_EDGE |
+                                                        EdgeRecord.AVF_VERTEX_USED);
 
-                        if ((absVertexFlags2 & (EdgeRecord.AVF_VERTEX_HAS_CONCAVE_EDGE | EdgeRecord.AVF_VERTEX_USED)) == EdgeRecord.AVF_VERTEX_USED) {
+                        if ((absVertexFlags2 & (EdgeRecord.AVF_VERTEX_HAS_CONCAVE_EDGE | EdgeRecord.AVF_VERTEX_USED)) ==
+                                EdgeRecord.AVF_VERTEX_USED) {
                             // Similarly unmark the possible previous use of the edge's second vertex
                             int usedFromEdgeIndex = vertices[vertIdx2].m_UsedFromEdgeIndex;
-                            const EdgeRecord * usedFromEdge = edges + usedFromEdgeIndex;
+                            //const EdgeRecord * usedFromEdge = edges + usedFromEdgeIndex;
+                            final EdgeRecord usedFromEdge = edges[usedFromEdgeIndex];
                             int usedInTriangleIndex = usedFromEdge.m_triIdx;
-                            byte usedVertFlags = usedFromEdge.m_vertIdx1 == vertIdx2 ? usedFromEdge.m_vert1Flags : usedFromEdge.m_vert2Flags;
+                            byte usedVertFlags = usedFromEdge.m_vertIdx1 == vertIdx2 ?
+                                    usedFromEdge.m_vert1Flags : usedFromEdge.m_vert2Flags;
                             useFlags[usedInTriangleIndex] ^= usedVertFlags;
                             dIASSERT((useFlags[usedInTriangleIndex] & usedVertFlags) == 0);
                         }
@@ -507,15 +522,16 @@ public class DxTriDataBase extends DBase {
                 // If this is a convex edge, mark its vertices and edge as used
                 else {
                     if (faceAngles != null) {
-                        buildConvexEdgeAngle(faceAngles, currEdge, normalSegmentDot, lengthSquareProduct, triangleNormal, secondOppositeVertexSegment, pSecondTriangleEdgeToUse, pFirstTriangleToUse, dataAccessor);
+                        buildConvexEdgeAngle(faceAngles, currEdge0, currEdge1, normalSegmentDot, lengthSquareProduct,
+                                triangleNormal, secondOppositeVertexSegment, pSecondTriangleEdgeToUse,
+                                firstTriangle, pFirstTriangleToUse, dataAccessor);
                     }
 
                     if (useFlags != null) {
                         //EdgeRecord * edgeToUse = currEdge;
-                        EdgeRecord edgeToUse0 = edges[currEdgeOfs];
-                        EdgeRecord edgeToUse1 = edges[currEdgeOfs + 1];
-                        int triIdx = edgeToUse0.m_triIdx;
-                        int triIdx1 = edgeToUse1.m_triIdx;
+                        int edgeToUse = currEdgeOfs;
+                        int triIdx = edges[edgeToUse].m_triIdx;
+                        int triIdx1 = edges[edgeToUse + 1].m_triIdx;
 
                         int triUseFlags = useFlags[triIdx];
                         int triUseFlags1 = useFlags[triIdx1];
@@ -533,19 +549,19 @@ public class DxTriDataBase extends DBase {
                             edges[vertIdx1].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
                             // Also remember the index the vertex flags are going to be applied to
                             // to allow easily clear the vertex from the use flags if any concave edges are found to connect to it
-                            vertices[vertIdx1].m_UsedFromEdgeIndex = (int) (edgeToUse - edges);
-                            triUseFlags |= edgeToUse0.m_vert1Flags;
+                            vertices[vertIdx1].m_UsedFromEdgeIndex = (int) (edgeToUse);// - edges);
+                            triUseFlags |= edges[edgeToUse].m_vert1Flags;
                         }
 
                         // Same processing for the second vertex...
                         if ((edges[vertIdx2].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0) {
                             edges[vertIdx2].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
-                            vertices[vertIdx2].m_UsedFromEdgeIndex = (int) (edgeToUse - edges);
-                            triUseFlags |= edgeToUse0.m_vert2Flags;
+                            vertices[vertIdx2].m_UsedFromEdgeIndex = (int) (edgeToUse);// - edges);
+                            triUseFlags |= edges[edgeToUse].m_vert2Flags;
                         }
 
                         // And finally store the use flags adding the edge flags in
-                        useFlags[triIdx] = (byte) (triUseFlags | edgeToUse0.m_edgeFlags);
+                        useFlags[triIdx] = (byte) (triUseFlags | edges[edgeToUse].m_edgeFlags);
                     }
                 }
 
@@ -555,7 +571,7 @@ public class DxTriDataBase extends DBase {
             // This is a boundary edge
             else {
                 if (faceAngles != null) {
-                    buildBoundaryEdgeAngle(faceAngles, currEdge);
+                    buildBoundaryEdgeAngle(faceAngles, currEdge0);
                 }
 
                 if (useFlags != null) {
@@ -564,13 +580,13 @@ public class DxTriDataBase extends DBase {
 
                     if ((edges[vertIdx1].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0) {
                         edges[vertIdx1].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
-                        vertices[vertIdx1].m_UsedFromEdgeIndex = (int) (currEdge - edges);
+                        vertices[vertIdx1].m_UsedFromEdgeIndex = currEdgeOfs; //(int) (currEdge0 - edges);
                         triUseExtraFlags |= currEdge0.m_vert1Flags;
                     }
 
                     if ((edges[vertIdx2].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0) {
                         edges[vertIdx2].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
-                        vertices[vertIdx2].m_UsedFromEdgeIndex = (int) (currEdge - edges);
+                        vertices[vertIdx2].m_UsedFromEdgeIndex = currEdgeOfs; //(int) (currEdge - edges);
                         triUseExtraFlags |= currEdge0.m_vert2Flags;
                     }
 
@@ -604,24 +620,28 @@ public class DxTriDataBase extends DBase {
     /*static */
     void buildConcaveEdgeAngle(IFaceAngleStorageControl faceAngles,
                                boolean negativeAnglesStored,
-                               EdgeRecord[] currEdge,
-                               final RefDouble normalSegmentDot,
-                               final RefDouble lengthSquareProduct,
+                               EdgeRecord currEdge0,
+                               EdgeRecord currEdge1,
+                               final double normalSegmentDot,
+                               final double lengthSquareProduct,
                                DVector3C triangleNormal,
                                DVector3C secondOppositeVertexSegment,
                                DVector3C pSecondTriangleMatchingEdge/*=NULL*/,
-                               DVector3C pFirstTriangle/*=NULL*/,
+                               DVector3C[] firstTriangle,
+                               int pFirstTriangle/*=NULL*/,
                                final TMeshDataAccessorP dataAccessor) {
         double faceAngle;
         //DMeshTriangleVertex
-        int firstVertexStartIndex = currEdge[0].getEdgeStartVertexIndex();
+        int firstVertexStartIndex = currEdge0.getEdgeStartVertexIndex();
 
         // Check if concave angles are stored at all
         if (negativeAnglesStored) {
             // The length square product can become zero due to precision loss
             // when both the normal and the opposite edge vectors are very small.
-            if (lengthSquareProduct.get() != (0.0)) {
-                faceAngle = -calculateEdgeAngleValidated(firstVertexStartIndex, currEdge, normalSegmentDot, lengthSquareProduct, triangleNormal, secondOppositeVertexSegment, pSecondTriangleMatchingEdge, pFirstTriangle, dataAccessor);
+            if (lengthSquareProduct != (0.0)) {
+                faceAngle = -calculateEdgeAngleValidated(firstVertexStartIndex, currEdge0, normalSegmentDot,
+                        lengthSquareProduct, triangleNormal, secondOppositeVertexSegment, pSecondTriangleMatchingEdge,
+                        firstTriangle, pFirstTriangle, dataAccessor);
             } else {
                 faceAngle = (0.0);
             }
@@ -630,10 +650,10 @@ public class DxTriDataBase extends DBase {
             faceAngle = -(double) M_PI;
         }
 
-        faceAngles.assignFacesAngleIntoStorage(currEdge[0].m_triIdx, firstVertexStartIndex, faceAngle);
+        faceAngles.assignFacesAngleIntoStorage(currEdge0.m_triIdx, firstVertexStartIndex, faceAngle);
         //dMeshTriangleVertex
-        int secondVertexStartIndex = currEdge[1].getEdgeStartVertexIndex();
-        faceAngles.assignFacesAngleIntoStorage(currEdge[1].m_triIdx, secondVertexStartIndex, faceAngle);
+        int secondVertexStartIndex = currEdge1.getEdgeStartVertexIndex();
+        faceAngles.assignFacesAngleIntoStorage(currEdge1.m_triIdx, secondVertexStartIndex, faceAngle);
     }
 
     //    template<class TMeshDataAccessor>
@@ -644,24 +664,30 @@ public class DxTriDataBase extends DBase {
     //    const dVector3 *pSecondTriangleMatchingEdge/*=NULL*/, const dVector3 *pFirstTriangle/*=NULL*/,
     //    const TMeshDataAccessor &dataAccessor)
     /*static */
-    void buildConvexEdgeAngle(IFaceAngleStorageControl faceAngles, EdgeRecord[] currEdge, final RefDouble normalSegmentDot, final RefDouble lengthSquareProduct, DVector3C triangleNormal, DVector3 secondOppositeVertexSegment, DVector3C[] pSecondTriangleMatchingEdge/*=NULL*/, final DVector3C[] pFirstTriangle
-            /*=NULL*/, final TMeshDataAccessor dataAccessor) {
+    void buildConvexEdgeAngle(IFaceAngleStorageControl faceAngles, EdgeRecord currEdge0, EdgeRecord currEdge1,
+                              final double normalSegmentDot,
+                              final double lengthSquareProduct, DVector3C triangleNormal,
+                              DVector3 secondOppositeVertexSegment, DVector3C pSecondTriangleMatchingEdge/*=NULL*/,
+                              final DVector3C[] firstTriangle, final int pFirstTriangle
+            /*=NULL*/, final TMeshDataAccessorP dataAccessor) {
         double faceAngle;
         //dMeshTriangleVertex
-        int firstVertexStartIndex = currEdge[0].getEdgeStartVertexIndex();
+        int firstVertexStartIndex = currEdge0.getEdgeStartVertexIndex();
 
         // The length square product can become zero due to precision loss
         // when both the normal and the opposite edge vectors are very small.
-        if (normalSegmentDot.get() < (0.0) && lengthSquareProduct.get() != (0.0)) {
-            faceAngle = calculateEdgeAngleValidated(firstVertexStartIndex, currEdge, -normalSegmentDot.get(), lengthSquareProduct, triangleNormal, secondOppositeVertexSegment, pSecondTriangleMatchingEdge, pFirstTriangle, dataAccessor);
+        if (normalSegmentDot < (0.0) && lengthSquareProduct != (0.0)) {
+            faceAngle = calculateEdgeAngleValidated(firstVertexStartIndex, currEdge0, -normalSegmentDot,
+                    lengthSquareProduct, triangleNormal, secondOppositeVertexSegment, pSecondTriangleMatchingEdge,
+                    firstTriangle, pFirstTriangle, dataAccessor);
         } else {
             faceAngle = (0.0);
         }
 
-        faceAngles.assignFacesAngleIntoStorage(currEdge[0].m_triIdx, firstVertexStartIndex, faceAngle);
+        faceAngles.assignFacesAngleIntoStorage(currEdge0.m_triIdx, firstVertexStartIndex, faceAngle);
         //dMeshTriangleVertex
-        int secondVertexStartIndex = currEdge[1].getEdgeStartVertexIndex();
-        faceAngles.assignFacesAngleIntoStorage(currEdge[1].m_triIdx, secondVertexStartIndex, faceAngle);
+        int secondVertexStartIndex = currEdge1.getEdgeStartVertexIndex();
+        faceAngles.assignFacesAngleIntoStorage(currEdge1.m_triIdx, secondVertexStartIndex, faceAngle);
     }
 
     //    template<class TMeshDataAccessor>
@@ -672,15 +698,16 @@ public class DxTriDataBase extends DBase {
     //    const dVector3 *pSecondTriangleMatchingEdge/*=NULL*/, const dVector3 *pFirstTriangle/*=NULL*/,
     //    const TMeshDataAccessor &dataAccessor)
     /*static */
-    double calculateEdgeAngleValidated(int firstVertexStartIndex, EdgeRecord[] currEdge,
-                                       final RefDouble normalSegmentDot, final RefDouble lengthSquareProduct,
+    double calculateEdgeAngleValidated(int firstVertexStartIndex, EdgeRecord currEdge0,
+                                       final double normalSegmentDot, final double lengthSquareProduct,
                                        DVector3C triangleNormal, DVector3C secondOppositeVertexSegment,
-                                       DVector3C[] pSecondTriangleMatchingEdge/*=NULL*/, DVector3C[] pFirstTriangle
+                                       DVector3C pSecondTriangleMatchingEdge/*=NULL*/, DVector3C[] firstTriangle,
+                                       int pFirstTriangle
             /*=NULL*/, final TMeshDataAccessorP dataAccessor) {
-        dIASSERT(lengthSquareProduct.get() >= (0.0));
+        dIASSERT(lengthSquareProduct >= (0.0));
 
         double result;
-        double angleCosine = normalSegmentDot.get() / dSqrt(lengthSquareProduct.get());
+        double angleCosine = normalSegmentDot / dSqrt(lengthSquareProduct);
 
         if (angleCosine < (1.0)) {
             DVector3 normalSecondOppositeSegmentCross = new DVector3();
@@ -690,20 +717,25 @@ public class DxTriDataBase extends DBase {
 
             if (pSecondTriangleMatchingEdge != null) {
                 // Check the cross product against the second triangle edge, if possible...
-                secondTriangleEdgeDirectionCheck = dCalcVectorDot3(normalSecondOppositeSegmentCross, * pSecondTriangleMatchingEdge)
-                ;
+                secondTriangleEdgeDirectionCheck = dCalcVectorDot3(normalSecondOppositeSegmentCross, pSecondTriangleMatchingEdge);
             } else {
                 // ...if not, calculate the supposed direction of the second triangle's edge
                 // as negative of first triangle edge. For that cross-multiply the precomputed
                 // first triangle normal by vector from the degenerate edge to its opposite vertex.
-
                 // Retrieve the first triangle points if necessary
-                DVector3[] firstTriangleStorage = DVector3.newArray(dMTV__MAX); //[ dMTV__MAX];
-                //const dVector3 *pFirstTriangleToUse = pFirstTriangle;
-                int pFirstTriangleToUse = 0;//pFirstTriangle;
 
-                if (pFirstTriangle == null) {
-                    dataAccessor.getTriangleVertexPoints(firstTriangleStorage, currEdge[0].m_triIdx);
+                // TZ:
+                DVector3C[] firstTriangleStorage = firstTriangle;
+                //const dVector3 *pFirstTriangleToUse = pFirstTriangle;
+                int pFirstTriangleToUse = pFirstTriangle;
+
+                //if (pFirstTriangle == null)
+                if (firstTriangle == null)
+                {
+                    //firstTriangleStorage = new DVector3[dMTV__MAX];
+                    DVector3[] temp = new DVector3[dMTV__MAX];
+                    dataAccessor.getTriangleVertexPoints(temp, currEdge0.m_triIdx);
+                    firstTriangleStorage = temp;
                     pFirstTriangleToUse = dMTV__MIN;//&firstTriangleStorage[dMTV__MIN];
                 }
 
@@ -711,6 +743,9 @@ public class DxTriDataBase extends DBase {
                 int firstTriangleOppositeIndex = firstVertexStartIndex != dMTV__MIN ? firstVertexStartIndex - 1 : dMTV__MAX - 1;
 
                 DVector3 firstOppositeVertexSegment = new DVector3();
+                //dSubtractVectors3(firstOppositeVertexSegment,
+                //        pFirstTriangleToUse[firstTriangleOppositeIndex],
+                //        pFirstTriangleToUse[firstVertexStartIndex]);
                 dSubtractVectors3(firstOppositeVertexSegment,
                         firstTriangleStorage[pFirstTriangleToUse + firstTriangleOppositeIndex],
                         firstTriangleStorage[pFirstTriangleToUse + firstVertexStartIndex]);
@@ -771,15 +806,16 @@ public class DxTriDataBase extends DBase {
     //    };
     //    END_NAMESPACE_OU();
     //    static const CEnumUnsortedElementArray<FaceAngleStorageMethod, ASM__MAX, FAngleStorageAllocProc *, 0x161211AD> g_AngleStorageAllocProcs;
-    private static class CEnumUnsortedElementArrayASAP {
-        public FaceAnglesWrapper Encode(int i) {
-            if (i != ASM_WORD_SIGNED) {
-                throw new UnsupportedOperationException("We only support ASM_WORD_SIGNED");
-            }
-            return FaceAngleStorageCodec.allocateInstance();
-        }
-    }
-    static final CEnumUnsortedElementArrayASAP g_AngleStorageAllocProcs = new CEnumUnsortedElementArrayASAP();
+    // TX we have only one FaceAngleStorageCodec in Java, so we can return it directly.
+    //    private static class CEnumUnsortedElementArrayASAP {
+    //        public FaceAnglesWrapper Encode(int i) {
+    //            if (i != ASM_WORD_SIGNED) {
+    //                throw new UnsupportedOperationException("We only support ASM_WORD_SIGNED");
+    //            }
+    //            return FaceAngleStorageCodec.allocateInstance();
+    //        }
+    //    }
+    //    static final CEnumUnsortedElementArrayASAP g_AngleStorageAllocProcs = new CEnumUnsortedElementArrayASAP();
 
 
 
@@ -830,7 +866,11 @@ public class DxTriDataBase extends DBase {
 
         int triangleCount = m_triangleCount;
 
-        FAngleStorageAllocProc allocProc = g_AngleStorageAllocProcs.Encode(storageMethod);
+        //FAngleStorageAllocProc allocProc = g_AngleStorageAllocProcs.Encode(storageMethod);
+        //IFaceAngleStorageControl storageInstance = allocProc.allocateInstance(triangleCount, storageView);
+        FaceAnglesWrapper allocProc = new FaceAnglesWrapper(triangleCount);
+        // TODO CHECK-TZ why do we not need this class in Java..????
+        FaceAngleStorageCodec proc = new FaceAngleStorageCodec();
         IFaceAngleStorageControl storageInstance = allocProc.allocateInstance(triangleCount, storageView);
 
         if (storageInstance != null)
@@ -1131,45 +1171,49 @@ public class DxTriDataBase extends DBase {
     //    };
     //    END_NAMESPACE_OU();
     //    static const CEnumSortedElementArray<dxTriMesh::TRIMESHTC, dxTriMesh::TTC__MAX, int, 0x161003D5> g_asiMeshTCGeomClasses;
-    static final CEnumSortedElementArray g_asiMeshTCGeomClasses = new CEnumSortedElementArray(new int[]{
-            dSphereClass, // TTC_SPHERE,
-            dBoxClass, // TTC_BOX,
-            dCapsuleClass, // TTC_CAPSULE,
-    }, TTC__MAX);
+    // TZ: See Gimpact, we are using a bool version in Java.
+    //    static final CEnumSortedElementArray g_asiMeshTCGeomClasses = new CEnumSortedElementArray(new int[]{
+    //            dSphereClass, // TTC_SPHERE,
+    //            dBoxClass, // TTC_BOX,
+    //            dCapsuleClass, // TTC_CAPSULE,
+    //    }, TTC__MAX);
 
 
     /*extern ODE_API */
     //void dGeomTriMeshEnableTC(dGeomID g, int geomClass, int enable)
-    void dGeomTriMeshEnableTC(DTriMesh g, int geomClass, int enable)
-    {
-        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
-
-        DxTriMesh mesh = (DxTriMesh) g;
-
-        //dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
-        int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
-
-        if (g_asiMeshTCGeomClasses.IsValidDecode(tc))
-        {
-            mesh.assignDoTC(tc, enable != 0);
-        }
-    }
-
-    /*extern ODE_API */
-    //int dGeomTriMeshIsTCEnabled(dGeomID g, int geomClass)
-    boolean dGeomTriMeshIsTCEnabled(DTriMesh g, int geomClass)
-    {
-        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
-
-        DxTriMesh mesh = (DxTriMesh) g;
-
-        //dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
-        int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
-
-        boolean result = g_asiMeshTCGeomClasses.IsValidDecode(tc)
-                && mesh.retrieveDoTC(tc);
-        return result;
-    }
+    // ****************************************************************************************************
+    // ********************  COMMENT: In Java GIMPACT uses a simplified version with boolean, see Gimpact.
+    // ****************************************************************************************************
+//    void dGeomTriMeshEnableTC(DTriMesh g, int geomClass, int enable)
+//    {
+//        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+//
+//        DxTriMesh mesh = (DxTriMesh) g;
+//
+//        //dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+//        int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+//
+//        if (g_asiMeshTCGeomClasses.IsValidDecode(tc))
+//        {
+//            mesh.assignDoTC(tc, enable != 0);
+//        }
+//    }
+//
+//    /*extern ODE_API */
+//    //int dGeomTriMeshIsTCEnabled(dGeomID g, int geomClass)
+//    boolean dGeomTriMeshIsTCEnabled(DTriMesh g, int geomClass)
+//    {
+//        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+//
+//        DxTriMesh mesh = (DxTriMesh) g;
+//
+//        //dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+//        int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+//
+//        boolean result = g_asiMeshTCGeomClasses.IsValidDecode(tc)
+//                && mesh.retrieveDoTC(tc);
+//        return result;
+//    }
 
 
     /*extern ODE_API */
@@ -1230,13 +1274,13 @@ public class DxTriDataBase extends DBase {
         DVector3[] dv = DVector3.newArray(3);
         mesh.fetchMeshTransformedTriangle(dv, index);
 
-        GetPointFromBarycentric(dv, u, v, Out);
+        DxGimpactCollision.GetPointFromBarycentric(dv, u, v, Out);
     }
 
 
     /*extern */
     //IFaceAngleStorageView *dxGeomTriMeshGetFaceAngleView(dxGeom *triMeshGeom)
-    IFaceAngleStorageView dxGeomTriMeshGetFaceAngleView(DTriMesh triMeshGeom)
+    public static IFaceAngleStorageView dxGeomTriMeshGetFaceAngleView(DTriMesh triMeshGeom)
     {
         //dUASSERT(triMeshGeom && triMeshGeom->type == dTriMeshClass, "The argument is not a trimesh");
 

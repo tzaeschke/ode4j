@@ -33,6 +33,7 @@ package org.ode4j.ode.internal.gimpact;
 
 import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 
+import org.ode4j.math.DVector3;
 import org.ode4j.ode.internal.cpp4j.java.IntArray;
 import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimBufferArrayFloat.GIM_PROCESS_BUFFER_ARRAY_FN;
@@ -904,14 +905,34 @@ public class GimTrimesh implements GimConstants {
 	*/
 	//void gim_trimesh_get_triangle_vertices(GIM_TRIMESH * trimesh, 
 	//GUINT32 triangle_index, vec3f v1,vec3f v2,vec3f v3)
-	public void gim_trimesh_get_triangle_vertices( 
-			int triangle_index, vec3f v1, vec3f v2, vec3f v3)
+//	public void gim_trimesh_get_triangle_vertices(
+//			int triangle_index, vec3f v1, vec3f v2, vec3f v3)
+//	{
+//		//vec3f[] transformed_vertices = GIM_BUFFER_ARRAY_POINTER(vec3f.class,trimesh.m_transformed_vertex_buffer,0);
+//		ObjArray<vec3f> transformed_vertices = m_transformed_vertex_buffer.GIM_BUFFER_ARRAY_POINTER(0);
+//
+//		//int[] triangle_indices = GIM_BUFFER_ARRAY_POINTER(GUINT32,trimesh.m_tri_index_buffer,triangle_index*3);
+//		IntArray triangle_indices = m_tri_index_buffer.GIM_BUFFER_ARRAY_POINTER(triangle_index*3);
+//
+//		//Copy the vertices
+//		if (v1 != null) {
+//			VEC_COPY(v1, transformed_vertices.at(triangle_indices.at(0)));
+//		}
+//		if (v2 != null) {
+//			VEC_COPY(v2, transformed_vertices.at(triangle_indices.at(1)));
+//		}
+//		if (v3 != null) {
+//			VEC_COPY(v3, transformed_vertices.at(triangle_indices.at(2)));
+//		}
+//	}
+	public void gim_trimesh_get_triangle_vertices(
+			int triangle_index, DVector3 v1, DVector3 v2, DVector3 v3)
 	{
 		//vec3f[] transformed_vertices = GIM_BUFFER_ARRAY_POINTER(vec3f.class,trimesh.m_transformed_vertex_buffer,0);
 		ObjArray<vec3f> transformed_vertices = m_transformed_vertex_buffer.GIM_BUFFER_ARRAY_POINTER(0);
 
-	    //int[] triangle_indices = GIM_BUFFER_ARRAY_POINTER(GUINT32,trimesh.m_tri_index_buffer,triangle_index*3);
-	    IntArray triangle_indices = m_tri_index_buffer.GIM_BUFFER_ARRAY_POINTER(triangle_index*3);
+		//int[] triangle_indices = GIM_BUFFER_ARRAY_POINTER(GUINT32,trimesh.m_tri_index_buffer,triangle_index*3);
+		IntArray triangle_indices = m_tri_index_buffer.GIM_BUFFER_ARRAY_POINTER(triangle_index*3);
 
 		//Copy the vertices
 		if (v1 != null) {

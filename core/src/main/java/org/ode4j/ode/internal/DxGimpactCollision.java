@@ -164,9 +164,9 @@ public class DxGimpactCollision {
 	//inline void FetchTransformedTriangle(dxTriMesh* TriMesh, int Index, dVector3 Out[3]){
 	static void FetchTransformedTriangle(DxGimpact TriMesh, int Index, DVector3 Out[]){
 		TriMesh.m_collision_trimesh.gim_trimesh_locks_work_data();
-		vec3f[] vOut = { new vec3f(), new vec3f(), new vec3f() };
-		TriMesh.m_collision_trimesh.gim_trimesh_get_triangle_vertices(Index, vOut[0], vOut[1], vOut[2]);
-		Out[0].set( vOut[0].f ); Out[1].set( vOut[1].f ); Out[2].set( vOut[2].f );
+		//vec3f[] vOut = { new vec3f(), new vec3f(), new vec3f() };
+		TriMesh.m_collision_trimesh.gim_trimesh_get_triangle_vertices(Index, Out[0], Out[1], Out[2]);
+		//Out[0].set( vOut[0].f ); Out[1].set( vOut[1].f ); Out[2].set( vOut[2].f );
 		TriMesh.m_collision_trimesh.gim_trimesh_unlocks_work_data();
 	}
 
@@ -240,12 +240,23 @@ public class DxGimpactCollision {
 //		Out[2] = (dv[0][2] * w) + (dv[1][2] * u) + (dv[2][2] * v);
 //		Out[3] = (dv[0][3] * w) + (dv[1][3] * u) + (dv[2][3] * v);
 	}
+	public static void GetPointFromBarycentric(DVector3C dv[], double u, double v, DVector3 Out){
+		double w = 1.0 - u - v;
+		Out.set0( dv[0].get0()*w + dv[1].get0()*u + dv[2].get0()*v );
+		Out.set1( dv[0].get1()*w + dv[1].get1()*u + dv[2].get1()*v );
+		Out.set2( dv[0].get2()*w + dv[1].get2()*u + dv[2].get2()*v );
+		//		Out.set0( dv[0].get3()*w + dv[1].get3()*u + dv[2].get3()*v );  //TODO ?
+		//		Out[0] = (dv[0][0] * w) + (dv[1][0] * u) + (dv[2][0] * v);
+		//		Out[1] = (dv[0][1] * w) + (dv[1][1] * u) + (dv[2][1] * v);
+		//		Out[2] = (dv[0][2] * w) + (dv[1][2] * u) + (dv[2][2] * v);
+		//		Out[3] = (dv[0][3] * w) + (dv[1][3] * u) + (dv[2][3] * v);
+	}
 
 	// Performs a callback
 	//inline bool Callback(dxTriMesh* TriMesh, dxGeom* Object, int TriIndex){
 	boolean Callback(DxTriMesh TriMesh, DxGeom Object, int TriIndex){
-		if (TriMesh.Callback != null){
-			return (TriMesh.Callback.call(TriMesh, Object, TriIndex)!=0);
+		if (TriMesh.m_Callback != null){
+			return (TriMesh.m_Callback.call(TriMesh, Object, TriIndex)!=0);
 		}
 		else return true;
 	}

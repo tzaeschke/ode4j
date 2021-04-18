@@ -33,19 +33,21 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.libccd.CCD.ccd_center_fn;
 import org.ode4j.ode.internal.libccd.CCD.ccd_support_fn;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;
+import org.ode4j.ode.internal.trimesh.DxTriDataBase;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.IFaceAngleStorageView;
 
 import static org.ode4j.ode.DTriMesh.*;
 import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.DxCollisionUtil.dQuatTransform;
-import static org.ode4j.ode.internal.DxTriDataBase.FAD_CONCAVE;
 import static org.ode4j.ode.internal.libccd.CCD.*;
 import static org.ode4j.ode.internal.libccd.CCDMPR.*;
 import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 import static org.ode4j.ode.internal.Rotation.dQFromAxisAndAngle;
 import static org.ode4j.ode.internal.Rotation.dQMultiply0;
+import static org.ode4j.ode.internal.trimesh.DxTriDataBase.FAD_CONCAVE;
 
 /**
  * Lib ccd.
@@ -338,8 +340,14 @@ public class CollisionLibccd {
 
 
     static int ccdCollide(DGeom o1, DGeom o2, int flags, DContactGeomBuffer contacts, ccd_obj_t obj1,
-						  ccd_support_fn supp1, ccd_center_fn cen1, ccd_obj_t obj2, ccd_support_fn supp2,
-						  ccd_center_fn cen2) {
+                          ccd_support_fn supp1, ccd_center_fn cen1, ccd_obj_t obj2, ccd_support_fn supp2,
+                          ccd_center_fn cen2) {
+        return ccdCollide(o1, o2, flags, contacts.get(), obj1, supp1, cen1, obj2, supp2, cen2);
+    };
+
+    static int ccdCollide(DGeom o1, DGeom o2, int flags, DContactGeom contacts, ccd_obj_t obj1,
+                          ccd_support_fn supp1, ccd_center_fn cen1, ccd_obj_t obj2, ccd_support_fn supp2,
+                          ccd_center_fn cen2) {
         ccd_t ccd = new ccd_t();
         int res;
         final RefDouble depth = new RefDouble();
@@ -367,7 +375,7 @@ public class CollisionLibccd {
 
         res = ccdMPRPenetration(obj1, obj2, ccd, depth, dir, pos);
         if (res == 0) {
-            DContactGeom contact = contacts.get();
+            DContactGeom contact = contacts;
             contact.g1 = o1;
             contact.g2 = o2;
 
@@ -523,7 +531,7 @@ public class CollisionLibccd {
             ccdGeomToConvex((DxConvex) o1, c1);
             ccdGeomToObj(o2, c2);
 
-            IFaceAngleStorageView meshFaceAngleView = dxGeomTriMeshGetFaceAngleView(o2);
+            IFaceAngleStorageView meshFaceAngleView = DxTriDataBase.dxGeomTriMeshGetFaceAngleView((DTriMesh) o2);
             dUASSERT(meshFaceAngleView != null, "Please preprocess the trimesh data with " +
 					"dTRIDATAPREPROCESS_BUILD_FACE_ANGLES");
 

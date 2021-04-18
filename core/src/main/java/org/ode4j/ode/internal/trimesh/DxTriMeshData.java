@@ -26,7 +26,6 @@ package org.ode4j.ode.internal.trimesh;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DTriMeshData;
-import org.ode4j.ode.internal.gimpact.GimGeometry;
 
 import java.util.Arrays;
 
@@ -36,7 +35,7 @@ import static org.ode4j.ode.internal.Common.dUASSERT;
 
 //typedef dxTriDataBase dxTriMeshData_Parent;
 //struct dxTriMeshData:public dxTriMeshData_Parent {
-public class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
+public abstract class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
     //public:
     //dxTriMeshData():
     //dxTriMeshData_Parent() {

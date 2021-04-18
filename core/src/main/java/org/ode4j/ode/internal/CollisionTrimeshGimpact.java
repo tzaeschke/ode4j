@@ -98,30 +98,31 @@ public class CollisionTrimeshGimpact {
 
     //    static inline
     //    void gim_trimesh_get_triangle_verticesODE(GIM_TRIMESH *trimesh, GUINT32 triangle_index, dVector3 v1, dVector3 v2, dVector3 v3) {
-    static void gim_trimesh_get_triangle_verticesODE(GimTrimesh trimesh, int triangle_index, DVector3 v1, DVector3 v2, DVector3 v3) {
-
-        //vec3f src1, src2, src3;
-        //        GREAL * psrc1 = v1 != null ? src1 : null;
-        //        GREAL * psrc2 = v2 != null ? src2 : null;
-        //        GREAL * psrc3 = v3 != null ? src3 : null;
-        vec3f psrc1 = v1 != null ? new vec3f() : null;
-        vec3f psrc2 = v2 != null ? new vec3f() : null;
-        vec3f psrc3 = v3 != null ? new vec3f() : null;
-
-        trimesh.gim_trimesh_get_triangle_vertices(triangle_index, psrc1, psrc2, psrc3);
-
-        if (v1 != null) {
-            dVECTOR3_VEC3F_COPY(v1, psrc1);
-        }
-
-        if (v2 != null) {
-            dVECTOR3_VEC3F_COPY(v2, psrc2);
-        }
-
-        if (v3 != null) {
-            dVECTOR3_VEC3F_COPY(v3, psrc3);
-        }
-    }
+    // TODO (TZ) THIS DOESN'T APPEAR TO BE USED
+    //    static void gim_trimesh_get_triangle_verticesODE(GimTrimesh trimesh, int triangle_index, DVector3 v1, DVector3 v2, DVector3 v3) {
+    //
+    //        //vec3f src1, src2, src3;
+    //        //        GREAL * psrc1 = v1 != null ? src1 : null;
+    //        //        GREAL * psrc2 = v2 != null ? src2 : null;
+    //        //        GREAL * psrc3 = v3 != null ? src3 : null;
+    //        vec3f psrc1 = v1 != null ? new vec3f() : null;
+    //        vec3f psrc2 = v2 != null ? new vec3f() : null;
+    //        vec3f psrc3 = v3 != null ? new vec3f() : null;
+    //
+    //        trimesh.gim_trimesh_get_triangle_vertices(triangle_index, psrc1, psrc2, psrc3);
+    //
+    //        if (v1 != null) {
+    //            dVECTOR3_VEC3F_COPY(v1, psrc1);
+    //        }
+    //
+    //        if (v2 != null) {
+    //            dVECTOR3_VEC3F_COPY(v2, psrc2);
+    //        }
+    //
+    //        if (v3 != null) {
+    //            dVECTOR3_VEC3F_COPY(v3, psrc3);
+    //        }
+    //    }
 
     // Anything calling gim_trimesh_get_triangle_vertices from within ODE
     // should be patched through to the dDOUBLE version above

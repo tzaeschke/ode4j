@@ -54,6 +54,7 @@ import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
  * Cylinder-trimesh collider by Alen Ladavac
@@ -1277,13 +1278,13 @@ public class CollideCylinderTrimesh implements DColliderFn {
 			{
 				final int Triint = boxesresult[i];
 				
-				vec3f[] dvf = { new vec3f(), new vec3f(), new vec3f() };
-				ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dvf[0], dvf[1], dvf[2]);
-				
+				//vec3f[] dvf = { new vec3f(), new vec3f(), new vec3f() };
 				DVector3[] dv = { new DVector3(), new DVector3(), new DVector3() };
-				dv[0].set(dvf[0].f); 
-				dv[1].set(dvf[1].f); 
-				dv[2].set(dvf[2].f);
+				ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv[0], dv[1], dv[2]);
+				
+				//dv[0].set(dvf[0].f);
+				//dv[1].set(dvf[1].f);
+				//dv[2].set(dvf[2].f);
 				RefBoolean bFinishSearching = new RefBoolean(false);
 				ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dv, bFinishSearching);
 

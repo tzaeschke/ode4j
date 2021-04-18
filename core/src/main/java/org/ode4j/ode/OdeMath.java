@@ -526,10 +526,10 @@ public class OdeMath extends DRotation {
 //	    return dSqrt(a.get0() * a.get0() + a.get1() * a.get1() + a.get2() * a.get2());
 //	}
 //
-//	public static double dCalcVectorLengthSquare3(final DVector3C a) {
-//	    return (a.get0() * a.get0() + a.get1() * a.get1() + a.get2() * a.get2());
-//	}
-//
+	public static double dCalcVectorLengthSquare3(final DVector3C a) {
+	    return (a.get0() * a.get0() + a.get1() * a.get1() + a.get2() * a.get2());
+	}
+
 //	public static double dCalcPointDepth3(const dReal *test_p, const dReal *plane_p, const dReal *plane_n)
 //	{
 //	    return (plane_p[0] - test_p[0]) * plane_n[0] + (plane_p[1] - test_p[1]) * plane_n[1] + (plane_p[2] - test_p[2]) * plane_n[2];

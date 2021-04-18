@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal.trimesh;
 
+import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
@@ -69,24 +70,29 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
     }
 
     //static
+    @Deprecated
     int calculateStorageSizeForTriangleCount(int triangleCount) {
-        final int baseIncludedTriangleCount = m_triangleFaceAngles.length ;
-                //dSTATIC_ARRAY_SIZE(FaceAnglesWrapper<TStorageCodec>::StorageRecord, m_triangleFaceAngles);
-        final int singleTriangleSize = membersize(FaceAnglesWrapper<TStorageCodec>::StorageRecord,
-                m_triangleFaceAngles[0]);
-        return sizeof(FaceAnglesWrapper < TStorageCodec >) + (triangleCount > baseIncludedTriangleCount ?
-                (triangleCount - baseIncludedTriangleCount) * singleTriangleSize : 0U);
+        //        final int baseIncludedTriangleCount = m_triangleFaceAngles.length ;
+        //                //dSTATIC_ARRAY_SIZE(FaceAnglesWrapper<TStorageCodec>::StorageRecord, m_triangleFaceAngles);
+        //        final int singleTriangleSize = membersize(FaceAnglesWrapper<TStorageCodec>::StorageRecord,
+        //                m_triangleFaceAngles[0]);
+        //        return sizeof(FaceAnglesWrapper < TStorageCodec >) + (triangleCount > baseIncludedTriangleCount ?
+        //                (triangleCount - baseIncludedTriangleCount) * singleTriangleSize : 0U);
+        // TODO TZ-CHECK Can we use this to pool arrays?
+        return triangleCount;
     }
 
     //static
+    @Deprecated
     int calculateTriangleCountForStorageSize(int storageSize) {
-        dIASSERT(storageSize >= sizeof(FaceAnglesWrapper < TStorageCodec >));
-
-        final int baseIncludedTriangleCount = dSTATIC_ARRAY_SIZE(FaceAnglesWrapper<TStorageCodec>::StorageRecord,
-                m_triangleFaceAngles);
-        final int singleTriangleSize = membersize(FaceAnglesWrapper<TStorageCodec>::StorageRecord,
-                m_triangleFaceAngles[0]);
-        return (storageSize - sizeof(FaceAnglesWrapper < TStorageCodec >)) / singleTriangleSize + baseIncludedTriangleCount;
+        //        dIASSERT(storageSize >= sizeof(FaceAnglesWrapper < TStorageCodec >));
+        //
+        //        final int baseIncludedTriangleCount = dSTATIC_ARRAY_SIZE(FaceAnglesWrapper<TStorageCodec>::StorageRecord,
+        //                m_triangleFaceAngles);
+        //        final int singleTriangleSize = membersize(FaceAnglesWrapper<TStorageCodec>::StorageRecord,
+        //                m_triangleFaceAngles[0]);
+        //        return (storageSize - sizeof(FaceAnglesWrapper < TStorageCodec >)) / singleTriangleSize + baseIncludedTriangleCount;
+        return storageSize;
     }
 
     // private: // IFaceAngleStorageControl
@@ -149,26 +155,27 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
     /*static */
     //DxTriDataBase.IFaceAngleStorageControl *FaceAnglesWrapper<DxTriDataBase.TStorageCodec>::allocateInstance
     // (unsigned triangleCount, DxTriDataBase.IFaceAngleStorageView *&out_storageView)
-    IFaceAngleStorageControl allocateInstance(int triangleCount, IFaceAngleStorageView[] out_storageView) {
+    IFaceAngleStorageControl allocateInstance(int triangleCount, Ref<IFaceAngleStorageView> out_storageView) {
         //FaceAnglesWrapper<DxTriDataBase.TStorageCodec> *result = NULL;
-        FaceAnglesWrapper<DxTriDataBase.TStorageCodec> result = NULL;
+        FaceAnglesWrapper<TStorageCodec> result = null;
 
         do {
-            int sizeRequired;
-            if (!FaceAnglesWrapper<DxTriDataBase.TStorageCodec>.calculateInstanceSizeRequired(sizeRequired, triangleCount))
+            RefInt sizeRequired = new RefInt();
+            if (!calculateInstanceSizeRequired(sizeRequired, triangleCount))
             {
                 break;
             }
 
-            void *bufferPointer = dAlloc(sizeRequired);
-            if (bufferPointer == NULL) {
-                break;
-            }
+            //void *bufferPointer = dAlloc(sizeRequired);
+            //if (bufferPointer == null) {
+            //    break;
+            //}
 
-            result = (FaceAnglesWrapper < TStorageCodec > *)bufferPointer;
-            new (result) FaceAnglesWrapper < TStorageCodec > (triangleCount);
+            //result = (FaceAnglesWrapper < TStorageCodec > *)bufferPointer;
+            //new (result) FaceAnglesWrapper < TStorageCodec > (triangleCount);
+            result = new FaceAnglesWrapper<>(triangleCount);
 
-            out_storageView = result;
+            out_storageView.set(result);
         } while (false);
 
         return result;
@@ -207,7 +214,7 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
         DESTRUCTOR();
 
         int memoryBlockSize = calculateStorageSizeForTriangleCount(triangleCount);
-        dFree(this, memoryBlockSize);
+        //dFree(this, memoryBlockSize);
     }
 
 
@@ -222,7 +229,7 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
     /*virtual */
     //boolean FaceAnglesWrapper<TStorageCodec>::areNegativeAnglesStored() const
     public boolean areNegativeAnglesStored() {
-        return DxTriDataBase.TStorageCodec.areNegativeAnglesCoded ();
+        return TStorageCodec.areNegativeAnglesCoded ();
     }
 
     //template<class TStorageCodec>

@@ -40,7 +40,7 @@ class DxTriMeshDisabled extends DxTriMesh {
 		}
 
 		@Override
-		void UpdateData() {
+		public void updateData() {
 			throw new UnsupportedOperationException();
 		}
 
@@ -84,7 +84,7 @@ class DxTriMeshDisabled extends DxTriMesh {
 	//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){ type = dTriMeshClass; }
 	public DxTriMeshDisabled(DxSpace space, DxTriMeshData data) //: dxGeom(Space, 1)
 	{ 
-		super(space);
+		super(space, data, null, null, null);
 		type = dTriMeshClass;
 	}
 	//dxTriMesh::~dxTriMesh(){}
@@ -145,9 +145,8 @@ class DxTriMeshDisabled extends DxTriMesh {
 	void dGeomTriMeshDataUpdate(DTriMeshData g) {}
 
 	@Override
-	void ClearTCCache() {
+	public void clearTCCache() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

@@ -25,7 +25,6 @@
 package org.ode4j.ode.internal.trimesh;
 
 import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.internal.CollisionTrimeshGimpact;
@@ -33,7 +32,6 @@ import org.ode4j.ode.internal.DxSpace;
 import org.ode4j.ode.internal.gimpact.GimGeometry;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 
-import static org.ode4j.ode.DTriMesh.dMTV__MAX;
 import static org.ode4j.ode.internal.Common.dUASSERT;
 import static org.ode4j.ode.internal.gimpact.GimGeometry.IDENTIFY_MATRIX_4X4;
 
@@ -49,7 +47,7 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
               DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
         // TC has speed/space 'issues' that don't make it a clear win by default on spheres/boxes.
         super(Space, null, Callback, ArrayCallback, RayCallback, true);
-        gim_init_buffer_managers(m_buffer_managers);
+        //gim_init_buffer_managers(m_buffer_managers);
         assignMeshData(Data);
     }
 
@@ -75,20 +73,12 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     }
 
     //void fetchMeshTransformedTriangle (dVector3 *const pout_triangle[3], unsigned index)
-    public void fetchMeshTransformedTriangle (DVector3C[] pout_triangle, int index)
+    public void fetchMeshTransformedTriangle (DVector3[] pout_triangle, int index)
     {
         m_collision_trimesh.gim_trimesh_locks_work_data();
         //            gim_trimesh_get_triangle_vertices( m_collision_trimesh, (GUINT32) index, *pout_triangle[0], *
         //            pout_triangle[1], *pout_triangle[2]);
         m_collision_trimesh.gim_trimesh_get_triangle_vertices(index, pout_triangle[0], pout_triangle[1], pout_triangle[2]);
-        m_collision_trimesh.gim_trimesh_unlocks_work_data();
-    }
-
-    //void fetchMeshTransformedTriangle (dVector3 out_triangle[3], unsigned index)
-    public void fetchMeshTransformedTriangle (DVector3[] out_triangle, int index)
-    {
-        m_collision_trimesh.gim_trimesh_locks_work_data();
-        m_collision_trimesh.gim_trimesh_get_triangle_vertices(index, out_triangle[0], out_triangle[1], out_triangle[2]);
         m_collision_trimesh.gim_trimesh_unlocks_work_data();
     }
 
@@ -218,4 +208,22 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     GimTrimesh m_collision_trimesh;
     // TODO CHECK-TZ remolve> THis is 'memory' stuff
     //GBUFFER_MANAGER_DATA m_buffer_managers[ G_BUFFER_MANAGER__MAX];
+
+    public abstract void FetchTransformedTriangle(int i, DVector3[] v);
+
+    public abstract int FetchTriangleCount();
+
+    /*
+     * Returns the following values:
+     * between -PI and 0 for concave edges
+     * 0 for flat edges
+     * between 0 and PI for convex edges
+     * > PI for boundary edges
+     */
+    abstract public float getEdgeAngle(int triangle, int edge);
+
+    public DTriRayCallback RayCallback() {
+        return m_RayCallback;
+    }
+
 }

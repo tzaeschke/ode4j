@@ -39,6 +39,7 @@ import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DATA;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
  *	Triangle-Capsule(Capsule) collider by Alen Ladavac

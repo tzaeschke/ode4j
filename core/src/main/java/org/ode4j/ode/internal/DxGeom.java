@@ -287,7 +287,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 
 	// compute the AABB only if it is not current. this function manipulates
 	// the GEOM_AABB_BAD flag.
-	void recomputeAABB() {
+	protected void recomputeAABB() {
 		if ((_gflags & GEOM_AABB_BAD) != 0) {
 			// our aabb functions assume final_posr is up to date
 			recomputePosr(); 
@@ -303,7 +303,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	}
 
 	/** _gflags |= (GEOM_DIRTY|GEOM_AABB_BAD); */
-	final void setFlagDirtyAndBad() {
+	protected final void setFlagDirtyAndBad() {
 		_gflags |= (GEOM_DIRTY|GEOM_AABB_BAD);
 	}
 	
