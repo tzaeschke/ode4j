@@ -117,7 +117,7 @@ public class DxGimpact extends DxTriMesh {
 	// TODO TZ_CHECK
 
 		//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){
-	DxGimpact(DxSpace Space, DxGimpactData Data) {
+        public DxGimpact(DxSpace Space, DxGimpactData Data) {
 		// TODO TZ-CHECK I inserted 'null' here, are we using Data?
 		// TODO TZ-CHECK I inserted 'null' here, are we using the Callbacks?
 		super(Space, Data, null, null, null);

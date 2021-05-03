@@ -35,6 +35,7 @@ import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.DxGeom.NUMC_MASK;
@@ -82,7 +83,7 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 		//Collide trimeshes
 		// TODO make static?
 		//gim_trimesh_trimesh_collision(triMesh1.m_collision_trimesh, triMesh2.m_collision_trimesh, trimeshContacts);
-		triMesh1.m_collision_trimesh.gim_trimesh_trimesh_collision(triMesh1.m_collision_trimesh, triMesh2.m_collision_trimesh, trimeshContacts);
+		triMesh1.m_collision_trimesh().gim_trimesh_trimesh_collision(triMesh2.m_collision_trimesh(), trimeshContacts);
 
 		int contactCount = trimeshContacts.size();
 

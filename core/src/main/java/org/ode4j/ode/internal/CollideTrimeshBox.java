@@ -70,14 +70,6 @@ public class CollideTrimeshBox implements DColliderFn {
 
 	//	#if dTRIMESH_ENABLED
 
-
-	//	static void
-	//	GenerateContact(int in_Flags, dContactGeom* in_Contacts, int in_Stride,
-	//	                dxGeom* in_g1,  dxGeom* in_g2, int TriIndex,
-	//	                const dVector3 in_ContactPos, const dVector3 in_Normal, dReal in_Depth,
-	//	                int& OutTriCount);
-
-
 	// largest number, double or float
 	//	#if defined(dSINGLE)
 	//	  #define MAXVALUE FLT_MAX
@@ -1624,44 +1616,5 @@ public class CollideTrimeshBox implements DColliderFn {
 	}
 	//	#endif  //GIMPACT
 
-
-	static void
-	GenerateContact(int in_Flags, List<DContactGeom> in_Contacts, int in_Stride,
-			DxGeom in_g1,  DxGeom in_g2, final int TriIndex,
-			DVector3C in_ContactPos, DVector3C in_Normal, final double in_Depth)
-	{
-		if (in_Stride != 1) throw new IllegalArgumentException("in_Stride = " + in_Stride);
-		boolean duplicate = false;
-		DVector3 diff = new DVector3();
-		for (DContactGeom contact : in_Contacts)
-		{
-			diff.eqDiff(in_ContactPos, contact.pos);
-			if (diff.dot(diff) < dEpsilon)
-			{
-				// same normal?
-				if (1.0 - dFabs(in_Normal.dot(contact.normal)) < dEpsilon)
-				{
-					if (in_Depth > contact.depth)
-						contact.depth = in_Depth;
-							duplicate = true;
-				}
-			}
-		}
-		if (!duplicate) {
-			DContactGeom Contact = new DContactGeom();
-			Contact.pos.set( in_ContactPos );
-			Contact.normal.set( in_Normal );
-			Contact.depth = in_Depth;
-			Contact.g1 = in_g1;
-			Contact.g2 = in_g2;
-			Contact.side1 = TriIndex;
-			Contact.side2 = -1;
-			in_Contacts.add(Contact);
-		}
-	}
-
-
 	//	#endif // dTRIMESH_ENABLED
-
-
 }

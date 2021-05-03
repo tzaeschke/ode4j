@@ -26,17 +26,11 @@ package org.ode4j.ode.internal.trimesh;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.internal.*;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
-import org.ode4j.ode.internal.cpp4j.java.RefDouble;
-import org.ode4j.ode.internal.cpp4j.java.RefInt;
-import org.ode4j.ode.ou.CEnumSortedElementArray;
 import org.ode4j.ode.ou.CEnumUnsortedElementArray;
-
-import java.util.Arrays;
 
 import static org.ode4j.ode.DTriMesh.*;
 import static org.ode4j.ode.DTriMesh.dMESHDATAUSE.*;
@@ -44,7 +38,6 @@ import static org.ode4j.ode.DTriMeshData.dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__M
 import static org.ode4j.ode.DTriMeshData.dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.CommonEnums.*;
-import static org.ode4j.ode.internal.trimesh.DxMeshBase.TTC__MAX;
 
 public class DxTriDataBase extends DBase {
 
@@ -998,11 +991,12 @@ public class DxTriDataBase extends DBase {
 
     /*extern ODE_API */
     //int
-    boolean dGeomTriMeshDataPreprocess(DTriMeshData g)
+    //boolean dGeomTriMeshDataPreprocess(DTriMeshData g)
+    public boolean preprocess()
     {
         //unsigned buildRequestFlags = (1U << dTRIDATAPREPROCESS_BUILD_CONCAVE_EDGES);
         int buildRequestFlags = (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES);
-        return dGeomTriMeshDataPreprocess2(g, buildRequestFlags, null);
+        return preprocess2(buildRequestFlags, null);
     }
 
 
@@ -1026,16 +1020,16 @@ public class DxTriDataBase extends DBase {
 
     /*extern ODE_API */
     //int dGeomTriMeshDataPreprocess2(dTriMeshDataID g, unsigned int buildRequestFlags, const dintptr *requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/)
-    boolean dGeomTriMeshDataPreprocess2(DTriMeshData g, int buildRequestFlags, final int[] requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/)
+    public boolean preprocess2(int buildRequestFlags, final long[] requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/)
     {
-        dUASSERT(g != null, "The argument is not a trimesh data");
+        //dUASSERT(g != null, "The argument is not a trimesh data");
         //dAASSERT((buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_FACE_ANGLES)) == 0 || requestExtraData == NULL || dIN_RANGE(requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES], dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX));
         dAASSERT((buildRequestFlags & (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES)) == 0
                 || requestExtraData == null
                 || dIN_RANGE(requestExtraData[DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES],
                     dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX));
 
-        DxTriMeshData data = (DxTriMeshData) g;
+        DxTriMeshData data = (DxTriMeshData) this;
 
         boolean buildUseFlags = (buildRequestFlags & (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES)) != 0;
         //        FaceAngleStorageMethod faceAnglesRequirement = (buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_FACE_ANGLES)) != 0

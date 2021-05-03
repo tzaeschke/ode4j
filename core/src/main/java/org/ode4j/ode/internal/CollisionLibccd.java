@@ -571,8 +571,10 @@ public class CollisionLibccd {
                 boolean stayWithinThisIndex = false;
 
                 // Only the merged contact normals need to be normalized
-                if (_const_type_cast_union < bool > (contact.normal[dV3E_PAD])) {
+                //if (_const_type_cast_union < bool > (contact.normal[dV3E_PAD])) {
+                if (contact.normal_needs_normalizing) {
 
+                    // TODO set normal_needs_normalizing after normalizing????
                     if (!contact.normal.safeNormalize()) {
                         // If the contact normals have added up to zero, erase the contact
                         // Normally the time step is to be shorter so that the objects do not get into each other

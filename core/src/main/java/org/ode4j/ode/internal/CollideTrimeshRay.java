@@ -30,6 +30,7 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.internal.gimpact.GimTriCollision;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
  * TriMesh code by Erwin de Vries.

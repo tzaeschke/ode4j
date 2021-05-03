@@ -197,13 +197,13 @@ public interface DTriMeshData {
 	 */
 	//ODE_API
 	//int dGeomTriMeshDataPreprocess2(dTriMeshDataID g, unsigned int buildRequestFlags, const dintptr *requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/);
-	int preprocess2(int buildRequestFlags, final long[] requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/);
+	boolean preprocess2(int buildRequestFlags, final long[] requestExtraData/*=NULL | const dintptr (*)[dTRIDATAPREPROCESS_BUILD__MAX]*/);
 
 	/*
 	 * Obsolete. Equivalent to calling dGeomTriMeshDataPreprocess2(g, (1U << dTRIDATAPREPROCESS_BUILD_CONCAVE_EDGES), NULL)
 	 */
 	//ODE_API
-	void preprocess();
+	boolean preprocess();
 
 	/*
 	 * Get and set the internal preprocessed trimesh data buffer (see the enumerated type above), for loading and saving

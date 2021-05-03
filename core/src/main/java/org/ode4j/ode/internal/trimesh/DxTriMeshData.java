@@ -26,6 +26,9 @@ package org.ode4j.ode.internal.trimesh;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.OdeConfig;
+import org.ode4j.ode.internal.DxGimpactData;
+import org.ode4j.ode.internal.DxTriMeshDisabled;
 
 import java.util.Arrays;
 
@@ -36,6 +39,15 @@ import static org.ode4j.ode.internal.Common.dUASSERT;
 //typedef dxTriDataBase dxTriMeshData_Parent;
 //struct dxTriMeshData:public dxTriMeshData_Parent {
 public abstract class DxTriMeshData extends DxTriDataBase implements DTriMeshData {
+
+    public static DTriMeshData dGeomTriMeshDataCreate() {
+        switch (OdeConfig.dTRIMESH_TYPE) {
+            case DISABLED: return new DxTriMeshDisabled.dxTriMeshDisabledData();
+            case GIMPACT: return new DxGimpactData();
+            default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
+        }
+    }
+
     //public:
     //dxTriMeshData():
     //dxTriMeshData_Parent() {

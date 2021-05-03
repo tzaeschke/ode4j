@@ -31,12 +31,12 @@ import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
-class DxTriMeshDisabled extends DxTriMesh {
+public class DxTriMeshDisabled extends DxTriMesh {
 
-	static class dxTriMeshDisabledData extends DxTriMeshData {
+	public static class dxTriMeshDisabledData extends DxTriMeshData {
 		@Override
-		public void preprocess() {
-			throw new UnsupportedOperationException();
+		public boolean preprocess() {
+			return true;
 		}
 
 		@Override
@@ -68,6 +68,11 @@ class DxTriMeshDisabled extends DxTriMesh {
 		@Override
 		public void destroy() {
 			//
+		}
+
+		@Override
+		public boolean preprocess2(int buildRequestFlags, long[] requestExtraData) {
+			return true;
 		}
 
 		@Override

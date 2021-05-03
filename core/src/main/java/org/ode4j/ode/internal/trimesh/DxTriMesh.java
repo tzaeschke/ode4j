@@ -27,8 +27,8 @@ package org.ode4j.ode.internal.trimesh;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DTriMesh;
-import org.ode4j.ode.internal.CollisionTrimeshGimpact;
-import org.ode4j.ode.internal.DxSpace;
+import org.ode4j.ode.OdeConfig;
+import org.ode4j.ode.internal.*;
 import org.ode4j.ode.internal.gimpact.GimGeometry;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 
@@ -38,6 +38,25 @@ import static org.ode4j.ode.internal.gimpact.GimGeometry.IDENTIFY_MATRIX_4X4;
 //    typedef dxMeshBase dxTriMesh_Parent;
 //    struct dxTriMesh: public dxTriMesh_Parent {
 public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
+
+    public static DxTriMesh dCreateTriMesh(DxSpace space,
+                                            DxTriMeshData Data,
+                                            DTriCallback Callback,
+                                            DTriArrayCallback ArrayCallback,
+                                            DTriRayCallback RayCallback)
+    {
+        DxTriMesh Geom;
+        switch (OdeConfig.dTRIMESH_TYPE) {
+            case DISABLED: Geom = new DxTriMeshDisabled(space, Data); break;
+            case GIMPACT: Geom = new DxGimpact(space, (DxGimpactData) Data); break;
+            default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
+        }
+        //		Geom.Callback = Callback;
+        //		Geom.ArrayCallback = ArrayCallback;
+        //		Geom.RayCallback = RayCallback;
+        //
+        return Geom;
+    }
 
     //public:
     // Functions
@@ -212,6 +231,10 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     public abstract void FetchTransformedTriangle(int i, DVector3[] v);
 
     public abstract int FetchTriangleCount();
+
+    public GimTrimesh m_collision_trimesh() {
+        return m_collision_trimesh;
+    }
 
     /*
      * Returns the following values:

@@ -48,7 +48,7 @@ public class DxGimpactData extends DxTriMeshData {
 //	boolean m_single;
 	private float[] m_Angles;
 
-    DxGimpactData()//dxTriMeshData()
+    public DxGimpactData()//dxTriMeshData()
 	{
 		m_Vertices=null;
 //		m_VertexStride = 12;
@@ -157,8 +157,10 @@ public class DxGimpactData extends DxTriMeshData {
 //#endif  // dTRIMESH_GIMPACT
 
 	@Override
-	public void preprocess() {
+	public boolean preprocess() {
 		m_Angles = new GimpactDataPreprocessor(this).buildAngles();
+		// TODO TZ-CHECK Remove this m,ethod?
+		return true;// (TZ): What else?
 	}
 
 	@Override

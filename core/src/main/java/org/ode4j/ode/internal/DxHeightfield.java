@@ -44,6 +44,7 @@ import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.internal.cpp4j.java.ObjArray;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
  *

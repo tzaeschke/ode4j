@@ -24,7 +24,10 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import org.ode4j.math.DVector4;
+import org.ode4j.math.DVector4C;
 import org.ode4j.ode.DContactGeom;
+import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry;
 
 public class DxPlaneContactAccessor implements DxGImpactContactsExportHelper.GImpactContactAccessorI {
@@ -34,7 +37,7 @@ public class DxPlaneContactAccessor implements DxGImpactContactsExportHelper.GIm
     //    struct dxPlaneContactAccessor
     //    {
     //        dxPlaneContactAccessor(const vec4f *planecontact_results, const dReal *plane, dGeomID g1, dGeomID g2) : m_planecontact_results(planecontact_results), m_plane(plane), m_g1(g1), m_g2(g2) {}
-    public DxPlaneContactAccessor(final GimGeometry.vec4f[] planecontact_results, final double[] plane, DxGeom g1, DxGeom g2) {
+    public DxPlaneContactAccessor(final GimGeometry.vec4f[] planecontact_results, final DVector4C plane, DxGeom g1, DxGeom g2) {
         m_planecontact_results = planecontact_results;
         m_plane = plane;
         m_g1 = g1;
@@ -52,8 +55,8 @@ public class DxPlaneContactAccessor implements DxGImpactContactsExportHelper.GIm
         pcontact.pos.set(planecontact.f[0], planecontact.f[1], planecontact.f[2]);
         pcontact.pos3(1.0); //pos[3] = 1.0;
 
-        final double[] plane = m_plane;
-        pcontact.normal.set(plane[0], plane[1], plane[2]);
+        final DVector4C plane = m_plane;
+        pcontact.normal.set(plane.get0(), plane.get1(), plane.get2());
         pcontact.normal3(0); //normal[3] = 0;
 
         pcontact.depth = planecontact.f[3];
@@ -64,6 +67,6 @@ public class DxPlaneContactAccessor implements DxGImpactContactsExportHelper.GIm
     }
 
     final GimGeometry.vec4f[] m_planecontact_results;
-    final double[] m_plane;
+    final DVector4C m_plane;
     DxGeom m_g1, m_g2;
 }

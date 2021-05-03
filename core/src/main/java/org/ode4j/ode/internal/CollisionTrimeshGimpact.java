@@ -323,7 +323,8 @@ public class CollisionTrimeshGimpact {
 
     /*extern */
     DTriMeshData dGeomTriMeshDataCreate() {
-        return new DxTriMeshData();
+        //return new DxTriMeshData();
+        return new DxGimpactData();
     }
 
     /*extern */

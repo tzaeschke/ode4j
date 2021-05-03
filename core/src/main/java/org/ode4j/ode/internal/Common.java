@@ -883,6 +883,9 @@ enum {
 	public static boolean dIN_RANGE(int aval, int amin_incl, int amax_excl) {
 		return amin_incl <= aval && aval < amax_excl;
 	}
+	public static boolean dIN_RANGE(long aval, long amin_incl, long amax_excl) {
+		return amin_incl <= aval && aval < amax_excl;
+	}
 
 
 
@@ -922,12 +925,12 @@ enum {
 		return dxClamp(aval, alo, ahi);
 	}
 
-	public static int dARRAY_SIZE(int[] aarr) {
-		return aarr.length;
-	}
-
-	public static int dSTATIC_ARRAY_SIZE(aclass, aarr) {
-		dARRAY_SIZE(((aclass *)sizeof(void *))->aarr);
-	}
+	//	public static int dARRAY_SIZE(int[] aarr) {
+	//		return aarr.length;
+	//	}
+	//
+	//	public static int dSTATIC_ARRAY_SIZE(aclass, aarr) {
+	//		dARRAY_SIZE(((aclass *)sizeof(void *))->aarr);
+	//	}
 
 }
