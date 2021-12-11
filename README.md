@@ -16,6 +16,8 @@ ode4j contains also some features that are not present in ODE, such as a ragdoll
 
 The [ODE forum](https://groups.google.com/forum/#!forum/ode-users) is useful for questions around physics and general API usage: 
 
+There is a new [Discord channel](https://discord.gg/UFXJcXv2P8) around ode4j/Java.
+
 The [ode4j forum](https://groups.google.com/forum/?hl=en#!forum/ode4j) is for problems and functionality specific to ode4j/Java. 
 
 There is also the [old website](http://www.zaeschke.com/ode4j/), including some [screenshots](http://www.zaeschke.com/ode4j/ode4j-features.html).
