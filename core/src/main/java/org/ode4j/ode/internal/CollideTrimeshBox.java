@@ -51,7 +51,9 @@ import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
+import static org.ode4j.ode.OdeMath.dSubtractVectors3;
 import static org.ode4j.ode.internal.Common.*;
+import static org.ode4j.ode.internal.DxGeom.NUMC_MASK;
 
 /*************************************************************************
  *                                                                       *
@@ -62,11 +64,10 @@ import static org.ode4j.ode.internal.Common.*;
  *************************************************************************/
 public class CollideTrimeshBox implements DColliderFn {
 
-	@Override
-	public int dColliderFn(DGeom o1, DGeom o2, int flags,
-			DContactGeomBuffer contacts) {
-		return dCollideBTL((DxTriMesh)o1, (DxBox)o2, flags, contacts, 1);
-	}
+    @Override
+    public int dColliderFn(DGeom o1, DGeom o2, int flags, DContactGeomBuffer contacts) {
+        return dCollideBTL((DxTriMesh) o1, (DxBox) o2, flags, contacts, 1);
+    }
 
 	//	#if dTRIMESH_ENABLED
 
@@ -184,7 +185,7 @@ public class CollideTrimeshBox implements DColliderFn {
 
 		//		void SetupInitialContext(dxTriMesh *TriMesh, dxGeom *BoxGeom,
 		//			int Flags, dContactGeom* Contacts, int Stride);
-		//		int TestCollisionForSingleTriangle(int ctContacts0, int Triint, 
+		//		int TestCollisionForSingleTriangle(int ctContacts0, int Triint,
 		//			dVector3 dv[3], bool &bOutFinishSearching);
 		//
 		//		bool _cldTestNormal(dReal fp0, dReal fR, dVector3 vNormal, int iAxis);
@@ -418,18 +419,19 @@ public class CollideTrimeshBox implements DColliderFn {
 				fDepth = fDepth*fOneOverLength;
 				fD*=fOneOverLength;
 
-				// if lower depth than best found so far (favor face over edges)
-				if (fDepth*1.5f < m_fBestDepth) {
-					// remember current axis as best axis
-					//	      m_vBestNormal[0]  = vNormal[0]*fOneOverLength;
-					//	      m_vBestNormal[1]  = vNormal[1]*fOneOverLength;
-					//	      m_vBestNormal[2]  = vNormal[2]*fOneOverLength;
-					m_vBestNormal.set(vNormal).scale(fOneOverLength);  // TODO TZ here positive, above negative, correct? 
-					m_iBestAxis    = iAxis;
-					//dAASSERT(fDepth>=0);
-					m_fBestDepth   = fDepth;
-				}
-			}
+                // if lower depth than best found so far (favor face over edges)
+                if (fDepth * 1.5f < m_fBestDepth) {
+                    // remember current axis as best axis
+                    //	      m_vBestNormal[0]  = vNormal[0]*fOneOverLength;
+                    //	      m_vBestNormal[1]  = vNormal[1]*fOneOverLength;
+                    //	      m_vBestNormal[2]  = vNormal[2]*fOneOverLength;
+                    m_vBestNormal.set(vNormal).scale(fOneOverLength);  // TODO TZ here positive, above negative,
+                    // correct?
+                    m_iBestAxis = iAxis;
+                    //dAASSERT(fDepth>=0);
+                    m_fBestDepth = fDepth;
+                }
+            }
 
 			return true;
 		}
@@ -463,7 +465,7 @@ public class CollideTrimeshBox implements DColliderFn {
 					//	      avArrayOut[ctOut][0] = avArrayIn[i0][0];
 					//	      avArrayOut[ctOut][1] = avArrayIn[i0][1];
 					//	      avArrayOut[ctOut][2] = avArrayIn[i0][2];
-					avArrayOut[ctOut.i].set( avArrayIn[i0] ); 
+					avArrayOut[ctOut.i].set( avArrayIn[i0] );
 					ctOut.i++;
 				}
 
@@ -510,8 +512,8 @@ public class CollideTrimeshBox implements DColliderFn {
 			// calculate length of face normal
 			double fNLen = LENGTHOF(m_vN);
 
-			// Even though all triangles might be initially valid, 
-			// a triangle may degenerate into a segment after applying 
+			// Even though all triangles might be initially valid,
+			// a triangle may degenerate into a segment after applying
 			// space transformation.
 			if (fNLen == 0) {
 				return false;
@@ -1042,14 +1044,15 @@ public class CollideTrimeshBox implements DColliderFn {
 
 					GenerateContact(TriIndex, vPntTmp, m_vBestNormal, -fTempDepth);
 
-					// TODO CHECK-TZ This check had been removed...
-					if	((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (DxGeom.NUMC_MASK | CONTACTS_UNIMPORTANT))) {
-						break;
-					}
-//					if ((m_ctContacts | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT))) {
-//						break;
-//					}
-				}
+                    // TODO CHECK-TZ This check had been removed...
+                    if ((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT))) {
+                        break;
+                    }
+                    //					if ((m_ctContacts | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK |
+                    //					CONTACTS_UNIMPORTANT))) {
+                    //						break;
+                    //					}
+                }
 
 				//dAASSERT(m_ctContacts>0);
 
@@ -1231,7 +1234,7 @@ public class CollideTrimeshBox implements DColliderFn {
 					break;
 				}
 
-				if (TriCount == (m_iFlags & DxGeom.NUMC_MASK))
+				if (TriCount == (m_iFlags & NUMC_MASK))
 				{
 					if (!(MinDepth < in_Depth))
 					{
@@ -1244,15 +1247,15 @@ public class CollideTrimeshBox implements DColliderFn {
 			}
 			else
 			{
-				dIASSERT(TriCount < (m_iFlags & DxGeom.NUMC_MASK));
+				dIASSERT(TriCount < (m_iFlags & NUMC_MASK));
 			}
 
-			if (!deeper)
-			{
-				// Add a new contact
-				// TODO CHECK-TZ This may attempt to ADD an ENTRY!!! See a few lines below
-				TgtContact = m_ContactGeoms.getSafe(m_iFlags, TriCount);
-				TriCount++;
+                if (!deeper) {
+                    // Add a new contact
+                    // TODO CHECK-TZ This may attempt to ADD an ENTRY!!! See a few lines below
+                    TgtContact = m_ContactGeoms.getSafe(m_iFlags, TriCount);
+                    //                DContactGeom pContact = m_TempContactGeoms.get(ctContacts0);
+                    TriCount++;
 
 				//TgtContact.pos[3] = 0.0;
 
@@ -1278,39 +1281,10 @@ public class CollideTrimeshBox implements DColliderFn {
 
 			TgtContact.side1 = TriIndex;
 
-			// TODO CHECK-TZ This may attempt to ADD an ENTRY!!! See a few lines below
-			//m_ctContacts = TriCount;
-		}
-		while (false);
-	}
-
-
-
-
-
-
-
-		// test one mesh triangle on intersection with given box
-		//	void sTrimeshBoxColliderData::_cldTestOneTriangle(const dVector3 &v0, const dVector3 &v1, const dVector3 &v2, int TriIndex)//, void *pvUser)
-		private void _cldTestOneTriangle(final DVector3C v0, final DVector3C v1,
-				final DVector3C v2, int TriIndex)//, void *pvUser)
-		{
-			// do intersection test and find best separating axis
-			if(!_cldTestSeparatingAxes(v0, v1, v2)) {
-				// if not found do nothing
-				return;
-			}
-
-			// if best separation axis is not found
-			if (m_iBestAxis == 0) {
-				// this should not happen (we should already exit in that case)
-				//dMessage (0, "best separation axis not found");
-				// do nothing
-				return;
-			}
-
-			_cldClipping(v0, v1, v2, TriIndex);
-		}
+                // TODO CHECK-TZ This may attempt to ADD an ENTRY!!! See a few lines below
+                //m_ctContacts = TriCount;
+            } while (false);
+        }
 
 
 		//	void sTrimeshBoxColliderData::SetupInitialContext(dxTriMesh *TriMesh, dxGeom *BoxGeom,
@@ -1342,14 +1316,14 @@ public class CollideTrimeshBox implements DColliderFn {
 			//	  SET(m_vHullDstPos,vPosMesh);
 			m_vHullDstPos.set(TriMesh.getPosition());
 
-			// global info for contact creation
-			m_TempContactGeoms = new ArrayList<DContactGeom>();
-			if (Stride != 1) throw new IllegalArgumentException("stride = " + Stride);
-			m_iStride=Stride;
-			m_iFlags=Flags;
-			m_ContactGeoms=Contacts;
-			m_Geom1=TriMesh;
-			m_Geom2=BoxGeom;
+            // global info for contact creation
+            m_TempContactGeoms = new ArrayList<DContactGeom>();
+            assert(Stride != 1) : "stride = " + Stride;
+            m_iStride = Stride;
+            m_iFlags = Flags;
+            m_ContactGeoms = Contacts;
+            m_Geom1 = TriMesh;
+            m_Geom2 = BoxGeom;
 
 			// reset stuff
 			m_fBestDepth = MAXVALUE;
@@ -1359,163 +1333,69 @@ public class CollideTrimeshBox implements DColliderFn {
 			m_vBestNormal.setZero();
 		}
 
-		//	int sTrimeshBoxColliderData::TestCollisionForSingleTriangle(int ctContacts0, int Triint, 
-		//		dVector3 dv[3], bool &bOutFinishSearching)
-		private int TestCollisionForSingleTriangle(int ctContacts0, int Triint, 
-				DVector3[] dv, RefBoolean bOutFinishSearching)
-		{
-			// test this triangle
-			_cldTestOneTriangle(dv[0],dv[1],dv[2],Triint);
+        //void sTrimeshBoxColliderData::TestCollisionForSingleTriangle(int Triint, dVector3 dv[3], bool &bOutFinishSearching)
+        void TestCollisionForSingleTriangle(int Triint, DVector3[] dv, RefBoolean bOutFinishSearching)
+        {
+            boolean finish = false;
 
-			// fill-in tri index for generated contacts
-			for (; ctContacts0 < m_TempContactGeoms.size(); ctContacts0++) {
-				//DContactGeom pContact = SAFECONTACT(m_iFlags, m_ContactGeoms, ctContacts0, m_iStride);
-				DContactGeom pContact = m_TempContactGeoms.get(ctContacts0);
-				pContact.side1 = Triint;
-				pContact.side2 = -1;
-			}
+            // test this triangle
+            if (_cldTestOneTriangle(dv[0], dv[1], dv[2], Triint))
+            {
+                /*
+                NOTE by Oleh_Derevenko:
+                The function continues checking triangles after maximal number
+                of contacts is reached because it selects maximal penetration depths.
+                See also comments in GenerateContact()
+                */
+                // TODO CHECK-TZ
+                //finish = ((m_ctContacts != 0 | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT)));
+                finish = ((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT)));
+            }
 
-			return ctContacts0;
-		}
+            bOutFinishSearching.set(finish);
+        }
+
+        // TODO TZ-CHECK remove this
+//        //	int sTrimeshBoxColliderData::TestCollisionForSingleTriangle(int ctContacts0, int Triint,
+//        //		dVector3 dv[3], bool &bOutFinishSearching)
+//        private int TestCollisionForSingleTriangle(int ctContacts0, int Triint, DVector3[] dv, RefBoolean bOutFinishSearching) {
+//            // test this triangle
+//            _cldTestOneTriangle(dv[0], dv[1], dv[2], Triint);
+//
+//            // fill-in tri index for generated contacts
+//            for (; ctContacts0 < m_TempContactGeoms.size(); ctContacts0++) {
+//                //DContactGeom pContact = SAFECONTACT(m_iFlags, m_ContactGeoms, ctContacts0, m_iStride);
+//                DContactGeom pContact = m_TempContactGeoms.get(ctContacts0);
+//                pContact.side1 = Triint;
+//                pContact.side2 = -1;
+//            }
+//
+//            return ctContacts0;
+//        }
 
 
-		//	// OPCODE version of box to mesh collider
-		//	#if dTRIMESH_OPCODE
-		//	static void dQueryBTLPotentialCollisionTriangles(OBBCollider &Collider, 
-		//	  const sTrimeshBoxColliderData &cData, dxTriMesh *TriMesh, dxGeom *BoxGeom,
-		//	  OBBCache &BoxCache)
-		//	{
-		//	  // get source hull position, orientation and half size
-		//	  const dMatrix3& mRotBox=*(const dMatrix3*)dGeomGetRotation(BoxGeom);
-		//	  const dVector3& vPosBox=*(const dVector3*)dGeomGetPosition(BoxGeom);
-		//
-		//	  // Make OBB
-		//	  OBB Box;
-		//	  Box.mCenter.x = vPosBox[0];
-		//	  Box.mCenter.y = vPosBox[1];
-		//	  Box.mCenter.z = vPosBox[2];
-		//
-		//	  // It is a potential issue to explicitly cast to float 
-		//	  // if custom width floating point type is introduced in OPCODE.
-		//	  // It is necessary to make a typedef and cast to it
-		//	  // (e.g. typedef float opc_float;)
-		//	  // However I'm not sure in what header it should be added.
-		//
-		//	  Box.mExtents.x = /*(float)*/cData.m_vBoxHalfSize[0];
-		//	  Box.mExtents.y = /*(float)*/cData.m_vBoxHalfSize[1];
-		//	  Box.mExtents.z = /*(float)*/cData.m_vBoxHalfSize[2];
-		//
-		//	  Box.mRot.m[0][0] = /*(float)*/mRotBox[0];
-		//	  Box.mRot.m[1][0] = /*(float)*/mRotBox[1];
-		//	  Box.mRot.m[2][0] = /*(float)*/mRotBox[2];
-		//
-		//	  Box.mRot.m[0][1] = /*(float)*/mRotBox[4];
-		//	  Box.mRot.m[1][1] = /*(float)*/mRotBox[5];
-		//	  Box.mRot.m[2][1] = /*(float)*/mRotBox[6];
-		//
-		//	  Box.mRot.m[0][2] = /*(float)*/mRotBox[8];
-		//	  Box.mRot.m[1][2] = /*(float)*/mRotBox[9];
-		//	  Box.mRot.m[2][2] = /*(float)*/mRotBox[10];
-		//
-		//	  Matrix4x4 amatrix;
-		//	  Matrix4x4 BoxMatrix = MakeMatrix(vPosBox, mRotBox, amatrix);
-		//
-		//	  Matrix4x4 InvBoxMatrix;
-		//	  InvertPRMatrix(InvBoxMatrix, BoxMatrix);
-		//
-		//	  // get destination hull position and orientation
-		//	  const dMatrix3& mRotMesh=*(const dMatrix3*)dGeomGetRotation(TriMesh);
-		//	  const dVector3& vPosMesh=*(const dVector3*)dGeomGetPosition(TriMesh);
-		//
-		//	  // TC results
-		//	  if (TriMesh->doBoxTC) {
-		//		dxTriMesh::BoxTC* BoxTC = 0;
-		//		for (int i = 0; i < TriMesh->BoxTCCache.size(); i++){
-		//			if (TriMesh->BoxTCCache[i].Geom == BoxGeom){
-		//				BoxTC = &TriMesh->BoxTCCache[i];
-		//				break;
-		//			}
-		//		}
-		//		if (!BoxTC){
-		//			TriMesh->BoxTCCache.push(dxTriMesh::BoxTC());
-		//
-		//			BoxTC = &TriMesh->BoxTCCache[TriMesh->BoxTCCache.size() - 1];
-		//			BoxTC->Geom = BoxGeom;
-		//		    BoxTC->FatCoeff = 1.1f; // Pierre recommends this, instead of 1.0
-		//		}
-		//
-		//		// Intersect
-		//		Collider.SetTemporalCoherence(true);
-		//		Collider.Collide(*BoxTC, Box, TriMesh->Data->BVTree, null, &MakeMatrix(vPosMesh, mRotMesh, amatrix));
-		//	  }
-		//	  else {
-		//			Collider.SetTemporalCoherence(false);
-		//			Collider.Collide(BoxCache, Box, TriMesh->Data->BVTree, null,
-		//							 &MakeMatrix(vPosMesh, mRotMesh, amatrix));
-		//		}
-		//	}
-		//
-		//	int dCollideBTL(dxGeom* g1, dxGeom* BoxGeom, int Flags, dContactGeom* Contacts, int Stride){
-		//	  dIASSERT (Stride >= (int)sizeof(dContactGeom));
-		//	  dIASSERT (g1->type == dTriMeshClass);
-		//	  dIASSERT (BoxGeom->type == dBoxClass);
-		//	  dIASSERT ((Flags & NUMC_MASK) >= 1);
-		//
-		//	  dxTriMesh* TriMesh = (dxTriMesh*)g1;
-		//
-		//	  sTrimeshBoxColliderData cData;
-		//	  cData.SetupInitialContext(TriMesh, BoxGeom, Flags, Contacts, Stride);
-		//
-		//	  const unsigned uiTLSKind = TriMesh->getParentSpaceTLSKind();
-		//	  dIASSERT(uiTLSKind == BoxGeom->getParentSpaceTLSKind()); // The colliding spaces must use matching cleanup method
-		//	  TrimeshCollidersCache *pccColliderCache = GetTrimeshCollidersCache(uiTLSKind);
-		//	  OBBCollider& Collider = pccColliderCache->_OBBCollider;
-		//
-		//	  dQueryBTLPotentialCollisionTriangles(Collider, cData, TriMesh, BoxGeom,
-		//	    pccColliderCache->defaultBoxCache);
-		//
-		//	  if (!Collider.GetContactStatus()) {
-		//	  	// no collision occurred
-		//	  	return 0;
-		//	  }
-		//
-		//	  // Retrieve data
-		//	  int TriCount = Collider.GetNbTouchedPrimitives();
-		//	  const int* Triangles = (const int*)Collider.GetTouchedPrimitives();
-		//
-		//	  if (TriCount != 0){
-		//	      if (TriMesh->ArrayCallback != null){
-		//	         TriMesh->ArrayCallback(TriMesh, BoxGeom, Triangles, TriCount);
-		//	    }
-		//
-		//	    // get destination hull position and orientation
-		//	    const dMatrix3& mRotMesh=*(const dMatrix3*)dGeomGetRotation(TriMesh);
-		//	    const dVector3& vPosMesh=*(const dVector3*)dGeomGetPosition(TriMesh);
-		//
-		//	    int ctContacts0 = 0;
-		//
-		//	    // loop through all intersecting triangles
-		//	    for (int i = 0; i < TriCount; i++){
-		//	        const int Triint = Triangles[i];
-		//	        if (!Callback(TriMesh, BoxGeom, Triint)) continue;
-		//
-		//	        dVector3 dv[3];
-		//			FetchTriangle(TriMesh, Triint, vPosMesh, mRotMesh, dv);
-		//
-		//			bool bFinishSearching;
-		//			ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dv, bFinishSearching);
-		//
-		//			if (bFinishSearching) {
-		//				break;
-		//			}
-		//		}
-		//	  }
-		//
-		//	  return cData.m_ctContacts;
-		//	}
-		//	#endif
+        // test one mesh triangle on intersection with given box
+        //	void sTrimeshBoxColliderData::_cldTestOneTriangle(const dVector3 &v0, const dVector3 &v1, const dVector3 &v2, int TriIndex)//, void *pvUser)
+        private boolean _cldTestOneTriangle(final DVector3C v0, final DVector3C v1, final DVector3C v2, int TriIndex)//, void *pvUser)
+        {
+            // do intersection test and find best separating axis
+            if (!_cldTestSeparatingAxes(v0, v1, v2)) {
+                // if not found do nothing
+                return false;
+            }
 
-	}  //TZ end of data?
+            // if best separation axis is not found
+            if (m_iBestAxis == 0) {
+                // this should not happen (we should already exit in that case)
+                //dMessage (0, "best separation axis not found");
+                // do nothing
+                return false;
+            }
+
+            _cldClipping(v0, v1, v2, TriIndex);
+            return true;
+        }
+    }  //TZ end of data?
 
 	// GIMPACT version of box to mesh collider
 	//	#if dTRIMESH_GIMPACT
@@ -1568,38 +1448,31 @@ public class CollideTrimeshBox implements DColliderFn {
 		int[] boxesresult = collision_result.GIM_DYNARRAY_POINTER();
 		ptrimesh.gim_trimesh_locks_work_data();
 
-		int ctContacts0 = 0;
-
-		DVector3[] dv = { new DVector3(), new DVector3(), new DVector3() };
-		//vec3f[] dv = new vec3f[] { new vec3f(), new vec3f(), new vec3f() };//[3];
-		for(int i=0;i<collision_result.size();i++)
-		{
-			//			DVector3[] dvTZ = new DVector3[3];
-			//			vec3f[] dv = new vec3f[3];
+        for (int i = 0; i < collision_result.size(); i++) {
+            DVector3[] dv = DVector3.newArray(3);
 
 			int Triint = boxesresult[i];
 			ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv[0], dv[1], dv[2]);
 
-			RefBoolean bFinishSearching = new RefBoolean(false);
-			//dvTZ[0].set(dv[0].f);
-			//dvTZ[1].set(dv[1].f);
-			//dvTZ[2].set(dv[2].f);
-			ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dv, bFinishSearching);
-		}
-		int contactcount = cData.m_TempContactGeoms.size();
-		int contactmax = (Flags & DxGeom.NUMC_MASK);
-		if (contactcount > contactmax)
-		{
-			if (OdeConfig.ENABLE_CONTACT_SORTING) {
-				Collections.sort(cData.m_TempContactGeoms, new Comparator<DContactGeom>() {
-					@Override
-					public int compare(DContactGeom o1, DContactGeom o2) {
-						return Double.compare(o2.depth, o1.depth);
-					}
-				});
-			}
-			contactcount = contactmax;
-		}
+            RefBoolean bFinishSearching = new RefBoolean(false);
+            //dvTZ[0].set(dv[0].f);
+            //dvTZ[1].set(dv[1].f);
+            //dvTZ[2].set(dv[2].f);
+            cData.TestCollisionForSingleTriangle(Triint, dv, bFinishSearching);
+        }
+        int contactcount = cData.m_TempContactGeoms.size();
+        int contactmax = (Flags & NUMC_MASK);
+        if (contactcount > contactmax) {
+            if (OdeConfig.ENABLE_CONTACT_SORTING) {
+                Collections.sort(cData.m_TempContactGeoms, new Comparator<DContactGeom>() {
+                    @Override
+                    public int compare(DContactGeom o1, DContactGeom o2) {
+                        return Double.compare(o2.depth, o1.depth);
+                    }
+                });
+            }
+            contactcount = contactmax;
+        }
 
 		ptrimesh.gim_trimesh_unlocks_work_data();
 		collision_result.GIM_DYNARRAY_DESTROY();
