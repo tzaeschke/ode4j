@@ -148,7 +148,6 @@ public class DemoMovingTrimesh extends dsFunctions {
 		System.out.println ("   v for a convex object.");
 		System.out.println ("   c for capsule.");
 		System.out.println ("   x for a composite object.");
-		System.out.println ("   v for a convex object.\n");
 		System.out.println ("   m for a trimesh.");
 		System.out.println ("To select an object, press space.");
 		System.out.println ("To disable the selected object, press d.");
@@ -561,7 +560,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 //	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,600,600,this);
 
 //	    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
 //	    pool.freeThreadPool();

@@ -80,6 +80,7 @@ class FaceAngleStorageCodec {//<TStorageType extends Number, SSI_SIGNED_STORED> 
     }
 
     //static dReal decodeStorageValue(storage_type storedValue)
+    // TODO CHECK TZ why are we storing a 'int' here? We are dropping a lot of precision here....
     static double decodeStorageValue(double storedValue) {
         return storedValue * (double) (M_PI / STORAGE_TYPE_MAX);
     }

@@ -170,6 +170,15 @@ public class DxGimpactCollision {
 		TriMesh.m_collision_trimesh.gim_trimesh_unlocks_work_data();
 	}
 
+	// TODO CHECK-TZ Use this instead of array of DVector
+	static void FetchTransformedTriangle(DxGimpact TriMesh, int Index, DVector3 Out0, DVector3 Out1, DVector3 Out2){
+		TriMesh.m_collision_trimesh.gim_trimesh_locks_work_data();
+		//vec3f[] vOut = { new vec3f(), new vec3f(), new vec3f() };
+		TriMesh.m_collision_trimesh.gim_trimesh_get_triangle_vertices(Index, Out0, Out1, Out2);
+		//Out[0].set( vOut[0].f ); Out[1].set( vOut[1].f ); Out[2].set( vOut[2].f );
+		TriMesh.m_collision_trimesh.gim_trimesh_unlocks_work_data();
+	}
+
 	//		inline void MakeMatrix(const dVector3 Position, const dMatrix3 Rotation, mat4f m)
 	static void MakeMatrix(DVector3C Position, DMatrix3C Rotation, mat4f m)
 	{

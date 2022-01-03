@@ -96,6 +96,9 @@ public interface DMass extends DMassC {
 	DVector3C getC();
 	@Override
 	DMatrix3C getI();
+	/**
+	 * @param c mass center
+	 */
 	void setC(DVector3C c);
 	void setI(DMatrix3C I);
 

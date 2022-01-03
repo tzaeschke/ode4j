@@ -30,6 +30,7 @@ import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.internal.*;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
+import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.ou.CEnumUnsortedElementArray;
 
 import static org.ode4j.ode.DTriMesh.*;
@@ -201,6 +202,10 @@ public class DxTriDataBase extends DBase {
         public IFaceAngleStorageControl retrieveFaceAngles() {
             return m_faceAngles;
         }
+        public double retrieveFaceAngle(int triangleIndex, int vertexIndex) {
+            RefDouble out_angleValue = new RefDouble();
+            return ((FaceAnglesWrapper)m_faceAngles).getFaceAngle(out_angleValue, triangleIndex, vertexIndex);
+        }
 
         public IFaceAngleStorageView retrieveFaceAngleView() {
             return m_faceAngleView;
@@ -370,8 +375,8 @@ public class DxTriDataBase extends DBase {
         final int lastEdgeOfs = (numEdges - 1);
         //for (EdgeRecord * currEdge = edges; ; ++currEdge) {
         for (int currEdgeOfs = 0; ; ++currEdgeOfs) {
-            final EdgeRecord currEdge0 = edges[currEdgeOfs];
-            final EdgeRecord currEdge1 = edges[currEdgeOfs + 1];
+//            final EdgeRecord currEdge0 = edges[currEdgeOfs];
+//            final EdgeRecord currEdge1 = edges[currEdgeOfs + 1];
             // Handle the last edge separately to have an optimizer friendly loop
             if (currEdgeOfs >= lastEdgeOfs) {
                 // This is a boundary edge
@@ -382,6 +387,7 @@ public class DxTriDataBase extends DBase {
 
                     if (useFlags != null) {
                         // For the last element EdgeRecord::kAbsVertexUsed assignment can be skipped as noone is going to need it any more
+                        final EdgeRecord currEdge0 = edges[currEdgeOfs];
                         useFlags[currEdge0.m_triIdx] |= ((edges[currEdge0.m_vertIdx1].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0 ? currEdge0.m_vert1Flags : 0) | ((edges[currEdge0.m_vertIdx2].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0 ? currEdge0.m_vert2Flags : 0) | currEdge0.m_edgeFlags;
                     }
                 }
@@ -389,6 +395,8 @@ public class DxTriDataBase extends DBase {
                 break;
             }
 
+            final EdgeRecord currEdge0 = edges[currEdgeOfs];
+            final EdgeRecord currEdge1 = edges[currEdgeOfs + 1];
             int vertIdx1 = currEdge0.m_vertIdx1;
             int vertIdx2 = currEdge0.m_vertIdx2;
 
@@ -847,6 +855,10 @@ public class DxTriDataBase extends DBase {
         m_normals = normals;
     }
 
+    protected void buildData(final float[] vertices, final int[] indices, final float[] normals) {
+        buildData(vertices, 1, vertices.length/3, indices, indices.length, 3, normals, true);
+    }
+
 
     //bool dxTriDataBase::allocateFaceAngles(FaceAngleStorageMethod storageMethod)
     boolean allocateFaceAngles(int storageMethod)
@@ -861,17 +873,17 @@ public class DxTriDataBase extends DBase {
 
         //FAngleStorageAllocProc allocProc = g_AngleStorageAllocProcs.Encode(storageMethod);
         //IFaceAngleStorageControl storageInstance = allocProc.allocateInstance(triangleCount, storageView);
-        FaceAnglesWrapper allocProc = new FaceAnglesWrapper(triangleCount);
-        // TODO CHECK-TZ why do we not need this class in Java..????
-        FaceAngleStorageCodec proc = new FaceAngleStorageCodec();
-        IFaceAngleStorageControl storageInstance = allocProc.allocateInstance(triangleCount, storageView);
+        //FaceAnglesWrapper allocProc = new FaceAnglesWrapper(triangleCount);
+        //FaceAngleStorageCodec proc = new FaceAngleStorageCodec();
+        //IFaceAngleStorageControl storageInstance = allocProc.allocateInstance(triangleCount, storageView);
+        FaceAnglesWrapper storage = FaceAnglesWrapper.allocateInstance(triangleCount);
 
-        if (storageInstance != null)
-        {
-            m_faceAngles = storageInstance;
-            m_faceAngleView = storageView.get();
+        //if (storageInstance != null)
+        //{
+            m_faceAngles = storage;//storageInstance;
+            m_faceAngleView = storage;//storageView.get();
             result = true;
-        }
+        //}
 
         return result;
     }

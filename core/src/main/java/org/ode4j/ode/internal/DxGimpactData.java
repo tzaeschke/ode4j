@@ -26,11 +26,6 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.dIASSERT;
 
-import java.util.ArrayList;
-
-import org.ode4j.math.DVector4;
-import org.ode4j.ode.internal.cpp4j.java.Ref;
-import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 /**
@@ -39,33 +34,33 @@ import org.ode4j.ode.internal.trimesh.DxTriMeshData;
  */
 public class DxGimpactData extends DxTriMeshData {
 
-	private float[] m_Vertices;//const char* m_Vertices;
-//	int m_VertexStride;   //see docs below, GIMPACT does not support strides other than 3 (TZ)
-//	int m_VertexCount;
-	private int[] m_Indices;//const char* m_Indices;
-//	int m_TriangleCount;
-//	int m_TriStride;
-//	boolean m_single;
-	private float[] m_Angles;
+//	private float[] m_Vertices;//const char* m_Vertices;
+////	int m_VertexStride;   //see docs below, GIMPACT does not support strides other than 3 (TZ)
+////	int m_VertexCount;
+//	private int[] m_Indices;//const char* m_Indices;
+////	int m_TriangleCount;
+////	int m_TriStride;
+////	boolean m_single;
+//	private float[] m_Angles;
 
     public DxGimpactData()//dxTriMeshData()
 	{
-		m_Vertices=null;
-//		m_VertexStride = 12;
-//		m_VertexCount = 0;
-		m_Indices = null;
-//		m_TriangleCount = 0;
-//		m_TriStride = 12;
-//		m_single = true;
+//		m_Vertices=null;
+////		m_VertexStride = 12;
+////		m_VertexCount = 0;
+//		m_Indices = null;
+////		m_TriangleCount = 0;
+////		m_TriStride = 12;
+////		m_single = true;
 	}
     
     
     float[] getDataRef() {
-    	return m_Vertices;
+    	return super.retrieveVertexInstances();
     }
 
     int[] getIndexRef() {
-    	return m_Indices;
+    	return super.retrieveTriangleVertexIndices();
     }
 
 //    void Build(const void* Vertices, int VertexStride, int VertexCount,
@@ -116,61 +111,62 @@ public class DxGimpactData extends DxTriMeshData {
   	{
  		dIASSERT(Vertices!=null);
  		dIASSERT(Indices!=null);
- 		m_Vertices = Vertices;
- 		m_Indices = Indices;
+ 		super.buildData(Vertices, Indices, null);
+ 		//m_Vertices = Vertices;
+ 		//m_Indices = Indices;
  		//TODO remove?
  		//check();
   	}
-	void GetVertex(int i, DVector4 Out)
-	{
-		//TZ commented out, special treatment not required (?)
-//		if(m_single)
-//		{
-			//const float * fverts = (const float * )(m_Vertices + m_VertexStride*i);
-			int p = i*3;//m_VertexStride;
-//			Out[0] = fverts[0];
-//			Out[1] = fverts[1];
-//			Out[2] = fverts[2];
-//			Out[3] = 1.0f;
-			Out.set(m_Vertices[p], m_Vertices[p+1], m_Vertices[p+2], 1.0f);
-//		}
-//		else
-//		{
-//			const double * dverts = (const double * )(m_Vertices + m_VertexStride*i);
-//			Out[0] = (float)dverts[0];
-//			Out[1] = (float)dverts[1];
-//			Out[2] = (float)dverts[2];
-//			Out[3] = 1.0f;
-//
-//		}
-	}
+//	void GetVertex(int i, DVector4 Out)
+//	{
+//		//TZ commented out, special treatment not required (?)
+////		if(m_single)
+////		{
+//			//const float * fverts = (const float * )(m_Vertices + m_VertexStride*i);
+//			int p = i*3;//m_VertexStride;
+////			Out[0] = fverts[0];
+////			Out[1] = fverts[1];
+////			Out[2] = fverts[2];
+////			Out[3] = 1.0f;
+//			Out.set(m_Vertices[p], m_Vertices[p+1], m_Vertices[p+2], 1.0f);
+////		}
+////		else
+////		{
+////			const double * dverts = (const double * )(m_Vertices + m_VertexStride*i);
+////			Out[0] = (float)dverts[0];
+////			Out[1] = (float)dverts[1];
+////			Out[2] = (float)dverts[2];
+////			Out[3] = 1.0f;
+////
+////		}
+//	}
 
 	//void GetTriIndices(unsigned int itriangle, unsigned int triindices[3])
-	void GetTriIndices(int itriangle, int[] triindices)
-	{
-		//const unsigned int * ind = (const unsigned int * )(m_Indices + m_TriStride*itriangle);
-		int p = itriangle*3;//m_TriStride;
-		triindices[0] = m_Indices[p+0];
-		triindices[1] = m_Indices[p+1];
-		triindices[2] = m_Indices[p+2];
-	}
+//	void GetTriIndices(int itriangle, int[] triindices)
+//	{
+//		//const unsigned int * ind = (const unsigned int * )(m_Indices + m_TriStride*itriangle);
+//		int p = itriangle*3;//m_TriStride;
+//		triindices[0] = m_Indices[p+0];
+//		triindices[1] = m_Indices[p+1];
+//		triindices[2] = m_Indices[p+2];
+//	}
 //#endif  // dTRIMESH_GIMPACT
 
-	@Override
-	public boolean preprocess() {
-		m_Angles = new GimpactDataPreprocessor(this).buildAngles();
-		// TODO TZ-CHECK Remove this m,ethod?
-		return true;// (TZ): What else?
-	}
-
-	@Override
-	public
-		//void dxTriMeshData::UpdateData()
-	void updateData() {
-		//  BVTree.Refit();
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
+//	@Override
+//	public boolean preprocess() {
+//		m_Angles = new GimpactDataPreprocessor(this).buildAngles();
+//		// TODO TZ-CHECK Remove this m,ethod?
+//		return true;// (TZ): What else?
+//	}
+//
+//	@Override
+//	public
+//		//void dxTriMeshData::UpdateData()
+//	void updateData() {
+//		//  BVTree.Refit();
+//		// TODO Auto-generated method stub
+//		throw new UnsupportedOperationException();
+//	}
 
 	
 
@@ -378,34 +374,36 @@ public class DxGimpactData extends DxTriMeshData {
 	 * Debugging method to check trimesh.
 	 */
 	public void check() {
-		@SuppressWarnings("unchecked")
-		ArrayList<Integer>[] edges = new ArrayList[m_Vertices.length/3];  // n = number of vertices
-		System.out.print("Checking Trimesh (size " + edges.length + " ) ...");
-		for (int i = 0; i < edges.length; i++) edges[i] = new ArrayList<Integer>();
-		int nE = 0;
-		for (int i = 0; i < m_Indices.length; i+=3) {
-			int[] ia = new int[4];
-			ia[0] = m_Indices[i];
-			ia[1] = m_Indices[i+1];
-			ia[2] = m_Indices[i+2];
-			ia[3] = ia[0];
-			for (int j = 0; j < 3; j++) {
-				nE++;
-				ArrayList<Integer> l = edges[ia[j]];
-				if (l.contains(ia[j+1])) {
-					System.out.println("WARNING: Reversed edge: " + ia[j] + " / " + ia[j+1]);
-				} else {
-					l.add(ia[j+1]);
-				}
-			}
-			
-		}
-		System.out.println(nE);
+		// TZ TODO?
+//		@SuppressWarnings("unchecked")
+//		ArrayList<Integer>[] edges = new ArrayList[m_Vertices.length/3];  // n = number of vertices
+//		System.out.print("Checking Trimesh (size " + edges.length + " ) ...");
+//		for (int i = 0; i < edges.length; i++) edges[i] = new ArrayList<Integer>();
+//		int nE = 0;
+//		for (int i = 0; i < m_Indices.length; i+=3) {
+//			int[] ia = new int[4];
+//			ia[0] = m_Indices[i];
+//			ia[1] = m_Indices[i+1];
+//			ia[2] = m_Indices[i+2];
+//			ia[3] = ia[0];
+//			for (int j = 0; j < 3; j++) {
+//				nE++;
+//				ArrayList<Integer> l = edges[ia[j]];
+//				if (l.contains(ia[j+1])) {
+//					System.out.println("WARNING: Reversed edge: " + ia[j] + " / " + ia[j+1]);
+//				} else {
+//					l.add(ia[j+1]);
+//				}
+//			}
+//
+//		}
+//		System.out.println(nE);
 	}
 
-
+	//TODO remove this?!?!  But we need to migrate collision_linccd first (or have we already?)
 	public float getEdgeAngle(int triangle, int edge) {
-    	return (float) (m_Angles != null ? m_Angles[triangle * 3 + edge] : Math.PI * 2);
+		return (float) retrieveFaceAngle(triangle, edge);
+    	//return (float) (m_Angles != null ? m_Angles[triangle * 3 + edge] : Math.PI * 2);
 	}
 	
 }

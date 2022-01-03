@@ -29,7 +29,7 @@ import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dIN_RANGE;
 import static org.ode4j.ode.internal.trimesh.DxTriDataBase.*;
 
-class EdgeRecord {
+class EdgeRecord implements Comparable<EdgeRecord> {
     // public:
     // void setupEdge(dMeshTriangleVertex edgeIdx, int triIdx, const unsigned vertexIndices[dMTV__MAX]);
 
@@ -114,9 +114,10 @@ class EdgeRecord {
     //  {
     //      return m_vertIdx1 < anotherEdge.m_vertIdx1 || (m_vertIdx1 == anotherEdge.m_vertIdx1 && m_vertIdx2 < anotherEdge.m_vertIdx2);
     //  }
-    public boolean isLessThan(EdgeRecord anotherEdge) {
-        return m_vertIdx1 < anotherEdge.m_vertIdx1 ||
-                (m_vertIdx1 == anotherEdge.m_vertIdx1 && m_vertIdx2 < anotherEdge.m_vertIdx2);
+    @Override
+    public int compareTo(EdgeRecord other) {
+        int c1 = Integer.compare(m_vertIdx1, other.m_vertIdx1);
+        return c1 != 0 ? c1 : Integer.compare(m_vertIdx2, other.m_vertIdx2);
     }
 
 

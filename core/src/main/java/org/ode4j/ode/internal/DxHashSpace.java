@@ -63,7 +63,6 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 	// an axis aligned bounding box in the hash table
 	private static class dxAABB {
 		int level;		// the level this is stored in (cell size = 2^level)
-		//TODO do not initialise?
 		int[] dbounds = new int[6];	// AABB bounds, discretized to cell size
 		DxGeom geom;		// corresponding geometry object (AABB stored here)
 		int index;		// index of this AABB, starting from 0
@@ -119,7 +118,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 
 	private static long getVirtualAddressBase(int level, int x, int y) {
 		long r = level * 1000L + x * 100L + y * 10L;
-		assert (r >= 0);
+		//assert (r >= 0);
 		return r;
 	}
 
@@ -281,11 +280,9 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 				int yend = dbounds[3];
 				for (int yi = dbounds[2]; yi <= yend; yi++) {
 					int zbegin = dbounds[4];
-					// TZ: cast to int after modulo with int should be fine
-					int hi = (int) ((getVirtualAddressBase (aabb.level,xi,yi) + zbegin) % sz);
+					int hi = Math.floorMod((getVirtualAddressBase (aabb.level,xi,yi) + zbegin) , sz);
 					int zend = dbounds[5];
 					for (int zi = zbegin; zi <= zend; hi = hi + 1 != sz ? hi + 1 : 0, zi++) {
-						// get the hash index  TODO TZ: cast to int
 						// add a new node to the hash table
 						Node node = new Node();//(Node) ALLOCA (sizeof (Node));
 						node.x = xi;
@@ -316,8 +313,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 					for (int yi = db[2]; yi <= yend; yi++) {
 						int zbegin = db[4];
 						// get the hash index
-						// TZ: cast to int after modulo with int should be fine
-						int hi = (int) ((getVirtualAddressBase(level, xi, yi) + zbegin) % sz);
+						int hi = Math.floorMod((getVirtualAddressBase(level, xi, yi) + zbegin), sz);
 						final int zend = db[5];
 						for (int zi = zbegin; zi <= zend; hi = hi + 1 != sz ? hi + 1 : 0, zi++) {
 							// search all nodes at this index
@@ -423,7 +419,6 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		return new DxHashSpace (space);
 	}
 
-	//TODO change to (dxHashSpace) space
 	//void dHashSpaceSetLevels (dxSpace space, int minlevel, int maxlevel)
 	void dHashSpaceSetLevels (int minlevel, int maxlevel)
 	{

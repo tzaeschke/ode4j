@@ -349,8 +349,9 @@ public class DxGimpact extends DxTriMesh {
 	}
 
 	// Getting data
+	@Override
 	//void dGeomTriMeshGetTriangle(dGeomID g, int Index, dVector3* v0, dVector3* v1, dVector3* v2)
-	void dGeomTriMeshGetTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2)
+	public void dGeomTriMeshGetTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2)
 	{
 		//TZ: simplified version ? Does not allow null-arguments
 		DVector3[] v = { v0, v1, v2 };

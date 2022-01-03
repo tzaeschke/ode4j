@@ -233,6 +233,8 @@ public abstract class DxTriMeshData extends DxTriDataBase implements DTriMeshDat
             //            }
 
             EdgeRecord[] edges = new EdgeRecord[numEdges]; //(EdgeRecord *) tempBuffer;
+            Arrays.fill(edges, new EdgeRecord());
+            // TODO CHECK TZ do we need to initialize the array with entries?
             VertexRecord[] vertices = new VertexRecord[numVertices]; //(VertexRecord *) ((uint8 *) tempBuffer + recordsMemoryRequired);
 
             TrimeshDataVertexIndexAccessor_GIMPACT indexAccessor = new TrimeshDataVertexIndexAccessor_GIMPACT(this);

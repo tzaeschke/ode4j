@@ -385,6 +385,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * 
 	 * This method returns (1,0,0) if no normal can be determined.
 	 * @return 'false' if no normal could be determined
+	 * TZ TODO CHECK TZ replace with new version in OdeMath? -> dxSafeNormalize3 ?
 	 */
 	public final boolean safeNormalize ()
 	{

@@ -25,6 +25,8 @@
 package org.ode4j.ode;
 
 
+import org.ode4j.math.DVector3;
+
 /**
  * TriMesh code by Erwin de Vries.
  *
@@ -258,10 +260,11 @@ public interface DTriMesh extends DGeom {
 //	//ODE_API 
 //	DTriMeshData dGeomTriMeshGetTriMeshDataID(DTriMesh g);
 //
-//	/**
-//	 * Gets a triangle.
-//	 */
-//	//ODE_API 
+	/**
+	 * Gets a triangle.
+	 */
+//	//ODE_API
+	void dGeomTriMeshGetTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2);
 //	//void dGeomTriMeshGetTriangle(dGeom g, int Index, dVector3* v0, dVector3* v1, dVector3* v2) {
 //	void dGeomTriMeshGetTriangle(DTriMesh g, int Index, DVector3 v0, DVector3 v1, DVector3 v2);
 //

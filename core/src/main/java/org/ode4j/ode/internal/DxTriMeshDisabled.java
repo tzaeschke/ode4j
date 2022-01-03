@@ -146,6 +146,9 @@ public class DxTriMeshDisabled extends DxTriMesh {
 
 	DTriMeshData dGeomTriMeshGetTriMeshDataID(DGeom g) { return null; }
 
+	@Override
+	public void dGeomTriMeshGetTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2) {};
+
 	int dGeomTriMeshGetTriangleCount (DGeom g) { return 0; }
 	void dGeomTriMeshDataUpdate(DTriMeshData g) {}
 
