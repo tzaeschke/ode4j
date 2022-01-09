@@ -280,7 +280,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 				int yend = dbounds[3];
 				for (int yi = dbounds[2]; yi <= yend; yi++) {
 					int zbegin = dbounds[4];
-					int hi = Math.floorMod((getVirtualAddressBase (aabb.level,xi,yi) + zbegin) , sz);
+					int hi = (int) Math.floorMod((getVirtualAddressBase (aabb.level,xi,yi) + zbegin) , (long) sz);
 					int zend = dbounds[5];
 					for (int zi = zbegin; zi <= zend; hi = hi + 1 != sz ? hi + 1 : 0, zi++) {
 						// add a new node to the hash table
@@ -313,7 +313,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 					for (int yi = db[2]; yi <= yend; yi++) {
 						int zbegin = db[4];
 						// get the hash index
-						int hi = Math.floorMod((getVirtualAddressBase(level, xi, yi) + zbegin), sz);
+						int hi = (int)Math.floorMod((getVirtualAddressBase(level, xi, yi) + zbegin), (long)sz);
 						final int zend = db[5];
 						for (int zi = zbegin; zi <= zend; hi = hi + 1 != sz ? hi + 1 : 0, zi++) {
 							// search all nodes at this index
