@@ -20,7 +20,7 @@ There is a new [Discord channel](https://discord.gg/UFXJcXv2P8) around ode4j/Jav
 
 The [ode4j forum](https://groups.google.com/forum/?hl=en#!forum/ode4j) is for problems and functionality specific to ode4j/Java. 
 
-There is also the [old website](http://www.zaeschke.com/ode4j/), including some [screenshots](http://www.zaeschke.com/ode4j/ode4j-features.html).
+There is also the [old website](https://tzaeschke.github.io/ode4j-old/), including some [screenshots](https://tzaeschke.github.io/ode4j-old/ode4j-features.html).
 
 
 The following artifact contains the complete physics engine (examples etc are [not included](https://github.com/tzaeschke/ode4j/wiki/Maven-HOWTO)):
