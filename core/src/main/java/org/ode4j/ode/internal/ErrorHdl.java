@@ -139,6 +139,7 @@ public class ErrorHdl {
 			debug_function.call (num,msg,ap);
 		}
 		logger.debug("ODE INTERNAL ERROR " + " " + num + ": " + msg, ap);
+		throw new RuntimeException(String.format(msg, ap));
 		// *((char *)0) = 0;   ... commit SEGVicide
 		//abort();
 //		msg += " -> ";

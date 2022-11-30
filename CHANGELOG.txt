@@ -35,6 +35,7 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 
 0.5.0 (unreleased)
 =====
+- Fix that internal assertions did not throw Exceptions. [#74](https://github.com/tzaeschke/ode4j/issues/74)
 - Moved to LWJGL 3.0 [#89](https://github.com/tzaeschke/ode4j/issues/89)
 - Move to Java [#87](https://github.com/tzaeschke/ode4j/issues/87)
   (Cleanup, part of this was done with the move to 0.15.1)
@@ -45,6 +46,7 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
   - Removed openjdk7: Not required. source compatibility is still set to 7, but should
     be safe to change to 8 now (Android Nougat is mostly 8 compatible), this covers > 80% users.
   - Changed oraclejdk build to 11
+
 
 
 
