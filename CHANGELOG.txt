@@ -1,3 +1,8 @@
+- API convenience changes
+  - DBody.addLinearVelocity()
+  - DVector3C.reAdd()
+
+
 0.4.0
 =====
 - Fixed javadoc to compile without warnings

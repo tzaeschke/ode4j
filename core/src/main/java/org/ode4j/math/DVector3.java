@@ -522,10 +522,13 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param c c
 	 * @return new vector
 	 */
-	public final DVector3C reAdd(DVector3C c) {
+	public final DVector3 reAdd(DVector3C c) {
 		return new DVector3(this).add(c);
 	}
-	
+	public final DVector3 reAdd(double x, double y, double z) {
+		return new DVector3(this).add(x, y, z);
+	}
+
     /**
      * Returns a new vector which equals (this)*d.
      * @param d d
