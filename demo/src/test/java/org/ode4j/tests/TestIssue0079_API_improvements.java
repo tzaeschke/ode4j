@@ -30,6 +30,7 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestIssue0079_API_improvements {
 
@@ -85,10 +86,12 @@ public class TestIssue0079_API_improvements {
         q1.setZero();
         assertEquals(q1, new DQuaternion(0, 0, 0, 0));
         assertEquals(q1, DQuaternion.ZERO);
+        assertTrue(q1.isZero());
     }
 
     /**
      * DQuaternion::toEuler().
+     * DQuaternion::fromEuler().
      */
     @Test
     public void testIssue79_DQuaternion_toEuler() {
@@ -98,8 +101,27 @@ public class TestIssue0079_API_improvements {
 
         DQuaternion q1n = new DQuaternion(q1);
         q1n.normalize();
-        for (int i = 0; i < q1n.length(); ++i) {
+        for (int i = 0; i < q1n.LEN; ++i) {
             assertEquals(q1n.get(i), q1b.get(i), 0.0000000001);
+        }
+    }
+
+    /**
+     * DQuaternion::invert().
+     */
+    @Test
+    public void testIssue79_DQuaternion_inverse() {
+        DQuaternionC q1 = new DQuaternion(1, 1, 1, 1);
+        DQuaternion q1i = new DQuaternion(q1);
+        q1i.invert();
+        assertEquals(new DQuaternion(0.25, -0.25, -0.25, -0.25), q1i);
+
+        DQuaternionC q2 = new DQuaternion(1, 2, 3, 4);
+        DQuaternion q2i = new DQuaternion(q2);
+        q2i.invert();
+        q2i.invert();
+        for (int i = 0; i < q2i.LEN; ++i) {
+            assertEquals(q2.get(i), q2i.get(i), 0.0000000001);
         }
     }
 }

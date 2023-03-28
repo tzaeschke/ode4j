@@ -4,6 +4,7 @@
   - DQuaternion.ZERO and DQuaternion.IDENTITY
   - Additional DQuaternionC API methods: isEq(), length(), lengthSquared(), ...
   - DQuaternion.toEuler() and fromEuler()
+  - DQUaternion.invert() inverts a quaternion
 
 
 0.4.0

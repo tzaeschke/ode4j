@@ -315,6 +315,10 @@ public class DQuaternion implements DQuaternionC {
 		set(1, 0, 0, 0);
 	}
 
+	public boolean isZero() {
+		return w == 0 && x == 0 && y == 0 && z == 0;
+	}
+
 	public static DQuaternion fromEuler(double roll, double pitch, double yaw) {
 		double cr = Math.cos(roll * 0.5);
 		double sr = Math.sin(roll * 0.5);
@@ -361,5 +365,21 @@ public class DQuaternion implements DQuaternionC {
 		angles.set2(Math.atan2(siny_cosp, cosy_cosp));
 
 		return angles;
+	}
+
+	/**
+	 * Calculates the Inverse of the quaternion.
+	 * @return the inverted quaternion
+	 */
+	public DQuaternion invert() {
+		double norm = lengthSquared();
+		if (norm > 0.0) {
+			double invNorm = 1.0 / norm;
+			w *= invNorm;
+			x *= -invNorm;
+			y *= -invNorm;
+			z *= -invNorm;
+		}
+		return this;
 	}
 }
