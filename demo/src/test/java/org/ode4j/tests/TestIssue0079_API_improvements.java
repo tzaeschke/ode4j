@@ -86,4 +86,20 @@ public class TestIssue0079_API_improvements {
         assertEquals(q1, new DQuaternion(0, 0, 0, 0));
         assertEquals(q1, DQuaternion.ZERO);
     }
+
+    /**
+     * DQuaternion::toEuler().
+     */
+    @Test
+    public void testIssue79_DQuaternion_toEuler() {
+        DQuaternionC q1 = new DQuaternion(1, 2, 3, 4);
+        DVector3 v1 = q1.toEuler();
+        DQuaternion q1b = DQuaternion.fromEuler(v1);
+
+        DQuaternion q1n = new DQuaternion(q1);
+        q1n.normalize();
+        for (int i = 0; i < q1n.length(); ++i) {
+            assertEquals(q1n.get(i), q1b.get(i), 0.0000000001);
+        }
+    }
 }

@@ -1,6 +1,6 @@
 /*************************************************************************
  *                                                                       *
- * Open Dynamics Engine 4J, Copyright (C) 2009-2014 Tilmann Zaeschke     *
+ * Open Dynamics Engine 4J, Copyright (C) 2009-2023 Tilmann Zaeschke     *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
@@ -44,29 +44,64 @@ public interface DQuaternionC {
 	 * @param i The row to return [0, 1, 2].
 	 * @return The value at position i
 	 */
-	public double get(int i);
+	double get(int i);
 
 	/**
 	 * w of [w, x, y, z].
+	 *
 	 * @return w
 	 */
-	public double get0();
+	double get0();
 
 	/**
 	 * x of [w, x, y, z].
+	 *
 	 * @return x
 	 */
-	public double get1();
+	double get1();
 
 	/**
 	 * y of [w, x, y, z].
+	 *
 	 * @return y
 	 */
-	public double get2();
+	double get2();
 
 	/**
 	 * z of [w, x, y, z].
+	 *
 	 * @return z
 	 */
-	public double get3();
+	double get3();
+
+	/**
+	 * @return Euler angles derived from this quaternion.
+	 */
+	DVector3 toEuler();
+
+	/**
+	 * @return w*w + x*x + y*y + z*z
+	 */
+	double lengthSquared();
+
+	/**
+	 * @return sqrt(w * w + x * x + y * y + z * z)
+	 */
+	double length();
+
+	boolean isEq(DQuaternion q);
+
+	/**
+	 * Do not use. This can be slow, use isEq() instead.
+	 *
+	 * @param obj object
+	 * @return true if equal
+	 * @deprecated
+	 */
+	@Override
+	@Deprecated
+	boolean equals(Object obj);
+
+	@Override
+	int hashCode();
 }

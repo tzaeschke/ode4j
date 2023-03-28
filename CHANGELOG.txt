@@ -1,7 +1,9 @@
 - API convenience changes (#79)[https://github.com/tzaeschke/ode4j/pull/79]
   - DBody.addLinearVelocity()
   - DVector3C.reAdd()
-  - DQuaternion.ZERO and DQUaternion.IDENTITY
+  - DQuaternion.ZERO and DQuaternion.IDENTITY
+  - Additional DQuaternionC API methods: isEq(), length(), lengthSquared(), ...
+  - DQuaternion.toEuler() and fromEuler()
 
 
 0.4.0
