@@ -33,6 +33,9 @@ public class DQuaternion implements DQuaternionC {
 	private final double[] v;
 	public static final int LEN = 4;
 
+	public static final DQuaternionC ZERO = new DQuaternion();
+	public static final DQuaternionC IDENTITY = new DQuaternion(1, 0, 0, 0);
+
 	public DQuaternion() {
 		v = new double[LEN];
 	}

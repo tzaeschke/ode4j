@@ -1,6 +1,7 @@
-- API convenience changes
+- API convenience changes (#79)[https://github.com/tzaeschke/ode4j/pull/79]
   - DBody.addLinearVelocity()
   - DVector3C.reAdd()
+  - DQuaternion.ZERO and DQUaternion.IDENTITY
 
 
 0.4.0

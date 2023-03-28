@@ -23,6 +23,8 @@
 package org.ode4j.tests;
 
 import org.junit.Test;
+import org.ode4j.math.DQuaternion;
+import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
@@ -57,5 +59,31 @@ public class TestIssue0079_API_improvements {
         assertEquals(v1, new DVector3(1, 2, 3));
         assertEquals(v2, new DVector3(3, 5, 7));
         assertEquals(v3, new DVector3(5, 8, 11));
+    }
+
+    /**
+     * DQuaternion::setIdentity().
+     */
+    @Test
+    public void testIssue79_DQuaternion_setIdentity() {
+        DQuaternion q1 = new DQuaternion(1, 2, 3, 4);
+        DQuaternionC q2 = DQuaternion.IDENTITY;
+        assertEquals(q2, new DQuaternion(1, 0, 0, 0));
+        q1.setIdentity();
+        assertEquals(q1, new DQuaternion(1, 0, 0, 0));
+        assertEquals(q1, DQuaternion.IDENTITY);
+    }
+
+    /**
+     * DQuaternion::setIdentity().
+     */
+    @Test
+    public void testIssue79_DQuaternion_setZero() {
+        DQuaternion q1 = new DQuaternion(1, 2, 3, 4);
+        DQuaternionC q2 = DQuaternion.ZERO;
+        assertEquals(q2, new DQuaternion(0, 0, 0, 0));
+        q1.setZero();
+        assertEquals(q1, new DQuaternion(0, 0, 0, 0));
+        assertEquals(q1, DQuaternion.ZERO);
     }
 }
