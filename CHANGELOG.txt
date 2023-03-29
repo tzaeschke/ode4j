@@ -1,4 +1,4 @@
-- API convenience changes (#79)[https://github.com/tzaeschke/ode4j/pull/79]
+- API convenience changes [#79](https://github.com/tzaeschke/ode4j/pull/79)
   - DBody.addLinearVelocity()
   - DVector3C.reAdd()
   - DQuaternion.ZERO and DQuaternion.IDENTITY
@@ -6,6 +6,7 @@
   - DQuaternion.toEuler() and fromEuler()
   - DQUaternion.invert() inverts a quaternion
   - DVector3.eqToRadians() and eqToDegrees() convert angles in a DVector3.
+- Fixed OSGI bundle info to use Java 1.7 instead of 7.0. [#80](https://github.com/tzaeschke/ode4j/pull/80)
 
 
 0.4.0
