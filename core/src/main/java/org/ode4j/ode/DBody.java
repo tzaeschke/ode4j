@@ -151,6 +151,19 @@ public interface DBody {
 	 */
 	void setLinearVel (DVector3C v);
 	/**
+	 * Add to the linear velocity of a body.
+	 * @param x x
+	 * @param y y
+	 * @param z z
+	 */
+	void addLinearVel (double x, double y, double z);
+	/**
+	 * Add to the linear velocity of a body.
+	 * @param v v
+	 */
+	void addLinearVel (DVector3C v);
+
+	/**
 	 * Set the angular velocity of a body.
 	 * @param x x
 	 * @param y y

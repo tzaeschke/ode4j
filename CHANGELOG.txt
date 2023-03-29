@@ -1,3 +1,13 @@
+- API convenience changes (#79)[https://github.com/tzaeschke/ode4j/pull/79]
+  - DBody.addLinearVelocity()
+  - DVector3C.reAdd()
+  - DQuaternion.ZERO and DQuaternion.IDENTITY
+  - Additional DQuaternionC API methods: isEq(), length(), lengthSquared(), ...
+  - DQuaternion.toEuler() and fromEuler()
+  - DQUaternion.invert() inverts a quaternion
+  - DVector3.eqToRadians() and eqToDegrees() convert angles in a DVector3.
+
+
 0.4.0
 =====
 - Fixed javadoc to compile without warnings

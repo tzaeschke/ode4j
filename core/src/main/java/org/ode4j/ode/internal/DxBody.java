@@ -1204,6 +1204,13 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	public void setLinearVel (DVector3C v)
 	{ dBodySetLinearVel(v); }
 	@Override
+	public void addLinearVel (double x, double y, double z)	{
+		lvel.add(x, y, z);
+	}
+	@Override
+	public void addLinearVel (DVector3C v)
+	{ lvel.add(v); }
+	@Override
 	public void setAngularVel (double x, double y, double z)
 	{ dBodySetAngularVel (x,y,z); }
 	@Override

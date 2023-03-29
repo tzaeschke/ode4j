@@ -1,6 +1,6 @@
 /*************************************************************************
  *                                                                       *
- * Open Dynamics Engine 4J, Copyright (C) 2009-2014 Tilmann Zaeschke     *
+ * Open Dynamics Engine 4J, Copyright (C) 2009-2023 Tilmann Zaeschke     *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
  * This library is free software; you can redistribute it and/or         *
@@ -22,80 +22,98 @@
 package org.ode4j.math;
 
 
+import static org.ode4j.ode.internal.Common.M_PI;
+
 /**
  * A quaternion consists of four numbers, [w, x, y, z].
- * They are used top represent rigid body orientations. 
- * 
+ * They are used top represent rigid body orientations.
+ *
  * @author Tilmann Zaeschke
  */
 public class DQuaternion implements DQuaternionC {
 
-	private final double[] v;
+	private double w;
+	private double x;
+	private double y;
+	private double z;
 	public static final int LEN = 4;
 
+	public static final DQuaternionC ZERO = new DQuaternion();
+	public static final DQuaternionC IDENTITY = new DQuaternion(1, 0, 0, 0);
+
 	public DQuaternion() {
-		v = new double[LEN];
+		// Nothing
 	}
-	
-	public DQuaternion(double x0, double x1, double x2, double x3) {
+
+	public DQuaternion(double w, double x, double y, double z) {
 		this();
-		set(x0, x1, x2, x3);
+		set(w, x, y, z);
 	}
-	
-	public DQuaternion(DQuaternion x) {
+
+	public DQuaternion(DQuaternionC x) {
 		this();
 		set(x);
 	}
 
 	@Override
 	public String toString() {
-		StringBuffer b = new StringBuffer();
-		b.append("DQuaternion[ ");
-		b.append(get0()).append(", ");
-		b.append(get1()).append(", ");
-		b.append(get2()).append(", ");
-		b.append(get3()).append(" ]");
-		return b.toString();
+		return "DQuaternion[ " +
+				get0() + ", " +
+				get1() + ", " +
+				get2() + ", " +
+				get3() + " ]";
 	}
-	
-	public DQuaternion set(double x0, double x1, double x2, double x3) {
-		v[0]=x0; v[1]=x1; v[2]=x2; v[3]=x3;
+
+	public DQuaternion set(double w, double x, double y, double z) {
+		this.w = w;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 		return this;
 	}
 
 	public DQuaternion set(DQuaternionC q) {
-		v[0]=q.get0(); v[1]=q.get1(); v[2]=q.get2(); v[3]=q.get3();
+		w = q.get0();
+		x = q.get1();
+		y = q.get2();
+		z = q.get3();
 		return this;
 	}
-	
+
 	public DQuaternion scale(double d) {
-		v[0] *= d; v[1] *= d; v[2] *=d; v[3] *= d;
+		w *= d;
+		x *= d;
+		y *= d;
+		z *= d;
 		return this;
 	}
 
 	public DQuaternion add(DQuaternion q) {
-		v[0] += q.get0(); v[1] += q.get1(); v[2] +=q.get2(); v[3] += q.get3();
+		w += q.get0();
+		x += q.get1();
+		y += q.get2();
+		z += q.get3();
 		return this;
 	}
 
 	@Override
 	public double get0() {
-		return v[0];
+		return w;
 	}
 
 	@Override
 	public double get1() {
-		return v[1];
+		return x;
 	}
 
 	@Override
 	public double get2() {
-		return v[2];
+		return y;
 	}
 
 	@Override
 	public double get3() {
-		return v[3];
+		return z;
 	}
 
 	public int dim() {
@@ -107,15 +125,15 @@ public class DQuaternion implements DQuaternionC {
 	 * @param w w
 	 */
 	public void set0(double w) {
-		v[0] = w;
+		this.w = w;
 	}
 
 	/**
 	 * Sets x of [w, x, y, z].
-	 * @param x x 
+	 * @param x x
 	 */
 	public void set1(double x) {
-		v[1] = x;
+		this.x = x;
 	}
 
 	/**
@@ -123,7 +141,7 @@ public class DQuaternion implements DQuaternionC {
 	 * @param y y
 	 */
 	public void set2(double y) {
-		v[2] = y;
+		this.y = y;
 	}
 
 	/**
@@ -131,18 +149,18 @@ public class DQuaternion implements DQuaternionC {
 	 * @param z z
 	 */
 	public void set3(double z) {
-		v[3] = z;
+		this.z = z;
 	}
 
 	public boolean isEq(DQuaternion q) {
-		return get0()==q.get0() && get1()==q.get1() && get2()==q.get2() && get3()==q.get3();
+		return w == q.w && x == q.x && y == q.y && z == q.z;
 	}
 
 	/**
 	 * Do not use. This can be slow, use isEq() instead.
 	 * @param obj object
 	 * @return true if equal
-	 * @deprecated 
+	 * @deprecated
 	 */
 	@Override
 	@Deprecated
@@ -156,25 +174,29 @@ public class DQuaternion implements DQuaternionC {
 	@Override
 	public int hashCode() {
 		int h = 0;
-		for (double d: v) {
-			h |= Double.doubleToRawLongBits(d);
-			h <<= 6;
-		}
+		h |= Double.doubleToRawLongBits(w);
+		h <<= 6;
+		h |= Double.doubleToRawLongBits(x);
+		h <<= 6;
+		h |= Double.doubleToRawLongBits(y);
+		h <<= 6;
+		h |= Double.doubleToRawLongBits(z);
+		h <<= 6;
 		return h;
 	}
 
-	public void add(double d0, double d1, double d2, double d3) {
-		v[0] += d0;
-		v[1] += d1;
-		v[2] += d2;
-		v[3] += d3;
+	public void add(double dw, double dx, double dy, double dz) {
+		w += dw;
+		x += dx;
+		y += dy;
+		z += dz;
 	}
 
 	public final void sum(DQuaternion q1, DQuaternion q2, double d2) {
-		v[0] = q1.get0() + q2.get0() * d2;
-		v[1] = q1.get1() + q2.get1() * d2;
-		v[2] = q1.get2() + q2.get2() * d2;
-		v[3] = q1.get3() + q2.get3() * d2;
+		w = q1.get0() + q2.get0() * d2;
+		x = q1.get1() + q2.get1() * d2;
+		y = q1.get2() + q2.get2() * d2;
+		z = q1.get3() + q2.get3() * d2;
 	}
 
 	/**
@@ -183,7 +205,14 @@ public class DQuaternion implements DQuaternionC {
 	 * @param d value
 	 */
 	public final void set(int i, double d) {
-		v[i] = d;
+		switch (i) {
+			case 0: w = d; break;
+			case 1: x = d; break;
+			case 2: y = d; break;
+			case 3: z = d; break;
+			default:
+				throw new ArrayIndexOutOfBoundsException("i=" + i);
+		}
 	}
 
 	public final void setZero() {
@@ -191,22 +220,36 @@ public class DQuaternion implements DQuaternionC {
 	}
 
 	public final void scale(int i, double l) {
-		v[i] *=l;
+		switch (i) {
+			case 0: w *= l; break;
+			case 1: x *= l; break;
+			case 2: y *= l; break;
+			case 3: z *= l; break;
+			default:
+				throw new ArrayIndexOutOfBoundsException("i=" + i);
+		}
 	}
 
 	public final double lengthSquared() {
-		return get0()*get0() + get1()*get1() + get2()*get2() + get3()*get3();
+		return w * w + x * x + y * y + z * z;
 	}
 
 	@Override
 	public final double get(int i) {
-		return v[i];
+		switch (i) {
+			case 0: return w;
+			case 1: return x;
+			case 2: return y;
+			case 3: return z;
+			default:
+				throw new ArrayIndexOutOfBoundsException("i=" + i);
+		}
 	}
 
 	public final double length() {
 		return Math.sqrt(lengthSquared());
 	}
-	
+
 	/**
 	 * this may be called for vectors `a' with extremely small magnitude, for
 	 * example the result of a cross product on two nearly perpendicular vectors.
@@ -217,8 +260,7 @@ public class DQuaternion implements DQuaternionC {
 	 * containing the smallest representable numbers.
 	 * @return 'false' if normnalization failed (returns unit vector)
 	 */
-	public final boolean safeNormalize4 ()
-	{
+	public final boolean safeNormalize4 () {
 		double d = Math.abs(get0());
 //		for (int i = 1; i < v.length; i++) {
 //			if (Math.abs(v[i]) > d) {
@@ -228,22 +270,22 @@ public class DQuaternion implements DQuaternionC {
 		if (Math.abs(get1()) > d) d = Math.abs(get1());
 		if (Math.abs(get2()) > d) d = Math.abs(get2());
 		if (Math.abs(get3()) > d) d = Math.abs(get3());
-		
+
 		if (d <= Double.MIN_NORMAL) {
 			set(1, 0, 0, 0);
 			return false;
 		}
-		
+
 		scale(1/d);
 //		for (int i = 0; i < v.length; i++) {
 //			v[i] /= d;
 //		}
-		
+
 //		double sum = 0;
 //		for (double d2: v) {
 //			sum += d2*d2;
 //		}
-		
+
 		double l = 1./length();//Math.sqrt(sum);
 //		for (int i = 0; i < v.length; i++) {
 //			v[i] *= l;
@@ -251,6 +293,7 @@ public class DQuaternion implements DQuaternionC {
 		scale(l);
 		return true;
 	}
+
 	/**
 	 * this may be called for vectors `a' with extremely small magnitude, for
 	 * example the result of a cross product on two nearly perpendicular vectors.
@@ -260,13 +303,120 @@ public class DQuaternion implements DQuaternionC {
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
 	 */
-	public void normalize()
-	{
+	public void normalize() {
 		if (!safeNormalize4()) throw new IllegalStateException(
 				"Normalization failed: " + this);
 	}
 
 	public void setIdentity() {
 		set(1, 0, 0, 0);
+	}
+
+	public boolean isZero() {
+		return w == 0 && x == 0 && y == 0 && z == 0;
+	}
+
+	/**
+	 * @param roll  radians roll
+	 * @param pitch radians pitch
+	 * @param yaw   radians yaw
+	 * @return quaternion
+	 */
+	public static DQuaternion fromEuler(double roll, double pitch, double yaw) {
+		double cr = Math.cos(roll * 0.5);
+		double sr = Math.sin(roll * 0.5);
+		double cp = Math.cos(pitch * 0.5);
+		double sp = Math.sin(pitch * 0.5);
+		double cy = Math.cos(yaw * 0.5);
+		double sy = Math.sin(yaw * 0.5);
+
+		DQuaternion q = new DQuaternion();
+		q.w = cr * cp * cy + sr * sp * sy;
+		q.x = sr * cp * cy - cr * sp * sy;
+		q.y = cr * sp * cy + sr * cp * sy;
+		q.z = cr * cp * sy - sr * sp * cy;
+		return q;
+	}
+
+	/**
+	 * @param angles roll, pitch and yaw as radians.
+	 * @return Quaternion
+	 */
+	public static DQuaternion fromEuler(DVector3C angles) {
+		return fromEuler(angles.get0(), angles.get1(), angles.get2());
+	}
+
+	/**
+	 * @param roll  roll degrees
+	 * @param pitch pitch degrees
+	 * @param yaw   yaw degrees
+	 * @return quaternion
+	 */
+	public static DQuaternion fromEulerDegrees(double roll, double pitch, double yaw) {
+		return fromEuler(Math.toRadians(roll), Math.toRadians(pitch), Math.toRadians(yaw));
+	}
+
+	/**
+	 * @param angles roll, pitch and yaw as degrees, i.e. 0..360.
+	 * @return Quaternion
+	 */
+	public static DQuaternion fromEulerDegrees(DVector3C angles) {
+		return fromEulerDegrees(angles.get0(), angles.get1(), angles.get2());
+	}
+
+	@Override
+	public DVector3 toEuler() {
+		DVector3 angles = new DVector3();
+		DQuaternion q = new DQuaternion(this);
+		q.safeNormalize4();
+
+		// roll (x-axis rotation)
+		double sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+		double cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+		angles.set0(Math.atan2(sinr_cosp, cosr_cosp));
+
+		// pitch (y-axis rotation)
+		double sinp = Math.sqrt(1 + 2 * (q.w * q.y - q.x * q.z));
+		double cosp = Math.sqrt(1 - 2 * (q.w * q.y - q.x * q.z));
+		angles.set1(2 * Math.atan2(sinp, cosp) - M_PI / 2);
+
+		// yaw (z-axis rotation)
+		double siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+		double cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+		angles.set2(Math.atan2(siny_cosp, cosy_cosp));
+
+		return angles;
+	}
+
+	@Override
+	public DVector3 toEulerDegrees() {
+		return toEuler().eqToDegrees();
+	}
+
+	/**
+	 * Calculates the inverse of the quaternion.
+	 * @return the inverted quaternion
+	 */
+	public DQuaternion inverse() {
+		double norm = lengthSquared();
+		if (norm > 0.0) {
+			double invNorm = 1.0 / norm;
+			w *= invNorm;
+			x *= -invNorm;
+			y *= -invNorm;
+			z *= -invNorm;
+		}
+		return this;
+	}
+
+	/**
+	 * Calculates the inverse of the quaternion and returns it as a new quaternion.
+	 * @return an inverted quaternion
+	 */
+	@Override
+	public DQuaternion reInverse() {
+		DQuaternion ret = new DQuaternion(this);
+		ret.inverse();
+		return ret;
 	}
 }

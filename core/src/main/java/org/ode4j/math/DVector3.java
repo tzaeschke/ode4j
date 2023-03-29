@@ -118,25 +118,12 @@ public class DVector3 implements DVector3I, DVector3C {
 	
 	@Override
 	public String toString() {
-		StringBuffer b = new StringBuffer();
-		b.append("DVector3[ ");
-		b.append(get0()).append(", ");
-		b.append(get1()).append(", ");
-		b.append(get2()).append(" ]");
-//		for (int i = 0; i < v.length-1; i++) {
-//			b.append(v[i]).append(", ");
-//		}
-//		b.append(v[v.length-1]).append("]");
-		return b.toString();
+		return "DVector3[ " +
+				get0() + ", " +
+				get1() + ", " +
+				get2() + " ]";
 	}
 
-//	@Override
-//	public void assertLen(int n) {
-//		if (n!=LEN) {
-//			throw new IllegalStateException("LEN is " + LEN + ", not " + n);
-//		}		
-//	}
-	
 	@Override
 	public final void set0(double d) {
 		d0 = d;
@@ -522,10 +509,13 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param c c
 	 * @return new vector
 	 */
-	public final DVector3C reAdd(DVector3C c) {
+	public final DVector3 reAdd(DVector3C c) {
 		return new DVector3(this).add(c);
 	}
-	
+	public final DVector3 reAdd(double x, double y, double z) {
+		return new DVector3(this).add(x, y, z);
+	}
+
     /**
      * Returns a new vector which equals (this)*d.
      * @param d d
@@ -693,13 +683,33 @@ public class DVector3 implements DVector3I, DVector3C {
 	    set1( m.get10()*v2.get0()+  m.get11()*v2.get1()+  m.get12()*v2.get2() );
 	    set2( m.get20()*v2.get0()+  m.get21()*v2.get1()+  m.get22()*v2.get2() );
 	}
-	
+
+	/**
+	 * Convert radians to degrees.
+	 */
+	public DVector3 eqToDegrees() {
+		set0( Math.toDegrees(get0()));
+		set1( Math.toDegrees(get1()));
+		set2( Math.toDegrees(get2()));
+		return this;
+	}
+
+	/**
+	 * Convert degrees to radians.
+	 */
+	public DVector3 eqToRadians() {
+		set0( Math.toRadians( get0() ) );
+		set1( Math.toRadians( get1() ) );
+		set2( Math.toRadians( get2() ) );
+		return this;
+	}
+
 	/**
 	 * Create an array of DVector instances.
 	 * @param size size of new array
 	 * @return AN array of DVector
 	 */
-	public final static DVector3[] newArray(int size) {
+	public static DVector3[] newArray(int size) {
 		DVector3[] a = new DVector3[size];
 		for (int i = 0; i < size; i++) {
 			a[i] = new DVector3();
