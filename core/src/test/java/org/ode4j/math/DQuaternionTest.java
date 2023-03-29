@@ -20,53 +20,20 @@
  * details.                                                              *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.tests;
+package org.ode4j.math;
 
 import org.junit.Test;
-import org.ode4j.math.DQuaternion;
-import org.ode4j.math.DQuaternionC;
-import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector3C;
-import org.ode4j.ode.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TestIssue0079_API_improvements {
-
-    /**
-     * DBody::addLinearVelocity.
-     */
-    @Test
-    public void testIssue79_addLinearVelocity() {
-        DWorld world = OdeHelper.createWorld();
-        DBody b = OdeHelper.createBody(world);
-        b.addLinearVel(1, 3, 5);
-        assertEquals(b.getLinearVel(), new DVector3(1, 3, 5));
-
-        b.addLinearVel(new DVector3(2, 3, 4));
-        assertEquals(b.getLinearVel(), new DVector3(3, 6, 9));
-    }
-
-    /**
-     * DVector3C::reAdd().
-     */
-    @Test
-    public void testIssue79_DVector3C_reAdd() {
-        DVector3C v1 = new DVector3(1, 2, 3);
-        DVector3C v2 = v1.reAdd(2, 3, 4);
-        assertEquals(v2, new DVector3(3, 5, 7));
-        DVector3C v3 = v2.reAdd(2, 3, 4);
-        assertEquals(v1, new DVector3(1, 2, 3));
-        assertEquals(v2, new DVector3(3, 5, 7));
-        assertEquals(v3, new DVector3(5, 8, 11));
-    }
+public class DQuaternionTest {
 
     /**
      * DQuaternion::setIdentity().
      */
     @Test
-    public void testIssue79_DQuaternion_setIdentity() {
+    public void testSetIdentity() {
         DQuaternion q1 = new DQuaternion(1, 2, 3, 4);
         DQuaternionC q2 = DQuaternion.IDENTITY;
         assertEquals(q2, new DQuaternion(1, 0, 0, 0));
@@ -79,7 +46,7 @@ public class TestIssue0079_API_improvements {
      * DQuaternion::setIdentity().
      */
     @Test
-    public void testIssue79_DQuaternion_setZero() {
+    public void testSetZero() {
         DQuaternion q1 = new DQuaternion(1, 2, 3, 4);
         DQuaternionC q2 = DQuaternion.ZERO;
         assertEquals(q2, new DQuaternion(0, 0, 0, 0));
@@ -94,14 +61,14 @@ public class TestIssue0079_API_improvements {
      * DQuaternion::fromEuler().
      */
     @Test
-    public void testIssue79_DQuaternion_toEuler() {
+    public void testToEuler() {
         DQuaternionC q1 = new DQuaternion(1, 2, 3, 4);
         DVector3 v1 = q1.toEuler();
         DQuaternion q1b = DQuaternion.fromEuler(v1);
 
         DQuaternion q1n = new DQuaternion(q1);
         q1n.normalize();
-        for (int i = 0; i < q1n.LEN; ++i) {
+        for (int i = 0; i < DQuaternion.LEN; ++i) {
             assertEquals(q1n.get(i), q1b.get(i), 0.0000000001);
         }
     }
@@ -110,18 +77,36 @@ public class TestIssue0079_API_improvements {
      * DQuaternion::invert().
      */
     @Test
-    public void testIssue79_DQuaternion_inverse() {
+    public void testInverse() {
         DQuaternionC q1 = new DQuaternion(1, 1, 1, 1);
         DQuaternion q1i = new DQuaternion(q1);
-        q1i.invert();
+        q1i.inverse();
         assertEquals(new DQuaternion(0.25, -0.25, -0.25, -0.25), q1i);
 
         DQuaternionC q2 = new DQuaternion(1, 2, 3, 4);
         DQuaternion q2i = new DQuaternion(q2);
-        q2i.invert();
-        q2i.invert();
-        for (int i = 0; i < q2i.LEN; ++i) {
+        q2i.inverse();
+        q2i.inverse();
+        for (int i = 0; i < DQuaternion.LEN; ++i) {
             assertEquals(q2.get(i), q2i.get(i), 0.0000000001);
+        }
+    }
+
+    /**
+     * DQuaternion::reInverse().
+     */
+    @Test
+    public void testReInverse() {
+        DQuaternionC q1 = new DQuaternion(1, 1, 1, 1);
+        DQuaternion q1i = q1.reInverse();
+        assertEquals(new DQuaternion(0.25, -0.25, -0.25, -0.25), q1i);
+        assertEquals(new DQuaternion(1, 1, 1, 1), q1);
+
+        DQuaternion q2 = new DQuaternion(1, 2, 3, 4);
+        DQuaternion q2i = q2.reInverse();
+        DQuaternion q2ii = q2i.reInverse();
+        for (int i = 0; i < DQuaternion.LEN; ++i) {
+            assertEquals(q2.get(i), q2ii.get(i), 0.0000000001);
         }
     }
 }

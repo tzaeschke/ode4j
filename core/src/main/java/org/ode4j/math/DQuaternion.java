@@ -319,6 +319,12 @@ public class DQuaternion implements DQuaternionC {
 		return w == 0 && x == 0 && y == 0 && z == 0;
 	}
 
+	/**
+	 * @param roll  radians roll
+	 * @param pitch radians pitch
+	 * @param yaw   radians yaw
+	 * @return quaternion
+	 */
 	public static DQuaternion fromEuler(double roll, double pitch, double yaw) {
 		double cr = Math.cos(roll * 0.5);
 		double sr = Math.sin(roll * 0.5);
@@ -336,12 +342,29 @@ public class DQuaternion implements DQuaternionC {
 	}
 
 	/**
-	 *
-	 * @param angles roll, pitch and yaw
+	 * @param angles roll, pitch and yaw as radians.
 	 * @return Quaternion
 	 */
 	public static DQuaternion fromEuler(DVector3C angles) {
 		return fromEuler(angles.get0(), angles.get1(), angles.get2());
+	}
+
+	/**
+	 * @param roll  roll degrees
+	 * @param pitch pitch degrees
+	 * @param yaw   yaw degrees
+	 * @return quaternion
+	 */
+	public static DQuaternion fromEulerDegrees(double roll, double pitch, double yaw) {
+		return fromEuler(Math.toRadians(roll), Math.toRadians(pitch), Math.toRadians(yaw));
+	}
+
+	/**
+	 * @param angles roll, pitch and yaw as degrees, i.e. 0..360.
+	 * @return Quaternion
+	 */
+	public static DQuaternion fromEulerDegrees(DVector3C angles) {
+		return fromEulerDegrees(angles.get0(), angles.get1(), angles.get2());
 	}
 
 	public DVector3 toEuler() {
@@ -368,10 +391,10 @@ public class DQuaternion implements DQuaternionC {
 	}
 
 	/**
-	 * Calculates the Inverse of the quaternion.
+	 * Calculates the inverse of the quaternion.
 	 * @return the inverted quaternion
 	 */
-	public DQuaternion invert() {
+	public DQuaternion inverse() {
 		double norm = lengthSquared();
 		if (norm > 0.0) {
 			double invNorm = 1.0 / norm;
@@ -381,5 +404,15 @@ public class DQuaternion implements DQuaternionC {
 			z *= -invNorm;
 		}
 		return this;
+	}
+
+	/**
+	 * Calculates the inverse of the quaternion and returns it as a new quaternion.
+	 * @return an inverted quaternion
+	 */
+	public DQuaternion reInverse() {
+		DQuaternion ret = new DQuaternion(this);
+		ret.inverse();
+		return ret;
 	}
 }

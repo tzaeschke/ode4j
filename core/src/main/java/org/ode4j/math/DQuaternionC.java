@@ -92,6 +92,12 @@ public interface DQuaternionC {
 	boolean isEq(DQuaternion q);
 
 	/**
+	 * Calculates the inverse of the quaternion and returns it as a new quaternion.
+	 * @return an inverted quaternion
+	 */
+	DQuaternion reInverse();
+
+	/**
 	 * Do not use. This can be slow, use isEq() instead.
 	 *
 	 * @param obj object
