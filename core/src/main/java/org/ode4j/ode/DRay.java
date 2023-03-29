@@ -86,8 +86,8 @@ public interface DRay extends DGeom {
 	 * they can make a major differences there.
 	 * @return closest hit setting
 	 */
-	void setClosestHit (boolean closestHit);
 	boolean getClosestHit();
+	void setClosestHit (boolean closestHit);
 
 
 //	  // intentionally undefined, don't use these

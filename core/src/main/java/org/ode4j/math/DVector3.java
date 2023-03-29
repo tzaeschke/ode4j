@@ -686,6 +686,7 @@ public class DVector3 implements DVector3I, DVector3C {
 
 	/**
 	 * Convert radians to degrees.
+	 * @return (this) vector
 	 */
 	public DVector3 eqToDegrees() {
 		set0( Math.toDegrees(get0()));
@@ -696,6 +697,7 @@ public class DVector3 implements DVector3I, DVector3C {
 
 	/**
 	 * Convert degrees to radians.
+	 * @return (this) vector
 	 */
 	public DVector3 eqToRadians() {
 		set0( Math.toRadians( get0() ) );
