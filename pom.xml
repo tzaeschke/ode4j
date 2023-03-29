@@ -262,7 +262,7 @@
 							Bundle-Name: ${project.name} ${project.version} - ${project.description}
 							Bundle-Description: ${project.description}
 							Bundle-SCM: ${project.scm.url}
-							Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=7.0))"
+							Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 ]]></bnd>
 					</configuration>
 				</plugin>
