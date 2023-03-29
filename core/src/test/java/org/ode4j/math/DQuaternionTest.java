@@ -74,6 +74,32 @@ public class DQuaternionTest {
     }
 
     /**
+     * DQuaternion::toEuler().
+     * DQuaternion::fromEuler().
+     */
+    @Test
+    public void testToEulerDegrees() {
+        DQuaternionC q1 = new DQuaternion(1, 2, 3, 4);
+        DVector3 v1 = q1.toEulerDegrees();
+        DQuaternion q1b = DQuaternion.fromEulerDegrees(v1);
+
+        DQuaternion q1n = new DQuaternion(q1);
+        q1n.normalize();
+        for (int i = 0; i < DQuaternion.LEN; ++i) {
+            assertEquals(q1n.get(i), q1b.get(i), 0.0000000001);
+        }
+
+        // compare with radians
+        DVector3 vD = new DVector3(30, 60, 90);
+        DVector3 vR = new DVector3(Math.toRadians(30), Math.toRadians(60), Math.toRadians(90));
+        DQuaternionC qD = DQuaternion.fromEulerDegrees(vD);
+        DQuaternionC qR = DQuaternion.fromEuler(vR);
+        for (int i = 0; i < DQuaternion.LEN; ++i) {
+            assertEquals(qD.get(i), qR.get(i), 0.0000000001);
+        }
+    }
+
+    /**
      * DQuaternion::invert().
      */
     @Test

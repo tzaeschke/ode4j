@@ -75,9 +75,14 @@ public interface DQuaternionC {
 	double get3();
 
 	/**
-	 * @return Euler angles derived from this quaternion.
+	 * @return Euler angles (radians) derived from this quaternion.
 	 */
 	DVector3 toEuler();
+
+	/**
+	 * @return Euler angles (degrees) derived from this quaternion.
+	 */
+	DVector3 toEulerDegrees();
 
 	/**
 	 * @return w*w + x*x + y*y + z*z

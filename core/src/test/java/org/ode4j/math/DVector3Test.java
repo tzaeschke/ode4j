@@ -24,13 +24,12 @@ package org.ode4j.math;
 
 import org.junit.Test;
 
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 
 public class DVector3Test {
 
-    /**
-     * DVector3C::reAdd().
-     */
     @Test
     public void testReAdd() {
         DVector3C v1 = new DVector3(1, 2, 3);
@@ -40,5 +39,14 @@ public class DVector3Test {
         assertEquals(v1, new DVector3(1, 2, 3));
         assertEquals(v2, new DVector3(3, 5, 7));
         assertEquals(v3, new DVector3(5, 8, 11));
+    }
+
+    @Test
+    public void testToDegrees() {
+        DVector3 v1 = new DVector3(Math.PI, Math.PI/2, Math.PI/4);
+        v1.eqToDegrees();
+        assertEquals(new DVector3(180, 90, 45), v1);
+        v1.eqToRadians();;
+        assertEquals(new DVector3(Math.PI, Math.PI/2, Math.PI/4), v1);
     }
 }

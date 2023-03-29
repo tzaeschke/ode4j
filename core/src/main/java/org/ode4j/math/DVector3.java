@@ -696,7 +696,27 @@ public class DVector3 implements DVector3I, DVector3C {
 	    set1( m.get10()*v2.get0()+  m.get11()*v2.get1()+  m.get12()*v2.get2() );
 	    set2( m.get20()*v2.get0()+  m.get21()*v2.get1()+  m.get22()*v2.get2() );
 	}
-	
+
+	/**
+	 * Convert radians to degrees.
+	 */
+	public DVector3 eqToDegrees() {
+		set0( Math.toDegrees(get0()));
+		set1( Math.toDegrees(get1()));
+		set2( Math.toDegrees(get2()));
+		return this;
+	}
+
+	/**
+	 * Convert degrees to radians.
+	 */
+	public DVector3 eqToRadians() {
+		set0( Math.toRadians( get0() ) );
+		set1( Math.toRadians( get1() ) );
+		set2( Math.toRadians( get2() ) );
+		return this;
+	}
+
 	/**
 	 * Create an array of DVector instances.
 	 * @param size size of new array

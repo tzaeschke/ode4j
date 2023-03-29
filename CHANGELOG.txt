@@ -5,6 +5,7 @@
   - Additional DQuaternionC API methods: isEq(), length(), lengthSquared(), ...
   - DQuaternion.toEuler() and fromEuler()
   - DQUaternion.invert() inverts a quaternion
+  - DVector3.eqToRadians() and eqToDegrees() convert angles in a DVector3.
 
 
 0.4.0

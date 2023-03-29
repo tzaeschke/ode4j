@@ -57,13 +57,11 @@ public class DQuaternion implements DQuaternionC {
 
 	@Override
 	public String toString() {
-		StringBuffer b = new StringBuffer();
-		b.append("DQuaternion[ ");
-		b.append(get0()).append(", ");
-		b.append(get1()).append(", ");
-		b.append(get2()).append(", ");
-		b.append(get3()).append(" ]");
-		return b.toString();
+		return "DQuaternion[ " +
+				get0() + ", " +
+				get1() + ", " +
+				get2() + ", " +
+				get3() + " ]";
 	}
 
 	public DQuaternion set(double w, double x, double y, double z) {
@@ -262,8 +260,7 @@ public class DQuaternion implements DQuaternionC {
 	 * containing the smallest representable numbers.
 	 * @return 'false' if normnalization failed (returns unit vector)
 	 */
-	public final boolean safeNormalize4 ()
-	{
+	public final boolean safeNormalize4 () {
 		double d = Math.abs(get0());
 //		for (int i = 1; i < v.length; i++) {
 //			if (Math.abs(v[i]) > d) {
@@ -296,6 +293,7 @@ public class DQuaternion implements DQuaternionC {
 		scale(l);
 		return true;
 	}
+
 	/**
 	 * this may be called for vectors `a' with extremely small magnitude, for
 	 * example the result of a cross product on two nearly perpendicular vectors.
@@ -305,8 +303,7 @@ public class DQuaternion implements DQuaternionC {
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
 	 */
-	public void normalize()
-	{
+	public void normalize() {
 		if (!safeNormalize4()) throw new IllegalStateException(
 				"Normalization failed: " + this);
 	}
@@ -367,6 +364,7 @@ public class DQuaternion implements DQuaternionC {
 		return fromEulerDegrees(angles.get0(), angles.get1(), angles.get2());
 	}
 
+	@Override
 	public DVector3 toEuler() {
 		DVector3 angles = new DVector3();
 		DQuaternion q = new DQuaternion(this);
@@ -390,6 +388,11 @@ public class DQuaternion implements DQuaternionC {
 		return angles;
 	}
 
+	@Override
+	public DVector3 toEulerDegrees() {
+		return toEuler().eqToDegrees();
+	}
+
 	/**
 	 * Calculates the inverse of the quaternion.
 	 * @return the inverted quaternion
@@ -410,6 +413,7 @@ public class DQuaternion implements DQuaternionC {
 	 * Calculates the inverse of the quaternion and returns it as a new quaternion.
 	 * @return an inverted quaternion
 	 */
+	@Override
 	public DQuaternion reInverse() {
 		DQuaternion ret = new DQuaternion(this);
 		ret.inverse();
