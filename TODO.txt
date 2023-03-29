@@ -1,3 +1,13 @@
+MArch 2023:
+General cleanup:
+- CHANGELOG -> .md
+- Move tests to core/test
+- update .pom dependencies
+- update DVector3 safeNormalize to use max() and then compare to 0
+- reformat everything? At least indentation?
+- CI builds
+
+
 July 6th 2009:
 Some minor things I found in the code:
 - The test universal.cpp (587-593) is probably incorrectly checking the first field of the array 3 times, rather than checking the 1st, 2nd, and 3rd field.

@@ -24,8 +24,6 @@ package org.ode4j.math;
 
 import org.junit.Test;
 
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 
 public class DVector3Test {
@@ -46,7 +44,7 @@ public class DVector3Test {
         DVector3 v1 = new DVector3(Math.PI, Math.PI/2, Math.PI/4);
         v1.eqToDegrees();
         assertEquals(new DVector3(180, 90, 45), v1);
-        v1.eqToRadians();;
+        v1.eqToRadians();
         assertEquals(new DVector3(Math.PI, Math.PI/2, Math.PI/4), v1);
     }
 }

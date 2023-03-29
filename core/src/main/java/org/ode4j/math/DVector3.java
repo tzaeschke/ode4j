@@ -118,25 +118,12 @@ public class DVector3 implements DVector3I, DVector3C {
 	
 	@Override
 	public String toString() {
-		StringBuffer b = new StringBuffer();
-		b.append("DVector3[ ");
-		b.append(get0()).append(", ");
-		b.append(get1()).append(", ");
-		b.append(get2()).append(" ]");
-//		for (int i = 0; i < v.length-1; i++) {
-//			b.append(v[i]).append(", ");
-//		}
-//		b.append(v[v.length-1]).append("]");
-		return b.toString();
+		return "DVector3[ " +
+				get0() + ", " +
+				get1() + ", " +
+				get2() + " ]";
 	}
 
-//	@Override
-//	public void assertLen(int n) {
-//		if (n!=LEN) {
-//			throw new IllegalStateException("LEN is " + LEN + ", not " + n);
-//		}		
-//	}
-	
 	@Override
 	public final void set0(double d) {
 		d0 = d;
@@ -722,7 +709,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param size size of new array
 	 * @return AN array of DVector
 	 */
-	public final static DVector3[] newArray(int size) {
+	public static DVector3[] newArray(int size) {
 		DVector3[] a = new DVector3[size];
 		for (int i = 0; i < size; i++) {
 			a[i] = new DVector3();
