@@ -7,6 +7,7 @@
   - DQUaternion.invert() inverts a quaternion
   - DVector3.eqToRadians() and eqToDegrees() convert angles in a DVector3.
 - Fixed OSGI bundle info to use Java 1.7 instead of 7.0. [#80](https://github.com/tzaeschke/ode4j/pull/80)
+- Removed deprecated `<prerequisites>` tag in `.pom`.
 
 
 0.4.0
