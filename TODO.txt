@@ -4,6 +4,7 @@ General cleanup:
 - Move tests to core/test
 - update .pom dependencies
 - update DVector3 safeNormalize to use max() and then compare to 0
+- replace DVector3.clone() with dVector3.re() or copy()
 - reformat everything? At least indentation?
 - CI builds
 
