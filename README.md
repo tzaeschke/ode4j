@@ -9,7 +9,7 @@ ode4j is a Java port of [ODE](http://www.ode.org/).
 ODE is an open source, high performance library for simulating rigid body dynamics. It is fully featured, stable, mature and platform independent with an easy to use C/C++ API. It has advanced joint types and integrated collision detection with friction. ODE is useful for simulating vehicles, objects in virtual reality environments and virtual creatures.
 It is currently used in many computer games, 3D authoring tools and simulation tools.
 
-The latest released version of ode4j is 0.4.0, but the master branch contains numerous fixes and improvements.
+The latest released version of ode4j is 0.4.2, but the master branch may contains fixes and improvements.
 Version 0.2.4 up to 0.2.9 are ports of ODE 0.12.1, Version 0.3.1 is a port of ODE 0.13.1. Release 0.4.0 contains most changes between 0.13.1 and 0.16.0.  
 
 ode4j contains also some features that are not present in ODE, such as a ragdoll and heightfields with holes. See [Wiki](https://github.com/tzaeschke/ode4j/wiki/Functionality-beyond-ODE).
@@ -36,7 +36,7 @@ The following artifact contains the complete physics engine (examples etc are [n
 News
 ====
 
-2023-31-03: Release 0.4.1 & 0.4.2. Mostly a gubfix release + some API helper methods: 
+2023-31-03: Release 0.4.1 & 0.4.2. Mostly a bugfix release + some API helper methods: 
  * Fix OSGI bundle info to require Java 1.7 instead of 7.0
  * New helper methods: `
    * `DBody` : `addLinearVelocity()`
