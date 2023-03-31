@@ -10,7 +10,7 @@ ODE is an open source, high performance library for simulating rigid body dynami
 It is currently used in many computer games, 3D authoring tools and simulation tools.
 
 The latest released version of ode4j is 0.4.0, but the master branch contains numerous fixes and improvements.
-Version 0.2.4 up to 0.2.9 are ports of ODE 0.12.1, Version 0.3.1 is a port of ODE 0.13.1. Release 0.4.0 Contains most changes between 0.13.1 and 0.16.0.  
+Version 0.2.4 up to 0.2.9 are ports of ODE 0.12.1, Version 0.3.1 is a port of ODE 0.13.1. Release 0.4.0 contains most changes between 0.13.1 and 0.16.0.  
 
 ode4j contains also some features that are not present in ODE, such as a ragdoll and heightfields with holes. See [Wiki](https://github.com/tzaeschke/ode4j/wiki/Functionality-beyond-ODE).
 
