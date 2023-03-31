@@ -29,7 +29,7 @@ The following artifact contains the complete physics engine (examples etc are [n
 <dependency>
     <groupId>org.ode4j</groupId>
     <artifactId>core</artifactId>
-    <version>0.4.1</version>
+    <version>0.4.2</version>
 </dependency>
 ```
 
