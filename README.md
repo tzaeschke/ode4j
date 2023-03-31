@@ -36,12 +36,13 @@ The following artifact contains the complete physics engine (examples etc are [n
 News
 ====
 
-2023-30-03: Release 0.4.1. Mostly a gubfix release + some API helper methods: 
+2023-31-03: Release 0.4.1 & 0.4.2. Mostly a gubfix release + some API helper methods: 
  * Fix OSGI bundle info to require Java 1.7 instead of 7.0
  * New helper methods: `
    * `DBody` : `addLinearVelocity()`
    * `DVector3`: `reAdd()`, `eqToRadians()`, `eqToDegrees()` (convert angles in a DVector3, `eq` prefix means that the object is set equal to the result)
-   * `DQuaternion`: `ZERO`, `IDENTITY`, `isEq()`, `length()`, `lengthSquared()`, `toEuler()`, `fromEuler()`, `toEulerDegrees()`, `fromEulerDegrees()`, `inverse()`, `reInverse()`.
+   * `DQuaternion`: `ZERO`, `IDENTITY`, `isEq()`, `length()`, `lengthSquared()`, `toEuler()`, `fromEuler()`, `toEulerDegrees()`, `fromEulerDegrees()`, `eqInverse()`, `reInverse()`.
+ * 0.4.2 fixes some small regressions with 0.4.1   
 
 2019-01-03: Release 0.4.0. This release contains most of the changes that happened between ODE 0.13.1 and ODE 0.16.0, plus some original features: 
  * Java 9 / modularization (generated jar files are Java 7) (io7m)
