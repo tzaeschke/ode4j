@@ -397,7 +397,7 @@ public class DQuaternion implements DQuaternionC {
 	 * Calculates the inverse of the quaternion.
 	 * @return the inverted quaternion
 	 */
-	public DQuaternion inverse() {
+	public DQuaternion eqInverse() {
 		double norm = lengthSquared();
 		if (norm > 0.0) {
 			double invNorm = 1.0 / norm;
@@ -416,7 +416,7 @@ public class DQuaternion implements DQuaternionC {
 	@Override
 	public DQuaternion reInverse() {
 		DQuaternion ret = new DQuaternion(this);
-		ret.inverse();
+		ret.eqInverse();
 		return ret;
 	}
 }
