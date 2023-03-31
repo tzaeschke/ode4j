@@ -1,3 +1,10 @@
+0.4.2
+=====
+- Fix regression: missing internal version id
+- renamed DQuaternion inverse() to eqInverse()
+
+0.4.1
+=====
 - API convenience changes [#79](https://github.com/tzaeschke/ode4j/pull/79)
   - DBody.addLinearVelocity()
   - DVector3C.reAdd()

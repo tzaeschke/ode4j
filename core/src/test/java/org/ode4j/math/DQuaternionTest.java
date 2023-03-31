@@ -106,13 +106,13 @@ public class DQuaternionTest {
     public void testInverse() {
         DQuaternionC q1 = new DQuaternion(1, 1, 1, 1);
         DQuaternion q1i = new DQuaternion(q1);
-        q1i.inverse();
+        q1i.eqInverse();
         assertEquals(new DQuaternion(0.25, -0.25, -0.25, -0.25), q1i);
 
         DQuaternionC q2 = new DQuaternion(1, 2, 3, 4);
         DQuaternion q2i = new DQuaternion(q2);
-        q2i.inverse();
-        q2i.inverse();
+        q2i.eqInverse();
+        q2i.eqInverse();
         for (int i = 0; i < DQuaternion.LEN; ++i) {
             assertEquals(q2.get(i), q2i.get(i), 0.0000000001);
         }
