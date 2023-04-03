@@ -1044,10 +1044,7 @@ public class CollideTrimeshBox implements DColliderFn {
 
 					GenerateContact(TriIndex, vPntTmp, m_vBestNormal, -fTempDepth);
 
-                    // TODO CHECK-TZ This check had been removed...
-                    if ((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT))) {
-                        break;
-                    }
+                    // TZ: We want the deepest contact!
                     //					if ((m_ctContacts | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK |
                     //					CONTACTS_UNIMPORTANT))) {
                     //						break;
@@ -1165,10 +1162,11 @@ public class CollideTrimeshBox implements DColliderFn {
 
 					GenerateContact(TriIndex, vPntTmp, m_vBestNormal, -fTempDepth);
 
-					// TODO CHECK-TZ This check had been removed...
-					if ((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (DxGeom.NUMC_MASK | CONTACTS_UNIMPORTANT))) {
-						break;
-					}
+					// TZ: We want the deepest contact!
+
+					//	if ((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (DxGeom.NUMC_MASK | CONTACTS_UNIMPORTANT))) {
+					//		break;
+					//	}
 				}
 
 				//dAASSERT(m_ctContacts>0);
@@ -1252,9 +1250,10 @@ public class CollideTrimeshBox implements DColliderFn {
 
                 if (!deeper) {
                     // Add a new contact
-                    // TODO CHECK-TZ This may attempt to ADD an ENTRY!!! See a few lines below
-                    TgtContact = m_ContactGeoms.getSafe(m_iFlags, TriCount);
-                    //                DContactGeom pContact = m_TempContactGeoms.get(ctContacts0);
+					// TgtContact = SAFECONTACT(m_iFlags, m_ContactGeoms, TriCount, m_iStride);
+                    //TgtContact = m_ContactGeoms.getSafe(m_iFlags, TriCount);
+					TgtContact = new DContactGeom();
+					m_TempContactGeoms.add(TgtContact);
                     TriCount++;
 
 				//TgtContact.pos[3] = 0.0;
@@ -1281,7 +1280,6 @@ public class CollideTrimeshBox implements DColliderFn {
 
 			TgtContact.side1 = TriIndex;
 
-                // TODO CHECK-TZ This may attempt to ADD an ENTRY!!! See a few lines below
                 //m_ctContacts = TriCount;
             } while (false);
         }
@@ -1334,7 +1332,7 @@ public class CollideTrimeshBox implements DColliderFn {
 		}
 
         //void sTrimeshBoxColliderData::TestCollisionForSingleTriangle(int Triint, dVector3 dv[3], bool &bOutFinishSearching)
-        void TestCollisionForSingleTriangle(int Triint, DVector3[] dv, RefBoolean bOutFinishSearching)
+        boolean TestCollisionForSingleTriangle(int Triint, DVector3[] dv)
         {
             boolean finish = false;
 
@@ -1347,32 +1345,12 @@ public class CollideTrimeshBox implements DColliderFn {
                 of contacts is reached because it selects maximal penetration depths.
                 See also comments in GenerateContact()
                 */
-                // TODO CHECK-TZ
-                //finish = ((m_ctContacts != 0 | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT)));
-                finish = ((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT)));
+                //finish = ((m_ctContacts | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT)));
+				finish = ((m_TempContactGeoms.size() | CONTACTS_UNIMPORTANT) == (m_iFlags & (NUMC_MASK | CONTACTS_UNIMPORTANT)));
             }
 
-            bOutFinishSearching.set(finish);
+            return finish;
         }
-
-        // TODO TZ-CHECK remove this
-//        //	int sTrimeshBoxColliderData::TestCollisionForSingleTriangle(int ctContacts0, int Triint,
-//        //		dVector3 dv[3], bool &bOutFinishSearching)
-//        private int TestCollisionForSingleTriangle(int ctContacts0, int Triint, DVector3[] dv, RefBoolean bOutFinishSearching) {
-//            // test this triangle
-//            _cldTestOneTriangle(dv[0], dv[1], dv[2], Triint);
-//
-//            // fill-in tri index for generated contacts
-//            for (; ctContacts0 < m_TempContactGeoms.size(); ctContacts0++) {
-//                //DContactGeom pContact = SAFECONTACT(m_iFlags, m_ContactGeoms, ctContacts0, m_iStride);
-//                DContactGeom pContact = m_TempContactGeoms.get(ctContacts0);
-//                pContact.side1 = Triint;
-//                pContact.side2 = -1;
-//            }
-//
-//            return ctContacts0;
-//        }
-
 
         // test one mesh triangle on intersection with given box
         //	void sTrimeshBoxColliderData::_cldTestOneTriangle(const dVector3 &v0, const dVector3 &v1, const dVector3 &v2, int TriIndex)//, void *pvUser)
@@ -1453,12 +1431,7 @@ public class CollideTrimeshBox implements DColliderFn {
 
 			int Triint = boxesresult[i];
 			ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv[0], dv[1], dv[2]);
-
-            RefBoolean bFinishSearching = new RefBoolean(false);
-            //dvTZ[0].set(dv[0].f);
-            //dvTZ[1].set(dv[1].f);
-            //dvTZ[2].set(dv[2].f);
-            cData.TestCollisionForSingleTriangle(Triint, dv, bFinishSearching);
+			cData.TestCollisionForSingleTriangle(Triint, dv);
         }
         int contactcount = cData.m_TempContactGeoms.size();
         int contactmax = (Flags & NUMC_MASK);

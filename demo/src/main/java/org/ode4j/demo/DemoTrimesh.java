@@ -208,10 +208,19 @@ class DemoTrimesh extends dsFunctions {
 
 			DMatrix3 R = new DMatrix3();
 			if (random_pos) {
-				obj[i].body.setPosition (
-						dRandReal()*2-1,dRandReal()*2-1,dRandReal()+1);
-				dRFromAxisAndAngle (R,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
-						dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
+				double z = dRandReal()+1;
+				double y = dRandReal()*2-1;
+				double x = dRandReal()*2-1;
+				obj[i].body.setPosition (x, y, z);
+//				obj[i].body.setPosition (
+//						dRandReal()*2-1,dRandReal()*2-1,dRandReal()+1);
+				double d = dRandReal()*10.0-5.0;
+				double c = dRandReal()*2.0-1.0;
+				double b = dRandReal()*2.0-1.0;
+				double a = dRandReal()*2.0-1.0;
+				dRFromAxisAndAngle (R,a, b, c, d);
+//				dRFromAxisAndAngle (R,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
+//						dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
 			}
 			else {
 				double maxheight = 0;

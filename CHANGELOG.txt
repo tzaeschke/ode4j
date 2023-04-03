@@ -8,6 +8,9 @@
     be safe to change to 8 now (Android Nougat is mostly 8 compatible), this covers > 80% users.
   - Changed oraclejdk build to 11
 
+- WARNING!!!!!
+  -> lwjgl requires Java 8!!!  Try lwjgl3 (works with Java 11) and see whether it also works with Java 8!
+
 
 0.4.0
 =====
