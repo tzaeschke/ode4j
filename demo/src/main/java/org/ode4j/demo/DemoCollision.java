@@ -96,7 +96,7 @@ class DemoCollision extends dsFunctions {
 		public boolean test_fn() {
 			return DemoCollision.this.runtest(name);
 		}
-	};
+	}
 
 	private boolean runtest(String name) {
 		try {
@@ -116,7 +116,7 @@ class DemoCollision extends dsFunctions {
 	}
 
 
-	private TestSlot[] testslot=new TestSlot[MAX_TESTS];
+	private final TestSlot[] testslot=new TestSlot[MAX_TESTS];
 
 
 	// globals used by the test functions
@@ -282,7 +282,7 @@ class DemoCollision extends dsFunctions {
 				pos.add2( Z_OFFSET );
 				DVector3 sides = new DVector3( 2, 2, 0.001 );
 				dsSetColor (1,0,1);
-				pos2.set( pos ).add( 0.1*depth, 0.1* depth, 01.*depth);
+				pos2.set( pos ).add( 0.1*depth, 0.1* depth, 0.1*depth);
 				dsDrawLine (pos,pos2);
 				dsSetColorAlpha (1f,0f,1f,0.8f);
 				dsDrawBox (pos,R,sides);
@@ -1178,7 +1178,8 @@ class DemoCollision extends dsFunctions {
 				if (fd==0) { k1 = 1; k2 = 2; }
 				if (fd==1) { k1 = 0; k2 = 2; }
 				if (fd==2) { k1 = 0; k2 = 1; }
-				DVector3 fp[] = DVector3.newArray(4), tmp=new DVector3();
+				DVector3[] fp = DVector3.newArray(4);
+				DVector3 tmp=new DVector3();
 				k=0;
 				for (j1=-1; j1<=1; j1+=2) {
 					for (j2=-1; j2<=1; j2+=2) {
@@ -1366,8 +1367,8 @@ class DemoCollision extends dsFunctions {
 	private boolean space_pressed = false;
 
 
-	private static float[] xyz = {2.4807f,-1.8023f,2.7600f};
-	private static float[] hpr = {141.5000f,-18.5000f,0.0000f};
+	private static final float[] xyz = {2.4807f,-1.8023f,2.7600f};
+	private static final float[] hpr = {141.5000f,-18.5000f,0.0000f};
 	// start simulation - set viewpoint
 
 	@Override

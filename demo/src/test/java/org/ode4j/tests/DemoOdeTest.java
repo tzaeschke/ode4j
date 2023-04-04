@@ -32,7 +32,6 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DMass;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.internal.DLCP;
 import org.ode4j.ode.internal.DxMass;
 import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
 
@@ -409,7 +408,8 @@ void testReorthonormalize()
     }
 
 
-    void testCholeskySolveM3() {
+    @Test
+    public void testCholeskySolveM3() {
         DMatrix3 A = new DMatrix3(), L = new DMatrix3();
         DVector3 b = new DVector3(), x = new DVector3(), btest = new DVector3();
         double diff;
@@ -1006,7 +1006,7 @@ void testReorthonormalize()
 
     // matrix header on the stack
 
-    private class MatrixComparison {
+    private static class MatrixComparison {
         //  struct dMatInfo;
         //  dArray<dMatInfo*> mat;
         //	  int afterfirst,index;
@@ -1033,11 +1033,11 @@ void testReorthonormalize()
             index = 0;
         }
 
-        @Override
-        protected void finalize() throws Throwable {
-            reset();
-            super.finalize();
-        }
+//        @Override
+//        protected void finalize() throws Throwable {
+//            reset();
+//            super.finalize();
+//        }
 
         /**
          * add a new n*m matrix A to the sequence. the name of the matrix is given
@@ -1168,9 +1168,6 @@ void testReorthonormalize()
     private static class ExpectedException extends RuntimeException {
         private static final long serialVersionUID = 1L;
     }
-
-    ;
-
 
     @Test
     public void dTestMatrixComparison() {
