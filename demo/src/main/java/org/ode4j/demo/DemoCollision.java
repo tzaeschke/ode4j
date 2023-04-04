@@ -143,8 +143,8 @@ class DemoCollision extends dsFunctions {
 	private boolean testFAILED() { 
 		if (graphical_test==0) { 
 			testslot[current_test].last_failed_line=new RuntimeException().getStackTrace()[0].getLineNumber(); 
-			return false; 
-		} else return true; 
+			return true;
+		} else return false;
 
 	}
 	//#define PASSED() { return 1; }
