@@ -124,7 +124,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	    DONT_MERGE_CONTACTS,
 	    MERGE_CONTACT_NORMALS,
 	    MERGE_CONTACTS_FULLY,
-	};
+	}
 
 
 	// geometry object base class. pos and R will either point to a separately
@@ -490,9 +490,6 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 * 1=yes, 0=no. this is used as an early-exit test in the space collision
 	 * functions. the default implementation returns 1, which is the correct
 	 * behavior if no more detailed implementation can be provided.
-	 * 
-	 * @param o
-	 * @return
 	 */
 	//	  abstract int AABBTest (dxGeom o, dReal aabb[6]);
 	boolean AABBTest (DxGeom o, DAABBC aabb)
