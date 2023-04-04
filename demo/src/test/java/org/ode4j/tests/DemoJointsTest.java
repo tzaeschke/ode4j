@@ -25,6 +25,7 @@
 package org.ode4j.tests;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ode4j.math.*;
@@ -1022,6 +1023,7 @@ public class DemoJointsTest {
         }
 
         world.destroy();
+        world = null;
         body[0] = null;
         body[1] = null;
 //		joint = null;
@@ -1040,6 +1042,7 @@ public class DemoJointsTest {
             System.out.print("max scaled error = " + max_error);
             if (max_error < 1) System.out.println(" - passed");
             else System.out.println(" - FAILED\n");
+            Assert.assertTrue(max_error < 1);
         }
     }
 
@@ -1074,9 +1077,21 @@ public class DemoJointsTest {
 
     @Test
     public void doTest() {
+        cmd_occasional_error = 0;
+        for (int j= 0; j < 20; ++j)
         for (int i = 0; i < NUM_JOINTS * 100; i++) {
             doTest(i);
         }
 //		doTest(testId);
     }
+
+    @Test
+    public void doTestWithError() {
+        cmd_occasional_error = 1;
+        for (int i = 0; i < NUM_JOINTS * 100; i++) {
+            doTest(i);
+        }
+//		doTest(testId);
+    }
+
 }
