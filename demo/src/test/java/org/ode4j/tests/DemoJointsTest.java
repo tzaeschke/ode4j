@@ -963,10 +963,6 @@ public class DemoJointsTest {
     //****************************************************************************
     // simulation stuff common to all the tests
 
-    // start simulation - set viewpoint
-    private static final float[] xyz = {1.0382f, -1.0811f, 1.4700f};
-    private static final float[] hpr = {135.0000f, -19.5000f, 0.0000f};
-
     private static int count = 0;
     // simulation loop
 

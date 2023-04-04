@@ -1019,7 +1019,7 @@ void testReorthonormalize()
         //public:
         //  ~MatrixComparison();
 
-        private class dMatInfo {
+        private static class dMatInfo {
             int n, m;        // size of matrix
             //  char name[128];	// name of the matrix
             //  dReal *data;		// matrix data
