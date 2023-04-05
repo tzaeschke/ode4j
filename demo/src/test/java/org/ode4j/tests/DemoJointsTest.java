@@ -417,9 +417,7 @@ public class DemoJointsTest {
                 jointHinge2 = OdeHelper.createHinge2Joint(world, null);
                 jointHinge2.attach(body[0], body[1]);
                 jointHinge2.setAnchor(-0.5 * SIDE, 0, 1);
-                //jointHinge2.setAxes(zunit, xunit);
-                jointHinge2.setAxis1(zunit);
-                jointHinge2.setAxis2(xunit);
+                jointHinge2.setAxes(zunit, xunit);
                 max_iterations = 50;
                 return 1;
 
@@ -432,9 +430,7 @@ public class DemoJointsTest {
                 jointHinge2 = OdeHelper.createHinge2Joint(world, null);
                 jointHinge2.attach(body[0], body[1]);
                 jointHinge2.setAnchor(-0.5 * SIDE, 0, 1);
-                // jointHinge2.setAxes(zunit, xunit);
-                jointHinge2.setAxis1(zunit);
-                jointHinge2.setAxis2(xunit);
+                jointHinge2.setAxes(zunit, xunit);
                 jointHinge2.setParamFMax(1);
                 jointHinge2.setParamFMax2(1);
                 if (n == 431) {

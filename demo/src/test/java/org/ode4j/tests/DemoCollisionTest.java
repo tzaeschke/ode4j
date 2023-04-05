@@ -59,7 +59,6 @@ public class DemoCollisionTest {
     private static final int TEST_REPS1 = 1000;        // run each test this many times (first batch)
     private static final int TEST_REPS2 = 10000;    // run each test this many times (second batch)
     private static final float tol = 1e-8f;        // tolerance used for numerical checks
-    private static final float Z_OFFSET = 2;        // z offset for drawing (to get above ground)
 
     private boolean runtest(String name) {
         try {
