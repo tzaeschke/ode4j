@@ -97,6 +97,34 @@ public class DemoJointsTest {
     private static int max_iterations = 0;
     private static float max_error = 0;
 
+    // static helpers
+    static class PseudoStatic {
+        double a_1 = 0;
+        double a_2 = 0;
+        double a_3 = 0;
+        double last_angle_221 = 0;
+        double a_231 = 0;
+        double last_pos_321 = 0;
+        double a_331 = 0;
+        double last_angle_421 = 0;
+        double a_431 = 0;
+        double a_432 = 0;
+        double a1_600, a2_600, a3_600;
+        double last_angle_701 = 0;
+        double last_angle_702 = 0;
+        double last_angle_721 = 0;
+        double last_angle_722 = 0;
+        double last_angle_731 = 0;
+        double last_angle_732 = 0;
+        double last_angle_741 = 0;
+        double last_angle_742 = 0;
+        double a_804 = 0;
+
+        int count = 0;
+    }
+
+    private PseudoStatic S = null;
+
     //****************************************************************************
     // utility stuff
 
@@ -145,30 +173,26 @@ public class DemoJointsTest {
 
     // add an oscillating torque to body 0
 
-    private static double a_1 = 0;
 
     private void addOscillatingTorque(double tscale) {
         //TZ  static double a=0;
-        body[0].addTorque(tscale * Math.cos(2 * a_1), tscale * Math.cos(2.7183 * a_1),
-                tscale * Math.cos(1.5708 * a_1));
-        a_1 += 0.01;
+        body[0].addTorque(tscale * Math.cos(2 * S.a_1), tscale * Math.cos(2.7183 * S.a_1),
+                tscale * Math.cos(1.5708 * S.a_1));
+        S.a_1 += 0.01;
     }
-
-
-    private static double a_2 = 0;
 
     private void addOscillatingTorqueAbout(double tscale, double x, double y, double z) {
         //TZ  static double a=0;
-        body[0].addTorque(tscale * Math.cos(a_2) * x, tscale * Math.cos(a_2) * y,
-                tscale * Math.cos(a_2) * z);
-        a_2 += 0.02;
+        body[0].addTorque(tscale * Math.cos(S.a_2) * x, tscale * Math.cos(S.a_2) * y,
+                tscale * Math.cos(S.a_2) * z);
+        S.a_2 += 0.02;
     }
 
     private void addOscillatingTorqueAbout(double tscale, DVector3 v) {
         //TZ  static double a=0;
-        body[0].addTorque(tscale * Math.cos(a_2) * v.get0(), tscale * Math.cos(a_2) * v.get1(),
-                tscale * Math.cos(a_2) * v.get2());
-        a_2 += 0.02;
+        body[0].addTorque(tscale * Math.cos(S.a_2) * v.get0(), tscale * Math.cos(S.a_2) * v.get1(),
+                tscale * Math.cos(S.a_2) * v.get2());
+        S.a_2 += 0.02;
     }
 
 
@@ -198,13 +222,11 @@ public class DemoJointsTest {
 
     // add an oscillating Force to body 0
 
-    private static double a_3 = 0;
-
     private void addOscillatingForce(double fscale) {
         //TZ static double a=0;
-        body[0].addForce(fscale * Math.cos(2 * a_3), fscale * Math.cos(2.7183 * a_3),
-                fscale * Math.cos(1.5708 * a_3));
-        a_3 += 0.01;
+        body[0].addForce(fscale * Math.cos(2 * S.a_3), fscale * Math.cos(2.7183 * S.a_3),
+                fscale * Math.cos(1.5708 * S.a_3));
+        S.a_3 += 0.01;
     }
 
     //****************************************************************************
@@ -395,7 +417,9 @@ public class DemoJointsTest {
                 jointHinge2 = OdeHelper.createHinge2Joint(world, null);
                 jointHinge2.attach(body[0], body[1]);
                 jointHinge2.setAnchor(-0.5 * SIDE, 0, 1);
-                jointHinge2.setAxes(zunit, xunit);
+                //jointHinge2.setAxes(zunit, xunit);
+                jointHinge2.setAxis1(zunit);
+                jointHinge2.setAxis2(xunit);
                 max_iterations = 50;
                 return 1;
 
@@ -408,7 +432,9 @@ public class DemoJointsTest {
                 jointHinge2 = OdeHelper.createHinge2Joint(world, null);
                 jointHinge2.attach(body[0], body[1]);
                 jointHinge2.setAnchor(-0.5 * SIDE, 0, 1);
-                jointHinge2.setAxes(zunit, xunit);
+                // jointHinge2.setAxes(zunit, xunit);
+                jointHinge2.setAxis1(zunit);
+                jointHinge2.setAxis2(xunit);
                 jointHinge2.setParamFMax(1);
                 jointHinge2.setParamFMax2(1);
                 if (n == 431) {
@@ -509,23 +535,6 @@ public class DemoJointsTest {
         return 0;
     }
 
-    private static double last_angle_221 = 0;
-    private static double a_231 = 0;
-    private static double last_pos_321 = 0;
-    private static double a_331 = 0;
-    private static double last_angle_421 = 0;
-    private static double a_431 = 0;
-    private static double a_432 = 0;
-    private static double a1_600, a2_600, a3_600;
-    private static double last_angle_701 = 0;
-    private static double last_angle_702 = 0;
-    private static double last_angle_721 = 0;
-    private static double last_angle_722 = 0;
-    private static double last_angle_731 = 0;
-    private static double last_angle_732 = 0;
-    private static double last_angle_741 = 0;
-    private static double last_angle_742 = 0;
-    private static double a_804 = 0;
 
     // do stuff specific to this test each iteration. you can check some
     // invariants for the test -- the return value is some scaled error measurement
@@ -630,8 +639,8 @@ public class DemoJointsTest {
                 body[1].addTorque(0, 0, -0.01);
                 double a = jointHinge.getAngle();
                 double r = jointHinge.getAngleRate();
-                double er = (a - last_angle_221) / STEPSIZE;        // estimated rate
-                last_angle_221 = a;
+                double er = (a - S.last_angle_221) / STEPSIZE;        // estimated rate
+                S.last_angle_221 = a;
                 return Math.abs(r - er) * 4e4;
             }
 
@@ -639,10 +648,10 @@ public class DemoJointsTest {
             case 231: {            // ...with stops
                 //TZ static double a = 0;
                 double r = jointHinge.getAngleRate();
-                double err = Math.abs(Math.cos(a_231) - r);
-                if (a_231 == 0) err = 0;
-                a_231 += 0.03;
-                jointHinge.setParamVel(Math.cos(a_231));
+                double err = Math.abs(Math.cos(S.a_231) - r);
+                if (S.a_231 == 0) err = 0;
+                S.a_231 += 0.03;
+                jointHinge.setParamVel(Math.cos(S.a_231));
                 if (n == 231) return dInfinity;
                 return err * 1e6;
             }
@@ -673,8 +682,8 @@ public class DemoJointsTest {
                 body[1].addForce(0, 0, -0.1);
                 double p = jointSlider.getPosition();
                 double r = jointSlider.getPositionRate();
-                double er = (p - last_pos_321) / STEPSIZE;    // estimated rate (almost exact)
-                last_pos_321 = p;
+                double er = (p - S.last_pos_321) / STEPSIZE;    // estimated rate (almost exact)
+                S.last_pos_321 = p;
                 return Math.abs(r - er) * 1e9;
             }
 
@@ -682,10 +691,10 @@ public class DemoJointsTest {
             case 331: {            // ...with stops
                 //TZ static double a = 0;
                 double r = jointSlider.getPositionRate();
-                double err = Math.abs(0.7 * Math.cos(a_331) - r);
-                if (a_331 < 0.04) err = 0;
-                a_331 += 0.03;
-                jointSlider.setParamVel(0.7 * Math.cos(a_331));
+                double err = Math.abs(0.7 * Math.cos(S.a_331) - r);
+                if (S.a_331 < 0.04) err = 0;
+                S.a_331 += 0.03;
+                jointSlider.setParamVel(0.7 * Math.cos(S.a_331));
                 if (n == 331) return dInfinity;
                 return err * 1e6;
             }
@@ -708,8 +717,8 @@ public class DemoJointsTest {
                 body[1].addTorque(0, 0, -0.01);
                 double a = jointHinge2.getAngle1();
                 double r = jointHinge2.getAngle1Rate();
-                double er = (a - last_angle_421) / STEPSIZE;        // estimated rate
-                last_angle_421 = a;
+                double er = (a - S.last_angle_421) / STEPSIZE;        // estimated rate
+                S.last_angle_421 = a;
                 return Math.abs(r - er) * 2e4;
             }
 
@@ -717,10 +726,10 @@ public class DemoJointsTest {
             case 431: {            // ...with stops
                 //TZ static double a = 0;
                 double r = jointHinge2.getAngle1Rate();
-                double err = Math.abs(Math.cos(a_431) - r);
-                if (a_431 == 0) err = 0;
-                a_431 += 0.03;
-                jointHinge2.setParamVel(Math.cos(a_431));
+                double err = Math.abs(Math.cos(S.a_431) - r);
+                if (S.a_431 == 0) err = 0;
+                S.a_431 += 0.03;
+                jointHinge2.setParamVel(Math.cos(S.a_431));
                 if (n == 431) return dInfinity;
                 return err * 1e6;
             }
@@ -728,10 +737,10 @@ public class DemoJointsTest {
             case 432: {            // hinge 2 wheel motor rate (+polarity) test
                 //TZ static double a = 0;
                 double r = jointHinge2.getAngle2Rate();
-                double err = Math.abs(Math.cos(a_432) - r);
-                if (a_432 == 0) err = 0;
-                a_432 += 0.03;
-                jointHinge2.setParamVel2(Math.cos(a_432));
+                double err = Math.abs(Math.cos(S.a_432) - r);
+                if (S.a_432 == 0) err = 0;
+                S.a_432 += 0.03;
+                jointHinge2.setParamVel2(Math.cos(S.a_432));
                 return err * 1e6;
             }
 
@@ -749,7 +758,7 @@ public class DemoJointsTest {
 
                 double err = dInfinity;
                 if (iteration > 0) {
-                    err = dFabs(aa1 - a1_600) + dFabs(aa2 - a2_600) + dFabs(aa3 - a3_600);
+                    err = dFabs(aa1 - S.a1_600) + dFabs(aa2 - S.a2_600) + dFabs(aa3 - S.a3_600);
                     err *= 1e10;
                 }
 
@@ -760,14 +769,14 @@ public class DemoJointsTest {
                 body[0].setRotation(Rbase);
 
                 // rotate body 2 by random euler angles w.r.t. body 1
-                a1_600 = 3.14 * 2 * (dRandReal() - 0.5);
-                a2_600 = 1.57 * 2 * (dRandReal() - 0.5);
-                a3_600 = 3.14 * 2 * (dRandReal() - 0.5);
+                S.a1_600 = 3.14 * 2 * (dRandReal() - 0.5);
+                S.a2_600 = 1.57 * 2 * (dRandReal() - 0.5);
+                S.a3_600 = 3.14 * 2 * (dRandReal() - 0.5);
                 DMatrix3 R1 = new DMatrix3(), R2 = new DMatrix3(), R3 = new DMatrix3();
                 DMatrix3 Rtmp1 = new DMatrix3(), Rtmp2 = new DMatrix3();
-                dRFromAxisAndAngle(R1, 0, 0, 1, -a1_600);
-                dRFromAxisAndAngle(R2, 0, 1, 0, a2_600);
-                dRFromAxisAndAngle(R3, 1, 0, 0, -a3_600);
+                dRFromAxisAndAngle(R1, 0, 0, 1, -S.a1_600);
+                dRFromAxisAndAngle(R2, 0, 1, 0, S.a2_600);
+                dRFromAxisAndAngle(R3, 1, 0, 0, -S.a3_600);
                 Rtmp1.eqMul(R2, R3);//dMultiply0 (Rtmp1,R2,R3,3,3,3);
                 Rtmp2.eqMul(R1, Rtmp1);//dMultiply0 (Rtmp2,R1,Rtmp1,3,3,3);
                 Rtmp1.eqMul(Rbase, Rtmp2);//dMultiply0 (Rtmp1,Rbase,Rtmp2,3,3,3);
@@ -795,11 +804,11 @@ public class DemoJointsTest {
                 dampRotationalMotion(0.1);
                 double a = jointUniversal.getAngle1();
                 double r = jointUniversal.getAngle1Rate();
-                double diff = a - last_angle_701;
+                double diff = a - S.last_angle_701;
                 if (diff > M_PI) diff -= 2 * M_PI;
                 if (diff < -M_PI) diff += 2 * M_PI;
                 double er = diff / STEPSIZE;    // estimated rate
-                last_angle_701 = a;
+                S.last_angle_701 = a;
                 // I'm not sure why the error is so large here.
                 return Math.abs(r - er) * 1e1;
             }
@@ -810,11 +819,11 @@ public class DemoJointsTest {
                 dampRotationalMotion(0.1);
                 double a = jointUniversal.getAngle2();
                 double r = jointUniversal.getAngle2Rate();
-                double diff = a - last_angle_702;
+                double diff = a - S.last_angle_702;
                 if (diff > M_PI) diff -= 2 * M_PI;
                 if (diff < -M_PI) diff += 2 * M_PI;
                 double er = diff / STEPSIZE;    // estimated rate
-                last_angle_702 = a;
+                S.last_angle_702 = a;
                 // I'm not sure why the error is so large here.
                 return Math.abs(r - er) * 1e1;
             }
@@ -834,11 +843,11 @@ public class DemoJointsTest {
                 dampRotationalMotion(0.1);
                 double a = jointUniversal.getAngle1();
                 double r = jointUniversal.getAngle1Rate();
-                double diff = a - last_angle_721;
+                double diff = a - S.last_angle_721;
                 if (diff > M_PI) diff -= 2 * M_PI;
                 if (diff < -M_PI) diff += 2 * M_PI;
                 double er = diff / STEPSIZE;    // estimated rate
-                last_angle_721 = a;
+                S.last_angle_721 = a;
                 return Math.abs(r - er) * 1e10;
             }
 
@@ -848,11 +857,11 @@ public class DemoJointsTest {
                 dampRotationalMotion(0.1);
                 double a = jointUniversal.getAngle2();
                 double r = jointUniversal.getAngle2Rate();
-                double diff = a - last_angle_722;
+                double diff = a - S.last_angle_722;
                 if (diff > M_PI) diff -= 2 * M_PI;
                 if (diff < -M_PI) diff += 2 * M_PI;
                 double er = diff / STEPSIZE;    // estimated rate
-                last_angle_722 = a;
+                S.last_angle_722 = a;
                 return Math.abs(r - er) * 1e10;
             }
 
@@ -873,11 +882,11 @@ public class DemoJointsTest {
                 dampRotationalMotion(0.1);
                 double a = jointUniversal.getAngle1();
                 double r = jointUniversal.getAngle1Rate();
-                double diff = a - last_angle_731;
+                double diff = a - S.last_angle_731;
                 if (diff > M_PI) diff -= 2 * M_PI;
                 if (diff < -M_PI) diff += 2 * M_PI;
                 double er = diff / STEPSIZE;    // estimated rate
-                last_angle_731 = a;
+                S.last_angle_731 = a;
                 return Math.abs(r - er) * 2e3;
             }
 
@@ -889,11 +898,11 @@ public class DemoJointsTest {
                 dampRotationalMotion(0.1);
                 double a = jointUniversal.getAngle2();
                 double r = jointUniversal.getAngle2Rate();
-                double diff = a - last_angle_732;
+                double diff = a - S.last_angle_732;
                 if (diff > M_PI) diff -= 2 * M_PI;
                 if (diff < -M_PI) diff += 2 * M_PI;
                 double er = diff / STEPSIZE;    // estimated rate
-                last_angle_732 = a;
+                S.last_angle_732 = a;
                 return Math.abs(r - er) * 1e10;
             }
 
@@ -914,11 +923,11 @@ public class DemoJointsTest {
                 dampRotationalMotion(0.1);
                 double a = jointUniversal.getAngle1();
                 double r = jointUniversal.getAngle1Rate();
-                double diff = a - last_angle_741;
+                double diff = a - S.last_angle_741;
                 if (diff > M_PI) diff -= 2 * M_PI;
                 if (diff < -M_PI) diff += 2 * M_PI;
                 double er = diff / STEPSIZE;    // estimated rate
-                last_angle_741 = a;
+                S.last_angle_741 = a;
                 return Math.abs(r - er) * 1e10;
             }
 
@@ -930,11 +939,11 @@ public class DemoJointsTest {
                 dampRotationalMotion(0.1);
                 double a = jointUniversal.getAngle2();
                 double r = jointUniversal.getAngle2Rate();
-                double diff = a - last_angle_742;
+                double diff = a - S.last_angle_742;
                 if (diff > M_PI) diff -= 2 * M_PI;
                 if (diff < -M_PI) diff += 2 * M_PI;
                 double er = diff / STEPSIZE;    // estimated rate
-                last_angle_742 = a;
+                S.last_angle_742 = a;
                 return Math.abs(r - er) * 1e4;
             }
 
@@ -947,8 +956,8 @@ public class DemoJointsTest {
             case 802:
             case 804: {
                 //TZ static double a = 0;
-                body[0].addTorque(0, 0.01 * Math.cos(1.5708 * a_804), 0);
-                a_804 += 0.01;
+                body[0].addTorque(0, 0.01 * Math.cos(1.5708 * S.a_804), 0);
+                S.a_804 += 0.01;
                 return dInfinity;
             }
 
@@ -964,7 +973,6 @@ public class DemoJointsTest {
     //****************************************************************************
     // simulation stuff common to all the tests
 
-    private static int count = 0;
     // simulation loop
 
     private void step() {
@@ -983,7 +991,7 @@ public class DemoJointsTest {
         // occasionally re-orient the first body to create a deliberate error.
         if (cmd_occasional_error != 0) {
             //TZ      static int count = 0;
-            if ((count % 20) == 0) {
+            if ((S.count % 20) == 0) {
                 // randomly adjust orientation of body[0]
                 DMatrix3C R1;
                 DMatrix3 R2 = new DMatrix3(), R3 = new DMatrix3();
@@ -1000,7 +1008,7 @@ public class DemoJointsTest {
                         pos.get1() + 0.2 * (dRandReal() - 0.5),
                         pos.get2() + 0.2 * (dRandReal() - 0.5));
             }
-            count++;
+            S.count++;
         }
     }
 
@@ -1012,6 +1020,7 @@ public class DemoJointsTest {
         iteration = 0;
         max_iterations = 300;
         max_error = 0;
+        S = new PseudoStatic();
 
         if (setupTest(n) == 0) {
             return;
@@ -1034,6 +1043,7 @@ public class DemoJointsTest {
         jointPR = null;
         jointSlider = null;
         jointUniversal = null;
+        S = null;
 
         // print results
         System.out.print("test " + n + ": ");
@@ -1078,20 +1088,17 @@ public class DemoJointsTest {
     @Test
     public void doTest() {
         cmd_occasional_error = 0;
-        for (int j= 0; j < 20; ++j)
         for (int i = 0; i < NUM_JOINTS * 100; i++) {
             doTest(i);
         }
-//		doTest(testId);
     }
 
-    @Test
-    public void doTestWithError() {
-        cmd_occasional_error = 1;
-        for (int i = 0; i < NUM_JOINTS * 100; i++) {
-            doTest(i);
-        }
-//		doTest(testId);
-    }
+//    @Test
+//    public void doTestWithError() {
+//        cmd_occasional_error = 1;
+//        for (int i = 0; i < NUM_JOINTS * 100; i++) {
+//            doTest(i);
+//        }
+//    }
 
 }

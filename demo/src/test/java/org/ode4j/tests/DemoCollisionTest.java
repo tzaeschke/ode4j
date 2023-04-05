@@ -38,7 +38,7 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.ode.internal.ErrorHandler.dDebug;
@@ -161,8 +161,13 @@ public class DemoCollisionTest {
         box.setLengths(s);
         dMakeRandomVector(p, 1.0);
         box.setPosition(p);
-        dRFromAxisAndAngle(R, dRandReal() * 2 - 1, dRandReal() * 2 - 1,
-                dRandReal() * 2 - 1, dRandReal() * 10 - 5);
+        double angle = dRandReal();
+        double az = dRandReal();
+        double ay = dRandReal();
+        double ax = dRandReal();
+        dRFromAxisAndAngle(R, ax * 2 - 1, ay * 2 - 1, az * 2 - 1, angle * 10 - 5);
+//        dRFromAxisAndAngle(R, dRandReal() * 2 - 1, dRandReal() * 2 - 1,
+//                dRandReal() * 2 - 1, dRandReal() * 10 - 5);
         box.setRotation(R);
 
         // ********** test center point has depth of smallest side
@@ -407,7 +412,7 @@ public class DemoCollisionTest {
         dMakeRandomVector(q2, 1.0);
         q2.normalize();
         k = dRandReal();
-        q2.eqSum(p, q, k * r * 0.99);
+        q2.eqSum(p, q2, k * r * 0.99);
         n.eqDiff(q2, q);
         n.normalize();
         ray.set(q, n);
@@ -868,17 +873,17 @@ public class DemoCollisionTest {
 
         // ********** test polarity with typical ground plane
         plane.setParams(0, 0, 1, 0);
-        a.set(0.1, 1, 0.1);
-        b.set(0, -1, 0);
+        a.set(0.1, 0.1, 1);
+        b.set(0, 0, -1);
         ray.set(a, b);
         ray.setLength(2);
-        assertEquals(OdeHelper.collide(ray, plane, 1, contacts), 1);
-        if (Math.abs(contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
+        assertEquals(1, OdeHelper.collide(ray, plane, 1, contacts));
+        assertFalse(Math.abs(contacts.get(0).depth - 1) > tol);
         a.set2(-1);
         b.set2(1);
         ray.set(a, b);
-        if (OdeHelper.collide(ray, plane, 1, contacts) != 1) if (testFAILED()) return false;
-        if (Math.abs(contacts.get(0).depth - 1) > tol) if (testFAILED()) return false;
+        assertEquals(1, OdeHelper.collide(ray, plane, 1, contacts));
+        assertFalse(Math.abs(contacts.get(0).depth - 1) > tol);
 
         return retPASSED();
     }
@@ -913,10 +918,11 @@ public class DemoCollisionTest {
         tmp.eqDiff(v2, v1);
         tmp.eqSum(v1, tmp.scale(alpha));
         if (dFabs(n.dot(tmp) + d) > 1e-6) dDebug(0, "bad tmp");
+
         if (alpha < 0) return false;
         if (alpha > 1) return false;
         //for (k=0; k<3; k++) tmp[k] -= p1[k];
-        tmp.set(p1).scale(-1);
+        tmp.sub(p1);
         double a1 = u1.dot(tmp);
         double a2 = u2.dot(tmp);
         if (a1 < 0 || a2 < 0 || a1 > d1 || a2 > d2) return false;
@@ -1047,10 +1053,22 @@ public class DemoCollisionTest {
         dMakeRandomVector(p2, 0.5);
         for (k = 0; k < 3; k++) side1.set(k, dRandReal() + 0.01);
         for (k = 0; k < 3; k++) side2.set(k, dRandReal() + 0.01);
-        dRFromAxisAndAngle(R1, dRandReal() * 2.0 - 1.0, dRandReal() * 2.0 - 1.0,
-                dRandReal() * 2.0 - 1.0, dRandReal() * 10.0 - 5.0);
-        dRFromAxisAndAngle(R2, dRandReal() * 2.0 - 1.0, dRandReal() * 2.0 - 1.0,
-                dRandReal() * 2.0 - 1.0, dRandReal() * 10.0 - 5.0);
+        double r13 = dRandReal();
+        double r12 = dRandReal();
+        double r11 = dRandReal();
+        double r10 = dRandReal();
+        dRFromAxisAndAngle(R1, r10 * 2.0 - 1.0, r11 * 2.0 - 1.0,
+                r12 * 2.0 - 1.0, r13 * 10.0 - 5.0);
+        double r23 = dRandReal();
+        double r22 = dRandReal();
+        double r21 = dRandReal();
+        double r20 = dRandReal();
+        dRFromAxisAndAngle(R2, r20 * 2.0 - 1.0, r21 * 2.0 - 1.0,
+                r22 * 2.0 - 1.0, r23 * 10.0 - 5.0);
+//        dRFromAxisAndAngle(R1, dRandReal() * 2.0 - 1.0, dRandReal() * 2.0 - 1.0,
+//                dRandReal() * 2.0 - 1.0, dRandReal() * 10.0 - 5.0);
+//        dRFromAxisAndAngle(R2, dRandReal() * 2.0 - 1.0, dRandReal() * 2.0 - 1.0,
+//                dRandReal() * 2.0 - 1.0, dRandReal() * 10.0 - 5.0);
 
         box1.setLengths(side1);
         box2.setLengths(side2);
@@ -1104,10 +1122,20 @@ public class DemoCollisionTest {
         for (k = 0; k < 3; k++) side1.set(k, dRandReal() + 0.01);
         for (k = 0; k < 3; k++) side2.set(k, dRandReal() + 0.01);
 
-        dRFromAxisAndAngle(R1, dRandReal() * 2.0 - 1.0, dRandReal() * 2.0 - 1.0,
-                dRandReal() * 2.0 - 1.0, dRandReal() * 10.0 - 5.0);
-        dRFromAxisAndAngle(R2, dRandReal() * 2.0 - 1.0, dRandReal() * 2.0 - 1.0,
-                dRandReal() * 2.0 - 1.0, dRandReal() * 10.0 - 5.0);
+//        dRFromAxisAndAngle(R1, dRandReal() * 2.0 - 1.0, dRandReal() * 2.0 - 1.0,
+//                dRandReal() * 2.0 - 1.0, dRandReal() * 10.0 - 5.0);
+//        dRFromAxisAndAngle(R2, dRandReal() * 2.0 - 1.0, dRandReal() * 2.0 - 1.0,
+//                dRandReal() * 2.0 - 1.0, dRandReal() * 10.0 - 5.0);
+        double a1 = dRandReal();
+        double az1 = dRandReal();
+        double ay1 = dRandReal();
+        double ax1 = dRandReal();
+        dRFromAxisAndAngle(R1, ax1 * 2.0 - 1.0, ay1 * 2.0 - 1.0, az1 * 2.0 - 1.0, a1 * 10.0 - 5.0);
+        double a2 = dRandReal();
+        double az2 = dRandReal();
+        double ay2 = dRandReal();
+        double ax2 = dRandReal();
+        dRFromAxisAndAngle(R2, ax2 * 2.0 - 1.0, ay2 * 2.0 - 1.0, az2 * 2.0 - 1.0, a2 * 10.0 - 5.0);
 
         // dRSetIdentity (R1);	// we can also try this
         // dRSetIdentity (R2);
@@ -1166,6 +1194,43 @@ public class DemoCollisionTest {
             for (int j = 0; j < reps; j++) {
                 runtest(function);
             }
+        }
+    }
+
+    // TZ: This was added because the original ODE demo_collision reports 0.02% errors
+    private void do_test_partial(int number, String function, double max_failure_ratio) {
+        // do two test batches. the first test batch has far fewer reps and will
+        // catch problems quickly. if all tests in the first batch passes, the
+        // second batch is run.
+        int failcount = 0;
+        int total_reps = 0;
+        String last_failed_line = "";
+        for (int batch = 0; batch < 2; batch++) {
+            int reps = (batch == 0) ? TEST_REPS1 : TEST_REPS2;
+            total_reps += reps;
+            System.out.println("testing " + number + " " + function + " batch " + (batch + 1) + " (" + reps + " reps)...");
+
+            // run tests
+            for (int j = 0; j < reps; j++) {
+                try {
+                    if (!runtest(function)) {
+                        failcount++;
+                    }
+                } catch (RuntimeException e) {
+                    last_failed_line = e.getMessage();
+                    failcount++;
+                }
+            }
+        }
+
+        // print results
+        System.out.printf("%3d: %-30s: ", number, function);
+        if (failcount > 0) {
+            double failure_ratio = (double) failcount / (double) total_reps;
+            System.out.printf("FAILED (%.2f%%) at line %s\n", failure_ratio * 100.0, last_failed_line);
+            assertTrue(failure_ratio < max_failure_ratio);
+        } else {
+            System.out.println("ok");
         }
     }
 
@@ -1234,6 +1299,6 @@ public class DemoCollisionTest {
 
     @Test
     public void testDBoxBox() {
-        do_test(101, "test_dBoxBox");
+        do_test_partial(101, "test_dBoxBox", 0.0002);
     }
 }

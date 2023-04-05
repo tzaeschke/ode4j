@@ -608,7 +608,7 @@ class DemoCollision extends dsFunctions {
 		dMakeRandomVector (q2,1.0);
 		q2.normalize();
 		k = dRandReal();
-		q2.eqSum( p, q, k*r*0.99 );
+		q2.eqSum( p, q2, k*r*0.99 );
 		n.eqDiff( q2, q );
 		n.normalize();
 		ray.set (q,n);
@@ -1080,8 +1080,8 @@ class DemoCollision extends dsFunctions {
 
 		// ********** test polarity with typical ground plane
 		plane.setParams (0,0,1,0);
-		a.set( 0.1, 1, 0.1 );
-		b.set( 0,  -1, 0   );
+		a.set(0.1, 0.1, 1);
+		b.set(0, 0, -1);
 		ray.set (a,b);
 		ray.setLength (2);
 		if (OdeHelper.collide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
@@ -1129,7 +1129,7 @@ class DemoCollision extends dsFunctions {
 		if (alpha < 0) return false;
 		if (alpha > 1) return false;
 		//for (k=0; k<3; k++) tmp[k] -= p1[k];
-		tmp.set(p1).scale(-1);
+		tmp.sub(p1);
 		double a1 = u1.dot(tmp);
 		double a2 = u2.dot(tmp);
 		if (a1<0 || a2<0 || a1>d1 || a2>d2) return false;
