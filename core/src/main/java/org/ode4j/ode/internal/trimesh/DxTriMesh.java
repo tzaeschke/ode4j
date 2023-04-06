@@ -113,7 +113,7 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     //            VERTEXINSTANCE_STRIDE = sizeof(vec3f), TRIANGLEINDEX_STRIDE = sizeof(GUINT32) * dMTV__MAX,
     //        } ;
     @Deprecated // TODO CHECK-TZ these should not be used!
-    public static final int VERTEXINSTANCE_STRIDE = 1;//sizeof(vec3f);
+    public static final int VERTEXINSTANCE_STRIDE = 3;//sizeof(vec3f);
     @Deprecated // TODO CHECK-TZ these should not be used!
     public static final int TRIANGLEINDEX_STRIDE = 1 /*sizeof(GUINT32)*/ * dMTV__MAX;
 

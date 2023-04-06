@@ -204,7 +204,8 @@ public class DxTriDataBase extends DBase {
         }
         public double retrieveFaceAngle(int triangleIndex, int vertexIndex) {
             RefDouble out_angleValue = new RefDouble();
-            return ((FaceAnglesWrapper)m_faceAngles).getFaceAngle(out_angleValue, triangleIndex, vertexIndex);
+            ((FaceAnglesWrapper)m_faceAngles).getFaceAngle(out_angleValue, triangleIndex, vertexIndex);
+            return out_angleValue.get();
         }
 
         public IFaceAngleStorageView retrieveFaceAngleView() {
@@ -856,7 +857,7 @@ public class DxTriDataBase extends DBase {
     }
 
     protected void buildData(final float[] vertices, final int[] indices, final float[] normals) {
-        buildData(vertices, 1, vertices.length/3, indices, indices.length, 3, normals, true);
+        buildData(vertices, DxTriMesh.VERTEXINSTANCE_STRIDE, vertices.length/3, indices, indices.length, 3, normals, true);
     }
 
 
