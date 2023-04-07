@@ -98,6 +98,7 @@ public class DxTriDataBase extends DBase {
 
 
     //enum FaceAngleStorageMethod {
+    // TODO TZ fix: Remove all these, we only use  ASM_WORD_SIGNED
     public static final int ASM__MIN = 0;
     public static final int ASM_BYTE_SIGNED = ASM__MIN;
     public static final int ASM_BYTE_POSITIVE = ASM_BYTE_SIGNED + 1;
@@ -125,7 +126,6 @@ public class DxTriDataBase extends DBase {
         FAD_CONVEX // = FAD__BYTEPOS_STORED_MIN;
         // FAD__BYTEPOS_STORED_MAX = FAD_CONVEX + 1;
         // EAD__MAX = FAD__BYTEPOS_STORED_MAX;
-        ;
     }
     public static final int EAD__MAX = FaceAngleDomain.values().length;
 
@@ -190,6 +190,7 @@ public class DxTriDataBase extends DBase {
         }
 
         protected boolean isSingle() {
+            // TODO TZ fix: remove this, it is not used (just indicates float vs double)
             return m_single;
         }
 
@@ -799,6 +800,7 @@ public class DxTriDataBase extends DBase {
 
     //enum EdgeStorageSignInclusion {
     public static final int SSI__MIN = 0;
+    // TODO TZ Fix: Remove this completely, Only SSI_SIGNED_STORED is used, so we can remove parametrization!
     public static final int SSI_SIGNED_STORED = SSI__MIN;
     public static final int SSI_POSITIVE_STORED = SSI_SIGNED_STORED + 1;
     public static final int SSI__MAX = SSI_POSITIVE_STORED + 1;
@@ -808,9 +810,9 @@ public class DxTriDataBase extends DBase {
 
 
     //typedef IFaceAngleStorageControl *(FAngleStorageAllocProc)(unsigned triangleCount, IFaceAngleStorageView *&out_storageView);
-    interface FAngleStorageAllocProc {
-        IFaceAngleStorageControl allocateInstance(int triangleCount, Ref<IFaceAngleStorageView> out_storageView);
-    }
+    //    interface FAngleStorageAllocProc {
+    //        IFaceAngleStorageControl allocateInstance(int triangleCount, Ref<IFaceAngleStorageView> out_storageView);
+    //    }
 
     //    BEGIN_NAMESPACE_OU();
     //    template<>
@@ -1062,12 +1064,13 @@ public class DxTriDataBase extends DBase {
         //        FaceAngleStorageMethod faceAnglesRequirement = (buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_FACE_ANGLES)) != 0
         //            ? g_TriMeshDataPreprocess_FaceAndlesExtraDataAngleStorageMethods.Encode(requestExtraData != NULL && dIN_RANGE(requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES], dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX) ? (unsigned)requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES] : dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__DEFAULT)
         //            : ASM__INVALID;
-        // TZ we only support signed, anyway, so it is easiest to only support 'word'.
+        // TODO TZ we only support signed, anyway, so it is easiest to only support 'word'.
         int faceAnglesRequirement = ASM_WORD_SIGNED;
 
         return data.preprocessData(buildUseFlags, faceAnglesRequirement);
     }
 
+    // TODO TZ Check, why are all these methods unused????
     /*extern ODE_API */
     void dGeomTriMeshDataUpdate(DTriMeshData g)
     {

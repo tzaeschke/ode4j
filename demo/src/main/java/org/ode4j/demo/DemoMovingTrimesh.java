@@ -74,13 +74,13 @@ public class DemoMovingTrimesh extends dsFunctions {
 	private static class MyObject {
 		DBody body;			// the body
 		DGeom[] geom = new DGeom[GPB];		// geometries representing this body
-	};
+	}
 
 	private static int num=0;		// number of objects in simulation
 	private static int nextobj=0;		// next object to recycle if num==NUM
 	private static DWorld world;
 	private static DSpace space;
-	private static MyObject[] obj = new MyObject[NUM];
+	private static final MyObject[] obj = new MyObject[NUM];
 	private static DJointGroup contactgroup;
 	private static int selected = -1;	// selected object
 	private static boolean show_aabb = false;	// show geom AABBs?
@@ -92,7 +92,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 	private static DTriMeshData TriData1, TriData2;  // reusable static trimesh data
 
 
-	private static DNearCallback nearCallback = new DNearCallback() {
+	private static final DNearCallback nearCallback = new DNearCallback() {
 		@Override
 		public void call(Object data, DGeom o1, DGeom o2) {
 			nearCallback(data, o1, o2);
@@ -134,8 +134,8 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 
     // start simulation - set viewpoint
-	private static float[] xyz = {2.1640f,-1.3079f,1.7600f};
-	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {2.1640f,-1.3079f,1.7600f};
+	private static final float[] hpr = {125.5000f,-17.0000f,0.0000f};
 
 	@Override
 	public void start()
