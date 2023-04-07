@@ -803,9 +803,10 @@ public class CollisionLibccd {
             // Triangle face normal
             ccd_vec3_t triNormal = new ccd_vec3_t();
             ccdVec3Cross(triNormal, edges[dMTV_FIRST], edges[dMTV_SECOND]);
-            if (ccdVec3Normalize(triNormal)) {
-                anyFault = true;
-            }
+            //            if (ccdVec3Normalize(triNormal)) {
+            //                anyFault = true;
+            //            }
+            anyFault |= ccdVec3Normalize(triNormal);
 
             // Check the edges to see if one of them is involved
             for (int testEdgeIndex = !anyFault ? dMTV__MIN : dMTV__MAX; testEdgeIndex != dMTV__MAX; ++testEdgeIndex) {
@@ -924,10 +925,9 @@ public class CollisionLibccd {
                     // Accumulate similar contacts
                     pc.normal.add(c.normal); //dAddVectors3(pc.normal, pc.normal, c.normal);
                     pc.depth = dMax(pc.depth, c.depth);
-                    if (true) throw new UnsupportedOperationException(); // TODO CHECK-TZ fix the following!
-                    //               _type_cast_union<bool>(pc.normal[dV3E_PAD]) = true; // Mark the contact as a
-					//               merged one
-
+                    // Mark the contact as a merged one
+                    // _type_cast_union<bool>(pc.normal[dV3E_PAD]) = true;
+                    pc.normal_needs_normalizing = true;
                     isDuplicate = true;
                     break;
                 }
@@ -947,9 +947,9 @@ public class CollisionLibccd {
                 contact.side2 = c.side2;
                 contact.pos.set(c.pos); //dCopyVector3(contact.pos, c.pos);
                 contact.normal.set(c.normal);//dCopyVector3(contact.normal, c.normal);
-                if (true) throw new UnsupportedOperationException(); // TODO CHECK-TZ fix the following!
-                //        *_type_cast_union<bool>(contact.normal[dV3E_PAD]) = false; // Indicates whether the contact
-				//        is merged or not
+                // Indicates whether the contact is merged or not
+                // *_type_cast_union<bool>(contact.normal[dV3E_PAD]) = false;
+                contact.normal_needs_normalizing = false;
                 contactcount = index == contactcount ? contactcount + 1 : contactcount;
             }
 

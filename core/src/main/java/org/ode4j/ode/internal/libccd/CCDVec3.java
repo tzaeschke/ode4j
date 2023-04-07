@@ -87,7 +87,12 @@ public class CCDVec3 {
 				throw new IllegalArgumentException();
 			}
 		}
-	};
+
+		@Override
+		public String toString() {
+			return "CCDVec3[ " + get0() + ", " + get1() + ", " + get2() + " ]";
+		}
+	}
 
 
 	private static final ccd_vec3_t CCD_VEC3_STATIC(double x, double y, double z) {
@@ -298,17 +303,20 @@ public class CCDVec3 {
 
 	/**
 	 * Normalizes given vector to unit length.
+	 *
+	 * WARNING: This returns TRUE for a failure!
+	 *
 	 * @param d d
-	 * @return 'false' if normalization failed.
+	 * @return 'true' if normalization failed.
 	 */
 	public static boolean ccdVec3Normalize(ccd_vec3_t d)
 	{
 	    double len = CCD_SQRT(ccdVec3Len2(d));
 	    if (len > CCD_EPS) {
 		    ccdVec3Scale(d, CCD_ONE / len);
-		    return true;
+		    return false;
 	    }
-	    return false;
+	    return true;
 	}
 
 	/**
