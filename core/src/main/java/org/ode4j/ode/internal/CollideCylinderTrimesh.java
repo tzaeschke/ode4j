@@ -52,7 +52,6 @@ import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
-import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
@@ -99,7 +98,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		double		fDepth;
 		int			triIndex;
 		int			nFlags; // 0 = filtered out, 1 = OK
-	};//sLocalContactData;
+	}//sLocalContactData;
 
 	private static class sCylinderTrimeshColliderData
 	{
@@ -184,7 +183,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 
 	// If this two contact can be classified as "near"
 	//inline int _IsNearContacts(sLocalContactData& c1,sLocalContactData& c2)
-	private static final boolean _IsNearContacts(sLocalContactData c1,sLocalContactData c2)
+	private static boolean _IsNearContacts(sLocalContactData c1,sLocalContactData c2)
 	{
 		boolean bPosNear = false;
 		boolean bSameDir = false;
@@ -212,7 +211,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		return (bPosNear && bSameDir);
 	}
 
-	private static final boolean _IsBetter(sLocalContactData c1,sLocalContactData c2)
+	private static boolean _IsBetter(sLocalContactData c1,sLocalContactData c2)
 	{
 		// The not better will be throw away
 		// You can change the selection criteria here
@@ -469,7 +468,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 //							   const dVector3& v2,
 //							   const dVector3& v3,
 //							   dVector3& r)
-	private static final void _CalculateAxis(final DVector3C v1,
+	private static void _CalculateAxis(final DVector3C v1,
 			   final DVector3C v2,
 			   final DVector3C v3,
 			   final DVector3 r)
@@ -897,7 +896,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 					m_gLocalContacts[m_nContacts].nFlags = 1;
 					m_nContacts++;
 					if(m_nContacts >= (m_iFlags & DxGeom.NUMC_MASK)) 
-						return;;
+						return;
 				}
 			}
 		}
@@ -923,7 +922,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 					m_gLocalContacts[m_nContacts].nFlags = 1;
 					m_nContacts++;
 					if(m_nContacts >= (m_iFlags & DxGeom.NUMC_MASK)) 
-						return;;
+						return;
 				}
 			}
 		}
