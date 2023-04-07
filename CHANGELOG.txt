@@ -11,6 +11,8 @@
 - WARNING!!!!!
   -> lwjgl requires Java 8!!!  Try lwjgl3 (works with Java 11) and see whether it also works with Java 8!
 
+// TODO TZ check
+// TODO TZ fix
 
 0.4.0
 =====

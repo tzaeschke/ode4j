@@ -61,16 +61,12 @@ public class CollisionLibccd {
         final ccd_vec3_t pos = new ccd_vec3_t();
         final ccd_quat_t rot = new ccd_quat_t(), rot_inv = new ccd_quat_t();
     }
-
-    ;
     //typedef struct _ccd_obj_t ccd_obj_t;
 
     private static class ccd_box_t extends ccd_obj_t {
         //ccd_obj_t o;
         double[] dim = new double[3];
     }
-
-    ;
     //typedef struct _ccd_box_t ccd_box_t;
 
     static class ccd_cap_t extends ccd_obj_t {
@@ -80,8 +76,6 @@ public class CollisionLibccd {
         final ccd_vec3_t p1 = new ccd_vec3_t();
         final ccd_vec3_t p2 = new ccd_vec3_t();
     }
-
-    ;
     //typedef struct _ccd_cap_t ccd_cap_t;
 
     static class ccd_cyl_t extends ccd_obj_t {
@@ -91,35 +85,27 @@ public class CollisionLibccd {
         final ccd_vec3_t p1 = new ccd_vec3_t();
         final ccd_vec3_t p2 = new ccd_vec3_t();
     }
-
-    ;
     //typedef struct _ccd_cyl_t ccd_cyl_t;
 
     static class ccd_sphere_t extends ccd_obj_t {
         //ccd_obj_t o;
         double radius;
     }
-
-    ;
     //typedef struct _ccd_sphere_t ccd_sphere_t;
 
     private static class ccd_convex_t extends ccd_obj_t {
         //ccd_obj_t o;
         DxConvex convex;
     }
-
-    ;
     //typedef struct _ccd_convex_t ccd_convex_t;
 
 
     private static class ccd_triangle_t extends ccd_obj_t {
         ccd_vec3_t[] vertices = new ccd_vec3_t[]{new ccd_vec3_t(), new ccd_vec3_t(), new ccd_vec3_t()};
     }
-
-    ;
     //typedef struct _ccd_triangle_t ccd_triangle_t;
 
-    /** Transforms geom to ccd struct */
+    /* Transforms geom to ccd struct */
     //    static void ccdGeomToObj(const dGeomID g, ccd_obj_t *);
     //    static void ccdGeomToBox(const dGeomID g, ccd_box_t *);
     //    static void ccdGeomToCap(const dGeomID g, ccd_cap_t *);
@@ -127,17 +113,17 @@ public class CollisionLibccd {
     //    static void ccdGeomToSphere(const dGeomID g, ccd_sphere_t *);
     //    static void ccdGeomToConvex(const dGeomID g, ccd_convex_t *);
 
-    /** Support functions */
+    /* Support functions */
     //    static void ccdSupportBox(const void *obj, const ccd_vec3_t *_dir, ccd_vec3_t *v);
     //    static void ccdSupportCap(const void *obj, const ccd_vec3_t *_dir, ccd_vec3_t *v);
     //    static void ccdSupportCyl(const void *obj, const ccd_vec3_t *_dir, ccd_vec3_t *v);
     //    static void ccdSupportSphere(const void *obj, const ccd_vec3_t *_dir, ccd_vec3_t *v);
     //    static void ccdSupportConvex(const void *obj, const ccd_vec3_t *_dir, ccd_vec3_t *v);
 
-    /** Center function */
+    /* Center function */
     //    static void ccdCenter(const void *obj, ccd_vec3_t *c);
 
-    /**
+    /*
      * General collide function
      */
     //    static int ccdCollide(dGeomID o1, dGeomID o2, int flags,
@@ -213,7 +199,7 @@ public class CollisionLibccd {
         ccdVec3Copy(cyl.p1, cyl.axis);
         ccdVec3Copy(cyl.p2, cyl.axis);
         boolean cylAxisNormalizationResult = ccdVec3Normalize(cyl.axis);
-        dUVERIFY(cylAxisNormalizationResult == false, "Invalid cylinder has been passed");
+        dUVERIFY(!cylAxisNormalizationResult, "Invalid cylinder has been passed");
         ccdVec3Normalize(cyl.axis);
         ccdVec3Scale(cyl.p2, -1.0);
         ccdVec3Add(cyl.p1, cyl.pos);
@@ -344,7 +330,7 @@ public class CollisionLibccd {
                           ccd_support_fn supp1, ccd_center_fn cen1, ccd_obj_t obj2, ccd_support_fn supp2,
                           ccd_center_fn cen2) {
         return ccdCollide(o1, o2, flags, contacts.get(), obj1, supp1, cen1, obj2, supp2, cen2);
-    };
+    }
 
     static int ccdCollide(DGeom o1, DGeom o2, int flags, DContactGeom contacts, ccd_obj_t obj1,
                           ccd_support_fn supp1, ccd_center_fn cen1, ccd_obj_t obj2, ccd_support_fn supp2,
@@ -407,8 +393,6 @@ public class CollisionLibccd {
         }
     }
 
-    ;
-
     public static class CollideCapsuleCylinder implements DColliderFn {
         @Override
         public int dColliderFn(DGeom o1, DGeom o2, int flags, DContactGeomBuffer contacts) {
@@ -421,8 +405,6 @@ public class CollisionLibccd {
             return ccdCollide(o1, o2, flags, contacts, cap, ccdSupportCap, ccdCenter, cyl, ccdSupportCyl, ccdCenter);
         }
     }
-
-    ;
 
     public static class CollideConvexBoxCCD implements DColliderFn {
         @Override
@@ -438,8 +420,6 @@ public class CollisionLibccd {
         }
     }
 
-    ;
-
     public static class CollideConvexCapsuleCCD implements DColliderFn {
         @Override
         public int dColliderFn(DGeom o1, DGeom o2, int flags, DContactGeomBuffer contacts) {
@@ -453,8 +433,6 @@ public class CollisionLibccd {
 					ccdCenter);
         }
     }
-
-    ;
 
     public static class CollideConvexSphereCCD implements DColliderFn {
         @Override
@@ -470,8 +448,6 @@ public class CollisionLibccd {
         }
     }
 
-    ;
-
     public static class CollideConvexCylinderCCD implements DColliderFn {
         @Override
         public int dColliderFn(DGeom o1, DGeom o2, int flags, DContactGeomBuffer contacts) {
@@ -485,8 +461,6 @@ public class CollisionLibccd {
 					ccdCenter);
         }
     }
-
-    ;
 
     public static class CollideConvexConvexCCD implements DColliderFn {
         @Override
