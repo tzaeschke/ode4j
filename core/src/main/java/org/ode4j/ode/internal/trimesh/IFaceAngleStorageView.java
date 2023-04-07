@@ -32,5 +32,6 @@ public interface IFaceAngleStorageView {
     //        public:
     //        virtual FaceAngleDomain retrieveFacesAngleFromStorage(dReal &out_AngleValue, unsigned triangleIndex, dMeshTriangleVertex vertexIndex) = 0;
     //    };
-    int retrieveFacesAngleFromStorage(RefDouble out_AngleValue, int triangleIndex, int vertexIndex);
+    DxTriDataBase.FaceAngleDomain
+    retrieveFacesAngleFromStorage(RefDouble out_AngleValue, int triangleIndex, int vertexIndex);
 }

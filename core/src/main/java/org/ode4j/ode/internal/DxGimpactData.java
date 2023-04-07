@@ -28,6 +28,8 @@ import static org.ode4j.ode.internal.Common.dIASSERT;
 
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
+import java.util.ArrayList;
+
 /**
  *
  * Data for Gimpact trimeshes.
@@ -56,11 +58,11 @@ public class DxGimpactData extends DxTriMeshData {
     
     
     float[] getDataRef() {
-    	return super.retrieveVertexInstances();
+		return super.retrieveVertexInstances();
     }
 
     int[] getIndexRef() {
-    	return super.retrieveTriangleVertexIndices();
+		return super.retrieveTriangleVertexIndices();
     }
 
 //    void Build(const void* Vertices, int VertexStride, int VertexCount,
@@ -107,16 +109,15 @@ public class DxGimpactData extends DxTriMeshData {
 
     @Override
     public void build(final float[] Vertices,
-   	       final int[] Indices)
-  	{
- 		dIASSERT(Vertices!=null);
- 		dIASSERT(Indices!=null);
- 		super.buildData(Vertices, Indices, null);
- 		//m_Vertices = Vertices;
- 		//m_Indices = Indices;
- 		//TODO remove?
- 		//check();
-  	}
+					  final int[] Indices) {
+		dIASSERT(Vertices!=null);
+		dIASSERT(Indices!=null);
+		super.buildData(Vertices, Indices, null);
+		//m_Vertices = Vertices;
+		//m_Indices = Indices;
+		//TODO remove?
+		//check();
+	}
 //	void GetVertex(int i, DVector4 Out)
 //	{
 //		//TZ commented out, special treatment not required (?)
@@ -299,12 +300,12 @@ public class DxGimpactData extends DxTriMeshData {
 	//		//g->UseFlags = buf;
 	//		throw new UnsupportedOperationException();
 	//	}
-	
-	
+
+
 	void dGeomTriMeshDataUpdate() {
-	    updateData();
+		updateData();
 	}
-	
+
 
 //	@Override
 //	public void buildSingle(double[] Vertices, int VertexStride,
@@ -330,7 +331,7 @@ public class DxGimpactData extends DxTriMeshData {
 	private void dGeomTriMeshDataDestroy() {
 		//Nothing to do
 	}
-	   
+
 //	public void dGeomTriMeshDataBuildSingle(
 //			final double[] Vertices, int VertexStride, int VertexCount, 
 //			final int[] Indices, int IndexCount, int TriStride) { }
@@ -374,36 +375,41 @@ public class DxGimpactData extends DxTriMeshData {
 	 * Debugging method to check trimesh.
 	 */
 	public void check() {
-		// TZ TODO?
-//		@SuppressWarnings("unchecked")
-//		ArrayList<Integer>[] edges = new ArrayList[m_Vertices.length/3];  // n = number of vertices
-//		System.out.print("Checking Trimesh (size " + edges.length + " ) ...");
-//		for (int i = 0; i < edges.length; i++) edges[i] = new ArrayList<Integer>();
-//		int nE = 0;
-//		for (int i = 0; i < m_Indices.length; i+=3) {
-//			int[] ia = new int[4];
-//			ia[0] = m_Indices[i];
-//			ia[1] = m_Indices[i+1];
-//			ia[2] = m_Indices[i+2];
-//			ia[3] = ia[0];
-//			for (int j = 0; j < 3; j++) {
-//				nE++;
-//				ArrayList<Integer> l = edges[ia[j]];
-//				if (l.contains(ia[j+1])) {
-//					System.out.println("WARNING: Reversed edge: " + ia[j] + " / " + ia[j+1]);
-//				} else {
-//					l.add(ia[j+1]);
-//				}
-//			}
-//
-//		}
-//		System.out.println(nE);
+		@SuppressWarnings("unchecked")
+		ArrayList<Integer>[] edges = new ArrayList[getDataRef().length/3];  // n = number of vertices
+		System.out.print("Checking Trimesh (size " + edges.length + " ) ...");
+		for (int i = 0; i < edges.length; i++) edges[i] = new ArrayList<Integer>();
+		int nE = 0;
+		int[] m_Indices = getIndexRef();
+		for (int i = 0; i < m_Indices.length; i+=3) {
+			int[] ia = new int[4];
+			ia[0] = m_Indices[i];
+			ia[1] = m_Indices[i+1];
+			ia[2] = m_Indices[i+2];
+			ia[3] = ia[0];
+			for (int j = 0; j < 3; j++) {
+				nE++;
+				ArrayList<Integer> l = edges[ia[j]];
+				if (l.contains(ia[j+1])) {
+					System.out.println("WARNING: Reversed edge: " + ia[j] + " / " + ia[j+1]);
+				} else {
+					l.add(ia[j+1]);
+				}
+			}
+
+		}
+		System.out.println(nE);
 	}
 
 	//TODO remove this?!?!  But we need to migrate collision_linccd first (or have we already?)
 	public float getEdgeAngle(int triangle, int edge) {
-		return (float) retrieveFaceAngle(triangle, edge);
-    	//return (float) (m_Angles != null ? m_Angles[triangle * 3 + edge] : Math.PI * 2);
+		//return (float) retrieveFaceAngle(triangle, edge);
+		// TODO TZ Check, this is really iffy. We should get rid of the whole SSI AngleWrapper stuff.
+		//         Maybe even get rid of (float).
+		double angle = retrieveFaceAngle(triangle, edge);
+		// TODO and why does edge==2*PI==360? Shouldn´t it be 180==PI?
+		return (float) (angle != 0.0 ? angle : Math.PI * 2);
+		//return (float) (m_Angles != null ? m_Angles[triangle * 3 + edge] : Math.PI * 2);
 	}
-	
+
 }

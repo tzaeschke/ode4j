@@ -254,7 +254,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 				m.setTrimesh( DENSITY, (DTriMesh) obj[i].geom[0] );
 				DVector3 c = new DVector3( m.getC() );
-				System.out.println("mass at " + c);
+				// System.out.println("mass at " + c);
 				c.scale(-1);
 				obj[i].geom[0].setPosition( c );
 				m.translate( c );

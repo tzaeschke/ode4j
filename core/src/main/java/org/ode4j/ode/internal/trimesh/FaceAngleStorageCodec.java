@@ -68,15 +68,17 @@ class FaceAngleStorageCodec {//<TStorageType extends Number, SSI_SIGNED_STORED> 
     }
 
     //static FaceAngleDomain classifyStorageValue(storage_type storedValue)
-    static int classifyStorageValue(double storedValue) {
+    static FaceAngleDomain classifyStorageValue(double storedValue) {
         dSASSERT(EAD__MAX == 3);
 
-        return storedValue < 0 ? FAD_CONCAVE : (storedValue == 0 ? FAD_FLAT : FAD_CONVEX);
+        return storedValue < 0 ? FaceAngleDomain.FAD_CONCAVE : (storedValue == 0 ?
+                FaceAngleDomain.FAD_FLAT : FaceAngleDomain.FAD_CONVEX);
     }
 
     //static bool isAngleDomainStored(FaceAngleDomain domainValue)
-    static boolean isAngleDomainStored(int domainValue) {
-        return !dTMPL_IN_RANGE(domainValue, FAD__SIGNSTORED_IMPLICITVALUE_MIN, FAD__SIGNSTORED_IMPLICITVALUE_MAX);
+    static boolean isAngleDomainStored(FaceAngleDomain domainValue) {
+        //return !dTMPL_IN_RANGE(domainValue, FAD__SIGNSTORED_IMPLICITVALUE_MIN, FAD__SIGNSTORED_IMPLICITVALUE_MAX);
+        return domainValue != FaceAngleDomain.FAD_FLAT;
     }
 
     //static dReal decodeStorageValue(storage_type storedValue)

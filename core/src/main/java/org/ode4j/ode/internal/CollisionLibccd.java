@@ -48,7 +48,7 @@ import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 import static org.ode4j.ode.internal.Rotation.dQFromAxisAndAngle;
 import static org.ode4j.ode.internal.Rotation.dQMultiply0;
-import static org.ode4j.ode.internal.trimesh.DxTriDataBase.FAD_CONCAVE;
+import static org.ode4j.ode.internal.trimesh.DxTriDataBase.FaceAngleDomain;
 
 /**
  * Lib ccd.
@@ -819,7 +819,7 @@ public class CollisionLibccd {
 
                         RefDouble angleValueAsDRead = new RefDouble();
                         //FaceAngleDomain
-                        int angleDomain = meshFaceAngleView.retrieveFacesAngleFromStorage(angleValueAsDRead,
+                        FaceAngleDomain angleDomain = meshFaceAngleView.retrieveFacesAngleFromStorage(angleValueAsDRead,
 								contact.side2, /*(dMeshTriangleVertex)*/ testEdgeIndex);
                         double angleValue = angleValueAsDRead.get();
 
@@ -827,7 +827,7 @@ public class CollisionLibccd {
                         contactGenerated = false;
                         contactPreserved = false; // re-assign to make optimizer's task easier
 
-                        if (angleDomain != FAD_CONCAVE) {
+                        if (angleDomain != FaceAngleDomain.FAD_CONCAVE) {
                             // Convex or flat - ensure the contact normal is within the allowed range
                             // formed by the two triangles' normals.
                             if (contactNormalToTriangleNormalAngle < CCD_ZERO) {

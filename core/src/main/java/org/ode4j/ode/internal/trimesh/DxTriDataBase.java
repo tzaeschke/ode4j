@@ -105,17 +105,29 @@ public class DxTriDataBase extends DBase {
     public static final int ASM__MAX = ASM_WORD_SIGNED + 1;
     public static final int ASM__INVALID = ASM__MAX;
 
-    // enum FaceAngleDomain {
-    public static final int FAD__MIN = 0;
-    public static final int FAD_CONCAVE = FAD__MIN;
-    public static final int FAD__SIGNSTORED_IMPLICITVALUE_MIN = FAD_CONCAVE + 1;
-    public static final int FAD_FLAT = FAD__SIGNSTORED_IMPLICITVALUE_MIN;
-    public static final int FAD__SIGNSTORED_IMPLICITVALUE_MAX = FAD_FLAT + 1;
-    public static final int FAD__BYTEPOS_STORED_MIN = FAD__SIGNSTORED_IMPLICITVALUE_MAX;
-    public static final int FAD_CONVEX = FAD__BYTEPOS_STORED_MIN;
-    public static final int FAD__BYTEPOS_STORED_MAX = FAD_CONVEX + 1;
-    public static final int EAD__MAX = FAD__BYTEPOS_STORED_MAX;
-
+//    // enum FaceAngleDomain {
+//    public static final int FAD__MIN = 0;
+//    public static final int FAD_CONCAVE = FAD__MIN;
+//    public static final int FAD__SIGNSTORED_IMPLICITVALUE_MIN = FAD_CONCAVE + 1;
+//    public static final int FAD_FLAT = FAD__SIGNSTORED_IMPLICITVALUE_MIN;
+//    public static final int FAD__SIGNSTORED_IMPLICITVALUE_MAX = FAD_FLAT + 1;
+//    public static final int FAD__BYTEPOS_STORED_MIN = FAD__SIGNSTORED_IMPLICITVALUE_MAX;
+//    public static final int FAD_CONVEX = FAD__BYTEPOS_STORED_MIN;
+//    public static final int FAD__BYTEPOS_STORED_MAX = FAD_CONVEX + 1;
+//    public static final int EAD__MAX = FAD__BYTEPOS_STORED_MAX;
+    public enum FaceAngleDomain {
+        //FAD__MIN = 0;
+        FAD_CONCAVE, // = FAD__MIN;
+        // FAD__SIGNSTORED_IMPLICITVALUE_MIN = FAD_CONCAVE + 1;
+        FAD_FLAT, // = FAD__SIGNSTORED_IMPLICITVALUE_MIN;
+        // FAD__SIGNSTORED_IMPLICITVALUE_MAX = FAD_FLAT + 1;
+        // FAD__BYTEPOS_STORED_MIN = FAD__SIGNSTORED_IMPLICITVALUE_MAX;
+        FAD_CONVEX // = FAD__BYTEPOS_STORED_MIN;
+        // FAD__BYTEPOS_STORED_MAX = FAD_CONVEX + 1;
+        // EAD__MAX = FAD__BYTEPOS_STORED_MAX;
+        ;
+    }
+    public static final int EAD__MAX = FaceAngleDomain.values().length;
 
     //typedef dBase dxTriDataBase_Parent;
     //class dxTriDataBase extends dxTriDataBase_Parent
@@ -602,6 +614,8 @@ public class DxTriDataBase extends DBase {
     //    void dxTriDataBase::buildBoundaryEdgeAngle(IFaceAngleStorageControl *faceAngles,
     //                                               EdgeRecord *currEdge)
     void buildBoundaryEdgeAngle(IFaceAngleStorageControl faceAngles, EdgeRecord currEdge0) {
+        // TODO TZ Check why don´t we set this to 360 / 2PI here? This would avoid the problem in getEdgeAngle()...
+        //    Or better: why not 180==PI
         final double faceAngle = (0.0);
 
         // DMeshTriangleVertex

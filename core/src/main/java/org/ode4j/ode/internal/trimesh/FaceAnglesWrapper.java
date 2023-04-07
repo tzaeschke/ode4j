@@ -25,6 +25,7 @@
 package org.ode4j.ode.internal.trimesh;
 
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
+import static org.ode4j.ode.internal.trimesh.DxTriDataBase.FaceAngleDomain;
 
 //    template<class TStorageCodec>
 //        :
@@ -118,14 +119,13 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
 
     // FaceAngleDomain getFaceAngle(dReal &out_angleValue, unsigned triangleIndex, dMeshTriangleVertex vertexIndex)
     // const
-    public int getFaceAngle(RefDouble out_angleValue, int triangleIndex, int vertexIndex) {
+    public FaceAngleDomain getFaceAngle(RefDouble out_angleValue, int triangleIndex, int vertexIndex) {
         //dIASSERT(dTMPL_IN_RANGE(triangleIndex, 0, getAllocatedTriangleCount()));
         //dIASSERT(dTMPL_IN_RANGE(vertexIndex, dMTV__MIN, dMTV__MAX));
 
         //storage_type storedValue = m_record.m_triangleFaceAngles[triangleIndex][vertexIndex];
         double storedValue = m_triangleFaceAngles[triangleIndex * 3 + vertexIndex];
-        //FaceAngleDomain
-        int resultDomain = TStorageCodec.classifyStorageValue(storedValue);
+        FaceAngleDomain resultDomain = TStorageCodec.classifyStorageValue(storedValue);
 
         out_angleValue.set(TStorageCodec.isAngleDomainStored(resultDomain) ?
                 TStorageCodec.decodeStorageValue(storedValue) : 0.0);
@@ -250,7 +250,7 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
     /*virtual */
     //int FaceAnglesWrapper<TStorageCodec>::retrieveFacesAngleFromStorage(dReal &out_angleValue, unsigned
     // triangleIndex, dMeshTriangleVertex vertexIndex)
-    public int retrieveFacesAngleFromStorage(RefDouble out_angleValue, int triangleIndex, int vertexIndex) {
+    public FaceAngleDomain retrieveFacesAngleFromStorage(RefDouble out_angleValue, int triangleIndex, int vertexIndex) {
         return getFaceAngle(out_angleValue, triangleIndex, vertexIndex);
     }
 
