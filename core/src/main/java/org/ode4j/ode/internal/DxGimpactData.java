@@ -169,7 +169,6 @@ public class DxGimpactData extends DxTriMeshData {
 //		throw new UnsupportedOperationException();
 //	}
 
-	
 
 //	void dGeomTriMeshDataBuildSingle1(dTriMeshDataID g,
 //            const void* Vertices, int VertexStride, int VertexCount,
