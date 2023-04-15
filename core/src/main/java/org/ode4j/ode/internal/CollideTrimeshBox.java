@@ -1316,7 +1316,7 @@ public class CollideTrimeshBox implements DColliderFn {
 
             // global info for contact creation
             m_TempContactGeoms = new ArrayList<DContactGeom>();
-            assert(Stride != 1) : "stride = " + Stride;
+            assert(Stride == 1) : "stride = " + Stride;
             m_iStride = Stride;
             m_iFlags = Flags;
             m_ContactGeoms = Contacts;
