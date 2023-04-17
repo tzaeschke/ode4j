@@ -8,7 +8,8 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.internal.DxGimpactData;
+import org.ode4j.tests.geoms.ConvexCubeGeom;
+import org.ode4j.tests.geoms.IcosahedronGeom;
 
 import java.util.Random;
 
@@ -66,7 +67,7 @@ public class CollisionPerformanceTest {
         world = OdeHelper.createWorld();
         space = createSpace();
         contactgroup = OdeHelper.createJointGroup();
-        // world.setGravity (0,0,-0.5); // TODO ?
+        // world.setGravity (0,0,-0.5);
         world.setCFM(1e-5);
     }
 
@@ -88,6 +89,18 @@ public class CollisionPerformanceTest {
     public void testCapsuleTrimesh() {
         collide(capsule(), trimesh(), WARMUP);
         collide(capsule(), trimesh(), BENCHMARK);
+    }
+
+    @Test
+    public void testConvexTrimesh() {
+        collide(convex(), trimesh(), WARMUP);
+        collide(convex(), trimesh(), BENCHMARK);
+    }
+
+    @Test
+    public void testConvexIHTrimesh() {
+        collide(convexIH(), trimesh(), WARMUP);
+        collide(convexIH(), trimesh(), BENCHMARK);
     }
 
     @Test
@@ -125,21 +138,33 @@ public class CollisionPerformanceTest {
         return assemble(geom, body(), mass);
     }
 
-    // TODO
-//    private DGeom convex() {
-//        // new Body(), new Mass(), new Geom(), geom.setBody(), body.setMass().
-//        double radius = r.nextDouble();
-//        double length = r.nextDouble();
-//        DGeom geom = OdeHelper.createConvex(space, radius, length);
-//
-//        DMass mass = OdeHelper.createMass();
-//        mass.setCapsule(DENSITY, r.nextInt(3) + 1, radius, length);
-//
-//        return assemble(geom, body(), mass);
-//    }
+    private DGeom convex() {
+        DGeom geom = OdeHelper.createConvex(space, ConvexCubeGeom.planes,
+                ConvexCubeGeom.planecount,
+                ConvexCubeGeom.points,
+                ConvexCubeGeom.pointcount,
+                ConvexCubeGeom.polygons);
+
+        DMass mass = OdeHelper.createMass();
+        mass.setBox(DENSITY, 0.25, 0.25, 0.25);
+
+        return assemble(geom, body(), mass);
+    }
+
+    private DGeom convexIH() {
+        DGeom geom = OdeHelper.createConvex(space, IcosahedronGeom.planes,
+                IcosahedronGeom.planecount,
+                IcosahedronGeom.points,
+                IcosahedronGeom.pointcount,
+                IcosahedronGeom.polygons);
+
+        DMass mass = OdeHelper.createMass();
+        mass.setBox(DENSITY, 0.25, 0.25, 0.25);
+
+        return assemble(geom, body(), mass);
+    }
 
     private DGeom cylinder() {
-        // new Body(), new Mass(), new Geom(), geom.setBody(), body.setMass().
         double radius = r.nextDouble();
         double length = r.nextDouble();
         DGeom geom = OdeHelper.createCylinder(space, radius, length);
@@ -162,7 +187,8 @@ public class CollisionPerformanceTest {
     }
 
     private DGeom trimesh() {
-        DxGimpactData data = new DxGimpactData();
+        DTriMeshData data = OdeHelper.createTriMeshData();
+        // DxGimpactData data = new DxGimpactData(); // TODO make private
         data.build(CUBE_POINTS, CUBE_INDICES);
         data.preprocess();
         DTriMesh geom = OdeHelper.createTriMesh(space, data, null, null, null);
@@ -175,15 +201,14 @@ public class CollisionPerformanceTest {
 
     private DSpace createSpace() {
         return OdeHelper.createSimpleSpace();
-        // return OdeHelper.createSapSpace(AXES.XZY);
-        // return DxSAPSpace2.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode(), STATIC_CATEGORY);
-        //return DxBVHSpace.bvhSpaceCreate(null, 16, false, 0.2, STATIC_CATEGORY);
+        // return OdeHelper.createSapSpace(DSapSpace.AXES.XZY);
+        // return OdeHelper.createBHVSpace(0);
     }
 
     private final DNearCallback nearCallback = new DNearCallback() {
         @Override
         public void call(Object data, DGeom o1, DGeom o2) {
-            nearCallback(data, o1, o2);
+            nearCallback(o1, o2);
         }
     };
 
@@ -192,7 +217,7 @@ public class CollisionPerformanceTest {
 
     // this is called by dSpaceCollide when two objects in space are
     // potentially colliding.
-    private void nearCallback(Object data, DGeom o1, DGeom o2) {
+    private void nearCallback(DGeom o1, DGeom o2) {
         // if (o1->body && o2->body) return;
 
         // exit without doing anything if the two bodies are connected by a joint
