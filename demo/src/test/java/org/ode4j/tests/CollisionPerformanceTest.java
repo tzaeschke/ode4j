@@ -2,7 +2,6 @@ package org.ode4j.tests;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
@@ -29,13 +28,13 @@ public class CollisionPerformanceTest {
     private DWorld world;
     private DSpace space;
     private DJointGroup contactgroup;
-    private Random r = new Random(0);
+    private final Random r = new Random(0);
 
     private int cntCollisions = 0;
     private int cntContacts = 0;
 
 
-    private static final float CUBE_POINTS[] = {
+    private static final float[] CUBE_POINTS = {
             0.25f, 0.25f, 0.25f, // point 0
             -0.25f, 0.25f, 0.25f, // point 1
             0.25f, -0.25f, 0.25f, // point 2
@@ -46,7 +45,7 @@ public class CollisionPerformanceTest {
             -0.25f, -0.25f, -0.25f,// point 7
     };
 
-    private static final int CUBE_INDICES[] = {
+    private static final int[] CUBE_INDICES = {
             0, 2, 6, // 0
             0, 6, 4, // 1
             1, 0, 4, // 2
@@ -179,10 +178,6 @@ public class CollisionPerformanceTest {
         // return OdeHelper.createSapSpace(AXES.XZY);
         // return DxSAPSpace2.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode(), STATIC_CATEGORY);
         //return DxBVHSpace.bvhSpaceCreate(null, 16, false, 0.2, STATIC_CATEGORY);
-    }
-
-    private static Random createRandom() {
-        return new Random(0);
     }
 
     private final DNearCallback nearCallback = new DNearCallback() {

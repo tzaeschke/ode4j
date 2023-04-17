@@ -137,7 +137,7 @@ public interface DMass extends DMassC {
 	 * @return <tt>true</tt> if both condition are met
 	 */
 	@Override
-	public boolean check();
+	boolean check();
 
 
 	
