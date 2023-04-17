@@ -9,11 +9,7 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DSapSpace.AXES;
-import org.ode4j.ode.internal.DxBVHSpace;
 import org.ode4j.ode.internal.DxGimpactData;
-import org.ode4j.ode.internal.DxMass;
-import org.ode4j.ode.internal.DxSAPSpace2;
 
 import java.util.Random;
 
@@ -25,14 +21,19 @@ import static org.ode4j.ode.OdeHelper.areConnectedExcluding;
 
 public class CollisionPerformanceTest {
 
-    private final static int WARMUP = 10;
-    private final static int BENCHMARK = 100;
+    private final static int WARMUP = 100 * 1000;
+    private final static int BENCHMARK = 1000 * 1000;
+    private static final double DENSITY = 5.0;        // density of all objects
+    private static final int MAX_CONTACTS = 3;
 
     private DWorld world;
     private DSpace space;
-    private static DJointGroup contactgroup;
-    private static Random r;
-    private static final double DENSITY = (5.0);        // density of all objects
+    private DJointGroup contactgroup;
+    private Random r = new Random(0);
+
+    private int cntCollisions = 0;
+    private int cntContacts = 0;
+
 
     private static final float CUBE_POINTS[] = {
             0.25f, 0.25f, 0.25f, // point 0
@@ -60,12 +61,6 @@ public class CollisionPerformanceTest {
             5, 6, 7  // 11
     };
 
-    @BeforeClass
-    public static void beforeClass() {
-        // TODO warmup
-        r = createRandom();
-    }
-
     @Before
     public void beforeTest() {
         OdeHelper.initODE2(0);
@@ -86,32 +81,26 @@ public class CollisionPerformanceTest {
 
     @Test
     public void testBoxTrimesh() {
-        for (int i = 0; i < WARMUP; ++i) {
-            collide(space, box(), trimesh());
-        }
-        for (int i = 0; i < BENCHMARK; ++i) {
-            collide(space, box(), trimesh());
-        }
+        collide(box(), trimesh(), WARMUP);
+        collide(box(), trimesh(), BENCHMARK);
+    }
+
+    @Test
+    public void testCapsuleTrimesh() {
+        collide(capsule(), trimesh(), WARMUP);
+        collide(capsule(), trimesh(), BENCHMARK);
     }
 
     @Test
     public void testCylinderTrimesh() {
-        for (int i = 0; i < WARMUP; ++i) {
-            collide(space, cylinder(), trimesh());
-        }
-        for (int i = 0; i < BENCHMARK; ++i) {
-            collide(space, cylinder(), trimesh());
-        }
+        collide(cylinder(), trimesh(), WARMUP);
+        collide(cylinder(), trimesh(), BENCHMARK);
     }
 
     @Test
     public void testSphereTrimesh() {
-        for (int i = 0; i < WARMUP; ++i) {
-            collide(space, sphere(), trimesh());
-        }
-        for (int i = 0; i < BENCHMARK; ++i) {
-            collide(space, sphere(), trimesh());
-        }
+        collide(sphere(), trimesh(), WARMUP);
+        collide(sphere(), trimesh(), BENCHMARK);
     }
 
     private DGeom box() {
@@ -124,6 +113,31 @@ public class CollisionPerformanceTest {
 
         return assemble(geom, body(), mass);
     }
+
+    private DGeom capsule() {
+        // new Body(), new Mass(), new Geom(), geom.setBody(), body.setMass().
+        double radius = r.nextDouble();
+        double length = r.nextDouble();
+        DGeom geom = OdeHelper.createCapsule(space, radius, length);
+
+        DMass mass = OdeHelper.createMass();
+        mass.setCapsule(DENSITY, r.nextInt(3) + 1, radius, length);
+
+        return assemble(geom, body(), mass);
+    }
+
+    // TODO
+//    private DGeom convex() {
+//        // new Body(), new Mass(), new Geom(), geom.setBody(), body.setMass().
+//        double radius = r.nextDouble();
+//        double length = r.nextDouble();
+//        DGeom geom = OdeHelper.createConvex(space, radius, length);
+//
+//        DMass mass = OdeHelper.createMass();
+//        mass.setCapsule(DENSITY, r.nextInt(3) + 1, radius, length);
+//
+//        return assemble(geom, body(), mass);
+//    }
 
     private DGeom cylinder() {
         // new Body(), new Mass(), new Geom(), geom.setBody(), body.setMass().
@@ -171,21 +185,19 @@ public class CollisionPerformanceTest {
         return new Random(0);
     }
 
-    private DNearCallback nearCallback = new DNearCallback() {
+    private final DNearCallback nearCallback = new DNearCallback() {
         @Override
         public void call(Object data, DGeom o1, DGeom o2) {
             nearCallback(data, o1, o2);
         }
     };
 
+    //private final DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
+
+
     // this is called by dSpaceCollide when two objects in space are
     // potentially colliding.
-
-    int cnt1 = 0;
-    int cnt2 = 0;
-
     private void nearCallback(Object data, DGeom o1, DGeom o2) {
-        int MAX_CONTACTS = 5;
         // if (o1->body && o2->body) return;
 
         // exit without doing anything if the two bodies are connected by a joint
@@ -202,32 +214,37 @@ public class CollisionPerformanceTest {
             contact.surface.bounce = 0.1;
             contact.surface.bounce_vel = 0.1;
             contact.surface.soft_cfm = 0.01;
+
+            contact.geom.depth = 0;
+            contact.geom.pos.setZero();
+            contact.geom.g1 = null;
+            contact.geom.g2 = null;
+
+            contact.fdir1.setZero();
         }
         int numc = OdeHelper.collide(o1, o2, MAX_CONTACTS, contacts.getGeomBuffer());
         if (numc != 0) {
-            cnt1++;
-            cnt2 += numc;
+            cntCollisions++;
+            cntContacts += numc;
             //double speed1 = o1.getBody().getLinearVel().length();
             //double speed2 = o2.getBody().getLinearVel().length();
             //System.out.println("contact: " + numc + "  speed: " + speed1 + "/" + speed2);
-            DMatrix3 RI = new DMatrix3();
-            RI.setIdentity();
-            for (int i = 0; i < numc; i++) {
-                DContact contact = contacts.get(i);
-                DJoint c = OdeHelper.createContactJoint(world, contactgroup, contact);
-                c.attach(b1, b2);
-            }
+//            for (int i = 0; i < numc; i++) {
+//                DContact contact = contacts.get(i);
+//                DJoint c = OdeHelper.createContactJoint(world, contactgroup, contact);
+//                c.attach(b1, b2);
+//            }
         }
     }
 
-    private void collide(DSpace space, DGeom geom1, DGeom geom2) {
-        setCollisionCourse(geom1, geom2);
+    private void collide(DGeom geom1, DGeom geom2, int iterations) {
+        reset(geom1, geom2);
 
-        int iterations = 1000;
         long timer = 0;
         int prevCount = 0;
-        cnt1 = 0;
-        cnt2 = 0;
+        cntCollisions = 0;
+        cntContacts = 0;
+        int totalCount = 0;
         for (int j = 0; j < iterations; j++) {
             long time1 = System.nanoTime();
             space.collide(0, nearCallback);
@@ -239,26 +256,32 @@ public class CollisionPerformanceTest {
             long time2 = System.nanoTime();
             timer += (time2 - time1);
 
-            if (prevCount > 0) {
-                if (j < 2) {
-                    fail("j=" + j);
-                }
-                //double dist = geom2.getPosition().distance(geom1.getPosition());
-                //System.out.println("j=" + j + "  dist = " + dist + "   " + geom1.getPosition() + " " + geom2.getPosition());
+            if (prevCount > 0 && j < 2) {
+                // If we have (almost) immediate collision then the geoms where to close and may have low speed.
+                // (speed is calculated from distance).
+                fail("j=" + j);
             }
 
-            if (prevCount > 0 && prevCount == cnt1) {
-                break;
+            // abort once we have stopped getting contacts
+            if (prevCount > 0 && prevCount == cntCollisions) {
+                reset(geom1, geom2);
+                totalCount += cntCollisions;
+                prevCount = 0;
+                cntCollisions = 0;
+                cntContacts = 0;
+                continue;
             }
-            if (cnt1 > 10) {
-                break;
+            prevCount = cntCollisions;
+            if (cntCollisions > 300) {
+                fail();  // TODO why is this so high for Box? -> See also slow falling box in DemoTrimesh..?
             }
-            prevCount = cnt1;
-            if (j > 1000) {
+            if (cntContacts > MAX_CONTACTS * cntCollisions) {
                 fail();
             }
         }
-        System.out.println("Time step: " + cnt1 + "/" + cnt2 + " time=" + timer / 1000 / 1000 + "ms");
+        String msg = geom1.getClass().getSimpleName() + "-" + geom2.getClass().getSimpleName();
+        System.out.println("Benchmark: " + msg + " contact/iterations: " + totalCount + "/" + iterations
+                + " time: " + timer / iterations + " ns/step");
         geom1.destroy();
         geom2.destroy();
     }
@@ -276,16 +299,27 @@ public class CollisionPerformanceTest {
         return body;
     }
 
-    private void setCollisionCourse(DGeom geom1, DGeom geom2) {
+    private void reset(DGeom geom1, DGeom geom2) {
+        geom1.setPosition(vector());
+        geom2.setPosition(vector());
+
+        geom1.getBody().setAngularVel(0, 0, 0);
+        geom2.getBody().setAngularVel(0, 0, 0);
+
+        geom2.getBody().setLinearVel(0, 0, 0);
+
+
         // Assure minimum distance
         DVector3 pos1 = new DVector3(geom1.getPosition());
         DVector3C pos2 = geom2.getPosition();
-        while (pos1.distance(pos2) < 2) {
-            geom1.setPosition(pos1.add(1, 1, 1));
+        while (pos1.distance(pos2) < 3) {
+            pos1.add(1, 1, 1);
         }
+        geom1.setPosition(pos1);
 
+        // set collision course
         DVector3 dir = pos2.reSub(pos1);
-        // TODO dir.scale(0.1);
+        dir.scale(0.3);
         geom1.getBody().setLinearVel(dir);
         assertEquals(geom1.getPosition(), geom1.getBody().getPosition());
         assertEquals(geom2.getPosition(), geom2.getBody().getPosition());
