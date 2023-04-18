@@ -277,7 +277,6 @@ public class CollisionPerformanceTest {
         cntCollisions = 0;
         cntContacts = 0;
         int totalCount = 0;
-        int round = 0;
         for (int j = 0; j < iterations; j++) {
             long time1 = System.nanoTime();
             space.collide(0, nearCallback);
@@ -301,7 +300,6 @@ public class CollisionPerformanceTest {
                 prevCount = 0;
                 cntCollisions = 0;
                 cntContacts = 0;
-                ++round;
                 continue;
             }
             prevCount = cntCollisions;

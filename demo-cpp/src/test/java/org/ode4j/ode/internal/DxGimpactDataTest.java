@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class DxGimpactDataTest {
 
-	static final float CUBE_POINTS[] = {
+	private static final float[] CUBE_POINTS = {
 			0.25f, 0.25f, 0.25f, // point 0
 			-0.25f, 0.25f, 0.25f, // point 1
 			0.25f, -0.25f, 0.25f, // point 2
@@ -17,7 +17,7 @@ public class DxGimpactDataTest {
 			-0.25f, -0.25f, -0.25f,// point 7
 	};
 
-	static final int CUBE_INDICES[] = {
+	private static final int[] CUBE_INDICES = {
 			0, 2, 6, // 0
 			0, 6, 4, // 1
 			1, 0, 4, // 2
@@ -45,14 +45,14 @@ public class DxGimpactDataTest {
 		assertEquals(0.0, data.getEdgeAngle(6, 2), 0.001);
 	}
 
-	static final float QUAD_POINTS[] = {
+	private static final float[] QUAD_POINTS = {
 			-1f, 0.0f, 0.0f, // point 0
 			0.0f, 0.0f, 1.0f, // point 1
 			0.0f, -0.0f, -1.0f, // point 2
 			1.0f, -1.0f, 0.0f, // point 3
 	};
 
-	static final int QUAD_INDICES[] = {
+	private static final int[] QUAD_INDICES = {
 			0, 1, 2, // 0
 			2, 1, 3, // 1
 			};
