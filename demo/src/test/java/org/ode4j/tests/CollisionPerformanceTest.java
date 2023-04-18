@@ -61,6 +61,10 @@ public class CollisionPerformanceTest {
             5, 6, 7  // 11
     };
 
+    private enum G {
+        BOX, CAPSULE, CONVEX, CYLINDER, SPHERE, TRIMESH;
+    }
+
     @Before
     public void beforeTest() {
         OdeHelper.initODE2(0);
@@ -77,6 +81,7 @@ public class CollisionPerformanceTest {
         space.destroy();
         world.destroy();
         OdeHelper.closeODE();
+        System.gc();
     }
 
     @Test
@@ -109,10 +114,28 @@ public class CollisionPerformanceTest {
         collide(cylinder(), trimesh(), BENCHMARK);
     }
 
+//    @Test
+//    public void testCylinderCylinder() {
+//        collide(cylinder(), cylinder(), WARMUP);
+//        collide(cylinder(), cylinder(), BENCHMARK);
+//    }
+
     @Test
     public void testSphereTrimesh() {
         collide(sphere(), trimesh(), WARMUP);
         collide(sphere(), trimesh(), BENCHMARK);
+    }
+
+    @Test
+    public void testSphereSphere() {
+        collide(sphere(), sphere(), WARMUP);
+        collide(sphere(), sphere(), BENCHMARK);
+    }
+
+    @Test
+    public void testTrimeshTrimesh() {
+        collide(trimesh(), trimesh(), WARMUP);
+        collide(trimesh(), trimesh(), BENCHMARK);
     }
 
     private DGeom box() {
@@ -353,5 +376,35 @@ public class CollisionPerformanceTest {
 
     private DVector3 vector() {
         return new DVector3(r.nextDouble(), r.nextDouble(), r.nextDouble());
+    }
+
+    @Test
+    public void testAll() {
+        for (G g1 : G.values()) {
+            for (G g2 : G.values()) {
+                if (g2.ordinal() >= g1.ordinal()) {
+                    collide(createGeom(g1), createGeom(g2), 1000);
+                }
+            }
+        }
+    }
+
+    private DGeom createGeom(G type) {
+        switch (type) {
+            case BOX:
+                return box();
+            case CAPSULE:
+                return capsule();
+            case CONVEX:
+                return convex();
+            case CYLINDER:
+                return cylinder();
+            case SPHERE:
+                return sphere();
+            case TRIMESH:
+                return trimesh();
+            default:
+                throw new UnsupportedOperationException(type.toString());
+        }
     }
 }
