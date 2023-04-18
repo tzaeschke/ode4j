@@ -73,7 +73,13 @@ public interface DVector3C {
 	 */
 	public double dot(DVector3View b);
 
-    /** 
+	/**
+	 * @param v2 other vector
+	 * @return return sum of (this)+v2
+	 * @see DVector3#reAdd(DVector3C)
+	 */
+	public DVector3 reAdd(DVector3C v2);
+    /**
      * @param v2 other vector
      * @return return difference of (this)-v2
      * @see DVector3#reSub(DVector3C) 

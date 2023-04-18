@@ -24,11 +24,10 @@ public class CollisionPerformanceTest {
     private final static int WARMUP = 100 * 1000;
     private final static int BENCHMARK = 1000 * 1000;
     private static final double DENSITY = 5.0;        // density of all objects
-    private static final int MAX_CONTACTS = 3;
+    private static final int MAX_CONTACTS = 8;
 
     private DWorld world;
     private DSpace space;
-    private DJointGroup contactgroup;
     private final Random r = new Random(0);
 
     private int cntCollisions = 0;
@@ -70,14 +69,12 @@ public class CollisionPerformanceTest {
         OdeHelper.initODE2(0);
         world = OdeHelper.createWorld();
         space = createSpace();
-        contactgroup = OdeHelper.createJointGroup();
         // world.setGravity (0,0,-0.5);
         world.setCFM(1e-5);
     }
 
     @After
     public void afterTest() {
-        contactgroup.destroy();
         space.destroy();
         world.destroy();
         OdeHelper.closeODE();
@@ -140,7 +137,7 @@ public class CollisionPerformanceTest {
 
     private DGeom box() {
         // new Body(), new Mass(), new Geom(), geom.setBody(), body.setMass().
-        DVector3 sides = vector().scale(6).add(new DVector3(0.25, 0.25, 0.25));
+        DVector3 sides = vector().add(new DVector3(0.25, 0.25, 0.25));
         DGeom geom = OdeHelper.createBox(space, sides);
 
         DMass mass = OdeHelper.createMass();
@@ -269,14 +266,6 @@ public class CollisionPerformanceTest {
         if (numc != 0) {
             cntCollisions++;
             cntContacts += numc;
-            //double speed1 = o1.getBody().getLinearVel().length();
-            //double speed2 = o2.getBody().getLinearVel().length();
-            //System.out.println("contact: " + numc + "  speed: " + speed1 + "/" + speed2);
-//            for (int i = 0; i < numc; i++) {
-//                DContact contact = contacts.get(i);
-//                DJoint c = OdeHelper.createContactJoint(world, contactgroup, contact);
-//                c.attach(b1, b2);
-//            }
         }
     }
 
@@ -288,14 +277,14 @@ public class CollisionPerformanceTest {
         cntCollisions = 0;
         cntContacts = 0;
         int totalCount = 0;
+        int round = 0;
         for (int j = 0; j < iterations; j++) {
             long time1 = System.nanoTime();
             space.collide(0, nearCallback);
             // world.step(0.05);
-            world.quickStep(0.05); // TODO ?
+            world.quickStep(0.05);
 
             // remove all contact joints
-            contactgroup.empty();  // TODO remove?!?!?
             long time2 = System.nanoTime();
             timer += (time2 - time1);
 
@@ -312,10 +301,11 @@ public class CollisionPerformanceTest {
                 prevCount = 0;
                 cntCollisions = 0;
                 cntContacts = 0;
+                ++round;
                 continue;
             }
             prevCount = cntCollisions;
-            if (cntCollisions > 300) {
+            if (cntCollisions > 50) {
                 fail();  // TODO why is this so high for Box? -> See also slow falling box in DemoTrimesh..?
             }
             if (cntContacts > MAX_CONTACTS * cntCollisions) {
@@ -351,18 +341,17 @@ public class CollisionPerformanceTest {
 
         geom2.getBody().setLinearVel(0, 0, 0);
 
-
         // Assure minimum distance
-        DVector3 pos1 = new DVector3(geom1.getPosition());
+        DVector3 delta = vector();
+        delta.normalize();
+        delta.scale(4);
         DVector3C pos2 = geom2.getPosition();
-        while (pos1.distance(pos2) < 3) {
-            pos1.add(1, 1, 1);
-        }
+        DVector3C pos1 = pos2.reAdd(delta);
         geom1.setPosition(pos1);
 
         // set collision course
         DVector3 dir = pos2.reSub(pos1);
-        dir.scale(0.3);
+        // dir.scale(1.0);
         geom1.getBody().setLinearVel(dir);
         assertEquals(geom1.getPosition(), geom1.getBody().getPosition());
         assertEquals(geom2.getPosition(), geom2.getBody().getPosition());
