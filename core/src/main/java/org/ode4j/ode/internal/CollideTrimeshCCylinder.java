@@ -408,7 +408,7 @@ public class CollideTrimeshCCylinder implements DColliderFn {
 //		// calculate length of separating axis vector
 //		dReal fL = LENGTHOF(vAxis);
 //		// if not long enough
-//		// TODO : dReal epsilon please
+//		// dReal epsilon please
 //		if ( fL < REAL(1e-5) ) 
 //		{
 //			// do nothing

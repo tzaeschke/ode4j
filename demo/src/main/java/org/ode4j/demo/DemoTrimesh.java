@@ -459,7 +459,7 @@ class DemoTrimesh extends dsFunctions {
 		world.setGravity (0,0,-0.5);
 		world.setCFM (1e-5);
 		//dCreatePlane (space,0,0,1,0);
-		//memset (obj,0,sizeof(obj));TZ TODO ?
+		//memset (obj,0,sizeof(obj));
 		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
 
 		Size = new float[]{ 5.0f, 5.0f, 2.5f };

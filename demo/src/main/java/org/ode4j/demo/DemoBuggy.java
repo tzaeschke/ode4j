@@ -165,7 +165,6 @@ class DemoBuggy extends dsFunctions {
 			steer = 0;
 			break;
 		case '1': {
-			//TODO TZ
 //			FILE f = fopen ("state.dif","wt");
 //			if (f!=null) {
 //				OdeHelper.dWorldExportDIF (world,f,"");

@@ -226,7 +226,6 @@ class DemoCollision extends dsFunctions {
 	     dVector3 normal, dReal *depth, int *code,
 	     int maxc, dContactGeom *contact, int skip); */
 
-	//TODO
 	//void dLineClosestApproach (final dVector3 pa, final dVector3 ua,
 	//			   final dVector3 pb, final dVector3 ub,
 	//			   double *alpha, double *beta);

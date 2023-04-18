@@ -175,7 +175,7 @@ public class CollideTrimeshBoxOld implements DColliderFn {
 	//	#define LENGTHOF(a) \
 	//	  dSqrt(a[0]*a[0]+a[1]*a[1]+a[2]*a[2])
 	private double LENGTHOF(DVector3C a) {
-		return a.length();  //TODO use squared? TZ
+		return a.length();
 	}
 
 

@@ -208,7 +208,6 @@ public class CollisionPerformanceTest {
 
     private DGeom trimesh() {
         DTriMeshData data = OdeHelper.createTriMeshData();
-        // DxGimpactData data = new DxGimpactData(); // TODO make private
         data.build(CUBE_POINTS, CUBE_INDICES);
         data.preprocess();
         DTriMesh geom = OdeHelper.createTriMesh(space, data, null, null, null);

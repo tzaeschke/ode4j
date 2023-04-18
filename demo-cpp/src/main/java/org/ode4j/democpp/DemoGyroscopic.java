@@ -145,7 +145,6 @@ public class DemoGyroscopic extends dsFunctions {
 			//world.quickStep(0.02);
 			world.step(0.02);
 
-		//TZ TODO
 		//	    if (write_world) {
 		//	        FILE *f = fopen ("state.dif","wt");
 		//	        if (f) {
