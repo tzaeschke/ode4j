@@ -250,10 +250,11 @@ public class TestDVector3 extends OdeTestCase {
 
 		try {
 			t.set(0, 0, 0).normalize();
-			//fail();
-		} catch (IllegalStateException e) {
+			fail();
+		} catch (RuntimeException e) {
 			//Good!
 		}
+		t.set(0, 0, 0).safeNormalize();
 		assertEquals(new DVector3(1, 0, 0), t);
 
 		t.set(3, 4, -18);
@@ -263,8 +264,8 @@ public class TestDVector3 extends OdeTestCase {
 		try {
 			t.set(0, 0, 0).normalize();
 			assertEquals(new DVector3(1, 0, 0), t);
-			//fail(t.toString());
-		} catch (IllegalStateException e) {
+			fail(t.toString());
+		} catch (RuntimeException e) {
 			//Ignore
 		}
 

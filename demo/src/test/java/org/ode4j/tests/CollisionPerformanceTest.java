@@ -310,9 +310,11 @@ public class CollisionPerformanceTest {
                 fail();
             }
         }
-        String msg = geom1.getClass().getSimpleName() + "-" + geom2.getClass().getSimpleName();
-        System.out.println("Benchmark: " + msg + " contact/iterations: " + totalCount + "/" + iterations
-                + " time: " + timer / iterations + " ns/step");
+        if (iterations == BENCHMARK) {
+            String msg = geom1.getClass().getSimpleName() + "-" + geom2.getClass().getSimpleName();
+            System.out.println("Benchmark: " + msg + " contact/iterations: " + totalCount + "/" + iterations
+                    + " time: " + timer / iterations + " ns/step");
+        }
         geom1.destroy();
         geom2.destroy();
     }
