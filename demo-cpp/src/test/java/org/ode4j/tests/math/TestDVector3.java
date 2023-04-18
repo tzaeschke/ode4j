@@ -354,13 +354,13 @@ public class TestDVector3 extends OdeTestCase {
 
 		//check illegal arguments
 		try {
-			d = x.dotCol(m, -1);
+			x.dotCol(m, -1);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//good
 		}
 		try {
-			d = x.dotCol(m, 3);
+			x.dotCol(m, 3);
 			fail();
 		} catch (IllegalArgumentException e) {
 			//good
