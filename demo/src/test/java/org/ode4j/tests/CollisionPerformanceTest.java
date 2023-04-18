@@ -62,7 +62,7 @@ public class CollisionPerformanceTest {
     };
 
     private enum G {
-        BOX, CAPSULE, CONVEX, CYLINDER, SPHERE, TRIMESH;
+        BOX, CAPSULE, CONVEX, CYLINDER, SPHERE, TRIMESH
     }
 
     @Before

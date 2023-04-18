@@ -115,8 +115,7 @@ public class DxGimpactData extends DxTriMeshData {
 		super.buildData(Vertices, Indices, null);
 		//m_Vertices = Vertices;
 		//m_Indices = Indices;
-		//TODO remove?
-		//check();
+		// check();
 	}
 //	void GetVertex(int i, DVector4 Out)
 //	{
@@ -152,22 +151,6 @@ public class DxGimpactData extends DxTriMeshData {
 //		triindices[2] = m_Indices[p+2];
 //	}
 //#endif  // dTRIMESH_GIMPACT
-
-//	@Override
-//	public boolean preprocess() {
-//		m_Angles = new GimpactDataPreprocessor(this).buildAngles();
-//		// TODO TZ-CHECK Remove this m,ethod?
-//		return true;// (TZ): What else?
-//	}
-//
-//	@Override
-//	public
-//		//void dxTriMeshData::UpdateData()
-//	void updateData() {
-//		//  BVTree.Refit();
-//		// TODO Auto-generated method stub
-//		throw new UnsupportedOperationException();
-//	}
 
 
 //	void dGeomTriMeshDataBuildSingle1(dTriMeshDataID g,
@@ -372,6 +355,7 @@ public class DxGimpactData extends DxTriMeshData {
 
 	/**
 	 * Debugging method to check trimesh.
+	 * This may e.g. be called from build().
 	 */
 	public void check() {
 		@SuppressWarnings("unchecked")
@@ -400,15 +384,14 @@ public class DxGimpactData extends DxTriMeshData {
 		System.out.println(nE);
 	}
 
-	//TODO remove this?!?!  But we need to migrate collision_linccd first (or have we already?)
+	/**
+	 * For testing only.
+	 *
+	 * Note: In ode4j 0.4.0 this returned 2*Pi for boundary edges.
+	 * This behavior has changed and is now in alignment with ODE.
+	 */
 	public float getEdgeAngle(int triangle, int edge) {
-		//return (float) retrieveFaceAngle(triangle, edge);
-		// TODO TZ Check, this is really iffy. We should get rid of the whole SSI AngleWrapper stuff.
-		//         Maybe even get rid of (float).
-		double angle = retrieveFaceAngle(triangle, edge);
-		// TODO and why does edge==2*PI==360? Shouldn´t it be 180==PI?
-		return (float) (angle != 0.0 ? angle : Math.PI * 2);
+		return (float) retrieveFaceAngle(triangle, edge);
 		//return (float) (m_Angles != null ? m_Angles[triangle * 3 + edge] : Math.PI * 2);
 	}
-
 }
