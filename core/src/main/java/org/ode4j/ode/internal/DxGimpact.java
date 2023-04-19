@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.Common.dUASSERT;
 import static org.ode4j.ode.internal.DxGimpactCollision.GIM_AABB_COPY;
 import static org.ode4j.ode.internal.DxGimpactCollision.MakeMatrix;
 
@@ -52,14 +53,7 @@ public class DxGimpact extends DxTriMesh {
 
 	DxGimpactData _Data;
 
-	GimTrimesh m_collision_trimesh;
-
-	// TODO TZ_CHECK This (using bool in Java) conflicts with the Trimes/TriBase implementation that uses the C++
-	//    with CEnum
-	private boolean doSphereTC = true;
-	private boolean doBoxTC = true;
-	private boolean doCapsuleTC = true;
-
+	//GimTrimesh m_collision_trimesh;
 
 	//void dGeomTriMeshSetLastTransform( DMatrix4 last_trans ) { //stub
 	void dGeomTriMeshSetLastTransform( Object last_trans ) { //stub
@@ -73,32 +67,15 @@ public class DxGimpact extends DxTriMesh {
 	}
 
 
-	//Not implemented in ODE 0.11.1
-	//	//	void*  dGeomTriMeshDataGet(dTriMeshDataID g, int data_id) {
-	////	    dUASSERT(g, "argument not trimesh data");
-	////		return NULL; // stub
-	////	}
-	//	@Override
-	//	public Object dGeomTriMeshDataGet(DTriMeshData g, int dataId) {
-	//		throw new UnsupportedAddressTypeException();
-	////		return null;
-	//	}
-	//
-	////	void dGeomTriMeshDataSet(dTriMeshDataID g, int data_id, void* in_data) { //stub
-	////	}
-	//	@Override
-	//	public void dGeomTriMeshDataSet(DTriMeshData g, int dataId, Object inData) {
-	//		throw new UnsupportedAddressTypeException();
-	//	}
-
+	// TODO TZ remove unused
 	@Override
 	public int FetchTriangleCount() {
 		return DxGimpactCollision.FetchTriangleCount(this);
 	}
 
 	@Override
-	public void FetchTransformedTriangle(int i, DVector3[] v) {
-		DxGimpactCollision.FetchTransformedTriangle(this, i, v);
+	public void FetchTransformedTriangle(int i, DVector3 out0, DVector3 out1, DVector3 out2) {
+		DxGimpactCollision.FetchTransformedTriangle(this, i, out0, out1, out2);
 	}
 
 
@@ -135,12 +112,6 @@ public class DxGimpact extends DxTriMesh {
 //		GimBufferArray.gim_init_buffer_managers(m_buffer_managers);
 
 		dGeomTriMeshSetData(Data);
-
-		/* TC has speed/space 'issues' that don't make it a clear
-		   win by default on spheres/boxes. */
-		this.doSphereTC = true;
-		this.doBoxTC = true;
-		this.doCapsuleTC = true;
 	}
 
 	@Override
@@ -148,17 +119,10 @@ public class DxGimpact extends DxTriMesh {
 	public void DESTRUCTOR(){
 
 		//Terminate Trimesh
-		m_collision_trimesh.gim_trimesh_destroy();
+		m_collision_trimesh().gim_trimesh_destroy();
 
 //		GimBufferArray.gim_terminate_buffer_managers(m_buffer_managers);
 		super.DESTRUCTOR();
-	}
-
-
-	@Override
-	//void dxTriMesh::ClearTCCache(){
-	public void clearTCCache(){
-
 	}
 
 
@@ -177,14 +141,13 @@ public class DxGimpact extends DxTriMesh {
 		mat4f transform = new mat4f();
 		GimGeometry.IDENTIFY_MATRIX_4X4(transform);
 		MakeMatrix(this, transform);
-		m_collision_trimesh.gim_trimesh_set_tranform(transform);
+		m_collision_trimesh().gim_trimesh_set_tranform(transform);
 
 		//Update trimesh boxes
-		m_collision_trimesh.gim_trimesh_update();
+		m_collision_trimesh().gim_trimesh_update();
 
-		GIM_AABB_COPY( m_collision_trimesh.getAabbSet().getGlobalBound(), _aabb );
+		GIM_AABB_COPY( m_collision_trimesh().getAabbSet().getGlobalBound(), _aabb );
 	}
-
 
 
 	//	dGeomID dCreateTriMesh(dSpaceID space,
@@ -206,186 +169,130 @@ public class DxGimpact extends DxTriMesh {
 	//	    return Geom;
 	//	}
 
-	//	void dGeomTriMeshSetCallback(dGeomID g, dTriCallback* Callback)
-	void dGeomTriMeshSetCallback(DTriCallback Callback)
-	{
-		//dUASSERT(g && g->type == dTriMeshClass, "argument not a trimesh");
-		this.m_Callback = Callback;
-	}
-
-	//dTriCallback* dGeomTriMeshGetCallback(dGeomID g)
-	DTriCallback dGeomTriMeshGetCallback()
-	{
-		//dUASSERT(g && g->type == dTriMeshClass, "argument not a trimesh");
-		return m_Callback;
-	}
-
-	//void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback)
-	void dGeomTriMeshSetArrayCallback(DTriArrayCallback ArrayCallback)
-	{
-		//dUASSERT(g && g->type == dTriMeshClass, "argument not a trimesh");
-		this.m_ArrayCallback = ArrayCallback;
-	}
-
-	//dTriArrayCallback* dGeomTriMeshGetArrayCallback(dGeomID g)
-	DTriArrayCallback dGeomTriMeshGetArrayCallback()
-	{
-		//dUASSERT(g && g->type == dTriMeshClass, "argument not a trimesh");
-		return m_ArrayCallback;
-	}
-
-	//void dGeomTriMeshSetRayCallback(dGeomID g, dTriRayCallback* Callback)
-	void dGeomTriMeshSetRayCallback(DTriRayCallback Callback)
-	{
-		//dUASSERT(g && g->type == dTriMeshClass, "argument not a trimesh");
-		this.m_RayCallback = Callback;
-	}
-
-	//dTriRayCallback* dGeomTriMeshGetRayCallback(dGeomID g)
-	DTriRayCallback dGeomTriMeshGetRayCallback()
-	{
-		//dUASSERT(g && g->type == dTriMeshClass, "argument not a trimesh");
-		return m_RayCallback;
-	}
-
-	//void dGeomTriMeshSetTriMergeCallback(dGeomID g, dTriTriMergeCallback* Callback)
-	void dGeomTriMeshSetTriMergeCallback(DTriTriMergeCallback Callback)
-	{
-		//dUASSERT(g && g->type == dTriMeshClass, "argument not a trimesh");
-		this.m_TriMergeCallback = Callback;
-	}
-
-	//dTriTriMergeCallback* dGeomTriMeshGetTriMergeCallback(dGeomID g)
-	DTriTriMergeCallback dGeomTriMeshGetTriMergeCallback()
-	{
-		//dUASSERT(g && g->type == dTriMeshClass, "argument not a trimesh");	
-		return m_TriMergeCallback;
-	}
-
-	//void dGeomTriMeshSetData(dGeomID g, dTriMeshDataID Data)
-	void dGeomTriMeshSetData(DTriMeshData Data)
-	{
-		this._Data = (DxGimpactData) Data;
-		// I changed my data -- I know nothing about my own AABB anymore.
-		//this._gflags |= (GEOM_DIRTY|GEOM_AABB_BAD);
-		setFlagDirtyAndBad();
-
-		// ******************************************************************************************
-		// GIMPACT only supports stride 12, so we need to catch the error early.
-		//		Common.dUASSERT
-		//		(
-		//		  //Data.m_VertexStride == 3*sizeof(float) && Data->m_TriStride == 3*sizeof(int),
-		//				_Data.m_VertexStride == 3 && _Data.m_TriStride == 3,
-		//	          "Gimpact trimesh only supports a stride of 3 float/int\n" +
-		//		  "This means that you cannot use dGeomTriMeshDataBuildSimple() with Gimpact.\n" +
-		//		  "Change the stride, or use Opcode trimeshes instead.\n"
-		//		);
-		// ******************************************************************************************
-
-		//Create trimesh
-		if ( _Data.getDataRef() != null ) {
-			this.m_collision_trimesh = GimTrimesh.gim_trimesh_create_from_data
-			(
-					//this.m_buffer_managers,
-					//this.m_collision_trimesh,		// gimpact mesh
-					//( vec3f *)(&Data.m_Vertices[0]),	// vertices
-					_Data.getDataRef(),//[0],	// vertices
-					//_Data.m_VertexCount,		// nr of verts
-					false,					// copy verts?
-					//( GUINT32 *)(&Data.m_Indices[0]),	// indices
-					_Data.getIndexRef(),//[0],	// indices
-					//_Data.m_TriangleCount*3,		// nr of indices
-					false,					// copy indices?
-					true				// transformed reply
-			);
-		}
-	}
-
-	DTriMeshData dGeomTriMeshGetData()
-	{
-		//dUASSERT(g && g->type == dTriMeshClass, "argument not a trimesh");
-		return _Data;
-	}
-
-
-
+	/*extern ODE_API */
+	//void dGeomTriMeshEnableTC(dGeomID g, int geomClass, int enable)
 	void dGeomTriMeshEnableTC(Class<? extends DGeom> geomClass, boolean enable)
 	{
+		//dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+		//DxTriMesh mesh = (DxTriMesh) g;
+
+		//dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+		//int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+
+		//if (g_asiMeshTCGeomClasses.IsValidDecode(tc))
+		//{
+		//	assignDoTC(tc, enable);
+		//}
 		if (geomClass.equals(DSphere.class)) {
-			doSphereTC = enable;
+			assignDoTC(TRIMESHTC.TTC_SPHERE, enable);
 		} else if (geomClass.equals(DBox.class)) {
-			doBoxTC = enable;
+			assignDoTC(TRIMESHTC.TTC_BOX, enable);
 		} else if (geomClass.equals(DCapsule.class)) {
-			doCapsuleTC = enable;
+			assignDoTC(TRIMESHTC.TTC_CAPSULE, enable);
 		} else {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException(geomClass.getName());
 		}
 	}
 
+	/*extern ODE_API */
+	//int dGeomTriMeshIsTCEnabled(dGeomID g, int geomClass)
 	boolean dGeomTriMeshIsTCEnabled(Class<? extends DGeom> geomClass)
 	{
-		if (geomClass.equals(DSphere.class)) {
-			return doSphereTC;
-		} else if (geomClass.equals(DBox.class)) {
-			return doBoxTC;
-		} else if (geomClass.equals(DCapsule.class)) {
-			return doCapsuleTC;
-		}
-		//return 0;
-		throw new UnsupportedOperationException();
-	}
+		//dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-	void dGeomTriMeshClearTCCache(){
-		clearTCCache();
+		//DxTriMesh mesh = (DxTriMesh) g;
+
+		//dxTriMesh::TRIMESHTC tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+		//int tc = g_asiMeshTCGeomClasses.Decode(geomClass);
+
+		//boolean result = g_asiMeshTCGeomClasses.IsValidDecode(tc)
+		//		&& mesh.retrieveDoTC(tc);
+		if (geomClass.equals(DSphere.class)) {
+			return retrieveDoTC(TRIMESHTC.TTC_SPHERE);
+		} else if (geomClass.equals(DBox.class)) {
+			return retrieveDoTC(TRIMESHTC.TTC_BOX);
+		} else if (geomClass.equals(DCapsule.class)) {
+			return retrieveDoTC(TRIMESHTC.TTC_CAPSULE);
+		}
+		throw new UnsupportedOperationException(geomClass.getName());
 	}
 
 	/**
 	 * returns the TriMeshDataID
 	 */
-	DTriMeshData
-	dGeomTriMeshGetTriMeshDataID()
+	/*extern ODE_API */
+	//dTriMeshDataID dGeomTriMeshGetTriMeshDataID(dGeomID g)
+	DTriMeshData dGeomTriMeshGetTriMeshData()
 	{
-		return _Data;
+		//dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+		//DxTriMesh mesh = (DxTriMesh) g;
+		return retrieveMeshData();
 	}
 
-	// Getting data
-	@Override
-	//void dGeomTriMeshGetTriangle(dGeomID g, int Index, dVector3* v0, dVector3* v1, dVector3* v2)
-	public void dGeomTriMeshGetTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2)
+	/*extern ODE_API */
+	//void dGeomTriMeshClearTCCache(dGeomID g)
+	void dGeomTriMeshClearTCCache()
 	{
-		//TZ: simplified version ? Does not allow null-arguments
-		DVector3[] v = { v0, v1, v2 };
-		FetchTransformedTriangle(Index, v);
+		//dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
-		//		// Redirect null vectors to dummy storage
-		//		DVector3[] v = { new DVector3(), new DVector3(), new DVector3() };
-		//
-		//		FetchTransformedTriangle(Index, v);
-		//
-		//		if (v0!=null){
-		//			v0.set(v[0]);
-		//		}
-		//		if (v1!=null){
-		//			v1.set(v[1]);
-		//		}
-		//		if (v2!=null){
-		//			v2.set(v[2]);
-		//		}
+		//DxTriMesh mesh = (DxTriMesh) g;
+		// TZ: This does nothing -> we also need to avoid infinite loop here, the name is the same as the Java API
+		//clearTCCache();
 	}
+
+	/*extern ODE_API */
+	//int dGeomTriMeshGetTriangleCount(dGeomID g)
+	public int dGeomTriMeshGetTriangleCount()
+	{
+		//dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+		//DxTriMesh mesh = (DxTriMesh) g;
+		int result = getMeshTriangleCount();
+		return result;
+	}
+
+	/*extern ODE_API */
+	//void dGeomTriMeshGetTriangle(dGeomID g, int index, dVector3 *v0/*=NULL*/, dVector3 *v1/*=NULL*/, dVector3 *v2/*=NULL*/)
+	public void dGeomTriMeshGetTriangle(int index, DVector3 v0/*=NULL*/, DVector3 v1/*=NULL*/, DVector3 v2/*=NULL*/)
+	{
+		//dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+		dUASSERT(v0 != null || v1 != null || v2 != null, "A meaningless call");
+
+		//DxTriMesh mesh = (DxTriMesh) g;
+		fetchMeshTransformedTriangle(v0, v1, v2, index);
+	}
+
+	/*extern ODE_API */
+	//void dGeomTriMeshSetData(dGeomID g, dTriMeshDataID Data)
+	void dGeomTriMeshSetData(DTriMeshData Data)
+	{
+		//dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+		//DxTriMesh mesh = (DxTriMesh) g;
+		assignMeshData((DxTriMeshData) Data);
+	}
+
+	/*extern ODE_API */
+	//dTriMeshDataID dGeomTriMeshGetData(dGeomID g)
+	public DTriMeshData dGeomTriMeshGetData()
+	{
+		//dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+		//DxTriMesh mesh = (DxTriMesh) g;
+		return retrieveMeshData();
+	}
+
 
 	//void dGeomTriMeshGetPoint(dGeomID g, int Index, dReal u, dReal v, dVector3 Out){
 	void dGeomTriMeshGetPoint(int Index, double u, double v, DVector3 Out){
 		//vec3f[] dv = { new vec3f(), new vec3f(), new vec3f() };
 		DVector3[] dv = { new DVector3(), new DVector3(), new DVector3() };
-		m_collision_trimesh.gim_trimesh_locks_work_data();	
-		m_collision_trimesh.gim_trimesh_get_triangle_vertices(Index, dv[0], dv[1], dv[2]);
+		m_collision_trimesh().gim_trimesh_locks_work_data();
+		m_collision_trimesh().gim_trimesh_get_triangle_vertices(Index, dv[0], dv[1], dv[2]);
 		DxGimpactCollision.GetPointFromBarycentric(dv, u, v, Out);
-		m_collision_trimesh.gim_trimesh_unlocks_work_data();
-	}
-
-	int dGeomTriMeshGetTriangleCount ()
-	{
-		return FetchTriangleCount();
+		m_collision_trimesh().gim_trimesh_unlocks_work_data();
 	}
 
 
@@ -401,22 +308,58 @@ public class DxGimpact extends DxTriMesh {
 	}
 
 
+//	@Override
+//	public DTriTriMergeCallback getTriMergeCallback() {
+//		return dGeomTriMeshGetTriMergeCallback();
+//	}
+//
+//
+//	@Override
+//	public void setTriMergeCallback(DTriTriMergeCallback Callback) {
+//		dGeomTriMeshSetTriMergeCallback(Callback);
+//	}
+
+
 	@Override
-	public void clearTCCache(DTriMesh g) {
+	/*extern ODE_API */
+	//dTriMeshDataID dGeomTriMeshGetTriMeshDataID(dGeomID g)
+	public DTriMeshData getTriMeshData() {
+		return dGeomTriMeshGetTriMeshData();
+	}
+
+	@Override
+	/*extern ODE_API */
+	//void dGeomTriMeshClearTCCache(dGeomID g)
+	public void clearTCCache() {
 		dGeomTriMeshClearTCCache();
 	}
 
-
 	@Override
-	public DTriTriMergeCallback getTriMergeCallback() {
-		return dGeomTriMeshGetTriMergeCallback();
+	/*extern ODE_API */
+	//int dGeomTriMeshGetTriangleCount(dGeomID g)
+	public int getTriangleCount() {
+		return dGeomTriMeshGetTriangleCount();
 	}
 
+	@Override
+	/*extern ODE_API */
+	//void dGeomTriMeshGetTriangle(dGeomID g, int index, dVector3 *v0/*=NULL*/, dVector3 *v1/*=NULL*/, dVector3 *v2/*=NULL*/)
+	public void getTriangle(int index, DVector3 v0/*=NULL*/, DVector3 v1/*=NULL*/, DVector3 v2/*=NULL*/) {
+		dGeomTriMeshGetTriangle(index, v0, v1, v2);
+	}
 
 	@Override
-	public void setTriMergeCallback(DTriTriMergeCallback Callback) {
-		dGeomTriMeshSetTriMergeCallback(Callback);
+	public void setTrimeshData(DTriMeshData Data) {
+		dGeomTriMeshSetData(Data);
 	}
+
+	@Override
+	/*extern ODE_API */
+	//dTriMeshDataID dGeomTriMeshGetData(dGeomID g)
+	public DTriMeshData getTrimeshData() {
+		return dGeomTriMeshGetData();
+	}
+
 
 	@Override
 	public float getEdgeAngle(int triangle, int edge) {

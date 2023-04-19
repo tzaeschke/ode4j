@@ -562,7 +562,7 @@ public class CollideTrimeshSphere implements DColliderFn {
 		SphereGeom.recomputeAABB();
 
 	    //Collide trimeshes
-	    DxGimpactCollision.gim_trimesh_sphere_collisionODE(TriMesh.m_collision_trimesh,Position,Radius,trimeshcontacts);
+	    DxGimpactCollision.gim_trimesh_sphere_collisionODE(TriMesh.m_collision_trimesh(),Position,Radius,trimeshcontacts);
 
 	    if(trimeshcontacts.size() == 0)
 	    {

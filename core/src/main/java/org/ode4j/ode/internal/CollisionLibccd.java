@@ -512,14 +512,14 @@ public class CollisionLibccd {
             ccdGeomToObj(o2, c2);
             DxTriMesh t2 = (DxTriMesh) o2;
 
-            IFaceAngleStorageView meshFaceAngleView = DxTriDataBase.dxGeomTriMeshGetFaceAngleView((DTriMesh) o2);
+            IFaceAngleStorageView meshFaceAngleView = t2.dxGeomTriMeshGetFaceAngleView();
             dUASSERT(meshFaceAngleView != null, "Please preprocess the trimesh data with " +
                     "dTRIDATAPREPROCESS_BUILD_FACE_ANGLES");
 
             DContactGeomBuffer tempContacts = new DContactGeomBuffer(1);
             for (int i = 0; i < triindices.length; ++i) {
                 //dContactGeom tempContact;
-                t2.dGeomTriMeshGetTriangle(triindices[i], triangle[dMTV_FIRST], triangle[dMTV_SECOND], triangle[dMTV_THIRD]);
+                t2.getTriangle(triindices[i], triangle[dMTV_FIRST], triangle[dMTV_SECOND], triangle[dMTV_THIRD]);
 
                 for (int j = dMTV__MIN; j != dMTV__MAX; ++j) {
                     ccdVec3Set(c2.vertices[j], triangle[j].get0(), triangle[j].get1(), triangle[j].get2());
@@ -547,7 +547,7 @@ public class CollisionLibccd {
                 //dContactGeom *contact = SAFECONTACT(flags, contacts, 0, skip);
                 DContactGeom contact = contacts.getSafe(flags, 0);
 
-                t2.dGeomTriMeshGetTriangle(contact.side2, triangle[dMTV_FIRST], triangle[dMTV_SECOND], triangle[dMTV_THIRD]);
+                t2.getTriangle(contact.side2, triangle[dMTV_FIRST], triangle[dMTV_SECOND], triangle[dMTV_THIRD]);
                 contactCount = addTrianglePerturbedContacts(o1, o2, meshFaceAngleView,
                         //indices, numIndices,
                         flags, contacts,

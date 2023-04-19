@@ -194,12 +194,12 @@ public class CollideTrimeshRay implements DColliderFn {
 
 		if(ClosestHit)
 		{
-			intersect = DxGimpactCollision.gim_trimesh_ray_closest_collisionODE(TriMesh.m_collision_trimesh,
+			intersect = DxGimpactCollision.gim_trimesh_ray_closest_collisionODE(TriMesh.m_collision_trimesh(),
 					Origin,Direction,Length,contact_data);
 		}
 		else
 		{
-			intersect = DxGimpactCollision.gim_trimesh_ray_collisionODE(TriMesh.m_collision_trimesh,
+			intersect = DxGimpactCollision.gim_trimesh_ray_collisionODE(TriMesh.m_collision_trimesh(),
 					Origin,Direction,Length,contact_data);
 		}
 

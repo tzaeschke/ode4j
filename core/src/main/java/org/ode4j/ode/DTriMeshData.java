@@ -216,4 +216,8 @@ public interface DTriMeshData {
 //	//void dGeomTriMeshDataSetBuffer(dTriMeshData g, unsigned char* buf) {
 //	void setBuffer(DTriMeshData g, byte[] buf);
 
+	//ODE_API
+	//void dGeomTriMeshDataUpdate(DTriMeshData g) {
+	void update();
+
 }

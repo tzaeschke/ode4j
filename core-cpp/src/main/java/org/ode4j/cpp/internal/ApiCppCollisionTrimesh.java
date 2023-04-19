@@ -317,24 +317,24 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
 
     //ODE_API
     void dGeomTriMeshSetData(DTriMesh g, DTriMeshData Data) {
-        throw new UnsupportedOperationException();
+        g.setData(Data);
     }
 
     //ODE_API
     DTriMeshData dGeomTriMeshGetData(DTriMesh g) {
-        throw new UnsupportedOperationException();
+        return g.getTrimeshData();
     }
 
 
     // enable/disable/check temporal coherence
     //ODE_API
-    void dGeomTriMeshEnableTC(DTriMesh g, int geomClass, int enable) {
-        throw new UnsupportedOperationException();
+    void dGeomTriMeshEnableTC(DTriMesh g, Class<? extends DGeom> geomClass, boolean enable) {
+        g.enableTC(geomClass, enable);
     }
 
     //ODE_API
-    int dGeomTriMeshIsTCEnabled(DTriMesh g, int geomClass) {
-        throw new UnsupportedOperationException();
+    boolean dGeomTriMeshIsTCEnabled(DTriMesh g, Class<? extends DGeom> geomClass) {
+        return g.isTCEnabled(geomClass);
     }
 
     /*
@@ -372,7 +372,7 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
      */
     //ODE_API
     void dGeomTriMeshGetPoint(DTriMesh g, int Index, double u, double v, DVector3 Out) {
-        throw new UnsupportedOperationException();
+        g.getPoint(Index, u, v, Out);
     }
 
 	/*
@@ -396,12 +396,12 @@ int TriStride = sizeof(StridedTri);
 
     //ODE_API
     int dGeomTriMeshGetTriangleCount(DTriMesh g) {
-        throw new UnsupportedOperationException();
+        return g.getTriangleCount();
     }
 
     //ODE_API
     void dGeomTriMeshDataUpdate(DTriMeshData g) {
-        throw new UnsupportedOperationException();
+        g.update();
     }
 
 }

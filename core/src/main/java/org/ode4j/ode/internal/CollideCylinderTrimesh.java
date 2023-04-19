@@ -1256,7 +1256,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 
 		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
-		Trimesh.m_collision_trimesh.getAabbSet().gim_aabbset_box_collision(test_aabb, collision_result);
+		Trimesh.m_collision_trimesh().getAabbSet().gim_aabbset_box_collision(test_aabb, collision_result);
 
 		if (collision_result.size() != 0)
 		{
@@ -1270,7 +1270,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 			}
 
 			int[] boxesresult = collision_result.GIM_DYNARRAY_POINTER();
-			GimTrimesh ptrimesh = Trimesh.m_collision_trimesh;
+			GimTrimesh ptrimesh = Trimesh.m_collision_trimesh();
 
 			ptrimesh.gim_trimesh_locks_work_data();
 

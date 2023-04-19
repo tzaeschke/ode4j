@@ -24,8 +24,10 @@
  *************************************************************************/
 package org.ode4j.ode.internal.trimesh;
 
+import org.ode4j.math.DVector3;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.internal.DxGeom;
+import org.ode4j.ode.internal.DxGimpactCollision;
 import org.ode4j.ode.internal.DxSpace;
 
 import java.util.Arrays;
@@ -62,21 +64,17 @@ public abstract class DxMeshBase extends DxGeom {
         return m_Callback == null || m_Callback.call(this, Object, TriIndex) != 0;
     }
 
-    //    public enum TRIMESHTC {
-    //        TTC__MIN,
-    //
-    //        TTC_SPHERE =TTC__MIN,
-    //        TTC_BOX,
-    //        TTC_CAPSULE,
-    //
-    //        TTC__MAX,
-    //    }
+    public enum TRIMESHTC {
+        TTC_SPHERE,
+        TTC_BOX,
+        TTC_CAPSULE
+    }
     // enum TRIMESHTC
-    public static final int TTC__MIN = 0;
-    public static final int TTC_SPHERE =TTC__MIN;
-    public static final int TTC_BOX = TTC_SPHERE + 1;
-    public static final int TTC_CAPSULE = TTC_BOX + 1;
-    public static final int TTC__MAX = TTC_CAPSULE + 1;
+    //    public static final int TTC__MIN = 0;
+    //    public static final int TTC_SPHERE =TTC__MIN;
+    //    public static final int TTC_BOX = TTC_SPHERE + 1;
+    //    public static final int TTC_CAPSULE = TTC_BOX + 1;
+    //    public static final int TTC__MAX = TTC_CAPSULE + 1;
 
 
     //public:
@@ -135,25 +133,25 @@ public abstract class DxMeshBase extends DxGeom {
     }
 
 
-    public void assignDoTC(int tc, boolean value) {
+    public void assignDoTC(TRIMESHTC tc, boolean value) {
         setDoTC(tc, value);
     }
 
-    public boolean retrieveDoTC(int tc) {
+    public boolean retrieveDoTC(TRIMESHTC tc) {
         return getDoTC(tc);
     }
 
     //public:
     //  void setDoTC(TRIMESHTC tc, bool value) { dIASSERT(dIN_RANGE(tc, TTC__MIN, TTC__MAX)); m_DoTCs[tc] = value; }
     //  bool getDoTC(TRIMESHTC tc) const { dIASSERT(dIN_RANGE(tc, TTC__MIN, TTC__MAX)); return m_DoTCs[tc]; }
-    public void setDoTC(int tc, boolean value) {
-        dIASSERT(dIN_RANGE(tc, TTC__MIN, TTC__MAX));
-        m_DoTCs[tc] = value;
+    public void setDoTC(TRIMESHTC tc, boolean value) {
+        //dIASSERT(dIN_RANGE(tc, TTC__MIN, TTC__MAX));
+        m_DoTCs[tc.ordinal()] = value;
     }
 
-    public boolean getDoTC(int tc) {
-        dIASSERT(dIN_RANGE(tc, TTC__MIN, TTC__MAX));
-        return m_DoTCs[tc];
+    public boolean getDoTC(TRIMESHTC tc) {
+        //dIASSERT(dIN_RANGE(tc, TTC__MIN, TTC__MAX));
+        return m_DoTCs[tc.ordinal()];
     }
 
 
@@ -174,18 +172,139 @@ public abstract class DxMeshBase extends DxGeom {
     public DTriMesh.DTriRayCallback m_RayCallback;
     public DTriMesh.DTriTriMergeCallback m_TriMergeCallback;
 
-    public DTriMesh.DTriCallback Callback() { return m_Callback; }
-    public DTriMesh.DTriArrayCallback ArrayCallback() { return m_ArrayCallback; }
-    public DTriMesh.DTriRayCallback RayCallback() { return m_RayCallback; }
-    public DTriMesh.DTriTriMergeCallback TriMergeCallback() { return m_TriMergeCallback; }
-    public void setCallback(DTriMesh.DTriCallback callback) { m_Callback = callback; }
-    public void setArrayCallback(DTriMesh.DTriArrayCallback callback) { m_ArrayCallback = callback; }
-    public void setRayCallback(DTriMesh.DTriRayCallback callback) { m_RayCallback = callback; }
-    public void setTriMergeCallback(DTriMesh.DTriTriMergeCallback callback) { m_TriMergeCallback = callback; }
-
+    // TODO TZ 2023 remove!
+//    public DTriMesh.DTriCallback Callback() { return m_Callback; }
+//    public DTriMesh.DTriArrayCallback ArrayCallback() { return m_ArrayCallback; }
+//    public DTriMesh.DTriRayCallback RayCallback() { return m_RayCallback; }
+//    public DTriMesh.DTriTriMergeCallback TriMergeCallback() { return m_TriMergeCallback; }
 
     // Data types
     private DxTriDataBase m_Data;
 
-    public boolean[] m_DoTCs = new boolean[TTC__MAX];
+    //private final boolean[] m_DoTCs = new boolean[TTC__MAX];
+    private final boolean[] m_DoTCs = new boolean[TRIMESHTC.values().length];
+
+    /*extern ODE_API */
+    //void dGeomTriMeshSetCallback(dGeomID g, dTriCallback* Callback)
+    void dGeomTriMeshSetCallback(DTriMesh.DTriCallback Callback)
+    {
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+        //DxTriMesh mesh = (DxTriMesh) g;
+        assignCallback(Callback);
+    }
+
+    /*extern ODE_API */
+    //dTriCallback* dGeomTriMeshGetCallback(dGeomID g)
+    DTriMesh.DTriCallback dGeomTriMeshGetCallback()
+    {
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+        //DxTriMesh mesh = (DxTriMesh) g;
+        return retrieveCallback();
+    }
+
+    /*extern ODE_API */
+    //void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback)
+    void dGeomTriMeshSetArrayCallback(DTriMesh.DTriArrayCallback ArrayCallback)
+    {
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+        //DxTriMesh mesh = (DxTriMesh) g;
+        assignArrayCallback(ArrayCallback);
+    }
+
+    /*extern ODE_API */
+    //dTriArrayCallback *dGeomTriMeshGetArrayCallback(dGeomID g)
+    DTriMesh.DTriArrayCallback dGeomTriMeshGetArrayCallback()
+    {
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+        //DxTriMesh mesh = (DxTriMesh) g;
+        return retrieveArrayCallback();
+    }
+
+    /*extern ODE_API */
+    //void dGeomTriMeshSetRayCallback(dGeomID g, dTriRayCallback* Callback)
+    void dGeomTriMeshSetRayCallback(DTriMesh.DTriRayCallback Callback)
+    {
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+        //DxTriMesh mesh = (DxTriMesh) g;
+        assignRayCallback(Callback);
+    }
+
+    /*extern ODE_API */
+    //dTriRayCallback* dGeomTriMeshGetRayCallback(dGeomID g)
+    DTriMesh.DTriRayCallback dGeomTriMeshGetRayCallback()
+    {
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+        //DxTriMesh mesh = (DxTriMesh) g;
+        return retrieveRayCallback();
+    }
+
+    /*extern ODE_API */
+    //void dGeomTriMeshSetTriMergeCallback(dGeomID g, dTriTriMergeCallback* Callback)
+    void dGeomTriMeshSetTriMergeCallback(DTriMesh.DTriTriMergeCallback Callback)
+    {
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+        //DxTriMesh mesh = (DxTriMesh) g;
+        assignTriMergeCallback(Callback);
+    }
+
+    /*extern ODE_API */
+    //dTriTriMergeCallback *dGeomTriMeshGetTriMergeCallback(dGeomID g)
+    DTriMesh.DTriTriMergeCallback dGeomTriMeshGetTriMergeCallback()
+    {
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+        //DxTriMesh mesh = (DxTriMesh) g;
+        return retrieveTriMergeCallback();
+    }
+
+
+    // *****************************************
+    // Java API
+    // *****************************************
+    //	void dGeomTriMeshSetCallback(dGeomID g, dTriCallback* Callback)
+    public void setCallback(DTriMesh.DTriCallback Callback) {
+        dGeomTriMeshSetCallback(Callback);
+    }
+
+    //dTriCallback* dGeomTriMeshGetCallback(dGeomID g)
+    public DTriMesh.DTriCallback getCallback() {
+        return dGeomTriMeshGetCallback();
+    }
+
+    //void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback)
+    public void setArrayCallback(DTriMesh.DTriArrayCallback ArrayCallback) {
+        dGeomTriMeshSetArrayCallback(ArrayCallback);
+    }
+
+    //dTriArrayCallback* dGeomTriMeshGetArrayCallback(dGeomID g)
+    public DTriMesh.DTriArrayCallback getArrayCallback() {
+        return dGeomTriMeshGetArrayCallback();
+    }
+
+    //void dGeomTriMeshSetRayCallback(dGeomID g, dTriRayCallback* Callback)
+    public void setRayCallback(DTriMesh.DTriRayCallback Callback) {
+        dGeomTriMeshSetRayCallback(Callback);
+    }
+
+    //dTriRayCallback* dGeomTriMeshGetRayCallback(dGeomID g)
+    public DTriMesh.DTriRayCallback getRayCallback() {
+        return dGeomTriMeshGetRayCallback();
+    }
+
+    //void dGeomTriMeshSetTriMergeCallback(dGeomID g, dTriTriMergeCallback* Callback)
+    public void setTriMergeCallback(DTriMesh.DTriTriMergeCallback Callback) {
+        dGeomTriMeshSetTriMergeCallback(Callback);
+    }
+
+    //dTriTriMergeCallback* dGeomTriMeshGetTriMergeCallback(dGeomID g)
+    public DTriMesh.DTriTriMergeCallback getTriMergeCallback() {
+        return dGeomTriMeshGetTriMergeCallback();
+    }
+
 }

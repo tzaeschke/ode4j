@@ -67,7 +67,7 @@ public class CollideTrimeshTrimeshOld implements DColliderFn {
 		g2.recomputeAABB();
 
 	    //Collide trimeshes
-		TriMesh1.m_collision_trimesh.gim_trimesh_trimesh_collision(TriMesh2.m_collision_trimesh,trimeshcontacts);
+		TriMesh1.m_collision_trimesh().gim_trimesh_trimesh_collision(TriMesh2.m_collision_trimesh(),trimeshcontacts);
 
 	    if(trimeshcontacts.size() == 0)
 	    {

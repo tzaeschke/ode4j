@@ -92,12 +92,13 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     }
 
     //void fetchMeshTransformedTriangle (dVector3 *const pout_triangle[3], unsigned index)
-    public void fetchMeshTransformedTriangle (DVector3[] pout_triangle, int index)
+    public void fetchMeshTransformedTriangle (
+            DVector3 pout_triangle0, DVector3 pout_triangle1, DVector3 pout_triangle2, int index)
     {
         m_collision_trimesh.gim_trimesh_locks_work_data();
         //            gim_trimesh_get_triangle_vertices( m_collision_trimesh, (GUINT32) index, *pout_triangle[0], *
         //            pout_triangle[1], *pout_triangle[2]);
-        m_collision_trimesh.gim_trimesh_get_triangle_vertices(index, pout_triangle[0], pout_triangle[1], pout_triangle[2]);
+        m_collision_trimesh.gim_trimesh_get_triangle_vertices(index, pout_triangle0, pout_triangle1, pout_triangle2);
         m_collision_trimesh.gim_trimesh_unlocks_work_data();
     }
 
@@ -163,7 +164,8 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     }
 
     @Override
-    //void dxTriMesh::
+    protected
+        //void dxTriMesh::
     void assignMeshData(DxTriMeshData Data) {
         // GIMPACT only supports stride 12, so we need to catch the error early.
         //dUASSERT((unsigned int)Data.retrieveVertexStride() == (unsigned) VERTEXINSTANCE_STRIDE && (unsigned int)
@@ -230,8 +232,10 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     // TODO CHECK-TZ remolve> THis is 'memory' stuff
     //GBUFFER_MANAGER_DATA m_buffer_managers[ G_BUFFER_MANAGER__MAX];
 
-    public abstract void FetchTransformedTriangle(int i, DVector3[] v);
+    // TODO TZ remove? Does not exist in ODE2
+    public abstract void FetchTransformedTriangle(int i, DVector3 out0, DVector3 out1, DVector3 out2);
 
+    // TODO TZ remove? Does not exist in ODE2
     public abstract int FetchTriangleCount();
 
     public GimTrimesh m_collision_trimesh() {
@@ -250,5 +254,43 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     public DTriRayCallback RayCallback() {
         return m_RayCallback;
     }
+
+
+    /*extern ODE_API */
+    //void dGeomTriMeshGetPoint(dGeomID g, int index, dReal u, dReal v, dVector3 Out)
+    void dGeomTriMeshGetPoint(int index, double u, double v, DVector3 Out)
+    {
+        //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
+
+        //DxTriMesh mesh = (DxTriMesh) g;
+
+        //DVector3[] dv = DVector3.newArray(3);
+        //mesh.fetchMeshTransformedTriangle(dv, index);
+
+        //DxGimpactCollision.GetPointFromBarycentric(dv, u, v, Out);
+
+        DVector3 dv0 = new DVector3(), dv1 = new DVector3(), dv2 = new DVector3();
+        fetchMeshTransformedTriangle(dv0, dv1, dv2, index);
+
+        DxGimpactCollision.GetPointFromBarycentric(dv0, dv1, dv2, u, v, Out);
+    }
+
+    /*extern */
+    //IFaceAngleStorageView *dxGeomTriMeshGetFaceAngleView(dxGeom *triMeshGeom)
+    public IFaceAngleStorageView dxGeomTriMeshGetFaceAngleView()
+    {
+        //dUASSERT(triMeshGeom && triMeshGeom->type == dTriMeshClass, "The argument is not a trimesh");
+
+        //DxTriMesh mesh = (DxTriMesh) triMeshGeom;
+        return retrieveFaceAngleView();
+    }
+
+    @Override
+    /*extern ODE_API */
+    //void dGeomTriMeshGetPoint(dGeomID g, int index, dReal u, dReal v, dVector3 Out)
+    public void getPoint(int index, double u, double v, DVector3 Out) {
+        dGeomTriMeshGetPoint(index, u, v, Out);
+    }
+
 
 }

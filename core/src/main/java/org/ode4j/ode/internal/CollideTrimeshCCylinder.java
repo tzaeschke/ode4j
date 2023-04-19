@@ -1211,7 +1211,7 @@ public class CollideTrimeshCCylinder implements DColliderFn {
 	    trimeshcontacts = GimContact.GIM_CREATE_CONTACT_LIST();
 
 	    //Collide trimeshe vs capsule
-	    TriMesh.m_collision_trimesh.gim_trimesh_capsule_collision(capsule,trimeshcontacts);
+	    TriMesh.m_collision_trimesh().gim_trimesh_capsule_collision(capsule,trimeshcontacts);
 
 
 	    if(trimeshcontacts.size() == 0)

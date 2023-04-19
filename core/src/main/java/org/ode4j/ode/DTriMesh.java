@@ -212,17 +212,15 @@ public interface DTriMesh extends DGeom {
 //		return OdeHelper.createTriMesh(space, Data, 
 //				Callback, ArrayCallback, RayCallback);
 //	}
-//
-//	//ODE_API 
-//	void dGeomTriMeshSetData(DGeom g, DTriMeshData Data) {
-//		throw new UnsupportedOperationException();
-//	}
-//	//ODE_API 
-//	DTriMeshData dGeomTriMeshGetData(DGeom g) {
-//		throw new UnsupportedOperationException();
-//	}
-//
-//
+
+	//ODE_API
+	//void dGeomTriMeshSetData(DGeom g, DTriMeshData Data) {
+	void setTrimeshData(DTriMeshData Data);
+	//ODE_API
+	//DTriMeshData dGeomTriMeshGetData(DGeom g) {
+	DTriMeshData getTrimeshData();
+
+
 	/** 
 	 * Enable/disable temporal coherence. 
 	 * @param cls Geometry class
@@ -248,33 +246,33 @@ public interface DTriMesh extends DGeom {
 	 * collision checked with a trimesh once, data is stored inside the trimesh.
 	 * With large worlds with lots of seperate objects this list could get huge.
 	 * We should be able to do this automagically.
-	 * @param g trimesh
 	 */
 	//ODE_API 
-	void clearTCCache(DTriMesh g);
+	void clearTCCache();
 
 
-//	/**
-//	 * returns the TriMeshDataID
-//	 */
-//	//ODE_API 
-//	DTriMeshData dGeomTriMeshGetTriMeshDataID(DTriMesh g);
-//
+	/**
+	 * returns the TriMeshDataID
+	 */
+	//ODE_API
+	//DTriMeshData dGeomTriMeshGetTriMeshDataID(DTriMesh g);
+	DTriMeshData getTriMeshData();
+
 	/**
 	 * Gets a triangle.
 	 */
-//	//ODE_API
-	void dGeomTriMeshGetTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2);
-//	//void dGeomTriMeshGetTriangle(dGeom g, int Index, dVector3* v0, dVector3* v1, dVector3* v2) {
-//	void dGeomTriMeshGetTriangle(DTriMesh g, int Index, DVector3 v0, DVector3 v1, DVector3 v2);
-//
-//	/**
-//	 * Gets the point on the requested triangle and the given barycentric
-//	 * coordinates.
-//	 */
-//	//ODE_API 
-//	void getPoint(DTriMesh g, int Index, double u, double v, DVector3 Out);
-//
+	//ODE_API
+	//void dGeomTriMeshGetTriangle(dGeom g, int Index, dVector3* v0, dVector3* v1, dVector3* v2) {
+	void getTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2);
+
+	/**
+	 * Gets the point on the requested triangle and the given barycentric
+	 * coordinates.
+	 */
+	//ODE_API
+	//void dGeomTriMeshGetPoint(dGeomID g, int index, dReal u, dReal v, dVector3 Out)
+	void getPoint(int index, double u, double v, DVector3 Out);
+
 //	/*
 //
 //This is how the strided data works:
@@ -292,14 +290,7 @@ public interface DTriMesh extends DGeom {
 //int TriStride = sizeof(StridedTri);
 //
 //	 */
-//
-//
-//	//ODE_API 
-//	int getTriangleCount (DGeom g);
-//
-//	//ODE_API 
-//	void dGeomTriMeshDataUpdate(DTriMeshData g) {
-//		throw new UnsupportedOperationException();
-//	}
 
+	//ODE_API
+	int getTriangleCount ();
 }

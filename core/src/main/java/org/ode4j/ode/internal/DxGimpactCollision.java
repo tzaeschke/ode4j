@@ -158,25 +158,16 @@ public class DxGimpactCollision {
 	//	inline unsigned FetchTriangleCount(dxTriMesh* TriMesh)
 	static int FetchTriangleCount(DxGimpact TriMesh)
 	{
-		return TriMesh.m_collision_trimesh.gim_trimesh_get_triangle_count();
+		return TriMesh.m_collision_trimesh().gim_trimesh_get_triangle_count();
 	}
 
 	//inline void FetchTransformedTriangle(dxTriMesh* TriMesh, int Index, dVector3 Out[3]){
-	static void FetchTransformedTriangle(DxGimpact TriMesh, int Index, DVector3 Out[]){
-		TriMesh.m_collision_trimesh.gim_trimesh_locks_work_data();
-		//vec3f[] vOut = { new vec3f(), new vec3f(), new vec3f() };
-		TriMesh.m_collision_trimesh.gim_trimesh_get_triangle_vertices(Index, Out[0], Out[1], Out[2]);
-		//Out[0].set( vOut[0].f ); Out[1].set( vOut[1].f ); Out[2].set( vOut[2].f );
-		TriMesh.m_collision_trimesh.gim_trimesh_unlocks_work_data();
-	}
-
-	// TODO CHECK-TZ Use this instead of array of DVector
 	static void FetchTransformedTriangle(DxGimpact TriMesh, int Index, DVector3 Out0, DVector3 Out1, DVector3 Out2){
-		TriMesh.m_collision_trimesh.gim_trimesh_locks_work_data();
+		TriMesh.m_collision_trimesh().gim_trimesh_locks_work_data();
 		//vec3f[] vOut = { new vec3f(), new vec3f(), new vec3f() };
-		TriMesh.m_collision_trimesh.gim_trimesh_get_triangle_vertices(Index, Out0, Out1, Out2);
+		TriMesh.m_collision_trimesh().gim_trimesh_get_triangle_vertices(Index, Out0, Out1, Out2);
 		//Out[0].set( vOut[0].f ); Out[1].set( vOut[1].f ); Out[2].set( vOut[2].f );
-		TriMesh.m_collision_trimesh.gim_trimesh_unlocks_work_data();
+		TriMesh.m_collision_trimesh().gim_trimesh_unlocks_work_data();
 	}
 
 	//		inline void MakeMatrix(const dVector3 Position, const dMatrix3 Rotation, mat4f m)
@@ -254,11 +245,19 @@ public class DxGimpactCollision {
 		Out.set0( dv[0].get0()*w + dv[1].get0()*u + dv[2].get0()*v );
 		Out.set1( dv[0].get1()*w + dv[1].get1()*u + dv[2].get1()*v );
 		Out.set2( dv[0].get2()*w + dv[1].get2()*u + dv[2].get2()*v );
-		//		Out.set0( dv[0].get3()*w + dv[1].get3()*u + dv[2].get3()*v );  //TODO ?
+		// Out.set0( dv[0].get3()*w + dv[1].get3()*u + dv[2].get3()*v );  //TODO ?
 		//		Out[0] = (dv[0][0] * w) + (dv[1][0] * u) + (dv[2][0] * v);
 		//		Out[1] = (dv[0][1] * w) + (dv[1][1] * u) + (dv[2][1] * v);
 		//		Out[2] = (dv[0][2] * w) + (dv[1][2] * u) + (dv[2][2] * v);
 		//		Out[3] = (dv[0][3] * w) + (dv[1][3] * u) + (dv[2][3] * v);
+	}
+
+	public static void GetPointFromBarycentric(
+			DVector3C dv0, DVector3 dv1, DVector3 dv2, double u, double v, DVector3 Out){
+		double w = 1.0 - u - v;
+		Out.set0( dv0.get0()*w + dv1.get0()*u + dv2.get0()*v );
+		Out.set1( dv0.get1()*w + dv1.get1()*u + dv2.get1()*v );
+		Out.set2( dv0.get2()*w + dv1.get2()*u + dv2.get2()*v );
 	}
 
 	// Performs a callback

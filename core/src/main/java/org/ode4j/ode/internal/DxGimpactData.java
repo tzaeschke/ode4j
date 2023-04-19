@@ -26,6 +26,7 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.dIASSERT;
 
+import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 import java.util.ArrayList;
@@ -284,8 +285,21 @@ public class DxGimpactData extends DxTriMeshData {
 	//	}
 
 
-	void dGeomTriMeshDataUpdate() {
+	/*extern ODE_API */
+	void dGeomTriMeshDataUpdate()
+	{
+		//dUASSERT(g, "The argument is not a trimesh data");
+
+		//DxTriMeshData *data = g;
+		//data.updateData();
+		//((DxTriMeshData)g).updateData();
 		updateData();
+	}
+
+	/*extern ODE_API */
+	// void dGeomTriMeshDataUpdate()
+	public void update() {
+		dGeomTriMeshDataUpdate();
 	}
 
 

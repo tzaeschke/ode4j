@@ -115,7 +115,7 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 	//
 
 //	int dCollideTTL(dxGeom* g1, dxGeom* g2, int Flags, dContactGeom* Contacts, int Stride)
-	int dCollideTTL(DxGimpact g1, DxGimpact g2, int Flags, DContactGeomBuffer Contacts, int Stride)
+	int dCollideTTL_X(DxGimpact g1, DxGimpact g2, int Flags, DContactGeomBuffer Contacts, int Stride)
 	{
 		dIASSERT (Stride == 1);//(int)sizeof(dContactGeom));
 		//dIASSERT (g1->type == dTriMeshClass);
@@ -132,7 +132,7 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 		g2.recomputeAABB();
 
 	    //Collide trimeshes
-		TriMesh1.m_collision_trimesh.gim_trimesh_trimesh_collision(TriMesh2.m_collision_trimesh,trimeshcontacts);
+		TriMesh1.m_collision_trimesh().gim_trimesh_trimesh_collision(TriMesh2.m_collision_trimesh(),trimeshcontacts);
 
 	    if(trimeshcontacts.size() == 0)
 	    {

@@ -188,7 +188,7 @@ public class CollideTrimeshPlane implements DColliderFn {
 
 		GimDynArray<vec4f> collision_result = GimTrimesh.GIM_CREATE_TRIMESHPLANE_CONTACTS();
 
-		DxGimpactCollision.gim_trimesh_plane_collisionODE(trimesh.m_collision_trimesh, plane, collision_result);
+		DxGimpactCollision.gim_trimesh_plane_collisionODE(trimesh.m_collision_trimesh(), plane, collision_result);
 
 		if(collision_result.size() == 0 )
 		{

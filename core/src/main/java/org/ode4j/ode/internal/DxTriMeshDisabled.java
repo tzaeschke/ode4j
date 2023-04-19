@@ -40,6 +40,11 @@ public class DxTriMeshDisabled extends DxTriMesh {
 		}
 
 		@Override
+		public void update() {
+
+		}
+
+		@Override
 		public void updateData() {
 			throw new UnsupportedOperationException();
 		}
@@ -126,8 +131,12 @@ public class DxTriMeshDisabled extends DxTriMesh {
 	//dReal* dGeomTriMeshGetLastTransform( dGeom g ) { return identity; }
 	//DMatrix4 dGeomTriMeshGetLastTransform( DGeom g ) { return null; } //TZ TODO?: return identity; }
 
-	void dGeomTriMeshSetData(DGeom g, DTriMeshData Data) {}
-	DTriMeshData dGeomTriMeshGetData(DGeom g) { return null; }
+	@Override
+	//void dGeomTriMeshSetData(DGeom g, DTriMeshData Data) {}
+	public void setTrimeshData(DTriMeshData Data) {}
+	@Override
+	//DTriMeshData dGeomTriMeshGetData(DGeom g) { return null; }
+	public DTriMeshData getTrimeshData() { return null; }
 
 
 	void dGeomTriMeshSetCallback(DGeom g, DTriCallback Callback) { }
@@ -146,19 +155,13 @@ public class DxTriMeshDisabled extends DxTriMesh {
 
 	DTriMeshData dGeomTriMeshGetTriMeshDataID(DGeom g) { return null; }
 
-	@Override
 	public void dGeomTriMeshGetTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2) {};
 
 	int dGeomTriMeshGetTriangleCount (DGeom g) { return 0; }
 	void dGeomTriMeshDataUpdate(DTriMeshData g) {}
 
 	@Override
-	public void clearTCCache() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void FetchTransformedTriangle(int i, DVector3[] v) {
+	public void FetchTransformedTriangle(int i, DVector3 out0, DVector3 out1, DVector3 out2) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -181,9 +184,24 @@ public class DxTriMeshDisabled extends DxTriMesh {
 	}
 
 	@Override
-	public void clearTCCache(DTriMesh g) {
+	public void clearTCCache() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public DTriMeshData getTriMeshData() {
+		return null;
+	}
+
+	@Override
+	public void getTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2) {
+
+	}
+
+	@Override
+	public int getTriangleCount() {
+		return 0;
 	}
 
 	@Override

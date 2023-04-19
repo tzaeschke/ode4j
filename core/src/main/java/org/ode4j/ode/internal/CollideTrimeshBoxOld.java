@@ -1470,7 +1470,7 @@ public class CollideTrimeshBoxOld implements DColliderFn {
 		//*****at first , collide box aabb******//
 
 		//GIM_TRIMESH * ptrimesh = &TriMesh.m_collision_trimesh;
-		GimTrimesh ptrimesh = TriMesh.m_collision_trimesh;
+		GimTrimesh ptrimesh = TriMesh.m_collision_trimesh();
 		aabb3f test_aabb = new aabb3f();
 
 		DAABBC aabb = BoxGeom.getAABB();
