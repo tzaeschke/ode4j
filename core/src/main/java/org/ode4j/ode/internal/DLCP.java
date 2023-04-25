@@ -492,10 +492,6 @@ public class DLCP {
 		            memcpy(m_L, Lrow, m_A, AROWp(j), j+1);
 		        }
 		    }
-		    // TODO CHECK-TZ remove this
-//		    dFactorLDLT (m_L,m_d,nub,m_nskip);
-//		    memcpy (m_x,m_b,nub);//*sizeof(dReal));
-//		    dSolveLDLT (m_L,m_d,m_x,nub,m_nskip);
             transfer_b_to_x(m_pairsbxA, 0, nub, false);
             dxtFactorLDLT(m_L, m_d, nub, m_nskip, 1);
             dxtSolveLDLT(m_L, m_d, 0, m_pairsbxA, 0 + PBX_X, nub, m_nskip, 1, PBX__MAX);
@@ -1485,48 +1481,6 @@ public class DLCP {
 				dxSwap(findex, i1, findex, i2);
 			}
 		}
-
-		// TODO CHECK-TZ remove this
-//		double tmpr;
-//		int tmpi;
-//		boolean tmpb;
-//		dIASSERT (n>0 && i1 >=0 && i2 >= 0 && i1 < n && i2 < n
-//				&& nskip >= n && i1 <= i2);
-//		if (i1==i2) return;
-//		swapRowsAndCols (A,n,i1,i2,nskip,do_fast_row_swaps);
-//		tmpr = x[i1];
-//		x[i1] = x[i2];
-//		x[i2] = tmpr;
-//
-//		tmpr = b[i1];
-//		b[i1] = b[i2];
-//		b[i2] = tmpr;
-//
-//		tmpr = w[i1];
-//		w[i1] = w[i2];
-//		w[i2] = tmpr;
-//
-//		tmpr = lo[i1];
-//		lo[i1] = lo[i2];
-//		lo[i2] = tmpr;
-//
-//		tmpr = hi[i1];
-//		hi[i1] = hi[i2];
-//		hi[i2] = tmpr;
-//
-//		tmpi = p[i1];
-//		p[i1] = p[i2];
-//		p[i2] = tmpi;
-//
-//		tmpb = state[i1];
-//		state[i1] = state[i2];
-//		state[i2] = tmpb;
-//
-//		if (findex!=null) {
-//			tmpi = findex[i1];
-//			findex[i1] = findex[i2];
-//			findex[i2] = tmpi;
-//		}
 	}
 
 

@@ -913,7 +913,7 @@ enum {
 		//		((typename _sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)(amax)
 		//				-
 		//				(typename _sized_unsigned<dMACRO_MAX(sizeof(amax), sizeof(amin))>::type)(amin)))
-		// TODO CHECK-TZ ???
+		// (unsigned)	return (aval - amin) < (amax - amin);
 		return aval >= amin && aval < amax;
 	}
 

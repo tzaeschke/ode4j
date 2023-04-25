@@ -98,7 +98,6 @@ public class CollisionTrimeshGimpact {
 
     //    static inline
     //    void gim_trimesh_get_triangle_verticesODE(GIM_TRIMESH *trimesh, GUINT32 triangle_index, dVector3 v1, dVector3 v2, dVector3 v3) {
-    // TODO (TZ) THIS DOESN'T APPEAR TO BE USED
     //    static void gim_trimesh_get_triangle_verticesODE(GimTrimesh trimesh, int triangle_index, DVector3 v1, DVector3 v2, DVector3 v3) {
     //
     //        //vec3f src1, src2, src3;

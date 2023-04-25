@@ -113,10 +113,8 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     //        enum {
     //            VERTEXINSTANCE_STRIDE = sizeof(vec3f), TRIANGLEINDEX_STRIDE = sizeof(GUINT32) * dMTV__MAX,
     //        } ;
-    @Deprecated // TODO CHECK-TZ these should not be used!
-    public static final int VERTEXINSTANCE_STRIDE = 3;//sizeof(vec3f);
-    @Deprecated // TODO CHECK-TZ these should not be used!
-    public static final int TRIANGLEINDEX_STRIDE = 1 /*sizeof(GUINT32)*/ * dMTV__MAX;
+    static final int VERTEXINSTANCE_STRIDE = 3;//sizeof(vec3f);
+    static final int TRIANGLEINDEX_STRIDE = 1 /*sizeof(GUINT32)*/ * dMTV__MAX;
 
     //void assignMeshData (dxTriMeshData * Data);
 
@@ -168,10 +166,10 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     void assignMeshData(DxTriMeshData Data) {
         // GIMPACT only supports stride 12, so we need to catch the error early.
         //dUASSERT((unsigned int)Data.retrieveVertexStride() == (unsigned) VERTEXINSTANCE_STRIDE && (unsigned int)
-        dUASSERT((int)Data.retrieveVertexStride() == (int) VERTEXINSTANCE_STRIDE && (int)
-        Data.retrieveTriangleStride() == (int) TRIANGLEINDEX_STRIDE, "Gimpact trimesh only supports a stride of 3 float/int\n" +
-        "This means that you cannot use dGeomTriMeshDataBuildSimple() with Gimpact.\n" +
-        "Change the stride, or use Opcode trimeshes instead.\n");
+        //dUASSERT((int)Data.retrieveVertexStride() == (int) VERTEXINSTANCE_STRIDE && (int)
+        //Data.retrieveTriangleStride() == (int) TRIANGLEINDEX_STRIDE, "Gimpact trimesh only supports a stride of 3 float/int\n" +
+        //"This means that you cannot use dGeomTriMeshDataBuildSimple() with Gimpact.\n" +
+        //"Change the stride, or use Opcode trimeshes instead.\n");
 
         //        dxTriMesh_Parent::assignMeshData (Data);
         super.assignMeshData (Data);

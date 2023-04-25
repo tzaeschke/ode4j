@@ -132,11 +132,11 @@ public class DxTriDataBase extends DBase {
         public DxTriDataBase() {
             super();
             m_vertices = null;
-            m_vertexStride = 0;
+            // m_vertexStride = 0;
             m_vertexCount = 0;
             m_indices = null;
             m_triangleCount = 0;
-            m_triStride = 0;
+            // m_triStride = 0;
             // m_single = false;
             m_normals = null;
             m_faceAngles = null;
@@ -161,17 +161,17 @@ public class DxTriDataBase extends DBase {
             return m_vertexCount;
         }
 
-        public int retrieveVertexStride() {
-            return m_vertexStride;
-        }
+        //        public int retrieveVertexStride() {
+        //            return m_vertexStride; // TZ: This is always 3!
+        //        }
 
         public int retrieveTriangleCount() {
             return m_triangleCount;
         }
 
-        public int retrieveTriangleStride() {
-            return m_triStride;
-        }
+        //        public int retrieveTriangleStride() {
+        //            //return m_triStride; // TZ: This is always 3!
+        //        }
 
         //protected:
         //    const void *retrieveVertexInstances() const { return m_vertices; }
@@ -290,7 +290,7 @@ public class DxTriDataBase extends DBase {
         //        private:
         //    const void *m_vertices;
         private float[] m_vertices;
-        private int m_vertexStride;
+        // private int m_vertexStride;
         private int m_vertexCount;
         //const void *m_indices;
         private int[] m_indices;
@@ -329,13 +329,31 @@ public class DxTriDataBase extends DBase {
     //    const tcoordfloat *vertexInstances, int vertexStride, const tindexint *triangleVertexIndices, int triangleStride)
     //<tcoordfloat, tindexint>
     /*static */
-    static void retrieveTriangleVertexPoints(DVector3[] out_Points, int triangleIndex, final float[] vertexInstances, int vertexStride, final int[] triangleVertexIndices, int triangleStride) {
+    //    static void retrieveTriangleVertexPoints(DVector3[] out_Points, int triangleIndex, final float[] vertexInstances, int vertexStride, final int[] triangleVertexIndices, int triangleStride) {
+    //        //final tindexint[] triangleIndicesOfInterest = (const tindexint *)((uint8 *)triangleVertexIndices + (size_t)triangleIndex * triangleStride);
+    //        final int triangleIndicesOfInterestPos = triangleIndex * triangleStride;
+    //        for (int trianglePoint = dMTV__MIN; trianglePoint != dMTV__MAX; ++trianglePoint) {
+    //            int vertexIndex = triangleVertexIndices[triangleIndicesOfInterestPos + trianglePoint];
+    //            //tcoordfloat * pointVertex = (tcoordfloat *) ((uint8 *) vertexInstances + (size_t) vertexIndex * vertexStride)
+    //            int pointVertexPos = /*vertexInstances +*/ vertexIndex * vertexStride;
+    //
+    //            //dAssignVector3(out_Points[trianglePoint], (double) pointVertex[dSA_X], (double) pointVertex[dSA_Y], (double) pointVertex[dSA_Z]);
+    //            out_Points[trianglePoint].set(
+    //                    vertexInstances[pointVertexPos + dSA_X],
+    //                    vertexInstances[pointVertexPos + dSA_Y],
+    //                    vertexInstances[pointVertexPos + dSA_Z]);
+    //            dSASSERT(dSA_X == 0);
+    //            dSASSERT(dSA_Y == 1);
+    //            dSASSERT(dSA_Z == 2);
+    //        }
+    //    }
+    static void retrieveTriangleVertexPoints(DVector3[] out_Points, int triangleIndex, final float[] vertexInstances, final int[] triangleVertexIndices) {
         //final tindexint[] triangleIndicesOfInterest = (const tindexint *)((uint8 *)triangleVertexIndices + (size_t)triangleIndex * triangleStride);
-        final int triangleIndicesOfInterestPos = triangleIndex * triangleStride;
+        final int triangleIndicesOfInterestPos = triangleIndex * DxTriMesh.TRIANGLEINDEX_STRIDE;
         for (int trianglePoint = dMTV__MIN; trianglePoint != dMTV__MAX; ++trianglePoint) {
             int vertexIndex = triangleVertexIndices[triangleIndicesOfInterestPos + trianglePoint];
             //tcoordfloat * pointVertex = (tcoordfloat *) ((uint8 *) vertexInstances + (size_t) vertexIndex * vertexStride)
-            int pointVertexPos = /*vertexInstances +*/ vertexIndex * vertexStride;
+            int pointVertexPos = /*vertexInstances +*/ vertexIndex * DxTriMesh.VERTEXINSTANCE_STRIDE;
 
             //dAssignVector3(out_Points[trianglePoint], (double) pointVertex[dSA_X], (double) pointVertex[dSA_Y], (double) pointVertex[dSA_Z]);
             out_Points[trianglePoint].set(
@@ -843,29 +861,30 @@ public class DxTriDataBase extends DBase {
     //    const void *indices, unsigned indexCount, int triStride,
     //    const void *normals,
     //                                  bool single)
-    void buildData(final float[] vertices, int vertexStride, int vertexCount, final int[] indices, int indexCount,
-                   int triStride, final float[] normals) //, boolean single)
-    {
+    //    private void buildData(final float[] vertices, int vertexStride, int vertexCount, final int[] indices,
+    //      int indexCount, int triStride, final float[] normals) //, boolean single) {
+    private void buildData(final float[] vertices, int vertexCount, final int[] indices, int indexCount,
+                           final float[] normals) {
         dIASSERT(vertices != null);
         dIASSERT(indices != null);
-        dIASSERT(vertexStride != 0);
-        dIASSERT(triStride != 0);
+        //dIASSERT(vertexStride != 0); // == 3!
+        //dIASSERT(triStride != 0); // == 3!
         dIASSERT(indexCount != 0);
         dIASSERT(indexCount % dMTV__MAX == 0);
 
         m_vertices = vertices;
-        m_vertexStride = vertexStride;
+        // m_vertexStride = vertexStride;
         m_vertexCount = vertexCount;
         m_indices = indices;
         m_triangleCount = indexCount / dMTV__MAX;
-        m_triStride = triStride;
-        //m_single = single;
+        // m_triStride = triStride;
+        // m_single = single;
 
         m_normals = normals;
     }
 
     protected void buildData(final float[] vertices, final int[] indices, final float[] normals) {
-        buildData(vertices, DxTriMesh.VERTEXINSTANCE_STRIDE, vertices.length/3, indices, indices.length, 3, normals); //, true);
+        buildData(vertices, vertices.length/3, indices, indices.length, normals); //, true);
     }
 
 

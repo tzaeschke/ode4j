@@ -138,7 +138,7 @@ public abstract class DxTriMeshData extends DxTriDataBase implements DTriMeshDat
         //enum {
         //TRIANGLEINDEX_STRIDE = dxTriMesh::TRIANGLEINDEX_STRIDE,
         //} ;
-        static final int TRIANGLEINDEX_STRIDE = DxTriMesh.TRIANGLEINDEX_STRIDE;
+        // static final int TRIANGLEINDEX_STRIDE = DxTriMesh.TRIANGLEINDEX_STRIDE;
 
         //    TrimeshDataVertexIndexAccessor_GIMPACT (dxTriMeshData * meshData):
         //    m_TriangleVertexIndices(meshData.retrieveTriangleVertexIndices()) {
@@ -146,7 +146,7 @@ public abstract class DxTriMeshData extends DxTriDataBase implements DTriMeshDat
         //    }
         TrimeshDataVertexIndexAccessor_GIMPACT(DxTriMeshData meshData) {
             m_TriangleVertexIndices = meshData.retrieveTriangleVertexIndices();
-            dIASSERT(meshData.retrieveTriangleStride() == TRIANGLEINDEX_STRIDE);
+            // dIASSERT(meshData.retrieveTriangleStride() == TRIANGLEINDEX_STRIDE);
         }
 
         //void getTriangleVertexIndices(unsigned out_VertexIndices[dMTV__MAX], unsigned triangleIdx) const
@@ -170,24 +170,28 @@ public abstract class DxTriMeshData extends DxTriDataBase implements DTriMeshDat
         //enum {
         //VERTEXINSTANCE_STRIDE = dxTriMesh::VERTEXINSTANCE_STRIDE, TRIANGLEINDEX_STRIDE = dxTriMesh::TRIANGLEINDEX_STRIDE,
         //} ;
-        final int VERTEXINSTANCE_STRIDE = DxTriMesh.VERTEXINSTANCE_STRIDE;
-        final int TRIANGLEINDEX_STRIDE = DxTriMesh.TRIANGLEINDEX_STRIDE;
+        // final int VERTEXINSTANCE_STRIDE = DxTriMesh.VERTEXINSTANCE_STRIDE;
+        // final int TRIANGLEINDEX_STRIDE = DxTriMesh.TRIANGLEINDEX_STRIDE;
 
         //        TrimeshDataTrianglePointAccessor_GIMPACT(dxTriMeshData * meshData):
         //        m_VertexInstances(meshData -> retrieveVertexInstances()), m_TriangleVertexIndices(meshData -> retrieveTriangleVertexIndices())
         TrimeshDataTrianglePointAccessor_GIMPACT(DxTriMeshData meshData) {
             m_VertexInstances = meshData.retrieveVertexInstances();
             m_TriangleVertexIndices = meshData.retrieveTriangleVertexIndices();
-            dIASSERT(meshData.retrieveVertexStride() == VERTEXINSTANCE_STRIDE);
-            dIASSERT(meshData.retrieveTriangleStride() == TRIANGLEINDEX_STRIDE);
+            // dIASSERT(meshData.retrieveVertexStride() == VERTEXINSTANCE_STRIDE);
+            // dIASSERT(meshData.retrieveTriangleStride() == TRIANGLEINDEX_STRIDE);
         }
 
         //void getTriangleVertexPoints (dVector3 out_Points[dMTV__MAX], unsigned triangleIndex) const
         @Override
         public void getTriangleVertexPoints (DVector3[] out_Points, int triangleIndex) {
+            //            DxTriMeshData.retrieveTriangleVertexPoints (out_Points, triangleIndex,
+            //                m_VertexInstances, VERTEXINSTANCE_STRIDE,
+            //                    m_TriangleVertexIndices, TRIANGLEINDEX_STRIDE);
             DxTriMeshData.retrieveTriangleVertexPoints (out_Points, triangleIndex,
-                m_VertexInstances, VERTEXINSTANCE_STRIDE,
-                    m_TriangleVertexIndices, TRIANGLEINDEX_STRIDE);
+                    m_VertexInstances,
+                    m_TriangleVertexIndices);
+
         }
 
         //            const vec3f * m_VertexInstances;

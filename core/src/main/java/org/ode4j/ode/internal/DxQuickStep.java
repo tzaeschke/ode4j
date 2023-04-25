@@ -46,6 +46,7 @@ import static org.ode4j.ode.internal.processmem.DxUtil.dMAX;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
@@ -595,24 +596,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		}
 		return result;
 	}
-	// TODO CHECK-TZ Why is the above implementation so different from the original?
-//	private static
-//	boolean IsSORConstraintsReorderRequiredForIteration(int iteration)
-//	{
-//		boolean result = false;
-//		if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__BY_ERROR) {
-//			result = true;
-//		} else if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__RANDOMLY) {
-//			if ((iteration & 7) == 0) {
-//				result = true;
-//			}
-//		} else { // #if CONSTRAINTS_REORDERING_METHOD != REORDERING_METHOD__BY_ERROR && CONSTRAINTS_REORDERING_METHOD != REORDERING_METHOD__RANDOMLY
-//			if (iteration == 0) {
-//				result = true;
-//			}
-//		}
-//		return result;
-//	}
 
 	private double[] buf_invI = new double[100];
 
@@ -694,7 +677,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    }
 	    else
 	    {
-	    	// TODO CHECK-TZ Is this still correct as of 0.15? -> Proabbly, it has not changed in ODE
 	        TaskGroup stage1 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage1", new Runnable() {
                 @Override
                 public void run() {
@@ -1139,7 +1121,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	            // findex iteration is compact and is not going to pollute caches - do it first
 	            // adjust returned findex values for global index numbering
-				// TODO CHECK-TZ This looks alright, but is different from the original where we use findexRow
+				// TZ: This looks alright, but is different from the original where we use findexRow
 	            for (int j = infom; j != 0; ) {
 	            	--j;
 	            	int fival = findex[j+ofsi];
@@ -1309,8 +1291,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        AtomicInteger[] mi_links = null;
 
 	        if (!singleThreadedExecution && ENABLE_LCP_ITERATIONS_MULTITHREADING) {
-	        	// TODO CHECK-TZ consider using AtomicIntergerArray? And pooling?
-	        	bi_links_or_mi_levels = new AtomicInteger[Math.max(nb, m)];// memarena->AllocateArray<atomicord32>(dMAX(nb, m));
+	        	// TODO TZ consider pooling?
+				bi_links_or_mi_levels = new AtomicInteger[Math.max(nb, m)];// memarena->AllocateArray<atomicord32>(dMAX(nb, m));
 	        	mi_links = new AtomicInteger[2 * (m + 1)];// memarena->AllocateArray<atomicord32>(2 * (m + 1));
 	        }
 
