@@ -29,7 +29,7 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 import static org.ode4j.ode.internal.ErrorHandler.dMessage;
-import static org.ode4j.ode.internal.FastDLT2.dxtFactorLDLT;
+import static org.ode4j.ode.internal.FastLDLT.dxtFactorLDLT;
 import static org.ode4j.ode.internal.FastDot.dDot;
 import static org.ode4j.ode.internal.Matrix.*;
 import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;

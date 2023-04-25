@@ -35,7 +35,6 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DMatrix;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 
@@ -1697,7 +1696,7 @@ public class Matrix extends FastDot {
 	 * @param nskip1 nskip 
 	 */
 	public static void dFactorLDLT(double[] A, double[] d, int n, int nskip1) {
-		D_LDLT.dFactorLDLT(A, d, n, nskip1);
+		D_LDLT.dxtFactorLDLT(A, d, n, nskip1, 1);
 	}
 	
 	private static final int _dEstimateFactorCholeskyTmpbufSize(int n)
