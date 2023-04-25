@@ -46,6 +46,10 @@ public class OdeConfig {
 	 * 
 	 * WARNING This is likely to be removed at some point.
 	 */
+	// TODO TZ Remove this, this has been fixed:
+	//  https://bitbucket.org/odedevs/ode/issues/36/fix-gimpact-contacts-handling
+	// TODO TZ remove with 0.6.0 (deprecated in 0.5.0)
+	@Deprecated() // This is deprecated. THe underlying issue has been resolved, see issue #22.
 	public static boolean ENABLE_CONTACT_SORTING = true;
 	
 	public static enum TRIMESH {

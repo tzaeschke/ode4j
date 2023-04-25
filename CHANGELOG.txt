@@ -13,6 +13,8 @@
 
 - OSGI: "JavaSE;version=1.8"  / https://www.aqute.biz/2020/03/02/osgi-on-android.html
 
+- Issue #22 / ODE issue #36: https://bitbucket.org/odedevs/ode/issues/36/fix-gimpact-contacts-handling
+  This has been resolved, We need to remove the workaround in OdeConfig::50
 // TODO TZ check
 // TODO TZ fix
 
