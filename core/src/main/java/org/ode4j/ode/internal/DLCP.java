@@ -232,9 +232,9 @@ public class DLCP {
 
 	//	#define dMIN(A,B)  ((A)>(B) ? (B) : (A))
 	//	#define dMAX(A,B)  ((B)>(A) ? (B) : (A))
-	private static double dMIN(double A, double B) { return ((A)>(B) ? (B) : (A)); }
-	private static double dMAX(double A, double B) { return ((B)>(A) ? (B) : (A)); }
-	private static int dMAX(int A, int B) { return ((B)>(A) ? (B) : (A)); }
+	// private static double dMIN(double A, double B) { return ((A)>(B) ? (B) : (A)); }
+	// private static double dMAX(double A, double B) { return ((B)>(A) ? (B) : (A)); }
+	private static int dMAX(int A, int B) { return (Math.max((B), (A))); }
 
 	//	#define LMATRIX_ALIGNMENT       dMAX(64, EFFICIENT_ALIGNMENT)
 	private static final int LMATRIX_ALIGNMENT = dMAX(64, DxUtil.EFFICIENT_ALIGNMENT);
