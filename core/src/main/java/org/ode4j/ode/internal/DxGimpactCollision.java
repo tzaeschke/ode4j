@@ -183,7 +183,6 @@ public class DxGimpactCollision {
 		MakeMatrix(Position, Rotation, Out);
 	}
 
-	//***  TODO TZ END OF GIMPACT SPECIFIC PART
 	//#endif // dTRIMESH_GIMPACT
 
 	// Outputs a matrix to 3 vectors

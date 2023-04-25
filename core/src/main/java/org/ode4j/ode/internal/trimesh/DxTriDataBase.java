@@ -614,8 +614,6 @@ public class DxTriDataBase extends DBase {
     //    void dxTriDataBase::buildBoundaryEdgeAngle(IFaceAngleStorageControl *faceAngles,
     //                                               EdgeRecord *currEdge)
     void buildBoundaryEdgeAngle(IFaceAngleStorageControl faceAngles, EdgeRecord currEdge0) {
-        // TODO TZ Check why don´t we set this to 360 / 2PI here? This would avoid the problem in getEdgeAngle()...
-        //    Or better: why not 180==PI
         final double faceAngle = (0.0);
 
         // DMeshTriangleVertex
