@@ -40,53 +40,75 @@ import static org.ode4j.ode.internal.trimesh.DxTriDataBase.*;
  * //@param <TStorageType>
  * //@param <SSI_SIGNED_STORED>
  */
-class FaceAngleStorageCodec {//<TStorageType extends Number, SSI_SIGNED_STORED> {
-
-    // TODO CHECK-TZ use 'short' for SSI_SIGNED_STORED?
-    //    template<typename TStorageType>
-    //    class FaceAngleStorageCodec<TStorageType, SSI_SIGNED_STORED>
-    //    {
-    //public:
-    //typedef typename _make_signed<TStorageType>::type storage_type;
-    //enum
-    //{
-    //STORAGE_TYPE_MAX = (typename _make_unsigned<TStorageType>::type)(~(typename _make_unsigned<TStorageType>::type)
-    // 0) >> 1,
-    private static final int STORAGE_TYPE_MAX = Integer.MAX_VALUE;
-    //};
+//class FaceAngleStorageCodec {//<TStorageType extends Number, SSI_SIGNED_STORED> {
+//
+//    //    template<typename TStorageType>
+//    //    class FaceAngleStorageCodec<TStorageType, SSI_SIGNED_STORED>
+//    //    {
+//    //public:
+//    //typedef typename _make_signed<TStorageType>::type storage_type;
+//    //enum
+//    //{
+//    //STORAGE_TYPE_MAX = (typename _make_unsigned<TStorageType>::type)(~(typename _make_unsigned<TStorageType>::type)
+//    // 0) >> 1,
+//    private static final int STORAGE_TYPE_MAX = Integer.MAX_VALUE;
+//    //};
+//
+//    static boolean areNegativeAnglesCoded() {
+//        return true;
+//    }
+//
+//    //static storage_type encodeForStorage(dReal angleValue)
+//    static int encodeForStorage(double angleValue) {
+//        int angleAsInt = (int) dFloor(dFabs(angleValue) * (double) (STORAGE_TYPE_MAX / M_PI));
+//        int limitedAngleAsInt = dMACRO_MIN(angleAsInt, STORAGE_TYPE_MAX);
+//        int result = angleValue < (0.0) ? -(int) limitedAngleAsInt : (int) limitedAngleAsInt;
+//        return result;
+//    }
+//
+//    //static FaceAngleDomain classifyStorageValue(storage_type storedValue)
+//    static FaceAngleDomain classifyStorageValue(double storedValue) {
+//        dSASSERT(EAD__MAX == 3);
+//
+//        return storedValue < 0 ? FaceAngleDomain.FAD_CONCAVE : (storedValue == 0 ?
+//                FaceAngleDomain.FAD_FLAT : FaceAngleDomain.FAD_CONVEX);
+//    }
+//
+//    //static bool isAngleDomainStored(FaceAngleDomain domainValue)
+//    static boolean isAngleDomainStored(FaceAngleDomain domainValue) {
+//        //return !dTMPL_IN_RANGE(domainValue, FAD__SIGNSTORED_IMPLICITVALUE_MIN, FAD__SIGNSTORED_IMPLICITVALUE_MAX);
+//        return domainValue != FaceAngleDomain.FAD_FLAT;
+//    }
+//
+//    //static dReal decodeStorageValue(storage_type storedValue)
+//    static double decodeStorageValue(double storedValue) {
+//        return storedValue * (double) (M_PI / STORAGE_TYPE_MAX);
+//    }
+//}
+class FaceAngleStorageCodec {
 
     static boolean areNegativeAnglesCoded() {
         return true;
     }
 
-    //static storage_type encodeForStorage(dReal angleValue)
-    static int encodeForStorage(double angleValue) {
-        int angleAsInt = (int) dFloor(dFabs(angleValue) * (double) (STORAGE_TYPE_MAX / M_PI));
-        int limitedAngleAsInt = dMACRO_MIN(angleAsInt, STORAGE_TYPE_MAX);
-        int result = angleValue < (0.0) ? -(int) limitedAngleAsInt : (int) limitedAngleAsInt;
-        return result;
+    static float encodeForStorage(double angleValue) {
+        return (float) (angleValue >= 0.0 ? Math.min(angleValue, M_PI) : Math.max(angleValue, -M_PI));
     }
 
-    //static FaceAngleDomain classifyStorageValue(storage_type storedValue)
     static FaceAngleDomain classifyStorageValue(double storedValue) {
-        dSASSERT(EAD__MAX == 3);
-
         return storedValue < 0 ? FaceAngleDomain.FAD_CONCAVE : (storedValue == 0 ?
                 FaceAngleDomain.FAD_FLAT : FaceAngleDomain.FAD_CONVEX);
     }
 
-    //static bool isAngleDomainStored(FaceAngleDomain domainValue)
     static boolean isAngleDomainStored(FaceAngleDomain domainValue) {
-        //return !dTMPL_IN_RANGE(domainValue, FAD__SIGNSTORED_IMPLICITVALUE_MIN, FAD__SIGNSTORED_IMPLICITVALUE_MAX);
         return domainValue != FaceAngleDomain.FAD_FLAT;
     }
 
-    //static dReal decodeStorageValue(storage_type storedValue)
-    // TODO CHECK TZ why are we storing a 'int' here? We are dropping a lot of precision here....
     static double decodeStorageValue(double storedValue) {
-        return storedValue * (double) (M_PI / STORAGE_TYPE_MAX);
+        return storedValue;
     }
 }
+
 
 
 //    template<typename TStorageType>

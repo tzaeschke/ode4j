@@ -55,7 +55,6 @@ public class DxTriDataBase extends DBase {
 
     //#if !dTLS_ENABLED
     // Have collider cache instance unconditionally of OPCODE or GIMPACT selection
-    // TODO This appears not to be necessary
     // public static final TrimeshCollidersCache g_ccTrimeshCollidersCache;
     //#endif
 
@@ -83,7 +82,6 @@ public class DxTriDataBase extends DBase {
 
     //    static inline
     //    TrimeshCollidersCache *GetTrimeshCollidersCache(unsigned uiTLSKind)
-    // TODO THis appears not to be necessary
     //    static TrimeshCollidersCache GetTrimeshCollidersCache(int uiTLSKind) {
     //        //    #if dTLS_ENABLED
     //        //            EODETLSKIND tkTLSKind = (EODETLSKIND)uiTLSKind;
@@ -97,24 +95,23 @@ public class DxTriDataBase extends DBase {
 
 
     //enum FaceAngleStorageMethod {
-    // TODO TZ fix: Remove all these, we only use  ASM_WORD_SIGNED
-    public static final int ASM__MIN = 0;
-    public static final int ASM_BYTE_SIGNED = ASM__MIN;
-    public static final int ASM_BYTE_POSITIVE = ASM_BYTE_SIGNED + 1;
-    public static final int ASM_WORD_SIGNED = ASM_BYTE_POSITIVE + 1;
-    public static final int ASM__MAX = ASM_WORD_SIGNED + 1;
-    public static final int ASM__INVALID = ASM__MAX;
+    //    public static final int ASM__MIN = 0;
+    //    public static final int ASM_BYTE_SIGNED = ASM__MIN;
+    //    public static final int ASM_BYTE_POSITIVE = ASM_BYTE_SIGNED + 1;
+    public static final int ASM_WORD_SIGNED = 2;//ASM_BYTE_POSITIVE + 1;
+    //    public static final int ASM__MAX = ASM_WORD_SIGNED + 1;
+    public static final int ASM__INVALID = 3;//ASM__MAX;
 
-//    // enum FaceAngleDomain {
-//    public static final int FAD__MIN = 0;
-//    public static final int FAD_CONCAVE = FAD__MIN;
-//    public static final int FAD__SIGNSTORED_IMPLICITVALUE_MIN = FAD_CONCAVE + 1;
-//    public static final int FAD_FLAT = FAD__SIGNSTORED_IMPLICITVALUE_MIN;
-//    public static final int FAD__SIGNSTORED_IMPLICITVALUE_MAX = FAD_FLAT + 1;
-//    public static final int FAD__BYTEPOS_STORED_MIN = FAD__SIGNSTORED_IMPLICITVALUE_MAX;
-//    public static final int FAD_CONVEX = FAD__BYTEPOS_STORED_MIN;
-//    public static final int FAD__BYTEPOS_STORED_MAX = FAD_CONVEX + 1;
-//    public static final int EAD__MAX = FAD__BYTEPOS_STORED_MAX;
+    //    // enum FaceAngleDomain {
+    //    public static final int FAD__MIN = 0;
+    //    public static final int FAD_CONCAVE = FAD__MIN;
+    //    public static final int FAD__SIGNSTORED_IMPLICITVALUE_MIN = FAD_CONCAVE + 1;
+    //    public static final int FAD_FLAT = FAD__SIGNSTORED_IMPLICITVALUE_MIN;
+    //    public static final int FAD__SIGNSTORED_IMPLICITVALUE_MAX = FAD_FLAT + 1;
+    //    public static final int FAD__BYTEPOS_STORED_MIN = FAD__SIGNSTORED_IMPLICITVALUE_MAX;
+    //    public static final int FAD_CONVEX = FAD__BYTEPOS_STORED_MIN;
+    //    public static final int FAD__BYTEPOS_STORED_MAX = FAD_CONVEX + 1;
+    //    public static final int EAD__MAX = FAD__BYTEPOS_STORED_MAX;
     public enum FaceAngleDomain {
         //FAD__MIN = 0;
         FAD_CONCAVE, // = FAD__MIN;
@@ -140,7 +137,7 @@ public class DxTriDataBase extends DBase {
             m_indices = null;
             m_triangleCount = 0;
             m_triStride = 0;
-            m_single = false;
+            // m_single = false;
             m_normals = null;
             m_faceAngles = null;
             m_faceAngleView = null;
@@ -188,10 +185,9 @@ public class DxTriDataBase extends DBase {
             return m_indices;
         }
 
-        protected boolean isSingle() {
-            // TODO TZ fix: remove this, it is not used (just indicates float vs double)
-            return m_single;
-        }
+        //        protected boolean isSingle() {
+        //            return m_single;
+        //        }
 
         //        public:
         //        template<typename tcoordfloat, typename
@@ -300,7 +296,7 @@ public class DxTriDataBase extends DBase {
         private int[] m_indices;
         private int m_triangleCount;
         private int m_triStride;
-        private boolean m_single;
+        //private boolean m_single;
 
         //        private:
         //        const void *m_normals;
@@ -796,11 +792,10 @@ public class DxTriDataBase extends DBase {
     //////////////////////////////////////////////////////////////////////////
 
     //enum EdgeStorageSignInclusion {
-    public static final int SSI__MIN = 0;
-    // TODO TZ Fix: Remove this completely, Only SSI_SIGNED_STORED is used, so we can remove parametrization!
-    public static final int SSI_SIGNED_STORED = SSI__MIN;
-    public static final int SSI_POSITIVE_STORED = SSI_SIGNED_STORED + 1;
-    public static final int SSI__MAX = SSI_POSITIVE_STORED + 1;
+    //    public static final int SSI__MIN = 0;
+    //    public static final int SSI_SIGNED_STORED = SSI__MIN;
+    //    public static final int SSI_POSITIVE_STORED = SSI_SIGNED_STORED + 1;
+    //    public static final int SSI__MAX = SSI_POSITIVE_STORED + 1;
 
 
 
@@ -849,7 +844,7 @@ public class DxTriDataBase extends DBase {
     //    const void *normals,
     //                                  bool single)
     void buildData(final float[] vertices, int vertexStride, int vertexCount, final int[] indices, int indexCount,
-                   int triStride, final float[] normals, boolean single)
+                   int triStride, final float[] normals) //, boolean single)
     {
         dIASSERT(vertices != null);
         dIASSERT(indices != null);
@@ -864,13 +859,13 @@ public class DxTriDataBase extends DBase {
         m_indices = indices;
         m_triangleCount = indexCount / dMTV__MAX;
         m_triStride = triStride;
-        m_single = single;
+        //m_single = single;
 
         m_normals = normals;
     }
 
     protected void buildData(final float[] vertices, final int[] indices, final float[] normals) {
-        buildData(vertices, DxTriMesh.VERTEXINSTANCE_STRIDE, vertices.length/3, indices, indices.length, 3, normals, true);
+        buildData(vertices, DxTriMesh.VERTEXINSTANCE_STRIDE, vertices.length/3, indices, indices.length, 3, normals); //, true);
     }
 
 
@@ -1036,12 +1031,12 @@ public class DxTriDataBase extends DBase {
     //    };
     //    END_NAMESPACE_OU();
     //    static const CEnumUnsortedElementArray<unsigned, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX, FaceAngleStorageMethod, 0x17010902> g_TriMeshDataPreprocess_FaceAndlesExtraDataAngleStorageMethods;
-    static final CEnumUnsortedElementArray g_TriMeshDataPreprocess_FaceAndlesExtraDataAngleStorageMethods =
-            new CEnumUnsortedElementArray(new int[]{
-            ASM_BYTE_POSITIVE, // dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_POSITIVE,
-            ASM_BYTE_SIGNED, // dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_ALL,
-            ASM_WORD_SIGNED, // dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_WORD_ALL,
-    }, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX);
+    //    static final CEnumUnsortedElementArray g_TriMeshDataPreprocess_FaceAndlesExtraDataAngleStorageMethods =
+    //            new CEnumUnsortedElementArray(new int[]{
+    //            ASM_BYTE_POSITIVE, // dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_POSITIVE,
+    //            ASM_BYTE_SIGNED, // dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_BYTE_ALL,
+    //            ASM_WORD_SIGNED, // dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA_WORD_ALL,
+    //    }, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX);
 
 
     /*extern ODE_API */
@@ -1061,7 +1056,7 @@ public class DxTriDataBase extends DBase {
         //        FaceAngleStorageMethod faceAnglesRequirement = (buildRequestFlags & (1U << dTRIDATAPREPROCESS_BUILD_FACE_ANGLES)) != 0
         //            ? g_TriMeshDataPreprocess_FaceAndlesExtraDataAngleStorageMethods.Encode(requestExtraData != NULL && dIN_RANGE(requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES], dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN, dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX) ? (unsigned)requestExtraData[dTRIDATAPREPROCESS_BUILD_FACE_ANGLES] : dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__DEFAULT)
         //            : ASM__INVALID;
-        // TODO TZ we only support signed, anyway, so it is easiest to only support 'word'.
+        // TZ: we only support signed, anyway, so it is easiest to only support 'word'.
         int faceAnglesRequirement = ASM_WORD_SIGNED;
 
         return data.preprocessData(buildUseFlags, faceAnglesRequirement);
