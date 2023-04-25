@@ -31,7 +31,6 @@ import org.ode4j.math.DVector4;
 import org.ode4j.math.DVector4C;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
@@ -48,7 +47,6 @@ public class DxGimpactCollision {
 	//	#if dTRIMESH_GIMPACT
 
 
-	//TZ TODO
 	//	#ifdef dDOUBLE
 	// To use GIMPACT with doubles, we need to patch a couple of the GIMPACT functions to 
 	// convert arguments to floats before sending them in

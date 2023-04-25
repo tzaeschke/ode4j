@@ -33,7 +33,6 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.libccd.CCD.ccd_center_fn;
 import org.ode4j.ode.internal.libccd.CCD.ccd_support_fn;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;
-import org.ode4j.ode.internal.trimesh.DxTriDataBase;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.IFaceAngleStorageView;
 

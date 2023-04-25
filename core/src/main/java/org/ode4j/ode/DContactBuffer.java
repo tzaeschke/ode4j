@@ -35,7 +35,7 @@ import java.util.Iterator;
  */
 public class DContactBuffer implements Iterable<DContact> {
 	
-	private ArrayList<DContact> buf = new ArrayList<DContact>();
+	private final ArrayList<DContact> buf = new ArrayList<DContact>();
 
 	public DContactBuffer(int size) {
 		for (int i = 0; i < size; i++) {
