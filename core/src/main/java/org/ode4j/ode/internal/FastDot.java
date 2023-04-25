@@ -102,8 +102,6 @@ public class FastDot extends Misc {
 		return sum;
 	}
 
-	// TODO CHECK-TZ Enable this and test it?
-	// TODO CHECK-TZ 'a' is original dReal**, are we doing the increments correctly?
 	//template<unsigned b_stride>
 	public static double dxtDot (final double[] a, int a_pos, final double[] b, int b_pos, int n, int b_stride)
 	{

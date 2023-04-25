@@ -452,7 +452,6 @@ dmaxcallcountestimate_fn_t {
 		cforce[CFE_AZ] += sumAZ;
 	}
 
-	// TODO CHECK-TZ remove these
 	//TZ: not used...
 //	private static void Multiply2_p8r (double[] A, int APos,
 //			double[] B, int BPos, double[] C, int CPos,

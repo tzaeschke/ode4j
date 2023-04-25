@@ -108,7 +108,7 @@ public class FastLTSolve {
                     double q1, p4, p3, p2, p1;
 
                     /* load p and q values */
-                    q1 = B[ptrBElement + 0 * (int)b_stride];
+                    q1 = B[ptrBElement + 0 * b_stride];
                     p4 = L[ptrLElement + -3];
                     p3 = L[ptrLElement + -2];
                     p2 = L[ptrLElement + -1];
@@ -130,7 +130,7 @@ public class FastLTSolve {
                     double q1, p4, p3, p2, p1;
 
                     /* load p and q values */
-                    q1 = B[ptrBElement + 0 * (int)b_stride];
+                    q1 = B[ptrBElement + 0 * b_stride];
                     p4 = L[ptrLElement + -3];
                     p3 = L[ptrLElement + -2];
                     p2 = L[ptrLElement + -1];
@@ -144,7 +144,7 @@ public class FastLTSolve {
                     Z11 += p1 * q1;
 
                     /* load p and q values */
-                    q1 = B[ptrBElement + -1 * (int)b_stride];
+                    q1 = B[ptrBElement + -1 * b_stride];
                     p4 = L[ptrLElement + -3];
                     p3 = L[ptrLElement + -2];
                     p2 = L[ptrLElement + -1];
@@ -168,7 +168,7 @@ public class FastLTSolve {
                     // TODO CHECK-TZ Replace with Loop
 
                     /* load p and q values */
-                    q1 = B[ptrBElement + 0 * (int)b_stride];
+                    q1 = B[ptrBElement + 0 * b_stride];
                     p4 = L[ptrLElement + -3];
                     p3 = L[ptrLElement + -2];
                     p2 = L[ptrLElement + -1];
@@ -182,7 +182,7 @@ public class FastLTSolve {
                     Z11 += p1 * q1;
 
                     /* load p and q values */
-                    q1 = B[ptrBElement + -1 * (int)b_stride];
+                    q1 = B[ptrBElement + -1 * b_stride];
                     p4 = L[ptrLElement + -3];
                     p3 = L[ptrLElement + -2];
                     p2 = L[ptrLElement + -1];
@@ -196,7 +196,7 @@ public class FastLTSolve {
                     Z11 += p1 * q1;
 
                     /* load p and q values */
-                    q1 = B[ptrBElement + -2 * (int)b_stride];
+                    q1 = B[ptrBElement + -2 * b_stride];
                     p4 = L[ptrLElement + -3];
                     p3 = L[ptrLElement + -2];
                     p2 = L[ptrLElement + -1];
@@ -210,7 +210,7 @@ public class FastLTSolve {
                     Z11 += p1 * q1;
 
                     /* load p and q values */
-                    q1 = B[ptrBElement + -3 * (int)b_stride];
+                    q1 = B[ptrBElement + -3 * b_stride];
                     p4 = L[ptrLElement + -3];
                     p3 = L[ptrLElement + -2];
                     p2 = L[ptrLElement + -1];

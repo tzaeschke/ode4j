@@ -373,10 +373,6 @@ public class DLCP {
 	private int indexC (int i) { return i; }
 	private int indexN (int i) { return i+m_nC; }
 	private double Aii (int i) { return AROW(i,i); }
-	@Deprecated // TODO CHECK-TZ remove
-	private double AiC_times_qC (int i, double[] q) { return FastDot.dDot (m_A, AROWp(i),q,0,m_nC); }
-	@Deprecated // TODO CHECK-TZ remove
-	private double AiN_times_qN (int i, double[] q) { return FastDot.dDot (m_A, AROWp(i)+m_nC,q,m_nC,m_nN); }
 	private double AiC_times_qC (int i, double[] qA, int qP, int q_stride) { return dxtDot (m_A, AROWp(i), qA, qP, m_nC, q_stride); }
 	private double AiN_times_qN (int i, double[] qA, int qP, int q_stride) { return dxtDot (m_A,AROWp(i) + m_nC, qA, qP + m_nC * q_stride, m_nN, q_stride); }
 	//  void pN_equals_ANC_times_qC (dReal *p, dReal *q);
@@ -474,12 +470,11 @@ public class DLCP {
 		    int[] findex = m_findex;
 		    double[] pairslhA = m_pairslh;
 		    int pairslhP = 0;
-		    int m_pairsbxP = 0; // TODO CHECK-TZ make global?
 		    final int n = m_n;
 		    for (int k = m_nub; k<n; ++k) {
 		        if (findex!=null && findex[k] >= 0) continue;
                 if (pairslhA[pairslhP + k * PLH__MAX + PLH_LO] == -dInfinity && pairslhA[pairslhP + k * PLH__MAX + PLH_HI] == dInfinity) {
-                    swapProblem(m_A, m_pairsbxA, m_pairsbxP, m_w, pairslhA, pairslhP, m_p, m_state, findex, n, m_nub, k, m_nskip, false);
+                    swapProblem(m_A, m_pairsbxA, 0, m_w, pairslhA, pairslhP, m_p, m_state, findex, n, m_nub, k, m_nskip, false);
 		            m_nub++;
 		        }
 		    }

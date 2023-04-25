@@ -140,7 +140,7 @@ public class FastLSolve {
                         ptrBElement += 12 * b_stride;
 
                         /* load p and q values */
-                        q1 = B[ptrBElement + -8 * (int)b_stride];
+                        q1 = B[ptrBElement + -8 * b_stride];
                         p1 = L[ptrLElement - rowSkip + -8];
                         p2 = L[ptrLElement + -8];
                         ptrLElement += rowSkip;
@@ -154,7 +154,7 @@ public class FastLSolve {
                         Z41 += p4 * q1;
 
                         /* load p and q values */
-                        q1 = B[ptrBElement + -7 * (int)b_stride];
+                        q1 = B[ptrBElement + -7 * b_stride];
                         p3 = L[ptrLElement + -7];
                         p4 = L[ptrLElement + -7 + rowSkip];
                         ptrLElement -= rowSkip;
@@ -168,7 +168,7 @@ public class FastLSolve {
                         Z41 += p4 * q1;
 
                         /* load p and q values */
-                        q1 = B[ptrBElement + -6 * (int)b_stride];
+                        q1 = B[ptrBElement + -6 * b_stride];
                         p1 = L[ptrLElement - rowSkip + -6];
                         p2 = L[ptrLElement + -6];
                         ptrLElement += rowSkip;
@@ -182,7 +182,7 @@ public class FastLSolve {
                         Z41 += p4 * q1;
 
                         /* load p and q values */
-                        q1 = B[ptrBElement + -5 * (int)b_stride];
+                        q1 = B[ptrBElement + -5 * b_stride];
                         p3 = L[ptrLElement + -5];
                         p4 = L[ptrLElement + -5 + rowSkip];
                         ptrLElement -= rowSkip;
@@ -196,7 +196,7 @@ public class FastLSolve {
                         Z41 += p4 * q1;
 
                         /* load p and q values */
-                        q1 = B[ptrBElement + -4 * (int)b_stride];
+                        q1 = B[ptrBElement + -4 * b_stride];
                         p1 = L[ptrLElement - rowSkip + -4];
                         p2 = L[ptrLElement + -4];
                         ptrLElement += rowSkip;
@@ -210,7 +210,7 @@ public class FastLSolve {
                         Z41 += p4 * q1;
 
                         /* load p and q values */
-                        q1 = B[ptrBElement + -3 * (int)b_stride];
+                        q1 = B[ptrBElement + -3 * b_stride];
                         p3 = L[ptrLElement + -3];
                         p4 = L[ptrLElement + -3 + rowSkip];
                         ptrLElement -= rowSkip;
@@ -224,7 +224,7 @@ public class FastLSolve {
                         Z41 += p4 * q1;
 
                         /* load p and q values */
-                        q1 = B[ptrBElement + -2 * (int)b_stride];
+                        q1 = B[ptrBElement + -2 * b_stride];
                         p1 = L[ptrLElement - rowSkip + -2];
                         p2 = L[ptrLElement + -2];
                         ptrLElement += rowSkip;
@@ -238,7 +238,7 @@ public class FastLSolve {
                         Z41 += p4 * q1;
 
                         /* load p and q values */
-                        q1 = B[ptrBElement + -1 * (int)b_stride];
+                        q1 = B[ptrBElement + -1 * b_stride];
                         p3 = L[ptrLElement + -1];
                         p4 = L[ptrLElement + -1 + rowSkip];
                         ptrLElement -= rowSkip;
