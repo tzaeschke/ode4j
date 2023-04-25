@@ -24,16 +24,11 @@
  *************************************************************************/
 package org.ode4j.ode.internal.trimesh;
 
-import org.ode4j.math.DVector3;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.internal.DxGeom;
-import org.ode4j.ode.internal.DxGimpactCollision;
 import org.ode4j.ode.internal.DxSpace;
 
 import java.util.Arrays;
-
-import static org.ode4j.ode.internal.Common.dIASSERT;
-import static org.ode4j.ode.internal.Common.dIN_RANGE;
 
 //    typedef dxGeom dxMeshBase_Parent;
 //    struct dxMeshBase:

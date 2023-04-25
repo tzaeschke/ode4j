@@ -208,13 +208,13 @@ public class DxGimpactCollision {
 
 	// Outputs a matrix to 3 vectors
 	//inline void Decompose(const dMatrix3 Matrix, dVector3 Vectors[3]){
-	void Decompose(DMatrix3C Matrix, DVector3 Vectors[]){
+	void Decompose(DMatrix3C Matrix, DVector3[] Vectors){
 		Decompose(Matrix, Vectors[0], Vectors[1], Vectors[2]);
 	}
 
 	// Finds barycentric
 	//inline void GetPointFromBarycentric(const dVector3 dv[3], dReal u, dReal v, dVector3 Out){
-	static void GetPointFromBarycentric(vec3f dv[], double u, double v, DVector3 Out){
+	static void GetPointFromBarycentric(vec3f[] dv, double u, double v, DVector3 Out){
 		double w = 1.0 - u - v;
 		Out.set0( dv[0].f[0]*w + dv[1].f[0]*u + dv[2].f[0]*v );
 		Out.set1( dv[0].f[1]*w + dv[1].f[1]*u + dv[2].f[1]*v );
@@ -225,7 +225,7 @@ public class DxGimpactCollision {
 //		Out[2] = (dv[0][2] * w) + (dv[1][2] * u) + (dv[2][2] * v);
 //		Out[3] = (dv[0][3] * w) + (dv[1][3] * u) + (dv[2][3] * v);
 	}
-	public static void GetPointFromBarycentric(DVector3C dv[], double u, double v, DVector3 Out){
+	public static void GetPointFromBarycentric(DVector3C[] dv, double u, double v, DVector3 Out){
 		double w = 1.0 - u - v;
 		Out.set0( dv[0].get0()*w + dv[1].get0()*u + dv[2].get0()*v );
 		Out.set1( dv[0].get1()*w + dv[1].get1()*u + dv[2].get1()*v );
@@ -340,47 +340,4 @@ public class DxGimpactCollision {
 //		out[2] += position[2];
 		out.add(position);
 	}
-
-	//------------------------------------------------------------------------------
-	/**
-	 * Check for intersection between triangle and capsule.
-	 * 
-	 * @param dist [out] Shortest distance squared between the triangle and 
-	 *                   the capsule segment (central axis).
-	 * @param t    [out] t value of point on segment that's the shortest distance 
-	 *                   away from the triangle, the coordinates of this point 
-	 *                   can be found by (cap.seg.end - cap.seg.start) * t,
-	 *                   or cap.seg.ipol(t).
-	 * @param u    [out] Barycentric coord on triangle.
-	 * @param v    [out] Barycentric coord on triangle.
-	 * @return True if intersection exists.
-	 * 
-	 * The third Barycentric coord is implicit, ie. w = 1.0 - u - v
-	 * The Barycentric coords give the location of the point on the triangle
-	 * closest to the capsule (where the distance between the two shapes
-	 * is the shortest).
-	 */
-	//inline
-	//bool IntersectCapsuleTri( const dVector3 segOrigin, const dVector3 segEnd, 
-	//                          const dReal radius, const dVector3 triOrigin, 
-	//                          const dVector3 triEdge0, const dVector3 triEdge1,
-	//                          dReal* dist, dReal* t, dReal* u, dReal* v )
-	boolean IntersectCapsuleTri( DVector3C segOrigin, DVector3C segEnd, 
-			final double radius, DVector3C triOrigin, 
-			DVector3C triEdge0, DVector3C triEdge1,
-			RefDouble dist, double[] t, double[] u, double[] v )
-	{
-		throw new UnsupportedOperationException(); //TZ TODO
-//		double sqrDist = SqrDistanceSegTri( segOrigin, segEnd, triOrigin, triEdge0, triEdge1, 
-//				t, u, v );
-//
-////		if ( dist )
-////			*dist = sqrDist;
-//		if ( dist != null )
-//			dist.d = sqrDist;
-//
-//		return ( sqrDist <= (radius * radius) );
-	}
-
-
 }

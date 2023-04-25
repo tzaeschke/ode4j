@@ -25,8 +25,6 @@
 package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.dUASSERT;
-import static org.ode4j.ode.internal.DxGimpactCollision.GIM_AABB_COPY;
-import static org.ode4j.ode.internal.DxGimpactCollision.MakeMatrix;
 
 import java.nio.channels.UnsupportedAddressTypeException;
 
@@ -35,12 +33,7 @@ import org.ode4j.ode.DBox;
 import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSphere;
-import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
-import org.ode4j.ode.internal.gimpact.GimGeometry;
-import org.ode4j.ode.internal.gimpact.GimTrimesh;
-import org.ode4j.ode.internal.gimpact.GimGeometry.mat4f;
-import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 

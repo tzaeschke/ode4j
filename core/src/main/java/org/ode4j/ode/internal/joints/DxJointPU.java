@@ -447,15 +447,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	 * </PRE>
 	 * <p>NOTE: Should have the same meaning as dJointSetSliderAxisDelta
 	 *
-	 * @param j The PU joint for which the anchor point will be set
 	 * @param x The X position of the anchor point in world frame
 	 * @param y The Y position of the anchor point in world frame
 	 * @param z The Z position of the anchor point in world frame
 	 * @param dx A delta to be added to the X position as if the anchor was set
 	 *           when body1 was at current_position[X] + dx
-	 * @param dx A delta to be added to the Y position as if the anchor was set
+	 * @param dy A delta to be added to the Y position as if the anchor was set
 	 *           when body1 was at current_position[Y] + dy
-	 * @param dx A delta to be added to the Z position as if the anchor was set
+	 * @param dz A delta to be added to the Z position as if the anchor was set
 	 *           when body1 was at current_position[Z] + dz
 	 */
 	void dJointSetPUAnchorDelta( double x, double y, double z,
@@ -504,15 +503,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	 * </PRE>
 	 * <p>NOTE: Should have the same meaning as dJointSetSliderAxisDelta
 	 *
-	 * @param j The PU joint for which the anchor point will be set
 	 * @param x The X position of the anchor point in world frame
 	 * @param y The Y position of the anchor point in world frame
 	 * @param z The Z position of the anchor point in world frame
 	 * @param dx A delta to be added to the X position as if the anchor was set
 	 *           when body1 was at current_position[X] + dx
-	 * @param dx A delta to be added to the Y position as if the anchor was set
+	 * @param dy A delta to be added to the Y position as if the anchor was set
 	 *           when body1 was at current_position[Y] + dy
-	 * @param dx A delta to be added to the Z position as if the anchor was set
+	 * @param dz A delta to be added to the Z position as if the anchor was set
 	 *           when body1 was at current_position[Z] + dz
 	 */
 	void dJointSetPUAnchorOffset( double x, double y, double z,

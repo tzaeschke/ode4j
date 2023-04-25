@@ -26,7 +26,6 @@ package org.ode4j.ode.internal;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
