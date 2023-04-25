@@ -72,7 +72,7 @@ dmaxcallcountestimate_fn_t {
 	//#define dMAX(A,B)  ((B)>(A) ? (B) : (A))
 	//TX: not used
 	//private static final int dMIN(int A, int B) { return ((A)>(B) ? (B) : (A)); }
-	private static final int dMAX(int A, int B) { return ((B)>(A) ? (B) : (A)); }
+	private static int dMAX(int A, int B) { return ((B)>(A) ? (B) : (A)); }
 
 
 	//****************************************************************************
@@ -80,22 +80,22 @@ dmaxcallcountestimate_fn_t {
 
 	//#define TIMING  /was commented out!
 	private static final boolean TIMING = false;
-	private static final void IFTIMING_dTimerStart(String name) {
+	private static void IFTIMING_dTimerStart(String name) {
 		if (TIMING) {
 			dTimerStart(name);
 		}
 	}
-	private static final void IFTIMING_dTimerNow(String name) {
+	private static void IFTIMING_dTimerNow(String name) {
 		if (TIMING) {
 			dTimerNow(name);
 		}
 	}
-	private static final void IFTIMING_dTimerEnd() {
+	private static void IFTIMING_dTimerEnd() {
 		if (TIMING) {
 			dTimerEnd();
 		}
 	}
-	private static final void IFTIMING_dTimerReport (FILE fout, int average) {
+	private static void IFTIMING_dTimerReport (FILE fout, int average) {
 		if (TIMING) {
 			dTimerReport(fout, average);
 		}
@@ -113,9 +113,9 @@ dmaxcallcountestimate_fn_t {
 	// #define AMATRIX_ALIGNMENT   dMAX(64, EFFICIENT_ALIGNMENT)
 	// #define INVI_ALIGNMENT      dMAX(32, EFFICIENT_ALIGNMENT)
 	// #define JINVM_ALIGNMENT     dMAX(64, EFFICIENT_ALIGNMENT)
-	private static int AMATRIX_ALIGNMENT = dMAX(64, EFFICIENT_ALIGNMENT);
-	private static int INVI_ALIGNMENT    = dMAX(32, EFFICIENT_ALIGNMENT);
-	private static int JINVM_ALIGNMENT   = dMAX(64, EFFICIENT_ALIGNMENT);
+	private static final int AMATRIX_ALIGNMENT = dMAX(64, EFFICIENT_ALIGNMENT);
+	// private static final int INVI_ALIGNMENT    = dMAX(32, EFFICIENT_ALIGNMENT);
+	private static final int JINVM_ALIGNMENT   = dMAX(64, EFFICIENT_ALIGNMENT);
 
 	private static class dxStepperStage0Outputs
 	{
@@ -599,7 +599,7 @@ dmaxcallcountestimate_fn_t {
 		IFTIMING_dTimerStart("preprocessing");
 
 		DxWorldProcessMemArena memarena = callContext.m_stepperArena();
-		DxWorld world = callContext.m_world();
+		// DxWorld world = callContext.m_world();
 		int nb = callContext.m_islandBodiesCount();
 		int _nj = callContext.m_islandJointsCount();
 

@@ -75,8 +75,8 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
 //            return x < minX ? minX : (x > maxX ? maxX : x);
 //        }
 //    }
-    private static final double clamp(double x, double minX, double maxX) {
-    	return x < minX ? minX : (x > maxX ? maxX : x);
+    private static double clamp(double x, double minX, double maxX) {
+    	return x < minX ? minX : (Math.min(x, maxX));
     }
 
     /*
