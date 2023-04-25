@@ -52,9 +52,9 @@ public class OdeConfig {
 	@Deprecated() // This is deprecated. THe underlying issue has been resolved, see issue #22.
 	public static boolean ENABLE_CONTACT_SORTING = true;
 	
-	public static enum TRIMESH {
+	public enum TRIMESH {
 		DISABLED,
-		GIMPACT;
+		GIMPACT
 	}
 	
 	
