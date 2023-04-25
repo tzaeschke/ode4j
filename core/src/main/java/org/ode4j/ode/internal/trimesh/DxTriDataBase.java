@@ -1070,16 +1070,6 @@ public class DxTriDataBase extends DBase {
         return data.preprocessData(buildUseFlags, faceAnglesRequirement);
     }
 
-    // TODO TZ Check, why are all these methods unused????
-
-
-
-    // TODO TZ move to DxGimpact?
-
-
-
-
-
     // #endif // #if dTRIMESH_ENABLED
 
 

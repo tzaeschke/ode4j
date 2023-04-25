@@ -663,7 +663,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		case dParamGroup3:
 			limotP.set( parameter.toSUB(), value );//.and( 0xff ), value );
 			break;
-		default: //TODO TZ remove
+		default:
 			throw new IllegalArgumentException(parameter.name());
 		}
 	}

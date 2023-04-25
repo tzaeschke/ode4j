@@ -486,11 +486,6 @@ public class DemoMovingTrimesh extends dsFunctions {
 //			DVector3C Pos = TriMesh1.getPosition();
 //			DMatrix3C Rot = TriMesh1.getRotation();
 //
-//			DVector3[] v = { new DVector3(), new DVector3(), new DVector3() };
-//			for (int i = 0; i < IndexCount/3; i++) {
-//				((DxGimpact)TriMesh1).FetchTransformedTriangle(i, v);
-//				dsDrawTriangle(Pos, Rot, v[0], v[1], v[2], false);
-//			}}
 		DVector3C Pos1 = TriMesh1.getPosition();
 		DMatrix3C Rot1 = TriMesh1.getRotation();
 		for (int i = 0; i < IndexCount; i+=3) {

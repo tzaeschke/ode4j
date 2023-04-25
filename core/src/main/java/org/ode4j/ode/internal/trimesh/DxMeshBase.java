@@ -172,12 +172,6 @@ public abstract class DxMeshBase extends DxGeom {
     public DTriMesh.DTriRayCallback m_RayCallback;
     public DTriMesh.DTriTriMergeCallback m_TriMergeCallback;
 
-    // TODO TZ 2023 remove!
-//    public DTriMesh.DTriCallback Callback() { return m_Callback; }
-//    public DTriMesh.DTriArrayCallback ArrayCallback() { return m_ArrayCallback; }
-//    public DTriMesh.DTriRayCallback RayCallback() { return m_RayCallback; }
-//    public DTriMesh.DTriTriMergeCallback TriMergeCallback() { return m_TriMergeCallback; }
-
     // Data types
     private DxTriDataBase m_Data;
 
