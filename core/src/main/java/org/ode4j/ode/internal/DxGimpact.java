@@ -51,7 +51,8 @@ import org.ode4j.ode.internal.trimesh.DxTriMeshData;
  */
 public class DxGimpact extends DxTriMesh {
 
-	DxGimpactData _Data;
+	// see super-class
+	// DxGimpactData _Data;
 
 	//GimTrimesh m_collision_trimesh;
 
@@ -69,73 +70,17 @@ public class DxGimpact extends DxTriMesh {
 
 	// Trimesh
 
-	// TODO TZ_CHECK
-	// TODO TZ_CHECK
-	// TODO TZ_CHECK
-	// TODO TZ_CHECK
-	// TODO TZ_CHECK
-	// TODO TZ_CHECK
-	// TODO TZ_CHECK The following are DxTrimesh:: methods, they should be move to DxTrimesh!!!
-	// TODO TZ_CHECK This also helpw with the callbacks and booleans in the constructor +getters + setters
-	// TODO TZ_CHECK
-	// TODO TZ_CHECK
-
-		//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){
-        public DxGimpact(DxSpace Space, DxGimpactData Data) {
-		// TODO TZ-CHECK I inserted 'null' here, are we using Data?
-		// TODO TZ-CHECK I inserted 'null' here, are we using the Callbacks?
+	//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){
+    public DxGimpact(DxSpace Space, DxGimpactData Data) {
 		super(Space, Data, null, null, null);
-		_Data = Data;
 		type = dTriMeshClass;
-
-		setCallback(null);
-		setArrayCallback(null);
-		setRayCallback(null);
-		setTriMergeCallback(null); // Not initialized in dCreateTriMesh
-
-//		for (int i=0; i < m_buffer_managers.length; i++) { 
-//			m_buffer_managers[i] = new GBUFFER_MANAGER_DATA(); 
-//		}
-//		GimBufferArray.gim_init_buffer_managers(m_buffer_managers);
-
-		dGeomTriMeshSetData(Data);
 	}
 
 	@Override
 	//dxTriMesh::~dxTriMesh(){
 	public void DESTRUCTOR(){
-
-		//Terminate Trimesh
-		m_collision_trimesh().gim_trimesh_destroy();
-
-//		GimBufferArray.gim_terminate_buffer_managers(m_buffer_managers);
 		super.DESTRUCTOR();
 	}
-
-
-//	boolean dxTriMesh::controlGeometry(int controlClass, int controlCode, void *dataValue, int *dataSize)
-//	{
-//	    return dxGeom::controlGeometry(controlClass, controlCode, dataValue, dataSize);
-//	}
-
-
-	@Override
-    protected
-        //void dxTriMesh::computeAABB()
-	void computeAABB()
-	{
-		//update trimesh transform
-		mat4f transform = new mat4f();
-		GimGeometry.IDENTIFY_MATRIX_4X4(transform);
-		MakeMatrix(this, transform);
-		m_collision_trimesh().gim_trimesh_set_tranform(transform);
-
-		//Update trimesh boxes
-		m_collision_trimesh().gim_trimesh_update();
-
-		GIM_AABB_COPY( m_collision_trimesh().getAabbSet().getGlobalBound(), _aabb );
-	}
-
 
 	//	dGeomID dCreateTriMesh(dSpaceID space,
 	//			       dTriMeshDataID Data,
@@ -350,6 +295,6 @@ public class DxGimpact extends DxTriMesh {
 
 	@Override
 	public float getEdgeAngle(int triangle, int edge) {
-		return _Data.getEdgeAngle(triangle, edge);
+		return ((DxGimpactData)getMeshData()).getEdgeAngle(triangle, edge);
 	}
 }

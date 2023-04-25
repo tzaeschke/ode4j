@@ -142,7 +142,6 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
         if (m_collision_trimesh != null){
             m_collision_trimesh.gim_trimesh_destroy();
         }
-        // TZ_CHECK remove
         //gim_terminate_buffer_managers(m_buffer_managers);
         super.DESTRUCTOR();
     }

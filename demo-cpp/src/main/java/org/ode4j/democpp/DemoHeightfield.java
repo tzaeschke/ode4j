@@ -847,7 +847,7 @@ class DemoHeightfield extends dsFunctions {
 						obj[i].last_matrix_index = 1;
 					
 					// Apply the 'other' matrix which is the oldest.
-					//TODO TZ
+					// -> not implemented for GIMPACT
 //					dGeomTriMeshSetLastTransform( obj[i].geom[j],
 //							new DoubleArray( obj[i].matrix_dblbuff, ( obj[i].last_matrix_index * 16 ) ) );
 				}
