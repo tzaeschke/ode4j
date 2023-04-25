@@ -95,10 +95,9 @@ public abstract class DObject extends DBase {
 
     /**
      * Remove the object from the linked list.
-     * @param <T> type
      */
 //    public static <T extends dObject>void removeObjectFromList (T obj)
-    public <T extends DObject>void removeObjectFromList ()
+    public void removeObjectFromList ()
     {
         //      if (obj.next) obj.next.tome = obj.tome;
         //      *(obj.tome) = obj.next;
