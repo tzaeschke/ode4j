@@ -573,10 +573,7 @@ public class CollisionLibccd {
                         if (k != contactCount) {
                             //dContactGeom *lastContact = SAFECONTACT(flags, contacts, contactCount, skip);
                             //*contact = *lastContact;
-                            DContactGeom lastContact = contacts.getSafe(flags, contactCount);
-                            contact = lastContact;
-                            // TODO TZ fix this. See comment above, we want to remove a contact here because it has a bad vector
-                            throw new UnsupportedOperationException();
+                            contacts.swap(k, contactCount);
                         }
 
                         stayWithinThisIndex = true;

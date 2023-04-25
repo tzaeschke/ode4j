@@ -766,8 +766,6 @@ public class CollideCylinderTrimesh implements DColliderFn {
 
 		// Generate contact 0
 		{
-			// TODO TZ fix: Why is this not initialized? Should it be? Or is late initialization okay?
-			if (m_gLocalContacts[m_nContacts]==null) m_gLocalContacts[m_nContacts]=new sLocalContactData();
 			m_gLocalContacts[m_nContacts].fDepth = fDepth0;
 			dVector3Copy(m_vContactNormal,m_gLocalContacts[m_nContacts].vNormal);
 			dVector3Copy(vCEdgePoint0,m_gLocalContacts[m_nContacts].vPos);
@@ -1263,7 +1261,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 	//*****Set globals for box collision******//
 
 			int ctContacts0 = 0;
-			//cData.m_gLocalContacts = null;// TODO TZ (sLocalContactData*)dALLOCA16(sizeof(sLocalContactData)*(cData.m_iFlags & NUMC_MASK));
+			// cData.m_gLocalContacts = (sLocalContactData*)dALLOCA16(sizeof(sLocalContactData)*(cData.m_iFlags & NUMC_MASK));
 			cData.m_gLocalContacts = new sLocalContactData[cData.m_iFlags & DxGeom.NUMC_MASK];
 			for (int i = 0; i < cData.m_gLocalContacts.length; i++) {
 				cData.m_gLocalContacts[i] = new sLocalContactData();
