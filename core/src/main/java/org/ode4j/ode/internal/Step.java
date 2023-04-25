@@ -56,7 +56,6 @@ import org.ode4j.ode.DJoint.DJointFeedback;
 import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
-import org.ode4j.ode.internal.joints.Info2DescrStep;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dmaxcallcountestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
