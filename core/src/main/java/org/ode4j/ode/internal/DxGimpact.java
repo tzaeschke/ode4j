@@ -67,19 +67,6 @@ public class DxGimpact extends DxTriMesh {
 	}
 
 
-	// TODO TZ remove unused
-	@Override
-	public int FetchTriangleCount() {
-		return DxGimpactCollision.FetchTriangleCount(this);
-	}
-
-	@Override
-	public void FetchTransformedTriangle(int i, DVector3 out0, DVector3 out1, DVector3 out2) {
-		DxGimpactCollision.FetchTransformedTriangle(this, i, out0, out1, out2);
-	}
-
-
-
 	// Trimesh
 
 	// TODO TZ_CHECK

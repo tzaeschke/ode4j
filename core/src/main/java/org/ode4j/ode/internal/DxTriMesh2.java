@@ -80,10 +80,6 @@ public abstract class DxTriMesh2 extends DxGeom implements DTriMesh {
 //		return Geom;
 	}
 
-	abstract public int FetchTriangleCount();
-
-	abstract public void FetchTransformedTriangle(int i, DVector3[] v);
-
 	/*
 	 * Returns the following values:
 	 * between -PI and 0 for concave edges

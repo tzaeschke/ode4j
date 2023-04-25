@@ -229,14 +229,7 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     //GIM_TRIMESH m_collision_trimesh;
     //GBUFFER_MANAGER_DATA m_buffer_managers[ G_BUFFER_MANAGER__MAX];
     GimTrimesh m_collision_trimesh;
-    // TODO CHECK-TZ remolve> THis is 'memory' stuff
     //GBUFFER_MANAGER_DATA m_buffer_managers[ G_BUFFER_MANAGER__MAX];
-
-    // TODO TZ remove? Does not exist in ODE2
-    public abstract void FetchTransformedTriangle(int i, DVector3 out0, DVector3 out1, DVector3 out2);
-
-    // TODO TZ remove? Does not exist in ODE2
-    public abstract int FetchTriangleCount();
 
     public GimTrimesh m_collision_trimesh() {
         return m_collision_trimesh;

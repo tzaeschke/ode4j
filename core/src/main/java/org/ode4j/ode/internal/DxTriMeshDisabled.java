@@ -161,18 +161,6 @@ public class DxTriMeshDisabled extends DxTriMesh {
 	void dGeomTriMeshDataUpdate(DTriMeshData g) {}
 
 	@Override
-	public void FetchTransformedTriangle(int i, DVector3 out0, DVector3 out1, DVector3 out2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int FetchTriangleCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public void enableTC(Class<? extends DGeom> cls, boolean b) {
 		// TODO Auto-generated method stub
 	}
