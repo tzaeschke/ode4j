@@ -127,17 +127,15 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 		if (listHasLoops (w.firstbody)) dDebug (0,"body list has loops");
 		if (listHasLoops (w.firstjoint)) dDebug (0,"joint list has loops");
 
-		//TODO
-		if (true) throw new UnsupportedOperationException();
-//		// check lists are well formed (check `tome' pointers)
-//		for (b=w.firstbody.get(); b!=null; b=(dxBody)b.getNext()) {
-//			if (b.getNext()!=null && b.getNext().tome != b.getNext())
-//				dDebug (0,"bad tome pointer in body list");
-//		}
-//		for (j=w.firstjoint.get(); j!=null; j=(dxJoint)j.getNext()) {
-//			if (j.getNext()!=null && j.getNext().tome != j.getNext())
-//				dDebug (0,"bad tome pointer in joint list");
-//		}
+		// check lists are well-formed (check `tome' pointers)
+		for (b=w.firstbody.get(); b!=null; b=(DxBody)b.getNext()) {
+			if (b.getNext()!=null && b.getNext().getTome() != b.getNext())
+				dDebug (0,"bad tome pointer in body list");
+		}
+		for (j=w.firstjoint.get(); j!=null; j=(DxJoint)j.getNext()) {
+			if (j.getNext()!=null && j.getNext().getTome() != j.getNext())
+				dDebug (0,"bad tome pointer in joint list");
+		}
 
 		// check counts
 		int nn = 0;
@@ -233,14 +231,18 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 	private static final int NUM = 100; 
 
 	//#define DO(x)
-
+	private static boolean DO = false;
+	private static void DO_printf(String msg, Object... args) {
+		if (DO) {
+			printf(msg, args);
+		}
+	}
 
 	//extern "C" 
 	public void dTestDataStructures()
 	{
 		int i;
-		//DO(
-		printf ("testDynamicsStuff()\n");
+		DO_printf ("testDynamicsStuff()\n");
 
 		DxBody[] body = new DxBody[NUM];
 		int nb = 0;
@@ -255,33 +257,27 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 		DxWorld w = DxWorld.dWorldCreate();
 		checkWorld (w);
 
-		for (;;) {
+		for (int round = 0; round < 1000; ++round) {
 			if (nb < NUM && dRandReal() > 0.5) {
-				//DO(
-				printf ("creating body\n");
+				DO_printf ("creating body\n");
 				body[nb] = DxBody.dBodyCreate (w);
-				//DO(
-				printf ("\t--> %p\n",body[nb].toString());
+				DO_printf ("\t--> %s\n",body[nb].toString());
 				nb++;
 				checkWorld (w);
-				//DO(
-				printf ("%d BODIES, %d JOINTS\n",nb,nj);
+				DO_printf ("%d BODIES, %d JOINTS\n",nb,nj);
 			}
 			if (nj < NUM && nb > 2 && dRandReal() > 0.5) {
 				DxBody b1 = body [(int) (dRand() % nb)];
 				DxBody b2 = body [(int) (dRand() % nb)];
 				if (b1 != b2) {
-					//DO(
-					printf ("creating joint, attaching to %p,%p\n",b1,b2);
+					DO_printf ("creating joint, attaching to %s,%s\n",b1.toString(),b2.toString());
 					joint[nj] = dJointCreateBall (w,null);
-					//DO(
-					printf ("\t-->%p\n",joint[nj]);
+					DO_printf ("\t-->%s\n",joint[nj].toString());
 					checkWorld (w);
 					joint[nj].dJointAttach (b1,b2);
 					nj++;
 					checkWorld (w);
-					//DO(
-					printf ("%d BODIES, %d JOINTS\n",nb,nj);
+					DO_printf ("%d BODIES, %d JOINTS\n",nb,nj);
 				}
 			}
 			if (nj > 0 && nb > 2 && dRandReal() > 0.5) {
@@ -289,32 +285,29 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 				DxBody b2 = body [(int) (dRand() % nb)];
 				if (b1 != b2) {
 					int k = (int) (dRand() % nj);
-					//DO(
-					printf ("reattaching joint %p\n",joint[k]);
+					DO_printf ("reattaching joint %s\n",joint[k].toString());
 					joint[k].dJointAttach (b1,b2);
 					checkWorld (w);
-					//DO(
-					printf ("%d BODIES, %d JOINTS\n",nb,nj);
+					DO_printf ("%d BODIES, %d JOINTS\n",nb,nj);
 				}
 			}
 			if (nb > 0 && dRandReal() > 0.5) {
 				int k = (int) (dRand() % nb);
-				//DO(
-				printf ("destroying body %p\n",body[k]);
+				DO_printf ("destroying body %s\n",body[k].toString());
 				body[k].dBodyDestroy ();
 				checkWorld (w);
 				for (; k < (NUM-1); k++) body[k] = body[k+1];
 				nb--;
-				printf ("%d BODIES, %d JOINTS\n",nb,nj);
+				DO_printf ("%d BODIES, %d JOINTS\n",nb,nj);
 			}
 			if (nj > 0 && dRandReal() > 0.5) {
 				int k = (int) (dRand() % nj);
-				printf ("destroying joint %p\n",joint[k]);
+				DO_printf ("destroying joint %s\n",joint[k].toString());
 				dJointDestroy (joint[k]);
 				checkWorld (w);
 				for (; k < (NUM-1); k++) joint[k] = joint[k+1];
 				nj--;
-				printf ("%d BODIES, %d JOINTS\n",nb,nj);
+				DO_printf ("%d BODIES, %d JOINTS\n",nb,nj);
 			}
 		}
 

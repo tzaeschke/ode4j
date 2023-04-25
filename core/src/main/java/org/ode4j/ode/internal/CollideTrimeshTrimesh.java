@@ -102,7 +102,7 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 		if (contactcount > maxcontacts)
 		{
 			if (OdeConfig.ENABLE_CONTACT_SORTING) {
-				Arrays.sort((Object[])trimeshContacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<>() {
+				Arrays.sort((Object[])trimeshContacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
 					@Override
 					public int compare(Object o1, Object o2) {
 						return Float.compare(((GimContact) o2).getDepth(), ((GimContact) o1).getDepth());

@@ -89,6 +89,9 @@ public abstract class DObject extends DBase {
         _tome = obj;
     }
 
+    DObject getTome() {
+        return _tome.get();
+    }
 
     /**
      * Remove the object from the linked list.
