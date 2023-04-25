@@ -123,7 +123,7 @@ public class DxTriDataBase extends DBase {
         // FAD__BYTEPOS_STORED_MAX = FAD_CONVEX + 1;
         // EAD__MAX = FAD__BYTEPOS_STORED_MAX;
     }
-    public static final int EAD__MAX = FaceAngleDomain.values().length;
+    //public static final int EAD__MAX = FaceAngleDomain.values().length;
 
     //typedef dBase dxTriDataBase_Parent;
     //class dxTriDataBase extends dxTriDataBase_Parent
@@ -241,11 +241,11 @@ public class DxTriDataBase extends DBase {
         public static final int CUF_USE_SECOND_VERTEX = CUF__USE_VERTICES_MIN << dMTV_SECOND;
         public static final int CUF_USE_THIRD_VERTEX = CUF__USE_VERTICES_MIN << dMTV_THIRD;
         public static final int CUF__USE_VERTICES_LAST = CUF__USE_VERTICES_MIN << (dMTV__MAX - 1);
-        public static final int CUF__USE_VERTICES_MAX = CUF__USE_VERTICES_MIN << dMTV__MAX;
+        // public static final int CUF__USE_VERTICES_MAX = CUF__USE_VERTICES_MIN << dMTV__MAX;
         public static final int CUF__USE_ALL_VERTICES =
                 CUF_USE_FIRST_VERTEX | CUF_USE_SECOND_VERTEX | CUF_USE_THIRD_VERTEX;
 
-        public static final int CUF__USE_ALL_COMPONENTS = CUF__USE_ALL_VERTICES | CUF__USE_ALL_EDGES;
+        // public static final int CUF__USE_ALL_COMPONENTS = CUF__USE_ALL_VERTICES | CUF__USE_ALL_EDGES;
 
         static {
             // Make sure that the flags match the values declared in public interface
@@ -295,8 +295,8 @@ public class DxTriDataBase extends DBase {
         //const void *m_indices;
         private int[] m_indices;
         private int m_triangleCount;
-        private int m_triStride;
-        //private boolean m_single;
+        // private int m_triStride;
+        // private boolean m_single;
 
         //        private:
         //        const void *m_normals;
@@ -577,14 +577,14 @@ public class DxTriDataBase extends DBase {
                             edges[vertIdx1].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
                             // Also remember the index the vertex flags are going to be applied to
                             // to allow easily clear the vertex from the use flags if any concave edges are found to connect to it
-                            vertices[vertIdx1].m_UsedFromEdgeIndex = (int) (edgeToUse);// - edges);
+                            vertices[vertIdx1].m_UsedFromEdgeIndex = (edgeToUse);// - edges);
                             triUseFlags |= edges[edgeToUse].m_vert1Flags;
                         }
 
                         // Same processing for the second vertex...
                         if ((edges[vertIdx2].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0) {
                             edges[vertIdx2].m_absVertexFlags |= EdgeRecord.AVF_VERTEX_USED;
-                            vertices[vertIdx2].m_UsedFromEdgeIndex = (int) (edgeToUse);// - edges);
+                            vertices[vertIdx2].m_UsedFromEdgeIndex = (edgeToUse);// - edges);
                             triUseFlags |= edges[edgeToUse].m_vert2Flags;
                         }
 
@@ -788,7 +788,7 @@ public class DxTriDataBase extends DBase {
             // Negative product means the angle absolute value is less than M_PI_2, positive - greater.
             result = secondTriangleEdgeDirectionCheck < (0.0) ? dAsin(angleCosine) : M_PI_2 + dAcos(angleCosine);
         } else {
-            result = (double) M_PI_2;
+            result = M_PI_2;
             dIASSERT(angleCosine - (1.0) < 1e-4); // The computational error can not be too high because the dot product had been verified to be greater than the concave threshold above
         }
 

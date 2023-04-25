@@ -111,13 +111,6 @@ public class DxUtil {
      */
     //#define dALLOCA16(n) dEFFICIENT_PTR(alloca((n)+(EFFICIENT_ALIGNMENT)))
 
-
-//    #ifndef SIZE_MAX
-//    #define SIZE_MAX  ((size_t)(-1))
-//    #endif
-    @Deprecated // TODO CHECK-TZ This got removed in 2017
-    static final int SIZE_MAX = Integer.MAX_VALUE; //TODO correct?
-
     //typedef void *(*alloc_block_fn_t)(size_t block_size);
     public interface alloc_block_fn_t {
         BlockPointer run(int block_size);

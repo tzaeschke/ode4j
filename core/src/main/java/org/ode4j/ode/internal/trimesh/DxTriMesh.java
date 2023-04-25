@@ -32,7 +32,6 @@ import org.ode4j.ode.internal.*;
 import org.ode4j.ode.internal.gimpact.GimGeometry;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 
-import static org.ode4j.ode.internal.Common.dUASSERT;
 import static org.ode4j.ode.internal.gimpact.GimGeometry.IDENTIFY_MATRIX_4X4;
 
 //    typedef dxMeshBase dxTriMesh_Parent;

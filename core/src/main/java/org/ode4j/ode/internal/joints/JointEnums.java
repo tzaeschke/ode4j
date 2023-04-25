@@ -52,17 +52,16 @@ public class JointEnums {
 	public static final int dJBR__DEFAULT = dJBR_GLOBAL;
 	public static final int dJBR__BODIES_COUNT = dJBR__BODIES_MAX - dJBR__BODIES_MIN;
 
-	// TODO CHECK-TZ remove this (or comment out?)
-	enum dJointBodyRelativity {
-		dJBR_GLOBAL, dJBR_BODY1, dJBR_BODY2;
-
-		public static final int dJBR__MIN = 0;
-		public static final int dJBR__BODIES_MIN = dJBR_GLOBAL.ordinal() + 1;
-		public static final int dJBR__BODIES_MAX = dJBR__BODIES_MIN + dJCB__MAX;
-		public static final int dJBR__MAX = dJBR__BODIES_MAX + 1;
-		public static final int dJBR__DEFAULT = dJBR_GLOBAL.ordinal();
-		public static final int dJBR__BODIES_COUNT = dJBR__BODIES_MAX - dJBR__BODIES_MIN;
-	}
+	//	enum dJointBodyRelativity {
+	//		dJBR_GLOBAL, dJBR_BODY1, dJBR_BODY2;
+	//
+	//		public static final int dJBR__MIN = 0;
+	//		public static final int dJBR__BODIES_MIN = dJBR_GLOBAL.ordinal() + 1;
+	//		public static final int dJBR__BODIES_MAX = dJBR__BODIES_MIN + dJCB__MAX;
+	//		public static final int dJBR__MAX = dJBR__BODIES_MAX + 1;
+	//		public static final int dJBR__DEFAULT = dJBR_GLOBAL.ordinal();
+	//		public static final int dJBR__BODIES_COUNT = dJBR__BODIES_MAX - dJBR__BODIES_MIN;
+	//	}
 
 
 	public static boolean dJBREncodeBodyRelativityStatus(int relativity) {
@@ -73,17 +72,6 @@ public class JointEnums {
 	public static int dJBRSwapBodyRelativity(int relativity) {
 		dIASSERT(dIN_RANGE(relativity, dJBR__BODIES_MIN, dJBR__BODIES_MAX));
 		return dJBR_BODY1 + dJBR_BODY2 - relativity;
-	}
-
-	// TODO CHECK-TZ remove these
-	public static boolean dJBREncodeBodyRelativityStatus(dJointBodyRelativity relativity) {
-		return relativity == dJointBodyRelativity.dJBR_BODY1 || relativity == dJointBodyRelativity.dJBR_BODY2;
-	}
-
-	// dJointBodyRelativity dJBRSwapBodyRelativity(int relativity)
-	public static dJointBodyRelativity dJBRSwapBodyRelativity(dJointBodyRelativity relativity) {
-		dIASSERT(dJBREncodeBodyRelativityStatus(relativity));
-		return dJointBodyRelativity.values()[dJointBodyRelativity.dJBR_BODY1.ordinal() + dJointBodyRelativity.dJBR_BODY2.ordinal() - relativity.ordinal()];
 	}
 
 }

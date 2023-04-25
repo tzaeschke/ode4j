@@ -32,7 +32,6 @@ import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
-import org.ode4j.ode.internal.joints.DxJoint;
 
 import static org.ode4j.ode.internal.ErrorHandler.*;
 
@@ -43,7 +42,7 @@ import static org.ode4j.ode.internal.ErrorHandler.*;
 @SuppressWarnings("unused")
 public class Common extends OdeConstants {
 
-	/** configuration stuff */
+	/* configuration stuff */
 
 	/** constants */
 
@@ -500,21 +499,21 @@ public class Common extends OdeConstants {
 
 	//#define REAL(x) (x)
 	//#define dRecip(x) (1.0/(x)) //TODO replace
-	public static final double dRecip(double x) { return 1.0/x; };
+	public static double dRecip(double x) { return 1.0/x; }
 	//#define dSqrt(x) sqrt(x) //TODO replace
-	public static final double dSqrt(double x) { return Math.sqrt(x); };
+	public static double dSqrt(double x) { return Math.sqrt(x); }
 	//#define dRecipSqrt(x) (1.0/sqrt(x))
-	public static final double dRecipSqrt(double x) { return 1.0/Math.sqrt(x); };
+	public static double dRecipSqrt(double x) { return 1.0/Math.sqrt(x); }
 	//#define dSin(x) sin(x)//TODO replace
-	public static final double dSin(double x) { return Math.sin(x); };
+	public static double dSin(double x) { return Math.sin(x); }
 	//#define dCos(x) cos(x) //TODO replace
-	public static final double dCos(double x) { return Math.cos(x); };
+	public static double dCos(double x) { return Math.cos(x); }
 	//#define dFabs(x) fabs(x) //TODO replace
-	public static final double dFabs(double x) {
+	public static double dFabs(double x) {
 		return Math.abs(x);
 	}
 	//#define dAtan2(y,x) atan2((y),(x)) //TODO replace
-	public static final double dAtan2(double y, double x) {
+	public static double dAtan2(double y, double x) {
 		return Math.atan2(y, x);
 	}
 	//#define dAsin(x) (asinf(x))
@@ -522,28 +521,28 @@ public class Common extends OdeConstants {
 		return Math.asin(x);
 	}
 	//#define dAcos(x) acos(x)
-	public static final double dAcos(double x) {
+	public static double dAcos(double x) {
 		return Math.acos(x);
 	}
 
 	//#define dFMod(a,b) (fmod((a),(b))) //TODO replace
-	public static final double dFMod(double x) {
+	public static double dFMod(double x) {
 		throw new UnsupportedOperationException();
 		//return Math.fmod(x);
 	}
 	//#define dFloor(x) floor(x) //TODO replace
-	public static final double dFloor(double x) { return Math.floor(x); }
+	public static double dFloor(double x) { return Math.floor(x); }
 
 	//#define dCeil(x) ceilf(x)          /* ceil */
-	public static final double dCeil(double x) { return Math.ceil(x); }
+	public static double dCeil(double x) { return Math.ceil(x); }
 
 	//#define dCopySign(a,b) ((dReal)copysignf(a,b)) /* copy value sign */
-    public static final double dCopysign(double magnitude, double sign) {
+    public static double dCopysign(double magnitude, double sign) {
         return Math.copySign(magnitude, sign);
     }
 
     //#define dNextAfter(x, y) nextafterf(x, y) /* next value after */
-    public static final double dNextAfter(double start, double direction) {
+    public static double dNextAfter(double start, double direction) {
         return Math.nextAfter(start, direction);
     }
 
@@ -565,8 +564,8 @@ public class Common extends OdeConstants {
 		return Math.copySign(a, b);
 	}
 
-	public static double dMin(double x, double y) { return x <= y ? x : y; }
-	public static double dMax(double x, double y) { return x <= y ? y : x; }
+	public static double dMin(double x, double y) { return Math.min(x, y); }
+	public static double dMax(double x, double y) { return Math.max(x, y); }
 
 	/* error numbers */
 

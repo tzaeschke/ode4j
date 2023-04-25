@@ -40,13 +40,10 @@ import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.QuickStepEnums.*;
 import static org.ode4j.ode.internal.Timer.*;
 import static org.ode4j.ode.internal.Timer.dTimerReport;
-import static org.ode4j.ode.internal.processmem.DxUtil.EFFICIENT_ALIGNMENT;
-import static org.ode4j.ode.internal.processmem.DxUtil.dMAX;
 
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicIntegerArray;
 
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
@@ -54,7 +51,6 @@ import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
 import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.joints.DxJoint;
-import org.ode4j.ode.internal.joints.Info2DescrQuickStep;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dmaxcallcountestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
@@ -87,8 +83,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     
     public static int RANDOM_CONSTRAINTS_REORDERING_FREQUENCY = 8;
     public static int RRS_REORDERING = 0;
-    public static int RRS_REVERSAL = 1;
-    public static int RRS_MIN = 0;
+    // public static int RRS_REVERSAL = 1;
+    // public static int RRS_MIN = 0;
     public static int RRS_MAX = 2;
 
 	private static final boolean CHECK_VELOCITY_OBEYS_CONSTRAINT = false;
@@ -333,7 +329,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		int[]                   m_findex;
 		double[]                m_J;
 		double[]                m_Jcopy;
-	};
+	}
 
 	private static class dxQuickStepperStage3CallContext
 	{
@@ -349,7 +345,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		DxStepperProcessingCallContext m_stepperCallContext;
 		dxQuickStepperLocalContext   m_localContext;
 		BlockPointer                            m_stage1MemArenaState;
-	};
+	}
 
 	private static class dxQuickStepperStage2CallContext
 	{
@@ -373,7 +369,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		final AtomicInteger           m_ji_jb = new AtomicInteger();
 		final AtomicInteger           m_bi = new AtomicInteger();
 		final AtomicInteger           m_Jrhsi = new AtomicInteger();
-	};
+	}
 
 	private static class dxQuickStepperStage5CallContext {
 		void Initialize(DxStepperProcessingCallContext callContext, dxQuickStepperLocalContext localContext,
@@ -386,7 +382,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		DxStepperProcessingCallContext m_stepperCallContext;
 		dxQuickStepperLocalContext m_localContext;
 		BlockPointer m_stage3MemArenaState;
-	};
+	}
 
     private static class dxQuickStepperStage4CallContext {
         void Initialize(DxStepperProcessingCallContext callContext, dxQuickStepperLocalContext localContext,
@@ -478,7 +474,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         final AtomicInteger m_SOR_reorderThreadsRemaining = new AtomicInteger();
         final AtomicInteger m_cf_4b = new AtomicInteger();
         final AtomicInteger m_ji_4b = new AtomicInteger();
-    };
+    }
 
     private static class dxQuickStepperStage6CallContext {
     	void Initialize(DxStepperProcessingCallContext callContext, dxQuickStepperLocalContext localContext) {
@@ -492,7 +488,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         dxQuickStepperLocalContext m_localContext;
         final AtomicInteger            m_bi_6a = new AtomicInteger();
         final AtomicInteger            m_bi_6b = new AtomicInteger();
-    };
+    }
 
     //***************************************************************************
 	// various common computations involving the matrix J
@@ -597,7 +593,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		return result;
 	}
 
-	private double[] buf_invI = new double[100];
+	private final double[] buf_invI = new double[100];
 
 	private double[] ensureSize_invI(int size) {
 		double[] a = buf_invI;
@@ -608,7 +604,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		}
 		return a;
 	}
-	private DJointWithInfo1[] buf_jointinfos = new DJointWithInfo1[0];
+	private final DJointWithInfo1[] buf_jointinfos = new DJointWithInfo1[0];
 
 	private DJointWithInfo1[] ensureSize_jointinfos(int size) {
 		DJointWithInfo1[] a = buf_jointinfos;

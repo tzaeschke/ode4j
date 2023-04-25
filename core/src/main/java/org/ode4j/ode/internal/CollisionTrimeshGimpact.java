@@ -29,18 +29,14 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector4C;
 import org.ode4j.ode.*;
-import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimTriCollision;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
-import org.ode4j.ode.internal.trimesh.DxMeshBase;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
-import static org.ode4j.ode.DTriMesh.dMTV__MAX;
 import static org.ode4j.ode.internal.Common.dAASSERT;
 import static org.ode4j.ode.internal.Common.dUASSERT;
-import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 
 // TriMesh code by Erwin de Vries.

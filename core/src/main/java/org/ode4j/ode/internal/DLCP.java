@@ -30,7 +30,6 @@ import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 import static org.ode4j.ode.internal.ErrorHandler.dMessage;
 import static org.ode4j.ode.internal.FastLDLT.dxtFactorLDLT;
-import static org.ode4j.ode.internal.FastDot.dDot;
 import static org.ode4j.ode.internal.Matrix.*;
 import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
 import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
@@ -332,21 +331,27 @@ public class DLCP {
     private int m_nC, m_nN;              // size of each index set
 	//  ATYPE A;				// A rows
 	//TODO use [][] ???
-	private double[] m_A;				// A rows
+	private final double[] m_A;				// A rows
 	//  dReal *Adata,*x,*b,*w,*lo,*hi;	// permuted LCP problem data
 	//  dReal *L,*d;				// L*D*L' factorization of set C
 	//  dReal *Dell,*ell,*tmp;
 	//  int *state,*findex,*p,*C;
-    private double[] m_pairsbxA, m_w, m_pairslhA;    // permuted LCP problem data
-	private double[] m_L,m_d;				// L*D*L' factorization of set C
-	private double[] m_Dell,m_ell,m_tmp;
-	private boolean[] m_state;
-	private int[] m_findex;
-	private int[] m_p, m_C;
+    private final double[] m_pairsbxA;
+	private final double[] m_w;
+	private final double[] m_pairslhA;    // permuted LCP problem data
+	private final double[] m_L;
+	private final double[] m_d;				// L*D*L' factorization of set C
+	private final double[] m_Dell;
+	private final double[] m_ell;
+	private final double[] m_tmp;
+	private final boolean[] m_state;
+	private final int[] m_findex;
+	private final int[] m_p;
+	private final int[] m_C;
 
-	private final int AROWp(int i) { return i*m_nskip; };
-	protected final double AROW(int i, int j) { return m_A[i*m_nskip+j]; };
-	//private void pN_plusequals_ANi (double[] p, int i) { pN_plusequals_ANi(p, i, 1); } ;
+	private int AROWp(int i) { return i*m_nskip; }
+	protected final double AROW(int i, int j) { return m_A[i*m_nskip+j]; }
+	//private void pN_plusequals_ANi (double[] p, int i) { pN_plusequals_ANi(p, i, 1); }
 	void solve1(double[] a, int i, boolean dir) { solve1(a, i, dir, false); }
 	void solve1(double[] a, int i) { solve1(a, i, true, false); }
 

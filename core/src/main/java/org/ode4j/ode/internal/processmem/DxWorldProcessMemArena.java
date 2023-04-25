@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 public final class DxWorldProcessMemArena {
 	
     //   public:
-        //TODO        #define BUFFER_TO_ARENA_EXTRA (EFFICIENT_ALIGNMENT + dEFFICIENT_SIZE(sizeof(dxWorldProcessMemArena)))
+    // #define BUFFER_TO_ARENA_EXTRA (EFFICIENT_ALIGNMENT + dEFFICIENT_SIZE(sizeof(dxWorldProcessMemArena)))
     private final static int BUFFER_TO_ARENA_EXTRA () {
         return (DxUtil.EFFICIENT_ALIGNMENT + DxUtil.dEFFICIENT_SIZE(
                 DxUtil.sizeof(DxWorldProcessMemArena.class)));
@@ -42,7 +42,7 @@ public final class DxWorldProcessMemArena {
 
     static boolean IsArenaPossible(int nBufferSize)
     {
-        return DxUtil.SIZE_MAX - BUFFER_TO_ARENA_EXTRA() >= nBufferSize; // This ensures there will be no overflow
+        return Common.SIZE_MAX - BUFFER_TO_ARENA_EXTRA() >= nBufferSize; // This ensures there will be no overflow
     }
 
     static int MakeArenaSize(int nBufferSize)
@@ -189,7 +189,7 @@ public final class DxWorldProcessMemArena {
             int rsrvminimum)
     {
         double scaledarena = arenareq * rsrvfactor;
-        int adjustedarena = (scaledarena < DxUtil.SIZE_MAX) ? (int)scaledarena : DxUtil.SIZE_MAX;
+        int adjustedarena = (scaledarena < Common.SIZE_MAX) ? (int)scaledarena : Common.SIZE_MAX;
         int boundedarena = (adjustedarena > rsrvminimum) ? adjustedarena : rsrvminimum;
         return DxUtil.dEFFICIENT_SIZE(boundedarena);
     }

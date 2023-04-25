@@ -1682,8 +1682,6 @@ public class Matrix extends FastDot {
 //		}
 //	}
 
-	private static final FastLDLT D_LDLT = new FastLDLT();
-
 	/**
 	 * factorize a matrix A into L*D*L', where L is lower triangular with ones
 	 * on the diagonal, and D is diagonal. A is an n*n matrix stored by rows,
@@ -1696,20 +1694,20 @@ public class Matrix extends FastDot {
 	 * @param nskip1 nskip 
 	 */
 	public static void dFactorLDLT(double[] A, double[] d, int n, int nskip1) {
-		D_LDLT.dxtFactorLDLT(A, d, n, nskip1, 1);
+		FastLDLT.dxtFactorLDLT(A, d, n, nskip1, 1);
 	}
 	
-	private static final int _dEstimateFactorCholeskyTmpbufSize(int n)
+	private static int _dEstimateFactorCholeskyTmpbufSize(int n)
 	{
 	  return dPAD(n) * 8;//sizeof(dReal);
 	}
 
-	private static final int _dEstimateSolveCholeskyTmpbufSize(int n)
+	private static int _dEstimateSolveCholeskyTmpbufSize(int n)
 	{
 	  return dPAD(n) * 8;//sizeof(dReal);
 	}
 
-	private static final int _dEstimateInvertPDMatrixTmpbufSize(int n)
+	private static int _dEstimateInvertPDMatrixTmpbufSize(int n)
 	{
 	  int FactorCholesky_size = _dEstimateFactorCholeskyTmpbufSize(n);
 	  int SolveCholesky_size = _dEstimateSolveCholeskyTmpbufSize(n);
@@ -1717,27 +1715,27 @@ public class Matrix extends FastDot {
 	  return dPAD(n) * (n + 1) * 8 /* sizeof(dReal) */ + MaxCholesky_size;
 	}
 
-	private static final int _dEstimateIsPositiveDefiniteTmpbufSize(int n)
+	private static int _dEstimateIsPositiveDefiniteTmpbufSize(int n)
 	{
 	  return dPAD(n) * n * 8 /* sizeof(dReal) */ + _dEstimateFactorCholeskyTmpbufSize(n);
 	}
 
-	private static final int _dEstimateLDLTAddTLTmpbufSize(int nskip)
+	private static int _dEstimateLDLTAddTLTmpbufSize(int nskip)
 	{
 	  return nskip * 2 * 8 /* sizeof(dReal) */;
 	}
 
-	private static final int _dEstimateLDLTRemoveTmpbufSize(int n2, int nskip)
+	private static int _dEstimateLDLTRemoveTmpbufSize(int n2, int nskip)
 	{
 	  return n2 * 8 /* sizeof(dReal) */ + _dEstimateLDLTAddTLTmpbufSize(nskip);
 	}
 
-	public static final int dEstimateFactorCholeskyTmpbufSize(int n) { return _dEstimateFactorCholeskyTmpbufSize(n); }
-	public static final int dEstimateSolveCholeskyTmpbufSize(int n) { return _dEstimateSolveCholeskyTmpbufSize(n); }
-	public static final int dEstimateInvertPDMatrixTmpbufSize(int n) { return _dEstimateInvertPDMatrixTmpbufSize(n); }
-	public static final int dEstimateIsPositiveDefiniteTmpbufSize(int n) { return _dEstimateIsPositiveDefiniteTmpbufSize(n); }
-	public static final int dEstimateLDLTAddTLTmpbufSize(int nskip) { return _dEstimateLDLTAddTLTmpbufSize(nskip); }
-	public static final int dEstimateLDLTRemoveTmpbufSize(int n2, int nskip) { return _dEstimateLDLTRemoveTmpbufSize(n2, nskip); }
+	public static int dEstimateFactorCholeskyTmpbufSize(int n) { return _dEstimateFactorCholeskyTmpbufSize(n); }
+	public static int dEstimateSolveCholeskyTmpbufSize(int n) { return _dEstimateSolveCholeskyTmpbufSize(n); }
+	public static int dEstimateInvertPDMatrixTmpbufSize(int n) { return _dEstimateInvertPDMatrixTmpbufSize(n); }
+	public static int dEstimateIsPositiveDefiniteTmpbufSize(int n) { return _dEstimateIsPositiveDefiniteTmpbufSize(n); }
+	public static int dEstimateLDLTAddTLTmpbufSize(int nskip) { return _dEstimateLDLTAddTLTmpbufSize(nskip); }
+	public static int dEstimateLDLTRemoveTmpbufSize(int n2, int nskip) { return _dEstimateLDLTRemoveTmpbufSize(n2, nskip); }
 
 
 	// matrix_impl.h
