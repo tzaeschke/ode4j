@@ -721,7 +721,6 @@ void testReorthonormalize()
 
 	//void computeMassParams (dMass *m, dReal q[NUMP][3], dReal pm[NUMP])
 	void computeMassParams (DMass m, DVector3[] q, double[] pm) {
-		//TODO assertTrue(q.length==NUMP && q[0].length==3 && pm.length==NUMP);
 		dIASSERT(q.length==NUMP && pm.length==NUMP);
 
 		int i;
@@ -1193,7 +1192,7 @@ void testReorthonormalize()
 	//extern "C" 
 	void dTestMatrixComparison()
 	{
-		//TODO volatile 
+		//volatile
 		int i;
 		printf ("dTestMatrixComparison()\n");
 		dMessageFunction orig_debug = dGetDebugHandler();
@@ -1230,7 +1229,7 @@ void testReorthonormalize()
 
 		// test broken sequences (with matrix error)
 		dRandSetSeed (seed);
-		//volatile TODO 
+		//volatile
 		int passcount = 0;
 		for (i=1; i<49; i++) {
 //			if (setjmp (jump_buffer) != 0) {
@@ -1299,7 +1298,6 @@ void testReorthonormalize()
 	//	extern "C" void dTestDataStructures();
 	//	extern "C" void dTestMatrixComparison();
 	//	extern "C" void dTestSolveLCP();
-	//TODO
 
 	public static void main(String[] args)
 	{

@@ -42,6 +42,7 @@ import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 import static org.ode4j.ode.OdeConstants.*;
 import static org.ode4j.ode.internal.Common.*;
@@ -174,7 +175,7 @@ public class CollideTrimeshBoxOld implements DColliderFn {
 	//	#define LENGTHOF(a) \
 	//	  dSqrt(a[0]*a[0]+a[1]*a[1]+a[2]*a[2])
 	private double LENGTHOF(DVector3C a) {
-		return a.length();  //TODO use squared? TZ
+		return a.length();
 	}
 
 
@@ -1469,7 +1470,7 @@ public class CollideTrimeshBoxOld implements DColliderFn {
 		//*****at first , collide box aabb******//
 
 		//GIM_TRIMESH * ptrimesh = &TriMesh.m_collision_trimesh;
-		GimTrimesh ptrimesh = TriMesh.m_collision_trimesh;
+		GimTrimesh ptrimesh = TriMesh.m_collision_trimesh();
 		aabb3f test_aabb = new aabb3f();
 
 		DAABBC aabb = BoxGeom.getAABB();
@@ -1499,8 +1500,8 @@ public class CollideTrimeshBoxOld implements DColliderFn {
 
 		int ctContacts0 = 0;
 
-		DVector3[] dvTZ = { new DVector3(), new DVector3(), new DVector3() };
-		vec3f[] dv = new vec3f[] { new vec3f(), new vec3f(), new vec3f() };//[3];
+		DVector3[] dv = { new DVector3(), new DVector3(), new DVector3() };
+		//vec3f[] dv = new vec3f[] { new vec3f(), new vec3f(), new vec3f() };//[3];
 		for(int i=0;i<collision_result.size();i++)
 		{
 			//			DVector3[] dvTZ = new DVector3[3];
@@ -1510,10 +1511,10 @@ public class CollideTrimeshBoxOld implements DColliderFn {
 			ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv[0], dv[1], dv[2]);
 
 			RefBoolean bFinishSearching = new RefBoolean(false);
-			dvTZ[0].set(dv[0].f);
-			dvTZ[1].set(dv[1].f);
-			dvTZ[2].set(dv[2].f);
-			ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dvTZ, bFinishSearching);
+			//dvTZ[0].set(dv[0].f);
+			//dvTZ[1].set(dv[1].f);
+			//dvTZ[2].set(dv[2].f);
+			ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dv, bFinishSearching);
 
 			if (bFinishSearching.b)
 			{

@@ -106,18 +106,23 @@ public class DxJointLMotor extends DxJoint implements DLMotorJoint {
 		}
 	}
 
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2( double worldFPS, double worldERP, Info2Descr info )
-	{
-		int row = 0;
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
 		DVector3[] ax = new DVector3[]{new DVector3(), new DVector3(), new DVector3()};
+		computeGlobalAxes(ax);
 
-		computeGlobalAxes( ax );
-
-		for ( int i = 0;i < num;i++ )
-		{
-			row += limot[i].addLimot( this, worldFPS, info, row, ax[i], false );
+		int currRowSkip = 0, currPairSkip = 0;
+		for (int i = 0; i < num; ++i) {
+			if (limot[i].addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, ax[i], false)) {
+				currRowSkip += rowskip;
+				currPairSkip += pairskip;
+			}
 		}
 	}
 

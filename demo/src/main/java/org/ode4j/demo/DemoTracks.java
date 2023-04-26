@@ -352,7 +352,7 @@ public class DemoTracks extends dsFunctions {
             v = contact.geom.pos.reSub(xyz);//dSubtractVectors3(v, contact.geom.pos, xyz);
             DVector3 c = new DVector3();
             dCalcVectorCross3(c, v, contact.geom.pos);
-            dSafeNormalize3(c);
+            dNormalize3(c);
             DVector3 pos1 = new DVector3();
             dAddScaledVectors3(pos1, contact.geom.pos, c, 1, 0.005);
             DVector3 pos2 = new DVector3();

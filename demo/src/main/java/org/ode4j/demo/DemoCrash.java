@@ -82,6 +82,11 @@ class DemoCrash extends dsFunctions {
 	private static final float CANNON_BALL_MASS = 10;	// mass of the cannon ball
 	private static final float CANNON_BALL_RADIUS = 0.5f;
 
+	private static final DVector3C xunit = new DVector3(1, 0, 0);
+	private static final DVector3C yunit = new DVector3(0, 1, 0);
+	private static final DVector3C zpunit = new DVector3(0, 0, 1);
+	private static final DVector3C zmunit = new DVector3(0, 0, -1);
+
 //	private static boolean BOX = false;
 //	private static boolean CARS = true;
 //	private static boolean WALL = true;
@@ -171,8 +176,8 @@ class DemoCrash extends dsFunctions {
 	}
 
 
-	private static float[] xyz = {3.8548f,9.0843f,7.5900f};
-	private static float[] hpr = {-145.5f,-22.5f,0.25f};
+	private static final float[] xyz = {3.8548f,9.0843f,7.5900f};
+	private static final float[] hpr = {-145.5f,-22.5f,0.25f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()
@@ -239,8 +244,7 @@ class DemoCrash extends dsFunctions {
 			j.attach (body[bodyI],body[bodyI+i+1]);
 			DVector3C a = body[bodyI+i+1].getPosition ();
 			j.setAnchor (a);
-			j.setAxis1 (0,0,(i<2 ? 1 : -1));
-			j.setAxis2 (0,1,0);
+			j.setAxes ((i<2 ? zpunit : zmunit), yunit);
 			j.setParamSuspensionERP (0.8);
 			j.setParamSuspensionCFM (1e-5);
 			j.setParamVel2 (0);
@@ -418,8 +422,7 @@ class DemoCrash extends dsFunctions {
 					DVector3C a = body[bodies++].getPosition ();
 					DHinge2Joint j = joint[joints++];
 					j.setAnchor (a);
-					j.setAxis1 (0,0,1);
-					j.setAxis2 (1,0,0);
+					j.setAxes (zpunit, xunit);
 					j.setParamSuspensionERP (1.0);
 					j.setParamSuspensionCFM (1e-5);
 					j.setParamLoStop (0);
@@ -443,8 +446,7 @@ class DemoCrash extends dsFunctions {
 					DVector3C b = body[bodies++].getPosition ();
 					j = joint[joints++];
 					j.setAnchor (b);
-					j.setAxis1 (0,0,1);
-					j.setAxis2 (1,0,0);
+					j.setAxes (zpunit, xunit);
 					j.setParamSuspensionERP (1.0);
 					j.setParamSuspensionCFM (1e-5);
 					j.setParamLoStop (0);

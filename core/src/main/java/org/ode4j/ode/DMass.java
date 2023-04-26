@@ -33,17 +33,33 @@ import org.ode4j.math.DVector3C;
  */
 public interface DMass extends DMassC {
 
+	/**
+	 * Set mass, center and inertia matrix to zero.
+	 */
 	void setZero();
-	
-	void setParameters (double themass, double cgx, double cgy, double cgz,
+
+	/**
+	 * Set all parameters of the mass.
+	 * @param total_mass total mass
+	 * @param cgx center of gravity x
+	 * @param cgy center of gravity y
+	 * @param cgz center of gravity x
+	 * @param I11 intertia matrix 11
+	 * @param I22 intertia matrix 22
+	 * @param I33 intertia matrix 33
+	 * @param I12 intertia matrix 12
+	 * @param I13 intertia matrix 13
+	 * @param I23 intertia matrix 23
+	 */
+	void setParameters (double total_mass, double cgx, double cgy, double cgz,
 			double I11, double I22, double I33,
 			double I12, double I13, double I23);
 	
 	void setSphere (double density, double radius);
-	void setSphereTotal (double total, double radius);
+	void setSphereTotal (double total_mass, double radius);
 
  	void setTrimesh(double density, DTriMesh geom);
- 	void setTrimeshTotal(double total, DTriMesh geom);
+ 	void setTrimeshTotal(double total_mass, DTriMesh geom);
 	
 	/** 
 	 * @param density density 
@@ -53,12 +69,12 @@ public interface DMass extends DMassC {
 	 */
 	void setCapsule (double density, int direction, double radius, double length);
 	/** 
-	 * @param total total 
+	 * @param total_mass total mass
 	 * @param direction 1=x; 2=y; 3=z 
 	 * @param radius radius
 	 * @param length length
 	 */
-	void setCapsuleTotal (double total, int direction, double radius, double length);
+	void setCapsuleTotal (double total_mass, int direction, double radius, double length);
 	
 	/** 
 	 * @param density density
@@ -68,18 +84,18 @@ public interface DMass extends DMassC {
 	 */
 	void setCylinder (double density, int direction, double radius, double length);
 	/** 
-	 * @param total total 
+	 * @param total_mass total mass
 	 * @param direction 1=x; 2=y; 3=z 
 	 * @param radius radius
 	 * @param length length
 	 */
-	void setCylinderTotal (double total, int direction, double radius, double length);
+	void setCylinderTotal (double total_mass, int direction, double radius, double length);
 
 	void setBox (double density, double lx, double ly, double lz);
 	void setBox (double density, DVector3C lxyz);
-	void setBoxTotal (double total, double lx, double ly, double lz);
+	void setBoxTotal (double total_mass, double lx, double ly, double lz);
 	
-	void adjust (double newmass);
+	void adjust (double new_total_mass);
 	
 	void translate (double x, double y, double z);
 	void translate(DVector3C c);
@@ -91,12 +107,27 @@ public interface DMass extends DMassC {
 	//by TZ
 	@Override
 	double getMass();
-	void setMass(double d);
+	void setMass(double total_mass);
+
+	/**
+	 * Get center of gravity.
+	 * @return center of gravity
+	 */
 	@Override
 	DVector3C getC();
+	/**
+	 * Set inertia matrix.
+	 * @return inertia matrix
+	 */
 	@Override
 	DMatrix3C getI();
+	/**
+	 * @param c mass center
+	 */
 	void setC(DVector3C c);
+	/**
+	 * @param I inertia matrix
+	 */
 	void setI(DMatrix3C I);
 
 	/**
@@ -106,7 +137,7 @@ public interface DMass extends DMassC {
 	 * @return <tt>true</tt> if both condition are met
 	 */
 	@Override
-	public boolean check();
+	boolean check();
 
 
 	

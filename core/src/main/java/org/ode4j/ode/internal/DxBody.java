@@ -31,16 +31,7 @@ import static org.ode4j.ode.OdeMath.dMultiply1_331;
 import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.ode.OdeMath.dNormalize4;
 import static org.ode4j.ode.OdeMath.dOrthogonalizeR;
-import static org.ode4j.ode.internal.Common.DBL_EPSILON;
-import static org.ode4j.ode.internal.Common.dAASSERT;
-import static org.ode4j.ode.internal.Common.dCos;
-import static org.ode4j.ode.internal.Common.dDEBUGMSG;
-import static org.ode4j.ode.internal.Common.dFabs;
-import static org.ode4j.ode.internal.Common.dIASSERT;
-import static org.ode4j.ode.internal.Common.dRecip;
-import static org.ode4j.ode.internal.Common.dSin;
-import static org.ode4j.ode.internal.Common.dSqrt;
-import static org.ode4j.ode.internal.Common.dUASSERT;
+import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.Matrix.dInvertPDMatrix;
 import static org.ode4j.ode.internal.Rotation.dDQfromW;
 import static org.ode4j.ode.internal.Rotation.dQMultiply0;
@@ -291,9 +282,12 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	{
 		//memcpy(b->posr.R, R, sizeof(dMatrix3));
 		_posr.Rw().set(R);
-		 dOrthogonalizeR(_posr.Rw());
-		 dQfromR (_q, R);
-		 dNormalize4 (_q);
+
+		boolean bOrthogonalizeResult = dOrthogonalizeR(_posr.Rw());
+		dAVERIFY(bOrthogonalizeResult);
+
+		dQfromR(_q, R);
+		dNormalize4(_q);
 		  
 		// notify all attached geoms that this body has moved
 		for (DxGeom geom2 = geom; geom2 != null; geom2 = geom2.dGeomGetBodyNext ()) {

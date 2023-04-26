@@ -44,6 +44,7 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.DMassC;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.internal.cpp4j.java.FormattedStringBuilder;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
  * DxMass.
@@ -285,7 +286,7 @@ public class DxMass implements DMass {
 
 		DxTriMesh TriMesh = (DxTriMesh )g;
 		//unsigned 
-		int triangles = TriMesh.FetchTriangleCount();
+		int triangles = TriMesh.getMeshTriangleCount();
 
 		double nx, ny, nz;
 		//unsigned 
@@ -303,14 +304,15 @@ public class DxMass implements DMass {
 
 		for( i = 0; i < triangles; i++ )	 	
 		{
-			DVector3[] v = {new DVector3(), new DVector3(), new DVector3()};//[3];
-			TriMesh.FetchTransformedTriangle( i, v);
+			//DVector3[] v = {new DVector3(), new DVector3(), new DVector3()};//[3];
+			DVector3 v0 = new DVector3(), v1 = new DVector3(), v2 = new DVector3();//[3];
+			TriMesh.fetchMeshTransformedTriangle(v0, v1, v2, i);
 
 			DVector3 n = new DVector3(), a = new DVector3(), b = new DVector3();
 //			dOP( a.v, OP.SUB, v[1].v, v[0].v ); 
 //			dOP( b.v, OP.SUB, v[2].v, v[0].v ); 
-			a.eqDiff(v[1], v[0]);
-			b.eqDiff(v[2], v[0]);
+			a.eqDiff(v1, v0);
+			b.eqDiff(v2, v0);
 			dCalcVectorCross3( n, b, a );
 			nx = Math.abs(n.get0());
 			ny = Math.abs(n.get1());
@@ -350,22 +352,22 @@ public class DxMass implements DMass {
 							switch(j)
 							{
 							case 0:
-								a0 = v[0].get(A);
-								b0 = v[0].get(B);
-								a1 = v[1].get(A);
-								b1 = v[1].get(B);
+								a0 = v0.get(A);
+								b0 = v0.get(B);
+								a1 = v1.get(A);
+								b1 = v1.get(B);
 								break;
 							case 1:
-								a0 = v[1].get(A);
-								b0 = v[1].get(B);
-								a1 = v[2].get(A);
-								b1 = v[2].get(B);
+								a0 = v1.get(A);
+								b0 = v1.get(B);
+								a1 = v2.get(A);
+								b1 = v2.get(B);
 								break;
 							case 2:
-								a0 = v[2].get(A);
-								b0 = v[2].get(B);
-								a1 = v[0].get(A);
-								b1 = v[0].get(B);
+								a0 = v2.get(A);
+								b0 = v2.get(B);
+								a1 = v0.get(A);
+								b1 = v0.get(B);
 								break;
 							}
 							da = a1 - a0;
@@ -407,7 +409,7 @@ public class DxMass implements DMass {
 						Pabb /= -60.0;
 					}			
 
-					w = - n.dot(v[0]);
+					w = - n.dot(v0);
 
 					k1 = 1 / n.get(C); k2 = k1 * k1; k3 = k2 * k1; k4 = k3 * k1;
 

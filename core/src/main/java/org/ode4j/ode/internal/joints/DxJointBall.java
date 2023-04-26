@@ -65,18 +65,18 @@ public class DxJointBall extends DxJoint implements DBallJoint
 		info.setNub(3);
 	}
 
-
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2( double worldFPS, double worldERP, Info2Descr info )
-	{
-		info.setCfm(0, cfm);
-		info.setCfm(1, cfm);
-		info.setCfm(2, cfm);
-		//    info.cfm.set(cfm, cfm, cfm);
-		setBall( this, worldFPS, erp, info, anchor1, anchor2 );
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
+		pairRhsCfmA[pairRhsCfmOfs + GI2_CFM] = cfm;
+		pairRhsCfmA[pairRhsCfmOfs + pairskip + GI2_CFM] = cfm;
+		pairRhsCfmA[pairRhsCfmOfs + 2 * pairskip + GI2_CFM] = cfm;
+		setBall( this, worldFPS, this.erp, rowskip, J1A, J1Ofs, J2A, J2Ofs, pairskip, pairRhsCfmA, pairRhsCfmOfs, anchor1, anchor2 );
 	}
-
 
 	//void dJointSetBallAnchor( dJoint j, double x, double y, double z )
 	public void dJointSetBallAnchor( DVector3C xyz )

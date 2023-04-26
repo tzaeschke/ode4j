@@ -74,13 +74,13 @@ public class DemoMovingTrimesh extends dsFunctions {
 	private static class MyObject {
 		DBody body;			// the body
 		DGeom[] geom = new DGeom[GPB];		// geometries representing this body
-	};
+	}
 
 	private static int num=0;		// number of objects in simulation
 	private static int nextobj=0;		// next object to recycle if num==NUM
 	private static DWorld world;
 	private static DSpace space;
-	private static MyObject[] obj = new MyObject[NUM];
+	private static final MyObject[] obj = new MyObject[NUM];
 	private static DJointGroup contactgroup;
 	private static int selected = -1;	// selected object
 	private static boolean show_aabb = false;	// show geom AABBs?
@@ -92,7 +92,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 	private static DTriMeshData TriData1, TriData2;  // reusable static trimesh data
 
 
-	private static DNearCallback nearCallback = new DNearCallback() {
+	private static final DNearCallback nearCallback = new DNearCallback() {
 		@Override
 		public void call(Object data, DGeom o1, DGeom o2) {
 			nearCallback(data, o1, o2);
@@ -134,8 +134,8 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 
     // start simulation - set viewpoint
-	private static float[] xyz = {2.1640f,-1.3079f,1.7600f};
-	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {2.1640f,-1.3079f,1.7600f};
+	private static final float[] hpr = {125.5000f,-17.0000f,0.0000f};
 
 	@Override
 	public void start()
@@ -245,6 +245,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 				//      dGeomTriMeshDataBuildSingle(new_tmdata, Vertices[0], 3 * sizeof(float), VertexCount, 
 				//		  (dTriIndex*)&Indices[0], IndexCount, 3 * sizeof(dTriIndex));
 				new_tmdata.build( Vertices, Indices );
+				new_tmdata.preprocess2((1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES), null);
 
 				obj[i].geom[0] = OdeHelper.createTriMesh(space, new_tmdata, null, null, null);
 
@@ -253,7 +254,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 				m.setTrimesh( DENSITY, (DTriMesh) obj[i].geom[0] );
 				DVector3 c = new DVector3( m.getC() );
-				System.out.println("mass at " + c);
+				// System.out.println("mass at " + c);
 				c.scale(-1);
 				obj[i].geom[0].setPosition( c );
 				m.translate( c );
@@ -485,11 +486,6 @@ public class DemoMovingTrimesh extends dsFunctions {
 //			DVector3C Pos = TriMesh1.getPosition();
 //			DMatrix3C Rot = TriMesh1.getRotation();
 //
-//			DVector3[] v = { new DVector3(), new DVector3(), new DVector3() };
-//			for (int i = 0; i < IndexCount/3; i++) {
-//				((DxGimpact)TriMesh1).FetchTransformedTriangle(i, v);
-//				dsDrawTriangle(Pos, Rot, v[0], v[1], v[2], false);
-//			}}
 		DVector3C Pos1 = TriMesh1.getPosition();
 		DMatrix3C Rot1 = TriMesh1.getRotation();
 		for (int i = 0; i < IndexCount; i+=3) {
@@ -528,12 +524,13 @@ public class DemoMovingTrimesh extends dsFunctions {
 		for (int i = 0; i < obj.length; i++) obj[i] = new MyObject(); 
 
 		// note: can't share tridata if intending to trimesh-trimesh collide
+		final int preprocessFlags = (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES) | (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES);
 		TriData1 = OdeHelper.createTriMeshData();
 		TriData1.build(Vertices, Indices);
-		TriData1.preprocess();
+		TriData1.preprocess2(preprocessFlags, null);
 		TriData2 = OdeHelper.createTriMeshData();
 		TriData2.build(Vertices, Indices);
-		TriData2.preprocess();
+		TriData2.preprocess2(preprocessFlags, null);
 
 		TriMesh1 = OdeHelper.createTriMesh(space, TriData1, null, null, null);
 		TriMesh2 = OdeHelper.createTriMesh(space, TriData2, null, null, null);
@@ -558,7 +555,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 //	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,600,600,this);
 
 //	    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
 //	    pool.freeThreadPool();

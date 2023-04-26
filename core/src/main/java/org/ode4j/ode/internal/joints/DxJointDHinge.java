@@ -24,14 +24,14 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
-import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
-import static org.ode4j.ode.OdeMath.dPlaneSpace;
-
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DDoubleHingeJoint;
 import org.ode4j.ode.DJoint;
+import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
+
+import static org.ode4j.ode.OdeMath.*;
 
 /**
  * Double Hinge joint.
@@ -45,7 +45,10 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
 //
 //    virtual void getSureMaxInfo( SureMaxInfo* info );
 //    virtual void getInfo1( Info1* info );
-//    virtual void getInfo2( dReal worldFPS, dReal worldERP, const Info2Descr* info );
+//    virtual void getInfo2( dReal worldFPS, dReal worldERP,
+//                           int rowskip, dReal *J1, dReal *J2,
+//                           int pairskip, dReal *pairRhsCfm, dReal *pairLoHi,
+//                           int *findex );
 //    virtual dJointType type() const;
 //    virtual size_t size() const;
 
@@ -72,31 +75,40 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
     }
 
 
-	@Override
-    public void
-    getInfo2( double worldFPS, double worldERP, Info2Descr info )
-    {
-        super.getInfo2( worldFPS, worldERP, info ); // sets row0
-        
+    /**
+     * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+     */
+    @Override
+    public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+                         int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+                         int pairLoHiOfs, int[] findexA, int findexOfs) {
+        super.getInfo2(worldFPS, worldERP, rowskip, J1A, J1Ofs, J2A, J2Ofs, pairskip, pairRhsCfmA, pairRhsCfmOfs,
+                pairLoHiA, pairLoHiOfs, findexA, findexOfs); // sets row0
+
         DVector3 globalAxis1 = new DVector3();
         //dBodyVectorToWorld(node[0].body, axis1[0], axis1[1], axis1[2], globalAxis1);
         node[0].body.vectorToWorld(axis1, globalAxis1);
 
+        DxBody body1 = node[1].body;
+
         // angular constraints, perpendicular to axis
         DVector3 p = new DVector3(), q = new DVector3();
         dPlaneSpace(globalAxis1, p, q);
-        info.setJ1a(1, p);
-        info.setJ1a(2, q);
 
-        if ( node[1].body != null ) {
-            info.setJ2aNegated(1, p);
-            info.setJ2aNegated(2, q);
+        dCopyVector3(J1A, J1Ofs + rowskip + GI2__JA_MIN, p);
+        if (body1 != null) {
+            dCopyNegatedVector3(J2A, J2Ofs + rowskip + GI2__JA_MIN, p);
+        }
+
+        dCopyVector3(J1A, J1Ofs + 2 * rowskip + GI2__JA_MIN, q);
+        if (body1 != null) {
+            dCopyNegatedVector3(J2A, J2Ofs + 2 * rowskip + GI2__JA_MIN, q);
         }
 
         DVector3 globalAxis2 = new DVector3();
-        if ( node[1].body != null ) {
+        if ( body1 != null ) {
             //dBodyVectorToWorld(node[1].body, axis2[0], axis2[1], axis2[2], globalAxis2);
-        	node[1].body.vectorToWorld(axis2, globalAxis2);
+        	body1.vectorToWorld(axis2, globalAxis2);
         } else {
         	//dCopyVector3(globalAxis2, axis2);
         	globalAxis2.set(axis2);
@@ -105,11 +117,10 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
         // similar to the hinge joint
         DVector3 u = new DVector3();
         dCalcVectorCross3(u, globalAxis1, globalAxis2);
+
         final double k = worldFPS * super.erp();
-
-        info.setC(1, k * u.dot(p) );
-        info.setC(2, k * u.dot(q) );
-
+        pairRhsCfmA[pairRhsCfmOfs + pairskip + GI2_RHS] = k * dCalcVectorDot3( u, p );
+        pairRhsCfmA[pairRhsCfmOfs + 2 * pairskip + GI2_RHS] = k * dCalcVectorDot3( u, q );
 
 
 
@@ -128,42 +139,29 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
          * along this axis, and the linear constraint is enough.
          */
 
-        //info.J1l[row3+0] = globalAxis1[0];
-        //info.J1l[row3+1] = globalAxis1[1];
-        //info.J1l[row3+2] = globalAxis1[2];
-        info.setJ1l(3, globalAxis1);
+        int rowskip_mul_3 = 3 * rowskip;
+        dCopyVector3(J1A, J1Ofs + rowskip_mul_3 + GI2__JL_MIN, globalAxis1);
 
-        if ( node[1].body != null ) {
+        if ( body1 != null ) {
 
             DVector3 h = new DVector3();
             //dAddScaledVectors3(h, node[0].body.posr().pos(), node[1].body.posr().pos, -0.5, 0.5);
-            h.eqSum(node[0].body.posr().pos(), -0.5, node[1].body.posr().pos(), 0.5);
-            
-            DVector3 omega = new DVector3();
-            dCalcVectorCross3(omega, h, globalAxis1);
-            //info.J1a[row3+0] = omega[0];
-            //info.J1a[row3+1] = omega[1];
-            //info.J1a[row3+2] = omega[2];
-            info.setJ1a(3, omega);
+            h.eqSum(node[0].body.posr().pos(), -0.5, body1.posr().pos(), 0.5);
 
-            //info.J2l[row3+0] = -globalAxis1[0];
-            //info.J2l[row3+1] = -globalAxis1[1];
-            //info.J2l[row3+2] = -globalAxis1[2];
-            info.setJ2lNegated(3, globalAxis1); 
+            dCalcVectorCross3(J1A, J1Ofs + rowskip_mul_3 + GI2__JA_MIN, h, globalAxis1);
 
-            //info.J2a[row3+0] = omega[0];
-            //info.J2a[row3+1] = omega[1];
-            //info.J2a[row3+2] = omega[2];
-            info.setJ2a(3, omega);
+            dCopyNegatedVector3(J2A, J2Ofs + rowskip_mul_3 + GI2__JL_MIN, globalAxis1);
+            dCopyVector3(J2A, J2Ofs + rowskip_mul_3 + GI2__JA_MIN, J1A, J1Ofs + rowskip_mul_3 + GI2__JA_MIN);
         }
 
         // error correction: both anchors should lie on the same plane perpendicular to the axis
         DVector3 globalA1 = new DVector3(), globalA2 = new DVector3();
         //dBodyGetRelPointPos(node[0].body, anchor1[0], anchor1[1], anchor1[2], globalA1);
         node[0].body.getRelPointPos(anchor1(), globalA1);
-        if ( node[1].body != null ) {
+
+        if ( body1 != null ) {
             //dBodyGetRelPointPos(node[1].body, anchor2[0], anchor2[1], anchor2[2], globalA2);
-        	node[1].body.getRelPointPos(anchor2(), globalA2);
+        	body1.getRelPointPos(anchor2(), globalA2);
         } else {
         	//dCopyVector3(globalA2, anchor2);
         	globalA2.set(anchor2());
@@ -172,7 +170,7 @@ public class DxJointDHinge extends DxJointDBall implements DDoubleHingeJoint {
         DVector3 d = new DVector3();
         //dSubtractVectors3(d, globalA1, globalA2); // displacement error
         d.eqDiff(globalA1, globalA2); // displacement error
-        info.setC(3, -k * globalAxis1.dot(d) );
+        pairRhsCfmA[pairRhsCfmOfs + 3 * pairskip + GI2_RHS] = -k * dCalcVectorDot3(globalAxis1, d);
     }
 
     void dJointSetDHingeAxis( DVector3C xyz )

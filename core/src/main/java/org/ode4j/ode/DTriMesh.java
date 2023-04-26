@@ -25,6 +25,8 @@
 package org.ode4j.ode;
 
 
+import org.ode4j.math.DVector3;
+
 /**
  * TriMesh code by Erwin de Vries.
  *
@@ -67,14 +69,55 @@ public interface DTriMesh extends DGeom {
 	interface DTriCallback {
 		int call(DGeom TriMesh, DGeom RefObject, int TriangleIndex);
 	}
-	
-	
-	
-	
-	
-//	void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data);
-//	Object dGeomTriMeshDataGet(DTriMeshData g, int data_id);
 
+
+	//	enum dMeshTriangleVertex {
+	//		dMTV__MIN,
+	//		dMTV_FIRST =dMTV__MIN,
+	//		dMTV_SECOND,
+	//		dMTV_THIRD,
+	//		dMTV__MAX,
+	//	}
+	public static final int dMTV__MIN = 0;
+	public static final int dMTV_FIRST = dMTV__MIN;
+	public static final int dMTV_SECOND = 1;
+	public static final int dMTV_THIRD = 2;
+	public static final int dMTV__MAX = 3;
+
+	/*
+	 * The values of data_id that can be used with dGeomTriMeshDataSet/dGeomTriMeshDataGet
+	 */
+	enum dTRIMESHDATA {
+		FACE_NORMALS,
+		USE_FLAGS;
+		//public static final dTRIMESHDATA _MIN = 0;
+		//public static final dTRIMESHDATA dTRIMESHDATA__MAX = 2;
+//#ifndef TRIMESH_FACE_NORMALS // Define this name during the header inclusion if you need it for something else
+//		// Included for backward compatibility -- please use the corrected name above. Sorry.
+//		TRIMESH_FACE_NORMALS = dTRIMESHDATA_FACE_NORMALS,
+//#endif
+	}
+
+	/*
+	 * The flags of the dTRIMESHDATA_USE_FLAGS data elements
+	 */
+	class dMESHDATAUSE
+	{
+		public static final int dMESHDATAUSE_EDGE1      = 0x01;
+		public static final int dMESHDATAUSE_EDGE2      = 0x02;
+		public static final int dMESHDATAUSE_EDGE3      = 0x04;
+		public static final int dMESHDATAUSE_VERTEX1    = 0x08;
+		public static final int dMESHDATAUSE_VERTEX2    = 0x10;
+		public static final int dMESHDATAUSE_VERTEX3    = 0x20;
+	};
+
+	/*
+	 *	Set and get the TriMeshData additional data
+	 * Note: The data is NOT COPIED on assignment
+	 */
+	//	void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data);
+	//	Object dGeomTriMeshDataGet(DTriMeshData g, int data_id);
+	//  void *dGeomTriMeshDataGet2(dTriMeshDataID g, int data_id, size_t *pout_size/*=NULL*/);
 
 //The following is not ported to Java because it is not supported by GIMPACT (TZ).
 //	/**
@@ -169,17 +212,15 @@ public interface DTriMesh extends DGeom {
 //		return OdeHelper.createTriMesh(space, Data, 
 //				Callback, ArrayCallback, RayCallback);
 //	}
-//
-//	//ODE_API 
-//	void dGeomTriMeshSetData(DGeom g, DTriMeshData Data) {
-//		throw new UnsupportedOperationException();
-//	}
-//	//ODE_API 
-//	DTriMeshData dGeomTriMeshGetData(DGeom g) {
-//		throw new UnsupportedOperationException();
-//	}
-//
-//
+
+	//ODE_API
+	//void dGeomTriMeshSetData(DGeom g, DTriMeshData Data) {
+	void setTrimeshData(DTriMeshData Data);
+	//ODE_API
+	//DTriMeshData dGeomTriMeshGetData(DGeom g) {
+	DTriMeshData getTrimeshData();
+
+
 	/** 
 	 * Enable/disable temporal coherence. 
 	 * @param cls Geometry class
@@ -205,32 +246,33 @@ public interface DTriMesh extends DGeom {
 	 * collision checked with a trimesh once, data is stored inside the trimesh.
 	 * With large worlds with lots of seperate objects this list could get huge.
 	 * We should be able to do this automagically.
-	 * @param g trimesh
 	 */
 	//ODE_API 
-	void clearTCCache(DTriMesh g);
+	void clearTCCache();
 
 
-//	/**
-//	 * returns the TriMeshDataID
-//	 */
-//	//ODE_API 
-//	DTriMeshData dGeomTriMeshGetTriMeshDataID(DTriMesh g);
-//
-//	/**
-//	 * Gets a triangle.
-//	 */
-//	//ODE_API 
-//	//void dGeomTriMeshGetTriangle(dGeom g, int Index, dVector3* v0, dVector3* v1, dVector3* v2) {
-//	void dGeomTriMeshGetTriangle(DTriMesh g, int Index, DVector3 v0, DVector3 v1, DVector3 v2);
-//
-//	/**
-//	 * Gets the point on the requested triangle and the given barycentric
-//	 * coordinates.
-//	 */
-//	//ODE_API 
-//	void getPoint(DTriMesh g, int Index, double u, double v, DVector3 Out);
-//
+	/**
+	 * returns the TriMeshDataID
+	 */
+	//ODE_API
+	//DTriMeshData dGeomTriMeshGetTriMeshDataID(DTriMesh g);
+	DTriMeshData getTriMeshData();
+
+	/**
+	 * Gets a triangle.
+	 */
+	//ODE_API
+	//void dGeomTriMeshGetTriangle(dGeom g, int Index, dVector3* v0, dVector3* v1, dVector3* v2) {
+	void getTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2);
+
+	/**
+	 * Gets the point on the requested triangle and the given barycentric
+	 * coordinates.
+	 */
+	//ODE_API
+	//void dGeomTriMeshGetPoint(dGeomID g, int index, dReal u, dReal v, dVector3 Out)
+	void getPoint(int index, double u, double v, DVector3 Out);
+
 //	/*
 //
 //This is how the strided data works:
@@ -248,14 +290,7 @@ public interface DTriMesh extends DGeom {
 //int TriStride = sizeof(StridedTri);
 //
 //	 */
-//
-//
-//	//ODE_API 
-//	int getTriangleCount (DGeom g);
-//
-//	//ODE_API 
-//	void dGeomTriMeshDataUpdate(DTriMeshData g) {
-//		throw new UnsupportedOperationException();
-//	}
 
+	//ODE_API
+	int getTriangleCount ();
 }

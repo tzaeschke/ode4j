@@ -22,6 +22,7 @@
 package org.ode4j.math;
 
 import org.ode4j.math.DMatrix3.DVector3ColView;
+import org.ode4j.ode.OdeMath;
 
 /**
  * This class provides functionality for DVector3 math.
@@ -366,46 +367,13 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
 	 * 
-	 * This method returns (1,0,0) if no normal can be determined.
+	 * This method does not modify the vector if no normal can be determined.
 	 * @return 'false' if no normal could be determined
 	 */
-	public final boolean safeNormalize ()
-	{
-		double s;
-
-		double aa0 = Math.abs(get0());
-		double aa1 = Math.abs(get1());
-		double aa2 = Math.abs(get2());
-		if (aa1 > aa0) {
-			if (aa2 > aa1) { // aa[2] is largest
-				s = aa2;
-			}
-			else {              // aa[1] is largest
-				s = aa1;
-			}
-		}
-		else {
-			if (aa2 > aa0) {// aa[2] is largest
-				s = aa2;
-			}
-			else {              // aa[0] might be the largest
-				if (aa0 <= 0) { // aa[0] might is largest
-//					a.d0 = 1;	// if all a's are zero, this is where we'll end up.
-//					a.d1 = 0;	// return a default unit length vector.
-//					a.d2 = 0;
-					set(1, 0, 0);
-					return false;
-				}
-				else {
-					s = aa0;
-				}
-			}
-		}
-
-		scale(1./s);
-		scale(1./length());
-		return true;
+	public final boolean safeNormalize () {
+		return OdeMath.dxSafeNormalize3(this);
 	}
+
 	/**
 	 * this may be called for vectors `a' with extremely small magnitude, for
 	 * example the result of a cross product on two nearly perpendicular vectors.
@@ -414,13 +382,11 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
-	 * 
-	 * This method throws an IllegalArgumentEception if no normal can be determined.
+	 *
+	 * This method throws an IllegalArgumentException if no normal can be determined.
 	 */
-	public final void normalize()
-	{
-		if (!safeNormalize()) throw new IllegalStateException(
-				"Normalization failed: " + this);
+	public final void normalize() {
+		OdeMath.dNormalize3(this);
 	}
 
 	/**

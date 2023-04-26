@@ -25,19 +25,14 @@
 package org.ode4j.ode.internal.joints;
 
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
-import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dMultiply1_331;
-import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.dDEBUGMSG;
 import static org.ode4j.ode.internal.Rotation.dQMultiply1;
 
-import org.ode4j.math.DMatrix3C;
-import org.ode4j.math.DQuaternion;
-import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector3C;
+import org.ode4j.math.*;
+import org.ode4j.ode.DMatrix;
 import org.ode4j.ode.DPistonJoint;
+import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
 
 
@@ -290,56 +285,47 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 	}
 
 
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2 ( double worldFPS, double worldERP, Info2Descr info )
-	{
-
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
 		final double k = worldFPS * worldERP;
 
 
 		// Pull out pos and R for both bodies. also get the `connection'
 		// vector pos2-pos1.
 
-		DMatrix3C R1 = null;//TZ
-		DMatrix3C R2 = null;//TZ
 		DVector3 dist = new DVector3(); // Current position of body_1  w.r.t "anchor"
 		// 2 bodies anchor is center of body 2
 		// 1 bodies anchor is origin
 		DVector3 lanchor2 = new DVector3(0, 0, 0);
 
 		DVector3C pos1 = node[0].body.posr().pos();
-		R1   = node[0].body.posr().R();
+		DMatrix3C R1 = node[0].body.posr().R();
+		DMatrix3C R2 = null;
 
-		if ( node[1].body!=null )
-		{
-			DVector3C pos2 = node[1].body.posr().pos();
-			R2   = node[1].body.posr().R();
+		DxBody body1 = node[1].body;
 
-			dMultiply0_331 ( lanchor2, R2, anchor2 );
-//			dist.v[0] = lanchor2.v[0] + pos2[0] - pos1[0];
-//			dist.v[1] = lanchor2.v[1] + pos2[1] - pos1[1];
-//			dist.v[2] = lanchor2.v[2] + pos2[2] - pos1[2];
+		if (body1 != null) {
+			DVector3C pos2 = body1.posr().pos();
+			R2 = body1.posr().R();
+
+			dMultiply0_331(lanchor2, R2, anchor2);
+			//			dist.v[0] = lanchor2.v[0] + pos2[0] - pos1[0];
+			//			dist.v[1] = lanchor2.v[1] + pos2[1] - pos1[1];
+			//			dist.v[2] = lanchor2.v[2] + pos2[2] - pos1[2];
 			dist.eqSum(lanchor2, pos2).sub(pos1);
-		}
-		else
-		{
+		} else {
 			// pos2 = 0; // N.B. We can do that to be safe but it is no necessary
 			// R2 = 0;   // N.B. We can do that to be safe but it is no necessary
-	        if ( isFlagsReverse() )
-	        {
-//	            dist[0] = pos1[0] - anchor2[0]; // Invert the value
-//	            dist[1] = pos1[1] - anchor2[1];
-//	            dist[2] = pos1[2] - anchor2[2];
-	            dist.eqDiff(pos1, anchor2);
-	        }
-	        else
-	        {
-//	            dist[0] = anchor2[0] - pos1[0];
-//	            dist[1] = anchor2[1] - pos1[1];
-//	            dist[2] = anchor2[2] - pos1[2];
-	            dist.eqDiff(anchor2, pos1);
-	        }
+			if (isFlagsReverse()) {
+				dSubtractVectors3(dist, pos1, anchor2); // Invert the value
+			} else {
+				dSubtractVectors3(dist, anchor2, pos1);
+			}
 		}
 
 		// ======================================================================
@@ -376,39 +362,36 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		// Since there is no constraint along the rotoide axis
 		// only along p and q that we want the same angular velocity and need to reduce
 		// the error
-		DVector3 ax1 = new DVector3(), p = new DVector3(), q = new DVector3();
-		dMultiply0_331 ( ax1, node[0].body.posr().R(), axis1 );
+		DVector3 b = new DVector3(), ax1 = new DVector3(), p = new DVector3(), q = new DVector3();
+		dMultiply0_331(ax1, node[0].body.posr().R(), axis1);
 
 		// Find the 2 axis perpendicular to the rotoide axis.
-		dPlaneSpace ( ax1, p, q );
+		dPlaneSpace(ax1, p, q);
 
 		// LHS
-		info.setJ1a(0, p);
-		info.setJ1a(1, q);
+		dCopyVector3(J1A, J1Ofs + GI2__JA_MIN, p);
 
-		DVector3 b = new DVector3();
-		if ( node[1].body !=null)
-		{
-			// LHS
-			//  info.J2a[s0+i] = -p[i]
-			info.setJ2aNegated(0, p);
-			info.setJ2aNegated(1, q);
+		if (body1 != null) {
+			dCopyNegatedVector3(J2A, J2Ofs + GI2__JA_MIN, p);
+		}
 
+		dCopyVector3(J1A, J1Ofs + rowskip + GI2__JA_MIN, q);
+
+		if (body1 != null) {
+			dCopyNegatedVector3(J2A, J2Ofs + rowskip + GI2__JA_MIN, q);
 
 			// Some math for the RHS
 			DVector3 ax2 = new DVector3();
-			dMultiply0_331 ( ax2, R2, axis2 );
-			dCalcVectorCross3 ( b, ax1, ax2 );
-		}
-		else
-		{
+			dMultiply0_331(ax2, R2, axis2);
+			dCalcVectorCross3(b, ax1, ax2);
+		} else {
 			// Some math for the RHS
-		    dCalcVectorCross3 ( b, ax1, axis2 );
+			dCalcVectorCross3(b, ax1, axis2);
 		}
 
 		// RHS
-		info.setC(0, k * dCalcVectorDot3 ( p, b ) );
-		info.setC(1, k * dCalcVectorDot3 ( q, b ) );
+		pairRhsCfmA[pairRhsCfmOfs + GI2_RHS] = k * dCalcVectorDot3(p, b);
+		pairRhsCfmA[pairRhsCfmOfs + pairskip + GI2_RHS] = k * dCalcVectorDot3(q, b);
 
 		// ======================================================================
 		// Work on the linear part (i.e row 2,3)
@@ -436,31 +419,32 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		// Coeff for 2er line of: J1l => q, J2l => -q
 		// Coeff for 1er line of: J1a => dist x p, J2a => p x anchor2
 		// Coeff for 2er line of: J1a => dist x q, J2a => q x anchor2
-		DVector3 v = new DVector3();
-		dCalcVectorCross3 ( v, dist, p );
-		info.setJ1a(2, v);
-		
-		dCalcVectorCross3 ( v, dist, q );
-		info.setJ1a(3, v);
 
-		info.setJ1l(2, p);
-		info.setJ1l(3, q);
-
-		if ( node[1].body!=null )
+		int currRowSkip = 2 * rowskip;
 		{
-			// q x anchor2 instead of anchor2 x q since we want the negative value
-		    dCalcVectorCross3 ( v, p, lanchor2 );
-			info.setJ2a(2, v);
+			dCopyVector3(J1A, J1Ofs + currRowSkip + GI2__JL_MIN, p);
+			dCalcVectorCross3(J1A, J1Ofs + currRowSkip + GI2__JA_MIN, dist, p);
 
-			// The cross product is in reverse order since we want the negative value
-		    dCalcVectorCross3 ( v, q, lanchor2 );
-			info.setJ2a(3, v);
-
-			// info.J2l[s2+i] = -p[i];
-			info.setJ2lNegated(2, p);
-			info.setJ2lNegated(3, q);
+			if (body1 != null) {
+				// info->J2l[s2+i] = -p[i];
+				dCopyNegatedVector3(J2A, J2Ofs + currRowSkip + GI2__JL_MIN, p);
+				// q x anchor2 instead of anchor2 x q since we want the negative value
+				dCalcVectorCross3(J2A, J2Ofs + currRowSkip + GI2__JA_MIN, p, lanchor2);
+			}
 		}
 
+		currRowSkip += rowskip;
+		{
+			dCopyVector3(J1A, J1Ofs + currRowSkip + GI2__JL_MIN, q);
+			dCalcVectorCross3(J1A, J1Ofs + currRowSkip + GI2__JA_MIN, dist, q);
+
+			if (body1 != null) {
+				// info->J2l[s3+i] = -q[i];
+				dCopyNegatedVector3(J2A, J2Ofs + currRowSkip + GI2__JL_MIN, q);
+				// The cross product is in reverse order since we want the negative value
+				dCalcVectorCross3(J2A, J2Ofs + currRowSkip + GI2__JA_MIN, q, lanchor2);
+			}
+		}
 
 		// We want to make correction for motion not in the line of the axis
 		// We calculate the displacement w.r.t. the "anchor" pt.
@@ -470,56 +454,43 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 		//
 		// Compute the RHS of rows 2 and 3
 		DVector3 err = new DVector3();
-		dMultiply0_331 ( err, R1, anchor1 );
-		//TZ dOPE2 ( err, OP.EQ , dist, -,  err );
-		//dOP ( err.v, OP.SUB, dist.v, err.v );
-		err.eqDiff(dist, err);
+		dMultiply0_331(err, R1, anchor1);
+		dSubtractVectors3(err, dist, err);
 
-		info.setC(2, k * dCalcVectorDot3 ( p, err ) );
-		info.setC(3, k * dCalcVectorDot3 ( q, err ) );
+		int currPairSkip = 2 * pairskip;
+		{
+			pairRhsCfmA[pairRhsCfmOfs + currPairSkip + GI2_RHS] = k * dCalcVectorDot3(p, err);
+		}
 
+		currPairSkip += pairskip;
+		{
+			pairRhsCfmA[pairRhsCfmOfs + currPairSkip + GI2_RHS] = k * dCalcVectorDot3(q, err);
+		}
 
-	    int row = 4;
-	    if (  node[1].body != null )
-	    {
-	        row += limotP.addLimot ( this, worldFPS, info, 4, ax1, false );
-	    }
-	    else if ( isFlagsReverse() )
-	    {
-	        DVector3 rAx1 = new DVector3();
-//	        rAx1[0] = -ax1[0];
-//	        rAx1[1] = -ax1[1];
-//	        rAx1[2] = -ax1[2];
-	        rAx1.sub( ax1 );
-	        row += limotP.addLimot ( this, worldFPS, info, 4, rAx1, false );
-	    }
-	    else
-	        row += limotP.addLimot ( this, worldFPS, info, 4, ax1, false );
+		currRowSkip += rowskip;
+		currPairSkip += pairskip;
 
-	    limotR.addLimot ( this, worldFPS, info, row, ax1, true );
-//		int row = 4 + limotP.addLimot ( this, info, 4, ax1, false );
-//		limotR.addLimot ( this, info, row, ax1, true );
-//	}
-//
-//	void
-//	computeInitialRelativeRotation()
-//	{
-//		if ( node[0].body!=null )
-//		{
-//			if ( node[1].body!=null )
-//			{
-//				dQMultiply1 ( qrel, node[0].body._q, node[1].body._q );
-//			}
-//			else
-//			{
-//				// set joint->qrel to the transpose of the first body q
-//				qrel.set0( node[0].body._q.get0() );
-//				for ( int i = 1; i < 4; i++ )
-//					qrel.set(i, -node[0].body._q.get(i) );
-//				// WARNING do we need the - in -joint->node[0].body->q[i]; or not
-//			}
-//		}
+		if (body1 != null || (flags & dJOINT_REVERSE) == 0) {
+			if (limotP.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, ax1, false)) {
+				currRowSkip += rowskip;
+				currPairSkip += pairskip;
+			}
+		} else {
+			DVector3 rAx1 = new DVector3();
+			dCopyNegatedVector3(rAx1, ax1);
+
+			if (limotP.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, rAx1, false)) {
+				currRowSkip += rowskip;
+				currPairSkip += pairskip;
+			}
+		}
+
+		limotR.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+				pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, ax1, true);
 	}
+
 
 	public void dJointSetPistonAnchor ( DVector3C xyz )
 	{
@@ -607,7 +578,7 @@ public class DxJointPiston extends DxJoint implements DPistonJoint
 //					node[1].body._posr.pos.v[2] - dz );
 			c.eqDiff(node[0].body.posr().pos(), node[1].body.posr().pos()).sub(dx, dy, dz);
 		}
-		else if ( node[0].body!=null )
+		else /*if ( node[0].body )*/ // -- body[0] should always be present -- there is a matrix multiplication below
 		{
 //			c.v[0] = node[0].body._posr.pos.v[0] - dx;
 //			c.v[1] = node[0].body._posr.pos.v[1] - dy;

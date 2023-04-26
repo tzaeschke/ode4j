@@ -39,6 +39,7 @@ import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DATA;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
  *	Triangle-Capsule(Capsule) collider by Alen Ladavac
@@ -407,7 +408,7 @@ public class CollideTrimeshCCylinder implements DColliderFn {
 //		// calculate length of separating axis vector
 //		dReal fL = LENGTHOF(vAxis);
 //		// if not long enough
-//		// TODO : dReal epsilon please
+//		// dReal epsilon please
 //		if ( fL < REAL(1e-5) ) 
 //		{
 //			// do nothing
@@ -1210,7 +1211,7 @@ public class CollideTrimeshCCylinder implements DColliderFn {
 	    trimeshcontacts = GimContact.GIM_CREATE_CONTACT_LIST();
 
 	    //Collide trimeshe vs capsule
-	    TriMesh.m_collision_trimesh.gim_trimesh_capsule_collision(capsule,trimeshcontacts);
+	    TriMesh.m_collision_trimesh().gim_trimesh_capsule_collision(capsule,trimeshcontacts);
 
 
 	    if(trimeshcontacts.size() == 0)

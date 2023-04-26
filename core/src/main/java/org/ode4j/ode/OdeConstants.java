@@ -30,7 +30,6 @@ package org.ode4j.ode;
  * @author Tilmann Zaeschke
  */
 public class OdeConstants {
-	//TODO implement surface-mode class with boolean parameters? (TZ)
 	/** Use axis dependent friction */
 	public static final int 	  dContactMu2		= 0x001;	
 	/** Same as above */
@@ -61,14 +60,12 @@ public class OdeConstants {
 	public static final int		  dContactApprox1   = 0x7000;
 	
 	
-	//TODO ?! (TZ)
 	public static final double dInfinity = Double.POSITIVE_INFINITY;
 	
 	/**
 	 *	Just generate any contacts (disables any contact refining).
 	 */
 	// #define CONTACTS_UNIMPORTANT			0x80000000
-	//TODO make this a boolean parameter? (TZ)
 	public static final int CONTACTS_UNIMPORTANT		=	0x80000000;
 
 	

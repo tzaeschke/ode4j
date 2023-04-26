@@ -323,9 +323,9 @@
 						</goals>
 						<configuration>
 							<rules>
-								<!-- Require JDK 7+ -->
+								<!-- Require JDK 8+ -->
 								<requireJavaVersion>
-									<version>[1.7,)</version>
+									<version>[1.8,)</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>
@@ -334,7 +334,7 @@
 			</plugin>
 
 			<!--
-				Set the default source level to 1.7.
+				Set the default source level to 1.8.
 
 				This is overridden when running on JDK 9 and above (see the
 				on-jdk-9-plus profile).
@@ -342,8 +342,8 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 
@@ -448,9 +448,9 @@
 									<excludes>
 										<exclude>module-info.java</exclude>
 									</excludes>
-									<release>7</release>
-									<source>7</source>
-									<target>7</target>
+									<release>8</release>
+									<source>8</source>
+									<target>8</target>
 								</configuration>
 							</execution>
 						</executions>

@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
 import static org.ode4j.ode.OdeMath.dCalcVectorDot3_41;
@@ -43,6 +44,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector4;
+import org.ode4j.ode.DAABB;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
@@ -433,11 +435,11 @@ public class DxCollisionUtil {
 
 		if (norm > 0.0f)
 		{
-			double invNorm = 1.0/norm;
-			dest.set0( source.get0() * invNorm );
-			dest.set1( -source.get1() * invNorm );
-			dest.set2( -source.get2() * invNorm );
-			dest.set3( -source.get3() * invNorm);	
+			double neg_norm_recip = 1.0/norm;
+			dest.set0( -source.get0() * neg_norm_recip );
+			dest.set1( source.get1() * neg_norm_recip );
+			dest.set2( source.get2() * neg_norm_recip );
+			dest.set3( source.get3() * neg_norm_recip);
 		}
 		else
 		{
@@ -929,7 +931,11 @@ public class DxCollisionUtil {
 	//****************************************************************************
 	// other utility functions
 
-
+	/*ODE_API */
+	static void dInfiniteAABB (DxGeom geom, DAABB aabb)
+	{
+		aabb.set(-dInfinity, dInfinity, -dInfinity, dInfinity, -dInfinity, dInfinity);
+	}
 
 	//****************************************************************************
 	// Helpers for Croteam's collider - by Nguyen Binh

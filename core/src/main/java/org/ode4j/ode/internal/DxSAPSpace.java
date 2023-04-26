@@ -243,17 +243,21 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		if( dirtyIdx != GEOM_INVALID_IDX ) {
 			// we're in dirty list, remove
 			int dirtySize = DirtyList.size();
-			DxGeom lastG = DirtyList.get(dirtySize-1);
-			DirtyList.set(dirtyIdx, lastG);
-			GEOM_SET_DIRTY_IDX(lastG,dirtyIdx);
+			if (dirtyIdx != dirtySize-1) {
+				DxGeom lastG = DirtyList.get(dirtySize - 1);
+				DirtyList.set(dirtyIdx, lastG);
+				GEOM_SET_DIRTY_IDX(lastG, dirtyIdx);
+			}
 			GEOM_SET_DIRTY_IDX(g,GEOM_INVALID_IDX);
 			DirtyList.remove( dirtySize-1 );
 		} else {
 			// we're in geom list, remove
 			int geomSize = GeomList.size();
-			DxGeom lastG = GeomList.get(geomSize-1);
-			GeomList.set(geomIdx, lastG);
-			GEOM_SET_GEOM_IDX(lastG,geomIdx);
+			if (geomIdx != geomSize-1) {
+				DxGeom lastG = GeomList.get(geomSize - 1);
+				GeomList.set(geomIdx, lastG);
+				GEOM_SET_GEOM_IDX(lastG, geomIdx);
+			}
 			GEOM_SET_GEOM_IDX(g,GEOM_INVALID_IDX);
 			GeomList.remove( geomSize-1 );
 		}
@@ -266,7 +270,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	void dirty( DxGeom g )
 	{
 		//dAASSERT(g);
-		dUASSERT(g.parent_space == this,"object is not in this space");
+		dUASSERT(g.parent_space == this, "object is not in this space");
 
 		// check if already dirtied
 		int dirtyIdx = GEOM_GET_DIRTY_IDX(g);
@@ -278,9 +282,11 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 		// remove from geom list, place last in place of this
 		int geomSize = GeomList.size();
-		DxGeom lastG = GeomList.get(geomSize-1);
-		GeomList.set(geomIdx, lastG);
-		GEOM_SET_GEOM_IDX(lastG,geomIdx);
+		if (geomIdx != geomSize-1) {
+			DxGeom lastG = GeomList.get(geomSize - 1);
+			GeomList.set(geomIdx, lastG);
+			GEOM_SET_GEOM_IDX(lastG, geomIdx);
+		}
 		//GeomList.setSize( geomSize-1 );
 		GeomList.remove(geomSize-1);
 
@@ -306,12 +312,16 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 
 		for( int i = 0; i < dirtySize; ++i ) {
 			DxGeom g = DirtyList.get(i);
-			if( g instanceof DxSpace ) {//IS_SPACE(g) ) {
-				((DxSpace)g).cleanGeoms();
+			if (g instanceof DxSpace) {//IS_SPACE(g) ) {
+				((DxSpace) g).cleanGeoms();
 			}
+
 			g.recomputeAABB();
-			//g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
-			g.unsetFlagDirtyAndBad();
+//			dIASSERT((g->gflags & GEOM_AABB_BAD) == 0);
+//			g->gflags &= ~GEOM_DIRTY;
+			dIASSERT(!g.hasFlagAabbBad());
+			g.unsetFlagDirty();
+
 			// remove from dirty list, add to geom list
 			GEOM_SET_DIRTY_IDX( g, GEOM_INVALID_IDX );
 			GEOM_SET_GEOM_IDX( g, geomSize + i );
@@ -353,15 +363,9 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 		}
 
 		// do SAP on normal AABBs
-		int normSize = TmpGeomList.size();
-		if ( normSize > 0 )
+		int tmp_geom_count = TmpGeomList.size();
+		if ( tmp_geom_count > 0 )
 		{
-			// Size the poslist (+1 for infinity end cap)
-			//poslist.setSize( tmp_geom_count + 1 );
-			//TODO TZ not used at the moment
-			//poslist = new float[ tmp_geom_count + 1 ];
-			//poslist = new float[ tmp_geom_count ];
-
 			// Generate a list of overlapping boxes
 			//BoxPruning( tmp_geom_count, (final dxGeom**)TmpGeomList.data(), overlapBoxes );
 			BoxPruning( TmpGeomList, data, callback );
@@ -381,7 +385,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 			}
 
 			// collide infinite ones with normal ones
-			for( n = 0; n < normSize; ++n ) {
+			for( n = 0; n < tmp_geom_count; ++n ) {
 				DxGeom g2 = TmpGeomList.get(n);
 				collideGeomsNoAABBs( g1, g2, data, callback );
 			}
@@ -435,7 +439,6 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 	 *  This greatly simplifies the code.
 	 *
 	 *	@param	geoms	[in] geoms of boxes.
-	 *	@param	pairs	[out] array of overlapping pairs.
 	 */
 	//void dxSAPSpace::BoxPruning( int count, const dxGeom** geoms, dArray< Pair >& pairs )
 	void BoxPruning(final List<DxGeom> geoms, Object data, DNearCallback callback)
@@ -485,97 +488,7 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 //	//void dxSAPSpace::BoxPruning( int count, const dxGeom** geoms, dArray< Pair >& pairs )
 //	void BoxPruning( int count, final ArrayList<dxGeom> geoms, ArrayList< Pair > pairs )
 //	{
-//		// 1) Build main list using the primary axis
-//		//  NOTE: uses floats instead of dReals because that's what radix sort wants
-//		for( int i = 0; i < count; ++i )
-//			poslist[i] = (float)TmpGeomList.get(i)._aabb.get( ax0idx );
-//		//TODO TZ poslist[count++] = Float.MAX_VALUE;//FLT_MAX;
-//
-//		// 2) Sort the list
-//		//final uint32* Sorted = sortContext.RadixSort( poslist.data(), count );
-//		//final IntArray Sorted = new IntArray( sortContext.RadixSort( poslist, count ) );
-//		//TODO
-//		//TODO
-//		//TODO
-//		ArrayList<dxGeom> buffer = new ArrayList<dxGeom>(geoms);
-//		Collections.sort(buffer, new GeomComparator());
-//		//final IntArray Sorted = new IntArray( Arrays.sort(poslist) );
-//		final IntArray Sorted = new IntArray(poslist.length);
-//		for (int i = 0; i < geoms.size(); i++) { //Sorted.setAt(i, i); // TODO optimize
-//			dxGeom g1 = geoms.get(i);
-//	//		poslist[i] = (float) g1._aabb.get(ax0idx); //TODO really?
-//			boolean found = false;
-//			for (int j = 0; j < buffer.size(); j++) {
-//				if (g1 == buffer.get(j)) {
-//					Sorted.setAt(buffer.size()-i-1, j);
-//					//Sorted.setAt(i, j);
-//					found = true;
-//					break;
-//				}
-//			}
-//			if (!found) throw new RuntimeException("i="+i);
-//		}
-//		//RESULT SO FAR
-//		//- Sorting is +- correct, geoms are ordered after aabb[0] from - to +
-//		//- poslist does not get modified
-//		//- poslist[Sorted] gives elements in correct order
-//
-//		// 3) Prune the list
-//		//	final uint32* const LastSorted = Sorted + count;
-//		//	final uint32* RunningAddress = Sorted;
-////		final IntArray LastSorted = new IntArray(Sorted, count);
-//		final IntArray RunningAddress = new IntArray(Sorted);
-//		//while ( RunningAddress < LastSorted && Sorted < LastSorted )
-//		//while ( RunningAddress.getAt0() < LastSorted.getAt0() && Sorted.getAt0() < LastSorted.getAt0() )
-//		while (RunningAddress.size() > 0 && Sorted.size() > 0)
-//		{
-//			Pair IndexPair = new Pair();  //TODO push does memcpy !?!?!?!!!!
-//			//IndexPair.id0 = *Sorted++;
-//			IndexPair.id0 = Sorted.getAt0();
-//			Sorted.inc();
-//
-//			// empty, this loop just advances RunningAddress
-//			//while ( poslist[*RunningAddress++] < poslist[IndexPair.id0] ) {}
-//			while ( poslist[RunningAddress.getAt0()] < poslist[IndexPair.id0] ) {
-//				RunningAddress.inc();
-//			}
-//			//TZ additional inc to point to failed position
-//			RunningAddress.inc();
-//
-//			//End of list not reached?
-//			//if ( RunningAddress.getAt0() < LastSorted.getAt0() )
-//			if (RunningAddress.size() > 0)
-//			{
-//				//final uint32* RunningAddress2 = RunningAddress;
-//				final IntArray RunningAddress2 = new IntArray(RunningAddress);
-//
-//				final double idx0ax0max = geoms.get(IndexPair.id0)._aabb.get(ax0idx+1);
-//				final double idx0ax1max = geoms.get(IndexPair.id0)._aabb.get(ax1idx+1);
-//				final double idx0ax2max = geoms.get(IndexPair.id0)._aabb.get(ax2idx+1);
-//
-//				//while ( poslist[ IndexPair.id1 = *RunningAddress2++ ] <= idx0ax0max )
-//				while ( true )
-//				{
-//					IndexPair.id1 = RunningAddress2.getAt0();
-//					RunningAddress2.inc();
-//					if (! (poslist[IndexPair.id1] <= idx0ax0max) || RunningAddress2.size()<0) {
-//						break;
-//					}
-//					
-//					final dVector6 aabb0 = geoms.get( IndexPair.id0 )._aabb;
-//					final dVector6 aabb1 = geoms.get( IndexPair.id1 )._aabb;
-//
-//					// Intersection?
-//					if ( idx0ax1max >= aabb1.get(ax1idx) && aabb1.get(ax1idx+1) >= aabb0.get(ax1idx) )
-//						if ( idx0ax2max >= aabb1.get(ax2idx) && aabb1.get(ax2idx+1) >= aabb0.get(ax2idx) )
-//						{
-//							System.out.println("P: " + IndexPair.id0 + " / " + IndexPair.id1 );
-//							pairs.add( IndexPair );
-//						}
-//				}
-//			}
-//
-//		}; // while ( RunningAddress < LastSorted && Sorted < LastSorted )
+//      TZ: I removed this because it is also outdated
 //	}
 
 

@@ -71,6 +71,9 @@ public final class DContactGeomBuffer {
 		return get(index);
 	}
 
+	public void swap(int pos1, int pos2) {
+		_buf.swap(pos1 + _ofs, pos2 + _ofs);
+	}
 
 	//DO NOT IMPLEMENT! This would affect the objects in the calling class!!!
 	//	/**

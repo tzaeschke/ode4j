@@ -22,6 +22,7 @@
 package org.ode4j.ode.threading;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Atomics {
@@ -29,6 +30,11 @@ public class Atomics {
 	public static boolean ThrsafeCompareExchange(AtomicInteger paoDestination, int aoComparand, int aoExchange)
 	{
 	    return paoDestination.compareAndSet(aoComparand, aoExchange);
+	}
+
+	public static boolean ThrsafeCompareExchange(AtomicIntegerArray paoDestination, int arrayOffset, int aoComparand, int aoExchange)
+	{
+		return paoDestination.compareAndSet(arrayOffset, aoComparand, aoExchange);
 	}
 
 	public static int ThrsafeExchange(AtomicInteger paoDestination, int aoExchange)

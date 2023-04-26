@@ -35,7 +35,7 @@ import java.util.Iterator;
  */
 public class DContactBuffer implements Iterable<DContact> {
 	
-	private ArrayList<DContact> buf = new ArrayList<DContact>();
+	private final ArrayList<DContact> buf = new ArrayList<DContact>();
 
 	public DContactBuffer(int size) {
 		for (int i = 0; i < size; i++) {
@@ -58,5 +58,11 @@ public class DContactBuffer implements Iterable<DContact> {
 	@Override
 	public Iterator<DContact> iterator() {
 		return Collections.unmodifiableList(buf).iterator();
+	}
+
+	public void swap(int pos1, int pos2) {
+		DContact c = buf.get(pos1);
+		buf.set(pos1, buf.get(pos2));
+		buf.set(pos2, c);
 	}
 }

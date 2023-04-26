@@ -87,7 +87,13 @@ public interface DrawStuffApi {
 			DVector3C v0, DVector3C v1, DVector3C v2, boolean solid);
 
 	public void dsDrawTriangle (final DVector3C pos, final DMatrix3C R,
-			final float[] v0, final float[] v1, final float[] v2, boolean solid);
+								final float[] v0, final float[] v1, final float[] v2, boolean solid);
 
-    public void dsSetSphereQuality(int n);
+	public void dsDrawTriangles(final float[] pos, final float[] R,
+								final float[][] v, boolean solid);
+
+	public void dsDrawTriangles(final DVector3C pos, final DMatrix3C R,
+								final DVector3C[] v, boolean solid);
+
+	public void dsSetSphereQuality(int n);
 }

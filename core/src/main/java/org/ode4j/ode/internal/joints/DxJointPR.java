@@ -25,9 +25,7 @@
 package org.ode4j.ode.internal.joints;
 
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
-import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
+import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.ode.internal.Rotation.dQMultiply1;
 
@@ -37,6 +35,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPRJoint;
+import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
 
 
@@ -291,12 +290,13 @@ public class DxJointPR extends DxJoint implements DPRJoint
 	}
 
 
-
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2( double worldFPS, double worldERP, Info2Descr info )
-	{
-
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
 		double k = worldFPS * worldERP;
 
 
@@ -305,20 +305,17 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// pull out pos and R for both bodies. also get the `connection'
 		// vector pos2-pos1.
 
-		//    double *pos1, *pos2 = 0, *R1, *R2 = 0;
-		DVector3C pos1, pos2 = null;
-		DMatrix3C R1 = new DMatrix3(), R2 = null;
-		pos1 = node[0].body.posr().pos();
-		R1 = node[0].body.posr().R();
-		if ( node[1].body!=null )
-		{
-			pos2 = node[1].body.posr().pos();
-			R2 = node[1].body.posr().R();
-		}
-		else
-		{
-			//     pos2 = 0; // N.B. We can do that to be safe but it is no necessary
-			//     R2 = 0;   // N.B. We can do that to be safe but it is no necessary
+		DVector3C pos2 = null;
+		DMatrix3C R2 = null;
+
+		DVector3C pos1 = node[0].body.posr().pos();
+		DMatrix3C R1 = node[0].body.posr().R();
+
+		DxBody body1 = node[1].body;
+
+		if (body1 != null) {
+			pos2 = body1.posr().pos();
+			R2 = body1.posr().R();
 		}
 
 
@@ -329,7 +326,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// Calculated in the same way as the offset
 		DVector3 wanchor2 = new DVector3(0,0,0), dist = new DVector3();
 
-		if ( node[1].body!=null )
+		if (body1 != null)
 		{
 			// Calculate anchor2 in world coordinate
 			dMultiply0_331( wanchor2, R2, _anchor2 );
@@ -340,16 +337,11 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		}
 		else
 		{
-	        if ( isFlagsReverse() )
-	        {
-//	            dist[0] = pos1[0] - anchor2[0]; // Invert the value
-				dist.eqDiff(pos1, _anchor2);
-	        }
-	        else
-	        {
-//	            dist[0] = anchor2[0] - pos1[0];
-				dist.eqDiff(_anchor2, pos1);
-	        }
+			if (isFlagsReverse()) {
+				dSubtractVectors3(dist, pos1, _anchor2); // Invert the value
+			} else {
+				dSubtractVectors3(dist, _anchor2, pos1); // Invert the value
+			}
 		}
 
 
@@ -363,19 +355,22 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		//    q*w1 - q*w2 = 0
 		// where p and q are unit vectors normal to the rotoide axis, and w1 and w2
 		// are the angular velocity vectors of the two bodies.
+		DVector3 ax2 = new DVector3();
 		DVector3 ax1 = new DVector3();
-		dMultiply0_331( ax1, node[0].body.posr().R(), axisR1 );
+		dMultiply0_331( ax1, R1, axisR1 );
 		dCalcVectorCross3( q, ax1, axP );
 
-		info.setJ1a(0, axP);
-		info.setJ1a(1, q);
+		dCopyVector3(J1A, J1Ofs + GI2__JA_MIN, axP);
 
-		if ( node[1].body!=null )
-		{
-			info.setJ2aNegated(0, axP);
-			info.setJ2aNegated(1, q);
+		if (body1 != null) {
+			dCopyNegatedVector3(J2A, J2Ofs + GI2__JA_MIN, axP);
 		}
 
+		dCopyVector3(J1A, J1Ofs + rowskip + GI2__JA_MIN, q);
+
+		if (body1 != null) {
+			dCopyNegatedVector3(J2A, J2Ofs + rowskip + GI2__JA_MIN, q);
+		}
 
 		// Compute the right hand side of the constraint equation set. Relative
 		// body velocities along p and q to bring the rotoide back into alignment.
@@ -393,24 +388,16 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// ax1 x ax2 is in the plane space of ax1, so we project the angular
 		// velocity to p and q to find the right hand side.
 
-		DVector3 ax2 = new DVector3();
-		if ( node[1].body!=null )
-		{
-			dMultiply0_331( ax2, R2, axisR2 );
-		}
-		else
-		{
-//			ax2.v[0] = axisR2.v[0];
-//			ax2.v[1] = axisR2.v[1];
-//			ax2.v[2] = axisR2.v[2];
-			ax2.set(axisR2);
+		if (body1 != null) {
+			dMultiply0_331(ax2, R2, axisR2);
+		} else {
+			dCopyVector3(ax2, axisR2);
 		}
 
 		DVector3 b = new DVector3();
-		dCalcVectorCross3( b, ax1, ax2 );
-		info.setC(0, k * dCalcVectorDot3( b, axP ) );
-		info.setC(1, k * dCalcVectorDot3( b, q ) );
-
+		dCalcVectorCross3(b, ax1, ax2);
+		pairRhsCfmA[pairRhsCfmOfs + GI2_RHS] = k * dCalcVectorDot3(b, axP);
+		pairRhsCfmA[pairRhsCfmOfs + pairskip + GI2_RHS] = k * dCalcVectorDot3(b, q);
 
 
 		// ==========================
@@ -440,32 +427,29 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// Coeff for 1er line of: J1a => dist x ax1, J2a => - anchor2 x ax1
 		// Coeff for 2er line of: J1a => dist x q,   J2a => - anchor2 x q
 
-
-		DVector3 v = new DVector3();
-		dCalcVectorCross3(v, dist, ax1 );
-		info.setJ1a(2, v);
-
-		dCalcVectorCross3(v, dist, q );
-		info.setJ1a(3, v);
-
-		info.setJ1l(2, ax1);
-		info.setJ1l(3, q);
-
-		if ( node[1].body!=null )
+		int currRowSkip = 2 * rowskip;
 		{
-			// ax2 x anchor2 instead of anchor2 x ax2 since we want the negative value
-		    dCalcVectorCross3(v, ax2, wanchor2 );   // since ax1 == ax2
-			info.setJ2a(2, v);
+			dCopyVector3(J1A, J1Ofs + currRowSkip + GI2__JL_MIN, ax1);
+			dCalcVectorCross3(J1A, J1Ofs + currRowSkip + GI2__JA_MIN, dist, ax1);
 
-			// The cross product is in reverse order since we want the negative value
-		    dCalcVectorCross3(v, q, wanchor2 );
-			info.setJ2a(3, v);
-
-			info.setJ2lNegated(2, ax1);
-			info.setJ2lNegated(3, q);
-
+			if (body1 != null) {
+				dCopyNegatedVector3(J2A, J2Ofs + currRowSkip + GI2__JL_MIN, ax1);
+				// ax2 x anchor2 instead of anchor2 x ax2 since we want the negative value
+				dCalcVectorCross3(J2A, J2Ofs + currRowSkip + GI2__JA_MIN, ax2, wanchor2);   // since ax1 == ax2
+			}
 		}
 
+		currRowSkip += rowskip;
+		{
+			dCopyVector3(J1A, J1Ofs + currRowSkip + GI2__JL_MIN, q);
+			dCalcVectorCross3(J1A, J1Ofs + currRowSkip + GI2__JA_MIN, dist, q);
+
+			if (body1 != null) {
+				dCopyNegatedVector3(J2A, J2Ofs + currRowSkip + GI2__JL_MIN, q);
+				// The cross product is in reverse order since we want the negative value
+				dCalcVectorCross3(J2A, J2Ofs + currRowSkip + GI2__JA_MIN, q, wanchor2);
+			}
+		}
 
 		// We want to make correction for motion not in the line of the axisP
 		// We calculate the displacement w.r.t. the anchor pt.
@@ -475,31 +459,40 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		// The position should be the same when we are not along the prismatic axis
 		DVector3 err = new DVector3();
 		dMultiply0_331( err, R1, offset );
-//		err.v[0] = dist.v[0] - err.v[0];
-//		err.v[1] = dist.v[1] - err.v[1];
-//		err.v[2] = dist.v[2] - err.v[2];
-		err.eqDiff(dist, err);
-		info.setC(2, k * dCalcVectorDot3( ax1, err ) );
-		info.setC(3, k * dCalcVectorDot3( q, err ) );
+		dSubtractVectors3(err, dist, err);
 
-	    int row = 4;
-	    //if (  node[1].body || !(flags & dJOINT_REVERSE) )
-	    if (  node[1].body != null || !isFlagsReverse() )
-	    {
-	        row += limotP.addLimot ( this, worldFPS, info, 4, axP, false );
-	    }
-	    else
-	    {
-	        DVector3 rAxP = new DVector3();
-	        rAxP.sub( axP );
-//	        rAxP[0] = -axP[0];
-//	        rAxP[1] = -axP[1];
-//	        rAxP[2] = -axP[2];
-	        row += limotP.addLimot ( this, worldFPS, info, 4, rAxP, false );
-	    }
+		int currPairSkip = 2 * pairskip;
+		{
+			pairRhsCfmA[pairRhsCfmOfs + currPairSkip + GI2_RHS] = k * dCalcVectorDot3(ax1, err);
+		}
 
-	    limotR.addLimot ( this, worldFPS, info, row, ax1, true );
-		//limotP.addLimot( this, info, 4, axP, false );
+		currPairSkip += pairskip;
+		{
+			pairRhsCfmA[pairRhsCfmOfs + currPairSkip + GI2_RHS] = k * dCalcVectorDot3(q, err);
+		}
+
+		currRowSkip += rowskip;
+		currPairSkip += pairskip;
+
+		if (body1 != null || !isFlagsReverse()) {
+			if (limotP.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, axP, false)) {
+				currRowSkip += rowskip;
+				currPairSkip += pairskip;
+			}
+		} else {
+			DVector3 rAxP = new DVector3();
+			dCopyNegatedVector3(rAxP, axP);
+
+			if (limotP.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, rAxP, false)) {
+				currRowSkip += rowskip;
+				currPairSkip += pairskip;
+			}
+		}
+
+		limotR.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+				pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, ax1, true);
 	}
 
 

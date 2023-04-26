@@ -96,7 +96,7 @@ class DemoCollision extends dsFunctions {
 		public boolean test_fn() {
 			return DemoCollision.this.runtest(name);
 		}
-	};
+	}
 
 	private boolean runtest(String name) {
 		try {
@@ -116,7 +116,7 @@ class DemoCollision extends dsFunctions {
 	}
 
 
-	private TestSlot[] testslot=new TestSlot[MAX_TESTS];
+	private final TestSlot[] testslot=new TestSlot[MAX_TESTS];
 
 
 	// globals used by the test functions
@@ -143,8 +143,8 @@ class DemoCollision extends dsFunctions {
 	private boolean testFAILED() { 
 		if (graphical_test==0) { 
 			testslot[current_test].last_failed_line=new RuntimeException().getStackTrace()[0].getLineNumber(); 
-			return false; 
-		} else return true; 
+			return true;
+		} else return false;
 
 	}
 	//#define PASSED() { return 1; }
@@ -282,7 +282,7 @@ class DemoCollision extends dsFunctions {
 				pos.add2( Z_OFFSET );
 				DVector3 sides = new DVector3( 2, 2, 0.001 );
 				dsSetColor (1,0,1);
-				pos2.set( pos ).add( 0.1*depth, 0.1* depth, 01.*depth);
+				pos2.set( pos ).add( 0.1*depth, 0.1* depth, 0.1*depth);
 				dsDrawLine (pos,pos2);
 				dsSetColorAlpha (1f,0f,1f,0.8f);
 				dsDrawBox (pos,R,sides);
@@ -608,7 +608,7 @@ class DemoCollision extends dsFunctions {
 		dMakeRandomVector (q2,1.0);
 		q2.normalize();
 		k = dRandReal();
-		q2.eqSum( p, q, k*r*0.99 );
+		q2.eqSum( p, q2, k*r*0.99 );
 		n.eqDiff( q2, q );
 		n.normalize();
 		ray.set (q,n);
@@ -1080,8 +1080,8 @@ class DemoCollision extends dsFunctions {
 
 		// ********** test polarity with typical ground plane
 		plane.setParams (0,0,1,0);
-		a.set( 0.1, 1, 0.1 );
-		b.set( 0,  -1, 0   );
+		a.set(0.1, 0.1, 1);
+		b.set(0, 0, -1);
 		ray.set (a,b);
 		ray.setLength (2);
 		if (OdeHelper.collide (ray,plane,1,contacts) != 1) if (testFAILED()) return false;
@@ -1129,7 +1129,7 @@ class DemoCollision extends dsFunctions {
 		if (alpha < 0) return false;
 		if (alpha > 1) return false;
 		//for (k=0; k<3; k++) tmp[k] -= p1[k];
-		tmp.set(p1).scale(-1);
+		tmp.sub(p1);
 		double a1 = u1.dot(tmp);
 		double a2 = u2.dot(tmp);
 		if (a1<0 || a2<0 || a1>d1 || a2>d2) return false;
@@ -1178,7 +1178,8 @@ class DemoCollision extends dsFunctions {
 				if (fd==0) { k1 = 1; k2 = 2; }
 				if (fd==1) { k1 = 0; k2 = 2; }
 				if (fd==2) { k1 = 0; k2 = 1; }
-				DVector3 fp[] = DVector3.newArray(4), tmp=new DVector3();
+				DVector3[] fp = DVector3.newArray(4);
+				DVector3 tmp=new DVector3();
 				k=0;
 				for (j1=-1; j1<=1; j1+=2) {
 					for (j2=-1; j2<=1; j2+=2) {
@@ -1366,8 +1367,8 @@ class DemoCollision extends dsFunctions {
 	private boolean space_pressed = false;
 
 
-	private static float[] xyz = {2.4807f,-1.8023f,2.7600f};
-	private static float[] hpr = {141.5000f,-18.5000f,0.0000f};
+	private static final float[] xyz = {2.4807f,-1.8023f,2.7600f};
+	private static final float[] hpr = {141.5000f,-18.5000f,0.0000f};
 	// start simulation - set viewpoint
 
 	@Override

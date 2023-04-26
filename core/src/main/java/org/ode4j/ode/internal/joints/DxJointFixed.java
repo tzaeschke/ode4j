@@ -31,6 +31,8 @@ import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
 
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.CommonEnums.dSA__MAX;
+import static org.ode4j.ode.internal.joints.JointEnums.*;
 
 
 /**
@@ -87,49 +89,54 @@ public class DxJointFixed extends DxJoint implements DFixedJoint {
 	}
 
 
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void getInfo2 ( double worldFPS, double worldERP, Info2Descr info )
-	{
-
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
 		// Three rows for orientation
-		setFixedOrientation ( this, worldFPS, worldERP, info, qrel, 3 );
+		setFixedOrientation ( this, worldFPS, worldERP,
+				rowskip, J1A, J1Ofs + dSA__MAX * rowskip, J2A, J2Ofs + dSA__MAX * rowskip,
+				pairskip, pairRhsCfmA, pairRhsCfmOfs + dSA__MAX * pairskip, qrel );
 
 		// Three rows for position.
-		// set jacobian
-		info.setJ1l(0, 0, 1);
-		info.setJ1l(1, 1, 1);
-		info.setJ1l(2, 2, 1);
+		// set Jacobian
+		J1A[J1Ofs + GI2_JLX] = 1;
+		J1A[J1Ofs + rowskip + GI2_JLY] = 1;
+		J1A[J1Ofs + 2 * rowskip + GI2_JLZ] = 1;
 
-		info.setCfm(0, cfm);
-		info.setCfm(1, cfm);
-		info.setCfm(2, cfm);
-
+		double k = worldFPS * this.erp;
 	    DxBody b0 = node[0].body, b1 = node[1].body;
 
 	    DVector3 ofs = new DVector3();
 		dMultiply0_331 ( ofs, b0.posr().R(), offset );
 		if ( b1 != null )
 		{
-		    info.setJ1aCrossMatrix(0, ofs, 1);
-			info.setJ2l(0, 0, -1);
-			info.setJ2l(1, 1, -1);
-			info.setJ2l(2, 2, -1);
+			dSetCrossMatrixPlus( J1A, J1Ofs + GI2__JA_MIN, ofs, rowskip );
+
+			J2A[J2Ofs + GI2_JLX] = -1;
+			J2A[J2Ofs + rowskip + GI2_JLY] = -1;
+			J2A[J2Ofs + 2 * rowskip + GI2_JLZ] = -1;
 		}
 
 		// set right hand side for the first three rows (linear)
-		double k = worldFPS * this.erp;
-		if ( b1 != null)
-		{
-			for ( int j = 0; j < 3; j++ )
-				info.setC(j, k * ( b1.posr().pos().get(j) -
-						b0.posr().pos().get(j) + ofs.get(j) ));
-		}
-		else
-		{
-			for ( int j = 0; j < 3; j++ ) {
-				info.setC(j, k * ( offset.get(j) - b0.posr().pos().get(j) ));
+		if (b1 != null) {
+			for (int j = 0, currPairSkip = 0; j < 3; currPairSkip += pairskip, ++j) {
+				pairRhsCfmA[pairRhsCfmOfs + currPairSkip + GI2_RHS] =
+						k * (b1.posr().pos().get(j) - b0.posr().pos().get(j) + ofs.get(j));
+			}
+		} else {
+			for (int j = 0, currPairSkip = 0; j < 3; currPairSkip += pairskip, ++j) {
+				pairRhsCfmA[pairRhsCfmOfs + currPairSkip + GI2_RHS] = k * (offset.get(j) - b0.posr().pos().get(j));
 			}
 		}
+
+		double cfm = this.cfm;
+		pairRhsCfmA[pairRhsCfmOfs + GI2_CFM] = cfm;
+		pairRhsCfmA[pairRhsCfmOfs + pairskip + GI2_CFM] = cfm;
+		pairRhsCfmA[pairRhsCfmOfs + 2 * pairskip + GI2_CFM] = cfm;
 	}
 
 	//void dJointSetFixed ( dJoint j )

@@ -100,13 +100,6 @@ public class DxJointConstrainedBall extends DxJointBall {
 		}
 	}
 
-	@Override
-	public void getInfo2(double worldFPS, double worldERP, Info2Descr info) {
-		setBall(this, worldFPS, erp, info, anchor1, anchor2);
-		int m = 3;
-		m += limotFlex.addLimot(this, worldFPS, info, m, axis1, true);
-		m += limotTwist.addLimot(this, worldFPS, info, m, axis2, true);
-	}
 
 	/**
 	 * @param baseAxis - base axis for constraints
