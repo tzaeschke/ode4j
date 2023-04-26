@@ -84,9 +84,9 @@ public class GimMath {
 //	//71795864
 //	private static final float G_ROOT3 = 1.73205f;
 //	private static final float G_ROOT2 = 1.41421f;
-	static final int G_UINT_INFINITY = 65534;      //TODO use Int.infinity!
-	protected static final float G_REAL_INFINITY = Float.POSITIVE_INFINITY;//FLT_MAX;  //TODO use Float.inifity!
-	protected static final float G_REAL_INFINITY_N = Float.NEGATIVE_INFINITY;//FLT_MAX;  //TODO use Float.inifity!
+	// static final int G_UINT_INFINITY = 65534;      // ----- TZ:  use Int.infinity!
+	protected static final float G_REAL_INFINITY = Float.POSITIVE_INFINITY;
+	protected static final float G_REAL_INFINITY_N = Float.NEGATIVE_INFINITY;
 //	private static final int	G_SIGN_BITMASK	= 	0x80000000;
 //	private static final boolean G_USE_EPSILON_TEST = true;
 	protected static final float G_EPSILON = 0.0000001f;
@@ -217,7 +217,7 @@ public class GimMath {
 //	    float rn = static_cast< float >( rand() );
 //	    rn/=(float)RAND_MAX;
 //	    return rn;
-		return random.nextFloat();  //TODO check, should we allow negative values?
+		return random.nextFloat();
 	}
 
 }

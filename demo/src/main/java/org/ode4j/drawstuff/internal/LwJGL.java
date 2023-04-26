@@ -406,7 +406,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	
 	/**
 	 * Handles the keyboard
-	 * @param fn 
+	 * @param fn event handle handler
 	 */
 	private void handleKeyboard(dsFunctions fn) {
 		Keyboard.poll();
@@ -477,12 +477,10 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	private void readBufferedMouse() {
 		// iterate all events, use the last button down
 		while(Mouse.next()) {
-			if (Mouse.getEventButton() != -1) {
-				if (Mouse.getEventButtonState()) {
+			if(Mouse.getEventButton() != -1 && Mouse.getEventButtonState()) {
+				// lastButton = Mouse.getEventButton();
 			}
-				//lastButton = Mouse.getEventButton();
-			}
-		}  
+		}
 
 		updateState();
 	}
