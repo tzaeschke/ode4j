@@ -23,9 +23,6 @@ package org.ode4j.math;
 
 import org.ode4j.math.DMatrix3.DVector3ColView;
 import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.internal.Common;
-
-import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 
 /**
  * This class provides functionality for DVector3 math.
@@ -668,7 +665,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param size size of new array
 	 * @return AN array of DVector
 	 */
-	public final static DVector3[] newArray(int size) {
+	public static DVector3[] newArray(int size) {
 		DVector3[] a = new DVector3[size];
 		for (int i = 0; i < size; i++) {
 			a[i] = new DVector3();
