@@ -2,7 +2,7 @@ TODO for 0.5.0
 ==============
 - Java 8 (or later) / OSGI: "JavaSE;version=1.8"  / https://www.aqute.biz/2020/03/02/osgi-on-android.html
 - lwjgl 3.0
-- Android compatibility
+- Android compatibility -> See TODO.txt
 - libGWT compatibility?
 - CI
 - Java 9/10/11 ?
@@ -11,6 +11,8 @@ TODO for 0.5.0
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
 - Move non-cpp tests out of cpp
 - Move to Google Java Code Style
+
+--> See TODO.txt
 
 Check:
 - Demo -> Test?  E.g. DemoI? DemoSpace(-Stress)? DemoStep? ....
@@ -22,15 +24,6 @@ ODE2: DemoCard with 18 layers: Very weird, collapses slowly, some cards floating
 ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row collapses and
  after a while, the outer card stops in a weird place.
 
-0.5.0
-=====
-- Update to ODE 0.15.1
-  - This includes incrrewsed stability, e.g. the DemoCards won't collapse anymore when 30 levels high.
-  - WARNING: Still missing: libccd and trimesh collider updates.
-- Changed CI build requirements:
-  - Removed openjdk7: Not required. source compatibility is still set to 7, but should
-    be safe to change to 8 now (Android Nougat is mostly 8 compatible), this covers > 80% users.
-  - Changed oraclejdk build to 11
 
 - WARNING!!!!!
   -> lwjgl requires Java 8!!!  Try lwjgl3 (works with Java 11) and see whether it also works with Java 8!
@@ -41,38 +34,17 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 // TODO TZ fix
 // TODO CHECK-TZ
 
-
-Java Version
-============
-Summary:
-- We should aim for Oreo or later (Android 8.0, released 2017, API Level 26: https://apilevels.com/)
-- Java 8 should be fine.
-- Try animal-sniffer plugin for higher versions, e.g. Java 9
-
-
-- Android Runtime replaced Dalvik as default Runtime in Android 5: https://en.wikipedia.org/wiki/Android_version_history
-- Android 8 (Oreo) is about 8% share:
-  - https://apilevels.com/
-  - https://www.composables.co/tools/distribution-chart
-- https://medium.com/androiddevelopers/support-for-newer-java-language-apis-bca79fc8ef65
-  - Support vor never Java features depend on Android Gradle Plugin 4.0.0 -> "Desugaring"
-    -> Does that also work with OSGI?
-    -> This was release in June 2017 ->
-  - Android 11 support "up to" Java 13 (Question: complete 13 or partial 13??)
-- 2018: https://jakewharton.com/androids-java-9-10-11-and-12-support/
-
-Oreo was release in August 2017
-Gradle 4.0.0 was released April 2020: https://developer.android.com/build/releases/past-releases/agp-4-0-0-release-notes
-
-- Java 8 support: https://developer.android.com/studio/write/java8-support-table
-- Java 8 support details: https://developer.android.com/studio/write/java8-support
+0.5.0 (unreleased)
+=====
+- Update to ODE 0.15.1
+  - This includes increased stability, e.g. the DemoCards won't collapse anymore when 30 levels high.
+  - **** WARNING **** : Still missing: libccd and trimesh collider updates.
+- Changed CI build requirements:
+  - Removed openjdk7: Not required. source compatibility is still set to 7, but should
+    be safe to change to 8 now (Android Nougat is mostly 8 compatible), this covers > 80% users.
+  - Changed oraclejdk build to 11
 
 
-Compliance checkers:
-https://stackoverflow.com/questions/11048805/maven-plugin-for-checking-api-compliance-with-android
-  -> TRY THIS!!!!
-https://lvc.github.io/japi-compliance-checker/    (up to 2018 / Java 9)
-https://simpligility.github.io/android-maven-plugin/index.html  (up to 2019)
 
 0.4.0
 =====
