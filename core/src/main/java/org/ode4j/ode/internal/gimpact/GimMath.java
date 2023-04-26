@@ -168,7 +168,6 @@ public class GimMath {
 	    }
 	    else
 	    {
-	    	//TODO check this out TZ
 	    	return (float) (1./Math.sqrt(va));
 //	        float _x = (va) * 0.5f;
 //	        GUINT32 _y = 0x5f3759df - ( IR(va) >> 1);
