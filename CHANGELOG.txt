@@ -1,3 +1,26 @@
+TODO for 0.5.0
+==============
+- Java 8 (or later) / OSGI: "JavaSE;version=1.8"  / https://www.aqute.biz/2020/03/02/osgi-on-android.html
+- lwjgl 3.0
+- Android compatibility
+- libGWT compatibility?
+- CI
+- Java 9/10/11 ?
+- Beautify CHANGELOG -> .md
+- Issue #22
+- Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
+-
+
+Check:
+- Demo -> Test?  E.g. DemoI? DemoSpace(-Stress)? DemoStep? ....
+- DemoPlane2D / DemoBasket(-Convex)
+- Performance with DemoCards -> "TODO CHECK-TZ" in steppers
+
+
+ODE2: DemoCard with 18 layers: Very weird, collapses slowly, some cards floating horizontally...
+ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row collapses and
+ after a while, the outer card stops in a weird place.
+
 0.5.0
 =====
 - Update to ODE 0.15.1
@@ -10,8 +33,6 @@
 
 - WARNING!!!!!
   -> lwjgl requires Java 8!!!  Try lwjgl3 (works with Java 11) and see whether it also works with Java 8!
-
-- OSGI: "JavaSE;version=1.8"  / https://www.aqute.biz/2020/03/02/osgi-on-android.html
 
 - Issue #22 / ODE issue #36: https://bitbucket.org/odedevs/ode/issues/36/fix-gimpact-contacts-handling
   This has been resolved, We need to remove the workaround in OdeConfig::50

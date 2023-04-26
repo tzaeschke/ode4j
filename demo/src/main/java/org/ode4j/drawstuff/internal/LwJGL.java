@@ -630,7 +630,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	}
 
 
-	private static double prev=System.nanoTime()/1000000000.0;
+	private static double prev=System.currentTimeMillis()/1000.0;
 	//extern "C" double dsElapsedTime()
 	@Override
 	public double dsElapsedTime()
@@ -641,7 +641,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 			//
 			//		gettimeofday(tv, 0);
 			//		double curr = tv.tv_sec + (double) tv.tv_usec / 1000000.0 ;
-			double curr = System.nanoTime()/1000000000.0;
+			double curr = System.currentTimeMillis()/1000.0;
 			//		if (prev==-1)
 			//			prev=curr;
 			double retval = curr-prev;

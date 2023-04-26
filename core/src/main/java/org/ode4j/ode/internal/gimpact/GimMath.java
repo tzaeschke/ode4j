@@ -122,9 +122,9 @@ public class GimMath {
 //	private float FR(int x) {return Float.intBitsToFloat(x);}
 
 	//#define MAX(a,b) ((a)<(b)?(b):(a))
-	protected static float MAX(float a, float b) { return a<b?b:a ; }
+	protected static float MAX(float a, float b) { return Math.max(a, b); }
 	//#define MIN(a,b) ((a)>(b)?(b):(a))
-	protected static float MIN(float a, float b) { return a>b?b:a ; }
+	protected static float MIN(float a, float b) { return Math.min(a, b); }
 
 	//#define MAX3(a,b,c) MAX(a,MAX(b,c))
 	protected static float MAX3(float a, float b, float c) { return MAX(a, MAX(b, c)); }
@@ -143,7 +143,7 @@ public class GimMath {
 	///returns a clamped number
 	//#define CLAMP(number,minval,maxval) ((number)<(minval)?(minval):((number)>(maxval)?(maxval):(number)))
 	protected static float CLAMP(float number, float minval, float maxval) { 
-		return number<minval ? minval : (number>maxval ? maxval : number ); }
+		return number<minval ? minval : (Math.min(number, maxval)); }
 
 
 	///Swap numbers
@@ -159,7 +159,7 @@ public class GimMath {
 //	}
 
 	//#define GIM_INV_SQRT(va,isva)\
-	protected static final float GIM_INV_SQRT(final float va)
+	protected static float GIM_INV_SQRT(final float va)
 	{
 		float isva;
 	    if((va)<=0.0000001f)
@@ -178,14 +178,12 @@ public class GimMath {
 	    return isva;
 	}
 
-	//#define GIM_SQRT(va,sva)\
-	protected static final float GIM_SQRT(final float va)
+	//#define GIM_SQRT(va,sva)\ // sva == result !
+	protected static float GIM_SQRT(final float va)
 	{
 //	    GIM_INV_SQRT(va,sva);
 //	    (sva) = 1.0f/(sva);
-		//return 1.0f/GIM_INV_SQRT(va);  //TODO TZ optimize like this:
-		return va*GIM_INV_SQRT(va);  //TODO TZ
-		//return (float) Math.sqrt(va);
+		return (float) Math.sqrt(va);
 	}
 
 
@@ -204,13 +202,13 @@ public class GimMath {
 	    return GIM_SQRT(f);
 	}
 
-	private static final Random random = new Random(System.nanoTime());
+	// TZ: We want everything to be predictable!
+	private static final Random random = new Random(0);
 	
 	//!Initializes mathematical functions
 	static void gim_init_math()
 	{
-		//new Random( System.nanoTime() );
-	    //srand( static_cast< unsigned int >( time( 0 ) ) );
+		//srand( static_cast< unsigned int >( time( 0 ) ) );
 	}
 
 	//! Generates an unit random
