@@ -9,7 +9,8 @@ TODO for 0.5.0
 - Beautify CHANGELOG -> .md
 - Issue #22
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
--
+- Move non-cpp tests out of cpp
+- Move to Google Java Code Style
 
 Check:
 - Demo -> Test?  E.g. DemoI? DemoSpace(-Stress)? DemoStep? ....

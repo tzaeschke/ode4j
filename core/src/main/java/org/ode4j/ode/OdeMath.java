@@ -1330,7 +1330,9 @@ public class OdeMath extends DRotation {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
-	 * TODO TZ: This "new" version may be slower than the old one. Verify this.
+	 * <p>>
+	 * TZ: Plain lengthSquared() == 0 checking with scale(1/lenbgthSquared() is about 4x faster. But we leave the
+	 *     safe version here.
 	 */
 	public static boolean dxSafeNormalize3(DVector3 a) {
 		dAASSERT(a);
@@ -1588,7 +1590,7 @@ public class OdeMath extends DRotation {
      */
 	public static void dNormalize3(DVector3 a)
 	{
-		a.normalize();
+		dxNormalize3(a);
 	}
 
 	/*extern */

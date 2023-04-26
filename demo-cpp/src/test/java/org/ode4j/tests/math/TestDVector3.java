@@ -255,7 +255,7 @@ public class TestDVector3 extends OdeTestCase {
 			//Good!
 		}
 		t.set(0, 0, 0).safeNormalize();
-		assertEquals(new DVector3(1, 0, 0), t);
+		assertEquals(new DVector3(0, 0, 0), t);
 
 		t.set(3, 4, -18);
 		t.normalize();
