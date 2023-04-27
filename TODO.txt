@@ -35,6 +35,7 @@ https://simpligility.github.io/android-maven-plugin/index.html  (up to 2019)
 MArch 2023:
 General cleanup:
 - CHANGELOG -> .md
+- check excluded tests in .pom
 - Move tests to core/test
 - update .pom dependencies
 - update DVector3 safeNormalize to use max() and then compare to 0. ALso see: https://github.com/JOML-CI/JOML/issues/66
