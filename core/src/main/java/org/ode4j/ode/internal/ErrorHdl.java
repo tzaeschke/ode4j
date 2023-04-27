@@ -141,11 +141,7 @@ public class ErrorHdl {
 		logger.debug("ODE INTERNAL ERROR " + " " + num + ": " + msg, ap);
 		// *((char *)0) = 0;   ... commit SEGVicide
 		//abort();
-//		msg += " -> ";
-//		for (Object o:ap) msg += o.toString() + " , ";
-		//throw new RuntimeException(String.format(msg, ap));
 		throw new RuntimeException("#"+num + ": " + String.format(msg, ap));
-		//  System.exit(2);
 	}
 
 
