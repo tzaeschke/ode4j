@@ -36,6 +36,7 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 
 0.5.0 (unreleased)
 =====
+- Moved to LWJGL 3.0 [#]
 - Move to Java [#87](https://github.com/tzaeschke/ode4j/issues/87)
   (Cleanup, part of this was done with the move to 0.15.1)
 - Update to ODE 0.15.1 [#86](https://github.com/tzaeschke/ode4j/pull/86)

@@ -36,7 +36,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
+import org.lwjgl.opengl.GL30;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
@@ -303,15 +303,23 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 			GL11.glPixelStorei (GL11.GL_UNPACK_SKIP_ROWS, 0);
 			GL11.glPixelStorei (GL11.GL_UNPACK_SKIP_PIXELS, 0);
 
+			//GL11.glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
+			//GL11.glTexSubImage2D(GL11.GL_TEXTURE_2D, 0​, 0, 0, image.width(), image.height(), GL11.GL_BGRA, GL11.GL_UNSIGNED_BYTE, image.data());
+
 //			glTexImage2D (GL11.GL_TEXTURE_2D, 0, 3, image->width(), image->height(), 0,
 //					   GL_RGB, GL_UNSIGNED_BYTE, image->data());
-//			GL11.glTexImage2D (GL11.GL_TEXTURE_2D, 0, 3, image.width(), image.height(), 0,
-//					GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, ByteBuffer.wrap(image.data()));
+			// TODO CHECK-TZ
+			// GL11.GL_RGBA8
+			GL11.glTexImage2D (GL11.GL_TEXTURE_2D, 0, 3, image.width(), image.height(), 0,
+					GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, image.data());//ByteBuffer.wrap(image.data().array()));
 			//TZ this is the original:
 //			GLX.gluBuild2DMipmaps (GL11.GL_TEXTURE_2D, 3, image.width(), image.height(),
 //			GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, image.data());
-			GLU.gluBuild2DMipmaps (GL11.GL_TEXTURE_2D, 3, image.width(), image.height(),
-			GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, image.data());
+//			GLU.gluBuild2DMipmaps (GL11.GL_TEXTURE_2D, 3, image.width(), image.height(),
+//			GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, image.data());
+			// TZ Please comment this out if it doesn´t work for you.
+			//  The demos will still work, albeit without textures.
+			GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D);
 			
 			// set texture parameters - will these also be bound to the texture???
 			GL11.glTexParameterf (GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
@@ -380,9 +388,9 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		light_ambient2.put( new float[]{ r*0.3f, g*0.3f, b*0.3f, alpha }).flip();
 		light_diffuse2.put( new float[]{ r*0.7f, g*0.7f, b*0.7f, alpha }).flip();
 		light_specular2.put( new float[]{ r*0.2f, g*0.2f, b*0.2f, alpha }).flip();
-		GL11.glMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT, light_ambient2);
-		GL11.glMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, light_diffuse2);
-		GL11.glMaterial (GL11.GL_FRONT_AND_BACK, GL11.GL_SPECULAR, light_specular2);
+		GL11.glMaterialfv (GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT, light_ambient2);
+		GL11.glMaterialfv (GL11.GL_FRONT_AND_BACK, GL11.GL_DIFFUSE, light_diffuse2);
+		GL11.glMaterialfv (GL11.GL_FRONT_AND_BACK, GL11.GL_SPECULAR, light_specular2);
 		GL11.glMaterialf (GL11.GL_FRONT_AND_BACK, GL11.GL_SHININESS, 5.0f);
 	}
 
@@ -413,7 +421,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		matrixF.put(matrix);
 		matrixF.flip();
 		GL11.glPushMatrix();
-		GL11.glMultMatrix (matrixF);
+		GL11.glMultMatrixf (matrixF);
 	}
 	
 	private DoubleBuffer matrixD = BufferUtils.createDoubleBuffer(16);
@@ -442,7 +450,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		matrixD.put(matrix);
 		matrixD.flip();
 		GL11.glPushMatrix();
-		GL11.glMultMatrix (matrixD);
+		GL11.glMultMatrixd (matrixD);
 	}
 
 
@@ -468,7 +476,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 //		matrixSST.put(15, 1);
 		matrixSST.flip();
 		GL11.glPushMatrix();
-		GL11.glMultMatrix (matrixSST);
+		GL11.glMultMatrixf (matrixSST);
 	}
 
 //	static void drawConvex (float *_planes,unsigned int _planecount,
@@ -1270,9 +1278,9 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 //		static GLfloat light_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
 //		static GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
 //		static GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-		GL11.glLight (GL11.GL_LIGHT0, GL11.GL_AMBIENT, light_ambient);
-		GL11.glLight (GL11.GL_LIGHT0, GL11.GL_DIFFUSE, light_diffuse);
-		GL11.glLight (GL11.GL_LIGHT0, GL11.GL_SPECULAR, light_specular);
+		GL11.glLightfv (GL11.GL_LIGHT0, GL11.GL_AMBIENT, light_ambient);
+		GL11.glLightfv (GL11.GL_LIGHT0, GL11.GL_DIFFUSE, light_diffuse);
+		GL11.glLightfv (GL11.GL_LIGHT0, GL11.GL_SPECULAR, light_specular);
 		GL11.glColor3f (1.0f, 1.0f, 1.0f);
 
 		// clear the window
@@ -1293,7 +1301,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 		// set the light position (for some reason we have to do this in model view.
 //		static GLfloat light_position[] = { LIGHTX, LIGHTY, 1.0, 0.0 };
-		GL11.glLight (GL11.GL_LIGHT0, GL11.GL_POSITION, light_position);
+		GL11.glLightfv (GL11.GL_LIGHT0, GL11.GL_POSITION, light_position);
 
 		// draw the background (ground, sky etc)
 		drawSky (view2_xyz);
@@ -1370,8 +1378,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 				GL11.glTexGeni (GL11.GL_T,GL11.GL_TEXTURE_GEN_MODE,GL11.GL_OBJECT_LINEAR);
 //				static GLfloat s_params[4] = {1.0f,1.0f,0.0f,1};
 //				static GLfloat t_params[4] = {0.817f,-0.817f,0.817f,1};
-				GL11.glTexGen (GL11.GL_S,GL11.GL_OBJECT_PLANE,s_params_SDM);
-				GL11.glTexGen (GL11.GL_T,GL11.GL_OBJECT_PLANE,t_params_SDM);
+				GL11.glTexGenfv (GL11.GL_S,GL11.GL_OBJECT_PLANE,s_params_SDM);
+				GL11.glTexGenfv (GL11.GL_T,GL11.GL_OBJECT_PLANE,t_params_SDM);
 			}
 			else {
 				GL11.glDisable (GL11.GL_TEXTURE_2D);
@@ -1412,8 +1420,8 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 			GL11.glTexGeni (GL11.GL_T,GL11.GL_TEXTURE_GEN_MODE,GL11.GL_EYE_LINEAR);
 //			static GLfloat s_params[4] = {ground_scale,0,0,ground_ofsx};
 //			static GLfloat t_params[4] = {0,ground_scale,0,ground_ofsy};
-			GL11.glTexGen (GL11.GL_S,GL11.GL_EYE_PLANE,s_params_SSDM);
-			GL11.glTexGen (GL11.GL_T,GL11.GL_EYE_PLANE,t_params_SSDM);
+			GL11.glTexGenfv (GL11.GL_S,GL11.GL_EYE_PLANE,s_params_SSDM);
+			GL11.glTexGenfv (GL11.GL_T,GL11.GL_EYE_PLANE,t_params_SSDM);
 		}
 		else {
 			GL11.glDisable (GL11.GL_TEXTURE_2D);

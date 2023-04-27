@@ -99,12 +99,6 @@
 	<!-- mvn versions:display-dependency-updates -->
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.lwjgl.lwjgl</groupId>
-				<artifactId>lwjgl_util</artifactId>
-				<version>2.9.3</version>
-			</dependency>
-
 			<!-- Note that this is upgraded in the on-jdk-9 profile below -->
 			<dependency>
 				<groupId>org.slf4j</groupId>

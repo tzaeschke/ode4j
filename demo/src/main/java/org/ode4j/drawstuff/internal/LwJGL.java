@@ -24,14 +24,19 @@
  *************************************************************************/
 package org.ode4j.drawstuff.internal;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.Sys;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
+import org.lwjgl.Version;
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.*;
+import org.lwjgl.system.*;
+
+import java.nio.*;
+
+import static org.lwjgl.glfw.Callbacks.*;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.system.MemoryStack.*;
+import static org.lwjgl.system.MemoryUtil.*;
+
 import org.ode4j.drawstuff.DrawStuff;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.ode.OdeHelper;
@@ -46,22 +51,6 @@ import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
  */
 abstract class LwJGL extends Internal implements DrawStuffApi {
 
-	//Ensure that Display.destroy() is called (TZ)
-	//Not sure this works, but it's an attempt at least.
-	//-> This should avoid the Problem that a process keeps running with 99%CPU, 
-	//   even if the window is closed (clicking on the 'x'). The supposed 
-	//   problem is that when clicking 'x', Display.destroy() never gets called
-	//   by dsPlatformSimLoop(). 
-	static {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-//				Display.destroy();
-			}
-		});
-	}
-	
-	
 	//***************************************************************************
 	// error handling for unix
 
@@ -110,6 +99,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 
 	//***************************************************************************
 	// openGL window
+	private static long window;
 
 	// X11 display info
 	//static Display display;//*display=0;
@@ -121,7 +111,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 
 	// window and openGL
 	//static Window win=null;			// X11 window, 0 if not initialized
-	private static int width=0,height=0;		// window size
+	private int width=0,height=0;		// window size
 	//static GLXContext glx_context=null;	// openGL rendering context
 	private static int last_key_pressed=0;		// last key pressed in the window
 	private static boolean run=true;			// 1 if simulation running
@@ -129,45 +119,113 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	private static boolean singlestep=false;		// 1 if single step key pressed
 	private static boolean writeframes=false;		// 1 if frame files to be written
 
+	private boolean mouseButtonPressedLeft = false;
+	private boolean mouseButtonPressedMiddle = false;
+	private boolean mouseButtonPressedRight = false;
+	private double mousePosX;
+	private double mousePosY;
 
-	private static void createMainWindow (int _width, int _height)
+	private void createMainWindow (int _width, int _height, dsFunctions fn)
 	{
-		// create Window of size 300x300
-		try {
-			Display.setLocation((Display.getDisplayMode().getWidth() - _width) / 2,
-					(Display.getDisplayMode().getHeight() - _height) / 2);
-		} catch (UnsatisfiedLinkError e) {
-			System.err.println("Missing lwjgl native libraries.");
-			System.err.println("If you are using maven, make sure to use '-Djava.library.path=target/natives' or " +
-					"'-Djava.library.path=demo/target/natives' as VM argument of your application.");
-			System.err.println("For plain Eclipse, add the native library path to the included "
-					+ "lwjgl.jar in the definition of the Referenced Libraries.");
-			throw e;
-		}
-		try {
-			Display.setDisplayMode(new DisplayMode(_width, _height));
-			Display.setTitle("Simulation");
-			Display.setVSyncEnabled(true);  //for VSync (TZ)
-			Display.create();
-		} catch (LWJGLException e) {
-			throw new RuntimeException(e);
-		}
+		// Setup an error callback. The default implementation
+		// will print the error message in System.err.
+		GLFWErrorCallback.createPrint(System.err).set();
 
-		try {
-			Keyboard.create();
-			Mouse.create();
-		} catch (LWJGLException e) {
-			throw new RuntimeException(e);
-		}
-		
+		// Initialize GLFW. Most GLFW functions will not work before doing this.
+		if ( !glfwInit() )
+			throw new IllegalStateException("Unable to initialize GLFW");
+
+		// Configure GLFW
+		glfwDefaultWindowHints(); // optional, the current window hints are already the default
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+
+		// Create the window
+		window = glfwCreateWindow(_width, _height, "Simulation", NULL, NULL);
+		if ( window == NULL )
+			throw new RuntimeException("Failed to create the GLFW window");
+
+		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
+		glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+			handleKeyboard(fn, key, scancode, action, mods);
+		});
+		glfwSetCharCallback(window, (window, codepoint) -> {
+			char c = Character.toChars(codepoint)[0];
+			fn.command(c);
+		});
+		glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
+			if (button == GLFW_MOUSE_BUTTON_LEFT) {
+				mouseButtonPressedLeft = action == GLFW_PRESS;
+			}
+			if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+				mouseButtonPressedMiddle = action == GLFW_PRESS;
+			}
+			if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+				mouseButtonPressedRight = action == GLFW_PRESS;
+			}
+		});
+		glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+			handleMouseMove(xpos, ypos);
+		});
+		glfwSetWindowSizeCallback(window, (window, width, height) -> {
+			this.width = width;
+			this.height = height;
+		});
+
+		// Get the thread stack and push a new frame
+		try ( MemoryStack stack = stackPush() ) {
+			IntBuffer pWidth = stack.mallocInt(1); // int*
+			IntBuffer pHeight = stack.mallocInt(1); // int*
+
+			// Get the window size passed to glfwCreateWindow
+			glfwGetWindowSize(window, pWidth, pHeight);
+
+			// Get the resolution of the primary monitor
+			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+			// Center the window
+			glfwSetWindowPos(
+					window,
+					(vidmode.width() - pWidth.get(0)) / 2,
+					(vidmode.height() - pHeight.get(0)) / 2
+			);
+		} // the stack frame is popped automatically
+
+		// Make the OpenGL context current
+		glfwMakeContextCurrent(window);
+		// Enable v-sync
+		glfwSwapInterval(1);
+
+		// Make the window visible
+		glfwShowWindow(window);
+
+
+//		// TODO CHECK-TZ It seem this can be removed with LWJGL 3
+//		// create Window of size 300x300
+//		try {
+////			Display.setLocation((Display.getDisplayMode().getWidth() - _width) / 2,
+////					(Display.getDisplayMode().getHeight() - _height) / 2);
+//		} catch (UnsatisfiedLinkError e) {
+//			System.err.println("Missing lwjgl native libraries.");
+//			System.err.println("If you are using maven, make sure to use '-Djava.library.path=target/natives' or " +
+//					"'-Djava.library.path=demo/target/natives' as VM argument of your application.");
+//			System.err.println("For plain Eclipse, add the native library path to the included "
+//					+ "lwjgl.jar in the definition of the Referenced Libraries.");
+//			throw e;
+//		}
+
+		GL.createCapabilities();
+
 		if (firsttime) {
 			System.err.println("GL_VENDOR:     " + GL11.glGetString(GL11.GL_VENDOR));
 			System.err.println("GL_RENDERER:   " + GL11.glGetString(GL11.GL_RENDERER));
 			System.err.println("GL_VERSION:    " + GL11.glGetString(GL11.GL_VERSION));
-			System.err.println("LWJGL_VERSION: " + Sys.getVersion());
+			System.err.println("LWJGL_VERSION: " + Version.getVersion());
 			System.err.println();
-			System.err.println("glLoadTransposeMatrixfARB() supported: " + 
-					GLContext.getCapabilities().GL_ARB_transpose_matrix);
+			// System.err.println("glLoadTransposeMatrixfARB() supported: " +
+			// 		GLContext.getCapabilities().GL_ARB_transpose_matrix);
 		}
 
 
@@ -240,9 +298,14 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 		//  display = 0;
 		//  win = 0;
 		//  glx_context = 0;
-		Keyboard.destroy();
-		Mouse.destroy();
-		Display.destroy();
+
+		// Free the window callbacks and destroy the window
+		glfwFreeCallbacks(window);
+		glfwDestroyWindow(window);
+
+		// Terminate GLFW and free the error callback
+		glfwTerminate();
+		glfwSetErrorCallback(null).free();
 	}
 
 
@@ -408,110 +471,76 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	 * Handles the keyboard
 	 * @param fn event handle handler
 	 */
-	private void handleKeyboard(dsFunctions fn) {
-		Keyboard.poll();
-		while(Keyboard.next()) {
-			char key = (char) Keyboard.getEventKey();
-			if (key == Keyboard.KEY_ESCAPE) {
-				run = false;
-			}
-			
-			if (!(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || 
-					Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))) {
-//				if ((event.xkey.state & ControlMask) == 0) {
-				//if (key >= ' ' && key <= 126 && fn.command) fn.command (key);
-				char keyChar = Keyboard.getEventCharacter();
-				if (keyChar >= ' ' && keyChar <= 126) fn.command (keyChar);
-//				System.out.println("cmd-c " +Keyboard.getEventCharacter());
-//				  System.out.println("cmd- " + (char)(key+65));
-
-			} else { //if (event.xkey.state & ControlMask) {
-				if (key == last_key_pressed) {
-					continue;
-				}
-				switch (key) {
-				case Keyboard.KEY_T:
-					dsSetTextures (!dsGetTextures());
-					break;
-				case Keyboard.KEY_S:
-					dsSetShadows (!dsGetShadows());
-					break;
-				case Keyboard.KEY_X:
-					run = false;
-					break;
-				case Keyboard.KEY_P:
-					pause = !pause;
-					singlestep = false;
-					break;
-				case Keyboard.KEY_O:
-					if (pause) singlestep = true;
-					break;
-				case Keyboard.KEY_V: {
-					float[] xyz=new float [3], hpr = new float [3];
-					dsGetViewpoint (xyz,hpr);
-					printf ("Viewpoint = (%.4f,%.4f,%.4f,%.4f,%.4f,%.4f)\n",
-							xyz[0],xyz[1],xyz[2],hpr[0],hpr[1],hpr[2]);
-					break;
-				}
-				case Keyboard.KEY_W:
-					writeframes = !writeframes;
-					if (writeframes) printf ("Now writing frames to PPM files\n");
-					break;
-				}
-			}
-			last_key_pressed = key;		// a kludgy place to put this...
+	private void handleKeyboard(dsFunctions fn, int key, int scancode, int action, int mods) {
+		if (key == GLFW_KEY_ESCAPE) {
+			run = false;
 		}
-	}
 
+		// ctrl-key pressed?
+		int ctrl_l = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL);
+		int ctrl_r = glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL);
+		if (ctrl_l == GLFW_PRESS || ctrl_r == GLFW_PRESS) {
+			if (key == last_key_pressed) {
+				return;
+			}
+			switch (key) {
+			case GLFW_KEY_T:
+				dsSetTextures (!dsGetTextures());
+				break;
+			case GLFW_KEY_S:
+				dsSetShadows (!dsGetShadows());
+				break;
+			case GLFW_KEY_X:
+				run = false;
+				break;
+			case GLFW_KEY_P:
+				pause = !pause;
+				singlestep = false;
+				break;
+			case GLFW_KEY_O:
+				if (pause) singlestep = true;
+				break;
+			case GLFW_KEY_V: {
+				float[] xyz=new float [3], hpr = new float [3];
+				dsGetViewpoint (xyz,hpr);
+				printf ("Viewpoint = (%.4f,%.4f,%.4f,%.4f,%.4f,%.4f)\n",
+						xyz[0],xyz[1],xyz[2],hpr[0],hpr[1],hpr[2]);
+				break;
+			}
+			case GLFW_KEY_W:
+				writeframes = !writeframes;
+				if (writeframes) printf ("Now writing frames to PPM files\n");
+				break;
+			}
+		}
+		last_key_pressed = key;		// a kludgy place to put this...
+	}
 
 	/**
 	 * handles the mouse
 	 */
-	private void handleMouse() {
-		readBufferedMouse();
-	}
-
-	/**
-	 * reads a mouse in buffered mode
-	 */
-	private void readBufferedMouse() {
-		// iterate all events, use the last button down
-		while(Mouse.next()) {
-			if(Mouse.getEventButton() != -1 && Mouse.getEventButtonState()) {
-				// lastButton = Mouse.getEventButton();
-			}
-		}
-
-		updateState();
-	}
-
-	/**
-	 * Updates our "model"
-	 *
-	 */
-	private void updateState() {
-		int dx = Mouse.getDX();
-		int dy = Mouse.getDY();
-		int dw = Mouse.getDWheel();
-
+	private void handleMouseMove(double posx, double posy) {
+		int dx = (int) (posx - mousePosX);
+		int dy = (int) (posy - mousePosY);
 
 		// get out if no movement
-		if (dx == dy && dx == 0 && dw == 0) {
+		if (dx == dy && dx == 0) {
 			return;
 		}
 
 		//LWJGL: 0=left 1=right 2=middle
 		//GL: 0=left 1=middle 2=right
-		
 		int mode = 0;
-		if (Mouse.isButtonDown(0)) mode |= 1; 
-		if (Mouse.isButtonDown(2)) mode |= 2; 
-		if (Mouse.isButtonDown(1)) mode |= 4;
+		if (mouseButtonPressedLeft) mode |= 1;
+		if (mouseButtonPressedMiddle) mode |= 2;
+		if (mouseButtonPressedRight) mode |= 4;
 		if (mode != 0) {
 			//LWJGL has inverted dy wrt C++/GL
-			dsMotion (mode, dx, -dy);
+			dsMotion (mode, dx, dy);
 		}
-		
+
+		mousePosX = posx;
+		mousePosY = posy;
 	}
 
 	
@@ -523,30 +552,30 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 			boolean initial_pause)
 	{
 		pause = initial_pause;
-		createMainWindow (window_width, window_height);
-		//glXMakeCurrent (display,win,glx_context);
-		//TODO ?
-		//GLContext.useContext(context);
-		try {
-			//Sets the context / by TZ
-			Display.makeCurrent();
-		} catch (LWJGLException e) {
-			throw new RuntimeException(e);
-		} 
+		createMainWindow (window_width, window_height, fn);
+
+
+		// This line is critical for LWJGL's interoperation with GLFW's
+		// OpenGL context, or any context that is managed externally.
+		// LWJGL detects the context that is current in the current thread,
+		// creates the GLCapabilities instance and makes the OpenGL
+		// bindings available for use.
+		GL.createCapabilities();
+
+		// Set the clear color
+		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
 		dsStartGraphics (window_width,window_height,fn);
 
 		//TZ static bool firsttime=true;
 		if (firsttime)
 		{
-			System.err.println();
 			System.err.print("Using ode4j version: " + OdeHelper.getVersion());
 			System.err.println("  [" + OdeHelper.getConfiguration() + "]");
 			System.err.println();
 			fprintf
 			(
 					stderr,
-					"\n" +
 					"Simulation test environment v%d.%02d\n" +
 					"   Ctrl-P : pause / unpause (or say `-pause' on command line).\n" +
 					"   Ctrl-O : single step when paused.\n" +
@@ -572,7 +601,9 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 		run = true;
 		long startTime = System.currentTimeMillis() + 5000;
 		long fps = 0;
-		while (run && !Display.isCloseRequested()) {
+		while (run && !glfwWindowShouldClose(window)) {
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+
 			//  while (run) {
 			// read in and process all pending events for the main window
 			//    XEvent event;
@@ -580,18 +611,22 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 			//      XNextEvent (display,event);
 			//      handleEvent (event,fn);
 			//    }
-			handleKeyboard(fn);
-			handleMouse();
+			// handleKeyboard(fn);
+			// handleMouse();
 
 			//processDrawFrame: This was not move into separate method for convenience
 			
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+			//GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 			dsDrawFrame (width,height,fn,pause && !singlestep);
 			singlestep = false;
 
+			glfwSwapBuffers(window); // swap the color buffers
 
-			Display.update();
+			// Poll for window events. The key callback above will only be
+			// invoked during this call.
+			glfwPollEvents();
+
 			if (startTime > System.currentTimeMillis()) {
 				fps++;
 			} else {
