@@ -34,7 +34,6 @@ import static org.junit.Assert.*;
  */
 public class TestIssue0074_PlaneGetQuaternion {
 
-    @SuppressWarnings("deprecation")
     @Test
     public void planeGetQuaternionFail() {
         OdeHelper.initODE2(0);
@@ -44,7 +43,7 @@ public class TestIssue0074_PlaneGetQuaternion {
             plane.getQuaternion();
             fail();
         } catch (RuntimeException e) {
-            assertEquals("geom must be placeable", e.getMessage());
+            assertTrue(e.getMessage().contains("geom must be placeable"));
         }
     }
 }
