@@ -1,6 +1,5 @@
 TODO for 0.5.0
 ==============
-- lwjgl 3.0
 - Update other dependencies, including JUnit
 - Android compatibility -> See TODO.txt
 - libGWT compatibility?
