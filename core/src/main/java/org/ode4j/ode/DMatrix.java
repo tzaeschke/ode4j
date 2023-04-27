@@ -226,7 +226,7 @@ public class DMatrix extends DMisc {
      * @return false if it failed
      */
     public static boolean dFactorCholesky (double[] A, int n) {
-        return Matrix.dFactorCholesky(A, n, null);
+        return Matrix.dFactorCholesky(A, n);
     }
 
 
@@ -247,7 +247,7 @@ public class DMatrix extends DMisc {
      * @param n n
      */
     public static void dSolveCholesky (double[] L, double[] x, int n) {
-        Matrix.dSolveCholesky(L, x, n, null);
+        Matrix.dSolveCholesky(L, x, n);
     }
 
 
@@ -263,7 +263,7 @@ public class DMatrix extends DMisc {
         return Matrix.dInvertPDMatrix(A, Ainv);
     }
     public static boolean dInvertPDMatrix (double[] A, double[] Ainv, int n) {
-        return Matrix.dInvertPDMatrix(A, Ainv, n, null);
+        return Matrix.dInvertPDMatrix(A, Ainv, n);
     }
 
 

@@ -59,7 +59,6 @@ public class Test_Bug0018_OdeRayToBoxCast
 //                boolean isSpace1 = (o2 instanceof DSpace);
 //                if(isSpace0 || isSpace1)
 //                {
-//                	System.out.println("Hello!");
 //                    OdeHelper.spaceCollide2(o1, o2, data, this);
 //                }
 //                else

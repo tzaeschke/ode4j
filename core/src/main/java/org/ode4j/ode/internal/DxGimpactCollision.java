@@ -31,7 +31,6 @@ import org.ode4j.math.DVector4;
 import org.ode4j.math.DVector4C;
 import org.ode4j.ode.DAABB;
 import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
@@ -40,6 +39,7 @@ import org.ode4j.ode.internal.gimpact.GimGeometry.mat4f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec4f;
 import org.ode4j.ode.internal.gimpact.GimTriCollision.GIM_TRIANGLE_RAY_CONTACT_DATA;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 public class DxGimpactCollision {
 	
@@ -47,7 +47,6 @@ public class DxGimpactCollision {
 	//	#if dTRIMESH_GIMPACT
 
 
-	//TZ TODO
 	//	#ifdef dDOUBLE
 	// To use GIMPACT with doubles, we need to patch a couple of the GIMPACT functions to 
 	// convert arguments to floats before sending them in
@@ -154,21 +153,6 @@ public class DxGimpactCollision {
 	//
 	//	#endif // dDouble
 
-	//	inline unsigned FetchTriangleCount(dxTriMesh* TriMesh)
-	static int FetchTriangleCount(DxGimpact TriMesh)
-	{
-		return TriMesh.m_collision_trimesh.gim_trimesh_get_triangle_count();
-	}
-
-	//inline void FetchTransformedTriangle(dxTriMesh* TriMesh, int Index, dVector3 Out[3]){
-	static void FetchTransformedTriangle(DxGimpact TriMesh, int Index, DVector3 Out[]){
-		TriMesh.m_collision_trimesh.gim_trimesh_locks_work_data();
-		vec3f[] vOut = { new vec3f(), new vec3f(), new vec3f() };
-		TriMesh.m_collision_trimesh.gim_trimesh_get_triangle_vertices(Index, vOut[0], vOut[1], vOut[2]);
-		Out[0].set( vOut[0].f ); Out[1].set( vOut[1].f ); Out[2].set( vOut[2].f );
-		TriMesh.m_collision_trimesh.gim_trimesh_unlocks_work_data();
-	}
-
 	//		inline void MakeMatrix(const dVector3 Position, const dMatrix3 Rotation, mat4f m)
 	static void MakeMatrix(DVector3C Position, DMatrix3C Rotation, mat4f m)
 	{
@@ -197,7 +181,6 @@ public class DxGimpactCollision {
 		MakeMatrix(Position, Rotation, Out);
 	}
 
-	//***  TODO TZ END OF GIMPACT SPECIFIC PART
 	//#endif // dTRIMESH_GIMPACT
 
 	// Outputs a matrix to 3 vectors
@@ -222,13 +205,13 @@ public class DxGimpactCollision {
 
 	// Outputs a matrix to 3 vectors
 	//inline void Decompose(const dMatrix3 Matrix, dVector3 Vectors[3]){
-	void Decompose(DMatrix3C Matrix, DVector3 Vectors[]){
+	void Decompose(DMatrix3C Matrix, DVector3[] Vectors){
 		Decompose(Matrix, Vectors[0], Vectors[1], Vectors[2]);
 	}
 
 	// Finds barycentric
 	//inline void GetPointFromBarycentric(const dVector3 dv[3], dReal u, dReal v, dVector3 Out){
-	static void GetPointFromBarycentric(vec3f dv[], double u, double v, DVector3 Out){
+	static void GetPointFromBarycentric(vec3f[] dv, double u, double v, DVector3 Out){
 		double w = 1.0 - u - v;
 		Out.set0( dv[0].f[0]*w + dv[1].f[0]*u + dv[2].f[0]*v );
 		Out.set1( dv[0].f[1]*w + dv[1].f[1]*u + dv[2].f[1]*v );
@@ -239,12 +222,31 @@ public class DxGimpactCollision {
 //		Out[2] = (dv[0][2] * w) + (dv[1][2] * u) + (dv[2][2] * v);
 //		Out[3] = (dv[0][3] * w) + (dv[1][3] * u) + (dv[2][3] * v);
 	}
+	public static void GetPointFromBarycentric(DVector3C[] dv, double u, double v, DVector3 Out){
+		double w = 1.0 - u - v;
+		Out.set0( dv[0].get0()*w + dv[1].get0()*u + dv[2].get0()*v );
+		Out.set1( dv[0].get1()*w + dv[1].get1()*u + dv[2].get1()*v );
+		Out.set2( dv[0].get2()*w + dv[1].get2()*u + dv[2].get2()*v );
+		// Out.set0( dv[0].get3()*w + dv[1].get3()*u + dv[2].get3()*v );  //TODO ?
+		//		Out[0] = (dv[0][0] * w) + (dv[1][0] * u) + (dv[2][0] * v);
+		//		Out[1] = (dv[0][1] * w) + (dv[1][1] * u) + (dv[2][1] * v);
+		//		Out[2] = (dv[0][2] * w) + (dv[1][2] * u) + (dv[2][2] * v);
+		//		Out[3] = (dv[0][3] * w) + (dv[1][3] * u) + (dv[2][3] * v);
+	}
+
+	public static void GetPointFromBarycentric(
+			DVector3C dv0, DVector3 dv1, DVector3 dv2, double u, double v, DVector3 Out){
+		double w = 1.0 - u - v;
+		Out.set0( dv0.get0()*w + dv1.get0()*u + dv2.get0()*v );
+		Out.set1( dv0.get1()*w + dv1.get1()*u + dv2.get1()*v );
+		Out.set2( dv0.get2()*w + dv1.get2()*u + dv2.get2()*v );
+	}
 
 	// Performs a callback
 	//inline bool Callback(dxTriMesh* TriMesh, dxGeom* Object, int TriIndex){
 	boolean Callback(DxTriMesh TriMesh, DxGeom Object, int TriIndex){
-		if (TriMesh.Callback != null){
-			return (TriMesh.Callback.call(TriMesh, Object, TriIndex)!=0);
+		if (TriMesh.m_Callback != null){
+			return (TriMesh.m_Callback.call(TriMesh, Object, TriIndex)!=0);
 		}
 		else return true;
 	}
@@ -335,47 +337,4 @@ public class DxGimpactCollision {
 //		out[2] += position[2];
 		out.add(position);
 	}
-
-	//------------------------------------------------------------------------------
-	/**
-	 * Check for intersection between triangle and capsule.
-	 * 
-	 * @param dist [out] Shortest distance squared between the triangle and 
-	 *                   the capsule segment (central axis).
-	 * @param t    [out] t value of point on segment that's the shortest distance 
-	 *                   away from the triangle, the coordinates of this point 
-	 *                   can be found by (cap.seg.end - cap.seg.start) * t,
-	 *                   or cap.seg.ipol(t).
-	 * @param u    [out] Barycentric coord on triangle.
-	 * @param v    [out] Barycentric coord on triangle.
-	 * @return True if intersection exists.
-	 * 
-	 * The third Barycentric coord is implicit, ie. w = 1.0 - u - v
-	 * The Barycentric coords give the location of the point on the triangle
-	 * closest to the capsule (where the distance between the two shapes
-	 * is the shortest).
-	 */
-	//inline
-	//bool IntersectCapsuleTri( const dVector3 segOrigin, const dVector3 segEnd, 
-	//                          const dReal radius, const dVector3 triOrigin, 
-	//                          const dVector3 triEdge0, const dVector3 triEdge1,
-	//                          dReal* dist, dReal* t, dReal* u, dReal* v )
-	boolean IntersectCapsuleTri( DVector3C segOrigin, DVector3C segEnd, 
-			final double radius, DVector3C triOrigin, 
-			DVector3C triEdge0, DVector3C triEdge1,
-			RefDouble dist, double[] t, double[] u, double[] v )
-	{
-		throw new UnsupportedOperationException(); //TZ TODO
-//		double sqrDist = SqrDistanceSegTri( segOrigin, segEnd, triOrigin, triEdge0, triEdge1, 
-//				t, u, v );
-//
-////		if ( dist )
-////			*dist = sqrDist;
-//		if ( dist != null )
-//			dist.d = sqrDist;
-//
-//		return ( sqrDist <= (radius * radius) );
-	}
-
-
 }

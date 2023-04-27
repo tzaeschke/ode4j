@@ -28,13 +28,16 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import org.ode4j.ode.DColliderFn;
-import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.OdeConfig;
-import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
+
+import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.internal.DxGeom.NUMC_MASK;
+import static org.ode4j.ode.internal.gimpact.GimDynArray.GIM_DYNARRAY_POINTER;
 
 /**
  *
@@ -48,88 +51,71 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 		return dCollideTTL((DxGimpact)o1, (DxGimpact)o2, flags, contacts, 1);
 	}
 
-	
+	/////////////////////////////////////////////////////////////////////////
+
+	//#if dTRIMESH_GIMPACT
+
 	//
 	// GIMPACT TRIMESH-TRIMESH COLLIDER
 	//
 
-//	int dCollideTTL(dxGeom* g1, dxGeom* g2, int Flags, dContactGeom* Contacts, int Stride)
-	int dCollideTTL(DxGimpact g1, DxGimpact g2, int Flags, DContactGeomBuffer Contacts, int Stride)
+	/*extern */
+	int dCollideTTL(DxGeom g1, DxGeom g2, int Flags, DContactGeomBuffer Contacts, int Stride)
 	{
-		Common.dIASSERT (Stride == 1);//(int)sizeof(dContactGeom));
-		//dIASSERT (g1->type == dTriMeshClass);
-		//dIASSERT (g2->type == dTriMeshClass);
-		Common.dIASSERT ((Flags & DxGeom.NUMC_MASK) >= 1);
+		dIASSERT (Stride >= 1);//(int)sizeof(dContactGeom));
+		// dIASSERT (g1->type == dTriMeshClass);
+		// dIASSERT (g2->type == dTriMeshClass);
+		dIASSERT ((Flags & NUMC_MASK) >= 1);
 
-	    DxGimpact TriMesh1 = g1;
-	    DxGimpact TriMesh2 = g2;
-	    //Create contact list
-	    GimDynArray<GimContact> trimeshcontacts;
-	    trimeshcontacts = GimContact.GIM_CREATE_CONTACT_LIST();
+		int result = 0;
 
-		g1.recomputeAABB();
-		g2.recomputeAABB();
+		DxTriMesh triMesh1 = (DxTriMesh) g1;
+		DxTriMesh triMesh2 = (DxTriMesh) g2;
+		//Create contact list
+		GimDynArray<GimContact> trimeshContacts;
+		trimeshContacts = GimContact.GIM_CREATE_CONTACT_LIST();
 
-	    //Collide trimeshes
-		TriMesh1.m_collision_trimesh.gim_trimesh_trimesh_collision(TriMesh2.m_collision_trimesh,trimeshcontacts);
+		triMesh1.recomputeAABB();
+		triMesh2.recomputeAABB();
 
-	    if(trimeshcontacts.size() == 0)
-	    {
-	    	trimeshcontacts.GIM_DYNARRAY_DESTROY();
-	        return 0;
-	    }
+		//Collide trimeshes
+		//gim_trimesh_trimesh_collision(triMesh1.m_collision_trimesh, triMesh2.m_collision_trimesh, trimeshContacts);
+		triMesh1.m_collision_trimesh().gim_trimesh_trimesh_collision(triMesh2.m_collision_trimesh(), trimeshContacts);
 
-	    ObjArray<GimContact> ptrimeshcontacts = trimeshcontacts.GIM_DYNARRAY_POINTER_V();
+		int contactCount = trimeshContacts.size();
 
+		if (contactCount != 0)
+		{
+			GimContact[] pTriMeshContacts = GIM_DYNARRAY_POINTER(trimeshContacts);
 
-		int contactcount = trimeshcontacts.size();
-		int maxcontacts = Flags & DxGeom.NUMC_MASK;
+			DxGImpactContactsExportHelper.GImpactContactAccessorI contactAccessor = new DxGIMCContactAccessor(pTriMeshContacts, g1, g2);
+			int culledContactCount = DxGImpactContactsExportHelper.ExportMaxDepthGImpactContacts(contactAccessor, contactCount, Flags, Contacts, Stride);
+
+			result = culledContactCount;
+		}
+
+		trimeshContacts.GIM_DYNARRAY_DESTROY();
+
+		// TODO remove this, #22 has been resolved
+		int contactcount = trimeshContacts.size();
+		int maxcontacts = Flags & NUMC_MASK;
 		if (contactcount > maxcontacts)
 		{
 			if (OdeConfig.ENABLE_CONTACT_SORTING) {
-				Arrays.sort((Object[])trimeshcontacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
+				Arrays.sort((Object[])trimeshContacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
 					@Override
 					public int compare(Object o1, Object o2) {
 						return Float.compare(((GimContact) o2).getDepth(), ((GimContact) o1).getDepth());
 					}
 				});
 			}
-			contactcount = maxcontacts;
 		}
 
-	    DContactGeom pcontact;
-	    GimContact ptrimeshcontact;
-		
-		for (int i=0;i<contactcount;i++)
-		{
-	        pcontact = Contacts.getSafe(Flags, i);//SAFECONTACT(Flags, Contacts, i, Stride);
-	        ptrimeshcontact = ptrimeshcontacts.at(i);
-
-//	        pcontact->pos[0] = ptrimeshcontacts->m_point[0];
-//	        pcontact->pos[1] = ptrimeshcontacts->m_point[1];
-//	        pcontact->pos[2] = ptrimeshcontacts->m_point[2];
-//	        pcontact->pos[3] = 1.0f;   //TODO TZ ?
-	        pcontact.pos.set(ptrimeshcontact.getPoint().f);
-
-//	        pcontact->normal[0] = ptrimeshcontacts->m_normal[0];
-//	        pcontact->normal[1] = ptrimeshcontacts->m_normal[1];
-//	        pcontact->normal[2] = ptrimeshcontacts->m_normal[2];
-//	        pcontact->normal[3] = 0;
-	        pcontact.normal.set( ptrimeshcontact.getNormal().f );
-
-	        pcontact.depth = ptrimeshcontact.getDepth();
-	        pcontact.g1 = g1;
-	        pcontact.g2 = g2;
-	        pcontact.side1 = ptrimeshcontact.getFeature1();
-	        pcontact.side2 = ptrimeshcontact.getFeature2();
-
-	        //ptrimeshcontacts.inc();//++;
-		}
-
-		trimeshcontacts.GIM_DYNARRAY_DESTROY();
-
-	    return contactcount;
+		return result;
 	}
 
-	
+
+	//#endif // dTRIMESH_GIMPACT
+
+	//#endif // dTRIMESH_ENABLED
 }

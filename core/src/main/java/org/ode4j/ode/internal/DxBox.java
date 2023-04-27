@@ -68,7 +68,7 @@ public class DxBox extends DxGeom implements DBox {
 
 
 	@Override
-	void computeAABB()
+    protected void computeAABB()
 	{
 		//	  final dMatrix3& R = final_posr.R;
 		//	  final dVector3& pos = final_posr.pos;
@@ -158,46 +158,71 @@ public class DxBox extends DxGeom implements DBox {
 		// if the point is inside all six sides
 
 		double[] dist = new double[6];
-		int   i;
+		// TODO TZ remove comment after 16.3: ported from latest ODE (2023-04-05)
 
-		boolean inside = true;
+		boolean outside = false;
+		double lastOuterOffset = 0;
+		int sideIndex;
 
-		for (i=0; i < 3; i++) {
-			double sideX = side.get(i) * (0.5);
+		for (sideIndex = 0; sideIndex != 3; ++sideIndex) {
+			double side = this.side.get(sideIndex) * 0.5;
 
-			dist[i  ] = sideX - q.get(i);
-			dist[i+3] = sideX + q.get(i);
+			dist[sideIndex] = side - q.get(sideIndex);
+			if (dist[sideIndex] < 0) {
+				lastOuterOffset = dist[sideIndex];
+				outside = true;
+				break;
+			}
 
-			if ((dist[i] < 0) || (dist[i+3] < 0)) {
-				inside = false;
+			dist[sideIndex + 3] = side + q.get(sideIndex);
+			if (dist[sideIndex + 3] < 0) {
+				lastOuterOffset = dist[sideIndex + 3];
+				outside = true;
+				break;
 			}
 		}
 
-		// If point is inside the box, the depth is the smallest positive distance
-		// to any side
+		if (outside) {
+			// If the point is outside the box, use Pythagorean theorem
+			// the add the squared lengths that lie outside of a side and return
+			// the sqrt of the sum.
+			// If 1 value is negative, this is the distance to a face.
+			// If 2 values are negative, this is the distance to an edge.
+			// If 3 values are negative, this is the distance to corner.
+			// No more than three dist values can be negative, since a point can't
+			// be on opposite sides of a box at the same time.
+			double squaredDistance = 0;
 
-		if (inside) {
-			//TZ double smallest_dist = (double) (unsigned) -1;
-			double smallest_dist = -1;
+			for (++sideIndex; sideIndex != 3; ++sideIndex) {
+				double side = this.side.get(sideIndex) * 0.5;
 
-			for (i=0; i < 6; i++) {
-				if (dist[i] < smallest_dist) smallest_dist = dist[i];
+				double positiveDirectionDistance = side - q.get(sideIndex);
+				if (positiveDirectionDistance < 0) {
+					squaredDistance += lastOuterOffset * lastOuterOffset;
+					lastOuterOffset = positiveDirectionDistance;
+				}
+				else {
+					double negativeDirectionDistance = side + q.get(sideIndex);
+					if (negativeDirectionDistance < 0) {
+						squaredDistance += lastOuterOffset * lastOuterOffset;
+						lastOuterOffset = negativeDirectionDistance;
+					}
+				}
 			}
 
-			return smallest_dist;
+			double outerDistance = squaredDistance != 0 ? -sqrt(squaredDistance + lastOuterOffset * lastOuterOffset) : lastOuterOffset;
+			return outerDistance;
 		}
 
-		// Otherwise, if point is outside the box, the depth is the largest
-		// distance to any side.  This is an approximation to the 'proper'
-		// solution (the proper solution may be larger in some cases).
-
-		double largest_dist = 0;
-
-		for (i=0; i < 6; i++) {
-			if (dist[i] > largest_dist) largest_dist = dist[i];
+		// Otherwise, if the point is inside the box, the depth is the smallest positive distance among all the sides
+		double smallestDist = dist[0];
+		for (int i = 1; i != 6; ++i) {
+		if (dist[i] < smallestDist) {
+			smallestDist = dist[i];
 		}
+	}
 
-		return -largest_dist;
+		return smallestDist;
 	}
 
 	//****************************************************************************

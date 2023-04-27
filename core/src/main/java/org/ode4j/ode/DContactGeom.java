@@ -53,4 +53,20 @@ public class DContactGeom {
 	/** (to be documented) */
 	public int side1;       
 	public int side2;
+
+	public boolean normal_needs_normalizing;
+
+	/**
+	 * pos[3] is assigned in several places but never ysed. This is a dummy functioon to track this fact.
+	 */
+	public void pos3(double d) {
+		// nothing
+	}
+
+	/**
+	 * normal[3] is assigned in several places but never ysed. This is a dummy functioon to track this fact.
+	 */
+	public void normal3(double d) {
+		// nothing
+	}
 }

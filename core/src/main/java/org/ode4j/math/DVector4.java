@@ -22,6 +22,11 @@
 package org.ode4j.math;
 
 
+import org.ode4j.ode.internal.Common;
+
+import static org.ode4j.ode.internal.CommonEnums.*;
+import static org.ode4j.ode.internal.ErrorHandler.dDebug;
+
 public class DVector4 implements DVector4C {
 	
 	private final double[] v;
@@ -110,38 +115,13 @@ public class DVector4 implements DVector4C {
 	 */
 	public final boolean safeNormalize4 ()
 	{
-		//TODO is this correct? Maybe the real problem was that no eps is defined?
-		double d = Math.abs(get0()); //TODO use epsilon for minimal values (?)
-//		for (int i = 1; i < v.length; i++) {
-//			if (Math.abs(v[i]) > d) {
-//				d = Math.abs(v[i]);
-//			}
-//		}
-		if (Math.abs(get1()) > d) d = Math.abs(get1());
-		if (Math.abs(get2()) > d) d = Math.abs(get2());
-		if (Math.abs(get3()) > d) d = Math.abs(get3());
-		
-		if (d <= Double.MIN_NORMAL) {
-			set(1, 0, 0, 0);
-			return false;
+		double l = get0() * get0() + get1() * get1() + get2() * get2() + get3() * get3();
+		if (l > 0) {
+			l = 1.0/Math.sqrt(l);
+			scale(l);
+			return true;
 		}
-		
-		scale(1/d);
-//		for (int i = 0; i < v.length; i++) {
-//			v[i] /= d;
-//		}
-		
-//		double sum = 0;
-//		for (double d2: v) {
-//			sum += d2*d2;
-//		}
-		
-		double l = 1./length();//Math.sqrt(sum);
-//		for (int i = 0; i < v.length; i++) {
-//			v[i] *= l;
-//		}
-		scale(l);
-		return true;
+		return false;
 	}
 	
 	/**
@@ -153,10 +133,11 @@ public class DVector4 implements DVector4C {
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
 	 */
-	public void normalize()
-	{
-		if (!safeNormalize4()) throw new IllegalStateException(
-				"Normalization failed: " + this);
+	public void normalize() {
+		if (!safeNormalize4()) {
+			dDebug(Common.d_ERR_IASSERT, "Normalization failed");
+			set(1, 0, 0, 0);
+		}
 	}
 	
 	public void set(double[] a) {

@@ -61,7 +61,7 @@ public class DxCylinder extends DxGeom implements DCylinder {
 
 
 	@Override
-	void computeAABB()
+    protected void computeAABB()
 	{
 		final DMatrix3C R = final_posr().R();
 		final DVector3C pos = final_posr().pos();

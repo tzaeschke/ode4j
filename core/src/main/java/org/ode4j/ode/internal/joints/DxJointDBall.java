@@ -24,9 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
-import static org.ode4j.ode.OdeMath.dMultiply1_331;
-import static org.ode4j.ode.OdeMath.dSetCrossMatrixMinus;
-import static org.ode4j.ode.OdeMath.dSetCrossMatrixPlus;
+import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.dUASSERT;
 
 import org.ode4j.math.DMatrix3;
@@ -68,21 +66,24 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 		info.nub = 1;
 	}
 
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2( double worldFPS, double worldERP, Info2Descr info )
-	{
-		info.setCfm(0, this.cfm);
-
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
 		DVector3 globalA1 = new DVector3(), globalA2 = new DVector3();
 		//dBodyGetRelPointPos(node[0].body, anchor1[0], anchor1[1], anchor1[2], globalA1);
 		node[0].body.getRelPointPos(anchor1, globalA1);
-		if (node[1].body != null)
+
+		if (node[1].body != null) {
 			//dBodyGetRelPointPos(node[1].body, anchor2[0], anchor2[1], anchor2[2], globalA2);
 			node[1].body.getRelPointPos(anchor2, globalA2);
-		else
+		} else {
 			//dCopyVector3(globalA2, anchor2);
 			globalA2.set(anchor2);
+		}
 
 		DVector3 q = new DVector3();
 		//dSubtractVectors3(q, globalA1, globalA2);
@@ -100,27 +101,25 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 			DVector3 v1 = new DVector3(), v2 = new DVector3();
 			//dBodyGetPointVel(node[0].body, globalA1[0], globalA1[1], globalA1[2], v1);
 			node[0].body.getPointVel(globalA1, v1);
-			if (node[1].body!=null) {
+
+			if (node[1].body != null) {
 				//dBodyGetPointVel(node[1].body, globalA2[0], globalA2[1], globalA2[2], v2);
 				node[1].body.getPointVel(globalA2, v2);
 			} else {
-				//dSetZero(v2, 3);
 				v2.setZero();
 			}
+
 			//dSubtractVectors3(q, v1, v2);
 			q.eqDiff(v1, v2);
 
 			if (q.length() < MIN_LENGTH) {
 				// this direction is as good as any
-				//                q[0] = 1;
-				//                q[1] = 0;
-				//                q[2] = 0;
 				q.set(1, 0, 0);
 			}
 		}
 		OdeMath.dNormalize3(q);
 
-		info.setJ1l(0, q);
+		dCopyVector3(J1A, J1Ofs + GI2__JL_MIN, q);
 
 		DVector3 relA1 = new DVector3();
 		//        dBodyVectorToWorld(node[0].body,
@@ -131,12 +130,11 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 		DMatrix3 a1m = new DMatrix3();
 		//dSetZero(a1m, 12);
 		dSetCrossMatrixMinus(a1m, relA1);//, 4);
-		DVector3 v = new DVector3();
-		dMultiply1_331(v, a1m, q);
-		info.setJ1a(0, v);
+
+		dMultiply1_331(J1A, J1Ofs + GI2__JA_MIN, a1m, q);
 
 		if (node[1].body != null) {
-			info.setJ2lNegated(0, q);
+			dCopyNegatedVector3(J2A, J2Ofs + GI2__JL_MIN, q);
 
 			DVector3 relA2 = new DVector3();
 			//            dBodyVectorToWorld(node[1].body,
@@ -146,13 +144,12 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 			DMatrix3 a2m = new DMatrix3();
 			//dSetZero(a2m, 12);
 			dSetCrossMatrixPlus(a2m, relA2);//, 4);
-			dMultiply1_331(v, a2m, q);
-			info.setJ2a(0, v);
+			dMultiply1_331(J2A, J2Ofs + GI2__JA_MIN, a2m, q);
 		}
 
 		final double k = worldFPS * this.erp;
-		//info.c[0] = k * (targetDistance - dCalcPointsDistance3(globalA1, globalA2));
-		info.setC(0, k * (targetDistance - globalA1.distance(globalA2)));
+		pairRhsCfmA[pairRhsCfmOfs + GI2_RHS] = k * (targetDistance - globalA1.distance(globalA2));
+		pairRhsCfmA[pairRhsCfmOfs + GI2_CFM] = this.cfm;
 	}
 
 
@@ -238,6 +235,10 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 		return targetDistance;
 	}
 
+	void dJointSetDBallDistance(double dist) {
+		dUASSERT(dist >= 0, "target distance must be non-negative");
+		targetDistance = dist;
+	}
 
 	void dJointGetDBallAnchor1( DVector3 result )
 	{
@@ -357,6 +358,11 @@ public class DxJointDBall extends DxJoint implements DDoubleBallJoint {
 	@Override
 	public double getDistance() {
 		return dJointGetDBallDistance();
+	}
+
+	@Override
+	public void setDistance(double distance) {
+		dJointSetDBallDistance(distance);
 	}
 
 	protected final double erp() {

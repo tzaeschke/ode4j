@@ -25,11 +25,7 @@
 package org.ode4j.ode.internal.joints;
 
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeMath.dAddScaledVectors3;
-import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
-import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dNormalize3;
+import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.ode.internal.Common.M_PI_2;
 import static org.ode4j.ode.internal.Common.dIASSERT;
@@ -65,7 +61,10 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
 //
 //    virtual void getSureMaxInfo( SureMaxInfo* info );
 //    virtual void getInfo1( Info1* info );
-//    virtual void getInfo2( dReal worldFPS, dReal worldERP, const Info2Descr* info );
+//    virtual void getInfo2( dReal worldFPS, dReal worldERP,
+//                           int rowskip, dReal *J1, dReal *J2,
+//                           int pairskip, dReal *pairRhsCfm, dReal *pairLoHi,
+//                           int *findex );
 //    virtual dJointType type() const;
 //    virtual size_t size() const;
 
@@ -76,8 +75,8 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
 //            return x < minX ? minX : (x > maxX ? maxX : x);
 //        }
 //    }
-    private static final double clamp(double x, double minX, double maxX) {
-    	return x < minX ? minX : (x > maxX ? maxX : x);
+    private static double clamp(double x, double minX, double maxX) {
+    	return x < minX ? minX : (Math.min(x, maxX));
     }
 
     /*
@@ -127,10 +126,13 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
         info.nub = backlash > 0 ? 0 : 1;
     }
 
-	@Override
-    public void
-    getInfo2( double worldFPS, double worldERP, Info2Descr info )
-    {
+    /**
+     * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+     */
+    @Override
+    public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+                         int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+                         int pairLoHiOfs, int[] findexA, int findexOfs) {
         DVector3[] a = new DVector3[]{new DVector3(), new DVector3()}; 
         DVector3[] n = new DVector3[]{new DVector3(), new DVector3()}; 
         DVector3[] l = new DVector3[]{new DVector3(), new DVector3()}; 
@@ -178,10 +180,9 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
             // baseline that will yield the correct ratio.
 
             dIASSERT (ratio > 0);
-            
+
             d.eqDiff(a[1],  a[0]);//dSubtractVectors3(d, a[1], a[0]);
-            //dAddScaledVectors3(c[0], a[0], d, 1, ratio / (1 + ratio));
-            c[0].eqSum(a[0], 1, d, ratio / (1 + ratio));
+            dAddVectorScaledVector3(c[0], a[0], d, ratio / (1 + ratio));
             c[1].set(c[0]);//dCopyVector3(c[1], c[0]);
             
             dNormalize3(d);
@@ -217,8 +218,8 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
 
             for (i = 0 ; i < 2 ; i += 1) {
                 d.eqDiff(a[i], O);//dSubtractVectors3(d, a[i], O);
-                m = dCalcVectorDot3(d, l[i]);        
-                dAddScaledVectors3(c[i], O, l[i], 1, m);
+                m = dCalcVectorDot3(d, l[i]);
+                dAddVectorScaledVector3(c[i], O, l[i], m);
             }
 
             break;
@@ -299,7 +300,6 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
                 //      reference[i][4],reference[i][5],reference[i][6],
                 //      reference[i][8],reference[i][9],reference[i][10]);
 
-                radii[i] = radii[i];
                 phase[i] = 0;
             }
 
@@ -396,7 +396,7 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
         // backlash gap.
 
         if (backlash == 0 || Math.abs(delta) > backlash) {
-            // The constraint is satisfied iff the absolute velocity of the
+            // The constraint is satisfied if the absolute velocity of the
             // contact point projected onto the tangent of the wheels is equal
             // for both gears.  This velocity can be calculated as:
             // 
@@ -410,33 +410,30 @@ public class DxJointTransmission extends DxJoint implements DTransmissionJoint {
                 r[i].eqDiff(c[i], p[i]);//dSubtractVectors3 (r[i], c[i], p[i]);
             }
 
-            dCalcVectorCross3(v, r[0], l[0]);
-    	    info.setJ1a(0, v);
-            dCalcVectorCross3(v, l[1], r[1]);
-    	    info.setJ2a(0, v);
+            dCopyVector3(J1A, J1Ofs + GI2__JL_MIN, l[0]);
+            dCalcVectorCross3(J1A, J1Ofs + GI2__JA_MIN, r[0], l[0]);
 
-    	    info.setJ1l(0, l[0]);
-            //dCopyNegatedVector3(info.J2l, l[1]);
-    	    info.setJ2lNegated(0, l[1]);
+            dCopyNegatedVector3(J2A, J2Ofs + GI2__JL_MIN, l[1]);
+            dCalcVectorCross3(J2A, J2Ofs + GI2__JA_MIN, l[1], r[1]);
 
             if (delta > 0) {
                 if (backlash > 0) {
-                    info.setLo(0, -dInfinity);
-                    info.setHi(0, 0);
+                    pairLoHiA[pairLoHiOfs + GI2_LO] = -dInfinity;
+                    pairLoHiA[pairLoHiOfs + GI2_HI] = 0;
                 }
 
-                info.setC(0, -worldFPS * erp * (delta - backlash) );
+                pairRhsCfmA[pairRhsCfmOfs + GI2_RHS] = -worldFPS * erp * (delta - backlash);
             } else {
                 if (backlash > 0) {
-                    info.setLo(0, 0);
-                    info.setHi(0, dInfinity);
+                    pairLoHiA[pairLoHiOfs + GI2_LO] = 0;
+                    pairLoHiA[pairLoHiOfs + GI2_HI] = dInfinity;
                 }
 
-                info.setC(0, -worldFPS * erp * (delta + backlash) );
+                pairRhsCfmA[pairRhsCfmOfs + GI2_RHS] = -worldFPS * erp * (delta + backlash);
             }
         }
 
-        info.setCfm(0, cfm);
+        pairRhsCfmA[pairRhsCfmOfs + GI2_CFM] = cfm;
 
         // printf ("%f, %f, %f, %f, %f\n", delta, phase[0], phase[1], -phase[1] / phase[0], ratio);
 

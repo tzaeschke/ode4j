@@ -626,7 +626,7 @@ class DemoTrimeshHeightfield extends dsFunctions {
 		gheight.setRotation( R );
 		gheight.setPosition( pos );
 
-		//TODO
+		// TODO
 //	    DThreadingImplementation threading = OdeHelper.allocateMultiThreaded();
 //	    DThreadingThreadPool pool = OdeHelper.allocateThreadPool(4, 0, /*dAllocateFlagBasicData,*/ null);
 //	    pool.serveMultiThreadedImplementation(threading);

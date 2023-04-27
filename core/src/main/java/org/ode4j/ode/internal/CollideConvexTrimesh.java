@@ -17,7 +17,7 @@ public class CollideConvexTrimesh implements DColliderFn {
 	public int dColliderFn(DGeom o1, DGeom o2, int flags, DContactGeomBuffer contacts) {
 
 		DxGimpact trimesh = (DxGimpact) o2; 
-		GimTrimesh ptrimesh = trimesh.m_collision_trimesh;
+		GimTrimesh ptrimesh = trimesh.m_collision_trimesh();
 		aabb3f test_aabb = new aabb3f();
 
 		DAABBC aabb = o1.getAABB();

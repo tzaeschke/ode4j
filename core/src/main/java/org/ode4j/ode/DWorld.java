@@ -362,65 +362,37 @@ public interface DWorld {
 	 */
 	double getQuickStepW();
 
-	
+
 	/**
-	 * Set auto disable linear threshold for newly created bodies.
+	 * Set auto disable linear average threshold for newly created bodies.
+	 *
 	 * @param threshold default is 0.01
 	 */
-	void  setAutoDisableLinearThreshold (double threshold);
-	
-	
+	void setAutoDisableLinearThreshold(double threshold);
+
+
 	/**
-	 * Get auto disable linear threshold for newly created bodies.
+	 * Get auto disable linear average threshold for newly created bodies.
+	 *
 	 * @return the threshold
 	 */
 	double getAutoDisableLinearThreshold();
-	
-	
+
+
 	/**
-	 * Set auto disable angular threshold for newly created bodies.
+	 * Set auto disable angular average threshold for newly created bodies.
+	 *
 	 * @param threshold default is 0.01
 	 */
-	void setAutoDisableAngularThreshold (double threshold);
+	void setAutoDisableAngularThreshold(double threshold);
 
-	
+
 	/**
-	 * Get auto disable angular threshold for newly created bodies.
+	 * Get auto disable angular average threshold for newly created bodies.
+	 *
 	 * @return the threshold
 	 */
 	double getAutoDisableAngularThreshold();
-
-
-//	/**
-//	 * Get auto disable linear average threshold for newly created bodies.
-//	 * @return the threshold
-//	 * @deprecated Not implemented in ODE.
-//	 */
-//	double getAutoDisableLinearAverageThreshold ();
-//
-//
-//	/**
-//	 * Set auto disable linear average threshold for newly created bodies.
-//	 * @param linear_average_threshold default is 0.01
-//	 * @deprecated Not implemented in ODE.
-//	 */
-//	void setAutoDisableLinearAverageThreshold (double linear_average_threshold);
-//
-//
-//	/**
-//	 * Get auto disable angular average threshold for newly created bodies.
-//	 * @return the threshold
-//	 * @deprecated Not implemented in ODE.
-//	 */
-//	double getAutoDisableAngularAverageThreshold ();
-//
-//
-//	/**
-//	 * Set auto disable angular average threshold for newly created bodies.
-//	 * @param angular_average_threshold default is 0.01
-//	 * @deprecated Not implemented in ODE.
-//	 */
-//	void setAutoDisableAngularAverageThreshold (double angular_average_threshold);
 
 
 	/**

@@ -57,6 +57,22 @@ public abstract class DVector3View implements DVector3I {
 		set2( z );
 	}
 
+	public final void set(int idx, double d) {
+		switch (idx) {
+			case 0:
+				set0(d);
+				break;
+			case 1:
+				set1(d);
+				break;
+			case 2:
+				set2(d);
+				break;
+			default:
+				throw new IllegalStateException();
+		}
+	}
+
 	public final void scale(double s) {
 		set0( get0() * s );
 		set1( get1() * s );

@@ -26,11 +26,10 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.dIASSERT;
 
-import java.util.ArrayList;
+import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
-import org.ode4j.math.DVector4;
-import org.ode4j.ode.internal.cpp4j.java.Ref;
-import org.ode4j.ode.internal.cpp4j.java.RefInt;
+import java.util.ArrayList;
 
 /**
  *
@@ -38,33 +37,33 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
  */
 public class DxGimpactData extends DxTriMeshData {
 
-	private float[] m_Vertices;//const char* m_Vertices;
-//	int m_VertexStride;   //see docs below, GIMPACT does not support strides other than 3 (TZ)
-//	int m_VertexCount;
-	private int[] m_Indices;//const char* m_Indices;
-//	int m_TriangleCount;
-//	int m_TriStride;
-//	boolean m_single;
-	private float[] m_Angles;
+//	private float[] m_Vertices;//const char* m_Vertices;
+////	int m_VertexStride;   //see docs below, GIMPACT does not support strides other than 3 (TZ)
+////	int m_VertexCount;
+//	private int[] m_Indices;//const char* m_Indices;
+////	int m_TriangleCount;
+////	int m_TriStride;
+////	boolean m_single;
+//	private float[] m_Angles;
 
-    DxGimpactData()//dxTriMeshData()
+    public DxGimpactData()//dxTriMeshData()
 	{
-		m_Vertices=null;
-//		m_VertexStride = 12;
-//		m_VertexCount = 0;
-		m_Indices = null;
-//		m_TriangleCount = 0;
-//		m_TriStride = 12;
-//		m_single = true;
+//		m_Vertices=null;
+////		m_VertexStride = 12;
+////		m_VertexCount = 0;
+//		m_Indices = null;
+////		m_TriangleCount = 0;
+////		m_TriStride = 12;
+////		m_single = true;
 	}
     
     
     float[] getDataRef() {
-    	return m_Vertices;
+		return super.retrieveVertexInstances();
     }
 
     int[] getIndexRef() {
-    	return m_Indices;
+		return super.retrieveTriangleVertexIndices();
     }
 
 //    void Build(const void* Vertices, int VertexStride, int VertexCount,
@@ -111,64 +110,49 @@ public class DxGimpactData extends DxTriMeshData {
 
     @Override
     public void build(final float[] Vertices,
-   	       final int[] Indices)
-  	{
- 		dIASSERT(Vertices!=null);
- 		dIASSERT(Indices!=null);
- 		m_Vertices = Vertices;
- 		m_Indices = Indices;
- 		//TODO remove?
- 		//check();
-  	}
-	void GetVertex(int i, DVector4 Out)
-	{
-		//TZ commented out, special treatment not required (?)
-//		if(m_single)
-//		{
-			//const float * fverts = (const float * )(m_Vertices + m_VertexStride*i);
-			int p = i*3;//m_VertexStride;
-//			Out[0] = fverts[0];
-//			Out[1] = fverts[1];
-//			Out[2] = fverts[2];
-//			Out[3] = 1.0f;
-			Out.set(m_Vertices[p], m_Vertices[p+1], m_Vertices[p+2], 1.0f);
-//		}
-//		else
-//		{
-//			const double * dverts = (const double * )(m_Vertices + m_VertexStride*i);
-//			Out[0] = (float)dverts[0];
-//			Out[1] = (float)dverts[1];
-//			Out[2] = (float)dverts[2];
-//			Out[3] = 1.0f;
-//
-//		}
+					  final int[] Indices) {
+		dIASSERT(Vertices!=null);
+		dIASSERT(Indices!=null);
+		super.buildData(Vertices, Indices, null);
+		//m_Vertices = Vertices;
+		//m_Indices = Indices;
+		// check();
 	}
+//	void GetVertex(int i, DVector4 Out)
+//	{
+//		//TZ commented out, special treatment not required (?)
+////		if(m_single)
+////		{
+//			//const float * fverts = (const float * )(m_Vertices + m_VertexStride*i);
+//			int p = i*3;//m_VertexStride;
+////			Out[0] = fverts[0];
+////			Out[1] = fverts[1];
+////			Out[2] = fverts[2];
+////			Out[3] = 1.0f;
+//			Out.set(m_Vertices[p], m_Vertices[p+1], m_Vertices[p+2], 1.0f);
+////		}
+////		else
+////		{
+////			const double * dverts = (const double * )(m_Vertices + m_VertexStride*i);
+////			Out[0] = (float)dverts[0];
+////			Out[1] = (float)dverts[1];
+////			Out[2] = (float)dverts[2];
+////			Out[3] = 1.0f;
+////
+////		}
+//	}
 
 	//void GetTriIndices(unsigned int itriangle, unsigned int triindices[3])
-	void GetTriIndices(int itriangle, int[] triindices)
-	{
-		//const unsigned int * ind = (const unsigned int * )(m_Indices + m_TriStride*itriangle);
-		int p = itriangle*3;//m_TriStride;
-		triindices[0] = m_Indices[p+0];
-		triindices[1] = m_Indices[p+1];
-		triindices[2] = m_Indices[p+2];
-	}
+//	void GetTriIndices(int itriangle, int[] triindices)
+//	{
+//		//const unsigned int * ind = (const unsigned int * )(m_Indices + m_TriStride*itriangle);
+//		int p = itriangle*3;//m_TriStride;
+//		triindices[0] = m_Indices[p+0];
+//		triindices[1] = m_Indices[p+1];
+//		triindices[2] = m_Indices[p+2];
+//	}
 //#endif  // dTRIMESH_GIMPACT
 
-	@Override
-	public void preprocess() {
-		m_Angles = new GimpactDataPreprocessor(this).buildAngles();
-	}
-
-	@Override
-	//void dxTriMeshData::UpdateData()
-	void UpdateData() {
-		//  BVTree.Refit();
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException();
-	}
-
-	
 
 //	void dGeomTriMeshDataBuildSingle1(dTriMeshDataID g,
 //            const void* Vertices, int VertexStride, int VertexCount,
@@ -285,26 +269,39 @@ public class DxGimpactData extends DxTriMeshData {
 //	}
 
 
-	//void dGeomTriMeshDataGetBuffer(dTriMeshDataID g, unsigned char** buf, int* bufLen)
-	void dGeomTriMeshDataGetBuffer(Ref<Object> buf, RefInt bufLen)
+	//	//void dGeomTriMeshDataGetBuffer(dTriMeshDataID g, unsigned char** buf, int* bufLen)
+	//	void dGeomTriMeshDataGetBuffer(Ref<Object> buf, RefInt bufLen)
+	//	{
+	//		buf.r = null;
+	//		bufLen.i = 0;
+	//		throw new UnsupportedOperationException();
+	//	}
+	//
+	//	//void dGeomTriMeshDataSetBuffer(dTriMeshDataID g, unsigned char* buf)
+	//	void dGeomTriMeshDataSetBuffer(Ref<Object> buf)
+	//	{
+	//		//g->UseFlags = buf;
+	//		throw new UnsupportedOperationException();
+	//	}
+
+
+	/*extern ODE_API */
+	void dGeomTriMeshDataUpdate()
 	{
-		buf.r = null;
-		bufLen.i = 0;
-		throw new UnsupportedOperationException();
+		//dUASSERT(g, "The argument is not a trimesh data");
+
+		//DxTriMeshData *data = g;
+		//data.updateData();
+		//((DxTriMeshData)g).updateData();
+		updateData();
 	}
 
-	//void dGeomTriMeshDataSetBuffer(dTriMeshDataID g, unsigned char* buf)
-	void dGeomTriMeshDataSetBuffer(Ref<Object> buf)
-	{
-		//g->UseFlags = buf;
-		throw new UnsupportedOperationException();
+	/*extern ODE_API */
+	// void dGeomTriMeshDataUpdate()
+	public void update() {
+		dGeomTriMeshDataUpdate();
 	}
-	
-	
-	void dGeomTriMeshDataUpdate() {
-	    UpdateData();
-	}
-	
+
 
 //	@Override
 //	public void buildSingle(double[] Vertices, int VertexStride,
@@ -330,7 +327,7 @@ public class DxGimpactData extends DxTriMeshData {
 	private void dGeomTriMeshDataDestroy() {
 		//Nothing to do
 	}
-	   
+
 //	public void dGeomTriMeshDataBuildSingle(
 //			final double[] Vertices, int VertexStride, int VertexCount, 
 //			final int[] Indices, int IndexCount, int TriStride) { }
@@ -372,13 +369,15 @@ public class DxGimpactData extends DxTriMeshData {
 
 	/**
 	 * Debugging method to check trimesh.
+	 * This may e.g. be called from build().
 	 */
 	public void check() {
 		@SuppressWarnings("unchecked")
-		ArrayList<Integer>[] edges = new ArrayList[m_Vertices.length/3];  // n = number of vertices
+		ArrayList<Integer>[] edges = new ArrayList[getDataRef().length/3];  // n = number of vertices
 		System.out.print("Checking Trimesh (size " + edges.length + " ) ...");
-		for (int i = 0; i < edges.length; i++) edges[i] = new ArrayList<Integer>();
+		for (int i = 0; i < edges.length; i++) edges[i] = new ArrayList<>();
 		int nE = 0;
+		int[] m_Indices = getIndexRef();
 		for (int i = 0; i < m_Indices.length; i+=3) {
 			int[] ia = new int[4];
 			ia[0] = m_Indices[i];
@@ -394,14 +393,19 @@ public class DxGimpactData extends DxTriMeshData {
 					l.add(ia[j+1]);
 				}
 			}
-			
+
 		}
 		System.out.println(nE);
 	}
 
-
+	/**
+	 * For testing only.
+	 *
+	 * Note: In ode4j 0.4.0 this returned 2*Pi for boundary edges.
+	 * This behavior has changed and is now in alignment with ODE.
+	 */
 	public float getEdgeAngle(int triangle, int edge) {
-    	return (float) (m_Angles != null ? m_Angles[triangle * 3 + edge] : Math.PI * 2);
+		return (float) retrieveFaceAngle(triangle, edge);
+		//return (float) (m_Angles != null ? m_Angles[triangle * 3 + edge] : Math.PI * 2);
 	}
-	
 }

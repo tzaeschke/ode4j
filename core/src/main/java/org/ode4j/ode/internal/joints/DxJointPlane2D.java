@@ -29,6 +29,8 @@ import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPlane2DJoint;
 import org.ode4j.ode.internal.DxWorld;
 
+import static org.ode4j.ode.internal.joints.JointEnums.GI2_JLZ;
+
 
 /**
  * Plane2D.
@@ -47,18 +49,6 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	DxJointLimitMotor   motor_y = new DxJointLimitMotor();
 	DxJointLimitMotor   motor_angle = new DxJointLimitMotor();
 
-
-	//    # define        VoXYZ(v1, o1, x, y, z) \
-	//private void VoXYZ(v1, o1, x, y, z) {
-	//      (v1)[0] o1 (x), 
-	//      (v1)[1] o1 (y), 
-	//      (v1)[2] o1 (z)  
-	//}
-//	private void VoXYZeq(v1, x, y, z) {
-//		(v1)[0] = (x), 
-//		(v1)[1] = (y), 
-//		(v1)[2] = (z)  
-//	}
 
 	//private static final double[][] Midentity =
 	//{
@@ -113,11 +103,13 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 	}
 
 
-
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2( double worldFPS, double worldERP, Info2Descr info )
-	{
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
 		double       eps = worldFPS * worldERP;
 
 		/*
@@ -137,43 +129,41 @@ public class DxJointPlane2D extends DxJoint implements DPlane2DJoint
 
 		// fill in linear and angular coeff. for left hand side:
 
-		//    VoXYZ( info.J1l.v[r0], OP.EQ , 0, 0, 1 );
-		//    VoXYZ( info.J1l.v[r1], OP.EQ , 0, 0, 0 );
-		//    VoXYZ( info.J1l.v[r2], OP.EQ , 0, 0, 0 );
-		//
-		//    VoXYZ( info.J1a.v[r0], OP.EQ , 0, 0, 0 );
-		//    VoXYZ( info.J1a.v[r1], OP.EQ , 1, 0, 0 );
-		//    VoXYZ( info.J1a.v[r2], OP.EQ , 0, 1, 0 );
-		info.setJ1l(0, 0, 0, 1);
-		info.setJ1l(1, 0, 0, 0);
-		info.setJ1l(2, 0, 0, 0);
-
-		info.setJ1a(0, 0, 0, 0);
-		info.setJ1a(1, 1, 0, 0);
-		info.setJ1a(2, 0, 1, 0);
+		J1A[J1Ofs + GI2_JLZ] = 1;
+		J1A[J1Ofs + rowskip + GI2_JAX] = 1;
+		J1A[J1Ofs + 2 * rowskip + GI2_JAY] = 1;
 
 		// error correction (against drift):
 
 		// a) linear vz, so that z (== pos[2]) == 0
-		info.setC(0, eps * -node[0].body.posr().pos().get2() );
+		pairRhsCfmA[pairRhsCfmOfs + GI2_RHS] = eps * -node[0].body.posr().pos().get2();
 
 		//# if 0
 		//    // b) angular correction? -> left to application !!!
 		//    dReal       *body_z_axis = &node[0].body->R[8];
-		//    info->c[1] = eps * + atan2( body_z_axis[1], body_z_axis[2] );  // wx error
-		//    info->c[2] = eps * -atan2( body_z_axis[0], body_z_axis[2] );  // wy error
+		//		pairRhsCfm[pairskip + GI2_RHS] = eps * + atan2( body_z_axis[1], body_z_axis[2] );  // wx error
+		//		pairRhsCfm[2 * pairskip + GI2_RHS] = eps * -atan2( body_z_axis[0], body_z_axis[2] );  // wy error
 		//# endif
 
 		// if the slider is powered, or has joint limits, add in the extra row:
 
-		if ( row_motor_x > 0 )
-			motor_x.addLimot( this, worldFPS, info, row_motor_x, Midentity0, false );
+		if (row_motor_x > 0) {
+			int currRowSkip = row_motor_x * rowskip, currPairSkip = row_motor_x * pairskip;
+			motor_x.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, Midentity0, false);
+		}
 
-		if ( row_motor_y > 0 )
-			motor_y.addLimot( this, worldFPS, info, row_motor_y, Midentity1, false );
+		if (row_motor_y > 0) {
+			int currRowSkip = row_motor_y * rowskip, currPairSkip = row_motor_y * pairskip;
+			motor_y.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, Midentity1, false);
+		}
 
-		if ( row_motor_angle > 0 )
-			motor_angle.addLimot( this, worldFPS, info, row_motor_angle, Midentity2, true );
+		if (row_motor_angle > 0) {
+			int currRowSkip = row_motor_angle * rowskip, currPairSkip = row_motor_angle * pairskip;
+			motor_angle.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, Midentity2, true);
+		}
 	}
 
 

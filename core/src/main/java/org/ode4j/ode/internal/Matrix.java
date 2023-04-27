@@ -24,6 +24,8 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.FastLSolve.dxtSolveL1;
+import static org.ode4j.ode.internal.FastLTSolve.dxtSolveL1T;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memmove;
 
@@ -45,18 +47,12 @@ public class Matrix extends FastDot {
 
 	/**
 	 * TODO use length of array.
-	 * 
+	 *
 	 * @param a a
 	 * @param n n
 	 */
 	public static void dSetZero(double[] a, int n) {
-		// dAASSERT (a);
-		dAASSERT(n >= 0);
-		while (n > 0) {
-			// *(a++) = 0;
-			a[n - 1] = 0;
-			n--;
-		}
+		Arrays.fill(a, 0, n, 0);
 	}
 
 	public static void dSetZero(double[] a) {
@@ -64,19 +60,11 @@ public class Matrix extends FastDot {
 	}
 
 	public static void dSetValue(double[] a, int n, double value) {
-		// dAASSERT (a);
-		dAASSERT(n >= 0);
-		while (n > 0) {
-			// *(a++) = value;
-			a[n - 1] = value;
-			n--;
-		}
+		Arrays.fill(a, 0, n, value);
 	}
 
 	public static void dSetValue(double[] a, int pos, int len, double value) {
-    	for (int i = pos; i < len+pos; i++) {
-    		a[i] = value;
-    	}
+		Arrays.fill(a, pos, pos + len, value);
     }
 
 	/**
@@ -467,7 +455,7 @@ public class Matrix extends FastDot {
 	 * @param tmpbuf tmpBuf 
 	 * @return 'false' if it fails 
 	 */
-	public static boolean dFactorCholesky(double[] A, int n, double[] tmpbuf) {
+	public static boolean dxFactorCholesky(double[] A, int n, double[] tmpbuf) {
 	    //dAASSERT (n > 0 && A);
 	    boolean failure = false;
 	    final int nskip = dPAD (n);
@@ -503,47 +491,6 @@ public class Matrix extends FastDot {
 	        }
 	    }
 	    return !failure;//failure ? 0 : 1;
-
-	    //TODO remove, is from 0.11.1
-//	    int i, j, k, nskip;
-//		double sum;
-//		// double[] a,b,aa,bb;
-//		int aPos, bPos, aaPos, bbPos;
-//		// double[] cc;
-//		int ccPos = 0; // TZ
-//		double[] recip;
-//		dAASSERT(n > 0);
-//		// dAASSERT(A);
-//		nskip = dPAD(n);
-//		recip = new double[n]; // TZ (double*) ALLOCA (n * sizeof(double));
-//		// TZaa = A;
-//		aaPos = 0;
-//		for (i = 0; i < n; i++) {
-//			bbPos = 0;// bb = A;
-//			ccPos = i * nskip;// cc = A + i*nskip;
-//			for (j = 0; j < i; j++) {
-//				sum = A[ccPos]; // TZsum = *cc;
-//				aPos = aaPos;// a = aa;
-//				bPos = bbPos;// b = bb;
-//				// for (k=j; k > 0; k--) sum -= (*(a++))*(*(b++));
-//				for (k = j; k > 0; k--)
-//					sum -= (A[aPos++]) * (A[bPos++]);
-//				A[ccPos] = sum * recip[j];// *cc = sum * recip[j];
-//				bbPos += nskip;// bb += nskip;
-//				ccPos++;// cc++;
-//			}
-//			sum = A[ccPos];// sum = *cc;
-//			aPos = aaPos;// a = aa;
-//			// for (k=i; k > 0; k--, a++) sum -= (*a)*(*a);
-//			for (k = i; k > 0; k--, aPos++)
-//				sum -= A[aPos] * A[aPos];
-//			if (sum <= 0.0)
-//				return false;
-//			A[ccPos] = dSqrt(sum);// *cc = COM.dSqrt(sum);
-//			recip[i] = dRecip(A[ccPos]);// recip[i] = COM.dRecip (*cc);
-//			aaPos += nskip;// aa += nskip;
-//		}
-//		return true;
 	}
 
 	/**
@@ -556,49 +503,6 @@ public class Matrix extends FastDot {
 	 */
 	public static boolean dFactorCholesky (DMatrix3 A)
 	{
-	    //port from 0.12
-//        //dAASSERT (n > 0 && A);
-//        double recip0;
-//        double recip1;
-//        double sum, sumsqrt;
-//
-//        //round 1
-//        sum = A.get00();//[cc];//dReal sum = *cc;
-//        if (sum <= 0.0) {
-//            return false;
-//        }
-//        sumsqrt = dSqrt(sum);
-//        A.set00( sumsqrt );
-//        recip0 = dRecip (sumsqrt);
-//
-//        //round 2
-//        sum = A.get11() - A.get10()*A.get10();//[a]*A[a];//(*a)*(*a);
-//        if (sum <= 0.0) {
-//            return false;
-//        }
-//        sumsqrt = dSqrt(sum);
-//        A.set11( sumsqrt );
-//        recip1 = dRecip (sumsqrt);
-//
-//        //round 3
-//        sum = A.get20();//dReal sum = *cc;
-//        A.set20( sum*recip0 );//*cc = sum * recip[j];
-//
-//        sum = A.get21() - A.get20()*A.get10();//[a]*A[b];//(*a)*(*b);
-//        A.set21( sum*recip1 );//*cc = sum * recip[j];
-//
-//        sum = A.get22() - A.get20()*A.get20() - A.get21()*A.get21();
-//        if (sum <= 0.0) {
-//            return false;
-//        }
-//        sumsqrt = dSqrt(sum);
-//        A.set22( sumsqrt );
-//        return true;
-
-	    
-	    
-	    
-	    
 	    double sum, recip0, recip1;
 		//********************
 		//i=0; aaPos = 0; bbPos = 0; ccPos = 0
@@ -633,7 +537,7 @@ public class Matrix extends FastDot {
 	 * @param n n
 	 * @param tmpbuf buffer 
 	 */
-	public static void dSolveCholesky(final double[] L, double[] b, int n, double[] tmpbuf) {
+	public static void dxSolveCholesky(final double[] L, double[] b, int n, double[] tmpbuf) {
 		int nskip = dPAD(n);
 		double[] y = (tmpbuf != null?tmpbuf : new double[n]);
 		dAASSERT(n > 0);
@@ -646,7 +550,8 @@ public class Matrix extends FastDot {
 			y[i] = (b[i] - sum) / L[ll + i];
 		}
 	    ll = (n - 1) * (nskip + 1);
-	    for (int i=n-1; i>=0; ll-=nskip+1, --i) {
+	    for (int i=n; i>0; ll-=nskip+1) {
+	    	--i;
 	        double sum = 0.0;
 	        int l = ll + nskip;
 	        for (int k=i+1; k<n; l+=nskip, ++k) {
@@ -744,7 +649,7 @@ public class Matrix extends FastDot {
 	 * @param tmpbuf buf 
 	 * @return 'false' on failure
 	 */
-	public static boolean dInvertPDMatrix(final double[] A, double[] Ainv, int n, double[] tmpbuf) {
+	public static boolean dxInvertPDMatrix(final double[] A, double[] Ainv, int n, double[] tmpbuf) {
 		int nskip;
 		double[] L, X;
 		dAASSERT(n > 0);
@@ -755,7 +660,7 @@ public class Matrix extends FastDot {
 		//memcpy(L, A, nskip * n);// *sizeof(double));
 		System.arraycopy(A, 0, L, 0, nskip * n);
 		X = new double[n]; // TZ (double*) ALLOCA (n*sizeof(double));
-		if (!dFactorCholesky(L, n, tmpbuf))
+		if (!dxFactorCholesky(L, n, tmpbuf))
 			return false;
 		dSetZero(Ainv, n * nskip); // make sure all padding elements set to 0
 		int aa = 0;
@@ -763,7 +668,7 @@ public class Matrix extends FastDot {
 			for (int j = 0; j < n; j++)
 				X[j] = 0;
 			X[xi] = 1;
-			dSolveCholesky(L, X, n, tmpbuf);
+			dxSolveCholesky(L, X, n, tmpbuf);
 			int a = aa;
 			for (int x = 0; x < n; a += nskip, x++)
 				Ainv[a] = X[x];
@@ -790,7 +695,7 @@ public class Matrix extends FastDot {
 										// sizeof(double));
 		//memcpy(Acopy, A, nskip * n);// * sizeof(double));
 		System.arraycopy(A, 0, Acopy, 0, nskip * n);
-		return dFactorCholesky(Acopy, n, tmpbuf);// != false;
+		return dxFactorCholesky(Acopy, n, tmpbuf);// != false;
 	}
     public static boolean dIsPositiveDefinite(final double[] A, int n) {
         return dIsPositiveDefinite(A, n, null);
@@ -817,10 +722,7 @@ public class Matrix extends FastDot {
 
 	/** in matlab syntax: a(1:n) = a(1:n) .* d(1:n) */
 	private static void dVectorScale(double[] a, final double[] d, int n) {
-		// dAASSERT (a != null, d != null, n >= 0);
-		for (int i = 0; i < n; i++) {
-			a[i] *= d[i];
-		}
+		dxtVectorScale (a, 0, d, 0, n, 1, 1);
 	}
 
 	/**
@@ -836,11 +738,9 @@ public class Matrix extends FastDot {
 	 */
 	public static void dSolveLDLT(final double[] L, final double[] d,
 			double[] b, int n, int nskip) {
-		// dAASSERT (L, d, b);
-		dAASSERT(n > 0 && nskip >= n);
-		dSolveL1(L, b, n, nskip);
-		dVectorScale(b, d, n);
-		dSolveL1T(L, b, n, nskip);
+		dIASSERT(n != 0);
+
+		dxtSolveLDLT(L, d, 0, b, 0, n, nskip, 1, 1);
 	}
 
 	/**
@@ -1008,7 +908,7 @@ public class Matrix extends FastDot {
 	public static void dLDLTRemove(double[] A, final int[] p, double[] L,
 			double[] d, int n1, int n2, int r, int nskip, BlockPointer tmpbuf) {
 		// dAASSERT(A, p, L, d);
-		dAASSERT(n1 > 0 && n2 > 0 && r >= 0 && r < n2 && n1 >= n2
+		dAASSERT(n1 > 0 && n2 > 0 /*&& r >= 0*/ && r < n2 && n1 >= n2
 				&& nskip >= n1);
 		if (!dNODEBUG) {// #ifndef dNODEBUG
 			for (int i = 0; i < n2; i++)
@@ -1019,7 +919,7 @@ public class Matrix extends FastDot {
 			return; // deleting last row/col is easy
 		} else {
 		DxWorldProcessMemArena.dummyStatic();
-//		    int LDLTAddTL_size = _dEstimateLDLTAddTLTmpbufSize(nskip);
+//		    int LDLTAddTL_size = dxEstimateLDLTAddTLTmpbufSize(nskip);
 //		    dIASSERT(LDLTAddTL_size % 8 /*sizeof(dReal)*/ == 0);
 //		    double[] tmp = tmpbuf!=null ? tmpbuf : new double[LDLTAddTL_size + n2];
 		    if (r == 0) {
@@ -1050,7 +950,7 @@ public class Matrix extends FastDot {
 		            }
 		        }
 		        a[0] += (1.0);
-		        dLDLTAddTL (L,r*nskip+r, d,r, a, n2-r, nskip, null);
+				dLDLTAddTL(L, (nskip + 1) * r, d, r, a, n2 - r, nskip, null);
 		    }
 		}
 //		        double[] a = new double[n2 - r]; // TZ (double*) ALLOCA ((n2-r) * sizeof(double));
@@ -1095,8 +995,9 @@ public class Matrix extends FastDot {
 		    }
 		    {
 		        final int cpy_size = r;//*sizeof(dReal);
-		        int Adst = r*nskip;//dReal *Adst = A + r * nskip;
-		        for (int i=r; i<(n-1); ++i) {
+				int Adst = nskip * r;//dReal *Adst = A + r * nskip;
+				int n1 = n - 1;
+				for (int i = r; i < n1; ++i) {
 		            int Asrc = Adst + nskip;//dReal *Asrc = Adst + nskip;
 		            memcpy (A,Adst,A,Asrc,cpy_size);
 		            Adst = Asrc;
@@ -1105,572 +1006,132 @@ public class Matrix extends FastDot {
 		}
 		{
 		    final int cpy_size = (n-r-1);//*sizeof(dReal);
-		    int Adst = r * (nskip+1);//dReal *Adst = A + r * (nskip + 1);
-		    for (int i=r; i<(n-1); ++i) {
+			int Adst = (nskip + 1) * r;//dReal *Adst = A + r * (nskip + 1);
+			int n1 = n - 1;
+			for (int i = r; i < n1; ++i) {
 		        int Asrc = Adst + (nskip + 1);//dReal *Asrc = Adst + (nskip + 1);
 		        memcpy (A,Adst,A,Asrc,cpy_size);
 		        Adst = Asrc - 1;
 		    }
 		}
-		//TODO remove, is from 0.11.1
-//		if (r > 0) {
-//		    for (i = 0; i < r; i++)
-//		        memmove(A, i * nskip + r, A, i * nskip + r + 1, (n - r - 1));// *sizeof(double));
-//		    for (i = r; i < (n - 1); i++)
-//		        memcpy(A, i * nskip, A, i * nskip + nskip, r);// *sizeof(double));
-//		}
-//		for (i = r; i < (n - 1); i++)
-//		    memcpy(A, i * nskip + r, A, i * nskip + nskip + r + 1, (n - r - 1));// *sizeof(double));
 	}
 
-	/**
-	 * solve L*x=b, where L is n*n lower triangular with ones on the diagonal,
-	 * and x,b are n*1. b is overwritten with x. the leading dimension of L is
-	 * `nskip'.
-	 * <p>
-	 * solve L*X=B, with B containing 1 right hand sides. L is an n*n lower
-	 * triangular matrix with ones on the diagonal. L is stored by rows and its
-	 * leading dimension is lskip. B is an n*1 matrix that contains the right
-	 * hand sides. B is stored by columns and its leading dimension is also
-	 * lskip. B is overwritten with X. this processes blocks of 4*4. if this is
-	 * in the factorizer source file, n must be a multiple of 4.
-	 */
-	static void dSolveL1(final double[] L, double[] B, int n, int lskip1) {
-		/* declare variables - Z matrix, p and q vectors, etc */
-		double Z11, Z21, Z31, Z41, p1, q1, p2, p3, p4;// ,ex[];
-		int exP;
-		// final double[] ell;
-		int ellP;
-		int lskip2, lskip3, i, j;
-		/* compute lskip values */
-		lskip2 = 2 * lskip1;
-		lskip3 = 3 * lskip1;
-		/* compute all 4 x 1 blocks of X */
-		for (i = 0; i <= n - 4; i += 4) {
-			/* compute all 4 x 1 block of X, from rows i..i+4-1 */
-			/* set the Z matrix to 0 */
-			Z11 = 0;
-			Z21 = 0;
-			Z31 = 0;
-			Z41 = 0;
-			ellP = i * lskip1; // +L;
-			exP = 0;// = B;
-			/* the inner loop that computes outer products and adds them to Z */
-			for (j = i - 12; j >= 0; j -= 12) {
-				for (int k = 0; k < 12; k++) {
-					/* load p and q values */
-					p1 = L[ellP + k];// ell[0];
-					q1 = B[exP + k];
-					p2 = L[ellP + k + lskip1];// ell[lskip1];
-					p3 = L[ellP + k + lskip2];// ell[lskip2];
-					p4 = L[ellP + k + lskip3];// ell[lskip3];
-					/* compute outer product and add it to the Z matrix */
-					Z11 += p1 * q1;
-					Z21 += p2 * q1;
-					Z31 += p3 * q1;
-					Z41 += p4 * q1;
-				}
-				// /* load p and q values */
-				// p1=L[ellP];//ell[0];
-				// q1=ex[0];
-				// p2=L[ellP+lskip1];//ell[lskip1];
-				// p3=L[ellP+lskip2];//ell[lskip2];
-				// p4=L[ellP+lskip3];//ell[lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP+1];//ell[1];
-				// q1=ex[1];
-				// p2=L[ellP+1+lskip1];//ell[1+lskip1];
-				// p3=L[ellP+1+lskip2];//ell[1+lskip2];
-				// p4=L[ellP+1+lskip3];//ell[1+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP+2];//ell[2];
-				// q1=ex[2];
-				// p2=L[ellP+2+lskip1];//ell[2+lskip1];
-				// p3=L[ellP+2+lskip2];//ell[2+lskip2];
-				// p4=L[ellP+2+lskip3];//ell[2+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP+3];//ell[3];
-				// q1=ex[3];
-				// p2=L[ellP+3+lskip1];//ell[3+lskip1];
-				// p3=L[ellP+3+lskip2];//ell[3+lskip2];
-				// p4=L[ellP+3+lskip3];//ell[3+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP+4;//ell[4];
-				// q1=ex[4];
-				// p2=L[ellP+4+lskip1];//ell[4+lskip1];
-				// p3=L[ellP+4+lskip2];//ell[4+lskip2];
-				// p4=L[ellP+4+lskip3];//ell[4+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP+5];//ell[5];
-				// q1=ex[5];
-				// p2=L[ellP+5+lskip1];//ell[5+lskip1];
-				// p3=L[ellP+5+lskip2];//ell[5+lskip2];
-				// p4=L[ellP+5+lskip3];//ell[5+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP+6];//ell[6];
-				// q1=ex[6];
-				// p2=L[ellP+6+lskip1];//ell[6+lskip1];
-				// p3=L[ellP+6+lskip2];//ell[6+lskip2];
-				// p4=L[ellP+6+lskip3];//ell[6+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP+7];//ell[7];
-				// q1=ex[7];
-				// p2=L[ellP+7+lskip1];//ell[7+lskip1];
-				// p3=L[ellP+7+lskip2];//ell[7+lskip2];
-				// p4=L[ellP+7+lskip3];//ell[7+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP+8];//ell[8];
-				// q1=ex[8];
-				// p2=L[ellP+8+lskip1];//ell[8+lskip1];
-				// p3=L[ellP+8+lskip2];//ell[8+lskip2];
-				// p4=L[ellP+8+lskip3];//ell[8+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[9];
-				// q1=ex[9];
-				// p2=L[ellP;//ell[9+lskip1];
-				// p3=L[ellP;//ell[9+lskip2];
-				// p4=L[ellP;//ell[9+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[10];
-				// q1=ex[10];
-				// p2=L[ellP;//ell[10+lskip1];
-				// p3=L[ellP;//ell[10+lskip2];
-				// p4=L[ellP;//ell[10+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[11];
-				// q1=ex[11];
-				// p2=L[ellP;//ell[11+lskip1];
-				// p3=L[ellP;//ell[11+lskip2];
-				// p4=L[ellP;//ell[11+lskip3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// Z21 += p2 * q1;
-				// Z31 += p3 * q1;
-				// Z41 += p4 * q1;
-				/* advance pointers */
-				ellP += 12;
-				exP += 12;
-				/* end of inner loop */
-			}
-			/* compute left-over iterations */
-			j += 12;
-			for (; j > 0; j--) {
-				/* load p and q values */
-				p1 = L[ellP];// ell[0];
-				q1 = B[exP];// ex[0];
-				p2 = L[ellP + lskip1];// ell[lskip1];
-				p3 = L[ellP + lskip2];// ell[lskip2];
-				p4 = L[ellP + lskip3];// ell[lskip3];
-				/* compute outer product and add it to the Z matrix */
-				Z11 += p1 * q1;
-				Z21 += p2 * q1;
-				Z31 += p3 * q1;
-				Z41 += p4 * q1;
-				/* advance pointers */
-				ellP += 1;
-				exP += 1;
-			}
-			/* finish computing the X(i) block */
-			Z11 = B[exP] - Z11;// ex[0] - Z11;
-			B[exP] = Z11;// ex[0] = Z11;
-			p1 = L[ellP + lskip1];// ell[lskip1];
-			Z21 = B[exP + 1] - Z21 - p1 * Z11;// ex[1] - Z21 - p1*Z11;
-			B[exP + 1] = Z21;// ex[1] = Z21;
-			p1 = L[ellP + lskip2];// ell[lskip2];
-			p2 = L[ellP + 1 + lskip2];// ell[1+lskip2];
-			// Z31 = ex[2] - Z31 - p1*Z11 - p2*Z21;
-			Z31 = B[exP + 2] - Z31 - p1 * Z11 - p2 * Z21;
-			B[exP + 2] = Z31;// ex[2] = Z31;
-			p1 = L[ellP + lskip3];// ell[lskip3];
-			p2 = L[ellP + 1 + lskip3];// ell[1+lskip3];
-			p3 = L[ellP + 2 + lskip3];// ell[2+lskip3];
-			// Z41 = ex[3] - Z41 - p1*Z11 - p2*Z21 - p3*Z31;
-			Z41 = B[exP + 3] - Z41 - p1 * Z11 - p2 * Z21 - p3 * Z31;
-			B[exP + 3] = Z41;// ex[3] = Z41;
-			/* end of outer loop */
+//	template <unsigned a_stride, typename element_type>
+//	ODE_INLINE
+	public static void dxtSetZero (double[] aA, int aP, int n, int a_stride)
+	{
+		int aend = aP + n * a_stride;
+		for (int acurr = aP; acurr != aend; acurr += a_stride) {
+        	aA[acurr] = 0;
 		}
-		/* compute rows at end that are not a multiple of block size */
-		for (; i < n; i++) {
-			/* compute all 1 x 1 block of X, from rows i..i+1-1 */
-			/* set the Z matrix to 0 */
-			Z11 = 0;
-			ellP = i * lskip1;// +L;
-			exP = 0;// B;
-			/* the inner loop that computes outer products and adds them to Z */
-			for (j = i - 12; j >= 0; j -= 12) {
-				for (int k = 0; k < 12; k++) {
-					/* load p and q values */
-					p1 = L[ellP + k];// ell[0];
-					q1 = B[exP + k];
-					/* compute outer product and add it to the Z matrix */
-					Z11 += p1 * q1;
-				}
-				// /* load p and q values */
-				// p1=L[ellP;//ell[0];
-				// q1=ex[0];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[1];
-				// q1=ex[1];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[2];
-				// q1=ex[2];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[3];
-				// q1=ex[3];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[4];
-				// q1=ex[4];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[5];
-				// q1=ex[5];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[6];
-				// q1=ex[6];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[7];
-				// q1=ex[7];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[8];
-				// q1=ex[8];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[9];
-				// q1=ex[9];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[10];
-				// q1=ex[10];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				// /* load p and q values */
-				// p1=L[ellP;//ell[11];
-				// q1=ex[11];
-				// /* compute outer product and add it to the Z matrix */
-				// Z11 += p1 * q1;
-				/* advance pointers */
-				ellP += 12;
-				exP += 12;
-				/* end of inner loop */
-			}
-			/* compute left-over iterations */
-			j += 12;
-			for (; j > 0; j--) {
-				/* load p and q values */
-				p1 = L[ellP];// ell[0];
-				q1 = B[exP];// ex[0];
-				/* compute outer product and add it to the Z matrix */
-				Z11 += p1 * q1;
-				/* advance pointers */
-				ellP += 1;
-				exP += 1;
-			}
-			/* finish computing the X(i) block */
-			Z11 = B[exP] - Z11;// ex[0] - Z11;
-			B[exP] = Z11;// ex[0] = Z11;
+	}
+	//	/*extern */
+	public static void dxSetZero (double[] a, int n)
+	{
+		dSetZero (a, n);
+	}
+
+	public static void dxSetZero (double[] a, int aPos, int n)
+	{
+		Arrays.fill(a, aPos, n + aPos, 0);
+	}
+
+
+//	/*extern */
+//	void dSetZero (double[] a, int n)
+//	{
+//		dxSetZero (a, n);
+//	}
+//
+//	/*extern */
+//	void dSetValue (dReal *a, int n, dReal value)
+//	{
+//		dxSetValue (a, n, value);
+//	}
+//
+//// dReal dDot (const dReal *a, const dReal *b, int n);
+//
+//	/*extern */
+//	void dMultiply0 (dReal *A, const dReal *B, const dReal *C, int p,int q,int r)
+//	{
+//		dxMultiply0 (A, B, C, p, q, r);
+//	}
+//
+//	/*extern */
+//	void dMultiply1 (dReal *A, const dReal *B, const dReal *C, int p,int q,int r)
+//	{
+//		dxMultiply1 (A, B, C, p, q, r);
+//	}
+//
+//	/*extern */
+//	void dMultiply2 (dReal *A, const dReal *B, const dReal *C, int p,int q,int r)
+//	{
+//		dxMultiply2 (A, B, C, p, q, r);
+//	}
+
+	/*extern */
+	public static boolean dFactorCholesky (double[] A, int n)
+	{
+		return dxFactorCholesky (A, n, null);
+	}
+
+	/*extern */
+	public static void dSolveCholesky (final double[] L, double[] b, int n)
+	{
+		dxSolveCholesky (L, b, n, null);
+	}
+
+	/*extern */
+	public static boolean dInvertPDMatrix (final double[] A, double[] Ainv, int n)
+	{
+		return dxInvertPDMatrix (A, Ainv, n, null);
+	}
+
+	/*extern */
+	//	public static int dIsPositiveDefinite (final double[] A, int n)
+	//	{
+	//		return dxIsPositiveDefinite (A, n, null);
+	//	}
+
+
+
+	static void dxSolveL1(final double[] L, double[] b, int n, int lskip1)
+	{
+		dIASSERT(n != 0);
+
+		dxtSolveL1(L, b, 0, n, lskip1, 1);
+	}
+
+	public static void dSolveL1(final double[] L, double[] B, int n, int lskip1)
+	{
+		dAASSERT(n != 0);
+
+		if (n != 0)
+		{
+			dAASSERT(L != null);
+			dAASSERT(B != null);
+
+			dxSolveL1(L, B, n, lskip1);
 		}
 	}
 
-	/**
-	 * solve L'*x=b, where L is n*n lower triangular with ones on the diagonal,
-	 * and x,b are n*1. b is overwritten with x. the leading dimension of L is
-	 * `nskip'.
-	 * <p>
-	 * solve L^T * x=b, with b containing 1 right hand side. L is an n*n lower
-	 * triangular matrix with ones on the diagonal. L is stored by rows and its
-	 * leading dimension is lskip. b is an n*1 matrix that contains the right
-	 * hand side. b is overwritten with x. this processes blocks of 4.
-	 */
-	static void dSolveL1T(final double[] L, double[] B, int n, int lskip1) {
-		/* declare variables - Z matrix, p and q vectors, etc */
-		double Z11, m11, Z21, m21, Z31, m31, Z41, m41, p1, q1, p2, p3, p4;
-		// ,ex[];
-		int exP;
-		// final double[] ell;
-		int ellP;
-		int lskip2, i, j;//lskip3, i, j;
-		/* special handling for L and B because we're solving L1 *transpose* */
-		// L = L + (n-1)*(lskip1+1);
-		// B = B + n-1;
-		// TZ:
-		int Lp = (n - 1) * (lskip1 + 1);
-		int Bp = n - 1;
-
-		lskip1 = -lskip1;
-		/* compute lskip values */
-		lskip2 = 2 * lskip1;
-		//lskip3 = 3 * lskip1;
-		/* compute all 4 x 1 blocks of X */
-		for (i = 0; i <= n - 4; i += 4) {
-			/* compute all 4 x 1 block of X, from rows i..i+4-1 */
-			/* set the Z matrix to 0 */
-			Z11 = 0;
-			Z21 = 0;
-			Z31 = 0;
-			Z41 = 0;
-			ellP = Lp - i;
-			exP = Bp;
-			/* the inner loop that computes outer products and adds them to Z */
-			for (j = i - 4; j >= 0; j -= 4) {
-				for (int ij = 0; ij < 4; ij++) {
-					/* load p and q values */
-					p1 = L[ellP];// ell[0];
-					q1 = B[exP - ij];// ex[0];
-					p2 = L[ellP - 1];// ell[-1];
-					p3 = L[ellP - 2];// ell[-2];
-					p4 = L[ellP - 3];// ell[-3];
-					/* compute outer product and add it to the Z matrix */
-					m11 = p1 * q1;
-					m21 = p2 * q1;
-					m31 = p3 * q1;
-					m41 = p4 * q1;
-					ellP += lskip1;
-					Z11 += m11;
-					Z21 += m21;
-					Z31 += m31;
-					Z41 += m41;
-				}
-				// /* load p and q values */
-				// p1=L[ellP];//ell[0];
-				// q1=B[exP];//ex[0];
-				// p2=L[ellP-1];//ell[-1];
-				// p3=L[ellP-2];//ell[-2];
-				// p4=L[ellP-3];//ell[-3];
-				// /* compute outer product and add it to the Z matrix */
-				// m11 = p1 * q1;
-				// m21 = p2 * q1;
-				// m31 = p3 * q1;
-				// m41 = p4 * q1;
-				// ellP += lskip1;
-				// Z11 += m11;
-				// Z21 += m21;
-				// Z31 += m31;
-				// Z41 += m41;
-				// /* load p and q values */
-				// p1=L[ellP];//ell[0];
-				// q1=B[exP-1];//ex[-1];
-				// p2=L[ellP-1];//ell[-1];
-				// p3=L[ellP-2];//ell[-2];
-				// p4=L[ellP-3];//ell[-3];
-				// /* compute outer product and add it to the Z matrix */
-				// m11 = p1 * q1;
-				// m21 = p2 * q1;
-				// m31 = p3 * q1;
-				// m41 = p4 * q1;
-				// ell += lskip1;
-				// Z11 += m11;
-				// Z21 += m21;
-				// Z31 += m31;
-				// Z41 += m41;
-				// /* load p and q values */
-				// p1=ell[0];
-				// q1=ex[-2];
-				// p2=ell[-1];
-				// p3=ell[-2];
-				// p4=ell[-3];
-				// /* compute outer product and add it to the Z matrix */
-				// m11 = p1 * q1;
-				// m21 = p2 * q1;
-				// m31 = p3 * q1;
-				// m41 = p4 * q1;
-				// ell += lskip1;
-				// Z11 += m11;
-				// Z21 += m21;
-				// Z31 += m31;
-				// Z41 += m41;
-				// /* load p and q values */
-				// p1=ell[0];
-				// q1=ex[-3];
-				// p2=ell[-1];
-				// p3=ell[-2];
-				// p4=ell[-3];
-				// /* compute outer product and add it to the Z matrix */
-				// m11 = p1 * q1;
-				// m21 = p2 * q1;
-				// m31 = p3 * q1;
-				// m41 = p4 * q1;
-				// ell += lskip1;
-				// Z11 += m11;
-				// Z21 += m21;
-				// Z31 += m31;
-				// Z41 += m41;
-				exP -= 4;
-				/* end of inner loop */
-			}
-			/* compute left-over iterations */
-			j += 4;
-			for (; j > 0; j--) {
-				/* load p and q values */
-				p1 = L[ellP];// ell[0];
-				q1 = B[exP];// ex[0];
-				p2 = L[ellP - 1];// ell[-1];
-				p3 = L[ellP - 2];// ell[-2];
-				p4 = L[ellP - 3];// ell[-3];
-				/* compute outer product and add it to the Z matrix */
-				m11 = p1 * q1;
-				m21 = p2 * q1;
-				m31 = p3 * q1;
-				m41 = p4 * q1;
-				ellP += lskip1;
-				exP -= 1;
-				Z11 += m11;
-				Z21 += m21;
-				Z31 += m31;
-				Z41 += m41;
-			}
-			/* finish computing the X(i) block */
-			Z11 = B[exP] - Z11;// ex[0] - Z11;
-			B[exP] = Z11;// ex[0] = Z11;
-			p1 = L[ellP - 1];// ell[-1];
-			Z21 = B[exP - 1] - Z21 - p1 * Z11;// ex[-1] - Z21 - p1*Z11;
-			B[exP - 1] = Z21;// ex[-1] = Z21;
-			p1 = L[ellP - 2];// ell[-2];
-			p2 = L[ellP - 2 + lskip1];// ell[-2+lskip1];
-			Z31 = B[exP - 2] - Z31 - p1 * Z11 - p2 * Z21;// ex[-2] - Z31 -
-															// p1*Z11 - p2*Z21;
-			B[exP - 2] = Z31;// ex[-2] = Z31;
-			p1 = L[ellP - 3];// ell[-3];
-			p2 = L[ellP - 3 + lskip1];// ell[-3+lskip1];
-			p3 = L[ellP - 3 + lskip2];// ell[-3+lskip2];
-			Z41 = B[exP - 3] - Z41 - p1 * Z11 - p2 * Z21 - p3 * Z31;// ex[-3] -
-																	// Z41 -
-																	// p1*Z11 -
-																	// p2*Z21 -
-																	// p3*Z31;
-			B[exP - 3] = Z41;// ex[-3] = Z41;
-			/* end of outer loop */
-		}
-		/* compute rows at end that are not a multiple of block size */
-		for (; i < n; i++) {
-			/* compute all 1 x 1 block of X, from rows i..i+1-1 */
-			/* set the Z matrix to 0 */
-			Z11 = 0;
-			ellP = Lp - i;// ell = L - i;
-			exP = Bp;// ex = B;
-			/* the inner loop that computes outer products and adds them to Z */
-			for (j = i - 4; j >= 0; j -= 4) {
-				/* load p and q values */
-				p1 = L[ellP];// ell[0];
-				q1 = B[exP];// ex[0];
-				/* compute outer product and add it to the Z matrix */
-				m11 = p1 * q1;
-				ellP += lskip1;
-				Z11 += m11;
-				/* load p and q values */
-				p1 = L[ellP];// ell[0];
-				q1 = B[exP - 1];// ex[-1];
-				/* compute outer product and add it to the Z matrix */
-				m11 = p1 * q1;
-				ellP += lskip1;
-				Z11 += m11;
-				/* load p and q values */
-				p1 = L[ellP];// ell[0];
-				q1 = B[exP - 2];// ex[-2];
-				/* compute outer product and add it to the Z matrix */
-				m11 = p1 * q1;
-				ellP += lskip1;
-				Z11 += m11;
-				/* load p and q values */
-				p1 = L[ellP];// ell[0];
-				q1 = B[exP - 3];// ex[-3];
-				/* compute outer product and add it to the Z matrix */
-				m11 = p1 * q1;
-				ellP += lskip1;
-				exP -= 4;
-				Z11 += m11;
-				/* end of inner loop */
-			}
-			/* compute left-over iterations */
-			j += 4;
-			for (; j > 0; j--) {
-				/* load p and q values */
-				p1 = L[ellP];// ell[0];
-				q1 = B[exP];// ex[0];
-				/* compute outer product and add it to the Z matrix */
-				m11 = p1 * q1;
-				ellP += lskip1;
-				exP -= 1;
-				Z11 += m11;
-			}
-			/* finish computing the X(i) block */
-			Z11 = B[exP] - Z11;// ex[0] - Z11;
-			B[exP] = Z11;// ex[0] = Z11;
-		}
+	static void dxSolveL1T(final double[] L, double[] b, int n, int lskip1)
+	{
+		dxtSolveL1T(L, b, 0, n, lskip1, 1);
 	}
 
-	private static final FastLDLT D_LDLT = new FastLDLT();
+	public static void dSolveL1T (final double[] L, double[] B, int n, int lskip1)
+	{
+		dAASSERT(n != 0);
+
+		if (n != 0)
+		{
+			dAASSERT(L != null);
+			dAASSERT(B != null);
+
+			dxSolveL1T(L, B, n, lskip1);
+		}
+	}
 
 	/**
 	 * factorize a matrix A into L*D*L', where L is lower triangular with ones
@@ -1684,20 +1145,20 @@ public class Matrix extends FastDot {
 	 * @param nskip1 nskip 
 	 */
 	public static void dFactorLDLT(double[] A, double[] d, int n, int nskip1) {
-		D_LDLT.dFactorLDLT(A, d, n, nskip1);
+		FastLDLT.dxtFactorLDLT(A, d, n, nskip1, 1);
 	}
 	
-	private static final int _dEstimateFactorCholeskyTmpbufSize(int n)
+	private static int _dEstimateFactorCholeskyTmpbufSize(int n)
 	{
 	  return dPAD(n) * 8;//sizeof(dReal);
 	}
 
-	private static final int _dEstimateSolveCholeskyTmpbufSize(int n)
+	private static int _dEstimateSolveCholeskyTmpbufSize(int n)
 	{
 	  return dPAD(n) * 8;//sizeof(dReal);
 	}
 
-	private static final int _dEstimateInvertPDMatrixTmpbufSize(int n)
+	private static int _dEstimateInvertPDMatrixTmpbufSize(int n)
 	{
 	  int FactorCholesky_size = _dEstimateFactorCholeskyTmpbufSize(n);
 	  int SolveCholesky_size = _dEstimateSolveCholeskyTmpbufSize(n);
@@ -1705,26 +1166,101 @@ public class Matrix extends FastDot {
 	  return dPAD(n) * (n + 1) * 8 /* sizeof(dReal) */ + MaxCholesky_size;
 	}
 
-	private static final int _dEstimateIsPositiveDefiniteTmpbufSize(int n)
+	private static int _dEstimateIsPositiveDefiniteTmpbufSize(int n)
 	{
 	  return dPAD(n) * n * 8 /* sizeof(dReal) */ + _dEstimateFactorCholeskyTmpbufSize(n);
 	}
 
-	private static final int _dEstimateLDLTAddTLTmpbufSize(int nskip)
+	private static int _dEstimateLDLTAddTLTmpbufSize(int nskip)
 	{
 	  return nskip * 2 * 8 /* sizeof(dReal) */;
 	}
 
-	private static final int _dEstimateLDLTRemoveTmpbufSize(int n2, int nskip)
+	private static int _dEstimateLDLTRemoveTmpbufSize(int n2, int nskip)
 	{
 	  return n2 * 8 /* sizeof(dReal) */ + _dEstimateLDLTAddTLTmpbufSize(nskip);
 	}
 
-	public static final int dEstimateFactorCholeskyTmpbufSize(int n) { return _dEstimateFactorCholeskyTmpbufSize(n); }
-	public static final int dEstimateSolveCholeskyTmpbufSize(int n) { return _dEstimateSolveCholeskyTmpbufSize(n); }
-	public static final int dEstimateInvertPDMatrixTmpbufSize(int n) { return _dEstimateInvertPDMatrixTmpbufSize(n); }
-	public static final int dEstimateIsPositiveDefiniteTmpbufSize(int n) { return _dEstimateIsPositiveDefiniteTmpbufSize(n); }
-	public static final int dEstimateLDLTAddTLTmpbufSize(int nskip) { return _dEstimateLDLTAddTLTmpbufSize(nskip); }
-	public static final int dEstimateLDLTRemoveTmpbufSize(int n2, int nskip) { return _dEstimateLDLTRemoveTmpbufSize(n2, nskip); }
+	public static int dEstimateFactorCholeskyTmpbufSize(int n) { return _dEstimateFactorCholeskyTmpbufSize(n); }
+	public static int dEstimateSolveCholeskyTmpbufSize(int n) { return _dEstimateSolveCholeskyTmpbufSize(n); }
+	public static int dEstimateInvertPDMatrixTmpbufSize(int n) { return _dEstimateInvertPDMatrixTmpbufSize(n); }
+	public static int dEstimateIsPositiveDefiniteTmpbufSize(int n) { return _dEstimateIsPositiveDefiniteTmpbufSize(n); }
+	public static int dEstimateLDLTAddTLTmpbufSize(int nskip) { return _dEstimateLDLTAddTLTmpbufSize(nskip); }
+	public static int dEstimateLDLTRemoveTmpbufSize(int n2, int nskip) { return _dEstimateLDLTRemoveTmpbufSize(n2, nskip); }
 
+
+	// matrix_impl.h
+
+	//	template<unsigned int a_stride, unsigned int d_stride>
+	//	void dxtVectorScale (dReal *aStart, const dReal *dStart, unsigned elementCount)
+	public static void dxtVectorScale(double[] A, final int aStart, final double[] D, int dStart, int elementCount, int a_stride, int d_stride) {
+		dAASSERT(aStart >= 0 && dStart >= 0 && elementCount >= 0);
+
+		final int step = 4;
+		//		dReal *ptrA = aStart;
+		//    const dReal *ptrD = dStart;
+		//    const dReal *const dStepsEnd = dStart + (size_t)(elementCount & ~(step - 1)) * d_stride;
+		int ptrA = aStart;
+		int ptrD = dStart;
+		final int dStepsEnd = dStart + (elementCount & ~(step - 1)) * d_stride;
+
+		for (; ptrD != dStepsEnd; ptrA += step * a_stride, ptrD += step * d_stride) {
+			double a0 = A[ptrA + 0], a1 = A[ptrA + 1 * a_stride], a2 = A[ptrA + 2 * a_stride], a3 = A[ptrA + 3 * a_stride];
+			double d0 = D[ptrD + 0], d1 = D[ptrD + 1 * d_stride], d2 = D[ptrD + 2 * d_stride], d3 = D[ptrD + 3 * d_stride];
+			a0 *= d0;
+			a1 *= d1;
+			a2 *= d2;
+			a3 *= d3;
+			A[ptrA + 0] = a0;
+			A[ptrA + 1 * a_stride] = a1;
+			A[ptrA + 2 * a_stride] = a2;
+			A[ptrA + 3 * a_stride] = a3;
+			//dSASSERT(step == 4);
+		}
+
+		switch (elementCount & (step - 1)) {
+			case 3: {
+				double a2 = A[ptrA + 2 * a_stride];
+				double d2 = D[ptrD + 2 * d_stride];
+				A[ptrA + 2 * a_stride] = a2 * d2;
+				// break; -- proceed to case 2
+			}
+
+			case 2: {
+				double a1 = A[ptrA + 1 * a_stride];
+				double d1 = D[ptrD + 1 * d_stride];
+				A[ptrA + 1 * a_stride] = a1 * d1;
+				// break; -- proceed to case 1
+			}
+
+			case 1: {
+				double a0 = A[ptrA + 0];
+				double d0 = D[ptrD + 0];
+				A[ptrA + 0] = a0 * d0;
+				break;
+			}
+		}
+	}
+
+
+	//	template<unsigned int d_stride, unsigned int b_stride>
+	//	void dxtSolveLDLT (const dReal *L, const dReal *d, dReal *b, unsigned rowCount, unsigned rowSkip)
+	public static void dxtSolveLDLT(final double[] L, double[] dArray, int dPos, double[] bArray, int bPos, int rowCount, int rowSkip, int d_stride, int b_stride) {
+		dAASSERT(L != null);
+		dAASSERT(dArray != null);
+		dAASSERT(bArray != null);
+		dAASSERT(rowCount > 0);
+		dAASSERT(rowSkip >= rowCount);
+
+		dxtSolveL1(L, bArray, bPos, rowCount, rowSkip, b_stride);
+		dxtVectorScale(bArray, bPos, dArray, dPos, rowCount, b_stride, d_stride);
+		dxtSolveL1T(L, bArray, bPos, rowCount, rowSkip, b_stride);
+	}
+
+	public static double dxDot(final double[] a, final double[] b, int n) {
+		return dDot(a, b, n);
+	}
+	public static double dxDot(final double[] a, int aOfs, final double[] b, int bOfs, int n) {
+		return dDot(a, aOfs, b, bOfs, n);
+	}
 }

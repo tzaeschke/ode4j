@@ -138,8 +138,8 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 					(Display.getDisplayMode().getHeight() - _height) / 2);
 		} catch (UnsatisfiedLinkError e) {
 			System.err.println("Missing lwjgl native libraries.");
-			System.err.println("If you are using maven, make sure to use "
-					+ "'-Djava.library.path=target/natives' as VM argument of your application.");
+			System.err.println("If you are using maven, make sure to use '-Djava.library.path=target/natives' or " +
+					"'-Djava.library.path=demo/target/natives' as VM argument of your application.");
 			System.err.println("For plain Eclipse, add the native library path to the included "
 					+ "lwjgl.jar in the definition of the Referenced Libraries.");
 			throw e;
@@ -406,7 +406,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	
 	/**
 	 * Handles the keyboard
-	 * @param fn 
+	 * @param fn event handle handler
 	 */
 	private void handleKeyboard(dsFunctions fn) {
 		Keyboard.poll();
@@ -477,12 +477,10 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	private void readBufferedMouse() {
 		// iterate all events, use the last button down
 		while(Mouse.next()) {
-			if (Mouse.getEventButton() != -1) {
-				if (Mouse.getEventButtonState()) {
+			if(Mouse.getEventButton() != -1 && Mouse.getEventButtonState()) {
+				// lastButton = Mouse.getEventButton();
 			}
-				//lastButton = Mouse.getEventButton();
-			}
-		}  
+		}
 
 		updateState();
 	}
@@ -630,7 +628,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 	}
 
 
-	private static double prev=System.nanoTime()/1000000000.0;
+	private static double prev=System.currentTimeMillis()/1000.0;
 	//extern "C" double dsElapsedTime()
 	@Override
 	public double dsElapsedTime()
@@ -641,7 +639,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 			//
 			//		gettimeofday(tv, 0);
 			//		double curr = tv.tv_sec + (double) tv.tv_usec / 1000000.0 ;
-			double curr = System.nanoTime()/1000000000.0;
+			double curr = System.currentTimeMillis()/1000.0;
 			//		if (prev==-1)
 			//			prev=curr;
 			double retval = curr-prev;

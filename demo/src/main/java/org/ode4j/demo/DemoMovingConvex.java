@@ -252,6 +252,7 @@ public class DemoMovingConvex extends dsFunctions {
 				//				dGeomTriMeshDataBuildSingle( new_tmdata, &Vertices[0], 3 * sizeof( float ), VertexCount,
 				//				                             ( dTriIndex* )&Indices[0], IndexCount, 3 * sizeof( dTriIndex ) );
 				new_tmdata.build( Vertices, Indices );
+				new_tmdata.preprocess2((1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES), null );
 
 				DTriMesh triMesh = OdeHelper.createTriMesh( null, new_tmdata, null, null, null );
 

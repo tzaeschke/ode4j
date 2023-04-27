@@ -83,7 +83,7 @@ class DemoChain2 extends dsFunctions {
 		DContactBuffer contacts = new DContactBuffer(1);
 		DContact contact = contacts.get(0);
 		contact.surface.mode = 0;
-		contact.surface.mu = Double.POSITIVE_INFINITY;//TODO dInfinity;
+		contact.surface.mu = Double.POSITIVE_INFINITY;
 		if (OdeHelper.collide (o1,o2,1,contacts.getGeomBuffer())!=0) {//&contact.geom,sizeof(dContactGeom))) {
 			DJoint c = OdeHelper.createContactJoint (world,contactgroup,contact);
 			c.attach(b1, b2);

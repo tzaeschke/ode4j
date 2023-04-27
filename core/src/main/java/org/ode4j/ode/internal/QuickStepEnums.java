@@ -1,6 +1,33 @@
+/*************************************************************************
+ *                                                                       *
+ * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
+ * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
+ * Open Dynamics Engine 4J, Copyright (C) 2009-2014 Tilmann Zaeschke     *
+ * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
+ *                                                                       *
+ * This library is free software; you can redistribute it and/or         *
+ * modify it under the terms of EITHER:                                  *
+ *   (1) The GNU Lesser General Public License as published by the Free  *
+ *       Software Foundation; either version 2.1 of the License, or (at  *
+ *       your option) any later version. The text of the GNU Lesser      *
+ *       General Public License is included with this library in the     *
+ *       file LICENSE.TXT.                                               *
+ *   (2) The BSD-style license that is included with this library in     *
+ *       the file ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT.         *
+ *                                                                       *
+ * This library is distributed in the hope that it will be useful,       *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the files    *
+ * LICENSE.TXT, ODE-LICENSE-BSD.TXT and ODE4J-LICENSE-BSD.TXT for more   *
+ * details.                                                              *
+ *                                                                       *
+ *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.Common.dSASSERT;
 import static org.ode4j.ode.internal.CommonEnums.*;
+import static org.ode4j.ode.internal.processmem.DxUtil.EFFICIENT_ALIGNMENT;
+import static org.ode4j.ode.internal.processmem.DxUtil.dMAX;
 
 import org.ode4j.ode.internal.joints.JointEnums;
 
@@ -76,6 +103,11 @@ public class QuickStepEnums {
 	public static final int JME__J1_COUNT = JME__J1_MAX - JME__J1_MIN;
 	public static final int JME__J2_COUNT = JME__J2_MAX - JME__J2_MIN;
 	public static final int JME__J_COUNT = JVE__MAX;
+
+	static {
+		dSASSERT(JME__J_COUNT == JME__J1_COUNT);
+		dSASSERT(JME__J_COUNT == JME__J2_COUNT);
+	}
 
 	// dxJacobiCopyElement
 	public static final int JCE__MIN = 0;
@@ -168,4 +200,17 @@ public class QuickStepEnums {
 	public static final int RHS__DYNAMICS_MAX = RHS__DYNAMICS_MIN + dDA__MAX;
 	public static final int RHS__MAX = RHS__DYNAMICS_MAX;
 
+	//	#define JACOBIAN_ALIGNMENT  dMAX(JME__MAX * sizeof(dReal), EFFICIENT_ALIGNMENT)
+	//		dSASSERT(((JME__MAX - 1) & JME__MAX) == 0); // Otherwise there is no reason to over-align the Jacobian
+	//
+	//	#define JCOPY_ALIGNMENT    dMAX(32, EFFICIENT_ALIGNMENT)
+	//	#define INVI_ALIGNMENT     dMAX(32, EFFICIENT_ALIGNMENT)
+	//	#define INVMJ_ALIGNMENT    dMAX(32, EFFICIENT_ALIGNMENT)
+	public static final int JACOBIAN_ALIGNMENT = dMAX(JME__MAX /* * sizeof(dReal)*/, EFFICIENT_ALIGNMENT);
+	static {
+		dSASSERT(((JME__MAX - 1) & JME__MAX) == 0); // Otherwise there is no reason to over-align the Jacobian
+	}
+	public static final int JCOPY_ALIGNMENT = dMAX(32, EFFICIENT_ALIGNMENT);
+	public static final int INVI_ALIGNMENT  = dMAX(32, EFFICIENT_ALIGNMENT);
+	public static final int INVMJ_ALIGNMENT = dMAX(32, EFFICIENT_ALIGNMENT);
 }

@@ -391,6 +391,24 @@ public class DrawStuff {
 	}
 
 	/**
+	 * Draw triangles.
+	 *
+	 * @param pos   Position of center
+	 * @param R     orientation
+	 * @param v     list of vertices (x0, y0, z0, x1, y1, z1, ...)
+	 * @param solid set to 0 for wireframe
+	 */
+	public static void dsDrawTriangles(final float[] pos, final float[] R,
+									   final float[][] v, boolean solid) {
+		get().dsDrawTriangles(pos, R, v, solid);
+	}
+
+	public static void dsDrawTriangles(final DVector3C pos, final DMatrix3C R,
+									   final DVector3C[] v, boolean solid) {
+		get().dsDrawTriangles(pos, R, v, solid);
+	}
+
+	/**
 	 * Draw a z-aligned cylinder.
 	 * @param pos pos
 	 * @param R R

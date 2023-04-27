@@ -70,10 +70,15 @@ public interface DDoubleBallJoint extends DJoint {
 	void getAnchor2(DVector3 result);
 
 	/**
-	 * Get the set distance from double ball joint.
+	 * Get the target distance from double ball joint.
 	 * @return distance
 	 */
 	double getDistance();
+
+	/**
+	 * Set the target distance for the double ball joint.
+	 */
+	void setDistance(double distance);
 
 	/**
 	 * Set double ball joint parameter.

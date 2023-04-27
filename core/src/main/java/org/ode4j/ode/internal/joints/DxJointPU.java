@@ -25,16 +25,13 @@
 package org.ode4j.ode.internal.joints;
 
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeMath.dCalcVectorCross3;
-import static org.ode4j.ode.OdeMath.dCalcVectorDot3;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dNormalize3;
-import static org.ode4j.ode.OdeMath.dPlaneSpace;
+import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.Common.M_PI;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DPUJoint;
+import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
@@ -329,11 +326,13 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	}
 
 
-
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2( double worldFPS, double worldERP, Info2Descr info )
-	{
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
 		final double k = worldFPS * worldERP;
 
 	    // ======================================================================
@@ -346,267 +345,81 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	    DVector3 uniPerp = new DVector3();  // Axis perpendicular to axes of rotation
 	    dCalcVectorCross3(uniPerp,ax1,ax2);
 	    dNormalize3( uniPerp );
-	    //dCopyVector3( info.J1a , uniPerp );
-	    info.setJ1a(0, uniPerp);
-	    if ( node[1].body != null )
-	    {
-	    	//dCopyNegatedVector3( info.J2a , uniPerp );
-	    	info.setJ2aNegated(0, uniPerp);
-	    }
+
+		dCopyVector3( J1A, J1Ofs + GI2__JA_MIN, uniPerp );
+
+		DxBody body1 = node[1].body;
+
+		if ( body1 != null ) {
+			dCopyNegatedVector3( J2A, J2Ofs + GI2__JA_MIN , uniPerp );
+		}
 	    // Corrective velocity attempting to keep uni axes perpendicular
 	    double val = dCalcVectorDot3( ax1, ax2 );
 	    // Small angle approximation : 
 	    // theta = asin(val)
 	    // theta is approximately val when val is near zero.
-	    info.setC(0, -k * val); 
-	    
+		pairRhsCfmA[pairRhsCfmOfs + GI2_RHS] = -k * val;
+
 	    // ==========================================================================
 	    // Handle axes orthogonal to the prismatic 
 	    DVector3 an1 = new DVector3(), an2 = new DVector3(); // Global anchor positions
 	    DVector3 axP = new DVector3(), sep = new DVector3(); // Prismatic axis and separation vector
-	    getAnchor(an1,_anchor1);
-	    getAnchor2(an2,_anchor2);
+		getAnchor(an1, _anchor1);
+		getAnchor2(an2, _anchor2);
+
 	    if ((flags & dJOINT_REVERSE)!=0) {
 	        getAxis2(axP, axisP1);
 	    } else {
 	        getAxis(axP, axisP1);
 	    }
-	    //dSubtractVectors3(sep,an2,an1);
-	    sep.eqDiff(an2, an1);
+		dSubtractVectors3(sep, an2, an1);
 
-	    DVector3 p = new DVector3(), q = new DVector3();
-	    dPlaneSpace(axP,p,q);
+		DVector3 p = new DVector3(), q = new DVector3();
+		dPlaneSpace(axP, p, q);
 
-	    //dCopyVector3(( info.J1l ) + s1, p );
-	    info.setJ1l(1, p);
-	    //dCopyVector3(( info.J1l ) + s2, q ); 
-	    info.setJ1l(2, q);
-	    // Make the anchors be body local
-	    // Aliasing isn't a problem here.
-	    //dSubtractVectors3(an1,an1,node[0].body.posr().pos());
-	    an1.sub(node[0].body.posr().pos());
-	    DVector3 v = new DVector3();
-	    dCalcVectorCross3(v, an1, p );
-	    info.setJ1a(1, v);
-	    dCalcVectorCross3(v, an1, q );
-	    info.setJ1a(2, v);
+		dCopyVector3( J1A, J1Ofs + rowskip + GI2__JL_MIN, p );
+		dCopyVector3( J1A, J1Ofs + 2 * rowskip + GI2__JL_MIN, q );
+		// Make the anchors be body local
+		// Aliasing isn't a problem here.
+		dSubtractVectors3(an1, an1, node[0].body.posr().pos());
+		dCalcVectorCross3( J1A, J1Ofs + rowskip + GI2__JA_MIN, an1, p );
+		dCalcVectorCross3( J1A, J1Ofs + 2 * rowskip + GI2__JA_MIN, an1, q );
 
-	    if (node[1].body != null) {
-		    info.setJ2lNegated(1, p);
-		    info.setJ2lNegated(2, q);
-	        //dSubtractVectors3(an2,an2,node[1].body.posr().pos());
-	        an2.sub(node[1].body.posr().pos());
-	        dCalcVectorCross3(v, p, an2 );
-		    info.setJ2a(1, v);
-	        dCalcVectorCross3(v, q, an2 );
-		    info.setJ2a(2, v);
-	    }
+		if (body1 != null) {
+			dCopyNegatedVector3( J2A, J2Ofs + rowskip + GI2__JL_MIN, p );
+			dCopyNegatedVector3( J2A, J2Ofs + 2 * rowskip + GI2__JL_MIN, q );
+			dSubtractVectors3(an2, an2, body1.posr().pos());
+			dCalcVectorCross3( J2A, J2Ofs + rowskip + GI2__JA_MIN, p, an2 );
+			dCalcVectorCross3( J2A, J2Ofs + 2 * rowskip + GI2__JA_MIN, q, an2 );
+		}
 
-	    info.setC(1, k * dCalcVectorDot3( p, sep ) );
-	    info.setC(2, k * dCalcVectorDot3( q, sep ) );
+		pairRhsCfmA[pairRhsCfmOfs + pairskip + GI2_RHS] = k * dCalcVectorDot3( p, sep );
+		pairRhsCfmA[pairRhsCfmOfs + 2 * pairskip + GI2_RHS] = k * dCalcVectorDot3( q, sep );
 	    
 	    // ==========================================================================
 	    // Handle the limits/motors
-	    int row = 3 + limot1.addLimot( this, worldFPS, info, 3, ax1, true );
-	    row += limot2.addLimot( this, worldFPS, info, row, ax2, true );
+		int currRowSkip = 3 * rowskip, currPairSkip = 3 * pairskip;
 
-	    if (  node[1].body!=null || (flags & dJOINT_REVERSE)==0 ) {
-	        limotP.addTwoPointLimot( this, worldFPS, info, row, axP, an1, an2 );
-	    } else {
-	        //axP[0] = -axP[0];
-	        //axP[1] = -axP[1];
-	        //axP[2] = -axP[2];
-	    	axP.scale(-1);
-	        limotP.addTwoPointLimot ( this, worldFPS, info, row, axP, an1, an2  );
-	    }
+		if (limot1.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+				pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, ax1, true)) {
+			currRowSkip += rowskip;
+			currPairSkip += pairskip;
+		}
 
-		
-//		// pull out pos and R for both bodies. also get the `connection'
-//		// vector pos2-pos1.
-//
-//		//double *pos1, *pos2 = 0, *R1, *R2 = 0;
-//		DVector3C pos1, pos2 = null;
-//		DMatrix3C R1, R2 = null;
-//		pos1 = node[0].body.posr().pos();
-//		R1 = node[0].body.posr().R();
-//		if ( node[1].body!=null )
-//		{
-//			pos2 = node[1].body.posr().pos();
-//			R2 = node[1].body.posr().R();
-//		}
-//
-//		DVector3 axP = new DVector3(); // Axis of the prismatic joint in global frame
-//		dMultiply0_331( axP, R1, axisP1 );
-//
-//		// distance between the body1 and the anchor2 in global frame
-//		// Calculated in the same way as the offset
-//		DVector3 dist = new DVector3();
-//		DVector3 wanchor2 = new DVector3(0,0,0);
-//		if ( node[1].body!=null )
-//		{
-//			dMultiply0_331( wanchor2, R2, _anchor2 );
-////			dist.v[0] = wanchor2.v[0] + pos2.v[0] - pos1.v[0];
-////			dist.v[1] = wanchor2.v[1] + pos2.v[1] - pos1.v[1];
-////			dist.v[2] = wanchor2.v[2] + pos2.v[2] - pos1.v[2];
-//			dist.eqSum(wanchor2, pos2).sub( pos1 );
-//		}
-//		else
-//		{
-//	        if ( isFlagsReverse() )
-//	        {
-//	            // Invert the sign of dist
-////	            dist[0] = pos1[0] - anchor2[0];
-////	            dist[1] = pos1[1] - anchor2[1];
-////	            dist[2] = pos1[2] - anchor2[2];
-//	            dist.eqDiff(pos1, _anchor2);
-//		    }
-//	        else
-//	        {
-////	            dist[0] = anchor2[0] - pos1[0];
-////	            dist[1] = anchor2[1] - pos1[1];
-////	            dist[2] = anchor2[2] - pos1[2];
-//	            dist.eqDiff(_anchor2, pos1);
-//	        }
-//		}
-//
-//		DVector3 q = new DVector3(); // Temporary axis vector
-//		// Will be used at 2 places with 2 different meaning
-//
-//		// ======================================================================
-//		// Work on the angular part (i.e. row 0)
-//		//
-//
-//		// The axis perpendicular to both axis1 and axis2 should be the only unconstrained
-//		// rotational axis, the angular velocity of the two bodies perpendicular to
-//		// the rotoide axes should be equal. Thus the constraint equations are
-//		//    p*w1 - p*w2 = 0
-//		// where p is a unit vector perpendicular to both axis1 and axis2
-//		// and w1 and w2 are the angular velocity vectors of the two bodies.
-//		DVector3 ax1 = new DVector3(), ax2 = new DVector3();
-//		getAxes( ax1, ax2 );
-//		double val = dCalcVectorDot3( ax1, ax2 );
-////		q.v[0] = ax2.v[0] - val * ax1.v[0];
-////		q.v[1] = ax2.v[1] - val * ax1.v[1];
-////		q.v[2] = ax2.v[2] - val * ax1.v[2];
-//		q.eqSum(ax2, ax1, -val);
-//
-//		DVector3 p = new DVector3();
-//		dCalcVectorCross3( p, ax1, q );
-//		dNormalize3( p );
-//
-//		//   info->J1a[s0+i] = p[i];
-//		dCopyVector3(info._J, ( info.J1ap ) + s0, p );
-//
-//		if ( node[1].body!=null )
-//		{
-//			//   info->J2a[s0+i] = -p[i];
-//		    dCopyNegatedVector3(info._J, info.J2ap + s0, p );
-//		}
-//
-//		// compute the right hand side of the constraint equation. Set relative
-//		// body velocities along p to bring the axes back to perpendicular.
-//		// If ax1, ax2 are unit length joint axes as computed from body1 and
-//		// body2, we need to rotate both bodies along the axis p.  If theta
-//		// is the angle between ax1 and ax2, we need an angular velocity
-//		// along p to cover the angle erp * (theta - Pi/2) in one step:
-//		//
-//		//   |angular_velocity| = angle/time = erp*(theta - Pi/2) / stepsize
-//		//                      = (erp*fps) * (theta - Pi/2)
-//		//
-//		// if theta is close to Pi/2,
-//		// theta - Pi/2 ~= cos(theta), so
-//		//    |angular_velocity|  ~= (erp*fps) * (ax1 dot ax2)
-//
-//		info.setC(0, k * - val );
-//
-//
-//
-//		// ==========================================================================
-//		// Work on the linear part (i.e rows 1 and 2)
-//		//
-//		// We want: vel2 = vel1 + w1 x c ... but this would
-//		// result in three equations, so we project along the planespace vectors
-//		// so that sliding along the axisP is disregarded.
-//		//
-//		// p1 + R1 dist' = p2 + R2 anchor2'
-//		// v1 + w1 x R1 dist' + v_p = v2 + w2 x R2 anchor2'
-//		// v_p is speed of prismatic joint (i.e. elongation rate)
-//		// Since the constraints are perpendicular to v_p we have:
-//		// e1 dot v_p = 0 and e2 dot v_p = 0
-//		// e1 dot ( v1 + w1 x dist = v2 + w2 x anchor2 )
-//		// e2 dot ( v1 + w1 x dist = v2 + w2 x anchor2 )
-//		// ==
-//		// e1 . v1 + e1 . w1 x dist = e1 . v2 + e1 . w2 x anchor2
-//		// since a . (b x c) = - b . (a x c) = - (a x c) . b
-//		// and a x b = - b x a
-//		// e1 . v1 - e1 x dist . w1 - e1 . v2 - (- e1 x anchor2 . w2) = 0
-//		// e1 . v1 + dist x e1 . w1 - e1 . v2 - anchor2 x e1 . w2 = 0
-//		// Coeff for 1er line of: J1l => e1, J2l => -e1
-//		// Coeff for 2er line of: J1l => e2, J2l => -ax2
-//		// Coeff for 1er line of: J1a => dist x e1, J2a => - anchor2 x e1
-//		// Coeff for 2er line of: J1a => dist x e2, J2a => - anchor2 x e2
-//		// e1 and e2 are perpendicular to axP
-//		// so e1 = ax1 and e2 = ax1 x axP
-//		// N.B. ax2 is not always perpendicular to axP since it is attached to body 2
-//		dCalcVectorCross3( q, ax1, axP );
-//
-//		dMultiply0_331( axP, R1, axisP1 );
-//
-//		dCalcVectorCross3( info._J, ( info.J1ap ) + s1, dist, ax1 );
-//		dCalcVectorCross3( info._J, ( info.J1ap ) + s2, dist, q );
-//
-//		// info->J1l[s1+i] = ax[i];
-//		dCopyVector3( info._J, ( info.J1lp ) + s1, ax1 );
-//
-//		// info->J1l[s2+i] = q[i];
-//		dCopyVector3( info._J, ( info.J1lp ) + s2, q);
-//
-//		if ( node[1].body!=null )
-//		{
-//			// Calculate anchor2 in world coordinate
-//
-//			// q x anchor2 instead of anchor2 x q since we want the negative value
-//		    dCalcVectorCross3( info._J, ( info.J2ap ) + s1, ax1, wanchor2 );
-//			// The cross product is in reverse order since we want the negative value
-//		    dCalcVectorCross3( info._J, ( info.J2ap ) + s2, q, wanchor2 );
-//
-//
-//			// info->J2l[s1+i] = -ax1[i];
-//		    dCopyNegatedVector3( info._J, ( info.J2lp ) + s1, ax1 );
-//			// info->J2l[s2+i] = -ax1[i];
-//		    dCopyNegatedVector3( info._J, ( info.J2lp ) + s2, q );
-//
-//		}
-//
-//
-//		// We want to make correction for motion not in the line of the axisP
-//		// We calculate the displacement w.r.t. the anchor pt.
-//		//
-//		// compute the elements 1 and 2 of right hand side.
-//		// We want to align the offset point (in body 2's frame) with the center of body 1.
-//		// The position should be the same when we are not along the prismatic axis
-//		DVector3 err = new DVector3();
-//		dMultiply0_331( err, R1, _anchor1 );
-//		// err[i] = dist[i] - err[i];
-//		//TZ dOPE2( err, OP.EQ , dist, OP.SUB, err );
-//		//dOP( err.v, OP.SUB , dist.v, err.v );
-//		err.eqDiff(dist, err);
-//		info.setC(1, k * dCalcVectorDot3( ax1, err ) );
-//		info.setC(2, k * dCalcVectorDot3( q, err ) );
-//
-//		int row = 3 + limot1.addLimot( this, info, 3, ax1, true );
-//	    row += limot2.addLimot( this, info, row, ax2, true );
-//
-//	    if (  node[1].body!=null || !isFlagsReverse() )
-//	        limotP.addLimot( this, info, row, axP, false );
-//	    else
-//	    {
-////	        axP[0] = -axP[0];
-////	        axP[1] = -axP[1];
-////	        axP[2] = -axP[2];
-//	    	axP.scale( -1 );
-//	        limotP.addLimot ( this, info, row, axP, false );
-//	    }
+		if (limot2.addLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+				pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, ax2, true)) {
+			currRowSkip += rowskip;
+			currPairSkip += pairskip;
+		}
+
+		if (body1 != null || !isFlagsReverse()) {
+			limotP.addTwoPointLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, axP, an1, an2);
+		} else {
+			dNegateVector3(axP);
+			limotP.addTwoPointLimot(this, worldFPS, J1A, J1Ofs + currRowSkip, J2A, J2Ofs + currRowSkip, pairRhsCfmA,
+					pairRhsCfmOfs + currPairSkip, pairLoHiA, pairLoHiOfs + currPairSkip, axP, an1, an2);
+		}
 	}
 
 	public void dJointSetPUAnchor( double x, double y, double z )
@@ -634,15 +447,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	 * </PRE>
 	 * <p>NOTE: Should have the same meaning as dJointSetSliderAxisDelta
 	 *
-	 * @param j The PU joint for which the anchor point will be set
 	 * @param x The X position of the anchor point in world frame
 	 * @param y The Y position of the anchor point in world frame
 	 * @param z The Z position of the anchor point in world frame
 	 * @param dx A delta to be added to the X position as if the anchor was set
 	 *           when body1 was at current_position[X] + dx
-	 * @param dx A delta to be added to the Y position as if the anchor was set
+	 * @param dy A delta to be added to the Y position as if the anchor was set
 	 *           when body1 was at current_position[Y] + dy
-	 * @param dx A delta to be added to the Z position as if the anchor was set
+	 * @param dz A delta to be added to the Z position as if the anchor was set
 	 *           when body1 was at current_position[Z] + dz
 	 */
 	void dJointSetPUAnchorDelta( double x, double y, double z,
@@ -691,15 +503,14 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	 * </PRE>
 	 * <p>NOTE: Should have the same meaning as dJointSetSliderAxisDelta
 	 *
-	 * @param j The PU joint for which the anchor point will be set
 	 * @param x The X position of the anchor point in world frame
 	 * @param y The Y position of the anchor point in world frame
 	 * @param z The Z position of the anchor point in world frame
 	 * @param dx A delta to be added to the X position as if the anchor was set
 	 *           when body1 was at current_position[X] + dx
-	 * @param dx A delta to be added to the Y position as if the anchor was set
+	 * @param dy A delta to be added to the Y position as if the anchor was set
 	 *           when body1 was at current_position[Y] + dy
-	 * @param dx A delta to be added to the Z position as if the anchor was set
+	 * @param dz A delta to be added to the Z position as if the anchor was set
 	 *           when body1 was at current_position[Z] + dz
 	 */
 	void dJointSetPUAnchorOffset( double x, double y, double z,
@@ -850,7 +661,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		case dParamGroup3:
 			limotP.set( parameter.toSUB(), value );//.and( 0xff ), value );
 			break;
-		default: //TODO TZ remove
+		default:
 			throw new IllegalArgumentException(parameter.name());
 		}
 	}

@@ -31,14 +31,18 @@ public class CCDVec3 {
 
 	//# define CCD_REAL(x) (x)       /*!< form a finalant */
 	//# define CCD_SQRT(x) (sqrt(x)) /*!< square root */
-	public static final double CCD_SQRT(double x) { return Math.sqrt(x); }
+	public static double CCD_SQRT(double x) { return Math.sqrt(x); }
 	/* absolute value */
-	private static final double CCD_FABS(double x) { return Math.abs(x); }
+	private static double CCD_FABS(double x) { return Math.abs(x); }
 	/* maximum of two floats */
-	//private static final double CCD_FMAX(double x, double y) { return x > y ? x : y; }
+	public static double CCD_FMAX(double x, double y) { return Math.max(x, y); }
 	/* minimum of two floats */
-	static final double CCD_FMIN(double x, double y) { return x < y ? x : y; }
-	
+	static double CCD_FMIN(double x, double y) { return Math.min(x, y); }
+
+	public static double CCD_ATAN2(double x, double y) {
+		return Math.atan2(x, y);
+	}
+
 	//#define CCD_ONE CCD_REAL(1.)
 	public static final double CCD_ONE = 1;
 	//#define CCD_ZERO CCD_REAL(0.)
@@ -83,25 +87,30 @@ public class CCDVec3 {
 				throw new IllegalArgumentException();
 			}
 		}
-	};
 
-
-	private static final ccd_vec3_t CCD_VEC3_STATIC(double x, double y, double z) {
-		return new ccd_vec3_t(x, y, z);
-	}
-
-	private static final ccd_vec3_t CCD_VEC3(double x, double y, double z) { 
-		return new ccd_vec3_t(x, y, z);
+		@Override
+		public String toString() {
+			return "CCDVec3[ " + get0() + ", " + get1() + ", " + get2() + " ]";
+		}
 	}
 
 
+	private static ccd_vec3_t CCD_VEC3_STATIC(double x, double y, double z) {
+		return new ccd_vec3_t(x, y, z);
+	}
 
-	/**** INLINES ****/
+	private static ccd_vec3_t CCD_VEC3(double x, double y, double z) {
+		return new ccd_vec3_t(x, y, z);
+	}
+
+
+
+	/* *** INLINES *** */
 	/** 
 	 * @param val val
 	 * @return sign of value. 
 	 */
-	public static final int ccdSign(double val)
+	public static int ccdSign(double val)
 	{
 	    if (ccdIsZero(val)){
 	        return 0;
@@ -115,7 +124,7 @@ public class CCDVec3 {
 	 * @param val value
 	 * @return true if val is zero. 
 	 **/
-	public static final boolean ccdIsZero(double val)
+	public static boolean ccdIsZero(double val)
 	{
 	    return CCD_FABS(val) < CCD_EPS;
 	}
@@ -125,7 +134,7 @@ public class CCDVec3 {
 	 * @param _b b
 	 * @return true if a and b equal. 
 	 **/
-	public static final boolean ccdEq(double _a, double _b)
+	public static boolean ccdEq(double _a, double _b)
 	{
 	    double ab;
 		double a, b;
@@ -144,17 +153,17 @@ public class CCDVec3 {
 	}
 
 
-	public static final double ccdVec3X(final ccd_vec3_t v)
+	public static double ccdVec3X(final ccd_vec3_t v)
 	{
 	    return v.v0;
 	}
 
-	public static final double ccdVec3Y(final ccd_vec3_t v)
+	public static double ccdVec3Y(final ccd_vec3_t v)
 	{
 	    return v.v1;
 	}
 
-	public static final double ccdVec3Z(final ccd_vec3_t v)
+	public static double ccdVec3Z(final ccd_vec3_t v)
 	{
 	    return v.v2;
 	}
@@ -164,7 +173,7 @@ public class CCDVec3 {
 	 * @param b b
 	 * @return true if a and b equal.
 	 */
-	public static final boolean ccdVec3Eq(final ccd_vec3_t a, final ccd_vec3_t b)
+	public static boolean ccdVec3Eq(final ccd_vec3_t a, final ccd_vec3_t b)
 	{
 	    return ccdEq(ccdVec3X(a), ccdVec3X(b))
 	            && ccdEq(ccdVec3Y(a), ccdVec3Y(b))
@@ -175,7 +184,7 @@ public class CCDVec3 {
 	 * @param v v
 	 * @return squared length of vector.
 	 */
-	public static final double ccdVec3Len2(final ccd_vec3_t v)
+	public static double ccdVec3Len2(final ccd_vec3_t v)
 	{
 	    return ccdVec3Dot(v, v);
 	}
@@ -185,21 +194,21 @@ public class CCDVec3 {
 	 * @param b b
 	 * @return distance between a and b.
 	 */
-	public static final double ccdVec3Dist2(final ccd_vec3_t a, final ccd_vec3_t b)
+	public static double ccdVec3Dist2(final ccd_vec3_t a, final ccd_vec3_t b)
 	{
 	    ccd_vec3_t ab = new ccd_vec3_t();
 	    ccdVec3Sub2(ab, a, b);
 	    return ccdVec3Len2(ab);
 	}
 
-	public static final void ccdVec3Set(ccd_vec3_t v, double x, double y, double z)
+	public static void ccdVec3Set(ccd_vec3_t v, double x, double y, double z)
 	{
 	    v.v0 = x;
 	    v.v1 = y;
 	    v.v2 = z;
 	}
 
-	public static final void ccdVec3Set(ccd_vec3_t v, DVector3C xyz)
+	public static void ccdVec3Set(ccd_vec3_t v, DVector3C xyz)
 	{
 	    v.v0 = xyz.get0();
 	    v.v1 = xyz.get1();
@@ -211,7 +220,7 @@ public class CCDVec3 {
 	 * @param v v
 	 * @param w w
 	 */
-	public static final void ccdVec3Copy(ccd_vec3_t v, final ccd_vec3_t w)
+	public static void ccdVec3Copy(ccd_vec3_t v, final ccd_vec3_t w)
 	{
 	    //*v = *w;
 		v.v0 = w.v0;
@@ -220,24 +229,15 @@ public class CCDVec3 {
 	}
 
 	/**
-	 * Substracts coordinates of vector w from vector v. v = v - w
+	 * Subtracts coordinates of vector w from vector v. v = v - w
 	 * @param v v
 	 * @param w w
 	 */
-	public static final void ccdVec3Sub(ccd_vec3_t v, final ccd_vec3_t w)
+	public static void ccdVec3Sub(ccd_vec3_t v, final ccd_vec3_t w)
 	{
 	    v.v0 -= w.v0;
 	    v.v1 -= w.v1;
 	    v.v2 -= w.v2;
-	}
-	/**
-	 * d = v - w
-	 */
-	static final void ccdVec3Sub2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w)
-	{
-	    d.v0 = v.v0 - w.v0;
-	    d.v1 = v.v1 - w.v1;
-	    d.v2 = v.v2 - w.v2;
 	}
 
 	/**
@@ -245,38 +245,78 @@ public class CCDVec3 {
 	 * @param v v
 	 * @param w w
 	 */
-	public static final void ccdVec3Add(ccd_vec3_t v, final ccd_vec3_t w)
+	public static void ccdVec3Add(ccd_vec3_t v, final ccd_vec3_t w)
 	{
-	    v.v0 += w.v0;
-	    v.v1 += w.v1;
-	    v.v2 += w.v2;
+		v.v0 += w.v0;
+		v.v1 += w.v1;
+		v.v2 += w.v2;
+	}
+
+	/**
+	 * d = v - w
+	 */
+	public static void ccdVec3Sub2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w)
+	{
+	    d.v0 = v.v0 - w.v0;
+	    d.v1 = v.v1 - w.v1;
+	    d.v2 = v.v2 - w.v2;
+	}
+
+	/**
+	 * d = v + w
+	 */
+	public static void ccdVec3Add2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w) {
+		d.v0 = v.v0 + w.v0;
+		d.v1 = v.v1 + w.v1;
+		d.v2 = v.v2 + w.v2;
 	}
 
 	/**
 	 * d = d * k;
+	 *
 	 * @param d d
 	 * @param k k
 	 */
-	public static final void ccdVec3Scale(ccd_vec3_t d, double k)
-	{
-	    d.v0 *= k;
-	    d.v1 *= k;
-	    d.v2 *= k;
+	public static void ccdVec3Scale(ccd_vec3_t d, double k) {
+		d.v0 *= k;
+		d.v1 *= k;
+		d.v2 *= k;
+	}
+
+	/**
+	 * d = s * k;
+	 */
+	public static void ccdVec3CopyScaled(ccd_vec3_t d, final ccd_vec3_t s, double k) {
+		d.v0 = s.v0 * k;
+		d.v1 = s.v1 * k;
+		d.v2 = s.v2 * k;
+	}
+
+	/**
+	 * d = v + s * k;
+	 */
+	static void ccdVec3AddScaled(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t s, double k) {
+		d.v0 = v.v0 + s.v0 * k;
+		d.v1 = v.v1 + s.v1 * k;
+		d.v2 = v.v2 + s.v2 * k;
 	}
 
 	/**
 	 * Normalizes given vector to unit length.
+	 *
+	 * WARNING: This returns TRUE for a failure!
+	 *
 	 * @param d d
-	 * @return 'false' if normalization failed.
+	 * @return 'true' if normalization failed.
 	 */
-	public static final boolean ccdVec3Normalize(ccd_vec3_t d)
+	public static boolean ccdVec3Normalize(ccd_vec3_t d)
 	{
 	    double len = CCD_SQRT(ccdVec3Len2(d));
 	    if (len > CCD_EPS) {
 		    ccdVec3Scale(d, CCD_ONE / len);
-		    return true;
+		    return false;
 	    }
-	    return false;
+	    return true;
 	}
 
 	/**
@@ -284,7 +324,7 @@ public class CCDVec3 {
 	 * @param b b
 	 * @return Dot product of two vectors.
 	 */
-	public static final double ccdVec3Dot(final ccd_vec3_t a, final ccd_vec3_t b)
+	public static double ccdVec3Dot(final ccd_vec3_t a, final ccd_vec3_t b)
 	{
 	    double dot;
 
@@ -300,7 +340,7 @@ public class CCDVec3 {
 	 * @param a a
 	 * @param b b
 	 */
-	public static final void ccdVec3Cross(ccd_vec3_t d, final ccd_vec3_t a, final ccd_vec3_t b)
+	public static void ccdVec3Cross(ccd_vec3_t d, final ccd_vec3_t a, final ccd_vec3_t b)
 	{
 	    d.v0 = (a.v1 * b.v2) - (a.v2 * b.v1);
 	    d.v1 = (a.v2 * b.v0) - (a.v0 * b.v2);
@@ -317,7 +357,7 @@ public class CCDVec3 {
 	/**
 	 * Array of points uniformly distributed on unit sphere.
 	 */
-	private static final ccd_vec3_t points_on_sphere[] = {
+	private static final ccd_vec3_t[] points_on_sphere = {
 		CCD_VEC3_STATIC(( 0.000000), (-0.000000), (-1.000000)),
 		CCD_VEC3_STATIC(( 0.723608), (-0.525725), (-0.447219)),
 		CCD_VEC3_STATIC((-0.276388), (-0.850649), (-0.447219)),
@@ -367,7 +407,7 @@ public class CCDVec3 {
 	static final int ccd_points_on_sphere_len = points_on_sphere.length;
 
 
-	static final double __ccdVec3PointSegmentDist2(final ccd_vec3_t P,
+	static double __ccdVec3PointSegmentDist2(final ccd_vec3_t P,
 	                                                  final ccd_vec3_t x0,
 	                                                  final ccd_vec3_t b,
 	                                                  ccd_vec3_t witness)

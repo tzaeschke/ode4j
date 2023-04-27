@@ -73,7 +73,7 @@ public class DxUtil {
         return sizeof(o.getClass());
     }
     
-    static final int EFFICIENT_ALIGNMENT = 16;
+    public static final int EFFICIENT_ALIGNMENT = 16;
     
 //  #define dEFFICIENT_SIZE(x) (((x)+(EFFICIENT_ALIGNMENT-1)) & ~((size_t)(EFFICIENT_ALIGNMENT-1)))
     static final int dEFFICIENT_SIZE(int x) {
@@ -99,16 +99,17 @@ public class DxUtil {
     	return p;
     }
 
+
+    // #define dOVERALIGNED_SIZE(size, alignment) dEFFICIENT_SIZE((size) + ((alignment) - EFFICIENT_ALIGNMENT))
+    //int dOVERALIGNED_SIZE(int size, int alignment) { return dEFFICIENT_SIZE(size + (alignment - EFFICIENT_ALIGNMENT)); }
+    // #define dOVERALIGNED_PTR(buf_ptr, alignment) ((void *)(((uintptr_t)(buf_ptr) + ((alignment) - 1)) & (int)(~(alignment - 1)))) // Casting the mask to int ensures sign-extension to larger integer sizes
+    // #define dOFFSET_OVERALIGNEDLY(buf_ptr, size, alignment) ((void *)((uintptr_t)(buf_ptr) + dOVERALIGNED_SIZE(size, alignment)))
+
+
     /* alloca aligned to the EFFICIENT_ALIGNMENT. note that this can waste
      * up to 15 bytes per allocation, depending on what alloca() returns.
      */
     //#define dALLOCA16(n) dEFFICIENT_PTR(alloca((n)+(EFFICIENT_ALIGNMENT)))
-
-
-//    #ifndef SIZE_MAX
-//    #define SIZE_MAX  ((size_t)(-1))
-//    #endif
-    static final int SIZE_MAX = Integer.MAX_VALUE; //TODO correct?
 
     //typedef void *(*alloc_block_fn_t)(size_t block_size);
     public interface alloc_block_fn_t {

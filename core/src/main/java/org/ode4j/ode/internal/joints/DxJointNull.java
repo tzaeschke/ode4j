@@ -58,11 +58,14 @@ public class DxJointNull extends DxJoint implements DNullJoint
 	}
 
 
+	/**
+	 * @see DxJoint#getInfo2(double, double, int, double[], int, double[], int, int, double[], int, double[], int, int[], int)
+	 */
 	@Override
-	public void
-	getInfo2( double worldFPS, double worldERP, Info2Descr info )
-	{
-		dDebug( 0, "this should never get called" );
+	public void getInfo2(double worldFPS, double worldERP, int rowskip, double[] J1A, int J1Ofs, double[] J2A,
+						 int J2Ofs, int pairskip, double[] pairRhsCfmA, int pairRhsCfmOfs, double[] pairLoHiA,
+						 int pairLoHiOfs, int[] findexA, int findexOfs) {
+		dDebug(0, "this should never get called");
 	}
 
 

@@ -52,8 +52,8 @@ import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
-import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
+import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
  * Cylinder-trimesh collider by Alen Ladavac
@@ -98,7 +98,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		double		fDepth;
 		int			triIndex;
 		int			nFlags; // 0 = filtered out, 1 = OK
-	};//sLocalContactData;
+	}//sLocalContactData;
 
 	private static class sCylinderTrimeshColliderData
 	{
@@ -183,7 +183,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 
 	// If this two contact can be classified as "near"
 	//inline int _IsNearContacts(sLocalContactData& c1,sLocalContactData& c2)
-	private static final boolean _IsNearContacts(sLocalContactData c1,sLocalContactData c2)
+	private static boolean _IsNearContacts(sLocalContactData c1,sLocalContactData c2)
 	{
 		boolean bPosNear = false;
 		boolean bSameDir = false;
@@ -211,7 +211,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		return (bPosNear && bSameDir);
 	}
 
-	private static final boolean _IsBetter(sLocalContactData c1,sLocalContactData c2)
+	private static boolean _IsBetter(sLocalContactData c1,sLocalContactData c2)
 	{
 		// The not better will be throw away
 		// You can change the selection criteria here
@@ -468,7 +468,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 //							   const dVector3& v2,
 //							   const dVector3& v3,
 //							   dVector3& r)
-	private static final void _CalculateAxis(final DVector3C v1,
+	private static void _CalculateAxis(final DVector3C v1,
 			   final DVector3C v2,
 			   final DVector3C v3,
 			   final DVector3 r)
@@ -766,7 +766,6 @@ public class CollideCylinderTrimesh implements DColliderFn {
 
 		// Generate contact 0
 		{
-			if (m_gLocalContacts[m_nContacts]==null) m_gLocalContacts[m_nContacts]=new sLocalContactData();//TZ fix TODO
 			m_gLocalContacts[m_nContacts].fDepth = fDepth0;
 			dVector3Copy(m_vContactNormal,m_gLocalContacts[m_nContacts].vNormal);
 			dVector3Copy(vCEdgePoint0,m_gLocalContacts[m_nContacts].vPos);
@@ -895,7 +894,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 					m_gLocalContacts[m_nContacts].nFlags = 1;
 					m_nContacts++;
 					if(m_nContacts >= (m_iFlags & DxGeom.NUMC_MASK)) 
-						return;;
+						return;
 				}
 			}
 		}
@@ -921,7 +920,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 					m_gLocalContacts[m_nContacts].nFlags = 1;
 					m_nContacts++;
 					if(m_nContacts >= (m_iFlags & DxGeom.NUMC_MASK)) 
-						return;;
+						return;
 				}
 			}
 		}
@@ -998,7 +997,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 		// if best separation axis is not found
 		if ( m_iBestAxis == 0 ) 
 		{
-			// this should not happen (we should already exit in that case)
+			// this should not happen (the function should have already returned in this case)
 			Common.dIASSERT(false);
 			// do nothing
 			return;
@@ -1097,74 +1096,61 @@ public class CollideCylinderTrimesh implements DColliderFn {
 //		sCylinderTrimeshColliderData &cData, dxGeom *Cylinder, dxTriMesh *Trimesh,
 //		OBBCache &BoxCache)
 //	{
-//		const dVector3 &vCylinderPos = cData.m_vCylinderPos;
+//Matrix4x4 MeshMatrix;
+//    const dVector3 vZeroVector3 = { REAL(0.0), };
+//	MakeMatrix(vZeroVector3, cData.m_mTrimeshRot, MeshMatrix);
 //
-//		Point cCenter(vCylinderPos[0],vCylinderPos[1],vCylinderPos[2]);
+//    const dVector3 &vCylinderPos = cData.m_vCylinderPos;
+//    const dMatrix3 &mCylinderRot = cData.m_mCylinderRot;
 //
-//		Point cExtents(cData.m_fCylinderRadius,cData.m_fCylinderRadius,cData.m_fCylinderRadius);
-//		cExtents[nCYLINDER_AXIS] = cData.m_fCylinderSize * REAL(0.5);
+//	dVector3 vCylinderOffsetPos;
+//	dSubtractVectors3(vCylinderOffsetPos, vCylinderPos, cData.m_vTrimeshPos);
 //
-//		Matrix3x3 obbRot;
+//    const dReal fCylinderRadius = cData.m_fCylinderRadius, fCylinderHalfAxis = cData.m_fCylinderSize * REAL(0.5);
 //
-//		const dMatrix3 &mCylinderRot = cData.m_mCylinderRot;
+//	OBB obbCylinder;
+//    obbCylinder.mCenter.Set(vCylinderOffsetPos[0], vCylinderOffsetPos[1], vCylinderOffsetPos[2]);
+//    obbCylinder.mExtents.Set(
+//			0 == nCYLINDER_AXIS ? fCylinderHalfAxis : fCylinderRadius,
+//			1 == nCYLINDER_AXIS ? fCylinderHalfAxis : fCylinderRadius,
+//			2 == nCYLINDER_AXIS ? fCylinderHalfAxis : fCylinderRadius);
+//    obbCylinder.mRot.Set(
+//	mCylinderRot[0], mCylinderRot[4], mCylinderRot[8],
+//	mCylinderRot[1], mCylinderRot[5], mCylinderRot[9],
+//	mCylinderRot[2], mCylinderRot[6], mCylinderRot[10]);
 //
-//		// It is a potential issue to explicitly cast to float 
-//		// if custom width floating point type is introduced in OPCODE.
-//		// It is necessary to make a typedef and cast to it
-//		// (e.g. typedef float opc_float;)
-//		// However I'm not sure in what header it should be added.
-//
-//		obbRot[0][0] = /*(float)*/mCylinderRot[0];
-//		obbRot[1][0] = /*(float)*/mCylinderRot[1];
-//		obbRot[2][0] = /*(float)*/mCylinderRot[2];
-//
-//		obbRot[0][1] = /*(float)*/mCylinderRot[4];
-//		obbRot[1][1] = /*(float)*/mCylinderRot[5];
-//		obbRot[2][1] = /*(float)*/mCylinderRot[6];
-//
-//		obbRot[0][2] = /*(float)*/mCylinderRot[8];
-//		obbRot[1][2] = /*(float)*/mCylinderRot[9];
-//		obbRot[2][2] = /*(float)*/mCylinderRot[10];
-//
-//		OBB obbCapsule(cCenter,cExtents,obbRot);
-//
-//		Matrix4x4 CapsuleMatrix;
-//		MakeMatrix(vCylinderPos, mCylinderRot, CapsuleMatrix);
-//
-//		Matrix4x4 MeshMatrix;
-//		MakeMatrix(cData.m_vTrimeshPos, cData.m_mTrimeshRot, MeshMatrix);
-//
-//		// TC results
-//		if (Trimesh->doBoxTC) 
+//	// TC results
+//    if (Trimesh->getDoTC(dxTriMesh::TTC_BOX))
+//	{
+//		dxTriMesh::BoxTC* BoxTC = 0;
+//        const int iBoxCacheSize = Trimesh->m_BoxTCCache.size();
+//		for (int i = 0; i != iBoxCacheSize; i++)
 //		{
-//			dxTriMesh::BoxTC* BoxTC = 0;
-//			for (int i = 0; i < Trimesh->BoxTCCache.size(); i++)
+//			if (Trimesh->m_BoxTCCache[i].Geom == Cylinder)
 //			{
-//				if (Trimesh->BoxTCCache[i].Geom == Cylinder)
-//				{
-//					BoxTC = &Trimesh->BoxTCCache[i];
-//					break;
-//				}
+//				BoxTC = &Trimesh->m_BoxTCCache[i];
+//				break;
 //			}
-//			if (!BoxTC)
-//			{
-//				Trimesh->BoxTCCache.push(dxTriMesh::BoxTC());
-//
-//				BoxTC = &Trimesh->BoxTCCache[Trimesh->BoxTCCache.size() - 1];
-//				BoxTC->Geom = Cylinder;
-//				BoxTC->FatCoeff = REAL(1.0);
-//			}
-//
-//			// Intersect
-//			Collider.SetTemporalCoherence(true);
-//			Collider.Collide(*BoxTC, obbCapsule, Trimesh->Data->BVTree, null, &MeshMatrix);
 //		}
-//		else 
+//		if (!BoxTC)
 //		{
-//			Collider.SetTemporalCoherence(false);
-//			Collider.Collide(BoxCache, obbCapsule, Trimesh->Data->BVTree, null,&MeshMatrix);
+//			Trimesh->m_BoxTCCache.push(dxTriMesh::BoxTC());
+//
+//			BoxTC = &Trimesh->m_BoxTCCache[Trimesh->m_BoxTCCache.size() - 1];
+//			BoxTC->Geom = Cylinder;
+//			BoxTC->FatCoeff = REAL(1.0);
 //		}
+//
+//		// Intersect
+//		Collider.SetTemporalCoherence(true);
+//		Collider.Collide(*BoxTC, obbCylinder, Trimesh->retrieveMeshBVTreeRef(), null, &MeshMatrix);
 //	}
+//    else
+//	{
+//		Collider.SetTemporalCoherence(false);
+//		Collider.Collide(BoxCache, obbCylinder, Trimesh->retrieveMeshBVTreeRef(), null, &MeshMatrix);
+//	}
+//}
 //
 //	int dCollideCylinderTrimesh(dxGeom *o1, dxGeom *o2, int flags, dContactGeom *contact, int skip)
 //	{
@@ -1182,44 +1168,44 @@ public class CollideCylinderTrimesh implements DColliderFn {
 //		sCylinderTrimeshColliderData cData(flags, skip);
 //		cData._InitCylinderTrimeshData(Cylinder, Trimesh);
 //
-//		const unsigned uiTLSKind = Trimesh->getParentSpaceTLSKind();
+//    const unsigned uiTLSKind = Trimesh->getParentSpaceTLSKind();
 //		dIASSERT(uiTLSKind == Cylinder->getParentSpaceTLSKind()); // The colliding spaces must use matching cleanup method
 //		TrimeshCollidersCache *pccColliderCache = GetTrimeshCollidersCache(uiTLSKind);
-//		OBBCollider& Collider = pccColliderCache->_OBBCollider;
+//		OBBCollider& Collider = pccColliderCache->m_OBBCollider;
 //
-//		dQueryCTLPotentialCollisionTriangles(Collider, cData, Cylinder, Trimesh, pccColliderCache->defaultBoxCache);
+//		dQueryCTLPotentialCollisionTriangles(Collider, cData, Cylinder, Trimesh, pccColliderCache->m_DefaultBoxCache);
 //
 //		// Retrieve data
 //		int TriCount = Collider.GetNbTouchedPrimitives();
 //
 //		if (TriCount != 0)
 //		{
-//			const int* Triangles = (const int*)Collider.GetTouchedPrimitives();
+//        const int* Triangles = (const int*)Collider.GetTouchedPrimitives();
 //
-//			if (Trimesh->ArrayCallback != null)
+//			if (Trimesh->m_ArrayCallback != NULL)
 //			{
-//				Trimesh->ArrayCallback(Trimesh, Cylinder, Triangles, TriCount);
+//				Trimesh->m_ArrayCallback(Trimesh, Cylinder, Triangles, TriCount);
 //			}
 //
 //			// allocate buffer for local contacts on stack
 //			cData.m_gLocalContacts = (sLocalContactData*)dALLOCA16(sizeof(sLocalContactData)*(cData.m_iFlags & NUMC_MASK));
 //
-//		    int ctContacts0 = 0;
+//			int ctContacts0 = 0;
 //
 //			// loop through all intersecting triangles
 //			for (int i = 0; i < TriCount; i++)
 //			{
-//				const int Triint = Triangles[i];
-//				if (!Callback(Trimesh, Cylinder, Triint)) continue;
+//            const int Triint = Triangles[i];
+//				if (!Trimesh->invokeCallback(Cylinder, Triint)) continue;
 //
 //
 //				dVector3 dv[3];
-//				FetchTriangle(Trimesh, Triint, cData.m_vTrimeshPos, cData.m_mTrimeshRot, dv);
+//				Trimesh->fetchMeshTriangle(dv, Triint, cData.m_vTrimeshPos, cData.m_mTrimeshRot);
 //
 //				bool bFinishSearching;
 //				ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dv, bFinishSearching);
 //
-//				if (bFinishSearching) 
+//				if (bFinishSearching)
 //				{
 //					break;
 //				}
@@ -1268,21 +1254,21 @@ public class CollideCylinderTrimesh implements DColliderFn {
 
 		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
-		Trimesh.m_collision_trimesh.getAabbSet().gim_aabbset_box_collision(test_aabb, collision_result);
+		Trimesh.m_collision_trimesh().getAabbSet().gim_aabbset_box_collision(test_aabb, collision_result);
 
 		if (collision_result.size() != 0)
 		{
 	//*****Set globals for box collision******//
 
 			int ctContacts0 = 0;
-			//cData.m_gLocalContacts = null;// TODO TZ (sLocalContactData*)dALLOCA16(sizeof(sLocalContactData)*(cData.m_iFlags & NUMC_MASK));
+			// cData.m_gLocalContacts = (sLocalContactData*)dALLOCA16(sizeof(sLocalContactData)*(cData.m_iFlags & NUMC_MASK));
 			cData.m_gLocalContacts = new sLocalContactData[cData.m_iFlags & DxGeom.NUMC_MASK];
 			for (int i = 0; i < cData.m_gLocalContacts.length; i++) {
 				cData.m_gLocalContacts[i] = new sLocalContactData();
 			}
 
 			int[] boxesresult = collision_result.GIM_DYNARRAY_POINTER();
-			GimTrimesh ptrimesh = Trimesh.m_collision_trimesh;
+			GimTrimesh ptrimesh = Trimesh.m_collision_trimesh();
 
 			ptrimesh.gim_trimesh_locks_work_data();
 
@@ -1290,13 +1276,13 @@ public class CollideCylinderTrimesh implements DColliderFn {
 			{
 				final int Triint = boxesresult[i];
 				
-				vec3f[] dvf = { new vec3f(), new vec3f(), new vec3f() };
-				ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dvf[0], dvf[1], dvf[2]);
-				
+				//vec3f[] dvf = { new vec3f(), new vec3f(), new vec3f() };
 				DVector3[] dv = { new DVector3(), new DVector3(), new DVector3() };
-				dv[0].set(dvf[0].f); 
-				dv[1].set(dvf[1].f); 
-				dv[2].set(dvf[2].f);
+				ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv[0], dv[1], dv[2]);
+				
+				//dv[0].set(dvf[0].f);
+				//dv[1].set(dvf[1].f);
+				//dv[2].set(dvf[2].f);
 				RefBoolean bFinishSearching = new RefBoolean(false);
 				ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dv, bFinishSearching);
 

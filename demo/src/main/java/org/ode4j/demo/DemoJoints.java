@@ -82,6 +82,9 @@ public class DemoJoints extends dsFunctions {
 	private static final float MASS = 1.0f;	// mass of a box
 	private static final float STEPSIZE = 0.05f;
 
+	private static final DVector3C xunit = new DVector3(1, 0, 0);
+	private static final DVector3C zunit = new DVector3(0, 0, 1);
+
 
 	// dynamics objects
 	private static DWorld world;
@@ -415,8 +418,7 @@ public class DemoJoints extends dsFunctions {
 			jointHinge2 = OdeHelper.createHinge2Joint (world,null);
 			jointHinge2.attach (body[0],body[1]);
 			jointHinge2.setAnchor (-0.5*SIDE,0,1);
-			jointHinge2.setAxis1 (0,0,1);
-			jointHinge2.setAxis2 (1,0,0);
+			jointHinge2.setAxes(zunit, xunit);
 			max_iterations = 50;
 			return 1;
 
@@ -429,8 +431,7 @@ public class DemoJoints extends dsFunctions {
 			jointHinge2 = OdeHelper.createHinge2Joint (world,null);
 			jointHinge2.attach (body[0],body[1]);
 			jointHinge2.setAnchor (-0.5*SIDE,0,1);
-			jointHinge2.setAxis1 (0,0,1);
-			jointHinge2.setAxis2 (1,0,0);
+			jointHinge2.setAxes(zunit, xunit);
 			jointHinge2.setParamFMax (1);
 			jointHinge2.setParamFMax2 (1);
 			if (n==431) {

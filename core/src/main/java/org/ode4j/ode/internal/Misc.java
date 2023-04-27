@@ -116,7 +116,6 @@ public class Misc extends Common {
 	 * as n approaches 2^32.
 	 * <p>
 	 *  adam's all-int straightforward(?) dRandInt (0..n-1)
-	 * TODO TZ Check whether this is ported correctly from unsigned long.
 	 * @param n max value
 	 * @return random value
 	 */

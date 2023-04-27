@@ -143,7 +143,8 @@ public class ErrorHdl {
 		//abort();
 //		msg += " -> ";
 //		for (Object o:ap) msg += o.toString() + " , ";
-//		throw new RuntimeException("#"+num + ": " + msg);
+		//throw new RuntimeException(String.format(msg, ap));
+		throw new RuntimeException("#"+num + ": " + String.format(msg, ap));
 		//  System.exit(2);
 	}
 

@@ -65,9 +65,12 @@ public class DxSimpleSpace extends DxSpace implements DSimpleSpace {
 			if (g instanceof DxSpace) {
 				((DxSpace)g).cleanGeoms();
 			}
+
 			g.recomputeAABB();
-			//g._gflags &= (~(GEOM_DIRTY|GEOM_AABB_BAD));
-			g.unsetFlagDirtyAndBad();
+			// dIASSERT((g->gflags & GEOM_AABB_BAD) == 0);
+			// g->gflags &= ~GEOM_DIRTY;
+			dIASSERT(!g.hasFlagAabbBad());
+			g.unsetFlagDirty();;
 		}
 		lock_count--;
 	}

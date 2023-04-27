@@ -590,6 +590,77 @@ void testReorthonormalize()
 				diff > tol ? "FAILED" : "passed");
 	}
 
+	private void testCoopLDLTFactorization()
+	{
+//		int i,j;
+//
+//       final int COOP_MSIZE = MSIZE * 51, COOP_MSIZE4 = dALIGN_SIZE(COOP_MSIZE, 4);
+//
+//		int matrixSize = COOP_MSIZE4 * COOP_MSIZE, vectorSize = COOP_MSIZE;
+//		double[] A = new double[matrixSize], L = new double[matrixSize], DL = new double[matrixSize],
+//        ATEST = new double[matrixSize], d = new double[vectorSize];
+//		double diff;
+//
+//    	final int threadCountMaximum = 8;
+//		dThreadingImplementationID threading = dThreadingAllocateMultiThreadedImplementation();
+//		dCooperativeID cooperative = dCooperativeCreate(dThreadingImplementationGetFunctions(threading), threading);
+//		dThreadingThreadPoolID pool = dThreadingAllocateThreadPool(threadCountMaximum, 0, dAllocateFlagBasicData, NULL);
+//		dThreadingThreadPoolServeMultiThreadedImplementation(pool, threading);
+//
+//		dResourceRequirementsID requirements = dResourceRequirementsCreate(cooperative);
+//		dEstimateCooperativelyFactorLDLTResourceRequirements(requirements, threadCountMaximum, COOP_MSIZE);
+//		dResourceContainerID resources = dResourceContainerAcquire(requirements);
+
+		HEADER();
+		System.out.println("SKIPPED!");
+
+//		for (int pass = 0; pass != 4; ++pass)
+//		{
+//			dTimerStart ("Factoring LDLT");
+//
+//        final int allowedThreads = 4;
+//        final int PASS_MSIZE = COOP_MSIZE - pass, PASS_MSIZE4 = dALIGN_SIZE(PASS_MSIZE, 4);
+//
+//			dTimerNow ("Preparing data");
+//			dMakeRandomMatrix (L, PASS_MSIZE, PASS_MSIZE, 1.0);
+//			dMultiply2 (A, L, L, PASS_MSIZE, PASS_MSIZE, PASS_MSIZE);
+//			Cstring.memcpy (L, A, PASS_MSIZE4 * PASS_MSIZE);
+//
+//			dTimerNow ("Factoring multi threaded");
+//			dCooperativelyFactorLDLT (resources, allowedThreads, L, d, PASS_MSIZE, PASS_MSIZE4);
+//
+//			dTimerNow ("Verifying");
+//			dClearUpperTriangle (L, PASS_MSIZE);
+//			for (i = 0; i < PASS_MSIZE; i++) L[i * PASS_MSIZE4 + i] = 1.0;
+//
+//			dSetZero (DL, 0, PASS_MSIZE4 * PASS_MSIZE);
+//			for (i = 0; i < PASS_MSIZE; i++) {
+//				for (j = 0; j < PASS_MSIZE; j++) DL[i * PASS_MSIZE4 + j] = L[i * PASS_MSIZE4 + j] / d[j];
+//			}
+//
+//			dMultiply2 (ATEST, L, DL, PASS_MSIZE, PASS_MSIZE, PASS_MSIZE);
+//			diff = dMaxDifference(A, ATEST, PASS_MSIZE, PASS_MSIZE);
+//			Cstdio.printf ("\tN=%u: maximum difference = %.6e - %s\n", PASS_MSIZE, diff, diff > 1e2 * tol ? "FAILED" : "passed");
+//
+//			dTimerEnd();
+//			FILE stdout = new FILE(System.out);
+//			dTimerReport(stdout, 0);
+//		}
+//
+//		dResourceContainerDestroy(resources);
+//		dResourceRequirementsDestroy(requirements);
+//
+//		dThreadingImplementationShutdownProcessing(threading);
+//		dThreadingFreeThreadPool(pool);
+//		dCooperativeDestroy(cooperative);
+//		dThreadingFreeImplementation(threading);
+//
+//		dFree(d, vectorSize);
+//		dFree(ATEST, matrixSize);
+//		dFree(DL, matrixSize);
+//		dFree(L, matrixSize);
+//		dFree(A, matrixSize);
+	}
 
 	private void testSolveLDLT()
 	{
@@ -614,6 +685,74 @@ void testReorthonormalize()
 				diff > tol ? "FAILED" : "passed");
 	}
 
+	void testCoopSolveLDLT()
+	{
+//    final int COOP_MSIZE = MSIZE * 51, COOP_MSIZE4 = dALIGN_SIZE(COOP_MSIZE, 4);
+//
+//		int matrixSize = COOP_MSIZE4 * COOP_MSIZE, vectorSize = COOP_MSIZE;
+//		dReal *A = (dReal *)dAlloc(matrixSize), *L = (dReal *)dAlloc(matrixSize),
+//        *d = (dReal *)dAlloc(vectorSize), *x = (dReal *)dAlloc(vectorSize),
+//        *b = (dReal *)dAlloc(vectorSize), *btest = (dReal *)dAlloc(vectorSize), diff;
+//
+//    	final int threadCountMaximum = 8;
+//		dThreadingImplementationID threading = dThreadingAllocateMultiThreadedImplementation();
+//		dCooperativeID cooperative = dCooperativeCreate(dThreadingImplementationGetFunctions(threading), threading);
+//		dThreadingThreadPoolID pool = dThreadingAllocateThreadPool(threadCountMaximum, 0, dAllocateFlagBasicData, NULL);
+//		dThreadingThreadPoolServeMultiThreadedImplementation(pool, threading);
+//
+//		dResourceRequirementsID requirements = dResourceRequirementsCreate(cooperative);
+//		dEstimateCooperativelySolveLDLTResourceRequirements(requirements, threadCountMaximum, COOP_MSIZE);
+//		dResourceContainerID resources = dResourceContainerAcquire(requirements);
+
+		HEADER();
+		System.out.println("Skipped");
+
+//		for (int pass = 0; pass != 4; ++pass)
+//		{
+//			dTimerStart ("Solving LDLT");
+//
+//        const unsigned allowedThreads = 4;
+//        const unsigned PASS_MSIZE = COOP_MSIZE - pass, PASS_MSIZE4 = dALIGN_SIZE(PASS_MSIZE, 4);
+//
+//			dTimerNow ("Preparing data");
+//			dMakeRandomMatrix (b, PASS_MSIZE, 1, 1.0);
+//
+//			dMakeRandomMatrix (L, PASS_MSIZE, PASS_MSIZE, 1.0);
+//			dMultiply2 (A, L, L, PASS_MSIZE, PASS_MSIZE, PASS_MSIZE);
+//
+//			memcpy (x, b, PASS_MSIZE * sizeof(dReal));
+//			memcpy (L, A, sizeof(dReal) * PASS_MSIZE4 * PASS_MSIZE);
+//
+//			dTimerNow ("Factoring");
+//			dFactorLDLT (L, d, PASS_MSIZE, PASS_MSIZE4);
+//
+//			dTimerNow ("Solving multi-threaded");
+//			dCooperativelySolveLDLT(resources, allowedThreads, L, d, x, PASS_MSIZE, PASS_MSIZE4);
+//
+//			dTimerNow ("Verifying solution");
+//			dMultiply2 (btest, A, x, PASS_MSIZE, PASS_MSIZE, 1);
+//			diff = dMaxDifference(b, btest, PASS_MSIZE, 1);
+//			printf ("\tN=%u: maximum difference = %.6e - %s\n", PASS_MSIZE, diff, diff > 1e2 * tol ? "FAILED" : "passed");
+//
+//			dTimerEnd();
+//			dTimerReport(stdout, 0);
+//		}
+//
+//		dResourceContainerDestroy(resources);
+//		dResourceRequirementsDestroy(requirements);
+//
+//		dThreadingImplementationShutdownProcessing(threading);
+//		dThreadingFreeThreadPool(pool);
+//		dCooperativeDestroy(cooperative);
+//		dThreadingFreeImplementation(threading);
+//
+//		dFree(btest, vectorSize);
+//		dFree(b, vectorSize);
+//		dFree(x, vectorSize);
+//		dFree(d, vectorSize);
+//		dFree(L, matrixSize);
+//		dFree(A, matrixSize);
+	}
 
 	private void testLDLTAddTL()
 	{
@@ -1350,9 +1489,10 @@ void testReorthonormalize()
 		testIsPositiveDefinite();
 		testIsPositiveDefiniteM3();
 		testFastLDLTFactorization();
+		testCoopLDLTFactorization();
 		testSolveLDLT();
+		testCoopSolveLDLT();
 		testLDLTAddTL();
-		//		
 		testLDLTRemove();
 		testMassFunctions();
 		testRtoQandQtoR();
