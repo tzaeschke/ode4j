@@ -1,6 +1,5 @@
 TODO for 0.5.0
 ==============
-- Update other dependencies, including JUnit
 - Android compatibility -> See TODO.txt
 - libGWT compatibility?
 - CI
@@ -35,6 +34,7 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 
 0.5.0 (unreleased)
 =====
+- Updated maven dependencies [#92](https://github.com/tzaeschke/ode4j/pull/92)
 - Test that internal assertions did not throw Exceptions. This was fixed as part of #86.
   [#74](https://github.com/tzaeschke/ode4j/issues/74)
 - Fixes to LWJGL 3.0 [#91](https://github.com/tzaeschke/ode4j/pull/91)
