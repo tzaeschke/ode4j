@@ -1,8 +1,8 @@
 ODE4J
 =====
 
-[![Build Status](https://travis-ci.org/tzaeschke/ode4j.svg?branch=master)](https://travis-ci.org/tzaeschke/ode4j)
-
+![Java 8](https://github.com/github/docs/actions/workflows/build-java-8.yml/badge.svg)
+![Java 9](https://github.com/github/docs/actions/workflows/build-java-9.yml/badge.svg)
 
 ode4j is a Java port of [ODE](http://www.ode.org/).
 

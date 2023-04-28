@@ -22,7 +22,8 @@ import static org.ode4j.ode.OdeHelper.areConnectedExcluding;
 public class CollisionPerformanceTest {
 
     private final static int WARMUP = 100 * 1000;
-    private final static int BENCHMARK = 1000 * 1000;
+    // private final static int BENCHMARK = 1000 * 1000;
+    private final static int BENCHMARK = 100 * 1000;
     private static final double DENSITY = 5.0;        // density of all objects
     private static final int MAX_CONTACTS = 8;
 
