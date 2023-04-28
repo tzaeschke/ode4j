@@ -52,6 +52,16 @@
 				<lwjgl.natives>natives-windows</lwjgl.natives>
 			</properties>
 		</profile>
+		<profile>
+			<id>lwjgl-natives-platform-missing</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<url>https://www.lwjgl.org/customize</url>
+				<lwjgl.natives>ERROR: native LWJGL libraries for this platform are not included. Either build without demos or adapt pom.xml. See https://www.lwjgl.org/customize. </lwjgl.natives>
+			</properties>
+		</profile>
 	</profiles>
 
 	<dependencyManagement>
@@ -114,11 +124,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>com.googlecode.mavennatives</groupId>
-				<artifactId>maven-nativedependencies-plugin</artifactId>
-			</plugin>
-
 			<!-- Produce an OSGi manifest -->
 			<plugin>
 				<groupId>biz.aQute.bnd</groupId>

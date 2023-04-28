@@ -37,6 +37,7 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 =====
 - Test that internal assertions did not throw Exceptions. This was fixed as part of #86.
   [#74](https://github.com/tzaeschke/ode4j/issues/74)
+- Fixes to LWJGL 3.0 [#91](https://github.com/tzaeschke/ode4j/pull/91)
 - Moved to LWJGL 3.0 [#89](https://github.com/tzaeschke/ode4j/issues/89)
 - Move to Java [#87](https://github.com/tzaeschke/ode4j/issues/87)
   (Cleanup, part of this was done with the move to 0.15.1)

@@ -38,11 +38,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>com.googlecode.mavennatives</groupId>
-				<artifactId>maven-nativedependencies-plugin</artifactId>
-			</plugin>
-
 			<!-- Produce an OSGi manifest -->
 			<plugin>
 				<groupId>biz.aQute.bnd</groupId>
