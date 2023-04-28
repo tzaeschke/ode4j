@@ -28,16 +28,10 @@ import org.ode4j.ode.*;
 /**
  *  Shows an incorrect calculation of the contact normal collision beam and boxing
  */
-public class Test_Bug0019_OdeRayToCylinder
-{
+public class Test_Bug0019_OdeRayToCylinder {
 
 	private static boolean found = false;
-	
-    public static void main(String[] args) {
-		new Test_Bug0019_OdeRayToCylinder().test();
-    }
-	
-	
+
 	@Test
 	public void test() {
 		OdeHelper.initODE2(0);
