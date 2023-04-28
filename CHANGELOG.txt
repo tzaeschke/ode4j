@@ -1,14 +1,15 @@
 TODO for 0.5.0
 ==============
-- Android compatibility -> See TODO.txt
 - libGWT compatibility?
 - CI
+- add default logger, see ZooDB?
 - Java 9/10/11 ?
 - Beautify CHANGELOG -> .md
 - Issue #22
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
 - Move non-cpp tests out of cpp
 - Move to Google Java Code Style
+- Check commented out tests in surefire-plugin
 
 --> See TODO.txt
 
@@ -32,8 +33,11 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 // TODO TZ fix
 // TODO CHECK-TZ
 
+
 0.5.0 (unreleased)
 =====
+- Added Android API compliance checker, now for API level 24 (the lowest that ode4j passed without changes)
+  [#93](https://github.com/tzaeschke/ode4j/pull/93)
 - Updated maven dependencies [#92](https://github.com/tzaeschke/ode4j/pull/92)
 - Test that internal assertions did not throw Exceptions. This was fixed as part of #86.
   [#74](https://github.com/tzaeschke/ode4j/issues/74)

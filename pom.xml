@@ -273,6 +273,21 @@
 						</execution>
 					</executions>
 				</plugin>
+
+				<!-- Check compatibility with: mvn animal-sniffer:check -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>animal-sniffer-maven-plugin</artifactId>
+					<version>1.22</version>
+					<configuration>
+						<signature>
+							<groupId>com.toasttab.android</groupId>
+							<artifactId>gummy-bears-api-24</artifactId>
+							<version>0.5.1</version>
+						</signature>
+					</configuration>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 
