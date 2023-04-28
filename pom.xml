@@ -34,7 +34,6 @@
 		<ode4j.maven-install-plugin.version>2.5.2</ode4j.maven-install-plugin.version>
 		<ode4j.maven-jar-plugin.version>3.1.0</ode4j.maven-jar-plugin.version>
 		<ode4j.maven-javadoc-plugin.version>3.0.0-M1</ode4j.maven-javadoc-plugin.version>
-		<ode4j.maven-nativedependencies-plugin.version>0.0.7</ode4j.maven-nativedependencies-plugin.version>
 		<ode4j.maven-plugin-plugin.version>3.2</ode4j.maven-plugin-plugin.version>
 		<ode4j.maven-resources-plugin.version>3.0.0</ode4j.maven-resources-plugin.version>
 		<ode4j.maven-source-plugin.version>3.0.1</ode4j.maven-source-plugin.version>
@@ -216,22 +215,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-plugin-plugin</artifactId>
 					<version>${ode4j.maven-plugin-plugin.version}</version>
-				</plugin>
-
-				<plugin>
-					<!-- mvn nativedependencies:copy -->
-					<groupId>com.googlecode.mavennatives</groupId>
-					<artifactId>maven-nativedependencies-plugin</artifactId>
-					<version>${ode4j.maven-nativedependencies-plugin.version}</version>
-					<executions>
-						<execution>
-							<id>unpacknatives</id>
-							<phase>generate-resources</phase>
-							<goals>
-								<goal>copy</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 
 				<plugin>
