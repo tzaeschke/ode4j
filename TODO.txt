@@ -1,10 +1,17 @@
+Before release:
+===============
+mvn animal-sniffer:check
+mvn versions:display-dependency-updates
+mvn versions:display-plugin-updates
+
+
+
 Java Version
 ============
-Summary:
 - We should aim for Oreo or later (Android 8.0, released 2017, API Level 26: https://apilevels.com/)
 - Java 8 should be fine.
 - Try animal-sniffer plugin for higher versions, e.g. Java 9
-
+  More accurate (respects desugaring by D8): https://github.com/open-toast/gummy-bears
 
 - Android Runtime replaced Dalvik as default Runtime in Android 5: https://en.wikipedia.org/wiki/Android_version_history
 - Android 8 (Oreo) is about 8% share:
@@ -17,19 +24,8 @@ Summary:
   - Android 11 support "up to" Java 13 (Question: complete 13 or partial 13??)
 - 2018: https://jakewharton.com/androids-java-9-10-11-and-12-support/
 
-Oreo was release in August 2017
-Gradle 4.0.0 was released April 2020: https://developer.android.com/build/releases/past-releases/agp-4-0-0-release-notes
-
 - Java 8 support: https://developer.android.com/studio/write/java8-support-table
 - Java 8 support details: https://developer.android.com/studio/write/java8-support
-
-
-Compliance checkers:
-https://stackoverflow.com/questions/11048805/maven-plugin-for-checking-api-compliance-with-android
-  -> TRY THIS!!!!
-https://lvc.github.io/japi-compliance-checker/    (up to 2018 / Java 9)
-https://simpligility.github.io/android-maven-plugin/index.html  (up to 2019)
-
 
 
 MArch 2023:
@@ -37,7 +33,6 @@ General cleanup:
 - CHANGELOG -> .md
 - check excluded tests in .pom
 - Move tests to core/test
-- update .pom dependencies
 - update DVector3 safeNormalize to use max() and then compare to 0. ALso see: https://github.com/JOML-CI/JOML/issues/66
 - replace DVector3.clone() with dVector3.re() or copy()
 - reformat everything? At least indentation?
