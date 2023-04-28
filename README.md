@@ -1,8 +1,8 @@
 ODE4J
 =====
 
-![Java 8](https://github.com/github/docs/actions/workflows/build-java-8.yml/badge.svg)
-![Java 9](https://github.com/github/docs/actions/workflows/build-java-9.yml/badge.svg)
+![Java 8](https://github.com/tzaeschke/ode4j/actions/workflows/build-java-8.yml/badge.svg)
+![Java 9](https://github.com/tzaeschke/ode4j/actions/workflows/build-java-9.yml/badge.svg)
 
 ode4j is a Java port of [ODE](http://www.ode.org/).
 
