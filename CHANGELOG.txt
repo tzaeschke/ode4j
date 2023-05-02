@@ -17,6 +17,8 @@ TODO for 0.5.0
   - "Split package, multiple jars provide the same package"
   - [WARNING] bootstrap class path not set in conjunction with -source 8
     when using: mvn clean install -P on-jdk-9-plus
+- CI: Fail build on warnbing?!
+- CI: remove "temurin"...?!
 
 
 --> See TODO.txt
