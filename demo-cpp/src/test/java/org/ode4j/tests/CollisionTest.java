@@ -24,33 +24,17 @@
  *************************************************************************/
 package org.ode4j.tests;
 
-import static org.ode4j.cpp.internal.ApiCppCollision.dCollide;
-import static org.ode4j.cpp.internal.ApiCppCollision.dCreateHeightfield;
-import static org.ode4j.cpp.internal.ApiCppCollision.dCreateRay;
-import static org.ode4j.cpp.internal.ApiCppCollision.dCreateSphere;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomDestroy;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomHeightfieldDataBuildByte;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomHeightfieldDataCreate;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomHeightfieldDataDestroy;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomHeightfieldDataSetBounds;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomRaySet;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetPosition;
-import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetRotation;
+import static org.ode4j.cpp.internal.ApiCppCollision.*;
 import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dCreateTriMesh;
 import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dGeomTriMeshDataBuildSingle;
 import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dGeomTriMeshDataCreate;
-import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_ARRAY_EQUAL;
-import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_EQUAL;
+import static org.ode4j.ode.internal.Common.*;
+import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.DContactBuffer;
-import org.ode4j.ode.DContactGeomBuffer;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DHeightfieldData;
-import org.ode4j.ode.DRay;
-import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.*;
 import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
@@ -198,5 +182,115 @@ public class CollisionTest extends TestSuperClass {
 		dGeomHeightfieldDataDestroy(heightfieldData);
 	}
 
+
+	// Copied from ConvexRayCollisionTest
+	private final int prism_pointcount = 8;
+	private final int prism_planecount = 6;
+	private final double prism_points[] = { 10.0, 1.0, -1.0, 10.0, -1.0, -1.0, -10.0, -1.0, -1.0, -10.0, 1.0, -1.0,
+			10.0, 1.0, 1.0, 10.0, -1.0, 1.0, -10.0, -1.0, 1.0, -10.0, 1.0, 1.0 };
+
+	private final int prism_polygons[] = { 4, 0, 1, 2, 3, 4, 4, 7, 6, 5, 4, 0, 4, 5, 1, 4, 1, 5, 6, 2, 4, 2, 6, 7, 3, 4,
+			4, 0, 3, 7, };
+
+	private final double prism_planes[] = { 0.0, 0.0, -1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 10.0, 0.0, -1.0,
+			0.0, 1.0, -1.0, 0.0, -0.0, 10.0, 0.0, 1.0, 0.0, 1.0, };
+
+	@Test
+	public void test_collision_ray_convex()
+	{
+		/*
+		 * Issue 55: ray vs convex collider does not consider the position of the convex geometry.
+		 */
+		{
+			DContactBuffer all_contacts = new DContactBuffer(1);
+			DContactGeomBuffer contacts = all_contacts.getGeomBuffer();
+			DContact contact = all_contacts.get(0); // TODO correct?
+
+			// Create convex
+			DGeom convex = dCreateConvex(null,
+					prism_planes,
+					prism_planecount,
+					prism_points,
+					prism_pointcount,
+					prism_polygons);
+			dGeomSetPosition(convex,0,0,0);
+
+			// Create ray
+			DRay ray = dCreateRay(null, 20);
+
+			dGeomRaySet(ray, 0, -10, 0, 0, 1, 0);
+
+			int count = dCollide(ray, convex, 1, contacts);
+
+			CHECK_EQUAL(1,count);
+			CHECK_CLOSE(0.0,contact.geom.pos.get0(), dEpsilon);
+			CHECK_CLOSE(-1.0,contact.geom.pos.get1(), dEpsilon);
+			CHECK_CLOSE(0.0,contact.geom.pos.get2(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.normal.get0(), dEpsilon);
+			CHECK_CLOSE(-1.0, contact.geom.normal.get1(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.normal.get2(), dEpsilon);
+			CHECK_CLOSE(9.0, contact.geom.depth, dEpsilon);
+
+			// Move Ray
+			dGeomRaySet(ray, 5, -10, 0, 0, 1, 0);
+
+			count = dCollide(ray, convex, 1, contacts);
+
+			CHECK_EQUAL(1,count);
+			CHECK_CLOSE(5.0, contact.geom.pos.get0(), dEpsilon);
+			CHECK_CLOSE(-1.0, contact.geom.pos.get1(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.pos.get2(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.normal.get0(), dEpsilon);
+			CHECK_CLOSE(-1.0, contact.geom.normal.get1(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.normal.get2(), dEpsilon);
+			CHECK_CLOSE(9.0, contact.geom.depth, dEpsilon);
+
+			// Rotate Convex
+			DMatrix3 rotate90z = new DMatrix3(
+
+							0,-1,0,0,
+							1,0,0,0,
+							0,0,1,0
+			);
+			dGeomSetRotation(convex, rotate90z);
+
+			count = dCollide(ray, convex, 1, contacts);
+
+			CHECK_EQUAL(0,count);
+
+			// Move Ray
+			dGeomRaySet(ray, 10, 0, 0, -1, 0, 0);
+			count = dCollide(ray, convex, 1, contacts);
+
+			CHECK_EQUAL(1,count);
+			CHECK_CLOSE(1.0, contact.geom.pos.get0(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.pos.get1(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.pos.get2(), dEpsilon);
+			CHECK_CLOSE(1.0, contact.geom.normal.get0(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.normal.get1(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.normal.get2(), dEpsilon);
+			CHECK_CLOSE(9.0,contact.geom.depth, dEpsilon);
+
+
+			// Move Ray
+			dGeomRaySet(ray, 10, 1000, 1000, -1, 0, 0);
+			// Move Geom
+			dGeomSetPosition(convex, 0, 1000, 1000);
+
+			count = dCollide(ray, convex, 1, contacts);
+
+			CHECK_EQUAL(1, count);
+			CHECK_CLOSE(1.0, contact.geom.pos.get0(), dEpsilon);
+			CHECK_CLOSE(1000.0, contact.geom.pos.get1(), dEpsilon);
+			CHECK_CLOSE(1000.0, contact.geom.pos.get2(), dEpsilon);
+			CHECK_CLOSE(1.0, contact.geom.normal.get0(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.normal.get1(), dEpsilon);
+			CHECK_CLOSE(0.0, contact.geom.normal.get2(), dEpsilon);
+			CHECK_CLOSE(9.0, contact.geom.depth, dEpsilon);
+
+			dGeomDestroy(convex);
+			dGeomDestroy(ray);
+		}
+	}
 
 }

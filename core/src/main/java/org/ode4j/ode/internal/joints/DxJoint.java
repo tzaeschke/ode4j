@@ -409,6 +409,13 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 		dCalcVectorCross3(J1A, J1Ofs + rowskip + JointEnums.GI2__JA_MIN, a1, q1);
 		dCalcVectorCross3(J1A, J1Ofs + 2 * rowskip + JointEnums.GI2__JA_MIN, a1, q2);
 
+		DxBody b0 = node[0].body;
+		dAddVectors3(a1, a1, b0.posr().pos());
+
+		// set right hand side - measure error along (axis,q1,q2)
+		double k1 = fps * erp1;
+		double k = fps * erp;
+
 		DxBody b1 = joint.node[1].body;
 		if (b1 != null) {
 			dCopyNegatedVector3(J2A, J2Ofs + JointEnums.GI2__JL_MIN, axis);
@@ -422,16 +429,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 			dCalcVectorCross3(J2A, J2Ofs + 2 * rowskip + JointEnums.GI2__JA_MIN, q2, a2); //== dCalcVectorCross3( J2 +
 			// 2 * rowskip + JointEnums.GI2__J2A_MIN, a2, q2 ); dNegateVector3( J2 + 2 * rowskip + JointEnums
 			// .GI2__J2A_MIN );
-		}
 
-		// set right hand side - measure error along (axis,q1,q2)
-		double k1 = fps * erp1;
-		double k = fps * erp;
-
-		DxBody b0 = joint.node[0].body;
-		dAddVectors3(a1, a1, b0.posr().pos());
-
-		if (b1 != null) {
 			dAddVectors3(a2, a2, b1.posr().pos());
 
 			DVector3 a2_minus_a1 = new DVector3();

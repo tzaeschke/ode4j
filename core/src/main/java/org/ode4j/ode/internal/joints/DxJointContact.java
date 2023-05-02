@@ -80,40 +80,69 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		// make sure mu's >= 0, then calculate number of constraint rows and number
 		// of unbounded rows.
 		int m = 1, nub = 0;
-	    boolean roll = (contact.surface.mode&OdeConstants.dContactRolling)!=0;
-	    
-		if ( contact.surface.mu < 0 ) contact.surface.mu = 0;
 
-	    // Anisotropic sliding and rolling and spinning friction 
-	    if ( (contact.surface.mode & OdeConstants.dContactAxisDep) != 0 )
-		{
-			if ( contact.surface.mu2 < 0 ) contact.surface.mu2 = 0;
-			if ( contact.surface.mu > 0 ) m++;
-			if ( contact.surface.mu2 > 0 ) m++;
-			if ( contact.surface.mu  == dInfinity ) nub ++;
-			if ( contact.surface.mu2 == dInfinity ) nub ++;
-	        if (roll) {
-	            if ( contact.surface.rho < 0 ) contact.surface.rho = 0;
-	            else m++;
-	            if ( contact.surface.rho2 < 0 ) contact.surface.rho2 = 0;
-	            else m++;
-	            if ( contact.surface.rhoN < 0 ) contact.surface.rhoN = 0;
-	            else m++;
+		// Anisotropic sliding and rolling and spinning friction
+		if ((contact.surface.mode & dContactAxisDep) != 0) {
+			if (contact.surface.mu < 0) {
+				contact.surface.mu = 0;
+			}
+			else if (contact.surface.mu > 0) {
+				if (contact.surface.mu == dInfinity) { nub++; }
+				m++;
+			}
 
-	            if ( contact.surface.rho  == dInfinity ) nub++;
-	            if ( contact.surface.rho2 == dInfinity ) nub++;
-	            if ( contact.surface.rhoN == dInfinity ) nub++;
-	          }
+			if (contact.surface.mu2 < 0) {
+				contact.surface.mu2 = 0;
+			}
+			else if (contact.surface.mu2 > 0) {
+				if (contact.surface.mu2 == dInfinity) { nub++; }
+				m++;
+			}
+
+			if ((contact.surface.mode & dContactRolling) != 0) {
+				if (contact.surface.rho < 0) {
+					contact.surface.rho = 0;
+				}
+				else {
+					if (contact.surface.rho == dInfinity) { nub++; }
+					m++;
+				}
+
+				if (contact.surface.rho2 < 0) {
+					contact.surface.rho2 = 0;
+				}
+				else {
+					if (contact.surface.rho2 == dInfinity) { nub++; }
+					m++;
+				}
+
+				if (contact.surface.rhoN < 0) {
+					contact.surface.rhoN = 0;
+				}
+				else {
+					if (contact.surface.rhoN == dInfinity) { nub++; }
+					m++;
+				}
+			}
 		}
-		else
-		{
-			if ( contact.surface.mu > 0 ) m += 2;
-			if ( contact.surface.mu == dInfinity ) nub += 2;
-	        if (roll) {
-	            if ( contact.surface.rho < 0 ) contact.surface.rho = 0;
-	            else m+=3;
-	            if ( contact.surface.rho == dInfinity ) nub += 3;
-	          }
+		else {
+			if (contact.surface.mu < 0) {
+				contact.surface.mu = 0;
+			}
+			else if (contact.surface.mu > 0) {
+				if (contact.surface.mu == dInfinity) { nub += 2; }
+				m += 2;
+			}
+
+			if ((contact.surface.mode & dContactRolling) != 0) {
+				if (contact.surface.rho < 0) {
+					contact.surface.rho = 0;
+				}
+				else {
+					if (contact.surface.rho == dInfinity) { nub += 3; }
+					m += 3;
+				}
+			}
 		}
 
 		the_m = m;
@@ -131,33 +160,8 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		final int ROW_NORMAL = 0;
 		final int ROW__OPTIONAL_MIN = 1;
 
-		// get normal, with sign adjusted for body1/body2 polarity
-		DVector3 normal = new DVector3();
-		if (isFlagsReverse()) {
-			dCopyNegatedVector3(normal, contact.geom.normal);
-		} else {
-			dCopyVector3(normal, contact.geom.normal);
-		}
-
-		// c1,c2 = contact points with respect to body PORs
-		DVector3 c1 = new DVector3(), c2 = new DVector3(0, 0, 0);
-
-		DxBody b0 = node[0].body;
-		dSubtractVectors3(c1, contact.geom.pos, b0.posr().pos());
-
-		// set Jacobian for normal
-		dCopyVector3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, normal);
-		dCalcVectorCross3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, c1, normal);
-
-		DxBody b1 = node[1].body;
-		if (b1 != null) {
-			dSubtractVectors3(c2, contact.geom.pos, b1.posr().pos());
-			dCopyNegatedVector3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, normal);
-			dCalcVectorCross3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, normal, c2); //== dCalcVectorCross3(
-			// J2A, J2Ofs + GI2__JA_MIN, c2, normal ); dNegateVector3( J2A, J2Ofs + GI2__JA_MIN );
-		}
-
 		final int surface_mode = contact.surface.mode;
+
 		// set right hand side and cfm value for normal
 		double erp = (surface_mode & dContactSoftERP) != 0 ? contact.surface.soft_erp : worldERP;
 		double k = worldFPS * erp;
@@ -167,28 +171,59 @@ public class DxJointContact extends DxJoint implements DContactJoint
 
 		double motionN = (surface_mode & dContactMotionN) != 0 ? contact.surface.motionN : 0.0;
 		final double pushout = k * depth + motionN;
+
+		boolean apply_bounce = (surface_mode & dContactBounce) != 0 && contact.surface.bounce_vel >= 0;
+		double outgoing = 0;
+
 		// note: this cap should not limit bounce velocity
 		final double maxvel = world.contactp.max_vel;
 		double c = pushout > maxvel ? maxvel : pushout;
 
-		// deal with bounce
-		if ((surface_mode & dContactBounce) != 0) {
-			// calculate outgoing velocity (-ve for incoming contact)
-			double outgoing =
-					dCalcVectorDot3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, node[0].body.lvel)
-							+ dCalcVectorDot3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, node[0].body.avel);
+		// c1,c2 = contact points with respect to body PORs
+		DVector3 c1 = new DVector3(), c2 = new DVector3();
 
-			if (b1 != null) {
-				outgoing += dCalcVectorDot3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, node[1].body.lvel)
-						+ dCalcVectorDot3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, node[1].body.avel);
+		// get normal, with sign adjusted for body1/body2 polarity
+		DVector3 normal = new DVector3();
+		if ((flags & dJOINT_REVERSE) != 0) {
+			dCopyNegatedVector3(normal, contact.geom.normal);
+		}
+		else {
+			dCopyVector3(normal, contact.geom.normal);
+		}
+
+		DxBody b1 = node[1].body;
+		if (b1 != null) {
+			dSubtractVectors3(c2, contact.geom.pos, b1.posr().pos());
+			// set Jacobian for b1 normal
+			dCopyNegatedVector3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, normal);
+			dCalcVectorCross3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, normal, c2); //== dCalcVectorCross3( J2 + GI2__JA_MIN, c2, normal ); dNegateVector3( J2 + GI2__JA_MIN );
+			if (apply_bounce) {
+				outgoing /*+*/= dCalcVectorDot3(J2A, J2Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, node[1].body.avel)
+				- dCalcVectorDot3(normal, node[1].body.lvel);
 			}
+		}
 
-			outgoing -= motionN;
+		DxBody b0 = node[0].body;
+		dSubtractVectors3(c1, contact.geom.pos, b0.posr().pos());
+		// set Jacobian for b0 normal
+		dCopyVector3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JL_MIN, normal);
+		dCalcVectorCross3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, c1, normal);
+		if (apply_bounce) {
+			// calculate outgoing velocity (-ve for incoming contact)
+			outgoing += dCalcVectorDot3(J1A, J1Ofs + ROW_NORMAL * rowskip + GI2__JA_MIN, node[0].body.avel)
+			+ dCalcVectorDot3(normal, node[0].body.lvel);
+		}
+
+		// deal with bounce
+		if (apply_bounce) {
+			double negated_outgoing = motionN - outgoing;
 			// only apply bounce if the outgoing velocity is greater than the
 			// threshold, and if the resulting c[rowNormal] exceeds what we already have.
-			if (contact.surface.bounce_vel >= 0 && (-outgoing) > contact.surface.bounce_vel) {
-				final double newc = -contact.surface.bounce * outgoing + motionN;
-				if (newc > c) c = newc;
+			dIASSERT(contact.surface.bounce_vel >= 0);
+			if (/*contact.surface.bounce_vel >= 0 &&*/
+					negated_outgoing > contact.surface.bounce_vel) {
+            final double newc = contact.surface.bounce * negated_outgoing + motionN;
+				if (newc > c) { c = newc; }
 			}
 		}
 
@@ -218,7 +253,9 @@ public class DxJointContact extends DxJoint implements DContactJoint
 			int currRowSkip = row * rowskip, currPairSkip = row * pairskip;
 
 			// first friction direction
-			if (contact.surface.mu > 0) {
+      		final double mu = contact.surface.mu;
+
+			if (mu > 0) {
 				dCopyVector3(J1A, J1Ofs + currRowSkip + GI2__JL_MIN, t1);
 				dCalcVectorCross3(J1A, J1Ofs + currRowSkip + GI2__JA_MIN, c1, t1);
 
@@ -239,8 +276,8 @@ public class DxJointContact extends DxJoint implements DContactJoint
 
 				// set LCP bounds and friction index. this depends on the approximation
 				// mode
-				pairLoHiA[pairLoHiOfs + currPairSkip + GI2_LO] = -contact.surface.mu;
-				pairLoHiA[pairLoHiOfs + currPairSkip + GI2_HI] = contact.surface.mu;
+				pairLoHiA[pairLoHiOfs + currPairSkip + GI2_LO] = -mu;
+				pairLoHiA[pairLoHiOfs + currPairSkip + GI2_HI] = mu;
 
 				if ((surface_mode & dContactApprox1_1) != 0) {
 					findexA[findexOfs + row] = 0;
@@ -251,9 +288,8 @@ public class DxJointContact extends DxJoint implements DContactJoint
 				currPairSkip += pairskip;
 			}
 
-			final double mu2 = (surface_mode & dContactMu2) != 0 ? contact.surface.mu2 : contact.surface.mu;
-
 			// second friction direction
+			final double mu2 = (surface_mode & dContactMu2) != 0 ? contact.surface.mu2 : mu;
 			if (mu2 > 0) {
 				dCopyVector3(J1A, J1Ofs + currRowSkip + GI2__JL_MIN, t2);
 				dCalcVectorCross3(J1A, J1Ofs + currRowSkip + GI2__JA_MIN, c1, t2);
@@ -289,6 +325,15 @@ public class DxJointContact extends DxJoint implements DContactJoint
 
 			// Handle rolling/spinning friction
 			if ((surface_mode & dContactRolling) != 0) {
+
+				DVector3C[] ax = {
+						t1, // Rolling around t1 creates movement parallel to t2
+						t2,
+						normal // Spinning axis
+				};
+
+				final int[] approx_bits = { dContactApprox1_1, dContactApprox1_2, dContactApprox1_N };
+
 				// Get the coefficients
 				double[] rho = new double[3];
 				rho[0] = contact.surface.rho;
@@ -299,17 +344,6 @@ public class DxJointContact extends DxJoint implements DContactJoint
 					rho[1] = rho[0];
 					rho[2] = rho[0];
 				}
-
-				final DVector3C[] ax = new DVector3[3];
-				ax[0] = t1; // Rolling around t1 creates movement parallel to t2
-				ax[1] = t2;
-				ax[2] = normal; // Spinning axis
-
-				// Should we use proportional force?
-				boolean[] approx = new boolean[3];
-				approx[0] = (surface_mode & dContactApprox1_1) != 0;
-				approx[1] = (surface_mode & dContactApprox1_2) != 0;
-				approx[2] = (surface_mode & dContactApprox1_N) != 0;
 
 				for (int i = 0; i != 3; ++i) {
 					if (rho[i] > 0) {
@@ -324,8 +358,9 @@ public class DxJointContact extends DxJoint implements DContactJoint
 						pairLoHiA[pairLoHiOfs + currPairSkip + GI2_LO] = -rho[i];
 						pairLoHiA[pairLoHiOfs + currPairSkip + GI2_HI] = rho[i];
 
-						// Make limits proportional to normal force
-						if (approx[i]) {
+						// Should we use proportional force?
+						if ((surface_mode & approx_bits[i]) != 0) {
+							// Make limits proportional to normal force
 							findexA[findexOfs + row] = 0;
 						}
 

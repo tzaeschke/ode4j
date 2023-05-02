@@ -208,6 +208,10 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			if ( node[1].body!=null )
 			{
 				// Find joint->anchor2 in global coordinates
+
+				// NOTE! anchor2 needs a volatile assignment on the multiplication to discard computation errors.
+				// Otherwise, tests fail for single type on x86.
+				// dxTruncToType::dMultiply0_331(anchor2, joint->node[1].body->posr.R, joint->anchor2);
 				dMultiply0_331( anchor2, node[1].body.posr().R(), _anchor2 );
 
 				//				r.v[0] = ( node[0].body._posr.pos.v[0] -
