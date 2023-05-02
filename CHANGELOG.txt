@@ -44,6 +44,14 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 =====
 - Port updates until 16.2.
   TODO FIX prism dependency in ColliksionTest.test_collision_ray_convex()
+  Not ported:
+  - resource_control.*
+  - simple_cooperation.*
+  - Updates to DxWorldProcessContext
+  - threaded_solver.ldlt.h
+
+  DONE: backwards up until quickstep.cpp
+
 - Added GutHub Actions CI builds for Java 8 and 9. [#95](https://github.com/tzaeschke/ode4j/pull/95)
 - Added default logger for demos and tests. [#94](https://github.com/tzaeschke/ode4j/pull/94)
 - Added Android API compliance checker, now for API level 24 (the lowest that ode4j passed without changes)

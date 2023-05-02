@@ -57,7 +57,10 @@ public class Atomics {
 	    int resultValue;
 	    while (true) {
 	        resultValue = storagePointer.get();
-	        if (resultValue == limitValue) {
+			// The ">=" comparison is used here to allow continuing incrementing the destination
+			// without waiting for all the threads to pass the barrier of checking its value
+			if (resultValue >= limitValue) {
+				resultValue = limitValue;
 	            break;
 	        }
 	        if (ThrsafeCompareExchange(storagePointer, resultValue, resultValue + 1)) {
@@ -72,7 +75,10 @@ public class Atomics {
 	    int resultValue;
 	    while (true) {
 	        resultValue = storagePointer.get();
-	        if (resultValue == limitValue) {
+			// The ">=" comparison is not required here at present ("==" could be used).
+			// It is just used this way to match the other function above.
+			if (resultValue >= limitValue) {
+				resultValue = limitValue;
 	            break;
 	        }
 	        //if (ThrsafeCompareExchangePointer((volatile atomicptr *)storagePointer, (atomicptr)resultValue, (atomicptr)(resultValue + 1))) {

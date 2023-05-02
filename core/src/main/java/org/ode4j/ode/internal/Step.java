@@ -1582,22 +1582,13 @@ dmaxcallcountestimate_fn_t {
 		stage3CallContext = null; // WARNING! stage3CallContext is not valid after this point!
 		dIVERIFY(stage3CallContext == null); // To suppress unused variable assignment warnings
 
-		double[] invI = localContext.m_invI;
-		dJointWithInfo1[] jointinfosA = localContext.m_jointinfosA;
-		int jointinfosP = localContext.m_jointinfosOfs;
-		int nj = localContext.m_nj;
 		int m = localContext.m_m;
 		int nub = localContext.m_nub;
 		//const unsigned int *mindex = localContext.m_mindex;
 		int[] findex = localContext.m_findex;
-		double[] J = localContext.m_J;
 		double[] A = localContext.m_A;
 		double[] pairsRhsLambda = localContext.m_pairsRhsCfm; // Reuse cfm buffer for lambdas as the former values are not needed any more
 		double[] pairsLoHi = localContext.m_pairsLoHi;
-
-		DxBody[] bodyA = callContext.m_islandBodiesStartA();
-		int bodyP = callContext.m_islandBodiesStartOfs();
-		int nb = callContext.m_islandBodiesCount();
 
 		if (m > 0) {
 			BlockPointer lcpstate = memarena.BEGIN_STATE_SAVE();

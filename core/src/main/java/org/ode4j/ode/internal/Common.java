@@ -680,23 +680,21 @@ enum {
 	public static int SIZE_MAX = Integer.MAX_VALUE;
 
 
-//#ifndef offsetof
-//#define offsetof(s, m) ((size_t)&(((s *)8)->m) - (size_t)8)
-//			#endif
-//#ifndef membersize
-//#define membersize(s, m) (sizeof(((s *)8)->m))
-//			#endif
-//#ifndef endoffsetof
-//#define endoffsetof(s, m)   ((size_t)((size_t)&(((s *)8)->m) - (size_t)8) + sizeof(((s *)8)->m))
-//			#endif
+	//#ifndef offsetof
+	//#define offsetof(s, m) ((size_t)&(((s *)8)->m) - (size_t)8)
+	//			#endif
+	//#ifndef membersize
+	//#define membersize(s, m) (sizeof(((s *)8)->m))
+	//			#endif
+	//#ifndef endoffsetof
+	//#define endoffsetof(s, m)   ((size_t)((size_t)&(((s *)8)->m) - (size_t)8) + sizeof(((s *)8)->m))
+	//			#endif
 
-//#define dMACRO_MAX(a, b) ((a) > (b) ? (a) : (b))
-//			#define dMACRO_MIN(a, b) ((a) < (b) ? (a) : (b))
-	public static int dMACRO_MIN(int a, int b) {
-		return Math.min(a, b);
-	}
-//
-//			#define dMAKE_PADDING_SIZE(DataType, ElementType) ((sizeof(DataType) + sizeof(ElementType) - 1) / sizeof(ElementType))
+	//#define dMACRO_MAX(a, b) ((a) > (b) ? (a) : (b))
+	//			#define dMACRO_MIN(a, b) ((a) < (b) ? (a) : (b))
+	//	public static int dMACRO_MIN(int a, int b) {
+	//		return Math.min(a, b);
+	//	}
 
 
 //	template<typename DstType, typename SrcType>

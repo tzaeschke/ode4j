@@ -36,8 +36,8 @@ public final class DxWorldProcessMemArena {
     //   public:
     // #define BUFFER_TO_ARENA_EXTRA (EFFICIENT_ALIGNMENT + dEFFICIENT_SIZE(sizeof(dxWorldProcessMemArena)))
     private final static int BUFFER_TO_ARENA_EXTRA () {
-        return (DxUtil.EFFICIENT_ALIGNMENT + DxUtil.dEFFICIENT_SIZE(
-                DxUtil.sizeof(DxWorldProcessMemArena.class)));
+        return 0; //(DxUtil.EFFICIENT_ALIGNMENT + DxUtil.dEFFICIENT_SIZE(
+                //DxUtil.sizeof(DxWorldProcessMemArena.class)));
     }
 
     static boolean IsArenaPossible(int nBufferSize)

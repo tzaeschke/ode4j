@@ -281,50 +281,50 @@ public class DxWorld extends DBase implements DWorld {
 	    return islands_max_threads;
 	}
 
-	/**
-	 * 
-	 * @param policyinfo
-	 * @return x
-	 * @deprecated Not used anymore: remove TODO
-	 */
-	@Deprecated
-	boolean dWorldSetStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo)
-	{
-	    dUASSERT (policyinfo==null || (policyinfo.struct_size >= DxUtil.sizeof(policyinfo) && policyinfo.reserve_factor >= 1.0f), "Bad policy info");
-
-	    boolean result = false;
-
-	    //(TZ) DxStepWorkingMemory wmem = policyinfo!=null ? AllocateOnDemand(this.wmem) : this.wmem;
-        DxStepWorkingMemory wmem;
-        if (policyinfo!=null) {
-            if (this.wmem == null) {
-                this.wmem = new DxStepWorkingMemory();
-            }
-            wmem = this.wmem;
-        } else {
-            wmem = this.wmem;
-        }
-
-	    if (wmem!=null)
-	    {
-	        if (policyinfo!=null)
-	        {
-	            wmem.SetMemoryReserveInfo(policyinfo.reserve_factor, policyinfo.reserve_minimum);
-	            result = wmem.GetMemoryReserveInfo() != null;
-	        }
-	        else
-	        {
-	            wmem.ResetMemoryReserveInfoToDefault();
-	            result = true;
-	        }
-	    }
-	    else if (policyinfo==null)
-	    {
-	        result = true;
-	    }
-
-	    return result;
-	}
+	//	/**
+	//	 *
+	//	 * @param policyinfo
+	//	 * @return x
+	//	 * @deprecated Not used anymore
+	//	 */
+	//	@Deprecated
+	//	boolean dWorldSetStepMemoryReservationPolicy(final DWorldStepReserveInfo policyinfo)
+	//	{
+	//	    dUASSERT (policyinfo==null || (policyinfo.struct_size >= DxUtil.sizeof(policyinfo) && policyinfo.reserve_factor >= 1.0f), "Bad policy info");
+	//
+	//	    boolean result = false;
+	//
+	//	    //(TZ) DxStepWorkingMemory wmem = policyinfo!=null ? AllocateOnDemand(this.wmem) : this.wmem;
+	//        DxStepWorkingMemory wmem;
+	//        if (policyinfo!=null) {
+	//            if (this.wmem == null) {
+	//                this.wmem = new DxStepWorkingMemory();
+	//            }
+	//            wmem = this.wmem;
+	//        } else {
+	//            wmem = this.wmem;
+	//        }
+	//
+	//	    if (wmem!=null)
+	//	    {
+	//	        if (policyinfo!=null)
+	//	        {
+	//	            wmem.SetMemoryReserveInfo(policyinfo.reserve_factor, policyinfo.reserve_minimum);
+	//	            result = wmem.GetMemoryReserveInfo() != null;
+	//	        }
+	//	        else
+	//	        {
+	//	            wmem.ResetMemoryReserveInfoToDefault();
+	//	            result = true;
+	//	        }
+	//	    }
+	//	    else if (policyinfo==null)
+	//	    {
+	//	        result = true;
+	//	    }
+	//
+	//	    return result;
+	//	}
 
 
 	boolean dWorldStep (double stepsize)
