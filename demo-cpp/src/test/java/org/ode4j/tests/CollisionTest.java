@@ -28,6 +28,7 @@ import static org.ode4j.cpp.internal.ApiCppCollision.*;
 import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dCreateTriMesh;
 import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dGeomTriMeshDataBuildSingle;
 import static org.ode4j.cpp.internal.ApiCppCollisionTrimesh.dGeomTriMeshDataCreate;
+import static org.ode4j.demo.ConvexPrism.*;
 import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.*;
 
@@ -181,19 +182,6 @@ public class CollisionTest extends TestSuperClass {
 		dGeomDestroy(ray);
 		dGeomHeightfieldDataDestroy(heightfieldData);
 	}
-
-
-	// Copied from ConvexRayCollisionTest
-	private final int prism_pointcount = 8;
-	private final int prism_planecount = 6;
-	private final double prism_points[] = { 10.0, 1.0, -1.0, 10.0, -1.0, -1.0, -10.0, -1.0, -1.0, -10.0, 1.0, -1.0,
-			10.0, 1.0, 1.0, 10.0, -1.0, 1.0, -10.0, -1.0, 1.0, -10.0, 1.0, 1.0 };
-
-	private final int prism_polygons[] = { 4, 0, 1, 2, 3, 4, 4, 7, 6, 5, 4, 0, 4, 5, 1, 4, 1, 5, 6, 2, 4, 2, 6, 7, 3, 4,
-			4, 0, 3, 7, };
-
-	private final double prism_planes[] = { 0.0, 0.0, -1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 10.0, 0.0, -1.0,
-			0.0, 1.0, -1.0, 0.0, -0.0, 10.0, 0.0, 1.0, 0.0, 1.0, };
 
 	@Test
 	public void test_collision_ray_convex()
