@@ -26,6 +26,7 @@ import org.ode4j.ode.internal.libccd.CCDPolyTope.ccd_pt_face_t;
 import org.ode4j.ode.internal.libccd.CCDSimplex.ccd_simplex_t;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;
 
+import static org.ode4j.ode.internal.libccd.CCDCustomVec3.ccdVec3SafeNormalize;
 import static org.ode4j.ode.internal.libccd.CCDPolyTope.*;
 import static org.ode4j.ode.internal.libccd.CCDSimplex.*;
 import static org.ode4j.ode.internal.libccd.CCDSupport.*;
@@ -242,7 +243,7 @@ public class CCD {
 			RefDouble depth, ccd_vec3_t dir, ccd_vec3_t pos)
 	{
 		ccd_pt_t polytope = new ccd_pt_t();
-		final Ref<ccd_pt_el_t<?>> nearestRef = new Ref<CCDPolyTope.ccd_pt_el_t<?>>();
+		final Ref<ccd_pt_el_t<?>> nearestRef = new Ref<>();
 		int ret;
 
 		ccdPtInit(polytope);
@@ -251,15 +252,16 @@ public class CCD {
 
 		// set separation vector
 		if (ret == 0 && nearestRef.get() != null){
-			// compute depth of penetration
-			depth.set( CCD_SQRT(nearestRef.get().dist) );
-
 			// store normalized direction vector
 			ccdVec3Copy(dir, nearestRef.get().witness);
-			ccdVec3Normalize(dir);
+			ret = ccdVec3SafeNormalize(dir);
 
-			// compute position
-			penEPAPos(polytope, nearestRef.get(), pos);
+			if (ret == 0) {
+				// compute depth of penetration
+            	depth.d = CCD_SQRT(nearestRef.get().dist);
+				// compute position
+				penEPAPos(polytope, nearestRef.get(), pos);
+			}
 		}
 
 		ccdPtDestroy(polytope);

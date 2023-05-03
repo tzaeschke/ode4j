@@ -39,10 +39,6 @@ public class CCDVec3 {
 	/* minimum of two floats */
 	static double CCD_FMIN(double x, double y) { return Math.min(x, y); }
 
-	public static double CCD_ATAN2(double x, double y) {
-		return Math.atan2(x, y);
-	}
-
 	//#define CCD_ONE CCD_REAL(1.)
 	public static final double CCD_ONE = 1;
 	//#define CCD_ZERO CCD_REAL(0.)
@@ -263,15 +259,6 @@ public class CCDVec3 {
 	}
 
 	/**
-	 * d = v + w
-	 */
-	public static void ccdVec3Add2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w) {
-		d.v0 = v.v0 + w.v0;
-		d.v1 = v.v1 + w.v1;
-		d.v2 = v.v2 + w.v2;
-	}
-
-	/**
 	 * d = d * k;
 	 *
 	 * @param d d
@@ -284,39 +271,12 @@ public class CCDVec3 {
 	}
 
 	/**
-	 * d = s * k;
-	 */
-	public static void ccdVec3CopyScaled(ccd_vec3_t d, final ccd_vec3_t s, double k) {
-		d.v0 = s.v0 * k;
-		d.v1 = s.v1 * k;
-		d.v2 = s.v2 * k;
-	}
-
-	/**
-	 * d = v + s * k;
-	 */
-	static void ccdVec3AddScaled(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t s, double k) {
-		d.v0 = v.v0 + s.v0 * k;
-		d.v1 = v.v1 + s.v1 * k;
-		d.v2 = v.v2 + s.v2 * k;
-	}
-
-	/**
 	 * Normalizes given vector to unit length.
-	 *
-	 * WARNING: This returns TRUE for a failure!
-	 *
-	 * @param d d
-	 * @return 'true' if normalization failed.
 	 */
-	public static boolean ccdVec3Normalize(ccd_vec3_t d)
+	public static void ccdVec3Normalize(ccd_vec3_t d)
 	{
-	    double len = CCD_SQRT(ccdVec3Len2(d));
-	    if (len > CCD_EPS) {
-		    ccdVec3Scale(d, CCD_ONE / len);
-		    return false;
-	    }
-	    return true;
+		double k = CCD_ONE / CCD_SQRT(ccdVec3Len2(d));
+		ccdVec3Scale(d, k);
 	}
 
 	/**

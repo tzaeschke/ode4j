@@ -218,11 +218,21 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 		throw new UnsupportedOperationException();
 	}
 
+	/* in matlab syntax: a(1:n) = a(1:n) .* d(1:n)
+	 */
 
-	/** in matlab syntax: a(1:n) = a(1:n) .* d(1:n) */
+	// ODE_API void dScaleVector (dReal *a, const dReal *d, int n);
+	void dScaleVector (DVector3 a, final DVector3C d, int n) {
+		throw new UnsupportedOperationException();
+	}
 
-	//ODE_API 
-	//	 void dVectorScale (double *a, final double *d, int n) {
+	/* The function is an alias for @c dScaleVector.
+	 * It has been deprecated because of a wrong naming schema used.
+	 */
+	//ODE_API_DEPRECATED
+	// ODE_API
+	//   void dVectorScale (dReal *a, const dReal *d, int n)
+	@Deprecated
 	void dVectorScale (DVector3C a, final DVector3 d, int n) {
 		throw new UnsupportedOperationException();
 	}

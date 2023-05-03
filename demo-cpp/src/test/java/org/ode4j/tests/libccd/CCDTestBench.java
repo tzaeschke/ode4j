@@ -273,7 +273,7 @@ public class CCDTestBench {
 	        cycles = Integer.parseInt(args[0]);
 	    }
 
-//	    fprintf(stdout, "Cycles: %u\n", cycles);
+//	    fprintf(stdout, "Cycles: %zu\n", cycles);
 //	    fprintf(stdout, "\n");
 
 	    boxbox();
