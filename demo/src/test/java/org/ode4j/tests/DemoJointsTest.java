@@ -87,7 +87,7 @@ public class DemoJointsTest {
     private static DUniversalJoint jointUniversal;
 
 
-    private static int cmd_occasional_error = 0;    // perturb occasionally
+    private static int cmd_occasional_error = 1;    // perturb occasionally
 
 
     // info about the current test

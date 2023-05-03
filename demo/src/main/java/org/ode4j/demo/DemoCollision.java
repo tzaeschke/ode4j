@@ -1123,22 +1123,6 @@ class DemoCollision extends dsFunctions {
 		final double uEpsilon = 1e-6, pEpsilon = 1e-8, tmpEpsilon = 1e-6;
 		// #endif
 
-//		if (dFabs(u1.dot(u2)) > 1e-6) dDebug (0,"bad u1/u2");
-//		n.eqCross(u1, u2);
-//		//for (k=0; k<3; k++) tmp[k] = v2[k]-v1[k];
-//		tmp.eqDiff(v2, v1);
-//		double d = -n.dot(p1);
-//		if (dFabs(n.dot(p1)+d) > 1e-8) dDebug (0,"bad n wrt p1");
-//		if (dFabs(n.dot(p2)+d) > 1e-8) dDebug (0,"bad n wrt p2");
-//		if (dFabs(n.dot(p3)+d) > 1e-8) dDebug (0,"bad n wrt p3");
-//		double alpha = -(d+n.dot(v1))/n.dot(tmp);
-//		//for (k=0; k<3; k++) tmp[k] = v1[k]+alpha*(v2[k]-v1[k]);
-//		tmp.eqDiff(v2, v1);
-//		tmp.eqSum(v1, tmp.scale(alpha));
-//		if (dFabs(n.dot(tmp)+d) > 1e-6) dDebug (0,"bad tmp");
-
-
-
 		error = dFabs(dCalcVectorDot3(u1, u2));
 		if (error > uEpsilon) dDebug(0, "bad u1/u2");
 
@@ -1167,11 +1151,13 @@ class DemoCollision extends dsFunctions {
 
 		if (alpha < 0) return false;
 		if (alpha > 1) return false;
+
 		//for (k=0; k<3; k++) tmp[k] -= p1[k];
 		tmp.sub(p1);
 		double a1 = u1.dot(tmp);
 		double a2 = u2.dot(tmp);
 		if (a1<0 || a2<0 || a1>d1 || a2>d2) return false;
+
 		return true;
 	}
 
