@@ -34,20 +34,14 @@ import static org.ode4j.ode.OdeConstants.*;
 import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.demo.Halton235Geom.*;
 
-/** Convex demo.
+/**
+ * Convex demo.
  *  Serves as a test for the convex geometry.
  * By Bram Stolk.
  */
 public class DemoConvex extends DrawStuff.dsFunctions {
 
-
-//#			#include "texturepath.h"
-
-//			#include "halton235_geom.h"
-
-
-
-// Height at which we drop the composite block.
+	// Height at which we drop the composite block.
 	private static final double H = 4.20;
 
 	private static DWorld world;
@@ -55,8 +49,8 @@ public class DemoConvex extends DrawStuff.dsFunctions {
 
 	private static DBody mbody;
 
-	private static DBody[] hbody = new DBody[halton_numc ];
-	private static DGeom[] hgeom = new DGeom[halton_numc ];
+	private static final DBody[] hbody = new DBody[halton_numc ];
+	private static final DGeom[] hgeom = new DGeom[halton_numc ];
 
 	private static DJointGroup contactgroup;
 
@@ -64,7 +58,7 @@ public class DemoConvex extends DrawStuff.dsFunctions {
 	private static boolean solidkernel = false;
 
 
-	private DGeom.DNearCallback nearCallback = new DGeom.DNearCallback() {
+	private final DGeom.DNearCallback nearCallback = new DGeom.DNearCallback() {
 		@Override
 		public void call(Object data, DGeom o1, DGeom o2) {
 			nearCallback(data, o1, o2);
@@ -112,25 +106,18 @@ public class DemoConvex extends DrawStuff.dsFunctions {
 	public void start() {
 		//dAllocateODEDataForThread(dAllocateMaskAll);
 		dsSetViewpoint(xyz, hpr);
-		System.err.printf("Press SPACE to reset the simulation.\n");
+		System.err.println("Press SPACE to reset the simulation.");
 	}
-	private static float[] xyz = { // [ 3] ={
+	private static final float[] xyz = { // [ 3] ={
 		-8, 0, 5
 	};
-	private static float[] hpr = { // [ 3] ={
+	private static final float[] hpr = { // [ 3] ={
 		0.0f, -29.5000f, 0.0000f
 	};
 
 
 	private static void reset() {
 		DQuaternion q = new DQuaternion();
-		// TODO remove
-//		dQSetIdentity(q);
-//		dBodySetPosition(mbody, 0, 0, 0 + H);
-//		dBodySetQuaternion(mbody, q);
-//		dBodySetLinearVel(mbody, 0, 0, 0);
-//		dBodySetAngularVel(mbody, 0, 0, 0);
-//		dBodyEnable(mbody);
 		q.setIdentity();
 		mbody.setPosition(0, 0, 0 + H);
 		mbody.setQuaternion(q);
@@ -140,12 +127,6 @@ public class DemoConvex extends DrawStuff.dsFunctions {
 		for (int i = 0; i < halton_numc; ++i) {
 			DBody body = hbody[i];
 			if (body == null) continue;
-			// TODO remove
-//			dBodySetPosition(body, halton_pos[i][0], halton_pos[i][1], halton_pos[i][2] + H);
-//			dBodySetQuaternion(body, q);
-//			dBodySetLinearVel(body, 0, 0, 0);
-//			dBodySetAngularVel(body, 0, 0, 0);
-//			dBodyEnable(body);
 			body.setPosition(halton_pos[i][0], halton_pos[i][1], halton_pos[i][2] + H);
 			body.setQuaternion(q);
 			body.setLinearVel(0, 0, 0);

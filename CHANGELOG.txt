@@ -44,12 +44,15 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 =====
 - Port updates until 0.16.2.
   THis includes some libCCD updates missing fro the 0.15.1 update.
-  TODO FIX prism dependency in ColliksionTest.test_collision_ray_convex()
+  New demo: DemoConvex.
+  TODO FIX prism dependency in CollisionTest.test_collision_ray_convex()
   Not ported:
   - resource_control.*
   - simple_cooperation.*
   - Updates to DxWorldProcessContext
   - threaded_solver.ldlt.h
+
+    TODO Check DemoFeedback
 
   DONE: backwards up until quickstep.cpp
 
