@@ -261,7 +261,13 @@ public class DxSAPSpace extends DxSpace implements DSapSpace {
 			GEOM_SET_GEOM_IDX(g,GEOM_INVALID_IDX);
 			GeomList.remove( geomSize-1 );
 		}
-		
+
+		//g->tome_ex = 0;
+		g._qtIdxEx = null;
+		// dUASSERT((g->next_ex = 0, true), "Needed for an assertion check only");
+		g.setNextEx(null);
+		dUASSERT(true, "Needed for an assertion check only");
+
 		super.remove(g);
 	}
 

@@ -316,8 +316,9 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 
 			//XXX TZ aObject.tome = null;
 			aObject._qtIdxEx = null;
-			// TODO CHECK TZ ?????
 			// dUASSERT((aObject.getNext() = 0, true), "Needed for an assertion check only");
+			aObject.setNextEx(null);
+			dUASSERT(true, "Needed for an assertion check only");
 
 			// Now traverse upwards to tell that we have lost a geom
 			Block Block = this;

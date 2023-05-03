@@ -52,7 +52,9 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
   - Updates to DxWorldProcessContext
   - threaded_solver.ldlt.h
 
-    TODO Check DemoFeedback
+    TODO
+      - Check DemoFeedback
+      - Remove CollideTrimeshBoxOld.java
 
   DONE: backwards up until quickstep.cpp
 
