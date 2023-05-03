@@ -200,7 +200,7 @@ public class CollisionLibccd {
         ccdVec3Copy(cyl.p1, cyl.axis);
         ccdVec3Copy(cyl.p2, cyl.axis);
         int cylAxisNormalizationResult = ccdVec3SafeNormalize(cyl.axis);
-        dUVERIFY(cylAxisNormalizationResult != 0, "Invalid cylinder has been passed");
+        dUVERIFY(cylAxisNormalizationResult == 0, "Invalid cylinder has been passed");
         ccdVec3Scale(cyl.p2, -1.0);
         ccdVec3Add(cyl.p1, cyl.pos);
         ccdVec3Add(cyl.p2, cyl.pos);
