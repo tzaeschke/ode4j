@@ -38,7 +38,7 @@ import static org.ode4j.demo.Halton235Geom.*;
  *  Serves as a test for the convex geometry.
  * By Bram Stolk.
  */
-public class DemoCOnvex extends DrawStuff.dsFunctions {
+public class DemoConvex extends DrawStuff.dsFunctions {
 
 
 //#			#include "texturepath.h"
@@ -55,8 +55,8 @@ public class DemoCOnvex extends DrawStuff.dsFunctions {
 
 	private static DBody mbody;
 
-	private static DBody hbody[halton_numc ];
-	private static DGeom hgeom[halton_numc ];
+	private static DBody[] hbody = new DBody[halton_numc ];
+	private static DGeom[] hgeom = new DGeom[halton_numc ];
 
 	private static DJointGroup contactgroup;
 
@@ -146,7 +146,7 @@ public class DemoCOnvex extends DrawStuff.dsFunctions {
 //			dBodySetLinearVel(body, 0, 0, 0);
 //			dBodySetAngularVel(body, 0, 0, 0);
 //			dBodyEnable(body);
-			body.setPosition();
+			body.setPosition(halton_pos[i][0], halton_pos[i][1], halton_pos[i][2] + H);
 			body.setQuaternion(q);
 			body.setLinearVel(0, 0, 0);
 			body.setAngularVel(0, 0, 0);
@@ -204,26 +204,27 @@ public class DemoCOnvex extends DrawStuff.dsFunctions {
 		if (drawpos) {
 			dsSetColor(1, 0, 0.2);
 			dsSetTexture(DS_NONE);
-			final double l = 0.35;
+			final float l = 0.35f;
 			for (int i = 0; i < halton_numc; ++i) {
 				DBody body = hbody[i];
-				DVector3C pos = body.getPosition();
-				DVector3 x0 ={
+				DVector3C pos2 = body.getPosition();
+				float[] pos = pos2.toFloatArray();
+				float[] x0 ={
 					pos[0] - l, pos[1], pos[2]
 				} ;
-				DVector3 x1 ={
+				float[] x1 ={
 					pos[0] + l, pos[1], pos[2]
 				} ;
-				DVector3 y0 ={
+				float[] y0 ={
 					pos[0], pos[1] - l, pos[2]
 				} ;
-				DVector3 y1 ={
+				float[] y1 ={
 					pos[0], pos[1] + l, pos[2]
 				} ;
-				DVector3 z0 ={
+				float[] z0 ={
 					pos[0], pos[1], pos[2] - l
 				} ;
-				DVector3 z1 ={
+				float[] z1 ={
 					pos[0], pos[1], pos[2] + l
 				} ;
 				dsDrawLine(x0, x1);
@@ -234,11 +235,11 @@ public class DemoCOnvex extends DrawStuff.dsFunctions {
 	}
 
 	public static void main(final String[] args) {
-		new DemoCOnvex().demo(args);
+		new DemoConvex().demo(args);
 	}
 
 	private void demo(String[] args) {
-		DMass m;
+		DMass m = OdeHelper.createMass();
 
 		// setup pointers to drawstuff callback functions
 		//		dsFunctions fn;
