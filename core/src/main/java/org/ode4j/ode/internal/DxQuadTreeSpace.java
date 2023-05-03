@@ -293,7 +293,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		//void Block::DelObject(dGeom Object){
 		void DelObject(DxGeom aObject){
 			// Del the geom
-			DxGeom Last, g = mFirst;
+			DxGeom Last = null, g = mFirst;
 			boolean Found = false;
 
 			if (g == aObject){
@@ -318,25 +318,6 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 			aObject._qtIdxEx = null;
 			// TODO CHECK TZ ?????
 			// dUASSERT((aObject.getNext() = 0, true), "Needed for an assertion check only");
-
-//			DxGeom g = mFirst;
-//			DxGeom Last = null;
-//			while (g!=null){
-//				if (g == aObject){
-//					if (Last!=null){
-//						Last.setNextEx( g.getNextEx() );
-//					}
-//					else mFirst = g.getNextEx();
-//
-//					break;
-//				}
-//				Last = g;
-//				g = g.getNextEx();
-//			}
-//
-//			//XXX TZ aObject.tome = null;
-//			aObject._qtIdxEx = null;
-			
 
 			// Now traverse upwards to tell that we have lost a geom
 			Block Block = this;
