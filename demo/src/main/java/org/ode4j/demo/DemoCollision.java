@@ -1105,27 +1105,66 @@ class DemoCollision extends dsFunctions {
 			DVector3 p1, DVector3 p2, DVector3 p3)
 	{
 		DVector3 u1=new DVector3(),u2=new DVector3(),n=new DVector3(),tmp=new DVector3();
+
 		//for (k=0; k<3; k++) u1[k] = p3[k]-p1[k];
 		u1.eqDiff(p3, p1);
 		//for (k=0; k<3; k++) u2[k] = p2[k]-p1[k];
 		u2.eqDiff(p2, p1);
+
 		double d1 = dSqrt(u1.dot(u1));
 		double d2 = dSqrt(u2.dot(u2));
 		u1.normalize();
 		u2.normalize();
-		if (dFabs(u1.dot(u2)) > 1e-6) dDebug (0,"bad u1/u2");
-		n.eqCross(u1, u2);
-		//for (k=0; k<3; k++) tmp[k] = v2[k]-v1[k];
+
+		double error;
+		// #ifdef dSINGLE
+		// 	const dReal uEpsilon = 1e-5, pEpsilon = 1e-6, tmpEpsilon = 1.5e-4;
+		// #else
+		final double uEpsilon = 1e-6, pEpsilon = 1e-8, tmpEpsilon = 1e-6;
+		// #endif
+
+//		if (dFabs(u1.dot(u2)) > 1e-6) dDebug (0,"bad u1/u2");
+//		n.eqCross(u1, u2);
+//		//for (k=0; k<3; k++) tmp[k] = v2[k]-v1[k];
+//		tmp.eqDiff(v2, v1);
+//		double d = -n.dot(p1);
+//		if (dFabs(n.dot(p1)+d) > 1e-8) dDebug (0,"bad n wrt p1");
+//		if (dFabs(n.dot(p2)+d) > 1e-8) dDebug (0,"bad n wrt p2");
+//		if (dFabs(n.dot(p3)+d) > 1e-8) dDebug (0,"bad n wrt p3");
+//		double alpha = -(d+n.dot(v1))/n.dot(tmp);
+//		//for (k=0; k<3; k++) tmp[k] = v1[k]+alpha*(v2[k]-v1[k]);
+//		tmp.eqDiff(v2, v1);
+//		tmp.eqSum(v1, tmp.scale(alpha));
+//		if (dFabs(n.dot(tmp)+d) > 1e-6) dDebug (0,"bad tmp");
+
+
+
+		error = dFabs(dCalcVectorDot3(u1, u2));
+		if (error > uEpsilon) dDebug(0, "bad u1/u2");
+
+		dCalcVectorCross3(n, u1, u2);
+
+		// for (k=0; k < 3; k++) tmp[k] = v2[k] - v1[k];
 		tmp.eqDiff(v2, v1);
-		double d = -n.dot(p1);
-		if (dFabs(n.dot(p1)+d) > 1e-8) dDebug (0,"bad n wrt p1");
-		if (dFabs(n.dot(p2)+d) > 1e-8) dDebug (0,"bad n wrt p2");
-		if (dFabs(n.dot(p3)+d) > 1e-8) dDebug (0,"bad n wrt p3");
-		double alpha = -(d+n.dot(v1))/n.dot(tmp);
-		//for (k=0; k<3; k++) tmp[k] = v1[k]+alpha*(v2[k]-v1[k]);
-		tmp.eqDiff(v2, v1);
-		tmp.eqSum(v1, tmp.scale(alpha));
-		if (dFabs(n.dot(tmp)+d) > 1e-6) dDebug (0,"bad tmp");
+
+		double d = -dCalcVectorDot3(n, p1);
+
+		error = dFabs(dCalcVectorDot3(n, p1) + d);
+		if (error > pEpsilon) dDebug(0, "bad n wrt p1");
+
+		error = dFabs(dCalcVectorDot3(n, p2) + d);
+		if (error > pEpsilon) dDebug(0, "bad n wrt p2");
+
+		error = dFabs(dCalcVectorDot3(n, p3) + d);
+		if (error > pEpsilon) dDebug(0, "bad n wrt p3");
+
+		double alpha = -(d + dCalcVectorDot3(n, v1)) / dCalcVectorDot3(n, tmp);
+		// for (k=0; k < 3; k++) tmp[k] = v1[k] + alpha * (v2[k] - v1[k]);
+		tmp.eqDiff(v2, v1).scale(alpha).add(v1);
+
+		error = dFabs(dCalcVectorDot3(n, tmp) + d);
+		if (error > tmpEpsilon) dDebug(0, "bad tmp");
+
 		if (alpha < 0) return false;
 		if (alpha > 1) return false;
 		//for (k=0; k<3; k++) tmp[k] -= p1[k];
