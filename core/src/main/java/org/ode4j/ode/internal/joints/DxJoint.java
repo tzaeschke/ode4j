@@ -786,7 +786,7 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 
 		// check if the joint can not be attached to just one body
 		dUASSERT (!((flags & dJOINT_TWOBODIES) != 0 &&
-				((body1 != null) ^ (body2 != null))),
+				((body1 != null) != (body2 != null))),
 				"joint can not be attached to just one body");
 
 		// remove any existing body attachments

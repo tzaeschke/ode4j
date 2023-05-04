@@ -103,7 +103,8 @@ public class FastDot extends Misc {
 	}
 
 	//template<unsigned b_stride>
-	public static double dxtDot (final double[] a, int a_pos, final double[] b, int b_pos, int n, int b_stride)
+	public static double calculateLargeVectorDot (
+			final double[] a, int a_pos, final double[] b, int b_pos, int n, final int b_stride)
 	{
 		double sum = 0;
     	int a_end = a_pos + (n & (int)(~3));
@@ -122,5 +123,4 @@ public class FastDot extends Misc {
 		}
 		return sum;
 	}
-
 }
