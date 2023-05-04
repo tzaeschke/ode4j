@@ -373,8 +373,12 @@ public class DLCP {
 	private int indexC (int i) { return i; }
 	private int indexN (int i) { return i+m_nC; }
 	private double Aii (int i) { return AROW(i,i); }
-	private double AiC_times_qC (int i, double[] qA, int qP, int q_stride) { return dxtDot (m_A, AROWp(i), qA, qP, m_nC, q_stride); }
-	private double AiN_times_qN (int i, double[] qA, int qP, int q_stride) { return dxtDot (m_A,AROWp(i) + m_nC, qA, qP + m_nC * q_stride, m_nN, q_stride); }
+	private double AiC_times_qC (int i, double[] qA, int qP, int q_stride) {
+		return calculateLargeVectorDot (m_A, AROWp(i), qA, qP, m_nC, q_stride);
+	}
+	private double AiN_times_qN (int i, double[] qA, int qP, int q_stride) {
+		return calculateLargeVectorDot (m_A,AROWp(i) + m_nC, qA, qP + m_nC * q_stride, m_nN, q_stride);
+	}
 	//  void pN_equals_ANC_times_qC (dReal *p, dReal *q);
 	//  void pN_plusequals_ANi (dReal *p, int i, int sign=1);
 //	private void pC_plusequals_s_times_qC (double[] p, double s, double[] q)
