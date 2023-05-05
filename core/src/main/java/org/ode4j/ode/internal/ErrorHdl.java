@@ -119,10 +119,11 @@ public class ErrorHdl {
 		//  va_start (ap,msg);
 		if (error_function != null) {
 			error_function.call (num,msg,ap);
-		} 
-		logger.error("ODE Error " + num + ": " + msg, ap);
+		} else {
+			logger.error("ODE Error " + num + ": " + msg, ap);
+		}
 		throw new RuntimeException("#"+num + ": " + msg);
-		//System.exit (1);
+		//exit (1);
 	}
 
 
@@ -137,8 +138,9 @@ public class ErrorHdl {
 		//  va_start (ap,msg);
 		if (debug_function != null) {
 			debug_function.call (num,msg,ap);
+		} else {
+			logger.debug("ODE INTERNAL ERROR " + " " + num + ": " + msg, ap);
 		}
-		logger.debug("ODE INTERNAL ERROR " + " " + num + ": " + msg, ap);
 		// *((char *)0) = 0;   ... commit SEGVicide
 		//abort();
 		throw new RuntimeException("#"+num + ": " + String.format(msg, ap));
