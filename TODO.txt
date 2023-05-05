@@ -11,10 +11,11 @@ Things left out for 0.5.0 (missing from 0.15.1 vs 0.16.2)
   - resource_control.*
   - simple_cooperation.*
   - Updates to DxWorldProcessContext
-  - threaded_solver.ldlt.h
-  - fastldlt.c -> cpp + fastldltfactor / fastldldvolve
-  - fastlsolve.c -> cpp + x: solveL1Straight() is done; Missing: ThreadedEquationSolverLDLT* and *Cooperative*
-  - fastltsolve.c -> cpp + fastvecscale
+  - ThreadedEquationSolverLDLT* and *Cooperative* is missing from:
+    - fastldltfactor(_impl).*
+    - fastlsolve(_impl).*
+    - fastltsolve(_impl).*:
+    - fastvecscale(_impl).*:
   - objects.h/.cpp  /  obstack.h/.cpp
 
 

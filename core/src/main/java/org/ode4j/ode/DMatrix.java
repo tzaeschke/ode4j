@@ -318,11 +318,26 @@ public class DMatrix extends DMisc {
 //    public void dSolveL1T (const dReal *L, dReal *b, int n, int nskip);
 
 
+    /* in matlab syntax: a(1:n) = a(1:n) .* d(1:n)
+     */
+
     /**
-     * In matlab syntax: a(1:n) = a(1:n) .* d(1:n) 
+     * In matlab syntax: a(1:n) = a(1:n) .* d(1:n)
      * @param a a
      * @param d d
      */
+    // ODE_API
+    public static void dScaleVector (DVector3 a, DVector3C d) {
+        a.scale(d);
+    }
+
+    /**
+     * The function is an alias for @c dScaleVector.
+     *  It has been deprecated because of a wrong naming schema used.
+     * @param a a
+     * @param d d
+     */
+    @Deprecated // deprecated in ODE
     public static void dVectorScale (DVector3 a, DVector3C d) {
         a.scale(d);
     }

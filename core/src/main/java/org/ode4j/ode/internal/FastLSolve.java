@@ -45,7 +45,7 @@ public class FastLSolve {
     //template<unsigned int b_stride>
     public static void solveL1Straight (final double[] L, double[] B, final int BPos, int rowCount, int rowSkip, int b_stride)
     {
-        int LPos = 0;
+        final int LPos = 0;
         dIASSERT(rowCount != 0);
 
         /* compute all 4 x 1 blocks of X */

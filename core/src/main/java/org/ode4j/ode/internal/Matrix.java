@@ -24,8 +24,9 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import static org.ode4j.ode.internal.FastLSolve.dxtSolveL1;
-import static org.ode4j.ode.internal.FastLTSolve.dxtSolveL1T;
+import static org.ode4j.ode.internal.FastLDLTSolve.solveEquationSystemWithLDLT;
+import static org.ode4j.ode.internal.FastLSolve.solveL1Straight;
+import static org.ode4j.ode.internal.FastLTSolve.solveL1Transposed;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memmove;
 
@@ -680,7 +681,6 @@ public class Matrix extends FastDot {
 	}
 
 	/**
-	 * TODO CHECK-TZ This has been remve in 0.16.2
 	 * given `L', a n*n lower triangular matrix with ones on the diagonal, and
 	 * `d', a n*1 vector of the reciprocal diagonal elements of an n*n matrix D,
 	 * solve L*D*L'*x=b where x,b are n*1. x overwrites b. the leading dimension
@@ -695,7 +695,9 @@ public class Matrix extends FastDot {
 			double[] b, int n, int nskip) {
 		dIASSERT(n != 0);
 
-		dxtSolveLDLT(L, d, 0, b, 0, n, nskip, 1, 1);
+		if (n != 0) {
+			solveEquationSystemWithLDLT(L, d, 0, b, 0, n, nskip, 1, 1);
+		}
 	}
 
 	/**
@@ -1051,13 +1053,6 @@ public class Matrix extends FastDot {
 
 
 
-	static void dxSolveL1(final double[] L, double[] b, int n, int lskip1)
-	{
-		dIASSERT(n != 0);
-
-		dxtSolveL1(L, b, 0, n, lskip1, 1);
-	}
-
 	public static void dSolveL1(final double[] L, double[] B, int n, int lskip1)
 	{
 		dAASSERT(n != 0);
@@ -1067,25 +1062,20 @@ public class Matrix extends FastDot {
 			dAASSERT(L != null);
 			dAASSERT(B != null);
 
-			dxSolveL1(L, B, n, lskip1);
+			solveL1Straight(L, B, 0, n, lskip1, 1);
 		}
 	}
 
-	static void dxSolveL1T(final double[] L, double[] b, int n, int lskip1)
+	public static void dSolveL1T (final double[] L, double[] B, int rowCount, int rowSkip)
 	{
-		dxtSolveL1T(L, b, 0, n, lskip1, 1);
-	}
+		dAASSERT(rowCount != 0);
 
-	public static void dSolveL1T (final double[] L, double[] B, int n, int lskip1)
-	{
-		dAASSERT(n != 0);
-
-		if (n != 0)
+		if (rowCount != 0)
 		{
 			dAASSERT(L != null);
 			dAASSERT(B != null);
 
-			dxSolveL1T(L, B, n, lskip1);
+			solveL1Transposed(L, B, 0, rowCount, rowSkip, 1);
 		}
 	}
 
@@ -1101,7 +1091,7 @@ public class Matrix extends FastDot {
 	 * @param nskip1 nskip 
 	 */
 	public static void dFactorLDLT(double[] A, double[] d, int n, int nskip1) {
-		FastLDLT.dxtFactorLDLT(A, d, n, nskip1, 1);
+		FastLDLTFactor.factorMatrixAsLDLT(A, d, n, nskip1, 1);
 	}
 	
 	private static int _dEstimateFactorCholeskyTmpbufSize(int n)
@@ -1143,76 +1133,6 @@ public class Matrix extends FastDot {
 	public static int dEstimateIsPositiveDefiniteTmpbufSize(int n) { return _dEstimateIsPositiveDefiniteTmpbufSize(n); }
 	public static int dEstimateLDLTAddTLTmpbufSize(int nskip) { return _dEstimateLDLTAddTLTmpbufSize(nskip); }
 	public static int dEstimateLDLTRemoveTmpbufSize(int n2, int nskip) { return _dEstimateLDLTRemoveTmpbufSize(n2, nskip); }
-
-
-	// matrix_impl.h
-
-	//	template<unsigned int a_stride, unsigned int d_stride>
-	//	void dxtVectorScale (dReal *aStart, const dReal *dStart, unsigned elementCount)
-	public static void dxtVectorScale(double[] A, final int aStart, final double[] D, int dStart, int elementCount, int a_stride, int d_stride) {
-		dAASSERT(aStart >= 0 && dStart >= 0 && elementCount >= 0);
-
-		final int step = 4;
-		//		dReal *ptrA = aStart;
-		//    const dReal *ptrD = dStart;
-		//    const dReal *const dStepsEnd = dStart + (size_t)(elementCount & ~(step - 1)) * d_stride;
-		int ptrA = aStart;
-		int ptrD = dStart;
-		final int dStepsEnd = dStart + (elementCount & ~(step - 1)) * d_stride;
-
-		for (; ptrD != dStepsEnd; ptrA += step * a_stride, ptrD += step * d_stride) {
-			double a0 = A[ptrA + 0], a1 = A[ptrA + 1 * a_stride], a2 = A[ptrA + 2 * a_stride], a3 = A[ptrA + 3 * a_stride];
-			double d0 = D[ptrD + 0], d1 = D[ptrD + 1 * d_stride], d2 = D[ptrD + 2 * d_stride], d3 = D[ptrD + 3 * d_stride];
-			a0 *= d0;
-			a1 *= d1;
-			a2 *= d2;
-			a3 *= d3;
-			A[ptrA + 0] = a0;
-			A[ptrA + 1 * a_stride] = a1;
-			A[ptrA + 2 * a_stride] = a2;
-			A[ptrA + 3 * a_stride] = a3;
-			//dSASSERT(step == 4);
-		}
-
-		switch (elementCount & (step - 1)) {
-			case 3: {
-				double a2 = A[ptrA + 2 * a_stride];
-				double d2 = D[ptrD + 2 * d_stride];
-				A[ptrA + 2 * a_stride] = a2 * d2;
-				// break; -- proceed to case 2
-			}
-
-			case 2: {
-				double a1 = A[ptrA + 1 * a_stride];
-				double d1 = D[ptrD + 1 * d_stride];
-				A[ptrA + 1 * a_stride] = a1 * d1;
-				// break; -- proceed to case 1
-			}
-
-			case 1: {
-				double a0 = A[ptrA + 0];
-				double d0 = D[ptrD + 0];
-				A[ptrA + 0] = a0 * d0;
-				break;
-			}
-		}
-	}
-
-
-	// TODO CHECK-TZ This has been remve in 0.16.2
-	//	template<unsigned int d_stride, unsigned int b_stride>
-	//	void dxtSolveLDLT (const dReal *L, const dReal *d, dReal *b, unsigned rowCount, unsigned rowSkip)
-	public static void dxtSolveLDLT(final double[] L, double[] dArray, int dPos, double[] bArray, int bPos, int rowCount, int rowSkip, int d_stride, int b_stride) {
-		dAASSERT(L != null);
-		dAASSERT(dArray != null);
-		dAASSERT(bArray != null);
-		dAASSERT(rowCount > 0);
-		dAASSERT(rowSkip >= rowCount);
-
-		dxtSolveL1(L, bArray, bPos, rowCount, rowSkip, b_stride);
-		dxtVectorScale(bArray, bPos, dArray, dPos, rowCount, b_stride, d_stride);
-		dxtSolveL1T(L, bArray, bPos, rowCount, rowSkip, b_stride);
-	}
 
 	public static double dxDot(final double[] a, final double[] b, int n) {
 		return dDot(a, b, n);

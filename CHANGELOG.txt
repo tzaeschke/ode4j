@@ -44,9 +44,11 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 =====
 - Port updates until 0.16.2.
   This includes some libCCD updates missing fro the 0.15.1 update.
+
     TODO
       - Check DemoFeedback
       - Remove CollideTrimeshBoxOld.java
+      - Remove all "dxt" stuff
 
   DONE: all Except listed in TODO.txt and  quickstep.cpp
 

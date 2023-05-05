@@ -29,8 +29,10 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 import static org.ode4j.ode.internal.ErrorHandler.dMessage;
-import static org.ode4j.ode.internal.FastLDLT.dxtFactorLDLT;
+import static org.ode4j.ode.internal.FastLDLTFactor.factorMatrixAsLDLT;
+import static org.ode4j.ode.internal.FastLDLTSolve.solveEquationSystemWithLDLT;
 import static org.ode4j.ode.internal.FastLSolve.solveL1Straight;
+import static org.ode4j.ode.internal.FastLTSolve.solveL1Transposed;
 import static org.ode4j.ode.internal.Matrix.*;
 import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
 import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
@@ -682,8 +684,8 @@ public class DLCP {
 		        }
 		    }
             transfer_b_to_x(m_pairsbxA, 0, nub, false);
-            dxtFactorLDLT(m_L, m_d, nub, m_nskip, 1);
-            dxtSolveLDLT(m_L, m_d, 0, m_pairsbxA, 0 + PBX_X, nub, m_nskip, 1, PBX__MAX);
+			factorMatrixAsLDLT(m_L, m_d, nub, m_nskip, 1);
+			solveEquationSystemWithLDLT(m_L, m_d, 0, m_pairsbxA, 0 + PBX_X, nub, m_nskip, 1, PBX__MAX);
             dSetZero (m_w,nub);
 		    {
 		        int[] C = m_C;
@@ -938,7 +940,7 @@ public class DLCP {
         		for (int j=0; j<nC; j++) Dell[j] = m_A[aPos+C[j]];//aptr[C[j]];
 			}//#   endif
 		}
-		solveL1Straight(m_L, m_Dell, nC, 0, m_nskip, 1);
+		solveL1Straight(m_L, m_Dell, 0, nC,  m_nskip, 1);
 		{
 		    double[] ell = m_ell, Dell = m_Dell, d = m_d;
 		    for (int j=0; j<nC; j++) ell[j] = Dell[j] * d[j];
@@ -949,7 +951,7 @@ public class DLCP {
 		    {
 		        for (int j=0; j<nC; ++j) tmp[j] = ell[j];
 		    }
-			solveL1Straight(m_L,tmp,0, m_nC,m_nskip, 1);
+			solveL1Transposed(m_L,tmp,0, nC,m_nskip, 1);
 		    if (dir_positive) {
 		        int[] C = m_C;
 		        //double[] tmp = m_tmp;
@@ -1038,8 +1040,8 @@ public class DLCP {
 
 		int nskip = dPAD(n);
 		dAASSERT(pairsbxP + PBX_B == 0); // TZ: If this is != 0 then we need to adapt the following method call:
-		dxtFactorLDLT (A, pairsbxA, /* pairsbxP + PBX_B,*/ n, nskip, PBX__MAX);
-		dxtSolveLDLT (A, pairsbxA, pairsbxP + PBX_B, pairsbxA, pairsbxP + PBX_X, n, nskip, PBX__MAX, PBX__MAX);
+		factorMatrixAsLDLT (A, pairsbxA, /* pairsbxP + PBX_B,*/ n, nskip, PBX__MAX);
+		solveEquationSystemWithLDLT (A, pairsbxA, pairsbxP + PBX_B, pairsbxA, pairsbxP + PBX_X, n, nskip, PBX__MAX, PBX__MAX);
 	}
 
 	//***************************************************************************

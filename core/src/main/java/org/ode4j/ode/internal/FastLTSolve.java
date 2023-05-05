@@ -40,7 +40,7 @@ public class FastLTSolve {
      * this processes blocks of 4.
      */
     //template<unsigned int b_stride>
-    public static void dxtSolveL1T(final double[] L, double[] B, int BPos, int rowCount, int rowSkip, int b_stride)
+    public static void solveL1Transposed(final double[] L, double[] B, int BPos, int rowCount, int rowSkip, int b_stride)
     {
         int LPos = 0;
         dIASSERT(rowCount != 0);

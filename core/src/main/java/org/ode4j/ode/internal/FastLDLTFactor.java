@@ -30,7 +30,7 @@ import static org.ode4j.ode.internal.Common.*;
 /**
  * Implementation of FastDLTImpl
  */
-public class FastLDLT {
+public class FastLDLTFactor {
 //#ifndef _ODE_FASTLDLT_IMPL_H_
 //#define _ODE_FASTLDLT_IMPL_H_
 
@@ -48,7 +48,7 @@ public class FastLDLT {
 
 
     //    template<unsigned int d_stride>
-    public static void dxtFactorLDLT(double[] A, double[] d, int rowCount, int rowSkip, int d_stride) {
+    public static void factorMatrixAsLDLT(double[] A, double[] d, int rowCount, int rowSkip, int d_stride) {
         if (rowCount < 1) return;
 
         final int lastRowIndex = rowCount - 1;
@@ -60,10 +60,10 @@ public class FastLDLT {
         for (; blockStartRow < lastRowIndex; subsequentPass = true, ARow_pos += 2 * rowSkip, blockStartRow += 2) {
             if (subsequentPass) {
                 /* solve L*(D*l)=a, l is scaled elements in 2 x i block at A(i,0) */
-                dxSolveL1_2(A, A, ARow_pos, blockStartRow, rowSkip);
-                dxScaleAndFactorizeL1_2(A, ARow_pos, d, blockStartRow, rowSkip, d_stride);
+                solveL1Stripe_2(A, A, ARow_pos, blockStartRow, rowSkip);
+                scaleAndFactorizeL1Stripe_2(A, ARow_pos, d, blockStartRow, rowSkip, d_stride);
             } else {
-                dxScaleAndFactorizeFirstL1Row_2(A, ARow_pos, d, rowSkip, d_stride);
+                scaleAndFactorizeL1FirstRowStripe_2(A, ARow_pos, d, rowSkip, d_stride);
             }
             /* done factorizing 2 x 2 block */
         }
@@ -71,10 +71,10 @@ public class FastLDLT {
         /* compute the (less than 2) rows at the bottom */
         if (!subsequentPass || blockStartRow == lastRowIndex) {
             if (subsequentPass) {
-                dxSolveL1_1(A, A, ARow_pos, blockStartRow, rowSkip);
-                dxScaleAndFactorizeL1_1(A, ARow_pos, d, blockStartRow, d_stride);
+                solveStripeL1_1(A, A, ARow_pos, blockStartRow, rowSkip);
+                scaleAndFactorizeL1Stripe_1(A, ARow_pos, d, blockStartRow, d_stride);
             } else {
-                dxScaleAndFactorizeFirstL1Row_1(A, ARow_pos, d, d_stride);
+                scaleAndFactorizeL1FirstRowStripe_1(A, ARow_pos, d, d_stride);
             }
             /* done factorizing 1 x 1 block */
         }
@@ -89,7 +89,7 @@ public class FastLDLT {
      * this processes blocks of 2*2.
      * if this is in the factorizer source file, n must be a multiple of 2.
      */
-    static void dxSolveL1_2(final double[] L, double[] B, int bPos, int rowCount, int rowSkip) {
+    static void solveL1Stripe_2(final double[] L, double[] B, int bPos, int rowCount, int rowSkip) {
         dIASSERT(rowCount != 0);
         dIASSERT(rowCount % 2 == 0);
 
@@ -229,7 +229,7 @@ public class FastLDLT {
     }
 
     //template<unsigned int d_stride>
-    private static void dxScaleAndFactorizeL1_2(double[] ARow, int aPos, double[] d, int factorizationRow, int rowSkip, int d_stride) {
+    private static void scaleAndFactorizeL1Stripe_2(double[] ARow, int aPos, double[] d, int factorizationRow, int rowSkip, int d_stride) {
         dIASSERT(factorizationRow != 0);
         dIASSERT(factorizationRow % 2 == 0);
 
@@ -346,7 +346,7 @@ public class FastLDLT {
     }
 
     //template<unsigned int d_stride>
-    private static void dxScaleAndFactorizeFirstL1Row_2(double[] ARow, int aPos, double[] d, int rowSkip, int d_stride) {
+    private static void scaleAndFactorizeL1FirstRowStripe_2(double[] ARow, int aPos, double[] d, int rowSkip, int d_stride) {
         int ptrAElement = aPos; //ARow;
         double[] ptrDElement = d;
 
@@ -380,7 +380,7 @@ public class FastLDLT {
      * this processes blocks of 2*2.
      * if this is in the factorizer source file, n must be a multiple of 2.
      */
-    static void dxSolveL1_1(final double[] L, double[] B, int bPos, int rowCount, int rowSkip) {
+    static void solveStripeL1_1(final double[] L, double[] B, int bPos, int rowCount, int rowSkip) {
         dIASSERT(rowCount != 0);
         dIASSERT(rowCount % 2 == 0);
 
@@ -491,7 +491,7 @@ public class FastLDLT {
     }
 
     //template<unsigned int d_stride>
-    private static void dxScaleAndFactorizeL1_1(double[] ARow, int APos, double[] d, int factorizationRow, int d_stride) {
+    private static void scaleAndFactorizeL1Stripe_1(double[] ARow, int APos, double[] d, int factorizationRow, int d_stride) {
         int ptrAElement = APos;//ARow;
         int ptrDElement = 0;//d;
 
@@ -561,7 +561,7 @@ public class FastLDLT {
     }
 
     //template<unsigned int d_stride>
-    private static void dxScaleAndFactorizeFirstL1Row_1(double[] ARow, int APos, double[] d, int d_stride) {
+    private static void scaleAndFactorizeL1FirstRowStripe_1(double[] ARow, int APos, double[] d, int d_stride) {
         int ptrAElement = APos; //ARow;
         double[] ptrDElement = d;
 
