@@ -813,6 +813,8 @@ public class TestIssue0096_CylinderCollisionError {
 			DGeom g2 = trimesh();//createCylinder(1, 1);
 			g2.setPosition(0,0,-0.75);
 			collide(100);
+			g1.destroy();
+			g2.destroy();
 		}
 	}
 
