@@ -43,7 +43,7 @@ public class FastLSolve {
      * if this is in the factorizer source file, n must be a multiple of 4.
      */
     //template<unsigned int b_stride>
-    public static void dxtSolveL1 (final double[] L, double[] B, final int BPos, int rowCount, int rowSkip, int b_stride)
+    public static void solveL1Straight (final double[] L, double[] B, final int BPos, int rowCount, int rowSkip, int b_stride)
     {
         int LPos = 0;
         dIASSERT(rowCount != 0);
