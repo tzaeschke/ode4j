@@ -17,7 +17,7 @@ TODO for 0.5.0
   - "Split package, multiple jars provide the same package"
   - [WARNING] bootstrap class path not set in conjunction with -source 8
     when using: mvn clean install -P on-jdk-9-plus
-- CI: Fail build on warnbing?!
+- CI: Fail build on warning?!
 - CI: remove "temurin"...?!
 
 
@@ -43,26 +43,12 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 0.5.0 (unreleased)
 =====
 - Port updates until 0.16.2.
-  THis includes some libCCD updates missing fro the 0.15.1 update.
-  New demo: DemoConvex.
-  TODO FIX prism dependency in CollisionTest.test_collision_ray_convex()
-  Not ported:
-  - resource_control.*
-  - simple_cooperation.*
-  - Updates to DxWorldProcessContext
-  - threaded_solver.ldlt.h
-  - fastldlt.c -> cpp + fastldltfactor / fastldldvolve
-  - fastlsolve.c -> cpp + x
-  - fastltsolve.c -> cpp + fastvecscale
-  - gimpact_contact_export.*  / gimpact_*_contact_accessor.*
-  - lcp.cpp/.h ------------------------?
-  - objects.h/.cpp  /  obstack.h/.cpp
-
+  This includes some libCCD updates missing fro the 0.15.1 update.
     TODO
       - Check DemoFeedback
       - Remove CollideTrimeshBoxOld.java
 
-  DONE: backwards up until quickstep.cpp
+  DONE: all Except listed in TODO.txt and  quickstep.cpp
 
 - Added GutHub Actions CI builds for Java 8 and 9. [#95](https://github.com/tzaeschke/ode4j/pull/95)
 - Added default logger for demos and tests. [#94](https://github.com/tzaeschke/ode4j/pull/94)

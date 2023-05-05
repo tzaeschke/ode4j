@@ -5,6 +5,22 @@ mvn versions:display-dependency-updates
 mvn versions:display-plugin-updates
 
 
+Things left out for 0.5.0 (missing from 0.15.1 vs 0.16.2)
+=========================================================
+ Not ported:
+  - resource_control.*
+  - simple_cooperation.*
+  - Updates to DxWorldProcessContext
+  - threaded_solver.ldlt.h
+  - fastldlt.c -> cpp + fastldltfactor / fastldldvolve
+  - fastlsolve.c -> cpp + x
+  - fastltsolve.c -> cpp + fastvecscale
+  - gimpact_contact_export.*  / gimpact_*_contact_accessor.*
+  - lcp.cpp/.h ------------------------?
+  - objects.h/.cpp  /  obstack.h/.cpp
+
+
+
 
 Java Version
 ============
