@@ -939,10 +939,9 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				setMIndex(mindex, mcurrO, moffs, mfboffs);
 				++mcurrO;
 
+				//for (DJointWithInfo1 jicurr: jointinfos) {
 				for (int i = 0; i < nj; i++) {
 					DJointWithInfo1 jicurr = jointinfos[i];
-				//TODO fix issue #18
-				//for (DJointWithInfo1 jicurr: jointinfos) {
 					//const dJointWithInfo1 *const jiend = jointinfos + nj;
 					//for (const dJointWithInfo1 *jicurr = jointinfos; jicurr != jiend; ++jicurr) {
 					DxJoint joint = jicurr.joint;
