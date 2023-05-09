@@ -45,6 +45,8 @@ General cleanup:
 - replace DVector3.clone() with dVector3.re() or copy()
 - Create separate distribution (maven jar) with modules? -> Check how modul-projects have trouble with including
   non-module projects...
+  -> https://www.baeldung.com/java-9-modularity
+  -> https://stackoverflow.com/questions/40490520/what-do-i-need-to-build-jdk-9-project-with-non-modular-dependencies-using-maven
 - reformat everything? At least indentation?
 
 
