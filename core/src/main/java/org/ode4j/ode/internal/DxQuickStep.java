@@ -40,6 +40,7 @@ import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.QuickStepEnums.*;
 import static org.ode4j.ode.internal.Timer.*;
 import static org.ode4j.ode.internal.Timer.dTimerReport;
+import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -85,7 +86,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     public static int RRS_REORDERING = 0;
     // public static int RRS_REVERSAL = 1;
     // public static int RRS_MIN = 0;
-    public static int RRS_MAX = 2;
+    public static int RRS_MAX = 1;
 
 	private static final boolean CHECK_VELOCITY_OBEYS_CONSTRAINT = false;
 
@@ -145,6 +146,18 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	// or hardly at all, but it doesn't seem to hurt.
 	private static final ReorderingMethod CONSTRAINTS_REORDERING_METHOD = ReorderingMethod.REORDERING_METHOD__RANDOMLY;
 
+	//		#if CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__RANDOMLY
+	//	#if !defined(RANDOM_CONSTRAINTS_REORDERING_FREQUENCY)
+	//	#define RANDOM_CONSTRAINTS_REORDERING_FREQUENCY 8U
+	//	#endif
+	//		dSASSERT(RANDOM_CONSTRAINTS_REORDERING_FREQUENCY != 0);
+	//	#endif
+	// TZ: see further up.
+	//	enum dxRandomReorderStage {
+	//		//RRS__MIN,
+	//		RRS_REORDERING,// = RRS__MIN,
+	//		RRS__MAX,
+	//	};
 
 	//***************************************************************************
 	// macros, typedefs, forwards and inlines
@@ -228,6 +241,17 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	//		int mIndex;
 	//		int fbIndex;
 	//	}
+	private static void setMIndex(int[] mindex, int pos, int mIndex, int fbIndex) {
+		mindex[2 * pos] = mIndex;
+		mindex[2 * pos + 1] = fbIndex;
+	}
+	private static int getMIndex(int[] mindex, int pos) {
+		return mindex[2 * pos];
+	}
+	private static int getFbIndex(int[] mindex, int pos) {
+		return mindex[pos * 2 + 1];
+	}
+
 	//
 	//	private static class dxJBodiesItem {
 	//		int first;
@@ -583,8 +607,9 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			result = true;
 		} else if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__RANDOMLY) {
 			// This logic is intended to skip randomization on the very first iteration
-			if (iteration < RANDOM_CONSTRAINTS_REORDERING_FREQUENCY ? iteration == 0
-					: iteration % RANDOM_CONSTRAINTS_REORDERING_FREQUENCY < RRS_MAX) {
+			if (iteration >= RANDOM_CONSTRAINTS_REORDERING_FREQUENCY
+					? (iteration % RANDOM_CONSTRAINTS_REORDERING_FREQUENCY < RRS_MAX)
+					: iteration == 0) {
 				result = true;
 			}
 		} else {
@@ -911,9 +936,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			{
 				int mcurrO = 0;//mindex;
 				int moffs = 0, mfboffs = 0;
-				mindex[mcurrO+0] = moffs;
-				mindex[mcurrO+1] = mfboffs;
-				mcurrO += 2;
+				setMIndex(mindex, mcurrO, moffs, mfboffs);
+				++mcurrO;
 
 				for (int i = 0; i < nj; i++) {
 					DJointWithInfo1 jicurr = jointinfos[i];
@@ -924,9 +948,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 					DxJoint joint = jicurr.joint;
 					moffs += jicurr.info.m;
 					if (joint.feedback != null) { mfboffs += jicurr.info.m; }
-					mindex[mcurrO+0] = moffs;
-					mindex[mcurrO+1] = mfboffs;
-					mcurrO += 2;
+					setMIndex(mindex, mcurrO, moffs, mfboffs);
+					++mcurrO;
 				}
 			}
 
@@ -1095,8 +1118,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	        int ji;
 	        while ((ji = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_J, nj)) != nj) {
-	            final int ofsi = mindex[ji * 2 + 0];
-	            final int infom = mindex[ji * 2 + 2] - ofsi;
+				final int ofsi = getMIndex(mindex, ji);
+				final int infom = getMIndex(mindex, ji + 1) - ofsi;
 	            int jRow = ofsi * JME__MAX;
 	            int jEnd = jRow + infom * JME__MAX;
 	            for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
@@ -1136,21 +1159,60 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	            // because it gets destroyed by SOR solver
 	            // instead of saving all Jacobian, we can save just rows
 	            // for joints, that requested feedback (which is normally much less)
-	            int mfbcurr = mindex[ji * 2 + 1], mfbnext = mindex[ji * 2 + 3];
-                int mfbCount = mfbnext - mfbcurr;
-                if (mfbCount != 0) {
-                    int jEndMfb = jRow + mfbCount * JME__MAX;
-                    for (int jCurr = jRow; jCurr < jEndMfb ;jCurr += JME__MAX) {
-                    	System.arraycopy(J, jCurr + JME__J1_MIN, Jcopy, jCopy_ofs + JCE__J1_MIN, JME__J1_COUNT);
-                    	System.arraycopy(J, jCurr + JME__J2_MIN, Jcopy, jCopy_ofs + JCE__J2_MIN, JME__J2_COUNT);
-                    	jCopy_ofs += JCE__MAX;
-                    }	        
+				int mfbIndex = getFbIndex(mindex, ji); //mindex[ji].fbIndex;
+				if (mfbIndex != getMIndex(mindex, ji + 1)) { //mindex[ji + 1].fbIndex) {
+				// dReal *const JEnd = JRow + infom * JME__MAX;
+				// dReal *JCopyRow = JCopy + mfbIndex * JCE__MAX; // Random access by mfbIndex here! Do not optimize!
+					final int jEndMfb = jRow + infom * JME__MAX;
+					int JCopyRow = jCopy_ofs + mfbIndex * JCE__MAX; // Random access by mfbIndex here! Do not optimize!
+					//for (const dReal *JCurr = JRow; ; ) {
+					for (int jCurr = jRow; jCurr < jEndMfb ;jCurr += JME__MAX) {
+						//for (unsigned i = 0; i != JME__J1_COUNT; ++i) { JCopyRow[i + JCE__J1_MIN] = JCurr[i + JME__J1_MIN]; }
+						//for (unsigned j = 0; j != JME__J2_COUNT; ++j) { JCopyRow[j + JCE__J2_MIN] = JCurr[j + JME__J2_MIN]; }
+						System.arraycopy(J, jCurr + JME__J1_MIN, Jcopy, jCopy_ofs + JCE__J1_MIN, JME__J1_COUNT);
+						System.arraycopy(J, jCurr + JME__J2_MIN, Jcopy, jCopy_ofs + JCE__J2_MIN, JME__J2_COUNT);
+						JCopyRow += JCE__MAX;
+
+						// TODO CHECK-TZ
+						// TODO CHECK-TZ
+						// TODO CHECK-TZ
+						// TODO CHECK-TZ
+						// TODO CHECK-TZ
+						// TODO CHECK-TZ
+						// TODO CHECK-TZ
+						// TODO CHECK-TZ
+
+						// TZ move this outside of loop
+						// dSASSERT((unsigned)JCE__J1_COUNT == JME__J1_COUNT);
+						// dSASSERT((unsigned)JCE__J2_COUNT == JME__J2_COUNT);
+						// dSASSERT(JCE__J1_COUNT + JCE__J2_COUNT == JCE__MAX);
+
+//	            int mfbcurr = mindex[ji * 2 + 1], mfbnext = mindex[ji * 2 + 3];
+//                int mfbCount = mfbnext - mfbcurr;
+//                if (mfbCount != 0) {
+//                    int jEndMfb = jRow + mfbCount * JME__MAX;
+//                    for (int jCurr = jRow; jCurr < jEndMfb ;jCurr += JME__MAX) {
+//                    	System.arraycopy(J, jCurr + JME__J1_MIN, Jcopy, jCopy_ofs + JCE__J1_MIN, JME__J1_COUNT);
+//                    	System.arraycopy(J, jCurr + JME__J2_MIN, Jcopy, jCopy_ofs + JCE__J2_MIN, JME__J2_COUNT);
+//                    	jCopy_ofs += JCE__MAX;
+					}
                 }
 	        }
     	    Atomics.ThrsafeAdd(localContext.m_valid_findices, validFIndices);
 	    }
 
-	    {
+		// TZ moved this here from inside loop above.
+		dSASSERT(JCE__J1_COUNT == JME__J1_COUNT);
+		dSASSERT(JCE__J2_COUNT == JME__J2_COUNT);
+		dSASSERT(JCE__J1_COUNT + JCE__J2_COUNT == JCE__MAX);
+
+		// TZ: additional assert for System.arraycopy optimization:
+		dSASSERT(JCE__J1_MIN == 0);
+		dSASSERT(JCE__J2_MIN == 6);
+		dSASSERT(JME__J1_COUNT + JME__J2_COUNT == JCE__MAX);
+
+
+		{
 	        int[] jb = localContext.m_jb;
 
 	        // create an array of body numbers for each joint row
@@ -1664,7 +1726,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
                 reorderRequired = true;
             }
 
-            // Increment iterations counter in advance as anyway it needs to be incremented 
+			// TODO CHECK-TZ why don't we need this?
+			// unsigned syncCallDependencies = reorderRequired ? 1 : stage4LCP_Iteration_allowedThreads;
+
+			// Increment iterations counter in advance as anyway it needs to be incremented
             // before independent tasks (the reordering or the iteration) are posted
             // (otherwise next iteration may complete before the increment 
             // and the same iteration index may be used again).
@@ -1743,15 +1808,25 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
                 dxQuickStepIsland_Stage4LCP_DependencyMapForNewOrderRebuilding(stage4CallContext);
             }
         }
+		else {
+			// TODO CHECK-TZ
+			if (true)
+				throw new UnsupportedOperationException("THis was added in 16.2, why did I miss it?");
+			// NOTE: So far, this branch is only called in CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__BY_ERROR case
+			if (Atomics.ThrsafeExchangeAdd(stage4CallContext.m_SOR_reorderThreadsRemaining, -1) == 1) { // If last thread has exited the reordering routine...
+				dIASSERT(iteration != 0);
+				dxQuickStepIsland_Stage4LCP_DependencyMapFromSavedLevelsReconstruction(stage4CallContext);
+			}
+		}
     }
 
     private static 
     boolean dxQuickStepIsland_Stage4LCP_ConstraintsShuffling(dxQuickStepperStage4CallContext stage4CallContext, int iteration)
     {
         boolean result = false;
+		// #if CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__BY_ERROR
         if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__BY_ERROR) {
             /*
-            #if CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__BY_ERROR
                 struct ConstraintsReorderingHelper
                 {
                     void operator ()(dxQuickStepperStage4CallContext *stage4CallContext, int int startIndex, int int endIndex)
@@ -1784,6 +1859,13 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
                 if (iteration > 1) { // Only reorder starting from iteration #2
                     // sort the constraints so that the ones converging slowest
                     // get solved last. use the absolute (not relative) error.
+					//
+					//  Full reorder needs to be done.
+					//  Even though this contradicts the initial idea of moving dependent constraints
+					//  to the order end the algorithm does not work the other way well.
+					//  It looks like the iterative method needs a shake after it already found
+					//  some initial approximations and those incurred errors help it to converge even better.
+					//
                     if (ThrsafeExchange(&stage4CallContext->m_SOR_reorderHeadTaken, 1) == 0) {
                         // Process the head
                         const dxQuickStepperLocalContext *localContext = stage4CallContext->m_localContext;
@@ -1822,37 +1904,55 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
                 else {
                     result = true; // return true on 0th iteration to build dependency map for the initial order 
                 }
-            #elif CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__RANDOMLY
         */
 			throw new UnsupportedOperationException();
+        // #elif CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__RANDOMLY
         } else if (CONSTRAINTS_REORDERING_METHOD == ReorderingMethod.REORDERING_METHOD__RANDOMLY) {
         	if (iteration != 0) {
-	        	if (iteration % RANDOM_CONSTRAINTS_REORDERING_FREQUENCY == RRS_REORDERING) {
+				dIASSERT(!dIN_RANGE(iteration, 0, RANDOM_CONSTRAINTS_REORDERING_FREQUENCY));
+
+				dIASSERT(iteration % RANDOM_CONSTRAINTS_REORDERING_FREQUENCY == RRS_REORDERING);
+				{
+					dIASSERT(!dIN_RANGE(iteration, 0, RANDOM_CONSTRAINTS_REORDERING_FREQUENCY));
+
+					dIASSERT(iteration % RANDOM_CONSTRAINTS_REORDERING_FREQUENCY == RRS_REORDERING);
+					//					{
+					//					class ConstraintsReorderingHelper {
+					//						void operator ()(dxQuickStepperStage4CallContext *stage4CallContext, unsigned int startIndex, unsigned int indicesCount)
+					//						{
+					//							IndexError *order = stage4CallContext->m_order + startIndex;
+					//
+					//							for (unsigned int index = 1; index < indicesCount; ++index) {
+					//							int swapIndex = dRandInt(index + 1);
+					//							IndexError tmp = order[index];
+					//							order[index] = order[swapIndex];
+					//							order[swapIndex] = tmp;
+					//						}
+					//						}
+					//					};
+
+					/*
+					 *  Full reorder needs to be done.
+					 *  Even though this contradicts the initial idea of moving dependent constraints
+					 *  to the order end the algorithm does not work the other way well.
+					 *  It looks like the iterative method needs a shake after it already found
+					 *  some initial approximations and those incurred errors help it to converge even better.
+					 */
 					if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_reorderHeadTaken, 1) == 0) {
 						// Process the head
-						dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
-						ConstraintsReorderingHelper(stage4CallContext, 0,
-								localContext.m_m - localContext.m_valid_findices.get());
-					}					
-					if (Atomics.ThrsafeExchange(stage4CallContext.m_SOR_reorderTailTaken, 1) == 0) {
-						// Process the tail
-						dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
-						ConstraintsReorderingHelper(stage4CallContext, localContext.m_m - localContext.m_valid_findices.get(),
-								localContext.m_valid_findices.get());
+						final dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
+						ConstraintsReorderingHelper(stage4CallContext, 0, localContext.m_m);
 					}
-	        	} else {
-	        		// Revert to the normal order on the next step after the shuffling
-	        		dxQuickStepIsland_Stage4LCP_ReorderPrep(stage4CallContext);
-	        	}
+				}
+				// dIASSERT((RRS__MAX, true)); // A reference to RRS__MAX to be located by Find in Files
         	} else {
         	// Just return true and skip the randomization for the very first iteration
         	}
 			result = true;
+		// #else // #if CONSTRAINTS_REORDERING_METHOD != REORDERING_METHOD__BY_ERROR && CONSTRAINTS_REORDERING_METHOD != REORDERING_METHOD__RANDOMLY
         } else {
-        	// TODO CHECK-TZ Confirm that this works, otherwise remove condition again
-			if (iteration == 0) {
-				result = true; // return true on 0th iteration to build dependency map for initial order
-			}
+			dIASSERT(iteration == 0);  // The reordering request is only returned for the first iteration
+			result = true;
         }
         return result;
     }
@@ -1966,6 +2066,23 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         AtomicInteger[] mi_levels = stage4CallContext.m_bi_links_or_mi_levels;
         AtomicInteger[] mi_links = stage4CallContext.m_mi_links;
 
+		// NOTE!
+		// OD: The mi_links array is not zero-filled before the reconstruction.
+		// Iteration ends with all the down links zeroed. And since down links
+		// are moved to the next level links when parent-child relations are established,
+		// the horizontal levels are properly terminated.
+		// The leaf nodes had their links zero-initialized initially
+		// and those zeros remain intact during the solving. This way the down links
+		// are properly terminated as well.
+		// This is very obscure and error prone and would need an assertion check at least
+		// but the simplest assertion approach I can imagine would be
+		// zero filling and building another tree with the memory buffer comparison afterwards.
+		// That would be stupid, obviously.
+		//
+		// NOTE!
+		// OD: This routine can be threaded. However having two threads messing
+		// in one integer array with random access and kicking each other memory lines
+		// out of cache would probably work worse than letting a single thread do the whole job.
         int m = localContext.m_m;
         for (int i = 0; i != m; ++i) {
             int currentLevelRoot = mi_levels[i].get();
@@ -1998,10 +2115,37 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         }
         dxQuickStepIsland_Stage4LCP_MTIteration(stage4CallContext, knownToBeCompletedLevel);
     }
-	
-    public static AtomicInteger mtIterations = new AtomicInteger();
-    
-    private static 
+
+	public static AtomicInteger mtIterations = new AtomicInteger();
+
+	/*
+	 *	       +0                +0
+	 * Root───┬─────────────────┬──...
+	 *      +1│               +1│
+	 *       ┌┴┐+0   ┌─┐+0      .
+	 *       │A├─────┤B├─...
+	 *       └┬┘     └┬┘
+	 *      +1│     +1│
+	 *       ┌┴┐+0    .
+	 *       │C├─...
+	 *       └┬┘
+	 *      +1│
+	 *        .
+	 *
+	 *  Lower tree levels depend on their parents. Same level nodes are independent with respect to each other.
+	 *
+	 *  1. B is linked in place of A
+	 *  2. A is processed
+	 *  3. C is inserted at the Root level
+	 *
+	 *  The tree starts with a single child subtree at the root level ("down" link of slot #0 is used for that).
+	 *  Then, additional "C" nodes are added to the root level by building horizontal link via slots of
+	 *  their former parent "A"s that had become free.
+	 *  The "level" link of slot #0 is used to find the root level head.
+	 *
+	 *  Since the tree is altered during iteration, mi_levels record each node parents so that the tree could be reconstructed.
+	 */
+    private static
     void dxQuickStepIsland_Stage4LCP_MTIteration(final dxQuickStepperStage4CallContext stage4CallContext, final int initiallyKnownToBeCompletedLevel)
     {
     	mtIterations.incrementAndGet();
@@ -2247,6 +2391,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         // they should not be used again.
 
         if (IsStage4bJointInfosIterationRequired(localContext)) {
+			DVector3 dataL = new DVector3(); //JVE__MAX;
+			DVector3 dataA = new DVector3(); //JVE__MAX;
             double[] Jcopy = localContext.m_Jcopy;
             double[] lambda = stage4CallContext.m_lambda;
             int[] mindex = localContext.m_mindex;
@@ -2259,33 +2405,75 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
             int ji_step;
             while ((ji_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_ji_4b, nj_steps)) != nj_steps) {
                 int ji = ji_step * step_size;
-                int lambdacurr = mindex[ji * 2];
-                int Jcopycurr = mindex[ji * 2 + 1] * JCE__MAX;
-                int jicurr = ji;
-                int jiend = jicurr + Math.min(step_size, nj - ji);
+				final int jiend = ji + Math.min(step_size, nj - ji);
+
+				//const dReal *Jcopycurr = Jcopy + (sizeint)mindex[ji].fbIndex * JCE__MAX;
+				int Jcopycurr = getFbIndex(mindex, ji) * JCE__MAX;
 
                 while (true) {
-                    DxJoint joint = jointinfos[jicurr].joint;
-                    int infom = jointinfos[jicurr].info.m;
-
                     // straightforward computation of joint constraint forces:
                     // multiply related lambdas with respective J' block for joints
                     // where feedback was requested
-            		DJoint.DJointFeedback fb = joint.feedback;
-                    if (fb != null) {
-                    	dAssertVec3Element(); // Assigning fb.f1/f2/t1/t2 inside multiply, see ODE code.
-                        Multiply1_12q1 (fb.f1, fb.t1, Jcopy, Jcopycurr + JCE__J1_MIN, lambda, lambdacurr, infom);
-                        if (joint.node[1].body != null) {
-                	        Multiply1_12q1 (fb.f2, fb.t2, Jcopy, Jcopycurr + JCE__J2_MIN, lambda, lambdacurr, infom);
-                        }
-                        Jcopycurr += infom * JCE__MAX;
-                    }
+                	final int fb_infom = getFbIndex(mindex, ji + 1) - getFbIndex(mindex, ji);
+					if (fb_infom != 0) {
+						dIASSERT(fb_infom == getMIndex(mindex, ji + 1) - getMIndex(mindex, ji));
 
-                    if (++jicurr == jiend) {
-                        break;
-                    }
-                    lambdacurr += infom;
-                }
+                    	//const dReal *lambdacurr = lambda + mindex[ji].mIndex;
+						final int lambdacurrOfs = getMIndex(mindex, ji);
+						DxJoint joint = jointinfos[ji].joint;
+
+				// #ifdef WARM_STARTING
+						if (WARM_STARTING) {
+							memcpy(joint.lambda, 0, lambda, lambdacurrOfs, fb_infom);
+						}
+				// #endif
+
+						DJoint.DJointFeedback fb = joint.feedback;
+
+						dAssertVec3Element(); // ode4j specific assertion
+						if (joint.node[1].body != null) {
+							Multiply1_12q1 (dataL, dataA, Jcopy, Jcopycurr + JCE__J2_MIN, lambda, lambdacurrOfs, fb_infom);
+							dSASSERT(JCE__MAX == 12);
+
+							// fb.f2[dSA_X] = data[JVE_LX];
+							// fb->f2[dSA_Y] = data[JVE_LY];
+							// fb->f2[dSA_Z] = data[JVE_LZ];
+							// fb->t2[dSA_X] = data[JVE_AX];
+							// fb->t2[dSA_Y] = data[JVE_AY];
+							// fb->t2[dSA_Z] = data[JVE_AZ];
+							fb.f2.set(dataL);
+							fb.t2.set(dataA);
+						}
+
+						Multiply1_12q1 (dataL, dataA, Jcopy, Jcopycurr + JCE__J1_MIN, lambda, lambdacurrOfs, fb_infom);
+						dSASSERT(JCE__MAX == 12);
+
+						// fb->f1[dSA_X] = data[JVE_LX];
+						// fb->f1[dSA_Y] = data[JVE_LY];
+						// fb->f1[dSA_Z] = data[JVE_LZ];
+						// fb->t1[dSA_X] = data[JVE_AX];
+						// fb->t1[dSA_Y] = data[JVE_AY];
+						// fb->t1[dSA_Z] = data[JVE_AZ];
+						fb.f2.set(dataL);
+						fb.t2.set(dataA);
+
+						Jcopycurr += fb_infom * JCE__MAX;
+					}
+					else {
+				// #ifdef WARM_STARTING
+						if (WARM_STARTING) {
+                    		int lambdacurrOfs = getMIndex(mindex, ji);
+                    		int infom = getMIndex(mindex,  ji + 1) - getMIndex(mindex, ji);
+							DxJoint joint = jointinfos[ji].joint;
+							memcpy(joint.lambda, 0, lambda, lambdacurrOfs, infom);
+				// #endif
+						}
+					}
+
+					if (++ji == jiend) {
+						break;
+					}
+				}
             }
         }
     }
