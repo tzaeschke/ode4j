@@ -43,6 +43,8 @@ General cleanup:
 - Move tests to core/test
 - update DVector3 safeNormalize to use max() and then compare to 0. ALso see: https://github.com/JOML-CI/JOML/issues/66
 - replace DVector3.clone() with dVector3.re() or copy()
+- Create separate distribution (maven jar) with modules? -> Check how modul-projects have trouble with including
+  non-module projects...
 - reformat everything? At least indentation?
 
 
@@ -56,7 +58,7 @@ Some minor things I found in the code:
 - http://opende.sourceforge.net/wiki/index.php/Joint_Param_Documentation
   This indicate that PU & PR joint have not parameters, I don't think that's correct?
 - GeomTransform is obsolete since 0.6 (according to the Wiki), but it is still used in several demos:
-  deom_boxstack, demo_heightfield, demo_jointPU, demo_motion, demo_spacestress.
+  demo_boxstack, demo_heightfield, demo_jointPU, demo_motion, demo_spacestress.
   I haven't used it myself, so is it still required?
 
 
