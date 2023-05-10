@@ -24,9 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DWorld;
@@ -178,7 +175,6 @@ public class Common extends OdeConstants {
 //			#endif
 
 	public static void dSASSERT(boolean  a) {
-		assert(a);
 		if (!a) {
 			dDebug (d_ERR_SASSERT, "Static assert failed");
 		}
@@ -295,7 +291,7 @@ public class Common extends OdeConstants {
 	 * @return Padded offset
 	 */
 	public static int dPAD(int a) {
-		return (((a) > 1) ? (((a) + 3) & (int)(~3)) : (a));
+		return (((a) > 1) ? (((a) + 3) & (~3)) : (a));
 	}
 	//#define dPAD(a) (((a) > 1) ? (((a) + 3) & (int)(~3)) : (a))
 
@@ -757,10 +753,10 @@ enum {
 //		return value < lo ? (value_type)lo : value > hi ? (value_type)hi : value;
 //	}
 	static double dxClamp(double value, double lo, double hi) {
-		return value < lo ? lo : value > hi ? hi : value;
+		return value < lo ? lo : Math.min(value, hi);
 	}
 	static int dxClamp(int value, int lo, int hi) {
-		return value < lo ? lo : value > hi ? hi : value;
+		return value < lo ? lo : Math.min(value, hi);
 	}
 
 
