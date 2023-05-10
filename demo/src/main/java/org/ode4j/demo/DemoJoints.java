@@ -105,7 +105,7 @@ public class DemoJoints extends dsFunctions {
 	//static int cmd_graphics = 1;
 	private static boolean cmd_interactive = false;
 	private static boolean cmd_graphics = true;
-	private static int cmd_occasional_error = 1;	// perturb occasionally
+	private static int cmd_occasional_error = 0;	// perturb occasionally
 
 
 	// info about the current test
