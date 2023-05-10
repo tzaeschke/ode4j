@@ -584,14 +584,14 @@ public class DLCP {
 	//		    dReal *_lo, dReal *_hi, dReal *_L, dReal *_d,
 	//		    dReal *_Dell, dReal *_ell, dReal *_tmp,
 	//		    int *_state, int *_findex, int *_p, int *_C, dReal **Arows)
-	DLCP (int _n, int _nskip, int _nub, double []_Adata, double[] _pairsbxA, double[] _w,
+	DLCP (int n, int nskip, int nub, double []_Adata, double[] _pairsbxA, double[] _w,
 			double[] m_pairslh, double[] _L, double[] _d,
 			double[] _Dell, double[] _ell, double[] _tmp,
-			boolean []_state, int []_findex, int []_p, int []_C, double[][] Arows)
+			boolean []_state, int []findex, int []p, int []_C, double[][] Arows)
 			{
-	    m_n = _n;
-	    m_nskip = _nskip;
-	    m_nub = _nub;
+	    m_n = n;
+	    m_nskip = nskip;
+	    m_nub = nub;
 	    if (ROWPTRS) {//# ifdef ROWPTRS
 	        //m_A(Arows),
 	        throw new UnsupportedOperationException();
@@ -607,8 +607,8 @@ public class DLCP {
 	    m_ell = _ell;
 	    m_tmp = _tmp;
 	    m_state = _state;
-	    m_findex = _findex;
-	    m_p = _p;
+	    m_findex = findex;
+	    m_p = p;
 	    m_C = _C;
 
         //dxtSetZero<PBX__MAX>(m_pairsbx + PBX_X, m_n);
@@ -618,22 +618,17 @@ public class DLCP {
 			// make matrix row pointers
 		    //		    dReal *aptr = _Adata;
 		    //		    ATYPE A = m_A;
-		    //		    const int n = m_n, nskip = m_nskip;
 		    //		    for (int k=0; k<n; aptr+=nskip, ++k) A[k] = aptr;
 			throw new UnsupportedOperationException();
 		}//# endif
 
 		{
-		    int []p = m_p;
-		    final int n = m_n;
 		    for (int k=0; k!=n; ++k) p[k]=k;     // initially unpermuted
 		}
 
 		/*
 		  // for testing, we can do some random swaps in the area i > nub
 		  {
-		    const int n = m_n;
-		    const int nub = m_nub;
 		    if (nub < n) {
 		    for (int k=0; k<100; k++) {
 		      int i1,i2;
@@ -657,52 +652,47 @@ public class DLCP {
 		// if lo=-inf and hi=inf - this is because these limits may change during the
 		// solution process.
 
+		int currNub = nub;
 		{
-		    int[] findex = m_findex;
 		    double[] pairslhA = m_pairslh;
 		    int pairslhP = 0;
-		    final int n = m_n;
-		    for (int k = m_nub; k<n; ++k) {
+		    for (int k = currNub; k<n; ++k) {
 		        if (findex!=null && findex[k] >= 0) continue;
                 if (pairslhA[pairslhP + k * PLH__MAX + PLH_LO] == -dInfinity && pairslhA[pairslhP + k * PLH__MAX + PLH_HI] == dInfinity) {
-                    swapProblem(m_A, m_pairsbxA, 0, m_w, pairslhA, pairslhP, m_p, m_state, findex, n, m_nub, k, m_nskip, false);
-		            m_nub++;
+                    swapProblem(m_A, m_pairsbxA, 0, m_w, pairslhA, pairslhP, m_p, m_state, findex, n, currNub, k, nskip, false);
+		            m_nub = ++currNub;
 		        }
 		    }
 		}
 
 		// if there are unbounded variables at the start, factorize A up to that
-		// point and solve for x. this puts all indexes 0..nub-1 into C.
-		if (m_nub > 0) {
-		    final int nub = m_nub;
+		// point and solve for x. this puts all indexes 0..currNub-1 into C.
+		if (currNub > 0) {
 		    {
 		        int Lrow = 0;//m_L;
-		        final int nskip = m_nskip;
-		        for (int j=0; j<nub; Lrow+=nskip, ++j) {
+		        for (int j=0; j<currNub; Lrow+=nskip, ++j) {
 		            //memcpy(Lrow,AROW(j),(j+1)*sizeof(dReal));
 		            memcpy(m_L, Lrow, m_A, AROWp(j), j+1);
 		        }
 		    }
-            transfer_b_to_x(m_pairsbxA, 0, nub, false);
-			factorMatrixAsLDLT(m_L, m_d, nub, m_nskip, 1);
-			solveEquationSystemWithLDLT(m_L, m_d, 0, m_pairsbxA, 0 + PBX_X, nub, m_nskip, 1, PBX__MAX);
-            dSetZero (m_w,nub);
+            transfer_b_to_x(m_pairsbxA, 0, currNub, false);
+			factorMatrixAsLDLT(m_L, m_d, currNub, nskip, 1);
+			solveEquationSystemWithLDLT(m_L, m_d, 0, m_pairsbxA, 0 + PBX_X, currNub, nskip, 1, PBX__MAX);
+            dSetZero (m_w,currNub);
 		    {
 		        int[] C = m_C;
-		        for (int k=0; k<nub; ++k) C[k] = k;
+		        for (int k=0; k<currNub; ++k) C[k] = k;
 		    }
-		    m_nC = nub;
+		    m_nC = currNub;
 		}
 
-		// permute the indexes > nub such that all findex variables are at the end
+		// permute the indexes > currNub such that all findex variables are at the end
 		if (m_findex!=null) {
-		    final int nub = m_nub;
-		    int[] findex = m_findex;
 		    int num_at_end = 0;
-		    for (int k=m_n; k > nub;) {
+		    for (int k=m_n; k > currNub;) {
 		        --k;
 		        if (findex[k] >= 0) {
-		            swapProblem (m_A,m_pairsbxA,0,m_w,m_pairslh,0,m_p,m_state,findex,m_n,k,m_n-1-num_at_end,m_nskip,true);
+		            swapProblem (m_A,m_pairsbxA,0,m_w,m_pairslh,0,m_p,m_state,findex,m_n,k,m_n-1-num_at_end,nskip,true);
 		            num_at_end++;
 		        }
 		    }
@@ -711,10 +701,8 @@ public class DLCP {
 		// print info about indexes
 		/*
 		  {
-		    const int n = m_n;
-		    const int nub = m_nub;
 		    for (int k=0; k<n; k++) {
-		      if (k<nub) printf ("C");
+		      if (k<currNub) printf ("C");
                else if ((m_pairslh + (size_t)k * PLH__MAX)[PLH_LO] == -dInfinity && (m_pairslh + (size_t)k * PLH__MAX)[PLH_HI] == dInfinity) printf ("c");
 		      else printf (".");
 		    }
