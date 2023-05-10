@@ -44,14 +44,8 @@ ODE16.2: Much better. Floating card is actually fine (in theory). But3rd row col
 =====
 - Port updates until 0.16.2.
   This includes some libCCD updates missing fro the 0.15.1 update.
-
-    TODO
-      - Check DemoFeedback
-      - Remove CollideTrimeshBoxOld.java
-      - Remove all "dxt" stuff
-
-  DONE: all Except listed in TODO.txt and  quickstep.cpp
-
+  This excludes improved solution finders with anything from *Cooperative* and ThreadedEquationSolverLDLT*.
+  [#97](https://github.com/tzaeschke/ode4j/pull/97)
 - Added GutHub Actions CI builds for Java 8 and 9. [#95](https://github.com/tzaeschke/ode4j/pull/95)
 - Added default logger for demos and tests. [#94](https://github.com/tzaeschke/ode4j/pull/94)
 - Added Android API compliance checker, now for API level 24 (the lowest that ode4j passed without changes)
