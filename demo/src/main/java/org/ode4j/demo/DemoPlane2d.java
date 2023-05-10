@@ -177,7 +177,9 @@ class DemoPlane2d extends dsFunctions {
 			{
 				//dSpaceCollide (coll_space_id, 0, cb_near_collision);
 				OdeHelper.spaceCollide (g_globals_ptr.coll_space_id, null, myNearCallBack );
-				g_globals_ptr.dyn_world.step (TIME_STEP/n);
+				// TODO See issue #15, step() causes weird spinning and console errors
+				// g_globals_ptr.dyn_world.step (TIME_STEP/n);
+				g_globals_ptr.dyn_world.quickStep (TIME_STEP/n);
 				g_globals_ptr.coll_contacts.empty ();
 			}
 		}
