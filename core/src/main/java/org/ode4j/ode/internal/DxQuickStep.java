@@ -1120,16 +1120,18 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				final int ofsi = getMIndex(mindex, ji);
 				final int infom = getMIndex(mindex, ji + 1) - ofsi;
 	            int jRow = ofsi * JME__MAX;
-	            int jEnd = jRow + infom * JME__MAX;
-	            for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
-	            	dSetZero(J, jCurr + JME__J1_MIN, JME__J1_COUNT);
-	            	J[jCurr + JME_RHS] = 0.0;
-	            	J[jCurr + JME_CFM] = worldCFM;
-	            	dSetZero(J, jCurr + JME__J2_MIN, JME__J2_COUNT);
-	            	J[jCurr + JME_LO] = -dInfinity;
-	            	J[jCurr + JME_HI] = dInfinity;
-	            }
-				dSASSERT(JME__J1_COUNT + 2 + JME__J2_COUNT + 2 == JME__MAX);
+				{
+					int jEnd = jRow + infom * JME__MAX;
+					for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
+						dSetZero(J, jCurr + JME__J1_MIN, JME__J1_COUNT);
+						J[jCurr + JME_RHS] = 0.0;
+						J[jCurr + JME_CFM] = worldCFM;
+						dSetZero(J, jCurr + JME__J2_MIN, JME__J2_COUNT);
+						J[jCurr + JME_LO] = -dInfinity;
+						J[jCurr + JME_HI] = dInfinity;
+					}
+					dSASSERT(JME__J1_COUNT + 2 + JME__J2_COUNT + 2 == JME__MAX);
+				}
 	            int findexRow = ofsi;
 	            dSetValue(findex, findexRow, infom, -1);
 
@@ -1138,22 +1140,34 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 						JME__MAX, J, jRow + JME__RHS_CFM_MIN, J, jRow + JME__LO_HI_MIN, findex, findexRow);
 
 	            // findex iteration is compact and is not going to pollute caches - do it first
-	            // adjust returned findex values for global index numbering
-				// TZ: This looks alright, but is different from the original where we use findexRow
-	            for (int j = infom; j != 0; ) {
-	            	--j;
-	            	int fival = findex[j+ofsi];
-	            	if (fival != -1)  {
-	            		findex[j+ofsi] = fival + ofsi;
-	            		validFIndices++;
-	            	}
-	            }
-
-	            for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
-	            	J[jCurr + JME_RHS] *= stepsizeRecip;
-	            	J[jCurr + JME_CFM] *= stepsizeRecip;
-	            }
-
+				{
+					// adjust returned findex values for global index numbering
+					int findicesEndOfs = findexRow + infom;
+					for (int findexCurrOfs = findexRow; findexCurrOfs != findicesEndOfs; ++findexCurrOfs) {
+						int fival = findex[findexCurrOfs]; // *findexCurr;
+						if (fival != -1) {
+							findex[findexCurrOfs] = fival + ofsi; // *findexCurr = fival + ofsi;
+							++validFIndices;
+						}
+					}
+					// TZ: This looks alright, but is different from the original where we use findexRow
+//					for (int j = infom; j != 0; ) {
+//						--j;
+//						int fival = findex[j + ofsi];
+//						if (fival != -1) {
+//							findex[j + ofsi] = fival + ofsi;
+//							++validFIndices;
+//						}
+//					}
+				}
+				{
+					// dReal *const JEnd = JRow + infom * JME__MAX;
+					int jEnd = jRow + infom * JME__MAX;
+					for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
+						J[jCurr + JME_RHS] *= stepsizeRecip;
+						J[jCurr + JME_CFM] *= stepsizeRecip;
+					}
+				}
 	            // we need a copy of Jacobian for joint feedbacks
 	            // because it gets destroyed by SOR solver
 	            // instead of saving all Jacobian, we can save just rows
@@ -1162,38 +1176,24 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				if (mfbIndex != getMIndex(mindex, ji + 1)) { //mindex[ji + 1].fbIndex) {
 				// dReal *const JEnd = JRow + infom * JME__MAX;
 				// dReal *JCopyRow = JCopy + mfbIndex * JCE__MAX; // Random access by mfbIndex here! Do not optimize!
-					final int jEndMfb = jRow + infom * JME__MAX;
+					final int jEnd = jRow + infom * JME__MAX;
 					int JCopyRow = jCopy_ofs + mfbIndex * JCE__MAX; // Random access by mfbIndex here! Do not optimize!
 					//for (const dReal *JCurr = JRow; ; ) {
-					for (int jCurr = jRow; jCurr < jEndMfb ;jCurr += JME__MAX) {
+					for (int jCurr = jRow; jCurr < jEnd ;) {
 						//for (unsigned i = 0; i != JME__J1_COUNT; ++i) { JCopyRow[i + JCE__J1_MIN] = JCurr[i + JME__J1_MIN]; }
 						//for (unsigned j = 0; j != JME__J2_COUNT; ++j) { JCopyRow[j + JCE__J2_MIN] = JCurr[j + JME__J2_MIN]; }
-						System.arraycopy(J, jCurr + JME__J1_MIN, Jcopy, jCopy_ofs + JCE__J1_MIN, JME__J1_COUNT);
-						System.arraycopy(J, jCurr + JME__J2_MIN, Jcopy, jCopy_ofs + JCE__J2_MIN, JME__J2_COUNT);
+						System.arraycopy(J, jCurr + JME__J1_MIN, Jcopy, JCopyRow + JCE__J1_MIN, JME__J1_COUNT);
+						System.arraycopy(J, jCurr + JME__J2_MIN, Jcopy, JCopyRow + JCE__J2_MIN, JME__J2_COUNT);
 						JCopyRow += JCE__MAX;
-
-						// TODO CHECK-TZ
-						// TODO CHECK-TZ
-						// TODO CHECK-TZ
-						// TODO CHECK-TZ
-						// TODO CHECK-TZ
-						// TODO CHECK-TZ
-						// TODO CHECK-TZ
-						// TODO CHECK-TZ
 
 						// TZ move this outside of loop
 						// dSASSERT((unsigned)JCE__J1_COUNT == JME__J1_COUNT);
 						// dSASSERT((unsigned)JCE__J2_COUNT == JME__J2_COUNT);
 						// dSASSERT(JCE__J1_COUNT + JCE__J2_COUNT == JCE__MAX);
 
-//	            int mfbcurr = mindex[ji * 2 + 1], mfbnext = mindex[ji * 2 + 3];
-//                int mfbCount = mfbnext - mfbcurr;
-//                if (mfbCount != 0) {
-//                    int jEndMfb = jRow + mfbCount * JME__MAX;
-//                    for (int jCurr = jRow; jCurr < jEndMfb ;jCurr += JME__MAX) {
-//                    	System.arraycopy(J, jCurr + JME__J1_MIN, Jcopy, jCopy_ofs + JCE__J1_MIN, JME__J1_COUNT);
-//                    	System.arraycopy(J, jCurr + JME__J2_MIN, Jcopy, jCopy_ofs + JCE__J2_MIN, JME__J2_COUNT);
-//                    	jCopy_ofs += JCE__MAX;
+						if ((jCurr += JME__MAX) == jEnd) {
+							break;
+						}
 					}
                 }
 	        }
@@ -1204,12 +1204,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		dSASSERT(JCE__J1_COUNT == JME__J1_COUNT);
 		dSASSERT(JCE__J2_COUNT == JME__J2_COUNT);
 		dSASSERT(JCE__J1_COUNT + JCE__J2_COUNT == JCE__MAX);
-
-		// TZ: additional assert for System.arraycopy optimization:
-		dSASSERT(JCE__J1_MIN == 0);
-		dSASSERT(JCE__J2_MIN == 6);
-		dSASSERT(JME__J1_COUNT + JME__J2_COUNT == JCE__MAX);
-
 
 		{
 	        int[] jb = localContext.m_jb;
@@ -1663,11 +1657,12 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     {
 	    dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
 	    int m = localContext.m_m;
+		int valid_findices = localContext.m_valid_findices.get();
 
         IndexError []order = stage4CallContext.m_order;
         // make sure constraints with findex < 0 come first.
         int orderhead = 0;
-        int ordertail = m;
+        int ordertail = m - valid_findices;
         int[] findex = localContext.m_findex;
 
         // Fill the array from both ends
@@ -1676,13 +1671,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
                 order[orderhead].index = i; // Place them at the front
                 ++orderhead;
             } else {
-            	// TODO CHECK-TZ Has this been fixed with the recent bug fixes?
-            	// WARNING!!!
-            	// The dependent constraints are put in reverse order here (backwards to front).
-            	// They MUST be ordered this way.
-            	// Putting them in normal order makes simulation less stable for some mysterious reason.
-            	--ordertail;
-            	order[ordertail].index = i; // Place them at the end
+				order[ordertail].index = i; // Place them at the end
+				++ordertail;
             }
         }
     }

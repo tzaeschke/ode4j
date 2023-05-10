@@ -89,7 +89,6 @@ class DemoFeedback extends dsFunctions {
 
 		if ( o1 instanceof DSpace || o2 instanceof DSpace )
 		{
-			System.err.println("testing space " + o1 + "  " + o2);
 			// colliding a space with something
 			OdeHelper.spaceCollide2(o1,o2,data,nearCallback);
 			// Note we do not want to test intersections within a space,

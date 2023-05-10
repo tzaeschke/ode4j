@@ -72,7 +72,7 @@ public class Common extends OdeConstants {
 			throw new RuntimeException("dDOUBLE == dSINGLE");
 		}
 		if (dDOUBLE) {
-			//TODO use MIN_VALUE instead? IEEE 754 ...
+			// dEpsilon = FLT_EPSILON or DBL_EPSILON
 			dEpsilon = Double.MIN_NORMAL;
 			MAX_FLOAT = Double.MAX_VALUE;
 		} else {
@@ -99,8 +99,7 @@ public class Common extends OdeConstants {
 	public static final int d_MEMORY_OUT_OF_MEMORY = 1;
 
 
-//From config-defaults.h
-	//TODO ???
+	//From config-defaults.h
 	/** @deprecated TZ this can be removed? */
 	@Deprecated
     public static final boolean  dATOMICS_ENABLED = false;
@@ -108,8 +107,6 @@ public class Common extends OdeConstants {
 
 	public static final boolean  dTRIMESH_OPCODE_USE_OLD_TRIMESH_TRIMESH_COLLIDER = false;
 
-	//TODO
-	//http://www.codeguru.com/forum/printthread.php?t=323835
 	//TODO use MACRO
 	//#define EPSILON 0.0001   // Define your own tolerance
 	//#define FLOAT_EQ(x,v) (((v - EPSILON) < x) && (x <( v + EPSILON)))
@@ -161,11 +158,7 @@ public class Common extends OdeConstants {
 	}
 
 	public static void dDEBUGMSG(String msg) {
-		StringWriter sw = new StringWriter();
-		new PrintWriter(sw);
-		new RuntimeException(msg).printStackTrace(new PrintWriter(sw));
-		String msg2 = sw.toString();
-		dMessage (d_ERR_UASSERT, msg2);
+		dMessage (d_ERR_UASSERT, msg);
 	}
 
 //	#ifdef __GNUC__
@@ -498,21 +491,21 @@ public class Common extends OdeConstants {
 	//#elif defined(dDOUBLE)
 
 	//#define REAL(x) (x)
-	//#define dRecip(x) (1.0/(x)) //TODO replace
+	//#define dRecip(x) (1.0/(x))
 	public static double dRecip(double x) { return 1.0/x; }
-	//#define dSqrt(x) sqrt(x) //TODO replace
+	//#define dSqrt(x) sqrt(x)
 	public static double dSqrt(double x) { return Math.sqrt(x); }
 	//#define dRecipSqrt(x) (1.0/sqrt(x))
 	public static double dRecipSqrt(double x) { return 1.0/Math.sqrt(x); }
-	//#define dSin(x) sin(x)//TODO replace
+	//#define dSin(x) sin(x)
 	public static double dSin(double x) { return Math.sin(x); }
-	//#define dCos(x) cos(x) //TODO replace
+	//#define dCos(x) cos(x)
 	public static double dCos(double x) { return Math.cos(x); }
-	//#define dFabs(x) fabs(x) //TODO replace
+	//#define dFabs(x) fabs(x)
 	public static double dFabs(double x) {
 		return Math.abs(x);
 	}
-	//#define dAtan2(y,x) atan2((y),(x)) //TODO replace
+	//#define dAtan2(y,x) atan2((y),(x))
 	public static double dAtan2(double y, double x) {
 		return Math.atan2(y, x);
 	}
@@ -525,12 +518,12 @@ public class Common extends OdeConstants {
 		return Math.acos(x);
 	}
 
-	//#define dFMod(a,b) (fmod((a),(b))) //TODO replace
+	//#define dFMod(a,b) (fmod((a),(b)))
 	public static double dFMod(double x) {
 		throw new UnsupportedOperationException();
 		//return Math.fmod(x);
 	}
-	//#define dFloor(x) floor(x) //TODO replace
+	//#define dFloor(x) floor(x)
 	public static double dFloor(double x) { return Math.floor(x); }
 
 	//#define dCeil(x) ceilf(x)          /* ceil */

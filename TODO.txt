@@ -48,6 +48,7 @@ General cleanup:
   -> https://www.baeldung.com/java-9-modularity
   -> https://stackoverflow.com/questions/40490520/what-do-i-need-to-build-jdk-9-project-with-non-modular-dependencies-using-maven
 - reformat everything? At least indentation?
+- Consider porting stuff in "contrib"
 
 
 July 6th 2009:
