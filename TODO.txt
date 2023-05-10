@@ -5,13 +5,24 @@ mvn versions:display-dependency-updates
 mvn versions:display-plugin-updates
 
 
+Things left out for 0.5.0 (missing from 0.15.1 vs 0.16.2)
+=========================================================
+ Not ported:
+  - resource_control.*
+  - simple_cooperation.*
+  - Updates to DxWorldProcessContext
+  - ThreadedEquationSolverLDLT* and *Cooperative* is missing from:
+    - fastldltfactor(_impl).*
+    - fastlsolve(_impl).*
+    - fastltsolve(_impl).*:
+    - fastvecscale(_impl).*:
+  - objects.h/.cpp  /  obstack.h/.cpp
+
 
 Java Version
 ============
 - We should aim for Oreo or later (Android 8.0, released 2017, API Level 26: https://apilevels.com/)
-- Java 8 should be fine.
-- Try animal-sniffer plugin for higher versions, e.g. Java 9
-  More accurate (respects desugaring by D8): https://github.com/open-toast/gummy-bears
+- We use animal-sniffer (respects desugaring by D8): https://github.com/open-toast/gummy-bears
 
 - Android Runtime replaced Dalvik as default Runtime in Android 5: https://en.wikipedia.org/wiki/Android_version_history
 - Android 8 (Oreo) is about 8% share:
@@ -24,9 +35,6 @@ Java Version
   - Android 11 support "up to" Java 13 (Question: complete 13 or partial 13??)
 - 2018: https://jakewharton.com/androids-java-9-10-11-and-12-support/
 
-- Java 8 support: https://developer.android.com/studio/write/java8-support-table
-- Java 8 support details: https://developer.android.com/studio/write/java8-support
-
 
 MArch 2023:
 General cleanup:
@@ -35,8 +43,12 @@ General cleanup:
 - Move tests to core/test
 - update DVector3 safeNormalize to use max() and then compare to 0. ALso see: https://github.com/JOML-CI/JOML/issues/66
 - replace DVector3.clone() with dVector3.re() or copy()
+- Create separate distribution (maven jar) with modules? -> Check how modul-projects have trouble with including
+  non-module projects...
+  -> https://www.baeldung.com/java-9-modularity
+  -> https://stackoverflow.com/questions/40490520/what-do-i-need-to-build-jdk-9-project-with-non-modular-dependencies-using-maven
 - reformat everything? At least indentation?
-- CI builds
+- Consider porting stuff in "contrib"
 
 
 July 6th 2009:
@@ -49,7 +61,7 @@ Some minor things I found in the code:
 - http://opende.sourceforge.net/wiki/index.php/Joint_Param_Documentation
   This indicate that PU & PR joint have not parameters, I don't think that's correct?
 - GeomTransform is obsolete since 0.6 (according to the Wiki), but it is still used in several demos:
-  deom_boxstack, demo_heightfield, demo_jointPU, demo_motion, demo_spacestress.
+  demo_boxstack, demo_heightfield, demo_jointPU, demo_motion, demo_spacestress.
   I haven't used it myself, so is it still required?
 
 

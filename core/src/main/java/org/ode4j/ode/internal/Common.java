@@ -24,9 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DWorld;
@@ -72,7 +69,7 @@ public class Common extends OdeConstants {
 			throw new RuntimeException("dDOUBLE == dSINGLE");
 		}
 		if (dDOUBLE) {
-			//TODO use MIN_VALUE instead? IEEE 754 ...
+			// dEpsilon = FLT_EPSILON or DBL_EPSILON
 			dEpsilon = Double.MIN_NORMAL;
 			MAX_FLOAT = Double.MAX_VALUE;
 		} else {
@@ -99,8 +96,7 @@ public class Common extends OdeConstants {
 	public static final int d_MEMORY_OUT_OF_MEMORY = 1;
 
 
-//From config-defaults.h
-	//TODO ???
+	//From config-defaults.h
 	/** @deprecated TZ this can be removed? */
 	@Deprecated
     public static final boolean  dATOMICS_ENABLED = false;
@@ -108,8 +104,6 @@ public class Common extends OdeConstants {
 
 	public static final boolean  dTRIMESH_OPCODE_USE_OLD_TRIMESH_TRIMESH_COLLIDER = false;
 
-	//TODO
-	//http://www.codeguru.com/forum/printthread.php?t=323835
 	//TODO use MACRO
 	//#define EPSILON 0.0001   // Define your own tolerance
 	//#define FLOAT_EQ(x,v) (((v - EPSILON) < x) && (x <( v + EPSILON)))
@@ -161,11 +155,7 @@ public class Common extends OdeConstants {
 	}
 
 	public static void dDEBUGMSG(String msg) {
-		StringWriter sw = new StringWriter();
-		new PrintWriter(sw);
-		new RuntimeException(msg).printStackTrace(new PrintWriter(sw));
-		String msg2 = sw.toString();
-		dMessage (d_ERR_UASSERT, msg2);
+		dMessage (d_ERR_UASSERT, msg);
 	}
 
 //	#ifdef __GNUC__
@@ -185,7 +175,6 @@ public class Common extends OdeConstants {
 //			#endif
 
 	public static void dSASSERT(boolean  a) {
-		assert(a);
 		if (!a) {
 			dDebug (d_ERR_SASSERT, "Static assert failed");
 		}
@@ -302,7 +291,7 @@ public class Common extends OdeConstants {
 	 * @return Padded offset
 	 */
 	public static int dPAD(int a) {
-		return (((a) > 1) ? (((a) + 3) & (int)(~3)) : (a));
+		return (((a) > 1) ? (((a) + 3) & (~3)) : (a));
 	}
 	//#define dPAD(a) (((a) > 1) ? (((a) + 3) & (int)(~3)) : (a))
 
@@ -498,21 +487,21 @@ public class Common extends OdeConstants {
 	//#elif defined(dDOUBLE)
 
 	//#define REAL(x) (x)
-	//#define dRecip(x) (1.0/(x)) //TODO replace
+	//#define dRecip(x) (1.0/(x))
 	public static double dRecip(double x) { return 1.0/x; }
-	//#define dSqrt(x) sqrt(x) //TODO replace
+	//#define dSqrt(x) sqrt(x)
 	public static double dSqrt(double x) { return Math.sqrt(x); }
 	//#define dRecipSqrt(x) (1.0/sqrt(x))
 	public static double dRecipSqrt(double x) { return 1.0/Math.sqrt(x); }
-	//#define dSin(x) sin(x)//TODO replace
+	//#define dSin(x) sin(x)
 	public static double dSin(double x) { return Math.sin(x); }
-	//#define dCos(x) cos(x) //TODO replace
+	//#define dCos(x) cos(x)
 	public static double dCos(double x) { return Math.cos(x); }
-	//#define dFabs(x) fabs(x) //TODO replace
+	//#define dFabs(x) fabs(x)
 	public static double dFabs(double x) {
 		return Math.abs(x);
 	}
-	//#define dAtan2(y,x) atan2((y),(x)) //TODO replace
+	//#define dAtan2(y,x) atan2((y),(x))
 	public static double dAtan2(double y, double x) {
 		return Math.atan2(y, x);
 	}
@@ -525,12 +514,12 @@ public class Common extends OdeConstants {
 		return Math.acos(x);
 	}
 
-	//#define dFMod(a,b) (fmod((a),(b))) //TODO replace
+	//#define dFMod(a,b) (fmod((a),(b)))
 	public static double dFMod(double x) {
 		throw new UnsupportedOperationException();
 		//return Math.fmod(x);
 	}
-	//#define dFloor(x) floor(x) //TODO replace
+	//#define dFloor(x) floor(x)
 	public static double dFloor(double x) { return Math.floor(x); }
 
 	//#define dCeil(x) ceilf(x)          /* ceil */
@@ -680,23 +669,21 @@ enum {
 	public static int SIZE_MAX = Integer.MAX_VALUE;
 
 
-//#ifndef offsetof
-//#define offsetof(s, m) ((size_t)&(((s *)8)->m) - (size_t)8)
-//			#endif
-//#ifndef membersize
-//#define membersize(s, m) (sizeof(((s *)8)->m))
-//			#endif
-//#ifndef endoffsetof
-//#define endoffsetof(s, m)   ((size_t)((size_t)&(((s *)8)->m) - (size_t)8) + sizeof(((s *)8)->m))
-//			#endif
+	//#ifndef offsetof
+	//#define offsetof(s, m) ((size_t)&(((s *)8)->m) - (size_t)8)
+	//			#endif
+	//#ifndef membersize
+	//#define membersize(s, m) (sizeof(((s *)8)->m))
+	//			#endif
+	//#ifndef endoffsetof
+	//#define endoffsetof(s, m)   ((size_t)((size_t)&(((s *)8)->m) - (size_t)8) + sizeof(((s *)8)->m))
+	//			#endif
 
-//#define dMACRO_MAX(a, b) ((a) > (b) ? (a) : (b))
-//			#define dMACRO_MIN(a, b) ((a) < (b) ? (a) : (b))
-	public static int dMACRO_MIN(int a, int b) {
-		return Math.min(a, b);
-	}
-//
-//			#define dMAKE_PADDING_SIZE(DataType, ElementType) ((sizeof(DataType) + sizeof(ElementType) - 1) / sizeof(ElementType))
+	//#define dMACRO_MAX(a, b) ((a) > (b) ? (a) : (b))
+	//			#define dMACRO_MIN(a, b) ((a) < (b) ? (a) : (b))
+	//	public static int dMACRO_MIN(int a, int b) {
+	//		return Math.min(a, b);
+	//	}
 
 
 //	template<typename DstType, typename SrcType>
@@ -766,10 +753,10 @@ enum {
 //		return value < lo ? (value_type)lo : value > hi ? (value_type)hi : value;
 //	}
 	static double dxClamp(double value, double lo, double hi) {
-		return value < lo ? lo : value > hi ? hi : value;
+		return value < lo ? lo : Math.min(value, hi);
 	}
 	static int dxClamp(int value, int lo, int hi) {
-		return value < lo ? lo : value > hi ? hi : value;
+		return value < lo ? lo : Math.min(value, hi);
 	}
 
 

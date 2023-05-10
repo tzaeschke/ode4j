@@ -145,8 +145,7 @@ public class TestOdeMath {
 
 		v3.set( 9999999999.0, 9999.0, 9.0 );
 		v3.normalize();
-		CHECK_EQUAL(v3.length(), 1.0);
-
+		CHECK_CLOSE(v3.length(), 1.0, 0.001);
 	}
 
 

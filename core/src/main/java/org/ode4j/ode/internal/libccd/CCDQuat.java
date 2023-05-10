@@ -198,19 +198,19 @@ public class CCDQuat {
 	}
 
 	/**
-	 * Rotate vector s by quaternion q and put result into d.
+	 * Rotate vector v by quaternion q.
 	 */
-	public static void ccdQuatRotVec2(ccd_vec3_t d, final ccd_vec3_t s, final ccd_quat_t q) {
+	public static void ccdQuatRotVec(ccd_vec3_t v, final ccd_quat_t q) {
 		// original version: 31 mul + 21 add
 		// optimized version: 18 mul + 12 add
-		// formula: d = s + 2 * cross(q.xyz, cross(q.xyz, v) + q.w * s)
+		// formula: v = v + 2 * cross(q.xyz, cross(q.xyz, v) + q.w * v)
 		double cross1_x, cross1_y, cross1_z, cross2_x, cross2_y, cross2_z;
 		double x, y, z, w;
 		double vx, vy, vz;
 
-		vx = ccdVec3X(s);
-		vy = ccdVec3Y(s);
-		vz = ccdVec3Z(s);
+		vx = ccdVec3X(v);
+		vy = ccdVec3Y(v);
+		vz = ccdVec3Z(v);
 
 		w = q.q3;
 		x = q.q0;
@@ -223,14 +223,7 @@ public class CCDQuat {
 		cross2_x = y * cross1_z - z * cross1_y;
 		cross2_y = z * cross1_x - x * cross1_z;
 		cross2_z = x * cross1_y - y * cross1_x;
-		ccdVec3Set(d, vx + 2 * cross2_x, vy + 2 * cross2_y, vz + 2 * cross2_z);
-	}
-
-	/**
-	 * Rotate vector v by quaternion q.
-	 */
-	public static void ccdQuatRotVec(ccd_vec3_t v, final ccd_quat_t q) {
-		ccdQuatRotVec2(v, v, q);
+		ccdVec3Set(v, vx + 2 * cross2_x, vy + 2 * cross2_y, vz + 2 * cross2_z);
 	}
 
 }

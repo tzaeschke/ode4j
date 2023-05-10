@@ -226,12 +226,15 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 				aabb.level = level;
 				if (level > maxlevel) maxlevel = level;
 				// cellsize = 2^level
-				double cellSizeRecip = dRecip(ldexp(1.0, level));
-				// discretize AABB position to cell size
+				double cellSizeRecip = dRecip(ldexp(1.0, level)); // No computational errors here!
 				// discretize AABB position to cell size
 				for (i=0; i < 3; i++) {
-					aabb.dbounds[2*i] = (int)Math.floor (geom._aabb.getMin(i) * cellSizeRecip);
-					aabb.dbounds[2*i+1] = (int)Math.floor (geom._aabb.getMax(i) * cellSizeRecip);
+					double aabbBoundMin = Math.floor (geom._aabb.getMin(i) * cellSizeRecip); // No computational errors so far!
+					double aabbBoundMax = Math.floor (geom._aabb.getMax(i) * cellSizeRecip); // No computational errors so far!
+					dICHECK(aabbBoundMin >= Integer.MIN_VALUE && aabbBoundMin </*=*/ Integer.MAX_VALUE); // Otherwise the scene is too large for integer types used
+					dICHECK(aabbBoundMax >= Integer.MIN_VALUE && aabbBoundMax </*=*/ Integer.MAX_VALUE); // Otherwise the scene is too large for integer types used
+					aabb.dbounds[2*i] = (int)Math.floor (aabbBoundMin);
+					aabb.dbounds[2*i+1] = (int)Math.floor (aabbBoundMax);
 				}
 				// set AABB index
 				aabb.index = hash_boxes.size();

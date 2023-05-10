@@ -96,7 +96,7 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 
 		trimeshContacts.GIM_DYNARRAY_DESTROY();
 
-		// TODO remove this, #22 has been resolved
+		// TODO CHECK-TZ remove this, #22 has been resolved
 		int contactcount = trimeshContacts.size();
 		int maxcontacts = Flags & NUMC_MASK;
 		if (contactcount > maxcontacts)

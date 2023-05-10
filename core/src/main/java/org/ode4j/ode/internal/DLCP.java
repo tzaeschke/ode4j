@@ -29,7 +29,10 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.ErrorHandler.dDebug;
 import static org.ode4j.ode.internal.ErrorHandler.dMessage;
-import static org.ode4j.ode.internal.FastLDLT.dxtFactorLDLT;
+import static org.ode4j.ode.internal.FastLDLTFactor.factorMatrixAsLDLT;
+import static org.ode4j.ode.internal.FastLDLTSolve.solveEquationSystemWithLDLT;
+import static org.ode4j.ode.internal.FastLSolve.solveL1Straight;
+import static org.ode4j.ode.internal.FastLTSolve.solveL1Transposed;
 import static org.ode4j.ode.internal.Matrix.*;
 import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
 import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
@@ -205,7 +208,7 @@ public class DLCP {
 	//#define DEBUG_LCP
 
 	//#define dLCP_FAST		// use fast dLCP object
-	//private static final boolean dLCP_FAST = true;
+	private static final boolean dLCP_FAST = true;
 
 	//#define NUB_OPTIMIZATIONS
 	protected static final boolean NUB_OPTIMIZATIONS = true;
@@ -262,8 +265,195 @@ public class DLCP {
 		}
 	}
 
+	/**
+	 * swap row/column i1 with i2 in the n*n matrix A. the leading dimension of
+	 * A is nskip. this only references and swaps the lower triangle.
+	 * if `do_fast_row_swaps' is nonzero and row pointers are being used, then
+	 * rows will be swapped by exchanging row pointers. otherwise the data will
+	 * be copied.
+	 */
+	private static void swapRowsAndCols (double[] A, int n, int i1, int i2, int nskip,
+										 boolean do_fast_row_swaps)
+	{
+		//dAASSERT (A);
+		dAASSERT (n > 0 && i1 >= 0 && i2 >= 0 && i1 < n && i2 < n &&
+				nskip >= n && i1 < i2);
+
+		if (ROWPTRS) {//# ifdef ROWPTRS
+//		    dReal *A_i1 = A[i1];
+//		    dReal *A_i2 = A[i2];
+//		    for (int i=i1+1; i<i2; ++i) {
+//		      dReal *A_i_i1 = A[i] + i1;
+//		      A_i1[i] = *A_i_i1;
+//		      *A_i_i1 = A_i2[i];
+//		    }
+//		    A_i1[i2] = A_i1[i1];
+//		    A_i1[i1] = A_i2[i1];
+//		    A_i2[i1] = A_i2[i2];
+//		    // swap rows, by swapping row pointers
+//		    if (do_fast_row_swaps) {
+//		      A[i1] = A_i2;
+//		      A[i2] = A_i1;
+//		    }
+//		    else {
+//		      // Only swap till i2 column to match A plain storage variant.
+//		      for (int k = 0; k <= i2; ++k) {
+//		        dReal tmp = A_i1[k];
+//		        A_i1[k] = A_i2[k];
+//		        A_i2[k] = tmp;
+//		      }
+//		    }
+//		    // swap columns the hard way
+//		    for (int j=i2+1; j<n; ++j) {
+//		      dReal *A_j = A[j];
+//		      dReal tmp = A_j[i1];
+//		      A_j[i1] = A_j[i2];
+//		      A_j[i2] = tmp;
+//		    }
+			throw new UnsupportedOperationException();
+		} else { // ROWPTRS # else
+			int A_i1p = i1*nskip;//dReal *A_i1 = A+i1*nskip;
+			int A_i2p = i2*nskip;//dReal *A_i2 = A+i2*nskip;
+			for (int k = 0; k < i1; ++k) {
+				dxSwap(A, A_i1p + k, A, A_i2p + k);
+			}
+
+			int A_ip = A_i1p + nskip;//dReal *A_i = A_i1 + nskip;
+			for (int i=i1+1; i<i2; A_ip+=nskip, ++i) {
+				dxSwap(A, A_i2p + i, A, A_ip + i1);
+			}
+
+			dxSwap(A, A_i1p + i1, A, A_i2p + i2);
+
+			int A_jp = A_i2p + nskip;//dReal *A_j = A_i2 + nskip;
+			for (int j=i2+1; j<n; A_jp+=nskip, ++j) {
+				dxSwap(A, A_jp + i1, A, A_jp + i2);
+			}
+		}// else ROWPTRS # endif
+	}
+
+
+	// swap two indexes in the n*n LCP problem. i1 must be <= i2.
+
+	//	static
+	//	void swapProblem (ATYPE A, dReal pairsbx[PBX__MAX], dReal *w, dReal pairslh[PLH__MAX],
+	//					  unsigned *p, bool *state, int *findex,
+	//					  unsigned n, unsigned i1, unsigned i2, unsigned nskip,
+	//					  int do_fast_row_swaps)
+	static
+	void swapProblem (double[] A, double[] pairsbxA, int pairsbxP, double[] w, double[] pairslhA, int pairslhP,
+					  int[] p, boolean[] state, int[] findex,
+					  int n, int i1, int i2, int nskip,
+					  boolean do_fast_row_swaps)
+	{
+		dIASSERT (n>0 && i1 < n && i2 < n && nskip >= n && i1 <= i2);
+
+		if (i1 != i2) {
+			swapRowsAndCols (A, n, i1, i2, nskip, do_fast_row_swaps);
+
+//			dxSwap((pairsbx + (size_t)i1 * PBX__MAX)[PBX_B], (pairsbx + (size_t)i2 * PBX__MAX)[PBX_B]);
+//			dxSwap((pairsbx + (size_t)i1 * PBX__MAX)[PBX_X], (pairsbx + (size_t)i2 * PBX__MAX)[PBX_X]);
+//			dSASSERT(PBX__MAX == 2);
+			dxSwap(pairsbxA, pairsbxP + i1 * PBX__MAX + PBX_B, pairsbxA, pairsbxP + i2 * PBX__MAX + PBX_B);
+			dxSwap(pairsbxA, pairsbxP + i1 * PBX__MAX + PBX_X, pairsbxA, pairsbxP + i2 * PBX__MAX + PBX_X);
+			dSASSERT(PBX__MAX == 2);
+
+			dxSwap(w, i1, w, i2);
+
+//			dxSwap((pairslh + (size_t)i1 * PLH__MAX)[PLH_LO], (pairslh + (size_t)i2 * PLH__MAX)[PLH_LO]);
+//			dxSwap((pairslh + (size_t)i1 * PLH__MAX)[PLH_HI], (pairslh + (size_t)i2 * PLH__MAX)[PLH_HI]);
+//			dSASSERT(PLH__MAX == 2);
+			dxSwap(pairslhA, pairslhP + i1 * PLH__MAX + PLH_LO, pairslhA, pairslhP + i2 * PLH__MAX + PLH_LO);
+			dxSwap(pairslhA, pairslhP + i1 * PLH__MAX + PLH_HI, pairslhA, pairslhP + i2 * PLH__MAX + PLH_HI);
+			dSASSERT(PLH__MAX == 2);
+
+			dxSwap(p, i1, p, i2);
+			dxSwap(state, i1, state, i2);
+
+			if (findex != null) {
+				dxSwap(findex, i1, findex, i2);
+			}
+		}
+	}
+
+
+	// for debugging - check that L,d is the factorization of A[C,C].
+	// A[C,C] has size nC*nC and leading dimension nskip.
+	// L has size nC*nC and leading dimension nskip.
+	// d has size nC.
+
+	//#ifdef DEBUG_LCP -> TZ see first 'return'
+
+	//static void checkFactorization (ATYPE A, dReal *_L, dReal *_d,
+	//		int nC, int *C, int nskip)
+	protected void checkFactorization (double[] A, double[]_L, double[]_d,
+									   int nC, int[] C, int nskip)
+	{
+		if (!DEBUG_LCP) return;
+		int i,j;
+		if (nC==0) return;
+
+		// get A1=A, copy the lower triangle to the upper triangle, get A2=A[C,C]
+		DMatrixN A1 = new DMatrixN(nC,nC);
+		for (i=0; i<nC; i++) {
+			for (j=0; j<=i; j++) { //A1(i,j) = A1(j,i) = AROW(i)[j];
+				A1.set(i, j, AROW(i,j));
+				A1.set(j, i, AROW(i,j));
+			}
+		}
+		DMatrixN A2 = A1.newSubMatrix (nC,C,nC,C);
+
+		// printf ("A1=\n"); A1.print(); printf ("\n");
+		// printf ("A2=\n"); A2.print(); printf ("\n");
+
+		// compute A3 = L*D*L'
+		DMatrixN L = new DMatrixN(nC, nC);
+		L.set(_L, nskip, 1);//new dMatrixN(nC,nC,_L,nskip,1);
+		DMatrixN D = new DMatrixN(nC,nC);
+		for (i=0; i<nC; i++) D.set(i, i, 1.0/_d[i]);//D(i,i) = 1/_d[i];
+		L.clearUpperTriangle();
+		for (i=0; i<nC; i++) L.set(i, i, 1);//L(i,i) = 1;
+		//TODO is this correct? dMatrixN A3 = L * D * L.transpose();
+		DMatrixN A3 = L.mulNew( D.mulNew( L.reTranspose() ));
+//		dMatrixN A3 = L.mulNew(D).mulNew( L.transposeNew() );
+
+
+		// compare A2 and A3
+		double diff = A2.maxDifference (A3);
+		if (diff > 1e-8)
+			dDebug (0,"L*D*L' check, maximum difference = %.6e\n",diff);
+	}
+
+	//#endif
+
+
+	// for debugging
+
+	//#ifdef DEBUG_LCP -> TZ see first 'return'
+
+	//static void checkPermutations (int i, int n, int nC, int nN, int *p, int *C)
+	protected static void checkPermutations (int i, int n, int nC, int nN,
+											 int[] p, int[] C)
+	{
+		if (!DEBUG_LCP) return;
+		int j,k;
+		dIASSERT(/*nC>=0 && nN>=0 &&*/ (nC + nN) == i && i < n);
+		for (k=0; k<i; k++) dIASSERT (p[k] >= 0 && p[k] < i);
+		for (k=i; k<n; k++) dIASSERT (p[k] == k);
+		for (j=0; j<nC; j++) {
+			int C_is_bad = 1;
+			for (k=0; k<nC; k++) if (C[k]==j) C_is_bad = 0;
+			dIASSERT (C_is_bad==0);
+		}
+	}
+	//#endif // DEBUG_LCP
+
+
+
+
 	//abstract methods by TZ
 //	protected abstract double AROW(int i, int j);
+//	abstract int getNub();
 //	abstract int getNub();
 //	abstract double Aii (int i);
 //	abstract double AiC_times_qC (int i, double[] q);
@@ -298,32 +488,30 @@ public class DLCP {
 	//
 	// the index set C is special: solutions to A(C,C)\A(C,i) can be generated.
 
+	//***************************************************************************
+	// fast implementation of dLCP. see the above definition of dLCP for
+	// interface comments.
+	//
+	// `p' records the permutation of A,x,b,w,etc. p is initially 1:n and is
+	// permuted as the other vectors/matrices are permuted.
+	//
+	// A,x,b,w,lo,hi,state,findex,p,c are permuted such that sets C,N have
+	// contiguous indexes. the don't-care indexes follow N.
+	//
+	// an L*D*L' factorization is maintained of A(C,C), and whenever indexes are
+	// added or removed from the set C the factorization is updated.
+	// thus L*D*L'=A[C,C], i.e. a permuted top left nC*nC submatrix of A.
+	// the leading dimension of the matrix L is always `nskip'.
+	//
+	// at the start there may be other indexes that are unbounded but are not
+	// included in `nub'. dLCP will permute the matrix so that absolutely all
+	// unbounded vectors are at the start. thus there may be some initial
+	// permutation.
+	//
+	// the algorithms here assume certain patterns, particularly with respect to
+	// index transfer.
 
-
-//***************************************************************************
-// fast implementation of dLCP. see the above definition of dLCP for
-// interface comments.
-//
-// `p' records the permutation of A,x,b,w,etc. p is initially 1:n and is
-// permuted as the other vectors/matrices are permuted.
-//
-// A,x,b,w,lo,hi,state,findex,p,c are permuted such that sets C,N have
-// contiguous indexes. the don't-care indexes follow N.
-//
-// an L*D*L' factorization is maintained of A(C,C), and whenever indexes are
-// added or removed from the set C the factorization is updated.
-// thus L*D*L'=A[C,C], i.e. a permuted top left nC*nC submatrix of A.
-// the leading dimension of the matrix L is always `nskip'.
-//
-// at the start there may be other indexes that are unbounded but are not
-// included in `nub'. dLCP will permute the matrix so that absolutely all
-// unbounded vectors are at the start. thus there may be some initial
-// permutation.
-//
-// the algorithms here assume certain patterns, particularly with respect to
-// index transfer.
-
-//#ifdef dLCP_FAST
+	//#ifdef dLCP_FAST
 
     private final int m_n;
     private final int m_nskip;
@@ -373,8 +561,12 @@ public class DLCP {
 	private int indexC (int i) { return i; }
 	private int indexN (int i) { return i+m_nC; }
 	private double Aii (int i) { return AROW(i,i); }
-	private double AiC_times_qC (int i, double[] qA, int qP, int q_stride) { return dxtDot (m_A, AROWp(i), qA, qP, m_nC, q_stride); }
-	private double AiN_times_qN (int i, double[] qA, int qP, int q_stride) { return dxtDot (m_A,AROWp(i) + m_nC, qA, qP + m_nC * q_stride, m_nN, q_stride); }
+	private double AiC_times_qC (int i, double[] qA, int qP, int q_stride) {
+		return calculateLargeVectorDot (m_A, AROWp(i), qA, qP, m_nC, q_stride);
+	}
+	private double AiN_times_qN (int i, double[] qA, int qP, int q_stride) {
+		return calculateLargeVectorDot (m_A,AROWp(i) + m_nC, qA, qP + m_nC * q_stride, m_nN, q_stride);
+	}
 	//  void pN_equals_ANC_times_qC (dReal *p, dReal *q);
 	//  void pN_plusequals_ANi (dReal *p, int i, int sign=1);
 //	private void pC_plusequals_s_times_qC (double[] p, double s, double[] q)
@@ -419,7 +611,6 @@ public class DLCP {
 	    m_p = _p;
 	    m_C = _C;
 
-	    // TODO TZ-CHECK remove this comment: Matrix.dSetZero (m_x, m_n);
         //dxtSetZero<PBX__MAX>(m_pairsbx + PBX_X, m_n);
         dxtSetZero(m_pairsbxA, 0 + PBX_X, m_n, PBX__MAX);
 
@@ -493,8 +684,8 @@ public class DLCP {
 		        }
 		    }
             transfer_b_to_x(m_pairsbxA, 0, nub, false);
-            dxtFactorLDLT(m_L, m_d, nub, m_nskip, 1);
-            dxtSolveLDLT(m_L, m_d, 0, m_pairsbxA, 0 + PBX_X, nub, m_nskip, 1, PBX__MAX);
+			factorMatrixAsLDLT(m_L, m_d, nub, m_nskip, 1);
+			solveEquationSystemWithLDLT(m_L, m_d, 0, m_pairsbxA, 0 + PBX_X, nub, m_nskip, 1, PBX__MAX);
             dSetZero (m_w,nub);
 		    {
 		        int[] C = m_C;
@@ -585,7 +776,7 @@ public class DLCP {
 	                    for (int j=0; j<nC; ++j) Dell[j] = m_A[aPos+C[j]];//aptr[C[j]];
 	                }//#   endif
 	            }
-				Matrix.dSolveL1(m_L, m_Dell, nC, m_nskip);
+				solveL1Straight(m_L, m_Dell, 0, nC, m_nskip, 1);
 
 				double ell_Dell_dot = 0.0;
 				final double[] LtgtA = m_L;
@@ -749,7 +940,7 @@ public class DLCP {
         		for (int j=0; j<nC; j++) Dell[j] = m_A[aPos+C[j]];//aptr[C[j]];
 			}//#   endif
 		}
-		Matrix.dxSolveL1(m_L, m_Dell, nC, m_nskip);
+		solveL1Straight(m_L, m_Dell, 0, nC,  m_nskip, 1);
 		{
 		    double[] ell = m_ell, Dell = m_Dell, d = m_d;
 		    for (int j=0; j<nC; j++) ell[j] = Dell[j] * d[j];
@@ -760,7 +951,7 @@ public class DLCP {
 		    {
 		        for (int j=0; j<nC; ++j) tmp[j] = ell[j];
 		    }
-		    Matrix.dxSolveL1T (m_L,tmp,m_nC,m_nskip);
+			solveL1Transposed(m_L,tmp,0, nC,m_nskip, 1);
 		    if (dir_positive) {
 		        int[] C = m_C;
 		        //double[] tmp = m_tmp;
@@ -849,8 +1040,8 @@ public class DLCP {
 
 		int nskip = dPAD(n);
 		dAASSERT(pairsbxP + PBX_B == 0); // TZ: If this is != 0 then we need to adapt the following method call:
-		dxtFactorLDLT (A, pairsbxA, /* pairsbxP + PBX_B,*/ n, nskip, PBX__MAX);
-		dxtSolveLDLT (A, pairsbxA, pairsbxP + PBX_B, pairsbxA, pairsbxP + PBX_X, n, nskip, PBX__MAX, PBX__MAX);
+		factorMatrixAsLDLT (A, pairsbxA, /* pairsbxP + PBX_B,*/ n, nskip, PBX__MAX);
+		solveEquationSystemWithLDLT (A, pairsbxA, pairsbxP + PBX_B, pairsbxA, pairsbxP + PBX_X, n, nskip, PBX__MAX, PBX__MAX);
 	}
 
 	//***************************************************************************
@@ -1371,190 +1562,5 @@ public class DLCP {
         return 1;
     }
 
-
-    /**
-	 * swap row/column i1 with i2 in the n*n matrix A. the leading dimension of
-	 * A is nskip. this only references and swaps the lower triangle.
-	 * if `do_fast_row_swaps' is nonzero and row pointers are being used, then
-	 * rows will be swapped by exchanging row pointers. otherwise the data will
-	 * be copied.
-	 */
-	private static void swapRowsAndCols (double[] A, int n, int i1, int i2, int nskip,
-			boolean do_fast_row_swaps)
-	{
-		//dAASSERT (A);
-		dAASSERT (n > 0 && i1 >= 0 && i2 >= 0 && i1 < n && i2 < n &&
-				nskip >= n && i1 < i2);
-
-		if (ROWPTRS) {//# ifdef ROWPTRS
-//		    dReal *A_i1 = A[i1];
-//		    dReal *A_i2 = A[i2];
-//		    for (int i=i1+1; i<i2; ++i) {
-//		      dReal *A_i_i1 = A[i] + i1;
-//		      A_i1[i] = *A_i_i1;
-//		      *A_i_i1 = A_i2[i];
-//		    }
-//		    A_i1[i2] = A_i1[i1];
-//		    A_i1[i1] = A_i2[i1];
-//		    A_i2[i1] = A_i2[i2];
-//		    // swap rows, by swapping row pointers
-//		    if (do_fast_row_swaps) {
-//		      A[i1] = A_i2;
-//		      A[i2] = A_i1;
-//		    }
-//		    else {
-//		      // Only swap till i2 column to match A plain storage variant.
-//		      for (int k = 0; k <= i2; ++k) {
-//		        dReal tmp = A_i1[k];
-//		        A_i1[k] = A_i2[k];
-//		        A_i2[k] = tmp;
-//		      }
-//		    }
-//		    // swap columns the hard way
-//		    for (int j=i2+1; j<n; ++j) {
-//		      dReal *A_j = A[j];
-//		      dReal tmp = A_j[i1];
-//		      A_j[i1] = A_j[i2];
-//		      A_j[i2] = tmp;
-//		    }
-			throw new UnsupportedOperationException();
-		} else { // ROWPTRS # else
-		    int A_i1p = i1*nskip;//dReal *A_i1 = A+i1*nskip;
-		    int A_i2p = i2*nskip;//dReal *A_i2 = A+i2*nskip;
-		    for (int k = 0; k < i1; ++k) {
-				dxSwap(A, A_i1p + k, A, A_i2p + k);
-		    }
-
-		    int A_ip = A_i1p + nskip;//dReal *A_i = A_i1 + nskip;
-		    for (int i=i1+1; i<i2; A_ip+=nskip, ++i) {
-				dxSwap(A, A_i2p + i, A, A_ip + i1);
-		    }
-
-			dxSwap(A, A_i1p + i1, A, A_i2p + i2);
-
-		    int A_jp = A_i2p + nskip;//dReal *A_j = A_i2 + nskip;
-		    for (int j=i2+1; j<n; A_jp+=nskip, ++j) {
-				dxSwap(A, A_jp + i1, A, A_jp + i2);
-		    }
-		}// else ROWPTRS # endif
-	}
-
-
-	// swap two indexes in the n*n LCP problem. i1 must be <= i2.
-
-	//	static
-	//	void swapProblem (ATYPE A, dReal pairsbx[PBX__MAX], dReal *w, dReal pairslh[PLH__MAX],
-	//					  unsigned *p, bool *state, int *findex,
-	//					  unsigned n, unsigned i1, unsigned i2, unsigned nskip,
-	//					  int do_fast_row_swaps)
-	static
-	void swapProblem (double[] A, double[] pairsbxA, int pairsbxP, double[] w, double[] pairslhA, int pairslhP,
-					  int[] p, boolean[] state, int[] findex,
-					  int n, int i1, int i2, int nskip,
-					  boolean do_fast_row_swaps)
-	{
-		dIASSERT (n>0 && i1 < n && i2 < n && nskip >= n && i1 <= i2);
-
-		if (i1 != i2) {
-			swapRowsAndCols (A, n, i1, i2, nskip, do_fast_row_swaps);
-
-//			dxSwap((pairsbx + (size_t)i1 * PBX__MAX)[PBX_B], (pairsbx + (size_t)i2 * PBX__MAX)[PBX_B]);
-//			dxSwap((pairsbx + (size_t)i1 * PBX__MAX)[PBX_X], (pairsbx + (size_t)i2 * PBX__MAX)[PBX_X]);
-//			dSASSERT(PBX__MAX == 2);
-			dxSwap(pairsbxA, pairsbxP + i1 * PBX__MAX + PBX_B, pairsbxA, pairsbxP + i2 * PBX__MAX + PBX_B);
-			dxSwap(pairsbxA, pairsbxP + i1 * PBX__MAX + PBX_X, pairsbxA, pairsbxP + i2 * PBX__MAX + PBX_X);
-			dSASSERT(PBX__MAX == 2);
-
-			dxSwap(w, i1, w, i2);
-
-//			dxSwap((pairslh + (size_t)i1 * PLH__MAX)[PLH_LO], (pairslh + (size_t)i2 * PLH__MAX)[PLH_LO]);
-//			dxSwap((pairslh + (size_t)i1 * PLH__MAX)[PLH_HI], (pairslh + (size_t)i2 * PLH__MAX)[PLH_HI]);
-//			dSASSERT(PLH__MAX == 2);
-			dxSwap(pairslhA, pairslhP + i1 * PLH__MAX + PLH_LO, pairslhA, pairslhP + i2 * PLH__MAX + PLH_LO);
-			dxSwap(pairslhA, pairslhP + i1 * PLH__MAX + PLH_HI, pairslhA, pairslhP + i2 * PLH__MAX + PLH_HI);
-			dSASSERT(PLH__MAX == 2);
-
-			dxSwap(p, i1, p, i2);
-			dxSwap(state, i1, state, i2);
-
-			if (findex != null) {
-				dxSwap(findex, i1, findex, i2);
-			}
-		}
-	}
-
-
-	// for debugging - check that L,d is the factorization of A[C,C].
-	// A[C,C] has size nC*nC and leading dimension nskip.
-	// L has size nC*nC and leading dimension nskip.
-	// d has size nC.
-
-	//#ifdef DEBUG_LCP -> TZ see first 'return'
-
-	//static void checkFactorization (ATYPE A, dReal *_L, dReal *_d,
-	//		int nC, int *C, int nskip)
-	protected void checkFactorization (double[] A, double[]_L, double[]_d,
-			int nC, int[] C, int nskip)
-	{
-		if (!DEBUG_LCP) return;
-		int i,j;
-		if (nC==0) return;
-
-		// get A1=A, copy the lower triangle to the upper triangle, get A2=A[C,C]
-		DMatrixN A1 = new DMatrixN(nC,nC);
-		for (i=0; i<nC; i++) {
-			for (j=0; j<=i; j++) { //A1(i,j) = A1(j,i) = AROW(i)[j];
-				A1.set(i, j, AROW(i,j));
-				A1.set(j, i, AROW(i,j));
-			}
-		}
-		DMatrixN A2 = A1.newSubMatrix (nC,C,nC,C);
-
-		// printf ("A1=\n"); A1.print(); printf ("\n");
-		// printf ("A2=\n"); A2.print(); printf ("\n");
-
-		// compute A3 = L*D*L'
-		DMatrixN L = new DMatrixN(nC, nC);
-		L.set(_L, nskip, 1);//new dMatrixN(nC,nC,_L,nskip,1);
-		DMatrixN D = new DMatrixN(nC,nC);
-		for (i=0; i<nC; i++) D.set(i, i, 1.0/_d[i]);//D(i,i) = 1/_d[i];
-		L.clearUpperTriangle();
-		for (i=0; i<nC; i++) L.set(i, i, 1);//L(i,i) = 1;
-		//TODO is this correct? dMatrixN A3 = L * D * L.transpose();
-		DMatrixN A3 = L.mulNew( D.mulNew( L.reTranspose() ));
-//		dMatrixN A3 = L.mulNew(D).mulNew( L.transposeNew() );
-
-
-		// compare A2 and A3
-		double diff = A2.maxDifference (A3);
-		if (diff > 1e-8)
-			dDebug (0,"L*D*L' check, maximum difference = %.6e\n",diff);
-	}
-
-	//#endif
-
-
-	// for debugging
-
-	//#ifdef DEBUG_LCP -> TZ see first 'return'
-
-	//static void checkPermutations (int i, int n, int nC, int nN, int *p, int *C)
-	protected static void checkPermutations (int i, int n, int nC, int nN,
-			int[] p, int[] C)
-	{
-		if (!DEBUG_LCP) return;
-		int j,k;
-		dIASSERT(/*nC>=0 && nN>=0 &&*/ (nC + nN) == i && i < n);
-		for (k=0; k<i; k++) dIASSERT (p[k] >= 0 && p[k] < i);
-		for (k=i; k<n; k++) dIASSERT (p[k] == k);
-		for (j=0; j<nC; j++) {
-			int C_is_bad = 1;
-			for (k=0; k<nC; k++) if (C[k]==j) C_is_bad = 0;
-			dIASSERT (C_is_bad==0);
-		}
-	}
 	//#endif // dLCP_FAST
-
-
-
 }

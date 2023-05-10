@@ -105,6 +105,14 @@ public class DxWorldProcessContext {
     {
     	Common.dIASSERT((m_pswObjectsAllocWorld != null) == (m_pmgStepperMutexGroup != null));
 
+        // TODO TZ: Ignored for migration to 0.16.2
+        //        if (m_pswObjectsAllocWorld != null)
+        //        {
+        //            throw new UnsupportedOperationException("This has not been ported yet from ODE");
+        //            // TODO m_pswObjectsAllocWorld->FreeMutexGroup(m_pmgStepperMutexGroup);
+        //            // m_pswObjectsAllocWorld->FreeThreadedCallWait(m_pcwIslandsSteppingWait); -- The stock call wait can not be freed
+        //        }
+
         DxWorldProcessMemArena pmaStepperArenas = m_pmaStepperArenas.get();
         if (pmaStepperArenas != null)
         {
@@ -396,14 +404,16 @@ public class DxWorldProcessContext {
     		//TODO this is just wrong!!!! (TZ)
     		int stepperReqWithCallContext = stepperReq + DxUtil.dEFFICIENT_SIZE(1);//DxSingleIslandCallContext.class);
 
-    		int islandThreadsCount = world.GetThreadingIslandsMaxThreadsCount(null);
-    		if (!context.ReallocateStepperMemArenas(world, islandThreadsCount, stepperReqWithCallContext, 
-    				memmgr, reserveInfo.m_fReserveFactor, reserveInfo.m_uiReserveMinimum))
-    		{
-    			break;
-    		}
+            // TODO TZ: This has not been migrfated from ODE 0.16.2
+            // throw new UnsupportedOperationException("This has not been ported yet from ODE");
+            int islandThreadsCount = world.GetThreadingIslandsMaxThreadsCount(null);
+            if (!context.ReallocateStepperMemArenas(world, islandThreadsCount, stepperReqWithCallContext,
+                    memmgr, reserveInfo.m_fReserveFactor, reserveInfo.m_uiReserveMinimum))
+            {
+                break;
+            }
 
-    		result = true;
+            result = true;
     	}
     	while (false);
 

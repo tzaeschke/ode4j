@@ -20,6 +20,7 @@ package org.ode4j.ode.internal.libccd;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.libccd.CCD.ccd_t;
 
+import static org.ode4j.ode.internal.libccd.CCDCustomVec3.ccdVec3SafeNormalize;
 import static org.ode4j.ode.internal.libccd.CCDSimplex.*;
 import static org.ode4j.ode.internal.libccd.CCDSupport.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
@@ -86,22 +87,27 @@ public class CCDMPR {
 	        // Origin isn't inside portal - no collision.
 	        return -1;
 
-	    }else if (res == 1){
+	    } else if (res == 1) {
 	        // Touching contact on portal's v1.
 	        findPenetrTouch(obj1, obj2, ccd, portal, depth, dir, pos);
 
-	    }else if (res == 2){
+	    } else if (res == 2) {
 	        // Origin lies on v0-v1 segment.
-	        findPenetrSegment(obj1, obj2, ccd, portal, depth, dir, pos);
+	        if (findPenetrSegment(obj1, obj2, ccd, portal, depth, dir, pos) != 0) {
+				return -1;
+			}
 
-	    }else if (res == 0){
+	    } else if (res == 0) {
 	        // Phase 2: Portal refinement
 	        res = refinePortal(obj1, obj2, ccd, portal);
-	        if (res < 0)
-	            return -1;
+	        if (res < 0) {
+				return -1;
+			}
 
 	        // Phase 3. Penetration info
-	        findPenetr(obj1, obj2, ccd, portal, depth, dir, pos);
+	        if (findPenetr(obj1, obj2, ccd, portal, depth, dir, pos) != 0) {
+				return -1;
+			}
 	    }
 
 	    return 0;
@@ -152,8 +158,10 @@ public class CCDMPR {
 	    // vertex 1 = support in direction of origin
 	    ccdVec3Copy(dir, ccdSimplexPoint0(portal).v);
 	    ccdVec3Scale(dir, (-1.));
-	    ccdVec3Normalize(dir);
-	    __ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW1(portal));
+		if (ccdVec3SafeNormalize(dir) != 0) {
+			return -1;
+		}
+		__ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW1(portal));
 	    ccdSimplexSetSize(portal,2);
 
 	    // test if origin isn't outside of v1
@@ -175,11 +183,14 @@ public class CCDMPR {
 	        }
 	    }
 
-	    ccdVec3Normalize(dir);
+		if (ccdVec3SafeNormalize(dir) != 0) {
+			return -1;
+		}
 	    __ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW2(portal));
 	    dot = ccdVec3Dot(ccdSimplexPoint2(portal).v, dir);
-	    if (ccdIsZero(dot) || dot < CCD_ZERO)
-	        return -1;
+	    if (ccdIsZero(dot) || dot < CCD_ZERO) {
+			return -1;
+		}
 
 	    ccdSimplexSetSize(portal, 3);
 
@@ -189,7 +200,9 @@ public class CCDMPR {
 	    ccdVec3Sub2(vb, ccdSimplexPoint2(portal).v,
 	                     ccdSimplexPoint0(portal).v);
 	    ccdVec3Cross(dir, va, vb);
-	    ccdVec3Normalize(dir);
+		if (ccdVec3SafeNormalize(dir) != 0) {
+			return -1;
+		}
 
 	    // it is better to form portal faces to be oriented "outside" origin
 	    dot = ccdVec3Dot(dir, ccdSimplexPoint0(portal).v);
@@ -201,8 +214,9 @@ public class CCDMPR {
 	    while (ccdSimplexSize(portal) < 4){
 	        __ccdSupport(obj1, obj2, dir, ccd, ccdSimplexPointW3(portal));
 	        dot = ccdVec3Dot(ccdSimplexPoint3(portal).v, dir);
-	        if (ccdIsZero(dot) || dot < CCD_ZERO)
-	            return -1;
+	        if (ccdIsZero(dot) || dot < CCD_ZERO) {
+				return -1;
+			}
 
 	        cont = 0;
 
@@ -234,8 +248,10 @@ public class CCDMPR {
 	            ccdVec3Sub2(vb, ccdSimplexPoint2(portal).v,
 	                             ccdSimplexPoint0(portal).v);
 	            ccdVec3Cross(dir, va, vb);
-	            ccdVec3Normalize(dir);
-	        }else{
+				if (ccdVec3SafeNormalize(dir) != 0) {
+					return -1;
+				}
+	        } else {
 	            ccdSimplexSetSize(portal, 4);
 	        }
 	    }
@@ -255,7 +271,9 @@ public class CCDMPR {
 	    while (true){
 	        // compute direction outside the portal (from v0 throught v1,v2,v3
 	        // face)
-	        portalDir(portal, dir);
+			if (portalDir(portal, dir) != 0) {
+				return -1;
+			}
 
 	        // test if origin is inside the portal
 	        if (portalEncapsulesOrigin(portal, dir))
@@ -282,7 +300,7 @@ public class CCDMPR {
 
 	
 	/** Finds penetration info by expanding provided portal. */
-	private static void findPenetr(final Object obj1, final Object obj2, final ccd_t ccd,
+	private static int findPenetr(final Object obj1, final Object obj2, final ccd_t ccd,
 	                       ccd_simplex_t portal,
 	                       RefDouble depth, ccd_vec3_t pdir, ccd_vec3_t pos)
 	{
@@ -293,8 +311,11 @@ public class CCDMPR {
 	    iterations = 0L;
 	    while (true){
 	        // compute portal direction and obtain next support point
-	        portalDir(portal, dir);
-	        __ccdSupport(obj1, obj2, dir, ccd, v4);
+			if (portalDir(portal, dir) != 0) {
+				return -1;
+			}
+
+			__ccdSupport(obj1, obj2, dir, ccd, v4);
 
 	        // reached tolerance . find penetration info
 	        if (portalReachTolerance(portal, v4, dir, ccd)
@@ -305,12 +326,16 @@ public class CCDMPR {
 	                                          ccdSimplexPoint3(portal).v,
 	                                          pdir));
 	            depth.set( CCD_SQRT(depth.get()));
-	            ccdVec3Normalize(pdir);
+				if (ccdVec3SafeNormalize(pdir) != 0) {
+					return -1;
+				}
 
 	            // barycentric coordinates:
-	            findPos(obj1, obj2, ccd, portal, pos);
+				if (findPos(obj1, obj2, ccd, portal, pos) != 0) {
+					return -1;
+				}
 
-	            return;
+				return 0;
 	        }
 
 	        expandPortal(portal, v4);
@@ -336,7 +361,7 @@ public class CCDMPR {
 	}
 
 	/** Find penetration info if origin lies on portal's segment v0-v1 */
-	private static void findPenetrSegment(final Object obj1, final Object obj2, final ccd_t ccd,
+	private static int findPenetrSegment(final Object obj1, final Object obj2, final ccd_t ccd,
 	                              ccd_simplex_t portal,
 	                              RefDouble depth, ccd_vec3_t dir, ccd_vec3_t pos)
 	{
@@ -364,13 +389,16 @@ public class CCDMPR {
 
 	    ccdVec3Copy(dir, ccdSimplexPoint1(portal).v);
 	    depth.set( CCD_SQRT(ccdVec3Len2(dir)) );
-	    ccdVec3Normalize(dir);
+		if (ccdVec3SafeNormalize(dir) != 0) {
+			return -1;
+		}
+		return 0;
 	}
 
 
 	
 	/** Finds position vector from fully established portal */
-	private static void findPos(final Object obj1, final Object obj2, final ccd_t ccd,
+	private static int findPos(final Object obj1, final Object obj2, final ccd_t ccd,
 			final ccd_simplex_t portal, ccd_vec3_t pos)
 	{
 	    final ccd_vec3_t dir = new ccd_vec3_t();
@@ -379,7 +407,9 @@ public class CCDMPR {
 	    double sum, inv;
 	    final ccd_vec3_t vec = new ccd_vec3_t(), p1 = new ccd_vec3_t(), p2 = new ccd_vec3_t();
 
-	    portalDir(portal, dir);
+		if (portalDir(portal, dir) != 0) {
+			return -1;
+		}
 
 	    // use barycentric coordinates of tetrahedron to find origin
 	    ccdVec3Cross(vec, ccdSimplexPoint1(portal).v,
@@ -458,12 +488,13 @@ public class CCDMPR {
 	    ccdVec3Copy(pos, p1);
 	    ccdVec3Add(pos, p2);
 	    ccdVec3Scale(pos, 0.5);
+		return 0;
 	}
 
 	
 	/** Extends portal with new support point.
 	 *  Portal must have face v1-v2-v3 arranged to face outside portal. */
-	private static final void expandPortal(ccd_simplex_t portal,
+	private static void expandPortal(ccd_simplex_t portal,
 	                              final ccd_support_t v4)
 	{
 	    double dot;
@@ -491,7 +522,7 @@ public class CCDMPR {
 
 	/** Fill dir with direction outside portal. Portal's v1-v2-v3 face must be
 	 *  arranged in correct order! */
-	private static final void portalDir(final ccd_simplex_t portal, ccd_vec3_t dir)
+	private static int portalDir(final ccd_simplex_t portal, ccd_vec3_t dir)
 	{
 	    final ccd_vec3_t v2v1 = new ccd_vec3_t(), v3v1 = new ccd_vec3_t();
 
@@ -500,7 +531,10 @@ public class CCDMPR {
 	    ccdVec3Sub2(v3v1, ccdSimplexPoint3(portal).v,
 	                       ccdSimplexPoint1(portal).v);
 	    ccdVec3Cross(dir, v2v1, v3v1);
-	    ccdVec3Normalize(dir);
+		if (ccdVec3SafeNormalize(dir) != 0) {
+			return -1;
+		}
+		return 0;
 	}
 
 	/** Returns true if portal encapsules origin (0,0,0), dir is direction of

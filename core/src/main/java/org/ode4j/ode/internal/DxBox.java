@@ -158,7 +158,7 @@ public class DxBox extends DxGeom implements DBox {
 		// if the point is inside all six sides
 
 		double[] dist = new double[6];
-		// TODO TZ remove comment after 16.3: ported from latest ODE (2023-04-05)
+		// TODO CHECK TZ remove comment after 16.3: ported from latest ODE (2023-04-05)
 
 		boolean outside = false;
 		double lastOuterOffset = 0;

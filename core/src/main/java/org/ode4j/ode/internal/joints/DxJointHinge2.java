@@ -392,6 +392,12 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		{
 			dMultiply0_331( result, node[0].body.posr().R(), _axis1 );
 		}
+		else
+		{
+			// dZeroVector3(result);
+			result.setZero();
+			dUASSERT( false, "the joint does not have first body attached" );
+		}
 	}
 
 
@@ -401,6 +407,12 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 		if ( node[1].body!= null )
 		{
 			dMultiply0_331( result, node[1].body.posr().R(), _axis2 );
+		}
+		else
+		{
+			// dZeroVector3(result);
+			result.setZero();
+			dUASSERT( false, "the joint does not have second body attached" );
 		}
 	}
 

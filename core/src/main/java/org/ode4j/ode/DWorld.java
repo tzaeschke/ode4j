@@ -185,7 +185,9 @@ public interface DWorld {
 	 */
 	double getCFM() ;
 
-	public static int dWORLDSTEP_THREADCOUNT_UNLIMITED = 0;
+	// TZ: This should be in threading.h
+	static int dTHREADING_THREAD_COUNT_UNLIMITED = 0;
+	public static int dWORLDSTEP_THREADCOUNT_UNLIMITED = dTHREADING_THREAD_COUNT_UNLIMITED;
 
 	/**
 	 * Set maximum threads to be used for island stepping

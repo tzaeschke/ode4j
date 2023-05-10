@@ -25,9 +25,7 @@
 package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.internal.Common.dAASSERT;
-import static org.ode4j.ode.internal.Common.dIASSERT;
-import static org.ode4j.ode.internal.Common.dNextAfter;
+import static org.ode4j.ode.internal.Common.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -295,15 +293,21 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 		//void Block::DelObject(dGeom Object){
 		void DelObject(DxGeom aObject){
 			// Del the geom
-			DxGeom g = mFirst;
-			DxGeom Last = null;
-			while (g!=null){
-				if (g == aObject){
-					if (Last!=null){
-						Last.setNextEx( g.getNextEx() );
-					}
-					else mFirst = g.getNextEx();
+			DxGeom Last = null, g = mFirst;
+			boolean Found = false;
 
+			if (g == aObject){
+				mFirst = g.getNextEx();
+				Found = true;
+			}
+			else {
+				Last = g;
+				g = g.getNextEx();
+			}
+
+			for (; !Found && g != null; Found = false){
+				if (g == aObject){
+					Last.setNextEx( g.getNextEx() );
 					break;
 				}
 				Last = g;
@@ -312,7 +316,9 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 
 			//XXX TZ aObject.tome = null;
 			aObject._qtIdxEx = null;
-			
+			// dUASSERT((aObject.getNext() = 0, true), "Needed for an assertion check only");
+			aObject.setNextEx(null);
+			dUASSERT(true, "Needed for an assertion check only");
 
 			// Now traverse upwards to tell that we have lost a geom
 			Block Block = this;
@@ -481,7 +487,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	void add(DxGeom g){
 		CHECK_NOT_LOCKED (this);
 		//Common.dAASSERT(g);
-		Common.dUASSERT(g._qtIdxEx == null && g.getNextEx() == null, 
+		dUASSERT(g._qtIdxEx == null && g.getNextEx() == null,
 		"geom is already in a space");
 
 		DirtyList.add(g);
@@ -497,7 +503,7 @@ public class DxQuadTreeSpace extends DxSpace implements DQuadTreeSpace {
 	void remove(DxGeom g){
 		CHECK_NOT_LOCKED(this);
 		//Common.dAASSERT(g);
-		Common.dUASSERT(g.parent_space == this,"object is not in this space");
+		dUASSERT(g.parent_space == this,"object is not in this space");
 
 		// remove
 		//TZ XXX ((Block*)g.tome).DelObject(g);

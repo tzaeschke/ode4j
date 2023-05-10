@@ -42,6 +42,8 @@ import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.DxCollisionUtil.dQuatTransform;
 import static org.ode4j.ode.internal.libccd.CCD.*;
+import static org.ode4j.ode.internal.libccd.CCDCustomQuat.ccdQuatRotVec2;
+import static org.ode4j.ode.internal.libccd.CCDCustomVec3.*;
 import static org.ode4j.ode.internal.libccd.CCDMPR.*;
 import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
@@ -197,9 +199,8 @@ public class CollisionLibccd {
         ccdQuatRotVec(cyl.axis, cyl.rot);
         ccdVec3Copy(cyl.p1, cyl.axis);
         ccdVec3Copy(cyl.p2, cyl.axis);
-        boolean cylAxisNormalizationResult = ccdVec3Normalize(cyl.axis);
-        dUVERIFY(!cylAxisNormalizationResult, "Invalid cylinder has been passed");
-        ccdVec3Normalize(cyl.axis);
+        int cylAxisNormalizationResult = ccdVec3SafeNormalize(cyl.axis);
+        dUVERIFY(cylAxisNormalizationResult == 0, "Invalid cylinder has been passed");
         ccdVec3Scale(cyl.p2, -1.0);
         ccdVec3Add(cyl.p1, cyl.pos);
         ccdVec3Add(cyl.p2, cyl.pos);
@@ -696,10 +697,9 @@ public class CollisionLibccd {
             // Triangle face normal
             ccd_vec3_t triNormal = new ccd_vec3_t();
             ccdVec3Cross(triNormal, edges[dMTV_FIRST], edges[dMTV_SECOND]);
-            //            if (ccdVec3Normalize(triNormal)) {
-            //                anyFault = true;
-            //            }
-            anyFault |= ccdVec3Normalize(triNormal);
+            if (ccdVec3SafeNormalize(triNormal) != 0) {
+                anyFault = true;
+            }
 
             // Check the edges to see if one of them is involved
             for (int testEdgeIndex = !anyFault ? dMTV__MIN : dMTV__MAX; testEdgeIndex != dMTV__MAX; ++testEdgeIndex) {
@@ -707,7 +707,7 @@ public class CollisionLibccd {
                 ccd_vec3_t edgeAxis = edges[testEdgeIndex];
 
                 // Edge axis
-                if (ccdVec3Normalize(edgeAxis)) {
+                if (ccdVec3SafeNormalize(edgeAxis) != 0) {
                     // This should not happen normally as in the case on of edges is degenerated
                     // the triangle normal calculation would have to fail above. If for some
                     // reason the above calculation succeeds and this one would not, it is

@@ -42,6 +42,27 @@ import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
 import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
 
 class DemoOde {
+	//****************************************************************************
+	// matrix sizes
+
+	// #define dALIGN_SIZE(buf_size, alignment) (((buf_size) + (alignment - 1)) & (int)(~(alignment - 1))) // Casting the mask to int ensures sign-extension to larger integer sizes
+	// #define dALIGN_PTR(buf_ptr, alignment) ((void *)(((duintptr)(buf_ptr) + ((alignment) - 1)) & (int)(~(alignment - 1)))) // Casting the mask to int ensures sign-extension to larger integer sizes
+	//
+	// #define MSIZE 21
+	// #define MSIZE4 dALIGN_SIZE(MSIZE, 4)	// MSIZE rounded up to 4
+	private static final int MSIZE = 21;
+	private static final int MSIZE4 = 24;	// MSIZE rounded up to 4
+
+
+
+
+
+	//****************************************************************************
+	// matrix accessors
+
+	// #define _A(i,j) A[(i)*4+(j)]
+	// #define _I(i,j) I[(i)*4+(j)]
+	// #define _R(i,j) R[(i)*4+(j)]
 
 
 	//****************************************************************************
@@ -294,12 +315,6 @@ void testReorthonormalize()
 	//****************************************************************************
 	// test matrix functions
 
-	//#define MSIZE 21
-	//#define MSIZE4 24	// MSIZE rounded up to 4
-	private static final int MSIZE = 21;
-	private static final int MSIZE4 = 24;	// MSIZE rounded up to 4
-
-
 	private void testMatrixMultiply()
 	{
 		// A is 2x3, B is 3x4, B2 is B except stored columnwise, C is 2x4
@@ -380,8 +395,10 @@ void testReorthonormalize()
 
 	private void testCholeskyFactorization()
 	{
-		double[] A = new double[MSIZE4*MSIZE], B = new double[MSIZE4*MSIZE];
-		double[] C = new double[MSIZE4*MSIZE];
+		int matrixSize = MSIZE4 * MSIZE;
+		double[] A = new double[matrixSize];
+		double[] B = new double[matrixSize];
+		double[] C = new double[matrixSize];
 		double diff;
 		HEADER();
 		dMakeRandomMatrix (A,MSIZE,MSIZE,1.0);
@@ -399,7 +416,8 @@ void testReorthonormalize()
 
 	private void testCholeskyFactorizationM3()
 	{
-		DMatrix3 A = new DMatrix3(), B = new DMatrix3();
+		DMatrix3 A = new DMatrix3();
+		DMatrix3 B = new DMatrix3();
 		DMatrix3 C = new DMatrix3();
 		double diff;
 		HEADER();
@@ -418,8 +436,10 @@ void testReorthonormalize()
 
 	private void testCholeskySolve()
 	{
-		double[] A = new double[MSIZE4*MSIZE], L = new double[MSIZE4*MSIZE];
-		double[] b = new double[MSIZE],x = new double[MSIZE],btest = new double[MSIZE];
+		int matrixSize = MSIZE4 * MSIZE;
+		int vectorSize = MSIZE;
+		double[] A = new double[matrixSize], L = new double[matrixSize];
+		double[] b = new double[vectorSize],x = new double[vectorSize],btest = new double[vectorSize];
 		double diff;
 		HEADER();
 
@@ -485,8 +505,9 @@ void testReorthonormalize()
 	private void testInvertPDMatrix()
 	{
 		int i,j,ok;
-		double[] A = new double[MSIZE4*MSIZE], Ainv = new double[MSIZE4*MSIZE]; 
-		double[] I = new double[MSIZE4*MSIZE];
+		int matrixSize = MSIZE4 * MSIZE;
+		double[] A = new double[matrixSize], Ainv = new double[matrixSize];
+		double[] I = new double[matrixSize];
 		HEADER();
 
 		dMakeRandomMatrix (A,MSIZE,MSIZE,1.0);
@@ -545,8 +566,11 @@ void testReorthonormalize()
 	
 	private void testIsPositiveDefinite()
 	{
-		double[] A = new double[MSIZE4*MSIZE], B = new double[MSIZE4*MSIZE];
+		int matrixSize = MSIZE4 * MSIZE;
+		double[] A = new double[matrixSize], B = new double[matrixSize];
+
 		HEADER();
+
 		dMakeRandomMatrix (A,MSIZE,MSIZE,1.0);
 		dMultiply2 (B,A,A,MSIZE,MSIZE,MSIZE);
 		println ("\t",dIsPositiveDefinite(A,MSIZE) ? "FAILED (1)":"passed (1)");
@@ -556,7 +580,9 @@ void testReorthonormalize()
 	private void testIsPositiveDefiniteM3()
 	{
 		DMatrix3 A = new DMatrix3(), B = new DMatrix3();
+
 		HEADER();
+
 		dMakeRandomMatrix (A,1.0);
 		dMultiply2 (B,A,A);
 		println ("\t",dIsPositiveDefinite(A) ? "FAILED (1)":"passed (1)");
@@ -566,16 +592,21 @@ void testReorthonormalize()
 	private void testFastLDLTFactorization()
 	{
 		int i,j;
-		double[] A = new double[MSIZE4*MSIZE], L = new double[MSIZE4*MSIZE];
-		double[] DL = new double[MSIZE4*MSIZE];
-		double[] ATEST = new double[MSIZE4*MSIZE], d = new double[MSIZE];
+		int matrixSize = MSIZE4 * MSIZE;
+		int vectorSize = MSIZE;
+		double[] A = new double[matrixSize], L = new double[matrixSize];
+		double[] DL = new double[matrixSize];
+		double[] ATEST = new double[matrixSize], d = new double[vectorSize];
 		double diff;
+
 		HEADER();
+
 		dMakeRandomMatrix (A,MSIZE,MSIZE,1.0);
 		dMultiply2 (L,A,A,MSIZE,MSIZE,MSIZE);
 		System.arraycopy(L, 0, A, 0, MSIZE4*MSIZE);
 		
 		dFactorLDLT (L,d,MSIZE,MSIZE4);
+
 		dClearUpperTriangle (L,MSIZE);
 		for (i=0; i<MSIZE; i++) L[i*MSIZE4+i] = 1.0;
 
@@ -664,11 +695,15 @@ void testReorthonormalize()
 
 	private void testSolveLDLT()
 	{
-		double[] A = new double[MSIZE4*MSIZE], L = new double[MSIZE4*MSIZE];
-		double[] d = new double[MSIZE], x = new double[MSIZE];
-		double[] b = new double[MSIZE], btest = new double[MSIZE];
+		int matrixSize = MSIZE4 * MSIZE;
+		int vectorSize = MSIZE;
+		double[] A = new double[matrixSize], L = new double[matrixSize];
+		double[] d = new double[vectorSize], x = new double[vectorSize];
+		double[] b = new double[vectorSize], btest = new double[vectorSize];
 		double diff;
+
 		HEADER();
+
 		dMakeRandomMatrix (A,MSIZE,MSIZE,1.0);
 		dMultiply2 (L,A,A,MSIZE,MSIZE,MSIZE);
 		System.arraycopy(L, 0, A, 0, MSIZE4*MSIZE);
@@ -757,10 +792,13 @@ void testReorthonormalize()
 	private void testLDLTAddTL()
 	{
 		int i,j;
-		double[] A = new double[MSIZE4*MSIZE], L = new double[MSIZE4*MSIZE]; 
-		double[] d = new double[MSIZE], a = new double[MSIZE];
-		double[] DL = new double[MSIZE4*MSIZE], ATEST = new double[MSIZE4*MSIZE];
+		int matrixSize = MSIZE4 * MSIZE;
+		int vectorSize = MSIZE;
+		double[] A = new double[matrixSize], L = new double[matrixSize];
+		double[] d = new double[vectorSize], a = new double[vectorSize];
+		double[] DL = new double[matrixSize], ATEST = new double[matrixSize];
 		double diff;
+
 		HEADER();
 
 		dMakeRandomMatrix (A,MSIZE,MSIZE,1.0);
@@ -796,16 +834,19 @@ void testReorthonormalize()
 	private void testLDLTRemove()
 	{
 		int i,j,r;
-		int[] p = new int[MSIZE];
-		double[] A = new double[MSIZE4*MSIZE];
-		double[] L = new double[MSIZE4*MSIZE];
-		double[] d = new double[MSIZE];
-		double[] L2 = new double[MSIZE4*MSIZE];
-		double[] d2 = new double[MSIZE];
-		double[] DL2 = new double[MSIZE4*MSIZE];
-		double[] Atest1 = new double[MSIZE4*MSIZE];
-		double[] Atest2 = new double [MSIZE4*MSIZE];
+		int matrixSize = MSIZE4 * MSIZE;
+		int vectorSize = MSIZE;
+		int[] p = new int[vectorSize];
+		double[] A = new double[matrixSize];
+		double[] L = new double[matrixSize];
+		double[] L2 = new double[matrixSize];
+		double[] DL2 = new double[matrixSize];
+		double[] Atest1 = new double[matrixSize];
+		double[] Atest2 = new double [matrixSize];
+		double[] d = new double[vectorSize];
+		double[] d2 = new double[vectorSize];
 		double diff, maxdiff;
+
 		HEADER();
 
 		// make array of A row pointers
@@ -900,10 +941,14 @@ void testReorthonormalize()
 		int i,j;
 		boolean ok = true;
 		if (!(cmp(m1.getMass(),m2.getMass()) && cmp(m1.getC().get0(),m2.getC().get0()) &&
-				cmp(m1.getC().get1(),m2.getC().get1()) && cmp(m1.getC().get2(),m2.getC().get2())))
+				cmp(m1.getC().get1(),m2.getC().get1()) && cmp(m1.getC().get2(),m2.getC().get2()))) {
 			ok = false;
-		for (i=0; i<3; i++) for (j=0; j<3; j++)
-			if (cmp (m1.getI().get(i,j),m2.getI().get(i,j))==false) ok = false;
+		}
+		for (i=0; i<3; i++) for (j=0; j<3; j++) {
+			if (cmp(m1.getI().get(i, j), m2.getI().get(i, j)) == false) {
+				ok = false;
+			}
+		}
 		if (ok) println ("\tpassed (", msg, ")"); 
 		else println ("\tFAILED (", msg, ")");
 	}

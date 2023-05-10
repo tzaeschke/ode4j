@@ -89,7 +89,6 @@ class DemoFeedback extends dsFunctions {
 
 		if ( o1 instanceof DSpace || o2 instanceof DSpace )
 		{
-			System.err.println("testing space " + o1 + "  " + o2);
 			// colliding a space with something
 			OdeHelper.spaceCollide2(o1,o2,data,nearCallback);
 			// Note we do not want to test intersections within a space,
@@ -120,8 +119,8 @@ class DemoFeedback extends dsFunctions {
 	}
 
 
-	private static float[] xyz = { -6, 8, 6};
-	private static float[] hpr = { -65.0f, -27.0f, 0.0f};
+	private static final float[] xyz = { -6, 8, 6};
+	private static final float[] hpr = { -65.0f, -27.0f, 0.0f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()
@@ -160,7 +159,7 @@ class DemoFeedback extends dsFunctions {
 
 	private static void inspectJoints()
 	{
-		final double forcelimit = 2000.0;
+		final double forcelimit = 4000.0;
 		int i;
 		for (i=0; i<SEGMCNT-1; i++)
 		{
@@ -303,7 +302,7 @@ class DemoFeedback extends dsFunctions {
 			colours[i]=0.0;
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,1280,720,this);
 
 		contactgroup.empty();
 		contactgroup.destroy();

@@ -68,15 +68,19 @@ News
  * This is the last release built with Java 6.
 
 
+Basic Usage Tips
+================
+ * Use `World.quickStep(...)` instead of `World.step()`. The latter is slower and appears to be less stable.
+ * Make sure to set `Common.dNODEBUG = true` for best performance.
+ * Avoid using `core-cpp` and ignore demos in `demo-cpp`. 
+
+
 Legal
 =====
 
 ode4j:
-Copyright (c) 2009-2017 Tilmann Zäschke <ode4j(AT)gmx.de>.
+Copyright (c) 2009-2023 Tilmann Zäschke <ode4j(AT)gmx.de>.
 All rights reserved.
-
-
-
 
 Like the original ODE, ode4j is licensed under LGPL v2.1 and BSD 3-clause. Choose whichever license suits your needs. 
 
