@@ -1222,8 +1222,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        	int b1 = (joint.node[0].body!=null) ? (joint.node[0].body.tag) : -1;
 	        	int b2 = (joint.node[1].body!=null) ? (joint.node[1].body.tag) : -1;
 
-	        	int jb_end = 2 * mindex[ji * 2 + 2];
-	        	int jb_ptr = 2 * mindex[ji * 2 + 0];
+	        	int jb_end = 2 * getMIndex(mindex, ji + 1);
+	        	int jb_ptr = 2 * getMIndex(mindex, ji);
 	        	for (; jb_ptr != jb_end; jb_ptr += 2) {
 	        		jb[jb_ptr] = b1;
 	        		jb[jb_ptr+1] = b2;
@@ -1468,8 +1468,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         int ji_step;
         while ((ji_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_ji_4a, nj_steps)) != nj_steps) {
             int ji = ji_step * step_size;
-            int lambdacurr = mindex[ji * 2];
-            int lambdsnext = mindex[2 * (ji + Math.min(step_size, nj - ji))];
+            int lambdacurr = getMIndex(mindex, ji);
+            int lambdsnext = getMIndex(mindex, ji + Math.min(step_size, nj - ji));
             dSetZero(lambda, lambdacurr, lambdsnext - lambdacurr);
         }
     }
