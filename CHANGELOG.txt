@@ -22,6 +22,8 @@ Check:
 
 0.5.0 (unreleased)
 =====
+- Fix maven warnings of type "Use Import/Export Package directive -split-package [...]"
+  [#101](https://github.com/tzaeschke/ode4j/pull/101)
 - Port updates until 0.16.3. [#100](https://github.com/tzaeschke/ode4j/pull/100)
 - Port updates until 0.16.2.
   This includes some libCCD updates missing fro the 0.15.1 update.

@@ -35,7 +35,7 @@
 				<configuration>
 					<bnd><![CDATA[
 						Bundle-SymbolicName: org.ode4j.core-cpp
-						Export-Package: org.ode4j.*
+						Export-Package: org.ode4j.cpp.*
 ]]></bnd>
 				</configuration>
 			</plugin>
