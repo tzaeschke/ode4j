@@ -45,7 +45,7 @@
 				<configuration>
 					<bnd><![CDATA[
 						Bundle-SymbolicName: org.ode4j.demo-cpp
-						Export-Package: org.ode4j.demo-cpp.*
+						Export-Package: org.ode4j.*
 ]]></bnd>
 				</configuration>
 			</plugin>
