@@ -1798,9 +1798,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
             }
         }
 		else {
-			// TODO CHECK-TZ
-			if (true)
-				throw new UnsupportedOperationException("THis was added in 16.2, why did I miss it?");
 			// NOTE: So far, this branch is only called in CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__BY_ERROR case
 			if (Atomics.ThrsafeExchangeAdd(stage4CallContext.m_SOR_reorderThreadsRemaining, -1) == 1) { // If last thread has exited the reordering routine...
 				dIASSERT(iteration != 0);

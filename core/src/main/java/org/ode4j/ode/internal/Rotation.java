@@ -109,9 +109,7 @@ public class Rotation extends Matrix {
 	 * @param bx bx
 	 * @param by by
 	 * @param bz bz
-	 * @deprecated (TZ) 
 	 */
-	@Deprecated
     public static void dRFrom2Axes (DMatrix3 R, double ax, double ay, double az,
                                     double bx, double by, double bz)
 	{

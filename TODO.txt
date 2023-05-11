@@ -19,6 +19,17 @@ Things left out for 0.5.0 (missing from 0.15.1 vs 0.16.2)
   - objects.h/.cpp  /  obstack.h/.cpp
 
 
+Fix
+===
+- Issue #22 / ODE issue #36: https://bitbucket.org/odedevs/ode/issues/36/fix-gimpact-contacts-handling
+  This has been resolved, We need to remove the workaround in OdeConfig::50, "ENABLE_CONTACT_SORTING"
+- Warnings when running
+  - TestIssue0031_RagdollNPE
+  - DemoPlane2d with step()
+- Fix DLCP.ROWPTRS = true?!? -> DEFAULT in 0.16.3
+
+
+
 Java Version
 ============
 - We should aim for Oreo or later (Android 8.0, released 2017, API Level 26: https://apilevels.com/)
@@ -36,7 +47,7 @@ Java Version
 - 2018: https://jakewharton.com/androids-java-9-10-11-and-12-support/
 
 
-MArch 2023:
+March 2023:
 General cleanup:
 - CHANGELOG -> .md
 - check excluded tests in .pom

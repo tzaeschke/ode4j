@@ -201,21 +201,6 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 		// Make the window visible
 		glfwShowWindow(window);
 
-
-//		// TODO CHECK-TZ It seem this can be removed with LWJGL 3
-//		// create Window of size 300x300
-//		try {
-////			Display.setLocation((Display.getDisplayMode().getWidth() - _width) / 2,
-////					(Display.getDisplayMode().getHeight() - _height) / 2);
-//		} catch (UnsatisfiedLinkError e) {
-//			System.err.println("Missing lwjgl native libraries.");
-//			System.err.println("If you are using maven, make sure to use '-Djava.library.path=target/natives' or " +
-//					"'-Djava.library.path=demo/target/natives' as VM argument of your application.");
-//			System.err.println("For plain Eclipse, add the native library path to the included "
-//					+ "lwjgl.jar in the definition of the Referenced Libraries.");
-//			throw e;
-//		}
-
 		GL.createCapabilities();
 
 		if (firsttime) {
