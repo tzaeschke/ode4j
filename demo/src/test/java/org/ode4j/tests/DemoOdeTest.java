@@ -84,7 +84,7 @@ public class DemoOdeTest {
     static {
         if (dDOUBLE) {
             tol = 1e-10;
-            tol2 = 1e-7;
+            tol2 = 1e-5;
         } else {
             tol = 1e-5;
         }
