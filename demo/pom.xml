@@ -138,7 +138,7 @@
 				<configuration>
 					<bnd><![CDATA[
 						Bundle-SymbolicName: org.ode4j.demo
-						Export-Package: org.ode4j.*
+						Export-Package: org.ode4j.demo.*,org.ode4j.drawstuff.*
 ]]></bnd>
 				</configuration>
 			</plugin>
