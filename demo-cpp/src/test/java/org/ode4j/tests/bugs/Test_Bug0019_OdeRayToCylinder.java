@@ -79,7 +79,7 @@ public class Test_Bug0019_OdeRayToCylinder {
                     }
 
                     DContact contact = contacts.get(0);
-                    System.out.println(contact.geom.normal);
+                    // System.out.println(contact.geom.normal);
                     assertTrue(Math.abs(contact.geom.normal.get0()) < 0.01);
                     assertTrue(Math.abs(contact.geom.normal.get1()) < 0.01);
                     assertTrue(Math.abs(contact.geom.normal.get2()) > 0.99);
