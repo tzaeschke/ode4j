@@ -15,7 +15,7 @@
  *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the License for more information.
  */
-package org.ode4j.tests.libccd;
+package org.ode4j.libccd;
 
 import org.junit.After;
 import org.junit.Before;

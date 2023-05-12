@@ -15,19 +15,18 @@
  *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the License for more information.
  */
-package org.ode4j.tests.libccd;
+package org.ode4j.libccd;
 
 import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
-import static org.ode4j.tests.libccd.CCDTestSupport.*;
 
 import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
 public class CCDTestCommon {
 
-	static void svtCyl(ccd_cyl_t c, FILE out, String color, String name)
+	static void svtCyl(CCDTestSupport.ccd_cyl_t c, FILE out, String color, String name)
 	{
 	    ccd_vec3_t[] v = new ccd_vec3_t[32];
 	    ccd_quat_t rot = new ccd_quat_t();
@@ -98,7 +97,7 @@ public class CCDTestCommon {
 	    fprintf(out, "-----\n");
 	}
 
-	static void svtBox(ccd_box_t b, FILE out, final String color, final String name)
+	static void svtBox(CCDTestSupport.ccd_box_t b, FILE out, final String color, final String name)
 	{
 	    ccd_vec3_t[] v = new ccd_vec3_t[8];
 	    int i;
@@ -141,12 +140,12 @@ public class CCDTestCommon {
 
 	static void svtObj(Object _o, FILE out, String color, String name)
 	{
-	    ccd_obj_t o = (ccd_obj_t )_o;
+	    CCDTestSupport.ccd_obj_t o = (CCDTestSupport.ccd_obj_t)_o;
 
-	    if (o.type == CCD_OBJ_CYL){
-	        svtCyl((ccd_cyl_t )o, out, color, name);
-	    }else if (o.type == CCD_OBJ_BOX){
-	        svtBox((ccd_box_t )o, out, color, name);
+	    if (o.type == CCDTestSupport.CCD_OBJ_CYL){
+	        svtCyl((CCDTestSupport.ccd_cyl_t)o, out, color, name);
+	    }else if (o.type == CCDTestSupport.CCD_OBJ_BOX){
+	        svtBox((CCDTestSupport.ccd_box_t)o, out, color, name);
 	    }
 	}
 

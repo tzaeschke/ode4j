@@ -22,70 +22,17 @@
  * details.                                                              *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.tests.math;
+package org.ode4j.math;
 
-import junit.framework.TestCase;
-
-import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DQuaternion;
-import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector4;
-import org.ode4j.math.DVector6;
 import org.ode4j.math.DMatrix3.DVector3ColView;
 
-public abstract class OdeTestCase extends TestCase {
+import static org.junit.Assert.fail;
 
-	protected void assertEquals(double exp, double val) {
-		//TODO use proper EPSILON!!!
-		double eps = 10e-9;
-		if (Math.abs(exp - val) > eps) {
-			fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
-		}
-	}
-	
-	protected void assertEquals(DVector3 exp, DVector3 val) {
-		//TODO use proper EPSILON!!!
-		double eps = 10e-9;
-		for (int i = 0; i < exp.dim(); i++) {
-			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
-				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
-			}
-		}
-	}
-	
-	protected void assertEquals(DVector3 exp, DVector3ColView val) {
-		//TODO use proper EPSILON!!!
-		double eps = 10e-9;
-		for (int i = 0; i < exp.dim(); i++) {
-			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
-				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
-			}
-		}
-	}
-	
-	protected void assertEquals(DVector4 exp, DVector4 val) {
-		//TODO use proper EPSILON!!!
-		double eps = 10e-9;
-		for (int i = 0; i < exp.dim(); i++) {
-			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
-				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
-			}
-		}
-	}
-	
-	protected void assertEquals(DQuaternion exp, DQuaternion val) {
-		//TODO use proper EPSILON!!!
-		double eps = 10e-9;
-		for (int i = 0; i < exp.dim(); i++) {
-			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
-				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
-			}
-		}
-	}
-	
-	protected void assertEquals(DVector6 exp, DVector6 val) {
-		//TODO use proper EPSILON!!!
-		double eps = 10e-9;
+public abstract class OdeTestUtil {
+
+	private static final double eps = 1e-9;
+
+	public static void assertEquals(DVector3 exp, DVector3 val) {
 		for (int i = 0; i < exp.dim(); i++) {
 			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
 				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
@@ -93,9 +40,47 @@ public abstract class OdeTestCase extends TestCase {
 		}
 	}
 
-	protected void assertEquals(DMatrix3 exp, DMatrix3 val) {
-		//TODO use proper EPSILON!!!
-		double eps = 10e-9;
+	public static void assertEquals(DVector3 exp, DMatrix3.DVector3RowTView val) {
+		for (int i = 0; i < exp.dim(); i++) {
+			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
+				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
+			}
+		}
+	}
+
+	public static void assertEquals(DVector3 exp, DVector3ColView val) {
+		for (int i = 0; i < exp.dim(); i++) {
+			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
+				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
+			}
+		}
+	}
+
+	public static void assertEquals(DVector4 exp, DVector4 val) {
+		for (int i = 0; i < exp.dim(); i++) {
+			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
+				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
+			}
+		}
+	}
+
+	public static void assertEquals(DQuaternion exp, DQuaternion val) {
+		for (int i = 0; i < exp.dim(); i++) {
+			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
+				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
+			}
+		}
+	}
+
+	public static void assertEquals(DVector6 exp, DVector6 val) {
+		for (int i = 0; i < exp.dim(); i++) {
+			if (Math.abs(exp.get(i)-val.get(i)) > eps) {
+				fail("Argmuments not equal: Expected=" + exp + ";  Actual=" + val);
+			}
+		}
+	}
+
+	public static void assertEquals(DMatrix3 exp, DMatrix3 val) {
 		for (int i = 0; i < exp.dimI(); i++) {
 			for (int j = 0; j < exp.dimJ(); j++) {
 				if (Math.abs(exp.get(i,j)-val.get(i,j)) > eps) {
@@ -104,5 +89,4 @@ public abstract class OdeTestCase extends TestCase {
 			}
 		}
 	}
-	
 }

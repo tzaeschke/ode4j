@@ -24,10 +24,11 @@ package org.ode4j.math;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DQuaternionTest {
+
+    private static final double eps = 1e-9;
 
     /**
      * DQuaternion::setIdentity().
@@ -134,5 +135,165 @@ public class DQuaternionTest {
         for (int i = 0; i < DQuaternion.LEN; ++i) {
             assertEquals(q2.get(i), q2ii.get(i), 0.0000000001);
         }
+    }
+
+    @Test
+    public void testGet(){
+        DQuaternion x = new DQuaternion(1, 2, 3, 4);
+        assertEquals(x.get0(), 1., 0);
+        assertEquals(x.get1(), 2., 0);
+        assertEquals(x.get2(), 3., 0);
+        assertEquals(x.get3(), 4., 0);
+        assertEquals(x.get(0), 1., 0);
+        assertEquals(x.get(1), 2., 0);
+        assertEquals(x.get(2), 3., 0);
+        assertEquals(x.get(3), 4., 0);
+    }
+
+    @Test
+    public void testEqual(){
+        DQuaternion x = new DQuaternion(1, 2, 3, 4);
+        DQuaternion xx = new DQuaternion(1, 2, 3, 4);
+        DQuaternion x1 = new DQuaternion(0, 2, 3, 4);
+        DQuaternion x2 = new DQuaternion(1, 0, 3, 4);
+        DQuaternion x3 = new DQuaternion(1, 2, 0, 4);
+        DQuaternion x4 = new DQuaternion(1, 2, 3, 0);
+        assertTrue(x.isEq(xx));
+        assertFalse(x.isEq(x1));
+        assertFalse(x.isEq(x2));
+        assertFalse(x.isEq(x3));
+        assertFalse(x.isEq(x4));
+    }
+
+    @Test
+    public void testSet(){
+        DQuaternion x = new DQuaternion(1, 2, 3, 4);
+        DQuaternion x2 = new DQuaternion(1, 2, 3, 4);
+        DQuaternion y = new DQuaternion(5, 6, 7, 8);
+        DQuaternion z = new DQuaternion(9, 10, 11, 12);
+        x.set0(9);
+        assertEquals(x.get0(), 9., 0);
+        x.set1(10);
+        assertEquals(x.get1(), 10., 0);
+        x.set2(11);
+        assertEquals(x.get2(), 11., 0);
+        x.set3(12);
+        assertEquals(x.get3(), 12., 0);
+        assertEquals(x, z);
+
+        x.set(0, 5);
+        assertEquals(x.get0(), 5., 0);
+        x.set(1, 6);
+        assertEquals(x.get1(), 6., 0);
+        x.set(2, 7);
+        assertEquals(x.get2(), 7., 0);
+        x.set(3, 8);
+        assertEquals(x.get3(), 8., 0);
+        assertEquals(x, y);
+
+        x.set(1, 2, 3, 4);
+        assertEquals(x, x2);
+
+        x.set(y);
+        assertEquals(x, y);
+    }
+
+    @Test
+    public void testInit(){
+        DQuaternion x = new DQuaternion(1, 2, 3, 4);
+        DQuaternion y = new DQuaternion();
+        DQuaternion z = new DQuaternion(x);
+        assertTrue(x.isEq(z));
+        assertFalse(x.isEq(y));
+        assertEquals(y.get0(), 0., 0);
+        assertEquals(y.get1(), 0., 0);
+        assertEquals(y.get2(), 0., 0);
+        assertEquals(y.get3(), 0., 0);
+
+        assertEquals(z.get0(), 1., 0);
+        assertEquals(z.get1(), 2., 0);
+        assertEquals(z.get2(), 3., 0);
+        assertEquals(z.get3(), 4., 0);
+    }
+
+    @Test
+    public void testAdd(){
+        DQuaternion x = new DQuaternion(1, 2, 3, 4);
+        DQuaternion y = new DQuaternion(4, 8, -1, -7);
+        DQuaternion t = new DQuaternion();
+        assertFalse(x.isEq(y));
+
+        t.add(x);
+        assertTrue(t.isEq(x));
+        t.add(3, 6, -4, -11);
+        assertTrue(t.isEq(y));
+    }
+
+    @Test
+    public void testSum(){
+        //TODO
+//		dQuaternion x = new dQuaternion(1, 2, 3, 4);
+//		dQuaternion y = new dQuaternion(4, 8, -1, -7);
+//		dQuaternion t = new dQuaternion();
+//		assertFalse(x.equals(y));
+//
+//		t.add(x);
+//		assertTrue(t.equals(x));
+//		t.add(3, 6, -4, -11);
+//		assertTrue(t.equals(y));
+//
+//		t.add(0, -3);
+//		t.add(1, -6);
+//		t.add(2, 4);
+//		t.add(3, 11);
+//		assertTrue(t.equals(x));
+//
+////		t.add0(3);
+////		t.add1(6);
+////		t.add2(-4);
+////		assertTrue(t.equals(y));
+    }
+
+    @Test
+    public void testSub(){
+        DQuaternion x = new DQuaternion(1, 2, 3, 4);
+        DQuaternion y = new DQuaternion(4, 8, -1, -7);
+        DQuaternion t = new DQuaternion();
+        assertFalse(x.isEq(y));
+
+        t.add(x);
+        t.add(x);
+    }
+
+    @Test
+    public void testScale(){
+        DQuaternion y = new DQuaternion(4, 10, -6, -13);
+        DQuaternion t = new DQuaternion();
+
+        t.set(y);
+        t.scale(0.5);
+        assertTrue(t.isEq( new DQuaternion(2, 5, -3, -6.5) ));
+    }
+
+    @Test
+    public void testOther(){
+        DQuaternion t = new DQuaternion();
+
+        //TODO remove dSafeNormalize3()?
+        try {
+            t.set(0, 0, 0, 0).normalize();
+            fail();
+        } catch (IllegalStateException e) {
+            // Good!
+        }
+        assertEquals(new DQuaternion(1, 0, 0, 0), t);
+
+        t.set(3, 4, -18, -6.5);
+        t.normalize();
+        assertEquals(new DQuaternion(0.15166804174966758, 0.20222405566622345, -0.9100082504980056, -0.32861409045761314), t);
+
+        t.set(3, 4, -5, -2);
+        assertEquals(Math.sqrt(54), t.length(), eps);
+        assertEquals(54.0, t.lengthSquared(), eps);
     }
 }

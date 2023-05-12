@@ -19,11 +19,12 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.tests.bugs;
+package org.ode4j.ode.old;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.ode4j.ode.*;
+
+import static org.junit.Assert.*;
 
 /**
  *  Shows an incorrect calculation of the contact normal collision beam and boxing

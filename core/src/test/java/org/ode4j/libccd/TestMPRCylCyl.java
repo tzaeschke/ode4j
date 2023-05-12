@@ -15,7 +15,7 @@
  *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the License for more information.
  */
-package org.ode4j.tests.libccd;
+package org.ode4j.libccd;
 
 import static org.junit.Assert.*;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
@@ -23,8 +23,8 @@ import static org.ode4j.ode.internal.libccd.CCD.*;
 import static org.ode4j.ode.internal.libccd.CCDMPR.*;
 import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
-import static org.ode4j.tests.libccd.CCDTestCommon.*;
-import static org.ode4j.tests.libccd.CCDTestSupport.*;
+import static org.ode4j.libccd.CCDTestCommon.*;
+import static org.ode4j.libccd.CCDTestSupport.*;
 
 import org.junit.Test;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;

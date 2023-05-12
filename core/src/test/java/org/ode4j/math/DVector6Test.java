@@ -19,28 +19,31 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.tests.math;
+package org.ode4j.math;
 
 import org.junit.Test;
-import org.ode4j.math.DVector6;
 
-public class TestDVector6 extends OdeTestCase {
+import static org.junit.Assert.*;
+
+public class DVector6Test {
+
+	private static final double eps = 1e-9;
 
 	@Test
 	public void testGet(){
 		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
-		assertEquals(x.get0(), 1.);
-		assertEquals(x.get1(), 2.);
-		assertEquals(x.get2(), 3.);
-		assertEquals(x.get3(), 4.);
-		assertEquals(x.get4(), 5.);
-		assertEquals(x.get5(), 6.);
-		assertEquals(x.get(0), 1.);
-		assertEquals(x.get(1), 2.);
-		assertEquals(x.get(2), 3.);
-		assertEquals(x.get(3), 4.);
-		assertEquals(x.get(4), 5.);
-		assertEquals(x.get(5), 6.);
+		assertEquals(x.get0(), 1., 0);
+		assertEquals(x.get1(), 2., 0);
+		assertEquals(x.get2(), 3., 0);
+		assertEquals(x.get3(), 4., 0);
+		assertEquals(x.get4(), 5., 0);
+		assertEquals(x.get5(), 6., 0);
+		assertEquals(x.get(0), 1., 0);
+		assertEquals(x.get(1), 2., 0);
+		assertEquals(x.get(2), 3., 0);
+		assertEquals(x.get(3), 4., 0);
+		assertEquals(x.get(4), 5., 0);
+		assertEquals(x.get(5), 6., 0);
 	}		
 		
 	@Test
@@ -117,19 +120,19 @@ public class TestDVector6 extends OdeTestCase {
 		DVector6 z = new DVector6(x);
 		assertTrue(x.isEq(z));
 		assertFalse(x.isEq(y));
-		assertEquals(y.get0(), 0.);
-		assertEquals(y.get1(), 0.);
-		assertEquals(y.get2(), 0.);
-		assertEquals(y.get3(), 0.);
-		assertEquals(y.get4(), 0.);
-		assertEquals(y.get5(), 0.);
+		assertEquals(y.get0(), 0., 0);
+		assertEquals(y.get1(), 0., 0);
+		assertEquals(y.get2(), 0., 0);
+		assertEquals(y.get3(), 0., 0);
+		assertEquals(y.get4(), 0., 0);
+		assertEquals(y.get5(), 0., 0);
 
-		assertEquals(z.get0(), 1.);
-		assertEquals(z.get1(), 2.);
-		assertEquals(z.get2(), 3.);
-		assertEquals(z.get3(), 4.);
-		assertEquals(z.get4(), 5.);
-		assertEquals(z.get5(), 6.);
+		assertEquals(z.get0(), 1., 0);
+		assertEquals(z.get1(), 2., 0);
+		assertEquals(z.get2(), 3., 0);
+		assertEquals(z.get3(), 4., 0);
+		assertEquals(z.get4(), 5., 0);
+		assertEquals(z.get5(), 6., 0);
 	}		
 	
 	@Test
@@ -241,8 +244,8 @@ public class TestDVector6 extends OdeTestCase {
 		
 
 		t.set(3, 4, -5, -2, 7, -11);
-		assertEquals(Math.sqrt(54 + 49 + 121), t.length());
-		assertEquals(224.0, t.lengthSquared());
+		assertEquals(Math.sqrt(54 + 49 + 121), t.length(), eps);
+		assertEquals(224.0, t.lengthSquared(), eps);
 		
 //		t.set(-3, -4, -5);
 //		t.eqAbs();

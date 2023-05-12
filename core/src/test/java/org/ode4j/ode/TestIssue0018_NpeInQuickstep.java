@@ -102,9 +102,8 @@ public class TestIssue0018_NpeInQuickstep {
             _motor.attach(body1, body2);
             _motor.setMode(DAMotorJoint.AMotorMode.dAMotorEuler);
             _motor.setNumAxes(3);
-            _motor.setAxis(0, 1, _axis0.get0(), _axis0.get1(), _axis0.get2());
-            _motor.setAxis(1, 1, _axis1.get0(), _axis1.get1(), _axis1.get2());
-            _motor.setAxis(2, 1, _axis2.get0(), _axis2.get1(), _axis2.get2());
+            _motor.setAxis(0, 1, _axis0);
+            _motor.setAxis(2, 2, _axis2);
 
             // XXX: make these changeable, for example using the XML
             _motor.setParam(DJoint.PARAM_N.dParamFudgeFactor1, 0.8f);
@@ -129,8 +128,6 @@ public class TestIssue0018_NpeInQuickstep {
      */
     @Test
     public void test() {
-//		DrawStuff.dsSetOutputNull();
-        // create world
         OdeHelper.initODE();
 
         start();

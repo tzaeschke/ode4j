@@ -1,4 +1,4 @@
-package org.ode4j.tests.libccd;
+package org.ode4j.libccd;
 
 import org.junit.Test;
 import org.ode4j.ode.internal.libccd.CCDQuat;

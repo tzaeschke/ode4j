@@ -88,7 +88,7 @@ public interface DAMotorJoint extends DJoint {
 	/**
 	 * Set axis.
 	 * @param anum anum
-	 * @param rel rel
+	 * @param rel rel. See ::getAxisRel
 	 * @param x x
 	 * @param y y
 	 * @param z z
@@ -99,7 +99,7 @@ public interface DAMotorJoint extends DJoint {
 	/**
 	 * Set axis.
 	 * @param anum anum
-	 * @param rel  rel
+	 * @param rel  rel. See ::getAxisRel
 	 * @param a a
 	 */
 	void setAxis (int anum, int rel, DVector3C a);
