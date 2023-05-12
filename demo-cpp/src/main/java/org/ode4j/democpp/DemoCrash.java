@@ -51,28 +51,7 @@ import static org.ode4j.cpp.internal.ApiCppCollision.dGeomSetBody;
 import static org.ode4j.cpp.internal.ApiCppCollision.dSpaceCollide;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSweepAndPruneSpaceCreate;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateFixed;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateHinge2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetBody;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHinge2Angle1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetFixed;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Anchor;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Param;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamSuspensionCFM;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamSuspensionERP;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel2;
+import static org.ode4j.cpp.internal.ApiCppJoint.*;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassSetSphere;
@@ -163,6 +142,10 @@ class DemoCrash extends dsFunctions {
 	private static final float CANNON_Y = 5	;	// y position of cannon
 	private static final float CANNON_BALL_MASS = 10;	// mass of the cannon ball
 	private static final float CANNON_BALL_RADIUS = 0.5f;
+
+
+	private final DVector3 xunit = new DVector3( 1, 0, 0 ), yunit = new DVector3( 0, 1, 0 ),
+			zpunit = new DVector3( 0, 0, 1 ), zmunit = new DVector3( 0, 0, -1 );
 
 	////#define BOX
 	//#define CARS
@@ -319,8 +302,7 @@ class DemoCrash extends dsFunctions {
 			dJointAttach (joint[jointI+i],body[bodyI],body[bodyI+i+1]);
 			final DVector3C a = dBodyGetPosition (body[bodyI+i+1]);
 			dJointSetHinge2Anchor (joint[jointI+i],a.get0(),a.get1(),a.get2());
-			dJointSetHinge2Axis1 (joint[jointI+i],0,0,(i<2 ? 1 : -1));
-			dJointSetHinge2Axis2 (joint[jointI+i],0,1,0);
+			dJointSetHinge2Axes (joint[jointI+i],(i<2 ? zpunit : zmunit), yunit);
 			dJointSetHinge2Param (joint[jointI+i],dParamSuspensionERP,0.8);
 			dJointSetHinge2Param (joint[jointI+i],dParamSuspensionCFM,1e-5);
 			dJointSetHinge2Param (joint[jointI+i],dParamVel2,0);
@@ -482,8 +464,7 @@ class DemoCrash extends dsFunctions {
 						dJointAttach (joint[joints],body[bodies-2],body[bodies]);
 					final DVector3C a = dBodyGetPosition (body[bodies++]);
 					dJointSetHinge2Anchor (joint[joints],a.get0(),a.get1(),a.get2());
-					dJointSetHinge2Axis1 (joint[joints],0,0,1);
-					dJointSetHinge2Axis2 (joint[joints],1,0,0);
+					dJointSetHinge2Axes (joint[joints],zpunit, xunit);
 					dJointSetHinge2Param (joint[joints],dParamSuspensionERP,1.0);
 					dJointSetHinge2Param (joint[joints],dParamSuspensionCFM,1e-5);
 					dJointSetHinge2Param (joint[joints],dParamLoStop,0);
@@ -506,8 +487,7 @@ class DemoCrash extends dsFunctions {
 						dJointAttach (joint[joints],body[bodies-2],body[bodies]);
 					final DVector3C b = dBodyGetPosition (body[bodies++]);
 					dJointSetHinge2Anchor (joint[joints],b.get0(),b.get1(),b.get2());
-					dJointSetHinge2Axis1 (joint[joints],0,0,1);
-					dJointSetHinge2Axis2 (joint[joints],1,0,0);
+					dJointSetHinge2Axes (joint[joints],zpunit, xunit);
 					dJointSetHinge2Param (joint[joints],dParamSuspensionERP,1.0);
 					dJointSetHinge2Param (joint[joints],dParamSuspensionCFM,1e-5);
 					dJointSetHinge2Param (joint[joints],dParamLoStop,0);

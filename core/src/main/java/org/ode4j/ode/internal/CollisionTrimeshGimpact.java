@@ -29,6 +29,7 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector4C;
 import org.ode4j.ode.*;
+import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimTriCollision;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
@@ -153,7 +154,7 @@ public class CollisionTrimeshGimpact {
         //    static inline
         //    void gim_trimesh_sphere_collisionODE(GIM_TRIMESH *mesh, const dVector3 Position, dReal Radius, GDYNAMIC_ARRAY *contact) {
     static
-    void gim_trimesh_sphere_collisionODE(GimTrimesh mesh, DVector3C Position, double Radius, GimDynArray contact) {
+    void gim_trimesh_sphere_collisionODE(GimTrimesh mesh, DVector3C Position, double Radius, GimDynArray<GimContact> contact) {
         //vec3f pos_vec3f = {(GREAL) Position[0], (GREAL) Position[1], (GREAL) Position[2]};
         vec3f pos_vec3f = new vec3f();
         copy(pos_vec3f, Position);
@@ -163,7 +164,7 @@ public class CollisionTrimeshGimpact {
     //    static inline
     //    void gim_trimesh_plane_collisionODE(GIM_TRIMESH *mesh, const dVector4 plane, GDYNAMIC_ARRAY *contact) {
     static
-    void gim_trimesh_plane_collisionODE(GimTrimesh mesh, DVector4C plane, GimDynArray contact) {
+    void gim_trimesh_plane_collisionODE(GimTrimesh mesh, DVector4C plane, GimDynArray<vec4f> contact) {
         //vec4f plane_vec4f = {(GREAL) plane[0], (GREAL) plane[1], (GREAL) plane[2], (GREAL) plane[3]};
         vec4f plane_vec4f = new vec4f();
         copy(plane_vec4f, plane);

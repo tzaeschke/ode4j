@@ -73,8 +73,8 @@ public abstract class DDestructible {
 	}
 	
 	
-	@Override
-	protected void finalize() throws Throwable {
+//	@Override
+//	protected void finalize() throws Throwable {
 //		if (DEBUG_FINALIZE) { 
 //			if (!_isDestructed) {
 //				_isDestructed = true;
@@ -86,7 +86,7 @@ public abstract class DDestructible {
 //			}
 //			super.finalize();
 //		}
-	}
+//	}
 	
 	@Override
 	public String toString() {

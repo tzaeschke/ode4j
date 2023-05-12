@@ -338,13 +338,13 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		//  delete image;
 		//  glDeleteTextures (1,&name);
 		//}
-		@Override
-		protected void finalize() throws Throwable {
-			image = null;
-//			GL11.glDeleteTextures (1, name));
-			GL11.glDeleteTextures (IntBuffer.wrap(new int[]{name}));
-			super.finalize();
-		}
+		//		@Override
+		//		protected void finalize() throws Throwable {
+		//			image = null;
+		////			GL11.glDeleteTextures (1, name));
+		//			GL11.glDeleteTextures (IntBuffer.wrap(new int[]{name}));
+		//			super.finalize();
+		//		}
 
 		public void bind (boolean modulate)
 		{

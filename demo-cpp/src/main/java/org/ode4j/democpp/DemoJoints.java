@@ -34,58 +34,7 @@ import static org.ode4j.cpp.internal.ApiCppBody.dBodySetMass;
 import static org.ode4j.cpp.internal.ApiCppBody.dBodySetPosition;
 import static org.ode4j.cpp.internal.ApiCppBody.dBodySetQuaternion;
 import static org.ode4j.cpp.internal.ApiCppBody.dBodySetRotation;
-import static org.ode4j.cpp.internal.ApiCppJoint.dAMotorEuler;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateAMotor;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateFixed;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateHinge;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateHinge2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreatePR;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateSlider;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateUniversal;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetAMotorAngle;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHinge2Angle1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHinge2Angle1Rate;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHinge2Angle2Rate;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHingeAngle;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHingeAngleRate;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetSliderPosition;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetSliderPositionRate;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle1Rate;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAngle2Rate;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAxis1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetUniversalAxis2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetAMotorAxis;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetAMotorMode;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetAMotorNumAxes;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetFixed;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Anchor;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Param;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeAnchor;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeAxis;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHingeParam;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAnchor;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAxis1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRAxis2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetPRParam;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetSliderAxis;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetSliderParam;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAnchor;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAxis1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetUniversalAxis2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamBounce;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel2;
+import static org.ode4j.cpp.internal.ApiCppJoint.*;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
@@ -167,6 +116,9 @@ public class DemoJoints extends dsFunctions {
 	//#define MASS (1.0)	// mass of a box
 	//#define STEPSIZE 0.05
 	//some constants
+
+	private final DVector3 xunit = new DVector3( 1, 0, 0 ), zunit = new DVector3( 0, 0, 1 );
+
 	private static final int NUM_JOINTS = 10;	// number of joints to test (the `xx' value)
 	private static final float SIDE = 0.5f;	// side length of a box - don't change this
 	private static final float MASS = 1.0f;	// mass of a box
@@ -518,8 +470,7 @@ public class DemoJoints extends dsFunctions {
 			jointH2 = dJointCreateHinge2 (world,null);
 			dJointAttach (jointH2,body[0],body[1]);
 			dJointSetHinge2Anchor (jointH2,-0.5*SIDE,0,1);
-			dJointSetHinge2Axis1 (jointH2,0,0,1);
-			dJointSetHinge2Axis2 (jointH2,1,0,0);
+			dJointSetHinge2Axes (jointH2,xunit, zunit);
 			max_iterations = 50;
 			return 1;
 
@@ -532,8 +483,7 @@ public class DemoJoints extends dsFunctions {
 			jointH2 = dJointCreateHinge2 (world,null);
 			dJointAttach (jointH2,body[0],body[1]);
 			dJointSetHinge2Anchor (jointH2,-0.5*SIDE,0,1);
-			dJointSetHinge2Axis1 (jointH2,0,0,1);
-			dJointSetHinge2Axis2 (jointH2,1,0,0);
+			dJointSetHinge2Axes (jointH2,xunit, zunit);
 			dJointSetHinge2Param (jointH2,dParamFMax,1);
 			dJointSetHinge2Param (jointH2,dParamFMax2,1);
 			if (n==431) {

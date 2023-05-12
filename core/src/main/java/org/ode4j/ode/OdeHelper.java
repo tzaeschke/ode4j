@@ -874,9 +874,9 @@ public abstract class OdeHelper {
 	 * @return true if the two bodies are connected together by
 	 * a joint that does not have type <code>jointType</code>, otherwise return 0.
 	 */
- 	//@SafeVarargs --> Not available in Java 6!
-	public static boolean areConnectedExcluding (DBody body1, DBody body2, 
-            Class<? extends DJoint> ... jointType) {
+ 	@SafeVarargs
+	public static boolean areConnectedExcluding (DBody body1, DBody body2,
+												 Class<? extends DJoint> ... jointType) {
         return ODE._dAreConnectedExcluding(body1, body2, jointType);
     }
 	/**
@@ -891,8 +891,7 @@ public abstract class OdeHelper {
 	 * @return true if the two bodies are connected together by
 	 * a joint that does not have type <code>jointType</code>, otherwise return 0.
 	 */
- 	//@SafeVarargs --> Not available in Java 6!
-	@SuppressWarnings("unchecked")
+ 	@SuppressWarnings("unchecked")
 	public static boolean areConnectedExcluding (DBody body1, DBody body2, 
             Class<? extends DJoint> jointType) {
         return ODE._dAreConnectedExcluding(body1, body2, new Class[]{jointType});
