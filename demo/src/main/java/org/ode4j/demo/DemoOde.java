@@ -1544,7 +1544,7 @@ void testReorthonormalize()
 		testQuaternionMultiply();
 		testRotationFunctions();
 		dTestMatrixComparison();
-		DLCP.dTestSolveLCP();
+		DLCP.dTestSolveLCP(true);
 		//OdeImpl.dTestDataStructures();
 		OdeHelper.closeODE();
 		return 0;

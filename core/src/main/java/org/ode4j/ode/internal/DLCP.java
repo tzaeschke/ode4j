@@ -1381,9 +1381,8 @@ public class DLCP {
 	    return -1;
 	}
 
-    //TODO API?
     //extern "C" ODE_API
-    public static int dTestSolveLCP()
+    public static int dTestSolveLCP(boolean print)
     {
         final int n = 100;
 
@@ -1409,7 +1408,9 @@ public class DLCP {
         } else {
             tol = 1e-4f;
         }
-        System.out.println ("dTestSolveLCP()");
+		if (print) {
+			System.out.println("dTestSolveLCP()");
+		}
 
 //        double[] A = new double[n*nskip];//ALLOCA (dReal,A,n*nskip*sizeof(dReal));
 //        double[] x = new double[n];//ALLOCA (dReal,x,n*sizeof(dReal));
@@ -1540,8 +1541,10 @@ public class DLCP {
             }
 
             // pacifier
-            printf ("passed: NL=%3d NH=%3d C=%3d   ",n1,n2,n3);
-            printf ("time=%10.3f ms  avg=%10.4f\n",time * 1000.0,average);
+			if (print) {
+				printf("passed: NL=%3d NH=%3d C=%3d   ", n1, n2, n3);
+				printf("time=%10.3f ms  avg=%10.4f\n", time * 1000.0, average);
+			}
             }
             arena.END_STATE_SAVE(saveInner);
         }

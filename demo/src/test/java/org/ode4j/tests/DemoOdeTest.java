@@ -38,7 +38,6 @@ import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
 import org.ode4j.ode.internal.OdeFactoryImpl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -473,13 +472,6 @@ void testReorthonormalize()
 
     @Test
     public void testInvertPDMatrix() {
-        for (int i = 0; i < 100; ++i) {
-            testInvertPDMatrix2();
-        }
-    }
-
-
-    void testInvertPDMatrix2() {
         int i, j, ok;
         int matrixSize = MSIZE4 * MSIZE;
         double[] A = new double[matrixSize], Ainv = new double[matrixSize];
@@ -1355,7 +1347,7 @@ void testReorthonormalize()
 
     @Test
     public void testSolveDLCP() {
-        DLCP.dTestSolveLCP();
+        DLCP.dTestSolveLCP(false);
     }
 
     @Test

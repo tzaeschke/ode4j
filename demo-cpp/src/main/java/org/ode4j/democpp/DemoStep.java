@@ -69,7 +69,7 @@ import org.ode4j.ode.OdeMath;
  * version, for various systems. currently you have to define COMPARE_METHODS
  * in step.cpp for this to work properly.
  *  
- * @@@ report MAX error
+ * report MAX error
  */
 class DemoStep extends dsFunctions {
 
@@ -214,7 +214,7 @@ class DemoStep extends dsFunctions {
 
 		dInitODE2(0);
 		//dRandSetSeed (time(null).seconds);
-		dRandSetSeed (System.currentTimeMillis()/1000);
+		dRandSetSeed (0 ); // System.currentTimeMillis()/1000);
 		createTest();
 
 		// run simulation

@@ -224,11 +224,11 @@ public class PRGetInfo1_Fixture_2  {
 		dJointSetPRParam(jId, dParamVel, (7.0) );
 		CHECK_EQUAL((7.0), joint.limotP.vel);
 
+		// TODO ? TZ: Probably not,
 		//#ifdef D_PARAM_NAMES.dParamFudgeFactor1
 		//			if (D_PARAM_NAMES.dParamFudgeFactor1) {
-		System.err.println("FIXME: test_SetPRParam()");
-		//TODO		dJointSetPRParam(jId, D_PARAM_NAMES.dParamFudgeFactor1, (5.5) );
-		//TODO		CHECK_EQUAL((5.5), joint.limotP.get(D_PARAM_NAMES.dParamFudgeFactor));
+		//		dJointSetPRParam(jId, D_PARAM_NAMES.dParamFudgeFactor1, (5.5) );
+		//		CHECK_EQUAL((5.5), joint.limotP.get(D_PARAM_NAMES.dParamFudgeFactor));
 		//			} //#endif  //TZ unnecessary
 
 		dJointSetPRParam(jId, dParamCFM2, (9.0) );
@@ -251,11 +251,10 @@ public class PRGetInfo1_Fixture_2  {
 				dJointGetPRParam(jId, dParamVel) );
 
 		//#ifdef D_PARAM_NAMES.dParamFudgeFactor1  //TZ unnecessary
-		System.err.println("FIXME: test_GetPRParam()");
-		//TODO		joint.limotP.set(D_PARAM_NAMES.dParamFudgeFactor, 5.5) ;//) =  (5.5);
+		//		joint.limotP.set(D_PARAM_NAMES.dParamFudgeFactor, 5.5) ;//) =  (5.5);
 
-		//TODO		CHECK_EQUAL(joint.limotP.get(D_PARAM_NAMES.dParamFudgeFactor),
-		//TODO				dJointGetPRParam(jId, D_PARAM_NAMES.dParamFudgeFactor1) );
+		//		CHECK_EQUAL(joint.limotP.get(D_PARAM_NAMES.dParamFudgeFactor),
+		//				dJointGetPRParam(jId, D_PARAM_NAMES.dParamFudgeFactor1) );
 		//#endif
 
 		joint.limotR.normal_cfm = (9.0);

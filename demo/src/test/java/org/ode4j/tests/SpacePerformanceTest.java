@@ -49,7 +49,7 @@ public class SpacePerformanceTest {
     private void test_performance_with_dynamic_world(DSpace space, int iterations, int passiveGeomNum, int geomNum) {
         spaceCollisions = 0;
         geomCollisions = 0;
-        System.out.println("==== " + space.getClass().getSimpleName());
+        System.out.printf("   %-16s ", space.getClass().getSimpleName());
         DGeom[] passiveGeoms = new DGeom[passiveGeomNum];
         Random r = new Random(123);
         for (int i = 0; i < passiveGeomNum; i++) {
@@ -141,7 +141,7 @@ public class SpacePerformanceTest {
     private void test_performance_with_static_world(DSpace space, int iterations, int passiveGeomNum, int geomNum) {
         spaceCollisions = 0;
         geomCollisions = 0;
-        System.out.println("==== " + space.getClass().getSimpleName());
+        System.out.printf("   %-16s ", space.getClass().getSimpleName());
         DGeom[] passiveGeoms = new DGeom[passiveGeomNum];
         Random r = new Random(123);
         for (int i = 0; i < passiveGeomNum; i++) {

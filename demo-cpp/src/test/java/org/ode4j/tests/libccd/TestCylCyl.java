@@ -156,7 +156,7 @@ public class TestCylCyl {
 	    RefDouble depth = new RefDouble();
 	    ccd_vec3_t dir = new ccd_vec3_t(), pos = new ccd_vec3_t();
 
-	    fprintf(stderr, "\n\n\n---- cylcylPenetration ----\n\n\n");
+	    // fprintf(stderr, "\n\n\n---- cylcylPenetration ----\n\n\n");
 
 	    cyl1.radius = 0.35;
 	    cyl1.height = 0.5;

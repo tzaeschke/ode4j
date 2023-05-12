@@ -59,6 +59,8 @@ import static org.ode4j.ode.OdeMath.*;
 //@RunWith(Parameterized.class)
 public class DemoJointsTest {
 
+    private static final boolean PRINT = false;
+
     //// some constants
     //#define NUM_JOINTS 10	// number of joints to test (the `xx' value)
     //#define SIDE (0.5f)	// side length of a box - don't change this
@@ -134,6 +136,18 @@ public class DemoJointsTest {
         DMatrix3 I = new DMatrix3();
         I.eqIdentity();
         return dMaxDifference(A, I);
+    }
+
+    private static void print(String s) {
+        if (PRINT) {
+            System.out.print(s);
+        }
+    }
+
+    private static void println(String s) {
+        if (PRINT) {
+            System.out.println(s);
+        }
     }
 
     //****************************************************************************
@@ -1042,12 +1056,13 @@ public class DemoJointsTest {
         S = null;
 
         // print results
-        System.out.print("test " + n + ": ");
-        if (max_error == dInfinity) System.out.println("error not computed");
-        else {
-            System.out.print("max scaled error = " + max_error);
-            if (max_error < 1) System.out.println(" - passed");
-            else System.out.println(" - FAILED\n");
+        print("test " + n + ": ");
+        if (max_error == dInfinity) {
+            println("error not computed");
+        } else {
+            print("max scaled error = " + max_error);
+            if (max_error < 1) println(" - passed");
+            else println(" - FAILED\n");
             Assert.assertTrue(max_error < 1);
         }
     }

@@ -27,26 +27,37 @@ import static org.ode4j.ode.internal.libccd.CCDPolyTope.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 
 public class TestPolytope {
-	
-	private void DBG(String format, Object a1) { 
-		fprintf(stderr, "%s :: " + format+ "\n", "fn", a1);//__func__, ## __VA_ARGS__); 
-		fflush(stderr); 
+
+
+	private static final boolean DEBUG = false;
+
+	private void DBG(String format, Object a1) {
+		if (DEBUG) {
+			fprintf(stderr, "%s :: " + format + "\n", "fn", a1);//__func__, ## __VA_ARGS__);
+			fflush(stderr);
+		}
 	}
 
-	private void DBG(String format, Object a1, Object a2) { 
-		fprintf(stderr, "%s :: " + format+ "\n", "fn", a1, a2);//__func__, ## __VA_ARGS__); 
-		fflush(stderr); 
+	private void DBG(String format, Object a1, Object a2) {
+		if (DEBUG) {
+			fprintf(stderr, "%s :: " + format + "\n", "fn", a1, a2);//__func__, ## __VA_ARGS__);
+			fflush(stderr);
+		}
 	}
 
 	private void DBG2(String str) {
-		fprintf(stderr, "%s :: " + str + "\n", "fn");//, __func__); 
-		fflush(stderr); 
+		if (DEBUG) {
+			fprintf(stderr, "%s :: " + str + "\n", "fn");//, __func__);
+			fflush(stderr);
+		}
 	}
 
 	private void DBG_VEC3(ccd_vec3_t vec, String prefix) {
-		fprintf(stderr, "%s :: %s[%f %f %f]\n", "fn",//	__func__, 
-				prefix, ccdVec3X(vec), ccdVec3Y(vec), ccdVec3Z(vec)); 
-		fflush(stderr); 
+		if (DEBUG) {
+			fprintf(stderr, "%s :: %s[%f %f %f]\n", "fn",//	__func__,
+					prefix, ccdVec3X(vec), ccdVec3Y(vec), ccdVec3Z(vec));
+			fflush(stderr);
+		}
 	}
 
 	
