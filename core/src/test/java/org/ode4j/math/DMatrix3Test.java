@@ -19,37 +19,39 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.tests.math;
+package org.ode4j.math;
 
 import org.junit.Test;
-import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DVector3;
 import org.ode4j.math.DMatrix3.DVector3ColView;
 import org.ode4j.math.DMatrix3.DVector3RowTView;
 
-public class TestDMatrix3 extends OdeTestCase {
+import static org.junit.Assert.*;
+
+public class DMatrix3Test {
+
+	private static final double eps = 1e-9;
 
 	@Test
 	public void testGet(){
 		DMatrix3 x = newM3();
-		assertEquals(x.get00(), 1.);
-		assertEquals(x.get01(), 2.);
-		assertEquals(x.get02(), 3.);
-		assertEquals(x.get10(), 4.);
-		assertEquals(x.get11(), 5.);
-		assertEquals(x.get12(), 6.);
-		assertEquals(x.get20(), 7.);
-		assertEquals(x.get21(), 8.);
-		assertEquals(x.get22(), 9.);
-		assertEquals(x.get(0, 0), 1.);
-		assertEquals(x.get(0, 1), 2.);
-		assertEquals(x.get(0, 2), 3.);
-		assertEquals(x.get(1, 0), 4.);
-		assertEquals(x.get(1, 1), 5.);
-		assertEquals(x.get(1, 2), 6.);
-		assertEquals(x.get(2, 0), 7.);
-		assertEquals(x.get(2, 1), 8.);
-		assertEquals(x.get(2, 2), 9.);
+		assertEquals(x.get00(), 1., 0);
+		assertEquals(x.get01(), 2., 0);
+		assertEquals(x.get02(), 3., 0);
+		assertEquals(x.get10(), 4., 0);
+		assertEquals(x.get11(), 5., 0);
+		assertEquals(x.get12(), 6., 0);
+		assertEquals(x.get20(), 7., 0);
+		assertEquals(x.get21(), 8., 0);
+		assertEquals(x.get22(), 9., 0);
+		assertEquals(x.get(0, 0), 1., 0);
+		assertEquals(x.get(0, 1), 2., 0);
+		assertEquals(x.get(0, 2), 3., 0);
+		assertEquals(x.get(1, 0), 4., 0);
+		assertEquals(x.get(1, 1), 5., 0);
+		assertEquals(x.get(1, 2), 6., 0);
+		assertEquals(x.get(2, 0), 7., 0);
+		assertEquals(x.get(2, 1), 8., 0);
+		assertEquals(x.get(2, 2), 9., 0);
 	}		
 		
 	@Test
@@ -74,23 +76,23 @@ public class TestDMatrix3 extends OdeTestCase {
 		
 		//test setIJ()
 		x.set00(1);
-		assertEquals(x.get00(), 1.);
+		assertEquals(x.get00(), 1., 0);
 		x.set01(2);
-		assertEquals(x.get01(), 2.);
+		assertEquals(x.get01(), 2., 0);
 		x.set02(3);
-		assertEquals(x.get02(), 3.);
+		assertEquals(x.get02(), 3., 0);
 		x.set10(4);
-		assertEquals(x.get10(), 4.);
+		assertEquals(x.get10(), 4., 0);
 		x.set11(5);
-		assertEquals(x.get11(), 5.);
+		assertEquals(x.get11(), 5., 0);
 		x.set12(6);
-		assertEquals(x.get12(), 6.);
+		assertEquals(x.get12(), 6., 0);
 		x.set20(7);
-		assertEquals(x.get20(), 7.);
+		assertEquals(x.get20(), 7., 0);
 		x.set21(8);
-		assertEquals(x.get21(), 8.);
+		assertEquals(x.get21(), 8., 0);
 		x.set22(9);
-		assertEquals(x.get22(), 9.);
+		assertEquals(x.get22(), 9., 0);
 		assertEquals(x, x2);
 		
 		//test set(i, j)
@@ -98,7 +100,7 @@ public class TestDMatrix3 extends OdeTestCase {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				x.set(i, j, 1 + j + 3*i);
-				assertEquals(x.get(i, j), 1 + j + 3*i);
+				assertEquals(x.get(i, j), 1 + j + 3*i, 0);
 			}
 		}
 		assertEquals(x, x2);
@@ -136,8 +138,8 @@ public class TestDMatrix3 extends OdeTestCase {
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				assertEquals(y.get(i, j), 0);
-				assertEquals(z.get(i, j), 1 + j + 3*i);
+				assertEquals(y.get(i, j), 0, 0);
+				assertEquals(z.get(i, j), 1 + j + 3*i, 0);
 			}
 		}
 	}		
@@ -230,54 +232,53 @@ public class TestDMatrix3 extends OdeTestCase {
 		DVector3ColView c0 = t.viewCol(0);
 		DVector3ColView c1 = t.viewCol(1);
 		DVector3ColView c2 = t.viewCol(2);
-		assertEquals(new DVector3(1, 4, 7), c0);
-		assertEquals(new DVector3(2, 5, 8), c1);
-		assertEquals(new DVector3(3, 6, 9), c2);
+		OdeTestUtil.assertEquals(new DVector3(1, 4, 7), c0);
+		OdeTestUtil.assertEquals(new DVector3(2, 5, 8), c1);
+		OdeTestUtil.assertEquals(new DVector3(3, 6, 9), c2);
 		t.set(0, 0, -1);
 		t.set(1, 1, -5);
 		t.set(2, 2, -9);
-		assertEquals(new DVector3(-1, 4, 7), c0);
-		assertEquals(new DVector3(2, -5, 8), c1);
-		assertEquals(new DVector3(3, 6, -9), c2);
+		OdeTestUtil.assertEquals(new DVector3(-1, 4, 7), c0);
+		OdeTestUtil.assertEquals(new DVector3(2, -5, 8), c1);
+		OdeTestUtil.assertEquals(new DVector3(3, 6, -9), c2);
 
 		//Row view
 		t = newM3();
 		DVector3RowTView r0 = t.viewRowT(0);
 		DVector3RowTView r1 = t.viewRowT(1);
 		DVector3RowTView r2 = t.viewRowT(2);
-		assertEquals(new DVector3(1, 2, 3), r0);
-		assertEquals(new DVector3(4, 5, 6), r1);
-		assertEquals(new DVector3(7, 8, 9), r2);
+		OdeTestUtil.assertEquals(new DVector3(1, 2, 3), r0);
+		OdeTestUtil.assertEquals(new DVector3(4, 5, 6), r1);
+		OdeTestUtil.assertEquals(new DVector3(7, 8, 9), r2);
 		t.set(0, 0, -1);
 		t.set(1, 1, -5);
 		t.set(2, 2, -9);
-		assertEquals(new DVector3(-1, 2, 3), r0);
-		assertEquals(new DVector3(4, -5, 6), r1);
-		assertEquals(new DVector3(7, 8, -9), r2);
+		OdeTestUtil.assertEquals(new DVector3(-1, 2, 3), r0);
+		OdeTestUtil.assertEquals(new DVector3(4, -5, 6), r1);
+		OdeTestUtil.assertEquals(new DVector3(7, 8, -9), r2);
 
 		//column clone
 		t = newM3();
 		DVector3 v0 = t.columnAsNewVector(0);
 		DVector3 v1 = t.columnAsNewVector(1);
 		DVector3 v2 = t.columnAsNewVector(2);
-		assertEquals(new DVector3(1, 4, 7), v0);
-		assertEquals(new DVector3(2, 5, 8), v1);
-		assertEquals(new DVector3(3, 6, 9), v2);
+		OdeTestUtil.assertEquals(new DVector3(1, 4, 7), v0);
+		OdeTestUtil.assertEquals(new DVector3(2, 5, 8), v1);
+		OdeTestUtil.assertEquals(new DVector3(3, 6, 9), v2);
 		//check changing the matrix
 		t.set(0, 0, -1);
 		t.set(1, 1, -5);
 		t.set(2, 2, -9);
 		//Check that Vectors did not change
-		assertEquals(new DVector3(1, 4, 7), v0);
-		assertEquals(new DVector3(2, 5, 8), v1);
-		assertEquals(new DVector3(3, 6, 9), v2);
+		OdeTestUtil.assertEquals(new DVector3(1, 4, 7), v0);
+		OdeTestUtil.assertEquals(new DVector3(2, 5, 8), v1);
+		OdeTestUtil.assertEquals(new DVector3(3, 6, 9), v2);
 		//check changing the vectors
 		v0.setZero();
 		v1.setZero();
 		v2.setZero();
 		//Check that Matrix did not change
-		assertEquals(new DMatrix3(-1, 2, 3, 4, -5, 6, 7, 8, -9), t);
-		
+		OdeTestUtil.assertEquals(new DMatrix3(-1, 2, 3, 4, -5, 6, 7, 8, -9), t);
 	}
 		
 	@Test
@@ -368,15 +369,15 @@ public class TestDMatrix3 extends OdeTestCase {
 		// ************ check dotCol ************
 		d = m.dotCol(0, y);
 		ex = 21*31 + 24*32 + 27*33;
-		assertEquals(ex, d);
+		assertEquals(ex, d, eps);
 		
 		d = m.dotCol(1, y);
 		ex = 22*31 + 25*32 + 28*33;
-		assertEquals(ex, d);
+		assertEquals(ex, d, eps);
 		
 		d = m.dotCol(2, y);
 		ex = 23*31 + 26*32 + 29*33;
-		assertEquals(ex, d);
+		assertEquals(ex, d, eps);
 		
 		try {
 			d = m.dotCol(-1, y);
@@ -394,15 +395,15 @@ public class TestDMatrix3 extends OdeTestCase {
 		// ************ check dotRow Vector ************
 		d = m.dotRow(0, y);
 		ex = 21*31 + 22*32 + 23*33;
-		assertEquals(ex, d);
+		assertEquals(ex, d, eps);
 		
 		d = m.dotRow(1, y);
 		ex = 24*31 + 25*32 + 26*33;
-		assertEquals(ex, d);
+		assertEquals(ex, d, eps);
 		
 		d = m.dotRow(2, y);
 		ex = 27*31 + 28*32 + 29*33;
-		assertEquals(ex, d);
+		assertEquals(ex, d, eps);
 		
 		try {
 			d = m.dotRow(-1, y);
@@ -422,15 +423,15 @@ public class TestDMatrix3 extends OdeTestCase {
 		// ************ check dotRow Array ************
 		d = m.dotRow(0, da, 2);
 		ex = 21*71 + 22*72 + 23*73;
-		assertEquals(ex, d);
+		assertEquals(ex, d, eps);
 		
 		d = m.dotRow(1, da, 2);
 		ex = 24*71 + 25*72 + 26*73;
-		assertEquals(ex, d);
+		assertEquals(ex, d, eps);
 		
 		d = m.dotRow(2, da, 2);
 		ex = 27*71 + 28*72 + 29*73;
-		assertEquals(ex, d);
+		assertEquals(ex, d, eps);
 		
 		try {
 			d = m.dotRow(-1, da, 2);
@@ -471,7 +472,7 @@ public class TestDMatrix3 extends OdeTestCase {
 			for (int j = 0; j < 3; j++) {
 				d = m.dotColCol(i, m2, j);
 				ex = m.get(0, i)*m2.get(0, j) + m.get(1, i)*m2.get(1, j) + m.get(2, i)*m2.get(2, j);
-				assertEquals(ex, d);
+				assertEquals(ex, d, 0);
 			}
 		}
 		try {
@@ -505,7 +506,7 @@ public class TestDMatrix3 extends OdeTestCase {
 			for (int j = 0; j < 3; j++) {
 				d = m.dotRowCol(i, m2, j);
 				ex = m.get(i,0)*m2.get(0,j) + m.get(i,1)*m2.get(1,j) + m.get(i,2)*m2.get(2,j);
-				assertEquals(ex, d);
+				assertEquals(ex, d, 0);
 			}
 		}
 		try {
@@ -539,7 +540,7 @@ public class TestDMatrix3 extends OdeTestCase {
 			for (int j = 0; j < 3; j++) {
 				d = m.dotRowRow(i, m2, j);
 				ex = m.get(i,0)*m2.get(j,0) + m.get(i,1)*m2.get(j,1) + m.get(i,2)*m2.get(j,2);
-				assertEquals(ex, d);
+				assertEquals(ex, d, 0);
 			}
 		}
 		try {

@@ -26,6 +26,7 @@ Check:
 
 0.5.0 (unreleased)
 =====
+- Cleaned up Junit 3 style tests. [#104](https://github.com/tzaeschke/ode4j/pull/104)
 - Moved tests into core/core-cpp. [#103](https://github.com/tzaeschke/ode4j/pull/103)
 - Cleaned up unit test output. [#102](https://github.com/tzaeschke/ode4j/pull/102)
 - Fix maven warnings of type "Use Import/Export Package directive -split-package [...]"

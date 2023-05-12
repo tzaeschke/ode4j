@@ -19,39 +19,22 @@
  * LICENSE.TXT and ODE4J-LICENSE-BSD.TXT for more details.               *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.tests.bugs;
+package org.ode4j.ode.old;
 
 
-import org.ode4j.ode.DBallJoint;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DJointGroup;
-import org.ode4j.ode.DMass;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.DSphere;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeHelper;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.ode4j.ode.*;
 
 /**
  * Test harness for bugs specific ode4j.
  *
  * @author Tilmann Zaeschke
  */
-public class BugsTest extends TestCase {
-
-    /**
-     * @param name the name
-     */
-    public BugsTest(String name) {
-        super(name);
-    }
-
+public class BugsTest {
 
     /**
      */
+	@Test
     public void testBodyDampening() {
     	int NUM = 10;			/* number of boxes */
     	double SIDE = (0.2);		/* side length of a box */
@@ -113,12 +96,4 @@ public class BugsTest extends TestCase {
 		world.destroy();
 //		OdeHelper.closeODE();
     }
-
-    
-    /**
-     * @return A new test suite.
-     */
-    public static Test suite() {
-        return new TestSuite(BugsTest.class);
-      }
 }

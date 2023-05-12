@@ -15,13 +15,12 @@
  *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the License for more information.
  */
-package org.ode4j.tests.libccd;
+package org.ode4j.libccd;
 
 import static org.ode4j.ode.internal.libccd.CCD.*;
 import static org.ode4j.ode.internal.libccd.CCDMPR.*;
 import static org.ode4j.ode.internal.libccd.CCDQuat.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
-import static org.ode4j.tests.libccd.CCDTestSupport.*;
 
 import org.junit.Assert;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
@@ -66,8 +65,8 @@ public class CCDTestBench2 {
 		System.out.println("CCDBench.boxbox(): ");
 
 	    ccd_t ccd = new ccd_t();
-	    ccd_box_t box1 = CCD_BOX();
-	    ccd_box_t box2 = CCD_BOX();
+	    CCDTestSupport.ccd_box_t box1 = CCDTestSupport.CCD_BOX();
+	    CCDTestSupport.ccd_box_t box2 = CCDTestSupport.CCD_BOX();
 	    ccd_vec3_t axis = new ccd_vec3_t();
 	    ccd_quat_t rot = new ccd_quat_t();
 
@@ -79,10 +78,10 @@ public class CCDTestBench2 {
 	    bench_num = 1;
 
 	    CCD_INIT(ccd);
-	    ccd.support1 = ccdSupport;
-	    ccd.support2 = ccdSupport;
-	    ccd.center1 = ccdObjCenter;
-	    ccd.center2 = ccdObjCenter;
+	    ccd.support1 = CCDTestSupport.ccdSupport;
+	    ccd.support2 = CCDTestSupport.ccdSupport;
+	    ccd.center1 = CCDTestSupport.ccdObjCenter;
+	    ccd.center2 = CCDTestSupport.ccdObjCenter;
 
 	    runBench(box1, box2, ccd);
 	    runBench(box2, box1, ccd);
@@ -159,8 +158,8 @@ public class CCDTestBench2 {
 		System.out.println("CCDBench.cylcyl(): ");
 
 	    ccd_t ccd = new ccd_t();
-	    ccd_cyl_t cyl1 = CCD_CYL();
-	    ccd_cyl_t cyl2 = CCD_CYL();
+	    CCDTestSupport.ccd_cyl_t cyl1 = CCDTestSupport.CCD_CYL();
+	    CCDTestSupport.ccd_cyl_t cyl2 = CCDTestSupport.CCD_CYL();
 	    ccd_vec3_t axis = new ccd_vec3_t();
 
 	    cyl1.radius = 0.35;
@@ -169,10 +168,10 @@ public class CCDTestBench2 {
 	    cyl2.height = 1.;
 
 	    CCD_INIT(ccd);
-	    ccd.support1 = ccdSupport;
-	    ccd.support2 = ccdSupport;
-	    ccd.center1 = ccdObjCenter;
-	    ccd.center2 = ccdObjCenter;
+	    ccd.support1 = CCDTestSupport.ccdSupport;
+	    ccd.support2 = CCDTestSupport.ccdSupport;
+	    ccd.center1 = CCDTestSupport.ccdObjCenter;
+	    ccd.center2 = CCDTestSupport.ccdObjCenter;
 
 	    runBench(cyl1, cyl2, ccd);
 	    runBench(cyl2, cyl1, ccd);
@@ -215,8 +214,8 @@ public class CCDTestBench2 {
 		System.out.println("CCDBench.boxcyl(): ");
 
 	    ccd_t ccd = new ccd_t();
-	    ccd_box_t box = CCD_BOX();
-	    ccd_cyl_t cyl = CCD_CYL();
+	    CCDTestSupport.ccd_box_t box = CCDTestSupport.CCD_BOX();
+	    CCDTestSupport.ccd_cyl_t cyl = CCDTestSupport.CCD_CYL();
 	    ccd_vec3_t axis = new ccd_vec3_t();
 
 	    box.x = 0.5;
@@ -226,10 +225,10 @@ public class CCDTestBench2 {
 	    cyl.height = 0.7;
 
 	    CCD_INIT(ccd);
-	    ccd.support1 = ccdSupport;
-	    ccd.support2 = ccdSupport;
-	    ccd.center1 = ccdObjCenter;
-	    ccd.center2 = ccdObjCenter;
+	    ccd.support1 = CCDTestSupport.ccdSupport;
+	    ccd.support2 = CCDTestSupport.ccdSupport;
+	    ccd.center1 = CCDTestSupport.ccdObjCenter;
+	    ccd.center2 = CCDTestSupport.ccdObjCenter;
 
 	    runBench(box, cyl, ccd);
 	    runBench(cyl, box, ccd);

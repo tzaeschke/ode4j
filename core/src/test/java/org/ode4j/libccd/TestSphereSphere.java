@@ -15,17 +15,15 @@
  *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the License for more information.
  */
-package org.ode4j.tests.libccd;
+package org.ode4j.libccd;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.ode4j.tests.libccd.CCDTestSupport.ccd_sphere_t;
 
 import static org.junit.Assert.*;
 import static org.ode4j.ode.internal.libccd.CCD.*;
 import static org.ode4j.ode.internal.libccd.CCDVec3.*;
-import static org.ode4j.tests.libccd.CCDTestSupport.*;
 
 public class TestSphereSphere {
 
@@ -43,14 +41,14 @@ public class TestSphereSphere {
 	public void spheresphereAlignedX()
 	{
 	    ccd_t ccd = new ccd_t();
-	    ccd_sphere_t s1 = CCD_SPHERE();
-	    ccd_sphere_t s2 = CCD_SPHERE();
+	    CCDTestSupport.ccd_sphere_t s1 = CCDTestSupport.CCD_SPHERE();
+	    CCDTestSupport.ccd_sphere_t s2 = CCDTestSupport.CCD_SPHERE();
 	    int i;
 	    boolean res;
 
 	    CCD_INIT(ccd);
-	    ccd.support1 = ccdSupport;
-	    ccd.support2 = ccdSupport;
+	    ccd.support1 = CCDTestSupport.ccdSupport;
+	    ccd.support2 = CCDTestSupport.ccdSupport;
 
 	    s1.radius = 0.35;
 	    s2.radius = .5;
@@ -73,14 +71,14 @@ public class TestSphereSphere {
 	public void spheresphereAlignedY()
 	{
 	    ccd_t ccd = new ccd_t();
-	    ccd_sphere_t s1 = CCD_SPHERE();
-	    ccd_sphere_t s2 = CCD_SPHERE();
+	    CCDTestSupport.ccd_sphere_t s1 = CCDTestSupport.CCD_SPHERE();
+	    CCDTestSupport.ccd_sphere_t s2 = CCDTestSupport.CCD_SPHERE();
 	    int i;
 	    boolean res;
 
 	    CCD_INIT(ccd);
-	    ccd.support1 = ccdSupport;
-	    ccd.support2 = ccdSupport;
+	    ccd.support1 = CCDTestSupport.ccdSupport;
+	    ccd.support2 = CCDTestSupport.ccdSupport;
 
 	    s1.radius = 0.35;
 	    s2.radius = .5;
@@ -103,14 +101,14 @@ public class TestSphereSphere {
 	public void spheresphereAlignedZ()
 	{
 	    ccd_t ccd = new ccd_t();
-	    ccd_sphere_t s1 = CCD_SPHERE();
-	    ccd_sphere_t s2 = CCD_SPHERE();
+	    CCDTestSupport.ccd_sphere_t s1 = CCDTestSupport.CCD_SPHERE();
+	    CCDTestSupport.ccd_sphere_t s2 = CCDTestSupport.CCD_SPHERE();
 	    int i;
 	    boolean res;
 
 	    CCD_INIT(ccd);
-	    ccd.support1 = ccdSupport;
-	    ccd.support2 = ccdSupport;
+	    ccd.support1 = CCDTestSupport.ccdSupport;
+	    ccd.support2 = CCDTestSupport.ccdSupport;
 
 	    s1.radius = 0.35;
 	    s2.radius = .5;
