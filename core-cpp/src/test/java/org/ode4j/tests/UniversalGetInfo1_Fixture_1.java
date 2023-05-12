@@ -252,7 +252,7 @@ public class UniversalGetInfo1_Fixture_1  {
 		//
 		//
 		 */
-		DMatrix3 R = new DMatrix3();;
+		DMatrix3 R = new DMatrix3();
 
 		dJointSetUniversalParam(jId, dParamLoStop, -M_PI/4.0);
 		dJointSetUniversalParam(jId, dParamHiStop,  M_PI/4.0);

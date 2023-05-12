@@ -26,10 +26,6 @@ import org.ode4j.math.DQuaternion;
 
 public class TestDQuaternion extends OdeTestCase {
 
-	@Test public void main() {
-		
-	}
-	
 	@Test
 	public void testGet(){
 		DQuaternion x = new DQuaternion(1, 2, 3, 4);

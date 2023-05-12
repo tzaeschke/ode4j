@@ -69,7 +69,7 @@ class DxJointAMotor
 			body.destroy();
 			world.destroy();
 		}
-	};
+	}
 
 
 	static class FixtureXUser extends FixtureBase {
@@ -87,7 +87,7 @@ class DxJointAMotor
 			dJointSetAMotorParam(joint, dParamVel2, 0);
 			dJointSetAMotorParam(joint, dParamFMax2, OdeConstants.dInfinity);
 		}
-	};
+	}
 
 	static class FixtureXEuler extends FixtureBase {
 		FixtureXEuler()

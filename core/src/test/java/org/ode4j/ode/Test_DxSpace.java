@@ -2,13 +2,7 @@ package org.ode4j.ode;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DCapsule;
-import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DSimpleSpace;
-import org.ode4j.ode.DSphere;
-import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.DxGeom;
 
 import static org.junit.Assert.*;

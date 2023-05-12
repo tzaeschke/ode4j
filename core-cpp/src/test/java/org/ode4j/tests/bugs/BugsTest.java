@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
 public class BugsTest extends TestCase {
 
     /**
-     * @param name
+     * @param name the name
      */
     public BugsTest(String name) {
         super(name);

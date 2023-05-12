@@ -1,9 +1,6 @@
 package org.ode4j.ode;
 
 import org.junit.Test;
-import org.ode4j.ode.DAMotorJoint;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeHelper;
 
 public class TestIssue0017_NpeInSetTorques {
 

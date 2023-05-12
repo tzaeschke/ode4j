@@ -28,10 +28,6 @@ import org.ode4j.ode.OdeMath;
 
 public class TestDVector3 extends OdeTestCase {
 
-	@Test public void main() {
-		
-	}
-	
 	@Test
 	public void testGet(){
 		DVector3 x = new DVector3(1, 2, 3);

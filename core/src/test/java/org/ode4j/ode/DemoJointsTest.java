@@ -29,7 +29,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ode4j.math.*;
-import org.ode4j.ode.*;
 import org.ode4j.ode.DAMotorJoint.AMotorMode;
 
 import static org.ode4j.ode.OdeMath.*;

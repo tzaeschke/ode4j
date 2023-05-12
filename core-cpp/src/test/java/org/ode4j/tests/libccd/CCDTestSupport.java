@@ -42,26 +42,26 @@ public class CCDTestSupport {
 	    int type;
 	    final ccd_vec3_t pos = new ccd_vec3_t();
 	    final ccd_quat_t quat = new ccd_quat_t();
-	};
+	}
 	//typedef struct _ccd_obj_t ccd_obj_t;
 
 	static final class ccd_box_t extends ccd_obj_t {
 	    //__CCD_OBJ__
 	    double x, y, z; //!< Lengths of box's edges
-	};
+	}
 	//typedef struct _ccd_box_t ccd_box_t;
 
 	static final class ccd_sphere_t extends ccd_obj_t {
 	    //__CCD_OBJ__
 	    double radius;
-	};
+	}
 	//typedef struct _ccd_sphere_t ccd_sphere_t;
 
 	static final class ccd_cyl_t extends ccd_obj_t {
 	    //__CCD_OBJ__
 	    double radius;
 	    double height;
-	};
+	}
 	//typedef struct _ccd_cyl_t ccd_cyl_t;
 
 

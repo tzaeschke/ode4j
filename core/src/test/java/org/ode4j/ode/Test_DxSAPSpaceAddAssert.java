@@ -1,11 +1,7 @@
 package org.ode4j.ode;
 
 import org.junit.Test;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DSapSpace.AXES;
 
 public class Test_DxSAPSpaceAddAssert {

@@ -41,11 +41,8 @@ import static org.junit.Assert.*;
  */
 public class OdeMathTZ {
 
-	@Test public void main() {
-		//TODO !?!?!?!
-		//		TEST();
-		//	}
-		//	
+	@Test
+	public void test_dNormalization3() {
 		//TEST(test_dNormalization3)
 		//{
 		DVector3C x = new DVector3(1,0,0);

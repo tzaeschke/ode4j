@@ -29,10 +29,6 @@ import org.ode4j.math.DMatrix3.DVector3RowTView;
 
 public class TestDMatrix3 extends OdeTestCase {
 
-	@Test public void main() {
-		
-	}
-	
 	@Test
 	public void testGet(){
 		DMatrix3 x = newM3();

@@ -27,11 +27,6 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DSphere;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeHelper;
 
 /**
  * 

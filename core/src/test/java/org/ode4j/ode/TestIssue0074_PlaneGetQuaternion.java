@@ -23,9 +23,6 @@
 package org.ode4j.ode;
 
 import org.junit.Test;
-import org.ode4j.ode.DPlane;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.OdeHelper;
 
 import static org.junit.Assert.*;
 

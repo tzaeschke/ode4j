@@ -27,18 +27,11 @@ package org.ode4j.tests.joints;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DQuaternionC;
-import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
 import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 import static org.ode4j.cpp.internal.ApiCppBody.*;
-import static org.ode4j.cpp.internal.ApiCppJoint.*;
 import static org.ode4j.cpp.internal.ApiCppWorld.*;
-import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
-import static org.ode4j.ode.OdeMath.dNormalize3;
 import static org.ode4j.ode.internal.Common.dSqrt;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_EQUAL;

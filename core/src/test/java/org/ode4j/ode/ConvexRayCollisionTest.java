@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.ode4j.math.DMatrix3;
-import org.ode4j.ode.DContactGeomBuffer;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.DxRay;
 
 public class ConvexRayCollisionTest {

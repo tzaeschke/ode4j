@@ -31,19 +31,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DContact;
-import org.ode4j.ode.DContactBuffer;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJoint;
-import org.ode4j.ode.DJointGroup;
-import org.ode4j.ode.DMass;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.DSphere;
-import org.ode4j.ode.DTriMeshData;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeHelper;
 
 public class TestIssue0008_Gimpact {
 
