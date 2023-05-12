@@ -12,7 +12,9 @@ TODO for 0.5.0
   - [WARNING] bootstrap class path not set in conjunction with -source 8
     when using: mvn clean install -P on-jdk-9-plus
 - CI: Fail build on warning?!
-- CI: remove "temurin"...?!
+- What is the deal with DJoint PARAM vs PARAM_N?
+  ODE doesn´t have PARAM_N (e.g. dParamBounce1)! -> ode4j shouldn´;t have them either...
+  Remove (deprecate) and replace with PARAM, or at least document what is goigh on!
 
 --> See TODO.txt
 
@@ -22,6 +24,7 @@ Check:
 
 0.5.0 (unreleased)
 =====
+- Cleaned up unit test output. [#102](https://github.com/tzaeschke/ode4j/pull/102)
 - Fix maven warnings of type "Use Import/Export Package directive -split-package [...]"
   [#101](https://github.com/tzaeschke/ode4j/pull/101)
 - Port updates until 0.16.3. [#100](https://github.com/tzaeschke/ode4j/pull/100)
