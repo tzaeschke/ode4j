@@ -224,7 +224,7 @@ public abstract class DxTriMeshData extends DxTriDataBase implements DTriMeshDat
 
             final int numTris = retrieveTriangleCount();
             final int numVertices = retrieveVertexCount();
-            int numEdges = (int) numTris * dMTV__MAX;
+            int numEdges = numTris * dMTV__MAX;
             dIASSERT(numVertices <= numEdges); // Edge records are going to be used for vertex data as well
 
             //            final int recordsMemoryRequired = dEFFICIENT_SIZE(numEdges * sizeof(EdgeRecord));

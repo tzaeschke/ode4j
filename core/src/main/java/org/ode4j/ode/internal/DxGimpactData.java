@@ -372,7 +372,7 @@ public class DxGimpactData extends DxTriMeshData {
 	 * This may e.g. be called from build().
 	 */
 	public void check() {
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({"unchecked"})
 		ArrayList<Integer>[] edges = new ArrayList[getDataRef().length/3];  // n = number of vertices
 		System.out.print("Checking Trimesh (size " + edges.length + " ) ...");
 		for (int i = 0; i < edges.length; i++) edges[i] = new ArrayList<>();

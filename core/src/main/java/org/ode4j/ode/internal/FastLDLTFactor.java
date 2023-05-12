@@ -273,7 +273,7 @@ public class FastLDLTFactor {
 
                 p1 = ARow[ptrAElement + -4];
                 p2 = ARow[ptrAElement + -4 + rowSkip];
-                dd = d[ptrDElement + -4 * (int) d_stride];
+                dd = d[ptrDElement + -4 * d_stride];
                 q1 = p1 * dd;
                 q2 = p2 * dd;
                 ARow[ptrAElement + -4] = q1;
@@ -284,7 +284,7 @@ public class FastLDLTFactor {
 
                 p1 = ARow[ptrAElement + -3];
                 p2 = ARow[ptrAElement + -3 + rowSkip];
-                dd = d[ptrDElement + -3 * (int) d_stride];
+                dd = d[ptrDElement + -3 * d_stride];
                 q1 = p1 * dd;
                 q2 = p2 * dd;
                 ARow[ptrAElement + -3] = q1;
@@ -295,7 +295,7 @@ public class FastLDLTFactor {
 
                 p1 = ARow[ptrAElement + -2];
                 p2 = ARow[ptrAElement + -2 + rowSkip];
-                dd = d[ptrDElement + -2 * (int) d_stride];
+                dd = d[ptrDElement + -2 * d_stride];
                 q1 = p1 * dd;
                 q2 = p2 * dd;
                 ARow[ptrAElement + -2] = q1;
@@ -306,7 +306,7 @@ public class FastLDLTFactor {
 
                 p1 = ARow[ptrAElement + -1];
                 p2 = ARow[ptrAElement + -1 + rowSkip];
-                dd = d[ptrDElement + -1 * (int) d_stride];
+                dd = d[ptrDElement + -1 * d_stride];
                 q1 = p1 * dd;
                 q2 = p2 * dd;
                 ARow[ptrAElement + -1] = q1;
@@ -521,8 +521,8 @@ public class FastLDLTFactor {
 
                 p1 = ARow[ptrAElement + -4];
                 p2 = ARow[ptrAElement + -3];
-                dd1 = d[ptrDElement + -4 * (int) d_stride];
-                dd2 = d[ptrDElement + -3 * (int) d_stride];
+                dd1 = d[ptrDElement + -4 * d_stride];
+                dd2 = d[ptrDElement + -3 * d_stride];
                 q1 = p1 * dd1;
                 q2 = p2 * dd2;
                 ARow[ptrAElement + -4] = q1;
@@ -532,8 +532,8 @@ public class FastLDLTFactor {
 
                 p1 = ARow[ptrAElement + -2];
                 p2 = ARow[ptrAElement + -1];
-                dd1 = d[ptrDElement + -2 * (int) d_stride];
-                dd2 = d[ptrDElement + -1 * (int) d_stride];
+                dd1 = d[ptrDElement + -2 * d_stride];
+                dd2 = d[ptrDElement + -1 * d_stride];
                 q1 = p1 * dd1;
                 q2 = p2 * dd2;
                 ARow[ptrAElement + -2] = q1;

@@ -355,8 +355,8 @@ public class FastLSolve {
                         /* load p and q values */
                         p1 = L[ptrLElement + -8];
                         p2 = L[ptrLElement + -7];
-                        q1 = B[ptrBElement + -8 * (int)b_stride];
-                        q2 = B[ptrBElement + -7 * (int)b_stride];
+                        q1 = B[ptrBElement + -8 * b_stride];
+                        q2 = B[ptrBElement + -7 * b_stride];
 
                         /* compute outer product and add it to the Z matrix */
                         Z11 += p1 * q1;
@@ -365,8 +365,8 @@ public class FastLSolve {
                         /* load p and q values */
                         p1 = L[ptrLElement + -6];
                         p2 = L[ptrLElement + -5];
-                        q1 = B[ptrBElement + -6 * (int)b_stride];
-                        q2 = B[ptrBElement + -5 * (int)b_stride];
+                        q1 = B[ptrBElement + -6 * b_stride];
+                        q2 = B[ptrBElement + -5 * b_stride];
 
                         /* compute outer product and add it to the Z matrix */
                         Z11 += p1 * q1;
@@ -375,8 +375,8 @@ public class FastLSolve {
                         /* load p and q values */
                         p1 = L[ptrLElement + -4];
                         p2 = L[ptrLElement + -3];
-                        q1 = B[ptrBElement + -4 * (int)b_stride];
-                        q2 = B[ptrBElement + -3 * (int)b_stride];
+                        q1 = B[ptrBElement + -4 * b_stride];
+                        q2 = B[ptrBElement + -3 * b_stride];
 
                         /* compute outer product and add it to the Z matrix */
                         Z11 += p1 * q1;
@@ -385,8 +385,8 @@ public class FastLSolve {
                         /* load p and q values */
                         p1 = L[ptrLElement + -2];
                         p2 = L[ptrLElement + -1];
-                        q1 = B[ptrBElement + -2 * (int)b_stride];
-                        q2 = B[ptrBElement + -1 * (int)b_stride];
+                        q1 = B[ptrBElement + -2 * b_stride];
+                        q2 = B[ptrBElement + -1 * b_stride];
 
                         /* compute outer product and add it to the Z matrix */
                         Z11 += p1 * q1;

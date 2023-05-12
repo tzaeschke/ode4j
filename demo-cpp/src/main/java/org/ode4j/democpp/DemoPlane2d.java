@@ -152,7 +152,7 @@ class DemoPlane2d extends dsFunctions {
 		contacts.get(0).surface.mode = 0;
 		contacts.get(0).surface.mu = 0; // frictionless
 
-		if (dCollide (o1, o2, 1, contacts.getGeomBuffer())!=0);//, sizeof (dContactGeom)))
+		if (dCollide (o1, o2, 1, contacts.getGeomBuffer())!=0)//, sizeof (dContactGeom)))
 		{
 			DJoint c = dJointCreateContact (dyn_world,
 					coll_contacts, contacts.get(0));

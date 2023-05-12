@@ -1265,7 +1265,7 @@ dmaxcallcountestimate_fn_t {
 				DxJoint joint = jointinfosA[jointinfosOfs + ji].joint;
 				joint.getInfo2(stepsizeRecip, worldERP, JME__MAX, J, JRowOfs + JME__J_MIN, J, JRowOfs + infom * JME__MAX + JME__J_MIN, RCE__RHS_CFM_MAX,
 						pairsRhsCfm, rowRhsCfmOfs, pairsLoHi, rowLoHiOfs, findex, findexRowOfs);
-				dSASSERT((int)LHE__LO_HI_MAX == RCE__RHS_CFM_MAX); // To make sure same step fits for both pairs in the call to dxJoint::getInfo2() above
+				dSASSERT(LHE__LO_HI_MAX == RCE__RHS_CFM_MAX); // To make sure same step fits for both pairs in the call to dxJoint::getInfo2() above
 
 				// findex iteration is compact and is not going to pollute caches - do it first
 				{

@@ -675,7 +675,7 @@ public class DxTriDataBase extends DBase {
             }
         } else {
             // If concave angles ate not stored, set an arbitrary negative value
-            faceAngle = -(double) M_PI;
+            faceAngle = -M_PI;
         }
 
         faceAngles.assignFacesAngleIntoStorage(currEdge0.m_triIdx, firstVertexStartIndex, faceAngle);
