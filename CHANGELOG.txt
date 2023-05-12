@@ -5,11 +5,6 @@ TODO for 0.5.0
 - Beautify CHANGELOG -> .md
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
 - Move to Google Java Code Style
-- Tests:
-  - Check commented out tests in surefire-plugin
-  - Remove Junit3-style Inheritance from/with OdeTestCase, e.g. TestDVector6
-  - Remove JUnit3 style stuff from BugTest etc
-
 - Fix maven warnings:
   - [WARNING] bootstrap class path not set in conjunction with -source 8
     when using: mvn clean install -P on-jdk-9-plus

@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.junit.Ignore;
 import org.ode4j.ode.internal.DDestructible;
 import org.ode4j.ode.internal.DxGeom;
 import org.ode4j.ode.internal.DxHashSpace;
@@ -64,6 +65,7 @@ import junit.framework.TestSuite;
  *
  * @author Tilmann Zaeschke
  */
+@Ignore // TZ This more of of a development tool than an actual test. It will probably never completely succeed.
 public class JavaMultiThreadTest extends TestCase {
 
     //The following two designate the package to test. 
