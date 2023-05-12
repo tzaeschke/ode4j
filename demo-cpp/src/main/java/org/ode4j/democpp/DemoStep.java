@@ -69,7 +69,7 @@ import org.ode4j.ode.OdeMath;
  * version, for various systems. currently you have to define COMPARE_METHODS
  * in step.cpp for this to work properly.
  *  
- * @@@ report MAX error
+ * report MAX error
  */
 class DemoStep extends dsFunctions {
 
