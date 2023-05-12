@@ -298,7 +298,7 @@ public class TestBoxBox {
 	    ccd_vec3_t sep = new ccd_vec3_t(), expsep = new ccd_vec3_t();
 	    ccd_vec3_t expsep2 = new ccd_vec3_t(), axis = new ccd_vec3_t();
 
-	    fprintf(stderr, "\n\n\n---- boxboxSeparate ----\n\n\n");
+	    // fprintf(stderr, "\n\n\n---- boxboxSeparate ----\n\n\n");
 
 	    box1.x = box1.y = box1.z = 1.;
 	    box2.x = 0.5;
@@ -391,7 +391,7 @@ public class TestBoxBox {
 	    RefDouble depth = new RefDouble();
 	    ccd_vec3_t dir = new ccd_vec3_t(), pos = new ccd_vec3_t();
 
-	    fprintf(stderr, "\n\n\n---- boxboxPenetration ----\n\n\n");
+	    // fprintf(stderr, "\n\n\n---- boxboxPenetration ----\n\n\n");
 
 	    box1.x = box1.y = box1.z = 1.;
 	    box2.x = 0.5;

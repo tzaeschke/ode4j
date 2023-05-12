@@ -174,7 +174,7 @@ class DemoStep extends dsFunctions {
 	
 	private void demo(String[] args) {
 		OdeHelper.initODE2(0);
-		dRandSetSeed (System.currentTimeMillis()/1000);
+		dRandSetSeed (0); // System.currentTimeMillis()/1000);
 		createTest();
 
 		// run simulation

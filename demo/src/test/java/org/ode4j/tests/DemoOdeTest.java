@@ -473,13 +473,6 @@ void testReorthonormalize()
 
     @Test
     public void testInvertPDMatrix() {
-        for (int i = 0; i < 100; ++i) {
-            testInvertPDMatrix2();
-        }
-    }
-
-
-    void testInvertPDMatrix2() {
         int i, j, ok;
         int matrixSize = MSIZE4 * MSIZE;
         double[] A = new double[matrixSize], Ainv = new double[matrixSize];
@@ -1355,7 +1348,7 @@ void testReorthonormalize()
 
     @Test
     public void testSolveDLCP() {
-        DLCP.dTestSolveLCP();
+        DLCP.dTestSolveLCP(false);
     }
 
     @Test

@@ -52,6 +52,7 @@ import static org.ode4j.ode.internal.ErrorHandler.dDebug;
  */
 public class DemoCollisionTest {
 
+    private static final boolean PRINT = false;
 
     //****************************************************************************
     // test infrastructure, including constants and macros
@@ -1211,7 +1212,10 @@ public class DemoCollisionTest {
         // second batch is run.
         for (int batch = 0; batch < 2; batch++) {
             int reps = (batch == 0) ? TEST_REPS1 : TEST_REPS2;
-            System.out.println("testing " + number + " " + function + " batch " + (batch + 1) + " (" + reps + " reps)...");
+            if (PRINT) {
+                System.out.println(
+                        "testing " + number + " " + function + " batch " + (batch + 1) + " (" + reps + " reps)...");
+            }
 
             // run tests
             for (int j = 0; j < reps; j++) {
@@ -1231,7 +1235,10 @@ public class DemoCollisionTest {
         for (int batch = 0; batch < 2; batch++) {
             int reps = (batch == 0) ? TEST_REPS1 : TEST_REPS2;
             total_reps += reps;
-            System.out.println("testing " + number + " " + function + " batch " + (batch + 1) + " (" + reps + " reps)...");
+            if (PRINT) {
+                System.out.println(
+                        "testing " + number + " " + function + " batch " + (batch + 1) + " (" + reps + " reps)...");
+            }
 
             // run tests
             for (int j = 0; j < reps; j++) {
@@ -1247,13 +1254,19 @@ public class DemoCollisionTest {
         }
 
         // print results
-        System.out.printf("%3d: %-30s: ", number, function);
+        if (PRINT) {
+            System.out.printf("%3d: %-30s: ", number, function);
+        }
         if (failcount > 0) {
             double failure_ratio = (double) failcount / (double) total_reps;
-            System.out.printf("FAILED (%.2f%%) at line %s\n", failure_ratio * 100.0, last_failed_line);
+            if (PRINT) {
+                System.out.printf("FAILED (%.2f%%) at line %s\n", failure_ratio * 100.0, last_failed_line);
+            }
             assertTrue(failure_ratio < max_failure_ratio);
         } else {
-            System.out.println("ok");
+            if (PRINT) {
+                System.out.println("ok");
+            }
         }
     }
 

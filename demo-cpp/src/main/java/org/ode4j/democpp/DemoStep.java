@@ -214,7 +214,7 @@ class DemoStep extends dsFunctions {
 
 		dInitODE2(0);
 		//dRandSetSeed (time(null).seconds);
-		dRandSetSeed (System.currentTimeMillis()/1000);
+		dRandSetSeed (0 ); // System.currentTimeMillis()/1000);
 		createTest();
 
 		// run simulation

@@ -297,7 +297,7 @@ class DemoI extends dsFunctions {
 		//fn.setPathToTextures(DrawStuff.DRAWSTUFF_TEXTURE_PATH);
 
 		dInitODE2(0);
-		dRandSetSeed (System.currentTimeMillis());
+		dRandSetSeed (0); // System.currentTimeMillis());
 		reset_test();
 
 		// run simulation

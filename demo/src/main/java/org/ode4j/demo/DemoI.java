@@ -239,7 +239,7 @@ class DemoI extends dsFunctions {
 	
 	private void demo(String[] args) {
 		OdeHelper.initODE2(0);
-		dRandSetSeed (System.currentTimeMillis());
+		dRandSetSeed (0); // System.currentTimeMillis());
 		reset_test();
 
 		// run simulation
