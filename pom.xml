@@ -228,9 +228,9 @@
 						</includes>
 						<excludes>
 							<!-- exclude tests that currently fail -->
-							<exclude>**/tests/JavaMultiThreadTest.java</exclude>
+							<exclude>**/JavaMultiThreadTest.java</exclude>
 							<exclude>**/tests/CollisionTest.java</exclude>
-							<exclude>**/tests/TestIssue0018_NpeInQuickstep.java</exclude>
+							<exclude>**/TestIssue0018_NpeInQuickstep.java</exclude>
 						</excludes>
 					</configuration>
 				</plugin>
