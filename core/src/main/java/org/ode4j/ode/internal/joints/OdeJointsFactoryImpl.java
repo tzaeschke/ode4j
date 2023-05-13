@@ -438,7 +438,8 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 	}
 
 
-	public boolean _dAreConnectedExcluding (DBody b1, DBody b2, Class<? extends DJoint> [] jointType)
+	@SafeVarargs
+	public final boolean _dAreConnectedExcluding(DBody b1, DBody b2, Class<? extends DJoint>... jointTypes)
 	{
 		//dAASSERT (b1!=null);// b2 can be null
 		// look through b1's neighbour list for b2
@@ -446,7 +447,7 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 			if ( n.body == b2) {
 				boolean found = false;
 				Class<?> clsJoint = n.joint.getClass();
-				for (Class<?> cls: jointType) {
+				for (Class<?> cls: jointTypes) {
 					if ( cls == clsJoint )  {
 						found = true;
 						break;

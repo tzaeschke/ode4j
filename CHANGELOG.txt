@@ -18,6 +18,11 @@ TODO for 0.5.0
 Check:
 - Demo -> Test?  E.g. DemoI? DemoSpace(-Stress)? DemoStep? ....
 
+DxHeightfield.tempPlaneBuffer should probably just be a simple array. ALso check tempHeightBuffer.
+   DxTrimeshHeightfield.tempHeightBuffer??
+   DxGimpactData.check().edges
+
+Fix ENABLE_CONTACT_SORTING / Issue #22
 
 0.5.0 (unreleased)
 =====

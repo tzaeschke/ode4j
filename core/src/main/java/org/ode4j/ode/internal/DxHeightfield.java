@@ -485,14 +485,14 @@ public class DxHeightfield extends DxAbstractHeightfield {
 	class HeightFieldVertex
 	{
 		//	public:
-		HeightFieldVertex(){};
+		// HeightFieldVertex(){};
 
 		DVector3 vertex = new DVector3();
 		//HeightFieldVertexCoords coords;
 		//int[] coords = new int[2]; //use c1 & c2 (TZ)
 		int coords0, coords1;
 		boolean state;
-	};
+	}
 
 	//TODO TZ not used
 //	private class HeightFieldEdge
@@ -507,13 +507,13 @@ public class DxHeightfield extends DxAbstractHeightfield {
 	private class HeightFieldTriangle
 	{
 		//public:
-		HeightFieldTriangle(){};
+		// HeightFieldTriangle(){};
 
 		void setMinMax()
 		{
 			maxAAAB = vertices[0].vertex.get1() > vertices[1].vertex.get1() ? vertices[0].vertex.get1() : vertices[1].vertex.get1();
 			maxAAAB = vertices[2].vertex.get1() > maxAAAB  ? vertices[2].vertex.get1() : maxAAAB;
-		};
+		}
 
 		//HeightFieldVertex   *vertices[3];
 		HeightFieldVertex[]   vertices = new HeightFieldVertex[3]; //TODO c1, c2, c3 (TZ)
@@ -524,7 +524,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 
 		boolean                isUp;
 		boolean                state;
-	};
+	}
 
 	private class HeightFieldPlane
 	{
@@ -540,7 +540,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 						maxAAAB = trianglelist[k].maxAAAB;
 				}
 			}
-		};
+		}
 
 		public void resetTriangleListSize(final int newSize)
 		{
@@ -573,7 +573,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		//double[]   planeDef = new double[4];
 		DVector3   planeDefV = new DVector3();
 		double planeDefD;
-	};
+	}
 
 
 
@@ -676,7 +676,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 				DContactGeomBuffer contacts) {
 			return collider.dCollideRTL((DxTriMesh)o2, (DxRay)o1, flags, contacts, 1);
 		}
-	};
+	}
 
 	//	int dxHeightfield::dCollideHeightfieldZone( final int minX, final int maxX, final int minZ, final int maxZ,
 	//            dxGeom* o2, final int numMaxContactsPossible,

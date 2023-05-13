@@ -26,7 +26,6 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.dIASSERT;
 
-import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 import java.util.ArrayList;
@@ -373,7 +372,7 @@ public class DxGimpactData extends DxTriMeshData {
 	 */
 	public void check() {
 		@SuppressWarnings({"unchecked"})
-		ArrayList<Integer>[] edges = new ArrayList[getDataRef().length/3];  // n = number of vertices
+		ArrayList<Integer>[] edges = (ArrayList<Integer>[]) new ArrayList<?>[getDataRef().length/3];  // n = number of vertices
 		System.out.print("Checking Trimesh (size " + edges.length + " ) ...");
 		for (int i = 0; i < edges.length; i++) edges[i] = new ArrayList<>();
 		int nE = 0;
