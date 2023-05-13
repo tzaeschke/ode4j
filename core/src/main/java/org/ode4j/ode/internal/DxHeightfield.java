@@ -43,7 +43,6 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DHeightfieldData;
-import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
@@ -175,15 +174,16 @@ public class DxHeightfield extends DxAbstractHeightfield {
 	//	    size_t              tempHeightBufferSizeX;
 	//	    size_t              tempHeightBufferSizeZ;
 	//private HeightFieldPlane[]    tempPlaneBuffer;
-	private ObjArray<HeightFieldPlane>[]  tempPlaneBuffer;
+	private HeightFieldPlane[]  tempPlaneBuffer;
 	private HeightFieldPlane[]    tempPlaneInstances;
 	private int              tempPlaneBufferSize;
 
 	private HeightFieldTriangle[] tempTriangleBuffer;
 	private int              tempTriangleBufferSize;
 
+	// TZ: Instead of pointers into tempHeightInstances[], we store indexes in tempHeightInstances[].
 	//private HeightFieldVertex[]  tempHeightBuffer;
-	private ObjArray<HeightFieldVertex>[]  tempHeightBuffer;
+	private int[]  tempHeightBuffer;
 	private HeightFieldVertex[]   tempHeightInstances;
 	private int              tempHeightBufferSizeX;
 	private int              tempHeightBufferSizeZ;
@@ -389,7 +389,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		int alignedNumTri = AlignBufferSize(numTri, TEMP_PLANE_BUFFER_ELEMENT_COUNT_ALIGNMENT);
 		tempPlaneBufferSize = alignedNumTri;
 		//tempPlaneBuffer = new HeightFieldPlane [alignedNumTri];
-		tempPlaneBuffer = new ObjArray[alignedNumTri];
+		tempPlaneBuffer = new HeightFieldPlane[alignedNumTri];
 		tempPlaneInstances = new HeightFieldPlane[alignedNumTri];
 		for (int indexTri = 0; indexTri != alignedNumTri; indexTri++)
 			tempPlaneInstances[indexTri] = new HeightFieldPlane();
@@ -399,7 +399,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		{
 			//tempPlaneBuffer[indexTri] = tempPlaneInstances[indexTri];//ptrPlaneMatrix;
 			//ptrPlaneMatrix += 1;
-			tempPlaneBuffer[indexTri] = new ObjArray<HeightFieldPlane>(tempPlaneInstances, indexTri);//ptrPlaneMatrix;
+			tempPlaneBuffer[indexTri] = tempPlaneInstances[indexTri];
 		}
 	}
 
@@ -419,7 +419,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		tempHeightBufferSizeX = alignedNumX;
 		tempHeightBufferSizeZ = alignedNumZ;
 		//tempHeightBuffer = new HeightFieldVertex *[alignedNumX];
-		tempHeightBuffer = new ObjArray[alignedNumX];
+		tempHeightBuffer = new int[alignedNumX];
 		int numCells = alignedNumX * alignedNumZ;
 		tempHeightInstances = new HeightFieldVertex [numCells];
 		for (int i = 0; i < tempHeightInstances.length; i++) {
@@ -431,8 +431,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		{
 			//			tempHeightBuffer[indexX] = ptrHeightMatrix;
 			//			ptrHeightMatrix += alignedNumZ;
-			//tempHeightBuffer[indexX] = tempHeightInstances[indexX];
-			tempHeightBuffer[indexX] = new ObjArray<HeightFieldVertex>(tempHeightInstances, indexX*alignedNumZ);
+			tempHeightBuffer[indexX] = indexX * alignedNumZ;
 		}
 	}
 
@@ -623,11 +622,11 @@ public class DxHeightfield extends DxAbstractHeightfield {
 			for (int i = 0; i < numPlanes - 1; i++)
 			{
 				//if they are in the wrong order
-				if (DescendingPlaneSort(tempPlaneBuffer[i].at0(), tempPlaneBuffer[i + 1].at0()))
+				if (DescendingPlaneSort(tempPlaneBuffer[i], tempPlaneBuffer[i + 1]))
 				{
 					//exchange them
 					//HeightFieldPlane * tempPlane = tempPlaneBuffer[i];
-					ObjArray<HeightFieldPlane> tempPlane = tempPlaneBuffer[i];
+					HeightFieldPlane tempPlane = tempPlaneBuffer[i];
 					tempPlaneBuffer[i] = tempPlaneBuffer[i + 1];
 					tempPlaneBuffer[i + 1] = tempPlane;
 
@@ -720,7 +719,8 @@ public class DxHeightfield extends DxAbstractHeightfield {
 				final double c_Xpos = Xpos;
 				//HeightFieldVertex HeightFieldRow = tempHeightBuffer[x_local];
 				//ObjArray<HeightFieldVertex> HeightFieldRow = new ObjArray<HeightFieldVertex>(tempHeightBuffer, x_local);
-				ObjArray<HeightFieldVertex> HeightFieldRow = tempHeightBuffer[x_local];
+				int posHeightFieldRow      = tempHeightBuffer[x_local];
+				//HeightFieldVertex HeightFieldRow = tempHeightBuffer[x_local];
 				for ( z = minZ, z_local = 0; z_local < numZ; z++, z_local++)
 				{
 					Ypos = z * cfSampleDepth; // Always calculate pos via multiplication to avoid computational error accumulation during multiple additions
@@ -729,9 +729,10 @@ public class DxHeightfield extends DxAbstractHeightfield {
 					//					HeightFieldRow.at(z_local).vertex[0] = c_Xpos;
 					//					HeightFieldRow.at(z_local).vertex[1] = h;
 					//					HeightFieldRow.at(z_local).vertex[2] = Ypos;
-					HeightFieldRow.at(z_local).vertex.set( c_Xpos, h, Ypos);
-					HeightFieldRow.at(z_local).coords0 = x;
-					HeightFieldRow.at(z_local).coords1 = z;
+					HeightFieldVertex HeightFieldRowZ = tempHeightInstances[posHeightFieldRow + z_local];
+					HeightFieldRowZ.vertex.set( c_Xpos, h, Ypos);
+					HeightFieldRowZ.coords0 = x;
+					HeightFieldRowZ.coords1 = z;
 
 					maxY = dMAX(maxY, h);
 					minY = dMIN(minY, h);
@@ -1033,31 +1034,25 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		{
 			//			HeightFieldVertex HeightFieldRow      = tempHeightBuffer[x_local];
 			//			HeightFieldVertex HeightFieldNextRow  = tempHeightBuffer[x_local + 1];
-//			int posHeightFieldRow      = x_local;
-//			int posHeightFieldNextRow  = x_local + 1;
-			ObjArray<HeightFieldVertex> HeightFieldRow      = tempHeightBuffer[x_local];
-			ObjArray<HeightFieldVertex> HeightFieldNextRow  = tempHeightBuffer[x_local + 1];
+			int posHeightFieldRow      = tempHeightBuffer[x_local];
+			int posHeightFieldNextRow  = tempHeightBuffer[x_local + 1];
 
 			// First A
 	        //C = &HeightFieldRow    [0];
-			//C = tempHeightBuffer[posHeightFieldRow];//    [0];
-			C = HeightFieldRow.at(0);
+			C = tempHeightInstances[posHeightFieldRow];//    [0];
 			// First B
 			//D = &HeightFieldNextRow[0];
-			//D = tempHeightBuffer[posHeightFieldNextRow];//[0];
-			D = HeightFieldNextRow.at(0);
+			D = tempHeightInstances[posHeightFieldNextRow];//[0];
 
 			for ( z_local = 0; z_local < maxZ_local; z_local++)
 			{
 				A = C;
 				B = D;
 
-//	            C = &HeightFieldRow    [z_local + 1];
-//	            D = &HeightFieldNextRow[z_local + 1];
-//				C = tempHeightBuffer[posHeightFieldRow  + z_local + 1];//  [z_local + 1];
-//				D = tempHeightBuffer[posHeightFieldNextRow + z_local + 1];//[z_local + 1];
-				C = HeightFieldRow.at(z_local + 1);//  [z_local + 1];
-				D = HeightFieldNextRow.at(z_local + 1);//[z_local + 1];
+				//	            C = &HeightFieldRow    [z_local + 1];
+				//	            D = &HeightFieldNextRow[z_local + 1];
+				C = tempHeightInstances[posHeightFieldRow  + z_local + 1];//  [z_local + 1];
+				D = tempHeightInstances[posHeightFieldNextRow + z_local + 1];//[z_local + 1];
 
 				final double AHeight = A.vertex.get1();
 				final double BHeight = B.vertex.get1();
@@ -1138,7 +1133,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 			//compute all triangles normals.
 			for (int k = 0; k < numTri; k++)
 			{
-				HeightFieldTriangle itTriangle = tempTriangleBuffer[k];  // final? TZ
+				HeightFieldTriangle itTriangle = tempTriangleBuffer[k];
 
 				// define 2 edges and a point that will define collision plane
 				//dVector3Subtract(itTriangle.vertices[2].vertex, itTriangle.vertices[0].vertex, Edge1);
@@ -1186,7 +1181,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 					continue;// already tested or added to plane list.
 
 				//HeightFieldPlane * const currPlane = tempPlaneBuffer[numPlanes];
-				HeightFieldPlane currPlane = tempPlaneBuffer[numPlanes].at0();// final ? TZ
+				HeightFieldPlane currPlane = tempPlaneBuffer[numPlanes];// final ? TZ
 				currPlane.resetTriangleListSize(numTri - k);
 				currPlane.addTriangle(tri_base);
 				// saves normal for collision check (planes, triangles, vertices and edges.)
@@ -1257,7 +1252,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 			for (int k = 0; k < numPlanes; k++)
 			{
 	            //HeightFieldPlane * const itPlane = tempPlaneBuffer[k];
-				HeightFieldPlane itPlane = tempPlaneBuffer[k].at0();//final TZ
+				HeightFieldPlane itPlane = tempPlaneBuffer[k];
 
 				//set Geom
 				dGeomPlaneSetNoNormalize (sliding_plane,  itPlane.planeDefV, itPlane.planeDefD);
