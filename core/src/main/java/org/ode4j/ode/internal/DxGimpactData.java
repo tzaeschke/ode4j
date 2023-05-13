@@ -399,7 +399,7 @@ public class DxGimpactData extends DxTriMeshData {
 
 	/**
 	 * For testing only.
-	 *
+	 * <p>
 	 * Note: In ode4j 0.4.0 this returned 2*Pi for boundary edges.
 	 * This behavior has changed and is now in alignment with ODE.
 	 */
