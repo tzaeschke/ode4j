@@ -547,19 +547,21 @@ public class DxJointHinge2 extends DxJoint implements DHinge2Joint {
 	@Override
 	public void setAxes (double ax, double ay, double az, double bx, double by, double bz)
 	{ dJointSetHinge2Axes(new DVector3(ax, ay, az), new DVector3(bx, by, bz)); }
+	@Deprecated // Please use setAxes()
 	@Override
 	public void setAxis1 (double x, double y, double z)
 	{ dJointSetHinge2Axis1 (x, y, z); }
+	@Deprecated // Please use setAxes()
 	@Override
 	public void setAxis1 (final DVector3C a)
-	//TODO use dVector3
 	{ setAxis1 (a.get0(), a.get1(), a.get2()); }
+	@Deprecated // Please use setAxes()
 	@Override
 	public void setAxis2 (double x, double y, double z)
 	{ dJointSetHinge2Axis2 (x, y, z); }
+	@Deprecated // Please use setAxes()
 	@Override
 	public void setAxis2 (final DVector3C a)
-	//TODO use dVector3
 	{ setAxis2 (a.get0(), a.get1(), a.get2()); }
 
 	@Override

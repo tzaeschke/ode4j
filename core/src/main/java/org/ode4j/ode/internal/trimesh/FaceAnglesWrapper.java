@@ -33,8 +33,9 @@ import static org.ode4j.ode.internal.trimesh.DxTriDataBase.FaceAngleDomain;
 //public IFaceAngleStorageView
 //class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements IFaceAngleStorageControl,
 //        IFaceAngleStorageView {
-class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements IFaceAngleStorageControl,
-        IFaceAngleStorageView {
+//class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements IFaceAngleStorageControl,
+//        IFaceAngleStorageView {
+class FaceAnglesWrapper implements IFaceAngleStorageControl, IFaceAngleStorageView {
 
     protected FaceAnglesWrapper(int triangleCount) {
         //setAllocatedTriangleCount(triangleCount);
@@ -114,7 +115,7 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
         //dIASSERT(dTMPL_IN_RANGE(vertexIndex, dMTV__MIN, dMTV__MAX));
 
         //m_record.m_triangleFaceAngles[triangleIndex][vertexIndex] = TStorageCodec.encodeForStorage (dAngleValue);
-        m_triangleFaceAngles[triangleIndex * 3 + vertexIndex] = TStorageCodec.encodeForStorage(dAngleValue);
+        m_triangleFaceAngles[triangleIndex * 3 + vertexIndex] = FaceAngleStorageCodec.encodeForStorage(dAngleValue);
     }
 
     // FaceAngleDomain getFaceAngle(dReal &out_angleValue, unsigned triangleIndex, dMeshTriangleVertex vertexIndex)
@@ -125,10 +126,13 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
 
         //storage_type storedValue = m_record.m_triangleFaceAngles[triangleIndex][vertexIndex];
         double storedValue = m_triangleFaceAngles[triangleIndex * 3 + vertexIndex];
-        FaceAngleDomain resultDomain = TStorageCodec.classifyStorageValue(storedValue);
+        //    FaceAngleDomain resultDomain = TStorageCodec.classifyStorageValue(storedValue);
+        FaceAngleDomain resultDomain = FaceAngleStorageCodec.classifyStorageValue(storedValue);
 
-        out_angleValue.set(TStorageCodec.isAngleDomainStored(resultDomain) ?
-                TStorageCodec.decodeStorageValue(storedValue) : 0.0);
+        //        out_angleValue.set(TStorageCodec.isAngleDomainStored(resultDomain) ?
+        //                TStorageCodec.decodeStorageValue(storedValue) : 0.0);
+        out_angleValue.set(FaceAngleStorageCodec.isAngleDomainStored(resultDomain) ?
+                FaceAngleStorageCodec.decodeStorageValue(storedValue) : 0.0);
         return resultDomain;
     }
 
@@ -160,7 +164,7 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
     //DxTriDataBase.IFaceAngleStorageControl *FaceAnglesWrapper<DxTriDataBase.TStorageCodec>::allocateInstance
     // (unsigned triangleCount, DxTriDataBase.IFaceAngleStorageView *&out_storageView)
     static FaceAnglesWrapper allocateInstance(int triangleCount) {//, Ref<IFaceAngleStorageView> out_storageView) {
-        return new FaceAnglesWrapper<>(triangleCount);
+        return new FaceAnglesWrapper(triangleCount);
         //FaceAnglesWrapper<DxTriDataBase.TStorageCodec> *result = NULL;
         //        FaceAnglesWrapper<TStorageCodec> result = null;
         //
@@ -235,7 +239,8 @@ class FaceAnglesWrapper<TStorageCodec extends FaceAngleStorageCodec> implements 
     /*virtual */
     //boolean FaceAnglesWrapper<TStorageCodec>::areNegativeAnglesStored() const
     public boolean areNegativeAnglesStored() {
-        return TStorageCodec.areNegativeAnglesCoded();
+        // return TStorageCodec.areNegativeAnglesCoded();
+        return FaceAngleStorageCodec.areNegativeAnglesCoded();
     }
 
     //template<class TStorageCodec>

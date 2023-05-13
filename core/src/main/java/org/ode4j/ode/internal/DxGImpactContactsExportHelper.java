@@ -58,7 +58,7 @@ public class DxGImpactContactsExportHelper {
                                                     int Flags, DContactGeomBuffer Contacts, int Stride) {
         int result;
 
-        int maxcontacts = (int) (Flags & NUMC_MASK);
+        int maxcontacts = Flags & NUMC_MASK;
         if (contactcount > maxcontacts) {
             ExportExcesssiveContacts(srccontacts, contactcount, Flags, Contacts, Stride);
             result = maxcontacts;
@@ -90,7 +90,7 @@ public class DxGImpactContactsExportHelper {
     /*static */
     private static void ExportExcesssiveContacts(GImpactContactAccessorI srccontacts, int contactcount,
                                                  int Flags, DContactGeomBuffer Contacts, int Stride) {
-        int maxcontacts = (int) (Flags & NUMC_MASK);
+        int maxcontacts = Flags & NUMC_MASK;
         double marginaldepth = FindContactsMarginalDepth(srccontacts, contactcount, maxcontacts);
 
         int contactshead = 0, contacttail = maxcontacts;

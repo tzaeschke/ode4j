@@ -49,26 +49,7 @@ import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceAdd;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceDestroy;
 import static org.ode4j.cpp.internal.ApiCppCollisionSpace.dSpaceSetCleanup;
 import static org.ode4j.cpp.internal.ApiCppExportDIF.dWorldExportDIF;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointAttach;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateContact;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointCreateHinge2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGetHinge2Angle1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupCreate;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupDestroy;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointGroupEmpty;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Anchor;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis1;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Axis2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dJointSetHinge2Param;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamFMax2;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamFudgeFactor;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamHiStop;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamLoStop;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamSuspensionCFM;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamSuspensionERP;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel;
-import static org.ode4j.cpp.internal.ApiCppJoint.dParamVel2;
+import static org.ode4j.cpp.internal.ApiCppJoint.*;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassAdjust;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassCreate;
 import static org.ode4j.cpp.internal.ApiCppMass.dMassSetBox;
@@ -133,6 +114,9 @@ class DemoBuggy extends dsFunctions {
 	//#define STARTZ 0.5	// starting height of chassis
 	//#define CMASS 1		// chassis mass
 	//#define WMASS 0.2	// wheel mass
+
+	private final DVector3 yunit = new DVector3( 0, 1, 0 ), zunit = new DVector3( 0, 0, 1 );
+
 	private final double LENGTH = 0.7;	// chassis length
 	private final double WIDTH = 0.5;	// chassis width
 	private final double HEIGHT = 0.2;	// chassis height
@@ -372,8 +356,7 @@ class DemoBuggy extends dsFunctions {
 			dJointAttach (joint[i],body[0],body[i+1]);
 			final DVector3C a = dBodyGetPosition (body[i+1]);
 			dJointSetHinge2Anchor (joint[i],a.get0(),a.get1(),a.get2());
-			dJointSetHinge2Axis1 (joint[i],0,0,1);
-			dJointSetHinge2Axis2 (joint[i],0,1,0);
+			dJointSetHinge2Axes (joint[i], zunit, yunit);
 		}
 
 		// set joint suspension

@@ -69,15 +69,15 @@ public class FastLTSolve {
             if (loopX1RowCount >= 2)
             {
                 double p2 = L[ptrLElement + -1];
-                double Y21 = B[ptrBElement + -1 * (int)b_stride]/* - Z21 */- p2 * Y11;
-                B[ptrBElement + -1 * (int)b_stride] = Y21;
+                double Y21 = B[ptrBElement + -1 * b_stride]/* - Z21 */- p2 * Y11;
+                B[ptrBElement + -1 * b_stride] = Y21;
 
                 if (loopX1RowCount > 2)
                 {
                     double p3 = L[ptrLElement + -2];
                     double p3_1 = L[(ptrLElement - rowSkip) + -2];
-                    double Y31 = B[ptrBElement + -2 * (int)b_stride]/* - Z31 */- p3 * Y11 - p3_1 * Y21;
-                    B[ptrBElement + -2 * (int)b_stride] = Y31;
+                    double Y31 = B[ptrBElement + -2 * b_stride]/* - Z31 */- p3 * Y11 - p3_1 * Y21;
+                    B[ptrBElement + -2 * b_stride] = Y31;
                 }
             }
         }
@@ -370,21 +370,21 @@ public class FastLTSolve {
             }
             {
                 double p2 = L[ptrLElement + -1];
-                Y21 = B[ptrBElement + -1 * (int)b_stride] - Z21 - p2 * Y11;
-                B[ptrBElement + -1 * (int)b_stride] = Y21;
+                Y21 = B[ptrBElement + -1 * b_stride] - Z21 - p2 * Y11;
+                B[ptrBElement + -1 * b_stride] = Y21;
             }
             {
                 double p3 = L[ptrLElement + -2];
                 double p3_1 = L[(ptrLElement - rowSkip) + -2];
-                Y31 = B[ptrBElement + -2 * (int)b_stride] - Z31 - p3 * Y11 - p3_1 * Y21;
-                B[ptrBElement + -2 * (int)b_stride] = Y31;
+                Y31 = B[ptrBElement + -2 * b_stride] - Z31 - p3 * Y11 - p3_1 * Y21;
+                B[ptrBElement + -2 * b_stride] = Y31;
             }
             {
                 double p4 = L[ptrLElement + -3];
                 double p4_1 = L[ptrLElement - rowSkip + -3];
                 double p4_2 = L[ptrLElement - rowSkip * 2 + -3];
-                Y41 = B[ptrBElement + -3 * (int)b_stride] - Z41 - p4 * Y11 - p4_1 * Y21 - p4_2 * Y31;
-                B[ptrBElement + -3 * (int)b_stride] = Y41;
+                Y41 = B[ptrBElement + -3 * b_stride] - Z41 - p4 * Y11 - p4_1 * Y21 - p4_2 * Y31;
+                B[ptrBElement + -3 * b_stride] = Y41;
             }
             /* end of outer loop */
         }

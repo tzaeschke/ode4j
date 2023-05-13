@@ -399,13 +399,13 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
     class HeightFieldVertex
     {
         //  public:
-        HeightFieldVertex(){};
+        // HeightFieldVertex(){};
 
         DVector3 vertex = new DVector3();
         //HeightFieldVertexCoords coords;
         //int[] coords = new int[2]; //use c1 & c2 (TZ)
         int coords0, coords1;
-    };
+    }
 
     //TODO TZ not used
 //  private class HeightFieldEdge
@@ -420,12 +420,12 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
     private class HeightFieldTriangle
     {
         //public:
-        HeightFieldTriangle(){};
+        // HeightFieldTriangle(){};
 
         //HeightFieldVertex   *vertices[3];
         HeightFieldVertex[]   vertices = new HeightFieldVertex[3]; //TODO c1, c2, c3 (TZ)
         //double[]               planeDef=new double[4];
-    };
+    }
 
 
     //////// dxHeightfield /////////////////////////////////////////////////////////////////

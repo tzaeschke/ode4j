@@ -591,11 +591,11 @@ public class DxJointAMotor extends DxJoint implements DAMotorJoint
 
 		// NOTE!
 		// For reverse joints, the rate is negated at the function exit to create swapped bodies effect
-		double rate = dDOT(axis, this.node[0].body.avel);
+		double rate = axis.dot(this.node[0].body.avel);
 
 		if (this.node[1].body != null)
 		{
-			rate -= dDOT(axis, this.node[1].body.avel);
+			rate -= axis.dot(this.node[1].body.avel);
 		}
 
 		// Negating the rate for reverse joints creates an effect of body swapping

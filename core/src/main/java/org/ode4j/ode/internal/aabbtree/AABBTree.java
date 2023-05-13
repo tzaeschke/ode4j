@@ -59,7 +59,7 @@ public class AABBTree<T> {
         startUpdate = 0x7FFFFFFF;
         endUpdate = -0x7FFFFFFF;
         nodesStack = new int[32];
-        nodes = new AABBTreeNode[FREE_NODES_POOL_SIZE];
+        nodes = (AABBTreeNode<T>[]) new AABBTreeNode<?>[FREE_NODES_POOL_SIZE];
     }
 
     private void allocateNodes(int size) {
@@ -290,9 +290,9 @@ public class AABBTree<T> {
             if (numExternalNodes == endNode) {
                 buildNodes = nodes;
                 numBuildNodes = endNode;
-                nodes = new AABBTreeNode[FREE_NODES_POOL_SIZE];
+                nodes = (AABBTreeNode<T>[]) new AABBTreeNode<?>[FREE_NODES_POOL_SIZE];
             } else {
-                buildNodes = new AABBTreeNode[numExternalNodes];
+                buildNodes = (AABBTreeNode<T>[]) new AABBTreeNode<?>[numExternalNodes];
                 int endNodeIndex = endNode;
                 for (int n = 0; n < endNodeIndex; n++) {
                     AABBTreeNode<T> currentNode = nodes[n];
@@ -467,7 +467,7 @@ public class AABBTree<T> {
 
     @SuppressWarnings("unchecked")
     void clear() {
-        nodes = new AABBTreeNode[0];
+        nodes = (AABBTreeNode<T>[]) new AABBTreeNode<?>[0];
         needsRebuild = false;
         needsRebound = false;
         numAdds = 0;

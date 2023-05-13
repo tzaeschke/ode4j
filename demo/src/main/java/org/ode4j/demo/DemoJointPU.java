@@ -408,7 +408,9 @@ public class DemoJointPU extends dsFunctions {
 
 		}
 
-		case 'p' :case 'P' : {
+		break;
+
+		case 'p' : case 'P' : {
 			if (joint instanceof DSliderJoint) {
 				DSliderJoint sj = (DSliderJoint) (joint);
 				System.out.println("Position =" + sj.getPosition());

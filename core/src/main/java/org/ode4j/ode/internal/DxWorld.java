@@ -338,7 +338,7 @@ public class DxWorld extends DBase implements DWorld {
         		Step.INSTANCE))//dxEstimateQuickStepMemoryRequirements))
         {
         	//if (dxProcessIslands (w, islandsinfo, stepsize, &dxStepIsland, &dxEstimateStepMaxCallCount))
-            if (dxProcessIslands (islandsinfo, stepsize, Step.INSTANCE, Step.INSTANCE));//dxEstimateStepMaxCallCount))
+            if (dxProcessIslands (islandsinfo, stepsize, Step.INSTANCE, Step.INSTANCE)) //dxEstimateStepMaxCallCount))
             {
                 result = true;
             }

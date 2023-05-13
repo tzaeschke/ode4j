@@ -26,7 +26,6 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.dIASSERT;
 
-import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 import java.util.ArrayList;
@@ -372,8 +371,8 @@ public class DxGimpactData extends DxTriMeshData {
 	 * This may e.g. be called from build().
 	 */
 	public void check() {
-		@SuppressWarnings("unchecked")
-		ArrayList<Integer>[] edges = new ArrayList[getDataRef().length/3];  // n = number of vertices
+		@SuppressWarnings({"unchecked"})
+		ArrayList<Integer>[] edges = (ArrayList<Integer>[]) new ArrayList<?>[getDataRef().length/3];  // n = number of vertices
 		System.out.print("Checking Trimesh (size " + edges.length + " ) ...");
 		for (int i = 0; i < edges.length; i++) edges[i] = new ArrayList<>();
 		int nE = 0;
@@ -400,7 +399,7 @@ public class DxGimpactData extends DxTriMeshData {
 
 	/**
 	 * For testing only.
-	 *
+	 * <p>
 	 * Note: In ode4j 0.4.0 this returned 2*Pi for boundary edges.
 	 * This behavior has changed and is now in alignment with ODE.
 	 */

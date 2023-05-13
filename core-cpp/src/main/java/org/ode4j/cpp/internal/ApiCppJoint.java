@@ -780,7 +780,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @param y y
 	 * @param z z
 	 */
-	//ODE_API 
+	//ODE_API
+	@Deprecated // Please use setAxes instead
 	public static void dJointSetHinge2Axis1 (DHinge2Joint j, double x, double y, double z) {
 		j.setAxis1(x, y, z);
 	}
@@ -794,6 +795,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @param z z
 	 */
 	//ODE_API 
+	@Deprecated // Please use setAxes instead
 	public static void dJointSetHinge2Axis2 (DHinge2Joint j, double x, double y, double z) {
 		j.setAxis2(x, y, z);
 	}

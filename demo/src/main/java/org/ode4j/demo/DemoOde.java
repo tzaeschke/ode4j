@@ -1281,11 +1281,11 @@ void testReorthonormalize()
 			index = 0;
 		}
 
-		@Override
-		protected void finalize() throws Throwable {
-			reset();
-			super.finalize();
-		} 
+		//		@Override
+		//		protected void finalize() throws Throwable {
+		//			reset();
+		//			super.finalize();
+		//		}
 
 		/**
 		 * add a new n*m matrix A to the sequence. the name of the matrix is given

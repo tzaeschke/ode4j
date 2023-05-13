@@ -37,6 +37,7 @@ public class FastVecScale {
 
     //	template<unsigned int a_stride, unsigned int d_stride>
     //	void scaleLargeVector (dReal *aStart, const dReal *dStart, unsigned elementCount)
+    @SuppressWarnings("fallthrough")
     public static void scaleLargeVector(double[] A, final int aStart, final double[] D, int dStart, int elementCount, int a_stride, int d_stride) {
         dAASSERT(aStart >= 0 && dStart >= 0 && elementCount >= 0);
 
