@@ -1,6 +1,5 @@
 TODO for 0.5.0
 ==============
-- libGWT compatibility?
 - Java 9/10/11 ?
 - Beautify CHANGELOG -> .md
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
@@ -10,7 +9,7 @@ TODO for 0.5.0
     when using: mvn clean install -P on-jdk-9-plus
 - CI: Fail build on warning?!
 - What is the deal with DJoint PARAM vs PARAM_N?
-  ODE doesn´t have PARAM_N (e.g. dParamBounce1)! -> ode4j shouldn´;t have them either...
+  ODE doesn´t have PARAM_N (e.g. dParamBounce1)! -> ode4j shouldn´t have them either...
   Remove (deprecate) and replace with PARAM, or at least document what is goigh on!
 
 --> See TODO.txt
@@ -27,6 +26,7 @@ Bug: Dropping first box on Heightfield is wrong.
 
 0.5.0 (unreleased)
 =====
+- Remove or deprecate `Cloneable` and `clone()`. [#109](https://github.com/tzaeschke/ode4j/pull/109)
 - DVector3/DQuaternion/...: Better support for call chaining, added isEq(x, y, z, eps) and deprecated clone() and
   DQuaternion.*Euler*().
   [#108](https://github.com/tzaeschke/ode4j/pull/108)

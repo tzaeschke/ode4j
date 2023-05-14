@@ -143,18 +143,7 @@ public class ObjArray<T> {
 //        System.arraycopy(_data, _ofs, ret, 0, _data.length - _ofs);
         return ret;
     }
-    
-    /**
-     * @param ofs offset
-     * @param len length
-     * @return cloned []
-     */
-    public T[] cloneData(int ofs, int len) {
-        T[] ret = _data.clone();
-//        System.arraycopy(_data, _ofs + ofs, ret, 0, len);
-        return ret;
-    }
-    
+
     /**
      * Decrement offset by 1.
      */

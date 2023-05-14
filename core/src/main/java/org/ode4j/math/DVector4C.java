@@ -50,8 +50,6 @@ public interface DVector4C {
 	public double get1();
 	public double get2();
 	public double get3();
-//	public float[] toFloatArray();
-//	public DVector3 clone();
 	public double lengthSquared();
 	public double length();
 	/** 

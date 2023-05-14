@@ -51,7 +51,7 @@ import org.ode4j.ode.internal.DxWorld;
  * body (joint.node[1].body), and if it is zero then behave as if its body
  * transform is the identity.
  */
-public abstract class DxJoint extends DObject implements DJoint, Cloneable {
+public abstract class DxJoint extends DObject implements DJoint {
 
 	// joint flags
 	//	enum dJOINT
@@ -931,16 +931,6 @@ public abstract class DxJoint extends DObject implements DJoint, Cloneable {
 	}
 
 
-	//by TZ
-	@Override
-	public Object clone() {
-		try {
-			return super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	void FinalizeAndDestroyJointInstance(boolean delete_it)
 	{
 	    // if any group joints have their world pointer set to 0, their world was

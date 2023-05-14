@@ -47,23 +47,13 @@ public class Objects_H {
 //	#endif
 
 	/** auto disable parameters. */
-	public static class dxAutoDisable implements Cloneable {
+	public static class dxAutoDisable {
 		public double idle_time;		// time the body needs to be idle to auto-disable it
 		public int idle_steps;		// steps the body needs to be idle to auto-disable it
 		public double linear_average_threshold;   // linear (squared) average velocity threshold
 		public double angular_average_threshold;  // angular (squared) average velocity threshold
-		//TODO? unsigned 
 		public int average_samples;     // size of the average_lvel and average_avel buffers
-		@Override
-		protected dxAutoDisable clone() {
-			try {
-				return (dxAutoDisable) super.clone();
-			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException(e);
-			}
-		}
 
-		//TZ: 'explicit' not required in Java
 	    dxAutoDisable() {
 	        idle_time = 0.0;
 	        idle_steps = 10;
@@ -71,44 +61,45 @@ public class Objects_H {
 	        linear_average_threshold = 0.01*0.01; // (magnitude squared)
 	        angular_average_threshold = 0.01*0.01; // (magnitude squared)
 	    }
+
+		void set(dxAutoDisable other) {
+			idle_time = other.idle_time;
+			idle_steps = other.idle_steps;
+			linear_average_threshold = other.linear_average_threshold;
+			angular_average_threshold = other.angular_average_threshold;
+			average_samples = other.average_samples;
+		}
 	}
 
 
 	/** damping parameters. */
-	public static class dxDampingParameters implements Cloneable {
+	public static class dxDampingParameters {
 		public double linear_scale;  // multiply the linear velocity by (1 - scale)
 		public double angular_scale; // multiply the angular velocity by (1 - scale)
 		public double linear_threshold;   // linear (squared) average speed threshold
 		public double angular_threshold;  // angular (squared) average speed threshold
-		@Override
-		protected dxDampingParameters clone() {
-			try {
-				return (dxDampingParameters) super.clone();
-			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException(e);
-			}
-		}
 
-		//TZ: 'explicit' not required in Java
 	    dxDampingParameters() {
 	        linear_scale = 0.0;
 	        angular_scale = 0.0;
 	        linear_threshold = 0.01 * 0.01;
 	        angular_threshold = 0.01 * 0.01;
 	    }
+
+		void set(dxDampingParameters other) {
+			linear_scale = other.linear_scale;
+			angular_scale = other.angular_scale;
+			linear_threshold = other.linear_threshold;
+			angular_threshold = other.angular_threshold;
+		}
 	}
 
 
 	/** quick-step parameters. */
-	public static class dxQuickStepParameters extends CloneableParameter {
+	public static class dxQuickStepParameters {
 		public int num_iterations;		// number of SOR iterations to perform
 		public double w;			// the SOR over-relaxation parameter
-		@Override
-		protected dxQuickStepParameters clone() {
-			return cloneThis();
-		}
 
-		//TZ: 'explicit' not required in Java
 	    dxQuickStepParameters() {
 	    	num_iterations = 20;
 	    	w = 1.3;
@@ -117,21 +108,15 @@ public class Objects_H {
 
 
 	/** contact generation parameters. */
-	public static class dxContactParameters extends CloneableParameter {
+	public static class dxContactParameters {
 		public double max_vel;		// maximum correcting velocity
 		public double min_depth;		// thickness of 'surface layer'
-		@Override
-		protected dxContactParameters clone() {
-			return cloneThis();
-		}
 
-		//TZ: 'explicit' not required in Java
 	    dxContactParameters() {
 	        max_vel = Common.dInfinity;
 	        min_depth = 0.0;
 	    }
 	}
-
 
 
 	/** 
@@ -156,33 +141,10 @@ public class Objects_H {
 		public DVector3C pos() {
 			return pos;
 		}
-		@Override
-		protected DxPosR clone() {
-			try {
-				DxPosR p = (DxPosR) super.clone();
-				p.pos.set( pos );// = pos.clone();
-				p.R.set( R );// = R.clone();
-				return p;
-			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException(e);
-			}
-		}
 	}
 	
 	public interface DxPosRC {
 		DMatrix3C R();
 		DVector3C pos();
-	}
-	
-	private static class CloneableParameter implements Cloneable {
-		//@Override
-		@SuppressWarnings("unchecked")
-		public <T> T cloneThis() {
-			try {
-				return (T) super.clone();
-			} catch (CloneNotSupportedException e) {
-				throw new RuntimeException(e);
-			}
-		}
 	}
 }

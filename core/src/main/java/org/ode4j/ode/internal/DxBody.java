@@ -62,7 +62,7 @@ import org.ode4j.ode.internal.processmem.DxWorldProcessContext;
 /**
  * rigid body (dynamics object).
  */
-public class DxBody extends DObject implements DBody, Cloneable {
+public class DxBody extends DObject implements DBody {
 
 	// some body flags
 
@@ -109,7 +109,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	DVector3 finite_rot_axis;	// finite rotation axis, unit length or 0=none
 
 	// auto-disable information
-	dxAutoDisable adis;		// auto-disable parameters
+	final dxAutoDisable adis = new dxAutoDisable();		// auto-disable parameters
 	double adis_timeleft;		// time left to be idle
 	int adis_stepsleft;		// steps left to be idle
 	//  dVector3* average_lvel_buffer;      // buffer for the linear average velocity calculation
@@ -122,7 +122,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	int average_ready;            // indicates ( with = 1 ), if the Body's buffers are ready for average-calculations
 
 	BodyMoveCallBack moved_callback; // let the user know the body moved
-	private dxDampingParameters dampingp; // damping parameters, depends on flags
+	private final dxDampingParameters dampingp = new dxDampingParameters(); // damping parameters, depends on flags
 	double max_angular_speed;      // limit the angular velocity to this magnitude
 
 	protected DxBody(DxWorld w)
@@ -880,7 +880,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodySetAutoDisableDefaults ()
 	{
 		DxWorld w = world;
-		adis = w.adis.clone();
+		adis.set(w.adis);
 		dBodySetAutoDisableFlag ( (w.body_flags & dxBodyAutoDisable)!=0);
 	}
 
@@ -945,7 +945,7 @@ public class DxBody extends DObject implements DBody, Cloneable {
 	void dBodySetDampingDefaults()
 	{
 		DxWorld w = world;
-		dampingp = w.dampingp.clone();
+		dampingp.set(w.dampingp);
 		//unsigned
 		final int mask = dxBodyLinearDamping | dxBodyAngularDamping;
 		flags &= ~mask; // zero them
@@ -1138,16 +1138,6 @@ public class DxBody extends DObject implements DBody, Cloneable {
 			}
 		}
 	}
-
-	@Override
-	public Object clone() {
-		try {
-			return super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 
 	@Override
 	public String toString() {
