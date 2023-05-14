@@ -69,22 +69,12 @@ public class SpacePerformanceTest {
         long timer2 = 0;
         for (int j = 0; j < iterations; j++) {
             long time1 = System.nanoTime();
-            space.collide(null, new DNearCallback() {
-                @Override
-                public void call(Object data, DGeom o1, DGeom o2) {
-                    spaceCollisions++;
-                }
-            });
+            space.collide(null, (data, o1, o2) -> spaceCollisions++);
             long time2 = System.nanoTime();
 
             for (int k = 0; k < 50; k++) {
                 int i = r.nextInt(geoms.length);
-                space.collide2(geoms[i], null, new DNearCallback() {
-                    @Override
-                    public void call(Object data, DGeom o1, DGeom o2) {
-                        geomCollisions++;
-                    }
-                });
+                space.collide2(geoms[i], null, (data, o1, o2) -> geomCollisions++);
             }
 
             long time3 = System.nanoTime();
@@ -161,22 +151,12 @@ public class SpacePerformanceTest {
         long timer2 = 0;
         for (int j = 0; j < iterations; j++) {
             long time1 = System.nanoTime();
-            space.collide(null, new DNearCallback() {
-                @Override
-                public void call(Object data, DGeom o1, DGeom o2) {
-                    spaceCollisions++;
-                }
-            });
+            space.collide(null, (data, o1, o2) -> spaceCollisions++);
             long time2 = System.nanoTime();
 
             for (int k = 0; k < 50; k++) {
                 int i = r.nextInt(geoms.length);
-                space.collide2(geoms[i], null, new DNearCallback() {
-                    @Override
-                    public void call(Object data, DGeom o1, DGeom o2) {
-                        geomCollisions++;
-                    }
-                });
+                space.collide2(geoms[i], null, (data, o1, o2) -> geomCollisions++);
             }
 
             long time3 = System.nanoTime();
