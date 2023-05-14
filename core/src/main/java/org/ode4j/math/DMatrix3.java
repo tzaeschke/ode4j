@@ -125,16 +125,25 @@ public final class DMatrix3 implements DMatrix3C {
 		set20( m.get20() ); set21( m.get21() ); set22( m.get22() );
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * Returns a clone of this Matrix.
 	 */
 	@Override
+	@Deprecated
 	public DMatrix3 clone() {
 		return new DMatrix3(this);
 	}
-	
+
+	/**
+	 * Returns a copy of this Matrix.
+	 */
+	@Override
+	public DMatrix3 copy() {
+		return new DMatrix3(this);
+	}
+
 	
 	@Override
 	public String toString() {
@@ -158,14 +167,19 @@ public final class DMatrix3 implements DMatrix3C {
 		b.append(get22()).append("]]");
 		return b.toString();
 	}
-	public void setOfs(int ofs, DVector3 v3) {
+
+	public DMatrix3 setOfs(int ofs, DVector3 v3) {
 		v[ofs] = v3.get0(); v[ofs+1] = v3.get1(); v[ofs+2] = v3.get2(); //v[ofs+3] = 0;//v3.v[3];
+		return this;
 	}
-	public void setCol(int i, DVector3 v3) {
+
+	public DMatrix3 setCol(int i, DVector3 v3) {
 		int ofs = i*4;
 		v[ofs] = v3.get0(); v[ofs+1] = v3.get1(); v[ofs+2] = v3.get2(); //v[ofs+3] = 0;//v3.v[3];
+		return this;
 	}
-	public void set(double i, double j, double k, double l, double m,
+
+	public DMatrix3 set(double i, double j, double k, double l, double m,
 			double n, double o, double p, double q) {
 //		v[0] = i; v[1] = j; v[2] = k;
 //		v[4] = l; v[5] = m; v[6] = n;
@@ -173,15 +187,18 @@ public final class DMatrix3 implements DMatrix3C {
 		set00( i ); set01( j ); set02( k );
 		set10( l ); set11( m ); set12( n );
 		set20( o ); set21( p ); set22( q );
+		return this;
 	}
-	/** 
+
+	/**
 	 * Initialises this matrix from a 3*4 double [] with 12 fields, ignoring 
 	 * the 4th, 8th and 12th field. This is useful when using padded arrays.
 	 * @param da Initialisztion matrix
 	 * @param da_ofs Reading offset
 	 */
-	public void set12(double[] da, int da_ofs) {
+	public DMatrix3 set12(double[] da, int da_ofs) {
 		System.arraycopy(da, da_ofs, v, 0, da.length);
+		return this;
 	}
 	
 	public double get(int i) {
@@ -213,10 +230,11 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 
 
-	public void scale(double scale) {
+	public DMatrix3 scale(double scale) {
 		for (int i = 0; i < v.length; i++) {
 			v[i] *= scale;
 		}
+		return this;
 	}
 	
 	/** 
@@ -230,11 +248,13 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param B source B
 	 * @param C source C
 	 */
-	public void dMultiply0 (final DMatrix3C B, 
+	public DMatrix3 dMultiply0 (final DMatrix3C B,
 			final DMatrix3C C) {
 		eqMul(B, C);
-	}	
-	public void eqMul (final DMatrix3C B, 
+		return this;
+	}
+
+	public DMatrix3 eqMul (final DMatrix3C B,
 			final DMatrix3C C)
 	{
 //		dMatrix3 B2 = (dMatrix3) B;
@@ -271,6 +291,7 @@ public final class DMatrix3 implements DMatrix3C {
 		set20( B.get20()*C.get00() + B.get21()*C.get10() + B.get22()*C.get20() );
 		set21( B.get20()*C.get01() + B.get21()*C.get11() + B.get22()*C.get21() );
 		set22( B.get20()*C.get02() + B.get21()*C.get12() + B.get22()*C.get22() );
+		return this;
 	}
 
 	
@@ -431,12 +452,12 @@ public final class DMatrix3 implements DMatrix3C {
 		public void set0(double d) {
 			v[_column] = d;
 		}
-		
+
 		@Override
 		public void set1(double d) {
 			v[1 * MAX_J + _column] = d;
 		}
-		
+
 		@Override
 		public void set2(double d) {
 			v[2 * MAX_J + _column] = d;
@@ -577,57 +598,66 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 
 	
-	public final void set00(double d) {
+	public DMatrix3 set00(double d) {
 		v[0] = d;
+		return this;
 	}
 
 
-	public final void set01(double d) {
+	public DMatrix3 set01(double d) {
 		v[1] = d;
+		return this;
 	}
 
 
-	public final void set02(double d) {
+	public DMatrix3 set02(double d) {
 		v[2] = d;
+		return this;
 	}
 
 
-	public final void set10(double d) {
+	public DMatrix3 set10(double d) {
 		v[1*MAX_J + 0] = d;
+		return this;
 	}
 
 
-	public final void set11(double d) {
+	public DMatrix3 set11(double d) {
 		v[1*MAX_J + 1] = d;
+		return this;
 	}
 
 
-	public final void set12(double d) {
+	public DMatrix3 set12(double d) {
 		v[1*MAX_J + 2] = d;
+		return this;
 	}
 
 
-	public final void set20(double d) {
+	public DMatrix3 set20(double d) {
 		v[2*MAX_J + 0] = d;
+		return this;
 	}
 
 
-	public final void set21(double d) {
+	public DMatrix3 set21(double d) {
 		v[2*MAX_J + 1] = d;
+		return this;
 	}
 
 
-	public final void set22(double d) {
+	public DMatrix3 set22(double d) {
 		v[2*MAX_J + 2] = d;
+		return this;
 	}
 
 
-	public final int dimI() {
+	public int dimI() {
 		return MAX_I;
 	}
 
 
-	public final int dimJ() {
+	public int dimJ() {
 		//TODO MAX_J, once MAX_J==3
 		return 3;
 	}
@@ -637,7 +667,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * This is marginally faster than <tt>equals(Object o)</tt>.
 	 */
 	@Override
-	public final boolean isEq(DMatrix3C m, double epsilon) {
+	public boolean isEq(DMatrix3C m, double epsilon) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				if (Math.abs(get(i, j) - m.get(i, j)) > epsilon) return false;
@@ -703,11 +733,12 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Make the matrix an identity matrix.
 	 * Same as setIdenity().
 	 */
-	public final void eqIdentity() {
+	public DMatrix3 eqIdentity() {
 		eqZero();
 		set00(1);
 		set11(1);
 		set22(1);
+		return this;
 	}
 
 
@@ -716,7 +747,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Same as eqIdenity().
 	 * @return This matrix.
 	 */
-	public final DMatrix3 setIdentity() {
+	public DMatrix3 setIdentity() {
 		eqIdentity();
 		return this;
 	}
@@ -726,10 +757,11 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Set the matrix to zero.
 	 * Same as setZero().
 	 */
-	public final void eqZero() {
+	public DMatrix3 eqZero() {
 		for (int i = 0; i < v.length; i++) {
 			v[i] = 0;
 		}
+		return this;
 	}
 
 
@@ -737,8 +769,9 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Set the matrix to zero.
 	 * Same as eqZero().
 	 */
-	public final void setZero() {
+	public DMatrix3 setZero() {
 		eqZero();
+		return this;
 	}
 
 
@@ -977,18 +1010,21 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param j column
 	 * @param a value at (i,j)
 	 */
-	public void set(int i, int j, double a) {
+	public DMatrix3 set(int i, int j, double a) {
 		v[i*MAX_J + j] = a;
+		return this;
 	}
 
 
-	public void add(int i, int j, double d) {
+	public DMatrix3 add(int i, int j, double d) {
 		v[i*MAX_J + j] += d;
+		return this;
 	}
 
 
-	public void sub(int i, int j, double d) {
+	public DMatrix3 sub(int i, int j, double d) {
 		v[i*MAX_J + j] -= d;
+		return this;
 	}
 
 

@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.ode4j.math.DVector3;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DBodyTest {
 
@@ -38,9 +39,9 @@ public class DBodyTest {
         DWorld world = OdeHelper.createWorld();
         DBody b = OdeHelper.createBody(world);
         b.addLinearVel(1, 3, 5);
-        Assert.assertEquals(b.getLinearVel(), new DVector3(1, 3, 5));
+        assertTrue(b.getLinearVel().isEq(1, 3, 5, 0));
 
         b.addLinearVel(new DVector3(2, 3, 4));
-        assertEquals(b.getLinearVel(), new DVector3(3, 6, 9));
+        assertTrue(b.getLinearVel().isEq(3, 6, 9, 0));
     }
 }

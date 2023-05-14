@@ -43,7 +43,7 @@ import org.ode4j.ode.OdeMath;
  * @author Tilmann Zaeschke
  *
  */
-public class DVector3 implements DVector3I, DVector3C {
+public class DVector3 implements DVector3C {
 
 	private double d0, d1, d2;
     public static final DVector3C ZERO = new DVector3();
@@ -92,8 +92,9 @@ public class DVector3 implements DVector3I, DVector3C {
 		return this;
 	}
 
-	public void set(float[] v2) {
+	public DVector3 set(float[] v2) {
 		set(v2[0], v2[1], v2[2]);
+		return this;
 	}
 	
 	public final DVector3 set(double x, double y, double z) {
@@ -111,12 +112,18 @@ public class DVector3 implements DVector3I, DVector3C {
 		set0( v2.get0() ); set1( v2.get1() ); set2( v2.get2() );
 		return this;
 	}
-	
+
 	@Override
+	@Deprecated // See interface
 	public DVector3 clone() {
 		return new DVector3(this);
 	}
-	
+
+	@Override
+	public DVector3 copy() {
+		return new DVector3(this);
+	}
+
 	@Override
 	public String toString() {
 		return "DVector3[ " +
@@ -125,19 +132,19 @@ public class DVector3 implements DVector3I, DVector3C {
 				get2() + " ]";
 	}
 
-	@Override
-	public final void set0(double d) {
+	public final DVector3 set0(double d) {
 		d0 = d;
+		return this;
 	}
 	
-	@Override
-	public final void set1(double d) {
+	public final DVector3 set1(double d) {
 		d1 = d;
+		return this;
 	}
 	
-	@Override
-	public final void set2(double d) {
+	public final DVector3 set2(double d) {
 		d2 = d;
+		return this;
 	}
 	
 	@Override
@@ -385,8 +392,9 @@ public class DVector3 implements DVector3I, DVector3C {
 	 *
 	 * This method throws an IllegalArgumentException if no normal can be determined.
 	 */
-	public final void normalize() {
+	public final DVector3 normalize() {
 		OdeMath.dNormalize3(this);
+		return this;
 	}
 
 	/**
@@ -421,6 +429,21 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * Check whether two vectors contains the same values.
 	 * Due to Java's polymorphism handling, this method can be much faster than
 	 * v.equals(a).
+	 * @param x other vector x
+	 * @param y other vector y
+	 * @param z other vector z
+	 * @param eps maximum allowed difference per value
+	 * @return quality
+	 */
+	@Override
+	public final boolean isEq(double x, double y, double z, double eps) {
+		return Math.abs(get0() - x) <= eps && Math.abs(get1() - y) <= eps && Math.abs(get2() - z) <= eps;
+	}
+
+	/**
+	 * Check whether two vectors contains the same values.
+	 * Due to Java's polymorphism handling, this method can be much faster than
+	 * v.equals(a).
 	 * @param a a
 	 * @return quality
 	 */
@@ -433,47 +456,26 @@ public class DVector3 implements DVector3I, DVector3C {
 	/**
 	 * Set this vector equal to abs(this).
 	 */
-	public final void eqAbs() {
+	public final DVector3 eqAbs() {
 		set0( Math.abs(get0()));
 		set1( Math.abs(get1()));
 		set2( Math.abs(get2()));
+		return this;
 	}
-	
-//	public void dMultiply0 (final dMatrix3C B, final dVector3C C)
-//	{
-//		eqMul(B, C);
-//	}
-//	
-//	public void eqMul (final dMatrix3C B, final dVector3C c)
-//	{
-////		double[] B2 = ((dMatrix3) B).v;
-////		double[] C2 = ((dVector3) C).v;
-////		double sum;
-////		int aPos = 0;
-////		int bPos, bbPos =0, cPos;
-////		for (int i=3; i > 0; i--) {
-////			cPos = 0;
-////			bPos = bbPos;
-////			sum = 0;
-////			for (int k=3; k > 0; k--) sum += B2[bPos++] * C2[cPos++];
-////			v[aPos++] = sum;
-////			bbPos += 4;
-////		}
-//		d0 = B.get00()*c.get0() + B.get01()*c.get1() + B.get02()*c.get2();
-//		d1 = B.get10()*c.get0() + B.get11()*c.get1() + B.get12()*c.get2();
-//		d2 = B.get20()*c.get0() + B.get21()*c.get1() + B.get22()*c.get2();
-//	}
 
-	public final void add0(double d) {
+	public final DVector3 add0(double d) {
 		d0 += d;
+		return this;
 	}
 
-	public final void add1(double d) {
+	public final DVector3 add1(double d) {
 		d1 += d;
+		return this;
 	}
 
-	public final void add2(double d) {
+	public final DVector3 add2(double d) {
 		d2 += d;
+		return this;
 	}
 
 	/**
@@ -481,8 +483,6 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @return '3'.
 	 */
 	public final int dim() {
-		//return LEN;
-		//TODO
 		return 3;
 	}
 
@@ -508,20 +508,24 @@ public class DVector3 implements DVector3I, DVector3C {
 		return new DVector3(this).scale(d);
 	}
 
-	public final void eqZero() {
+	public final DVector3 eqZero() {
 		set(0, 0, 0);
+		return this;
 	}
 
-	public final void setZero() {
+	public final DVector3 setZero() {
 		eqZero();
+		return this;
 	}
 	
-	public final void eqIdentity() {
+	public final DVector3 eqIdentity() {
 		set(1, 0, 0);
+		return this;
 	}
 
-	public final void setIdentity() {
+	public final DVector3 setIdentity() {
 		eqIdentity();
+		return this;
 	}
 
 	@Override
@@ -557,31 +561,34 @@ public class DVector3 implements DVector3I, DVector3C {
 		return new float[]{(float) get0(), (float) get1(), (float) get2()};
 	}
 	
-	public final void set(int i, double d) {
+	public final DVector3 set(int i, double d) {
         switch (i) {
         case 0: d0 = d; break;
         case 1: d1 = d; break;
         case 2: d2 = d; break;
         default: throw new IllegalArgumentException("i=" + i);
         }
+		return this;
 	}
 
-	public final void scale(int i, double d) {
+	public final DVector3 scale(int i, double d) {
         switch (i) {
         case 0: d0 *= d; break;
         case 1: d1 *= d; break;
         case 2: d2 *= d; break;
         default: throw new IllegalArgumentException("i=" + i);
         }
+		return this;
 	}
 
-	public final void add(int i, double d) {
+	public final DVector3 add(int i, double d) {
         switch (i) {
         case 0: d0 += d; break;
         case 1: d1 += d; break;
         case 2: d2 += d; break;
         default: throw new IllegalArgumentException("i=" + i);
         }
+		return this;
 	}
 	
 	/**
@@ -645,10 +652,11 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param b b
 	 * @param c c
 	 */
-	public final void eqCross(DVector3C b, DVector3C c) {
+	public final DVector3 eqCross(DVector3C b, DVector3C c) {
 		set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
 		set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
 		set2( b.get0()*c.get1() - b.get1()*c.get0() );
+		return this;
 	}
 
 	/** 
@@ -661,10 +669,11 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @param m matrix m
 	 * @param v2 vector v
 	 */
-	public final void eqProd(DMatrix3C m, DVector3C v2) {
+	public final DVector3 eqProd(DMatrix3C m, DVector3C v2) {
 	    set0( m.get00()*v2.get0()+  m.get01()*v2.get1()+  m.get02()*v2.get2() );
 	    set1( m.get10()*v2.get0()+  m.get11()*v2.get1()+  m.get12()*v2.get2() );
 	    set2( m.get20()*v2.get0()+  m.get21()*v2.get1()+  m.get22()*v2.get2() );
+		return this;
 	}
 
 	/**

@@ -18,18 +18,18 @@ TODO for 0.5.0
 Check:
 - Demo -> Test?  E.g. DemoI? DemoSpace(-Stress)? DemoStep? ....
 
-DxHeightfield.tempPlaneBuffer should probably just be a simple array. ALso check tempHeightBuffer.
-   DxTrimeshHeightfield.tempHeightBuffer??
-   DxGimpactData.check().edges
-
 Bug: Dropping first box on Heightfield is wrong.
   -> Cylinder is also often iffy, but that is the same in C++  -> e.g. 7. cylinder (java) or 11th (c++)!
 
-Fix ENABLE_CONTACT_SORTING / Issue #22
+0.6.0
+=====
+- TODO remove deprecations for 0.6.0
 
 0.5.0 (unreleased)
 =====
-- DVector3/DQuaternion/...: Better support for call chaining. [#108](https://github.com/tzaeschke/ode4j/pull/108)
+- DVector3/DQuaternion/...: Better support for call chaining, added isEq(x, y, z, eps) and deprecated clone() and
+  DQuaternion.*Euler*().
+  [#108](https://github.com/tzaeschke/ode4j/pull/108)
 - DVector3/DQuaternion/...: Deprecated hashCode(). [#107](https://github.com/tzaeschke/ode4j/pull/107)
 - Removed unnecessary ObjArray from heightfield. [#106](https://github.com/tzaeschke/ode4j/pull/106)
 - Added linter and fixed some lint. [#105](https://github.com/tzaeschke/ode4j/pull/105)

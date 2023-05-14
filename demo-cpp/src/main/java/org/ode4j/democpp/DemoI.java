@@ -128,8 +128,8 @@ class DemoI extends dsFunctions {
 		int i,j;
 		double pmi, q0, q1, q2;
 		dMassSetZero (m);
-		DVector3 C = m.getC().clone();
-		DMatrix3 I = m.getI().clone();
+		DVector3 C = m.getC().copy();
+		DMatrix3 I = m.getI().copy();
 		for (i=0; i<NUM; i++) {
 			pmi = pm.get(i);
 			m.setMass(m.getMass() + pmi);// += pmi;
@@ -215,7 +215,7 @@ class DemoI extends dsFunctions {
 		computeMassParams (m,q,pm);
 		m.setMass( m.getMass() + anchor_m.getMass()); //+= anchor_m._mass;
 		//for (i=0; i<12; i++) m.I.v[i] = m.I.v[i] + anchor_m.I.v[i];
-		m.setI( m.getI().clone().add(anchor_m.getI()) );
+		m.setI( m.getI().copy().add(anchor_m.getI()) );
 		dBodySetMass (test_body,m);
 
 		// rotate the test and anchor bodies by a random amount
