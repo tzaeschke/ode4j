@@ -60,6 +60,7 @@ public class CollideTrimeshTrimesh implements DColliderFn {
 	//
 
 	/*extern */
+	@SuppressWarnings("deprecation")
 	int dCollideTTL(DxGeom g1, DxGeom g2, int Flags, DContactGeomBuffer Contacts, int Stride)
 	{
 		dIASSERT (Stride >= 1);//(int)sizeof(dContactGeom));

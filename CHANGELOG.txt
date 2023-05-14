@@ -29,6 +29,8 @@ Fix ENABLE_CONTACT_SORTING / Issue #22
 
 0.5.0 (unreleased)
 =====
+- DVector3/DQuaternion/...: Better support for call chaining. [#108](https://github.com/tzaeschke/ode4j/pull/108)
+- DVector3/DQuaternion/...: Deprecated hashCode(). [#107](https://github.com/tzaeschke/ode4j/pull/107)
 - Removed unnecessary ObjArray from heightfield. [#106](https://github.com/tzaeschke/ode4j/pull/106)
 - Added linter and fixed some lint. [#105](https://github.com/tzaeschke/ode4j/pull/105)
 - Cleaned up Junit 3 style tests. [#104](https://github.com/tzaeschke/ode4j/pull/104)

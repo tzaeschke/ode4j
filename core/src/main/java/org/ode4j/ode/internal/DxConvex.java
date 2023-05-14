@@ -27,7 +27,7 @@ package org.ode4j.ode.internal;
 import static org.ode4j.ode.OdeConstants.CONTACTS_UNIMPORTANT;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.Common.*;
+import static org.ode4j.ode.internal.Common.dxClamp;
 import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Copy;
 import static org.ode4j.ode.internal.cpp4j.Cmath.fabs;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.fprintf;
@@ -101,7 +101,7 @@ public class DxConvex extends DxGeom implements DConvex {
 		int first;
 		//unsigned 
 		int second;
-	};
+	}
 	//edge* edges;
 	private Edge[] edges;
 
@@ -522,9 +522,6 @@ public class DxConvex extends DxGeom implements DConvex {
 	 * @param q1 end of segment 1
 	 * @param p2 start of segment 2
 	 * @param q2 end of segment 2
-	 * @param t the time "t" in Ray 1 that gives us the closest point
-	 * (closest_point=Origin1+(Direction1*t).
-	 * @return true if there is a closest point, false if the rays are paralell.
 	 */
 //	private float ClosestPointBetweenSegments(dVector3& p1,
 //            dVector3& q1,
@@ -538,7 +535,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	    // s & t were originaly part of the output args, but since
 	    // we don't really need them, we'll just declare them in here
 	    double s;
-	    double t;
+	    double t; // TZ: the time "t" in Ray 1 that gives us the closest point (closest_point=Origin1+(Direction1*t) (?)
 	    DVector3 d1 = q1.reSub(p1);//{q1[0] - p1[0],
 	                   //q1[1] - p1[1],
 	                   //q1[2] - p1[2]};
@@ -1180,7 +1177,7 @@ public class DxConvex extends DxGeom implements DConvex {
 //							(plane[2] * cvx2._final_posr.pos[2]));
 					planeV.dot(cvx2.final_posr().pos());
 				//dContactGeom *target = SAFECONTACT(flags, contact, curc, skip);
-				DContactGeom target = contacts.getSafe(flags, curc.get());;
+				DContactGeom target = contacts.getSafe(flags, curc.get());
 				target.g1=cvx1;//&cvx1; // g1 is the one pushed
 				target.g2=cvx2;//&cvx2;
 				if(IntersectSegmentPlane(e1,e2,planeV, planeD,t,target.pos))
@@ -1236,17 +1233,13 @@ Helper struct
 		 // e1a to e1b = edge in cvx1,e2a to e2b = edge in cvx2.
 		DVector3 e1a = new DVector3(), e1b = new DVector3();
 		DVector3 e2a = new DVector3(), e2b = new DVector3();
-	};
+	}
 
 	/** 
 	 * Does an axis separation test using cvx1 planes on cvx1 and cvx2, 
 	 * returns true for a collision false for no collision.
 	 * @param cvx1 [IN] First Convex object, its planes are used to do the tests
 	 * @param cvx2 [IN] Second Convex object
-	 * @param min_depth [IN/OUT] Used to input as well as output the minimum 
-	 * depth so far, must be set to a huge value such as dInfinity for initialization.
-	 * @param g1 [OUT] Pointer to the convex which should be used in the returned contact as g1
-	 * @param g2 [OUT] Pointer to the convex which should be used in the returned contact as g2
 	 */
 	//inline bool CheckSATConvexFaces(dxConvex& cvx1,
 	//				dxConvex& cvx2,
@@ -1304,10 +1297,6 @@ Helper struct
 	 * returns true for a collision false for no collision.
 	 * @param cvx1 [IN] First Convex object
 	 * @param cvx2 [IN] Second Convex object
-	 * @param min_depth [IN/OUT] Used to input as well as output the minimum 
-	 * depth so far, must be set to a huge value such as dInfinity for initialization.
-	 * @param g1 [OUT] Pointer to the convex which should be used in the returned contact as g1
-	 * @param g2 [OUT] Pointer to the convex which should be used in the returned contact as g2
 	 */
 	//inline bool CheckSATConvexEdges(dxConvex& cvx1,
 	//				dxConvex& cvx2,
@@ -1603,7 +1592,6 @@ Helper struct
 									out = true;
 									break;
 								}
-								;
 							}
 						}
 						if(!out)
@@ -1721,7 +1709,7 @@ Helper struct
 //					r1[2]*cvx2.planes[(j*4)+2]-
 //					cvx2.planes[(j*4)+3];
 					d = r1.dot(cvx2.planesV[j]) - cvx2.planesD[j];
-					if(d>=0){out = true;break;};
+					if(d>=0){out = true;break;}
 				}
 				if(!out)
 				{
@@ -1731,7 +1719,7 @@ Helper struct
 					{
 						// dContactGeom *cur_contact = SAFECONTACT(flags, contact, j, skip);
 						DContactGeom cur_contact = contactBuf.getSafe(flags, j);
-						if (cur_contact.pos.isEq(i1))
+						if (cur_contact.pos.isEq(i1, 0))
 						{
 							outside=true;
 						}

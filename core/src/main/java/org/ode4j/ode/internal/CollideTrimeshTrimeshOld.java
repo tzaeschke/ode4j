@@ -49,7 +49,8 @@ public class CollideTrimeshTrimeshOld implements DColliderFn {
 	// GIMPACT TRIMESH-TRIMESH COLLIDER
 	//
 
-//	int dCollideTTL(dxGeom* g1, dxGeom* g2, int Flags, dContactGeom* Contacts, int Stride)
+	//	int dCollideTTL(dxGeom* g1, dxGeom* g2, int Flags, dContactGeom* Contacts, int Stride)
+	@SuppressWarnings("deprecation")
 	int dCollideTTL(DxGimpact g1, DxGimpact g2, int Flags, DContactGeomBuffer Contacts, int Stride)
 	{
 		Common.dIASSERT (Stride == 1);//(int)sizeof(dContactGeom));

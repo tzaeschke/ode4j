@@ -401,7 +401,22 @@ public class DVector3 implements DVector3I, DVector3C {
 	    double r3 = get2()-a.get2();
 	    return Math.sqrt(r1*r1 + r2*r2 + r3*r3);
 	}
-	
+
+	/**
+	 * Check whether two vectors contains the same values.
+	 * Due to Java's polymorphism handling, this method can be much faster than
+	 * v.equals(a).
+	 * @param a other vector
+	 * @param eps maximum allowed difference per value
+	 * @return quality
+	 */
+	@Override
+	public final boolean isEq(DVector3C a, double eps) {
+		return Math.abs(get0() - a.get0()) <= eps
+				&& Math.abs(get1() - a.get1()) <= eps
+				&& Math.abs(get2() - a.get2()) <= eps;
+	}
+
 	/**
 	 * Check whether two vectors contains the same values.
 	 * Due to Java's polymorphism handling, this method can be much faster than
@@ -410,6 +425,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * @return quality
 	 */
 	@Override
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public final boolean isEq(DVector3C a) {
 		return get0()==a.get0() && get1()==a.get1() && get2()==a.get2();
 	}
@@ -595,7 +611,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	 * and get2() return the same values.
 	 */
 	@Override
-	@Deprecated
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
@@ -605,6 +621,7 @@ public class DVector3 implements DVector3I, DVector3C {
 	}
 	
 	@Override
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public int hashCode() {
 		return (int) (Double.doubleToRawLongBits(get0())  * 
 		Double.doubleToRawLongBits(get1()) * 
