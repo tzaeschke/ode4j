@@ -1,11 +1,15 @@
-package org.ode4j.ode;
+package org.ode4j.benchmarks;
 
 import java.util.Random;
 
 import org.junit.Test;
 import org.ode4j.math.DQuaternion;
+import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DSapSpace.AXES;
+import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.DxBVHSpace;
 import org.ode4j.ode.internal.DxSAPSpace2;
 
