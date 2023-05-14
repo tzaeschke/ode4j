@@ -1378,6 +1378,7 @@ public class CollideTrimeshBox implements DColliderFn {
 	// GIMPACT version of box to mesh collider
 	//	#if dTRIMESH_GIMPACT
 	//	int dCollideBTL(dxGeom* g1, dxGeom* BoxGeom, int Flags, dContactGeom* Contacts, int Stride)
+	@SuppressWarnings("deprecation")
 	int dCollideBTL(DxTriMesh g1, DxBox BoxGeom, int Flags, DContactGeomBuffer Contacts, int Stride)
 	{
 		dIASSERT (Stride >= 1);//(int)sizeof(dContactGeom));

@@ -631,12 +631,27 @@ public final class DMatrix3 implements DMatrix3C {
 		//TODO MAX_J, once MAX_J==3
 		return 3;
 	}
-	
+
 	/**
 	 * Compares two matrices for equality.
 	 * This is marginally faster than <tt>equals(Object o)</tt>.
 	 */
 	@Override
+	public final boolean isEq(DMatrix3C m, double epsilon) {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if (Math.abs(get(i, j) - m.get(i, j)) > epsilon) return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Compares two matrices for equality.
+	 * This is marginally faster than <tt>equals(Object o)</tt>.
+	 */
+	@Override
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public final boolean isEq(DMatrix3C m) {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -651,7 +666,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param m other matrix
 	 * @return 'true' if both matrices are equal
 	 */
-	@Deprecated
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public final boolean isEqual(DMatrix3C m) {
 		return isEq(m);
 	}
@@ -662,7 +677,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * This is marginally slower than <tt>isEquals(DMatrix3C m)</tt>.
 	 */
 	@Override
-	@Deprecated
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public final boolean equals(Object o) {
 		if (o == null) {
 			return false;
@@ -674,6 +689,7 @@ public final class DMatrix3 implements DMatrix3C {
 	}
 
 	@Override
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public int hashCode() {
 		int h = 0;
 		for (double d: v) {

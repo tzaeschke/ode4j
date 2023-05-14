@@ -94,6 +94,9 @@ public interface DQuaternionC {
 	 */
 	double length();
 
+	boolean isEq(DQuaternion q, double epsilon);
+
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	boolean isEq(DQuaternion q);
 
 	/**
@@ -110,9 +113,10 @@ public interface DQuaternionC {
 	 * @deprecated
 	 */
 	@Override
-	@Deprecated
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	boolean equals(Object obj);
 
 	@Override
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	int hashCode();
 }

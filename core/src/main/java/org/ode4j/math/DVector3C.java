@@ -51,6 +51,8 @@ public interface DVector3C {
 	public double get2();
 	public float[] toFloatArray();
 	public DVector3 clone();
+	public boolean isEq(DVector3C v, double epsilon);
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public boolean isEq(DVector3C v);
 	public double lengthSquared();
 	public double length();

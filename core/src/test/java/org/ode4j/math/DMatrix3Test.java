@@ -59,12 +59,12 @@ public class DMatrix3Test {
 		DMatrix3 x = newM3();
 		DMatrix3 xx = newM3();
 		DMatrix3 x1 = new DMatrix3();
-		assertTrue(x.isEq(xx));
+		assertTrue(x.isEq(xx, 0));
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				x1.set(xx);
 				x1.set(i, j, 0);
-				assertFalse(x.isEq(x1));
+				assertFalse(x.isEq(x1, 0));
 			}
 		}
 	}		
@@ -125,7 +125,7 @@ public class DMatrix3Test {
 //		assertEquals(x, new DMatrix3(2, 2, 2, 2, 2, 2, 2, 2, 2));
 
 		x = new DMatrix3();
-		assertFalse(x.isEq(x2));
+		assertFalse(x.isEq(x2, 0));
 	}		
 		
 	@Test
@@ -133,8 +133,8 @@ public class DMatrix3Test {
 		DMatrix3 x = newM3();
 		DMatrix3 y = new DMatrix3();
 		DMatrix3 z = new DMatrix3(x);
-		assertTrue(x.isEq(z));
-		assertFalse(x.isEq(y));
+		assertTrue(x.isEq(z, 0));
+		assertFalse(x.isEq(y, 0));
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -148,14 +148,10 @@ public class DMatrix3Test {
 	public void testAdd(){
 		DMatrix3 x = newM3();
 		DMatrix3 t = new DMatrix3();
-		assertFalse(x.isEq(t));
+		assertFalse(x.isEq(t, 0));
 		
 		t.add(x);
-		assertTrue(t.isEq(x));
-		
-//		t = new dMatrix3();
-//		t.add(1, 2, 3, 4, 5, 6, 7, 8, 9);
-//		assertTrue(t.equals(x));
+		assertTrue(t.isEq(x, 0));
 
 		t = new DMatrix3();
 		for (int i = 0; i < 3; i++) {
@@ -163,13 +159,8 @@ public class DMatrix3Test {
 				t.add(i, j, 1 + j + 3*i);
 			}
 		}
-		assertTrue(t.isEq(x));
-
-//		t.add0(3);
-//		t.add1(6);
-//		t.add2(-4);
-//		assertTrue(t.equals(y));
-	}		
+		assertTrue(t.isEq(x, 0));
+	}
 	
 	@Test
 	public void testSub(){
@@ -178,10 +169,6 @@ public class DMatrix3Test {
 		
 		t.add(x);
 		t.add(x);
-//		t.sub(x);
-//		assertTrue(t.equals(x));
-//		t.sub(-3, -6, 4);
-//		assertTrue(t.equals(y));
 
 		t.set(x);
 		t.add(x);
@@ -202,28 +189,11 @@ public class DMatrix3Test {
 		DMatrix3 x = newM3();
 		DMatrix3 t = new DMatrix3();
 		
-//		t.set(x);
-//		t.scale(4, 5, -2);
-//		assertTrue(t.equals(y));
 		t.set(x);
 		t.scale(-2);
-		assertTrue(t.isEq( new DMatrix3(-2, -4, -6, -8, -10, -12, -14, -16, -18) ));
+		assertTrue(t.isEq( new DMatrix3(-2, -4, -6, -8, -10, -12, -14, -16, -18), 0 ));
+	}
 
-//		t.sub(0, 3);
-//		t.sub(1, 6);
-//		t.sub(2, -4);
-//		assertTrue(t.isEq(x));
-	}		
-	
-//	@Test
-//	public void testClone() {
-//		dMatrix3 y = new dMatrix3(4, 8, -1, -7);
-//		dMatrix3 t = y.clone();
-//		assertTrue( y.equals(t) );
-//		t.set0(1);
-//		assertFalse( y.equals(t) );
-//	}
-	
 	@Test
 	public void testViews(){
 		DMatrix3 t = newM3();
@@ -291,14 +261,6 @@ public class DMatrix3Test {
 		t.eqZero();
 		assertEquals(new DMatrix3(0, 0, 0, 0, 0, 0, 0, 0, 0), t);
 	}		
-	
-//	@Test
-//	public void testDot(){
-//		dMatrix3 x = newM3();
-//		dMatrix3 t = new dMatrix3();
-//		
-//		assertEquals( 4+16-3 , t.eqDot(x, x));
-//	}		
 	
 	@Test
 	public void testMul(){

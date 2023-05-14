@@ -1163,6 +1163,7 @@ public class CollideTrimeshCCylinder implements DColliderFn {
 	
 	// capsule - trimesh  By francisco leon
 	//int dCollideCCTL(dxGeom *o1, dxGeom *o2, int flags, dContactGeom *contact, int skip)
+	@SuppressWarnings("deprecation")
 	int dCollideCCTL(DxTriMesh o1, DxCapsule o2, int flags, DContactGeomBuffer contacts, int skip)
 	{
 		Common.dIASSERT (skip >= 1);//(int)sizeof(dContactGeom));

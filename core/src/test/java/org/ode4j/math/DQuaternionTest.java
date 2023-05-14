@@ -158,11 +158,11 @@ public class DQuaternionTest {
         DQuaternion x2 = new DQuaternion(1, 0, 3, 4);
         DQuaternion x3 = new DQuaternion(1, 2, 0, 4);
         DQuaternion x4 = new DQuaternion(1, 2, 3, 0);
-        assertTrue(x.isEq(xx));
-        assertFalse(x.isEq(x1));
-        assertFalse(x.isEq(x2));
-        assertFalse(x.isEq(x3));
-        assertFalse(x.isEq(x4));
+        assertTrue(x.isEq(xx, 0));
+        assertFalse(x.isEq(x1, 0));
+        assertFalse(x.isEq(x2, 0));
+        assertFalse(x.isEq(x3, 0));
+        assertFalse(x.isEq(x4, 0));
     }
 
     @Test
@@ -203,8 +203,8 @@ public class DQuaternionTest {
         DQuaternion x = new DQuaternion(1, 2, 3, 4);
         DQuaternion y = new DQuaternion();
         DQuaternion z = new DQuaternion(x);
-        assertTrue(x.isEq(z));
-        assertFalse(x.isEq(y));
+        assertTrue(x.isEq(z, 0));
+        assertFalse(x.isEq(y, 0));
         assertEquals(y.get0(), 0., 0);
         assertEquals(y.get1(), 0., 0);
         assertEquals(y.get2(), 0., 0);
@@ -221,37 +221,12 @@ public class DQuaternionTest {
         DQuaternion x = new DQuaternion(1, 2, 3, 4);
         DQuaternion y = new DQuaternion(4, 8, -1, -7);
         DQuaternion t = new DQuaternion();
-        assertFalse(x.isEq(y));
+        assertFalse(x.isEq(y, 0));
 
         t.add(x);
-        assertTrue(t.isEq(x));
+        assertTrue(t.isEq(x, 0));
         t.add(3, 6, -4, -11);
-        assertTrue(t.isEq(y));
-    }
-
-    @Test
-    public void testSum(){
-        //TODO
-//		dQuaternion x = new dQuaternion(1, 2, 3, 4);
-//		dQuaternion y = new dQuaternion(4, 8, -1, -7);
-//		dQuaternion t = new dQuaternion();
-//		assertFalse(x.equals(y));
-//
-//		t.add(x);
-//		assertTrue(t.equals(x));
-//		t.add(3, 6, -4, -11);
-//		assertTrue(t.equals(y));
-//
-//		t.add(0, -3);
-//		t.add(1, -6);
-//		t.add(2, 4);
-//		t.add(3, 11);
-//		assertTrue(t.equals(x));
-//
-////		t.add0(3);
-////		t.add1(6);
-////		t.add2(-4);
-////		assertTrue(t.equals(y));
+        assertTrue(t.isEq(y, 0));
     }
 
     @Test
@@ -259,7 +234,7 @@ public class DQuaternionTest {
         DQuaternion x = new DQuaternion(1, 2, 3, 4);
         DQuaternion y = new DQuaternion(4, 8, -1, -7);
         DQuaternion t = new DQuaternion();
-        assertFalse(x.isEq(y));
+        assertFalse(x.isEq(y, 0));
 
         t.add(x);
         t.add(x);
@@ -272,7 +247,7 @@ public class DQuaternionTest {
 
         t.set(y);
         t.scale(0.5);
-        assertTrue(t.isEq( new DQuaternion(2, 5, -3, -6.5) ));
+        assertTrue(t.isEq( new DQuaternion(2, 5, -3, -6.5), 0 ));
     }
 
     @Test

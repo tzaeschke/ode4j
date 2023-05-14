@@ -152,6 +152,16 @@ public class DQuaternion implements DQuaternionC {
 		this.z = z;
 	}
 
+	@Override
+	public boolean isEq(DQuaternion q, double epsilon) {
+		return Math.abs(w - q.w) <= epsilon
+				&& Math.abs(x - q.x) <= epsilon
+				&& Math.abs(y - q.y) <= epsilon
+				&& Math.abs(z - q.z) <= epsilon;
+	}
+
+	@Override
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public boolean isEq(DQuaternion q) {
 		return w == q.w && x == q.x && y == q.y && z == q.z;
 	}
@@ -163,7 +173,7 @@ public class DQuaternion implements DQuaternionC {
 	 * @deprecated
 	 */
 	@Override
-	@Deprecated
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
@@ -172,6 +182,7 @@ public class DQuaternion implements DQuaternionC {
 	}
 
 	@Override
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public int hashCode() {
 		int h = 0;
 		h |= Double.doubleToRawLongBits(w);

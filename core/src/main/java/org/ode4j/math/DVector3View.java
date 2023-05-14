@@ -90,6 +90,7 @@ public abstract class DVector3View implements DVector3I {
 	
 	
 	@Override
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
@@ -99,6 +100,7 @@ public abstract class DVector3View implements DVector3I {
 	}
 	
 	@Override
+	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public int hashCode() {
 		return (int) (Double.doubleToRawLongBits(get0())  * 
 		Double.doubleToRawLongBits(get1()) * 
