@@ -124,32 +124,36 @@ public class DQuaternion implements DQuaternionC {
 	 * Sets w of [w, x, y, z].
 	 * @param w w
 	 */
-	public void set0(double w) {
+	public DQuaternion set0(double w) {
 		this.w = w;
+		return this;
 	}
 
 	/**
 	 * Sets x of [w, x, y, z].
 	 * @param x x
 	 */
-	public void set1(double x) {
+	public DQuaternion set1(double x) {
 		this.x = x;
+		return this;
 	}
 
 	/**
 	 * Sets y of [w, x, y, z].
 	 * @param y y
 	 */
-	public void set2(double y) {
+	public DQuaternion set2(double y) {
 		this.y = y;
+		return this;
 	}
 
 	/**
 	 * Sets z of [w, x, y, z].
 	 * @param z z
 	 */
-	public void set3(double z) {
+	public DQuaternion set3(double z) {
 		this.z = z;
+		return this;
 	}
 
 	@Override
@@ -196,18 +200,20 @@ public class DQuaternion implements DQuaternionC {
 		return h;
 	}
 
-	public void add(double dw, double dx, double dy, double dz) {
+	public DQuaternion add(double dw, double dx, double dy, double dz) {
 		w += dw;
 		x += dx;
 		y += dy;
 		z += dz;
+		return this;
 	}
 
-	public final void sum(DQuaternion q1, DQuaternion q2, double d2) {
+	public final DQuaternion sum(DQuaternion q1, DQuaternion q2, double d2) {
 		w = q1.get0() + q2.get0() * d2;
 		x = q1.get1() + q2.get1() * d2;
 		y = q1.get2() + q2.get2() * d2;
 		z = q1.get3() + q2.get3() * d2;
+		return this;
 	}
 
 	/**
@@ -215,7 +221,7 @@ public class DQuaternion implements DQuaternionC {
 	 * @param i position
 	 * @param d value
 	 */
-	public final void set(int i, double d) {
+	public final DQuaternion set(int i, double d) {
 		switch (i) {
 			case 0: w = d; break;
 			case 1: x = d; break;
@@ -224,13 +230,15 @@ public class DQuaternion implements DQuaternionC {
 			default:
 				throw new ArrayIndexOutOfBoundsException("i=" + i);
 		}
+		return this;
 	}
 
-	public final void setZero() {
+	public final DQuaternion setZero() {
 		set(0, 0, 0, 0);
+		return this;
 	}
 
-	public final void scale(int i, double l) {
+	public final DQuaternion scale(int i, double l) {
 		switch (i) {
 			case 0: w *= l; break;
 			case 1: x *= l; break;
@@ -239,6 +247,7 @@ public class DQuaternion implements DQuaternionC {
 			default:
 				throw new ArrayIndexOutOfBoundsException("i=" + i);
 		}
+		return this;
 	}
 
 	public final double lengthSquared() {
@@ -314,13 +323,15 @@ public class DQuaternion implements DQuaternionC {
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
 	 */
-	public void normalize() {
+	public DQuaternion normalize() {
 		if (!safeNormalize4()) throw new IllegalStateException(
 				"Normalization failed: " + this);
+		return this;
 	}
 
-	public void setIdentity() {
+	public DQuaternion setIdentity() {
 		set(1, 0, 0, 0);
+		return this;
 	}
 
 	public boolean isZero() {
@@ -333,6 +344,7 @@ public class DQuaternion implements DQuaternionC {
 	 * @param yaw   radians yaw
 	 * @return quaternion
 	 */
+	@Deprecated // TODO deprecated, to be removed in 0.6.0. Consider using DRotation.dRFromEulerAngles
 	public static DQuaternion fromEuler(double roll, double pitch, double yaw) {
 		double cr = Math.cos(roll * 0.5);
 		double sr = Math.sin(roll * 0.5);
@@ -353,6 +365,7 @@ public class DQuaternion implements DQuaternionC {
 	 * @param angles roll, pitch and yaw as radians.
 	 * @return Quaternion
 	 */
+	@Deprecated // TODO deprecated, to be removed in 0.6.0. Consider using DRotation.dRFromEulerAngles
 	public static DQuaternion fromEuler(DVector3C angles) {
 		return fromEuler(angles.get0(), angles.get1(), angles.get2());
 	}
@@ -363,6 +376,7 @@ public class DQuaternion implements DQuaternionC {
 	 * @param yaw   yaw degrees
 	 * @return quaternion
 	 */
+	@Deprecated // TODO deprecated, to be removed in 0.6.0. Consider using DRotation.dRFromEulerAngles
 	public static DQuaternion fromEulerDegrees(double roll, double pitch, double yaw) {
 		return fromEuler(Math.toRadians(roll), Math.toRadians(pitch), Math.toRadians(yaw));
 	}
@@ -371,11 +385,13 @@ public class DQuaternion implements DQuaternionC {
 	 * @param angles roll, pitch and yaw as degrees, i.e. 0..360.
 	 * @return Quaternion
 	 */
+	@Deprecated // TODO deprecated, to be removed in 0.6.0. Consider using DRotation.dRFromEulerAngles
 	public static DQuaternion fromEulerDegrees(DVector3C angles) {
 		return fromEulerDegrees(angles.get0(), angles.get1(), angles.get2());
 	}
 
 	@Override
+	@Deprecated // TODO deprecated, to be removed in 0.6.0. Consider using DRotation.dRFromEulerAngles
 	public DVector3 toEuler() {
 		DVector3 angles = new DVector3();
 		DQuaternion q = new DQuaternion(this);
@@ -400,6 +416,7 @@ public class DQuaternion implements DQuaternionC {
 	}
 
 	@Override
+	@Deprecated // TODO deprecated, to be removed in 0.6.0. Consider using DRotation.dRFromEulerAngles
 	public DVector3 toEulerDegrees() {
 		return toEuler().eqToDegrees();
 	}

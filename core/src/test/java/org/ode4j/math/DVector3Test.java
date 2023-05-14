@@ -35,20 +35,20 @@ public class DVector3Test {
     public void testReAdd() {
         DVector3C v1 = new DVector3(1, 2, 3);
         DVector3C v2 = v1.reAdd(2, 3, 4);
-        assertEquals(v2, new DVector3(3, 5, 7));
+        assertTrue(v2.isEq(new DVector3(3, 5, 7), 0));
         DVector3C v3 = v2.reAdd(2, 3, 4);
-        assertEquals(v1, new DVector3(1, 2, 3));
-        assertEquals(v2, new DVector3(3, 5, 7));
-        assertEquals(v3, new DVector3(5, 8, 11));
+        assertTrue(v1.isEq(new DVector3(1, 2, 3), 0));
+        assertTrue(v2.isEq(new DVector3(3, 5, 7), 0));
+        assertTrue(v3.isEq(new DVector3(5, 8, 11), 0));
     }
 
     @Test
     public void testToDegrees() {
         DVector3 v1 = new DVector3(Math.PI, Math.PI/2, Math.PI/4);
         v1.eqToDegrees();
-        assertEquals(new DVector3(180, 90, 45), v1);
+        assertTrue(new DVector3(180, 90, 45).isEq(v1, 0));
         v1.eqToRadians();
-        assertEquals(new DVector3(Math.PI, Math.PI/2, Math.PI/4), v1);
+        assertTrue(new DVector3(Math.PI, Math.PI/2, Math.PI/4).isEq(v1, 0));
 
         DVector3 v2 = new DVector3(Math.PI, Math.PI/2, Math.PI/4);
         DVector3 v2b = v2.eqToDegrees();
@@ -193,7 +193,7 @@ public class DVector3Test {
         t.eqCross(x, y);
         DVector3 t2 = new DVector3();
         OdeMath.dCalcVectorCross3(t2, x, y);
-        assertEquals(t2, t);
+        assertTrue(t2.isEq(t, 0));
     }
 
     @Test
@@ -225,9 +225,9 @@ public class DVector3Test {
     }
 
     @Test
-    public void testClone() {
+    public void testCopy() {
         DVector3 y = new DVector3(4, 8, -1);
-        DVector3 t = y.clone();
+        DVector3 t = y.copy();
         assertTrue( y.isEq(t, 0) );
         t.set0(1);
         assertFalse( y.isEq(t, 0) );
@@ -246,15 +246,15 @@ public class DVector3Test {
             //Good!
         }
         t.set(0, 0, 0).safeNormalize();
-        assertEquals(new DVector3(0, 0, 0), t);
+        assertTrue(new DVector3(0, 0, 0).isEq(t, 0));
 
         t.set(3, 4, -18);
         t.normalize();
-        assertEquals(new DVector3(0.16058631827165676, 0.21411509102887566, -0.9635179096299405), t);
+        assertTrue(new DVector3(0.16058631827165676, 0.21411509102887566, -0.9635179096299405).isEq(t, 0));
 
         try {
             t.set(0, 0, 0).normalize();
-            assertEquals(new DVector3(1, 0, 0), t);
+            assertTrue(new DVector3(1, 0, 0).isEq(t, 0));
             fail(t.toString());
         } catch (RuntimeException e) {
             //Ignore
@@ -262,7 +262,7 @@ public class DVector3Test {
 
         t.set(3, 4, -18);
         t.normalize();
-        assertEquals(new DVector3(0.16058631827165676, 0.21411509102887566, -0.9635179096299405), t);
+        assertTrue(new DVector3(0.16058631827165676, 0.21411509102887566, -0.9635179096299405).isEq(t, 0));
 
 
         t.set(3, 4, -5);
@@ -271,10 +271,10 @@ public class DVector3Test {
 
         t.set(-3, -4, -5);
         t.eqAbs();
-        assertEquals(new DVector3(3, 4, 5), t);
+        assertTrue(new DVector3(3, 4, 5).isEq(t, 0));
 
         t.eqDiff(x, y);
-        assertEquals(new DVector3(-3, -6, 4), t);
+        assertTrue(new DVector3(-3, -6, 4).isEq(t, 0));
     }
 
     @Test

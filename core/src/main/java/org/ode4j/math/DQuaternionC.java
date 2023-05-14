@@ -77,11 +77,13 @@ public interface DQuaternionC {
 	/**
 	 * @return Euler angles (radians) derived from this quaternion.
 	 */
+	@Deprecated // TODO deprecated, to be removed in 0.6.0. Consider using DRotation.dRFromEulerAngles
 	DVector3 toEuler();
 
 	/**
 	 * @return Euler angles (degrees) derived from this quaternion.
 	 */
+	@Deprecated // TODO deprecated, to be removed in 0.6.0. Consider using DRotation.dRFromEulerAngles
 	DVector3 toEulerDegrees();
 
 	/**

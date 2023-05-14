@@ -677,7 +677,7 @@ public class Matrix extends FastDot {
 	 * @return 'false' on failure
 	 */
 	public static boolean dIsPositiveDefinite(DMatrix3C A) {
-		return dFactorCholesky(A.clone());
+		return dFactorCholesky(A.copy());
 	}
 
 	/**

@@ -61,6 +61,7 @@ public class DQuaternionTest {
      * DQuaternion::toEuler().
      * DQuaternion::fromEuler().
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testToEuler() {
         DQuaternionC q1 = new DQuaternion(1, 2, 3, 4);
@@ -78,6 +79,7 @@ public class DQuaternionTest {
      * DQuaternion::toEuler().
      * DQuaternion::fromEuler().
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testToEulerDegrees() {
         DQuaternionC q1 = new DQuaternion(1, 2, 3, 4);

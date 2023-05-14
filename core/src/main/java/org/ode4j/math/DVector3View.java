@@ -30,11 +30,8 @@ public abstract class DVector3View implements DVector3I {
 	public abstract double get2();
 	@Override
 	public abstract double get(int i);
-	@Override
 	public abstract void set0(double d);
-	@Override
 	public abstract void set1(double d);
-	@Override
 	public abstract void set2(double d);
 
 	public final double length() {

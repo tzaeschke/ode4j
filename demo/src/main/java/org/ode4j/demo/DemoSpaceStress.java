@@ -283,7 +283,7 @@ public class DemoSpaceStress extends dsFunctions {
 				}
 
 				// move all encapsulated objects so that the center of mass is (0,0,0)
-				DVector3C negC = m.getC().clone().scale(-1);
+				DVector3C negC = m.getC().copy().scale(-1);
 				for (k=0; k<GPB; k++) {
 					obj[i].geom[k].setBody(obj[i].body);
 //					dGeomSetPosition (g2[k],

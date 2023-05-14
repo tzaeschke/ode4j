@@ -30,7 +30,7 @@ package org.ode4j.math;
  * this object may continue to modify it, these changes will also reflect in
  * the 'unmodifiable view' that the user has.
  * If the user requires a lasting immutable object, then the object needs to 
- * be cloned. 
+ * be copied().
  *
  * This interface should only be implemented by DVector3.
  * This allows efficient optimisation by the JVM, which is not
@@ -50,10 +50,22 @@ public interface DVector3C {
 	public double get1();
 	public double get2();
 	public float[] toFloatArray();
-	public DVector3 clone();
-	public boolean isEq(DVector3C v, double epsilon);
+
+	/**
+	 * Please use @see #copy() instead. This is deprecated because we don't implement Cloneable.
+	 * @return A clone() of this object.
+	 */
+	@Deprecated // TODO deprecated. Should be removed. Plese use copy() instead. To be removed in 0.6.0.
+	DVector3 clone();
+
+	/**
+	 * @return A mutable copy of this object.
+	 */
+	DVector3 copy();
+	boolean isEq(DVector3C v, double epsilon);
+	boolean isEq(double x, double y, double z, double epsilon);
 	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
-	public boolean isEq(DVector3C v);
+	boolean isEq(DVector3C v);
 	public double lengthSquared();
 	public double length();
 	/** 

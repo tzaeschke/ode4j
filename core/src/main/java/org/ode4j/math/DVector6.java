@@ -241,6 +241,7 @@ public class DVector6 {
 		}
 		return true;
 	}
+
 	/**
 	 * this may be called for vectors `a' with extremely small magnitude, for
 	 * example the result of a cross product on two nearly perpendicular vectors.
@@ -250,9 +251,9 @@ public class DVector6 {
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
 	 */
-	public void normalize()
-	{
+	public DVector6 normalize()	{
 		if (!safeNormalize6()) throw new IllegalStateException(
 				"Normalization failed: " + this);
+		return this;
 	}
 }

@@ -37,7 +37,4 @@ interface DVector3I {
 	double get0();
 	double get1();
 	double get2();
-	void set0(double d);
-	void set1(double d);
-	void set2(double d);
 }
