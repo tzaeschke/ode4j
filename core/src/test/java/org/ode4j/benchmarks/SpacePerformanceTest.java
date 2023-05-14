@@ -1,11 +1,15 @@
-package org.ode4j.ode;
+package org.ode4j.benchmarks;
 
 import java.util.Random;
 
 import org.junit.Test;
 import org.ode4j.math.DQuaternion;
+import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DSapSpace.AXES;
+import org.ode4j.ode.DSpace;
+import org.ode4j.ode.DSphere;
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.DxBVHSpace;
 import org.ode4j.ode.internal.DxSAPSpace2;
 
@@ -65,22 +69,12 @@ public class SpacePerformanceTest {
         long timer2 = 0;
         for (int j = 0; j < iterations; j++) {
             long time1 = System.nanoTime();
-            space.collide(null, new DNearCallback() {
-                @Override
-                public void call(Object data, DGeom o1, DGeom o2) {
-                    spaceCollisions++;
-                }
-            });
+            space.collide(null, (data, o1, o2) -> spaceCollisions++);
             long time2 = System.nanoTime();
 
             for (int k = 0; k < 50; k++) {
                 int i = r.nextInt(geoms.length);
-                space.collide2(geoms[i], null, new DNearCallback() {
-                    @Override
-                    public void call(Object data, DGeom o1, DGeom o2) {
-                        geomCollisions++;
-                    }
-                });
+                space.collide2(geoms[i], null, (data, o1, o2) -> geomCollisions++);
             }
 
             long time3 = System.nanoTime();
@@ -157,22 +151,12 @@ public class SpacePerformanceTest {
         long timer2 = 0;
         for (int j = 0; j < iterations; j++) {
             long time1 = System.nanoTime();
-            space.collide(null, new DNearCallback() {
-                @Override
-                public void call(Object data, DGeom o1, DGeom o2) {
-                    spaceCollisions++;
-                }
-            });
+            space.collide(null, (data, o1, o2) -> spaceCollisions++);
             long time2 = System.nanoTime();
 
             for (int k = 0; k < 50; k++) {
                 int i = r.nextInt(geoms.length);
-                space.collide2(geoms[i], null, new DNearCallback() {
-                    @Override
-                    public void call(Object data, DGeom o1, DGeom o2) {
-                        geomCollisions++;
-                    }
-                });
+                space.collide2(geoms[i], null, (data, o1, o2) -> geomCollisions++);
             }
 
             long time3 = System.nanoTime();

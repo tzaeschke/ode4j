@@ -2,8 +2,6 @@ TODO for 0.5.0
 ==============
 - Java 9/10/11 ?
 - Beautify CHANGELOG -> .md
-- Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
-- Move to Google Java Code Style
 - Fix maven warnings:
   - [WARNING] bootstrap class path not set in conjunction with -source 8
     when using: mvn clean install -P on-jdk-9-plus
@@ -14,18 +12,13 @@ TODO for 0.5.0
 
 --> See TODO.txt
 
-Check:
-- Demo -> Test?  E.g. DemoI? DemoSpace(-Stress)? DemoStep? ....
-
 Bug: Dropping first box on Heightfield is wrong.
   -> Cylinder is also often iffy, but that is the same in C++  -> e.g. 7. cylinder (java) or 11th (c++)!
 
-0.6.0
-=====
-- TODO remove deprecations for 0.6.0
 
 0.5.0 (unreleased)
 =====
+- Turned into tests: DemoI, DemoSpace, DemoSpaceStress. [#110](https://github.com/tzaeschke/ode4j/pull/110)
 - Remove or deprecate `Cloneable` and `clone()`. [#109](https://github.com/tzaeschke/ode4j/pull/109)
 - DVector3/DQuaternion/...: Better support for call chaining, added isEq(x, y, z, eps) and deprecated clone() and
   DQuaternion.*Euler*().

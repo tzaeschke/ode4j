@@ -21,12 +21,10 @@ Things left out for 0.5.0 (missing from 0.15.1 vs 0.16.2)
 
 Fix
 ===
-- Issue #22 / ODE issue #36: https://bitbucket.org/odedevs/ode/issues/36/fix-gimpact-contacts-handling
-  This has been resolved, We need to remove the workaround in OdeConfig::50, "ENABLE_CONTACT_SORTING"
-- Warnings when running
-  - TestIssue0031_RagdollNPE
-  - DemoPlane2d with step()
+- TODO remove deprecations for 0.6.0
 - Fix DLCP.ROWPTRS = true?!? -> DEFAULT in 0.16.3
+- Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
+- Move to Google Java Code Style
 
 
 
