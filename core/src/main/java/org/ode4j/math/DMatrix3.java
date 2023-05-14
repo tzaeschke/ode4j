@@ -22,6 +22,8 @@
 package org.ode4j.math;
 
 
+import java.util.Arrays;
+
 /**
  * 3x3 matrix class.
  * Internally this uses a 4x3 matrix for compatibility.
@@ -105,7 +107,7 @@ public final class DMatrix3 implements DMatrix3C {
 
 	/**
 	 * Private to enforce usage of wrap().
-	 * @param a
+	 * @param a other array
 	 */
 	private DMatrix3(double[] a) {
 		v = a;
@@ -154,7 +156,7 @@ public final class DMatrix3 implements DMatrix3C {
 //		}
 //		b.append(v[v.length-1]).append("]");
 //		return b.toString();
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		b.append("DMatrix3[[");
 		b.append(get00()).append(", ");
 		b.append(get01()).append(", ");
@@ -758,9 +760,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * Same as setZero().
 	 */
 	public DMatrix3 eqZero() {
-		for (int i = 0; i < v.length; i++) {
-			v[i] = 0;
-		}
+		Arrays.fill(v, 0);
 		return this;
 	}
 
@@ -1048,7 +1048,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param size Size of array
 	 * @return An array of DVector
 	 */
-	public final static DMatrix3[] newArray(int size) {
+	public static DMatrix3[] newArray(int size) {
 		DMatrix3[] a = new DMatrix3[size];
 		for (int i = 0; i < size; i++) {
 			a[i] = new DMatrix3();

@@ -45,15 +45,26 @@ public class DVectorN {
 		System.arraycopy(data, 0, v, 0, v.length);
 	}
 
+	/**
+	 * Please use @see #copy() instead. This is deprecated because we don't implement Cloneable.
+	 * @return A clone() of this object.
+	 */
 	@Override
+	@Deprecated // TODO deprecated. Should be removed. Please use copy() instead. To be removed in 0.6.0.
 	public DVectorN clone() {
 		return new DVectorN(this);
 	}
-	
-	
+
+	/**
+	 * @return A copy of this object.
+	 */
+	public DVectorN copy() {
+		return new DVectorN(this);
+	}
+
 	@Override
 	public String toString() {
-		StringBuffer b = new StringBuffer();
+		StringBuilder b = new StringBuilder();
 		b.append("dVector3[");
 		for (int i = 0; i < v.length-1; i++) {
 			b.append(v[i]).append(", ");
