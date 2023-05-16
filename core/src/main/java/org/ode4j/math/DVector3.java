@@ -47,7 +47,6 @@ public class DVector3 implements DVector3C {
 
 	private double d0, d1, d2;
     public static final DVector3C ZERO = new DVector3();
-	public static final int CURRENT_LENGTH = 4;
 
 	/**
 	 * Creates a (0,0,0) vector.
@@ -381,7 +380,7 @@ public class DVector3 implements DVector3C {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
-	 * 
+	 * <p>
 	 * This method does not modify the vector if no normal can be determined.
 	 * @return 'false' if no normal could be determined
 	 */
@@ -397,7 +396,7 @@ public class DVector3 implements DVector3C {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
-	 *
+	 * <p>
 	 * This method throws an IllegalArgumentException if no normal can be determined.
 	 */
 	public final DVector3 normalize() {
@@ -626,7 +625,7 @@ public class DVector3 implements DVector3C {
 	
 	/**
 	 * Do not use. This can be slow, use isEq() instead.
-	 * 
+	 * <p>
 	 * Any implementation of DVector3I will return true if get0(), get1()
 	 * and get2() return the same values.
 	 */
@@ -666,10 +665,25 @@ public class DVector3 implements DVector3C {
 	 * @param c c
 	 */
 	public final DVector3 eqCross(DVector3C b, DVector3C c) {
-		set0( b.get1()*c.get2() - b.get2()*c.get1() ); 
-		set1( b.get2()*c.get0() - b.get0()*c.get2() ); 
+		set0( b.get1()*c.get2() - b.get2()*c.get1() );
+		set1( b.get2()*c.get0() - b.get0()*c.get2() );
 		set2( b.get0()*c.get1() - b.get1()*c.get0() );
 		return this;
+	}
+
+	/**
+	 * Create new vector v = (this) x b.
+	 * @param b Other vector
+	 * @return cross product of (this) and b
+	 * @see DVector3#cross(DVector3C)
+	 */
+	@Override
+	public final DVector3 cross(DVector3C b) {
+		DVector3 a = new DVector3();
+		set0( a.get1()*b.get2() - a.get2()*b.get1() );
+		set1( a.get2()*b.get0() - a.get0()*b.get2() );
+		set2( a.get0()*b.get1() - a.get1()*b.get0() );
+		return a;
 	}
 
 	/** 

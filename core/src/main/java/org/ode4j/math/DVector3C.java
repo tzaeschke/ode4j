@@ -51,57 +51,69 @@ public interface DVector3C {
 	double get2();
 	float[] toFloatArray();
 	double[] toDoubleArray();
+
 	/**
 	 * Please use @see #copy() instead. This is deprecated because we don't implement Cloneable.
 	 * @return A clone() of this object.
 	 */
-	@Deprecated // TODO deprecated. Should be removed. Plese use copy() instead. To be removed in 0.6.0.
+	@Deprecated // TODO deprecated. Should be removed. Please use copy() instead. To be removed in 0.6.0.
 	DVector3 clone();
 
 	/**
 	 * @return A mutable copy of this object.
 	 */
 	DVector3 copy();
+
 	boolean isEq(DVector3C v, double epsilon);
 	boolean isEq(double x, double y, double z, double epsilon);
 	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	boolean isEq(DVector3C v);
 	double lengthSquared();
 	double length();
+
 	/** 
 	 * @param a Other vector
 	 * @return Distance between this vector and b).
 	 * @see DVector3#distance(DVector3C) 
 	 */
 	double distance(DVector3C a);
+
 	/** 
 	 * @param b Other vector
 	 * @return dot product of (this) and b
 	 * @see DVector3#dot(DVector3C)
 	 */
 	double dot(DVector3C b);
-	/** 
+
+	/**
 	 * @param b Other vector
 	 * @return dot product of (this) and b
 	 * @see DVector3#dot(DVector3C) 
 	 */
-	public double dot(DVector3View b);
+	double dot(DVector3View b);
+
+	/**
+	 * @param b Other vector
+	 * @return cross product of (this) and b
+	 * @see DVector3#cross(DVector3C)
+	 */
+	DVector3 cross(DVector3C b);
 
 	/**
 	 * @param v2 other vector
 	 * @return return sum of (this)+v2
 	 * @see DVector3#reAdd(DVector3C)
 	 */
-	public DVector3 reAdd(DVector3C v2);
-	public DVector3 reAdd(double x, double y, double z);
+	DVector3 reAdd(DVector3C v2);
+	DVector3 reAdd(double x, double y, double z);
 
     /**
      * @param v2 other vector
      * @return return difference of (this)-v2
      * @see DVector3#reSub(DVector3C) 
      */
-	public DVector3 reSub(DVector3C v2);
-	public DVector3 reScale(double s);
-	public float[] toFloatArray4();
-	public double dotCol(DMatrix3C m, int col);
+	DVector3 reSub(DVector3C v2);
+	DVector3 reScale(double s);
+	float[] toFloatArray4();
+	double dotCol(DMatrix3C m, int col);
 }

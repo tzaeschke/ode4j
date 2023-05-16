@@ -29,7 +29,6 @@ package org.ode4j.math;
 public class DVectorN {
 	
 	private final double[] v;
-	public static final int CURRENT_LENGTH = 4;
 
 	public DVectorN(int len) { 
 		v = new double[len];
@@ -73,13 +72,6 @@ public class DVectorN {
 		return b.toString();
 	}
 
-//	@Override
-//	public void assertLen(int n) {
-//		if (n!=v.length) {
-//			throw new IllegalStateException("LEN is " + v.length + ", not " + n);
-//		}		
-//	}
-	
 	public void set0(double d) {
 		v[0] = d;
 	}
@@ -174,7 +166,6 @@ public class DVectorN {
 
 	public void set(double[] a) {
 		System.arraycopy(a, 0, v, 0, v.length);
-		//return (T) this;
 	}
 	
 	public void setIdentity() {
