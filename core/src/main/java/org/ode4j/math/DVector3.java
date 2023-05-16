@@ -557,10 +557,15 @@ public class DVector3 implements DVector3C {
 	}
 
 	@Override
+	public final double[] toDoubleArray() {
+		return new double[]{get0(), get1(), get2()};
+	}
+
+	@Override
 	public final float[] toFloatArray() {
 		return new float[]{(float) get0(), (float) get1(), (float) get2()};
 	}
-	
+
 	public final DVector3 set(int i, double d) {
         switch (i) {
         case 0: d0 = d; break;

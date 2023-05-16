@@ -45,12 +45,12 @@ public interface DVector3C {
 	 * @param i The row to return [0, 1, 2].
 	 * @return Value ot position i
 	 */
-	public double get(int i);
-	public double get0();
-	public double get1();
-	public double get2();
-	public float[] toFloatArray();
-
+	double get(int i);
+	double get0();
+	double get1();
+	double get2();
+	float[] toFloatArray();
+	double[] toDoubleArray();
 	/**
 	 * Please use @see #copy() instead. This is deprecated because we don't implement Cloneable.
 	 * @return A clone() of this object.
@@ -66,20 +66,20 @@ public interface DVector3C {
 	boolean isEq(double x, double y, double z, double epsilon);
 	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	boolean isEq(DVector3C v);
-	public double lengthSquared();
-	public double length();
+	double lengthSquared();
+	double length();
 	/** 
 	 * @param a Other vector
 	 * @return Distance between this vector and b).
 	 * @see DVector3#distance(DVector3C) 
 	 */
-	public double distance(DVector3C a);
+	double distance(DVector3C a);
 	/** 
 	 * @param b Other vector
 	 * @return dot product of (this) and b
 	 * @see DVector3#dot(DVector3C)
 	 */
-	public double dot(DVector3C b);
+	double dot(DVector3C b);
 	/** 
 	 * @param b Other vector
 	 * @return dot product of (this) and b
