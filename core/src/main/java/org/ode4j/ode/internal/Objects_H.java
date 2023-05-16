@@ -126,6 +126,7 @@ public class Objects_H {
 	public static class DxPosR implements DxPosRC {
 		public final DVector3 pos = new DVector3();
 		private final DMatrix3 R = new DMatrix3();
+		DxPosR() {}
 		@Override
 		public DMatrix3C R() {
 			return R;
@@ -147,4 +148,6 @@ public class Objects_H {
 		DMatrix3C R();
 		DVector3C pos();
 	}
+
+	private Objects_H() {}
 }

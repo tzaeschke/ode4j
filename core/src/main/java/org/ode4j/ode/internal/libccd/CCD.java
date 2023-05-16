@@ -39,7 +39,7 @@ public class CCD {
 	 * and returns (via vec argument) furthest point from object in specified
 	 * direction.
 	 */
-	public static interface ccd_support_fn {
+	public interface ccd_support_fn {
 		void run(final Object obj, final ccd_vec3_t dir, ccd_vec3_t vec);
 	}
 
@@ -47,7 +47,7 @@ public class CCD {
 	 * Returns (via dir argument) first direction vector that will be used in
 	 * initialization of algorithm.
 	 */
-	static interface ccd_first_dir_fn {
+	interface ccd_first_dir_fn {
 		void run(final Object obj1, final Object obj2, ccd_vec3_t dir);
 	}
 
@@ -56,7 +56,7 @@ public class CCD {
 	 * Returns (via center argument) geometric center (some point near center)
 	 * of given object.
 	 */
-	public static interface ccd_center_fn {
+	public interface ccd_center_fn {
 		void run(final Object obj1, ccd_vec3_t center);
 	}
 
@@ -79,11 +79,13 @@ public class CCD {
 		public long max_iterations; //!< Maximal number of iterations
 		double epa_tolerance;
 		public double mpr_tolerance; //!< Boundary tolerance for MPR algorithm
-	};
+
+		public ccd_t() {}
+	}
 	//	typedef struct _ccd_t ccd_t;
 
 	//	#define CCD_INIT(ccd) \
-	public static final void CCD_INIT(ccd_t ccd) {
+	public static void CCD_INIT(ccd_t ccd) {
 		(ccd).first_dir = new ccd_first_dir_fn() {
 			
 			@Override
@@ -1089,4 +1091,6 @@ public class CCD {
 
 		return 0;
 	}
+
+	private CCD() {}
 }

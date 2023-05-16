@@ -48,7 +48,9 @@ public class GimTrimeshCapsuleCollision {
 	    public float m_radius;
 	    public final vec3f m_point1 = new vec3f();
 	    public final vec3f m_point2 = new vec3f();
-	};
+
+		public GIM_CAPSULE_DATA() {}
+	}
 	//typedef struct _GIM_CAPSULE_DATA GIM_CAPSULE_DATA;
 
 	//#define CALC_CAPSULE_AABB(capsule,aabb)\
@@ -360,4 +362,5 @@ public class GimTrimeshCapsuleCollision {
 	    dummycontacts.GIM_DYNARRAY_DESTROY();
 	}
 
+	private GimTrimeshCapsuleCollision() {}
 }

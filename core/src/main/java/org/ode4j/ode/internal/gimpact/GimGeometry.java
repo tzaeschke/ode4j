@@ -2071,4 +2071,8 @@ public class GimGeometry extends GimMath {
 	    VEC_SCALE(vPointB,_tp.d,_BD);
 	    VEC_SUM(vPointB,vPointB,vB1);
 	}
+
+	private GimGeometry() {
+		super();
+	}
 }

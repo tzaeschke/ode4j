@@ -44,17 +44,17 @@ public class CCDSimplex {
 
 	/**** INLINES ****/
 
-	static final void ccdSimplexInit(ccd_simplex_t s)
+	static void ccdSimplexInit(ccd_simplex_t s)
 	{
 		s.last = -1;
 	}
 
-	static final int ccdSimplexSize(final ccd_simplex_t s)
+	static int ccdSimplexSize(final ccd_simplex_t s)
 	{
 		return s.last + 1;
 	}
 
-	static final ccd_support_t ccdSimplexLast(final ccd_simplex_t s)
+	static ccd_support_t ccdSimplexLast(final ccd_simplex_t s)
 	{
 		//return ccdSimplexPoint(s, s.last);
 		switch (s.last){
@@ -71,36 +71,36 @@ public class CCDSimplex {
 //		// here is no check on boundaries
 //		return s.ps[idx];
 //	}
-	static final ccd_support_t ccdSimplexPoint0(final ccd_simplex_t s) {
+	static ccd_support_t ccdSimplexPoint0(final ccd_simplex_t s) {
 		return s.ps0;
 	}
-	static final ccd_support_t ccdSimplexPoint1(final ccd_simplex_t s) {
+	static ccd_support_t ccdSimplexPoint1(final ccd_simplex_t s) {
 		return s.ps1;
 	}
-	static final ccd_support_t ccdSimplexPoint2(final ccd_simplex_t s) {
+	static ccd_support_t ccdSimplexPoint2(final ccd_simplex_t s) {
 		return s.ps2;
 	}
-	static final ccd_support_t ccdSimplexPoint3(final ccd_simplex_t s) {
+	static ccd_support_t ccdSimplexPoint3(final ccd_simplex_t s) {
 		return s.ps3;
 	}
 //	static final ccd_support_t ccdSimplexPointW(ccd_simplex_t s, int idx)
 //	{
 //		return s.ps[idx];
 //	}
-	static final ccd_support_t ccdSimplexPointW0(final ccd_simplex_t s) {
+	static ccd_support_t ccdSimplexPointW0(final ccd_simplex_t s) {
 		return s.ps0;
 	}
-	static final ccd_support_t ccdSimplexPointW1(final ccd_simplex_t s) {
+	static ccd_support_t ccdSimplexPointW1(final ccd_simplex_t s) {
 		return s.ps1;
 	}
-	static final ccd_support_t ccdSimplexPointW2(final ccd_simplex_t s) {
+	static ccd_support_t ccdSimplexPointW2(final ccd_simplex_t s) {
 		return s.ps2;
 	}
-	static final ccd_support_t ccdSimplexPointW3(final ccd_simplex_t s) {
+	static ccd_support_t ccdSimplexPointW3(final ccd_simplex_t s) {
 		return s.ps3;
 	}
 
-	static final void ccdSimplexAdd(ccd_simplex_t s, final ccd_support_t v)
+	static void ccdSimplexAdd(ccd_simplex_t s, final ccd_support_t v)
 	{
 		// here is no check on boundaries in sake of speed
 		++s.last;
@@ -118,20 +118,20 @@ public class CCDSimplex {
 //	{
 //		ccdSupportCopy(s.ps[pos], a);
 //	}
-	static final void ccdSimplexSet0(ccd_simplex_t s, final ccd_support_t a) {
+	static void ccdSimplexSet0(ccd_simplex_t s, final ccd_support_t a) {
 		ccdSupportCopy(s.ps0, a);
 	}
-	static final void ccdSimplexSet1(ccd_simplex_t s, final ccd_support_t a) {
+	static void ccdSimplexSet1(ccd_simplex_t s, final ccd_support_t a) {
 		ccdSupportCopy(s.ps1, a);
 	}
-	static final void ccdSimplexSet2(ccd_simplex_t s, final ccd_support_t a) {
+	static void ccdSimplexSet2(ccd_simplex_t s, final ccd_support_t a) {
 		ccdSupportCopy(s.ps2, a);
 	}
-	static final void ccdSimplexSet3(ccd_simplex_t s, final ccd_support_t a) {
+	static void ccdSimplexSet3(ccd_simplex_t s, final ccd_support_t a) {
 		ccdSupportCopy(s.ps3, a);
 	}
 
-	static final void ccdSimplexSetSize(ccd_simplex_t s, int size)
+	static void ccdSimplexSetSize(ccd_simplex_t s, int size)
 	{
 		s.last = size - 1;
 	}
@@ -147,7 +147,7 @@ public class CCDSimplex {
 	/**
 	 * swaps position 1 and 2.
 	 */
-	static final void ccdSimplexSwap12(ccd_simplex_t s)
+	static void ccdSimplexSwap12(ccd_simplex_t s)
 	{
 		ccd_support_t supp = new ccd_support_t();
 
@@ -156,4 +156,5 @@ public class CCDSimplex {
 		ccdSupportCopy(s.ps2, supp);
 	}
 
+	private CCDSimplex() {}
 }

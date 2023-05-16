@@ -52,6 +52,7 @@ public class CCDPolyTope {
 	    @SuppressWarnings({ "unchecked", "rawtypes" })
         final ccd_list_t<T> list = new ccd_list_t(this);    /*! list of elements of same type */
 
+		public ccd_pt_el_t() {}
 		public double dist() {
 			return dist;
 		}
@@ -61,7 +62,7 @@ public class CCDPolyTope {
 		public ccd_vec3_t witness() {
 			return witness;
 		}
-	};
+	}
 
 	/**
 	 * Polytope's vertex.
@@ -69,9 +70,11 @@ public class CCDPolyTope {
 	public static final class ccd_pt_vertex_t extends ccd_pt_el_t<ccd_pt_vertex_t> implements Comparable<ccd_pt_vertex_t> {
 //	    __CCD_PT_EL
 
-	    int id;
+	    // int id;  // TZ: not used?!?!
 	    final ccd_support_t v = new ccd_support_t();
 	    ccd_list_t<ccd_pt_vertex_t> edges = new ccd_list_t<ccd_pt_vertex_t>(null); //!< List of edges
+
+		public ccd_pt_vertex_t() {}
 		public ccd_support_t v() {
 			return v;
 		}
@@ -89,7 +92,7 @@ public class CCDPolyTope {
 				return 1;
 			}
 		}
-	};
+	}
 
 	/**
 	 * Polytope's edge.
@@ -111,7 +114,9 @@ public class CCDPolyTope {
 		//	vertex_list[0] = new ccd_list_t<ccd_pt_vertex_t>(null);
 		//	vertex_list[1] = new ccd_list_t<ccd_pt_vertex_t>(null);
 		//}
-	};
+
+		public ccd_pt_edge_t() {}
+	}
 
 	/**
 	 * Polytope's triangle faces.
@@ -124,6 +129,7 @@ public class CCDPolyTope {
 		ccd_pt_edge_t edge0;
 		ccd_pt_edge_t edge1; 
 		ccd_pt_edge_t edge2;
+		private ccd_pt_face_t() {}
 		ccd_pt_edge_t edge(int pos) {
 			switch(pos) {
 			case 0: return edge0;
@@ -132,7 +138,7 @@ public class CCDPolyTope {
 			}
 			throw new IllegalArgumentException();
 		}
-	};
+	}
 
 
 	/**
@@ -146,14 +152,16 @@ public class CCDPolyTope {
 	    ccd_pt_el_t<? extends ccd_pt_el_t<?>> nearest;
 	    double nearest_dist;
 	    int nearest_type;
-	};
+
+		public ccd_pt_t() {}
+	}
 
 
 	//// **** INLINES ****
 	
 	
-	public static final ccd_pt_vertex_t ccdPtAddVertexCoords(ccd_pt_t pt,
-	                                                  double x, double y, double z)
+	public static ccd_pt_vertex_t ccdPtAddVertexCoords(ccd_pt_t pt,
+													   double x, double y, double z)
 	{
 	    ccd_support_t s = new ccd_support_t();
 	    ccdVec3Set(s.v, x, y, z);
@@ -166,7 +174,7 @@ public class CCDPolyTope {
 	 * @param v v
 	 * @return 0 on success, -1 otherwise.
 	 */
-	public static final int ccdPtDelVertex(ccd_pt_t pt, ccd_pt_vertex_t v)
+	public static int ccdPtDelVertex(ccd_pt_t pt, ccd_pt_vertex_t v)
 	{
 	    // test if any edge is connected to this vertex
 	    if (!ccdListEmpty(v.edges))
@@ -183,7 +191,7 @@ public class CCDPolyTope {
 	    return 0;
 	}
 
-	public static final int ccdPtDelEdge(ccd_pt_t pt, ccd_pt_edge_t e)
+	public static int ccdPtDelEdge(ccd_pt_t pt, ccd_pt_edge_t e)
 	{
 	    // text if any face is connected to this edge (faces[] is always
 	    // aligned to lower indices)
@@ -205,7 +213,7 @@ public class CCDPolyTope {
 	    return 0;
 	}
 
-	public static final int ccdPtDelFace(final ccd_pt_t pt, ccd_pt_face_t f)
+	public static int ccdPtDelFace(final ccd_pt_t pt, ccd_pt_face_t f)
 	{
 	    ccd_pt_edge_t e;
 	    int i;
@@ -230,16 +238,16 @@ public class CCDPolyTope {
 	    return 0;
 	}
 
-	/**
-	 * Returns vertices surrounding given triangle face.
-	 */
-	@Deprecated
-	static final void ccdPtFaceVec3(final ccd_pt_face_t face,
-	                               ccd_vec3_t[][] a,
-	                               ccd_vec3_t[][] b,
-	                               ccd_vec3_t[][] c)
-	{
-		throw new UnsupportedOperationException("This should be inlined manually");
+//	/**
+//	 * Returns vertices surrounding given triangle face.
+//	 */
+//	@Deprecated
+//	static void ccdPtFaceVec3(final ccd_pt_face_t face,
+//							  ccd_vec3_t[][] a,
+//							  ccd_vec3_t[][] b,
+//							  ccd_vec3_t[][] c)
+//	{
+//		throw new UnsupportedOperationException("This should be inlined manually");
 //	    *a = face.edge[0].vertex[0].v.v;
 //	    *b = face.edge[0].vertex[1].v.v;
 //
@@ -249,15 +257,15 @@ public class CCDPolyTope {
 //	    }else{
 //	        *c = face.edge[1].vertex[1].v.v;
 //	    }
-	}
-
-	@Deprecated
-	static final void ccdPtFaceVertices(final ccd_pt_face_t face,
-	                                   ccd_pt_vertex_t[][] a,
-	                                   ccd_pt_vertex_t[][] b,
-	                                   ccd_pt_vertex_t[][] c)
-	{
-		throw new UnsupportedOperationException(); //TZ implement?
+//	}
+//
+//	@Deprecated
+//	static void ccdPtFaceVertices(final ccd_pt_face_t face,
+//								  ccd_pt_vertex_t[][] a,
+//								  ccd_pt_vertex_t[][] b,
+//								  ccd_pt_vertex_t[][] c)
+//	{
+//		throw new UnsupportedOperationException(); //TZ implement?
 //	    *a = face.edge[0].vertex[0];
 //	    *b = face.edge[0].vertex[1];
 //
@@ -267,8 +275,8 @@ public class CCDPolyTope {
 //	    }else{
 //	        *c = face.edge[1].vertex[1];
 //	    }
-	}
-
+//	}
+//
 //	static final void ccdPtFaceEdges(final ccd_pt_face_t f,
 //	                                ccd_pt_edge_t[][] a,
 //	                                ccd_pt_edge_t[][] b,
@@ -278,23 +286,23 @@ public class CCDPolyTope {
 //	    *b = f.edge[1];
 //	    *c = f.edge[2];
 //	}
-	static final void ccdPtFaceEdges(final ccd_pt_face_t f,
-			ccd_pt_edge_t[] abc, int pos1, int pos2, int pos3)
+	static void ccdPtFaceEdges(final ccd_pt_face_t f,
+							   ccd_pt_edge_t[] abc, int pos1, int pos2, int pos3)
 	{
 		abc[pos1] = f.edge0;
 		abc[pos2] = f.edge1;
 		abc[pos3] = f.edge2;
 	}
 
-	@Deprecated
-	static final void ccdPtEdgeVec3(final ccd_pt_edge_t e,
-	                               ccd_vec3_t[][] a,
-	                               ccd_vec3_t[][] b)
-	{
-		throw new UnsupportedOperationException("This should be inlined manually");
+//	@Deprecated
+//	static void ccdPtEdgeVec3(final ccd_pt_edge_t e,
+//							  ccd_vec3_t[][] a,
+//							  ccd_vec3_t[][] b)
+//	{
+//		throw new UnsupportedOperationException("This should be inlined manually");
 //	    *a = e.vertex[0].v.v;
 //	    *b = e.vertex[1].v.v;
-	}
+//	}
 
 //	static final void ccdPtEdgeVertices(final ccd_pt_edge_t e,
 //	                                   ccd_pt_vertex_t[][] a,
@@ -303,8 +311,8 @@ public class CCDPolyTope {
 //	    *a = e.vertex[0];
 //	    *b = e.vertex[1];
 //	}
-	static final void ccdPtEdgeVertices(final ccd_pt_edge_t e,
-			ccd_pt_vertex_t[] ab, int a1, int a2)
+	static void ccdPtEdgeVertices(final ccd_pt_edge_t e,
+								  ccd_pt_vertex_t[] ab, int a1, int a2)
 	{
 		ab[a1] = e.vertex0;
 		ab[a2] = e.vertex1;
@@ -317,8 +325,8 @@ public class CCDPolyTope {
 //	    *f1 = e.faces[0];
 //	    *f2 = e.faces[1];
 //	}
-	static final void ccdPtEdgeFaces(final ccd_pt_edge_t e,
-			ccd_pt_face_t[] f12, int pos1, int pos2)
+	static void ccdPtEdgeFaces(final ccd_pt_edge_t e,
+							   ccd_pt_face_t[] f12, int pos1, int pos2)
 	{
 		f12[pos1] = e.faces0;
 		f12[pos2] = e.faces1;
@@ -329,20 +337,20 @@ public class CCDPolyTope {
 	 * libccd
 	 * ---------------------------------
 	 * Copyright (c)2010 Daniel Fiser <danfis@danfis.cz>
-	 *
-	 *
+	 *  <p>
+	 *  <p>
 	 *  This file is part of libccd.
-	 *
+	 *  <p>
 	 *  Distributed under the OSI-approved BSD License (the "License");
 	 *  see accompanying file BDS-LICENSE for details or see
-	 *  <http://www.opensource.org/licenses/bsd-license.php>.
-	 *
+	 *  <a href="http://www.opensource.org/licenses/bsd-license.php">...</a>.
+	 *  <p>
 	 *  This software is distributed WITHOUT ANY WARRANTY; without even the
 	 *  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 	 *  See the License for more information.
 	 */
 
-	private static final void _ccdPtNearestUpdate(ccd_pt_t pt, ccd_pt_el_t<? extends ccd_pt_el_t<?>> el)
+	private static void _ccdPtNearestUpdate(ccd_pt_t pt, ccd_pt_el_t<? extends ccd_pt_el_t<?>> el)
 	{
 	    if (ccdEq(pt.nearest_dist, el.dist)){
 	        if (el.type < pt.nearest_type){
@@ -385,7 +393,7 @@ public class CCDPolyTope {
 
 
 
-	public static final void ccdPtInit(ccd_pt_t pt)
+	public static void ccdPtInit(ccd_pt_t pt)
 	{
 //	    ccdListInit(pt.vertices);
 //	    ccdListInit(pt.edges);
@@ -396,7 +404,7 @@ public class CCDPolyTope {
 	    pt.nearest_type = 3;
 	}
 
-	public static final void ccdPtDestroy(ccd_pt_t pt)
+	public static void ccdPtDestroy(ccd_pt_t pt)
 	{
 	    //ccd_pt_face_t f, f2;
 	    //ccd_pt_edge_t e, e2;
@@ -425,7 +433,7 @@ public class CCDPolyTope {
 	/**
 	 * Adds vertex to polytope and returns pointer to newly created vertex.
 	 */
-	static final ccd_pt_vertex_t ccdPtAddVertex(ccd_pt_t pt, final ccd_support_t v)
+	static ccd_pt_vertex_t ccdPtAddVertex(ccd_pt_t pt, final ccd_support_t v)
 	{
 	    ccd_pt_vertex_t vert;
 
@@ -454,8 +462,8 @@ public class CCDPolyTope {
 	 * @param v2 v2
 	 * @return edge
 	 */
-	public static final ccd_pt_edge_t ccdPtAddEdge(ccd_pt_t pt, ccd_pt_vertex_t v1,
-	                                          ccd_pt_vertex_t v2)
+	public static ccd_pt_edge_t ccdPtAddEdge(ccd_pt_t pt, ccd_pt_vertex_t v1,
+											 ccd_pt_vertex_t v2)
 	{
 	    final ccd_vec3_t a, b;
 	    ccd_pt_edge_t edge;
@@ -490,9 +498,9 @@ public class CCDPolyTope {
 	 * @param e3 e3
 	 * @return face
 	 */
-	public static final ccd_pt_face_t ccdPtAddFace(ccd_pt_t pt, ccd_pt_edge_t e1,
-	                                          ccd_pt_edge_t e2,
-	                                          ccd_pt_edge_t e3)
+	public static ccd_pt_face_t ccdPtAddFace(ccd_pt_t pt, ccd_pt_edge_t e1,
+											 ccd_pt_edge_t e2,
+											 ccd_pt_edge_t e3)
 	{
 	    final ccd_vec3_t a, b, c;
 	    ccd_pt_face_t face;
@@ -585,7 +593,7 @@ public class CCDPolyTope {
 	 * @param pt pt
 	 * @return pt.nearest
 	 */
-	public static final ccd_pt_el_t<?> ccdPtNearest(ccd_pt_t pt)
+	public static ccd_pt_el_t<?> ccdPtNearest(ccd_pt_t pt)
 	{
 	    if (pt.nearest==null){
 	        _ccdPtNearestRenew(pt);
@@ -644,5 +652,5 @@ public class CCDPolyTope {
 //	        Cstdio.fprintf(fout, "%d %d %d\n", a.id, b.id, c.id);
 //	    }
 //	}
-
+	private CCDPolyTope() {}
 }

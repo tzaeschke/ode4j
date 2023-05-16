@@ -539,8 +539,8 @@ public class CCDMPR {
 
 	/** Returns true if portal encapsules origin (0,0,0), dir is direction of
 	 *  v1-v2-v3 face. */
-	private static final boolean portalEncapsulesOrigin(final ccd_simplex_t portal,
-	                                       final ccd_vec3_t dir)
+	private static boolean portalEncapsulesOrigin(final ccd_simplex_t portal,
+												  final ccd_vec3_t dir)
 	{
 	    double dot;
 	    dot = ccdVec3Dot(dir, ccdSimplexPoint1(portal).v);
@@ -553,10 +553,10 @@ public class CCDMPR {
 	 *
 	 *  v4 is candidate for new point in portal, dir is direction in which v4
 	 *  was obtained. */
-	private static final boolean portalReachTolerance(final ccd_simplex_t portal,
-	                                     final ccd_support_t v4,
-	                                     final ccd_vec3_t dir,
-	                                     final ccd_t ccd)
+	private static boolean portalReachTolerance(final ccd_simplex_t portal,
+												final ccd_support_t v4,
+												final ccd_vec3_t dir,
+												final ccd_t ccd)
 	{
 	    double dv1, dv2, dv3, dv4;
 	    double dot1, dot2, dot3;
@@ -580,13 +580,14 @@ public class CCDMPR {
 
 	/** Returns true if portal expanded by new point v4 could possibly contain
 	 *  origin, dir is direction in which v4 was obtained. */
-	private static final boolean portalCanEncapsuleOrigin(final ccd_simplex_t portal,   
-	                                         final ccd_support_t v4,
-	                                         final ccd_vec3_t dir)
+	private static boolean portalCanEncapsuleOrigin(final ccd_simplex_t portal,
+													final ccd_support_t v4,
+													final ccd_vec3_t dir)
 	{
 	    double dot;
 	    dot = ccdVec3Dot(v4.v, dir);
 	    return ccdIsZero(dot) || dot > CCD_ZERO;
 	}
 
+	private CCDMPR() {}
 }

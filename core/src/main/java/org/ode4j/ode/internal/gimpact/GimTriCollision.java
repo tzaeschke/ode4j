@@ -35,11 +35,13 @@ import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.cpp4j.java.RefFloat;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
+import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
+
 /**
  * Ported to Java by Tilmann Zaeschke
  * @author Francisco Leon
  */
-public class GimTriCollision extends GimGeometry {
+public class GimTriCollision {
 
 	static final int MAX_TRI_CLIPPING = 8;
 
@@ -138,7 +140,7 @@ public class GimTriCollision extends GimGeometry {
 	    {
 	    	for (int i = 0; i < m_points.length; i++) m_points[i] = new vec3f();
 	    }
-	};
+	}
 	//typedef struct _GIM_TRIANGLE_CONTACT_DATA GIM_TRIANGLE_CONTACT_DATA;
 
 	/** Structure for collision. */
@@ -162,7 +164,9 @@ public class GimTriCollision extends GimGeometry {
 	    public float getV() { return v; }
 	    public float getTParam() { return tparam; }
 	    public int getFaceID() { return m_face_id; }
-	};
+
+		public GIM_TRIANGLE_RAY_CONTACT_DATA() {}
+	}
 	//typedef struct _GIM_TRIANGLE_RAY_CONTACT_DATA GIM_TRIANGLE_RAY_CONTACT_DATA;
 
 
@@ -586,4 +590,6 @@ public class GimTriCollision extends GimGeometry {
 	    if(isect1[1]<isect2[0] || isect2[1]<isect1[0]) return 0;
 	    return 1;
 	}
+
+	private GimTriCollision() {}
 }

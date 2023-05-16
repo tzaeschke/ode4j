@@ -1,3 +1,8 @@
+Planned for 0.6.0
+=================
+- Remove ccp4j
+
+
 TODO for 0.5.0
 ==============
 - Java 9/10/11 ?

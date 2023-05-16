@@ -56,4 +56,6 @@ public class CCDCustomQuat {
         ccdQuatRotVec(d, q);
 //#endif
     }
+
+    private CCDCustomQuat() {}
 }

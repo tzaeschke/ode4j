@@ -432,4 +432,5 @@ public class DMatrix extends DMisc {
         Matrix.dRemoveRowCol(A, n, nskip, r);
     }
 
+    protected DMatrix() {}
 }

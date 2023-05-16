@@ -528,4 +528,5 @@ public class CCDVec3 {
 	    return dist;
 	}
 
+	private CCDVec3() {}
 }

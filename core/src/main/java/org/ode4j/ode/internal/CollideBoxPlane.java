@@ -35,6 +35,8 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dIASSERT;
 
 public class CollideBoxPlane implements DColliderFn {
 	//int dCollideBoxPlane (dxGeom *o1, dxGeom *o2,

@@ -24,21 +24,9 @@
  *************************************************************************/
 package org.ode4j.ode.internal.joints;
 
-import static org.ode4j.ode.OdeConstants.dContactApprox1_1;
-import static org.ode4j.ode.OdeConstants.dContactApprox1_2;
-import static org.ode4j.ode.OdeConstants.dContactApprox1_N;
-import static org.ode4j.ode.OdeConstants.dContactBounce;
-import static org.ode4j.ode.OdeConstants.dContactFDir1;
-import static org.ode4j.ode.OdeConstants.dContactMotion1;
-import static org.ode4j.ode.OdeConstants.dContactMotion2;
-import static org.ode4j.ode.OdeConstants.dContactMotionN;
-import static org.ode4j.ode.OdeConstants.dContactMu2;
-import static org.ode4j.ode.OdeConstants.dContactSlip1;
-import static org.ode4j.ode.OdeConstants.dContactSlip2;
-import static org.ode4j.ode.OdeConstants.dContactSoftCFM;
-import static org.ode4j.ode.OdeConstants.dContactSoftERP;
-import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.OdeConstants.*;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.dIASSERT;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;

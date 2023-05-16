@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.FastLDLTSolve.solveEquationSystemWithLDLT;
 import static org.ode4j.ode.internal.FastLSolve.solveL1Straight;
 import static org.ode4j.ode.internal.FastLTSolve.solveL1Transposed;

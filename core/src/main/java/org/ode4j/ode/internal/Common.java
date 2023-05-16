@@ -752,10 +752,10 @@ enum {
 //	{
 //		return value < lo ? (value_type)lo : value > hi ? (value_type)hi : value;
 //	}
-	static double dxClamp(double value, double lo, double hi) {
+	public static double dxClamp(double value, double lo, double hi) {
 		return value < lo ? lo : Math.min(value, hi);
 	}
-	static int dxClamp(int value, int lo, int hi) {
+	public static int dxClamp(int value, int lo, int hi) {
 		return value < lo ? lo : Math.min(value, hi);
 	}
 
@@ -919,4 +919,5 @@ enum {
 	//		dARRAY_SIZE(((aclass *)sizeof(void *))->aarr);
 	//	}
 
+	protected Common() {}
 }

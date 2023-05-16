@@ -219,4 +219,5 @@ public class GimMath {
 		return random.nextFloat();
 	}
 
+	protected GimMath() {}
 }

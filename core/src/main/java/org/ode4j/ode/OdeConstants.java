@@ -76,4 +76,6 @@ public class OdeConstants {
 	 */
 	@Deprecated
     public static final int dAllocateMaskAll = 0xFFFFFFFF; //~0U,
+
+	protected OdeConstants() {}
 }

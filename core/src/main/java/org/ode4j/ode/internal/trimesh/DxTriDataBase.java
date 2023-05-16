@@ -37,6 +37,8 @@ import static org.ode4j.ode.DTriMesh.dMESHDATAUSE.*;
 import static org.ode4j.ode.DTriMeshData.dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MAX;
 import static org.ode4j.ode.DTriMeshData.dTRIDATAPREPROCESS_FACE_ANGLES_EXTRA__MIN;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.M_PI;
+import static org.ode4j.ode.internal.Common.M_PI_2;
 import static org.ode4j.ode.internal.CommonEnums.*;
 
 public class DxTriDataBase extends DBase {

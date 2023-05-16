@@ -31,7 +31,8 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 
-import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.dDOUBLE;
+import static org.ode4j.ode.internal.Common.dIASSERT;
 
 
 /**

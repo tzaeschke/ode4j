@@ -37,6 +37,7 @@ module org.ode4j
     exports org.ode4j.ode.internal.processmem;
     exports org.ode4j.ode.internal.ragdoll;
     exports org.ode4j.ode.internal.stuff;
+    exports org.ode4j.ode.internal.trimesh;
     exports org.ode4j.ode.internal;
     exports org.ode4j.ode.ragdoll;
     exports org.ode4j.ode.threading.task;

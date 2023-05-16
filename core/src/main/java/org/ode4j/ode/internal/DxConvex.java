@@ -27,7 +27,6 @@ package org.ode4j.ode.internal;
 import static org.ode4j.ode.OdeConstants.CONTACTS_UNIMPORTANT;
 import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.Common.dxClamp;
 import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Copy;
 import static org.ode4j.ode.internal.cpp4j.Cmath.fabs;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.fprintf;
@@ -185,10 +184,10 @@ public class DxConvex extends DxGeom implements DConvex {
 	//#define dMIN(A,B)  std::min(A,B)
 	//#define dMAX(A,B)  std::max(A,B)
 	//#endif
-	private static final double dMIN(double a, double b) { return a>b ? b : a; }
-	private static final double dMAX(double a, double b) { return a>b ? a : b; }
-	private static final int dMIN(int a, int b) { return a>b ? b : a; }
-	private static final int dMAX(int a, int b) { return a>b ? a : b; }
+	private static double dMIN(double a, double b) { return Math.min(a, b); }
+	private static double dMAX(double a, double b) { return Math.max(a, b); }
+	private static int dMIN(int a, int b) { return Math.min(a, b); }
+	private static int dMAX(int a, int b) { return Math.max(a, b); }
 
 	//****************************************************************************
 	// Convex public API

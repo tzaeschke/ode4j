@@ -79,7 +79,8 @@ public class GimContact {
 //	};
 	//typedef struct _GIM_CONTACT GIM_CONTACT;
 
-	
+	private GimContact() {}
+
 	public vec3f getPoint() {
 		return m_point;
 	}

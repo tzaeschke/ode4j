@@ -28,6 +28,7 @@ import org.ode4j.math.*;
 import org.ode4j.math.DMatrix3.DVector3RowTView;
 import org.ode4j.ode.internal.Common;
 
+import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.CommonEnums.*;
 
 /**

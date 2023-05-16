@@ -29,4 +29,5 @@ package org.ode4j.ode.internal.cpp4j;
  */
 public class C_All extends Cmath {
 
+    private C_All() {}
 }

@@ -35,6 +35,7 @@ import java.util.Arrays;
 import static org.ode4j.ode.DAMotorJoint.AMotorMode.dAMotorEuler;
 import static org.ode4j.ode.DAMotorJoint.AMotorMode.dAMotorUser;
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.joints.JointEnums.*;
 

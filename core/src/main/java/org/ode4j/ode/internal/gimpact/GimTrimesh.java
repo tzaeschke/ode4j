@@ -166,6 +166,7 @@ public class GimTrimesh implements GimConstants {
 	mat4f m_transform = new mat4f();
 
 
+	private GimTrimesh() {}
 
 	/**
 	 * Trimesh Trimesh Collisions
