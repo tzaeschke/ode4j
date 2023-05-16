@@ -60,6 +60,22 @@ public class DVector3Test {
     }
 
     @Test
+    public void testFromDoubleArray(){
+        DVector3 x = new DVector3(10, 20, 30);
+        double[] a = {10, 20, 30};
+        DVector3 y = DVector3.fromDoubleArray(a);
+        assertTrue(x.isEq(y, 0));
+    }
+
+    @Test
+    public void testFromFloatArray(){
+        DVector3 x = new DVector3(10, 20, 30);
+        float[] a = {10, 20, 30};
+        DVector3 y = DVector3.fromFloatArray(a);
+        assertTrue(x.isEq(y, 0));
+    }
+
+    @Test
     public void testToDoubleArray(){
         DVector3 x = new DVector3(10, 20, 30);
         double[] a = x.toDoubleArray();

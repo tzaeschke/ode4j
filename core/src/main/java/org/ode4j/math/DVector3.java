@@ -86,7 +86,15 @@ public class DVector3 implements DVector3C {
 		this();
 		set(i, j, k);
 	}
-	
+
+	public static DVector3 fromDoubleArray(double[] a) {
+		return new DVector3(a);
+	}
+
+	public static DVector3 fromFloatArray(float[] a) {
+		return new DVector3(a[0], a[1], a[2]);
+	}
+
 	public final DVector3 set(double[] v2) {
 		set(v2[0], v2[1], v2[2]);
 		return this;
