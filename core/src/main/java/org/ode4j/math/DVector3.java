@@ -86,7 +86,15 @@ public class DVector3 implements DVector3C {
 		this();
 		set(i, j, k);
 	}
-	
+
+	public static DVector3 fromDoubleArray(double[] a) {
+		return new DVector3(a);
+	}
+
+	public static DVector3 fromFloatArray(float[] a) {
+		return new DVector3(a[0], a[1], a[2]);
+	}
+
 	public final DVector3 set(double[] v2) {
 		set(v2[0], v2[1], v2[2]);
 		return this;
@@ -557,10 +565,15 @@ public class DVector3 implements DVector3C {
 	}
 
 	@Override
+	public final double[] toDoubleArray() {
+		return new double[]{get0(), get1(), get2()};
+	}
+
+	@Override
 	public final float[] toFloatArray() {
 		return new float[]{(float) get0(), (float) get1(), (float) get2()};
 	}
-	
+
 	public final DVector3 set(int i, double d) {
         switch (i) {
         case 0: d0 = d; break;

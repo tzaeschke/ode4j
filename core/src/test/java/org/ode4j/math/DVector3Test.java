@@ -25,6 +25,8 @@ package org.ode4j.math;
 import org.junit.Test;
 import org.ode4j.ode.OdeMath;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class DVector3Test {
@@ -55,6 +57,42 @@ public class DVector3Test {
         assertSame(v2, v2b);
         DVector3 v2c = v2.eqToRadians();
         assertSame(v2, v2c);
+    }
+
+    @Test
+    public void testFromDoubleArray(){
+        DVector3 x = new DVector3(10, 20, 30);
+        double[] a = {10, 20, 30};
+        DVector3 y = DVector3.fromDoubleArray(a);
+        assertTrue(x.isEq(y, 0));
+    }
+
+    @Test
+    public void testFromFloatArray(){
+        DVector3 x = new DVector3(10, 20, 30);
+        float[] a = {10, 20, 30};
+        DVector3 y = DVector3.fromFloatArray(a);
+        assertTrue(x.isEq(y, 0));
+    }
+
+    @Test
+    public void testToDoubleArray(){
+        DVector3 x = new DVector3(10, 20, 30);
+        double[] a = x.toDoubleArray();
+        assertEquals(3, a.length);
+        assertEquals(10, a[0], 0);
+        assertEquals(20, a[1], 0);
+        assertEquals(30, a[2], 0);
+    }
+
+    @Test
+    public void testToFloatArray(){
+        DVector3 x = new DVector3(10, 20, 30);
+        float[] a = x.toFloatArray();
+        assertEquals(3, a.length);
+        assertEquals(10, a[0], 0);
+        assertEquals(20, a[1], 0);
+        assertEquals(30, a[2], 0);
     }
 
     @Test
