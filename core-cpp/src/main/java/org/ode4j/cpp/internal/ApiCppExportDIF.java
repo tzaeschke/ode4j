@@ -34,4 +34,5 @@ public abstract class ApiCppExportDIF extends ApiCppCollision {
 		throw new UnsupportedOperationException();
 	}
 
+	protected ApiCppExportDIF() {}
 }

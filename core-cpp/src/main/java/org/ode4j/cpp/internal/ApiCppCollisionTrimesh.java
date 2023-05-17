@@ -404,5 +404,6 @@ int TriStride = sizeof(StridedTri);
         g.update();
     }
 
+    protected ApiCppCollisionTrimesh() {}
 }
 

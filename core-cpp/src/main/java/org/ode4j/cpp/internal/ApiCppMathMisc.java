@@ -146,4 +146,5 @@ public abstract class ApiCppMathMisc {
 		return OdeMath.dMaxDifferenceLowerTriangle(A, B, n);
 	}
 
+	protected ApiCppMathMisc() {}
 }

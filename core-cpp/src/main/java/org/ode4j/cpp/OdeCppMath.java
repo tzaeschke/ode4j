@@ -30,6 +30,7 @@ import org.ode4j.ode.OdeMath;
  * From OdeMath.java.
  *
  */
+@Deprecated // To be removed in 0.6.0
 public abstract class OdeCppMath extends ApiCppMathMatrix {
 
 	//ODE_API 
@@ -77,4 +78,5 @@ public abstract class OdeCppMath extends ApiCppMathMatrix {
 		OdeMath.dPlaneSpace(n, p, q);
 	}
 
+	protected OdeCppMath() {}
 }

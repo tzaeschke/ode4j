@@ -103,4 +103,5 @@ public static void dTimerReport (FILE fout, int average) {
 	 return Timer.dTimerResolution();
  }
 
+ protected ApiCppTimer() {}
 }

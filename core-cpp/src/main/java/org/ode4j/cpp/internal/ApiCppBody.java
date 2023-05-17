@@ -1165,4 +1165,6 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	public static void dBodySetGyroscopicMode(DBody b, boolean enabled) {
 		b.setGyroscopicMode(enabled);
 	}
+
+	protected ApiCppBody() {}
 }

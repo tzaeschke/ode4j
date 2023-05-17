@@ -88,4 +88,5 @@ public abstract class ApiCppOther extends ApiCppMass {
 		return OdeHelper.areConnectedExcluding(body1, body2, joint_type);
 	}
 
+	protected ApiCppOther() {}
 }

@@ -223,28 +223,28 @@ public interface DWorld {
 	int getStepIslandsProcessingMaxThreadCount();
 
 
-	public static final double dWORLDSTEP_RESERVEFACTOR_DEFAULT = 1.2f;
-	public static final int dWORLDSTEP_RESERVESIZE_DEFAULT = 65536;
-
-	/**
-	 * Memory reservation policy descriptor structure for world stepping functions.
-	 *
-	 * <code>struct_size</code> should be assigned the size of the structure.
-	 *
-	 * <code>reserve_factor</code> is a quotient that is multiplied by required memory size
-	 *  to allocate extra reserve whenever reallocation is needed.
-	 *
-	 * <code>reserve_minimum</code> is a minimum size that is checked against whenever reallocation 
-	 * is needed to allocate expected working memory minimum at once without extra 
-	 * reallocations as number of bodies/joints grows.
-	 *
-	 * See DxWorld.setStepMemoryReservationPolicy(DWorldStepReserveInfo)
-	 */
-	public class DWorldStepReserveInfo	{
-	    public int struct_size;
-	    public double reserve_factor; // Use float as precision does not matter here
-	    public int reserve_minimum;
-	};
+	//	final double dWORLDSTEP_RESERVEFACTOR_DEFAULT = 1.2f;
+	//	final int dWORLDSTEP_RESERVESIZE_DEFAULT = 65536;
+	//
+	//	/**
+	//	 * Memory reservation policy descriptor structure for world stepping functions.
+	//	 *
+	//	 * <code>struct_size</code> should be assigned the size of the structure.
+	//	 *
+	//	 * <code>reserve_factor</code> is a quotient that is multiplied by required memory size
+	//	 *  to allocate extra reserve whenever reallocation is needed.
+	//	 *
+	//	 * <code>reserve_minimum</code> is a minimum size that is checked against whenever reallocation
+	//	 * is needed to allocate expected working memory minimum at once without extra
+	//	 * reallocations as number of bodies/joints grows.
+	//	 *
+	//	 * See DxWorld.setStepMemoryReservationPolicy(DWorldStepReserveInfo)
+	//	 */
+	//	class DWorldStepReserveInfo	{
+	//	    public int struct_size;
+	//	    public double reserve_factor; // Use float as precision does not matter here
+	//	    public int reserve_minimum;
+	//	}
 
 
 	/**

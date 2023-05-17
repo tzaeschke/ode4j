@@ -1670,6 +1670,8 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 		public boolean aabb_test(DGeom o1, DGeom o2, DAABB aabb) {
 			return aabb_test.run(o1, o2, aabb);
 		}
+
+		public dGeomClass() {}
 	}
 
 	//ODE_API 
@@ -1699,4 +1701,6 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	public static void dSetColliderOverride (int i, int j, DColliderFn fn) {
 		OdeHelper.setColliderOverride(i, j, fn);
 	}
+
+	protected ApiCppCollision() {}
 }

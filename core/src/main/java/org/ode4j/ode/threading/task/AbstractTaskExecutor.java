@@ -25,6 +25,8 @@ package org.ode4j.ode.threading.task;
 
 public abstract class AbstractTaskExecutor implements TaskExecutor {
 
+	protected AbstractTaskExecutor() {}
+
 	@Override
 	public TaskGroup group(String string, Runnable runnable) {
 		return new TaskGroup(this, string, runnable);

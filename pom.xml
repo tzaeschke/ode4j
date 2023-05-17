@@ -437,8 +437,8 @@
 										<exclude>module-info.java</exclude>
 									</excludes>
 									<release>8</release>
-									<source>8</source>
-									<target>8</target>
+									<source>1.8</source>
+									<target>1.8</target>
 								</configuration>
 							</execution>
 						</executions>

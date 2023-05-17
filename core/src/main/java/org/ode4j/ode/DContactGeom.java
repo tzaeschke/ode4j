@@ -56,6 +56,8 @@ public class DContactGeom {
 
 	public boolean normal_needs_normalizing;
 
+	public DContactGeom() {}
+
 	/**
 	 * pos[3] is assigned in several places but never ysed. This is a dummy functioon to track this fact.
 	 */

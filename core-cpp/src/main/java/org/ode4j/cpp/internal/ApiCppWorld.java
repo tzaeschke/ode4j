@@ -710,5 +710,5 @@ public abstract class ApiCppWorld extends ApiCppBody {
 		w.setMaxAngularSpeed(max_speed);
 	}
 
-
+	protected ApiCppWorld() {}
 }
