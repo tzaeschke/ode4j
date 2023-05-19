@@ -74,4 +74,5 @@ public class JointEnums {
 		return dJBR_BODY1 + dJBR_BODY2 - relativity;
 	}
 
+	private JointEnums() {}
 }

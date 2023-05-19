@@ -223,5 +223,5 @@ public class DxWorldProcessIslandsInfo {
         return maxreq;
     }
 
-
+    public DxWorldProcessIslandsInfo() {}
 }

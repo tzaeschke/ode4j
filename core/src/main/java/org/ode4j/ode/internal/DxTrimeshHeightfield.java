@@ -50,9 +50,9 @@ import org.ode4j.ode.DSpace;
 public class DxTrimeshHeightfield extends DxAbstractHeightfield {
 
     //#define dMIN(A,B)  ((A)>(B) ? (B) : (A))
-    private static final double dMIN(double A, double B) { return ((A)>(B) ? (B) : (A)); }
+    private static double dMIN(double A, double B) { return (Math.min((A), (B))); }
     //#define dMAX(A,B)  ((A)>(B) ? (A) : (B))
-    private static final double dMAX(double A, double B) { return ((A)>(B) ? (A) : (B)); }
+    private static double dMAX(double A, double B) { return (Math.max((A), (B))); }
     //
     //
     ////Three-way MIN and MAX
@@ -129,7 +129,7 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
     private int              tempHeightBufferSizeX;
     private int              tempHeightBufferSizeZ;
 
-    private boolean	layered;
+    private final boolean	layered;
 
     public DxTrimeshHeightfield(DSpace space, DHeightfieldData data, boolean bPlaceable) {
         this(space, data, bPlaceable, false);
@@ -615,7 +615,7 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
         return numTerrainContacts;
     }
 
-    public static class CollideHeightfield implements DColliderFn {
+    static class CollideHeightfield implements DColliderFn {
         int dCollideHeightfield( DxTrimeshHeightfield o1, DxGeom o2, int flags, DContactGeomBuffer contacts, int skip )
         {
             dIASSERT( skip >= 1);//(int)sizeof(dContactGeom) );

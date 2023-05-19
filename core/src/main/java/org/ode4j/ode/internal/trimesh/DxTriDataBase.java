@@ -209,7 +209,7 @@ public class DxTriDataBase extends DBase {
 
         //        IFaceAngleStorageControl *retrieveFaceAngles() const { return m_faceAngles; }
         //        IFaceAngleStorageView *retrieveFaceAngleView() const { return m_faceAngleView; }
-        public IFaceAngleStorageControl retrieveFaceAngles() {
+        IFaceAngleStorageControl retrieveFaceAngles() {
             return m_faceAngles;
         }
         public double retrieveFaceAngle(int triangleIndex, int vertexIndex) {

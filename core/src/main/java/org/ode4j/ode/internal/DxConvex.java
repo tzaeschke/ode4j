@@ -1783,7 +1783,7 @@ Helper struct
 		return contacts;
 	}
 
-	public static class CollideConvexConvex implements DColliderFn {
+	static class CollideConvexConvex implements DColliderFn {
 		//int dCollideConvexConvex (dxGeom *o1, dxGeom *o2, int flags,
 		//			  dContactGeom *contact, int skip)
 		int dCollideConvexConvex (DxConvex Convex1, DxConvex Convex2, int flags,

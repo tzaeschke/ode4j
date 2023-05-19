@@ -37,13 +37,13 @@ public class ErrorHdl {
 
 	public static Logger logger = LoggerFactory.getLogger(ErrorHdl.class);
 
-	    /**
-	 * @author Tilmann Zaeschke
-	 */
-	public static class ErrorJump extends RuntimeException {
-		private static final long serialVersionUID = 1L;
-
-	}
+	//    /**
+	//	 * @author Tilmann Zaeschke
+	//	 */
+	//	public static class ErrorJump extends RuntimeException {
+	//		private static final long serialVersionUID = 1L;
+	//
+	//	}
 
 
 	private static dMessageFunction error_function = null;
@@ -163,4 +163,6 @@ public class ErrorHdl {
 			logger.info("ODE Message " + num + ": " + msg, ap);
 		}
 	}
+
+	private ErrorHdl() {}
 }

@@ -29,7 +29,7 @@ import static org.ode4j.ode.internal.FastLSolve.solveL1Straight;
 import static org.ode4j.ode.internal.FastLTSolve.solveL1Transposed;
 import static org.ode4j.ode.internal.FastVecScale.scaleLargeVector;
 
-public class FastLDLTSolve {
+class FastLDLTSolve {
 
 
     // #ifndef _ODE_MATRIX_IMPL_H_
@@ -50,4 +50,5 @@ public class FastLDLTSolve {
         solveL1Transposed(L, bArray, bPos, rowCount, rowSkip, b_stride);
     }
 
+    private FastLDLTSolve() {}
 }

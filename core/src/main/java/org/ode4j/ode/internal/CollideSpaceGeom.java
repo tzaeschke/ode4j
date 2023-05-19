@@ -29,7 +29,7 @@ import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DColliderFn;
 
-public class CollideSpaceGeom implements DColliderFn {
+class CollideSpaceGeom implements DColliderFn {
 
 	@Override
 	public int dColliderFn (DGeom o1, DGeom o2, int flags, 

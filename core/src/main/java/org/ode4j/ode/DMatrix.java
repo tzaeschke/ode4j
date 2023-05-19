@@ -415,7 +415,7 @@ public class DMatrix extends DMisc {
      */
     public static void dLDLTRemove (double[] A, int[] p, double[] L, double[] d,
               int n1, int n2, int r, int nskip) {
-        Matrix.dLDLTRemove(A, p, L, d, n1, n2, r, nskip, null);
+        Matrix.dLDLTRemove(A, p, L, d, n1, n2, r, nskip);
     }
 
 

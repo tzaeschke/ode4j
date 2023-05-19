@@ -51,6 +51,8 @@ public final class DxWorldProcessMemArena {
     }
     //     #undef BUFFER_TO_ARENA_EXTRA
 
+    public DxWorldProcessMemArena() {}
+
     boolean IsStructureValid() //const
     {
         return m_pAllocBegin!=null 

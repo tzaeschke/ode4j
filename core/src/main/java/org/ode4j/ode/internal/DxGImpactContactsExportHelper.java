@@ -32,7 +32,7 @@ import static org.ode4j.ode.internal.Common.dIASSERT;
 import static org.ode4j.ode.internal.Common.dNextAfter;
 import static org.ode4j.ode.internal.DxGeom.NUMC_MASK;
 
-public class DxGImpactContactsExportHelper {
+class DxGImpactContactsExportHelper {
     interface GImpactContactAccessorI {
         double RetrieveDepthByIndex(int index);
 
@@ -232,4 +232,5 @@ public class DxGImpactContactsExportHelper {
         return result;
     }
 
+    private DxGImpactContactsExportHelper() {}
 }

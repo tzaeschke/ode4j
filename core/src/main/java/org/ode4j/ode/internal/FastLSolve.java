@@ -25,7 +25,7 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.dIASSERT;
 
-public class FastLSolve {
+class FastLSolve {
 
 // Code style improvements and optimizations by Oleh Derevenko ????-2017
 
@@ -449,4 +449,5 @@ public class FastLSolve {
         }
     }
 
+    private FastLSolve() {}
 }

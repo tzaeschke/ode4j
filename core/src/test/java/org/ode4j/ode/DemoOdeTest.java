@@ -32,7 +32,6 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.internal.DLCP;
 import org.ode4j.ode.internal.DxMass;
-import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
 import org.ode4j.ode.internal.OdeFactoryImpl;
 
 import java.util.ArrayList;
@@ -117,7 +116,7 @@ public class DemoOdeTest {
         try {
             execute(obj, mName, params);
             //print(ifnomsg);//ifnomsg ;
-        } catch (ErrorJump e) {
+        } catch (Exception e) {
             //print(ifmsg);//ifmsg ;
             e.printStackTrace();
             fail(ifmsg);

@@ -1099,5 +1099,7 @@ public class DxCollisionUtil {
 			}
 		}	
 	}
+
+	protected DxCollisionUtil() {}
 }
 

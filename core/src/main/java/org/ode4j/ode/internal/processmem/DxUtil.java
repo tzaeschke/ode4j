@@ -36,8 +36,8 @@ public class DxUtil {
 
 	//#define dMIN(A,B)  ((A)>(B) ? (B) : (A))
 	//#define dMAX(A,B)  ((B)>(A) ? (B) : (A))
-	public static final int dMIN(int A, int B) { return A > B ? B : A; }
-	public static final int dMAX(int B, int A) { return A > B ? B : A; }
+	public static int dMIN(int A, int B) { return Math.min(A, B); }
+	public static int dMAX(int B, int A) { return Math.min(A, B); }
 	
 	
     //****************************************************************************
@@ -75,24 +75,24 @@ public class DxUtil {
     /* ********************************************************************************************************* */
 
 //  #define dEFFICIENT_SIZE(x) (((x)+(EFFICIENT_ALIGNMENT-1)) & ~((size_t)(EFFICIENT_ALIGNMENT-1)))
-    static final int dEFFICIENT_SIZE(int x) {
+    static int dEFFICIENT_SIZE(int x) {
         return x;
         //return (((x)+(EFFICIENT_ALIGNMENT-1)) & ~((int)(EFFICIENT_ALIGNMENT-1)));
     }
 //  #define dEFFICIENT_PTR(p) ((void *)dEFFICIENT_SIZE((size_t)(p)))
-    static final BlockPointer dEFFICIENT_PTR(BlockPointer p) {
+    static BlockPointer dEFFICIENT_PTR(BlockPointer p) {
     	//return new BlockPointer(dEFFICIENT_SIZE(p.toInt()));
     	//TZ reallocation not possible --> just return it
     	return p;
     }
-    static final BlockPointer dEFFICIENT_PTR(DxWorldProcessMemArena obj, int i) {
+    static BlockPointer dEFFICIENT_PTR(DxWorldProcessMemArena obj, int i) {
         //System.out.println("dEFFICIENT_PTR(Object obj, int i)");
     	//TODO arghhh!!!
     	//return NULL_BP;
         return new BlockPointer(obj, i);
     }
 //  #define dOFFSET_EFFICIENTLY(p, b) ((void *)((size_t)(p) + dEFFICIENT_SIZE(b)))
-    static final BlockPointer dOFFSET_EFFICIENTLY(BlockPointer p, int b) {
+    static BlockPointer dOFFSET_EFFICIENTLY(BlockPointer p, int b) {
         //return new BlockPointer((p.toInt() + dEFFICIENT_SIZE(b)));
     	//TZ reallocation not possible --> just return it
     	return p;
@@ -149,5 +149,5 @@ public class DxUtil {
         }
     }
 
-    
+    private DxUtil() {}
 }

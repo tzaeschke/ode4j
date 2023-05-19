@@ -37,7 +37,7 @@ import static org.ode4j.ode.internal.Common.*;
 /**
  * Do not use directly, this is an internal class!
  */
-public class CollideBoxBox implements DColliderFn {
+class CollideBoxBox implements DColliderFn {
 	//int dCollideBoxBox (dxGeom *o1, dxGeom *o2, int flags,
 	//    dContactGeom *contact, int skip)
 	public int dCollideBoxBox (DxBox o1, DxBox o2, int flags,

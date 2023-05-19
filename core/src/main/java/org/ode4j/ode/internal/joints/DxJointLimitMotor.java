@@ -58,6 +58,7 @@ public class DxJointLimitMotor {
 	//****************************************************************************
 	// dxJointLimitMotor
 
+	public DxJointLimitMotor() {}
 
 	public void init( DxWorld world )
 	{
