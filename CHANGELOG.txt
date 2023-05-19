@@ -23,6 +23,7 @@ Bug: Dropping first box on Heightfield is wrong.
 
 0.5.0 (unreleased)
 =====
+- Removed linter warnings when compiling with Java 17. [#116](https://github.com/tzaeschke/ode4j/pull/116)
 - DVector3C.cross(). [#115](https://github.com/tzaeschke/ode4j/pull/115)
 - DVector3.toDoubleArray(), fromDoubleArray(), fromFloatArray(). [#114](https://github.com/tzaeschke/ode4j/pull/114)
 - Turned into tests: DemoI, DemoSpace, DemoSpaceStress. [#110](https://github.com/tzaeschke/ode4j/pull/110)
