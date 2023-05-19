@@ -31,6 +31,20 @@ import org.ode4j.ode.internal.ragdoll.DxRagdoll;
 
 import java.util.List;
 
+/**
+ * ode4j has generic support for rag dolls (or any other entities made of multiple bodies connected with joints).
+ * The patch adds a new type of joint - DxJointConstrainedBall, it is an extension to the regular ball and socket
+ * joint and additionally provides a way to constrain the movement as described at
+ * <a href="http://www.monsterden.net/software/ragdoll-pyode-tutorial">
+ *     http://www.monsterden.net/software/ragdoll-pyode-tutorial</a>.
+ * It is useful to implement more realistic shoulders of a human rag doll for instance.
+ * DxRagdoll class builds the actual rag doll based on the given list of "bones" and "joints".
+ * Additionally it provides a simple autoDisable method that can be used to freeze the whole rag doll
+ * when the movement of the bodies is minimal. Usually rag doll bodies tend to oscillate due to the high
+ * number of hard constraints and disabling only some of them does not work. Additionally, there is a demo
+ * with an example of a humanoid rag doll based on the tutorial mentioned above.
+ * The demo is extremely simple, you can only press space to apply some force.
+ */
 public interface DRagdoll {
 
     interface DRagdollBody {

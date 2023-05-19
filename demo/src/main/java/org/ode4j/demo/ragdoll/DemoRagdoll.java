@@ -39,30 +39,17 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DCapsule;
-import org.ode4j.ode.DContact;
-import org.ode4j.ode.DContactBuffer;
-import org.ode4j.ode.DContactJoint;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJoint;
-import org.ode4j.ode.DJointGroup;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.internal.Rotation;
-import org.ode4j.ode.internal.ragdoll.DxRagdoll;
-import org.ode4j.ode.internal.ragdoll.DxRagdoll.DxRagdollBody;
+import org.ode4j.ode.*;
+import org.ode4j.ode.ragdoll.DRagdoll;
 
 public class DemoRagdoll extends dsFunctions {
 
 	private static final int  MAX_CONTACTS = 64;		// maximum number of contact points per body
 	private DWorld world;
 	private DSpace space;
-	private DxRagdoll ragdoll;
-	private static double[] xyz = {4.3966, -2.0614, 3.4300};
-	private static double[] hpr = {153.5, -14.5, 0};
+	private DRagdoll ragdoll;
+	private static final double[] xyz = {4.3966, -2.0614, 3.4300};
+	private static final double[] hpr = {153.5, -14.5, 0};
 	private DJointGroup contactgroup;
 	private boolean show_contacts = false;	// show contact points?
 
@@ -81,12 +68,11 @@ public class DemoRagdoll extends dsFunctions {
 		contactgroup = OdeHelper.createJointGroup ();
 		OdeHelper.createPlane( space, 0, 0, 1, 0 );
 
-		ragdoll = new DxRagdoll(world, space, new DxDefaultHumanRagdollConfig());
+		ragdoll = OdeHelper.createRagdoll(world, space, new DxDefaultHumanRagdollConfig());
 		ragdoll.setAngularDamping(0.1);
 		DQuaternion q = new DQuaternion(1, 0, 0, 0);
-		Rotation.dQFromAxisAndAngle(q, new DVector3(1, 0, 0), -0.5 * Math.PI);
-		for (int i = 0; i < ragdoll.getBones().size(); i++) {
-			DxRagdollBody bone = ragdoll.getBones().get(i);
+		DRotation.dQFromAxisAndAngle(q, new DVector3(1, 0, 0), -0.5 * Math.PI);
+		for (DRagdoll.DRagdollBody bone : ragdoll.getBoneIter()) {
 			DGeom g = OdeHelper.createCapsule(space, bone.getRadius(), bone.getLength());
 			DBody body = bone.getBody();
 			DQuaternion qq = new DQuaternion();
@@ -123,13 +109,6 @@ public class DemoRagdoll extends dsFunctions {
 			dsDrawCapsule (pos, rot, cap.getLength(), cap.getRadius());
 		}
 	}
-
-	private DGeom.DNearCallback nearCallback = new DGeom.DNearCallback() {
-		@Override
-		public void call(Object data, DGeom o1, DGeom o2) {
-			nearCallback(data, o1, o2);
-		}
-	};
 
 	private void nearCallback (Object data, DGeom o1, DGeom o2) {
 		int i;
@@ -171,7 +150,7 @@ public class DemoRagdoll extends dsFunctions {
 	@Override
 	public void step(boolean pause)
 	{
-		space.collide (null,nearCallback);
+		space.collide (null, this::nearCallback);
 
 		if (!pause) {
 
@@ -212,7 +191,7 @@ public class DemoRagdoll extends dsFunctions {
 	public void command(char cmd) {
 		cmd = Character.toLowerCase(cmd);
 		if (cmd == ' ') {
-			ragdoll.getBones().get(DxDefaultHumanRagdollConfig.PELVIS).getBody().setLinearVel(0, 0, 80);
+			ragdoll.getBone(DxDefaultHumanRagdollConfig.PELVIS).getBody().setLinearVel(0, 0, 80);
 		}
 	}
 

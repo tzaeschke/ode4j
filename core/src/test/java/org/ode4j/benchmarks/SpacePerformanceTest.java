@@ -9,8 +9,6 @@ import org.ode4j.ode.DSapSpace.AXES;
 import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.internal.DxBVHSpace;
-import org.ode4j.ode.internal.DxSAPSpace2;
 
 public class SpacePerformanceTest {
 
@@ -39,9 +37,9 @@ public class SpacePerformanceTest {
         System.out.println("-= Iterations: " + iterations + "  Static: " + staticGeoms + " Dynamic: " + geoms + " =-");
         DSpace space = OdeHelper.createSapSpace(AXES.XZY);
         test_performance_with_dynamic_world(space, iterations, staticGeoms, geoms);
-        space = DxSAPSpace2.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode(), STATIC_CATEGORY);
+        space = OdeHelper.createSapSpace2(null, AXES.XZY, STATIC_CATEGORY);
         test_performance_with_dynamic_world(space, iterations, staticGeoms, geoms);
-        space = DxBVHSpace.bvhSpaceCreate(null, 16, false, 0.2, STATIC_CATEGORY);
+        space = OdeHelper.createBHVSpace(null, 16, false, 0.2, STATIC_CATEGORY);
         test_performance_with_dynamic_world(space, iterations, staticGeoms, geoms);
     }
 
@@ -121,9 +119,9 @@ public class SpacePerformanceTest {
 
     private void test_performance_with_static_world(int iterations, int staticGeoms, int geoms) {
         System.out.println("-= Iterations: " + iterations + "  Static: " + staticGeoms + " Dynamic: " + geoms + " =-");
-        DSpace space = DxSAPSpace2.dSweepAndPruneSpaceCreate(null, AXES.XZY.getCode(), STATIC_CATEGORY);
+        DSpace space = OdeHelper.createSapSpace2(null, AXES.XZY, STATIC_CATEGORY);
         test_performance_with_static_world(space, iterations, staticGeoms, geoms);
-        space = DxBVHSpace.bvhSpaceCreate(null, 4, false, 0.2, STATIC_CATEGORY);
+        space = OdeHelper.createBHVSpace(null, 4, false, 0.2, STATIC_CATEGORY);
         test_performance_with_static_world(space, iterations, staticGeoms, geoms);
     }
 

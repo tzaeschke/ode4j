@@ -39,22 +39,9 @@ import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DCapsule;
-import org.ode4j.ode.DContact;
-import org.ode4j.ode.DContactBuffer;
-import org.ode4j.ode.DContactJoint;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJoint;
-import org.ode4j.ode.DJointGroup;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.*;
 import org.ode4j.ode.internal.DxQuickStep;
-import org.ode4j.ode.internal.Rotation;
-import org.ode4j.ode.internal.ragdoll.DxRagdoll;
-import org.ode4j.ode.internal.ragdoll.DxRagdoll.DxRagdollBody;
+import org.ode4j.ode.ragdoll.DRagdoll;
 import org.ode4j.ode.threading.task.MultiThreadTaskExecutor;
 
 public class DemoMultithreading extends dsFunctions {
@@ -63,9 +50,9 @@ public class DemoMultithreading extends dsFunctions {
 	private static final int RAGDOLLS = 8;
 	private DWorld world;
 	private DSpace space;
-	private DxRagdoll[] ragdolls = new DxRagdoll[RAGDOLLS * RAGDOLLS];
-	private static double[] xyz = {0, -12.0614, 6.4300};
-	private static double[] hpr = {90, -34.5, 0};
+	private final DRagdoll[] ragdolls = new DRagdoll[RAGDOLLS * RAGDOLLS];
+	private static final double[] xyz = {0, -12.0614, 6.4300};
+	private static final double[] hpr = {90, -34.5, 0};
 	private DJointGroup contactgroup;
 	private boolean show_contacts = false;	// show contact points?
 
@@ -89,12 +76,11 @@ public class DemoMultithreading extends dsFunctions {
 		for (int y = 0; y < RAGDOLLS; y++) {
 			for (int x = 0; x < RAGDOLLS; x++) {
 				int n = x + y * RAGDOLLS;
-				ragdolls[n] = new DxRagdoll(world, space, new DxDefaultHumanRagdollConfig());
+				ragdolls[n] = OdeHelper.createRagdoll(world, space, new DxDefaultHumanRagdollConfig());
 				ragdolls[n].setAngularDamping(0.1);
 				DQuaternion q = new DQuaternion(1, 0, 0, 0);
-				Rotation.dQFromAxisAndAngle(q, new DVector3(1, 0, 0), -0.5 * Math.PI);
-				for (int i = 0; i < ragdolls[n].getBones().size(); i++) {
-					DxRagdollBody bone = ragdolls[n].getBones().get(i);
+				DRotation.dQFromAxisAndAngle(q, new DVector3(1, 0, 0), -0.5 * Math.PI);
+				for (DRagdoll.DRagdollBody bone : ragdolls[n].getBoneIter()) {
 					DGeom g = OdeHelper.createCapsule(space, bone.getRadius(), bone.getLength());
 					DBody body = bone.getBody();
 					DQuaternion qq = new DQuaternion();
@@ -137,13 +123,6 @@ public class DemoMultithreading extends dsFunctions {
 		}
 	}
 
-	private DGeom.DNearCallback nearCallback = new DGeom.DNearCallback() {
-		@Override
-		public void call(Object data, DGeom o1, DGeom o2) {
-			nearCallback(data, o1, o2);
-		}
-	};
-
 	private void nearCallback (Object data, DGeom o1, DGeom o2) {
 		int i;
 		// if (o1->body && o2->body) return;
@@ -184,7 +163,7 @@ public class DemoMultithreading extends dsFunctions {
 	@Override
 	public void step(boolean pause)
 	{
-		space.collide (null,nearCallback);
+		space.collide (null, this::nearCallback);
 		DxQuickStep.mtIterations.set(0);
 
 		if (!pause) {

@@ -33,15 +33,7 @@ import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DMass;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.DSphere;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.internal.joints.DxJointConstrainedBall;
+import org.ode4j.ode.*;
 
 public class DemoJointConstrainedBall extends dsFunctions {
 
@@ -49,11 +41,12 @@ public class DemoJointConstrainedBall extends dsFunctions {
 	private DSpace space;
 	private DBody body1;
 	private DBody body2;
-	private DxJointConstrainedBall joint1;
-	private DxJointConstrainedBall joint2;
+	//private DxJointConstrainedBall joint1;
+	private DConstrainedBallJoint joint1;
+	private DConstrainedBallJoint joint2;
 
-	private static double[] xyz = {3.8966, -2.0614, 4.0300};
-	private static double[] hpr = {153.5, -16.5, 0};
+	private static final double[] xyz = {3.8966, -2.0614, 4.0300};
+	private static final double[] hpr = {153.5, -16.5, 0};
 
 	@Override
 	public void start()
@@ -86,13 +79,13 @@ public class DemoJointConstrainedBall extends dsFunctions {
 		mass.setBox(1, 0.2, 0.2, 1);
 		body2.setMass(mass);
 
-		joint1 = new DxJointConstrainedBall(world);
+		joint1 = OdeHelper.createConstrainedBallJoint(world);
 		joint1.attach(body1, null);
 		joint1.setAnchor(0, 0, 3.5);
 		joint1.setAxes(new DVector3(0, 0, 1), new DVector3(0, 0, 1));
 		joint1.setLimits(0.35 * Math.PI, 0.3 * Math.PI);
 
-		joint2 = new DxJointConstrainedBall(world);
+		joint2 = OdeHelper.createConstrainedBallJoint(world);
 		joint2.attach(body1, body2);
 		joint2.setAnchor(0, 0, 2.5);
 		joint2.setAxes(new DVector3(0, 0, 1), new DVector3(0, 0, 1));

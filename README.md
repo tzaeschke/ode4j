@@ -13,10 +13,11 @@ The latest released version of ode4j is 0.4.2, but the master branch may contain
 Version 0.2.4 up to 0.2.9 are ports of ODE 0.12.1, Version 0.3.1 is a port of ODE 0.13.1. Release 0.4.0 contains most changes between 0.13.1 and 0.16.0.  
 
 ode4j contains some custom features that are not present in ODE (see also [Wiki](https://github.com/tzaeschke/ode4j/wiki/Functionality-beyond-ODE)): 
- * `DRagdoll` & `DConstrainedBallJoint`, see `DemoJointConstrainedBall`
+ * `DRagdoll` & `DConstrainedBallJoint`, see `DemoRagdoll` and `DemoJointConstrainedBall`.
  * `DTrimeshHeightfield` with support for holes. See `DemoTrimeshHeightfield`.
- * SAP SPace 2
- * `BVHSpace`
+ * Improved SAP space (`SapSpace2`) implementation that allows labelling bodies as "immobile", see `SpacePerformanceTest`.
+ * BVH space based on a bounding volume hierarchy index, see `SpacePerformanceTest`.
+ * Java multi-threading support, see `DemoMultiThreading`.
 
 The [ODE forum](https://groups.google.com/forum/#!forum/ode-users) is useful for questions around physics and general API usage: 
 

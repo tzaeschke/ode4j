@@ -26,9 +26,7 @@ import org.junit.Test;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.internal.Rotation;
-import org.ode4j.ode.internal.ragdoll.DxRagdoll;
-import org.ode4j.ode.internal.ragdoll.DxRagdoll.DxRagdollBody;
+import org.ode4j.ode.ragdoll.DRagdoll;
 import org.ode4j.ode.test.geoms.DxDefaultHumanRagdollConfig;
 
 public class TestIssue0031_RagdollNPE {
@@ -45,12 +43,11 @@ public class TestIssue0031_RagdollNPE {
 		DSpace space = OdeHelper.createSimpleSpace();
 		OdeHelper.createPlane( space, 0, 0, 1, 0 );
 
-		DxRagdoll ragdoll = new DxRagdoll(world, space, new DxDefaultHumanRagdollConfig());
+		DRagdoll ragdoll = OdeHelper.createRagdoll(world, space, new DxDefaultHumanRagdollConfig());
 		ragdoll.setAngularDamping(0.1);
 		DQuaternion q = new DQuaternion(1, 0, 0, 0);
-		Rotation.dQFromAxisAndAngle(q, new DVector3(1, 0, 0), -0.5 * Math.PI);
-		for (int i = 0; i < ragdoll.getBones().size(); i++) {
-			DxRagdollBody bone = ragdoll.getBones().get(i);
+		DRotation.dQFromAxisAndAngle(q, new DVector3(1, 0, 0), -0.5 * Math.PI);
+		for (DRagdoll.DRagdollBody bone : ragdoll.getBoneIter()) {
 			DGeom g = OdeHelper.createCapsule(space, bone.getRadius(), bone.getLength());
 			DBody body = bone.getBody();
 			DQuaternion qq = new DQuaternion();

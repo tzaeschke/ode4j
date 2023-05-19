@@ -45,7 +45,13 @@ import org.ode4j.ode.DSpace;
  * Pierre Terdiman Homepage: http://www.codercorner.com/Opcode.htm
  *
  * Temporally coherent version of SAPSpace with additional BVH tree for collide2 performance improvement.
- * 
+ *
+ *
+ * This is essentially the same as SAP Space but with a crucial improvement: It is possible to specify a mask for
+ * marking bodies as 'immobile' (such as houses or walls in a 3D game). These objects are not tested for collision.
+ * For large gaming areas this can considerably improve performance because many or even most of the collisions do
+ * not need to be calculated even if the objects touch or even intersect.
+ *
  * @author Piotr Piastucki
  *
  */
