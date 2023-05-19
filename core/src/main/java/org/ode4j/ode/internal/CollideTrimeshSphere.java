@@ -24,16 +24,10 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DColliderFn;
-import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.OdeConfig;
-import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 
@@ -42,7 +36,7 @@ import org.ode4j.ode.internal.gimpact.GimDynArray;
  * Ported to Java by Tilmann Zaeschke
  *
  */
-public class CollideTrimeshSphere implements DColliderFn {
+class CollideTrimeshSphere implements DColliderFn {
 
 
 //	#include <ode/collision.h>
@@ -562,7 +556,7 @@ public class CollideTrimeshSphere implements DColliderFn {
 		SphereGeom.recomputeAABB();
 
 	    //Collide trimeshes
-	    DxGimpactCollision.gim_trimesh_sphere_collisionODE(TriMesh.m_collision_trimesh(),Position,Radius,trimeshcontacts);
+	    CollisionTrimeshGimpact.gim_trimesh_sphere_collisionODE(TriMesh.m_collision_trimesh(),Position,Radius,trimeshcontacts);
 
 	    if(trimeshcontacts.size() == 0)
 	    {

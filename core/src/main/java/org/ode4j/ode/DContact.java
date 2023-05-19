@@ -60,6 +60,8 @@ public class DContact {
 		public double motion1,motion2,motionN;
 		public double slip1;
 		public double slip2;
+
+		public DSurfaceParameters() {}
 	}
 
 	public DContactGeom getContactGeom() {

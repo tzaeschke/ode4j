@@ -215,7 +215,7 @@ public class DxBox extends DxGeom implements DBox {
 				}
 			}
 
-			double outerDistance = squaredDistance != 0 ? -sqrt(squaredDistance + lastOuterOffset * lastOuterOffset) : lastOuterOffset;
+			double outerDistance = squaredDistance != 0 ? -Math.sqrt(squaredDistance + lastOuterOffset * lastOuterOffset) : lastOuterOffset;
 			return outerDistance;
 		}
 

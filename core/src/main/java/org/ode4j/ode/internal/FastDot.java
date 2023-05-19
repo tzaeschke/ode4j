@@ -123,4 +123,6 @@ public class FastDot extends Misc {
 		}
 		return sum;
 	}
+
+	protected FastDot() {}
 }

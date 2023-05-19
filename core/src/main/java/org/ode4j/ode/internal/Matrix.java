@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.FastLDLTSolve.solveEquationSystemWithLDLT;
 import static org.ode4j.ode.internal.FastLSolve.solveL1Straight;
 import static org.ode4j.ode.internal.FastLTSolve.solveL1Transposed;
@@ -858,11 +859,14 @@ public class Matrix extends FastDot {
 	 * @param n2 n2
 	 * @param r r
 	 * @param nskip nskip 
-	 * @param tmpbuf buf
 	 */
 	// void dLDLTRemove (double [][]A, final int []p, double []L, double []d,
 	// int n1, int n2, int r, int nskip)
 	public static void dLDLTRemove(double[] A, final int[] p, double[] L,
+								   double[] d, int n1, int n2, int r, int nskip) {
+		dLDLTRemove(A, p, L, d, n1, n2, r, nskip, null);
+	}
+	static void dLDLTRemove(double[] A, final int[] p, double[] L,
 			double[] d, int n1, int n2, int r, int nskip, BlockPointer tmpbuf) {
 		// dAASSERT(A, p, L, d);
 		dAASSERT(n1 > 0 && n2 > 0 /*&& r >= 0*/ && r < n2 && n1 >= n2

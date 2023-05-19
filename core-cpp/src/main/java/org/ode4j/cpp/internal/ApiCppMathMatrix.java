@@ -326,5 +326,5 @@ void dMultidot2 (const dReal *a0, const ddouble*a1,
 		OdeMath.dRemoveRowCol(A, n, nskip, r);
 	}
 
-
+	protected ApiCppMathMatrix() {}
 }

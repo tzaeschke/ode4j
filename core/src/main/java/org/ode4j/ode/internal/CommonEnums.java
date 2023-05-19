@@ -137,4 +137,5 @@ public class CommonEnums {
 		assert(dV3E_X == 0 && dV3E_Y == 1 && dV3E_Z == 2);
 	}
 
+	private CommonEnums() {}
 }

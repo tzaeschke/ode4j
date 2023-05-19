@@ -26,7 +26,7 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.dAASSERT;
 
-public class FastVecScale {
+class FastVecScale {
 
     //    #ifndef _ODE_FASTVECSCALE_IMPL_H_
     //    #define _ODE_FASTVECSCALE_IMPL_H_
@@ -87,4 +87,5 @@ public class FastVecScale {
         }
     }
 
+    private FastVecScale() {}
 }

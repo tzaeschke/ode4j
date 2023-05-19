@@ -42,7 +42,7 @@ import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
  * Ported to Java by Tilmann Zaeschke
  * @author Francisco Leon
 */
-public class GimTrimeshSphereCollision {
+class GimTrimeshSphereCollision {
 
 
 //	int gim_triangle_sphere_collision(

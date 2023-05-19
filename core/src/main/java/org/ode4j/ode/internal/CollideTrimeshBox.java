@@ -62,7 +62,7 @@ import static org.ode4j.ode.internal.DxGeom.NUMC_MASK;
  * Ported to Java by Tilmann Zaeschke.                                   *
  *                                                                       *
  *************************************************************************/
-public class CollideTrimeshBox implements DColliderFn {
+class CollideTrimeshBox implements DColliderFn {
 
     @Override
     public int dColliderFn(DGeom o1, DGeom o2, int flags, DContactGeomBuffer contacts) {

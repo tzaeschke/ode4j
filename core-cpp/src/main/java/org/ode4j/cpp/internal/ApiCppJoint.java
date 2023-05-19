@@ -2484,4 +2484,6 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	public static DJoint dConnectingJoint (DBody b1, DBody b2) {
 		return OdeHelper.connectingJoint(b1, b2);
 	}
+
+	protected ApiCppJoint() {}
 }

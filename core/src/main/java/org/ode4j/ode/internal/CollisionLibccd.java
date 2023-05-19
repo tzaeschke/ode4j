@@ -56,7 +56,7 @@ import static org.ode4j.ode.internal.trimesh.DxTriDataBase.FaceAngleDomain;
  *
  * @author Tilmann Zaeschke
  */
-public class CollisionLibccd {
+class CollisionLibccd {
 
     private static class ccd_obj_t {
         final ccd_vec3_t pos = new ccd_vec3_t();

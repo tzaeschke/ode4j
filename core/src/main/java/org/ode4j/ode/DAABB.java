@@ -40,7 +40,14 @@ public class DAABB implements DAABBC {
 	private final DVector3 _min = new DVector3();
 	private final DVector3 _max = new DVector3();
 	
-	
+	public DAABB() {}
+
+	public DAABB(double min0, double max0, double min1, double max1, double min2, double max2) {
+		_min.set(min0, min1, min2);
+		_max.set(max0, max1, max2);
+	}
+
+
 	/**
 	 * Set the minimum and maximum values to -infinity and
 	 * infinity.
@@ -104,12 +111,9 @@ public class DAABB implements DAABBC {
 	 */
 	@Override
 	public boolean isValid() {
-		if (Double.isNaN(getMin0()) || Double.isNaN(getMax0()) ||
-				Double.isNaN(getMin1()) || Double.isNaN(getMax1()) ||
-				Double.isNaN(getMin2()) || Double.isNaN(getMax2()) ) {
-			return false;
-		}
-		return true;
+		return !Double.isNaN(getMin0()) && !Double.isNaN(getMax0()) &&
+				!Double.isNaN(getMin1()) && !Double.isNaN(getMax1()) &&
+				!Double.isNaN(getMin2()) && !Double.isNaN(getMax2());
 	}
 
 	/**
@@ -119,15 +123,12 @@ public class DAABB implements DAABBC {
 	 */
 	@Override
 	public boolean isDisjoint(DAABBC aabb2) {
-		if (getMin0() > aabb2.getMax0() ||
+		return getMin0() > aabb2.getMax0() ||
 				getMax0() < aabb2.getMin0() ||
 				getMin1() > aabb2.getMax1() ||
 				getMax1() < aabb2.getMin1() ||
 				getMin2() > aabb2.getMax2() ||
-				getMax2() < aabb2.getMin2()) {
-			return true;
-		}
-		return false;
+				getMax2() < aabb2.getMin2();
 	}
 
 	/**

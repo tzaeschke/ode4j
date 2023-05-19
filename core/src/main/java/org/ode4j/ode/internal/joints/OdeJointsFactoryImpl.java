@@ -42,7 +42,7 @@ import org.ode4j.ode.internal.DxWorld;
 /**
  * Factory for Joints.
  */
-public class OdeJointsFactoryImpl extends OdeHelper {
+public class OdeJointsFactoryImpl {
 
 
 	//****************************************************************************
@@ -458,4 +458,6 @@ public class OdeJointsFactoryImpl extends OdeHelper {
 		}
 		return false;
 	}
+
+	protected OdeJointsFactoryImpl() {}
 }

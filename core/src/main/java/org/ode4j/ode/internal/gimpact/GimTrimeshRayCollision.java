@@ -44,7 +44,7 @@ import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
  * Ported to Java by Tilmann Zaeschke
  * @author Francisco Leon
 */
-public class GimTrimeshRayCollision {
+class GimTrimeshRayCollision {
 
 
 //	#include "GIMPACT/gim_trimesh.h"
@@ -52,11 +52,11 @@ public class GimTrimeshRayCollision {
 
 	/**
 	 *  Trimesh Ray Collisions
-	 * @param trimesh
-	 * @param origin
-	 * @param dir
-	 * @param tmax
-	 * @param contact
+	 * @param trimesh trimesh
+	 * @param origin origin
+	 * @param dir dir
+	 * @param tmax tmax
+	 * @param contact contact
 	 * @return 1 if the ray collides, else 0
 	 */
 	//int gim_trimesh_ray_collision(GimTrimesh trimesh,vec3f origin,vec3f dir, 
@@ -121,11 +121,11 @@ public class GimTrimeshRayCollision {
 	 * Trimesh Ray Collisions closest.
 	 * Find the closest primitive collided by the ray.
 	 *
-	 * @param trimesh
-	 * @param origin
-	 * @param dir
-	 * @param tmax
-	 * @param contact
+	 * @param trimesh trimesh
+	 * @param origin origin
+	 * @param dir dir
+	 * @param tmax tmax
+	 * @param contact contact
 	 * @return 1 if the ray collides, else 0
 	 */
 	//int gim_trimesh_ray_closest_collision(GIM_TRIMESH * trimesh,vec3f origin,vec3f dir,

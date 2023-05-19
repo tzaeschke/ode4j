@@ -322,4 +322,6 @@ public class GimRadixSort {
 			return GIM_COMP_MACRO(x, y);
 		}
 	};
+
+	private GimRadixSort() {}
 }

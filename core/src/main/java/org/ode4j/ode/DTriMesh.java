@@ -109,7 +109,9 @@ public interface DTriMesh extends DGeom {
 		public static final int dMESHDATAUSE_VERTEX1    = 0x08;
 		public static final int dMESHDATAUSE_VERTEX2    = 0x10;
 		public static final int dMESHDATAUSE_VERTEX3    = 0x20;
-	};
+
+		private dMESHDATAUSE() {}
+	}
 
 	/*
 	 *	Set and get the TriMeshData additional data

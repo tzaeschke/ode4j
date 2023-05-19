@@ -169,4 +169,6 @@ public class OdeConfig {
 //  #endif
 //#endif
 
+	@Deprecated // Make this "private" in 0.6.0
+	protected OdeConfig() {}
 }

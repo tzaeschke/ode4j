@@ -166,4 +166,6 @@ public class Cstdio extends Cstdlib {
 			throw new RuntimeException(e);
 		}
 	}
+
+	protected Cstdio() {}
 }

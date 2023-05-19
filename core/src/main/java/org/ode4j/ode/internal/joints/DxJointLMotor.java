@@ -30,6 +30,7 @@ import org.ode4j.ode.DLMotorJoint;
 import org.ode4j.ode.internal.DxWorld;
 
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.dAASSERT;
 
 
 /**

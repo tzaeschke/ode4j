@@ -21,7 +21,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal.cpp4j;
 
-public class Cstring extends Ctime {
+public class Cstring extends Ctype {
 
 	public static void memcpy(double[] to, double[] from, int count) {
 		System.arraycopy(from, 0, to, 0, count);
@@ -89,4 +89,5 @@ public class Cstring extends Ctime {
 		return strlen(s.toCharArray());
 	}
 
+	protected Cstring() {}
 }

@@ -24,23 +24,21 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.ode4j.ode.OdeConstants;
-
 
 /** 
  * (TZ) This is for internal use only. Please try to avoid using this in
  * user applications.
  * This comes from the `reuse' library. copy any changes back to the source. 
  */
-public abstract class ErrorHandler extends OdeConstants {
+public abstract class ErrorHandler {
 
 
 	/** all user defined error functions have this type. error and debug functions
 	 * should not return.
 	 */
 	//public void dMessageFunction (int errnum, String msg, va_list ap);
-	public static interface dMessageFunction {
-		public void call(int errnum, String msg, Object ... ap);
+	public interface dMessageFunction {
+		void call(int errnum, String msg, Object ... ap);
 	}
 
 	/** set a new error, debug or warning handler. if fn is 0, the default handlers
@@ -111,5 +109,7 @@ public abstract class ErrorHandler extends OdeConstants {
 	public static void dMessage (int num, final String msg, Object ... ap) {
 		ErrorHdl.dMessage(num, msg, ap);
 	}
+
+	private ErrorHandler() {}
 }
 

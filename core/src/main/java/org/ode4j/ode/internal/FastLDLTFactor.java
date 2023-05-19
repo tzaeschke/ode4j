@@ -30,7 +30,7 @@ import static org.ode4j.ode.internal.Common.*;
 /**
  * Implementation of FastDLTImpl
  */
-public class FastLDLTFactor {
+class FastLDLTFactor {
 //#ifndef _ODE_FASTLDLT_IMPL_H_
 //#define _ODE_FASTLDLT_IMPL_H_
 

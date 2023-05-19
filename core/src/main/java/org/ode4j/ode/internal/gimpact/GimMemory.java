@@ -37,7 +37,7 @@ package org.ode4j.ode.internal.gimpact;
  * Ported to Java by Tilmann Zaeschke
  * @author Francisco Leon
  */
-public class GimMemory {
+class GimMemory {
 //	typedef void * gim_alloc_function (size_t size);
 //	typedef void * gim_alloca_function (size_t size);//Allocs on the heap
 //	typedef void * gim_realloc_function (void *ptr, size_t oldsize, size_t newsize);

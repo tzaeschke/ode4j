@@ -115,6 +115,8 @@ public class GimBufferArrayInt implements GimConstants { //formerly GBUFFER_ARRA
 	//typedef  struct _GBUFFER_ARRAY GBUFFER_ARRAY;
 
 
+	private GimBufferArrayInt() {}
+
 	//!Return a pointer of the element at the _index
 	//#define GIM_BUFFER_ARRAY_POINTER(_type,_array_data,_index) (_type *)((_array_data).m_buffer_data + (_index)*(_array_data).m_byte_stride)
 	IntArray GIM_BUFFER_ARRAY_POINTER(int _index) { return new IntArray(m_buffer_data, _index*m_byte_stride ); }

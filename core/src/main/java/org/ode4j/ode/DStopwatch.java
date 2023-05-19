@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode;
 
+// @Deprecated // This will be removed in 0.6.0
 public class DStopwatch {
 
 	private double _time;			/* total clock count */
@@ -51,4 +52,6 @@ public class DStopwatch {
 	public double getTime () {
 		return _time * 10e-9;
 	}
+
+	public DStopwatch() {}
 }

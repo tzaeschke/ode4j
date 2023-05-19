@@ -44,11 +44,7 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DJoint;
-import org.ode4j.ode.DMass;
-import org.ode4j.ode.DMassC;
+import org.ode4j.ode.*;
 import org.ode4j.ode.internal.Objects_H.DxPosR;
 import org.ode4j.ode.internal.Objects_H.DxPosRC;
 import org.ode4j.ode.internal.Objects_H.dxAutoDisable;
@@ -1414,7 +1410,7 @@ public class DxBody extends DObject implements DBody {
 
 	@Override
 	public boolean isConnectedTo (DBody body) //const
-	{ return OdeJointsFactoryImpl.areConnected (this, body); }
+	{ return OdeHelper.areConnected (this, body); }
 
 	@Override
 	public void  setAutoDisableLinearThreshold (double threshold)

@@ -31,7 +31,7 @@ import static org.ode4j.ode.internal.processmem.DxUtil.dMAX;
 
 import org.ode4j.ode.internal.joints.JointEnums;
 
-public class QuickStepEnums {
+class QuickStepEnums {
 
 	// dxInvIRowElement
 	public static final int IIE__MIN = 0;

@@ -91,7 +91,7 @@ import org.ode4j.math.DVector3;
  */
 public interface DJoint {
 
-	public static class DJointFeedback {
+	class DJointFeedback {
 		/** force applied to body 1 */
 		public DVector3 f1 = new DVector3();		
 		/** torque applied to body 1 */
@@ -99,7 +99,9 @@ public interface DJoint {
 		/** force applied to body 2 */
 		public DVector3 f2 = new DVector3();		
 		/** torque applied to body 2 */
-		public DVector3 t2 = new DVector3();		
+		public DVector3 t2 = new DVector3();
+
+		public DJointFeedback() {}
 	}
 
 	//virtual ~dJoint() // :

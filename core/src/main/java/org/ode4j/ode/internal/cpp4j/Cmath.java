@@ -93,4 +93,6 @@ public class Cmath extends Csetjmp {
 		exp.i=(int)((0x7ff0000000000000L & bits)>>52)-1022;
 		return Double.longBitsToDouble((0x800fffffffffffffL & bits)| 0x3fe0000000000000L);
 	}
+
+	protected Cmath() {}
 }

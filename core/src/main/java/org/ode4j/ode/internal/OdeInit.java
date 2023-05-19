@@ -643,4 +643,5 @@ public class OdeInit {
     private static final int dAllocateMaskAll = ~0; //@< Allocate all the possible data that is currently defined or will be defined in the future.
     //};
 
+    private OdeInit() {}
 }

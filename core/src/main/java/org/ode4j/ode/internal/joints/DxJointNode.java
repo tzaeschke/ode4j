@@ -38,4 +38,6 @@ public class DxJointNode
 	public DxJoint joint;     // pointer to enclosing dxJoint object
 	public DxBody body;       // *other* body this joint is connected to
 	public DxJointNode next;  // next node in body's list of connected joints
+
+	public DxJointNode() {}
 }

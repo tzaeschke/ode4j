@@ -25,8 +25,7 @@
 package org.ode4j.ode.internal.joints;
 
 import static org.ode4j.ode.OdeMath.*;
-import static org.ode4j.ode.internal.Common.M_PI;
-import static org.ode4j.ode.internal.Common.dAtan2;
+import static org.ode4j.ode.internal.Common.*;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;

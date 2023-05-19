@@ -52,24 +52,30 @@ public class GimGeometry extends GimMath {
 	 */
 
 	//! Integer vector 2D
-	//typedef GINT32 vec2i[2];
-	static class vec2i { int[] i = new int[2]; }
-	//! Integer vector 3D
-	//typedef GINT32 vec3i[3];
-	static class vec3i { int[] i = new int[3]; }
-	//! Integer vector 4D
-	//typedef GINT32 vec4i[4];
-	static class vec4i { int[] i = new int[4]; }
+	//	//typedef GINT32 vec2i[2];
+	//	static class vec2i { int[] i = new int[2]; }
+	//	//! Integer vector 3D
+	//	//typedef GINT32 vec3i[3];
+	//	static class vec3i { int[] i = new int[3]; }
+	//	//! Integer vector 4D
+	//	//typedef GINT32 vec4i[4];
+	//	static class vec4i { int[] i = new int[4]; }
 
 	//! Float vector 2D
 	//typedef GREAL vec2f[2];
 	static class vec2f { float[] f = new float[2]; }
 	//! Float vector 3D
 	//typedef GREAL vec3f[3];
-	public static class vec3f { public float[] f = new float[3]; }
+	public static class vec3f {
+		public float[] f = new float[3];
+		public vec3f() {}
+	}
 	//! Float vector 4D
 	//typedef GREAL vec4f[4];
-	public static class vec4f { public float[] f = new float[4]; }
+	public static class vec4f {
+		public float[] f = new float[4];
+		public vec4f() {}
+	}
 
 	//! Matrix 2D, row ordered
 	//typedef GREAL mat2f.f[M(2,2)];
@@ -79,11 +85,14 @@ public class GimGeometry extends GimMath {
 	static class mat3f { float[] f = new float[9]; }
 	//! Matrix 4D, row ordered
 	//typedef GREAL mat4f[4][4];
-	public static class mat4f { public float[] f = new float[16]; }
+	public static class mat4f {
+		public float[] f = new float[16];
+		public mat4f() {}
+	}
 
 	//! Quaternion
 	//typedef GREAL quatf[4];
-	static class quatf { float[] f = new float[4]; }
+	// static class quatf { float[] f = new float[4]; }
 
 	//! Axis aligned box
 	public static class aabb3f{
@@ -93,7 +102,8 @@ public class GimGeometry extends GimMath {
 	    public float maxY;
 	    public float minZ;
 	    public float maxZ;
-	};
+		public aabb3f() {}
+	}
 	//typedef struct _aabb3f aabb3f;
 	//! @}
 
@@ -103,28 +113,28 @@ public class GimGeometry extends GimMath {
 	 */
 
 	//! Zero out a 2D vector
-	static final void VEC_ZERO_2(vec2f a)
+	static void VEC_ZERO_2(vec2f a)
 	{
 	   (a).f[0] = (a).f[1] = 0.0f;
 	}
 
 
 	//! Zero out a 3D vector
-	static final void VEC_ZERO(vec3f a)
+	static void VEC_ZERO(vec3f a)
 	{
 	   (a).f[0] = (a).f[1] = (a).f[2] = 0.0f;
 	}
 
 
 	/// Zero out a 4D vector
-	static final void VEC_ZERO_4(vec4f a)
+	static void VEC_ZERO_4(vec4f a)
 	{
 	   (a).f[0] = (a).f[1] = (a).f[2] = (a).f[3] = 0.0f;
 	}
 
 
 	/// Vector copy
-	static final void VEC_COPY_2(vec2f b, vec2f a)				
+	static void VEC_COPY_2(vec2f b, vec2f a)
 	{						
 	   (b).f[0] = (a).f[0];				
 	   (b).f[1] = (a).f[1];				
@@ -138,13 +148,13 @@ public class GimGeometry extends GimMath {
 	   (b).f[1] = (a).f[1];				
 	   (b).f[2] = (a).f[2];				
 	}
-	static final void VEC_COPY(vec3f b, vec4f a)				
+	static void VEC_COPY(vec3f b, vec4f a)
 	{						
 	   (b).f[0] = (a).f[0];				
 	   (b).f[1] = (a).f[1];				
 	   (b).f[2] = (a).f[2];				
 	}
-	static final void VEC_COPY(vec4f b, vec3f a)				
+	static void VEC_COPY(vec4f b, vec3f a)
 	{						
 	   (b).f[0] = (a).f[0];				
 	   (b).f[1] = (a).f[1];				
@@ -156,7 +166,7 @@ public class GimGeometry extends GimMath {
 
 
 	/// Copy 4D vector
-	static final void VEC_COPY_4(vec4f b, vec4f a)				
+	static void VEC_COPY_4(vec4f b, vec4f a)
 	{						
 	   (b).f[0] = (a).f[0];				
 	   (b).f[1] = (a).f[1];				
@@ -166,7 +176,7 @@ public class GimGeometry extends GimMath {
 
 
 	/// Vector difference
-	static final void VEC_DIFF_2(vec2f v21, vec2f v2, vec2f v1)			
+	static void VEC_DIFF_2(vec2f v21, vec2f v2, vec2f v1)
 	{						
 	   (v21).f[0] = (v2).f[0] - (v1).f[0];		
 	   (v21).f[1] = (v2).f[1] - (v1).f[1];		
@@ -174,13 +184,13 @@ public class GimGeometry extends GimMath {
 
 
 	/// Vector difference
-	static final void VEC_DIFF(vec3f v21, vec3f v2, vec3f v1)			
+	static void VEC_DIFF(vec3f v21, vec3f v2, vec3f v1)
 	{						
 	   (v21).f[0] = (v2).f[0] - (v1).f[0];		
 	   (v21).f[1] = (v2).f[1] - (v1).f[1];		
 	   (v21).f[2] = (v2).f[2] - (v1).f[2];		
 	}
-	static final void VEC_DIFF(vec4f v21, vec3f v2, vec3f v1)			
+	static void VEC_DIFF(vec4f v21, vec3f v2, vec3f v1)
 	{						
 	   (v21).f[0] = (v2).f[0] - (v1).f[0];		
 	   (v21).f[1] = (v2).f[1] - (v1).f[1];		
@@ -2070,5 +2080,9 @@ public class GimGeometry extends GimMath {
 		_tp.d = CLAMP(_tp.d,0.0f,1.0f);	
 	    VEC_SCALE(vPointB,_tp.d,_BD);
 	    VEC_SUM(vPointB,vPointB,vB1);
+	}
+
+	private GimGeometry() {
+		super();
 	}
 }

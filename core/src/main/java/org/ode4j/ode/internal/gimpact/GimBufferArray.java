@@ -92,7 +92,7 @@ int main()
  * @author Francisco Leon
  * @param <T> Type
  */
-public class GimBufferArray<T> implements GimConstants { //formerly GBUFFER_ARRAY
+class GimBufferArray<T> implements GimConstants { //formerly GBUFFER_ARRAY
 
 	  //! Buffer managed array struct.
 //	struct GBUFFER_ARRAY

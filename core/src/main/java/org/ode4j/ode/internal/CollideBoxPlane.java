@@ -35,8 +35,10 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.dFabs;
+import static org.ode4j.ode.internal.Common.dIASSERT;
 
-public class CollideBoxPlane implements DColliderFn {
+class CollideBoxPlane implements DColliderFn {
 	//int dCollideBoxPlane (dxGeom *o1, dxGeom *o2,
 	//    int flags, dContactGeom *contact, int skip)
 	int dCollideBoxPlane (DxBox o1, DxPlane o2,
@@ -231,7 +233,7 @@ public class CollideBoxPlane implements DColliderFn {
 //	CONTACT(contact,i*skip).pos[0] = p[0] op box.side[j] * R[0+j]; \
 //	CONTACT(contact,i*skip).pos[1] = p[1] op box.side[j] * R[4+j]; \
 //	CONTACT(contact,i*skip).pos[2] = p[2] op box.side[j] * R[8+j];
-	private final void FOO2(int i, int j, int op, DContactGeomBuffer contacts, 
+	private void FOO2(int i, int j, int op, DContactGeomBuffer contacts,
 			int skip, DVector3 p, DMatrix3C R, DVector3 side) {
 		contacts.get(i*skip).pos.eqSum(p, R.viewCol(j), op*side.get(j));
 	}
@@ -241,7 +243,7 @@ public class CollideBoxPlane implements DColliderFn {
 //  if (A ## sideinc > 0) { FOO2(ctact,side,+); } else { FOO2(ctact,side,-); } \
 //  CONTACT(contact,ctact*skip).depth = depth; \
 //  ret++;
-    private final boolean BAR2(final int ctact, final int side, final int sideinc, 
+    private boolean BAR2(final int ctact, final int side, final int sideinc,
             RefDouble depth, RefInt ret, DContactGeomBuffer contacts, final int skip,
             double[] A, double[] B, DxGeom o1, DxGeom o2, 
             DVector3 p, DMatrix3C R, DVector3 boxSide, final int maxc, 
@@ -294,7 +296,7 @@ public class CollideBoxPlane implements DColliderFn {
 //        return true;
 //    }
     
-	private final void done(RefInt ret, DContactGeomBuffer contacts, int skip, DxGeom o1, DxGeom o2,
+	private void done(RefInt ret, DContactGeomBuffer contacts, int skip, DxGeom o1, DxGeom o2,
 	        final int maxc, final double depth, DVector3C p, DVector3C n) {
 		//done:
 	    if (maxc == 4 && ret.get() == 3) { // If user requested 4 contacts, and the first 3 were created...

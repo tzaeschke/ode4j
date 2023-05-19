@@ -33,7 +33,7 @@ import java.util.Arrays;
 //    typedef dxGeom dxMeshBase_Parent;
 //    struct dxMeshBase:
 //    public dxMeshBase_Parent
-public abstract class DxMeshBase extends DxGeom {
+abstract class DxMeshBase extends DxGeom {
     //        public:
     //        dxMeshBase(dxSpace *Space, dxTriDataBase *Data,
     //                dTriCallback *Callback, dTriArrayCallback *ArrayCallback, dTriRayCallback *RayCallback,

@@ -44,9 +44,7 @@ import org.ode4j.ode.internal.DxHashSpace;
 import org.ode4j.ode.internal.ErrorHdl;
 import org.ode4j.ode.internal.Misc;
 import org.ode4j.ode.internal.OdeFactoryImpl;
-import org.ode4j.ode.internal.Timer;
 import org.ode4j.ode.internal.gimpact.GimMath;
-import org.ode4j.ode.internal.stuff.Performator;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -134,14 +132,12 @@ public class JavaMultiThreadTest extends TestCase {
             _ignoreFields.add(DxGeom.class.getDeclaredField("colliders_initialized")); //TODO fix this properly
             _ignoreFields.add(DxGeom.class.getDeclaredField("colliders")); //TODO fix this properly
             _ignoreFields.add(GimMath.class.getDeclaredField("random"));
-            _ignoreFields.add(Performator.class.getDeclaredField("data"));
+            _ignoreFields.add(Class.forName("org.ode4j.ode.internal.stuff.Performator").getDeclaredField("data"));
 //            _ignoreClasses.add(dMatrixComparison.class);
-            _ignoreClasses.add(Timer.class);
+            _ignoreClasses.add(Class.forName("org.ode4j.ode.internal.stuff.Timer"));
             _ignoreClasses.add(Throwable.class);
             _ignoreClasses.add(TestCase.class);
-        } catch (SecurityException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchFieldException e) {
+        } catch (SecurityException | NoSuchFieldException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

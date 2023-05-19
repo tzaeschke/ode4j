@@ -203,4 +203,5 @@ public class DMisc extends Common {
         return Misc.dMaxDifferenceLowerTriangle(A, B, n);
     }
 
+    protected DMisc() {}
 }

@@ -198,4 +198,6 @@ public abstract class ApiCppMass extends ApiCppOdeInit {
 	//#endif
 	//
 	//#endif
+
+	protected ApiCppMass() {}
 }

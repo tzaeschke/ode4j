@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
 import org.ode4j.ode.internal.joints.DxJoint;
@@ -476,7 +477,7 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 		if (extension.indexOf(' ') >= 0 || extension.length() == 0)
 			return true;  //TODO TZ report. should this not return 'false' instead?
 
-		final String config = getConfiguration();
+		final String config = OdeHelper.getConfiguration();
 
 		final int ext_length = extension.length();//strlen(extension);
 
@@ -505,4 +506,6 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 
 		return false;
 	}
+
+	public OdeFactoryImpl() {}
 }

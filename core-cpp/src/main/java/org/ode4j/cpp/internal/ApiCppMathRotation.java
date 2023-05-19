@@ -132,4 +132,6 @@ public abstract class ApiCppMathRotation extends ApiCppMathMisc {
 	public static void dDQfromW (DQuaternion dq, final DVector3 w, final DQuaternion q) {
 		Rotation.dDQfromW(dq, w, q);
 	}
+
+	protected ApiCppMathRotation() {}
 }

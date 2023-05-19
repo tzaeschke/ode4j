@@ -1158,5 +1158,7 @@ public abstract class OdeHelper {
 	public static List<DJoint> connectingJointList(DBody b1, DBody b2) {
 		return OdeJointsFactoryImpl.dConnectingJointList((DxBody)b1, (DxBody)b2);
 	}
-	
+
+	@Deprecated // Make this "private" in 0.6.0
+	protected OdeHelper() {}
 }

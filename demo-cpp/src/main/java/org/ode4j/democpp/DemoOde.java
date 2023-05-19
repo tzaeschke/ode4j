@@ -56,7 +56,6 @@ import org.ode4j.ode.DMass;
 import org.ode4j.ode.internal.DLCP;
 import org.ode4j.ode.internal.DxMass;
 import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
-import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
 import org.ode4j.ode.internal.cpp4j.Csetjmp.jmp_buf;
 import org.ode4j.ode.internal.cpp4j.java.CppLongJump;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
@@ -144,7 +143,7 @@ class DemoOde {
 		try {
 			execute(obj, mName, params); 
 			printf(ifnomsg);//ifnomsg ; 
-		} catch (ErrorJump e) {
+		} catch (Exception e) {
 			printf(ifmsg);//ifmsg ; 
 			e.printStackTrace();
 		}

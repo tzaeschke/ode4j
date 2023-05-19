@@ -2671,4 +2671,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	public void run(DxStepperProcessingCallContext callContext) {
 		dxQuickStepIsland(callContext);
 	}
+
+	private DxQuickStep() {}
 }

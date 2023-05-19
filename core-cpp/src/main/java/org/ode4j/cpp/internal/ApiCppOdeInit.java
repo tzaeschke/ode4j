@@ -228,4 +228,6 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 	public static void dCloseODE() {
 		OdeHelper.closeODE();
 	}
+
+	protected ApiCppOdeInit() {}
 }

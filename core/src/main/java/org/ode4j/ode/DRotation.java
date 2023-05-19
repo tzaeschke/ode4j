@@ -122,4 +122,5 @@ public class DRotation extends DMatrix {
     
 //    public static void dDQfromW (dReal dq[4], const dVector3 w, const dQuaternion q);
 
+    protected DRotation() {}
 }

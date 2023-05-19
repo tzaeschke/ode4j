@@ -30,6 +30,8 @@ public class SameThreadTaskExecutor extends AbstractTaskExecutor {
 
     private final Queue<Task> queue = new LinkedList<>();
 
+	public SameThreadTaskExecutor() {}
+
     @Override
 	public void submit(Task task) {
         queue.add(task);

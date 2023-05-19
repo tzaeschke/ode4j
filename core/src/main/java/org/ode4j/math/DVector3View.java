@@ -34,6 +34,7 @@ public abstract class DVector3View implements DVector3I {
 	public abstract void set1(double d);
 	public abstract void set2(double d);
 
+	protected DVector3View() {}
 	public final double length() {
 		return Math.sqrt(get0()*get0() + get1()*get1() + get2()*get2());
 	}

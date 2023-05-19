@@ -32,7 +32,8 @@ import org.ode4j.ode.DHeightfieldData;
 import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
 import org.ode4j.ode.internal.DxHeightfield.HeightFieldVertex;
 
-import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.internal.Common.dIASSERT;
 
 /**
  * dHeightfield Collider

@@ -232,4 +232,6 @@ public abstract class ApiCppCollisionSpace extends ApiCppCollisionTrimesh {
 	int dSpaceGetClass(DSpace space) {
 		throw new UnsupportedOperationException();
 	}
+
+	protected ApiCppCollisionSpace() {}
 }

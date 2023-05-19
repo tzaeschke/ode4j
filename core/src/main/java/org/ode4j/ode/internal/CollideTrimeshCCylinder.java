@@ -73,7 +73,7 @@ import org.ode4j.ode.internal.trimesh.DxTriMesh;
  *  
  */
 
-public class CollideTrimeshCCylinder implements DColliderFn {
+class CollideTrimeshCCylinder implements DColliderFn {
 
 //	#if dTRIMESH_ENABLED
 

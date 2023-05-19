@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Tilmann Zaeschke
  */
-public final class Performator {
+final class Performator {
 
     private static final ConcurrentHashMap<String, Entry> data = 
         new ConcurrentHashMap<String, Performator.Entry>();

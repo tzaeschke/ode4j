@@ -36,7 +36,7 @@ import java.util.Comparator;
  *
  * @author Tilmann Zaeschke
  */
-public class CollideTrimeshTrimeshOld implements DColliderFn {
+class CollideTrimeshTrimeshOld implements DColliderFn {
 
 	@Override
 	public int dColliderFn(DGeom o1, DGeom o2, int flags,

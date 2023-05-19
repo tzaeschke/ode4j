@@ -28,14 +28,15 @@ import org.ode4j.ode.internal.cpp4j.java.CppLongJump;
  *
  * @author Tilmann Zaeschke
  */
-public class Csetjmp extends Cstdarg {
+public class Csetjmp extends Cstdio {
 
 	/**
 	 *
 	 */
 	public static class jmp_buf {
 		int _ret = 0;
-	};
+		public jmp_buf() {}
+	}
 	
 	/**
 	 * @param jump_buffer jump buffer
@@ -60,4 +61,6 @@ public class Csetjmp extends Cstdarg {
 		String f = new Exception().getStackTrace()[1].toString();
 		System.out.println("WARNING: Not implemented: " + f);
 	}
+
+	protected Csetjmp() {}
 }

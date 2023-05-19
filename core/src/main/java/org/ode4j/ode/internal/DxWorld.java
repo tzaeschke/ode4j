@@ -238,39 +238,6 @@ public class DxWorld extends DBase implements DWorld {
 		return global_cfm;
 	}
 
-
-	//TODO remove this, it's from 0.11.1
-////	void dWorldStep (dxWorld w, double stepsize)
-//	public void dWorldStep (double stepsize)
-//	{
-//		//dUASSERT (w,"bad world argument");
-//		dUASSERT (stepsize > 0,"stepsize must be > 0");
-//		dxProcessIslands (stepsize,Step.INSTANCE);//&dInternalStepIsland);
-//	}
-//
-//
-//	//	public void dWorldQuickStep (dxWorld w, double stepsize)
-//	boolean dWorldQuickStep (double stepsize)
-//	{
-//		//	  dUASSERT (w,"bad world argument");
-//		dUASSERT (stepsize > 0,"stepsize must be > 0");
-//
-//		boolean result = false;
-//		//TODO
-////		  dxWorldProcessIslandsInfo islandsinfo;
-////		  if (dxReallocateWorldProcessContext (w, islandsinfo, stepsize, &dxEstimateQuickStepMemoryRequirements))
-////		  {
-//        //TODO
-//		dxProcessIslands (stepsize,DxQuickStep.INSTANCE);//dxQuickStepper);
-//		result = true;
-//        //TODO
-//	//}
-//		//dxCleanupWorldProcessContext (w);
-//        //TODO
-//		return result;
-//	}
-
-
 	void dWorldSetStepIslandsProcessingMaxThreadCount(int count)
 	{
 	    islands_max_threads = count;
@@ -1153,13 +1120,12 @@ public class DxWorld extends DBase implements DWorld {
 	*
 	* <code>free_block</code> is a function to delete existing memory block.
 	*
-//	* @see DWorld#setStepMemoryManager(DWorldStepMemoryFunctionsInfo)
 	* @deprecated Do not use ! (TZ)
 	*/
 	@Deprecated
     public static class DWorldStepMemoryFunctionsInfo
 	{
-	    public int struct_size;
+	    // public int struct_size;
 	    //TODO, already in DxUtil (TZ) -> Should not be public in Java.
 	    //	  void *(*alloc_block)(size_t block_size);
 	    public static final DxUtil.alloc_block_fn_t alloc_block = new alloc_block_fn_t() {
@@ -1181,9 +1147,10 @@ public class DxWorld extends DBase implements DWorld {
 	    public static final DxUtil.free_block_fn_t free_block = new free_block_fn_t() {
 			@Override
 			public void run(BlockPointer block_pointer, int block_current_size) {
-				//TODO?
+				// Nothing
 			}
 		};
-	};
 
+		private DWorldStepMemoryFunctionsInfo() {}
+	}
 }

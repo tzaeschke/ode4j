@@ -109,6 +109,8 @@ public abstract class DxJoint extends DObject implements DJoint {
 		public int m;
 		/** number of unbound variables (lo, hi= -/+ infinity) */
 		public int nub;
+
+		public Info1() {}
 		public int getM() { return m; }
 		public void incM() { m++; }
 		public void setM(int m) { this.m = m; }

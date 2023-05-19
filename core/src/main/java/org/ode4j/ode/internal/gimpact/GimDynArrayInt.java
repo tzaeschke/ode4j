@@ -65,6 +65,8 @@ public class GimDynArrayInt {
 		return a;
 	}
 
+	private GimDynArrayInt() {}
+
 	/** Inserts an element at the last position. */
 	//#define GIM_DYNARRAY_PUSH_ITEM(type, array_data, item)\
 	void GIM_DYNARRAY_PUSH_ITEM(final int item)

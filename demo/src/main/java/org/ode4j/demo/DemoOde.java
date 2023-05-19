@@ -39,7 +39,6 @@ import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.DLCP;
 import org.ode4j.ode.internal.DxMass;
 import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
-import org.ode4j.ode.internal.ErrorHdl.ErrorJump;
 
 class DemoOde {
 	//****************************************************************************
@@ -126,7 +125,7 @@ class DemoOde {
 		try {
 			execute(obj, mName, params); 
 			print(ifnomsg);//ifnomsg ; 
-		} catch (ErrorJump e) {
+		} catch (Exception e) {
 			print(ifmsg);//ifmsg ; 
 			e.printStackTrace();
 		}

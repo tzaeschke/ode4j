@@ -43,7 +43,7 @@ import static org.ode4j.ode.internal.gimpact.GimDynArray.GIM_DYNARRAY_POINTER;
  *
  * @author Tilmann Zaeschke
  */
-public class CollideTrimeshTrimesh implements DColliderFn {
+class CollideTrimeshTrimesh implements DColliderFn {
 
 	@Override
 	public int dColliderFn(DGeom o1, DGeom o2, int flags,

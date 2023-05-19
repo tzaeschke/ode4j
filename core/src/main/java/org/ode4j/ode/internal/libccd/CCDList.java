@@ -199,4 +199,6 @@ public class CCDList {
 	    item.next = item;
 	    item.prev = item;
 	}
+
+	private CCDList() {}
 }

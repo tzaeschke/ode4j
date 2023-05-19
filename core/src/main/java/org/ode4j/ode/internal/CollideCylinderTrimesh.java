@@ -24,6 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import static org.ode4j.ode.internal.Common.M_PI;
 import static org.ode4j.ode.internal.DxCollisionUtil.dClipEdgeToPlane;
 import static org.ode4j.ode.internal.DxCollisionUtil.dClipPolyToPlane;
 import static org.ode4j.ode.internal.DxCollisionUtil.dConstructPlane;
@@ -60,7 +61,7 @@ import org.ode4j.ode.internal.trimesh.DxTriMesh;
  * Ported to ODE by Nguyen Binh
  * Ported to Java by Tilmann Zaeschke
  */
-public class CollideCylinderTrimesh implements DColliderFn {
+class CollideCylinderTrimesh implements DColliderFn {
 
 	@Override
 	public int dColliderFn(DGeom o1, DGeom o2, int flags,
@@ -1049,7 +1050,7 @@ public class CollideCylinderTrimesh implements DColliderFn {
 
 
 		// calculate basic angle for 8-gon
-		double fAngle = OdeMath.M_PI / nCYLINDER_CIRCLE_SEGMENTS;
+		double fAngle = M_PI / nCYLINDER_CIRCLE_SEGMENTS;
 		// calculate angle increment
 		double fAngleIncrement = fAngle*(2.0); 
 

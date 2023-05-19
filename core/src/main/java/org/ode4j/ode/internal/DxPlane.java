@@ -29,7 +29,9 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector4;
 import org.ode4j.ode.DPlane;
-import static org.ode4j.ode.OdeMath.*;
+
+import static org.ode4j.ode.OdeConstants.dInfinity;
+import static org.ode4j.ode.internal.Common.dRecipSqrt;
 
 
 /**

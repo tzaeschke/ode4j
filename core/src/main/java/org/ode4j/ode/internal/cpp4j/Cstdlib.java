@@ -129,4 +129,6 @@ public class Cstdlib extends Cstring {
 	public static final void exit(int status) {
 		System.exit(status);
 	}
+
+	protected Cstdlib() {}
 }

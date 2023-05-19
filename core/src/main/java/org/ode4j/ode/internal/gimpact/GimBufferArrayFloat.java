@@ -195,7 +195,7 @@ public class GimBufferArrayFloat implements GimConstants { //formerly GBUFFER_AR
 
 	
 	
-	
+	GimBufferArrayFloat() {}
 
 
 	//! Destroys an GBUFFER_ARRAY object

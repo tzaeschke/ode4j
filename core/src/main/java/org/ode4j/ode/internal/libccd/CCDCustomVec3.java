@@ -83,4 +83,6 @@ public class CCDCustomVec3 {
 
         return result;
     }
+
+    private CCDCustomVec3() {}
 }

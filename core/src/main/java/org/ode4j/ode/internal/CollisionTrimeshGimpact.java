@@ -24,10 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import org.ode4j.math.DMatrix3C;
-import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector3C;
-import org.ode4j.math.DVector4C;
+import org.ode4j.math.*;
 import org.ode4j.ode.*;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
@@ -47,7 +44,7 @@ import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 
 //****************************************************************************
 // dxTriMesh class
-public class CollisionTrimeshGimpact {
+class CollisionTrimeshGimpact {
     // #ifndef _ODE_COLLISION_TRIMESH_GIMPACT_H_
     // #define _ODE_COLLISION_TRIMESH_GIMPACT_H_
 
@@ -61,154 +58,106 @@ public class CollisionTrimeshGimpact {
 
 
 
-    // #ifdef dDOUBLE
+    //	#ifdef dDOUBLE
     // To use GIMPACT with doubles, we need to patch a couple of the GIMPACT functions to
     // convert arguments to floats before sending them in
 
-    /// Convert an gimpact vec3f to a ODE dVector3d:   dVector3[i] = vec3f[i]
-    //        #define dVECTOR3_VEC3F_COPY(b, a) { \
-    //        (b)[0] = (a)[0];              \
-    //        (b)[1] = (a)[1];              \
-    //        (b)[2] = (a)[2];              \
-    //        (b)[3] = 0;                   \
-    //    }
-    static void dVECTOR3_VEC3F_COPY(DVector3 b, vec3f a) {
-        //        (b)[0] = (a)[0];
-        //        (b)[1] = (a)[1];
-        //        (b)[2] = (a)[2];
-        //        (b)[3] = 0;
-        b.set(a.f[0], a.f[1], a.f[2]);
+
+    // Convert an gimpact vec3f to a ODE dVector3d:   dVector3[i] = vec3f[i]
+//			private void dVECTOR3_VEC3F_COPY(b,a) {
+//				(b)[0] = (a)[0];
+//				(b)[1] = (a)[1];
+//				(b)[2] = (a)[2];
+//				(b)[3] = 0;
+//			}
+
+    //private void gim_trimesh_get_triangle_verticesODE(GimTrimesh trimesh, GUINT triangle_index, dVector3 v1, dVector3 v2, dVector3 v3) {
+//			private void gim_trimesh_get_triangle_verticesODE(GimTrimesh trimesh, int triangle_index,
+//					DVector3 v1, DVector3 v2, DVector3 v3) {
+//				vec3f src1 = new vec3f(), src2 = new vec3f(), src3 = new vec3f();
+//				trimesh.gim_trimesh_get_triangle_vertices(triangle_index, src1, src2, src3);
+//
+//				v1.set(src1.f);//dVECTOR3_VEC3F_COPY(v1, src1);
+//				v2.set(src2.f);//dVECTOR3_VEC3F_COPY(v2, src2);
+//				v3.set(src3.f);//dVECTOR3_VEC3F_COPY(v3, src3);
+//			}
+
+    private static vec3f DVector3Tovec3f(DVector3C v) {
+        vec3f vf = new vec3f();
+        vf.f[0] = (float) v.get0();
+        vf.f[1] = (float) v.get1();
+        vf.f[2] = (float) v.get2();
+        return vf;
     }
 
-    private static void copy(vec3f b, DVector3C a) {
-        b.f[0] = (float) a.get0();
-        b.f[1] = (float) a.get1();
-        b.f[2] = (float) a.get2();
+    private static vec4f DVector4Tovec4f(DVector4C v) {
+        vec4f vf = new vec4f();
+        vf.f[0] = (float) v.get0();
+        vf.f[1] = (float) v.get1();
+        vf.f[2] = (float) v.get2();
+        vf.f[3] = (float) v.get3();
+        return vf;
     }
-
-    private static void copy(vec4f b, DVector4C a) {
-        b.f[0] = (float) a.get0();
-        b.f[1] = (float) a.get1();
-        b.f[2] = (float) a.get2();
-        b.f[3] = (float) a.get3();
-    }
-
-    //    static inline
-    //    void gim_trimesh_get_triangle_verticesODE(GIM_TRIMESH *trimesh, GUINT32 triangle_index, dVector3 v1, dVector3 v2, dVector3 v3) {
-    //    static void gim_trimesh_get_triangle_verticesODE(GimTrimesh trimesh, int triangle_index, DVector3 v1, DVector3 v2, DVector3 v3) {
-    //
-    //        //vec3f src1, src2, src3;
-    //        //        GREAL * psrc1 = v1 != null ? src1 : null;
-    //        //        GREAL * psrc2 = v2 != null ? src2 : null;
-    //        //        GREAL * psrc3 = v3 != null ? src3 : null;
-    //        vec3f psrc1 = v1 != null ? new vec3f() : null;
-    //        vec3f psrc2 = v2 != null ? new vec3f() : null;
-    //        vec3f psrc3 = v3 != null ? new vec3f() : null;
-    //
-    //        trimesh.gim_trimesh_get_triangle_vertices(triangle_index, psrc1, psrc2, psrc3);
-    //
-    //        if (v1 != null) {
-    //            dVECTOR3_VEC3F_COPY(v1, psrc1);
-    //        }
-    //
-    //        if (v2 != null) {
-    //            dVECTOR3_VEC3F_COPY(v2, psrc2);
-    //        }
-    //
-    //        if (v3 != null) {
-    //            dVECTOR3_VEC3F_COPY(v3, psrc3);
-    //        }
-    //    }
 
     // Anything calling gim_trimesh_get_triangle_vertices from within ODE
     // should be patched through to the dDOUBLE version above
 
     //#define gim_trimesh_get_triangle_vertices gim_trimesh_get_triangle_verticesODE
+//			static void gim_trimesh_get_triangle_verticesODE( GimTrimesh mesh ) {
+//				mesh.gim_trimesh_get_triangle_vertices(0, null, null, null);
+//			}
 
-    //    static inline
-    //    int gim_trimesh_ray_closest_collisionODE(GIM_TRIMESH *mesh, dVector3 origin, dVector3 dir, dReal tmax, GIM_TRIANGLE_RAY_CONTACT_DATA *contact) {
-    static
-    int gim_trimesh_ray_closest_collisionODE(GimTrimesh mesh, DVector3 origin, DVector3 dir, double tmax, GimTriCollision.GIM_TRIANGLE_RAY_CONTACT_DATA contact) {
-        vec3f dir_vec3f = new vec3f();
-        copy(dir_vec3f, dir);//.f[0] = (float) dir.get0(); dir_vec3f.f[1] = (float) dir.get1(); dir_vec3f.f[2] = (float) dir.get2();
-        //vec3f origin_vec3f = {(float) origin[0], (float) origin[1], (float) origin[2]};
-        vec3f origin_vec3f = new vec3f();
-        copy(origin_vec3f, origin);
-        return mesh.gim_trimesh_ray_closest_collision(origin_vec3f, dir_vec3f, (float) tmax, contact);
+    //			inline int gim_trimesh_ray_closest_collisionODE( GIM_TRIMESH *mesh, dVector3 origin,
+//					dVector3 dir, GREAL tmax, GIM_TRIANGLE_RAY_CONTACT_DATA *contact ) {
+    static int gim_trimesh_ray_closest_collisionODE( GimTrimesh mesh, DVector3C origin, DVector3C dir,
+                                                     double tmax, GimTriCollision.GIM_TRIANGLE_RAY_CONTACT_DATA contact ) {
+        vec3f dir_vec3f    = DVector3Tovec3f( dir );
+        vec3f origin_vec3f = DVector3Tovec3f( origin );
+
+        return mesh.gim_trimesh_ray_closest_collision( origin_vec3f, dir_vec3f, (float) tmax, contact );
     }
 
-//    static inline
-//    int gim_trimesh_ray_collisionODE(GIM_TRIMESH *mesh, const dVector3 origin, const dVector3 dir, dReal tmax, GIM_TRIANGLE_RAY_CONTACT_DATA *contact) {
-    static
-    int gim_trimesh_ray_collisionODE(GimTrimesh mesh, DVector3C origin, DVector3C dir, double tmax, GimTriCollision.GIM_TRIANGLE_RAY_CONTACT_DATA contact) {
-        //vec3f dir_vec3f = {(GREAL) dir[0], (GREAL) dir[1], (GREAL) dir[2]};
-        vec3f dir_vec3f = new vec3f();
-        copy(dir_vec3f, dir);
-        //vec3f origin_vec3f = {(GREAL) origin[0], (GREAL) origin[1], (GREAL) origin[2]};
-        vec3f origin_vec3f = new vec3f();
-        copy(origin_vec3f, origin);
+    //inline int gim_trimesh_ray_collisionODE( GIM_TRIMESH *mesh, dVector3 origin, dVector3 dir,
+    //GREAL tmax, GIM_TRIANGLE_RAY_CONTACT_DATA *contact ) {
+    static int gim_trimesh_ray_collisionODE( GimTrimesh mesh, DVector3C origin, DVector3C dir,
+                                             double tmax, GimTriCollision.GIM_TRIANGLE_RAY_CONTACT_DATA contact ) {
+        vec3f dir_vec3f    = DVector3Tovec3f( dir );
+        vec3f origin_vec3f = DVector3Tovec3f( origin );
 
-        return mesh.gim_trimesh_ray_collision(origin_vec3f, dir_vec3f, (float) tmax, contact);
+        return mesh.gim_trimesh_ray_collision( origin_vec3f, dir_vec3f, (float) tmax, contact );
     }
 
-        //    static inline
-        //    void gim_trimesh_sphere_collisionODE(GIM_TRIMESH *mesh, const dVector3 Position, dReal Radius, GDYNAMIC_ARRAY *contact) {
-    static
-    void gim_trimesh_sphere_collisionODE(GimTrimesh mesh, DVector3C Position, double Radius, GimDynArray<GimContact> contact) {
-        //vec3f pos_vec3f = {(GREAL) Position[0], (GREAL) Position[1], (GREAL) Position[2]};
-        vec3f pos_vec3f = new vec3f();
-        copy(pos_vec3f, Position);
-        mesh.gim_trimesh_sphere_collision(pos_vec3f, (float) Radius, contact);
+    //#define gim_trimesh_sphere_collisionODE( mesh, Position, Radius, contact ) {	\
+    static void gim_trimesh_sphere_collisionODE( GimTrimesh mesh, DVector3C Position,
+                                                 double Radius, GimDynArray<GimContact> contact ) {
+        vec3f pos_vec3f = DVector3Tovec3f( Position );
+        mesh.gim_trimesh_sphere_collision( pos_vec3f, (float) Radius, contact );
     }
 
-    //    static inline
-    //    void gim_trimesh_plane_collisionODE(GIM_TRIMESH *mesh, const dVector4 plane, GDYNAMIC_ARRAY *contact) {
-    static
-    void gim_trimesh_plane_collisionODE(GimTrimesh mesh, DVector4C plane, GimDynArray<vec4f> contact) {
-        //vec4f plane_vec4f = {(GREAL) plane[0], (GREAL) plane[1], (GREAL) plane[2], (GREAL) plane[3]};
-        vec4f plane_vec4f = new vec4f();
-        copy(plane_vec4f, plane);
-        mesh.gim_trimesh_plane_collision(plane_vec4f, contact);
+    //#define gim_trimesh_plane_collisionODE( mesh, plane, contact ) { 			\
+    static void gim_trimesh_plane_collisionODE( GimTrimesh mesh, DVector4 plane,
+                                                GimDynArray<vec4f> contact ) {
+        vec4f plane_vec4f = DVector4Tovec4f( plane );
+        mesh.gim_trimesh_plane_collision( plane_vec4f, contact );
     }
 
-//        #define GIM_AABB_COPY(src, dst) {		\
-//        (dst)[0] = (src) -> minX;			\
-//        (dst)[1] = (src) -> maxX;			\
-//        (dst)[2] = (src) -> minY;			\
-//        (dst)[3] = (src) -> maxY;			\
-//        (dst)[4] = (src) -> minZ;			\
-//        (dst)[5] = (src) -> maxZ;			\
-//    }
-    private static void GIM_AABB_COPY(DAABBC src, DAABB dst) {
-        dst.set(src);
+    //#define GIM_AABB_COPY( src, dst ) {		\
+    static void GIM_AABB_COPY( aabb3f src, DAABB dst ) {
+        dst.set( src.minX, src.maxX, src.minY, src.maxY, src.minZ, src.maxZ );
     }
 
 
-    //        #else // #ifdef !dDOUBLE
+    //	#else
+    //		// With single precision, we can pass native ODE vectors directly to GIMPACT
     //
-    //                // With single precision, we can pass native ODE vectors directly to GIMPACT
+    //		#define gim_trimesh_ray_closest_collisionODE 	gim_trimesh_ray_closest_collision
+    //		#define gim_trimesh_ray_collisionODE 			gim_trimesh_ray_collision
+    //		#define gim_trimesh_sphere_collisionODE 		gim_trimesh_sphere_collision
+    //		#define gim_trimesh_plane_collisionODE 			gim_trimesh_plane_collision
     //
-    //                #
-    //    define gim_trimesh_ray_closest_collisionODE
-    //    gim_trimesh_ray_closest_collision
-    //        #
-    //    define gim_trimesh_ray_collisionODE
-    //    gim_trimesh_ray_collision
-    //        #
-    //    define gim_trimesh_sphere_collisionODE
-    //    gim_trimesh_sphere_collision
-    //        #
-    //    define gim_trimesh_plane_collisionODE
-    //    gim_trimesh_plane_collision
+    //		#define GIM_AABB_COPY( src, dst ) 	memcpy( dst, src, 6 * sizeof( GREAL ) )
     //
-    //        #
-    //
-    //    define GIM_AABB_COPY(src, dst) 	memcpy(dst,src,6*
-    //
-    //    sizeof(GREAL) )
-    //
-    //
-    //            #endif // #ifdef !dDOUBLE
+    //	#endif // dDouble
 
 
 

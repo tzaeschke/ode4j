@@ -100,4 +100,5 @@ public class Atomics {
         return paoDestination.getAndAdd(aoAddend);
     }
 
+	private Atomics() {}
 }

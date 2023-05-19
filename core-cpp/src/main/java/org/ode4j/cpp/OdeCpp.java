@@ -48,7 +48,8 @@ import org.ode4j.cpp.internal.ApiCppWorld;
  * 
  * @author Tilmann Zaeschke, based on ODE for C/C++
  */
-		
+
+@Deprecated // To be removed in 0.6.0
 public class OdeCpp extends ApiCppWorld {
 	
 	protected OdeCpp() {
