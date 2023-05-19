@@ -25,10 +25,10 @@
 
 module org.ode4j
 {
-    requires org.slf4j;
+    requires transitive org.slf4j;
 
     exports org.ode4j.math;
-    exports org.ode4j.ode.internal.aabbtree;
+    // exports org.ode4j.ode.internal.aabbtree;
     exports org.ode4j.ode.internal.cpp4j.java;
     exports org.ode4j.ode.internal.cpp4j;
     exports org.ode4j.ode.internal.gimpact;

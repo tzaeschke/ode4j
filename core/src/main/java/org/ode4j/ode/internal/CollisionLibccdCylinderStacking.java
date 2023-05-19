@@ -31,12 +31,11 @@ import static org.ode4j.ode.internal.libccd.CCDVec3.*;
 import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.internal.CollisionLibccd.ccd_cyl_t;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.libccd.CCDVec3.ccd_vec3_t;
 
-public class CollisionLibccdCylinderStacking {
+class CollisionLibccdCylinderStacking {
 
     public static int collideCylCyl(DGeom o1, DGeom o2, ccd_cyl_t cyl1, ccd_cyl_t cyl2, int flags,
                                     DContactGeomBuffer contacts) {

@@ -42,6 +42,7 @@ public class DxJointGroup extends DBase implements DJointGroup
 	//TODO use LinkedList?
 	private final ArrayList<DxJoint> _stack = new ArrayList<DxJoint>(); 
 
+	public DxJointGroup() {}
 	
 //    template<class T>
 //    T *alloc(dWorldID w)

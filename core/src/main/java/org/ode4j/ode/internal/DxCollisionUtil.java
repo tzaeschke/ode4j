@@ -49,6 +49,7 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
+import org.ode4j.ode.internal.gimpact.GimGeometry;
 
 
 /**
@@ -452,6 +453,38 @@ public class DxCollisionUtil {
 		}
 	}
 
+	// Finds barycentric
+	//inline void GetPointFromBarycentric(const dVector3 dv[3], dReal u, dReal v, dVector3 Out){
+	static void GetPointFromBarycentric(GimGeometry.vec3f[] dv, double u, double v, DVector3 Out){
+		double w = 1.0 - u - v;
+		Out.set0( dv[0].f[0]*w + dv[1].f[0]*u + dv[2].f[0]*v );
+		Out.set1( dv[0].f[1]*w + dv[1].f[1]*u + dv[2].f[1]*v );
+		Out.set2( dv[0].f[2]*w + dv[1].f[2]*u + dv[2].f[2]*v );
+//		Out.set0( dv[0].get3()*w + dv[1].get3()*u + dv[2].get3()*v );  //TODO ?
+//		Out[0] = (dv[0][0] * w) + (dv[1][0] * u) + (dv[2][0] * v);
+//		Out[1] = (dv[0][1] * w) + (dv[1][1] * u) + (dv[2][1] * v);
+//		Out[2] = (dv[0][2] * w) + (dv[1][2] * u) + (dv[2][2] * v);
+//		Out[3] = (dv[0][3] * w) + (dv[1][3] * u) + (dv[2][3] * v);
+	}
+	public static void GetPointFromBarycentric(DVector3C[] dv, double u, double v, DVector3 Out){
+		double w = 1.0 - u - v;
+		Out.set0( dv[0].get0()*w + dv[1].get0()*u + dv[2].get0()*v );
+		Out.set1( dv[0].get1()*w + dv[1].get1()*u + dv[2].get1()*v );
+		Out.set2( dv[0].get2()*w + dv[1].get2()*u + dv[2].get2()*v );
+		// Out.set0( dv[0].get3()*w + dv[1].get3()*u + dv[2].get3()*v );  //TODO ?
+		//		Out[0] = (dv[0][0] * w) + (dv[1][0] * u) + (dv[2][0] * v);
+		//		Out[1] = (dv[0][1] * w) + (dv[1][1] * u) + (dv[2][1] * v);
+		//		Out[2] = (dv[0][2] * w) + (dv[1][2] * u) + (dv[2][2] * v);
+		//		Out[3] = (dv[0][3] * w) + (dv[1][3] * u) + (dv[2][3] * v);
+	}
+
+	public static void GetPointFromBarycentric(
+			DVector3C dv0, DVector3 dv1, DVector3 dv2, double u, double v, DVector3 Out){
+		double w = 1.0 - u - v;
+		Out.set0( dv0.get0()*w + dv1.get0()*u + dv2.get0()*v );
+		Out.set1( dv0.get1()*w + dv1.get1()*u + dv2.get1()*v );
+		Out.set2( dv0.get2()*w + dv1.get2()*u + dv2.get2()*v );
+	}
 
 	//****************************************************************************
 	/**

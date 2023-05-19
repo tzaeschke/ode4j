@@ -32,15 +32,16 @@ import java.util.Map;
  */
 public final class SerTimer {
 
-    private final Map<String, Entry> _data = new HashMap<String, Entry>();
+    private final Map<String, Entry> _data = new HashMap<>();
     private long _prev = 0;
     private int _nStart = 0;
-    
+
+    public SerTimer() {}
  
     /**
      * Start time measurement.
      */
-    public final void start() {
+    public void start() {
     	_prev = System.currentTimeMillis();
     	_nStart++;
     }
@@ -50,7 +51,7 @@ public final class SerTimer {
      * Get elapsed time since last take() or start().
      * @param key key
      */
-    public final void take(String key) {
+    public void take(String key) {
     	long now = System.currentTimeMillis();
     	Entry e = _data.get(key);
     	if (e == null) {
@@ -64,9 +65,8 @@ public final class SerTimer {
     /**
      * Print results.
      */
-    public final void print() {
-        List<String> keys = new LinkedList<String>();
-        keys.addAll(_data.keySet());
+    public void print() {
+        List<String> keys = new LinkedList<>(_data.keySet());
         Collections.sort(keys);
         for (String key: keys) {
             System.out.println(_data.get(key).print() + " :: " + key);
@@ -80,13 +80,13 @@ public final class SerTimer {
         /**
          * @return Returns String representation
          */
-        public final String print() {
-            StringBuffer b = new StringBuffer();
-            b.append("Calls: " + _nCalls);
+        public String print() {
+            StringBuilder b = new StringBuilder();
+            b.append("Calls: ").append(_nCalls);
             while (b.length() < 25) b.append(' ');
-            b.append("Time [ms]: " + _total);
+            b.append("Time [ms]: ").append(_total);
             while (b.length() < 50) b.append(' ');
-            b.append("T/C [ms]: " + _total/(double)_nCalls);
+            b.append("T/C [ms]: ").append(_total / (double) _nCalls);
             return b.toString();
         }
 
@@ -94,7 +94,7 @@ public final class SerTimer {
          * @param time time
          * 
          */
-        public final void add(long time) {
+        public void add(long time) {
             _total += time;
             _nCalls++;
         }
@@ -104,7 +104,7 @@ public final class SerTimer {
     /**
      * 
      */
-    public final void reset() {
+    public void reset() {
         _data.clear();
     }
     
@@ -112,7 +112,7 @@ public final class SerTimer {
      * @return number of 'starts'.
      * 
      */
-    public final int getNStart() {
+    public int getNStart() {
     	return _nStart;
     }
 }

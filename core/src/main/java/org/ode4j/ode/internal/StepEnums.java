@@ -29,7 +29,7 @@ import org.ode4j.ode.internal.joints.JointEnums;
 
 import static org.ode4j.ode.internal.CommonEnums.*;
 
-public class StepEnums {
+class StepEnums {
 
 
     // dxRHSCFMElement

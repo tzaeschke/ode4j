@@ -27,12 +27,14 @@ package org.ode4j.ode.internal;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.internal.gimpact.GimGeometry;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 public class DxTriMeshDisabled extends DxTriMesh {
 
 	public static class dxTriMeshDisabledData extends DxTriMeshData {
+		public dxTriMeshDisabledData() {}
 		@Override
 		public boolean preprocess() {
 			return true;
@@ -209,5 +211,10 @@ public class DxTriMeshDisabled extends DxTriMesh {
 	}
 
 	//#endif // !dTRIMESH_ENABLED
+
+	@Override
+	protected void MakeMatrix(GimGeometry.mat4f transform) {
+		CollisionTrimeshGimpact.MakeMatrix(this, transform);
+	}
 }
 

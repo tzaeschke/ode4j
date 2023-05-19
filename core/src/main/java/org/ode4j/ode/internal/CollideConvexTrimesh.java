@@ -11,7 +11,7 @@ import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 
-public class CollideConvexTrimesh implements DColliderFn {
+class CollideConvexTrimesh implements DColliderFn {
 
 	@Override
 	public int dColliderFn(DGeom o1, DGeom o2, int flags, DContactGeomBuffer contacts) {

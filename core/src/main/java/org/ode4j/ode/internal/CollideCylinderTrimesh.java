@@ -61,7 +61,7 @@ import org.ode4j.ode.internal.trimesh.DxTriMesh;
  * Ported to ODE by Nguyen Binh
  * Ported to Java by Tilmann Zaeschke
  */
-public class CollideCylinderTrimesh implements DColliderFn {
+class CollideCylinderTrimesh implements DColliderFn {
 
 	@Override
 	public int dColliderFn(DGeom o1, DGeom o2, int flags,

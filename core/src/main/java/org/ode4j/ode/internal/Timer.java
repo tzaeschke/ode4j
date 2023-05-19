@@ -303,4 +303,6 @@ public class Timer {
 		}
 		fprintf (fout,"\n");
 	}
+
+	private Timer() {}
 }

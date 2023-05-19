@@ -458,4 +458,6 @@ public class OdeJointsFactoryImpl {
 		}
 		return false;
 	}
+
+	protected OdeJointsFactoryImpl() {}
 }

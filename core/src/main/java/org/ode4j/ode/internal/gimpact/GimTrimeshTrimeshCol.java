@@ -46,7 +46,7 @@ import static org.ode4j.ode.internal.gimpact.GimTriCollision.*;
  * Ported to Java by Tilmann Zaeschke
  * @author Francisco Leon
 */
-public class GimTrimeshTrimeshCol {
+class GimTrimeshTrimeshCol {
 	
 	// ******************************************************
 	// TZ: gim_trimesh_trimesh.collision.cpp
@@ -281,7 +281,7 @@ public class GimTrimeshTrimeshCol {
 
 	/**
 	 * Finds the contact points from a collision of two triangles.
-	 * 
+	 * <p>
 	 * Returns the contact points, the penetration depth and the separating normal of the collision
 	 * between two triangles. The normal is pointing toward triangle 1 from triangle 2
 	 */
@@ -312,7 +312,7 @@ public class GimTrimeshTrimeshCol {
  
 	/**
 	 * Trimesh Trimesh Collisions.
-	 * 
+	 * <p>
 	 * In each contact:
 	 * <ul>
 	 * <li> m_handle1 points to trimesh1.
@@ -401,7 +401,7 @@ public class GimTrimeshTrimeshCol {
 	/**
 	 * Trimesh Plane Collisions.
 	 * 
-	 * @param trimesh
+	 * @param trimesh trimesh
 	 * @param plane vec4f plane
 	 * @param contacts A vec4f array. Must be initialized (~100). Each element 
 	 * have the coordinate point in the first 3 elements, and vec4f[3] has the penetration depth.

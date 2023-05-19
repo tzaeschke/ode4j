@@ -143,6 +143,9 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
         super.DESTRUCTOR();
     }
 
+    // TZ: This is not in ODE, but we do it to prevent dependency on DxCollision
+    // (and because ODE basically implements it as polymorphic via #ifdef GIMPCAT
+    protected abstract void MakeMatrix(GimGeometry.mat4f transform);
 
     /*virtual */
     //void dxTriMesh::
@@ -150,7 +153,7 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
         //update trimesh transform
         GimGeometry.mat4f transform = new GimGeometry.mat4f();
         IDENTIFY_MATRIX_4X4(transform);
-        CollisionTrimeshGimpact.MakeMatrix(this, transform);
+        MakeMatrix(transform);
         m_collision_trimesh.gim_trimesh_set_tranform(transform);
 
         //Update trimesh boxes
@@ -252,16 +255,10 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
 
         //DxTriMesh mesh = (DxTriMesh) g;
-
-        //DVector3[] dv = DVector3.newArray(3);
-        //mesh.fetchMeshTransformedTriangle(dv, index);
-
-        //DxGimpactCollision.GetPointFromBarycentric(dv, u, v, Out);
-
         DVector3 dv0 = new DVector3(), dv1 = new DVector3(), dv2 = new DVector3();
         fetchMeshTransformedTriangle(dv0, dv1, dv2, index);
 
-        DxGimpactCollision.GetPointFromBarycentric(dv0, dv1, dv2, u, v, Out);
+        DxCollisionUtil.GetPointFromBarycentric(dv0, dv1, dv2, u, v, Out);
     }
 
     /*extern */

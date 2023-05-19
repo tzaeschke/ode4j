@@ -34,6 +34,7 @@ import org.ode4j.ode.DCapsule;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.DSphere;
 import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.internal.gimpact.GimGeometry;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
@@ -209,18 +210,6 @@ public class DxGimpact extends DxTriMesh {
 		return retrieveMeshData();
 	}
 
-
-	//void dGeomTriMeshGetPoint(dGeomID g, int Index, dReal u, dReal v, dVector3 Out){
-	void dGeomTriMeshGetPoint(int Index, double u, double v, DVector3 Out){
-		//vec3f[] dv = { new vec3f(), new vec3f(), new vec3f() };
-		DVector3[] dv = { new DVector3(), new DVector3(), new DVector3() };
-		m_collision_trimesh().gim_trimesh_locks_work_data();
-		m_collision_trimesh().gim_trimesh_get_triangle_vertices(Index, dv[0], dv[1], dv[2]);
-		DxGimpactCollision.GetPointFromBarycentric(dv, u, v, Out);
-		m_collision_trimesh().gim_trimesh_unlocks_work_data();
-	}
-
-
 	@Override
 	public void enableTC(Class<? extends DGeom> cls, boolean enable) {
 		dGeomTriMeshEnableTC(cls, enable);
@@ -289,5 +278,10 @@ public class DxGimpact extends DxTriMesh {
 	@Override
 	public float getEdgeAngle(int triangle, int edge) {
 		return ((DxGimpactData)getMeshData()).getEdgeAngle(triangle, edge);
+	}
+
+	@Override
+	protected void MakeMatrix(GimGeometry.mat4f transform) {
+		CollisionTrimeshGimpact.MakeMatrix(this, transform);
 	}
 }
