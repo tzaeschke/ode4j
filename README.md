@@ -12,7 +12,11 @@ It is currently used in many computer games, 3D authoring tools and simulation t
 The latest released version of ode4j is 0.4.2, but the master branch may contains fixes and improvements.
 Version 0.2.4 up to 0.2.9 are ports of ODE 0.12.1, Version 0.3.1 is a port of ODE 0.13.1. Release 0.4.0 contains most changes between 0.13.1 and 0.16.0.  
 
-ode4j contains also some features that are not present in ODE, such as a ragdoll and heightfields with holes. See [Wiki](https://github.com/tzaeschke/ode4j/wiki/Functionality-beyond-ODE).
+ode4j contains some custom features that are not present in ODE (see also [Wiki](https://github.com/tzaeschke/ode4j/wiki/Functionality-beyond-ODE)): 
+ * `DRagdoll` & `DConstrainedBallJoint`, see `DemoJointConstrainedBall`
+ * `DTrimeshHeightfield` with support for holes. See `DemoTrimeshHeightfield`.
+ * SAP SPace 2
+ * `BVHSpace`
 
 The [ODE forum](https://groups.google.com/forum/#!forum/ode-users) is useful for questions around physics and general API usage: 
 

@@ -5,7 +5,6 @@ Planned for 0.6.0
 
 TODO for 0.5.0
 ==============
-- Java 9/10/11 ?
 - Beautify CHANGELOG -> .md
 - Fix maven warnings:
   - [WARNING] bootstrap class path not set in conjunction with -source 8
@@ -14,6 +13,7 @@ TODO for 0.5.0
 - What is the deal with DJoint PARAM vs PARAM_N?
   ODE doesn´t have PARAM_N (e.g. dParamBounce1)! -> ode4j shouldn´t have them either...
   Remove (deprecate) and replace with PARAM, or at least document what is goigh on!
+- Check for import "internal." in demos
 
 --> See TODO.txt
 

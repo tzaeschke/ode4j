@@ -29,7 +29,6 @@ import static org.ode4j.ode.internal.Common.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.DBody;
 import org.ode4j.ode.DContact;
 import org.ode4j.ode.DJoint;
@@ -75,6 +74,13 @@ public class OdeJointsFactoryImpl {
 	{
 		dAASSERT (w);
 		return createJoint( new DxJointBall((DxWorld) w),group);
+	}
+
+
+	public DxJointConstrainedBall dJointCreateConstrainedBall (DWorld w, DJointGroup group)
+	{
+		dAASSERT (w);
+		return createJoint( new DxJointConstrainedBall(w),group);
 	}
 
 
