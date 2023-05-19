@@ -30,14 +30,18 @@ import static org.ode4j.ode.internal.Rotation.dRFromAxisAndAngle;
 
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
+import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DConstrainedBallJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeMath;
 import org.ode4j.ode.internal.DxWorld;
 
 /**
- * Ball and socket joint with constraints as described here http://www.monsterden.net/software/ragdoll-pyode-tutorial
+ * Ball and socket joint with constraints as described here
+ * <a href="http://www.monsterden.net/software/ragdoll-pyode-tutorial">
+ *     http://www.monsterden.net/software/ragdoll-pyode-tutorial</a>
  */
-public class DxJointConstrainedBall extends DxJointBall {
+public class DxJointConstrainedBall extends DxJointBall implements DConstrainedBallJoint {
 
 	private final DVector3 baseAxis;
 	private final DVector3 body2Axis;
@@ -105,25 +109,41 @@ public class DxJointConstrainedBall extends DxJointBall {
 	 * @param baseAxis - base axis for constraints
 	 * @param body2Axis - main axis of the 2nd body
 	 */
-	public void setAxes(DVector3 baseAxis, DVector3 body2Axis) {
-		baseAxis.safeNormalize();
-		body2Axis.safeNormalize();
+	@Override
+	public void setAxes(DVector3C baseAxis, DVector3C body2Axis) {
+		DVector3 baseAx = baseAxis.copy();
+		DVector3 body2Ax = body2Axis.copy();
+
+		baseAx.safeNormalize();
+		body2Ax.safeNormalize();
 		DVector3 twistUpAxis = new DVector3();
-		if (Math.abs(body2Axis.dot(new DVector3(0.0, 1.0, 0.0))) < 0.7) {
+		if (Math.abs(body2Ax.dot(new DVector3(0.0, 1.0, 0.0))) < 0.7) {
 			twistUpAxis.set(0, 1, 0);
 		} else {
 			twistUpAxis.set(0, 0, 1);
 		}
 		DVector3 cross = new DVector3();
-		cross.eqCross(body2Axis, twistUpAxis);
+		cross.eqCross(body2Ax, twistUpAxis);
 		cross.safeNormalize();
-		twistUpAxis.eqCross(cross, body2Axis);
+		twistUpAxis.eqCross(cross, body2Ax);
 		twistUpAxis.safeNormalize();
-		setAxes(baseAxis, this.baseAxis, null);
-		setAxes(body2Axis, null, this.body2Axis);
+		setAxes(baseAx, this.baseAxis, null);
+		setAxes(body2Ax, null, this.body2Axis);
 		setAxes(twistUpAxis, twistUpAxis1, twistUpAxis2);
+
 	}
 
+	@Override
+	public DVector3C getBaseAxis() {
+		return baseAxis;
+	}
+
+	@Override
+	public DVector3C getSecondBodyAxis() {
+		return body2Axis;
+	}
+
+	@Override
 	public void setLimits(double flexLimit, double twistLimit) {
 		limotFlex.set(PARAM.dParamLoStop, -flexLimit);
 		limotFlex.set(PARAM.dParamHiStop, flexLimit);
@@ -131,4 +151,13 @@ public class DxJointConstrainedBall extends DxJointBall {
 		limotTwist.set(PARAM.dParamHiStop, twistLimit);
 	}
 
+	@Override
+	public double getFlexLimit() {
+		return limotFlex.get(PARAM.dParamHiStop);
+	}
+
+	@Override
+	public double getTwistLimit() {
+		return limotTwist.get(PARAM.dParamHiStop);
+	}
 }

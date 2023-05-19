@@ -1,5 +1,7 @@
 /*************************************************************************
  *                                                                       *
+ * Open Dynamics Engine, Copyright (C) 2001,2002 Russell L. Smith.       *
+ * All rights reserved.  Email: russ@q12.org   Web: www.q12.org          *
  * Open Dynamics Engine 4J, Copyright (C) 2009-2014 Tilmann Zaeschke     *
  * All rights reserved.  Email: ode4j@gmx.de   Web: www.ode4j.org        *
  *                                                                       *
@@ -22,48 +24,22 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.junit.Test;
-import org.ode4j.math.DMatrix3;
-import org.ode4j.math.DQuaternion;
-import org.ode4j.math.DVector3;
-import org.ode4j.ode.ragdoll.DRagdoll;
-import org.ode4j.ode.test.geoms.DxDefaultHumanRagdollConfig;
+import org.ode4j.math.DVector3C;
 
-public class TestIssue0031_RagdollNPE {
+public interface DConstrainedBallJoint extends DBallJoint {
 
 	/**
-	 * The call to ragdoll.destroy() used to cause an NPE.
+	 * @param baseAxis - base axis for constraints
+	 * @param body2Axis - main axis of the 2nd body
 	 */
-	@Test
-	public void testIssue31() {
-		DWorld world = OdeHelper.createWorld();
-		world.setGravity(0,0,-9.8);
-		world.setDamping(1e-4, 1e-5);
-		//    dWorldSetERP(world, 1);
-		DSpace space = OdeHelper.createSimpleSpace();
-		OdeHelper.createPlane( space, 0, 0, 1, 0 );
+	void setAxes(DVector3C baseAxis, DVector3C body2Axis);
 
-		DRagdoll ragdoll = OdeHelper.createRagdoll(world, space, new DxDefaultHumanRagdollConfig());
-		ragdoll.setAngularDamping(0.1);
-		DQuaternion q = new DQuaternion(1, 0, 0, 0);
-		DRotation.dQFromAxisAndAngle(q, new DVector3(1, 0, 0), -0.5 * Math.PI);
-		for (DRagdoll.DRagdollBody bone : ragdoll.getBoneIter()) {
-			DGeom g = OdeHelper.createCapsule(space, bone.getRadius(), bone.getLength());
-			DBody body = bone.getBody();
-			DQuaternion qq = new DQuaternion();
-			OdeMath.dQMultiply1(qq, q, body.getQuaternion());
-			body.setQuaternion(qq);
-			DMatrix3 R = new DMatrix3();
-			OdeMath.dRfromQ(R, q);
-			DVector3 v = new DVector3();
-			OdeMath.dMultiply0_133(v, body.getPosition(), R);
-			body.setPosition(v.get0(), v.get1(), v.get2());
-			g.setBody(body);
-		}
+	DVector3C getBaseAxis();
+	DVector3C getSecondBodyAxis();
 
-		ragdoll.destroy();
-		
-	}
-	
-	
+
+	void setLimits(double flexLimit, double twistLimit);
+
+	double getFlexLimit();
+	double getTwistLimit();
 }

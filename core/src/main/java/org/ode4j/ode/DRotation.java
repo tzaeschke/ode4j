@@ -67,14 +67,17 @@ public class DRotation extends DMatrix {
 
 //    public static void dQSetIdentity (dQuaternion q);
 //
-    public static void dQFromAxisAndAngle (DQuaternion q, double ax, double ay, 
+    public static void dQFromAxisAndAngle (DQuaternion q, double ax, double ay,
             double az, double angle) {
         Rotation.dQFromAxisAndAngle(q, ax, ay, az, angle);
     }
+    public static void dQFromAxisAndAngle (DQuaternion q, DVector3C axyz, double angle) {
+        Rotation.dQFromAxisAndAngle(q, axyz, angle);
+    }
 
     /**
-     * Quaternion multiplication, analogous to the matrix multiplication routines. 
-     * qa = rotate by qc, then qb 
+     * Quaternion multiplication, analogous to the matrix multiplication routines.
+     * qa = rotate by qc, then qb
      * @param qa qa
      * @param qb qb
      * @param qc qc

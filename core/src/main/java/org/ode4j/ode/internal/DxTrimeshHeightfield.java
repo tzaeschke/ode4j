@@ -45,7 +45,13 @@ import org.ode4j.ode.DSpace;
 
 /**
  *
- * @author Tilmann Zaeschke
+ * ode4j enhances the functionality of the gimpact-based heightfield geom by adding simple support for holes and
+ * multiple layers. There is a corresponding demo showing 2 overlapping heightfields that look somewhat like a
+ * Swiss cheese. Moving bodies can fall through the holes and roll on both heightfields. The functionality is
+ * not very interesting on its own, but it allows to build complex environments including tunnels or caves
+ * (e.g. a pipe-like trimesh combined with a heightfield with 2 holes at the end of the tunnel) The code
+ * purposely enforces the rectangular shape of the holes to make it compatible with most of the rendering
+ * techniques. In order to keep the heightfield data API intact NaN value was chosen to denote a hole.
  */
 public class DxTrimeshHeightfield extends DxAbstractHeightfield {
 

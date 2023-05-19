@@ -27,6 +27,7 @@ package org.ode4j.ode.internal.ragdoll;
 import static org.ode4j.ode.internal.Rotation.dQMultiply1;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.ode4j.math.DMatrix3;
@@ -34,25 +35,17 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DCapsule;
-import org.ode4j.ode.DFixedJoint;
-import org.ode4j.ode.DHingeJoint;
-import org.ode4j.ode.DJoint;
+import org.ode4j.ode.*;
 import org.ode4j.ode.DJoint.PARAM_N;
-import org.ode4j.ode.DMass;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.DUniversalJoint;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.internal.joints.DxJointConstrainedBall;
+import org.ode4j.ode.ragdoll.DRagdoll;
 import org.ode4j.ode.ragdoll.DRagdollBoneConfig;
 import org.ode4j.ode.ragdoll.DRagdollConfig;
 import org.ode4j.ode.ragdoll.DRagdollJointConfig;
 
-public class DxRagdoll {
+public class DxRagdoll implements DRagdoll {
 
-    public class DxRagdollBody {
+    public static class DxRagdollBody implements DRagdoll.DRagdollBody {
         private final DBody body;
         private final double length;
         private final double radius;
@@ -93,8 +86,8 @@ public class DxRagdoll {
 
     private final DWorld world;
     private final DSpace space;
-    private final List<DxRagdollBody> bones = new ArrayList<DxRagdollBody>(16);
-    private final List<DJoint> joints = new ArrayList<DJoint>();
+    private final List<DxRagdollBody> bones = new ArrayList<>(16);
+    private final List<DJoint> joints = new ArrayList<>();
     private double totalMass;
     private boolean autoDisabled;
     private double autoDisableLinearAverageThreshold;
@@ -103,6 +96,11 @@ public class DxRagdoll {
     private int autoDisableBufferIndex;
     private boolean autoDisableBufferReady;
 
+    public static DRagdoll create(DWorld world, DSpace space, DRagdollConfig skeleton) {
+        return new DxRagdoll(world, space, skeleton);
+    }
+
+    @Deprecated // This will be made private in 0.6.0. Please use OdeHelper.createRagdoll() instead
     public DxRagdoll(DWorld world, DSpace space, DRagdollConfig skeleton) {
         this.world = world;
         this.space = space;
@@ -168,7 +166,7 @@ public class DxRagdoll {
     }
 
     private void adjustMass(DRagdollConfig skeleton) {
-        for (DxRagdollBody bone : bones) {
+        for (DRagdollBody bone : bones) {
             DMass mass = ((DMass)bone.getBody().getMass());
             mass.adjust(bone.getBody().getMass().getMass() * skeleton.getMass() / totalMass);
             bone.getBody().setMass(mass);
@@ -221,13 +219,22 @@ public class DxRagdoll {
     }
 
     public void setAngularDamping(double damping) {
-        for (DxRagdollBody bone : bones) {
+        for (DRagdollBody bone : bones) {
             bone.getBody().setAngularDamping(damping);
         }
     }
 
+    @Deprecated // to be removed in 0.6.0. Please use getBoneIter() or getBone()
     public List<DxRagdollBody> getBones() {
         return bones;
+    }
+
+    public DRagdollBody getBone(int i) {
+        return bones.get(i);
+    }
+
+    public List<DRagdollBody> getBoneIter() {
+        return Collections.unmodifiableList(bones);
     }
 
     public List<DJoint> getJoints() {
@@ -274,7 +281,7 @@ public class DxRagdoll {
         if (autoDisableBufferReady) {
             allIdle = true;
             for (DxRagdollBody bone : bones) {
-                DBody body = bone.body;
+                DBody body = bone.getBody();
                 DVector3 avgPos = new DVector3();
                 DQuaternion avgQuat = new DQuaternion();
                 for (int i = 0; i < autoDisableAverageSamples; i++) {
@@ -285,7 +292,7 @@ public class DxRagdoll {
                 }
                 avgPos.scale(1.0 / autoDisableAverageSamples);
                 avgQuat.safeNormalize4();
-                avgPos = avgPos.sub(body.getPosition());
+                avgPos.sub(body.getPosition());
                 double ldiff = avgPos.dot(avgPos);
                 DQuaternion adiff = new DQuaternion();
                 dQMultiply1(adiff, avgQuat, body.getQuaternion());
@@ -322,9 +329,9 @@ public class DxRagdoll {
         for (DJoint joint : joints) {
             joint.destroy();
         }
-        for (DxRagdollBody bone : bones) {
-            bone.body.getFirstGeom().destroy();
-            bone.body.destroy();
+        for (DRagdollBody bone : bones) {
+            bone.getBody().getFirstGeom().destroy();
+            bone.getBody().destroy();
         }
     }
 
