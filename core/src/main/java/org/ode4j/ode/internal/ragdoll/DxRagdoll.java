@@ -96,7 +96,6 @@ public class DxRagdoll implements DRagdoll {
     private int autoDisableBufferIndex;
     private boolean autoDisableBufferReady;
 
-    @SuppressWarnings("deprecation")
     public static DRagdoll create(DWorld world, DSpace space, DRagdollConfig skeleton) {
         return new DxRagdoll(world, space, skeleton);
     }
