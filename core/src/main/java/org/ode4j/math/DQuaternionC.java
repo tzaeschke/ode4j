@@ -87,6 +87,11 @@ public interface DQuaternionC {
 	DVector3 toEulerDegrees();
 
 	/**
+	 * @return A mutable copy of this object.
+	 */
+    DQuaternion copy();
+
+    /**
 	 * @return w*w + x*x + y*y + z*z
 	 */
 	double lengthSquared();
@@ -106,6 +111,13 @@ public interface DQuaternionC {
 	 * @return an inverted quaternion
 	 */
 	DQuaternion reInverse();
+
+	/**
+	 * @param b Other quaternion
+	 * @return dot product of (this) and b
+	 * @see DQuaternion#dot(DQuaternionC)
+	 */
+	double dot(DQuaternionC b);
 
 	/**
 	 * Do not use. This can be slow, use isEq() instead.
