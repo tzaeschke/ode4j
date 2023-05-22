@@ -23,6 +23,7 @@ Bug: Dropping first box on Heightfield is wrong.
 
 0.5.0 (unreleased)
 =====
+- Fixed missing callback to Trimesh callbacks [#76](https://github.com/tzaeschke/ode4j/issues/76)
 - Added DQuaternion.copy() and dot() [#117](https://github.com/tzaeschke/ode4j/pull/117)
 - Added factory methods and missing API for DRagdoll, DConstrainedBallJoint and DTrimeshHeightfield.
   [#24](https://github.com/tzaeschke/ode4j/issues/24)

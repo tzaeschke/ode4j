@@ -114,6 +114,23 @@ class CollideTrimeshTrimesh implements DColliderFn {
 
 		return result;
 	}
+	// TODO 76
+//	    GimContact ptrimeshcontact;
+//
+//		int nActualContacts = 0;
+//		for (int i=0;i<contactcount;i++)
+//		{
+//			ptrimeshcontact = ptrimeshcontacts.at(i);
+//			// ode4j fix: see issue #76
+//			if (TriMesh1.invokeCallback(TriMesh1, TriMesh2, ptrimeshcontact.getFeature1()) == 0) {
+//				continue;
+//			}
+//			if (TriMesh2.invokeCallback(TriMesh2, TriMesh1, ptrimeshcontact.getFeature2()) == 0) {
+//				continue;
+//			}
+//	        //ptrimeshcontacts.inc();//++;
+//			nActualContacts++;
+//		}
 
 
 	//#endif // dTRIMESH_GIMPACT

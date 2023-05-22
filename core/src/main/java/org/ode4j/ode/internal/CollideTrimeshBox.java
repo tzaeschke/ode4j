@@ -1450,16 +1450,24 @@ class CollideTrimeshBox implements DColliderFn {
 
 		ptrimesh.gim_trimesh_unlocks_work_data();
 		collision_result.GIM_DYNARRAY_DESTROY();
+		int nActualContacts = 0;
 		for (int i = 0; i < contactcount; i++) {
-			cData.m_ContactGeoms.get(i).depth = cData.m_TempContactGeoms.get(i).depth;
-			cData.m_ContactGeoms.get(i).g1 = cData.m_TempContactGeoms.get(i).g1;
-			cData.m_ContactGeoms.get(i).g2 = cData.m_TempContactGeoms.get(i).g2;
-			cData.m_ContactGeoms.get(i).normal.set(cData.m_TempContactGeoms.get(i).normal);
-			cData.m_ContactGeoms.get(i).pos.set(cData.m_TempContactGeoms.get(i).pos);
-			cData.m_ContactGeoms.get(i).side1 = cData.m_TempContactGeoms.get(i).side1;
-			cData.m_ContactGeoms.get(i).side2 = cData.m_TempContactGeoms.get(i).side2;
+			// TODO 76
+			// ode4j fix: see issue #76
+			// side1: see TestCollisionForSingleTriangle()
+			if (TriMesh.invokeCallback(TriMesh, BoxGeom, cData.m_TempContactGeoms.get(i).side1) == 0) {
+				continue;
+			}
+			cData.m_ContactGeoms.get(nActualContacts).depth = cData.m_TempContactGeoms.get(i).depth;
+			cData.m_ContactGeoms.get(nActualContacts).g1 = cData.m_TempContactGeoms.get(i).g1;
+			cData.m_ContactGeoms.get(nActualContacts).g2 = cData.m_TempContactGeoms.get(i).g2;
+			cData.m_ContactGeoms.get(nActualContacts).normal.set(cData.m_TempContactGeoms.get(i).normal);
+			cData.m_ContactGeoms.get(nActualContacts).pos.set(cData.m_TempContactGeoms.get(i).pos);
+			cData.m_ContactGeoms.get(nActualContacts).side1 = cData.m_TempContactGeoms.get(i).side1;
+			cData.m_ContactGeoms.get(nActualContacts).side2 = cData.m_TempContactGeoms.get(i).side2;
+			nActualContacts++;
 		}
-		return contactcount;
+		return nActualContacts;
 	}
 	//	#endif  //GIMPACT
 

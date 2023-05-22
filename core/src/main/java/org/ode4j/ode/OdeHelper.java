@@ -1090,9 +1090,10 @@ public abstract class OdeHelper {
 	 * Construction. Callbacks are optional.
 	 * @param space space
 	 * @param data user data
-	 * @param callback callback
-	 * @param arrayCallback array callback
-	 * @param rayCallback ray callback
+	 * @param callback callback (can be NULL)
+	 *                 NOTE: The callback is only called for Box, Capsule, Ray, Sphere and TriMesh. See issue #76.
+	 * @param arrayCallback array callback (can be NULL)
+	 * @param rayCallback ray callback (can be NULL)
 	 * @return trimesh
 	 */
 	public static DTriMesh createTriMesh(DSpace space, DTriMeshData data, DTriCallback callback, 

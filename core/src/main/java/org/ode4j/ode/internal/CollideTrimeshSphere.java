@@ -569,9 +569,23 @@ class CollideTrimeshSphere implements DColliderFn {
 		DxGIMCContactAccessor contactaccessor = new DxGIMCContactAccessor(ptrimeshcontacts, g1, SphereGeom, -1);
 		contactcount = DxGImpactContactsExportHelper.ExportMaxDepthGImpactContacts(contactaccessor, contactcount, Flags, Contacts, Stride);
 
+		int nActualContacts = 0;
+		for (int i=0;i<contactcount;i++)
+		{
+			// ode4j fix: see issue #76
+			// feature1: see gim_trimesh_sphere_collisionODE()
+			if (TriMesh.invokeCallback(TriMesh, SphereGeom, ptrimeshcontacts.at0().getFeature1()) == 0) {
+				ptrimeshcontacts.inc();
+				continue;
+			}
+			// TODO 76
+	        ptrimeshcontacts.inc();//++;
+			nActualContacts++;
+		}
+
 		trimeshcontacts.GIM_DYNARRAY_DESTROY();
 
-	    return contactcount;
+	    return nActualContacts;
 	}
 //	#endif // dTRIMESH_GIMPACT
 
