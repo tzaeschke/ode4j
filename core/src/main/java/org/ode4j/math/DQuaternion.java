@@ -200,6 +200,11 @@ public class DQuaternion implements DQuaternionC {
 		return h;
 	}
 
+	@Override
+	public DQuaternion copy() {
+		return new DQuaternion(this);
+	}
+
 	public DQuaternion add(double dw, double dx, double dy, double dz) {
 		w += dw;
 		x += dx;
@@ -446,5 +451,16 @@ public class DQuaternion implements DQuaternionC {
 		DQuaternion ret = new DQuaternion(this);
 		ret.eqInverse();
 		return ret;
+	}
+
+	/**
+	 * Return the 'dot' product of two quaternions.
+	 * r = a0*b0 + a1*b1 + a2*b2 + a3*b3;
+	 * @param b b
+	 * @return (this) * b
+	 */
+	@Override
+	public double dot(DQuaternionC b) {
+		return get0()*b.get0() + get1()*b.get1() + get2()*b.get2() + get3()*b.get3();
 	}
 }

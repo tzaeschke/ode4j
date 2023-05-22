@@ -273,4 +273,36 @@ public class DQuaternionTest {
         assertEquals(Math.sqrt(54), t.length(), eps);
         assertEquals(54.0, t.lengthSquared(), eps);
     }
+
+    @Test
+    public void testDot() {
+        DQuaternion x = new DQuaternion(1, 2, 3, 5);
+        DQuaternion y = new DQuaternion(4, 8, -1, -2);
+
+        assertEquals(4 + 16 - 3 - 10, x.dot(y), eps);
+
+        // * 1 if rotation1 == rotation2
+        // * 0 if rotation1 and rotation2 are perpendicular
+        // * -1 if rotation1 and rotation2 are opposite
+
+        // q1 == q2
+        DQuaternion q1 = x.copy().normalize();
+        DQuaternion q2 = y.copy().normalize();
+        assertEquals(1, q1.dot(q1), 0.0001);
+        assertEquals(1, q2.dot(q2), 0.0001);
+
+        // opposite directions
+        DQuaternion q1i = q1.copy().scale(-1);
+        DQuaternion q2i = q2.copy().scale(-1);
+        assertEquals(-1, q1i.dot(q1), 0.0001);
+        assertEquals(-1, q2i.dot(q2), 0.0001);
+        assertEquals(-1, q1.dot(q1i), 0.0001);
+        assertEquals(-1, q2.dot(q2i), 0.0001);
+
+        // perpendicular
+        DQuaternion x2 = new DQuaternion(1, 0, 0, 0).normalize();
+        DQuaternion y2 = new DQuaternion(0, 1, 0, 0).normalize();
+        assertEquals(0, x2.dot(y2), 0.0001);
+        assertEquals(0, y2.dot(x2), 0.0001);
+    }
 }
