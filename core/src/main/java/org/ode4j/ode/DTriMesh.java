@@ -78,18 +78,18 @@ public interface DTriMesh extends DGeom {
 	//		dMTV_THIRD,
 	//		dMTV__MAX,
 	//	}
-	public static final int dMTV__MIN = 0;
-	public static final int dMTV_FIRST = dMTV__MIN;
-	public static final int dMTV_SECOND = 1;
-	public static final int dMTV_THIRD = 2;
-	public static final int dMTV__MAX = 3;
+	int dMTV__MIN = 0;
+	int dMTV_FIRST = dMTV__MIN;
+	int dMTV_SECOND = 1;
+	int dMTV_THIRD = 2;
+	int dMTV__MAX = 3;
 
 	/*
 	 * The values of data_id that can be used with dGeomTriMeshDataSet/dGeomTriMeshDataGet
 	 */
 	enum dTRIMESHDATA {
 		FACE_NORMALS,
-		USE_FLAGS;
+		USE_FLAGS
 		//public static final dTRIMESHDATA _MIN = 0;
 		//public static final dTRIMESHDATA dTRIMESHDATA__MAX = 2;
 //#ifndef TRIMESH_FACE_NORMALS // Define this name during the header inclusion if you need it for something else

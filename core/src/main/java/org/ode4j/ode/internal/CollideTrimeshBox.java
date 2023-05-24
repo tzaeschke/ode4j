@@ -42,16 +42,13 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.OdeConfig;
-import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
-import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
-import static org.ode4j.ode.OdeMath.dSubtractVectors3;
 import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.DxGeom.NUMC_MASK;
 
@@ -275,34 +272,36 @@ class CollideTrimeshBox implements DColliderFn {
 			double fMin, fMax;
 
 			// find min of triangle interval
-			if ( fp0 < fp1 ) {
-				if ( fp0 < fp2 ) {
-					fMin = fp0;
-				} else {
-					fMin = fp2;
-				}
-			} else {
-				if( fp1 < fp2 ) {
-					fMin = fp1;
-				} else {
-					fMin = fp2;
-				}
-			}
+			fMin = Math.min(fp0, Math.min(fp1, fp2));
+			//			if ( fp0 < fp1 ) {
+			//				if ( fp0 < fp2 ) {
+			//					fMin = fp0;
+			//				} else {
+			//					fMin = fp2;
+			//				}
+			//			} else {
+			//				if( fp1 < fp2 ) {
+			//					fMin = fp1;
+			//				} else {
+			//					fMin = fp2;
+			//				}
+			//			}
 
 			// find max of triangle interval
-			if ( fp0 > fp1 ) {
-				if ( fp0 > fp2 ) {
-					fMax = fp0;
-				} else {
-					fMax = fp2;
-				}
-			} else {
-				if( fp1 > fp2 ) {
-					fMax = fp1;
-				} else {
-					fMax = fp2;
-				}
-			}
+			fMax = Math.max(fp0, Math.max(fp1, fp2));
+			//			if ( fp0 > fp1 ) {
+			//				if ( fp0 > fp2 ) {
+			//					fMax = fp0;
+			//				} else {
+			//					fMax = fp2;
+			//				}
+			//			} else {
+			//				if( fp1 > fp2 ) {
+			//					fMax = fp1;
+			//				} else {
+			//					fMax = fp2;
+			//				}
+			//			}
 
 			// calculate minimum and maximum depth
 			double fDepthMin = fR - fMin;
@@ -441,8 +440,8 @@ class CollideTrimeshBox implements DColliderFn {
 		//	static void _cldClipPolyToPlane( dVector3 avArrayIn[], int ctIn,
 		//	                      dVector3 avArrayOut[], int &ctOut,
 		//	                      const dVector4 &plPlane )
-		void _cldClipPolyToPlane( DVector3 avArrayIn[], int ctIn,
-				DVector3 avArrayOut[], RefInt ctOut,
+		void _cldClipPolyToPlane( DVector3[] avArrayIn, int ctIn,
+				DVector3[] avArrayOut, RefInt ctOut,
 				final DVector4C plPlane )
 		{
 			// start with no output points

@@ -23,8 +23,8 @@ Bug: Dropping first box on Heightfield is wrong.
 
 0.5.0 (unreleased)
 =====
-- Fixed missing callback to Trimesh callbacks.
-  Also:
+- Cumulative fix:
+  * Fixed missing callback to Trimesh callbacks. [#76](https://github.com/tzaeschke/ode4j/issues/76)
   * DBody.getGeomIterator()
   * DBody.getFirstGeom() is no longer deprecated
   * Simpler construction methods for DConvex

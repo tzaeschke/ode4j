@@ -165,7 +165,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 
 		// note: this cap should not limit bounce velocity
 		final double maxvel = world.contactp.max_vel;
-		double c = pushout > maxvel ? maxvel : pushout;
+		double c = Math.min(pushout, maxvel);
 
 		// c1,c2 = contact points with respect to body PORs
 		DVector3 c1 = new DVector3(), c2 = new DVector3();

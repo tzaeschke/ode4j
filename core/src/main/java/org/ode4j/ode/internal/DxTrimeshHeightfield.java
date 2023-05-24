@@ -63,9 +63,9 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
     //
     ////Three-way MIN and MAX
     //#define dMIN3(A,B,C)  ( (A)<(B) ? dMIN((A),(C)) : dMIN((B),(C)) )
-    private final double dMIN3(double A, double B, double C) { return A<B ? dMIN(A,C) : dMIN(B,C); }
+    private double dMIN3(double A, double B, double C) { return A<B ? dMIN(A,C) : dMIN(B,C); }
     //#define dMAX3(A,B,C)  ( (A)>(B) ? dMAX((A),(C)) : dMAX((B),(C)) )
-    private final double dMAX3(double A, double B, double C) { return A>B ? dMAX(A,C) : dMAX(B,C); }
+    private double dMAX3(double A, double B, double C) { return A>B ? dMAX(A,C) : dMAX(B,C); }
     //
     //#define dOPESIGN(a, op1, op2,b) \
     //(a)[0] op1 op2 ((b)[0]); \
@@ -327,10 +327,9 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
     {
         //delete[] tempTriangleBuffer;
         tempTriangleBuffer = null;
-        //TODO set size == 0? TZ
+        tempTriangleBufferSize = -0; // TZ just to be clean
     }
 
-    @SuppressWarnings("unchecked")
     private void allocateHeightBuffer(int numX, int numZ)
     {
         int alignedNumX = AlignBufferSize(numX, TEMP_HEIGHT_BUFFER_ELEMENT_COUNT_ALIGNMENT_X);

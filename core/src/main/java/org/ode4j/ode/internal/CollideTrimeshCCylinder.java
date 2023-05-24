@@ -24,17 +24,11 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DColliderFn;
-import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.OdeConfig;
-import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
@@ -1243,14 +1237,14 @@ class CollideTrimeshCCylinder implements DColliderFn {
 //	#endif // dTRIMESH_ENABLED
 
 	
-	private static final void VEC_SCALE(vec3f c, final double a, DVector3C x)			
+	private static void VEC_SCALE(vec3f c, final double a, DVector3C x)
 	{						
 	   c.f[0] = (float) (a*x.get0());				
 	   c.f[1] = (float) (a*x.get1());				
 	   c.f[2] = (float) (a*x.get2());				
 	}
 
-	private static final void VEC_SUM(vec3f v21, DVector3C v2, vec3f v1)			
+	private static void VEC_SUM(vec3f v21, DVector3C v2, vec3f v1)
 	{						
 	   v21.f[0] = (float) (v2.get0() + v1.f[0]);		
 	   v21.f[1] = (float) (v2.get1() + v1.f[1]);		

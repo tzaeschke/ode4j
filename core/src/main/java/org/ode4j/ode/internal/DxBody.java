@@ -52,7 +52,6 @@ import org.ode4j.ode.internal.Objects_H.dxDampingParameters;
 import org.ode4j.ode.internal.cpp4j.java.Ref;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
-import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
 import org.ode4j.ode.internal.processmem.DxWorldProcessContext;
 
 import java.util.Iterator;
@@ -91,7 +90,7 @@ public class DxBody extends DObject implements DBody {
 
 	//	  public dxJointNode firstjoint;	// list of attached joints
 	//TODO
-	public final Ref<DxJointNode> firstjoint = new Ref<DxJointNode>();	// list of attached joints
+	public final Ref<DxJointNode> firstjoint = new Ref<>();	// list of attached joints
 	//unsigned
 	int flags;			// some dxBodyFlagXXX flags
 	//  public dGeom geom;			// first collision geom associated with body
@@ -1155,7 +1154,7 @@ public class DxBody extends DObject implements DBody {
 	@Override
 	//	  public void DESTRUCTOR()
 	//	    { dBodyDestroy (); super.DESTRUCTOR(); }
-	public void DESTRUCTOR() { super.DESTRUCTOR(); };
+	public void DESTRUCTOR() { super.DESTRUCTOR(); }
 
 	//void setData (void *data)
 	@Override
