@@ -1207,13 +1207,14 @@ class CollideTrimeshCCylinder implements DColliderFn {
 		VEC_SUM(capsule.m_point2,vCapsulePosition,capsule.m_point2);
 
 
-	//Create contact list
+	    //Create contact list
 	    GimDynArray<GimContact> trimeshcontacts;
 	    trimeshcontacts = GimContact.GIM_CREATE_CONTACT_LIST();
 
 	    //Collide trimeshe vs capsule
 	    TriMesh.m_collision_trimesh().gim_trimesh_capsule_collision(capsule,trimeshcontacts);
-
+		// TZ: Only in ode4j, call callbacks, see issue #76
+		TriMesh.applyCallbacksToContacts(gCylinder, trimeshcontacts, true);
 
 	    if(trimeshcontacts.size() == 0)
 	    {
@@ -1221,60 +1222,15 @@ class CollideTrimeshCCylinder implements DColliderFn {
 	        return 0;
 	    }
 
-	    ObjArray<GimContact> ptrimeshcontacts = trimeshcontacts.GIM_DYNARRAY_POINTER_V();
-
+		GimContact[] ptrimeshcontacts = trimeshcontacts.GIM_DYNARRAY_POINTER();
 		int contactcount = trimeshcontacts.size();
-		int contactmax = (flags & DxGeom.NUMC_MASK);
-		if (contactcount > contactmax)
-		{
-			if (OdeConfig.ENABLE_CONTACT_SORTING) {
-				Arrays.sort((Object[])trimeshcontacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
-					@Override
-					public int compare(Object o1, Object o2) {
-						return Float.compare(((GimContact) o2).getDepth(), ((GimContact) o1).getDepth());
-					}
-				});
-			}
-			contactcount = contactmax;
-		}
 
-	    DContactGeom pcontact;
-		int nActualContacts = 0;
-		for (int i=0;i<contactcount;i++)
-		{
-			// ode4j fix: see issue #76
-			// feature1: see gim_trimesh_capsule_collision()
-			if (TriMesh.invokeCallback(TriMesh, gCylinder, ptrimeshcontacts.at0().getFeature1()) == 0) {
-				ptrimeshcontacts.inc();
-				continue;
-			}
-	        pcontact = contacts.getSafe(flags, nActualContacts);//SAFECONTACT(flags, contact, i, skip);
-
-//	        pcontact.pos[0] = ptrimeshcontacts.m_point[0];
-//	        pcontact.pos[1] = ptrimeshcontacts.m_point[1];
-//	        pcontact.pos[2] = ptrimeshcontacts.m_point[2];
-//	        pcontact.pos[3] = 1.0f;
-	        pcontact.pos.set( ptrimeshcontacts.at0().getPoint().f );
-
-//	        pcontact.normal[0] = ptrimeshcontacts.m_normal[0];
-//	        pcontact.normal[1] = ptrimeshcontacts.m_normal[1];
-//	        pcontact.normal[2] = ptrimeshcontacts.m_normal[2];
-//	        pcontact.normal[3] = 0;
-	        pcontact.normal.set( ptrimeshcontacts.at0().getNormal().f );
-
-	        pcontact.depth = ptrimeshcontacts.at0().getDepth();
-	        pcontact.g1 = TriMesh;
-	        pcontact.g2 = gCylinder;
-	        pcontact.side1 = ptrimeshcontacts.at0().getFeature1();
-	        pcontact.side2 = -1;
-	        
-	        ptrimeshcontacts.inc();//++;
-			nActualContacts++;
-		}
+		DxGIMCContactAccessor contactaccessor = new DxGIMCContactAccessor(ptrimeshcontacts, TriMesh, gCylinder, -1);
+		contactcount = DxGImpactContactsExportHelper.ExportMaxDepthGImpactContacts(contactaccessor, contactcount, flags, contacts, skip);
 
 		trimeshcontacts.GIM_DYNARRAY_DESTROY();
 
-	    return nActualContacts;
+		return contactcount;
 	}
 //	#endif //GIMPACT
 

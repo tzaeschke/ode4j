@@ -324,7 +324,6 @@ public class DxRagdoll implements DRagdoll {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public void destroy() {
         for (DJoint joint : joints) {
             joint.destroy();

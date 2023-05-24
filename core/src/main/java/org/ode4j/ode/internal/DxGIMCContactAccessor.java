@@ -81,9 +81,10 @@ public class DxGIMCContactAccessor implements DxGImpactContactsExportHelper.GImp
     }
 
     private final GimContact[] m_ptrimeshcontacts;
-    private DxGeom m_g1, m_g2;
-    private boolean m_gotside2ovr;
-    private int m_side2ovr;
+    private final DxGeom m_g1;
+    private final DxGeom m_g2;
+    private final boolean m_gotside2ovr;
+    private final int m_side2ovr;
 //    };
 
 }

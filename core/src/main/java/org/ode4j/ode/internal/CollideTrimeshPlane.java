@@ -197,7 +197,6 @@ class CollideTrimeshPlane implements DColliderFn {
 		}
 
 
-		//ObjArray<vec4f> planecontact_results = collision_result.GIM_DYNARRAY_POINTER_V();
 		vec4f[] planecontact_results = collision_result.GIM_DYNARRAY_POINTER();
 		int contactcount = collision_result.size();
 

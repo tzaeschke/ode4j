@@ -103,6 +103,15 @@ public class GimGeometry extends GimMath {
 	    public float minZ;
 	    public float maxZ;
 		public aabb3f() {}
+
+		public void set(double minX, double maxX, double minY, double maxY, double minZ, double maxZ) {
+			this.minX = (float) minX;
+			this.maxX = (float) maxX;
+			this.minY = (float) minY;
+			this.maxY = (float) maxY;
+			this.minZ = (float) minZ;
+			this.maxZ = (float) maxZ;
+		}
 	}
 	//typedef struct _aabb3f aabb3f;
 	//! @}

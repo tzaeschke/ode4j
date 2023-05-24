@@ -47,7 +47,7 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
         DxTriMesh Geom;
         switch (OdeConfig.dTRIMESH_TYPE) {
             case DISABLED: Geom = new DxTriMeshDisabled(space, Data); break;
-            case GIMPACT: Geom = new DxGimpact(space, (DxGimpactData) Data); break;
+            case GIMPACT: Geom = new DxGimpact(space, (DxGimpactData) Data, Callback, ArrayCallback, RayCallback); break;
             default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
         }
         //		Geom.Callback = Callback;

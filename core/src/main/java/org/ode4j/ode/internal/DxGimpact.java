@@ -29,11 +29,7 @@ import static org.ode4j.ode.internal.Common.dUASSERT;
 import java.nio.channels.UnsupportedAddressTypeException;
 
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DCapsule;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DSphere;
-import org.ode4j.ode.DTriMeshData;
+import org.ode4j.ode.*;
 import org.ode4j.ode.internal.gimpact.GimGeometry;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
@@ -65,8 +61,9 @@ public class DxGimpact extends DxTriMesh {
 	// Trimesh
 
 	//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){
-    public DxGimpact(DxSpace Space, DxGimpactData Data) {
-		super(Space, Data, null, null, null);
+	public DxGimpact(DxSpace Space, DxGimpactData Data, DTriMesh.DTriCallback Callback,
+					 DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
+		super(Space, Data, Callback, ArrayCallback, RayCallback);
 		type = dTriMeshClass;
 	}
 

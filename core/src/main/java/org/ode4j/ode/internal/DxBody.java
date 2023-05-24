@@ -55,6 +55,8 @@ import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.ode.internal.joints.OdeJointsFactoryImpl;
 import org.ode4j.ode.internal.processmem.DxWorldProcessContext;
 
+import java.util.Iterator;
+
 /**
  * rigid body (dynamics object).
  */
@@ -1504,8 +1506,6 @@ public class DxBody extends DObject implements DBody {
 		dBodySetAutoDisableDefaults();
 	}
 
-	/** @deprecated */
-	@Deprecated
     @Override
 	public DGeom getFirstGeom() {
 		return dBodyGetFirstGeom();
@@ -1520,8 +1520,32 @@ public class DxBody extends DObject implements DBody {
 	}
 
 	@Override
+	public Iterator<DGeom> getGeomIterator() {
+		return new GeomIterator(geom);
+	}
+
+	@Override
 	public void setMovedCallback(BodyMoveCallBack callback) {
 		dBodySetMovedCallback(callback);
 	}
 
+	private static class GeomIterator implements Iterator<DGeom> {
+		DxGeom current;
+
+		GeomIterator(DxGeom start) {
+			current = start;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return current != null;
+		}
+
+		@Override
+		public DGeom next() {
+			DGeom ret = current;
+			current = current.body_next;
+			return ret;
+		}
+	}
 }

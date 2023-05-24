@@ -973,7 +973,7 @@ public abstract class ApiCppBody extends ApiCppJoint {
 	 * returns the next geom associated with the same body.
 	 * @param g a geom attached to some body.
 	 * @return the next geom attached to the same body, or 0.
-	 * @see dBodyGetFirstGeom
+	 * @see #dBodyGetFirstGeom
 	 * 
 	 */
 	//ODE_API 

@@ -1332,12 +1332,12 @@ class CollideTrimeshBox implements DColliderFn {
 		}
 
         //void sTrimeshBoxColliderData::TestCollisionForSingleTriangle(int Triint, dVector3 dv[3], bool &bOutFinishSearching)
-        boolean TestCollisionForSingleTriangle(int Triint, DVector3[] dv)
+        boolean TestCollisionForSingleTriangle(int Triint, DVector3 dv0, DVector3 dv1, DVector3 dv2)
         {
             boolean finish = false;
 
             // test this triangle
-            if (_cldTestOneTriangle(dv[0], dv[1], dv[2], Triint))
+            if (_cldTestOneTriangle(dv0, dv1, dv2, Triint))
             {
                 /*
                 NOTE by Oleh_Derevenko:
@@ -1403,12 +1403,7 @@ class CollideTrimeshBox implements DColliderFn {
 		aabb3f test_aabb = new aabb3f();
 
 		DAABBC aabb = BoxGeom.getAABB();
-		test_aabb.minX = (float) aabb.getMin0();
-		test_aabb.maxX = (float) aabb.getMax0();
-		test_aabb.minY = (float) aabb.getMin1();
-		test_aabb.maxY = (float) aabb.getMax1();
-		test_aabb.minZ = (float) aabb.getMin2();
-		test_aabb.maxZ = (float) aabb.getMax2();
+		test_aabb.set(aabb.getMin0(), aabb.getMax0(), aabb.getMin1(), aabb.getMax1(), aabb.getMin2(), aabb.getMax2());
 
 		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
@@ -1428,11 +1423,11 @@ class CollideTrimeshBox implements DColliderFn {
 		ptrimesh.gim_trimesh_locks_work_data();
 
         for (int i = 0; i < collision_result.size(); i++) {
-            DVector3[] dv = DVector3.newArray(3);
+            DVector3 dv0 = new DVector3(), dv1 = new DVector3(), dv2 = new DVector3();
 
 			int Triint = boxesresult[i];
-			ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv[0], dv[1], dv[2]);
-			cData.TestCollisionForSingleTriangle(Triint, dv);
+			ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv0, dv1, dv2);
+			cData.TestCollisionForSingleTriangle(Triint, dv0, dv1, dv2);
         }
         int contactcount = cData.m_TempContactGeoms.size();
         int contactmax = (Flags & NUMC_MASK);
@@ -1455,7 +1450,7 @@ class CollideTrimeshBox implements DColliderFn {
 			// TODO 76
 			// ode4j fix: see issue #76
 			// side1: see TestCollisionForSingleTriangle()
-			if (TriMesh.invokeCallback(TriMesh, BoxGeom, cData.m_TempContactGeoms.get(i).side1) == 0) {
+			if (!TriMesh.invokeCallback(BoxGeom, cData.m_TempContactGeoms.get(i).side1)) {
 				continue;
 			}
 			cData.m_ContactGeoms.get(nActualContacts).depth = cData.m_TempContactGeoms.get(i).depth;

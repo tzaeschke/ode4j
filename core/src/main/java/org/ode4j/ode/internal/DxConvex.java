@@ -391,7 +391,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	//		       unsigned int _pointcount,
 	//		       unsigned int *_polygons)
 	public static DConvex dCreateConvex (DxSpace space, double[] planes, int planecount,
-			double[] points, int pointcount, int[] polygons)
+										 double[] points, int pointcount, int[] polygons)
 	{
 		//fprintf(stdout,"dxConvex dCreateConvex\n");
 		return new DxConvex(space, planes, planecount,
@@ -400,12 +400,21 @@ public class DxConvex extends DxGeom implements DConvex {
 				polygons);
 	}
 
+	// Only in ode4j.
+	public static DConvex dCreateConvex (DxSpace space, double[] planes, double[] points, int[] polygons)
+	{
+		//fprintf(stdout,"dxConvex dCreateConvex\n");
+		dUASSERT(planes.length % 4 == 0, "planes are defined by four values: x, y, z, depth");
+		dUASSERT(points.length % 3 == 0, "points are defined by three values: x, y, z");
+		return new DxConvex(space, planes, planes.length / 4, points, points.length / 3, polygons);
+	}
+
 	//void dGeomSetConvex (dGeom g,dReal *_planes,unsigned int _planecount,
 	//		     dReal *_points,
 	//		     unsigned int _pointcount,
 	//		     unsigned int *_polygons)
 	void dGeomSetConvex (double[] planes, int planecount,
-			double[] points, int pointcount, int[] polygons)
+						 double[] points, int pointcount, int[] polygons)
 	{
 		//fprintf(stdout,"dxConvex dGeomSetConvex\n");
 		//dUASSERT (g && g.type == dConvexClass,"argument not a convex shape");
@@ -424,6 +433,7 @@ public class DxConvex extends DxGeom implements DConvex {
 		this.pointcount = pointcount;
 		this.polygons=polygons;
 	}
+
 
 	//****************************************************************************
 	// Helper Inlines
@@ -2034,8 +2044,16 @@ Helper struct
 
 	@Override
 	public void setConvex(double[] planes, int planeCount, double[] points,
-			int pointCount, int[] polygons) {
+						  int pointCount, int[] polygons) {
 		dGeomSetConvex(planes, planeCount, points, pointCount, polygons);
+	}
+
+	// Only in ode4j
+	@Override
+	public void setConvex(double[] planes, double[] points, int[] polygons) {
+		dUASSERT(planes.length % 4 == 0, "planes are defined by four values: x, y, z, depth");
+		dUASSERT(points.length % 3 == 0, "points are defined by three values: x, y, z");
+		dGeomSetConvex(planes, planes.length/4, points, points.length/3, polygons);
 	}
 
 	public double[] getPoints() {

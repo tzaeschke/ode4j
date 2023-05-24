@@ -24,9 +24,28 @@
  *************************************************************************/
 package org.ode4j.ode;
 
+
 public interface DConvex extends DGeom {
 
+	/**
+	 * @param planes An array of planes in the form: normal X, normal Y, normal Z,Distance
+	 * @param planeCount Amount of planes in `planes`
+	 * @param points An array of points X,Y,Z
+	 * @param pointCount Amount of points in `points`
+	 * @param polygons An array of indices to the points of each polygon, it should be the
+	 * 	 number of vertices followed by that amount of indices to "points" in
+	 * 	 counter clockwise order.
+	 */
 	void setConvex(double[] planes, int planeCount, double[] points,
 			int pointCount, int[] polygons);
 
+
+	/**
+	 * @param planes An array of planes in the form: normal X, normal Y, normal Z,Distance
+	 * @param points An array of points X,Y,Z
+	 * @param polygons An array of indices to the points of each polygon, it should be the
+	 * 	 number of vertices followed by that amount of indices to "points" in
+	 * 	 counter clockwise order.
+	 */
+	void setConvex(double[] planes, double[] points, int[] polygons);
 }

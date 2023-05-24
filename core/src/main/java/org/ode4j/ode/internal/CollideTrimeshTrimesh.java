@@ -83,6 +83,10 @@ class CollideTrimeshTrimesh implements DColliderFn {
 		//gim_trimesh_trimesh_collision(triMesh1.m_collision_trimesh, triMesh2.m_collision_trimesh, trimeshContacts);
 		triMesh1.m_collision_trimesh().gim_trimesh_trimesh_collision(triMesh2.m_collision_trimesh(), trimeshContacts);
 
+		// TZ: only in ode4j, see issue #76
+		triMesh1.applyCallbacksToContacts(triMesh2, trimeshContacts, true);
+		triMesh2.applyCallbacksToContacts(triMesh1, trimeshContacts, false);
+
 		int contactCount = trimeshContacts.size();
 
 		if (contactCount != 0)
@@ -114,24 +118,6 @@ class CollideTrimeshTrimesh implements DColliderFn {
 
 		return result;
 	}
-	// TODO 76
-//	    GimContact ptrimeshcontact;
-//
-//		int nActualContacts = 0;
-//		for (int i=0;i<contactcount;i++)
-//		{
-//			ptrimeshcontact = ptrimeshcontacts.at(i);
-//			// ode4j fix: see issue #76
-//			if (TriMesh1.invokeCallback(TriMesh1, TriMesh2, ptrimeshcontact.getFeature1()) == 0) {
-//				continue;
-//			}
-//			if (TriMesh2.invokeCallback(TriMesh2, TriMesh1, ptrimeshcontact.getFeature2()) == 0) {
-//				continue;
-//			}
-//	        //ptrimeshcontacts.inc();//++;
-//			nActualContacts++;
-//		}
-
 
 	//#endif // dTRIMESH_GIMPACT
 

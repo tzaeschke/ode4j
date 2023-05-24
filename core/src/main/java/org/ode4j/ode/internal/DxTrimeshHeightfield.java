@@ -614,7 +614,7 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
         }
         DxGimpactData data = new DxGimpactData();
         data.build(vertices, faces);
-        DxGimpact trimesh = new DxGimpact(null, data);
+        DxGimpact trimesh = new DxGimpact(null, data, null, null, null);
         trimesh.recomputeAABB();
         numTerrainContacts = DxGeom.dCollide(trimesh, o2, flags, contacts, skip);
         trimesh.destroy();

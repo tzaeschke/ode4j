@@ -27,13 +27,15 @@ package org.ode4j.ode.internal.trimesh;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.internal.DxGeom;
 import org.ode4j.ode.internal.DxSpace;
+import org.ode4j.ode.internal.gimpact.GimContact;
+import org.ode4j.ode.internal.gimpact.GimDynArray;
 
 import java.util.Arrays;
 
 //    typedef dxGeom dxMeshBase_Parent;
 //    struct dxMeshBase:
 //    public dxMeshBase_Parent
-abstract class DxMeshBase extends DxGeom {
+abstract class DxMeshBase extends DxGeom implements DTriMesh {
     //        public:
     //        dxMeshBase(dxSpace *Space, dxTriDataBase *Data,
     //                dTriCallback *Callback, dTriArrayCallback *ArrayCallback, dTriRayCallback *RayCallback,
@@ -55,8 +57,20 @@ abstract class DxMeshBase extends DxGeom {
         type = dTriMeshClass;
     }
 
-    boolean invokeCallback(DxGeom Object, int TriIndex) {
+    public boolean invokeCallback(DxGeom Object, int TriIndex) {
         return m_Callback == null || m_Callback.call(this, Object, TriIndex) != 0;
+    }
+
+    // Only in ode4j, see #76
+    public void applyCallbacksToContacts(DxGeom otherGeom, GimDynArray<GimContact> trimeshContacts, boolean isPrimary) {
+        for (int i = 0; i < trimeshContacts.size(); ++i) {
+            GimContact gimContact = trimeshContacts.GIM_DYNARRAY_POINTER()[i];
+            int index = isPrimary ? gimContact.getFeature1() : gimContact.getFeature2();
+            if (!invokeCallback(otherGeom, index)) {
+                trimeshContacts.GIM_DYNARRAY_DELETE_ITEM(i);
+                --i;
+            }
+        }
     }
 
     public enum TRIMESHTC {
@@ -257,41 +271,49 @@ abstract class DxMeshBase extends DxGeom {
     // Java API
     // *****************************************
     //	void dGeomTriMeshSetCallback(dGeomID g, dTriCallback* Callback)
+    @Override
     public void setCallback(DTriMesh.DTriCallback Callback) {
         dGeomTriMeshSetCallback(Callback);
     }
 
     //dTriCallback* dGeomTriMeshGetCallback(dGeomID g)
+    @Override
     public DTriMesh.DTriCallback getCallback() {
         return dGeomTriMeshGetCallback();
     }
 
     //void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback)
+    @Override
     public void setArrayCallback(DTriMesh.DTriArrayCallback ArrayCallback) {
         dGeomTriMeshSetArrayCallback(ArrayCallback);
     }
 
     //dTriArrayCallback* dGeomTriMeshGetArrayCallback(dGeomID g)
+    @Override
     public DTriMesh.DTriArrayCallback getArrayCallback() {
         return dGeomTriMeshGetArrayCallback();
     }
 
     //void dGeomTriMeshSetRayCallback(dGeomID g, dTriRayCallback* Callback)
+    @Override
     public void setRayCallback(DTriMesh.DTriRayCallback Callback) {
         dGeomTriMeshSetRayCallback(Callback);
     }
 
     //dTriRayCallback* dGeomTriMeshGetRayCallback(dGeomID g)
+    @Override
     public DTriMesh.DTriRayCallback getRayCallback() {
         return dGeomTriMeshGetRayCallback();
     }
 
     //void dGeomTriMeshSetTriMergeCallback(dGeomID g, dTriTriMergeCallback* Callback)
+    @Override
     public void setTriMergeCallback(DTriMesh.DTriTriMergeCallback Callback) {
         dGeomTriMeshSetTriMergeCallback(Callback);
     }
 
     //dTriTriMergeCallback* dGeomTriMeshGetTriMergeCallback(dGeomID g)
+    @Override
     public DTriMesh.DTriTriMergeCallback getTriMergeCallback() {
         return dGeomTriMeshGetTriMergeCallback();
     }

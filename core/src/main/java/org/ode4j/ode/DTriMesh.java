@@ -133,58 +133,55 @@ public interface DTriMesh extends DGeom {
 
 
 
-//	///**
-//	// * Per triangle callback. Allows the user to say if he wants a collision with
-//	// * a particular triangle.
-//	// */
-//	////typedef int dTriCallback(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
-//	//	 interface dTriCallback {
-//	//		 int call(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
-//	//	 }
-//	//ODE_API 
-//	void dGeomTriMeshSetCallback(DGeom g, dTriCallback Callback) {
-//		throw new UnsupportedOperationException();
-//	}
-//	//ODE_API 
-//	dTriCallback dGeomTriMeshGetCallback(DGeom g) {
-//		throw new UnsupportedOperationException();
-//	}
-//
-//	///**
-//	// * Per object callback. Allows the user to get the list of triangles in 1
-//	// * shot. Maybe we should remove this one.
-//	// */
-//	////typedef void dTriArrayCallback(dGeom TriMesh, dGeom RefObject, final int* TriIndices, int TriCount);
-//	//interface dTriArrayCallback {
-//	//	void call(dGeom TriMesh, dGeom RefObject, final int[] TriIndices, int TriCount);
-//	//}
-//	//ODE_API 
-//	void dGeomTriMeshSetArrayCallback(DGeom g, dTriArrayCallback ArrayCallback) {
-//		throw new UnsupportedOperationException();
-//	}
-//	//ODE_API 
-//	dTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) {
-//		throw new UnsupportedOperationException();
-//	}
-//
-//	///**
-//	// * Ray callback.
-//	// * Allows the user to say if a ray collides with a triangle on barycentric
-//	// * coords. The user can for example sample a texture with alpha transparency
-//	// * to determine if a collision should occur.
-//	// */
-//	////typedef int dTriRayCallback(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
-//	//interface dTriRayCallback {
-//	//	int call(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
-//	//}
-//	//ODE_API 
-//	void dGeomTriMeshSetRayCallback(DGeom g, dTriRayCallback Callback) {
-//		throw new UnsupportedOperationException();
-//	}
-//	//ODE_API 
-//	dTriRayCallback dGeomTriMeshGetRayCallback(DGeom g) {
-//		throw new UnsupportedOperationException();
-//	}
+	/**
+	 * Per triangle callback. Allows the user to say if he wants a collision with
+	 * a particular triangle.
+	 */
+	////typedef int dTriCallback(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
+	//	 interface dTriCallback {
+	//		 int call(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
+	//	 }
+	//ODE_API
+	//void dGeomTriMeshSetCallback(DGeom g, dTriCallback Callback) {
+	void setCallback(DTriCallback Callback);
+
+	//ODE_API
+	//dTriCallback dGeomTriMeshGetCallback(DGeom g)
+	DTriCallback getCallback();
+
+	///**
+	// * Per object callback. Allows the user to get the list of triangles in 1
+	// * shot. Maybe we should remove this one.
+	// */
+	////typedef void dTriArrayCallback(dGeom TriMesh, dGeom RefObject, final int* TriIndices, int TriCount);
+	//interface dTriArrayCallback {
+	//	void call(dGeom TriMesh, dGeom RefObject, final int[] TriIndices, int TriCount);
+	//}
+	//ODE_API
+	//void dGeomTriMeshSetArrayCallback(DGeom g, dTriArrayCallback ArrayCallback)
+	void setArrayCallback(DTriMesh.DTriArrayCallback ArrayCallback);
+
+	//ODE_API
+	//dTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g)
+	DTriMesh.DTriArrayCallback getArrayCallback();
+
+	///**
+	// * Ray callback.
+	// * Allows the user to say if a ray collides with a triangle on barycentric
+	// * coords. The user can for example sample a texture with alpha transparency
+	// * to determine if a collision should occur.
+	// */
+	////typedef int dTriRayCallback(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
+	//interface dTriRayCallback {
+	//	int call(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
+	//}
+	//ODE_API
+	//void dGeomTriMeshSetRayCallback(DGeom g, dTriRayCallback Callback);
+	void setRayCallback(DTriMesh.DTriRayCallback Callback);
+
+	//ODE_API
+	//dTriRayCallback dGeomTriMeshGetRayCallback(DGeom g);
+	DTriMesh.DTriRayCallback getRayCallback();
 
 	/**
 	 * Triangle merging callback.

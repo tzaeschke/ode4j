@@ -372,5 +372,10 @@ public class DxJointContact extends DxJoint implements DContactJoint
 	public void setParam(PARAM_N parameter, double value) {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public DContact getContact() {
+		return contact;
+	}
 }
 

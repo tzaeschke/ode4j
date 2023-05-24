@@ -1,3 +1,9 @@
+Ask
+===
+- dCollideCylinderTrimesh() deosn't appear to recompute the AABB (explicitly via recompiute() or implicitly via getAABB)
+  However, box-trimesh collision DOES recompute it: see dCollideBTL() or dCollideTrimeshPlane()
+
+
 Before release:
 ===============
 mvn animal-sniffer:check

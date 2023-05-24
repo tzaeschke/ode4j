@@ -418,13 +418,9 @@ class CollisionTrimeshGimpact {
             // TZ: is it correct to check for TriMeshDisabled here in the GimPact collider?
             //     This is new and wasn't in the original ode4j code or ODE code.
             case DISABLED: Geom = new DxTriMeshDisabled((DxSpace)space, (DxTriMeshData) Data); break;
-            case GIMPACT: Geom = new DxGimpact((DxSpace)space, (DxGimpactData) Data); break;
+            case GIMPACT: Geom = new DxGimpact((DxSpace)space, (DxGimpactData) Data, Callback, ArrayCallback, RayCallback); break;
             default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
         }
-        Geom.setCallback(Callback);
-        Geom.setArrayCallback(ArrayCallback);
-        Geom.setRayCallback(RayCallback);
-
         return Geom;
     }
 

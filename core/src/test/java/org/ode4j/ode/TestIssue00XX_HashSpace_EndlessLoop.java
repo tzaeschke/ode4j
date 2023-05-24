@@ -20,10 +20,9 @@
  * details.                                                              *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.tests;
+package org.ode4j.ode;
 
 import org.junit.Test;
-import org.ode4j.ode.*;
 
 import java.util.ArrayList;
 
@@ -34,7 +33,7 @@ public class TestIssue00XX_HashSpace_EndlessLoop {
     private DWorld world;
     private DSpace space;
     private DJointGroup contactgroup;
-    private final ArrayList<DJoint> contactJoints = new ArrayList<DJoint>();
+    private final ArrayList<DJoint> contactJoints = new ArrayList<>();
 
     /**
      * Issue #xx: HashSpace enters an endless loop resulting in OutOfMemoryException.
@@ -58,8 +57,8 @@ public class TestIssue00XX_HashSpace_EndlessLoop {
 
         OdeHelper.initODE2(0);
         world = OdeHelper.createWorld();
-        //space = OdeHelper.createHashSpace();  // TODO TZ this fails with OOM Exceptions
-        space = OdeHelper.createSapSpace(DSapSpace.AXES.XYZ);
+        space = OdeHelper.createHashSpace();  // TODO TZ this fails with OOM Exceptions
+        //space = OdeHelper.createSapSpace(DSapSpace.AXES.XYZ);
         contactgroup = OdeHelper.createJointGroup();
 
         DTriMeshData Data = OdeHelper.createTriMeshData();
@@ -68,11 +67,9 @@ public class TestIssue00XX_HashSpace_EndlessLoop {
 
 		DSphere sphere = OdeHelper.createSphere(space, 10);
 	    DBody sBody = OdeHelper.createBody(world);
-	    //sphere = OdeHelper.createSphere(1);
 	    sphere.setBody(sBody);
 	    sBody.setPosition(10, 10, 10);
-	    space.add(sphere);
-		
+
 	    for (int i = 0; i < 100; i++) {
 	    	OdeHelper.spaceCollide(space, 0, nearCallback);
 	    	world.quickStep(10.0 / 60);
@@ -82,12 +79,7 @@ public class TestIssue00XX_HashSpace_EndlessLoop {
     }
 
     
-    private final DGeom.DNearCallback nearCallback = new DGeom.DNearCallback() {
-        @Override
-        public void call(Object data, DGeom o1, DGeom o2) {
-            nearCallback(data, o1, o2);
-        }
-    };
+    private final DGeom.DNearCallback nearCallback = this::nearCallback;
 
     
     private void nearCallback(Object data, DGeom o1, DGeom o2) {
@@ -120,5 +112,4 @@ public class TestIssue00XX_HashSpace_EndlessLoop {
             }
         }
     }
-
 }

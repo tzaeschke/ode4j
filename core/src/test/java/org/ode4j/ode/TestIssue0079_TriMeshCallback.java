@@ -20,20 +20,16 @@
  * details.                                                              *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.tests;
+package org.ode4j.ode;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.ode4j.math.DVector3;
-import org.ode4j.math.DVector4;
-import org.ode4j.ode.*;
+import org.ode4j.ode.test.geoms.ConvexCubeGeom;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.ode4j.ode.OdeConstants.*;
+import static org.junit.Assert.*;
 
 /**
  * Issue #79: Trimesh callbacks are not called.
@@ -43,24 +39,20 @@ public class TestIssue0079_TriMeshCallback {
     private DWorld world;
     private DSpace space;
     private DJointGroup contactgroup;
-    private final ArrayList<DJoint> contactJoints = new ArrayList<DJoint>();
+    private final ArrayList<DContactJoint> contactJoints = new ArrayList<>();
     private int nContacts;
 
-    private DTriMesh.DTriCallback defaultCallback = new DTriMesh.DTriCallback() {
-        @Override
-        public int call(DGeom TriMesh, DGeom RefObject, int TriangleIndex) {
-            if (TriangleIndex != 1 && TriangleIndex != 2) {
-                fail("Triangle index should be 1 or 2 but was: " + TriangleIndex);
-            }
-            // We ignore triangle ¨1"
-            if (TriangleIndex == 1) {
-                return 0;
-            }
-            // Triangle "2" should collide normally!
-            return 1;
+    private final DTriMesh.DTriCallback defaultCallback = (TriMesh, RefObject, TriangleIndex) -> {
+        if (TriangleIndex != 1 && TriangleIndex != 2) {
+            fail("Triangle index should be 1 or 2 but was: " + TriangleIndex);
         }
-
-        ;
+        // We ignore triangle ¨1"
+        if (TriangleIndex == 1) {
+            return 0;
+        }
+        // Triangle "2" should collide normally!
+        assertEquals(2, TriangleIndex);
+        return 1;
     };
 
     @Before
@@ -101,57 +93,106 @@ public class TestIssue0079_TriMeshCallback {
 
         DTriMeshData Data = OdeHelper.createTriMeshData();
         Data.build(vertices, indices);
-        OdeHelper.createTriMesh(space, Data, callback, null, null);
+        if (geom instanceof DConvex) {
+            Data.preprocess();
+        }
+        // TODO what about array callback / ray callback?
+        DTriMesh trimesh = OdeHelper.createTriMesh(space, Data, callback, null, null);
+        DBody triBody = OdeHelper.createBody(world);
+        trimesh.setBody(triBody);
 
+        // TODO remove this extra branch for Rays?!?!?!?!?!!??
         if (geom instanceof DRay) {
             //space.add(geom);
-            OdeHelper.spaceCollide2((DRay) geom, space, 0, rayCallback);
+            OdeHelper.spaceCollide2(geom, space, 0, rayCallback);
         } else {
+            DBody sBody = OdeHelper.createBody(world);
+            geom.setBody(sBody);
             if (!(geom instanceof DTriMesh)) {
-                DBody sBody = OdeHelper.createBody(world);
-                geom.setBody(sBody);
                 sBody.setPosition(1, 1, 1);
-                space.add(geom);
             }
 
-            OdeHelper.spaceCollide(space, 0, nearCallback);
+            OdeHelper.spaceCollide(space, 0, this::nearCallback);
         }
     }
 
     @Test
     public void testBoxNoOp() {
         // just verify that it does not fail!
-        DGeom geom = OdeHelper.createBox(1, 1, 1);
+        DGeom geom = OdeHelper.createBox(space, 1, 1, 1);
         testTrimesh(geom, null);
         assertEquals(2 * 4, contactJoints.size());
     }
 
     @Test
     public void testBox() {
-        DGeom geom = OdeHelper.createBox(1, 1, 1);
+        DGeom geom = OdeHelper.createBox(space, 1, 1, 1);
         testTrimesh(geom, defaultCallback);
+        verifyContactJoints();
         assertEquals(1 * 4, contactJoints.size());
     }
 
     @Test
     public void testCapsuleNoOp() {
         // just verify that it does not fail!
-        DGeom geom = OdeHelper.createCapsule(1, 1);
+        DGeom geom = OdeHelper.createCapsule(space, 1, 1);
         testTrimesh(geom, null);
         assertEquals(2, contactJoints.size());
     }
 
     @Test
     public void testCapsule() {
-        DGeom geom = OdeHelper.createCapsule(1, 1);
+        DGeom geom = OdeHelper.createCapsule(space, 1, 1);
         testTrimesh(geom, defaultCallback);
+        verifyContactJoints();
         assertEquals(1, contactJoints.size());
+    }
+
+    @Test
+    public void testConvexNoOp() {
+        // TODO move to different position?!?!?
+        DGeom geom = OdeHelper.createConvex(space, ConvexCubeGeom.planes,
+                ConvexCubeGeom.planecount,
+                ConvexCubeGeom.points,
+                ConvexCubeGeom.pointcount,
+                ConvexCubeGeom.polygons);
+        testTrimesh(geom, null);
+        assertEquals(2, contactJoints.size());
+    }
+
+    @Test
+    public void testConvex() {
+        // TODO move to different position?!?!?
+        DGeom geom = OdeHelper.createConvex(space, ConvexCubeGeom.planes,
+                ConvexCubeGeom.planecount,
+                ConvexCubeGeom.points,
+                ConvexCubeGeom.pointcount,
+                ConvexCubeGeom.polygons);
+        testTrimesh(geom, defaultCallback);
+        verifyContactJoints();
+        assertEquals(1, contactJoints.size());
+    }
+
+    @Test
+    public void testCylinderNoOp() {
+        // just verify that it does not fail!
+        DGeom geom = OdeHelper.createCylinder(space, 1, 1);
+        testTrimesh(geom, null);
+        assertEquals(4, contactJoints.size());
+    }
+
+    @Test
+    public void testCylinder() {
+        DGeom geom = OdeHelper.createCylinder(space, 1, 1);
+        testTrimesh(geom, defaultCallback);
+        verifyContactJoints();
+        assertEquals(2, contactJoints.size());
     }
 
     @Test
     public void testRayNoOp() {
         // just verify that it does not fail!
-        DRay geom = OdeHelper.createRay(10);
+        DRay geom = OdeHelper.createRay(space, 10);
         geom.set(0f, 2.5f, 10f, 0f, 0f, -1f);
         testTrimesh(geom, null);
         assertEquals(1, nContacts);
@@ -159,16 +200,17 @@ public class TestIssue0079_TriMeshCallback {
 
     @Test
     public void testRay() {
-        DRay geom = OdeHelper.createRay(10);
+        DRay geom = OdeHelper.createRay(space, 10);
         geom.set(0f, 2.5f, 10f, 0f, 0f, -1f);
         testTrimesh(geom, defaultCallback);
+        verifyContactJoints();
         assertEquals(1, nContacts);
     }
 
     @Test
     public void testRay2NoOp() {
         // just verify that it does not fail!
-        DRay geom = OdeHelper.createRay(10);
+        DRay geom = OdeHelper.createRay(space, 10);
         geom.set(2.5f, 0f, 10f, 0f, 0f, -1f);
         testTrimesh(geom, null);
         assertEquals(1, nContacts);
@@ -176,25 +218,27 @@ public class TestIssue0079_TriMeshCallback {
 
     @Test
     public void test2Ray() {
-        DRay geom = OdeHelper.createRay(10);
+        DRay geom = OdeHelper.createRay(space, 10);
         geom.set(2.5f, 0f, 10f, 0f, 0f, -1f);
         testTrimesh(geom, defaultCallback);
         // Contact is ignored by our callback -> 0
+        verifyContactJoints();
         assertEquals(0, nContacts);
     }
 
     @Test
     public void testSphereNoOp() {
         // just verify that it does not fail!
-        DGeom geom = OdeHelper.createSphere(1);
+        DGeom geom = OdeHelper.createSphere(space, 1);
         testTrimesh(geom, null);
         assertEquals(2, contactJoints.size());
     }
 
     @Test
     public void testSphere() {
-        DGeom geom = OdeHelper.createSphere(1);
+        DGeom geom = OdeHelper.createSphere(space, 1);
         testTrimesh(geom, defaultCallback);
+        verifyContactJoints();
         assertEquals(1, contactJoints.size());
     }
 
@@ -230,6 +274,7 @@ public class TestIssue0079_TriMeshCallback {
         Data.build(vertices, indices);
         DGeom geom = OdeHelper.createTriMesh(space, Data);
         testTrimesh(geom, defaultCallback);
+        verifyContactJoints();
         assertEquals(1, contactJoints.size());
     }
 
@@ -243,22 +288,9 @@ public class TestIssue0079_TriMeshCallback {
         }
     };
 
-    private final DGeom.DNearCallback nearCallback = new DGeom.DNearCallback() {
-        @Override
-        public void call(Object data, DGeom o1, DGeom o2) {
-            nearCallback(data, o1, o2);
-        }
-    };
-
-
     private void nearCallback(Object data, DGeom o1, DGeom o2) {
-        assert (o1 != null);
-        assert (o2 != null);
-
-        if (o1 instanceof DSpace || o2 instanceof DSpace) {
-            OdeHelper.spaceCollide2(o1, o2, data, nearCallback);
-            return;
-        }
+        assertNotNull(o1);
+        assertNotNull(o2);
 
         final int N = 32;
         DContactBuffer contacts = new DContactBuffer(N);
@@ -267,19 +299,40 @@ public class TestIssue0079_TriMeshCallback {
         if (n > 0) {
             for (int i = 0; i < n; i++) {
                 DContact contact = contacts.get(i);
-                contact.surface.slip1 = 0.1;
-                contact.surface.slip2 = 0.1;
-                contact.surface.mode = dContactSoftERP | dContactSoftCFM | dContactSlip1 | dContactSlip2;
-                contact.surface.mu = OdeConstants.dInfinity;
-                contact.surface.soft_erp = 0.99;
-                contact.surface.soft_cfm = 0.10;
-                contact.surface.bounce = 0;
-                DJoint c = OdeHelper.createContactJoint(world, contactgroup, contact);
+                // TODO simplify this, this is unnecessary for this test
+//                contact.surface.slip1 = 0.1;
+//                contact.surface.slip2 = 0.1;
+//                contact.surface.mode = dContactSoftERP | dContactSoftCFM | dContactSlip1 | dContactSlip2;
+//                contact.surface.mu = OdeConstants.dInfinity;
+//                contact.surface.soft_erp = 0.99;
+//                contact.surface.soft_cfm = 0.10;
+//                contact.surface.bounce = 0;
+                DContactJoint c = OdeHelper.createContactJoint(world, contactgroup, contact);
                 c.attach(contact.geom.g1.getBody(),
                         contact.geom.g2.getBody());
                 contactJoints.add(c);
+                // TODO
+//                if (o1 instanceof DTriMesh) {
+//                    assertEquals(2, contact.getContactGeom().side1);
+//                }
+//                if (o2 instanceof DTriMesh) {
+//                    assertEquals(2, contact.getContactGeom().side2);
+//                }
             }
         }
     }
 
+    private void verifyContactJoints() {
+        for (DContactJoint j : contactJoints) {
+            DContact contact = j.getContact();
+            DGeom g1 = j.getBody(0).getFirstGeom();
+            if (g1 instanceof DTriMesh) {
+                assertEquals(2, contact.getContactGeom().side1);
+            }
+            DGeom g2 = j.getBody(1).getFirstGeom();
+            if (g2 instanceof DTriMesh) {
+                assertEquals(2, contact.getContactGeom().side2);
+            }
+        }
+    }
 }

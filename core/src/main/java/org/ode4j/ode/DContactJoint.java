@@ -26,7 +26,6 @@ package org.ode4j.ode;
 
 public interface DContactJoint extends DJoint {
 
-	
 //	  // intentionally undefined, don't use these
 //	  dContactJoint (const dContactJoint &);
 //	  void operator = (const dContactJoint &);
@@ -45,4 +44,8 @@ public interface DContactJoint extends DJoint {
 //
 //	  void create (dWorld& world, dJointGroup group, dContact *contact)
 //	    { create(world.id(), group, contact); }
+
+    // Only in ode4j.
+    DContact getContact();
+
 }
