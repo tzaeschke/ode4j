@@ -2,6 +2,9 @@ Ask
 ===
 - dCollideCylinderTrimesh() deosn't appear to recompute the AABB (explicitly via recompiute() or implicitly via getAABB)
   However, box-trimesh collision DOES recompute it: see dCollideBTL() or dCollideTrimeshPlane()
+- Was there something with contact sorting? dCollideConvexTrimeshTrianglesCCD() seems to violate that
+  (swaps last contact with current) -> Only if length is 0 ...
+- collision_libccd.cpp:768 -> "tempContact.side2 = i;" -> "tempContact.side2 = indices[i];"
 
 
 Before release:

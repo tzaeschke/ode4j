@@ -151,11 +151,9 @@ public class TestIssue0079_TriMeshCallback {
     @Test
     public void testConvexNoOp() {
         // TODO move to different position?!?!?
-        DGeom geom = OdeHelper.createConvex(space, ConvexCubeGeom.planes,
-                ConvexCubeGeom.planecount,
-                ConvexCubeGeom.points,
-                ConvexCubeGeom.pointcount,
-                ConvexCubeGeom.polygons);
+        DGeom geom = OdeHelper.createConvex(space, ConvexCubeGeom.planes1,
+                ConvexCubeGeom.points1,
+                ConvexCubeGeom.polygons1);
         testTrimesh(geom, null);
         assertEquals(2, contactJoints.size());
     }
@@ -163,11 +161,9 @@ public class TestIssue0079_TriMeshCallback {
     @Test
     public void testConvex() {
         // TODO move to different position?!?!?
-        DGeom geom = OdeHelper.createConvex(space, ConvexCubeGeom.planes,
-                ConvexCubeGeom.planecount,
-                ConvexCubeGeom.points,
-                ConvexCubeGeom.pointcount,
-                ConvexCubeGeom.polygons);
+        DGeom geom = OdeHelper.createConvex(space, ConvexCubeGeom.planes1,
+                ConvexCubeGeom.points1,
+                ConvexCubeGeom.polygons1);
         testTrimesh(geom, defaultCallback);
         verifyContactJoints();
         assertEquals(1, contactJoints.size());

@@ -31,4 +31,37 @@ public class ConvexCubeGeom {
                     4, 2, 3, 7, 6, // negative Y
                     4, 5, 4, 6, 7, // negative Z
             };
+
+    /**
+     * cube with edge length 1
+     */
+    public static final double[] planes1 = // planes for a cube
+            {1.0, 0.0, 0.0, 0.5,
+                    0.0, 1.0, 0.0, 0.5,
+                    0.0, 0.0, 1.0, 0.5,
+                    0.0, 0.0, -1.0, 0.5,
+                    0.0, -1.0, 0.0, 0.5,
+                    -1.0, 0.0, 0.0, 0.5};
+
+    /**
+     * cube with edge length 1
+     */
+    public static final double[] points1 = // points for a cube
+            {0.5, 0.5, 0.5, // point 0
+                    -0.5, 0.5, 0.5, // point 1
+
+                    0.5, -0.5, 0.5, // point 2
+                    -0.5, -0.5, 0.5, // point 3
+
+                    0.5, 0.5, -0.5, // point 4
+                    -0.5, 0.5, -0.5, // point 5
+
+                    0.5, -0.5, -0.5, // point 6
+                    -0.5, -0.5, -0.5,// point 7
+            };
+
+    /**
+     * cube with edge length 1
+     */
+    public static final int[] polygons1 = polygons;
 }
