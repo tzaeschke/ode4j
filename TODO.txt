@@ -33,6 +33,8 @@ Fix
 - TODO remove deprecations for 0.6.0
 - Fix DLCP.ROWPTRS = true?!? -> DEFAULT in 0.16.3
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
+  -> Remove GIM_BUFFER_ARRAY_POINTER() -> avoit IntArr and ObjArray allocation + usage!!!!!
+  -> e.g. in gim_trimesh_update_aabbset()
 - Move to Google Java Code Style
 
 

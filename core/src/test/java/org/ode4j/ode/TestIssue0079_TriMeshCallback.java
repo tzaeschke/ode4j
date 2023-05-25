@@ -42,6 +42,25 @@ public class TestIssue0079_TriMeshCallback {
     private final ArrayList<DContactJoint> contactJoints = new ArrayList<>();
     private int nContacts;
 
+    // Second trimesh to collide with main trimesh
+    private final float[] triangle2vertices = new float[]{
+            5.0f, 0, 0,  // point 1 of colliding triangle
+            0, 5.0f, 0,  // point 2 of colliding triangle
+            0, 0, 5.0f,  // point 3 of colliding triangle
+            6, 6, 6,  // point way outside
+            6, 6, 7,  // point way outside
+            6, 7, 6,  // point way outside
+            7, 6, 6,  // point way outside
+    };
+    private final int[] triangle2indices = new int[]{
+            3, 4, 5,
+            4, 5, 6,
+            3, 5, 6,
+            0, 1, 2,  // overlapping triangle
+            3, 4, 6,
+    };
+
+
     private final DTriMesh.DTriCallback defaultCallback = (TriMesh, RefObject, TriangleIndex) -> {
         if (TriangleIndex != 1 && TriangleIndex != 2) {
             fail("Triangle index should be 1 or 2 but was: " + TriangleIndex);
@@ -73,7 +92,7 @@ public class TestIssue0079_TriMeshCallback {
 
     /**
      * This test is designed such that every geom can collide with triangles "1" and "2" only.
-     * Only triangle "2" will collide, "1" is ignored.
+     * When using the callback, only triangle "2" will collide, "1" is ignored.
      */
     private void testTrimesh(DGeom geom, DTriMesh.DTriCallback callback) {
         float[] size = new float[]{5.0f, 5.0f, 2.5f};
@@ -150,7 +169,6 @@ public class TestIssue0079_TriMeshCallback {
 
     @Test
     public void testConvexNoOp() {
-        // TODO move to different position?!?!?
         DGeom geom = OdeHelper.createConvex(space, ConvexCubeGeom.planes1,
                 ConvexCubeGeom.points1,
                 ConvexCubeGeom.polygons1);
@@ -160,7 +178,6 @@ public class TestIssue0079_TriMeshCallback {
 
     @Test
     public void testConvex() {
-        // TODO move to different position?!?!?
         DGeom geom = OdeHelper.createConvex(space, ConvexCubeGeom.planes1,
                 ConvexCubeGeom.points1,
                 ConvexCubeGeom.polygons1);
@@ -240,17 +257,9 @@ public class TestIssue0079_TriMeshCallback {
 
     @Test
     public void testTrimesNoOp() {
-        float[] size = new float[]{5.0f, 5.0f, 5f};
-        float[] vertices = new float[]{
-                size[0], 0, 0,
-                0, size[1], 0,
-                0f, 0f, size[2]};
-        int[] indices = new int[]{
-                0, 1, 2,
-        };
         // just verify that it does not fail!
         DTriMeshData Data = OdeHelper.createTriMeshData();
-        Data.build(vertices, indices);
+        Data.build(triangle2vertices, triangle2indices);
         DGeom geom = OdeHelper.createTriMesh(space, Data);
         testTrimesh(geom, null);
         assertEquals(2, contactJoints.size());
@@ -258,16 +267,8 @@ public class TestIssue0079_TriMeshCallback {
 
     @Test
     public void testTrimesh() {
-        float[] size = new float[]{5.0f, 5.0f, 5f};
-        float[] vertices = new float[]{
-                size[0], 0, 0,
-                0, size[1], 0,
-                0f, 0f, size[2]};
-        int[] indices = new int[]{
-                0, 1, 2,
-        };
         DTriMeshData Data = OdeHelper.createTriMeshData();
-        Data.build(vertices, indices);
+        Data.build(triangle2vertices, triangle2indices);
         DGeom geom = OdeHelper.createTriMesh(space, Data);
         testTrimesh(geom, defaultCallback);
         verifyContactJoints();
@@ -295,14 +296,6 @@ public class TestIssue0079_TriMeshCallback {
         if (n > 0) {
             for (int i = 0; i < n; i++) {
                 DContact contact = contacts.get(i);
-                // TODO simplify this, this is unnecessary for this test
-//                contact.surface.slip1 = 0.1;
-//                contact.surface.slip2 = 0.1;
-//                contact.surface.mode = dContactSoftERP | dContactSoftCFM | dContactSlip1 | dContactSlip2;
-//                contact.surface.mu = OdeConstants.dInfinity;
-//                contact.surface.soft_erp = 0.99;
-//                contact.surface.soft_cfm = 0.10;
-//                contact.surface.bounce = 0;
                 DContactJoint c = OdeHelper.createContactJoint(world, contactgroup, contact);
                 c.attach(contact.geom.g1.getBody(),
                         contact.geom.g2.getBody());
@@ -327,7 +320,8 @@ public class TestIssue0079_TriMeshCallback {
             }
             DGeom g2 = j.getBody(1).getFirstGeom();
             if (g2 instanceof DTriMesh) {
-                assertEquals(2, contact.getContactGeom().side2);
+                // Trimesh-trimesh collision, only triangl 3 collides
+                assertEquals(3, contact.getContactGeom().side2);
             }
         }
     }

@@ -37,6 +37,7 @@ Bug: Dropping first box on Heightfield is wrong.
   * test DBody.getGeomIterator()
   * TriArrayCallback? RayCallback?
   * Clean up Test 0079 and 00XX
+  * Document: Gimpact works best with (i.e. does not scale above ?) room size <= MAX_AABB_SIZE=1638.0
 
   [#76](https://github.com/tzaeschke/ode4j/issues/76)
 - Added DQuaternion.copy() and dot() [#117](https://github.com/tzaeschke/ode4j/pull/117)
