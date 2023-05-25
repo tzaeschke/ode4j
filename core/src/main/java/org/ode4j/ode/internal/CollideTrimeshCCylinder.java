@@ -24,17 +24,11 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DColliderFn;
-import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
-import org.ode4j.ode.OdeConfig;
-import org.ode4j.ode.internal.cpp4j.java.ObjArray;
 import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
@@ -1207,13 +1201,14 @@ class CollideTrimeshCCylinder implements DColliderFn {
 		VEC_SUM(capsule.m_point2,vCapsulePosition,capsule.m_point2);
 
 
-	//Create contact list
+	    //Create contact list
 	    GimDynArray<GimContact> trimeshcontacts;
 	    trimeshcontacts = GimContact.GIM_CREATE_CONTACT_LIST();
 
 	    //Collide trimeshe vs capsule
 	    TriMesh.m_collision_trimesh().gim_trimesh_capsule_collision(capsule,trimeshcontacts);
-
+		// TZ: Only in ode4j, call callbacks, see issue #76
+		TriMesh.applyCallbacksToContacts(gCylinder, trimeshcontacts, true);
 
 	    if(trimeshcontacts.size() == 0)
 	    {
@@ -1221,53 +1216,15 @@ class CollideTrimeshCCylinder implements DColliderFn {
 	        return 0;
 	    }
 
-	    ObjArray<GimContact> ptrimeshcontacts = trimeshcontacts.GIM_DYNARRAY_POINTER_V();
-
+		GimContact[] ptrimeshcontacts = trimeshcontacts.GIM_DYNARRAY_POINTER();
 		int contactcount = trimeshcontacts.size();
-		int contactmax = (flags & DxGeom.NUMC_MASK);
-		if (contactcount > contactmax)
-		{
-			if (OdeConfig.ENABLE_CONTACT_SORTING) {
-				Arrays.sort((Object[])trimeshcontacts.GIM_DYNARRAY_POINTER(), 0, contactcount, new Comparator<Object>() {
-					@Override
-					public int compare(Object o1, Object o2) {
-						return Float.compare(((GimContact) o2).getDepth(), ((GimContact) o1).getDepth());
-					}
-				});
-			}
-			contactcount = contactmax;
-		}
 
-	    DContactGeom pcontact;
-
-		for (int i=0;i<contactcount;i++)
-		{
-	        pcontact = contacts.getSafe(flags, i);//SAFECONTACT(flags, contact, i, skip);
-
-//	        pcontact.pos[0] = ptrimeshcontacts.m_point[0];
-//	        pcontact.pos[1] = ptrimeshcontacts.m_point[1];
-//	        pcontact.pos[2] = ptrimeshcontacts.m_point[2];
-//	        pcontact.pos[3] = 1.0f;
-	        pcontact.pos.set( ptrimeshcontacts.at0().getPoint().f );
-
-//	        pcontact.normal[0] = ptrimeshcontacts.m_normal[0];
-//	        pcontact.normal[1] = ptrimeshcontacts.m_normal[1];
-//	        pcontact.normal[2] = ptrimeshcontacts.m_normal[2];
-//	        pcontact.normal[3] = 0;
-	        pcontact.normal.set( ptrimeshcontacts.at0().getNormal().f );
-
-	        pcontact.depth = ptrimeshcontacts.at0().getDepth();
-	        pcontact.g1 = TriMesh;
-	        pcontact.g2 = gCylinder;
-	        pcontact.side1 = ptrimeshcontacts.at0().getFeature1();
-	        pcontact.side2 = -1;
-	        
-	        ptrimeshcontacts.inc();//++;
-		}
+		DxGIMCContactAccessor contactaccessor = new DxGIMCContactAccessor(ptrimeshcontacts, TriMesh, gCylinder, -1);
+		contactcount = DxGImpactContactsExportHelper.ExportMaxDepthGImpactContacts(contactaccessor, contactcount, flags, contacts, skip);
 
 		trimeshcontacts.GIM_DYNARRAY_DESTROY();
 
-	    return contactcount;
+		return contactcount;
 	}
 //	#endif //GIMPACT
 
@@ -1280,14 +1237,14 @@ class CollideTrimeshCCylinder implements DColliderFn {
 //	#endif // dTRIMESH_ENABLED
 
 	
-	private static final void VEC_SCALE(vec3f c, final double a, DVector3C x)			
+	private static void VEC_SCALE(vec3f c, final double a, DVector3C x)
 	{						
 	   c.f[0] = (float) (a*x.get0());				
 	   c.f[1] = (float) (a*x.get1());				
 	   c.f[2] = (float) (a*x.get2());				
 	}
 
-	private static final void VEC_SUM(vec3f v21, DVector3C v2, vec3f v1)			
+	private static void VEC_SUM(vec3f v21, DVector3C v2, vec3f v1)
 	{						
 	   v21.f[0] = (float) (v2.get0() + v1.f[0]);		
 	   v21.f[1] = (float) (v2.get1() + v1.f[1]);		

@@ -30,7 +30,6 @@ import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimTriCollision;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
-import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 import static org.ode4j.ode.internal.Common.dAASSERT;
@@ -408,25 +407,19 @@ class CollisionTrimeshGimpact {
 
     /*extern */
     //dGeomID dCreateTriMesh(dSpaceID space, dTriMeshDataID Data, dTriCallback*Callback, dTriArrayCallback*ArrayCallback, dTriRayCallback*RayCallback) {
-    DGeom dCreateTriMesh(DSpace space, DTriMeshData Data, DTriMesh.DTriCallback Callback,
-                         DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
-        //DxTriMesh mesh = new DxTriMesh(space, Data, Callback, ArrayCallback, RayCallback);
-        DxTriMesh Geom;
-        switch (OdeConfig.dTRIMESH_TYPE) {
-            // TODO TZ-CHECK remove TrimeshDisabled construction here?
-            //      move this method into DxTrimesh!!! (?)
-            // TZ: is it correct to check for TriMeshDisabled here in the GimPact collider?
-            //     This is new and wasn't in the original ode4j code or ODE code.
-            case DISABLED: Geom = new DxTriMeshDisabled((DxSpace)space, (DxTriMeshData) Data); break;
-            case GIMPACT: Geom = new DxGimpact((DxSpace)space, (DxGimpactData) Data); break;
-            default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
-        }
-        Geom.setCallback(Callback);
-        Geom.setArrayCallback(ArrayCallback);
-        Geom.setRayCallback(RayCallback);
-
-        return Geom;
-    }
+    //    DGeom dCreateTriMesh(DSpace space, DTriMeshData Data, DTriMesh.DTriCallback Callback,
+    //                         DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
+    //        //DxTriMesh mesh = new DxTriMesh(space, Data, Callback, ArrayCallback, RayCallback);
+    //        DxTriMesh Geom;
+    //        switch (OdeConfig.dTRIMESH_TYPE) {
+    //            // TZ: is it correct to check for TriMeshDisabled here in the GimPact collider?
+    //            //     This is new and wasn't in the original ode4j code or ODE code.
+    //            case DISABLED: Geom = new DxTriMeshDisabled((DxSpace)space, (DxTriMeshData) Data); break;
+    //            case GIMPACT: Geom = new DxGimpact((DxSpace)space, (DxGimpactData) Data, Callback, ArrayCallback, RayCallback); break;
+    //            default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
+    //        }
+    //        return Geom;
+    //    }
 
 
     /*extern */

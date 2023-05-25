@@ -530,11 +530,12 @@ class CollisionLibccd {
                 if (ccdCollide(o1, o2, flags, tempContacts, c1, ccdSupportConvex, ccdCenter, c2, ccdSupportTriangle,
                         ccdCenter) == 1) {
                     DContactGeom tempContact = tempContacts.get();
-                    tempContact.side2 = i;
+                    // TODO TZ: report this to ODE!
+                    tempContact.side2 = triindices[i];
 
                     if (meshFaceAngleView == null ||
                             correctTriangleContactNormal(c2, tempContact, meshFaceAngleView)) {//, triindices)) {
-                        contactCount = addUniqueContact(contacts, tempContact, contactCount, maxContacts, flags);//, skip);
+                        contactCount = addUniqueContact(contacts, tempContact, contactCount, maxContacts, flags, (DxConvex) o1, t2);//, skip);
 
                         if ((flags & CONTACTS_UNIMPORTANT) != 0) {
                             break;
@@ -660,7 +661,7 @@ class CollisionLibccd {
 
                     if (meshFaceAngleView == null || correctTriangleContactNormal(c2, perturbedContact,
 							meshFaceAngleView)) { //, indices, numIndices)) {
-                        contacCount = addUniqueContact(contacts, perturbedContact, contacCount, maxContacts, flags);
+                        contacCount = addUniqueContact(contacts, perturbedContact, contacCount, maxContacts, flags, (DxConvex) o1, (DxTriMesh) o2);
 								// , skip);
                     }
                 }
@@ -793,8 +794,9 @@ class CollisionLibccd {
         }
 
 
+        // TZ: added trimesh/comvex for callback processing
         static int addUniqueContact(DContactGeomBuffer contacts, DContactGeom c, int contactcount, int maxcontacts,
-									int flags) {//}, int skip) {
+									int flags, DxConvex convex, DxTriMesh trimesh) {//}, int skip) {
             double minDepth = c.depth;
             int index = contactcount;
             boolean isDuplicate = false;
@@ -832,18 +834,21 @@ class CollisionLibccd {
             }
 
             if (!isDuplicate && index < maxcontacts) {
-                DContactGeom contact = contacts.getSafe(flags, index);
-                contact.g1 = c.g1;
-                contact.g2 = c.g2;
-                contact.depth = c.depth;
-                contact.side1 = c.side1;
-                contact.side2 = c.side2;
-                contact.pos.set(c.pos); //dCopyVector3(contact.pos, c.pos);
-                contact.normal.set(c.normal);//dCopyVector3(contact.normal, c.normal);
-                // Indicates whether the contact is merged or not
-                // *_type_cast_union<bool>(contact.normal[dV3E_PAD]) = false;
-                contact.normal_needs_normalizing = false;
-                contactcount = index == contactcount ? contactcount + 1 : contactcount;
+                // ode4j fix: see issue #76
+                if (trimesh.invokeCallback(convex, c.side2)) {
+                    DContactGeom contact = contacts.getSafe(flags, index);
+                    contact.g1 = c.g1;
+                    contact.g2 = c.g2;
+                    contact.depth = c.depth;
+                    contact.side1 = c.side1;
+                    contact.side2 = c.side2;
+                    contact.pos.set(c.pos); //dCopyVector3(contact.pos, c.pos);
+                    contact.normal.set(c.normal);//dCopyVector3(contact.normal, c.normal);
+                    // Indicates whether the contact is merged or not
+                    // *_type_cast_union<bool>(contact.normal[dV3E_PAD]) = false;
+                    contact.normal_needs_normalizing = false;
+                    contactcount = index == contactcount ? contactcount + 1 : contactcount;
+                }
             }
 
             return contactcount;

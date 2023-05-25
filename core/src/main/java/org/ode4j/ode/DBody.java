@@ -29,6 +29,8 @@ import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
+import java.util.Iterator;
+
 /**
  * A rigid body has various properties from the point of view of the
  * simulation. Some properties change over time:
@@ -71,7 +73,7 @@ public interface DBody {
 	  * Use it to know which body may need an update in an external
 	  * structure (like a 3D engine).
 	  */
-	 public interface BodyMoveCallBack {
+	 interface BodyMoveCallBack {
 		 void run(DBody b);
 	 }
 
@@ -842,10 +844,8 @@ public interface DBody {
 	 * You can traverse through the geoms by repeatedly calling
 	 * dBodyGetNextGeom().
 	 *
-	 * @return the first geom attached to this body, or 0.
-	 * @deprecated May be replaced by a more Java-like API.
+	 * @return the first geom attached to this body, or null.
 	 */
-    @Deprecated
     DGeom getFirstGeom ();
 
 
@@ -854,10 +854,14 @@ public interface DBody {
 	 * @param geom a geom attached to some body.
 	 * @return the next geom attached to the same body, or 0.
 	 * @see DBody#getFirstGeom()
-	 * @deprecated May be replaced by a more Java-like API.
+	 * @deprecated May be replaced by a more Java-like API. Please use getGeomIterator() instead
 	 */
     @Deprecated
     DGeom getNextGeom (DGeom geom);
 
+	/**
+	 * @return an iterator over all geoms associated with with body.
+	 */
+	Iterator<DGeom> getGeomIterator();
 
 }

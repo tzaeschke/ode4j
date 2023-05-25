@@ -42,16 +42,13 @@ import org.ode4j.ode.DContactGeom;
 import org.ode4j.ode.DContactGeomBuffer;
 import org.ode4j.ode.DGeom;
 import org.ode4j.ode.OdeConfig;
-import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
-import org.ode4j.ode.internal.gimpact.GimGeometry.vec3f;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
-import static org.ode4j.ode.OdeMath.dSubtractVectors3;
 import static org.ode4j.ode.internal.Common.*;
 import static org.ode4j.ode.internal.DxGeom.NUMC_MASK;
 
@@ -275,34 +272,36 @@ class CollideTrimeshBox implements DColliderFn {
 			double fMin, fMax;
 
 			// find min of triangle interval
-			if ( fp0 < fp1 ) {
-				if ( fp0 < fp2 ) {
-					fMin = fp0;
-				} else {
-					fMin = fp2;
-				}
-			} else {
-				if( fp1 < fp2 ) {
-					fMin = fp1;
-				} else {
-					fMin = fp2;
-				}
-			}
+			fMin = Math.min(fp0, Math.min(fp1, fp2));
+			//			if ( fp0 < fp1 ) {
+			//				if ( fp0 < fp2 ) {
+			//					fMin = fp0;
+			//				} else {
+			//					fMin = fp2;
+			//				}
+			//			} else {
+			//				if( fp1 < fp2 ) {
+			//					fMin = fp1;
+			//				} else {
+			//					fMin = fp2;
+			//				}
+			//			}
 
 			// find max of triangle interval
-			if ( fp0 > fp1 ) {
-				if ( fp0 > fp2 ) {
-					fMax = fp0;
-				} else {
-					fMax = fp2;
-				}
-			} else {
-				if( fp1 > fp2 ) {
-					fMax = fp1;
-				} else {
-					fMax = fp2;
-				}
-			}
+			fMax = Math.max(fp0, Math.max(fp1, fp2));
+			//			if ( fp0 > fp1 ) {
+			//				if ( fp0 > fp2 ) {
+			//					fMax = fp0;
+			//				} else {
+			//					fMax = fp2;
+			//				}
+			//			} else {
+			//				if( fp1 > fp2 ) {
+			//					fMax = fp1;
+			//				} else {
+			//					fMax = fp2;
+			//				}
+			//			}
 
 			// calculate minimum and maximum depth
 			double fDepthMin = fR - fMin;
@@ -441,8 +440,8 @@ class CollideTrimeshBox implements DColliderFn {
 		//	static void _cldClipPolyToPlane( dVector3 avArrayIn[], int ctIn,
 		//	                      dVector3 avArrayOut[], int &ctOut,
 		//	                      const dVector4 &plPlane )
-		void _cldClipPolyToPlane( DVector3 avArrayIn[], int ctIn,
-				DVector3 avArrayOut[], RefInt ctOut,
+		void _cldClipPolyToPlane( DVector3[] avArrayIn, int ctIn,
+				DVector3[] avArrayOut, RefInt ctOut,
 				final DVector4C plPlane )
 		{
 			// start with no output points
@@ -1332,12 +1331,12 @@ class CollideTrimeshBox implements DColliderFn {
 		}
 
         //void sTrimeshBoxColliderData::TestCollisionForSingleTriangle(int Triint, dVector3 dv[3], bool &bOutFinishSearching)
-        boolean TestCollisionForSingleTriangle(int Triint, DVector3[] dv)
+        boolean TestCollisionForSingleTriangle(int Triint, DVector3 dv0, DVector3 dv1, DVector3 dv2)
         {
             boolean finish = false;
 
             // test this triangle
-            if (_cldTestOneTriangle(dv[0], dv[1], dv[2], Triint))
+            if (_cldTestOneTriangle(dv0, dv1, dv2, Triint))
             {
                 /*
                 NOTE by Oleh_Derevenko:
@@ -1403,12 +1402,7 @@ class CollideTrimeshBox implements DColliderFn {
 		aabb3f test_aabb = new aabb3f();
 
 		DAABBC aabb = BoxGeom.getAABB();
-		test_aabb.minX = (float) aabb.getMin0();
-		test_aabb.maxX = (float) aabb.getMax0();
-		test_aabb.minY = (float) aabb.getMin1();
-		test_aabb.maxY = (float) aabb.getMax1();
-		test_aabb.minZ = (float) aabb.getMin2();
-		test_aabb.maxZ = (float) aabb.getMax2();
+		test_aabb.set(aabb.getMin0(), aabb.getMax0(), aabb.getMin1(), aabb.getMax1(), aabb.getMin2(), aabb.getMax2());
 
 		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
 
@@ -1428,11 +1422,11 @@ class CollideTrimeshBox implements DColliderFn {
 		ptrimesh.gim_trimesh_locks_work_data();
 
         for (int i = 0; i < collision_result.size(); i++) {
-            DVector3[] dv = DVector3.newArray(3);
+            DVector3 dv0 = new DVector3(), dv1 = new DVector3(), dv2 = new DVector3();
 
 			int Triint = boxesresult[i];
-			ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv[0], dv[1], dv[2]);
-			cData.TestCollisionForSingleTriangle(Triint, dv);
+			ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv0, dv1, dv2);
+			cData.TestCollisionForSingleTriangle(Triint, dv0, dv1, dv2);
         }
         int contactcount = cData.m_TempContactGeoms.size();
         int contactmax = (Flags & NUMC_MASK);
@@ -1450,16 +1444,23 @@ class CollideTrimeshBox implements DColliderFn {
 
 		ptrimesh.gim_trimesh_unlocks_work_data();
 		collision_result.GIM_DYNARRAY_DESTROY();
+		int nActualContacts = 0;
 		for (int i = 0; i < contactcount; i++) {
-			cData.m_ContactGeoms.get(i).depth = cData.m_TempContactGeoms.get(i).depth;
-			cData.m_ContactGeoms.get(i).g1 = cData.m_TempContactGeoms.get(i).g1;
-			cData.m_ContactGeoms.get(i).g2 = cData.m_TempContactGeoms.get(i).g2;
-			cData.m_ContactGeoms.get(i).normal.set(cData.m_TempContactGeoms.get(i).normal);
-			cData.m_ContactGeoms.get(i).pos.set(cData.m_TempContactGeoms.get(i).pos);
-			cData.m_ContactGeoms.get(i).side1 = cData.m_TempContactGeoms.get(i).side1;
-			cData.m_ContactGeoms.get(i).side2 = cData.m_TempContactGeoms.get(i).side2;
+			// ode4j fix: see issue #76
+			// side1: see TestCollisionForSingleTriangle()
+			if (!TriMesh.invokeCallback(BoxGeom, cData.m_TempContactGeoms.get(i).side1)) {
+				continue;
+			}
+			cData.m_ContactGeoms.get(nActualContacts).depth = cData.m_TempContactGeoms.get(i).depth;
+			cData.m_ContactGeoms.get(nActualContacts).g1 = cData.m_TempContactGeoms.get(i).g1;
+			cData.m_ContactGeoms.get(nActualContacts).g2 = cData.m_TempContactGeoms.get(i).g2;
+			cData.m_ContactGeoms.get(nActualContacts).normal.set(cData.m_TempContactGeoms.get(i).normal);
+			cData.m_ContactGeoms.get(nActualContacts).pos.set(cData.m_TempContactGeoms.get(i).pos);
+			cData.m_ContactGeoms.get(nActualContacts).side1 = cData.m_TempContactGeoms.get(i).side1;
+			cData.m_ContactGeoms.get(nActualContacts).side2 = cData.m_TempContactGeoms.get(i).side2;
+			nActualContacts++;
 		}
-		return contactcount;
+		return nActualContacts;
 	}
 	//	#endif  //GIMPACT
 

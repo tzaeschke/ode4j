@@ -184,7 +184,7 @@ class CollideTrimeshRay implements DColliderFn {
 		boolean BackfaceCull = RayGeom.getBackfaceCull();
 		//TODO CHECK-TZ GimPAct is ignoring first contact AND BackfaceCull
 		//TODO remove/report?		boolean FirstContact = RayGeom.getFirstContact();
-//TODO remove/report?		boolean BackfaceCull = RayGeom.getBackfaceCull();
+		//TODO remove/report?		boolean BackfaceCull = RayGeom.getBackfaceCull();
 		boolean ClosestHit = RayGeom.getClosestHit();//dGeomRayGetClosestHit(RayGeom);
 		DVector3 Origin = new DVector3(), Direction = new DVector3();
 		RayGeom.get(Origin, Direction);
@@ -213,6 +213,13 @@ class CollideTrimeshRay implements DColliderFn {
 				TriMesh.RayCallback().call(TriMesh, RayGeom, contact_data.getFaceID(),
 				contact_data.getU(), contact_data.getV()) != 0)
 		{
+			// ode4j fix: see issue #76
+			// TODO TZ this just returns "0" if the callback for the first "hit" returns false.
+			//     It should probably check for other contacts. However, apparently even for closestHit=false,
+			//     there is only ever one contact created.
+			if (!TriMesh.invokeCallback(RayGeom, contact_data.getFaceID())) {
+				return 0;
+			}
 			DContactGeom Contact = Contacts.get();//&( Contacts[ 0 ] );
 			Contact.pos.set(contact_data.getPoint().f);//VEC_COPY(Contact.pos,contact_data.getPoint());
 			Contact.normal.set(contact_data.getNormal().f);//VEC_COPY(Contact.normal,contact_data.getNormal());

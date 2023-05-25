@@ -23,6 +23,16 @@ Bug: Dropping first box on Heightfield is wrong.
 
 0.5.0 (unreleased)
 =====
+- Cumulative fix:
+  * Fixed missing call to Trimesh callbacks. [#76](https://github.com/tzaeschke/ode4j/issues/76)
+  * Deprecated DTriArrayCallback. It was never supported and is considered for removal in ODE.
+  * DBody.getGeomIterator()
+  * DBody.getFirstGeom() is no longer deprecated
+  * Simpler construction methods for DConvex
+  * Some javadoc for DConvex
+  * DContactJoint.getContact()
+  * Updated Trimesh/Capsule collision (CollideTrimeshCCylinder)
+  [#77](https://github.com/tzaeschke/ode4j/pull/77)
 - Added DQuaternion.copy() and dot() [#117](https://github.com/tzaeschke/ode4j/pull/117)
 - Added factory methods and missing API for DRagdoll, DConstrainedBallJoint and DTrimeshHeightfield.
   [#24](https://github.com/tzaeschke/ode4j/issues/24)

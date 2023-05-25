@@ -187,6 +187,14 @@ public class GimDynArray<T> {//extends GimBufferArray<T> {
 //	    } 
 //	    m_size--; 
 //	} 
+	public void GIM_DYNARRAY_DELETE_ITEM(int index)
+	{
+	    if (index < m_size - 1) {
+	        T[] _pt = GIM_DYNARRAY_POINTER();
+			System.arraycopy(_pt, index + 1, _pt, index, m_size - index - 1);
+	    }
+	    m_size--;
+	}
 
 	//! Removes an element at the last position
 	//#define GIM_DYNARRAY_POP_ITEM(array_data) \

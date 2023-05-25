@@ -30,7 +30,6 @@ import java.util.List;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DTriMesh.DTriArrayCallback;
 import org.ode4j.ode.DTriMesh.DTriCallback;
 import org.ode4j.ode.DTriMesh.DTriRayCallback;
 import org.ode4j.ode.internal.*;
@@ -686,13 +685,52 @@ public abstract class OdeHelper {
 		return DxCapsule.dCreateCapsule((DxSpace) space, radius, length);
 	}
 
-	public static DConvex createConvex(double[] planes,
-			int planecount, double[] points, int pointcount, int[] polygons) {
-		return DxConvex.dCreateConvex(null, planes, planecount, points, pointcount, polygons);
+	/**
+	 * @param planes An array of planes in the form: normal X, normal Y, normal Z,Distance
+	 * @param points An array of points X,Y,Z
+	 * @param polygons An array of indices to the points of each polygon, it should be the
+	 * 	 number of vertices followed by that amount of indices to "points" in
+	 * 	 counter clockwise order
+	 */
+	public static DConvex createConvex(double[] planes, double[] points, int[] polygons) {
+		return DxConvex.dCreateConvex(null, planes, points, polygons);
 	}
+	/**
+	 * @param planes An array of planes in the form: normal X, normal Y, normal Z,Distance
+	 * @param points An array of points X,Y,Z
+	 * @param polygons An array of indices to the points of each polygon, it should be the
+	 * 	 number of vertices followed by that amount of indices to "points" in
+	 * 	 counter clockwise order
+	 */
+	public static DConvex createConvex(DSpace space, double[] planes, double[] points, int[] polygons) {
+		return DxConvex.dCreateConvex((DxSpace)space, planes, points, polygons);
+	}
+
+	/**
+	 * @param planes An array of planes in the form: normal X, normal Y, normal Z,Distance
+	 * @param planeCount Amount of planes in `planes`
+	 * @param points An array of points X,Y,Z
+	 * @param pointCount Amount of points in `points`
+	 * @param polygons An array of indices to the points of each polygon, it should be the
+	 * 	 number of vertices followed by that amount of indices to "points" in
+	 * 	 counter clockwise order
+	 */
+	public static DConvex createConvex(double[] planes,
+									   int planeCount, double[] points, int pointCount, int[] polygons) {
+		return DxConvex.dCreateConvex(null, planes, planeCount, points, pointCount, polygons);
+	}
+	/**
+	 * @param planes An array of planes in the form: normal X, normal Y, normal Z,Distance
+	 * @param planeCount Amount of planes in `planes`
+	 * @param points An array of points X,Y,Z
+	 * @param pointCount Amount of points in `points`
+	 * @param polygons An array of indices to the points of each polygon, it should be the
+	 * 	 number of vertices followed by that amount of indices to "points" in
+	 * 	 counter clockwise order
+	 */
 	public static DConvex createConvex(DSpace space, double[] planes,
-			int planecount, double[] points, int pointcount, int[] polygons) {
-		return DxConvex.dCreateConvex((DxSpace)space, planes, planecount, points, pointcount, polygons);
+									   int planeCount, double[] points, int pointCount, int[] polygons) {
+		return DxConvex.dCreateConvex((DxSpace)space, planes, planeCount, points, pointCount, polygons);
 	}
 
 	public static DCylinder createCylinder(double radius, double length) {
@@ -1083,21 +1121,49 @@ public abstract class OdeHelper {
 //		return DxTrimeshHeightfield.dGeomHeightfieldDataCreate();
 //	}
 
-
+	/**
+	 * Trimesh class
+	 * Construction. Callbacks are optional.
+	 * @param space space
+	 * @param data user data
+	 * @return trimesh
+	 */
+	public static DTriMesh createTriMesh(DSpace space, DTriMeshData data) {
+		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)data,null, null, null);
+	}
 
 	/**
 	 * Trimesh class
 	 * Construction. Callbacks are optional.
 	 * @param space space
 	 * @param data user data
-	 * @param callback callback
-	 * @param arrayCallback array callback
-	 * @param rayCallback ray callback
+	 * @param callback callback (can be NULL)
+	 *                 NOTE: The callback is only called for Box, Capsule, Ray, Sphere and TriMesh. See issue #76.
+	 * // @param arrayCallback array callback (can be NULL) --> Not supported in GIMPACT.
+	 * @param rayCallback ray callback (can be NULL)
 	 * @return trimesh
 	 */
-	public static DTriMesh createTriMesh(DSpace space, DTriMeshData data, DTriCallback callback, 
-			 DTriArrayCallback arrayCallback, DTriRayCallback rayCallback) {
-		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)data, 
+	public static DTriMesh createTriMesh(DSpace space, DTriMeshData data, DTriCallback callback,
+										 DTriRayCallback rayCallback) {
+		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)data, callback, null, rayCallback);
+	}
+
+	/**
+	 * Trimesh class
+	 * Construction. Callbacks are optional.
+	 * @param space space
+	 * @param data user data
+	 * @param callback callback (can be NULL)
+	 *                 NOTE: The callback is only called for Box, Capsule, Ray, Sphere and TriMesh. See issue #76.
+	 * @param arrayCallback array callback (can be NULL) --> Not supported in GIMPACT.
+	 * @param rayCallback ray callback (can be NULL)
+	 * @return trimesh
+	 */
+	@SuppressWarnings("deprecation") // TODO deprecate this method?!?!? 0.6.0 ?
+	public static DTriMesh createTriMesh(DSpace space, DTriMeshData data, DTriCallback callback,
+										 org.ode4j.ode.DTriMesh.DTriArrayCallback arrayCallback,
+										 DTriRayCallback rayCallback) {
+		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)data,
 				callback, arrayCallback, rayCallback);
 	}
 

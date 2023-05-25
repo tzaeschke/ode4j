@@ -44,12 +44,7 @@ import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.math.DVector4;
-import org.ode4j.ode.DColliderFn;
-import org.ode4j.ode.DContactGeom;
-import org.ode4j.ode.DContactGeomBuffer;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeMath;
+import org.ode4j.ode.*;
 import org.ode4j.ode.internal.cpp4j.java.RefBoolean;
 import org.ode4j.ode.internal.gimpact.GimDynArrayInt;
 import org.ode4j.ode.internal.gimpact.GimGeometry.aabb3f;
@@ -272,6 +267,12 @@ class CollideCylinderTrimesh implements DColliderFn {
 		{
 			if (1 == m_gLocalContacts[iContact].nFlags)
 			{
+				// TODO 76
+				// ode4j fix: see issue #76
+				// side1: see TestCollisionForSingleTriangle()
+				if (!Trimesh.invokeCallback(Cylinder, m_gLocalContacts[iContact].triIndex)) {
+					continue;
+				}
 				//getSAFECONTACT(m_iFlags, contact, nFinalContact, m_iSkip);
 				Contact = contacts.getSafe(m_iFlags, nFinalContact);
 				Contact.depth = m_gLocalContacts[iContact].fDepth;
@@ -1074,10 +1075,10 @@ class CollideCylinderTrimesh implements DColliderFn {
 //	int sCylinderTrimeshColliderData::TestCollisionForSingleTriangle(int ctContacts0, 
 //		int Triint, dVector3 dv[3], bool &bOutFinishSearching)
 	int TestCollisionForSingleTriangle(int ctContacts0, 
-			final int Triint, final DVector3[] dv, final RefBoolean bOutFinishSearching)
+			final int Triint, DVector3 dv0, DVector3 dv1, DVector3 dv2, final RefBoolean bOutFinishSearching)
 	{
 		// test this triangle
-		TestOneTriangleVsCylinder(dv[0],dv[1],dv[2], false);
+		TestOneTriangleVsCylinder(dv0,dv1,dv2, false);
 
 		// fill-in tri index for generated contacts
 		for (; ctContacts0<m_nContacts; ctContacts0++)
@@ -1241,16 +1242,11 @@ class CollideCylinderTrimesh implements DColliderFn {
 		sCylinderTrimeshColliderData cData = new sCylinderTrimeshColliderData(flags, skip);
 		cData._InitCylinderTrimeshData(Cylinder, Trimesh);
 
-	//*****at first , collide box aabb******//
+		//*****at first , collide box aabb******//
 
 		aabb3f test_aabb = new aabb3f();
-
-		test_aabb.minX = (float) o1._aabb.getMin0();
-		test_aabb.maxX = (float) o1._aabb.getMax0();
-		test_aabb.minY = (float) o1._aabb.getMin1();
-		test_aabb.maxY = (float) o1._aabb.getMax1();
-		test_aabb.minZ = (float) o1._aabb.getMin2();
-		test_aabb.maxZ = (float) o1._aabb.getMax2();
+		DAABBC aabb = o1._aabb; // TODO TZ: remompute AABB with getAABB()?
+		test_aabb.set(aabb.getMin0(), aabb.getMax0(), aabb.getMin1(), aabb.getMax1(), aabb.getMin2(), aabb.getMax2());
 
 
 		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
@@ -1259,7 +1255,7 @@ class CollideCylinderTrimesh implements DColliderFn {
 
 		if (collision_result.size() != 0)
 		{
-	//*****Set globals for box collision******//
+		//*****Set globals for box collision******//
 
 			int ctContacts0 = 0;
 			// cData.m_gLocalContacts = (sLocalContactData*)dALLOCA16(sizeof(sLocalContactData)*(cData.m_iFlags & NUMC_MASK));
@@ -1278,14 +1274,14 @@ class CollideCylinderTrimesh implements DColliderFn {
 				final int Triint = boxesresult[i];
 				
 				//vec3f[] dvf = { new vec3f(), new vec3f(), new vec3f() };
-				DVector3[] dv = { new DVector3(), new DVector3(), new DVector3() };
-				ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv[0], dv[1], dv[2]);
+				DVector3 dv0 = new DVector3(), dv1 = new DVector3(), dv2 = new DVector3();
+				ptrimesh.gim_trimesh_get_triangle_vertices(Triint, dv0, dv1, dv2);
 				
 				//dv[0].set(dvf[0].f);
 				//dv[1].set(dvf[1].f);
 				//dv[2].set(dvf[2].f);
 				RefBoolean bFinishSearching = new RefBoolean(false);
-				ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dv, bFinishSearching);
+				ctContacts0 = cData.TestCollisionForSingleTriangle(ctContacts0, Triint, dv0, dv1, dv2, bFinishSearching);
 
 				if (bFinishSearching.b) 
 				{

@@ -38,6 +38,7 @@ import static org.ode4j.ode.internal.gimpact.GimGeometry.IDENTIFY_MATRIX_4X4;
 //    struct dxTriMesh: public dxTriMesh_Parent {
 public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
 
+    @SuppressWarnings("deprecation")
     public static DxTriMesh dCreateTriMesh(DxSpace space,
                                             DxTriMeshData Data,
                                             DTriCallback Callback,
@@ -47,7 +48,7 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
         DxTriMesh Geom;
         switch (OdeConfig.dTRIMESH_TYPE) {
             case DISABLED: Geom = new DxTriMeshDisabled(space, Data); break;
-            case GIMPACT: Geom = new DxGimpact(space, (DxGimpactData) Data); break;
+            case GIMPACT: Geom = new DxGimpact(space, (DxGimpactData) Data, Callback, ArrayCallback, RayCallback); break;
             default: throw new IllegalArgumentException(OdeConfig.dTRIMESH_TYPE.name());
         }
         //		Geom.Callback = Callback;
@@ -61,6 +62,7 @@ public abstract class DxTriMesh extends DxMeshBase implements DTriMesh {
     // Functions
     //dxTriMesh(dxSpace * Space, dxTriMeshData * Data, dTriCallback * Callback, dTriArrayCallback * ArrayCallback, dTriRayCallback * RayCallback):
     //dxTriMesh_Parent(Space, NULL, Callback, ArrayCallback, RayCallback, true) // TC has speed/space 'issues' that don't make it a clear win by default on spheres/boxes.
+    @SuppressWarnings("deprecation")
     protected DxTriMesh(DxSpace Space, DxTriMeshData Data, DTriMesh.DTriCallback Callback,
               DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
         // TC has speed/space 'issues' that don't make it a clear win by default on spheres/boxes.

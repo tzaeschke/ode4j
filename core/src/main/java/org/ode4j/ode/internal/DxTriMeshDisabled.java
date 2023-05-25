@@ -143,7 +143,9 @@ public class DxTriMeshDisabled extends DxTriMesh {
 	void dGeomTriMeshSetCallback(DGeom g, DTriCallback Callback) { }
 	DTriCallback dGeomTriMeshGetCallback(DGeom g) { return null; }
 
+	@Deprecated
 	void dGeomTriMeshSetArrayCallback(DGeom g, DTriArrayCallback ArrayCallback) { }
+	@Deprecated
 	DTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) { return null; }
 
 	void dGeomTriMeshSetRayCallback(DGeom g, DTriRayCallback Callback) { }
@@ -156,7 +158,7 @@ public class DxTriMeshDisabled extends DxTriMesh {
 
 	DTriMeshData dGeomTriMeshGetTriMeshDataID(DGeom g) { return null; }
 
-	public void dGeomTriMeshGetTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2) {};
+	public void dGeomTriMeshGetTriangle(int Index, DVector3 v0, DVector3 v1, DVector3 v2) {}
 
 	int dGeomTriMeshGetTriangleCount (DGeom g) { return 0; }
 	void dGeomTriMeshDataUpdate(DTriMeshData g) {}

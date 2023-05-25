@@ -1,3 +1,12 @@
+Ask
+===
+- dCollideCylinderTrimesh() deosn't appear to recompute the AABB (explicitly via recompiute() or implicitly via getAABB)
+  However, box-trimesh collision DOES recompute it: see dCollideBTL() or dCollideTrimeshPlane()
+- Was there something with contact sorting? dCollideConvexTrimeshTrianglesCCD() seems to violate that
+  (swaps last contact with current) -> Only if length is 0 ...
+- collision_libccd.cpp:768 -> "tempContact.side2 = i;" -> "tempContact.side2 = indices[i];"
+
+
 Before release:
 ===============
 mvn animal-sniffer:check
@@ -24,7 +33,11 @@ Fix
 - TODO remove deprecations for 0.6.0
 - Fix DLCP.ROWPTRS = true?!? -> DEFAULT in 0.16.3
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
+  -> Remove GIM_BUFFER_ARRAY_POINTER() -> avoit IntArr and ObjArray allocation + usage!!!!!
+  -> e.g. in gim_trimesh_update_aabbset()
 - Move to Google Java Code Style
+- Document: Gimpact works best with (i.e. does not scale above ?) room size <= MAX_AABB_SIZE=1638.0
+  -> Why 1638? Can we improve this?
 
 
 

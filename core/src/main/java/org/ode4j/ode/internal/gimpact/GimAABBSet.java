@@ -71,7 +71,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	{
 		int m_index1;
 		int m_index2;
-	};
+	}
 	//typedef struct _GIM_PAIR GIM_PAIR;
 
 	/** Box container */
@@ -179,7 +179,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * Converts a vector coordinate to an integer for box sorting.
 	 * @param vx X component
 	 * @param vz Z component
-	 * @param uint_key a GUINT
+	 * // @param uint_key a GUINT
 	 */
 	//#define GIM_CONVERT_VEC3F_GUINT_XZ(vx,vz,uint_key)\
 	long GIM_CONVERT_VEC3F_GUINT_XZ(float vx, float vz)
@@ -196,7 +196,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * Converts a vector coordinate to an integer for box sorting, rounding to the upper int.
 	 * @param vx X component
 	 * @param vz Z component
-	 * @param uint_key a GUINT
+	 * // @param uint_key a GUINT
 	 */
 	//#define GIM_CONVERT_VEC3F_GUINT_XZ_UPPER(vx,vz,uint_key)\
 	long GIM_CONVERT_VEC3F_GUINT_XZ_UPPER(float vx, float vz)
@@ -214,7 +214,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * Converts a vector coordinate to an integer for box sorting. Secure clamped.
 	 * @param vx X component
 	 * @param vz Z component
-	 * @param uint_key a GUINT
+	 * // @param uint_key a GUINT
 	 */
 	//#define GIM_CONVERT_VEC3F_GUINT_XZ_CLAMPED(vx,vz,uint_key)\
 	long GIM_CONVERT_VEC3F_GUINT_XZ_CLAMPED(float vx, float vz)
@@ -235,7 +235,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * Converts a vector coordinate to an integer for box sorting. Secure clamped, rounded.
 	 * @param vx X component
 	 * @param vz Z component
-	 * @param uint_key a GUINT
+	 * // @param uint_key a GUINT
 	 */
 	//#define GIM_CONVERT_VEC3F_GUINT_XZ_UPPER_CLAMPED(vx,vz,uint_key)\
 	long GIM_CONVERT_VEC3F_GUINT_XZ_UPPER_CLAMPED(float vx, float vz)
@@ -336,7 +336,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * 2) Sorts the min coords
 	 * 3) Calcs the global bound
 	 * @pre aabbset must be allocated. And the boxes must be already set.
-	 * @param aabbset
+	 * // @param aabbset
 	 * @param calc_global_bound If 1 , calcs the global bound
 	 * @post If aabbset.m_sorted_mincoords == 0, then it allocs the sorted coordinates
 	 */
@@ -381,7 +381,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 				unsorted[i].m_value = i;
 			}
 			GimRadixSort.GIM_RADIX_SORT_RTOKENS(unsorted,sorted_tokens,count);
-			//gim_free(unsorted,0); //TODO remove TZ
+			//gim_free(unsorted,0);
 			
 		}
 		
@@ -421,16 +421,8 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	private interface PushPairMacro {
 		void run(final int i, final int j, GimDynArray<GIM_PAIR> pairset);
 	}
-	private static final PushPairMacro PUSH_PAIR = new PushPairMacro() {
-		@Override public void run(int i, int j, GimDynArray<GIM_PAIR> pairset) {
-			PUSH_PAIR(i, j, pairset);
-		}
-	};
-	private static final PushPairMacro PUSH_PAIR_INV = new PushPairMacro() {
-		@Override public void run(int i, int j, GimDynArray<GIM_PAIR> pairset) {
-			PUSH_PAIR_INV(i, j, pairset);
-		}
-	};
+	private static final PushPairMacro PUSH_PAIR = GimAABBSet::PUSH_PAIR;
+	private static final PushPairMacro PUSH_PAIR_INV = GimAABBSet::PUSH_PAIR_INV;
 
 	//#define PUSH_PAIR(i,j,pairset)\
 	static void PUSH_PAIR(final int i, final int j, GimDynArray<GIM_PAIR> pairset)
@@ -549,7 +541,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 		if(classified_count1==0)
 		{
-			//TODO remove TZ gim_free(classified_tokens1 ,0);
+			//gim_free(classified_tokens1 ,0);
 			return; // no pairs
 		}
 
@@ -570,7 +562,6 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 		if(classified_count2==0)
 		{
-			//TODO remove TZ
 			//	        gim_free(classified_tokens1 ,0);
 			//	        gim_free(classified_tokens2 ,0);
 			return; // no pairs
@@ -607,7 +598,6 @@ public class GimAABBSet { //Formerly GimBoxPruning
 						max_coord_uint, sorted_tokens1, 0 , paabb1, collision_pairs, PUSH_PAIR_INV );
 			}
 		}
-		//TODO TZ remove
 		//	    gim_free(classified_tokens1 ,0);
 		//	    gim_free(classified_tokens2 ,0);
 	}
@@ -655,7 +645,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 
 		if(classified_count==0)
 		{
-			//gim_free(classified,0); TODO TZ remove
+			//gim_free(classified,0);
 			return; // no pairs
 		}
 
@@ -676,7 +666,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 				}
 			}
 		}
-		//gim_free(classified,0); TODO TZ remove
+		//gim_free(classified,0);
 	}
 
 
@@ -723,7 +713,6 @@ public class GimAABBSet { //Formerly GimBoxPruning
 		{//Sorted force approach
 			gim_aabbset_bipartite_intersections_sorted(aabbset1,aabbset2,collision_pairs);
 		}
-//		System.out.println("IGNORED!");//TODO fix this!
 	}
 
 	/**
@@ -763,7 +752,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * @param vorigin Origin point of ray.
 	 * @param vdir Direction vector of ray.
 	 * @param tmax Max distance param for ray.
-	 * @param aabbset Set of boxes .Global bound is required.
+	 * // @param aabbset Set of boxes .Global bound is required.
 	 * @param collided Array of GUINT elements, indices of boxes. Must be initialized before (Reserve size ~ 100)
 	 */
 	//void gim_aabbset_ray_collision(vec3f vorigin,vec3f vdir, GREAL tmax, GIM_AABB_SET * aabbset, GDYNAMIC_ARRAY * collided)

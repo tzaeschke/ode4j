@@ -22,12 +22,12 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.ode4j.math.DVector3;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
 
 public class DBodyTest {
 
@@ -43,5 +43,29 @@ public class DBodyTest {
 
         b.addLinearVel(new DVector3(2, 3, 4));
         assertTrue(b.getLinearVel().isEq(3, 6, 9, 0));
+    }
+
+    /**
+     * DBody::getGeomIterator().
+     */
+    @Test
+    public void testGetGeomIterator() {
+        DWorld world = OdeHelper.createWorld();
+        DBody b = OdeHelper.createBody(world);
+
+        DGeom g1 = OdeHelper.createBox(1, 1, 1);
+        g1.setBody(b);
+
+        Iterator<DGeom> it1 = b.getGeomIterator();
+        assertEquals(g1, it1.next());
+        assertFalse(it1.hasNext());
+
+        DGeom g2 = OdeHelper.createBox(1, 1, 1);
+        g2.setBody(b);
+        Iterator<DGeom> it2 = b.getGeomIterator();
+        // The following order may in fact change! -> Fix test to ignore ordering!
+        assertEquals(g2, it2.next());
+        assertEquals(g1, it2.next());
+        assertFalse(it2.hasNext());
     }
 }
