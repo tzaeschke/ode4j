@@ -40,10 +40,12 @@ abstract class DxMeshBase extends DxGeom implements DTriMesh {
     //        dxMeshBase(dxSpace *Space, dxTriDataBase *Data,
     //                dTriCallback *Callback, dTriArrayCallback *ArrayCallback, dTriRayCallback *RayCallback,
     //                bool doTCs=false):
-    public DxMeshBase(DxSpace Space, DxTriDataBase Data, DTriMesh.DTriCallback Callback,
-                      DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
-        this(Space, Data, Callback, ArrayCallback, RayCallback, false);
-    }
+    //    public DxMeshBase(DxSpace Space, DxTriDataBase Data, DTriMesh.DTriCallback Callback,
+    //                      DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
+    //        this(Space, Data, Callback, ArrayCallback, RayCallback, false);
+    //    }
+
+    @SuppressWarnings("deprecation")
     public DxMeshBase(DxSpace Space, DxTriDataBase Data, DTriMesh.DTriCallback Callback,
                       DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback, boolean doTCs) {
         super(Space, true);
@@ -95,10 +97,12 @@ abstract class DxMeshBase extends DxGeom implements DTriMesh {
         return m_Callback;
     }
 
+    @Deprecated
     public void assignArrayCallback(DTriMesh.DTriArrayCallback value) {
         m_ArrayCallback = value;
     }
 
+    @Deprecated
     public DTriMesh.DTriArrayCallback retrieveArrayCallback() {
         return m_ArrayCallback;
     }
@@ -177,6 +181,7 @@ abstract class DxMeshBase extends DxGeom implements DTriMesh {
     //public:
     // Callbacks
     public DTriMesh.DTriCallback m_Callback;
+    @Deprecated
     public DTriMesh.DTriArrayCallback m_ArrayCallback;
     public DTriMesh.DTriRayCallback m_RayCallback;
     public DTriMesh.DTriTriMergeCallback m_TriMergeCallback;
@@ -209,6 +214,7 @@ abstract class DxMeshBase extends DxGeom implements DTriMesh {
 
     /*extern ODE_API */
     //void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback)
+    @Deprecated
     void dGeomTriMeshSetArrayCallback(DTriMesh.DTriArrayCallback ArrayCallback)
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
@@ -219,6 +225,7 @@ abstract class DxMeshBase extends DxGeom implements DTriMesh {
 
     /*extern ODE_API */
     //dTriArrayCallback *dGeomTriMeshGetArrayCallback(dGeomID g)
+    @Deprecated
     DTriMesh.DTriArrayCallback dGeomTriMeshGetArrayCallback()
     {
         //dUASSERT(g && g->type == dTriMeshClass, "The argument is not a trimesh");
@@ -283,12 +290,14 @@ abstract class DxMeshBase extends DxGeom implements DTriMesh {
     }
 
     //void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback)
+    @Deprecated
     @Override
     public void setArrayCallback(DTriMesh.DTriArrayCallback ArrayCallback) {
         dGeomTriMeshSetArrayCallback(ArrayCallback);
     }
 
     //dTriArrayCallback* dGeomTriMeshGetArrayCallback(dGeomID g)
+    @Deprecated
     @Override
     public DTriMesh.DTriArrayCallback getArrayCallback() {
         return dGeomTriMeshGetArrayCallback();

@@ -56,6 +56,7 @@ public interface DTriMesh extends DGeom {
 	 * shot. Maybe we should remove this one.
 	 */
 	//typedef void dTriArrayCallback(dGeom TriMesh, dGeom RefObject, final int* TriIndices, int TriCount);
+	@Deprecated // This is not supported in GIMPACT and neither in ode4j. Moreover, ODE suggests this should be removed.
 	interface DTriArrayCallback {
 		void call(DGeom TriMesh, DGeom RefObject, final int[] TriIndices, int TriCount);
 	}

@@ -36,6 +36,8 @@ Fix
   -> Remove GIM_BUFFER_ARRAY_POINTER() -> avoit IntArr and ObjArray allocation + usage!!!!!
   -> e.g. in gim_trimesh_update_aabbset()
 - Move to Google Java Code Style
+- Document: Gimpact works best with (i.e. does not scale above ?) room size <= MAX_AABB_SIZE=1638.0
+  -> Why 1638? Can we improve this?
 
 
 

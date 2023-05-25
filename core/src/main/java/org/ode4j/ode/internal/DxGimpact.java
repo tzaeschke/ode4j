@@ -61,6 +61,7 @@ public class DxGimpact extends DxTriMesh {
 	// Trimesh
 
 	//dxTriMesh::dxTriMesh(dSpaceID Space, dTriMeshDataID Data) : dxGeom(Space, 1){
+	@SuppressWarnings("deprecation")
 	public DxGimpact(DxSpace Space, DxGimpactData Data, DTriMesh.DTriCallback Callback,
 					 DTriMesh.DTriArrayCallback ArrayCallback, DTriMesh.DTriRayCallback RayCallback) {
 		super(Space, Data, Callback, ArrayCallback, RayCallback);

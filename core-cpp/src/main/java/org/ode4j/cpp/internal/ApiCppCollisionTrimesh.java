@@ -27,7 +27,6 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DTriMesh;
 import org.ode4j.ode.DTriMeshData;
 import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.DTriMesh.DTriArrayCallback;
 import org.ode4j.ode.DTriMesh.DTriCallback;
 import org.ode4j.ode.DTriMesh.DTriRayCallback;
 import org.ode4j.ode.internal.cpp4j.java.DoubleArray;
@@ -247,12 +246,14 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
     //	void call(dGeom TriMesh, dGeom RefObject, final int[] TriIndices, int TriCount);
     //}
     //ODE_API
-    void dGeomTriMeshSetArrayCallback(DGeom g, DTriArrayCallback ArrayCallback) {
+    @Deprecated
+    void dGeomTriMeshSetArrayCallback(DGeom g, org.ode4j.ode.DTriMesh.DTriArrayCallback ArrayCallback) {
         throw new UnsupportedOperationException();
     }
 
     //ODE_API
-    DTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) {
+    @Deprecated
+    org.ode4j.ode.DTriMesh.DTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g) {
         throw new UnsupportedOperationException();
     }
 
@@ -310,8 +311,10 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
      * @return trimesh
      */
     //ODE_API
+    @SuppressWarnings("deprecation")
     public static DTriMesh dCreateTriMesh(DSpace space, DTriMeshData Data, DTriCallback Callback,
-                                          DTriArrayCallback ArrayCallback, DTriRayCallback RayCallback) {
+                                          org.ode4j.ode.DTriMesh.DTriArrayCallback ArrayCallback,
+                                          DTriRayCallback RayCallback) {
         return OdeHelper.createTriMesh(space, Data, Callback, ArrayCallback, RayCallback);
     }
 

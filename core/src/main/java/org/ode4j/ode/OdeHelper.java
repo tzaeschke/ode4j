@@ -30,7 +30,6 @@ import java.util.List;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.DTriMesh.DTriArrayCallback;
 import org.ode4j.ode.DTriMesh.DTriCallback;
 import org.ode4j.ode.DTriMesh.DTriRayCallback;
 import org.ode4j.ode.internal.*;
@@ -1122,8 +1121,6 @@ public abstract class OdeHelper {
 //		return DxTrimeshHeightfield.dGeomHeightfieldDataCreate();
 //	}
 
-
-
 	/**
 	 * Trimesh class
 	 * Construction. Callbacks are optional.
@@ -1142,12 +1139,30 @@ public abstract class OdeHelper {
 	 * @param data user data
 	 * @param callback callback (can be NULL)
 	 *                 NOTE: The callback is only called for Box, Capsule, Ray, Sphere and TriMesh. See issue #76.
-	 * @param arrayCallback array callback (can be NULL)
+	 * // @param arrayCallback array callback (can be NULL) --> Not supported in GIMPACT.
 	 * @param rayCallback ray callback (can be NULL)
 	 * @return trimesh
 	 */
 	public static DTriMesh createTriMesh(DSpace space, DTriMeshData data, DTriCallback callback,
-										 DTriArrayCallback arrayCallback, DTriRayCallback rayCallback) {
+										 DTriRayCallback rayCallback) {
+		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)data, callback, null, rayCallback);
+	}
+
+	/**
+	 * Trimesh class
+	 * Construction. Callbacks are optional.
+	 * @param space space
+	 * @param data user data
+	 * @param callback callback (can be NULL)
+	 *                 NOTE: The callback is only called for Box, Capsule, Ray, Sphere and TriMesh. See issue #76.
+	 * @param arrayCallback array callback (can be NULL) --> Not supported in GIMPACT.
+	 * @param rayCallback ray callback (can be NULL)
+	 * @return trimesh
+	 */
+	@SuppressWarnings("deprecation") // TODO deprecate this method?!?!? 0.6.0 ?
+	public static DTriMesh createTriMesh(DSpace space, DTriMeshData data, DTriCallback callback,
+										 org.ode4j.ode.DTriMesh.DTriArrayCallback arrayCallback,
+										 DTriRayCallback rayCallback) {
 		return DxTriMesh.dCreateTriMesh((DxSpace)space, (DxTriMeshData)data,
 				callback, arrayCallback, rayCallback);
 	}

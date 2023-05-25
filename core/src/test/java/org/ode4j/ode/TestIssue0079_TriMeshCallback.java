@@ -74,6 +74,20 @@ public class TestIssue0079_TriMeshCallback {
         return 1;
     };
 
+    private final DTriMesh.DTriRayCallback defaultRayCallback = (TriMesh, RefObject, TriangleIndex, u, v) -> {
+        if (TriangleIndex != 1 && TriangleIndex != 2) {
+            fail("Triangle index should be 1 or 2 but was: " + TriangleIndex);
+        }
+        // We ignore triangle ¨1"
+        if (TriangleIndex == 1) {
+            return 0;
+        }
+        // Triangle "2" should collide normally!
+        assertEquals(2, TriangleIndex);
+        ++nContacts;
+        return 1;
+    };
+
     @Before
     public void beforeTest() {
         OdeHelper.initODE2(0);
@@ -95,6 +109,10 @@ public class TestIssue0079_TriMeshCallback {
      * When using the callback, only triangle "2" will collide, "1" is ignored.
      */
     private void testTrimesh(DGeom geom, DTriMesh.DTriCallback callback) {
+        testTrimesh(geom, callback, null);
+    }
+
+    private void testTrimesh(DGeom geom, DTriMesh.DTriCallback callback, DTriMesh.DTriRayCallback rayCallback) {
         float[] size = new float[]{5.0f, 5.0f, 2.5f};
         float[] vertices = new float[]{
                 -size[0], -size[1], size[2],
@@ -115,24 +133,20 @@ public class TestIssue0079_TriMeshCallback {
         if (geom instanceof DConvex) {
             Data.preprocess();
         }
-        // TODO what about array callback / ray callback?
-        DTriMesh trimesh = OdeHelper.createTriMesh(space, Data, callback, null, null);
+        DTriMesh trimesh = OdeHelper.createTriMesh(space, Data, callback, null, rayCallback);
         DBody triBody = OdeHelper.createBody(world);
         trimesh.setBody(triBody);
 
-        // TODO remove this extra branch for Rays?!?!?!?!?!!??
         if (geom instanceof DRay) {
-            //space.add(geom);
-            OdeHelper.spaceCollide2(geom, space, 0, rayCallback);
+            //            OdeHelper.spaceCollide2(geom, space, 0, rayCallback);
         } else {
             DBody sBody = OdeHelper.createBody(world);
             geom.setBody(sBody);
             if (!(geom instanceof DTriMesh)) {
                 sBody.setPosition(1, 1, 1);
             }
-
-            OdeHelper.spaceCollide(space, 0, this::nearCallback);
         }
+        OdeHelper.spaceCollide(space, 0, this::nearCallback);
     }
 
     @Test
@@ -204,36 +218,61 @@ public class TestIssue0079_TriMeshCallback {
 
     @Test
     public void testRayNoOp() {
-        // just verify that it does not fail!
+        // Ray through triangle 2
         DRay geom = OdeHelper.createRay(space, 10);
         geom.set(0f, 2.5f, 10f, 0f, 0f, -1f);
-        testTrimesh(geom, null);
+        testTrimesh(geom, null, null);
         assertEquals(1, nContacts);
     }
 
     @Test
     public void testRay() {
+        // Ray through triangle 2
         DRay geom = OdeHelper.createRay(space, 10);
+        //        geom.set(0f, 2.5f, 0f, 0f, 0f, 1f);
         geom.set(0f, 2.5f, 10f, 0f, 0f, -1f);
-        testTrimesh(geom, defaultCallback);
+        testTrimesh(geom, defaultCallback, null);
+        verifyContactJoints();
+        assertEquals(1, nContacts);
+    }
+
+    @Test
+    public void testRayRCB() {
+        // Ray through triangle 2
+        DRay geom = OdeHelper.createRay(space, 10);
+        //        geom.set(0f, 2.5f, 0f, 0f, 0f, 1f);
+        geom.set(0f, 2.5f, 10f, 0f, 0f, -1f);
+        testTrimesh(geom, null, defaultRayCallback);
         verifyContactJoints();
         assertEquals(1, nContacts);
     }
 
     @Test
     public void testRay2NoOp() {
-        // just verify that it does not fail!
+        // Ray through triangle 1
         DRay geom = OdeHelper.createRay(space, 10);
         geom.set(2.5f, 0f, 10f, 0f, 0f, -1f);
-        testTrimesh(geom, null);
+        testTrimesh(geom, null, null);
         assertEquals(1, nContacts);
     }
 
     @Test
     public void test2Ray() {
+        // Ray through triangle 1
         DRay geom = OdeHelper.createRay(space, 10);
         geom.set(2.5f, 0f, 10f, 0f, 0f, -1f);
-        testTrimesh(geom, defaultCallback);
+        testTrimesh(geom, defaultCallback, null);
+        // Contact is ignored by our callback -> 0
+        verifyContactJoints();
+        assertEquals(0, nContacts);
+    }
+
+    @Test
+    public void test2RayRCB() {
+        // Ray through triangle 1
+        DRay geom = OdeHelper.createRay(space, 10);
+        geom.set(2.5f, 0f, 10f, 0f, 0f, -1f);
+        testTrimesh(geom, null, defaultRayCallback);
         // Contact is ignored by our callback -> 0
         verifyContactJoints();
         assertEquals(0, nContacts);
@@ -300,13 +339,6 @@ public class TestIssue0079_TriMeshCallback {
                 c.attach(contact.geom.g1.getBody(),
                         contact.geom.g2.getBody());
                 contactJoints.add(c);
-                // TODO
-//                if (o1 instanceof DTriMesh) {
-//                    assertEquals(2, contact.getContactGeom().side1);
-//                }
-//                if (o2 instanceof DTriMesh) {
-//                    assertEquals(2, contact.getContactGeom().side2);
-//                }
             }
         }
     }
@@ -314,11 +346,11 @@ public class TestIssue0079_TriMeshCallback {
     private void verifyContactJoints() {
         for (DContactJoint j : contactJoints) {
             DContact contact = j.getContact();
-            DGeom g1 = j.getBody(0).getFirstGeom();
+            DGeom g1 = contact.getContactGeom().g1;
             if (g1 instanceof DTriMesh) {
                 assertEquals(2, contact.getContactGeom().side1);
             }
-            DGeom g2 = j.getBody(1).getFirstGeom();
+            DGeom g2 = contact.getContactGeom().g2;
             if (g2 instanceof DTriMesh) {
                 // Trimesh-trimesh collision, only triangl 3 collides
                 assertEquals(3, contact.getContactGeom().side2);
