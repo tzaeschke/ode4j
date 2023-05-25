@@ -45,9 +45,9 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
  */
 public class ApiCppCollisionTrimesh extends ApiCppTimer {
 
-    /**
-     * Data storage for triangle meshes.
-     */
+    ///**
+    // * Data storage for triangle meshes.
+    // */
     //struct dxTriMeshData;
     //typedef struct dxTriMeshData* dTriMeshDataID;
 
@@ -73,8 +73,6 @@ public class ApiCppCollisionTrimesh extends ApiCppTimer {
      */
     @Deprecated
     enum TRIMESH1 {TRIMESH_FACE_NORMALS}
-
-    ;
 
     //ODE_API
     void dGeomTriMeshDataSet(DTriMeshData g, int data_id, Object in_data) {

@@ -30,7 +30,6 @@ import org.ode4j.ode.internal.gimpact.GimContact;
 import org.ode4j.ode.internal.gimpact.GimDynArray;
 import org.ode4j.ode.internal.gimpact.GimTriCollision;
 import org.ode4j.ode.internal.gimpact.GimTrimesh;
-import org.ode4j.ode.internal.trimesh.DxTriMesh;
 import org.ode4j.ode.internal.trimesh.DxTriMeshData;
 
 import static org.ode4j.ode.internal.Common.dAASSERT;

@@ -71,7 +71,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	{
 		int m_index1;
 		int m_index2;
-	};
+	}
 	//typedef struct _GIM_PAIR GIM_PAIR;
 
 	/** Box container */
