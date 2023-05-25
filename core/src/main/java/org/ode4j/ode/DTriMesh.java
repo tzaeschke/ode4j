@@ -93,10 +93,10 @@ public interface DTriMesh extends DGeom {
 		USE_FLAGS
 		//public static final dTRIMESHDATA _MIN = 0;
 		//public static final dTRIMESHDATA dTRIMESHDATA__MAX = 2;
-//#ifndef TRIMESH_FACE_NORMALS // Define this name during the header inclusion if you need it for something else
-//		// Included for backward compatibility -- please use the corrected name above. Sorry.
-//		TRIMESH_FACE_NORMALS = dTRIMESHDATA_FACE_NORMALS,
-//#endif
+		//#ifndef TRIMESH_FACE_NORMALS // Define this name during the header inclusion if you need it for something else
+		//		// Included for backward compatibility -- please use the corrected name above. Sorry.
+		//		TRIMESH_FACE_NORMALS = dTRIMESHDATA_FACE_NORMALS,
+		//#endif
 	}
 
 	/*
@@ -139,9 +139,6 @@ public interface DTriMesh extends DGeom {
 	 * a particular triangle.
 	 */
 	////typedef int dTriCallback(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
-	//	 interface dTriCallback {
-	//		 int call(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
-	//	 }
 	//ODE_API
 	//void dGeomTriMeshSetCallback(DGeom g, dTriCallback Callback) {
 	void setCallback(DTriCallback Callback);
@@ -150,32 +147,26 @@ public interface DTriMesh extends DGeom {
 	//dTriCallback dGeomTriMeshGetCallback(DGeom g)
 	DTriCallback getCallback();
 
-	///**
-	// * Per object callback. Allows the user to get the list of triangles in 1
-	// * shot. Maybe we should remove this one.
-	// */
-	////typedef void dTriArrayCallback(dGeom TriMesh, dGeom RefObject, final int* TriIndices, int TriCount);
-	//interface dTriArrayCallback {
-	//	void call(dGeom TriMesh, dGeom RefObject, final int[] TriIndices, int TriCount);
-	//}
-	//ODE_API
-	//void dGeomTriMeshSetArrayCallback(DGeom g, dTriArrayCallback ArrayCallback)
-	void setArrayCallback(DTriMesh.DTriArrayCallback ArrayCallback);
+	//	///**
+	//	// * Per object callback. Allows the user to get the list of triangles in 1
+	//	// * shot. Maybe we should remove this one.
+	//	// */
+	//	////typedef void dTriArrayCallback(dGeom TriMesh, dGeom RefObject, final int* TriIndices, int TriCount);
+	//	//ODE_API
+	//	//void dGeomTriMeshSetArrayCallback(DGeom g, dTriArrayCallback ArrayCallback)
+	//	void setArrayCallback(DTriMesh.DTriArrayCallback ArrayCallback);
+	//
+	//	//ODE_API
+	//	//dTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g)
+	//	DTriMesh.DTriArrayCallback getArrayCallback();
 
-	//ODE_API
-	//dTriArrayCallback dGeomTriMeshGetArrayCallback(DGeom g)
-	DTriMesh.DTriArrayCallback getArrayCallback();
-
-	///**
-	// * Ray callback.
-	// * Allows the user to say if a ray collides with a triangle on barycentric
-	// * coords. The user can for example sample a texture with alpha transparency
-	// * to determine if a collision should occur.
-	// */
+	/**
+	 * Ray callback.
+	 * Allows the user to say if a ray collides with a triangle on barycentric
+	 * coords. The user can for example sample a texture with alpha transparency
+	 * to determine if a collision should occur.
+	 */
 	////typedef int dTriRayCallback(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
-	//interface dTriRayCallback {
-	//	int call(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
-	//}
 	//ODE_API
 	//void dGeomTriMeshSetRayCallback(DGeom g, dTriRayCallback Callback);
 	void setRayCallback(DTriMesh.DTriRayCallback Callback);

@@ -327,7 +327,7 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
     {
         //delete[] tempTriangleBuffer;
         tempTriangleBuffer = null;
-        tempTriangleBufferSize = -0; // TZ just to be clean
+        tempTriangleBufferSize = 0; // TZ just to be clean
     }
 
     private void allocateHeightBuffer(int numX, int numZ)

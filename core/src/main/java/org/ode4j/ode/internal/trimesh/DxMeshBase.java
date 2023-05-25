@@ -291,14 +291,12 @@ abstract class DxMeshBase extends DxGeom implements DTriMesh {
 
     //void dGeomTriMeshSetArrayCallback(dGeomID g, dTriArrayCallback* ArrayCallback)
     @Deprecated
-    @Override
     public void setArrayCallback(DTriMesh.DTriArrayCallback ArrayCallback) {
         dGeomTriMeshSetArrayCallback(ArrayCallback);
     }
 
     //dTriArrayCallback* dGeomTriMeshGetArrayCallback(dGeomID g)
     @Deprecated
-    @Override
     public DTriMesh.DTriArrayCallback getArrayCallback() {
         return dGeomTriMeshGetArrayCallback();
     }
