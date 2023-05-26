@@ -378,8 +378,8 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		return contact;
 	}
 
-	public void setDContact(DContact contact) {
+	public void setContact(DContact contact) {
 		this.contact.set(contact);
-}
+	}
 }
 

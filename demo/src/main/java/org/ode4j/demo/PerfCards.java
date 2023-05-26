@@ -22,7 +22,7 @@
  * details.                                                              *
  *                                                                       *
  *************************************************************************/
-package org.ode4j.tests;
+package org.ode4j.demo;
 
 import org.ode4j.drawstuff.DrawStuff.*;
 import org.ode4j.math.DMatrix3;
@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactApprox1;
 import static org.ode4j.ode.internal.Common.M_PI;
-
 
 /**
  *
@@ -163,27 +162,45 @@ public class PerfCards extends dsFunctions {
 	};
 
 	private static final int MAX_CONTACTS = 8;
-	private static final DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
+		private static final DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
 
-	private static void nearCallback (Object data, DGeom o1, DGeom o2)
-	{
-		// exit without doing anything if the two bodies are connected by a joint
-		DBody b1 = o1.getBody();
-		DBody b2 = o2.getBody();
+		private static void nearCallback (Object data, DGeom o1, DGeom o2)
+		{
+			// exit without doing anything if the two bodies are connected by a joint
+			DBody b1 = o1.getBody();
+			DBody b2 = o2.getBody();
 
-		contacts.nullify();
+			contacts.nullify();
 
-		int numc = OdeHelper.collide (o1, o2, MAX_CONTACTS,
-				contacts.getGeomBuffer());
+			int numc = OdeHelper.collide (o1, o2, MAX_CONTACTS,
+					contacts.getGeomBuffer());
 
-		for (int i=0; i<numc; i++) {
-			contacts.get(i).surface.mode = dContactApprox1;
-			contacts.get(i).surface.mu = 5;
-			DJoint c = OdeHelper.createContactJoint (world, contactgroup, contacts.get(i));//contact+i);
-			c.attach (b1, b2);
+			for (int i=0; i<numc; i++) {
+				contacts.get(i).surface.mode = dContactApprox1;
+				contacts.get(i).surface.mu = 5;
+				DJoint c = OdeHelper.createContactJoint (world, contactgroup, contacts.get(i));//contact+i);
+				c.attach (b1, b2);
+			}
 		}
-	}
-	
+
+//	private static void nearCallback (Object data, DGeom o1, DGeom o2)
+//	{
+//		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
+//		// exit without doing anything if the two bodies are connected by a joint
+//		DBody b1 = o1.getBody();
+//		DBody b2 = o2.getBody();
+//
+//		int numc = OdeHelper.collide (o1, o2, MAX_CONTACTS,
+//				contacts.getGeomBuffer());
+//
+//		for (int i=0; i<numc; i++) {
+//			contacts.get(i).surface.mode = dContactApprox1;
+//			contacts.get(i).surface.mu = 5;
+//			DJoint c = OdeHelper.createContactJoint (world, contactgroup, contacts.get(i));//contact+i);
+//			c.attach (b1, b2);
+//		}
+//	}
+
 	@Override
 	public void step(boolean pause)
 	{

@@ -35,7 +35,7 @@ public class DContact {
 	public final DContactGeom geom = new DContactGeom();
 	public final DVector3 fdir1 = new DVector3();
 
-	DContact() {
+	public DContact() {
 		// Nothing
 	}
 	

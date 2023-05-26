@@ -168,17 +168,16 @@ public class DemoCards extends dsFunctions {
 			nearCallback(data, o1, o2);
 		}
 	};
-
-	private static final int MAX_CONTACTS = 8;
-	private static DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
-
+	
 	private static void nearCallback (Object data, DGeom o1, DGeom o2)
 	{
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
 
-		contacts.nullify();
+		final int MAX_CONTACTS = 8;
+		//DContact contact[MAX_CONTACTS];
+		DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
 
 		int numc = OdeHelper.collide (o1, o2, MAX_CONTACTS,
 				contacts.getGeomBuffer());
