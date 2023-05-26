@@ -230,7 +230,7 @@ public class DLCP {
 	// The benefit is also not clear, but there is definitely a downside to haveing an array of arrays.
 	// TODO maybe reconsider at a later point.
     //protected static final boolean ROWPTRS = true;
-    protected static final boolean ROWPTRS = !false;
+    protected static final boolean ROWPTRS = false;
 
 
 	//***************************************************************************
