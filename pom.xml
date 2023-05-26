@@ -85,6 +85,17 @@
 		</repository>
 	</repositories>
 
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
 	<!-- mvn versions:display-dependency-updates -->
 	<dependencyManagement>
 		<dependencies>
@@ -150,6 +161,29 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>${ode4j.build-helper-maven-plugin.version}</version>
+				</plugin>
+
+				<!-- TZ: I added these only to avoid warnings during release:perform-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${ode4j.maven-javadoc-plugin.version}</version>
+<!--					<configuration>-->
+<!--						<show>private</show>-->
+<!--						<nohelp>true</nohelp>-->
+<!--					</configuration>-->
+				</plugin>
+
+				<!-- TZ: I added these only to avoid warnings during release:perform-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.3.0</version>
+<!--					<configuration>-->
+<!--						<outputDirectory>/absolute/path/to/the/output/directory</outputDirectory>-->
+<!--						<finalName>filename-of-generated-jar-file</finalName>-->
+<!--						<attach>false</attach>-->
+<!--					</configuration>-->
 				</plugin>
 
 				<!--
