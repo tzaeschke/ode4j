@@ -9,6 +9,7 @@ Ask
 
 Before release:
 ===============
+- Disable DEBUG?
 mvn animal-sniffer:check
 mvn versions:display-dependency-updates
 mvn versions:display-plugin-updates
@@ -31,13 +32,13 @@ Things left out for 0.5.0 (missing from 0.15.1 vs 0.16.2)
 Fix
 ===
 - TODO remove deprecations for 0.6.0
-- Fix DLCP.ROWPTRS = true?!? -> DEFAULT in 0.16.3
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
   -> Remove GIM_BUFFER_ARRAY_POINTER() -> avoit IntArr and ObjArray allocation + usage!!!!!
   -> e.g. in gim_trimesh_update_aabbset()
 - Move to Google Java Code Style
 - Document: Gimpact works best with (i.e. does not scale above ?) room size <= MAX_AABB_SIZE=1638.0
   -> Why 1638? Can we improve this?
+- reduce cpp usage?!?!
 
 
 
@@ -60,11 +61,7 @@ Java Version
 
 March 2023:
 General cleanup:
-- CHANGELOG -> .md
-- check excluded tests in .pom
-- Move tests to core/test
 - update DVector3 safeNormalize to use max() and then compare to 0. ALso see: https://github.com/JOML-CI/JOML/issues/66
-- replace DVector3.clone() with dVector3.re() or copy()
 - Create separate distribution (maven jar) with modules? -> Check how modul-projects have trouble with including
   non-module projects...
   -> https://www.baeldung.com/java-9-modularity
@@ -111,10 +108,6 @@ REPORT !!!!
   smaller PLUS ONE!!  DONE (2009-05-08)
   
 
-FIX !!!!!!!!!!!!!!!
-- dArray.push() clones Objects!!!!!!!
-
-
 DOC:
 - replace @sa with @see
 - replace \li with <li>
@@ -125,7 +118,9 @@ dJointGetAMotorMode: Unused @param 'mode'
 
 
 DIFFERENCES:
-- No GIMPACT/OPCODE, only Heightfield
+- ode4j has No OPCODE, only GIMPACT. ODE defaults to OPCODE.
+- ode4j LCP uses ROWPTRS=false
+- No coop-multithreading, no memory arenas management
 - SAP-Space uses different implementation (merge-sort i.o. radix-sort)
 - DrawStuff is slow. The implementation would require significant changes to 
   be a fast as the C/C++ version.
@@ -155,14 +150,6 @@ DIFFERENCES:
     while it is used, either through multithreading, or simply by other calls to the Object.
   * Also, it may NOT be modified, because the user does not know whether he gets an actual field
     or only a calculated result back.
-
-REQUIRED LIBS:
-- Java 6: for everything.
-- cppLib: for everything. It is used to simplify the porting. It is currently
-  included in the ode4j jars.
-- JUnit 4: for the test harnesses
-- lwjgl 2.0.1: for DrawStuff
-
 
 
 Cleanup uses of dVector.v, especially in e.g.
@@ -215,44 +202,19 @@ TODO
 - In SAP SPACE, use sort for all three dimensions and then prune Pairs
   that are not in all Dimensions?
 
-Trimesh:
---------
-- Heigthfield has bug (see post on March 10), use Trimesh instead
-- OPCODE is default over GIMPACT. There is also OPCODE-NEW (see WIKI)
-
 Bigger plans:
 -------------
-- Heightfield
-- Migrate javadoc from API to dBody, dContact, ... classes
-- Migrate one (or both?) of the TRIMESH libraries
-- Split ObjAPI and CppAPI into different packages
-- Make ObjAPI and Internals independent of CppAPI:
-  - No references to dClassID
-  - No references to org.tz.cpp
-- math independent of the rest
-- Check for multithreaded abilities.
-- Investigate AtomicXXX libraries
-- Implement GJK algorithm, see: 
+- Migrate OPCODE TRIMESH library
+- Implement GJK algorithm, see:
 	http://opende.sourceforge.net/wiki/index.php/How_Collision_Detection_Works
 	http://en.wikipedia.org/wiki/Gilbert-Johnson-Keerthi_distance_algorithm
 
-- use dVector3 as param instead of 3*double, e.g.:
-	dGeomBoxSetLengths, dGeomSetPosition, dGeomBoxPointDepth,
-	dGeomSpherePointDepth, dGeomPlaneSetParams, dGeomPlanePointDepth
-	dGeomCapsuleSetParams, dGeomCapsulePointDepth, dGeomRaySet
-	
-- parallel:
-  - collision detection (one collision per thread
-  - SAP space: sort objects in three dimensions in three Threads.
-  - LPC --> This will be more complicated, I guess.
-
 -------------------
-Migration guide
+Migration guide -> OLD, 0.3.0 ?
 -------------------
  
-Use QuickStep. Its's faster then Step. StepFast has not been migrated (or has it?)
-  
-  
+Use QuickStep. Its's faster then Step. StepFast is less stable
+
 dMass
 =====
 - dMass._c is now a dVector3, but was a dVector4
@@ -267,75 +229,9 @@ anymore, because the user is always dealing with the actual objects.
 
 OdeHelper
 =========
-Instead of 'new', Ode onjects have to be created via the static methods in OdeHelper.
+Instead of 'new', Ode objects have to be created via the static methods in OdeHelper.
 
-
-dCollide arguments / dContact / dContactGeom / dColliderFn
-==========================================================
-- dCollide takes as argument a dContactGeomBuffer(). This can be created via:
-  dContactBuffer contacts = new dContactBuffer(MAX_CONTACTS);
-  dCollide( ...., contacts.getGeomBuffer() );
-  This was necessary to allow it being filled with new contacts.
-- Parameter skip got removed. It is assumed that it was always size(dContact)
-  and is now assumed to be '1' (always going to the following contact).
-
-
-
-useful imports:
-===============
-import static org.ode4j.drawstuff.DS_API.*;
-import static org.ode4j.cpp.OdeCpp.*;
-import static org.ode4j.ode.OdeMath.*;
-import static org.cpp4j.C_All.*;
-DS_API is useful for demos
-OdeCpp is the 1to1 implementation of the C API of ODE
-OdeCppMath is the 1to1 implementation of the C math API of ODE
-C_All is useful when migrating C/C++ code to Java (e.g. demos and tests from ODE) 
-
-
-Using DrawStuff callbacks:
-==========================
-    class MyDemo extends dsFunctions { ...
-
-	main(String args) {
-		// setup pointers to drawstuff callback functions
-		dsFunctions fn = new MyDemo();
-		fn.version = DS_VERSION;
-		//  fn.start = &start;
-		//  fn.step = &simLoop;
-		//  fn.command = &command;
-		//  fn.stop = 0;
-		fn.path_to_textures = DRAWSTUFF_TEXTURE_PATH;
-
-So MyDemo should implement dsFunctions, the implemented methods should
-call the local equivalents.
-Note that command(char c) now take a 'char' and step(boolean pause) takes
-a 'boolean' argument.
-
-
-dGeom.getClass() was renamed to dGeom.getClassID()
-dGeom.id() has been removed.
-dGeom.isSpace() has been removed.
-dGeom.DESTRUCTOR added.
-
-dBody.create() has been removed:
-    body = dBodyCreate(world);//  body.create (world);
-
-
-dGeomGetClass / type
-====================
-the getType() methods have been removed.
-//if (dGeomGetClass (g) == dPlaneClass) {
-  if (g instanceof dPlane) {
-  
-
-Joint parameters
-================
-joint.setParam (dParamVel, vel);
--->
-joint.setParam (D_PARAM_NAMES_N.dParamVel1, vel);
-
-
+Z
 dContact
 ========
   dContact contact[N];
@@ -360,53 +256,3 @@ dContact
 		}
 	};
  
-
-Class types
-===========
-dSphereClass
--->
-dGeom.dSphereClass
-or BETTER:
-instanceof DSphere
-  
-dJointTypeContact
--->
-Common.dJointType.dJointTypeContact
-
-
-ContactType -> Find better name
-===========
-
-if (b1!=null && b2!=null && dAreConnectedExcluding(b1, b2, dJointTypeContact))
-    return;
--->
-if (b1!=null && b2!=null && OdeHelper.areConnectedExcluding(b1, b2, DContactJoint.class))
-    return;
-
-
-
-Constants
-=========
-Constants are in OdeConstants
-- dInfinity
-- dContact*
-
-
-
-Other
-=====
-dJointGroupCreate (1000000);
-OdeHelper.createJointGroup (100000);
-----> The parameter has been deprecated. Set to 0.
-
-dInitODE2(0);
----> OdeHelper.initODE2(0);
-
-dCloseODE();
----> OdeHelper.closeODE();
-
-
-
-DAABB
-=====
-DVector6 is replaced by DAABB/DAABBC	

@@ -23,6 +23,7 @@ Bug: Dropping first box on Heightfield is wrong.
 
 0.5.0 (unreleased)
 =====
+- Included brief overview into README [#118](https://github.com/tzaeschke/ode4j/pull/118)
 - Cumulative fix:
   * Fixed missing call to Trimesh callbacks. [#76](https://github.com/tzaeschke/ode4j/issues/76)
   * Deprecated DTriArrayCallback. It was never supported and is considered for removal in ODE.
