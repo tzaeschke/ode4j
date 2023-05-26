@@ -122,7 +122,7 @@ public class Test_DxSpace {
 	}
 
 	private boolean contains(DGeom geom) {
-		for (DxGeom g : space.getGeoms()) {
+		for (DGeom g : space.getGeoms()) {
 			if (geom == g) {
 				return true;
 			}

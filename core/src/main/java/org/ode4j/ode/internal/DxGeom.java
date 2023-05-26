@@ -1441,7 +1441,7 @@ public abstract class DxGeom extends DBase implements DGeom {
 	 * and moving it to the front of the space's list. all the parents of a
 	 * dirty geom also become dirty.
 	 */ 
-//	void dGeomMoved (dxGeom geom)
+	//	void dGeomMoved (dxGeom geom)
 	void dGeomMoved ()
 	{
 		// if geom is offset, mark it as needing a calculate

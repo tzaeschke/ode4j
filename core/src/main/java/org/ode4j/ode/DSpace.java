@@ -54,7 +54,7 @@ public interface DSpace extends DGeom {
 	 */
 	@Deprecated
 	DGeom getGeom (int i);
-	Iterable<DxGeom> getGeoms();
+	Iterable<DGeom> getGeoms();
 
 	/** 
 	 * This is equivalent to OdeHelper.spaceCollide(...) 

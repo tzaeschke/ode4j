@@ -175,7 +175,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 	{
 		// compute the AABBs of all dirty geoms, and clear the dirty flags
 		lock_count++;
-		for (DxGeom g : getGeoms()) {
+		for (DxGeom g : getGeomsDx()) {
 			//if ((g._gflags & GEOM_DIRTY)==0) break;
 			if (!g.hasFlagDirty()) break;
 			if (g instanceof DxSpace) {
@@ -213,7 +213,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		ArrayList<dxAABB> hash_boxes = new ArrayList<dxAABB>();	// list of AABBs in hash table
 		ArrayList<dxAABB> big_boxes = new ArrayList<dxAABB>();	// list of AABBs too big for hash table
 		maxlevel = global_minlevel - 1;
-		for (DxGeom geom : getGeoms()) {
+		for (DxGeom geom : getGeomsDx()) {
 			if (!GEOM_ENABLED(geom)){
 				continue;
 			}
@@ -401,7 +401,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		geom.recomputeAABB();
 
 		// intersect bounding boxes
-		for (DxGeom g : getGeoms()) {
+		for (DxGeom g : getGeomsDx()) {
 			if (GEOM_ENABLED(g)) collideAABBs (g,geom,data,callback);
 		}
 
