@@ -24,7 +24,6 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-import org.ode4j.ode.internal.DxGeom;
 
 /**
  * collision space.

@@ -3,7 +3,6 @@ package org.ode4j.ode;
 import org.junit.Before;
 import org.junit.Test;
 import org.ode4j.ode.DGeom.DNearCallback;
-import org.ode4j.ode.internal.DxGeom;
 
 import static org.junit.Assert.*;
 
@@ -81,12 +80,7 @@ public class Test_DxSpace {
 		assertTrue(contains(box));
 		assertTrue(contains(capsule));
 		final AtomicInteger collisions = new AtomicInteger(0);
-		space.collide(null, new DNearCallback() {
-			@Override
-			public void call(Object data, DGeom o1, DGeom o2) {
-				collisions.incrementAndGet();
-			}
-		});
+		space.collide(null, (data, o1, o2) -> collisions.incrementAndGet());
 		assertEquals(3, collisions.get());
 		space.remove(box);
 		assertEquals(2, space.getNumGeoms());
@@ -94,12 +88,7 @@ public class Test_DxSpace {
 		assertFalse(contains(box));
 		assertTrue(contains(capsule));
 		collisions.set(0);
-		space.collide(null, new DNearCallback() {
-			@Override
-			public void call(Object data, DGeom o1, DGeom o2) {
-				collisions.incrementAndGet();
-			}
-		});
+		space.collide(null, (data, o1, o2) -> collisions.incrementAndGet());
 		assertEquals(1, collisions.get());
 		capsule.destroy();
 		assertEquals(1, space.getNumGeoms());
@@ -107,12 +96,7 @@ public class Test_DxSpace {
 		assertFalse(contains(box));
 		assertFalse(contains(capsule));
 		collisions.set(0);
-		space.collide(null, new DNearCallback() {
-			@Override
-			public void call(Object data, DGeom o1, DGeom o2) {
-				collisions.incrementAndGet();
-			}
-		});
+		space.collide(null, (data, o1, o2) -> collisions.incrementAndGet());
 		assertEquals(0, collisions.get());
 		space.destroy();
 		assertEquals(0, space.getNumGeoms());

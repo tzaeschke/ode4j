@@ -248,12 +248,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 						DataCallback dc = new DataCallback(data, callback);
 						//for (dxGeom g = s1._first; g != null; g=g.getNext()) {
 						for (DxGeom g: s1.getGeomsDx()) {
-							s2.collide2 (dc,g,new DNearCallback() {
-								@Override
-								public void call(Object data, DGeom g1,
-										DGeom g2) {
-									swap_callback(data, g1, g2);
-								}});
+							s2.collide2 (dc,g, DxSpace::swap_callback);
 						}
 					}
 					else {
@@ -273,12 +268,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 			if (s2 != null) {
 				// g1 is a geom, g2 is a space
 				DataCallback dc = new DataCallback(data, callback);
-				s2.collide2 (dc,g1,new DNearCallback() {
-					@Override
-					public void call(Object data, DGeom g1,
-							DGeom g2) {
-						swap_callback(data, (DxGeom)g1, (DxGeom)g2);
-					}}
+				s2.collide2 (dc,g1, DxSpace::swap_callback
 				);
 			}
 			else {

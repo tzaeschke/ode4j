@@ -70,7 +70,7 @@ public class DxSimpleSpace extends DxSpace implements DSimpleSpace {
 			// dIASSERT((g->gflags & GEOM_AABB_BAD) == 0);
 			// g->gflags &= ~GEOM_DIRTY;
 			dIASSERT(!g.hasFlagAabbBad());
-			g.unsetFlagDirty();;
+			g.unsetFlagDirty();
 		}
 		lock_count--;
 	}
