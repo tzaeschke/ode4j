@@ -454,23 +454,24 @@
 								</configuration>
 							</execution>
 
-							<execution>
-								<id>base-compile</id>
-								<goals>
-									<goal>compile</goal>
-								</goals>
+<!--							TODO TZ: WHat is this good for? Remove in 0.6.0 ....?-->
+<!--							<execution>-->
+<!--								<id>base-compile</id>-->
+<!--								<goals>-->
+<!--									<goal>compile</goal>-->
+<!--								</goals>-->
 
-								<!-- Recompile everything for the target VM except the
-										 module-info.java -->
-								<configuration>
-									<excludes>
-										<exclude>module-info.java</exclude>
-									</excludes>
-									<release>8</release>
-									<source>1.8</source>
-									<target>1.8</target>
-								</configuration>
-							</execution>
+<!--								&lt;!&ndash; Recompile everything for the target VM except the-->
+<!--										 module-info.java &ndash;&gt;-->
+<!--								<configuration>-->
+<!--									<excludes>-->
+<!--										<exclude>module-info.java</exclude>-->
+<!--									</excludes>-->
+<!--									<release>8</release>-->
+<!--									<source>1.8</source>-->
+<!--									<target>1.8</target>-->
+<!--								</configuration>-->
+<!--							</execution>-->
 						</executions>
 					</plugin>
 				</plugins>
