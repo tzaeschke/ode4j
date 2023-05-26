@@ -29,19 +29,6 @@ Things left out for 0.5.0 (missing from 0.15.1 vs 0.16.2)
   - objects.h/.cpp  /  obstack.h/.cpp
 
 
-Fix
-===
-- TODO remove deprecations for 0.6.0
-- Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
-  -> Remove GIM_BUFFER_ARRAY_POINTER() -> avoit IntArr and ObjArray allocation + usage!!!!!
-  -> e.g. in gim_trimesh_update_aabbset()
-- Move to Google Java Code Style
-- Document: Gimpact works best with (i.e. does not scale above ?) room size <= MAX_AABB_SIZE=1638.0
-  -> Why 1638? Can we improve this?
-- reduce cpp usage?!?!
-
-
-
 Java Version
 ============
 - We should aim for Oreo or later (Android 8.0, released 2017, API Level 26: https://apilevels.com/)
@@ -62,12 +49,6 @@ Java Version
 March 2023:
 General cleanup:
 - update DVector3 safeNormalize to use max() and then compare to 0. ALso see: https://github.com/JOML-CI/JOML/issues/66
-- Create separate distribution (maven jar) with modules? -> Check how modul-projects have trouble with including
-  non-module projects...
-  -> https://www.baeldung.com/java-9-modularity
-  -> https://stackoverflow.com/questions/40490520/what-do-i-need-to-build-jdk-9-project-with-non-modular-dependencies-using-maven
-- reformat everything? At least indentation?
-- Consider porting stuff in "contrib"
 
 
 July 6th 2009:
