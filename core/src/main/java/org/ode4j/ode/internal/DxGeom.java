@@ -1863,8 +1863,8 @@ public abstract class DxGeom extends DBase implements DGeom {
 	public void setQuaternion (DQuaternionC quat)
 	{ dGeomSetQuaternion (quat); }
 
-//	public int isSpace()
-//	{ return dGeomIsSpace (_id); }
+	public boolean isSpace()
+	{ return this instanceof DSpace; }
 
 	@Override
 	public void setCategoryBits (long bits)//unsigned long bits)
