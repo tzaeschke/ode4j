@@ -162,6 +162,7 @@ public abstract class ApiCppJoint extends ApiCppOther {
 	 * @param w world
 	 * @param g set to 0 to allocate the joint normally.
 	 * If it is nonzero the joint is allocated in the given joint group.
+	 * @return joint
 	 */
 	//ODE_API
 	public static DDoubleBallJoint dJointCreateDBall (DWorld w, DJointGroup g) {
@@ -604,6 +605,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * Set the target distance for the double ball joint.
+	 * @param j j
+	 * @param distance distance
 	 */
 	//ODE_API
 	public static void dJointSetDBallDistance (DDoubleBallJoint j, double distance) {
@@ -1557,6 +1560,8 @@ public abstract class ApiCppJoint extends ApiCppOther {
 
 	/**
 	 * Get the target distance from double ball joint.
+	 * @param j joint
+	 * @return distance
 	 */
 	//ODE_API
 	public static double dJointGetDBallDistance (DDoubleBallJoint j) {

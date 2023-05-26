@@ -691,16 +691,19 @@ public abstract class OdeHelper {
 	 * @param polygons An array of indices to the points of each polygon, it should be the
 	 * 	 number of vertices followed by that amount of indices to "points" in
 	 * 	 counter clockwise order
+	 * @return new DConvex instance
 	 */
 	public static DConvex createConvex(double[] planes, double[] points, int[] polygons) {
 		return DxConvex.dCreateConvex(null, planes, points, polygons);
 	}
 	/**
+	 * @param space the space instance
 	 * @param planes An array of planes in the form: normal X, normal Y, normal Z,Distance
 	 * @param points An array of points X,Y,Z
 	 * @param polygons An array of indices to the points of each polygon, it should be the
 	 * 	 number of vertices followed by that amount of indices to "points" in
 	 * 	 counter clockwise order
+	 * @return new DConvex instance
 	 */
 	public static DConvex createConvex(DSpace space, double[] planes, double[] points, int[] polygons) {
 		return DxConvex.dCreateConvex((DxSpace)space, planes, points, polygons);
@@ -714,12 +717,14 @@ public abstract class OdeHelper {
 	 * @param polygons An array of indices to the points of each polygon, it should be the
 	 * 	 number of vertices followed by that amount of indices to "points" in
 	 * 	 counter clockwise order
+	 * @return new DConvex instance
 	 */
 	public static DConvex createConvex(double[] planes,
 									   int planeCount, double[] points, int pointCount, int[] polygons) {
 		return DxConvex.dCreateConvex(null, planes, planeCount, points, pointCount, polygons);
 	}
 	/**
+	 * @param space The space instance
 	 * @param planes An array of planes in the form: normal X, normal Y, normal Z,Distance
 	 * @param planeCount Amount of planes in `planes`
 	 * @param points An array of points X,Y,Z
@@ -727,6 +732,7 @@ public abstract class OdeHelper {
 	 * @param polygons An array of indices to the points of each polygon, it should be the
 	 * 	 number of vertices followed by that amount of indices to "points" in
 	 * 	 counter clockwise order
+	 * @return new DConvex instance
 	 */
 	public static DConvex createConvex(DSpace space, double[] planes,
 									   int planeCount, double[] points, int pointCount, int[] polygons) {
@@ -1139,7 +1145,7 @@ public abstract class OdeHelper {
 	 * @param data user data
 	 * @param callback callback (can be NULL)
 	 *                 NOTE: The callback is only called for Box, Capsule, Ray, Sphere and TriMesh. See issue #76.
-	 * // @param arrayCallback array callback (can be NULL) --> Not supported in GIMPACT.
+	 * // @param arrayCallback array callback (can be NULL) ---- Not supported in GIMPACT.
 	 * @param rayCallback ray callback (can be NULL)
 	 * @return trimesh
 	 */
@@ -1155,7 +1161,7 @@ public abstract class OdeHelper {
 	 * @param data user data
 	 * @param callback callback (can be NULL)
 	 *                 NOTE: The callback is only called for Box, Capsule, Ray, Sphere and TriMesh. See issue #76.
-	 * @param arrayCallback array callback (can be NULL) --> Not supported in GIMPACT.
+	 * @param arrayCallback array callback (can be NULL) ---- Not supported in GIMPACT.
 	 * @param rayCallback ray callback (can be NULL)
 	 * @return trimesh
 	 */
