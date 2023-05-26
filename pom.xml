@@ -222,6 +222,7 @@
 					<configuration>
 						<printSummary>true</printSummary>
 						<skipTests>false</skipTests>
+						<argLine>-DdDEBUG=true</argLine>
 						<includes>
 							<!-- include ALL tests -->
 							<include>**/*.java</include>
@@ -326,14 +327,16 @@
 				This is overridden when running on JDK 9 and above (see the
 				on-jdk-9-plus profile).
 			-->
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<compilerArgument>-Xlint</compilerArgument>
-				</configuration>
-			</plugin>
+<!--			<plugin>-->
+<!--				<artifactId>maven-compiler-plugin</artifactId>-->
+<!--				<configuration>-->
+<!--					<source>1.8</source>-->
+<!--					<target>1.8</target>-->
+<!--					<compilerArgs>-->
+<!--						<arg>-Xlint</arg>-->
+<!--					</compilerArgs>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 
 			<!--
 			  Produce an OSGi manifest
@@ -355,6 +358,33 @@
 	</build>
 
 	<profiles>
+
+		<profile>
+		<id>on-jdk-8</id>
+		<activation>
+			<jdk>8</jdk>
+		</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<executions>
+							<execution>
+							<id>default-compile</id>
+							<configuration>
+								<source>1.8</source>
+								<target>1.8</target>
+								<compilerArgs>
+									<arg>-Xlint</arg>
+									<arg>-Werror</arg>
+								</compilerArgs>
+							</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 		<!--
 			A profile activated when the building JDK is >= JDK 9.

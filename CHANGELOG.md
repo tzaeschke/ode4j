@@ -32,7 +32,8 @@
 - CI: Fail build on warning?!
 
 ## 0.5.0 (unreleased)
-
+- Fixed Java module warning; added `-Werror`; new default `OdeConfig.dDEBUG = false`
+  [#122](https://github.com/tzaeschke/ode4j/pull/122)
 - BREAKING CHANGE: DSpace.getGeoms() not returns `DGeom` instead of `DxGeom`.
   [#121](https://github.com/tzaeschke/ode4j/pull/121)
 - DGeom.isSpace() [#120](https://github.com/tzaeschke/ode4j/pull/120)

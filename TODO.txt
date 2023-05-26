@@ -9,10 +9,12 @@ Ask
 
 Before release:
 ===============
-- Disable DEBUG?
-mvn animal-sniffer:check
-mvn versions:display-dependency-updates
-mvn versions:display-plugin-updates
+- Before release: Disable DEBUG
+- mvn animal-sniffer:check
+- mvn versions:display-dependency-updates
+- mvn versions:display-plugin-updates
+- Release
+- After release enable DEBUG
 
 
 Things left out for 0.5.0 (missing from 0.15.1 vs 0.16.2)

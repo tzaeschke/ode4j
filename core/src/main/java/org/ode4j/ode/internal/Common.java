@@ -27,6 +27,7 @@ package org.ode4j.ode.internal;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DWorld;
+import org.ode4j.ode.OdeConfig;
 import org.ode4j.ode.OdeConstants;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
@@ -57,7 +58,7 @@ public class Common extends OdeConstants {
 	 *   DEBUGMSG just prints out a message
 	 */
 
-	public static final boolean dNODEBUG = false;
+	public static final boolean dNODEBUG = !OdeConfig.dDEBUG;
 
 
 	public static final boolean dDOUBLE = true;
