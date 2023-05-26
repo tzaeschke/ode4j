@@ -75,7 +75,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		Node next;		// next node in hash table collision list, 0 if none
 		int x,y,z;		// cell position in space, discretized to cell size
 		dxAABB aabb;		// axis aligned bounding box that intersects this cell
-	};
+	}
 
 
 	// return the `level' of an AABB. the AABB will be put into cells at this
@@ -175,7 +175,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 	{
 		// compute the AABBs of all dirty geoms, and clear the dirty flags
 		lock_count++;
-		for (DxGeom g : getGeoms()) {
+		for (DxGeom g : getGeomsDx()) {
 			//if ((g._gflags & GEOM_DIRTY)==0) break;
 			if (!g.hasFlagDirty()) break;
 			if (g instanceof DxSpace) {
@@ -186,7 +186,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 			// dIASSERT((g->gflags & GEOM_AABB_BAD) == 0);
 			// g->gflags &= ~GEOM_DIRTY;
 			dIASSERT(!g.hasFlagAabbBad());
-			g.unsetFlagDirty();;
+			g.unsetFlagDirty();
 		}
 		lock_count--;
 	}
@@ -210,10 +210,10 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		// that list at the end. for AABBs that are not too big, record the maximum
 		// level that we need.
 
-		ArrayList<dxAABB> hash_boxes = new ArrayList<dxAABB>();	// list of AABBs in hash table
-		ArrayList<dxAABB> big_boxes = new ArrayList<dxAABB>();	// list of AABBs too big for hash table
+		ArrayList<dxAABB> hash_boxes = new ArrayList<>();	// list of AABBs in hash table
+		ArrayList<dxAABB> big_boxes = new ArrayList<>();	// list of AABBs too big for hash table
 		maxlevel = global_minlevel - 1;
-		for (DxGeom geom : getGeoms()) {
+		for (DxGeom geom : getGeomsDx()) {
 			if (!GEOM_ENABLED(geom)){
 				continue;
 			}
@@ -401,7 +401,7 @@ public class DxHashSpace extends DxSpace implements DHashSpace {
 		geom.recomputeAABB();
 
 		// intersect bounding boxes
-		for (DxGeom g : getGeoms()) {
+		for (DxGeom g : getGeomsDx()) {
 			if (GEOM_ENABLED(g)) collideAABBs (g,geom,data,callback);
 		}
 

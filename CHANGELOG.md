@@ -1,7 +1,8 @@
 # Changelog
 
-## Considered for 0.6.0
+## Considered for upcoming 0.6.0
 
+- Make Java 9 the default.
 - remove deprecations for 0.6.0
 - Remove ccp4j
 - Bug: Dropping first box on Heightfield is wrong.
@@ -32,6 +33,8 @@
 
 ## 0.5.0 (unreleased)
 
+- BREAKING CHANGE: DSpace.getGeoms() not returns `DGeom` instead of `DxGeom`.
+  [#121](https://github.com/tzaeschke/ode4j/pull/121)
 - DGeom.isSpace() [#120](https://github.com/tzaeschke/ode4j/pull/120)
 - CHANGELOG.txt -> .md and added overview to README.md [#119](https://github.com/tzaeschke/ode4j/pull/119)
 - Cumulative fix:

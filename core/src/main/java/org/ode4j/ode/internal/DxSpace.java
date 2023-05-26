@@ -67,9 +67,8 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 
 	protected int count;			// number of geoms in this space
 	//	  dxGeom *first;		// first geom in list
-//	dxGeom first;		// first geom in list
-//	protected final Ref<dxGeom> first = 
-//		new Ref<dxGeom>();		// first geom in list
+	//	dxGeom first;		// first geom in list
+	//	protected final Ref<dxGeom> first = new Ref<dxGeom>();		// first geom in list
 	protected DxGeom _first = null;		// first geom in list
 	boolean cleanup;			// cleanup mode, 1=destroy geoms on exit
 	int sublevel;         // space sublevel (used in dSpaceCollide2). NOT TRACKED AUTOMATICALLY!!!
@@ -171,12 +170,11 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	/** 
 	 * @param i id
 	 * @return geometry object
-	 * @deprecated 2016-01-17 
+	 * @deprecated 2016-01-17 / TODO remove in 0.6.0
 	 */
 	@Deprecated
 	public DxGeom dSpaceGetGeom (int i)
 	{
-		//TODO remove this cast if possible
 		return (DxGeom) getGeom (i);
 	}
 
@@ -206,7 +204,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	}
 
 	// Invokes the callback with arguments swapped
-	static void swap_callback(Object data, DxGeom g1, DxGeom g2)
+	static void swap_callback(Object data, DGeom g1, DGeom g2)
 	{
 		DataCallback dc = (DataCallback)data;
 		dc.callback.call(dc.data, g2, g1);
@@ -249,18 +247,13 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 					if (s1.count < s2.count) {
 						DataCallback dc = new DataCallback(data, callback);
 						//for (dxGeom g = s1._first; g != null; g=g.getNext()) {
-						for (DxGeom g: s1.getGeoms()) {
-							s2.collide2 (dc,g,new DNearCallback() {
-								@Override
-								public void call(Object data, DGeom g1,
-										DGeom g2) {
-									swap_callback(data, (DxGeom)g1, (DxGeom)g2);
-								}});
+						for (DxGeom g: s1.getGeomsDx()) {
+							s2.collide2 (dc,g, DxSpace::swap_callback);
 						}
 					}
 					else {
 						//for (dxGeom g = s2._first; g != null; g=g.getNext()) {
-						for (DxGeom g: s2.getGeoms()) {
+						for (DxGeom g: s2.getGeomsDx()) {
 							s1.collide2 (data,g,callback);
 						}
 					}
@@ -275,12 +268,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 			if (s2 != null) {
 				// g1 is a geom, g2 is a space
 				DataCallback dc = new DataCallback(data, callback);
-				s2.collide2 (dc,g1,new DNearCallback() {
-					@Override
-					public void call(Object data, DGeom g1,
-							DGeom g2) {
-						swap_callback(data, (DxGeom)g1, (DxGeom)g2);
-					}}
+				s2.collide2 (dc,g1, DxSpace::swap_callback
 				);
 			}
 			else {
@@ -420,7 +408,7 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 
 	// the dirty geoms are numbered 0..k, the clean geoms are numbered k+1..count-1
 
-	/** @deprecated 2016-01-17 */
+	/** @deprecated 2016-01-17  - to be removed in 0.6.0 */
 	@Deprecated
 	@Override
 	public DGeom getGeom (int i)
@@ -443,11 +431,11 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 	}
 
 
-	//TODO geom != this?
 	void add (DxGeom geom)
 	{
 		CHECK_NOT_LOCKED ();
 		//dAASSERT (geom);
+		dUASSERT(this != geom, "Cannot add space to itself" );
 		dUASSERT (geom.parent_space == null && geom.getNext() == null,
 				"geom is already in a space");
 
@@ -459,15 +447,14 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 		// enumerator has been invalidated
 		current_geom = null;
 
-		//TZ TODO why (this) and not geom??
 		dGeomMoved ();
 	}
 
-	//TODO geom != this?
 	void remove (DxGeom geom)
 	{
 		CHECK_NOT_LOCKED ();
 		//dAASSERT (geom);
+		dUASSERT(this != geom, "Cannot remove space from itself" );
 		dUASSERT (geom.parent_space == this,"object is not in this space");
 
 		// remove
@@ -485,7 +472,6 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 
 		// the bounding box of this space (and that of all the parents) may have
 		// changed as a consequence of the removal.
-		//TZ TODO why this and not geom??
 		dGeomMoved ();
 	}
 
@@ -532,32 +518,51 @@ public abstract class DxSpace extends DxGeom implements DSpace {
 //	public dGeom getGeom (int i)
 //	{ return dSpaceGetGeom (id(),i); }
 
-	@Override
-	public Iterable<DxGeom> getGeoms() {
-		return new Iterable<DxGeom>() {
+	public Iterable<DxGeom> getGeomsDx() {
+		return () -> new Iterator<DxGeom>() {
+
+			private DxGeom current = _first;
+
 			@Override
-			public Iterator<DxGeom> iterator() {
-				return new Iterator<DxGeom>() {
+			public boolean hasNext() {
+				return current != null;
+			}
 
-					private DxGeom current = _first;
+			@Override
+			public DxGeom next() {
+				DxGeom g = current;
+				current = current.getNext();
+				return g;
+			}
 
-					@Override
-					public boolean hasNext() {
-						return current != null;
-					}
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
+			}
+		};
+	}
 
-					@Override
-					public DxGeom next() {
-						DxGeom g = current;
-						current = current.getNext();
-						return g;
-					}
+	@Override
+	public Iterable<DGeom> getGeoms() {
+		return () -> new Iterator<DGeom>() {
 
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException("remove");
-					}
-				};
+			private DxGeom current = _first;
+
+			@Override
+			public boolean hasNext() {
+				return current != null;
+			}
+
+			@Override
+			public DGeom next() {
+				DxGeom g = current;
+				current = current.getNext();
+				return g;
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException("remove");
 			}
 		};
 	}
