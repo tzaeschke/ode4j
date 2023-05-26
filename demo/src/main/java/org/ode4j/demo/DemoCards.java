@@ -37,7 +37,6 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
-import org.ode4j.ode.DGeom.DNearCallback;
 
 
 /**
