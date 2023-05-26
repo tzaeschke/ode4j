@@ -28,6 +28,9 @@ public class CCDCustomVec3 {
 
     /**
      * d = v + w
+     * @param d d
+     * @param v v
+     * @param w w
      */
     public static void ccdVec3Add2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w) {
 //#ifndef dLIBCCD_USE_SYSTEM
@@ -42,6 +45,9 @@ public class CCDCustomVec3 {
 
     /**
      * d = s * k;
+     * @param d d
+     * @param s s
+     * @param k k
      */
     public static void ccdVec3CopyScaled(ccd_vec3_t d, final ccd_vec3_t s, double k) {
 //#ifndef dLIBCCD_USE_SYSTEM
@@ -56,6 +62,10 @@ public class CCDCustomVec3 {
 
     /**
      * d = v + s * k;
+     * @param d d
+     * @param v v
+     * @param s s
+     * @param k k
      */
     public static void ccdVec3AddScaled(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t s, double k) {
 //#ifndef dLIBCCD_USE_SYSTEM
@@ -71,6 +81,8 @@ public class CCDCustomVec3 {
 
     /**
      * Normalizes given vector to unit length.
+     * @param d d
+     * @return 0 for success or -1 for error
      */
     public static int ccdVec3SafeNormalize(ccd_vec3_t d) {
         int result = -1;

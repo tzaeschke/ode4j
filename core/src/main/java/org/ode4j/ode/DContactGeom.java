@@ -60,6 +60,7 @@ public class DContactGeom {
 
 	/**
 	 * pos[3] is assigned in several places but never ysed. This is a dummy functioon to track this fact.
+	 * @param d d
 	 */
 	public void pos3(double d) {
 		// nothing
@@ -67,6 +68,7 @@ public class DContactGeom {
 
 	/**
 	 * normal[3] is assigned in several places but never ysed. This is a dummy functioon to track this fact.
+	 * @param d d
 	 */
 	public void normal3(double d) {
 		// nothing

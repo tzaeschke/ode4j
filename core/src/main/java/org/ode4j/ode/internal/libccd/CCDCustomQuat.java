@@ -24,6 +24,9 @@ public class CCDCustomQuat {
 
     /**
      * Rotate vector s by quaternion q and put result into d.
+     * @param d d
+     * @param s s
+     * @param q q
      */
     // _ccd_inline void ccdQuatRotVec2(ccd_vec3_t *d, const ccd_vec3_t *s, const ccd_quat_t *q);
     public static void ccdQuatRotVec2(ccd_vec3_t d, final ccd_vec3_t s, final ccd_quat_t q) {
