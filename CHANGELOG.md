@@ -21,18 +21,19 @@
   -> https://www.baeldung.com/java-9-modularity
   -> https://stackoverflow.com/questions/40490520/what-do-i-need-to-build-jdk-9-project-with-non-modular-dependencies-using-maven
 - Consider porting stuff in "contrib"
+- Fix maven warnings:
+  - [WARNING] bootstrap class path not set in conjunction with -source 8
+    WHen using JDK 9 or later
 
 --> See TODO.txt
 
 ## TODO for 0.5.0
 
-- Fix maven warnings:
-    - [WARNING] bootstrap class path not set in conjunction with -source 8
-      when using: mvn clean install -P on-jdk-9-plus
-- CI: Fail build on warning?!
+- Nothing?
 
 ## 0.5.0 (unreleased)
-
+- Fixed Java module warning; added `-Werror`; new default `OdeConfig.dDEBUG = false`
+  [#122](https://github.com/tzaeschke/ode4j/pull/122)
 - BREAKING CHANGE: DSpace.getGeoms() not returns `DGeom` instead of `DxGeom`.
   [#121](https://github.com/tzaeschke/ode4j/pull/121)
 - DGeom.isSpace() [#120](https://github.com/tzaeschke/ode4j/pull/120)

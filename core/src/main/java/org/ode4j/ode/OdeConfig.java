@@ -32,6 +32,7 @@ package org.ode4j.ode;
  */
 public class OdeConfig {
 
+	public static boolean dDEBUG = Boolean.parseBoolean(System.getProperty("dDEBUG", "false"));
 	private static final boolean dDOUBLE = true;
 	private static boolean dLIBCCD = true;
 	

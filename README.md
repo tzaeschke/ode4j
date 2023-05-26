@@ -95,8 +95,9 @@ plus some original features:
 
 ## General recommendations
 
-* Please use `World.quickStep(...)` instead of `World.step()`. The latter is slower and appears to be less stable.
-* Make sure that `Common.dNODEBUG = true` for best performance.
+* Please use `DWorld.quickStep(...)` instead of `DWorld.step()`. The latter is slower and appears to be less stable.
+* Set `OdeConfig.dDEBUG = true` for debugging and `= false` for best performance.
+* When compiling with JDK 9 or later, `mvn` will automatically use the`on-jdk-9-plus` profile and create modules.
 
 ## ODE vs od4j
 
