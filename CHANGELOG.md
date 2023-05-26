@@ -32,6 +32,8 @@
 - Nothing?
 
 ## 0.5.0 (unreleased)
+- Improved Android compatibility
+  [#123](https://github.com/tzaeschke/ode4j/pull/123)
 - Avoid garbage collection of DContact. This is now implemented without pooling but with reusing
   DContact instances in place.[#35](https://github.com/tzaeschke/ode4j/issues/35)
 - Fixed Java module warning; added `-Werror`; new default `OdeConfig.dDEBUG = false`

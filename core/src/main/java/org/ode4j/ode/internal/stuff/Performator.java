@@ -24,6 +24,7 @@ package org.ode4j.ode.internal.stuff;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -31,14 +32,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 final class Performator {
 
-    private static final ConcurrentHashMap<String, Entry> data = 
-        new ConcurrentHashMap<String, Performator.Entry>();
+    private static final ConcurrentHashMap<String, Entry> data = new ConcurrentHashMap<>();
 
     /**
      * Start time measurement.
      * @param key key
      */
-    public static final void begin(String key) {
+    public static void begin(String key) {
         Entry e = data.get(key);
         //funny construct for theoretical thread safety
         if (e == null) {
@@ -53,16 +53,19 @@ final class Performator {
      * Stop time measurement.
      * @param key key
      */
-    public static final void end(String key) {
+    public static void end(String key) {
         data.get(key).end();
     }
 
     /**
      * Print results.
      */
-    public static final void print() {
-        List<String> keys = new LinkedList<String>();
-        keys.addAll(data.keySet());
+    public static void print() {
+        List<String> keys = new LinkedList<>();
+        // We do not use addAll() because of Android incompatibility
+        for (Map.Entry<String, Entry> e : data.entrySet()) {
+            keys.add(e.getKey());
+        }
         Collections.sort(keys);
         for (String key: keys) {
             System.out.println(data.get(key).print() + " :: " + key);
@@ -70,35 +73,35 @@ final class Performator {
     }
 
     private static final class Entry {
-        long _total = 0;
-        long _nCalls = 0;
+        long total = 0;
+        long nCalls = 0;
 
         /**
          * @return Returns String representation
          */
-        public final String print() {
-            StringBuffer b = new StringBuffer();
-            b.append("Calls: " + _nCalls);
+        public String print() {
+            StringBuilder b = new StringBuilder();
+            b.append("Calls: ").append(nCalls);
             while (b.length() < 25) b.append(' ');
-            b.append("Time [ms]: " + _total);
+            b.append("Time [ms]: ").append(total);
             while (b.length() < 50) b.append(' ');
-            b.append("T/C [ms]: " + _total/(double)_nCalls);
+            b.append("T/C [ms]: ").append(total / (double) nCalls);
             return b.toString();
         }
 
         /**
          * 
          */
-        public final void end() {
-            _total += System.currentTimeMillis();
-            _nCalls++;
+        public void end() {
+            total += System.currentTimeMillis();
+            nCalls++;
         }
 
         /**
          * 
          */
-        public final void begin() {
-            _total -= System.currentTimeMillis();
+        public void begin() {
+            total -= System.currentTimeMillis();
         }
 
     }
@@ -106,7 +109,7 @@ final class Performator {
     /**
      * 
      */
-    public static final void reset() {
+    public static void reset() {
         data.clear();
     }
 }
