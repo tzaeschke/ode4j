@@ -224,9 +224,11 @@ public class DLCP {
 	//#define ATYPE dReal *
 	//#define AROW(i) (A+(i)*nskip)
 
-    //TODO 
-    //TODO This was true!!! (TZ)
 	// see options above (TZ)
+	// ROWPTRS=true turns m_A into a double[n][x] i.o. double[n*x]. This is technically difficult in Java, essentially
+	// requiring a separate implementation.
+	// The benefit is also not clear, but there is definitely a downside to haveing an array of arrays.
+	// TODO maybe reconsider at a later point.
     //protected static final boolean ROWPTRS = true;
     protected static final boolean ROWPTRS = false;
 
