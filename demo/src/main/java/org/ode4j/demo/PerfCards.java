@@ -29,7 +29,6 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
-import org.ode4j.ode.DGeom.DNearCallback;
 
 import java.util.ArrayList;
 
@@ -74,10 +73,10 @@ public class PerfCards extends dsFunctions {
 			body.destroy();
 			geom.destroy();
 		}
-	};
+	}
 
 
-	private final ArrayList<Card> cards = new ArrayList<Card>();
+	private final ArrayList<Card> cards = new ArrayList<>();
 
 	private int getncards(int levels)
 	{
@@ -154,13 +153,6 @@ public class PerfCards extends dsFunctions {
 		System.out.println("   =     - one more level");
 	}
 
-	private static DNearCallback nearCallback = new DNearCallback() {
-		@Override
-		public void call(Object data, DGeom o1, DGeom o2) {
-			nearCallback(data, o1, o2);
-		}
-	};
-
 	private static final int MAX_CONTACTS = 8;
 		private static final DContactBuffer contacts = new DContactBuffer(MAX_CONTACTS);
 
@@ -205,7 +197,7 @@ public class PerfCards extends dsFunctions {
 	public void step(boolean pause)
 	{
 		if (!pause) {
-			space.collide(null, nearCallback);
+			space.collide(null, PerfCards::nearCallback);
 			world.quickStep(0.01);
 			contactgroup.empty();
 		}
