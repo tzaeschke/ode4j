@@ -1331,9 +1331,11 @@ public class OdeMath extends DRotation {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
-	 * <p>>
-	 * TZ: Plain lengthSquared() == 0 checking with scale(1/lenbgthSquared() is about 4x faster. But we leave the
+	 * <p>
+	 * TZ: Plain lengthSquared() == 0 checking with scale(1/lengthSquared() is about 4x faster. But we leave the
 	 *     safe version here.
+	 * @param a the vector to normalize
+	 * @return "true" if normalization succeeded
 	 */
 	public static boolean dxSafeNormalize3(DVector3 a) {
 		dAASSERT(a);
@@ -1711,6 +1713,7 @@ public class OdeMath extends DRotation {
 	 * Note: this operates on rows, not columns, because for rotations
 	 * both ways give equivalent results.
 	 * @param m m
+	 * @return "true" unconditionally
 	 */
 	public static boolean dxOrthogonalizeR(DMatrix3 m) {
 		boolean ret = false;

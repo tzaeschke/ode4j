@@ -200,6 +200,8 @@ public class CCDQuat {
 
 	/**
 	 * Rotate vector v by quaternion q.
+	 * @param v v
+	 * @param q q
 	 */
 	public static void ccdQuatRotVec(ccd_vec3_t v, final ccd_quat_t q) {
 		// original version: 31 mul + 21 add

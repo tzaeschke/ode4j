@@ -250,6 +250,9 @@ public class CCDVec3 {
 
 	/**
 	 * d = v - w
+	 * @param d d
+	 * @param v v
+	 * @param w w
 	 */
 	public static void ccdVec3Sub2(ccd_vec3_t d, final ccd_vec3_t v, final ccd_vec3_t w)
 	{
@@ -272,6 +275,7 @@ public class CCDVec3 {
 
 	/**
 	 * Normalizes given vector to unit length.
+	 * @param d d
 	 */
 	public static void ccdVec3Normalize(ccd_vec3_t d)
 	{

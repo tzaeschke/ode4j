@@ -250,6 +250,7 @@ public class DVector6 {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
+	 * @return This vector.
 	 */
 	public DVector6 normalize()	{
 		if (!safeNormalize6()) throw new IllegalStateException(

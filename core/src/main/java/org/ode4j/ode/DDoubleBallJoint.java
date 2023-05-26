@@ -77,6 +77,7 @@ public interface DDoubleBallJoint extends DJoint {
 
 	/**
 	 * Set the target distance for the double ball joint.
+	 * @param distance distance
 	 */
 	void setDistance(double distance);
 

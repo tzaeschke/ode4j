@@ -398,6 +398,7 @@ public class DVector3 implements DVector3C {
 	 * containing the smallest representable numbers.
 	 * <p>
 	 * This method throws an IllegalArgumentException if no normal can be determined.
+	 * @return This vector.
 	 */
 	public final DVector3 normalize() {
 		OdeMath.dNormalize3(this);
@@ -423,7 +424,7 @@ public class DVector3 implements DVector3C {
 	 * v.equals(a).
 	 * @param a other vector
 	 * @param eps maximum allowed difference per value
-	 * @return quality
+	 * @return equality
 	 */
 	@Override
 	public final boolean isEq(DVector3C a, double eps) {
@@ -462,6 +463,7 @@ public class DVector3 implements DVector3C {
 
 	/**
 	 * Set this vector equal to abs(this).
+	 * @return This vector.
 	 */
 	public final DVector3 eqAbs() {
 		set0( Math.abs(get0()));
@@ -663,6 +665,7 @@ public class DVector3 implements DVector3C {
 	 * Set this vector = b x c.
 	 * @param b b
 	 * @param c c
+	 * @return This vector.
 	 */
 	public final DVector3 eqCross(DVector3C b, DVector3C c) {
 		set0( b.get1()*c.get2() - b.get2()*c.get1() );
@@ -695,6 +698,7 @@ public class DVector3 implements DVector3C {
 	 * </pre> 
 	 * @param m matrix m
 	 * @param v2 vector v
+	 * @return This vector.
 	 */
 	public final DVector3 eqProd(DMatrix3C m, DVector3C v2) {
 	    set0( m.get00()*v2.get0()+  m.get01()*v2.get1()+  m.get02()*v2.get2() );

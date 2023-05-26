@@ -5,6 +5,8 @@
 - Make Java 9 the default.
 - remove deprecations for 0.6.0
 - Remove ccp4j
+- Look at DContactGeom pos3()/normal3()
+- dxOrthogonalizeR returns true unconditionally... verify with ODE!
 - Bug: Dropping first box on Heightfield is wrong.
   -> Cylinder is also often iffy, but that is the same in C++ -> e.g. 7. cylinder (java) or 11th (c++)!
 - What is the deal with DJoint PARAM vs PARAM_N?
@@ -32,6 +34,8 @@
 - Nothing?
 
 ## 0.5.0 (unreleased)
+- Improved Android compatibility
+  [#124](https://github.com/tzaeschke/ode4j/pull/124)
 - Improved Android compatibility
   [#123](https://github.com/tzaeschke/ode4j/pull/123)
 - Avoid garbage collection of DContact. This is now implemented without pooling but with reusing
