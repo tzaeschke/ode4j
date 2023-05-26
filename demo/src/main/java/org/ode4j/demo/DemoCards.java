@@ -37,7 +37,6 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
-import org.ode4j.ode.DGeom.DNearCallback;
 
 
 /**
@@ -82,10 +81,10 @@ public class DemoCards extends dsFunctions {
 		{
 			dsDrawBox(body.getPosition(), body.getRotation(), sides);
 		}
-	};
+	}
 
 
-	private final ArrayList<Card> cards = new ArrayList<Card>();
+	private final ArrayList<Card> cards = new ArrayList<>();
 
 	private int getncards(int levels)
 	{
@@ -162,13 +161,6 @@ public class DemoCards extends dsFunctions {
 		System.out.println("   =     - one more level");
 	}
 
-	private static DNearCallback nearCallback = new DNearCallback() {
-		@Override
-		public void call(Object data, DGeom o1, DGeom o2) {
-			nearCallback(data, o1, o2);
-		}
-	};
-	
 	private static void nearCallback (Object data, DGeom o1, DGeom o2)
 	{
 		// exit without doing anything if the two bodies are connected by a joint
@@ -194,7 +186,7 @@ public class DemoCards extends dsFunctions {
 	public void step(boolean pause)
 	{
 		if (!pause) {
-			space.collide(null, nearCallback);
+			space.collide(null, DemoCards::nearCallback);
 			world.quickStep(0.01);
 			contactgroup.empty();
 		}

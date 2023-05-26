@@ -44,7 +44,7 @@ import org.ode4j.ode.internal.DxWorld;
 public class DxJointContact extends DxJoint implements DContactJoint
 {
 	int the_m;   // number of rows computed by getInfo1
-	public DContact contact;
+	private final DContact contact = new DContact();
 
 	DxJointContact( DxWorld w ) 
 	//        dxJoint( w )
@@ -376,6 +376,10 @@ public class DxJointContact extends DxJoint implements DContactJoint
 	@Override
 	public DContact getContact() {
 		return contact;
+	}
+
+	public void setContact(DContact contact) {
+		this.contact.set(contact);
 	}
 }
 

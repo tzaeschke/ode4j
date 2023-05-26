@@ -105,7 +105,7 @@ public class OdeJointsFactoryImpl {
 	{
 		dAASSERT (w, c);
 		DxJointContact j = createJoint(new DxJointContact((DxWorld) w), group);
-		j.contact = c;
+		j.setContact(c);
 		return j;
 	}
 

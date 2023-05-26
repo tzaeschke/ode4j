@@ -35,7 +35,7 @@ public class DContact {
 	public final DContactGeom geom = new DContactGeom();
 	public final DVector3 fdir1 = new DVector3();
 
-	DContact() {
+	public DContact() {
 		// Nothing
 	}
 	
@@ -62,9 +62,57 @@ public class DContact {
 		public double slip2;
 
 		public DSurfaceParameters() {}
+
+		void nullify() {
+			 mode = 0;
+			 mu = 0;
+			 mu2 = 0;
+			 rho = 0;
+			 rho2 = 0;
+			 rhoN = 0;
+			 bounce = 0;
+			 bounce_vel = 0;
+			 soft_erp = 0;
+			 soft_cfm = 0;
+			 motion1 = 0;
+			 motion2 = 0;
+			 motionN = 0;
+			 slip1 = 0;
+			 slip2 = 0;
+		}
+
+		public void set(DSurfaceParameters other) {
+			mode = other.mode;
+			mu = other.mu;
+			mu2 = other.mu2;
+			rho = other.rho;
+			rho2 = other.rho2;
+			rhoN = other.rhoN;
+			bounce = other.bounce;
+			bounce_vel = other.bounce_vel;
+			soft_erp = other.soft_erp;
+			soft_cfm = other.soft_cfm;
+			motion1 = other.motion1;
+			motion2 = other.motion2;
+			motionN = other.motionN;
+			slip1 = other.slip1;
+			slip2 = other.slip2;
+		}
 	}
 
 	public DContactGeom getContactGeom() {
 		return geom;
+	}
+
+	public void nullify() {
+		surface.nullify();
+		geom.nullify();
+		fdir1.setZero();
+	}
+
+	public void set(DContact other) {
+		surface.set(other.surface);
+		geom.set(other.geom);
+		fdir1.set(other.fdir1);
 	}
 }
