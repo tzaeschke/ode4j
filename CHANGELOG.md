@@ -29,11 +29,11 @@
     - [WARNING] bootstrap class path not set in conjunction with -source 8
       when using: mvn clean install -P on-jdk-9-plus
 - CI: Fail build on warning?!
-- Return dxGeom in public API -> WHere is the TODO???
 
 ## 0.5.0 (unreleased)
 
-- CHANGELOG.txt -> .md and added overview to README.md [#118](https://github.com/tzaeschke/ode4j/pull/118)
+- DGeom.isSpace() [#120](https://github.com/tzaeschke/ode4j/pull/120)
+- CHANGELOG.txt -> .md and added overview to README.md [#119](https://github.com/tzaeschke/ode4j/pull/119)
 - Cumulative fix:
     * Fixed missing call to Trimesh callbacks. [#76](https://github.com/tzaeschke/ode4j/issues/76)
     * Deprecated DTriArrayCallback. It was never supported and is considered for removal in ODE.

@@ -316,12 +316,11 @@ public interface DGeom {
 	DAABBC getAABB ();
 
 	
-//	/**
-//	 * Determing if a geom is a space.
-//	 * @param geom the geom to query
-//	 * @return Non-zero if the geom is a space, zero otherwise.
-//	 */
-	//	int isSpace();
+	/**
+	 * Determing if a geom is a space.
+	 * @return Non-zero if the geom is a space, zero otherwise.
+	 */
+	boolean isSpace();
 
 	
 	/**
@@ -420,7 +419,7 @@ public interface DGeom {
 	 * that those pairs should not interact.
 	 */
 	//typedef void dNearCallback (void *data, dGeom o1, dGeom o2);
-	public interface DNearCallback {
+	interface DNearCallback {
 	    /**
 	     * @param data The user data object, as passed to dSpaceCollide.
 	     * @param o1   The first geom being tested.
