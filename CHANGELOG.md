@@ -29,11 +29,7 @@
 
 --> See TODO.txt
 
-## TODO for 0.5.0
-
-- Nothing?
-
-## 0.5.0 (unreleased)
+## 0.5.0 - 2023-05-27
 - Improved Android compatibility
   [#124](https://github.com/tzaeschke/ode4j/pull/124)
 - Improved Android compatibility
@@ -42,7 +38,7 @@
   DContact instances in place.[#35](https://github.com/tzaeschke/ode4j/issues/35)
 - Fixed Java module warning; added `-Werror`; new default `OdeConfig.dDEBUG = false`
   [#122](https://github.com/tzaeschke/ode4j/pull/122)
-- BREAKING CHANGE: DSpace.getGeoms() not returns `DGeom` instead of `DxGeom`.
+- BREAKING CHANGE: `DSpace.getGeoms()` now returns `DGeom` instead of `DxGeom`.
   [#121](https://github.com/tzaeschke/ode4j/pull/121)
 - DGeom.isSpace() [#120](https://github.com/tzaeschke/ode4j/pull/120)
 - CHANGELOG.txt -> .md and added overview to README.md [#119](https://github.com/tzaeschke/ode4j/pull/119)
