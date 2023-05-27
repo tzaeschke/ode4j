@@ -6,7 +6,7 @@
 	<!--
 	mvn clean
 	mvn compile
-	mvn deploy -Psonatype-oss-release
+	mvn release:xxx -Pode4j-release
 	-->
 
 	<groupId>org.ode4j</groupId>
@@ -168,10 +168,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>${ode4j.maven-javadoc-plugin.version}</version>
-<!--					<configuration>-->
-<!--						<show>private</show>-->
-<!--						<nohelp>true</nohelp>-->
-<!--					</configuration>-->
 				</plugin>
 
 				<!-- TZ: I added these only to avoid warnings during release:perform-->
@@ -179,11 +175,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
 					<version>3.3.0</version>
-<!--					<configuration>-->
-<!--						<outputDirectory>/absolute/path/to/the/output/directory</outputDirectory>-->
-<!--						<finalName>filename-of-generated-jar-file</finalName>-->
-<!--						<attach>false</attach>-->
-<!--					</configuration>-->
 				</plugin>
 
 				<!--
@@ -392,6 +383,30 @@
 	</build>
 
 	<profiles>
+
+		<profile>
+			<id>ode4j-release</id>
+<!--			<modules>-->
+<!--				<module>core</module>-->
+<!--				<module>parent-pom</module>-->
+<!--			</modules>-->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<configuration>
+									<file>${file}.jar</file>
+									<keyname>${gpg.keyname}</keyname>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 		<profile>
 		<id>on-jdk-8</id>
