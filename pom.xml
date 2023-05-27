@@ -361,16 +361,16 @@
 				This is overridden when running on JDK 9 and above (see the
 				on-jdk-9-plus profile).
 			-->
-<!--			<plugin>-->
-<!--				<artifactId>maven-compiler-plugin</artifactId>-->
-<!--				<configuration>-->
-<!--					<source>1.8</source>-->
-<!--					<target>1.8</target>-->
-<!--					<compilerArgs>-->
-<!--						<arg>-Xlint</arg>-->
-<!--					</compilerArgs>-->
-<!--				</configuration>-->
-<!--			</plugin>-->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<compilerArgs>
+						<arg>-Xlint</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
 
 			<!--
 			  Produce an OSGi manifest
