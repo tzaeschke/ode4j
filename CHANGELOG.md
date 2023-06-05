@@ -8,8 +8,6 @@
 - Look at DContactGeom pos3()/normal3()
 - Bug: Dropping first box on Heightfield is wrong.
   -> Cylinder is also often iffy, but that is the same in C++ -> e.g. 7. cylinder (java) or 11th (c++)!
-- What is the deal with DJoint PARAM vs PARAM_N?
-  ODE doesn´t have PARAM_N (e.g. dParamBounce1)! -> ode4j shouldn´t have them either...
   Remove (deprecate) and replace with PARAM, or at least document what is going on!
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
   -> Remove GIM_BUFFER_ARRAY_POINTER() -> avoit IntArr and ObjArray allocation + usage!!!!!
