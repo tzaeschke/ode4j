@@ -5,6 +5,8 @@ Ask
 - Was there something with contact sorting? dCollideConvexTrimeshTrianglesCCD() seems to violate that
   (swaps last contact with current) -> Only if length is 0 ...
 - collision_libccd.cpp:768 -> "tempContact.side2 = i;" -> "tempContact.side2 = indices[i];"
+- dJointAddPUTorque (...) : Can anyone point me to the implementation? I don't think there is one.
+--> All reported on 2023-06-05
 
 
 Before release:
@@ -52,44 +54,6 @@ March 2023:
 General cleanup:
 - update DVector3 safeNormalize to use max() and then compare to 0. ALso see: https://github.com/JOML-CI/JOML/issues/66
 
-
-July 6th 2009:
-Some minor things I found in the code:
-- The test universal.cpp (587-593) is probably incorrectly checking the first field of the array 3 times, rather than checking the 1st, 2nd, and 3rd field.
-- demo_gyroscopic is not initializing 'contactgroup'
-- demo_kinematic is not initializing 'joints'
-- demo_moving_convex uses dWorldStepFast1, which is deprecated:
-- dJointAddPUTorque (...) : Can anyone point me to the implementation? I don't think there is one.
-- http://opende.sourceforge.net/wiki/index.php/Joint_Param_Documentation
-  This indicate that PU & PR joint have not parameters, I don't think that's correct?
-- GeomTransform is obsolete since 0.6 (according to the Wiki), but it is still used in several demos:
-  demo_boxstack, demo_heightfield, demo_jointPU, demo_motion, demo_spacestress.
-  I haven't used it myself, so is it still required?
-
-
-REPORT MISSING:
-- dBody.destroy()
-- dCapsule class
-- dPlane2DJoint class
-- dMass.setCylinder in OO-API
-- dMass.setSphereTotal in OO-API
-- dMass.check()
-- dWorld.void setAutoDisableAverageSamplesCount(int average_samples_count)
-- dWorld.void setContactMaxCorrectingVel (double vel);
-- dWorld.destroy()
-- dJointGroup.destroy()
-- dGeom.setOffsetPosition()
-- dGeom.setOffsetRotation()
-- dGeomTransform API class
-- dPistonJoint.setAnchorOffset()
-
-
-REPORT !!!!
-- Report that SAP-Space BoxPruning may miss some collisions:
-  while ( poslist[*RunningAddress++] < poslist[IndexPair.id0] ) {}
-  This line increases the RunningAddress to the first that is not
-  smaller PLUS ONE!!  DONE (2009-05-08)
-  
 
 DOC:
 - replace @sa with @see
