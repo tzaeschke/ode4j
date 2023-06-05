@@ -19,7 +19,6 @@
   non-module projects...
   -> https://www.baeldung.com/java-9-modularity
   -> https://stackoverflow.com/questions/40490520/what-do-i-need-to-build-jdk-9-project-with-non-modular-dependencies-using-maven
-- Consider porting stuff in "contrib"
 - Fix maven warnings:
   - [WARNING] bootstrap class path not set in conjunction with -source 8
     WHen using JDK 9 or later
