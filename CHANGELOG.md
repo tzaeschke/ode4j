@@ -5,6 +5,8 @@
 - Make Java 9 the default.
 - remove deprecations for 0.6.0
 - Remove ccp4j
+- Look at DContactGeom pos3()/normal3()
+- dxOrthogonalizeR returns true unconditionally... verify with ODE!
 - Bug: Dropping first box on Heightfield is wrong.
   -> Cylinder is also often iffy, but that is the same in C++ -> e.g. 7. cylinder (java) or 11th (c++)!
 - What is the deal with DJoint PARAM vs PARAM_N?
@@ -27,16 +29,16 @@
 
 --> See TODO.txt
 
-## TODO for 0.5.0
-
-- Nothing?
-
-## 0.5.0 (unreleased)
+## 0.5.0 - 2023-05-27
+- Improved Android compatibility
+  [#124](https://github.com/tzaeschke/ode4j/pull/124)
+- Improved Android compatibility
+  [#123](https://github.com/tzaeschke/ode4j/pull/123)
 - Avoid garbage collection of DContact. This is now implemented without pooling but with reusing
   DContact instances in place.[#35](https://github.com/tzaeschke/ode4j/issues/35)
 - Fixed Java module warning; added `-Werror`; new default `OdeConfig.dDEBUG = false`
   [#122](https://github.com/tzaeschke/ode4j/pull/122)
-- BREAKING CHANGE: DSpace.getGeoms() not returns `DGeom` instead of `DxGeom`.
+- BREAKING CHANGE: `DSpace.getGeoms()` now returns `DGeom` instead of `DxGeom`.
   [#121](https://github.com/tzaeschke/ode4j/pull/121)
 - DGeom.isSpace() [#120](https://github.com/tzaeschke/ode4j/pull/120)
 - CHANGELOG.txt -> .md and added overview to README.md [#119](https://github.com/tzaeschke/ode4j/pull/119)

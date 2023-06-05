@@ -123,6 +123,7 @@ public class DQuaternion implements DQuaternionC {
 	/**
 	 * Sets w of [w, x, y, z].
 	 * @param w w
+	 * @return This quaternion.
 	 */
 	public DQuaternion set0(double w) {
 		this.w = w;
@@ -132,6 +133,7 @@ public class DQuaternion implements DQuaternionC {
 	/**
 	 * Sets x of [w, x, y, z].
 	 * @param x x
+	 * @return This quaternion.
 	 */
 	public DQuaternion set1(double x) {
 		this.x = x;
@@ -141,6 +143,7 @@ public class DQuaternion implements DQuaternionC {
 	/**
 	 * Sets y of [w, x, y, z].
 	 * @param y y
+	 * @return This quaternion.
 	 */
 	public DQuaternion set2(double y) {
 		this.y = y;
@@ -150,6 +153,7 @@ public class DQuaternion implements DQuaternionC {
 	/**
 	 * Sets z of [w, x, y, z].
 	 * @param z z
+	 * @return This quaternion.
 	 */
 	public DQuaternion set3(double z) {
 		this.z = z;
@@ -225,6 +229,7 @@ public class DQuaternion implements DQuaternionC {
 	 * Set a vector/matrix at position i to a specific value.
 	 * @param i position
 	 * @param d value
+	 * @return This quaternion.
 	 */
 	public final DQuaternion set(int i, double d) {
 		switch (i) {
@@ -327,6 +332,7 @@ public class DQuaternion implements DQuaternionC {
 	 * all the components by 1/a[i]. then we can compute the length of `a' and
 	 * scale the components by 1/l. this has been verified to work with vectors
 	 * containing the smallest representable numbers.
+	 * @return This quaternion.
 	 */
 	public DQuaternion normalize() {
 		if (!safeNormalize4()) throw new IllegalStateException(

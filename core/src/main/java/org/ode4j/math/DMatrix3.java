@@ -197,6 +197,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * the 4th, 8th and 12th field. This is useful when using padded arrays.
 	 * @param da Initialisztion matrix
 	 * @param da_ofs Reading offset
+	 * @return this.
 	 */
 	public DMatrix3 set12(double[] da, int da_ofs) {
 		System.arraycopy(da, da_ofs, v, 0, da.length);
@@ -249,6 +250,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * B or C are stored in standard column format.
 	 * @param B source B
 	 * @param C source C
+	 * @return this.
 	 */
 	public DMatrix3 dMultiply0 (final DMatrix3C B,
 			final DMatrix3C C) {
@@ -734,6 +736,7 @@ public final class DMatrix3 implements DMatrix3C {
 	/**
 	 * Make the matrix an identity matrix.
 	 * Same as setIdenity().
+	 * @return This matrix.
 	 */
 	public DMatrix3 eqIdentity() {
 		eqZero();
@@ -758,6 +761,7 @@ public final class DMatrix3 implements DMatrix3C {
 	/**
 	 * Set the matrix to zero.
 	 * Same as setZero().
+	 * @return This matrix.
 	 */
 	public DMatrix3 eqZero() {
 		Arrays.fill(v, 0);
@@ -768,6 +772,7 @@ public final class DMatrix3 implements DMatrix3C {
 	/**
 	 * Set the matrix to zero.
 	 * Same as eqZero().
+	 * @return This matrix.
 	 */
 	public DMatrix3 setZero() {
 		eqZero();
@@ -1009,6 +1014,7 @@ public final class DMatrix3 implements DMatrix3C {
 	 * @param i row
 	 * @param j column
 	 * @param a value at (i,j)
+	 * @return This matrix.
 	 */
 	public DMatrix3 set(int i, int j, double a) {
 		v[i*MAX_J + j] = a;

@@ -137,6 +137,7 @@ public interface DTriMesh extends DGeom {
 	/**
 	 * Per triangle callback. Allows the user to say if he wants a collision with
 	 * a particular triangle.
+	 * @param Callback the callback function
 	 */
 	////typedef int dTriCallback(dGeom TriMesh, dGeom RefObject, int TriangleIndex);
 	//ODE_API
@@ -165,6 +166,7 @@ public interface DTriMesh extends DGeom {
 	 * Allows the user to say if a ray collides with a triangle on barycentric
 	 * coords. The user can for example sample a texture with alpha transparency
 	 * to determine if a collision should occur.
+	 * @param Callback the callback function
 	 */
 	////typedef int dTriRayCallback(dGeom TriMesh, dGeom Ray, int TriangleIndex, double u, double v);
 	//ODE_API
@@ -243,7 +245,7 @@ public interface DTriMesh extends DGeom {
 
 
 	/**
-	 * returns the TriMeshDataID
+	 * @return the TriMeshData instance
 	 */
 	//ODE_API
 	//DTriMeshData dGeomTriMeshGetTriMeshDataID(DTriMesh g);
@@ -251,6 +253,10 @@ public interface DTriMesh extends DGeom {
 
 	/**
 	 * Gets a triangle.
+	 * @param Index triangle index
+	 * @param v0 output node 0
+	 * @param v1 output node 1
+	 * @param v2 output node 2
 	 */
 	//ODE_API
 	//void dGeomTriMeshGetTriangle(dGeom g, int Index, dVector3* v0, dVector3* v1, dVector3* v2) {
@@ -259,28 +265,32 @@ public interface DTriMesh extends DGeom {
 	/**
 	 * Gets the point on the requested triangle and the given barycentric
 	 * coordinates.
+	 * @param index triangle index
+	 * @param u u
+	 * @param v v
+	 * @param Out output
 	 */
 	//ODE_API
 	//void dGeomTriMeshGetPoint(dGeomID g, int index, dReal u, dReal v, dVector3 Out)
 	void getPoint(int index, double u, double v, DVector3 Out);
 
-//	/*
-//
-//This is how the strided data works:
-//
-//struct StridedVertex{
-//	dVector3 Vertex;
-//	// Userdata
-//};
-//int VertexStride = sizeof(StridedVertex);
-//
-//struct StridedTri{
-//	int Indices[3];
-//	// Userdata
-//};
-//int TriStride = sizeof(StridedTri);
-//
-//	 */
+	//	/*
+	//
+	//This is how the strided data works:
+	//
+	//struct StridedVertex{
+	//	dVector3 Vertex;
+	//	// Userdata
+	//};
+	//int VertexStride = sizeof(StridedVertex);
+	//
+	//struct StridedTri{
+	//	int Indices[3];
+	//	// Userdata
+	//};
+	//int TriStride = sizeof(StridedTri);
+	//
+	//	 */
 
 	//ODE_API
 	int getTriangleCount ();

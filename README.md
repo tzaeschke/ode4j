@@ -9,9 +9,8 @@ ODE is an open source, high performance library for simulating rigid body dynami
 and platform independent with an easy to use C/C++ API. It has advanced joint types and integrated collision detection
 with friction. ODE is useful for simulating vehicles, objects in virtual reality environments and virtual creatures.
 
-The latest released version of ode4j is 0.4.2, but the master branch may contain fixes and improvements.
-Version 0.2.4 up to 0.2.9 are ports of ODE 0.12.1, Version 0.3.1 is a port of ODE 0.13.1. Release 0.4.0 contains most
-changes between 0.13.1 and 0.16.0.
+The latest released version of ode4j is 0.5.0, but the master branch may contain fixes and improvements. Release 0.5.0
+contains all changes up to ODE 0.16.3.
 
 ode4j contains numerous [custom features](#additional-features-in-ode4j) that are not present in ODE (see
 also [Wiki](https://github.com/tzaeschke/ode4j/wiki/Functionality-beyond-ODE)).
@@ -34,13 +33,25 @@ are [not included](https://github.com/tzaeschke/ode4j/wiki/Maven-HOWTO)):
 <dependency>
     <groupId>org.ode4j</groupId>
     <artifactId>core</artifactId>
-    <version>0.4.2</version>
+    <version>0.5.0</version>
 </dependency>
 ```
 
 ## News
 
-2023-31-03: Release 0.4.1 & 0.4.2. Mostly a bugfix release + some API helper methods:
+2023-05-27: Release 0.5.0. Full update to ODE 0.16.3 + Java 8 as baseline:
+
+* Port of all changes up to ODE 0.16.3
+* Java 8 required
+* LWJGL 3.x for demos
+* Tested Android compatibility with API level 24 (Android 7 / Nougat)
+* CI for Java 8 + 9
+* Improved API (mostly in `math` package)
+* Cleanup (e.g. full JUnit 4 style test, fixed most lint warnings up to Java 17)
+* Bug fixes
+* **BREAKING CHANGE**: `DSpace.getGeoms()` now returns `DGeom` instead of `DxGeom`.
+
+2023-03-31: Release 0.4.1 & 0.4.2. Mostly a bugfix release + some API helper methods:
 
 * Fix OSGI bundle info to require Java 1.7 instead of 7.0
 * New helper methods: `
@@ -98,7 +109,7 @@ plus some original features:
 * Please use `DWorld.quickStep(...)` instead of `DWorld.step()`. The latter is slower and appears to be less stable.
 * Set `OdeConfig.dDEBUG = true` for debugging and `= false` for best performance.
 * When compiling with JDK 9 or later, `mvn` will automatically use the`on-jdk-9-plus` profile and create modules.
-* In case of GC problems (e.g. on Android): 
+* In case of GC problems (e.g. on Android):
   There may be excessive garbage collection due to frequent allocation of `DContact` objects.
   To avoid this, these objects can be nullified and reused. See `PerfCards.nearCallback()` for an example.
 
@@ -161,6 +172,15 @@ However, there are some notable differences:
 * ode4j's DLCP uses `ROWPTRS = false`
 * SAP-Space uses different merge-sort instead of radix-sort
 * ...
+
+### Version overview
+
+ode4j versions and corresponding ODE versions:
+
+* ode4j 0.5.0 contains all changes up to ODE 0.16.3.
+* ode4j 0.4.0 contains most changes between 0.13.1 and 0.16.0.
+* ode4j 0.3.1 is a port of ODE 0.13.1.
+* ode4j 0.2.4 up to 0.2.9 are ports of ODE 0.12.1
 
 ## Legal
 

@@ -402,6 +402,9 @@ public class DxGimpactData extends DxTriMeshData {
 	 * <p>
 	 * Note: In ode4j 0.4.0 this returned 2*Pi for boundary edges.
 	 * This behavior has changed and is now in alignment with ODE.
+	 * @param edge edge
+	 * @param triangle triangle
+	 * @return angle
 	 */
 	public float getEdgeAngle(int triangle, int edge) {
 		return (float) retrieveFaceAngle(triangle, edge);

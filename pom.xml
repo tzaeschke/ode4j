@@ -6,12 +6,12 @@
 	<!--
 	mvn clean
 	mvn compile
-	mvn deploy -Psonatype-oss-release
+	mvn release:xxx -Pode4j-release
 	-->
 
 	<groupId>org.ode4j</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.4.3-SNAPSHOT</version>
+	<version>0.5.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -57,7 +57,8 @@
 		<url>https://github.com/tzaeschke/ode4j</url>
 		<connection>scm:git:git@github.com:tzaeschke/ode4j.git</connection>
 		<developerConnection>scm:git:git@github.com:tzaeschke/ode4j.git</developerConnection>
-	</scm>
+	  <tag>HEAD</tag>
+  </scm>
 
 	<developers>
 		<developer>
@@ -72,18 +73,29 @@
 		<url>https://github.com/tzaeschke/ode4j/issues</url>
 	</issueManagement>
 
-	<repositories>
+<!--	<repositories>-->
+<!--		<repository>-->
+<!--			<id>sonatype-snapshots</id>-->
+<!--			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
+<!--			<releases>-->
+<!--				<enabled>false</enabled>-->
+<!--			</releases>-->
+<!--			<snapshots>-->
+<!--				<enabled>true</enabled>-->
+<!--			</snapshots>-->
+<!--		</repository>-->
+<!--	</repositories>-->
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 		<repository>
-			<id>sonatype-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-	</repositories>
+	</distributionManagement>
 
 	<!-- mvn versions:display-dependency-updates -->
 	<dependencyManagement>
@@ -150,6 +162,20 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>${ode4j.build-helper-maven-plugin.version}</version>
+				</plugin>
+
+				<!-- TZ: I added these only to avoid warnings during release:perform-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${ode4j.maven-javadoc-plugin.version}</version>
+				</plugin>
+
+				<!-- TZ: I added these only to avoid warnings during release:perform-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.3.0</version>
 				</plugin>
 
 				<!--
@@ -327,16 +353,16 @@
 				This is overridden when running on JDK 9 and above (see the
 				on-jdk-9-plus profile).
 			-->
-<!--			<plugin>-->
-<!--				<artifactId>maven-compiler-plugin</artifactId>-->
-<!--				<configuration>-->
-<!--					<source>1.8</source>-->
-<!--					<target>1.8</target>-->
-<!--					<compilerArgs>-->
-<!--						<arg>-Xlint</arg>-->
-<!--					</compilerArgs>-->
-<!--				</configuration>-->
-<!--			</plugin>-->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<compilerArgs>
+						<arg>-Xlint</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
 
 			<!--
 			  Produce an OSGi manifest
@@ -358,6 +384,30 @@
 	</build>
 
 	<profiles>
+
+		<profile>
+			<id>ode4j-release</id>
+<!--			<modules>-->
+<!--				<module>core</module>-->
+<!--				<module>parent-pom</module>-->
+<!--			</modules>-->
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<configuration>
+									<file>${file}.jar</file>
+									<keyname>${gpg.keyname}</keyname>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 		<profile>
 		<id>on-jdk-8</id>
