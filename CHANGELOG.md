@@ -6,7 +6,6 @@
 - remove deprecations for 0.6.0
 - Remove ccp4j
 - Look at DContactGeom pos3()/normal3()
-- dxOrthogonalizeR returns true unconditionally... verify with ODE!
 - Bug: Dropping first box on Heightfield is wrong.
   -> Cylinder is also often iffy, but that is the same in C++ -> e.g. 7. cylinder (java) or 11th (c++)!
 - What is the deal with DJoint PARAM vs PARAM_N?
