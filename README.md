@@ -107,6 +107,8 @@ plus some original features:
 ## General recommendations
 
 * Please use `DWorld.quickStep(...)` instead of `DWorld.step()`. The latter is slower and appears to be less stable.
+* Consider disabling geometries that do not move. For an example, refer to [`DemoCrash`](https://github.com/tzaeschke/ode4j/blob/28a8338abccaccf13042e825ef615e0037aa91d3/demo/src/main/java/org/ode4j/demo/DemoCrash.java#L590).
+The demo disables boxes that have not moved for a few steps. If a whole "island" of bodies is disabled, it is automatically excluded from simulation (bodies are automatically re-enabled when necessary), see also [ODE wiki](http://ode.org/wiki/index.php?title=Manual#Islands_and_Disabled_Bodies).
 * Set `OdeConfig.dDEBUG = true` for debugging and `= false` for best performance.
 * When compiling with JDK 9 or later, `mvn` will automatically use the`on-jdk-9-plus` profile and create modules.
 * In case of GC problems (e.g. on Android):
