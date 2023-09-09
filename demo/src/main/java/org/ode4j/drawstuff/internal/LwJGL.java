@@ -139,6 +139,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 		glfwDefaultWindowHints(); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+		glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE); // For windows and linux - fix window size
 
 		// Create the window
 		window = glfwCreateWindow(_width, _height, "Simulation", NULL, NULL);
