@@ -139,6 +139,7 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 		glfwDefaultWindowHints(); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+		glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE); // For windows and linux - fix window size
 
 		// Create the window
 		window = glfwCreateWindow(_width, _height, "Simulation", NULL, NULL);
@@ -169,11 +170,8 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 		glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
 			handleMouseMove(xpos, ypos);
 		});
-		glfwSetWindowSizeCallback(window, (window, width, height) -> {
-			this.width = width;
-			this.height = height;
-		});
 
+		float xScale, yScale;
 		// Get the thread stack and push a new frame
 		try ( MemoryStack stack = stackPush() ) {
 			IntBuffer pWidth = stack.mallocInt(1); // int*
@@ -191,7 +189,19 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 					(vidmode.width() - pWidth.get(0)) / 2,
 					(vidmode.height() - pHeight.get(0)) / 2
 			);
+
+			// Required for HiDPI monitors (i.e. Mac Retina)
+			FloatBuffer _xscale = stack.mallocFloat(1);
+			FloatBuffer _yscale = stack.mallocFloat(1);
+			glfwGetWindowContentScale(window, _xscale, _yscale);
+			xScale = _xscale.get();
+			yScale = _yscale.get();
 		} // the stack frame is popped automatically
+
+		glfwSetWindowSizeCallback(window, (window, width, height) -> {
+			this.width = (int) (width * xScale);
+			this.height = (int) (height * yScale);
+		});
 
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
@@ -232,8 +242,8 @@ abstract class LwJGL extends Internal implements DrawStuffApi {
 
 		// initialize variables
 		//  win = 0;
-		width = _width;
-		height = _height;
+		width = (int) (_width * xScale);
+		height = (int) (_width * yScale);
 		//  glx_context = 0;
 		last_key_pressed = 0;
 
