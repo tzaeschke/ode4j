@@ -10,12 +10,12 @@
   -> Cylinder is also often iffy, but that is the same in C++ -> e.g. 7. cylinder (java) or 11th (c++)!
   Remove (deprecate) and replace with PARAM, or at least document what is going on!
 - Cleanup GimMath / GimGeometry  (e.g. remove RefFloat)
-  -> Remove GIM_BUFFER_ARRAY_POINTER() -> avoit IntArr and ObjArray allocation + usage!!!!!
+  -> Remove GIM_BUFFER_ARRAY_POINTER() -> avoid IntArr and ObjArray allocation + usage!!!!!
   -> e.g. in gim_trimesh_update_aabbset()
 - Move to Google Java Code Style
 - Document: Gimpact works best with (i.e. does not scale above ?) room size <= MAX_AABB_SIZE=1638.0
   -> Why 1638? Can we improve this?
-- Create separate distribution (maven jar) with modules? -> Check how modul-projects have trouble with including
+- Create separate distribution (maven jar) with modules? -> Check how module-projects have trouble with including
   non-module projects...
   -> https://www.baeldung.com/java-9-modularity
   -> https://stackoverflow.com/questions/40490520/what-do-i-need-to-build-jdk-9-project-with-non-modular-dependencies-using-maven
@@ -24,6 +24,9 @@
     WHen using JDK 9 or later
 
 --> See TODO.txt
+
+## Unreleased
+- Support for HiDPI screens / Apple Silicon/Retina. Contribution by valb3r,  [#126]https://github.com/tzaeschke/ode4j/issues/126
 
 ## 0.5.0 - 2023-05-27
 - Improved Android compatibility

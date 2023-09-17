@@ -222,3 +222,14 @@ Like the original ODE, ode4j is licensed under LGPL v2.1 and BSD 3-clause. Choos
 Tilmann Zaeschke
 ode4j (AT) gmx.de
 
+## Special thanks to contributors
+
+*Please let me know if I missed anyone!*
+
+* [valb3r](https://github.com/valb3r)
+* [io7m](https://github.com/io7m)
+* [ppiastucki(piotr)](https://github.com/ppiastucki) <-- Shoutout for major contributions!
+* [fommil](https://github.com/fommil)
+* [peterkir](https://github.com/peterkir)
+* [neduard](https://github.com/neduard)
+* [Namek](https://github.com/Namek)
