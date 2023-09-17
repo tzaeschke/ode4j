@@ -33,7 +33,7 @@ are [not included](https://github.com/tzaeschke/ode4j/wiki/Maven-HOWTO)):
 <dependency>
     <groupId>org.ode4j</groupId>
     <artifactId>core</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1</version>
 </dependency>
 ```
 
