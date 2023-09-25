@@ -1,0 +1,4 @@
+rootProject.name = 'ode4j'
+
+include 'core'
+
