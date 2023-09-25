@@ -21,6 +21,8 @@
  *************************************************************************/
 package org.ode4j.ode.internal.cpp4j;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 public class Cmath extends Csetjmp {
@@ -91,7 +93,7 @@ public class Cmath extends Csetjmp {
 		//http://www.math.northwestern.edu/~wphooper/code/java/
 		long bits=Double.doubleToLongBits(num);
 		exp.i=(int)((0x7ff0000000000000L & bits)>>52)-1022;
-		return Double.longBitsToDouble((0x800fffffffffffffL & bits)| 0x3fe0000000000000L);
+		return NumberUtils.longBitsToDouble((0x800fffffffffffffL & bits)| 0x3fe0000000000000L);
 	}
 
 	protected Cmath() {}
