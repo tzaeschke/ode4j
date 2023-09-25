@@ -24,30 +24,31 @@
  *************************************************************************/
 package org.ode4j.ode.threading;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+//import java.util.concurrent.locks.Lock;
+//import java.util.concurrent.locks.ReentrantLock;
 
 public class MutexGroupImpl implements MutexGroup
 {
-	final Lock[] m_Mutex_array;
+	//final Lock[] m_Mutex_array;
 
 	public MutexGroupImpl() {
-		m_Mutex_array = new Lock[dxProcessContextMutex.values().length];
-		for (int i = 0; i < m_Mutex_array.length; ++i) {
-			m_Mutex_array[i] = new ReentrantLock();
-		}
+//		m_Mutex_array = new Lock[dxProcessContextMutex.values().length];
+//		for (int i = 0; i < m_Mutex_array.length; ++i) {
+//			m_Mutex_array[i] = new ReentrantLock();
+//		}
 	}
 
 	public void lock(dxProcessContextMutex mutex_index) { 
-		m_Mutex_array[mutex_index.ordinal()].lock(); 
+		//m_Mutex_array[mutex_index.ordinal()].lock();
 	}
 
 	public boolean tryLock(dxProcessContextMutex mutex_index) { 
-		return m_Mutex_array[mutex_index.ordinal()].tryLock(); 
+		//return m_Mutex_array[mutex_index.ordinal()].tryLock();
+		return true;
 	}
 
 	public void unlock(dxProcessContextMutex mutex_index) { 
-		m_Mutex_array[mutex_index.ordinal()].unlock(); 
+		//m_Mutex_array[mutex_index.ordinal()].unlock();
 	}
 
 }
