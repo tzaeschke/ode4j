@@ -115,13 +115,13 @@ public class FormattedStringBuilder {
      * @param t Exception to print.
      * @return The updated instance of FormattedStringBuilder.
      */
-    public FormattedStringBuilder append(Throwable t) { 
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        PrintStream p = new PrintStream(os);
-        t.printStackTrace(p);
-        p.close();
-        return append(os.toString());
-    }
+//    public FormattedStringBuilder append(Throwable t) {
+//        ByteArrayOutputStream os = new ByteArrayOutputStream();
+//        PrintStream p = new PrintStream(os);
+//        t.printStackTrace(p);
+//        p.close();
+//        return append(os.toString());
+//    }
 
     /**
      * Appends the stack trace of the Throwable argument to this sequence 
@@ -129,9 +129,9 @@ public class FormattedStringBuilder {
      * @param t Exception to print.
      * @return The updated instance of FormattedStringBuilder.
      */
-    public FormattedStringBuilder appendln(Throwable t) {
-        return append(t).appendln();
-    }
+//    public FormattedStringBuilder appendln(Throwable t) {
+//        return append(t).appendln();
+//    }
 
     /**
      * Appends to the line the white spaces and then the string <tt>s</tt>

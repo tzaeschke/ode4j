@@ -9,6 +9,9 @@
 	 (Obviously, change libgdx_library_template to match your project, and change the source path below.)
   -->
 <module>
-    <source path="org/ode4j"/>
+    <source path="org/ode4j">
+        <!--<exclude name="**/cpp4j/**" />-->
+    </source>
+
     <inherits name="com.badlogic.gdx.backends.gdx_backends_gwt" />
 </module>

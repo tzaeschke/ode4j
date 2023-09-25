@@ -1,8 +1,6 @@
 package org.ode4j;
 
 import java.io.Serializable;
-import java.util.function.IntBinaryOperator;
-import java.util.function.IntUnaryOperator;
 
 public class GWTAtomicIntegerArray implements Serializable {
     private static final long serialVersionUID = 2862133569453604235L;
@@ -13,7 +11,7 @@ public class GWTAtomicIntegerArray implements Serializable {
     }
 
     public GWTAtomicIntegerArray(int[] array) {
-        this.array = (int[])array.clone();
+        this.array = array;
     }
 
     public final int length() {
