@@ -36,7 +36,7 @@ import org.ode4j.math.DVector3C;
 
 import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Common.dPAD;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
+//import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 
 

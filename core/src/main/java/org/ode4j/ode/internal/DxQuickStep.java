@@ -39,7 +39,7 @@ import static org.ode4j.ode.internal.Misc.dRandInt;
 import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.QuickStepEnums.*;
 import static org.ode4j.ode.internal.Timer.*;
-import static org.ode4j.ode.internal.Timer.dTimerReport;
+//import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 
 import java.io.PrintStream;
@@ -50,7 +50,7 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint;
 import org.ode4j.ode.internal.Objects_H.dxQuickStepParameters;
-import org.ode4j.ode.internal.cpp4j.FILE;
+//import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dmaxcallcountestimate_fn_t;
@@ -111,7 +111,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	}
 	private static void IFTIMING_dTimerReport (PrintStream fout, int average) {
 		if (TIMING) {
-			dTimerReport(new FILE(fout), average);
+			//dTimerReport(new FILE(fout), average);
 		}
 	}
 

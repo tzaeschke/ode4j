@@ -40,9 +40,9 @@ import static org.ode4j.ode.internal.DLCP.*;
 import static org.ode4j.ode.internal.StepEnums.*;
 import static org.ode4j.ode.internal.Timer.dTimerEnd;
 import static org.ode4j.ode.internal.Timer.dTimerNow;
-import static org.ode4j.ode.internal.Timer.dTimerReport;
+//import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
+//import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 import static org.ode4j.ode.internal.joints.JointEnums.*;
 import static org.ode4j.ode.internal.processmem.DxUtil.EFFICIENT_ALIGNMENT;
 import static org.ode4j.ode.threading.Atomics.*;
@@ -53,7 +53,7 @@ import org.ode4j.GWTAtomicIntegerArray;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint.DJointFeedback;
-import org.ode4j.ode.internal.cpp4j.FILE;
+//import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
@@ -95,11 +95,11 @@ dmaxcallcountestimate_fn_t {
 			dTimerEnd();
 		}
 	}
-	private static void IFTIMING_dTimerReport (FILE fout, int average) {
-		if (TIMING) {
-			dTimerReport(fout, average);
-		}
-	}
+//	private static void IFTIMING_dTimerReport (FILE fout, int average) {
+//		if (TIMING) {
+//			dTimerReport(fout, average);
+//		}
+//	}
 
 	public static final boolean DIRECT_CHOLESKY = true;
 	public static final boolean REPORT_ERROR = false;
@@ -1623,7 +1623,7 @@ dmaxcallcountestimate_fn_t {
 			IFTIMING_dTimerEnd();
 
 			if (m > 0) {
-				IFTIMING_dTimerReport(stdout, 1);
+				//IFTIMING_dTimerReport(stdout, 1);
 			}
 		} else {
 			throw new UnsupportedOperationException();

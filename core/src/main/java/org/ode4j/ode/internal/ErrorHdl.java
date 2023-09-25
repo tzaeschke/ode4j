@@ -25,8 +25,8 @@
 package org.ode4j.ode.internal;
 
 import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 
 /**
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ErrorHdl {
 
-	public static Logger logger = LoggerFactory.getLogger(ErrorHdl.class);
+	//public static Logger logger = LoggerFactory.getLogger(ErrorHdl.class);
 
 	//    /**
 	//	 * @author Tilmann Zaeschke
@@ -120,7 +120,7 @@ public class ErrorHdl {
 		if (error_function != null) {
 			error_function.call (num,msg,ap);
 		} else {
-			logger.error("ODE Error " + num + ": " + msg, ap);
+			//logger.error("ODE Error " + num + ": " + msg, ap);
 		}
 		throw new RuntimeException("#"+num + ": " + msg);
 		//exit (1);
@@ -139,11 +139,12 @@ public class ErrorHdl {
 		if (debug_function != null) {
 			debug_function.call (num,msg,ap);
 		} else {
-			logger.debug("ODE INTERNAL ERROR " + " " + num + ": " + msg, ap);
+			//logger.debug("ODE INTERNAL ERROR " + " " + num + ": " + msg, ap);
 		}
 		// *((char *)0) = 0;   ... commit SEGVicide
 		//abort();
-		throw new RuntimeException("#"+num + ": " + String.format(msg, ap));
+		//throw new RuntimeException("#"+num + ": " + String.format(msg, ap));
+		throw new RuntimeException("#"+num + ": " + msg);
 	}
 
 
@@ -160,7 +161,7 @@ public class ErrorHdl {
 			message_function.call (num,msg,ap);
 		} else {
 			//printMessage (num,"ODE Message",msg,ap);
-			logger.info("ODE Message " + num + ": " + msg, ap);
+			//logger.info("ODE Message " + num + ": " + msg, ap);
 		}
 	}
 

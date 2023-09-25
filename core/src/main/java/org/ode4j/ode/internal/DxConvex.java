@@ -29,8 +29,8 @@ import static org.ode4j.ode.OdeConstants.dInfinity;
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.DxCollisionUtil.dVector3Copy;
 import static org.ode4j.ode.internal.cpp4j.Cmath.fabs;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.fprintf;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
+//import static org.ode4j.ode.internal.cpp4j.Cstdio.fprintf;
+//import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
@@ -247,13 +247,13 @@ public class DxConvex extends DxGeom implements DConvex {
 						points[(index03)+1]*points[(index13)+0]*points[(index23)+2] - 
 						points[(index03)+0]*points[(index13)+2]*points[(index23)+1])<0)
 				{
-					fprintf(stdout,"WARNING: Polygon %d is not defined counterclockwise\n",i);
+					//fprintf(stdout,"WARNING: Polygon %d is not defined counterclockwise\n",i);
 				}
 				//points_in_poly+=(*points_in_poly+1);
 				points_in_polyPos+= polygons[points_in_polyPos]+1;
 				indexPos=points_in_polyPos+1;//index=points_in_poly+1;
 				//if(planes[(i*4)+3]<0) fprintf(stdout,"WARNING: Plane %d does not contain the origin\n",i);
-				if(planesD[i]<0) fprintf(stdout,"WARNING: Plane %d does not contain the origin\n",i);
+				//if(planesD[i]<0) fprintf(stdout,"WARNING: Plane %d does not contain the origin\n",i);
 			}
 		} //#endif dNODEBUG
 
