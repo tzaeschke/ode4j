@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN"
+        "http://www.gwtproject.org/doctype/2.8.2/gwt-module.dtd">
+<!-- To compile to Gwt, you need to reference this file in your master .gwt.xml
+     file (usually called GdxDefinition.gwt.xml) as follows:
+
+     <inherits name="libgdx_library_template" />
+	 
+	 (Obviously, change libgdx_library_template to match your project, and change the source path below.)
+  -->
+<module>
+    <source path="com/github/antzGames/gdx/ode4j"/>
+    <inherits name="com.badlogic.gdx.backends.gdx_backends_gwt" />
+</module>

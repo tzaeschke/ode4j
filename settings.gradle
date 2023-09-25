@@ -1,4 +1,4 @@
-rootProject.name = 'ode4j'
+rootProject.name = 'gdx-ode4j'
 
 include 'core'
 
