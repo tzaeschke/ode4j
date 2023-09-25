@@ -21,6 +21,8 @@
  *************************************************************************/
 package org.ode4j.math;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 public abstract class DVector3View implements DVector3I {
 	@Override
 	public abstract double get0();
@@ -100,8 +102,8 @@ public abstract class DVector3View implements DVector3I {
 	@Override
 	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public int hashCode() {
-		return (int) (Double.doubleToRawLongBits(get0())  * 
-		Double.doubleToRawLongBits(get1()) * 
-		Double.doubleToRawLongBits(get2()));
+		return (int) (NumberUtils.doubleToLongBits(get0())  *
+		NumberUtils.doubleToLongBits(get1()) * 
+		NumberUtils.doubleToLongBits(get2()));
 	}
 }
