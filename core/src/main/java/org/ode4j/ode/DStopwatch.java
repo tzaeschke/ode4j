@@ -24,6 +24,8 @@
  *************************************************************************/
 package org.ode4j.ode;
 
+import com.badlogic.gdx.utils.TimeUtils;
+
 // @Deprecated // This will be removed in 0.6.0
 public class DStopwatch {
 
@@ -40,12 +42,12 @@ public class DStopwatch {
 
 
 	public void start () {
-		_cc = System.nanoTime();
+		_cc = TimeUtils.nanoTime();
 	}
 
 
 	public void stop () {
-		_time += System.nanoTime() - _cc;
+		_time += TimeUtils.nanoTime() - _cc;
 	}
 
 

@@ -65,16 +65,16 @@ public class SpacePerformanceTest {
         long timer1 = 0;
         long timer2 = 0;
         for (int j = 0; j < iterations; j++) {
-            long time1 = System.nanoTime();
+            long time1 = TimeUtils.nanoTime();
             space.collide(null, (data, o1, o2) -> spaceCollisions++);
-            long time2 = System.nanoTime();
+            long time2 = TimeUtils.nanoTime();
 
             for (int k = 0; k < 50; k++) {
                 int i = r.nextInt(geoms.length);
                 space.collide2(geoms[i], null, (data, o1, o2) -> geomCollisions++);
             }
 
-            long time3 = System.nanoTime();
+            long time3 = TimeUtils.nanoTime();
             timer1 += time2 - time1;
             timer2 += time3 - time2;
             for (int i = 0; i < geomNum; i++) {
@@ -147,16 +147,16 @@ public class SpacePerformanceTest {
         long timer1 = 0;
         long timer2 = 0;
         for (int j = 0; j < iterations; j++) {
-            long time1 = System.nanoTime();
+            long time1 = TimeUtils.nanoTime();
             space.collide(null, (data, o1, o2) -> spaceCollisions++);
-            long time2 = System.nanoTime();
+            long time2 = TimeUtils.nanoTime();
 
             for (int k = 0; k < 50; k++) {
                 int i = r.nextInt(geoms.length);
                 space.collide2(geoms[i], null, (data, o1, o2) -> geomCollisions++);
             }
 
-            long time3 = System.nanoTime();
+            long time3 = TimeUtils.nanoTime();
             timer1 += time2 - time1;
             timer2 += time3 - time2;
         }

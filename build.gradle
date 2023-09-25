@@ -29,6 +29,7 @@ version "$VERSION_NAME" // You can set the version in gradle.properties .
 
 sourceSets {
     main.java.srcDirs = ['core/src/main/java']
+    main.java.exclude('core/src/test')
     //main.resources.srcDirs = ['src/resources']
 }
 
