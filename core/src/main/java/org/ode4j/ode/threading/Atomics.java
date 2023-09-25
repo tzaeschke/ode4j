@@ -21,6 +21,8 @@
  *************************************************************************/
 package org.ode4j.ode.threading;
 
+import org.ode4j.GWTAtomicIntegerArray;
+
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,7 +34,7 @@ public class Atomics {
 	    return paoDestination.compareAndSet(aoComparand, aoExchange);
 	}
 
-	public static boolean ThrsafeCompareExchange(AtomicIntegerArray paoDestination, int arrayOffset, int aoComparand, int aoExchange)
+	public static boolean ThrsafeCompareExchange(GWTAtomicIntegerArray paoDestination, int arrayOffset, int aoComparand, int aoExchange)
 	{
 		return paoDestination.compareAndSet(arrayOffset, aoComparand, aoExchange);
 	}
