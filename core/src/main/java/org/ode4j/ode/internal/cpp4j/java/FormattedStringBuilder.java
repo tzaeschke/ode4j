@@ -47,7 +47,7 @@ import java.io.PrintStream;
 public class FormattedStringBuilder {
 
     /** New Line. */
-    public final static String NL = System.getProperty("line.separator");
+    public final static String NL = "\n";
     
     private StringBuilder _delegate;
     

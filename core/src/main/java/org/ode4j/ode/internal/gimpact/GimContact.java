@@ -132,7 +132,8 @@ public class GimContact {
 	///Creates a contact list for queries
 	//#define GIM_CREATE_CONTACT_LIST(contact_array) GIM_DYNARRAY_CREATE(GIM_CONTACT,contact_array,100)
 	public static GimDynArray<GimContact> GIM_CREATE_CONTACT_LIST() { 
-		return GimDynArray.GIM_DYNARRAY_CREATE(GimContact.class, 100);//GIM_CONTACT,contact_array,100);
+		//return GimDynArray.GIM_DYNARRAY_CREATE(GimContact.class, 100);//GIM_CONTACT,contact_array,100);
+		return GimDynArray.GIM_DYNARRAY_CREATE( 100);//GIM_CONTACT,contact_array,100);
 	}
 
 	//#define GIM_PUSH_CONTACT(contact_array, point, normal, deep,handle1, handle2, feat1, feat2)\

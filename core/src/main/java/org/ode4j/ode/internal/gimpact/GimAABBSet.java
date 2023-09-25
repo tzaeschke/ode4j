@@ -100,7 +100,8 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	/** Function for creating  an overlapping pair set. */
 	//#define GIM_CREATE_PAIR_SET(dynarray) GIM_DYNARRAY_CREATE(GIM_PAIR,dynarray,G_ARRAY_GROW_SIZE)
 	static GimDynArray<GIM_PAIR> GIM_CREATE_PAIR_SET() { 
-		return GimDynArray.GIM_DYNARRAY_CREATE(GIM_PAIR.class, GimDynArray.G_ARRAY_GROW_SIZE);  //GIM_PAIR !! TZ TODO ?
+		//return GimDynArray.GIM_DYNARRAY_CREATE(GIM_PAIR.class, GimDynArray.G_ARRAY_GROW_SIZE);  //GIM_PAIR !! TZ TODO ?
+		return GimDynArray.GIM_DYNARRAY_CREATE(GimDynArray.G_ARRAY_GROW_SIZE);  //GIM_PAIR !! TZ TODO ?
 	}
 
 //	/**

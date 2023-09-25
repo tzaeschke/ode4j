@@ -73,11 +73,13 @@ public class GimDynArray<T> {//extends GimBufferArray<T> {
 	//! Creates a dynamic array zero sized
 	//#define GIM_DYNARRAY_CREATE(type, array_data, reserve_size) \
 	@SuppressWarnings("unchecked")
-	static <T> GimDynArray<T> GIM_DYNARRAY_CREATE(Class<T> clazz, int reserve_size)
+	//static <T> GimDynArray<T> GIM_DYNARRAY_CREATE(Class<T> clazz, int reserve_size)
+	static <T> GimDynArray<T> GIM_DYNARRAY_CREATE( int reserve_size)
 	{ 
 		GimDynArray<T> a = new GimDynArray<T>();
 	    //(array_data).m_pdata = (char *)gim_alloc((reserve_size) * sizeof(type));
-		a.m_pdata = (T[]) Array.newInstance(clazz, reserve_size); //gim_alloc((reserve_size));// * sizeof(type));
+		//a.m_pdata = (T[]) Array.newInstance(clazz, reserve_size); //gim_alloc((reserve_size));// * sizeof(type));
+		a.m_pdata = (T[]) new Object[reserve_size];;
 	    a.m_size = 0; 
 	    a.m_reserve_size = reserve_size;
 	    return a;
