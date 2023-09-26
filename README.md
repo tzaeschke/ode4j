@@ -12,19 +12,23 @@ with friction. ODE is useful for simulating vehicles, objects in virtual reality
 The latest released version of ode4j is 0.5.1, but the master branch may contain fixes and improvements. Release 0.5.0
 contains all changes up to ODE 0.16.3.
 
-ode4j contains numerous [custom features](#additional-features-in-ode4j) that are not present in ODE (see
+Resources
+ 
+* ode4j contains numerous [custom features](#additional-features-in-ode4j) that are not present in ODE (see
 also [Wiki](https://github.com/tzaeschke/ode4j/wiki/Functionality-beyond-ODE)).
 
-The [ODE forum](https://groups.google.com/forum/#!forum/ode-users) is useful for questions around physics and general
+* The [ODE forum](https://groups.google.com/forum/#!forum/ode-users) is useful for questions around physics and general
 API usage:
 
-There is a new [Discord channel](https://discord.gg/UFXJcXv2P8) around ode4j/Java.
+* There is a new [Discord channel](https://discord.gg/UFXJcXv2P8) around ode4j/Java.
 
-The [ode4j forum](https://groups.google.com/forum/?hl=en#!forum/ode4j) is for problems and functionality specific to
+* The [ode4j forum](https://groups.google.com/forum/?hl=en#!forum/ode4j) is for problems and functionality specific to
 ode4j/Java.
 
-There is also the [old website](https://tzaeschke.github.io/ode4j-old/), including
+* There is also the [old website](https://tzaeschke.github.io/ode4j-old/), including
 some [screenshots](https://tzaeschke.github.io/ode4j-old/ode4j-features.html).
+
+There is also a [GWT compatible fork](https://github.com/antzGames/gdx-ode4j) of ode4j.
 
 The following artifact contains the complete physics engine (examples etc.
 are [not included](https://github.com/tzaeschke/ode4j/wiki/Maven-HOWTO)):
