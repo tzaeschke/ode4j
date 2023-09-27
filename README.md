@@ -1,3 +1,5 @@
+[![](https://jitpack.io/v/antzGames/ode4j.svg)](https://jitpack.io/#antzGames/ode4j)
+
 # libGDX Open Dynamics Engine (ODE4J) - physics engine LIBRARY
 
 ![image](https://github.com/antzGames/gdx-ode4j/assets/10563814/c59c282d-9198-4066-81b7-0de4e5808f64)
