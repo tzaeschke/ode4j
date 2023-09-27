@@ -110,14 +110,6 @@ public void render(float deltaTime){
 
 I have tried jBullet, PhysX and ODE physics engines with libGDX.  ODE is the slowest, and the reason being is that in ODE everything is using double precision.
 
-### Known Issues
-
-ODE4J 0.4.2 has some Triangle Mesh (TriMesh) collision detection issues.
-
-The owner of ODE4J has fixed them in ODE4J 0.5.0.
-
-I will have to update this library to use ODE4J 0.5.0 which is planned.
-
 ## Where to get ODE/ode4j documentation and help
 
 ODE official manual: http://ode.org/wiki/index.php/Manual
