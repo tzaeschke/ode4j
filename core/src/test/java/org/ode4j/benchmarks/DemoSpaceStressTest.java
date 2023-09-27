@@ -353,12 +353,12 @@ public class DemoSpaceStressTest {
             command('s');
         }
 
-        long t0 = System.nanoTime();
+        long t0 = TimeUtils.nanoTime();
         // run simulation
         for (int i = 0; i < 100; ++i) {
             simLoop();
         }
-        long t1 = System.nanoTime();
+        long t1 = TimeUtils.nanoTime();
         System.out.print("time: " + (t1 - t0) / 1000 / 1000 + "ms     ");
     }
 }

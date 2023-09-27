@@ -32,7 +32,7 @@ import org.ode4j.ode.internal.joints.DxJointNode;
 
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.ErrorHandler.*;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
+//import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 
 /**
@@ -235,7 +235,7 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 	private static boolean DO = false;
 	private static void DO_printf(String msg, Object... args) {
 		if (DO) {
-			printf(msg, args);
+			//printf(msg, args);
 		}
 	}
 

@@ -47,15 +47,15 @@ public class DxGimpact extends DxTriMesh {
 	//GimTrimesh m_collision_trimesh;
 
 	//void dGeomTriMeshSetLastTransform( DMatrix4 last_trans ) { //stub
-	void dGeomTriMeshSetLastTransform( Object last_trans ) { //stub
-		throw new UnsupportedAddressTypeException();
-	}
-
-	//	DMatrix4 dGeomTriMeshGetLastTransform() {
-	Object dGeomTriMeshGetLastTransform() {
-		throw new UnsupportedAddressTypeException();
-		//		return null; // stub
-	}
+//	void dGeomTriMeshSetLastTransform( Object last_trans ) { //stub
+//		throw new UnsupportedAddressTypeException();
+//	}
+//
+//	//	DMatrix4 dGeomTriMeshGetLastTransform() {
+//	Object dGeomTriMeshGetLastTransform() {
+//		throw new UnsupportedAddressTypeException();
+//		//		return null; // stub
+//	}
 
 
 	// Trimesh

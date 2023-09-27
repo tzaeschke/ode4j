@@ -1,0 +1,4 @@
+rootProject.name = 'gdx-ode4j'
+
+include 'core'
+

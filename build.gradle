@@ -1,0 +1,96 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.22.0'
+    }
+}
+
+apply plugin: 'java-library'
+apply plugin: 'com.vanniktech.maven.publish'
+
+// Changing this to 11 may be possible, but anything higher will restrict this library to being used on desktop only.
+// It may be possible to downgrade this to 1.7, but then you need to avoid using LWJGL3 within this library/its tests.
+sourceCompatibility = 1.8
+
+//Obviously, change the next line to match your project name.
+def projectName = 'gdx-ode4j'
+
+//Change this to whatever Maven Central group you might publish to, which is probably not this one if you aren't Tommy Ettinger.
+group 'com.github.antzGames'
+
+version "$VERSION_NAME" // You can set the version in gradle.properties .
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+sourceSets {
+    main.java.srcDirs = ['core/src/main/java']
+    main.java.exclude(['core/src/test', '**/cpp4j/Cstd*.java', '**/cpp4j/FILE.java'])
+    main.resources.srcDirs = ['core/src/main/resources']
+}
+
+// Disable JDK 8's doclint
+// http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            // The -quiet is because of some sort of weird JDK JavaCompiler bug:
+            // https://discuss.gradle.org/t/passing-arguments-to-compiler-and-javadoc/1661
+            options.addStringOption('Xdoclint:none,-missing', '-quiet')
+        }
+    }
+}
+
+if(JavaVersion.current().isJava9Compatible()) {
+    allprojects {
+        tasks.withType(JavaCompile) {
+            options.release.set(8) // LWJGL3 needs Java 8 starting in libGDX 1.11.0, which forces tests
+                                   // to use Java 8 or higher. options.release enforces compatibility with Java 8,
+                                   // including how NIO Buffers behave (which broke compatibility in Java 9).
+        }
+    }
+}
+
+// JavaDocs will be published inside the docs/ folder, which you can easily put on GitHub Pages in your repo settings.
+// You may instead want to remove this line if frequent doc changes use up too much repo space.
+javadoc.destinationDir = file('docs/apidocs')
+
+jar {
+    archiveBaseName.set(projectName)
+    manifest {
+        attributes 'Implementation-Title': projectName, 'Implementation-Version': archiveVersion
+    }
+}
+
+repositories {
+    // You can uncomment mavenLocal() if you need self-built versions, but it can be a problem with GWT or other sources dependencies.
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://s01.oss.sonatype.org' }
+    google()
+    gradlePluginPortal()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    // JitPack is a good repo to have if you depend on commit versions.
+    // Having the below repo might cause problems if uploading to Maven Central.
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+// Change gdxVersion in gradle.properties to update or downgrade.
+// Libraries that don't use libGDX directly can change the next line
+// from `api` to `testImplementation` .
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    api "com.github.tommyettinger:formic:$formicVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    testImplementation "junit:junit:4.13.2"
+    api "org.slf4j:slf4j-api:2.0.7"
+
+    // I don't know what conditions may require this to run tests.
+    //testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.9.0"
+}

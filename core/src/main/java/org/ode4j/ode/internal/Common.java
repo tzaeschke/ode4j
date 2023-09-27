@@ -24,6 +24,8 @@
  *************************************************************************/
 package org.ode4j.ode.internal;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DGeom.DNearCallback;
 import org.ode4j.ode.DWorld;
@@ -532,9 +534,27 @@ public class Common extends OdeConstants {
     }
 
     //#define dNextAfter(x, y) nextafterf(x, y) /* next value after */
-    public static double dNextAfter(double start, double direction) {
-        return Math.nextAfter(start, direction);
-    }
+//    public static double dNextAfter(double start, double direction) {
+//        return Math.nextAfter(start, direction);
+//    }
+
+	public static final double dNextAfter(double start, double direction) {
+
+		long transducer;
+		if (start > direction) {
+			if (start != 0.0D) {
+				transducer = NumberUtils.doubleToLongBits(start);
+				return NumberUtils.longBitsToDouble(transducer + (transducer > 0L ? -1L : 1L));
+			} else {
+				return -4.9E-324D;
+			}
+		} else if (start < direction) {
+			transducer = NumberUtils.doubleToLongBits(start + 0.0D);
+			return NumberUtils.longBitsToDouble(transducer + (transducer >= 0L ? 1L : -1L));
+		} else {
+			return start == direction ? direction : start + direction;
+		}
+	}
 
 
 	//#ifdef HAVE___ISNAN

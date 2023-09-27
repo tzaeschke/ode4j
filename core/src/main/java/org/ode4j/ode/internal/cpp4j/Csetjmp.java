@@ -28,7 +28,7 @@ import org.ode4j.ode.internal.cpp4j.java.CppLongJump;
  *
  * @author Tilmann Zaeschke
  */
-public class Csetjmp extends Cstdio {
+public class Csetjmp  {
 
 	/**
 	 *

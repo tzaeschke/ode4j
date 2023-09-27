@@ -25,10 +25,12 @@
 package org.ode4j.ode.internal;
 
 
-import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
+import com.badlogic.gdx.utils.TimeUtils;
+
+//import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 import org.ode4j.ode.DStopwatch;
-import org.ode4j.ode.internal.cpp4j.FILE;
+//import org.ode4j.ode.internal.cpp4j.FILE;
 
 /**
  * TODO
@@ -45,13 +47,13 @@ public class Timer {
 
 	//	private static void getClockCount (long[] cc)
 	//	{
-	//		long ms = System.nanoTime();//TimeMillis();
+	//		long ms = TimeUtils.nanoTime();//TimeMillis();
 	//		//  cc[1] = ms.lo / 1000000;
 	//		//  cc[0] = ms.lo - ( cc[1] * 1000000 );
 	//	}
 	private static long getClockCount ()
 	{
-		return System.nanoTime();//TimeMillis();
+		return TimeUtils.nanoTime();//TimeMillis();
 	}
 
 
@@ -86,12 +88,12 @@ public class Timer {
 		//		double t1 = loadClockCount (cc1);
 		//		double t2 = loadClockCount (cc2);
 		long cc2;
-		long cc1 = System.nanoTime();
+		long cc1 = TimeUtils.nanoTime();
 		do {
-			cc2 = System.nanoTime(); 
+			cc2 = TimeUtils.nanoTime(); 
 		} while (cc1 == cc2);
 		do {
-			cc1 = System.nanoTime(); 
+			cc1 = TimeUtils.nanoTime(); 
 		} while (cc1 == cc2);
 
 		return (cc1-cc2) / dTimerTicksPerSecond();
@@ -221,88 +223,88 @@ public class Timer {
 	// print report
 
 	//static void fprintDoubleWithPrefix (FILE *f, double a, const char *fmt)
-	private static void fprintDoubleWithPrefix (FILE f, double a, final String fmt)
-	{
-		if (a >= 0.999999) {
-			fprintf (f,fmt,a);
-			return;
-		}
-		a *= 1000.0;
-		if (a >= 0.999999) {
-			fprintf (f,fmt,a);
-			fprintf (f,"m");
-			return;
-		}
-		a *= 1000.0;
-		if (a >= 0.999999) {
-			fprintf (f,fmt,a);
-			fprintf (f,"u");
-			return;
-		}
-		a *= 1000.0;
-		fprintf (f,fmt,a);
-		fprintf (f,"n");
-	}
+//	private static void fprintDoubleWithPrefix (FILE f, double a, final String fmt)
+//	{
+//		if (a >= 0.999999) {
+//			//fprintf (f,fmt,a);
+//			return;
+//		}
+//		a *= 1000.0;
+//		if (a >= 0.999999) {
+//			//fprintf (f,fmt,a);
+//			//fprintf (f,"m");
+//			return;
+//		}
+//		a *= 1000.0;
+//		if (a >= 0.999999) {
+//			//fprintf (f,fmt,a);
+//			//fprintf (f,"u");
+//			return;
+//		}
+//		a *= 1000.0;
+//		//fprintf (f,fmt,a);
+//		//fprintf (f,"n");
+//	}
 
 
-	public static void dTimerReport (FILE fout, int average)
-	{
-		int i;
-		int maxl;//size_t maxl;
-		double ccunit = 1.0/dTimerTicksPerSecond();
-		fprintf (fout,"\nTimer Report (");
-		fprintDoubleWithPrefix (fout,ccunit,"%.2f ");
-		fprintf (fout,"s resolution)\n------------\n");
-		if (num < 1) return;
-
-		// get maximum description length
-		maxl = 0;
-		for (i=0; i<num; i++) {
-			//size_t l = strlen (event[i].description);
-			int l = event[i].description.length();
-			if (l > maxl) maxl = l;
-		}
-
-		// calculate total time
-		double tt1 = loadClockCount (event[0].cc);
-		double tt2 = loadClockCount (event[num-1].cc);
-		double total = tt2 - tt1;
-		if (total <= 0) total = 1;
-
-		// compute time difference for all slots except the last one. update totals
-		double []times = new double[num];//(double*) ALLOCA (num * sizeof(double));
-		for (i=0; i < (num-1); i++) {
-			double t1 = loadClockCount (event[i].cc);
-			double t2 = loadClockCount (event[i+1].cc);
-			times[i] = t2 - t1;
-			event[i].count++;
-			event[i].total_t += times[i];
-			event[i].total_p += times[i]/total * 100.0;
-		}
-
-		// print report (with optional averages)
-		for (i=0; i<num; i++) {
-			double t,p;
-			if (i < (num-1)) {
-				t = times[i];
-				p = t/total * 100.0;
-			}
-			else {
-				t = total;
-				p = 100.0;
-			}
-			//fprintf (fout,"%-*s %7.2fms %6.2f%%",(int)maxl,event[i].description, //TODO -*
-			fprintf (fout,"%s %7.2fms %6.2f%%",event[i].description,  //TODO (int)maxl
-					t*ccunit * 1000.0, p);
-			if (average!=0 && i < (num-1)) {
-				fprintf (fout,"  (avg %7.2fms %6.2f%%)",
-						(event[i].total_t / event[i].count)*ccunit * 1000.0,
-						event[i].total_p / event[i].count);
-			}
-			fprintf (fout,"\n");
-		}
-		fprintf (fout,"\n");
-	}
+//	public static void dTimerReport (FILE fout, int average)
+//	{
+//		int i;
+//		int maxl;//size_t maxl;
+//		double ccunit = 1.0/dTimerTicksPerSecond();
+//		//fprintf (fout,"\nTimer Report (");
+//		fprintDoubleWithPrefix (fout,ccunit,"%.2f ");
+//		//fprintf (fout,"s resolution)\n------------\n");
+//		if (num < 1) return;
+//
+//		// get maximum description length
+//		maxl = 0;
+//		for (i=0; i<num; i++) {
+//			//size_t l = strlen (event[i].description);
+//			int l = event[i].description.length();
+//			if (l > maxl) maxl = l;
+//		}
+//
+//		// calculate total time
+//		double tt1 = loadClockCount (event[0].cc);
+//		double tt2 = loadClockCount (event[num-1].cc);
+//		double total = tt2 - tt1;
+//		if (total <= 0) total = 1;
+//
+//		// compute time difference for all slots except the last one. update totals
+//		double []times = new double[num];//(double*) ALLOCA (num * sizeof(double));
+//		for (i=0; i < (num-1); i++) {
+//			double t1 = loadClockCount (event[i].cc);
+//			double t2 = loadClockCount (event[i+1].cc);
+//			times[i] = t2 - t1;
+//			event[i].count++;
+//			event[i].total_t += times[i];
+//			event[i].total_p += times[i]/total * 100.0;
+//		}
+//
+//		// print report (with optional averages)
+//		for (i=0; i<num; i++) {
+//			double t,p;
+//			if (i < (num-1)) {
+//				t = times[i];
+//				p = t/total * 100.0;
+//			}
+//			else {
+//				t = total;
+//				p = 100.0;
+//			}
+//			//fprintf (fout,"%-*s %7.2fms %6.2f%%",(int)maxl,event[i].description, //TODO -*
+//			//fprintf (fout,"%s %7.2fms %6.2f%%",event[i].description,  //TODO (int)maxl
+//			//		t*ccunit * 1000.0, p);
+//			if (average!=0 && i < (num-1)) {
+//				//fprintf (fout,"  (avg %7.2fms %6.2f%%)",
+//				//		(event[i].total_t / event[i].count)*ccunit * 1000.0,
+//				//		event[i].total_p / event[i].count);
+//			}
+//			//fprintf (fout,"\n");
+//		}
+//		//fprintf (fout,"\n");
+//	}
 
 	private Timer() {}
 }

@@ -22,6 +22,8 @@
 package org.ode4j.math;
 
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 import static org.ode4j.ode.internal.Common.M_PI;
 
 /**
@@ -193,13 +195,13 @@ public class DQuaternion implements DQuaternionC {
 	@Deprecated // float is generally not comparable. To be removed in 0.6.0. TODO deprecated
 	public int hashCode() {
 		int h = 0;
-		h |= Double.doubleToRawLongBits(w);
+		h |= NumberUtils.doubleToLongBits(w);
 		h <<= 6;
-		h |= Double.doubleToRawLongBits(x);
+		h |= NumberUtils.doubleToLongBits(x);
 		h <<= 6;
-		h |= Double.doubleToRawLongBits(y);
+		h |= NumberUtils.doubleToLongBits(y);
 		h <<= 6;
-		h |= Double.doubleToRawLongBits(z);
+		h |= NumberUtils.doubleToLongBits(z);
 		h <<= 6;
 		return h;
 	}

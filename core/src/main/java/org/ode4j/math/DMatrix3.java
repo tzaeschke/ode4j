@@ -22,6 +22,8 @@
 package org.ode4j.math;
 
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 import java.util.Arrays;
 
 /**
@@ -727,7 +729,7 @@ public final class DMatrix3 implements DMatrix3C {
 	public int hashCode() {
 		int h = 0;
 		for (double d: v) {
-			h |= Double.doubleToRawLongBits(d);
+			h |= NumberUtils.doubleToLongBits(d);
 			h <<= 2;
 		}
 		return h;

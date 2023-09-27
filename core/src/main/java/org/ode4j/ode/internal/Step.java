@@ -40,20 +40,20 @@ import static org.ode4j.ode.internal.DLCP.*;
 import static org.ode4j.ode.internal.StepEnums.*;
 import static org.ode4j.ode.internal.Timer.dTimerEnd;
 import static org.ode4j.ode.internal.Timer.dTimerNow;
-import static org.ode4j.ode.internal.Timer.dTimerReport;
+//import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
+//import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 import static org.ode4j.ode.internal.joints.JointEnums.*;
 import static org.ode4j.ode.internal.processmem.DxUtil.EFFICIENT_ALIGNMENT;
 import static org.ode4j.ode.threading.Atomics.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicIntegerArray;
 
+import org.ode4j.GWTAtomicIntegerArray;
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.ode.DJoint.DJointFeedback;
-import org.ode4j.ode.internal.cpp4j.FILE;
+//import org.ode4j.ode.internal.cpp4j.FILE;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointNode;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
@@ -95,11 +95,11 @@ dmaxcallcountestimate_fn_t {
 			dTimerEnd();
 		}
 	}
-	private static void IFTIMING_dTimerReport (FILE fout, int average) {
-		if (TIMING) {
-			dTimerReport(fout, average);
-		}
-	}
+//	private static void IFTIMING_dTimerReport (FILE fout, int average) {
+//		if (TIMING) {
+//			dTimerReport(fout, average);
+//		}
+//	}
 
 	public static final boolean DIRECT_CHOLESKY = true;
 	public static final boolean REPORT_ERROR = false;
@@ -198,7 +198,7 @@ dmaxcallcountestimate_fn_t {
 						int nj,
 						int m, int nub, final int[] mindex, int[] findex,
 						double[] J, double[] A, double[] pairsRhsCfm, double[] pairsLoHi,
-						AtomicIntegerArray bodyStartJoints, AtomicIntegerArray bodyJointLinks) {
+						GWTAtomicIntegerArray bodyStartJoints, GWTAtomicIntegerArray bodyJointLinks) {
 			m_invI = invI;
 			m_jointinfosA = jointinfosA;
 			m_jointinfosOfs = jointinfosOfs;
@@ -227,8 +227,8 @@ dmaxcallcountestimate_fn_t {
 		double[]                           m_A;
 		double[]                           m_pairsRhsCfm;
 		double[]                           m_pairsLoHi;
-		AtomicIntegerArray                 m_bodyStartJoints;
-		AtomicIntegerArray                 m_bodyJointLinks;
+		GWTAtomicIntegerArray                 m_bodyStartJoints;
+		GWTAtomicIntegerArray                 m_bodyJointLinks;
 	}
 
 	private static class dxStepperStage2CallContext
@@ -1082,7 +1082,7 @@ dmaxcallcountestimate_fn_t {
 		double[] J = null, A = null, pairsRhsCfm = null, pairsLoHi = null;
 		int[] findex = null;
 		//atomicord32 *bodyStartJoints = NULL, *bodyJointLinks = NULL;
-		AtomicIntegerArray bodyStartJoints = null, bodyJointLinks = null;
+		GWTAtomicIntegerArray bodyStartJoints = null, bodyJointLinks = null;
 
 
 		// if there are constraints, compute constrForce
@@ -1396,7 +1396,7 @@ dmaxcallcountestimate_fn_t {
 			int bodyP = callContext.m_islandBodiesStartOfs();
 			final int nb = callContext.m_islandBodiesCount();
 			final double[] invI = localContext.m_invI;
-			AtomicIntegerArray bodyStartJoints = localContext.m_bodyStartJoints;
+			GWTAtomicIntegerArray bodyStartJoints = localContext.m_bodyStartJoints;
 			double[] rhs_tmp = stage2CallContext.m_rhs_tmp;
 
 			// compute the right hand side `rhs'
@@ -1520,8 +1520,8 @@ dmaxcallcountestimate_fn_t {
 			double[] J = localContext.m_J;
 			double[] rhs_tmp = stage2CallContext.m_rhs_tmp;
 			double[] pairsRhsCfm = localContext.m_pairsRhsCfm;
-			AtomicIntegerArray bodyStartJoints = localContext.m_bodyStartJoints;
-			AtomicIntegerArray bodyJointLinks = localContext.m_bodyJointLinks;
+			GWTAtomicIntegerArray bodyStartJoints = localContext.m_bodyStartJoints;
+			GWTAtomicIntegerArray bodyJointLinks = localContext.m_bodyJointLinks;
 
 
 			// compute the right hand side `rhs'
@@ -1623,7 +1623,7 @@ dmaxcallcountestimate_fn_t {
 			IFTIMING_dTimerEnd();
 
 			if (m > 0) {
-				IFTIMING_dTimerReport(stdout, 1);
+				//IFTIMING_dTimerReport(stdout, 1);
 			}
 		} else {
 			throw new UnsupportedOperationException();
@@ -1660,8 +1660,8 @@ dmaxcallcountestimate_fn_t {
 		double[] J = localContext.m_J;
 		double[] pairsRhsLambda = localContext.m_pairsRhsCfm;
 		final int[] mIndex = localContext.m_mindex;
-		AtomicIntegerArray bodyStartJoints = localContext.m_bodyStartJoints;
-		AtomicIntegerArray bodyJointLinks = localContext.m_bodyJointLinks;
+		GWTAtomicIntegerArray bodyStartJoints = localContext.m_bodyStartJoints;
+		GWTAtomicIntegerArray bodyJointLinks = localContext.m_bodyJointLinks;
 		final int nb = callContext.m_islandBodiesCount();
 
 		int bi = 0;

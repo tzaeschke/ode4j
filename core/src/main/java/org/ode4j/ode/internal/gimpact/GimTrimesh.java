@@ -358,7 +358,8 @@ public class GimTrimesh implements GimConstants {
 	///Function for create Trimesh Plane  collision result
 	//#define GIM_CREATE_TRIMESHPLANE_CONTACTS(dynarray) GIM_DYNARRAY_CREATE(vec4f,dynarray,G_ARRAY_GROW_SIZE)
 	public static GimDynArray<vec4f> GIM_CREATE_TRIMESHPLANE_CONTACTS() { 
-		return GimDynArray.GIM_DYNARRAY_CREATE(vec4f.class, GimDynArray.G_ARRAY_GROW_SIZE);//vec4f,dynarray,G_ARRAY_GROW_SIZE);
+		//return GimDynArray.GIM_DYNARRAY_CREATE(vec4f.class, GimDynArray.G_ARRAY_GROW_SIZE);//vec4f,dynarray,G_ARRAY_GROW_SIZE);
+		return GimDynArray.GIM_DYNARRAY_CREATE(2, GimDynArray.G_ARRAY_GROW_SIZE);//vec4f,dynarray,G_ARRAY_GROW_SIZE);
 	}
 
 	//! Trimesh Plane Collisions

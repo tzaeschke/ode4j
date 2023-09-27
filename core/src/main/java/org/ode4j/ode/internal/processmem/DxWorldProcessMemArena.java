@@ -24,12 +24,13 @@
  *************************************************************************/
 package org.ode4j.ode.internal.processmem;
 
+import org.ode4j.GWTAtomicIntegerArray;
 import org.ode4j.ode.internal.Common;
 import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 
-import java.util.concurrent.atomic.AtomicIntegerArray;
+//import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public final class DxWorldProcessMemArena {
 	
@@ -216,8 +217,8 @@ public final class DxWorldProcessMemArena {
         return new double[count];
     }
 
-    public final AtomicIntegerArray AllocateArrayAtomicord32(int size) {
-        return new AtomicIntegerArray(size);
+    public final GWTAtomicIntegerArray AllocateArrayAtomicord32(int size) {
+        return new GWTAtomicIntegerArray(size);
     }
 
     /**

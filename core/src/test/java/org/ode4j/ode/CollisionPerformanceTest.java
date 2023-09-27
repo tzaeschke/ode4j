@@ -278,14 +278,14 @@ public class CollisionPerformanceTest {
         int totalCount = 0;
         int maxCollisionCount = 0;
         for (int j = 0; j < iterations; j++) {
-            long time1 = System.nanoTime();
+            long time1 = TimeUtils.nanoTime();
             space.collide(0, (data, o1, o2) -> nearCallback(o1, o2));
             // world.step(0.05);
             world.quickStep(0.05);
             contactgroup.empty ();
 
             // remove all contact joints
-            long time2 = System.nanoTime();
+            long time2 = TimeUtils.nanoTime();
             timer += (time2 - time1);
 
             if (prevCount > 0 && j < 2) {

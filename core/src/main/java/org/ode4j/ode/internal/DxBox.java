@@ -35,6 +35,7 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
 
 import static org.ode4j.ode.OdeMath.*;
 import static org.ode4j.ode.internal.cpp4j.C_All.*;
+import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 
 
 /**

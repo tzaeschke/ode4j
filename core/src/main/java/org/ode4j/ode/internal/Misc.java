@@ -32,11 +32,11 @@ import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DQuaternionC;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.internal.cpp4j.FILE;
+//import org.ode4j.ode.internal.cpp4j.FILE;
 
 import static org.ode4j.ode.internal.Common.dFabs;
 import static org.ode4j.ode.internal.Common.dPAD;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
+//import static org.ode4j.ode.internal.cpp4j.Cstdio.*;
 
 
 
@@ -229,15 +229,15 @@ public class Misc {
 
 	/** print out a matrix */
 //	void dPrintMatrix (final double []A, int n, int m, char []fmt, FILE f)
-	void dPrintMatrix (final double []A, int n, int m, String fmt, FILE f)
-	{
-	    int skip = dPAD(m);
-	    int Arowp = 0;//A;
-	    for (int i=0; i<n; Arowp+=skip, ++i) {
-	        for (int j=0; j<m; ++j) fprintf (f,fmt,A[Arowp+j]);
-	        fprintf (f,"\n");
-	    }
-	}
+//	void dPrintMatrix (final double []A, int n, int m, String fmt, FILE f)
+//	{
+//	    int skip = dPAD(m);
+//	    int Arowp = 0;//A;
+//	    for (int i=0; i<n; Arowp+=skip, ++i) {
+//	        for (int j=0; j<m; ++j) fprintf (f,fmt,A[Arowp+j]);
+//	        fprintf (f,"\n");
+//	    }
+//	}
 
 
 	/** 

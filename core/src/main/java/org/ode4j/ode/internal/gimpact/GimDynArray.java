@@ -73,15 +73,27 @@ public class GimDynArray<T> {//extends GimBufferArray<T> {
 	//! Creates a dynamic array zero sized
 	//#define GIM_DYNARRAY_CREATE(type, array_data, reserve_size) \
 	@SuppressWarnings("unchecked")
-	static <T> GimDynArray<T> GIM_DYNARRAY_CREATE(Class<T> clazz, int reserve_size)
+	//static <T> GimDynArray<T> GIM_DYNARRAY_CREATE(Class<T> clazz, int reserve_size)
+	static <T> GimDynArray<T> GIM_DYNARRAY_CREATE(int type,  int reserve_size)
 	{ 
 		GimDynArray<T> a = new GimDynArray<T>();
 	    //(array_data).m_pdata = (char *)gim_alloc((reserve_size) * sizeof(type));
-		a.m_pdata = (T[]) Array.newInstance(clazz, reserve_size); //gim_alloc((reserve_size));// * sizeof(type));
-	    a.m_size = 0; 
+		//a.m_pdata = (T[]) Array.newInstance(clazz, reserve_size); //gim_alloc((reserve_size));// * sizeof(type));
+		//a.m_pdata = (T[]) new Object[reserve_size]; // doesnt work
+
+		if (type == 0)
+			a.m_pdata = (T[]) new GimContact[reserve_size];
+		else if (type == 1)
+			a.m_pdata = (T[]) new GimAABBSet.GIM_PAIR[reserve_size];
+		else
+			a.m_pdata = (T[]) new GimGeometry.vec4f[reserve_size];
+
+	    a.m_size = 0;
 	    a.m_reserve_size = reserve_size;
 	    return a;
-	} 
+	}
+
+
 
 	/**
 	 * Creates a dynamic array with n = size elements.

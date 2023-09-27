@@ -38,7 +38,7 @@ import static org.ode4j.ode.internal.Misc.dClearUpperTriangle;
 import static org.ode4j.ode.internal.Misc.dMakeRandomMatrix;
 import static org.ode4j.ode.internal.Misc.dMaxDifference;
 import static org.ode4j.ode.internal.Misc.dRandReal;
-import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
+//import static org.ode4j.ode.internal.cpp4j.Cstdio.printf;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memcpy;
 import static org.ode4j.ode.internal.cpp4j.Cstring.memmove;
 
@@ -1544,8 +1544,8 @@ public class DLCP {
 
             // pacifier
 			if (print) {
-				printf("passed: NL=%3d NH=%3d C=%3d   ", n1, n2, n3);
-				printf("time=%10.3f ms  avg=%10.4f\n", time * 1000.0, average);
+//				printf("passed: NL=%3d NH=%3d C=%3d   ", n1, n2, n3);
+//				printf("time=%10.3f ms  avg=%10.4f\n", time * 1000.0, average);
 			}
             }
             arena.END_STATE_SAVE(saveInner);
