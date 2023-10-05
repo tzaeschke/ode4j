@@ -25,6 +25,9 @@
 
 --> See TODO.txt
 
+## unreleased
+- Fix DVector3.cross() returning always 0. [#128](https://github.com/tzaeschke/ode4j/issues/128)
+
 ## 0.5.1 - 2023-09-17
 - Support for HiDPI screens / Apple Silicon/Retina. Contribution by valb3r,
   [#126]https://github.com/tzaeschke/ode4j/issues/126
