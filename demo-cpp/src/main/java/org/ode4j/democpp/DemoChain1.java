@@ -217,7 +217,7 @@ class DemoChain1 extends dsFunctions {
 		}
 
 		/* run simulation */
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 		dJointGroupDestroy (contactgroup);
 		dSpaceDestroy (space);

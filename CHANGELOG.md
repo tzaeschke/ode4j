@@ -28,6 +28,7 @@
 ## unreleased
 - Fix DVector3.cross() returning always 0. [#128](https://github.com/tzaeschke/ode4j/issues/128)
 - Fix JUnit test lint. [#130](https://github.com/tzaeschke/ode4j/pull/130)
+- Fix Demo window size to minimum 640x480. [#131](https://github.com/tzaeschke/ode4j/pull/131)
 
 ## 0.5.1 - 2023-09-17
 - Support for HiDPI screens / Apple Silicon/Retina. Contribution by valb3r,

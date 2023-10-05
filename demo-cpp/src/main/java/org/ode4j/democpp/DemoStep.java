@@ -218,7 +218,7 @@ class DemoStep extends dsFunctions {
 		createTest();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 		dWorldDestroy (world);
 		dCloseODE();

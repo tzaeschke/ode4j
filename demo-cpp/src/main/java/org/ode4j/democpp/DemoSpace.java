@@ -253,7 +253,7 @@ class DemoSpace extends dsFunctions {
 		init_test();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 		dSpaceDestroy (space);
 		dCloseODE();

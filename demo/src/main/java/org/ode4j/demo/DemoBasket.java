@@ -266,7 +266,7 @@ public class DemoBasket extends dsFunctions {
 		space.add (sphgeom);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 		// Causes segm violation? Why?
 		// (because dWorldDestroy() destroys body connected to geom; must call first!)

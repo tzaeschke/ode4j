@@ -243,7 +243,7 @@ class DemoI extends dsFunctions {
 		reset_test();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 		world.destroy ();
 		OdeHelper.closeODE();

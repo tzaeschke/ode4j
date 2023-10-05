@@ -1140,7 +1140,7 @@ public class DemoJoints extends dsFunctions {
 
 		// run simulation
 		if (cmd_graphics) {
-			dsSimulationLoop (args,352,288,this);
+			dsSimulationLoop (args,640,480,this);
 			//dsSimulationLoop (args,288,288,fn);
 			//dsSimulationLoop (args,400,400,fn);
 		}

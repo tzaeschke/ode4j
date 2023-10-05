@@ -331,7 +331,7 @@ public class DemoBuoyancy extends dsFunctions {
         for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
         OdeHelper.createPlane( space, 0, 0, 1, 0 );
 
-        dsSimulationLoop (args,352,288,this);
+        dsSimulationLoop (args,640,480,this);
         contactgroup.destroy ();
         space.destroy ();
         world.destroy ();
