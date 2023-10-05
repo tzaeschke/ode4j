@@ -32,18 +32,18 @@ public class DVector6Test {
 	@Test
 	public void testGet(){
 		DVector6 x = new DVector6(1, 2, 3, 4, 5, 6);
-		assertEquals(x.get0(), 1., 0);
-		assertEquals(x.get1(), 2., 0);
-		assertEquals(x.get2(), 3., 0);
-		assertEquals(x.get3(), 4., 0);
-		assertEquals(x.get4(), 5., 0);
-		assertEquals(x.get5(), 6., 0);
-		assertEquals(x.get(0), 1., 0);
-		assertEquals(x.get(1), 2., 0);
-		assertEquals(x.get(2), 3., 0);
-		assertEquals(x.get(3), 4., 0);
-		assertEquals(x.get(4), 5., 0);
-		assertEquals(x.get(5), 6., 0);
+		assertEquals(1., x.get0(), 0);
+		assertEquals(2., x.get1(), 0);
+		assertEquals(3., x.get2(), 0);
+		assertEquals(4., x.get3(), 0);
+		assertEquals(5., x.get4(), 0);
+		assertEquals(6., x.get5(), 0);
+		assertEquals(1., x.get(0), 0);
+		assertEquals(2., x.get(1), 0);
+		assertEquals(3., x.get(2), 0);
+		assertEquals(4., x.get(3), 0);
+		assertEquals(5., x.get(4), 0);
+		assertEquals(6., x.get(5), 0);
 	}		
 		
 	@Test
@@ -102,19 +102,19 @@ public class DVector6Test {
 		DVector6 z = new DVector6(x);
 		assertTrue(x.isEq(z, 0));
 		assertFalse(x.isEq(y, 0));
-		assertEquals(y.get0(), 0., 0);
-		assertEquals(y.get1(), 0., 0);
-		assertEquals(y.get2(), 0., 0);
-		assertEquals(y.get3(), 0., 0);
-		assertEquals(y.get4(), 0., 0);
-		assertEquals(y.get5(), 0., 0);
+		assertEquals(0., y.get0(), 0);
+		assertEquals(0., y.get1(), 0);
+		assertEquals(0., y.get2(), 0);
+		assertEquals(0., y.get3(), 0);
+		assertEquals(0., y.get4(), 0);
+		assertEquals(0., y.get5(), 0);
 
-		assertEquals(z.get0(), 1., 0);
-		assertEquals(z.get1(), 2., 0);
-		assertEquals(z.get2(), 3., 0);
-		assertEquals(z.get3(), 4., 0);
-		assertEquals(z.get4(), 5., 0);
-		assertEquals(z.get5(), 6., 0);
+		assertEquals(1., z.get0(), 0);
+		assertEquals(2., z.get1(), 0);
+		assertEquals(3., z.get2(), 0);
+		assertEquals(4., z.get3(), 0);
+		assertEquals(5., z.get4(), 0);
+		assertEquals(6., z.get5(), 0);
 	}		
 	
 	@Test
