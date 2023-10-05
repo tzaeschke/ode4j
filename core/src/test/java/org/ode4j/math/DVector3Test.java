@@ -201,7 +201,7 @@ public class DVector3Test {
     @Test
     public void testAddScale(){
         DVector3 x = new DVector3(1, 2, 3);
-        DVector3 y = new DVector3(1.5, 3, 4.5);
+        DVector3 y = new DVector3(1.5, 3, 2);
         DVector3 t = new DVector3();
         assertFalse(x.isEq(y, 0));
 
@@ -223,9 +223,9 @@ public class DVector3Test {
     @Test
     public void testCross1(){
         DVector3C x = new DVector3(1, 2, 3);
-        DVector3 y = new DVector3(1.5, 3, 4.5);
+        DVector3 y = new DVector3(1.5, 3, 2);
 
-        DVector3 t = x.cross(y);
+        DVector3 t = new DVector3(x).cross(y);
         DVector3 t2 = new DVector3();
         OdeMath.dCalcVectorCross3(t2, x, y);
         assertTrue(t2.isEq(t, 0));
@@ -234,7 +234,7 @@ public class DVector3Test {
     @Test
     public void testCross2(){
         DVector3 x = new DVector3(1, 2, 3);
-        DVector3 y = new DVector3(1.5, 3, 4.5);
+        DVector3 y = new DVector3(1.5, 3, 2);
         DVector3 t = new DVector3();
         assertFalse(x.isEq(y, 0));
 
