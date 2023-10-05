@@ -201,7 +201,7 @@ public class DVector3Test {
     @Test
     public void testAddScale(){
         DVector3 x = new DVector3(1, 2, 3);
-        DVector3 y = new DVector3(1.5, 3, 2);
+        DVector3 y = new DVector3(1.5, 3, 4.5);
         DVector3 t = new DVector3();
         assertFalse(x.isEq(y, 0));
 
