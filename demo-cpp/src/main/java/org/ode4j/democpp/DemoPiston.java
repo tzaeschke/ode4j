@@ -832,7 +832,7 @@ class DemoPiston extends dsFunctions {
 
 
 		// run simulation
-		dsSimulationLoop (args,400,300,this);
+		dsSimulationLoop (args,640,480,this);
 
 		//delete joint;
 		dJointGroupDestroy (contactgroup);

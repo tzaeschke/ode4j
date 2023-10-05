@@ -215,7 +215,7 @@ public class DemoHinge extends dsFunctions {
 		// run simulation
 		//	  dsSimulationLoop (argc,argv,352,288,&fn);
 //		dsSimulationLoop (args,352,288,fn);
-		dsSimulationLoop (args,400,400,this);
+		dsSimulationLoop (args,640,480,this);
 
 		dWorldDestroy (world);
 		dCloseODE();

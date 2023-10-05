@@ -305,7 +305,7 @@ class DemoBuggy extends dsFunctions {
 		ground_box.setRotation(R);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 		box[0].destroy();
 		sphere[0].destroy();

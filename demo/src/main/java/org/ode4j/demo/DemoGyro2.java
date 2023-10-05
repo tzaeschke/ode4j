@@ -205,7 +205,7 @@ public class DemoGyro2 extends dsFunctions {
 		reset();
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 		clear();
 		OdeHelper.closeODE();

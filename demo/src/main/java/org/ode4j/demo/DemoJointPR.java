@@ -433,7 +433,7 @@ class DemoJointPR extends dsFunctions {
 		box1_space.add(box1);
 
 		// run simulation
-		dsSimulationLoop (args,400,300,this);
+		dsSimulationLoop (args,640,480,this);
 		contactgroup.destroy ();
 		space.destroy ();
 		world.destroy ();

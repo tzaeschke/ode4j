@@ -392,7 +392,7 @@ class DemoBuggy extends dsFunctions {
 		dGeomSetRotation (ground_box,R);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 		dGeomDestroy (box[0]);
 		dGeomDestroy (sphere[0]);
