@@ -9,7 +9,7 @@ ODE is an open source, high performance library for simulating rigid body dynami
 and platform independent with an easy to use C/C++ API. It has advanced joint types and integrated collision detection
 with friction. ODE is useful for simulating vehicles, objects in virtual reality environments and virtual creatures.
 
-The latest released version of ode4j is 0.5.1, but the master branch may contain fixes and improvements. Release 0.5.0
+The latest released version of ode4j is 0.5.2, but the master branch may contain fixes and improvements. Release 0.5.0
 contains all changes up to ODE 0.16.3.
 
 Resources
@@ -37,11 +37,15 @@ are [not included](https://github.com/tzaeschke/ode4j/wiki/Maven-HOWTO)):
 <dependency>
     <groupId>org.ode4j</groupId>
     <artifactId>core</artifactId>
-    <version>0.5.1</version>
+    <version>0.5.2</version>
 </dependency>
 ```
 
 ## News
+
+2023-10-07: Release 0.5.2:
+
+* Bug fix for DVector3.cross() + some minor improvements
 
 2023-09-17: Release 0.5.1:
 

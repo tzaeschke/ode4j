@@ -1003,7 +1003,7 @@ public abstract class OdeHelper {
 	 * @return The version String.
 	 */
 	public static String getVersion() {
-		return "0.5.1";
+		return "0.5.2";
 	}
 	
 	
