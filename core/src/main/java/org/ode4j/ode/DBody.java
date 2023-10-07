@@ -167,13 +167,16 @@ public interface DBody {
 
 	/**
 	 * Set the angular velocity of a body.
+	 * The velocity must be provided in radians/timeunit.
 	 * @param x x
 	 * @param y y
 	 * @param z z
 	 */
 	void setAngularVel (double x, double y, double z);
+
 	/**
 	 * Set the angular velocity of a body.
+	 * The velocity must be provided in radians/timeunit.
 	 * @param v v
 	 */
 	void setAngularVel (DVector3C v);
