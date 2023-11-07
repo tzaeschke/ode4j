@@ -235,7 +235,7 @@ public class DemoGyroscopic extends dsFunctions {
 		reset();
 
 		// run simulation
-		dsSimulationLoop (args,512,384,this);
+		dsSimulationLoop (args,640,480,this);
 
 		g1.DESTRUCTOR();//delete g1;
 		g2.DESTRUCTOR();//delete g2;

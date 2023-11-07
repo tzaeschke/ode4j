@@ -217,7 +217,7 @@ class DemoSlider extends dsFunctions {
 		dJointSetSliderAxis (slider,1,1,1);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 		dWorldDestroy (world);
 		dCloseODE();

@@ -685,9 +685,9 @@ public class DVector3 implements DVector3C {
 	@Override
 	public final DVector3 cross(DVector3C b) {
 		DVector3 a = new DVector3();
-		set0( a.get1()*b.get2() - a.get2()*b.get1() );
-		set1( a.get2()*b.get0() - a.get0()*b.get2() );
-		set2( a.get0()*b.get1() - a.get1()*b.get0() );
+		a.set0( get1()*b.get2() - get2()*b.get1() );
+		a.set1( get2()*b.get0() - get0()*b.get2() );
+		a.set2( get0()*b.get1() - get1()*b.get0() );
 		return a;
 	}
 

@@ -634,7 +634,7 @@ class DemoTrimeshHeightfield extends dsFunctions {
 //	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
 
 		// run simulation
-		dsSimulationLoop (args,352,288,this);
+		dsSimulationLoop (args,640,480,this);
 
 //	    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
 //	    pool.freeThreadPool();

@@ -25,8 +25,6 @@ package org.ode4j.math;
 import org.junit.Test;
 import org.ode4j.ode.OdeMath;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.*;
 
 public class DVector3Test {
@@ -98,12 +96,12 @@ public class DVector3Test {
     @Test
     public void testGet(){
         DVector3 x = new DVector3(1, 2, 3);
-        assertEquals(x.get0(), 1., 0);
-        assertEquals(x.get1(), 2., 0);
-        assertEquals(x.get2(), 3., 0);
-        assertEquals(x.get(0), 1., 0);
-        assertEquals(x.get(1), 2., 0);
-        assertEquals(x.get(2), 3., 0);
+        assertEquals(1., x.get0(), 0);
+        assertEquals(2., x.get1(), 0);
+        assertEquals(3., x.get2(), 0);
+        assertEquals(1., x.get(0), 0);
+        assertEquals(2., x.get(1), 0);
+        assertEquals(3., x.get(2), 0);
     }
 
     @Test
@@ -126,19 +124,19 @@ public class DVector3Test {
         DVector3 y = new DVector3(4, 5, 6);
         DVector3 z = new DVector3(7, 8, 9);
         x.set0(7);
-        assertEquals(x.get0(), 7., 0);
+        assertEquals(7., x.get0(), 0);
         x.set1(8);
-        assertEquals(x.get1(), 8., 0);
+        assertEquals(8., x.get1(), 0);
         x.set2(9);
-        assertEquals(x.get2(), 9., 0);
+        assertEquals(9., x.get2(), 0);
         assertTrue(x.isEq(z, 0));
 
         x.set(0, 4);
-        assertEquals(x.get0(), 4., 0);
+        assertEquals(4., x.get0(), 0);
         x.set(1, 5);
-        assertEquals(x.get1(), 5., 0);
+        assertEquals(5., x.get1(), 0);
         x.set(2, 6);
-        assertEquals(x.get2(), 6., 0);
+        assertEquals(6., x.get2(), 0);
         assertTrue(x.isEq(y, 0));
 
         x.set(1, 2, 3);
@@ -166,13 +164,13 @@ public class DVector3Test {
         DVector3 z = new DVector3(x);
         assertTrue(x.isEq(z, 0));
         assertFalse(x.isEq(y, 0));
-        assertEquals(y.get0(), 0., 0);
-        assertEquals(y.get1(), 0., 0);
-        assertEquals(y.get2(), 0., 0);
+        assertEquals(0., y.get0(), 0);
+        assertEquals(0., y.get1(), 0);
+        assertEquals(0., y.get2(), 0);
 
-        assertEquals(z.get0(), 1., 0);
-        assertEquals(z.get1(), 2., 0);
-        assertEquals(z.get2(), 3., 0);
+        assertEquals(1., z.get0(), 0);
+        assertEquals(2., z.get1(), 0);
+        assertEquals(3., z.get2(), 0);
     }
 
     @Test
@@ -223,9 +221,9 @@ public class DVector3Test {
     @Test
     public void testCross1(){
         DVector3C x = new DVector3(1, 2, 3);
-        DVector3 y = new DVector3(1.5, 3, 4.5);
+        DVector3 y = new DVector3(1.5, 3, 2);
 
-        DVector3 t = x.cross(y);
+        DVector3 t = new DVector3(x).cross(y);
         DVector3 t2 = new DVector3();
         OdeMath.dCalcVectorCross3(t2, x, y);
         assertTrue(t2.isEq(t, 0));
@@ -234,7 +232,7 @@ public class DVector3Test {
     @Test
     public void testCross2(){
         DVector3 x = new DVector3(1, 2, 3);
-        DVector3 y = new DVector3(1.5, 3, 4.5);
+        DVector3 y = new DVector3(1.5, 3, 2);
         DVector3 t = new DVector3();
         assertFalse(x.isEq(y, 0));
 

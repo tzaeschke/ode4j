@@ -142,14 +142,14 @@ public class DQuaternionTest {
     @Test
     public void testGet(){
         DQuaternion x = new DQuaternion(1, 2, 3, 4);
-        assertEquals(x.get0(), 1., 0);
-        assertEquals(x.get1(), 2., 0);
-        assertEquals(x.get2(), 3., 0);
-        assertEquals(x.get3(), 4., 0);
-        assertEquals(x.get(0), 1., 0);
-        assertEquals(x.get(1), 2., 0);
-        assertEquals(x.get(2), 3., 0);
-        assertEquals(x.get(3), 4., 0);
+        assertEquals(1., x.get0(), 0);
+        assertEquals(2., x.get1(), 0);
+        assertEquals(3., x.get2(), 0);
+        assertEquals(4., x.get3(), 0);
+        assertEquals(1., x.get(0), 0);
+        assertEquals(2., x.get(1), 0);
+        assertEquals(3., x.get(2), 0);
+        assertEquals(4., x.get(3), 0);
     }
 
     @Test
@@ -174,23 +174,23 @@ public class DQuaternionTest {
         DQuaternion y = new DQuaternion(5, 6, 7, 8);
         DQuaternion z = new DQuaternion(9, 10, 11, 12);
         x.set0(9);
-        assertEquals(x.get0(), 9., 0);
+        assertEquals(9., x.get0(), 0);
         x.set1(10);
-        assertEquals(x.get1(), 10., 0);
+        assertEquals(10., x.get1(), 0);
         x.set2(11);
-        assertEquals(x.get2(), 11., 0);
+        assertEquals(11., x.get2(), 0);
         x.set3(12);
-        assertEquals(x.get3(), 12., 0);
+        assertEquals(12., x.get3(), 0);
         assertEquals(x, z);
 
         x.set(0, 5);
-        assertEquals(x.get0(), 5., 0);
+        assertEquals(5., x.get0(), 0);
         x.set(1, 6);
-        assertEquals(x.get1(), 6., 0);
+        assertEquals(6., x.get1(), 0);
         x.set(2, 7);
-        assertEquals(x.get2(), 7., 0);
+        assertEquals(7., x.get2(), 0);
         x.set(3, 8);
-        assertEquals(x.get3(), 8., 0);
+        assertEquals(8., x.get3(), 0);
         assertEquals(x, y);
 
         x.set(1, 2, 3, 4);
@@ -207,14 +207,14 @@ public class DQuaternionTest {
         DQuaternion z = new DQuaternion(x);
         assertTrue(x.isEq(z, 0));
         assertFalse(x.isEq(y, 0));
-        assertEquals(y.get0(), 0., 0);
-        assertEquals(y.get1(), 0., 0);
-        assertEquals(y.get2(), 0., 0);
-        assertEquals(y.get3(), 0., 0);
+        assertEquals(0., y.get0(), 0);
+        assertEquals(0., y.get1(), 0);
+        assertEquals(0., y.get2(), 0);
+        assertEquals(0., y.get3(), 0);
 
-        assertEquals(z.get0(), 1., 0);
-        assertEquals(z.get1(), 2., 0);
-        assertEquals(z.get2(), 3., 0);
+        assertEquals(1., z.get0(), 0);
+        assertEquals(2., z.get1(), 0);
+        assertEquals(3., z.get2(), 0);
         assertEquals(z.get3(), 4., 0);
     }
 

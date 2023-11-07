@@ -34,24 +34,24 @@ public class DMatrix3Test {
 	@Test
 	public void testGet(){
 		DMatrix3 x = newM3();
-		assertEquals(x.get00(), 1., 0);
-		assertEquals(x.get01(), 2., 0);
-		assertEquals(x.get02(), 3., 0);
-		assertEquals(x.get10(), 4., 0);
-		assertEquals(x.get11(), 5., 0);
-		assertEquals(x.get12(), 6., 0);
-		assertEquals(x.get20(), 7., 0);
-		assertEquals(x.get21(), 8., 0);
-		assertEquals(x.get22(), 9., 0);
-		assertEquals(x.get(0, 0), 1., 0);
-		assertEquals(x.get(0, 1), 2., 0);
-		assertEquals(x.get(0, 2), 3., 0);
-		assertEquals(x.get(1, 0), 4., 0);
-		assertEquals(x.get(1, 1), 5., 0);
-		assertEquals(x.get(1, 2), 6., 0);
-		assertEquals(x.get(2, 0), 7., 0);
-		assertEquals(x.get(2, 1), 8., 0);
-		assertEquals(x.get(2, 2), 9., 0);
+		assertEquals(1., x.get00(), 0);
+		assertEquals(2., x.get01(), 0);
+		assertEquals(3., x.get02(), 0);
+		assertEquals(4., x.get10(), 0);
+		assertEquals(5., x.get11(), 0);
+		assertEquals(6., x.get12(), 0);
+		assertEquals(7., x.get20(), 0);
+		assertEquals(8., x.get21(), 0);
+		assertEquals(9., x.get22(), 0);
+		assertEquals(1., x.get(0, 0), 0);
+		assertEquals(2., x.get(0, 1), 0);
+		assertEquals(3., x.get(0, 2), 0);
+		assertEquals(4., x.get(1, 0), 0);
+		assertEquals(5., x.get(1, 1), 0);
+		assertEquals(6., x.get(1, 2), 0);
+		assertEquals(7., x.get(2, 0), 0);
+		assertEquals(8., x.get(2, 1), 0);
+		assertEquals(9., x.get(2, 2), 0);
 	}		
 		
 	@Test
@@ -76,23 +76,23 @@ public class DMatrix3Test {
 		
 		//test setIJ()
 		x.set00(1);
-		assertEquals(x.get00(), 1., 0);
+		assertEquals(1., x.get00(), 0);
 		x.set01(2);
-		assertEquals(x.get01(), 2., 0);
+		assertEquals(2., x.get01(), 0);
 		x.set02(3);
-		assertEquals(x.get02(), 3., 0);
+		assertEquals(3., x.get02(), 0);
 		x.set10(4);
-		assertEquals(x.get10(), 4., 0);
+		assertEquals(4., x.get10(), 0);
 		x.set11(5);
-		assertEquals(x.get11(), 5., 0);
+		assertEquals(5., x.get11(), 0);
 		x.set12(6);
-		assertEquals(x.get12(), 6., 0);
+		assertEquals(6., x.get12(), 0);
 		x.set20(7);
-		assertEquals(x.get20(), 7., 0);
+		assertEquals(7., x.get20(), 0);
 		x.set21(8);
-		assertEquals(x.get21(), 8., 0);
+		assertEquals(8., x.get21(), 0);
 		x.set22(9);
-		assertEquals(x.get22(), 9., 0);
+		assertEquals(9., x.get22(), 0);
 		assertEquals(x, x2);
 		
 		//test set(i, j)
