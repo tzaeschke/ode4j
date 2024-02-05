@@ -149,12 +149,17 @@ are mostly internal.
 ode4j contains some custom features that are not present in ODE (see
 also [Wiki](https://github.com/tzaeschke/ode4j/wiki/Functionality-beyond-ODE)):
 
-* `DRagdoll` & `DConstrainedBallJoint`, see `DemoRagdoll` and `DemoJointConstrainedBall`.
-* `DTrimeshHeightfield` with support for holes. See `DemoTrimeshHeightfield`.
+* `DRagdoll` & `DConstrainedBallJoint`, 
+  [see `DemoRagdoll`](demo/src/main/java/org/ode4j/demo/ragdoll/DemoRagdoll.java) and
+  [`DemoJointConstrainedBall`](demo/src/main/java/org/ode4j/demo/DemoJointConstrainedBall.java).
+* `DTrimeshHeightfield` with support for holes. 
+  [See `DemoTrimeshHeightfield`](demo/src/main/java/org/ode4j/demo/DemoTrimeshHeightfield.java).
 * Improved SAP space (`SapSpace2`) implementation that allows labelling bodies as "immobile",
-  see `SpacePerformanceTest`.
-* BVH space based on a bounding volume hierarchy index, see `SpacePerformanceTest`.
-* Java multi-threading support, see `DemoMultiThreading`.
+  [see `SpacePerformanceTest`](core/src/test/java/org/ode4j/benchmarks/SpacePerformanceTest.java).
+* BVH space based on a bounding volume hierarchy index,
+  [see `SpacePerformanceTest`](core/src/test/java/org/ode4j/benchmarks/SpacePerformanceTest.java).
+* Java multi-threading support, 
+  [see `DemoMultithreading`](demo/src/main/java/org/ode4j/demo/ragdoll/DemoMultithreading.java).
 
 ### ode4j API vs ODE API
 
