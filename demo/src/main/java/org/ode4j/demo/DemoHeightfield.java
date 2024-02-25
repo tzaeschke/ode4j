@@ -51,28 +51,8 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DAABBC;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DCapsule;
-import org.ode4j.ode.DContact;
-import org.ode4j.ode.DContactBuffer;
-import org.ode4j.ode.DContactJoint;
-import org.ode4j.ode.DConvex;
-import org.ode4j.ode.DCylinder;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DHeightfield;
+import org.ode4j.ode.*;
 import org.ode4j.ode.DHeightfield.DHeightfieldGetHeight;
-import org.ode4j.ode.DHeightfieldData;
-import org.ode4j.ode.DJoint;
-import org.ode4j.ode.DJointGroup;
-import org.ode4j.ode.DMass;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.DSphere;
-import org.ode4j.ode.DTriMesh;
-import org.ode4j.ode.DTriMeshData;
-import org.ode4j.ode.DWorld;
-import org.ode4j.ode.OdeHelper;
 
 
 class DemoHeightfield extends dsFunctions {
@@ -225,12 +205,20 @@ class DemoHeightfield extends dsFunctions {
 		}
 		int numc = OdeHelper.collide (o1,o2,MAX_CONTACTS,contacts.getGeomBuffer());
 		if (numc!=0) {
+			++n;
 			DMatrix3 RI = new DMatrix3();
 			RI.setIdentity();
 			final DVector3 ss = new DVector3(0.02,0.02,0.02);
+			System.out.println("----- numc=" + numc);
 			for (i=0; i<numc; i++) {
-				DJoint c = OdeHelper.createContactJoint (world,contactgroup,contacts.get(i));
+				DContactJoint c = OdeHelper.createContactJoint (world,contactgroup,contacts.get(i));
 				c.attach (b1,b2);
+				DContact cc = contacts.get(i);
+				if (c.getFeedback() != null)
+					System.out.println("   c:" + c.getFeedback().f1 + " " + c.getFeedback().f2 + " " + c.getFeedback().t1 + " " + c.getFeedback().t2 + " ");
+				DContactGeom cg = cc.getContactGeom();
+				System.out.println("cc:  " + n + " " + cg.pos + " " + cg.normal + " " + cg.depth + " " + cg.side1 + "/" +  cg.side2 + "  " + cg.g1.getPosition() + " / " + cg.g2);
+				//c.getContact().
 				if (show_contacts) {
 					dsSetColor(0, 0, 1);
 					dsDrawBox (contacts.get(i).geom.pos,RI,ss);
@@ -238,6 +226,8 @@ class DemoHeightfield extends dsFunctions {
 			}
 		}
 	}
+
+	static int n = 0;
 
 	private static float[] xyz = {2.1640f,-1.3079f,1.7600f};
 	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
@@ -311,12 +301,29 @@ class DemoHeightfield extends dsFunctions {
 
 			DMatrix3 R = new DMatrix3();
 			if (random_pos) {
+//				double z = dRandReal();
+//				double y = dRandReal();
+//				double x = dRandReal();
+				double x = dRandReal();
+				double y = dRandReal();
+				double z = dRandReal();
 				obj[i].body.setPosition(
-						(dRandReal()-0.5)*HFIELD_WIDTH*0.75,
-						(dRandReal()-0.5)*HFIELD_DEPTH*0.75,
-						dRandReal() + 2 );
-				dRFromAxisAndAngle (R,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
-						dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
+						(x-0.5)*HFIELD_WIDTH*0.75,
+						(y-0.5)*HFIELD_DEPTH*0.75,
+						z + 2 );
+//				obj[i].body.setPosition(
+//						(dRandReal()-0.5)*HFIELD_WIDTH*0.75,
+//						(dRandReal()-0.5)*HFIELD_DEPTH*0.75,
+//						dRandReal() + 2 );
+				double ax = dRandReal();
+				double ay = dRandReal();
+				double az = dRandReal();
+				double angle = dRandReal();
+				dRFromAxisAndAngle (R,ax*2.0-1.0,ay*2.0-1.0,az*2.0-1.0,angle*10.0-5.0);
+				DVector3C pos = obj[i].body.getPosition();
+				System.out.println("pos=" + pos);
+//				dRFromAxisAndAngle (R,dRandReal()*2.0-1.0,dRandReal()*2.0-1.0,
+//						dRandReal()*2.0-1.0,dRandReal()*10.0-5.0);
 			} else {
 				double maxheight = 0;
 				for (k=0; k<num; k++) {
