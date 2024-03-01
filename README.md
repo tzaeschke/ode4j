@@ -128,6 +128,36 @@ There is also the [old website](https://tzaeschke.github.io/ode4j-old/), includi
 
 Here is a [Youtube video](https://www.youtube.com/watch?v=ENlpu_Jjp3Q) of a list of games that used ODE from 2002-2015.  You will be suprised how many of your favorite games used this physcis libary.
 
+## Versions
+
+Both ODE4J `v0.4.1` and `v0.5.1` have been ported.
+
+Version v0.4.1 GitHub repo: [https://github.com/antzGames/gdx-ode4j](https://github.com/antzGames/gdx-ode4j)
+
+Version v0.5.1 GitHub repo: [https://github.com/antzGames/ode4j](https://github.com/antzGames/ode4j)
+
+## Where has ODE4J libGDX version been used?
+
+Here are some games and projects and tutorials that have used v0.4.1 of ODE4J for libGDX:
+
+[https://github.com/MonstrousSoftware/VehicleTest](https://github.com/MonstrousSoftware/VehicleTest)
+
+[https://monstrous-software.itch.io/base-invaders](https://monstrous-software.itch.io/base-invaders)
+
+[https://monstrous-software.itch.io/fps-demo](https://monstrous-software.itch.io/fps-demo)
+
+[https://antzgames.itch.io/physics-in-a-browser](https://antzgames.itch.io/physics-in-a-browser)
+
+[https://antzgames.itch.io/shotgun-wedding](https://antzgames.itch.io/shotgun-wedding)
+
+[https://antzgames.itch.io/tank-vs-dinos](https://antzgames.itch.io/tank-vs-dinos)
+
+## 3D FPS Tutorial using ODE4J
+
+A full blown tutorial on making a libGDX FPS game using ODE4J can be found here:
+
+[Tutorial on creating a 3D game with LibGDX](https://monstroussoftware.github.io/2023/11/01/Tutorial-3D-step1.html)
+
 ## ODE, ode4j and other Licenses
 
 ### Licensing & Copyright for ODE and ode4j
