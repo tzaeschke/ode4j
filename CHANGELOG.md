@@ -25,6 +25,9 @@
 
 --> See TODO.txt
 
+## 0.5.3-SNAPSHOT
+- Fix issue in DCLP.solve1() causing ODE INTERNAL ERROR. [#133](https://github.com/tzaeschke/ode4j/issues/133)
+
 ## 0.5.2 - 2023-10-07
 - Fix DVector3.cross() returning always 0. [#128](https://github.com/tzaeschke/ode4j/issues/128)
 - Fix JUnit test lint. [#130](https://github.com/tzaeschke/ode4j/pull/130)
