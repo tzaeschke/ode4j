@@ -24,7 +24,9 @@
     WHen using JDK 9 or later
 
 --> See TODO.txt
-## 0.5.3 - unreleased
+
+## 0.5.3 - 2024-04-28
+
 - Fix INTERNAL ERROR in `FastLSolve.solveL1Straight()` caused by bug in `DLCP.solve1()`.
   [#133](https://github.com/tzaeschke/ode4j/issues/133)
 - Fix formatting of debug/info/error message.
