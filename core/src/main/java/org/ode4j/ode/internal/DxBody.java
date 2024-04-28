@@ -197,6 +197,10 @@ public class DxBody extends DObject implements DBody {
 	public void dBodyDestroy ()
 	{
 		//dAASSERT (b);
+		// ode4j special: We set world=null, so we can check here
+		if (world == null) {
+			return; // already destroyed
+		}
 
 		// all geoms that link to this body must be notified that the body is about
 		// to disappear. note that the call to dGeomSetBody(geom,0) will result in
@@ -222,6 +226,9 @@ public class DxBody extends DObject implements DBody {
 		}
 		removeObjectFromList ();
 		world.nb--;
+
+		// ode4j special: We set world=null, so we can check precondition in destroy()
+		world = null;
 
 		// delete the average buffers
 		//TZ nothing to do
