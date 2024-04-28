@@ -11,7 +11,7 @@
 
 	<groupId>org.ode4j</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.5.3</version>
+	<version>0.5.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -57,7 +57,7 @@
 		<url>https://github.com/tzaeschke/ode4j</url>
 		<connection>scm:git:git@github.com:tzaeschke/ode4j.git</connection>
 		<developerConnection>scm:git:git@github.com:tzaeschke/ode4j.git</developerConnection>
-	  <tag>parent-0.5.3</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<developers>
