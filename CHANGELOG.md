@@ -27,6 +27,8 @@
 ## 0.5.3 - unreleased
 - Fix INTERNAL ERROR in `FastLSolve.solveL1Straight()` caused by bug in `DLCP.solve1()`.
   [#133](https://github.com/tzaeschke/ode4j/issues/133)
+- Fix formatting of degub/info/error message.
+  [#135](https://github.com/tzaeschke/ode4j/issues/135)
 
 ## 0.5.2 - 2023-10-07
 - Fix DVector3.cross() returning always 0. [#128](https://github.com/tzaeschke/ode4j/issues/128)
