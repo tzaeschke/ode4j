@@ -25,11 +25,20 @@
 
 --> See TODO.txt
 
+## 0.5.3 - 2024-04-28
+
+- Fix INTERNAL ERROR in `FastLSolve.solveL1Straight()` caused by bug in `DLCP.solve1()`.
+  [#133](https://github.com/tzaeschke/ode4j/issues/133)
+- Fix formatting of debug/info/error message.
+  [#135](https://github.com/tzaeschke/ode4j/issues/135)
+- QOL: allow calling destroy() multiple times.
+  [#139](https://github.com/tzaeschke/ode4j/pull/139)
+
 ## 0.5.2 - 2023-10-07
 - Fix DVector3.cross() returning always 0. [#128](https://github.com/tzaeschke/ode4j/issues/128)
 - Fix JUnit test lint. [#130](https://github.com/tzaeschke/ode4j/pull/130)
 - Fix Demo window size to minimum 640x480. [#131](https://github.com/tzaeschke/ode4j/pull/131)
-- Add javadoc to dindicate that angular velocity is given in radians. [#132](https://github.com/tzaeschke/ode4j/pull/132)
+- Add javadoc to indicate that angular velocity is given in radians. [#132](https://github.com/tzaeschke/ode4j/pull/132)
 
 ## 0.5.1 - 2023-09-17
 - Support for HiDPI screens / Apple Silicon/Retina. Contribution by valb3r,

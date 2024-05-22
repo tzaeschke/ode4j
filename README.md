@@ -209,7 +209,7 @@ ODE is an open source, high performance library for simulating rigid body dynami
 and platform independent with an easy to use C/C++ API. It has advanced joint types and integrated collision detection
 with friction. ODE is useful for simulating vehicles, objects in virtual reality environments and virtual creatures.
 
-The latest released version of ode4j is 0.5.2, but the master branch may contain fixes and improvements. Release 0.5.0
+The latest released version of ode4j is 0.5.3, but the master branch may contain fixes and improvements. Release 0.5.0
 contains all changes up to ODE 0.16.3.
 
 Resources
@@ -237,11 +237,15 @@ are [not included](https://github.com/tzaeschke/ode4j/wiki/Maven-HOWTO)):
 <dependency>
     <groupId>org.ode4j</groupId>
     <artifactId>core</artifactId>
-    <version>0.5.2</version>
+    <version>0.5.3</version>
 </dependency>
 ```
 
 ## News
+
+2024-04-28: Release 0.5.3:
+
+* Bug fix for possible INTERNAL ERROR in DLCP/FastSolver + some minor improvements
 
 2023-10-07: Release 0.5.2:
 
@@ -349,12 +353,17 @@ are mostly internal.
 ode4j contains some custom features that are not present in ODE (see
 also [Wiki](https://github.com/tzaeschke/ode4j/wiki/Functionality-beyond-ODE)):
 
-* `DRagdoll` & `DConstrainedBallJoint`, see `DemoRagdoll` and `DemoJointConstrainedBall`.
-* `DTrimeshHeightfield` with support for holes. See `DemoTrimeshHeightfield`.
+* `DRagdoll` & `DConstrainedBallJoint`, 
+  [see `DemoRagdoll`](demo/src/main/java/org/ode4j/demo/ragdoll/DemoRagdoll.java) and
+  [`DemoJointConstrainedBall`](demo/src/main/java/org/ode4j/demo/DemoJointConstrainedBall.java).
+* `DTrimeshHeightfield` with support for holes. 
+  [See `DemoTrimeshHeightfield`](demo/src/main/java/org/ode4j/demo/DemoTrimeshHeightfield.java).
 * Improved SAP space (`SapSpace2`) implementation that allows labelling bodies as "immobile",
-  see `SpacePerformanceTest`.
-* BVH space based on a bounding volume hierarchy index, see `SpacePerformanceTest`.
-* Java multi-threading support, see `DemoMultiThreading`.
+  [see `SpacePerformanceTest`](core/src/test/java/org/ode4j/benchmarks/SpacePerformanceTest.java).
+* BVH space based on a bounding volume hierarchy index,
+  [see `SpacePerformanceTest`](core/src/test/java/org/ode4j/benchmarks/SpacePerformanceTest.java).
+* Java multi-threading support, 
+  [see `DemoMultithreading`](demo/src/main/java/org/ode4j/demo/ragdoll/DemoMultithreading.java).
 
 ### ode4j API vs ODE API
 
