@@ -916,41 +916,44 @@ public class DLCP {
 
 		final int nC = m_nC;
 		if (nC > 0) {
-		    double[] Dell = m_Dell;
-		    int[] C = m_C;
-			//double[] aptr = AROW(i);
-			int aPos = AROWp(i);
-			if (NUB_OPTIMIZATIONS) {//#   ifdef NUB_OPTIMIZATIONS
-				// if nub>0, initial part of aptr[] is guaranteed unpermuted
-			    final int nub = m_nub;
-			    int j=0;
-				for ( ; j<nub; ++j) Dell[j] = m_A[aPos+j];//aptr[j];
-				for ( ; j<nC; ++j) Dell[j] = m_A[aPos+C[j]];//aptr[C[j]];
-			} else {//#   else
-        		for (int j=0; j<nC; j++) Dell[j] = m_A[aPos+C[j]];//aptr[C[j]];
-			}//#   endif
-		}
-		solveL1Straight(m_L, m_Dell, 0, nC,  m_nskip, 1);
-		{
-		    double[] ell = m_ell, Dell = m_Dell, d = m_d;
-		    for (int j=0; j<nC; j++) ell[j] = Dell[j] * d[j];
-		}
+			{
+				double[] Dell = m_Dell;
+				int[] C = m_C;
+				//double[] aptr = AROW(i);
+				int aPos = AROWp(i);
+				if (NUB_OPTIMIZATIONS) {//#   ifdef NUB_OPTIMIZATIONS
+					// if nub>0, initial part of aptr[] is guaranteed unpermuted
+					final int nub = m_nub;
+					int j = 0;
+					for (; j < nub; ++j) Dell[j] = m_A[aPos + j];//aptr[j];
+					for (; j < nC; ++j) Dell[j] = m_A[aPos + C[j]];//aptr[C[j]];
+				} else {//#   else
+					for (int j = 0; j < nC; j++) Dell[j] = m_A[aPos + C[j]];//aptr[C[j]];
+				}//#   endif
+			}
 
-		if (!only_transfer) {
-		    double[] tmp = m_tmp, ell = m_ell;
-		    {
-		        for (int j=0; j<nC; ++j) tmp[j] = ell[j];
-		    }
-			solveL1Transposed(m_L,tmp,0, nC,m_nskip, 1);
-		    if (dir_positive) {
-		        int[] C = m_C;
-		        //double[] tmp = m_tmp;
-		        for (int j=0; j<nC; ++j) a[C[j]] = -tmp[j];
-		    } else {
-		        int[] C = m_C;
-		        //double[] tmp = m_tmp;
-		        for (int j=0; j<nC; ++j) a[C[j]] = tmp[j];
-		    }
+			solveL1Straight(m_L, m_Dell, 0, nC, m_nskip, 1);
+			{
+				double[] ell = m_ell, Dell = m_Dell, d = m_d;
+				for (int j = 0; j < nC; j++) ell[j] = Dell[j] * d[j];
+			}
+
+			if (!only_transfer) {
+				double[] tmp = m_tmp, ell = m_ell;
+				{
+					for (int j = 0; j < nC; ++j) tmp[j] = ell[j];
+				}
+				solveL1Transposed(m_L, tmp, 0, nC, m_nskip, 1);
+				if (dir_positive) {
+					int[] C = m_C;
+					//double[] tmp = m_tmp;
+					for (int j = 0; j < nC; ++j) a[C[j]] = -tmp[j];
+				} else {
+					int[] C = m_C;
+					//double[] tmp = m_tmp;
+					for (int j = 0; j < nC; ++j) a[C[j]] = tmp[j];
+				}
+			}
 		}
 	}
 

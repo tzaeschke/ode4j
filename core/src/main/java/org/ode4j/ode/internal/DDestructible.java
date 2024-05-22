@@ -65,11 +65,11 @@ public abstract class DDestructible {
 	 */
 	protected void DESTRUCTOR() {
 		if (isDestructed) {
-			System.err.println("WARNING Object was already destructed.");
-			new RuntimeException().printStackTrace();
+			//	System.err.println("WARNING Object was already destructed.");
+			//	new RuntimeException().printStackTrace();
+			ErrorHdl.dMessage(0, "WARNING Object was already destructed.");
 		}
 		isDestructed = true;
-		//System.err.println("CCC");
 	}
 	
 	

@@ -25,8 +25,7 @@
 package org.ode4j.ode.internal;
 
 import org.ode4j.ode.internal.ErrorHandler.dMessageFunction;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+import java.util.IllegalFormatException;
 
 
 /**
@@ -115,14 +114,11 @@ public class ErrorHdl {
 	 * @param ap objects 
 	 */
 	public static void dError (int num, String msg, Object ... ap) {
-		//  va_list ap;
-		//  va_start (ap,msg);
 		if (error_function != null) {
-			error_function.call (num,msg,ap);
+			error_function.call(num, msg, ap);
 		} else {
-			//logger.error("ODE Error " + num + ": " + msg, ap);
 		}
-		throw new RuntimeException("#"+num + ": " + msg);
+		throw new RuntimeException("#" + num + ": " + format(msg, ap));
 		//exit (1);
 	}
 
@@ -134,15 +130,13 @@ public class ErrorHdl {
 	 * @param ap objects 
 	 */
 	public static void dDebug (int num, String msg, Object ... ap) {
-		//  va_list ap;
-		//  va_start (ap,msg);
 		if (debug_function != null) {
-			debug_function.call (num,msg,ap);
+			debug_function.call(num, msg, ap);
 		} else {
 			//logger.debug("ODE INTERNAL ERROR " + " " + num + ": " + msg, ap);
 		}
-		// *((char *)0) = 0;   ... commit SEGVicide
 		//abort();
+
 		//throw new RuntimeException("#"+num + ": " + String.format(msg, ap));
 		throw new RuntimeException("#"+num + ": " + msg);
 	}
@@ -155,10 +149,8 @@ public class ErrorHdl {
 	 * @param ap objects 
 	 */
 	public static void dMessage (int num, String msg, Object ... ap) {
-		//  va_list ap;
-		//  va_start (ap,msg);
-		if (message_function!=null) {
-			message_function.call (num,msg,ap);
+		if (message_function != null) {
+			message_function.call(num, msg, ap);
 		} else {
 			//printMessage (num,"ODE Message",msg,ap);
 			//logger.info("ODE Message " + num + ": " + msg, ap);
