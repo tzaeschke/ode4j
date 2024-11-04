@@ -90,12 +90,12 @@ public class DemoMotor extends dsFunctions {
 		double angular = amotor[1].getParam(DJoint.PARAM_N.dParamVel1);
 		// change the forces based on the key
 		switch(cmd) {
-		case 'q': case 'Q':  linear+= ACCELERATION;  break;
-		case 'a': case 'A':  linear=0;  break;
-		case 'z': case 'Z':  linear-= ACCELERATION;  break;
-		case 'w': case 'W':  angular+= ACCELERATION;  break;
-		case 'e': case 'E':  angular=0;  break;
-		case 'r': case 'R':  angular-= ACCELERATION;  break;
+		case 'q': case 'Q':  linear += ACCELERATION;  break;
+		case 'a': case 'A':  linear =0;  break;
+		case 'z': case 'Z':  linear -= ACCELERATION;  break;
+		case 'w': case 'W':  angular += ACCELERATION;  break;
+		case 'e': case 'E':  angular =0;  break;
+		case 'r': case 'R':  angular -= ACCELERATION;  break;
 		default:  break;
 		}
 		// report the new forces
@@ -105,7 +105,7 @@ public class DemoMotor extends dsFunctions {
 		amotor[1].setParamVel(angular);
 	}
 
-	private static void nearCallback (Object data, DGeom o1, DGeom o2) {
+	private void nearCallback (Object data, DGeom o1, DGeom o2) {
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
@@ -123,7 +123,7 @@ public class DemoMotor extends dsFunctions {
 	@Override
 	public void step(boolean pause) {
 		if (!pause) {
-			OdeHelper.spaceCollide(space,null, DemoMotor::nearCallback);
+			OdeHelper.spaceCollide(space,null, this::nearCallback);
 			world.quickStep (0.05);
 			contactgroup.empty ();
 		}
