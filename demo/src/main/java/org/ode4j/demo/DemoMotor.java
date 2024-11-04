@@ -45,76 +45,67 @@ import static org.ode4j.drawstuff.DrawStuff.*;
 
 
 /**
- *
- * Motor demo.
+ * Motor demo.  Creates two boxes.
+ * The first box is connected to the world with an angular motor (amotor).
+ * The second box is connected to the first box with a linear motor (lmotor).
  */
 public class DemoMotor extends dsFunctions {
-
 	// some constants
 	//#define SIDE (0.5f)	// side length of a box
 	//#define MASS (1.0)	// mass of a box
 	private static final float SIDE = 0.5f;
 	private static final float MASS = 1.0f;
 
+	// maximum force that can be applied in a given frame.
+	private final double FORCE_MAX_ANGULAR = 0.01;
+	private final double FORCE_MAX_LINEAR = 0.1;
+	// force applied by the user each frame when keys are pressed.  (not held, not released.)
+	private final int ACCELERATION = 1;
 
 	// dynamics and collision objects
 	private static DWorld world;
-	private static DBody[] body = new DBody[2];
-	private static DBox[] geom = new DBox[2];
-	private static DLMotorJoint[] lmotor = new DLMotorJoint[2];
-	private static DAMotorJoint[] amotor = new DAMotorJoint[2];
+	private static final DBody[] body = new DBody[2];
+	private static final DBox[] geom = new DBox[2];
+	private static final DLMotorJoint[] lmotor = new DLMotorJoint[2];
+	private static final DAMotorJoint[] amotor = new DAMotorJoint[2];
 	private static DSpace space;
 	private static DJointGroup contactgroup;
 
-
-	// start simulation - set viewpoint
-
+	// viewpoint at start
 	private static float[] xyz = {1.0382f,-1.0811f,1.4700f};
 	private static float[] hpr = {135.0000f,-19.5000f,0.0000f};
+
 	@Override
-	public void start()
-	{
+	public void start() {
 		dsSetViewpoint (xyz,hpr);
 		System.out.println ("Press 'q,a,z' to control one axis of lmotor connectiong two bodies. (q is +,a is 0, z is -)");
-		System.out.println ("Press 'w,e,r' to control one axis of lmotor connectiong first body with world. (w is +,e is 0, r is -)");
+		System.out.println ("Press 'w,e,r' to control one axis of amotor connectiong first body with world. (w is +,e is 0, r is -)");
 	}
-
 
 	// called when a key pressed
 	@Override
-	public void command (char cmd)
-	{
-		if (cmd == 'q' || cmd == 'Q') {
-			lmotor[0].setParamVel(0);
-			lmotor[0].setParamVel2(0);
-			lmotor[0].setParamVel3(0.1);
-		} else if (cmd == 'a' || cmd == 'A') {
-			lmotor[0].setParamVel(0);
-			lmotor[0].setParamVel2(0);
-			lmotor[0].setParamVel3(0);
-		} else if (cmd == 'z' || cmd == 'Z') {
-			lmotor[0].setParamVel(0);
-			lmotor[0].setParamVel2(0);
-			lmotor[0].setParamVel3(-10.1);
-		} else if (cmd == 'w' || cmd == 'W') {
-			lmotor[1].setParamVel(10.1);
-			lmotor[1].setParamVel2(0);
-			lmotor[1].setParamVel3(0);
-		} else if (cmd == 'e' || cmd == 'E') {
-			lmotor[1].setParamVel(0);
-			lmotor[1].setParamVel2(0);
-			lmotor[1].setParamVel3(0);
-		} else if (cmd == 'r' || cmd == 'R') {
-			lmotor[1].setParamVel(-10.1);
-			lmotor[1].setParamVel2(0);
-			lmotor[1].setParamVel3(0);
+	public void command (char cmd) {
+		// get the forces
+		double linear = lmotor[0].getParam(DJoint.PARAM_N.dParamVel3);
+		double angular = amotor[1].getParam(DJoint.PARAM_N.dParamVel1);
+		// change the forces based on the key
+		switch(cmd) {
+		case 'q': case 'Q':  linear+= ACCELERATION;  break;
+		case 'a': case 'A':  linear=0;  break;
+		case 'z': case 'Z':  linear-= ACCELERATION;  break;
+		case 'w': case 'W':  angular+= ACCELERATION;  break;
+		case 'e': case 'E':  angular=0;  break;
+		case 'r': case 'R':  angular-= ACCELERATION;  break;
+		default:  break;
 		}
+		// report the new forces
+		System.out.println("linear="+linear+" angular="+angular);
+		// apply the new forces
+		lmotor[0].setParamVel3(linear);
+		amotor[1].setParamVel(angular);
 	}
 
-
-
-	private static void nearCallback (Object data, DGeom o1, DGeom o2)
-	{
+	private static void nearCallback (Object data, DGeom o1, DGeom o2) {
 		// exit without doing anything if the two bodies are connected by a joint
 		DBody b1 = o1.getBody();
 		DBody b2 = o2.getBody();
@@ -129,24 +120,15 @@ public class DemoMotor extends dsFunctions {
 		}
 	}
 
-	// simulation loop
-	private static DNearCallback nearCallback = new DNearCallback() {
-
-		@Override
-		public void call(Object data, DGeom o1, DGeom o2) {
-			nearCallback(data, o1, o2);
-
-		}
-
-	};
-	private static void simLoop (boolean pause)
-	{
+	@Override
+	public void step(boolean pause) {
 		if (!pause) {
-			OdeHelper.spaceCollide(space,null,nearCallback);
+			OdeHelper.spaceCollide(space,null, DemoMotor::nearCallback);
 			world.quickStep (0.05);
 			contactgroup.empty ();
 		}
 
+		// draw the two boxes
 		DVector3C sides1 = geom[0].getLengths();
 		DVector3C sides2 = geom[1].getLengths();
 		dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
@@ -156,56 +138,66 @@ public class DemoMotor extends dsFunctions {
 		dsDrawBox (body[1].getPosition(), body[1].getRotation(), sides2);
 	}
 
-
 	/**
 	 * @param args args
 	 */
-	public static void main (String[] args)
-	{
+	public static void main (String[] args) {
 		new DemoMotor().demo(args);
 	}
 	
-	
 	private void demo(String[] args) {
-
 		// create world
 		OdeHelper.initODE2(0);
 		contactgroup = OdeHelper.createJointGroup();
 		world = OdeHelper.createWorld();
 		space = OdeHelper.createSimpleSpace (null);
+
+		// create a mass descriptor
 		DMass m = OdeHelper.createMass();
 		m.setBox (1,SIDE,SIDE,SIDE);
 		m.adjust (MASS);
 
+		// box 0
 		body[0] = OdeHelper.createBody (world);
 		body[0].setMass (m);
 		body[0].setPosition (0,0,1);
 		geom[0] = OdeHelper.createBox(space,SIDE,SIDE,SIDE);
+		geom[0].setBody (body[0]);
+
+		// box 1
 		body[1] = OdeHelper.createBody (world);
 		body[1].setMass (m);
 		body[1].setPosition (0,0,2);
-		geom[1] = OdeHelper.createBox(space,SIDE,SIDE,SIDE); 
-
-		geom[0].setBody (body[0]);
+		geom[1] = OdeHelper.createBox(space,SIDE,SIDE,SIDE);
 		geom[1].setBody (body[1]);
 
+		// linear motor 0 connects two boxes together
 		lmotor[0] = OdeHelper.createLMotorJoint (world,null);
 		lmotor[0].attach (body[0],body[1]);
+
+		// linear motor 1 connects first box with world
 		lmotor[1] = OdeHelper.createLMotorJoint (world,null);
 		lmotor[1].attach (body[0],null);
+
+		// angular motor 0 connects two boxes together
 		amotor[0] = OdeHelper.createAMotorJoint (world,null);
 		amotor[0].attach (body[0],body[1]);
+
+		// angular motor 1 connects first box with world
 		amotor[1] = OdeHelper.createAMotorJoint (world,null);
 		amotor[1].attach (body[0], null);
 
+		// set the axies and forces for each motor.
+		// axies are in world space, regardless of the body they are attached to.
+
 		for (int i=0; i<2; i++) {
-			amotor[i].setNumAxes( 3);
+			amotor[i].setNumAxes(3);
 			amotor[i].setAxis(0,1,1,0,0);
 			amotor[i].setAxis(1,1,0,1,0);
 			amotor[i].setAxis(2,1,0,0,1);
-			amotor[i].setParamFMax(0.00001);
-			amotor[i].setParamFMax2(0.00001);
-			amotor[i].setParamFMax3(0.00001);
+			amotor[i].setParamFMax (FORCE_MAX_ANGULAR);
+			amotor[i].setParamFMax2(FORCE_MAX_ANGULAR);
+			amotor[i].setParamFMax3(FORCE_MAX_ANGULAR);
 
 			amotor[i].setParamVel(0);
 			amotor[i].setParamVel2(0);
@@ -216,9 +208,13 @@ public class DemoMotor extends dsFunctions {
 			lmotor[i].setAxis(1,1,0,1,0);
 			lmotor[i].setAxis(2,1,0,0,1);
 
-			lmotor[i].setParamFMax(0.0001);
-			lmotor[i].setParamFMax2(0.0001);
-			lmotor[i].setParamFMax3(0.0001);
+			lmotor[i].setParamFMax (FORCE_MAX_LINEAR);
+			lmotor[i].setParamFMax2(FORCE_MAX_LINEAR);
+			lmotor[i].setParamFMax3(FORCE_MAX_LINEAR);
+
+			lmotor[i].setParamVel(0);
+			lmotor[i].setParamVel2(0);
+			lmotor[i].setParamVel3(0);
 		}
 
 		// run simulation
@@ -229,13 +225,6 @@ public class DemoMotor extends dsFunctions {
 		world.destroy ();
 		OdeHelper.closeODE();
 	}
-
-
-	@Override
-	public void step(boolean pause) {
-		simLoop(pause);
-	}
-
 
 	@Override
 	public void stop() {
