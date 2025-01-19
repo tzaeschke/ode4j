@@ -29,22 +29,7 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DQuaternion;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DPlane;
-import org.ode4j.ode.DSphere;
-import org.ode4j.ode.OdeConstants;
-import org.ode4j.ode.OdeHelper;
-import org.ode4j.ode.OdeMath;
-import org.ode4j.ode.DBody;
-import org.ode4j.ode.DBox;
-import org.ode4j.ode.DContact;
-import org.ode4j.ode.DContactBuffer;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DHinge2Joint;
-import org.ode4j.ode.DJointGroup;
-import org.ode4j.ode.DJoint;
-import org.ode4j.ode.DMass;
-import org.ode4j.ode.DSpace;
-import org.ode4j.ode.DWorld;
+import org.ode4j.ode.*;
 import org.ode4j.ode.DGeom.DNearCallback;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
@@ -75,7 +60,7 @@ class DemoBuggy extends dsFunctions {
 	private static DWorld world;
 	private static DSpace space;
 	private static DBody[] body = new DBody[4];
-	private static DHinge2Joint[] joint = new DHinge2Joint[3];	// joint[0] is the front wheel
+	private static DHingeJoint[] joint = new DHingeJoint[3];	// joint[0] is the front wheel
 	private static DJointGroup contactgroup;
 	private static DPlane ground;
 	private static DSpace car_space;
@@ -150,6 +135,7 @@ class DemoBuggy extends dsFunctions {
 		switch (cmd) {
 		case 'a': case 'A':
 			speed += 0.3;
+				System.out.println("speed=" + speed);
 			break;
 		case 'z': case 'Z':
 			speed -= 0.3;
@@ -187,11 +173,11 @@ class DemoBuggy extends dsFunctions {
 		int i;
 		if (!pause) {
 			// motor
-			joint[0].setParamVel2 (-speed);
-			joint[0].setParamFMax2 (0.1);
+			joint[0].setParamVel (-speed);
+			joint[0].setParamFMax (0.1);
 
 			// steering
-			double v = steer - joint[0].getAngle1();
+			double v = steer - joint[0].getAngle();
 			if (v > 0.1) v = 0.1;
 			if (v < -0.1) v = -0.1;
 			v *= 10.0;
@@ -199,7 +185,7 @@ class DemoBuggy extends dsFunctions {
 			joint[0].setParamFMax (0.2);
 			joint[0].setParamLoStop (-0.75);
 			joint[0].setParamHiStop (0.75);
-			joint[0].setParamFudgeFactor (0.1);
+			//joint[0].setParamFudgeFactor (0.1);
 
 			space.collide(null,nearCallback);
 			world.step(0.05);
@@ -264,18 +250,21 @@ class DemoBuggy extends dsFunctions {
 
 		// front and back wheel hinges
 		for (i=0; i<3; i++) {
-			joint[i] = OdeHelper.createHinge2Joint (world,null);
+			joint[i] = OdeHelper.createHingeJoint (world,null);
 			joint[i].attach(body[0],body[i+1]);
 			final DVector3C a = body[i+1].getPosition();
-			DHinge2Joint h2 = joint[i];
+			DHingeJoint h2 = joint[i];
 			h2.setAnchor (a);
-			h2.setAxes (zunit, yunit);
+			//h2.setAxes (zunit, yunit);
+//			h2.setAxis (yunit);
+			h2.setAxis (yunit);
 		}
+		//DHinge2Joint h; h.set
 
 		// set joint suspension
 		for (i=0; i<3; i++) {
-			joint[i].setParamSuspensionERP (0.4);
-			joint[i].setParamSuspensionCFM (0.8);
+//			joint[i].setParamSuspensionERP (0.4);
+//			joint[i].setParamSuspensionCFM (0.8);
 		}
 
 		// lock back wheels along the steering axis
@@ -285,8 +274,8 @@ class DemoBuggy extends dsFunctions {
 			joint[i].setParamHiStop (0);
 			// the following alternative method is no good as the wheels may get out
 			// of alignment:
-			//   dJointSetHinge2Param (joint[i],dParamVel,0);
-			//   dJointSetHinge2Param (joint[i],dParamFMax,dInfinity);
+			joint[i].setParamVel(0);
+			joint[i].setParamFMax(Double.POSITIVE_INFINITY);//   dJointSetHinge2Param (joint[i],dParamFMax,dInfinity);
 		}
 
 		// create car space and add it to the top level space

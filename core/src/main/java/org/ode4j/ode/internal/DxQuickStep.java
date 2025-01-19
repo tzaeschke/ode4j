@@ -144,7 +144,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	// uncomment the following line to randomly reorder constraint rows
 	// during the solution. depending on the situation, this can help a lot
 	// or hardly at all, but it doesn't seem to hurt.
-	private static final ReorderingMethod CONSTRAINTS_REORDERING_METHOD = ReorderingMethod.REORDERING_METHOD__RANDOMLY;
+	private static final ReorderingMethod CONSTRAINTS_REORDERING_METHOD = ReorderingMethod.REORDERING_METHOD__DONT_REORDER;
 
 	//		#if CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__RANDOMLY
 	//	#if !defined(RANDOM_CONSTRAINTS_REORDERING_FREQUENCY)
