@@ -25,6 +25,12 @@
 
 --> See TODO.txt
 
+## Unreleased
+
+- Add some math functions:
+  - `DVector3 addScaled(DVector3C v2, DVector3C v3)` scale v2 with v3 and add to `this` 
+  - `DVector3 addScaledInv(DVector3C v2, DVector3C v3)` inverse scale v2 with v3 and add to `this`
+
 ## 0.5.3 - 2024-04-28
 
 - Fix INTERNAL ERROR in `FastLSolve.solveL1Straight()` caused by bug in `DLCP.solve1()`.

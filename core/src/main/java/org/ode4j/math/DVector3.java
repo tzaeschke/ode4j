@@ -649,15 +649,91 @@ public class DVector3 implements DVector3C {
 		Double.doubleToRawLongBits(get2()));
 	}
 
-	/** 
-	 * Scales the first parameter with the second and then adds the 
+	/**
+	 * Scales the first parameter with the second and then adds the
 	 * result to the current vector.
+	 *
 	 * @param v2 Vector
-	 * @param d scale
+	 * @param d  scale
 	 * @return this + v2*d
 	 */
 	public final DVector3 addScaled(DVector3C v2, double d) {
-		d0 += v2.get0()*d; d1 += v2.get1()*d; d2 += v2.get2()*d;
+		d0 += v2.get0() * d;
+		d1 += v2.get1() * d;
+		d2 += v2.get2() * d;
+		return this;
+	}
+
+	// TODO really? addScaled(v, 1/x) is not that much overhead.
+	/**
+	 * Reverse-scales the first parameter with the second and then adds the
+	 * result to the current vector. 'Reverse scaling' means dividing every element by 'd'.
+	 *
+	 * @param v2 Vector
+	 * @param d  reverse scale
+	 * @return this + v2/d
+	 */
+	public final DVector3 addReverseScaled(DVector3C v2, double d) {
+		d0 += v2.get0() / d;
+		d1 += v2.get1() / d;
+		d2 += v2.get2() / d;
+		return this;
+	}
+
+//	/**
+//	 * Scales the first parameter with the second and then adds the
+//	 * result to the current vector. 'Scaling' means pairwise multiplication.
+//	 * @param v2 vector
+//	 * @param v3 vector for pairwise multiplication with v2
+//	 * @return this + (v2[0]*v3[0] + v2[1]*v3[1] + v2[2]*v3[2])
+//	 */
+//	public final DVector3 addScaled(DVector3C v2, DVector3C v3) {
+//		d0 += v2.get0() * v3.get0();
+//		d1 += v2.get1() * v3.get1();
+//		d2 += v2.get2() * v3.get2();
+//		return this;
+//	}
+
+	/**
+	 * Scales the first parameter with the second and then adds the
+	 * result to the current vector. 'Scaling' means pairwise multiplication.
+	 * @param v2 vector
+	 * @param v3 vector for pairwise multiplication with v2
+	 * @param d scale factor
+	 * @return this + (v2[0]*v3[0]*d + v2[1]*v3[1]*d + v2[2]*v3[2]*d)
+	 */
+	public final DVector3 addScaled(DVector3C v2, DVector3C v3, double d) {
+		d0 += v2.get0() * v3.get0() * d;
+		d1 += v2.get1() * v3.get1() * d;
+		d2 += v2.get2() * v3.get2() * d;
+		return this;
+	}
+
+	/**
+	 * Reverse-scales the first parameter with the second and then adds the
+	 * result to the current vector. 'Reverse scaling' means pairwise division.
+	 *
+	 * @param v2 vector
+	 * @param v3 vector for pairwise division with v2
+	 * @return this + (v2[0]/v3[0] + v2[1]/v3[1] + v2[2]/v3[2])
+	 */
+	public final DVector3 addReverseScaled(DVector3C v2, DVector3C v3) {
+		d0 += v2.get0() / v3.get0();
+		d1 += v2.get1() / v3.get1();
+		d2 += v2.get2() / v3.get2();
+		return this;
+	}
+
+
+	/**
+	 * Reciprocate each element of the vector.
+	 *
+	 * @return {1/v[0], 1/v[1], 1/v[2]}
+	 */
+	public final DVector3 eqReciprocal() {
+		d0 = 1 / d0;
+		d1 = 1 / d1;
+		d2 = 1 / d2;
 		return this;
 	}
 
