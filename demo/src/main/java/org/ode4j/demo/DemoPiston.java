@@ -160,7 +160,8 @@ class DemoPiston extends dsFunctions {
 
 
 	//private int type = dJointTypePiston;
-	private Class<?> type = DPistonJoint.class;
+	// private Class<?> type = DPistonJoint.class;
+	private Class<?> type = DSliderJoint.class;
 
 	//#pragma message("tc to be changed to 0")
 
@@ -693,6 +694,10 @@ class DemoPiston extends dsFunctions {
 
 		setPositionBodies (tc);
 
+		DMatrix3 R2 = new DMatrix3();
+		dRFromAxisAndAngle (R2, 0,1,0, -0.25*PI);
+		geom[BODY1].setRotation (R2);
+
 
 		if ( fixed ) {
 			// Attache external cylinder to the world
@@ -711,7 +716,8 @@ class DemoPiston extends dsFunctions {
 		// The static is here only to help debugging
 		if ( type == DSliderJoint.class ) {
 			DSliderJoint sj = OdeHelper.createSliderJoint (world, null);
-			sj.attach (body[BODY1], body[BODY2]);
+			// sj.attach (body[BODY1], body[BODY2]);
+			sj.attach (body[BODY1], null);
 			sj.setAxis (1, 0, 0);
 			joint = sj;
 		} else { // fall through default

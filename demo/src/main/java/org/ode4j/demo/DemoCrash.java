@@ -102,7 +102,7 @@ class DemoCrash extends dsFunctions {
 	private static boolean BALLSTACK = false;
 	private static boolean ONEBALL = true;
 	private static boolean CENTIPEDE = true;
-	private static boolean CANNON = true;
+	private static boolean CANNON = !true;
 
 	// dynamics and collision objects (chassis, 3 wheels, environment)
 
@@ -641,21 +641,23 @@ class DemoCrash extends dsFunctions {
 		for (i=0; i< spheres; i++) dsDrawSphere (sphere[i].getPosition(),
 				sphere[i].getRotation(),RADIUS);
 
-		// draw the cannon
-		dsSetColor (1,1,0);
-		DMatrix3 R2 = new DMatrix3(), R3 = new DMatrix3(), R4 = new DMatrix3();
-		dRFromAxisAndAngle (R2,0,0,1,cannon_angle);
-		dRFromAxisAndAngle (R3,0,1,0,cannon_elevation);
-		dMultiply0 (R4,R2,R3);
-		DVector3 cpos = new DVector3(CANNON_X,CANNON_Y,1);
-		DVector3 csides = new DVector3(2,2,2);
-		dsDrawBox (cpos,R2,csides);
-		for (i=0; i<3; i++) cpos.add(i,  1.5*R4.get(i, 2));//[i*4+2]);
-		dsDrawCylinder (cpos,R4,3f,0.5f);
+		if (CANNON) {
+			// draw the cannon
+			dsSetColor (1,1,0);
+			DMatrix3 R2 = new DMatrix3(), R3 = new DMatrix3(), R4 = new DMatrix3();
+			dRFromAxisAndAngle (R2,0,0,1,cannon_angle);
+			dRFromAxisAndAngle (R3,0,1,0,cannon_elevation);
+			dMultiply0 (R4,R2,R3);
+			DVector3 cpos = new DVector3(CANNON_X,CANNON_Y,1);
+			DVector3 csides = new DVector3(2,2,2);
+			dsDrawBox (cpos,R2,csides);
+			for (i=0; i<3; i++) cpos.add(i,  1.5*R4.get(i, 2));//[i*4+2]);
+			dsDrawCylinder (cpos,R4,3f,0.5f);
 
-		// draw the cannon ball
-		dsDrawSphere (cannon_ball_body.getPosition(),cannon_ball_body.getRotation(),
-				CANNON_BALL_RADIUS);
+			// draw the cannon ball
+			dsDrawSphere(cannon_ball_body.getPosition(), cannon_ball_body.getRotation(),
+					CANNON_BALL_RADIUS);
+		}
 	}
 
 	public static void main(String[] args) {
