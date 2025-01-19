@@ -25,10 +25,14 @@
 
 --> See TODO.txt
 
-## 0.5.4 - in progress
+## Unreleased
 
+## 0.5.4 - in progress
 Known Bugs: TrimeshHeightfield and LayeredTrimeshHeightfield don't work with Convex
 
+- Add some math functions: [#145](https://github.com/tzaeschke/ode4j/issues/145)
+    - `DVector3 addScaled(DVector3C v2, DVector3C v3)` scale v2 with v3 and add to `this`
+    - `DVector3 addScaledInv(DVector3C v2, DVector3C v3)` inverse scale v2 with v3 and add to `this`
 - Fixed BVH spelling in API [#149](https://github.com/tzaeschke/ode4j/pull/149)
 - Post 0.16.6 cleanup [#148](https://github.com/tzaeschke/ode4j/pull/148)
   - Re-enabled new BoxPlane collider
