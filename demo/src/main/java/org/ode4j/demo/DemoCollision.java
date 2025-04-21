@@ -102,25 +102,18 @@ class DemoCollision extends dsFunctions {
 		try {
 			Method m = DemoCollision.class.getDeclaredMethod(name);
 			return (Boolean)m.invoke(this);
-		} catch (SecurityException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} catch (InvocationTargetException e) {
+		} catch (SecurityException | NoSuchMethodException | IllegalArgumentException | IllegalAccessException |
+                 InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
-	}
+    }
 
 
 	private final TestSlot[] testslot=new TestSlot[MAX_TESTS];
 
 
 	// globals used by the test functions
-	private int graphical_test=0;		// show graphical results of this test, 0=none
+	private int graphical_test = 0;		// show graphical results of this test, 0=none
 	private int current_test;		// currently execiting test
 	private boolean draw_all_objects_called;
 
@@ -622,8 +615,7 @@ class DemoCollision extends dsFunctions {
 		do {
 			dMakeRandomVector (n,1.0);
 			n.normalize();
-		}
-		while (n.dot(q) < 0);	// make sure normal goes away from sphere
+		} while (n.dot(q) < 0);	// make sure normal goes away from sphere
 		q.eqSum( p, q, 1.01*r );
 		ray.set (q,n);
 		ray.setLength (100);
@@ -1455,10 +1447,11 @@ class DemoCollision extends dsFunctions {
 
 			dsSetSphereQuality (3);
 			dsSetCapsuleQuality (8);
-			dsSimulationLoop (args,1280,900,this);
+			dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 		}
 		else {
 			// do all tests noninteractively
+			dsInitializeConsole(args);
 
 			for (i=0; i<MAX_TESTS; i++) testslot[i].number = i;
 
@@ -1508,6 +1501,8 @@ class DemoCollision extends dsFunctions {
 				}
 			}
 		}
+
+		dsFinalizeConsole();
 	}
 
 	//****************************************************************************

@@ -1,15 +1,7 @@
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawConvex;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.DMisc.dRandReal;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactBounce;
@@ -331,7 +323,7 @@ public class DemoBuoyancy extends dsFunctions {
         for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
         OdeHelper.createPlane( space, 0, 0, 1, 0 );
 
-        dsSimulationLoop (args,640,480,this);
+        dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
         contactgroup.destroy ();
         space.destroy ();
         world.destroy ();

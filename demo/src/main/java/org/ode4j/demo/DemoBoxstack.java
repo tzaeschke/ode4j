@@ -29,16 +29,8 @@ import static org.ode4j.demo.IcosahedronGeom.Sphere_planes;
 import static org.ode4j.demo.IcosahedronGeom.Sphere_pointcount;
 import static org.ode4j.demo.IcosahedronGeom.Sphere_points;
 import static org.ode4j.demo.IcosahedronGeom.Sphere_polygons;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawConvex;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.DMisc.dRandReal;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactBounce;
@@ -596,7 +588,7 @@ class DemoBoxstack extends dsFunctions {
 //	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
 	    
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 //	    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
 //	    pool.freeThreadPool();

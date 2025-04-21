@@ -271,7 +271,7 @@ public class DemoBasketConvex extends dsFunctions {
 		space.add (sphgeom);
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		// Causes segm violation? Why?
 		// (because dWorldDestroy() destroys body connected to geom; must call first!)

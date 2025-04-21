@@ -24,9 +24,8 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactApprox1;
 
@@ -242,8 +241,19 @@ public class DemoCards extends dsFunctions {
 
 		place_cards();
 
+		//	dThreadingImplementationID threading = dThreadingAllocateMultiThreadedImplementation();
+		//	dThreadingThreadPoolID pool = dThreadingAllocateThreadPool(4, 0, dAllocateFlagBasicData, NULL);
+		//	dThreadingThreadPoolServeMultiThreadedImplementation(pool, threading);
+		//	// dWorldSetStepIslandsProcessingMaxThreadCount(world, 1);
+		//	dWorldSetStepThreadingImplementation(world, dThreadingImplementationGetFunctions(threading), threading);
+
 		// run simulation
-		dsSimulationLoop (args, 640, 480, this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
+
+		//	dThreadingImplementationShutdownProcessing(threading);
+		//	dThreadingFreeThreadPool(pool);
+		//	dWorldSetStepThreadingImplementation(world, NULL, NULL);
+		//	dThreadingFreeImplementation(threading);
 
 		levels = 0;
 		place_cards();

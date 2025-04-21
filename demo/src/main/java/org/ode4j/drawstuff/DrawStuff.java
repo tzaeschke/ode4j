@@ -162,7 +162,7 @@ public class DrawStuff {
 	 * @param args Reserved for future use
 	 */
 	// DS_API
-	void dsInitializeConsole(String[] args) {
+	public static void dsInitializeConsole(String[] args) {
 		get().dsInitializeConsole(args);
 	}
 
@@ -175,7 +175,7 @@ public class DrawStuff {
 	 * The function is to be called only if @fn dsSimulationLoop is not invoked.
 	 */
 	// DS_API
-	void dsFinalizeConsole() {
+	public static void dsFinalizeConsole() {
 		get().dsFinalizeConsole();
 	}
 
