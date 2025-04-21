@@ -559,9 +559,9 @@ public class GimTrimesh implements GimConstants {
 	\param vertex_count
 	\param triindex_array
 	\param index_count
-	\param copy_vertices If 1, it copies the source vertices in another buffer. Else (0) it constructs a reference to the data.
-	\param copy_indices If 1, it copies the source vertices in another buffer. Else (0) it constructs a reference to the data.
-	\param transformed_reply If 1, then the m_transformed_vertices is a reply of the source vertices. Else it just be a reference to the original array. Use 1 if you will apply transformations to the trimesh. See \ref gim_trimesh_set_tranform().
+	\param copy_vertices If 1, it copies the source vertices to another buffer. Else (0) it constructs a reference to the data.
+	\param copy_indices If 1, it copies the source vertices to another buffer. Else (0) it constructs a reference to the data.
+	\param transformed_reply If 1, then the m_transformed_vertices is a reply of the source vertices. Else it just is a reference to the original array. Use 1 if you will apply transformations to the trimesh. See \ref gim_trimesh_set_tranform().
 	*/
 //	void gim_trimesh_create_from_data(GBUFFER_MANAGER_DATA buffer_managers[],
 //			GIM_TRIMESH * trimesh, vec3f * vertex_array, GUINT32 vertex_count,char copy_vertices, 

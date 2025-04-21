@@ -293,7 +293,7 @@ public class GimTrimeshCapsuleCollision {
 
 	/**
 	 * Trimesh Capsule collision.
-	 * Find the closest primitive collided by the ray.
+	 * Finds the closest primitive collided by the ray.
 	 * @param trimesh
 	 * @param capsule
 	 * @param contacts A GIM_CONTACT array. Must be initialized

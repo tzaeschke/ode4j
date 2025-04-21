@@ -189,7 +189,7 @@ class GimTrimeshTrimeshCol {
 
 
 
-	    //State variabnles
+	    //State variables
 		int mostdir=0;
 		int clipped2_count=0;
 
@@ -203,7 +203,7 @@ class GimTrimeshTrimeshCol {
 		     return false;//Reject
 		}
 
-		//find most deep interval face1
+		//find deepest interval face1
 		int deep2_count=0;
 
 		RefFloat maxdeep = new RefFloat();
