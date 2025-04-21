@@ -78,6 +78,16 @@ public class DrawStuffNull implements DrawStuffApi {
 	}
 
 	@Override
+	public void dsInitializeConsole(String[] args) {
+		// Nothing
+	}
+
+	@Override
+	public void dsFinalizeConsole()	{
+		// Nothing
+	}
+
+	@Override
 	public void dsSimulationLoop(String[] args, int window_width,
 			int window_height, dsFunctions fn) {
 		// look for flags that apply to us
@@ -194,7 +204,7 @@ public class DrawStuffNull implements DrawStuffApi {
 	}
 
 	@Override
-	public void dsSetViewpoint(float[] xyz, float[] hpr) {
+	public void dsSetViewpoint(final float[] xyz, final float[] hpr) {
 		// Nothing
 	}
 

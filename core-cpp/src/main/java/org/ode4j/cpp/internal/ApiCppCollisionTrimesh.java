@@ -39,7 +39,7 @@ import org.ode4j.ode.internal.cpp4j.java.RefInt;
  * Trimesh data.
  * This is where the actual vertexdata (pointers), and BV tree is stored.
  * Vertices should be single precision!
- * This should be more sophisticated, so that the user can easyly implement
+ * This should be more sophisticated, so that the user can easily implement
  * another collision library, but this is a lot of work, and also costs some
  * performance because some data has to be copied.
  */

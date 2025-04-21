@@ -1434,13 +1434,13 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 
 	/*extern */
 	// void dsInitializeConsole(int argc, char **argv)
-	void dsInitializeConsole(String[] args)
+	public void dsInitializeConsole(String[] args)
 	{
 		dsPlatformInitializeConsole();
 	}
 
 	/*extern */
-	void dsFinalizeConsole()
+	public void dsFinalizeConsole()
 	{
 		dsPlatformFinalizeConsole();
 	}
@@ -1504,7 +1504,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	//extern "C" 
 	//void dsSetViewpoint (float xyz[3], float hpr[3])
 	@Override
-	public void dsSetViewpoint (float[] xyz, float[] hpr)
+	public void dsSetViewpoint (final float[] xyz, final float[] hpr)
 	{
 		if (current_state < 1) dsError ("dsSetViewpoint() called before simulation started");
 		if (xyz!=null) {

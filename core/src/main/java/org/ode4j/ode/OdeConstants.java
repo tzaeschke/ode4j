@@ -51,6 +51,8 @@ public class OdeConstants {
 	public static final int 	  dContactSlip2		= 0x200;
 	/** Rolling/Angular friction */
 	public static final int 	  dContactRolling   = 0x400;
+	/** Allow inward contact force for inelastic collision */
+	public static final int 	  dContactInelastic = 0x800;
 
 	public static final int 	  dContactApprox0	= 0x0000;
 	public static final int 	  dContactApprox1_1	= 0x1000;

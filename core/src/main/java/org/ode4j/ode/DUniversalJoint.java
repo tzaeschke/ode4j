@@ -169,7 +169,7 @@ public interface DUniversalJoint extends DJoint {
 	 * Set the Universal axis1 as if the 2 bodies were already at 
 	 *        offset1 and offset2 appart with respect to axis1 and axis2.
 	 * <p>
-	 * This function initialize the axis1 and the relative orientation of 
+	 * This function initializes the axis1 and the relative orientation of
 	 * each body as if body1 was rotated around the new axis1 by the offset1 
 	 * value and as if body2 was rotated around the axis2 by offset2. <p>
 	 * Ex: <br>

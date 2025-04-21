@@ -120,7 +120,7 @@ public interface DPistonJoint extends DJoint {
 	/**
 	 * Set the Piston anchor as if the 2 bodies were already at [dx,dy, dz] apart.
 	 * <p>
-	 * This function initialize the anchor and the relative position of each body
+	 * This function initializes the anchor and the relative position of each body
 	 * as if the position between body1 and body2 was already the projection of [dx, dy, dz]
 	 * along the Piston axis. (i.e as if the body1 was at its current position - [dx,dy,dy] when the
 	 * axis is set).
@@ -201,7 +201,7 @@ public interface DPistonJoint extends DJoint {
 
 	
 	/**
-	 * Get the Piston angular position (i.e. the  twist between the 2 bodies).
+	 * Get the Piston angular position (i.e. the twist between the 2 bodies).
 	 * <p>
 	 * When the axis is set, the current position of the attached bodies is
 	 * examined and that position will be the zero position.

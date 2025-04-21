@@ -62,7 +62,7 @@ import org.ode4j.ode.threading.task.TaskExecutor;
  * A body is considered to be idle when the magnitudes of both its
  * linear average velocity and angular average velocity are below given thresholds.
  * The sample size for the average defaults to one and can be disabled by setting
- * to zero with
+ * to zero with {@code #setAutoDisableAverageSamplesCount}
  * <p>
  * Thus, every body has six auto-disable parameters: an enabled flag, a idle step
  * count, an idle time, linear/angular average velocity thresholds, and the
@@ -127,7 +127,7 @@ public interface DWorld {
 	/**
 	 * Set the world's global gravity vector.
 	 *
-	 * The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
+	 * <p>The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
 	 * assuming that +z is up. The default is no gravity, i.e. (0,0,0).
 	 * @param x x
 	 * @param y y
@@ -139,7 +139,7 @@ public interface DWorld {
 	/**
 	 * Set the world's global gravity vector.
 	 *
-	 * The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
+	 * <p>The units are m/s^2, so Earth's gravity vector would be (0,0,-9.81),
 	 * assuming that +z is up. The default is no gravity, i.e. (0,0,0).
 	 * @param g vector
 	 */
@@ -189,9 +189,87 @@ public interface DWorld {
 	static int dTHREADING_THREAD_COUNT_UNLIMITED = 0;
 	public static int dWORLDSTEP_THREADCOUNT_UNLIMITED = dTHREADING_THREAD_COUNT_UNLIMITED;
 
+	enum dWSTP
+	{
+		/** Thread count limit for parallel island iteration */
+		dWSTP_WorldIslandsIterationMaxThreads(0x001),
+		/** Thread count limit for stepping each individual island being iterated */
+		dWSTP_IslandSteppingMaxThreads( 0x002),
+		/** Thread count limit for solving QuickStep/Step LCP */
+		dWSTP_LCPSolvingMaxThreads(0x004);
+		public final int v;
+		dWSTP(int v) {
+			this.v = v;
+		}
+	}
+
+	class dWorldSteppingThreadingParameters
+	{
+		/* must always be defined */
+		// unsigned
+		int param_set; /**< Combination of dWSTP_... flags */
+		// unsigned
+		int world_islands_iteration_max_threads;
+		// unsigned
+		int island_stepping_max_threads;
+		// unsigned
+		int lcp_solving_max_threads;
+
+	} // dWorldSteppingThreadingParameters;
+
+	/**
+	 * Set threading parameters to be used for world stepping
+	 * <p>
+	 * The function sets parameters defined by bits in {@code dWorldSteppingThreadingParameters::param_set}
+	 * leaving other parameters unchanged. The actual number of threads that is going to be used will be the minimum
+	 * of a specific limit and the number of threads in the thread pool.
+	 * <p>
+	 * By default, for {@code dWorldSteppingThreadingParameters::world_islands_iteration_max_threads}
+	 * and {@code dWorldSteppingThreadingParameters::island_stepping_max_threads} there is no limit (@c dWORLDSTEP_THREADCOUNT_UNLIMITED);
+	 * for {@code dWorldSteppingThreadingParameters::lcp_solving_max_threads} the default limit is 1 thread (as the single threaded variant
+	 * appears to perform much better). These defaults may change in future releases.
+	 * <p>
+	 * The parameters act in the manner that world_islands_iteration_max_threads are used to iterate islands within the world. Then, for each island,
+	 * up to island_stepping_max_threads are used to prepare inputs and distribute results while up to lcp_solving_max_threads are used for solving the LCP itself.
+	 * Roughly, the total number of active threads could be up to world_islands_iteration_max_threads * MAX(island_stepping_max_threads, lcp_solving_max_threads)
+	 * if there is a sufficient number of threads available in the thread pool assigned for the world.
+	 *
+	 * <p> NOTE: Note that in current implementation {@link #step(double)} supports single threaded LCP solving only and the lcp_solving_max_threads parameter has no effect for it.
+	 *
+	 * <p> NOTE: world_islands_iteration_max_threads is the parameter set with {@link #setStepIslandsProcessingMaxThreadCount(int)}
+	 *
+	 * <p> WARNING: 
+	 * WARNING! Iterating islands in multiple threads requires allocating
+	 * individual stepping memory buffer for each of those threads. The size of buffers
+	 * allocated is the size needed to handle the largest island in the world.
+	 *
+	 * @param ptr_params Pointer to structure of type @c dWorldSteppingThreadingParameters
+	 * @see #getSteppingThreadingParameters(dWorldSteppingThreadingParameters) 
+	 * @see #setStepIslandsProcessingMaxThreadCount(int) 
+	 */
+	//	ODE_API
+	//void dWorldSetSteppingThreadingParameters(dWorldID w, const dWorldSteppingThreadingParameters *ptr_params);
+	void setSteppingThreadingParameters(final dWorldSteppingThreadingParameters ptr_params);
+
+	/**
+	 * Obtain threading parameters used for world stepping
+	 * <p>
+	 * The function retrieves parameters defined by bits in {@code dWorldSteppingThreadingParameters::param_set}.
+	 * <p>
+	 * NOTE: 
+	 * world_islands_iteration_max_threads is the parameter returned by {@link #getStepIslandsProcessingMaxThreadCount()}
+	 * <p>
+	 * @param ptr_params Pointer to structure of type @c dWorldSteppingThreadingParameters; the structure must have its param_set field initialized
+	 * @see #setSteppingThreadingParameters(dWorldSteppingThreadingParameters) 
+	 * @see #getStepIslandsProcessingMaxThreadCount() 
+	 */
+	//ODE_API void dWorldGetSteppingThreadingParameters(dWorldID w, dWorldSteppingThreadingParameters *ptr_params);
+	void getSteppingThreadingParameters(dWorldSteppingThreadingParameters ptr_params);
+
+
 	/**
 	 * Set maximum threads to be used for island stepping
-	 *
+	 * <p>
 	 * The actual number of threads that is going to be used will be the minimum
 	 * of this limit and number of threads in the threading pool. By default 
 	 * there is no limit ({@code WORLDSTEP_THREADCOUNT_UNLIMITED}).
@@ -213,7 +291,7 @@ public interface DWorld {
 	/**
 	 * Get maximum threads that are allowed to be used for island stepping.
 	 *
-	 * Please read commentaries to {@code setStepIslandsProcessingMaxThreadCount} for 
+	 * <p>Please read commentaries to {@code setStepIslandsProcessingMaxThreadCount} for
 	 * important information regarding the value returned.
 	 *
 	 * @return Current thread count limit value for island stepping
@@ -250,12 +328,12 @@ public interface DWorld {
 	/**
 	 * Step the world.
 	 *
-	 * This uses a "big matrix" method that takes time on the order of m^3
+	 * <p>This uses a "big matrix" method that takes time on the order of m^3
 	 * and memory on the order of m^2, where m is the total number of constraint
 	 * rows. For large systems this will use a lot of memory and can be very slow,
 	 * but this is currently the most accurate method.
 	 *
-	 * Failure result status means that the memory allocation has failed for operation.
+	 * <p>Failure result status means that the memory allocation has failed for operation.
 	 * In such a case all the objects remain in unchanged state and simulation can be
 	 * retried as soon as more memory is available.
 	 *
@@ -268,20 +346,20 @@ public interface DWorld {
 	/**
 	 * Quick-step the world.
 	 * 
-	 * This uses an iterative method that takes time on the order of m*N
+	 * <p>This uses an iterative method that takes time on the order of m*N
 	 * and memory on the order of m, where m is the total number of constraint
 	 * rows N is the number of iterations.
 	 * For large systems this is a lot faster than dWorldStep(),
 	 * but it is less accurate.
 	 * 
-	 * QuickStep is great for stacks of objects especially when the
+	 * <p>QuickStep is great for stacks of objects especially when the
 	 * auto-disable feature is used as well.
 	 * However, it has poor accuracy for near-singular systems.
 	 * Near-singular systems can occur when using high-friction contacts, motors,
 	 * or certain articulated structures. For example, a robot with multiple legs
 	 * sitting on the ground may be near-singular.
 	 * 
-	 * There are ways to help overcome QuickStep's inaccuracy problems:
+	 * <p>There are ways to help overcome QuickStep's inaccuracy problems:
 	 * 
 	 * <ul>
 	 * <li> Increase CFM. </li>
@@ -298,7 +376,7 @@ public interface DWorld {
 	 * Increasing the number of QuickStep iterations may help a little bit, but
 	 * it is not going to help much if your system is really near singular.
 	 *
-	 * Failure result status means that the memory allocation has failed for operation.
+	 * <p>Failure result status means that the memory allocation has failed for operation.
 	 * In such a case all the objects remain in unchanged state and simulation can be
 	 * retried as soon as more memory is available.
 	 *
@@ -310,7 +388,7 @@ public interface DWorld {
 	/**
 	* Converts an impulse to a force.
     *
-	* If you want to apply a linear or angular impulse to a rigid body,
+	* <p>If you want to apply a linear or angular impulse to a rigid body,
 	* instead of a force or a torque, then you can use this function to convert
 	* the desired impulse into a force/torque vector before calling the
 	* BodyAdd... function.
@@ -328,7 +406,9 @@ public interface DWorld {
 	void impulseToForce(double stepsize, double ix, double iy, double iz, 
 	        DVector3 force);
 	
-	
+	// #define dWORLDQUICKSTEP_ITERATION_COUNT_DEFAULT                     20U
+	int dWORLDQUICKSTEP_ITERATION_COUNT_DEFAULT = 20;
+
 	/**
 	 * Set the number of iterations that the QuickStep method performs per
 	 *        step.
@@ -337,7 +417,7 @@ public interface DWorld {
 	 * More iterations will give a more accurate solution, but will take
 	 * longer to compute.
 	 * 
-	 * @param num The default is 20 iterations.
+	 * @param num The default is dWORLDQUICKSTEP_ITERATION_COUNT_DEFAULT iterations.
 	 */
 	void setQuickStepNumIterations(int num);
 	
@@ -348,8 +428,136 @@ public interface DWorld {
 	 * @return nr of iterations
 	 */
 	int getQuickStepNumIterations() ;
-	
-	
+
+
+	//	#define dWORLDQUICKSTEP_ITERATION_PREMATURE_EXIT_DELTA_DEFAULT      1e-8f
+	double dWORLDQUICKSTEP_ITERATION_PREMATURE_EXIT_DELTA_DEFAULT = 1e-8f;
+	//	#define dWORLDQUICKSTEP_MAXIMAL_EXTRA_ITERATION_COUNT_FACTOR_DEFAULT 1.0f
+	double dWORLDQUICKSTEP_MAXIMAL_EXTRA_ITERATION_COUNT_FACTOR_DEFAULT = 1.0f;
+	//	#define dWORLDQUICKSTEP_EXTRA_ITERATION_REQUIREMENT_DELTA_DEFAULT   1e-2f
+	double dWORLDQUICKSTEP_EXTRA_ITERATION_REQUIREMENT_DELTA_DEFAULT = 1e-2f;
+
+	/**
+	 * Configure QuickStep method dynamic iteration count adjustment.
+	 *
+	 * <p> REMARK: The function controls dynamic iteration count adjustment basing on maximal contact force change
+	 * per iteration in matrix.
+	 *
+	 * <p>If Premature Exit Delta is configured with {@code ptr_iteration_premature_exit_delta}
+	 * and the maximal contact force adjustment does not exceed the value the iterations are abandoned
+	 * prematurely and computations complete in fewer steps than it would take normally.
+	 * Passing zero in {@code ptr_iteration_premature_exit_delta} will disable the premature exit and enforce
+	 * unconditional execution of iteration count set by {@link #setQuickStepNumIterations(int)}.
+	 *
+	 * <p>If extra iterations are enabled by passing  a positive fraction in {@code ptr_max_num_extra_factor}
+	 * and, after the normal number of iterations is executed, the maximal contact force adjustment is still
+	 * larger than the limit set with the {@code ptr_extra_iteration_requirement_delta}, up to that fraction of
+	 * normal iteration count is executed extra until the maximal contact force change falls below the margin.
+	 *
+	 * <p>At least one parameter must be not NULL for the call.
+	 * If NULL is passed for any of the parameters the corresponding parameter will retain its previous value.
+	 * If the standard number of iterations is changed with {@link #setQuickStepNumIterations(int)} call and
+	 * an extra iteration count was configured with {@code ptr_max_num_extra_factor} the extra absolute value will be
+	 * adjusted accordingly.
+	 *
+	 * @param ptr_iteration_premature_exit_delta A margin value such that, if contact force adjustment value maximum in an iteration
+	 * becomes less, the method is allowed to terminate prematurely.
+	 * @param ptr_max_num_extra_factor A non-negative coefficient that defines fraction of the standard iteration count to be executed extra
+	 * if contact force still significantly changes after the standard iterations complete.
+	 * @param ptr_extra_iteration_requirement_delta A margin that defines when the extra iterations are not needed or can be abandoned after
+	 * the start.
+	 * @see #getQuickStepDynamicIterationParameters(double[], double[], double[])
+	 */
+	//		ODE_API void dWorldSetQuickStepDynamicIterationParameters(dWorldID w, const dReal *ptr_iteration_premature_exit_delta/*=NULL*/,
+	//		const dReal *ptr_max_num_extra_factor/*=NULL*/, const dReal *ptr_extra_iteration_requirement_delta/*=NULL*/);
+	void setQuickStepDynamicIterationParameters(final double[] ptr_iteration_premature_exit_delta/*=NULL*/,
+		final double[] ptr_max_num_extra_factor/*=NULL*/, final double[] ptr_extra_iteration_requirement_delta/*=NULL*/);
+
+
+	/**
+	 * Retrieve QuickStep method dynamic iteration count adjustment parameters.
+	 *
+	 * <p>REMARK: The function retrieves dynamic iteration count adjustment parameters.
+	 *
+	 * <p>See {@link #setQuickStepDynamicIterationParameters(double[], double[], double[])} for the parameters description.
+	 *
+	 * <p>At least one parameter must be not NULL for the call.
+	 *
+	 * @param out_iteration_premature_exit_delta Premature Exit Delta value (can be NULL if the value is not needed).
+	 * @param out_max_num_extra_factor Maximum Extra Iteration Number Factor value (can be NULL if the value is not needed).
+	 * @param out_extra_iteration_requirement_delta Extra Iteration Requirement Delta value (can be NULL if the value is not needed).
+	 * @see #setQuickStepDynamicIterationParameters(double[], double[], double[])
+	 */
+	//		ODE_API void dWorldGetQuickStepDynamicIterationParameters(dWorldID w, dReal *out_iteration_premature_exit_delta/*=NULL*/,
+	//																  dReal *out_max_num_extra_factor/*=NULL*/, dReal *out_extra_iteration_requirement_delta/*=NULL*/);
+	void getQuickStepDynamicIterationParameters(double[] out_iteration_premature_exit_delta/*=NULL*/,
+											    double[] out_max_num_extra_factor/*=NULL*/, double[] out_extra_iteration_requirement_delta/*=NULL*/);
+
+
+	/**
+	 * Statistics structure to accumulate QuickStep iteration couunt dynamic adjustment data.
+	 *
+	 * @see #attachQuickStepDynamicIterationStatisticsSink
+	 */
+	class dWorldQuickStepIterationCount_DynamicAdjustmentStatistics
+	{
+		//		unsigned struct_size;         /*< to be initialized with the structure size */
+		//
+		//		duint32 iteration_count;      /*< number of iterations executed */
+		//
+		//		duint32 premature_exits;      /*< number of times solution took fewer than the regular iteration count */
+		//		duint32 prolonged_execs;      /*< number of times solution took more  than the regular iteration count */
+		//		duint32 full_extra_execs;     /*< number of times the assigned exit criteria were not achieved even after all extra iterations allowed */
+		@Deprecated
+		int struct_size;         /*< to be initialized with the structure size */
+
+		int iteration_count;      /*< number of iterations executed */
+
+		int premature_exits;      /*< number of times solution took fewer than the regular iteration count */
+		int prolonged_execs;      /*< number of times solution took more  than the regular iteration count */
+		int full_extra_execs;     /*< number of times the assigned exit criteria were not achieved even after all extra iterations allowed */
+
+	} // dWorldQuickStepIterationCount_DynamicAdjustmentStatistics;
+
+	// ODE_PURE_INLINE
+	//	void dWorldInitializeQuickStepIterationCount_DynamicAdjustmentStatistics(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics *ptr_stat)
+	//	{
+	//		memset(ptr_stat, 0, sizeof(*ptr_stat));
+	//		ptr_stat->struct_size = sizeof(*ptr_stat);
+	//	}
+	static void initializeQuickStepIterationCount_DynamicAdjustmentStatistics(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics ptr_stat)
+	{
+		// memset(ptr_stat, 0, sizeof(*ptr_stat));
+		ptr_stat.iteration_count = 0;
+		ptr_stat.premature_exits = 0;
+		ptr_stat.prolonged_execs = 0;
+		ptr_stat.full_extra_execs = 0;
+		ptr_stat.struct_size = 5*4 + 12;
+	}
+
+
+	/**
+	 * Attach or remove a structure to collect QuickStep iteration count dynamic adjustment statistics.
+	 *
+	 * <p>REMARKS: The function can be used to attach or remove a structure instance that will be updated with iteration count dynamic adjustment statistics
+	 * of QuickStep. To break the attachment, the function must be called with NULL for the {@code var_stats}.
+	 *
+	 * <p>See {@link #setQuickStepDynamicIterationParameters(double[], double[], double[])} for information on the iteration count dynamic adjustment options.
+	 *
+	 * <p>The caller is responsible for initializing the structure before assignment. The structure must persist in memory until unattached or
+	 * the host world object is destroyed. The same structure instance may be shared among multiple worlds if that makes sense.
+	 *
+	 * <p>The assignment may fail if the feature is not configured within the library, or if the structure was not initialized properly.
+	 *
+	 * @param var_stats A pointer to structure instance to assigned or NULL to break the previous attachment for the world.
+	 * @return Boolean status indicating whether the function succeeded
+	 * @see dWorldQuickStepIterationCount_DynamicAdjustmentStatistics
+	 */
+	// ODE_API int dWorldAttachQuickStepDynamicIterationStatisticsSink(dWorldID w, dWorldQuickStepIterationCount_DynamicAdjustmentStatistics *var_stats/*=NULL*/);
+	int attachQuickStepDynamicIterationStatisticsSink(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics var_stats/*=NULL*/);
+
+
+
 	/**
 	 * Set the SOR over-relaxation parameter
 	 * 
@@ -458,7 +666,7 @@ public interface DWorld {
 	/**
 	 * Destroy a world and everything in it.
 	 *
-	 * This includes all bodies, and all joints that are not part of a joint
+	 * <p>This includes all bodies, and all joints that are not part of a joint
 	 * group. Joints that are part of a joint group will be deactivated, and
 	 * can be destroyed by calling, for example, dJointGroupEmpty().
 	 */

@@ -461,7 +461,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * the enabled state.
 	 *
 	 * @param geom   the geom to disable
-	 * @see #dGeomDisable(DGeom)
+	 * @see #dGeomEnable(DGeom)
 	 * @see #dGeomIsEnabled(DGeom)
 	 */
 	//ODE_API 
@@ -480,7 +480,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 	 * @param geom   the geom to query
 	 * @return Non-zero if the geom is enabled, zero otherwise.
 	 * @see #dGeomDisable(DGeom)
-	 * @see #dGeomIsEnabled(DGeom)
+	 * @see #dGeomEnable(DGeom)
 	 */
 	//ODE_API 
 	public static boolean dGeomIsEnabled (DGeom geom) {
@@ -950,7 +950,7 @@ public abstract class ApiCppCollision extends ApiCppCollisionSpace {
 
 
 	/**
-	 * Calculate the depth of the a given point within a sphere.
+	 * Calculate the depth of the given point within a sphere.
 	 *
 	 * @param sphere  the sphere to query.
 	 * @param x       the X coordinate of the point.

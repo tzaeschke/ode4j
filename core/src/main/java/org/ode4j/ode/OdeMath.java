@@ -869,7 +869,7 @@ public class OdeMath extends DRotation {
 
 
 	/*
-	 * special case matrix multipication, with operator selection
+	 * special case matrix multiplication, with operator selection
 	 */
 
 	private static void dMultiplyHelper0_331(DVector3 res, DMatrix3C a, DVector3C b) {

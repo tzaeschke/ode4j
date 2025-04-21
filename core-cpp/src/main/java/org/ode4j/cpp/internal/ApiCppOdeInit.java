@@ -29,7 +29,7 @@ import org.ode4j.ode.internal.OdeInit;
  * Library Initialization
  *
  * Library initialization functions prepare ODE internal data structures for use
- * and release allocated resources after ODE is not needed any more.
+ * and release allocated resources after ODE is not needed anymore.
  */
 public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 
@@ -130,7 +130,7 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 //	 * in advance. If collision detection is not going to be used, it is not necessary
 //	 * to specify this flag.
 //	 *
-//	 * @c dAllocateMaskAll is a mask that can be used for for allocating all possible
+//	 * @c dAllocateMaskAll is a mask that can be used for allocating all possible
 //	 * data in cases when it is not known what exactly features of ODE will be used.
 //	 * The mask may not be used in combination with other flags. It is guaranteed to
 //	 * include all the current and future legal allocation flags. However, mature
@@ -207,9 +207,9 @@ public abstract class ApiCppOdeInit extends ApiCppExportDIF {
 
 
 	/**
-	 * Close ODE after it is not needed any more.
+	 * Close ODE after it is not needed anymore.
 	 *
-	 * The function is required to be called when program does not need ODE features any more.
+	 * The function is required to be called when program does not need ODE features anymore.
 	 * The call to {@code dCloseODE} releases all the resources allocated for library
 	 * including all the thread local data that might be allocated for all the threads
 	 * that were using ODE.

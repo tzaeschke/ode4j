@@ -608,7 +608,7 @@ public interface DBody {
 	 * Sets the finite rotation axis for a body.
 	 * 
 	 * <p>REMARK:
-	 * This is axis only has meaning when the finite rotation mode is set
+	 * This axis only has meaning when the finite rotation mode is set
 	 * If this axis is zero (0,0,0), full finite rotations are performed on
 	 * the body.
 	 * If this axis is nonzero, the body is rotated by performing a partial finite
@@ -629,7 +629,7 @@ public interface DBody {
 	 * Sets the finite rotation axis for a body.
 	 * 
 	 * <p>REMARK:
-	 * This is axis only has meaning when the finite rotation mode is set
+	 * This axis only has meaning when the finite rotation mode is set
 	 * If this axis is zero (0,0,0), full finite rotations are performed on
 	 * the body.
 	 * If this axis is nonzero, the body is rotated by performing a partial finite
@@ -647,7 +647,7 @@ public interface DBody {
 
 	/**
 	 * Get the way a body's orientation is updated each timestep.
-	 * @return the mode 0 (infitesimal) or 1 (finite).
+	 * @return the mode 0 (infinitesimal) or 1 (finite).
 	 */
 	boolean getFiniteRotationMode();
 	/**
@@ -663,7 +663,7 @@ public interface DBody {
 	int getNumJoints();
 	/**
 	 * Return a joint attached to this body, given by index.
-	 * @param index valid range is  0 to n-1 where n is the value returned by
+	 * @param index valid range is 0 to n-1 where n is the value returned by
 	 * dBodyGetNumJoints().
 	 * @return Joint object
 	 */

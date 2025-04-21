@@ -106,7 +106,7 @@ public class CCDList {
 //	}
 //
 //	/**
-//	 * Iterates over list safe against remove of list entry
+//	 * Iterates over list safe against removal of list entry
 //	 */
 //	static final void ccdListForEachSafe(ccd_list_t list, ccd_list_t item, tmp) {
 //		    for (item = (list).next, tmp = (item).next; 

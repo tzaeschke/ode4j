@@ -47,7 +47,7 @@ public class TestVec3 {
 	    ccdVec3Set(a, 0., 0., 0.);
 	    ccdVec3Set(b, 1., 0., 0.);
 
-	    // extereme w == a
+	    // extreme w == a
 	    ccdVec3Set(P, -1., 0., 0.);
 	    dist = ccdVec3PointSegmentDist2(P, a, b, w);
 	    assertTrue(ccdEq(dist, 1.));
@@ -84,7 +84,7 @@ public class TestVec3 {
 	    assertTrue(ccdVec3Eq(w, a));
 
 
-	    // extereme w == b
+	    // extreme w == b
 	    ccdVec3Set(P, 2., 0., 0.);
 	    dist = ccdVec3PointSegmentDist2(P, a, b, w);
 	    assertTrue(ccdEq(dist, 1.));
@@ -148,7 +148,7 @@ public class TestVec3 {
 	    ccdVec3Set(a, -.5, 2., 1.);
 	    ccdVec3Set(b, 1., 1.5, 0.5);
 
-	    // extereme w == a
+	    // extreme w == a
 	    ccdVec3Set(P, -10., 0., 0.);
 	    dist = ccdVec3PointSegmentDist2(P, a, b, w);
 	    assertTrue(ccdEq(dist, 9.5 * 9.5 + 2. * 2. + 1.));
@@ -159,7 +159,7 @@ public class TestVec3 {
 	    assertTrue(ccdEq(dist, 9.5 * 9.5 + 7.2 * 7.2 + 2.4 * 2.4));
 	    assertTrue(ccdVec3Eq(w, a));
 
-	    // extereme w == b
+	    // extreme w == b
 	    ccdVec3Set(P, 10., 0., 0.);
 	    dist = ccdVec3PointSegmentDist2(P, a, b, w);
 	    assertTrue(ccdEq(dist, 9. * 9. + 1.5 * 1.5 + 0.5 * 0.5));
