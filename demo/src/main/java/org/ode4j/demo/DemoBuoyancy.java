@@ -335,8 +335,8 @@ public class DemoBuoyancy extends dsFunctions {
     public void stop() {
     }
 
-    private final static double WATER_LEVEL = 5; 
-    private final static double WATER_DENSITY = 0.27; 
+    private static final double WATER_LEVEL = 5;
+    private static final double WATER_DENSITY = 0.27;
 
     public void handleBuoyancy() {
         List<DGeom> floatingGeoms = new ArrayList<>();

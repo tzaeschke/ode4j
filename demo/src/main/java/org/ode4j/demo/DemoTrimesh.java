@@ -151,8 +151,8 @@ class DemoTrimesh extends dsFunctions {
 	}
 
 
-	private static float[] xyz = {2.1640f,-1.3079f,1.7600f};
-	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {2.1640f,-4.3079f,1.7600f};
+	private static final float[] hpr = {115.5000f,-17.0000f,0.0000f};
 
 	// start simulation - set viewpoint
 
@@ -507,7 +507,7 @@ class DemoTrimesh extends dsFunctions {
 //	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 //	    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
 //	    pool.freeThreadPool();

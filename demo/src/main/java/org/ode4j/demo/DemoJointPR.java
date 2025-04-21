@@ -84,8 +84,8 @@ class DemoJointPR extends dsFunctions {
 
 
 	//camera view
-	private static float[] xyz = {2.0f,-3.5f,2.0000f};
-	private static float[] hpr = {90.000f,-25.5000f,0.0000f};
+	private static final float[] xyz = {2.0f,-3.5f,2.0000f};
+	private static final float[] hpr = {90.000f,-25.5000f,0.0000f};
 	//world,space,body & geom
 	private static DWorld world;
 	private static DSpace space;
@@ -433,7 +433,7 @@ class DemoJointPR extends dsFunctions {
 		box1_space.add(box1);
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 		contactgroup.destroy ();
 		space.destroy ();
 		world.destroy ();

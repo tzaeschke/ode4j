@@ -213,8 +213,8 @@ class DemoBoxstack extends dsFunctions {
 	}
 
 
-	private static float[] xyz = {2.1640f,-1.3079f,1.7600f};
-	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {2.1640f,-1.3079f,1.7600f};
+	private static final float[] hpr = {125.5000f,-17.0000f,0.0000f};
 
 	// start simulation - set viewpoint
 

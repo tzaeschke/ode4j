@@ -24,14 +24,6 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawLine;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
-
 import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
@@ -51,6 +43,9 @@ import org.ode4j.ode.DTransmissionJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
+
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 
 
 /**
@@ -163,8 +158,8 @@ public class DemoTransmission extends dsFunctions {
 		body2.setAngularVel(0, 0, 0);
 	}
 
-	private static double[] xyz = {1.15,-2.78,4.1};
-	private static double[] hpr = {105,-45.5,0};
+	private static final double[] xyz = {1.15,-2.78,4.1};
+	private static final double[] hpr = {105,-45.5,0};
 
 	@Override
 	public void start() {
@@ -420,7 +415,7 @@ public class DemoTransmission extends dsFunctions {
 		OdeHelper.initODE2(0);
 
 		// run simulation
-		dsSimulationLoop (args,800,600,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		OdeHelper.closeODE();
 	}

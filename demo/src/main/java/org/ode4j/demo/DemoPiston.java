@@ -27,15 +27,8 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsElapsedTime;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactApprox1;
 import static org.ode4j.ode.OdeConstants.dContactSlip1;
@@ -135,8 +128,8 @@ class DemoPiston extends dsFunctions {
 	//private static final double Mass2 = 8;
 
 	//camera view
-	private static float[] xyz = {2.0f,-3.5f,2.0000f};
-	private static float[] hpr = {90.000f,-25.5000f,0.0000f};
+	private static final float[] xyz = {2.0f,-5.5f,2.0000f};
+	private static final float[] hpr = {90.000f,-15.5000f,0.0000f};
 
 
 	//world,space,body & geom
@@ -726,7 +719,7 @@ class DemoPiston extends dsFunctions {
 
 
 		// run simulation
-		dsSimulationLoop (args,400,300,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		//delete joint;
 		contactgroup.destroy ();

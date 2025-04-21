@@ -126,8 +126,8 @@ class DemoBuggy extends dsFunctions {
 	}
 
 
-	private float[] xyz = {0.8317f,-0.9817f,0.8000f};
-	private float[] hpr = {121.0000f,-27.5000f,0.0000f};
+	private static final float[] xyz = {0.8317f,-0.9817f,0.8000f};
+	private static final float[] hpr = {121.0000f,-27.5000f,0.0000f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()

@@ -136,8 +136,8 @@ public class DemoBasketConvex extends dsFunctions {
 
 		dsSetViewpoint (xyz,hpr);
 	}
-	private float[] xyz = {-8,0,5};
-	private float[] hpr = {0.0f,-29.5000f,0.0000f};
+	private static final float[] xyz = {-8,0,5};
+	private static final float[] hpr = {0.0f,-29.5000f,0.0000f};
 
 
 

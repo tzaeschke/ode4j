@@ -24,15 +24,8 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.DMisc.dRandReal;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactBounce;
@@ -245,8 +238,8 @@ public class DemoMotion extends dsFunctions {
 
 	// start simulation - set viewpoint
 
-	private static float[] xyz = {2.1106f,-1.3007f,2.f};
-	private static float[] hpr = {150.f,-13.5000f,0.0000f};
+	private static final float[] xyz = {2.1106f,-1.3007f,2.f};
+	private static final float[] hpr = {150.f,-13.5000f,0.0000f};
 
 	@Override
 	public void start()
@@ -528,7 +521,7 @@ public class DemoMotion extends dsFunctions {
 		platform.setCollideBits(~1l);
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		contactgroup.destroy ();
 		space.destroy ();

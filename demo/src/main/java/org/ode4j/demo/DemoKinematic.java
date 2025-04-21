@@ -264,8 +264,8 @@ public class DemoKinematic extends dsFunctions {
 	    hinge.attach(kbody, matraca);
 	    hinge.setAnchor(kx, ky, kz+1);
 	    hinge.setAxis(0, 0, 1);
-	    
-	    dsSimulationLoop (args, 640, 480, this);
+
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 	    
 	    OdeHelper.closeODE();
 	}

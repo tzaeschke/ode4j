@@ -94,8 +94,8 @@ class DemoPlane2d extends dsFunctions {
 //	private static DJointGroup coll_contacts;
 
 
-	private static float[]    xyz = { 0.5f*STAGE_SIZE, 0.5f*STAGE_SIZE, 0.65f*STAGE_SIZE};
-	private static float[]    hpr = { 90.0f, -90.0f, 0 };
+	private static final float[]    xyz = { 0.5f*STAGE_SIZE, 0.5f*STAGE_SIZE, 0.85f*STAGE_SIZE};
+	private static final float[]    hpr = { 90.0f, -90.0f, 0 };
 
 	private static void cb_start ()	{
 		dsSetViewpoint (xyz, hpr);
@@ -336,7 +336,7 @@ class DemoPlane2d extends dsFunctions {
 
 		g_globals_ptr.coll_contacts = OdeHelper.createJointGroup();
 
-		dsSimulationLoop (args, 352,288,drawstuff_functions);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, drawstuff_functions);
 
 		OdeHelper.closeODE();
 	}

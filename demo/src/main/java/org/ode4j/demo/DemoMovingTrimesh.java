@@ -134,7 +134,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 
 
     // start simulation - set viewpoint
-	private static final float[] xyz = {2.1640f,-1.3079f,1.7600f};
+	private static final float[] xyz = {2.1640f,-2.3079f,1.7600f};
 	private static final float[] hpr = {125.5000f,-17.0000f,0.0000f};
 
 	@Override
@@ -555,7 +555,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 //	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
 
 		// run simulation
-		dsSimulationLoop (args,600,600,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 //	    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
 //	    pool.freeThreadPool();

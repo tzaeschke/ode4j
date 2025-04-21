@@ -675,7 +675,7 @@ class DemoCrash extends dsFunctions {
 		setupSimulation();
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		shutdownSimulation();
 		OdeHelper.closeODE();

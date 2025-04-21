@@ -289,8 +289,8 @@ public class DemoTracks extends dsFunctions {
 
         dsSetSphereQuality(3);
     }
-    private static float[] xyz = {-5.9414f,-0.4804f,2.9800f};
-    private static float[] hpr = {32.5000f,-10.0000f,0.0000f};
+    private static final float[] xyz = {-7.9414f,-2.4804f,2.9800f};
+    private static final float[] hpr = {32.5000f,-10.0000f,0.0000f};
 
 
     private DNearCallback nearCallback = new DNearCallback() {
@@ -542,7 +542,7 @@ public class DemoTracks extends dsFunctions {
         OdeHelper.initODE2(0);
 
         // run demo
-        dsSimulationLoop (args, 800, 600, this);
+        dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
         OdeHelper.closeODE();
     }

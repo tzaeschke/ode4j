@@ -1400,8 +1400,6 @@ void testReorthonormalize()
 	//****************************************************************************
 	// unit test
 
-	//#include <setjmp.h>
-
 	// static jmp_buf jump_buffer;
 
 	//	static void myDebug (int num, const char *msg, va_list ap)
@@ -1520,7 +1518,7 @@ void testReorthonormalize()
 		testCrossProduct();
 		testSetZero();
 		testNormalize3();
-		//testReorthonormalize();     ... not any more
+		//testReorthonormalize();     ... not anymore
 		testPlaneSpace();
 		testMatrixMultiply();
 		testSmallMatrixMultiply();
