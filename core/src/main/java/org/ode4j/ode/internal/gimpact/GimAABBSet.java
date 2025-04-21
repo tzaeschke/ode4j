@@ -124,17 +124,17 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	/*
 	                Brute-Force Vs Sorted pruning
 	Different approaches must be applied when colliding sets with different number of
-	elements. When sets have less of 100 boxes, is often better to apply force brute
+	elements. When sets have less of 100 boxes, it is often better to apply brute force
 	approach instead of sorted methods, because at lowlevel bruteforce routines gives
-	better perormance and consumes less resources, due of their simplicity.
-	But when sets are larger, the complexiity of bruteforce increases exponencially.
+	better performance and consumes less resources, due of their simplicity.
+	But when sets are larger, the complexiity of bruteforce increases exponentially.
 	In the case of large sets, sorted approach is applied. So GIMPACT has the following
 	strategies:
 
 	On Sorting sets:
 	!) When sets have more of 140 boxes, the boxes are sorted by its coded min coord
 	and the global box is calculated. But when sets are smaller (less of 140 boxes),
-	Is convenient to apply brute force approach.
+	It is convenient to apply brute force approach.
 
 	 *******************************************************************************/
 
@@ -673,7 +673,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	//Use these functions for general initialization
 
 	/**
-	 * Initalizes the set. Sort Boxes if needed.
+	 * Initalizes the set. Sort boxes if needed.
 	 * @pre aabbset must be allocated. And the boxes must be already set.
 	 * @post If the set has less of GIM_MIN_SORTED_BIPARTITE_PRUNING_BOXES boxes, only calcs the global box,
 	 * else it Sorts the entire set( Only applicable for large sets)
@@ -722,7 +722,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * @param test_aabb Box for collision query
 	 * @param collided Array of GUINT elements, indices of boxes. Must be initialized before (Reserve size ~ 100)
 	 */
-	//* @param aabbset Set of boxes .Global bound is required.
+	//* @param aabbset Set of boxes. Global bound is required.
 	//void gim_aabbset_box_collision(aabb3f *test_aabb, GIM_AABB_SET * aabbset, GDYNAMIC_ARRAY * collided)
 	public void gim_aabbset_box_collision(aabb3f test_aabb, GimDynArrayInt collided)
 	{
@@ -752,7 +752,7 @@ public class GimAABBSet { //Formerly GimBoxPruning
 	 * @param vorigin Origin point of ray.
 	 * @param vdir Direction vector of ray.
 	 * @param tmax Max distance param for ray.
-	 * // @param aabbset Set of boxes .Global bound is required.
+	 * // @param aabbset Set of boxes. Global bound is required.
 	 * @param collided Array of GUINT elements, indices of boxes. Must be initialized before (Reserve size ~ 100)
 	 */
 	//void gim_aabbset_ray_collision(vec3f vorigin,vec3f vdir, GREAL tmax, GIM_AABB_SET * aabbset, GDYNAMIC_ARRAY * collided)

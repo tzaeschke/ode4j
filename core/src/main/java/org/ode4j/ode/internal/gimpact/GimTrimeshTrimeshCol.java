@@ -283,7 +283,7 @@ class GimTrimeshTrimeshCol {
 	 * Finds the contact points from a collision of two triangles.
 	 * <p>
 	 * Returns the contact points, the penetration depth and the separating normal of the collision
-	 * between two triangles. The normal is pointing toward triangle 1 from triangle 2
+	 * between two triangles. The normal is pointing towards triangle 1 from triangle 2
 	 */
 //	int gim_triangle_triangle_collision(
 //			GIM_TRIANGLE_DATA *tri1,

@@ -40,7 +40,7 @@ public class Gimpact {
 
 
 	/** 
-	 * Call this for initialize GIMPACT system structures.
+	 * Call this to initialize GIMPACT system structures.
 	 */
 	public static void gimpact_init()
 	{
@@ -48,7 +48,7 @@ public class Gimpact {
 	}
 
 	/**
-	 * Call this for clean GIMPACT system structures.
+	 * Call this to clean GIMPACT system structures.
 	 */
 	public static void gimpact_terminate()
 	{

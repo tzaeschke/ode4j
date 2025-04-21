@@ -98,7 +98,7 @@ public class GimTrimeshCapsuleCollision {
 
 	
 	/**
-	 * Utility function for find the closest point between a segment and a triangle.
+	 * Utility function to find the closest point between a segment and a triangle.
 	 * <p> Postcondition: 
 	 * The contacts array is not set to 0. It adds additional contacts.
 	 * 
@@ -242,8 +242,8 @@ public class GimTrimeshCapsuleCollision {
 
 
 	/**
-	 * Utility function for find the closest point between a capsule and a triangle
-	 * <p>Postcondition: The contacts array is not set to 0. It adds aditional contacts
+	 * Utility function to find the closest point between a capsule and a triangle
+	 * <p>Postcondition: The contacts array is not set to 0. It adds additional contacts
 	 * @param triangle
 	 * @param capsule
 	 * @param contacts Contains the closest points on the capsule, and the normal points to triangle
@@ -296,7 +296,6 @@ public class GimTrimeshCapsuleCollision {
 	 * Find the closest primitive collided by the ray.
 	 * @param trimesh
 	 * @param capsule
-	 * @param contact
 	 * @param contacts A GIM_CONTACT array. Must be initialized
 	 */
 	static void gim_trimesh_capsule_collision(GimTrimesh trimesh, GIM_CAPSULE_DATA capsule, GimDynArray<GimContact> contacts)

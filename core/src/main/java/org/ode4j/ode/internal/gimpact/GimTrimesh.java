@@ -48,8 +48,8 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 	<ul>
 	<li> For creating trimeshes, you must initialize Buffer managers by calling \ref gimpact_init
 	<li> Then you must define the vertex and index sources by creating them with \ref BUFFER_ARRAYS routines, and then call  \ref gim_trimesh_create_from_arrays.
-	<li> An alternative way for creaing trimesh objects is calling  \ref gim_trimesh_create_from_data.
-	<li> For access to the trimesh data (vertices, triangle indices), you must call  \ref gim_trimesh_locks_work_data , and  \ref gim_trimesh_unlocks_work_data for finish the access.
+	<li> An alternative way for creating trimesh objects is calling  \ref gim_trimesh_create_from_data.
+	<li> For access to the trimesh data (vertices, triangle indices), you must call  \ref gim_trimesh_locks_work_data , and  \ref gim_trimesh_unlocks_work_data to finish the access.
 	<li> Each time when the trimesh data is modified, you must call  \ref gim_trimesh_update after.
 	<li> When a trimesh is no longer needed, you must call \ref gim_trimesh_destroy.
 	</ul>
@@ -81,7 +81,7 @@ import org.ode4j.ode.internal.gimpact.GimTrimeshCapsuleCollision.GIM_CAPSULE_DAT
 	<p>Note that parameter transformed_reply is 0, that means that m_transformed_vertex_buffer is a reference to m_source_vertex on the trimesh, and transformations are not avaliable. Use that configuration if you have to simulate a deformable trimesh like cloth or elastic bodies.</p>
 	<p>When the trimesh is no longer needed, destroy it safely with gim_trimesh_destroy()</p>
 	<p><strong>UPDATING TRIMESHES</strong></p>
-	<p>On simulation loops, is needed to update trimeshes every time for update vertices althought updating triangle boxes and planes cache. There is two ways for update trimeshes: </p>
+	<p>On simulation loops, is needed to update trimeshes every time to update vertices althought updating triangle boxes and planes cache. There is two ways for update trimeshes: </p>
 	<ul>
 	<li> Updating vertices directly. You need to access to the \ref GIM_TRIMESH.m_source_vertex_buffer member; a vertex buffer which has access to the source vertices.
 	<pre>
@@ -141,7 +141,7 @@ public class GimTrimesh implements GimConstants {
 	GimBufferArrayFloat m_source_vertex_buffer;//!< Buffer of vec3f coordinates
 
 	/** 
-	 * (GUINT) Indices of triangles,groups of three elements.
+	 * (GUINT) Indices of triangles, groups of three elements.
 	 * Array of GUINT. Triangle indices. Each triple contains indices of the vertices for each triangle.
 	 * @invariant must be aligned
 	 */
@@ -170,7 +170,7 @@ public class GimTrimesh implements GimConstants {
 
 	/**
 	 * Trimesh Trimesh Collisions
-	 * Before use this function you must update each trimesh:
+	 * Before use of this function you must update each trimesh:
 	 * <code>
 	 * gim_trimesh_update(TriMesh1);
 	 * gim_trimesh_update(TriMesh2);
@@ -186,7 +186,7 @@ public class GimTrimesh implements GimConstants {
 	 *     //Collide trimeshes
 	 *     gim_trimesh_trimesh_collision(TriMesh1,TriMesh2,&amp; trimeshcontacts);
 	 *     
-	 *     if(trimeshcontacts.m_size == 0) //do  nothing
+	 *     if(trimeshcontacts.m_size == 0) //do nothing
 	 *     {
 	 *         GIM_DYNARRAY_DESTROY(trimeshcontacts);//clean contact array
 	 *         return 0;
@@ -232,7 +232,7 @@ public class GimTrimesh implements GimConstants {
 
 	//! Trimesh Sphere Collisions
 	/*!
-	Before use this function you must update the trimesh:
+	Before use of this function you must update the trimesh:
 	\code
 	gim_trimesh_update(trimesh);
 	\endcode
@@ -294,9 +294,9 @@ public class GimTrimesh implements GimConstants {
 
 	//! Trimesh Capsule collision
 	/*!
-	Find the closest primitive collided by the ray.
+	Finds the closest primitive collided with the ray.
 
-	Before use this function you must update the trimesh:
+	Before use of this function you must update the trimesh:
 	\code
 	gim_trimesh_update(trimesh);
 	\endcode
@@ -364,7 +364,7 @@ public class GimTrimesh implements GimConstants {
 	//! Trimesh Plane Collisions
 	/*!
 
-	Before use this function you must update the trimesh:
+	Before use of this function you must update the trimesh:
 	\code
 	gim_trimesh_update(trimesh);
 	\endcode
@@ -411,7 +411,7 @@ public class GimTrimesh implements GimConstants {
 	}
 	\endcode
 
-	In each contact the 3 first coordinates refers to the contact point, the fourth refers to the distance depth and the normal is the normal of the plane.
+	In each contact the 3 first coordinates refer to the contact point, the fourth refers to the distance depth and the normal is the normal of the plane.
 
 	\param trimesh
 	\param plane vec4f plane
@@ -442,7 +442,7 @@ public class GimTrimesh implements GimConstants {
 
 	//! Trimesh Ray Collisions closest
 	/*!
-	Find the closest primitive collided by the ray
+	Finds the closest primitive collided by the ray
 	\param trimesh
 	\param origin
 	\param dir
@@ -503,7 +503,7 @@ public class GimTrimesh implements GimConstants {
 	\param trimesh
 	\param vertex_array
 	\param triindex_array
-	\param transformed_reply If 1, then the m_transformed_vertices is a reply of the source vertices. Else it just be a reference to the original array.
+	\param transformed_reply If 1, then the m_transformed_vertices is a reply of the source vertices. Else it just is a reference to the original array.
 	\post it copies the arrays by reference, and creates the auxiliary data (m_aabbset,m_planes_cache_buffer)
 	*/
 //	void gim_trimesh_create_from_arrays(GBUFFER_MANAGER_DATA buffer_managers[],
@@ -554,7 +554,7 @@ public class GimTrimesh implements GimConstants {
 
 	//! Create a trimesh from vertex array and an index array
 	/*!
-	\param trimesh An uninitialized GimTrimesh  structure
+	\param trimesh An uninitialized GimTrimesh structure
 	\param vertex_array A buffer to a vec3f array
 	\param vertex_count
 	\param triindex_array
@@ -640,7 +640,7 @@ public class GimTrimesh implements GimConstants {
 	\post dest_trimesh will be created
 	\param source_trimesh
 	\param dest_trimesh
-	\param copy_by_reference If 1, it attach a reference to the source vertices, else it copies the vertices
+	\param copy_by_reference If 1, it attaches a reference to the source vertices, else it copies the vertices
 	\param transformed_reply IF 1, then it forces the m_trasnformed_vertices to be  a reply of the source vertices
 	\param transformed_reply If 1, transformed vertices are reply of source vertives. 1 Is recommended
 	*/
@@ -730,9 +730,9 @@ public class GimTrimesh implements GimConstants {
 	    return (m_mask&GIM_TRIMESH_NEED_UPDATE) != 0;
 	}
 
-	//! Change the state of the trimesh for force it to update
+	//! Change the state of the trimesh to force it to update
 	/*!
-	Call it after made changes to the trimesh.
+	Call it after having made changes to the trimesh.
 	\post gim_trimesh_need_update(trimesh) will return 1
 	\sa gim_trimesh_needs_update,gim_trimesh_has_tranformed_reply
 	*/
