@@ -158,12 +158,6 @@ public class DxBox extends DxGeom implements DBox {
 		// if the point is inside all six sides
 
 		double[] dist = new double[6];
-		// TODO CHECK TZ
-		//  This is not the 0.16.3 solution but the solution from "master".
-		//  - This is weird because the code in 0.16.3 is from 2020-11-06, master is from 2020-11-08, 0.16.3 was tagged
-		//    much later on 2022-12-19 but it doesn´t include th master version.
-		//  - For some reason the 0.16.3 fails the DemoCollision test (it works in C++ though).
-		//  ---> We can just leave it as is.
 
 		boolean outside = false;
 		double lastOuterOffset = 0;

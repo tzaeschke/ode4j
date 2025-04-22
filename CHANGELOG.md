@@ -25,6 +25,16 @@
 
 --> See TODO.txt
 
+## 0.5.4 - in progress
+
+- Port updates until 0.16.6 (previous: 0.16.2/.3). This includes:
+  - New box-plane collider
+  - new DemoTrimeshCollision
+  - Cleanup:
+    - Lots of typos fixed
+    - Demos have new default window size and some a new default view position
+    - DemoFeedback has changed parameters.
+
 ## 0.5.3 - 2024-04-28
 
 - Fix INTERNAL ERROR in `FastLSolve.solveL1Straight()` caused by bug in `DLCP.solve1()`.

@@ -747,6 +747,11 @@ enum {
 		one[oneP] = another[anotherP];
 		another[anotherP] = tmp;
 	}
+	public static <T> void dxSwap(T[] one, int oneP, T[] another, int anotherP) {
+		T tmp = one[oneP];
+		one[oneP] = another[anotherP];
+		another[anotherP] = tmp;
+	}
 
 //	template<typename value_type, typename lo_type, typename hi_type>
 //	inline
