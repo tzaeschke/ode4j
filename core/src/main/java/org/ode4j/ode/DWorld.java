@@ -207,13 +207,13 @@ public interface DWorld {
 	{
 		/* must always be defined */
 		// unsigned
-		int param_set; /**< Combination of dWSTP_... flags */
+		public int param_set; /**< Combination of dWSTP_... flags */
 		// unsigned
-		int world_islands_iteration_max_threads;
+		public int world_islands_iteration_max_threads;
 		// unsigned
-		int island_stepping_max_threads;
+		public int island_stepping_max_threads;
 		// unsigned
-		int lcp_solving_max_threads;
+		public int lcp_solving_max_threads;
 
 	} // dWorldSteppingThreadingParameters;
 
@@ -517,6 +517,13 @@ public interface DWorld {
 		int prolonged_execs;      /*< number of times solution took more  than the regular iteration count */
 		int full_extra_execs;     /*< number of times the assigned exit criteria were not achieved even after all extra iterations allowed */
 
+		public void set(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics other) {
+			struct_size = other.struct_size;
+			iteration_count = other.iteration_count;
+			premature_exits = other.premature_exits;
+			prolonged_execs = other.prolonged_execs;
+			full_extra_execs = other.full_extra_execs;
+		}
 	} // dWorldQuickStepIterationCount_DynamicAdjustmentStatistics;
 
 	// ODE_PURE_INLINE

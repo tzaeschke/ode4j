@@ -26,8 +26,7 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.dSASSERT;
 import static org.ode4j.ode.internal.CommonEnums.*;
-import static org.ode4j.ode.internal.processmem.DxUtil.EFFICIENT_ALIGNMENT;
-import static org.ode4j.ode.internal.processmem.DxUtil.dMAX;
+import static org.ode4j.ode.internal.processmem.DxUtil.*;
 
 import org.ode4j.ode.internal.joints.JointEnums;
 
@@ -143,29 +142,35 @@ class QuickStepEnums {
 	// dxInvMJTElement
 	public static final int IMJ__MIN = 0;
 	public static final int IMJ__1_MIN = IMJ__MIN;
-	public static final int IMJ__1L_MIN = IMJ__1_MIN + JVE__L_MIN;
-	public static final int IMJ_1LX = IMJ__1_MIN + JVE_LX;
-	public static final int IMJ_1LY = IMJ__1_MIN + JVE_LY;
-	public static final int IMJ_1LZ = IMJ__1_MIN + JVE_LZ;
-	public static final int IMJ__1L_MAX = IMJ__1_MIN + JVE__L_MAX;
-	public static final int IMJ__1A_MIN = IMJ__1_MIN + JVE__A_MIN;
-	public static final int IMJ_1AX = IMJ__1_MIN + JVE_AX;
-	public static final int IMJ_1AY = IMJ__1_MIN + JVE_AY;
-	public static final int IMJ_1AZ = IMJ__1_MIN + JVE_AZ;
-	public static final int IMJ__1A_MAX = IMJ__1_MIN + JVE__A_MAX;
-	public static final int IMJ__1_MAX = IMJ__1_MIN + JVE__MAX;
+	public static final int IMJ__1JVE_MIN = IMJ__1_MIN;
+	public static final int IMJ__1L_MIN = IMJ__1JVE_MIN + JVE__L_MIN;
+	public static final int IMJ_1LX = IMJ__1JVE_MIN + JVE_LX;
+	public static final int IMJ_1LY = IMJ__1JVE_MIN + JVE_LY;
+	public static final int IMJ_1LZ = IMJ__1JVE_MIN + JVE_LZ;
+	public static final int IMJ__1L_MAX = IMJ__1JVE_MIN + JVE__L_MAX;
+	public static final int IMJ__1A_MIN = IMJ__1JVE_MIN + JVE__A_MIN;
+	public static final int IMJ_1AX = IMJ__1JVE_MIN + JVE_AX;
+	public static final int IMJ_1AY = IMJ__1JVE_MIN + JVE_AY;
+	public static final int IMJ_1AZ = IMJ__1JVE_MIN + JVE_AZ;
+	public static final int IMJ__1A_MAX = IMJ__1JVE_MIN + JVE__A_MAX;
+	public static final int IMJ__1JVE_MAX = IMJ__1JVE_MIN + JVE__MAX;
+	public static final int	IMJ_1JVE_MAXABS = IMJ__1JVE_MAX + 1;
+	public static final int IMJ__1_MAX = IMJ_1JVE_MAXABS + 1;
 	public static final int IMJ__2_MIN = IMJ__1_MAX;
-	public static final int IMJ__2L_MIN = IMJ__2_MIN + JVE__L_MIN;
-	public static final int IMJ_2LX = IMJ__2_MIN + JVE_LX;
-	public static final int IMJ_2LY = IMJ__2_MIN + JVE_LY;
-	public static final int IMJ_2LZ = IMJ__2_MIN + JVE_LZ;
-	public static final int IMJ__2L_MAX = IMJ__2_MIN + JVE__L_MAX;
-	public static final int IMJ__2A_MIN = IMJ__2_MIN + JVE__A_MIN;
-	public static final int IMJ_2AX = IMJ__2_MIN + JVE_AX;
-	public static final int IMJ_2AY = IMJ__2_MIN + JVE_AY;
-	public static final int IMJ_2AZ = IMJ__2_MIN + JVE_AZ;
-	public static final int IMJ__2A_MAX = IMJ__2_MIN + JVE__A_MAX;
-	public static final int IMJ__2_MAX = IMJ__2_MIN + JVE__MAX;
+	public static final int IMJ__2JVE_MIN = IMJ__2_MIN;
+	public static final int IMJ__2L_MIN = IMJ__2JVE_MIN + JVE__L_MIN;
+	public static final int IMJ_2LX = IMJ__2JVE_MIN + JVE_LX;
+	public static final int IMJ_2LY = IMJ__2JVE_MIN + JVE_LY;
+	public static final int IMJ_2LZ = IMJ__2JVE_MIN + JVE_LZ;
+	public static final int IMJ__2L_MAX = IMJ__2JVE_MIN + JVE__L_MAX;
+	public static final int IMJ__2A_MIN = IMJ__2JVE_MIN + JVE__A_MIN;
+	public static final int IMJ_2AX = IMJ__2JVE_MIN + JVE_AX;
+	public static final int IMJ_2AY = IMJ__2JVE_MIN + JVE_AY;
+	public static final int IMJ_2AZ = IMJ__2JVE_MIN + JVE_AZ;
+	public static final int IMJ__2A_MAX = IMJ__2JVE_MIN + JVE__A_MAX;
+	public static final int IMJ__2JVE_MAX = IMJ__2JVE_MIN + JVE__MAX;
+	public static final int IMJ_2JVE_MAXABS = IMJ__2JVE_MAX + 1;
+	public static final int IMJ__2_MAX = IMJ_2JVE_MAXABS + 1;
 	public static final int IMJ__MAX = IMJ__2_MAX;
 
 	// dxContactForceElement
@@ -183,6 +188,20 @@ class QuickStepEnums {
 	public static final int CFE__A_MAX = CFE__DYNAMICS_MIN + dDA__A_MAX;
 	public static final int CFE__DYNAMICS_MAX = CFE__DYNAMICS_MIN + dDA__MAX;
 	public static final int CFE__MAX = CFE__DYNAMICS_MAX;
+
+	// dxForceAdjustmentElement
+	public static final int	FAE__MIN = 0;
+	public static final int	FAE_NEGATIVE = FAE__MIN;
+	public static final int	FAE_POSITIVE = FAE_NEGATIVE + 1;
+	public static final int	FAE__MAX = FAE_POSITIVE + 1;
+
+	// #define ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(positive) ((dxForceAdjustmentElement)(int)(positive))
+	private static int ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(boolean positive) { return positive ? 1 : 0; }
+	static {
+		dSASSERT(FAE_NEGATIVE == ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(false));
+		dSASSERT(FAE_POSITIVE == ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(true));
+		dSASSERT(FAE__MAX == 2);
+	}
 
 	// dxRHSElement
 	public static final int RHS__MIN = 0;
@@ -210,7 +229,7 @@ class QuickStepEnums {
 	static {
 		dSASSERT(((JME__MAX - 1) & JME__MAX) == 0); // Otherwise there is no reason to over-align the Jacobian
 	}
-	public static final int JCOPY_ALIGNMENT = dMAX(32, EFFICIENT_ALIGNMENT);
-	public static final int INVI_ALIGNMENT  = dMAX(32, EFFICIENT_ALIGNMENT);
-	public static final int INVMJ_ALIGNMENT = dMAX(32, EFFICIENT_ALIGNMENT);
+	public static final int JCOPY_ALIGNMENT = dMAX(COMMON_CACHELINE_SIZE, EFFICIENT_ALIGNMENT);
+	public static final int INVI_ALIGNMENT  = dMAX(COMMON_CACHELINE_SIZE, EFFICIENT_ALIGNMENT);
+	public static final int INVMJ_ALIGNMENT = dMAX(COMMON_CACHELINE_SIZE, EFFICIENT_ALIGNMENT);
 }

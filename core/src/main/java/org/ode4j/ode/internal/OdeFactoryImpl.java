@@ -426,6 +426,50 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 
 	} // dTRIMESH_ENABLED
 
+	// libccd use
+	//#if dLIBCCD_ENABLED
+		REGISTER_EXTENSION("ODE_EXT_libccd");
+	//
+	//#if dLIBCCD_INTERNAL
+	//	REGISTER_EXTENSION(ODE_CCD_IMPL_internal)
+	//#endif
+	//
+	//// NOTE: Colliding geometry contractions are ordered lexicographically
+	//#if dLIBCCD_BOX_CYL
+	//	REGISTER_EXTENSION(ODE_CCD_COLL_box_cyl)
+	//#endif
+	//
+	//#if dLIBCCD_CYL_CYL
+	//	REGISTER_EXTENSION(ODE_CCD_COLL_cyl_cyl)
+	//#endif
+	//
+	//#if dLIBCCD_CAP_CYL
+	//	REGISTER_EXTENSION(ODE_CCD_COLL_cap_cyl)
+	//#endif
+	//
+	//#if dLIBCCD_CONVEX_BOX
+	//	REGISTER_EXTENSION(ODE_CCD_COLL_box_conv)
+	//#endif
+	//
+	//#if dLIBCCD_CONVEX_CAP
+	//	REGISTER_EXTENSION(ODE_CCD_COLL_cap_conv)
+	//#endif
+	//
+	//#if dLIBCCD_CONVEX_CYL
+	//	REGISTER_EXTENSION(ODE_CCD_COLL_conv_cyl)
+	//#endif
+	//
+	//#if dLIBCCD_CONVEX_SPHERE
+	//	REGISTER_EXTENSION(ODE_CCD_COLL_conv_sph)
+	//#endif
+	//
+	//#if dLIBCCD_CONVEX_CONVEX
+	//	REGISTER_EXTENSION(ODE_CCD_COLL_conv_conv)
+	//#endif
+	//// NOTE: Colliding geometry contractions are ordered lexicographically
+	//
+	//#endif // dLIBCCD_ENABLED
+
 //	if (dTLS_ENABLED) {
 //		REGISTER_EXTENSION( "ODE_EXT_mt_collisions" );
 //	} // dTLS_ENABLED
@@ -437,6 +481,8 @@ public class OdeFactoryImpl extends OdeJointsFactoryImpl {
 //	REGISTER_EXTENSION( ODE_THR_builtin_impl )
 //	#endif // #if dBUILTIN_THREADING_IMPL_ENABLED
 //	#endif // #if !dTHREADING_INTF_DISABLED
+
+	REGISTER_EXTENSION("ODE_EXT_inelastic_collisions");
 
 	//**********************************
 	// EXTENSION LIST END

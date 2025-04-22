@@ -77,6 +77,7 @@ public class DxBody extends DObject implements DBody {
 	//		  _i = i;
 	//	  }
 	//	};
+	// TODO (TZ) turn into enum as in C++?
 	private static final int dxBodyFlagFiniteRotation = 1;	// use finite rotations
 	private static final int dxBodyFlagFiniteRotationAxis= 2;	// use finite rotations only along axis
 	static final int dxBodyDisabled				=  4;		// body is disabled
@@ -102,7 +103,8 @@ public class DxBody extends DObject implements DBody {
 	public DQuaternion _q;		// orientation quaternion
 	public DVector3 lvel;		// linear and angular velocity of POR
 	public DVector3 avel;
-	DVector3 facc,tacc;		// force and torque accumulators
+	DVector3 facc; 				// force and torque accumulators
+	DVector3 tacc;
 	DVector3 finite_rot_axis;	// finite rotation axis, unit length or 0=none
 
 	// auto-disable information

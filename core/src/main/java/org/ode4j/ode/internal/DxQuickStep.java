@@ -55,6 +55,7 @@ import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dmaxcallcountestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
+import org.ode4j.ode.internal.processmem.DxUtil;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
@@ -116,6 +117,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	}
 
 
+	// #define PRINT_DYNAMIC_ADJUSTMENT_STATS   0
+	private static final int PRINT_DYNAMIC_ADJUSTMENT_STATS = 0;
+
+
 	//***************************************************************************
 	// configuration
 
@@ -161,22 +166,53 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	//***************************************************************************
 	// macros, typedefs, forwards and inlines
+	private static final int sizeofdReal = 8; // TODO (TZ) remove or set to 1?
+	private static final int sizeofVoidStar = 8; // TODO (TZ) remove or set to 1?
 
-	private static final int dxQUICKSTEPISLAND_STAGE2B_STEP = 16;
-	private static final int dxQUICKSTEPISLAND_STAGE2C_STEP = 32;
-	private static final int dxQUICKSTEPISLAND_STAGE4A_STEP = WARM_STARTING ? 256 : 512;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP = 8;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_AD_STEP = 8;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP = WARM_STARTING ? 128 : dxQUICKSTEPISLAND_STAGE4A_STEP / 2;
-	// IF WARM_STARTING
-	//private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP = 128;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_COMPLETE_TO_PREPARE_COMPLEXITY_DIVISOR = 4;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_PREPARE = (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP * dxQUICKSTEPISLAND_STAGE4LCP_FC_COMPLETE_TO_PREPARE_COMPLEXITY_DIVISOR);
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_COMPLETE = (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP);
-	// ENDIF WARM_STARTING
-	private static final int dxQUICKSTEPISLAND_STAGE4B_STEP = 256;
-	private static final int dxQUICKSTEPISLAND_STAGE6A_STEP = 16;
-	private static final int dxQUICKSTEPISLAND_STAGE6B_STEP = 1;
+	private static int dRESTRICT_STEP(int step_size, int limit) { return step_size > 1 ? Math.min(step_size, limit) : step_size;}
+
+
+	private static final int CACHELINE_BLOCKING_FACTOR = 16;
+	private static final int PER_THREAD_PROCESSING_BLOCK_SIZE = DxUtil.COMMON_CACHELINE_SIZE * CACHELINE_BLOCKING_FACTOR;
+
+	private static final int dxQUICKSTEPISLAND_STAGE0_BODIES_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (IIE__MAX * sizeofdReal)), 1);
+
+	private static final int dxQUICKSTEPISLAND_STAGE2A_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (JME__MAX * sizeofdReal)), 1);
+
+	private static final int dxQUICKSTEPISLAND_STAGE2B_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (RHS__MAX * sizeofdReal)), 16);
+	private static final int dxQUICKSTEPISLAND_STAGE2C_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (JME__MAX * sizeofdReal)), 32);
+
+	//		#ifdef WARM_STARTING
+	static {
+		if (WARM_STARTING) throw new UnsupportedOperationException();
+	}
+	// #define dxQUICKSTEPISLAND_STAGE4A_STEP  dMAX((PER_THREAD_PROCESSING_BLOCK_SIZE / (1 * sizeof(dReal))), 256U)
+	//		#else
+	private static final int dxQUICKSTEPISLAND_STAGE4A_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (1 * sizeofdReal)), 512);
+	//		#endif
+
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (IMJ__MAX * sizeofdReal)), 8);
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_AD_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (JME__MAX * sizeofdReal)), 8);
+
+	//	#ifdef WARM_STARTING
+	static {
+		if (WARM_STARTING) throw new UnsupportedOperationException();
+	}
+	// #define dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP  dMAX((PER_THREAD_PROCESSING_BLOCK_SIZE / 4), 128U)
+	//		#define dxQUICKSTEPISLAND_STAGE4LCP_FC_COMPLETE_TO_PREPARE_COMPLEXITY_DIVISOR  4
+	//		#define dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_PREPARE  (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP * dxQUICKSTEPISLAND_STAGE4LCP_FC_COMPLETE_TO_PREPARE_COMPLEXITY_DIVISOR)
+	//		#define dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_COMPLETE (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP)
+	//		#define dxQUICKSTEPISLAND_STAGE4LCP_FORCEMAXADJ_STEP (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_PREPARE * CFE__MAX / FAE__MAX)
+	//	#else
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP = (dxQUICKSTEPISLAND_STAGE4A_STEP / 2); // Average info.m is 3 for stage4a, while there are 6 reals per index in fc
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FORCEMAXADJ_STEP = (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP * CFE__MAX / FAE__MAX);
+	//	#endif
+
+
+	private static final int dxQUICKSTEPISLAND_STAGE4B_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / 2), 256);
+
+	private static final int dxQUICKSTEPISLAND_STAGE6A_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (1 * sizeofVoidStar)), 16);
+	private static final int dxQUICKSTEPISLAND_STAGE6B_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (1 * sizeofVoidStar)), 1);
 
 	private static int CalculateOptimalThreadsCount(int complexity, int max_threads, int step_size) {
 		int raw_threads = Math.max(complexity, step_size) / step_size; // Round down on division
@@ -193,6 +229,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	}
 
 	private static final int dxHEAD_INDEX = 0;
+
 
 	//****************************************************************************
 	// special matrix multipliers
@@ -410,12 +447,14 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
     private static class dxQuickStepperStage4CallContext {
         void Initialize(DxStepperProcessingCallContext callContext, dxQuickStepperLocalContext localContext,
-                double[] lambda, double[] cforce, double[] iMJ, IndexError[] order, double[] last_lambda,
+                double[] lambda, double[] cforce, double[] forceMaxAdjustments, double[] iMJ, IndexError[] order,
+						double[] last_lambda,
                 AtomicInteger[] bi_links_or_mi_levels, AtomicInteger[] mi_links) {
             m_stepperCallContext = callContext;
             m_localContext = localContext;
             m_lambda = lambda;
             m_cforce = cforce;
+			m_forceMaxAdjustments = forceMaxAdjustments;
             m_iMJ = iMJ;
             m_order = order;
             m_last_lambda = last_lambda;
@@ -426,9 +465,11 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
             m_LCP_fcStartReleasee = null;
             m_ji_4a.set(0);
             m_mi_iMJ.set(0);
-            m_mi_fc.set(0);
+			m_bi_forceMaxAdj = 0;
+			m_bi_fc = 0;
             m_mi_Ad.set(0);
             m_LCP_iteration = 0;
+			m_LCP_extra_num_iterations = 0;
             m_cf_4b.set(0);
             m_ji_4b.set(0);
         }
@@ -448,7 +489,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         }
 
         void ResetLCP_fcComputationIndex() {
-            m_mi_fc.set(0);
+            m_bi_fc.set(0);
         }
 
         void ResetSOR_ConstraintsReorderVariables(int reorderThreads) {
