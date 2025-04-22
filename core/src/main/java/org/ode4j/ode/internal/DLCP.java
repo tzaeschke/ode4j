@@ -267,6 +267,12 @@ public class DLCP {
 		}
 	}
 
+	enum dxRowSwapMethodSwapRCOption
+	{
+		SRCO_FAST_ROW_SWAP,
+		SRCO_ELEMENTWISE_ROW_SWAP,
+	}
+
 	/**
 	 * swap row/column i1 with i2 in the n*n matrix A. the leading dimension of
 	 * A is nskip. this only references and swaps the lower triangle.
@@ -274,8 +280,9 @@ public class DLCP {
 	 * rows will be swapped by exchanging row pointers. otherwise the data will
 	 * be copied.
 	 */
-	private static void swapRowsAndCols (double[] A, int n, int i1, int i2, int nskip,
-										 boolean do_fast_row_swaps)
+	// template<dxRowSwapMethodSwapRCOption row_swap_method>
+	private static void swapRowsAndCols (int i1, int i2, double[] A, int n, int nskip,
+										 dxRowSwapMethodSwapRCOption row_swap_method)
 	{
 		//dAASSERT (A);
 		dAASSERT (n > 0 && i1 >= 0 && i2 >= 0 && i1 < n && i2 < n &&
@@ -293,7 +300,7 @@ public class DLCP {
 //		    A_i1[i1] = A_i2[i1];
 //		    A_i2[i1] = A_i2[i2];
 //		    // swap rows, by swapping row pointers
-//		    if (do_fast_row_swaps) {
+//		    if (row_swap_method == SRCO_FAST_ROW_SWAP) {
 //		      A[i1] = A_i2;
 //		      A[i2] = A_i1;
 //		    }
@@ -334,47 +341,63 @@ public class DLCP {
 		}// else ROWPTRS # endif
 	}
 
+	enum dxSwapStateSwapProblemOption
+	{
+		SPO_SWAP_STATE,
+		SPO_DONT_SWAP_STATE,
+	};
+
+
+	//static void doSwapProblem_Common(unsigned i1, unsigned i2, dReal pairsbx[PBX__MAX], dReal *w,
+	// dReal pairslh[PLH__MAX], unsigned *p, int *findex);
 
 	// swap two indexes in the n*n LCP problem. i1 must be <= i2.
+	//template<dxSwapStateSwapProblemOption state_swap_opt, dxRowSwapMethodSwapRCOption row_swap_method>
+	//	void swapProblem (unsigned i1, unsigned i2, ATYPE A, unsigned n, unsigned nskip,
+	//			  dReal pairsbx[PBX__MAX], dReal *w, dReal pairslh[PLH__MAX], unsigned *p, int *findex, bool *state)
+	void swapProblem (int i1, int i2, double[] A, int n, int nskip,
+					  double[] pairsbxA, int pairsbxP, double[] w,
+					  double[] pairslhA, int pairslhP, int[] p, int[] findex, boolean[] state,
+					  dxSwapStateSwapProblemOption state_swap_opt, dxRowSwapMethodSwapRCOption row_swap_method)
 
-	//	static
-	//	void swapProblem (ATYPE A, dReal pairsbx[PBX__MAX], dReal *w, dReal pairslh[PLH__MAX],
-	//					  unsigned *p, bool *state, int *findex,
-	//					  unsigned n, unsigned i1, unsigned i2, unsigned nskip,
-	//					  int do_fast_row_swaps)
-	static
-	void swapProblem (double[] A, double[] pairsbxA, int pairsbxP, double[] w, double[] pairslhA, int pairslhP,
-					  int[] p, boolean[] state, int[] findex,
-					  int n, int i1, int i2, int nskip,
-					  boolean do_fast_row_swaps)
 	{
 		dIASSERT (n>0 && i1 < n && i2 < n && nskip >= n && i1 <= i2);
+		dIASSERT(i1 != i2);
 
-		if (i1 != i2) {
-			swapRowsAndCols (A, n, i1, i2, nskip, do_fast_row_swaps);
-
-//			dxSwap((pairsbx + (size_t)i1 * PBX__MAX)[PBX_B], (pairsbx + (size_t)i2 * PBX__MAX)[PBX_B]);
-//			dxSwap((pairsbx + (size_t)i1 * PBX__MAX)[PBX_X], (pairsbx + (size_t)i2 * PBX__MAX)[PBX_X]);
-//			dSASSERT(PBX__MAX == 2);
-			dxSwap(pairsbxA, pairsbxP + i1 * PBX__MAX + PBX_B, pairsbxA, pairsbxP + i2 * PBX__MAX + PBX_B);
-			dxSwap(pairsbxA, pairsbxP + i1 * PBX__MAX + PBX_X, pairsbxA, pairsbxP + i2 * PBX__MAX + PBX_X);
-			dSASSERT(PBX__MAX == 2);
-
-			dxSwap(w, i1, w, i2);
-
-//			dxSwap((pairslh + (size_t)i1 * PLH__MAX)[PLH_LO], (pairslh + (size_t)i2 * PLH__MAX)[PLH_LO]);
-//			dxSwap((pairslh + (size_t)i1 * PLH__MAX)[PLH_HI], (pairslh + (size_t)i2 * PLH__MAX)[PLH_HI]);
-//			dSASSERT(PLH__MAX == 2);
-			dxSwap(pairslhA, pairslhP + i1 * PLH__MAX + PLH_LO, pairslhA, pairslhP + i2 * PLH__MAX + PLH_LO);
-			dxSwap(pairslhA, pairslhP + i1 * PLH__MAX + PLH_HI, pairslhA, pairslhP + i2 * PLH__MAX + PLH_HI);
-			dSASSERT(PLH__MAX == 2);
-
-			dxSwap(p, i1, p, i2);
+		if (state_swap_opt == dxSwapStateSwapProblemOption.SPO_SWAP_STATE) {
 			dxSwap(state, i1, state, i2);
+		}
 
-			if (findex != null) {
-				dxSwap(findex, i1, findex, i2);
-			}
+		swapRowsAndCols (i1, i2, A, n, nskip, row_swap_method);
+		doSwapProblem_Common(i1, i2, pairsbxA, pairsbxP, w, pairslhA, pairslhP, p, findex);
+	}
+
+	//	static
+	//	void doSwapProblem_Common(unsigned i1, unsigned i2,
+	//							  dReal pairsbx[PBX__MAX], dReal *w, dReal pairslh[PLH__MAX], unsigned *p, int *findex)
+	static
+	void doSwapProblem_Common(int i1, int i2,
+							  double[] pairsbxA, int pairsbxP, double[] w,
+							  double[] pairslhA, int pairslhP, int[] p, int[] findex)
+	{
+		// dxSwap((pairsbx + (sizeint)i1 * PBX__MAX)[PBX_B], (pairsbx + (sizeint)i2 * PBX__MAX)[PBX_B]);
+		// dxSwap((pairsbx + (sizeint)i1 * PBX__MAX)[PBX_X], (pairsbx + (sizeint)i2 * PBX__MAX)[PBX_X]);
+		dxSwap(pairsbxA, (pairsbxP + i1 * PBX__MAX) + PBX_B, pairsbxA, (pairsbxP + i2 * PBX__MAX) + PBX_B);
+		dxSwap(pairsbxA, (pairsbxP + i1 * PBX__MAX) + PBX_X, pairsbxA, (pairsbxP + i2 * PBX__MAX) + PBX_X);
+		// dSASSERT(PBX__MAX == 2);
+
+		dxSwap(w, i1, w, i2);
+
+		//	dxSwap((pairslh + (sizeint)i1 * PLH__MAX)[PLH_LO], (pairslh + (sizeint)i2 * PLH__MAX)[PLH_LO]);
+		//	dxSwap((pairslh + (sizeint)i1 * PLH__MAX)[PLH_HI], (pairslh + (sizeint)i2 * PLH__MAX)[PLH_HI]);
+		dxSwap(pairslhA, (pairslhP + i1 * PLH__MAX) + PLH_LO, pairslhA, (pairslhP + i2 * PLH__MAX) + PLH_LO);
+		dxSwap(pairslhA, (pairslhP + i1 * PLH__MAX) + PLH_HI, pairslhA, (pairslhP + i2 * PLH__MAX) + PLH_HI);
+		// dSASSERT(PLH__MAX == 2);
+
+		dxSwap(p, i1, p, i2);
+
+		if (findex != null) {
+			dxSwap(findex, i1, findex, i2);
 		}
 	}
 
@@ -534,7 +557,7 @@ public class DLCP {
 	private final double[] m_Dell;
 	private final double[] m_ell;
 	private final double[] m_tmp;
-	private final boolean[] m_state;
+	private boolean[] m_state;
 	private final int[] m_findex;
 	private final int[] m_p;
 	private final int[] m_C;
@@ -550,7 +573,9 @@ public class DLCP {
 	//  dLCP (int _n, int _nub, dReal *_Adata, dReal *_x, dReal *_b, dReal *_w,
 	//	dReal *_lo, dReal *_hi, dReal *_L, dReal *_d,
 	//	dReal *_Dell, dReal *_ell, dReal *_tmp,
-	//	int *_state, int *_findex, int *_p, int *_C, dReal **Arows);
+	//	int *_findex, int *_p, int *_C, dReal **Arows);
+	void assignState(boolean[] state) { dIASSERT(m_state == null); m_state = state; }
+
 	private int getNub() { return m_nub; }
 	//  void transfer_i_to_C (int i);
 	private void transfer_i_to_N (int i) { m_nN++; } // because we can assume C and N span 1:i-1
@@ -587,9 +612,9 @@ public class DLCP {
 	//		    dReal *_Dell, dReal *_ell, dReal *_tmp,
 	//		    int *_state, int *_findex, int *_p, int *_C, dReal **Arows)
 	DLCP (int n, int nskip, int nub, double []_Adata, double[] _pairsbxA, double[] _w,
-			double[] m_pairslh, double[] _L, double[] _d,
+			double[] _pairslhA, double[] _L, double[] _d,
 			double[] _Dell, double[] _ell, double[] _tmp,
-			boolean []_state, int []findex, int []p, int []_C, double[][] Arows)
+			int []findex, int []p, int []_C, double[][] Arows)
 			{
 	    m_n = n;
 	    m_nskip = nskip;
@@ -602,18 +627,21 @@ public class DLCP {
 	    } //#endif
 	    m_pairsbxA = _pairsbxA;
 	    m_w = _w;
-	    m_pairslhA = m_pairslh;
+	    m_pairslhA = _pairslhA;
 	    m_L = _L;
 	    m_d = _d;
 	    m_Dell = _Dell;
 	    m_ell = _ell;
 	    m_tmp = _tmp;
-	    m_state = _state;
+	    m_state = null;
 	    m_findex = findex;
 	    m_p = p;
 	    m_C = _C;
 
-        //dxtSetZero<PBX__MAX>(m_pairsbx + PBX_X, m_n);
+	    final dxSwapStateSwapProblemOption state_swap_opt = dxSwapStateSwapProblemOption.SPO_DONT_SWAP_STATE;
+		//dIASSERT(m_state == null);
+
+		//dxtSetZero<PBX__MAX>(m_pairsbx + PBX_X, m_n);
         dxtSetZero(m_pairsbxA, 0 + PBX_X, m_n, PBX__MAX);
 
 		if (ROWPTRS) {//# ifdef ROWPTRS
@@ -625,7 +653,7 @@ public class DLCP {
 		}//# endif
 
 		{
-		    for (int k=0; k!=n; ++k) p[k]=k;     // initially unpermuted
+		    for (int k=0; k!=n; ++k) p[k]=k;     // in natural order initially
 		}
 
 		/*
@@ -640,8 +668,9 @@ public class DLCP {
 		      }
 		      while (i1 > i2); 
 		      //printf ("--> %d %d\n",i1,i2);
-		      swapProblem (m_A,m_pairsbxA,m_w,m_pairslhA,m_p,m_state,m_findex,n,i1,i2,m_nskip,0);
-		    }
+              swapProblem (i1, i2, m_A, n, m_nskip, m_pairsbx, m_w, m_pairslh, m_p, m_findex, m_state,
+                  state_swap_opt, SPO_ELEMENTWISE_ROW_SWAP);
+ 	    }
 		  }
 		 */
 
@@ -656,12 +685,16 @@ public class DLCP {
 
 		int currNub = nub;
 		{
-		    double[] pairslhA = m_pairslh;
+		    double[] pairslhA = _pairslhA;
 		    int pairslhP = 0;
 		    for (int k = currNub; k<n; ++k) {
 		        if (findex!=null && findex[k] >= 0) continue;
+
                 if (pairslhA[pairslhP + k * PLH__MAX + PLH_LO] == -dInfinity && pairslhA[pairslhP + k * PLH__MAX + PLH_HI] == dInfinity) {
-                    swapProblem(m_A, m_pairsbxA, 0, m_w, pairslhA, pairslhP, m_p, m_state, findex, n, currNub, k, nskip, false);
+					if (k != currNub) {
+						swapProblem(currNub, k, m_A, n, nskip, m_pairsbxA, 0, m_w, pairslhA, pairslhP, m_p, findex, m_state,
+								state_swap_opt, dxRowSwapMethodSwapRCOption.SRCO_ELEMENTWISE_ROW_SWAP);
+					}
 		            m_nub = ++currNub;
 		        }
 		    }
@@ -690,12 +723,16 @@ public class DLCP {
 
 		// permute the indexes > currNub such that all findex variables are at the end
 		if (m_findex!=null) {
-		    int num_at_end = 0;
+		    int destination = m_n - 1;
 		    for (int k=m_n; k > currNub;) {
 		        --k;
 		        if (findex[k] >= 0) {
-		            swapProblem (m_A,m_pairsbxA,0,m_w,m_pairslh,0,m_p,m_state,findex,m_n,k,m_n-1-num_at_end,nskip,true);
-		            num_at_end++;
+					if (k != destination) {
+						swapProblem(k, destination, m_A, m_n, nskip, m_pairsbxA, 0, m_w, m_pairslhA, 0, m_p, findex, m_state,
+								state_swap_opt, dxRowSwapMethodSwapRCOption.SRCO_FAST_ROW_SWAP);
+					}
+
+					--destination;
 		        }
 		    }
 		}
@@ -733,7 +770,10 @@ public class DLCP {
 				m_d[0] = dRecip(AROW(i, i));
 			}
 
-			swapProblem(m_A, m_pairsbxA, 0, m_w, m_pairslhA, 0, m_p, m_state, m_findex, m_n, nC, i, m_nskip, true);
+			if (i != nC) {
+				swapProblem(nC, i, m_A, m_n, m_nskip, m_pairsbxA, 0, m_w, m_pairslhA, 0, m_p, m_findex, m_state,
+						dxSwapStateSwapProblemOption.SPO_SWAP_STATE, dxRowSwapMethodSwapRCOption.SRCO_FAST_ROW_SWAP);
+			}
 
 			m_C[nC] = nC;
 			m_nC = nC + 1; // nC value is outdated after this line
@@ -750,6 +790,7 @@ public class DLCP {
 	{
 	    {
 	    	final int nC = m_nC;
+
 	        if (nC > 0) {
 	            {
 	                //dReal *const aptr = AROW(i);
@@ -785,7 +826,10 @@ public class DLCP {
 	            m_d[0] = dRecip (AROW(i,i));
 	        }
 
-			swapProblem(m_A, m_pairsbxA, 0, m_w, m_pairslhA, 0, m_p, m_state, m_findex, m_n, nC, i, m_nskip, true);
+			if (i != nC) {
+				swapProblem(nC, i, m_A, m_n, m_nskip, m_pairsbxA, 0, m_w, m_pairslhA, 0, m_p, m_findex, m_state,
+						dxSwapStateSwapProblemOption.SPO_SWAP_STATE, dxRowSwapMethodSwapRCOption.SRCO_FAST_ROW_SWAP);
+			}
 
 	        m_C[nC] = nC;
 	        m_nN--;
@@ -837,7 +881,11 @@ public class DLCP {
 	            }
 	        }
 	        dIASSERT (j < nC);
-			swapProblem(m_A, m_pairsbxA, 0, m_w, m_pairslhA, 0, m_p, m_state, m_findex, m_n, i, nC - 1, m_nskip, true);
+
+			if (i != nC - 1) {
+				swapProblem(i, nC - 1, m_A, m_n, m_nskip, m_pairsbxA, 0, m_w, m_pairslhA, 0, m_p, m_findex, m_state,
+						dxSwapStateSwapProblemOption.SPO_SWAP_STATE, dxRowSwapMethodSwapRCOption.SRCO_FAST_ROW_SWAP);
+			}
 
 	        m_nN++;
 	        m_nC = nC - 1; // nC value is outdated after this line
@@ -1079,8 +1127,9 @@ public class DLCP {
 
 		// create LCP object. note that tmp is set to delta_w to save space, this
 		// optimization relies on knowledge of how tmp is used, so be careful!
-		DLCP lcp = new DLCP(n,nskip,nub,A,pairsbxA,w,pairslhA,L,d,Dell,ell,delta_w,state,findex,p,C,Arows);
-		int adj_nub = lcp.getNub();
+		DLCP lcp = new DLCP(n,nskip,nub,A,pairsbxA,w,pairslhA,L,d,Dell,ell,delta_w,findex,p,C,Arows);
+		// Assign the state array separately so that the dLCP constructor does not manipulate with uninitialized values in the array
+		lcp.assignState(state);
 
 		// loop over all indexes adj_nub..n-1. for index i, if x(i),w(i) satisfy the
 		// LCP conditions then i is added to the appropriate index set. otherwise
@@ -1092,6 +1141,7 @@ public class DLCP {
 		// when that happens.
 
 		boolean hit_first_friction_index = false;
+		int adj_nub = lcp.getNub();
 		for (int i=adj_nub; i<n; ++i) {
 		    boolean s_error = false;
 		    // the index i is the driving index and indexes i+1..n-1 are "dont care",

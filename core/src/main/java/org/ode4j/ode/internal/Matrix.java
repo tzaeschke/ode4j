@@ -1011,7 +1011,25 @@ public class Matrix extends FastDot {
 //		dxSetValue (a, n, value);
 //	}
 //
-//// dReal dDot (const dReal *a, const dReal *b, int n);
+
+	//ODE_PURE_INLINE
+	// dReal dxCalculateModuloMaximum(const dReal *valueStorage, sizeint valueCount)
+	double dxCalculateModuloMaximum(final double[] valueStorage)
+	{
+		// dIASSERT(valueCount != 0);
+
+		double moduleMaximum = dFabs(valueStorage[0]);
+
+    	//const dReal *const storageEnd = valueStorage + valueCount;
+		//for (const dReal *currentValue = valueStorage + 1; currentValue != storageEnd; ++currentValue) {
+		for (int i = 1; i < valueStorage.length; i++) {
+			moduleMaximum = dMax(moduleMaximum, dFabs(valueStorage[i]));
+		}
+
+		return moduleMaximum;
+	}
+
+	//// dReal dDot (const dReal *a, const dReal *b, int n);
 //
 //	/*extern */
 //	void dMultiply0 (dReal *A, const dReal *B, const dReal *C, int p,int q,int r)

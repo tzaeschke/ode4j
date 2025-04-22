@@ -34,6 +34,8 @@
     - Lots of typos fixed
     - Demos have new default window size and some a new default view position
     - DemoFeedback has changed parameters.
+    - Fix? DxHeightfield.dCollideHeightfieldZone() cleaned up
+    - Fix? DLCP swapping updated
 
 ## 0.5.3 - 2024-04-28
 

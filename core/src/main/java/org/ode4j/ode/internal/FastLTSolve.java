@@ -26,7 +26,10 @@ package org.ode4j.ode.internal;
 import static org.ode4j.ode.internal.Common.dIASSERT;
 
 class FastLTSolve {
-    // Code style improvements and optimizations by Oleh Derevenko ????-2017
+    /*
+     * Code style improvements and optimizations by Oleh Derevenko ????-2025
+     * L1Transposed cooperative solving code of ThreadedEquationSolverLDLT copyright (c) 2017-2025 Oleh Derevenko, odar@eleks.com (change all "a" to "e")
+     */
 
     //#ifndef _ODE_FASTLTSOLVE_IMPL_H_
     //#define _ODE_FASTLTSOLVE_IMPL_H_
