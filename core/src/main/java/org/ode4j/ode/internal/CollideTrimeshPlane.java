@@ -125,7 +125,7 @@ class CollideTrimeshPlane implements DColliderFn {
 	//				// Collision?
 	//				//
 	//
-	//				// If alpha < 0 then point is if front of plane. i.e. no contact
+	//				// If alpha < 0 then point is in front of plane. i.e. no contact
 	//				// If alpha = 0 then the point is on the plane
 	//				alpha = plane->p[ 3 ] - dDOT( plane->p, vertex );
 	//	      

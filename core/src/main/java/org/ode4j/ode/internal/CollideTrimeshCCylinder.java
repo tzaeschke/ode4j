@@ -237,7 +237,7 @@ class CollideTrimeshCCylinder implements DColliderFn {
 //	// Use to classify contacts to be "near" in normal direction
 //	static const dReal fSameContactNormalEpsilon = REAL(0.0001); // 1e-4
 //
-//	// If this two contact can be classified as "near"
+//	// If these two contact can be classified as "near"
 //	inline int _IsNearContacts(sLocalContactData& c1,sLocalContactData& c2)
 //	{
 //		int bPosNear = 0;
@@ -1094,7 +1094,7 @@ class CollideTrimeshCCylinder implements DColliderFn {
 //		TrimeshCollidersCache *pccColliderCache = GetTrimeshCollidersCache(uiTLSKind);
 //		OBBCollider& Collider = pccColliderCache->_OBBCollider;
 //
-//		// Will it better to use LSS here? -> confirm Pierre.
+//		// Will it be better to use LSS here? -> confirm Pierre.
 //		dQueryCCTLPotentialCollisionTriangles(Collider, cData, 
 //			TriMesh, Capsule, pccColliderCache->defaultBoxCache);
 //

@@ -68,7 +68,7 @@ public class DxTriDataBase extends DBase {
     // TriMesh code by Erwin de Vries.
     // Modified for FreeSOLID Compatibility by Rodrigo Hernandez
     // TriMesh caches separation by Oleh Derevenko
-    // TriMesh storage classes refactoring and face angle computation code by Oleh Derevenko (C) 2016-2017
+    // TriMesh storage classes refactoring and face angle computation code by Oleh Derevenko (C) 2016-2025
 
 
     //  #ifndef _ODE_COLLISION_TRIMESH_INTERNAL_H_
@@ -415,7 +415,7 @@ public class DxTriDataBase extends DBase {
                     }
 
                     if (useFlags != null) {
-                        // For the last element EdgeRecord::kAbsVertexUsed assignment can be skipped as noone is going to need it any more
+                        // For the last element EdgeRecord::kAbsVertexUsed assignment can be skipped as noone is going to need it anymore
                         final EdgeRecord currEdge0 = edges[currEdgeOfs];
                         useFlags[currEdge0.m_triIdx] |= ((edges[currEdge0.m_vertIdx1].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0 ? currEdge0.m_vert1Flags : 0) | ((edges[currEdge0.m_vertIdx2].m_absVertexFlags & EdgeRecord.AVF_VERTEX_USED) == 0 ? currEdge0.m_vert2Flags : 0) | currEdge0.m_edgeFlags;
                     }
@@ -500,7 +500,7 @@ public class DxTriDataBase extends DBase {
                 double normalSegmentDot = dCalcVectorDot3(triangleNormal, secondOppositeVertexSegment);
 
                 // This is a concave edge, leave it for the next pass
-                // OD: This is the "dot >= kConcaveThresh" check, but since the vectros were not normalized to save on roots and divisions,
+                // OD: This is the "dot >= kConcaveThresh" check, but since the vectors were not normalized to save on roots and divisions,
                 // the check against zero is performed first and then the dot product is squared and compared against the threshold multiplied by lengths' squares
                 // OD: Originally, there was dot > -kConcaveThresh check, but this does not seem to be a good idea
                 // as it can mark all edges on potentially large (nearly) flat surfaces concave.
@@ -807,7 +807,7 @@ public class DxTriDataBase extends DBase {
     //  collision_trimesh_internal.cpp
     // **************************************************
 
-    // TriMesh storage classes refactoring and face angle computation code by Oleh Derevenko (C) 2016-2017
+    // TriMesh storage classes refactoring and face angle computation code by Oleh Derevenko (C) 2016-2025
 
     //////////////////////////////////////////////////////////////////////////
 

@@ -352,7 +352,7 @@ class CollideBoxPlane implements DColliderFn {
     	DVector3C normal = plane.getNormal();          // normal vector
 
 		// The number of contacts found.
-		int nContactsFound = 0;
+		final RefInt nContactsFound = new RefInt(0);
 
 		do
 		{
@@ -429,16 +429,16 @@ class CollideBoxPlane implements DColliderFn {
 			//
 			// We can precompute signedHalfSides[s]=0.5*sgn(A[s])*side[s] and
 			// signedHalfSideVectors[s][c]=signedHalfSides[s]*R[4*s+c]
-			DVector3C signedHalfSides = new DVector3(
+			final double[] signedHalfSides = {
 					dCopySign(0.5, A.get0()) * side.get0(),
 					dCopySign(0.5, A.get1()) * side.get1(),
 					dCopySign(0.5, A.get2()) * side.get2()
-					);
+			};
 
-			DVector3C[] signedHalfSideVectors = new DVector3C[3] = {
-				{signedHalfSides[0] * R[0 + 0], signedHalfSides[0] * R[4 + 0], signedHalfSides[0] * R[8 + 0]},
-				{signedHalfSides[1] * R[0 + 1], signedHalfSides[1] * R[4 + 1], signedHalfSides[1] * R[8 + 1]},
-				{signedHalfSides[2] * R[0 + 2], signedHalfSides[2] * R[4 + 2], signedHalfSides[2] * R[8 + 2]},
+			final double[][] signedHalfSideVectors = {
+				{signedHalfSides[0] * R.get00(), signedHalfSides[0] * R.get10(), signedHalfSides[0] * R.get20()},
+				{signedHalfSides[1] * R.get01(), signedHalfSides[1] * R.get11(), signedHalfSides[1] * R.get21()},
+				{signedHalfSides[2] * R.get02(), signedHalfSides[2] * R.get12(), signedHalfSides[2] * R.get22()},
 			};
 
 			// Now the vertices are given by:
@@ -448,13 +448,14 @@ class CollideBoxPlane implements DColliderFn {
 			//
 			// The deepest vertex corresponds to always choosing "-". So we can fill it in right away.
 			{
-				DContactGeom currContact = contact;
-				dIASSERT(contact == CONTACT(contact, nContactsFound * skip));
-				currContact.pos.set0( p.get0() - signedHalfSideVectors[2].get0() - signedHalfSideVectors[1].get0() - signedHalfSideVectors[0].get0() );
-				currContact.pos.set1( p.get1() - signedHalfSideVectors[2].get1() - signedHalfSideVectors[1].get1() - signedHalfSideVectors[0].get1() );
-				currContact.pos.set2( p.get2() - signedHalfSideVectors[2].get2() - signedHalfSideVectors[1].get2() - signedHalfSideVectors[0].get2() );
+				DContactGeom currContact = contacts.get(0);
+				//dIASSERT(contact == CONTACT(contact, nContactsFound * skip));
+				dIASSERT(nContactsFound.get() * skip == 0);
+				currContact.pos.set0( p.get0() - signedHalfSideVectors[2][0] - signedHalfSideVectors[1][0] - signedHalfSideVectors[0][0] );
+				currContact.pos.set1( p.get1() - signedHalfSideVectors[2][1] - signedHalfSideVectors[1][1] - signedHalfSideVectors[0][1] );
+				currContact.pos.set2( p.get2() - signedHalfSideVectors[2][2] - signedHalfSideVectors[1][2] - signedHalfSideVectors[0][2] );
 				currContact.depth = firstContactDepth;
-				if (++nContactsFound == maxc)
+				if (nContactsFound.inc() == maxc)
 				{
 					break;
 				}
@@ -494,47 +495,48 @@ class CollideBoxPlane implements DColliderFn {
 			// We will call the following macro with the various +/- combos to compute the depth of a
 			// vertex, add it to the contacts if it is inside and stop early if it isn't or we've found
 			// the requested number of contacts.
-//			#define ADD_VERTEX_IF_INSIDE(op1, op2, op3)                                                                                                              \
-//			{                                                                                                                                                        \
-//				double contactDepth = (centerDepth - 0.5 * (op3 orderedB[2] op2 orderedB[1] op1 orderedB[0]));                                                  \
-//				if (contactDepth < 0.0)                                                                                                                              \
-//				{                                                                                                                                                    \
-//					break;                                                                                                                                           \
-//				}                                                                                                                                                    \
-//				dContactGeom *currContact = CONTACT(contact, nContactsFound * skip);                                                                                 \
-//				currContact->pos[0] = p[0] op3 orderedSignedHalfSideVectors[2][0] op2 orderedSignedHalfSideVectors[1][0] op1 orderedSignedHalfSideVectors[0][0];     \
-//				currContact->pos[1] = p[1] op3 orderedSignedHalfSideVectors[2][1] op2 orderedSignedHalfSideVectors[1][1] op1 orderedSignedHalfSideVectors[0][1];     \
-//				currContact->pos[2] = p[2] op3 orderedSignedHalfSideVectors[2][2] op2 orderedSignedHalfSideVectors[1][2] op1 orderedSignedHalfSideVectors[0][2];     \
-//				currContact->depth = contactDepth;                                                                                                                   \
-//				if (++nContactsFound == maxc)                                                                                                                        \
-//				{                                                                                                                                                    \
-//					break;                                                                                                                                           \
-//				}                                                                                                                                                    \
-//			} // END OF MACRO DEFINITION
+
+			//	#define ADD_VERTEX_IF_INSIDE(op1, op2, op3)                                                                                                              \
+			//	{                                                                                                                                                        \
+			//		double contactDepth = (centerDepth - 0.5 * (op3 orderedB[2] op2 orderedB[1] op1 orderedB[0]));                                                  \
+			//		if (contactDepth < 0.0)                                                                                                                              \
+			//		{                                                                                                                                                    \
+			//			break;                                                                                                                                           \
+			//		}                                                                                                                                                    \
+			//		dContactGeom *currContact = CONTACT(contact, nContactsFound * skip);                                                                                 \
+			//		currContact->pos[0] = p[0] op3 orderedSignedHalfSideVectors[2][0] op2 orderedSignedHalfSideVectors[1][0] op1 orderedSignedHalfSideVectors[0][0];     \
+			//		currContact->pos[1] = p[1] op3 orderedSignedHalfSideVectors[2][1] op2 orderedSignedHalfSideVectors[1][1] op1 orderedSignedHalfSideVectors[0][1];     \
+			//		currContact->pos[2] = p[2] op3 orderedSignedHalfSideVectors[2][2] op2 orderedSignedHalfSideVectors[1][2] op1 orderedSignedHalfSideVectors[0][2];     \
+			//		currContact->depth = contactDepth;                                                                                                                   \
+			//		if (++nContactsFound == maxc)                                                                                                                        \
+			//		{                                                                                                                                                    \
+			//			break;                                                                                                                                           \
+			//		}                                                                                                                                                    \
+			//	} // END OF MACRO DEFINITION
 
 
 			// But first we need to sort the sides and Bs. We'll start with them in their original order...
-        	DVector3C[] orderedSignedHalfSideVectors = new DVector3C[]{
-				&(signedHalfSideVectors[0][0]),
-            &(signedHalfSideVectors[1][0]),
-            &(signedHalfSideVectors[2][0]),
+        	double[][] orderedSignedHalfSideVectors = {
+				signedHalfSideVectors[0],
+            	signedHalfSideVectors[1],
+            	signedHalfSideVectors[2],
         	};
-        	DVector3C orderedB = B; // TODO copy???
+        	double[] orderedB = B; // TODO (TZ) copy???
 
 			TriFunction ADD_VERTEX_IF_INSIDE = (op1, op2, op3) ->
 			{
-				double contactDepth = (centerDepth - 0.5 * (op3 * orderedB.get2() + op2 * orderedB.get1() + op1 * orderedB.get0()));
+				double contactDepth = (centerDepth - 0.5 * (op3 * orderedB[2] + op2 * orderedB[1] + op1 * orderedB[0]));
 				if (contactDepth < 0.0)
 				{
 					//break;
 					return true;
 				}
-				DContactGeom currContact = contacts.get(nContactsFound * skip); //CONTACT(contact, nContactsFound * skip);
-				currContact.pos.set0( p.get0() + op3 * orderedSignedHalfSideVectors[2].get0() + op2 * orderedSignedHalfSideVectors[1].get0() + op1 * orderedSignedHalfSideVectors[0].get0() );
-				currContact.pos.set1( p.get1() + op3 * orderedSignedHalfSideVectors[2].get1() + op2 * orderedSignedHalfSideVectors[1].get1() + op1 * orderedSignedHalfSideVectors[0].get1() );
-				currContact.pos.set2( p.get2() + op3 * orderedSignedHalfSideVectors[2].get2() + op2 * orderedSignedHalfSideVectors[1].get2() + op1 * orderedSignedHalfSideVectors[0].get2() );
+				DContactGeom currContact = contacts.get(nContactsFound.get() * skip); //CONTACT(contact, nContactsFound * skip);
+				currContact.pos.set0( p.get0() + op3 * orderedSignedHalfSideVectors[2][0] + op2 * orderedSignedHalfSideVectors[1][0] + op1 * orderedSignedHalfSideVectors[0][0] );
+				currContact.pos.set1( p.get1() + op3 * orderedSignedHalfSideVectors[2][1] + op2 * orderedSignedHalfSideVectors[1][1] + op1 * orderedSignedHalfSideVectors[0][1] );
+				currContact.pos.set2( p.get2() + op3 * orderedSignedHalfSideVectors[2][2] + op2 * orderedSignedHalfSideVectors[1][2] + op1 * orderedSignedHalfSideVectors[0][2] );
 				currContact.depth = contactDepth;
-				if (++nContactsFound == maxc)
+				if (nContactsFound.inc() == maxc)
 				{
 					//break;
 					return true;
@@ -588,12 +590,12 @@ class CollideBoxPlane implements DColliderFn {
 		}
 		while (false);
 
-		if (nContactsFound != 0)
+		if (nContactsFound.get() != 0)
 		{
-			finishBoxPlaneContacts(nContactsFound, contacts, skip, box, plane, normal);
+			finishBoxPlaneContacts(nContactsFound.get(), contacts, skip, box, plane, normal);
 		}
 
-		int retVal = nContactsFound;
+		int retVal = nContactsFound.get();
 		return retVal;
 	}
 
