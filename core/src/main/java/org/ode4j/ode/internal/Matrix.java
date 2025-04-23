@@ -1014,16 +1014,17 @@ public class Matrix extends FastDot {
 
 	//ODE_PURE_INLINE
 	// dReal dxCalculateModuloMaximum(const dReal *valueStorage, sizeint valueCount)
-	double dxCalculateModuloMaximum(final double[] valueStorage)
+	public static double dxCalculateModuloMaximum(final double[] valueStorageA, int valueStorageP, int valueCount)
 	{
 		// dIASSERT(valueCount != 0);
 
-		double moduleMaximum = dFabs(valueStorage[0]);
+		double moduleMaximum = dFabs(valueStorageA[valueStorageP]);
 
     	//const dReal *const storageEnd = valueStorage + valueCount;
+		int storageEnd = valueStorageP + valueCount;
 		//for (const dReal *currentValue = valueStorage + 1; currentValue != storageEnd; ++currentValue) {
-		for (int i = 1; i < valueStorage.length; i++) {
-			moduleMaximum = dMax(moduleMaximum, dFabs(valueStorage[i]));
+		for (int i = valueStorageP + 1; i < storageEnd; i++) {
+			moduleMaximum = dMax(moduleMaximum, dFabs(valueStorageA[i]));
 		}
 
 		return moduleMaximum;

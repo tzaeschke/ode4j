@@ -27,9 +27,29 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Atomics {
 
+	public static int ThrsafeIncrement(AtomicInteger atomic)
+	{
+		return atomic.incrementAndGet();
+	}
+
+	public static int ThrsafeDecrement(AtomicInteger atomic)
+	{
+		return atomic.decrementAndGet();
+	}
+
+	public static void ThrsafeIncrementNoResult(AtomicInteger atomic)
+	{
+		atomic.incrementAndGet();
+	}
+
+	public static void ThrsafeDecrementNoResult(AtomicInteger atomic)
+	{
+		atomic.decrementAndGet();
+	}
+
 	public static boolean ThrsafeCompareExchange(AtomicInteger paoDestination, int aoComparand, int aoExchange)
 	{
-	    return paoDestination.compareAndSet(aoComparand, aoExchange);
+		return paoDestination.compareAndSet(aoComparand, aoExchange);
 	}
 
 	public static boolean ThrsafeCompareExchange(AtomicIntegerArray paoDestination, int arrayOffset, int aoComparand, int aoExchange)

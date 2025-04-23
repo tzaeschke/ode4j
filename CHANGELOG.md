@@ -36,6 +36,17 @@
     - DemoFeedback has changed parameters.
     - Fix? DxHeightfield.dCollideHeightfieldZone() cleaned up
     - Fix? DLCP swapping updated
+  - Skipped:
+    - quickstep.cpp / dxQuickStepIsland (allowedThreads != 1)
+    - threading_impl*, threading_pool*
+TODO verify
+    - Should dxQuickStepIsland_Stage4LCP_IterationStartSingleThread()
+    - get the same updates as dxQuickStepIsland_Stage4LCP_IterationStart()?
+    - ThrsafeDecrement
+    - Multithrading: verify calculateThreadingLimitedThreadCount()
+
+MAYBE BROKEN:
+- sizeint is "long"!!!!
 
 ## 0.5.3 - 2024-04-28
 

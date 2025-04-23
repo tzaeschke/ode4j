@@ -1044,7 +1044,7 @@ public class DxBody extends DObject implements DBody {
 		_posr.pos.eqSum(_posr.pos(), lvel, h);
 
 		if ((flags & dxBodyFlagFiniteRotation) != 0) {
-			DVector3 irv = new DVector3();	// infitesimal rotation vector
+			DVector3 irv = new DVector3();	// infinitesimal rotation vector
 			DQuaternion q = new DQuaternion();	// quaternion for finite rotation
 
 			if ((flags & dxBodyFlagFiniteRotationAxis) != 0) {
@@ -1092,7 +1092,7 @@ public class DxBody extends DObject implements DBody {
 			//for (j=0; j<4; j++) _q.v[j] = q2.v[j];
 			_q.set(q2);
 
-			// do the infitesimal rotation if required
+			// do the infinitesimal rotation if required
 			if ((flags & dxBodyFlagFiniteRotationAxis) != 0) {
 				DQuaternion dq = new DQuaternion();
 				dDQfromW (dq,irv,_q);
@@ -1101,7 +1101,7 @@ public class DxBody extends DObject implements DBody {
 			}
 		}
 		else {
-			// the normal way - do an infitesimal rotation
+			// the normal way - do an infinitesimal rotation
 			DQuaternion dq = new DQuaternion();
 			dDQfromW (dq,avel,_q);
 			//for (j=0; j<4; j++) _q.v[j] += h * dq[j];

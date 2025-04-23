@@ -196,7 +196,7 @@ class QuickStepEnums {
 	public static final int	FAE__MAX = FAE_POSITIVE + 1;
 
 	// #define ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(positive) ((dxForceAdjustmentElement)(int)(positive))
-	private static int ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(boolean positive) { return positive ? 1 : 0; }
+	static int ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(boolean positive) { return positive ? 1 : 0; }
 	static {
 		dSASSERT(FAE_NEGATIVE == ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(false));
 		dSASSERT(FAE_POSITIVE == ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(true));

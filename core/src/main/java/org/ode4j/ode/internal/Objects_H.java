@@ -30,6 +30,8 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.DWorld;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  *  object, body, and world structures.
  *  
@@ -184,10 +186,18 @@ public class Objects_H {
 		public void AssignStatisticsSink(DWorld.dWorldQuickStepIterationCount_DynamicAdjustmentStatistics statistics) { m_statistics = statistics; }
 		public void ClearStatisticsSink() { m_statistics.set(m_internal_statistics); }
 
-		//		public volatile atomicord32 *GetStatisticsIterationCountStorage() const { dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, iteration_count)); return _type_cast_union<atomicord32>(&m_statistics->iteration_count); }
-		//		public volatile atomicord32 *GetStatisticsPrematureExitsStorage() const { dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, premature_exits)); return _type_cast_union<atomicord32>(&m_statistics->premature_exits); }
-		//		public volatile atomicord32 *GetStatisticsProlongedExecutionsStorage() const { dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, prolonged_execs)); return _type_cast_union<atomicord32>(&m_statistics->prolonged_execs); }
-		//		public volatile atomicord32 *GetStatisticsFullExtraExecutionsStorage() const { dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, full_extra_execs)); return _type_cast_union<atomicord32>(&m_statistics->full_extra_execs); }
+		public AtomicInteger GetStatisticsIterationCountStorage() {
+			// dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, iteration_count));
+			return m_statistics.iteration_count; }
+		public AtomicInteger GetStatisticsPrematureExitsStorage() {
+			// dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, premature_exits));
+			return m_statistics.premature_exits; }
+		public AtomicInteger GetStatisticsProlongedExecutionsStorage() {
+			// dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, prolonged_execs));
+			return m_statistics.prolonged_execs; }
+		public AtomicInteger GetStatisticsFullExtraExecutionsStorage() {
+			// dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, full_extra_execs));
+			return m_statistics.full_extra_execs; }
 
 		// private:
 		private static int DeriveExtraIterationCount(int iterationCount, double extraIterationCountFactor)
@@ -214,7 +224,8 @@ public class Objects_H {
 		public double w;                               // the SOR over-relaxation parameter
 
 		// private:
-		private DWorld.dWorldQuickStepIterationCount_DynamicAdjustmentStatistics m_internal_statistics; // The internal statistics is used to not have to check m_statistics for NULL; the local instance is used instead of a global one to avoid cache line conflicts between different threads possibly serving separate worlds.
+		// The internal statistics is used to not have to check m_statistics for NULL; the local instance is used instead of a global one to avoid cache line conflicts between different threads possibly serving separate worlds.
+		private final DWorld.dWorldQuickStepIterationCount_DynamicAdjustmentStatistics m_internal_statistics = new DWorld.dWorldQuickStepIterationCount_DynamicAdjustmentStatistics();
 	}
 
 

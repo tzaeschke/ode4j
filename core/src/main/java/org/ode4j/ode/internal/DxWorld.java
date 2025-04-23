@@ -116,8 +116,8 @@ public class DxWorld extends DBase implements DWorld {
 		adis = null;
 		body_flags = 0;  // everything disabled
 		islands_max_threads = dWORLDSTEP_THREADCOUNT_UNLIMITED;
-		stepping_max_threads(dWORLDSTEP_THREADCOUNT_UNLIMITED),
-		solving_max_threads(1),
+		stepping_max_threads = dWORLDSTEP_THREADCOUNT_UNLIMITED;
+		solving_max_threads = 1;
 		wmem = null;
 		qs = null;
 		contactp = null;
@@ -268,7 +268,8 @@ public class DxWorld extends DBase implements DWorld {
 		return global_cfm;
 	}
 
-	void dWorldSetSteppingThreadingParameters(final dWorldSteppingThreadingParameters ptr_params)
+	//	void dWorldSetSteppingThreadingParameters(final dWorldSteppingThreadingParameters ptr_params)
+	public void setSteppingThreadingParameters(final dWorldSteppingThreadingParameters ptr_params)
 	{
 		// dAASSERT(w);
 		// dAASSERT(ptr_params);
@@ -291,7 +292,8 @@ public class DxWorld extends DBase implements DWorld {
 		}
 	}
 
-	void dWorldGetSteppingThreadingParameters(dWorldSteppingThreadingParameters ptr_params)
+	// void dWorldGetSteppingThreadingParameters(dWorldSteppingThreadingParameters ptr_params)
+	public void getSteppingThreadingParameters(dWorldSteppingThreadingParameters ptr_params)
 	{
 		int param_set = ptr_params.param_set;
 
@@ -580,7 +582,7 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
-//	void dWorldSetQuickStepNumIterations (dxWorld w, int num)
+	//	void dWorldSetQuickStepNumIterations (dxWorld w, int num)
 	public void dWorldSetQuickStepNumIterations (int num)
 	{
 		//dAASSERT(w);
@@ -590,6 +592,7 @@ public class DxWorld extends DBase implements DWorld {
 	}
 
 
+	// private int dWorldGetQuickStepNumIterations ()
 	private int dWorldGetQuickStepNumIterations ()
 	{
 
@@ -600,79 +603,79 @@ public class DxWorld extends DBase implements DWorld {
 	/*extern */
 	//	void dWorldSetQuickStepDynamicIterationParameters(dWorldID w, const dReal *ptr_iteration_premature_exit_delta/*=NULL*/,
 	//    const dReal *ptr_max_num_extra_factor/*=NULL*/, const dReal *ptr_extra_iteration_requirement_delta/*=NULL*/)
-	void dWorldSetQuickStepDynamicIterationParameters(final double[] ptr_iteration_premature_exit_delta/*=NULL*/,
-    final double[] ptr_max_num_extra_factor/*=NULL*/, final double[] ptr_extra_iteration_requirement_delta/*=NULL*/)
-
-	{
-		// dAASSERT(w);
-		dAASSERT(ptr_iteration_premature_exit_delta != null || ptr_max_num_extra_factor != null || ptr_extra_iteration_requirement_delta != null);
-		dAASSERT(ptr_iteration_premature_exit_delta == null || *ptr_iteration_premature_exit_delta >= 0);
-		dAASSERT(ptr_max_num_extra_factor == null || *ptr_max_num_extra_factor >= 0);
-		dAASSERT(ptr_extra_iteration_requirement_delta == null || *ptr_extra_iteration_requirement_delta >= 0);
-
-		if (ptr_iteration_premature_exit_delta != null) {
-			this.qs.AssignPrematureExitDelta(Math.max(*ptr_iteration_premature_exit_delta, 0.0));
-		}
-
-		if (ptr_extra_iteration_requirement_delta != null) {
-			this.qs.AssignExtraIterationsRequirementDelta(Math.max(*ptr_extra_iteration_requirement_delta, 0.0));
-		}
-
-		if (ptr_max_num_extra_factor != null) {
-			this.qs.AssignMaxNumExtraFactor(Math.max(*ptr_max_num_extra_factor, 0.0));
-		}
-	}
+	//	void dWorldSetQuickStepDynamicIterationParameters(final double[] ptr_iteration_premature_exit_delta/*=NULL*/,
+	//    final double[] ptr_max_num_extra_factor/*=NULL*/, final double[] ptr_extra_iteration_requirement_delta/*=NULL*/)
+	//
+	//	{
+	//		// dAASSERT(w);
+	//		dAASSERT(ptr_iteration_premature_exit_delta != null || ptr_max_num_extra_factor != null || ptr_extra_iteration_requirement_delta != null);
+	//		dAASSERT(ptr_iteration_premature_exit_delta == null || *ptr_iteration_premature_exit_delta >= 0);
+	//		dAASSERT(ptr_max_num_extra_factor == null || *ptr_max_num_extra_factor >= 0);
+	//		dAASSERT(ptr_extra_iteration_requirement_delta == null || *ptr_extra_iteration_requirement_delta >= 0);
+	//
+	//		if (ptr_iteration_premature_exit_delta != null) {
+	//			this.qs.AssignPrematureExitDelta(Math.max(*ptr_iteration_premature_exit_delta, 0.0));
+	//		}
+	//
+	//		if (ptr_extra_iteration_requirement_delta != null) {
+	//			this.qs.AssignExtraIterationsRequirementDelta(Math.max(*ptr_extra_iteration_requirement_delta, 0.0));
+	//		}
+	//
+	//		if (ptr_max_num_extra_factor != null) {
+	//			this.qs.AssignMaxNumExtraFactor(Math.max(*ptr_max_num_extra_factor, 0.0));
+	//		}
+	//	}
 
 	/*extern */
 	//	void dWorldGetQuickStepDynamicIterationParameters(dWorldID w, dReal *out_iteration_premature_exit_delta/*=NULL*/,
 	//				  dReal *out_max_num_extra_factor/*=NULL*/, dReal *out_extra_iteration_requirement_delta/*=NULL*/)
-	void dWorldGetQuickStepDynamicIterationParameters(double[] out_iteration_premature_exit_delta/*=NULL*/,
-													  double[] out_max_num_extra_factor/*=NULL*/,
-													  double[] out_extra_iteration_requirement_delta/*=NULL*/)
-	{
-		// dAASSERT(w);
-		dAASSERT(out_iteration_premature_exit_delta != null || out_max_num_extra_factor != null || out_extra_iteration_requirement_delta != null);
-
-		if (out_iteration_premature_exit_delta != null) {
-        *out_iteration_premature_exit_delta = this.qs.GetPrematureExitDelta();
-		}
-
-		if (out_extra_iteration_requirement_delta != null) {
-        *out_extra_iteration_requirement_delta = this.qs.GetExtraIterationsRequirementDelta();
-		}
-
-		if (out_max_num_extra_factor != null) {
-        *out_max_num_extra_factor = this.qs.GetMaxNumExtraFactor();
-		}
-	}
+	//	void dWorldGetQuickStepDynamicIterationParameters(double[] out_iteration_premature_exit_delta/*=NULL*/,
+	//													  double[] out_max_num_extra_factor/*=NULL*/,
+	//													  double[] out_extra_iteration_requirement_delta/*=NULL*/)
+	//	{
+	//		// dAASSERT(w);
+	//		dAASSERT(out_iteration_premature_exit_delta != null || out_max_num_extra_factor != null || out_extra_iteration_requirement_delta != null);
+	//
+	//		if (out_iteration_premature_exit_delta != null) {
+	//        *out_iteration_premature_exit_delta = this.qs.GetPrematureExitDelta();
+	//		}
+	//
+	//		if (out_extra_iteration_requirement_delta != null) {
+	//        *out_extra_iteration_requirement_delta = this.qs.GetExtraIterationsRequirementDelta();
+	//		}
+	//
+	//		if (out_max_num_extra_factor != null) {
+	//        *out_max_num_extra_factor = this.qs.GetMaxNumExtraFactor();
+	//		}
+	//	}
 
 	/*extern */
 	//	int dWorldAttachQuickStepDynamicIterationStatisticsSink(dWorldID w,
 	//							dWorldQuickStepIterationCount_DynamicAdjustmentStatistics *var_stats/*=NULL*/)
-	boolean dWorldAttachQuickStepDynamicIterationStatisticsSink(
-							dWorldQuickStepIterationCount_DynamicAdjustmentStatistics var_stats/*=NULL*/)
-
-	{
-		// dAASSERT(w);
-		dAASSERT(var_stats == null || (var_stats.struct_size >= sizeof(*var_stats) && var_stats.struct_size % sizeof(duint32) == 0));
-		dSASSERT(sizeof(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics) % sizeof(duint32) == 0);
-
-		boolean result = false;
-
-		if (var_stats != null) {
-			if (var_stats.struct_size >= sizeof(*var_stats) && var_stats.struct_size % sizeof(duint32) == 0) {
-
-				this.qs.AssignStatisticsSink(var_stats);
-				result = true;
-			}
-		}
-		else {
-			this.qs.ClearStatisticsSink();
-			result = true;
-		}
-
-		return result;
-	}
+	//	boolean dWorldAttachQuickStepDynamicIterationStatisticsSink(
+	//							dWorldQuickStepIterationCount_DynamicAdjustmentStatistics var_stats/*=NULL*/)
+	//
+	//	{
+	//		// dAASSERT(w);
+	//		dAASSERT(var_stats == null || (var_stats.struct_size >= sizeof(*var_stats) && var_stats.struct_size % sizeof(duint32) == 0));
+	//		dSASSERT(sizeof(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics) % sizeof(duint32) == 0);
+	//
+	//		boolean result = false;
+	//
+	//		if (var_stats != null) {
+	//			if (var_stats.struct_size >= sizeof(*var_stats) && var_stats.struct_size % sizeof(duint32) == 0) {
+	//
+	//				this.qs.AssignStatisticsSink(var_stats);
+	//				result = true;
+	//			}
+	//		}
+	//		else {
+	//			this.qs.ClearStatisticsSink();
+	//			result = true;
+	//		}
+	//
+	//		return result;
+	//	}
 
 
 	private void dWorldSetQuickStepW (double param)
@@ -768,9 +771,9 @@ public class DxWorld extends DBase implements DWorld {
 	
 	static int EstimateIslandProcessingSimultaneousCallsMaximumCount(int activeThreadCount, 
 			int islandsAllowedThreadCount, 
-			int stepperAllowedThreadCount, dmaxcallcountestimate_fn_t maxCallCountEstimator)
+			int steppingAllowedThreadCount, int lcpAllowedThreadCount, dmaxcallcountestimate_fn_t maxCallCountEstimator)
 	{
-		int stepperCallsMaximum = maxCallCountEstimator.run(activeThreadCount, stepperAllowedThreadCount);
+		int stepperCallsMaximum = maxCallCountEstimator.run(activeThreadCount, steppingAllowedThreadCount,lcpAllowedThreadCount);
 		int islandsIntermediateCallsMaximum = (1 + 2); // ThreadedProcessIslandSearch_Callback + (ThreadedProcessIslandStepper_Callback && ThreadedProcessIslandSearch_Callback)
 
 		int result = 
@@ -819,9 +822,11 @@ public class DxWorld extends DBase implements DWorld {
 		dIASSERT(activeThreadCount.get() >= islandsAllowedThreadCount);
 
 		// For now, set stepper allowed threads equal to island stepping threads
-		int stepperAllowedThreadCount = islandsAllowedThreadCount; 
+		int stepperAllowedThreadCount = this.calculatePerIslandSteppingMaxThreadCount();
+		int lcpAllowedThreadCount = this.calculatePerIslandSolvingMaxThreadCount();
 
-		callContext.SetStepperAllowedThreads(Threading.ENABLE_STEPPER_MULTITHREADING ? stepperAllowedThreadCount : 1);
+		callContext.SetStepperAllowedThreads(Threading.ENABLE_STEPPER_MULTITHREADING ? stepperAllowedThreadCount : 1,
+				Threading.ENABLE_STEPPER_MULTITHREADING ? lcpAllowedThreadCount : 1);
 
 		final TaskGroup group = taskExecutor.group("World Islands Stepping Group", new Runnable() {
 			@Override
@@ -1033,6 +1038,47 @@ public class DxWorld extends DBase implements DWorld {
 	    return islands_max_threads == dWORLDSTEP_THREADCOUNT_UNLIMITED 
 	        ? active_thread_count 
 	        : (islands_max_threads < active_thread_count ? islands_max_threads : active_thread_count);
+	}
+
+	// TODO TZ moved here from dxThreadingBase / threading_base.h
+	private int calculateThreadingLimitedThreadCount(int limitValue, boolean countCallerAsExtraThread,
+													 RefInt ptrOut_activeThreadCount)
+	{
+		// TODO (TZ) should we just return GetThreadingIslandsMaxThreadsCount() ?
+		int activeThreadCount = taskExecutor.getThreadCount(); //RetrieveThreadingThreadCount();
+
+		if (ptrOut_activeThreadCount != null)
+		{
+			ptrOut_activeThreadCount.set(activeThreadCount);
+		}
+
+		int adjustedActiveThreads = countCallerAsExtraThread && activeThreadCount != Integer.MAX_VALUE ? activeThreadCount + 1 : activeThreadCount;
+		return limitValue == dTHREADING_THREAD_COUNT_UNLIMITED
+				? adjustedActiveThreads
+				: Math.min(limitValue, adjustedActiveThreads);
+	}
+
+	public int calculateIslandIterationMaxThreadCount(RefInt ptrOut_activeThreadCount)
+	{
+		// int activeThreadCount;
+		RefInt ptrActiveThreadCountToUse = ptrOut_activeThreadCount != null ? new RefInt() : null;
+		int limitedCount = calculateThreadingLimitedThreadCount(islands_max_threads, false, ptrActiveThreadCountToUse);
+		if (ptrOut_activeThreadCount != null) {
+            ptrOut_activeThreadCount.set(Math.max(ptrActiveThreadCountToUse.get(), 1));
+		}
+		return Math.max(limitedCount, 1);
+	}
+
+	int calculatePerIslandSteppingMaxThreadCount()
+	{
+		int limitedCount = calculateThreadingLimitedThreadCount(stepping_max_threads, false, null);
+		return Math.max(limitedCount, 1);
+	}
+
+	int calculatePerIslandSolvingMaxThreadCount()
+	{
+		int limitedCount = calculateThreadingLimitedThreadCount(solving_max_threads, false, null);
+		return Math.max(limitedCount, 1);
 	}
 
 	public DxWorldProcessContext UnsafeGetWorldProcessingContext()

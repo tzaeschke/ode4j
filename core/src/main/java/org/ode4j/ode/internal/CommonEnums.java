@@ -137,5 +137,12 @@ public class CommonEnums {
 		assert(dV3E_X == 0 && dV3E_Y == 1 && dV3E_Z == 2);
 	}
 
+	public static void dAssertDSA() {
+		// TZ: Using this elaborate construct of constants to access an array is inefficient with
+		//     ode4j's DVector3 implementation. Therefore, we do not use these constants but
+		//     assert() that they are as we expect them to be.
+		assert(dSA_X == 0 && dSA_Y == 1 && dSA_Z == 2);
+	}
+
 	private CommonEnums() {}
 }

@@ -28,6 +28,8 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.threading.task.TaskExecutor;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * The world object is a container for rigid bodies and joints. Objects in
  * different worlds can not interact, for example rigid bodies from two
@@ -437,67 +439,67 @@ public interface DWorld {
 	//	#define dWORLDQUICKSTEP_EXTRA_ITERATION_REQUIREMENT_DELTA_DEFAULT   1e-2f
 	double dWORLDQUICKSTEP_EXTRA_ITERATION_REQUIREMENT_DELTA_DEFAULT = 1e-2f;
 
-	/**
-	 * Configure QuickStep method dynamic iteration count adjustment.
-	 *
-	 * <p> REMARK: The function controls dynamic iteration count adjustment basing on maximal contact force change
-	 * per iteration in matrix.
-	 *
-	 * <p>If Premature Exit Delta is configured with {@code ptr_iteration_premature_exit_delta}
-	 * and the maximal contact force adjustment does not exceed the value the iterations are abandoned
-	 * prematurely and computations complete in fewer steps than it would take normally.
-	 * Passing zero in {@code ptr_iteration_premature_exit_delta} will disable the premature exit and enforce
-	 * unconditional execution of iteration count set by {@link #setQuickStepNumIterations(int)}.
-	 *
-	 * <p>If extra iterations are enabled by passing  a positive fraction in {@code ptr_max_num_extra_factor}
-	 * and, after the normal number of iterations is executed, the maximal contact force adjustment is still
-	 * larger than the limit set with the {@code ptr_extra_iteration_requirement_delta}, up to that fraction of
-	 * normal iteration count is executed extra until the maximal contact force change falls below the margin.
-	 *
-	 * <p>At least one parameter must be not NULL for the call.
-	 * If NULL is passed for any of the parameters the corresponding parameter will retain its previous value.
-	 * If the standard number of iterations is changed with {@link #setQuickStepNumIterations(int)} call and
-	 * an extra iteration count was configured with {@code ptr_max_num_extra_factor} the extra absolute value will be
-	 * adjusted accordingly.
-	 *
-	 * @param ptr_iteration_premature_exit_delta A margin value such that, if contact force adjustment value maximum in an iteration
-	 * becomes less, the method is allowed to terminate prematurely.
-	 * @param ptr_max_num_extra_factor A non-negative coefficient that defines fraction of the standard iteration count to be executed extra
-	 * if contact force still significantly changes after the standard iterations complete.
-	 * @param ptr_extra_iteration_requirement_delta A margin that defines when the extra iterations are not needed or can be abandoned after
-	 * the start.
-	 * @see #getQuickStepDynamicIterationParameters(double[], double[], double[])
-	 */
-	//		ODE_API void dWorldSetQuickStepDynamicIterationParameters(dWorldID w, const dReal *ptr_iteration_premature_exit_delta/*=NULL*/,
-	//		const dReal *ptr_max_num_extra_factor/*=NULL*/, const dReal *ptr_extra_iteration_requirement_delta/*=NULL*/);
-	void setQuickStepDynamicIterationParameters(final double[] ptr_iteration_premature_exit_delta/*=NULL*/,
-		final double[] ptr_max_num_extra_factor/*=NULL*/, final double[] ptr_extra_iteration_requirement_delta/*=NULL*/);
+	//	/**
+	//	 * Configure QuickStep method dynamic iteration count adjustment.
+	//	 *
+	//	 * <p> REMARK: The function controls dynamic iteration count adjustment basing on maximal contact force change
+	//	 * per iteration in matrix.
+	//	 *
+	//	 * <p>If Premature Exit Delta is configured with {@code ptr_iteration_premature_exit_delta}
+	//	 * and the maximal contact force adjustment does not exceed the value the iterations are abandoned
+	//	 * prematurely and computations complete in fewer steps than it would take normally.
+	//	 * Passing zero in {@code ptr_iteration_premature_exit_delta} will disable the premature exit and enforce
+	//	 * unconditional execution of iteration count set by {@link #setQuickStepNumIterations(int)}.
+	//	 *
+	//	 * <p>If extra iterations are enabled by passing  a positive fraction in {@code ptr_max_num_extra_factor}
+	//	 * and, after the normal number of iterations is executed, the maximal contact force adjustment is still
+	//	 * larger than the limit set with the {@code ptr_extra_iteration_requirement_delta}, up to that fraction of
+	//	 * normal iteration count is executed extra until the maximal contact force change falls below the margin.
+	//	 *
+	//	 * <p>At least one parameter must be not NULL for the call.
+	//	 * If NULL is passed for any of the parameters the corresponding parameter will retain its previous value.
+	//	 * If the standard number of iterations is changed with {@link #setQuickStepNumIterations(int)} call and
+	//	 * an extra iteration count was configured with {@code ptr_max_num_extra_factor} the extra absolute value will be
+	//	 * adjusted accordingly.
+	//	 *
+	//	 * @param ptr_iteration_premature_exit_delta A margin value such that, if contact force adjustment value maximum in an iteration
+	//	 * becomes less, the method is allowed to terminate prematurely.
+	//	 * @param ptr_max_num_extra_factor A non-negative coefficient that defines fraction of the standard iteration count to be executed extra
+	//	 * if contact force still significantly changes after the standard iterations complete.
+	//	 * @param ptr_extra_iteration_requirement_delta A margin that defines when the extra iterations are not needed or can be abandoned after
+	//	 * the start.
+	//	 * @see #getQuickStepDynamicIterationParameters(double[], double[], double[])
+	//	 */
+	//	//		ODE_API void dWorldSetQuickStepDynamicIterationParameters(dWorldID w, const dReal *ptr_iteration_premature_exit_delta/*=NULL*/,
+	//	//		const dReal *ptr_max_num_extra_factor/*=NULL*/, const dReal *ptr_extra_iteration_requirement_delta/*=NULL*/);
+	//	void setQuickStepDynamicIterationParameters(final double[] ptr_iteration_premature_exit_delta/*=NULL*/,
+	//		final double[] ptr_max_num_extra_factor/*=NULL*/, final double[] ptr_extra_iteration_requirement_delta/*=NULL*/);
 
 
-	/**
-	 * Retrieve QuickStep method dynamic iteration count adjustment parameters.
-	 *
-	 * <p>REMARK: The function retrieves dynamic iteration count adjustment parameters.
-	 *
-	 * <p>See {@link #setQuickStepDynamicIterationParameters(double[], double[], double[])} for the parameters description.
-	 *
-	 * <p>At least one parameter must be not NULL for the call.
-	 *
-	 * @param out_iteration_premature_exit_delta Premature Exit Delta value (can be NULL if the value is not needed).
-	 * @param out_max_num_extra_factor Maximum Extra Iteration Number Factor value (can be NULL if the value is not needed).
-	 * @param out_extra_iteration_requirement_delta Extra Iteration Requirement Delta value (can be NULL if the value is not needed).
-	 * @see #setQuickStepDynamicIterationParameters(double[], double[], double[])
-	 */
-	//		ODE_API void dWorldGetQuickStepDynamicIterationParameters(dWorldID w, dReal *out_iteration_premature_exit_delta/*=NULL*/,
-	//																  dReal *out_max_num_extra_factor/*=NULL*/, dReal *out_extra_iteration_requirement_delta/*=NULL*/);
-	void getQuickStepDynamicIterationParameters(double[] out_iteration_premature_exit_delta/*=NULL*/,
-											    double[] out_max_num_extra_factor/*=NULL*/, double[] out_extra_iteration_requirement_delta/*=NULL*/);
+	//	/**
+	//	 * Retrieve QuickStep method dynamic iteration count adjustment parameters.
+	//	 *
+	//	 * <p>REMARK: The function retrieves dynamic iteration count adjustment parameters.
+	//	 *
+	//	 * <p>See {@link #setQuickStepDynamicIterationParameters(double[], double[], double[])} for the parameters description.
+	//	 *
+	//	 * <p>At least one parameter must be not NULL for the call.
+	//	 *
+	//	 * @param out_iteration_premature_exit_delta Premature Exit Delta value (can be NULL if the value is not needed).
+	//	 * @param out_max_num_extra_factor Maximum Extra Iteration Number Factor value (can be NULL if the value is not needed).
+	//	 * @param out_extra_iteration_requirement_delta Extra Iteration Requirement Delta value (can be NULL if the value is not needed).
+	//	 * @see #setQuickStepDynamicIterationParameters(double[], double[], double[])
+	//	 */
+	//	//		ODE_API void dWorldGetQuickStepDynamicIterationParameters(dWorldID w, dReal *out_iteration_premature_exit_delta/*=NULL*/,
+	//	//																  dReal *out_max_num_extra_factor/*=NULL*/, dReal *out_extra_iteration_requirement_delta/*=NULL*/);
+	//	void getQuickStepDynamicIterationParameters(double[] out_iteration_premature_exit_delta/*=NULL*/,
+	//											    double[] out_max_num_extra_factor/*=NULL*/, double[] out_extra_iteration_requirement_delta/*=NULL*/);
 
 
 	/**
 	 * Statistics structure to accumulate QuickStep iteration couunt dynamic adjustment data.
 	 *
-	 * @see #attachQuickStepDynamicIterationStatisticsSink
+//	 * @see #attachQuickStepDynamicIterationStatisticsSink
 	 */
 	class dWorldQuickStepIterationCount_DynamicAdjustmentStatistics
 	{
@@ -511,18 +513,18 @@ public interface DWorld {
 		@Deprecated
 		int struct_size;         /*< to be initialized with the structure size */
 
-		int iteration_count;      /*< number of iterations executed */
+		public final AtomicInteger iteration_count = new AtomicInteger();      /*< number of iterations executed */
 
-		int premature_exits;      /*< number of times solution took fewer than the regular iteration count */
-		int prolonged_execs;      /*< number of times solution took more  than the regular iteration count */
-		int full_extra_execs;     /*< number of times the assigned exit criteria were not achieved even after all extra iterations allowed */
+		public final AtomicInteger premature_exits = new AtomicInteger();      /*< number of times solution took fewer than the regular iteration count */
+		public final AtomicInteger prolonged_execs = new AtomicInteger();      /*< number of times solution took more  than the regular iteration count */
+		public final AtomicInteger full_extra_execs = new AtomicInteger();     /*< number of times the assigned exit criteria were not achieved even after all extra iterations allowed */
 
 		public void set(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics other) {
 			struct_size = other.struct_size;
-			iteration_count = other.iteration_count;
-			premature_exits = other.premature_exits;
-			prolonged_execs = other.prolonged_execs;
-			full_extra_execs = other.full_extra_execs;
+			iteration_count.set(other.iteration_count.get());
+			premature_exits.set(other.premature_exits.get());
+			prolonged_execs.set(other.prolonged_execs.get());
+			full_extra_execs.set(other.full_extra_execs.get());
 		}
 	} // dWorldQuickStepIterationCount_DynamicAdjustmentStatistics;
 
@@ -535,33 +537,33 @@ public interface DWorld {
 	static void initializeQuickStepIterationCount_DynamicAdjustmentStatistics(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics ptr_stat)
 	{
 		// memset(ptr_stat, 0, sizeof(*ptr_stat));
-		ptr_stat.iteration_count = 0;
-		ptr_stat.premature_exits = 0;
-		ptr_stat.prolonged_execs = 0;
-		ptr_stat.full_extra_execs = 0;
+		ptr_stat.iteration_count.set(0);
+		ptr_stat.premature_exits.set(0);
+		ptr_stat.prolonged_execs.set(0);
+		ptr_stat.full_extra_execs.set(0);
 		ptr_stat.struct_size = 5*4 + 12;
 	}
 
 
-	/**
-	 * Attach or remove a structure to collect QuickStep iteration count dynamic adjustment statistics.
-	 *
-	 * <p>REMARKS: The function can be used to attach or remove a structure instance that will be updated with iteration count dynamic adjustment statistics
-	 * of QuickStep. To break the attachment, the function must be called with NULL for the {@code var_stats}.
-	 *
-	 * <p>See {@link #setQuickStepDynamicIterationParameters(double[], double[], double[])} for information on the iteration count dynamic adjustment options.
-	 *
-	 * <p>The caller is responsible for initializing the structure before assignment. The structure must persist in memory until unattached or
-	 * the host world object is destroyed. The same structure instance may be shared among multiple worlds if that makes sense.
-	 *
-	 * <p>The assignment may fail if the feature is not configured within the library, or if the structure was not initialized properly.
-	 *
-	 * @param var_stats A pointer to structure instance to assigned or NULL to break the previous attachment for the world.
-	 * @return Boolean status indicating whether the function succeeded
-	 * @see dWorldQuickStepIterationCount_DynamicAdjustmentStatistics
-	 */
-	// ODE_API int dWorldAttachQuickStepDynamicIterationStatisticsSink(dWorldID w, dWorldQuickStepIterationCount_DynamicAdjustmentStatistics *var_stats/*=NULL*/);
-	int attachQuickStepDynamicIterationStatisticsSink(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics var_stats/*=NULL*/);
+	//	/**
+	//	 * Attach or remove a structure to collect QuickStep iteration count dynamic adjustment statistics.
+	//	 *
+	//	 * <p>REMARKS: The function can be used to attach or remove a structure instance that will be updated with iteration count dynamic adjustment statistics
+	//	 * of QuickStep. To break the attachment, the function must be called with NULL for the {@code var_stats}.
+	//	 *
+	//	 * <p>See {@link #setQuickStepDynamicIterationParameters(double[], double[], double[])} for information on the iteration count dynamic adjustment options.
+	//	 *
+	//	 * <p>The caller is responsible for initializing the structure before assignment. The structure must persist in memory until unattached or
+	//	 * the host world object is destroyed. The same structure instance may be shared among multiple worlds if that makes sense.
+	//	 *
+	//	 * <p>The assignment may fail if the feature is not configured within the library, or if the structure was not initialized properly.
+	//	 *
+	//	 * @param var_stats A pointer to structure instance to assigned or NULL to break the previous attachment for the world.
+	//	 * @return Boolean status indicating whether the function succeeded
+	//	 * @see dWorldQuickStepIterationCount_DynamicAdjustmentStatistics
+	//	 */
+	//	// ODE_API int dWorldAttachQuickStepDynamicIterationStatisticsSink(dWorldID w, dWorldQuickStepIterationCount_DynamicAdjustmentStatistics *var_stats/*=NULL*/);
+	//	int attachQuickStepDynamicIterationStatisticsSink(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics var_stats/*=NULL*/);
 
 
 

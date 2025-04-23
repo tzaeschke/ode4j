@@ -33,14 +33,15 @@ public final class DxStepperProcessingCallContext {
 
 	//typedef void (*dstepper_fn_t) (const dxStepperProcessingCallContext *callContext);
 	public interface dstepper_fn_t {
-		public void run(DxStepperProcessingCallContext callContext);
+		void run(DxStepperProcessingCallContext callContext);
 	}
-	//typedef unsigned (*dmaxcallcountestimate_fn_t) (unsigned activeThreadCount, unsigned allowedThreadCount);
+	//typedef unsigned (*dmaxcallcountestimate_fn_t) (unsigned activeThreadCount, unsigned steppingAllowedThreadCount,
+	// unsigned lcpAllowedThreadCount);
 	public interface dmaxcallcountestimate_fn_t {
-		public int run(int activeThreadCount, int allowedThreadCount);
+		int run(int activeThreadCount, int steppingAllowedThreadCount, int lcpAllowedThreadCount);
 	}
 	
-	DxStepperProcessingCallContext(DxWorld world, double stepSize, int stepperAllowedThreads, 
+	DxStepperProcessingCallContext(DxWorld world, double stepSize, int stepperAllowedThreads, int lcpAllowedThreads,
 			DxWorldProcessMemArena stepperArena, 
 			DxBody[] islandBodiesStart,
 			DxJoint[] islandJointsStart) {
@@ -54,6 +55,7 @@ public final class DxStepperProcessingCallContext {
 		m_islandBodiesCount = 0;
 		m_islandJointsCount = 0;
 		m_stepperAllowedThreads = stepperAllowedThreads;
+		m_lcpAllowedThreads = lcpAllowedThreads;
 	}
 
 	void AssignIslandSelection(DxBody[] islandBodiesStartA, int islandBodiesStartOfs,
@@ -81,6 +83,7 @@ public final class DxStepperProcessingCallContext {
 	private int                m_islandBodiesCount;
 	private int                m_islandJointsCount;
 	private int                m_stepperAllowedThreads;
+	private int                m_lcpAllowedThreads;
 	private TaskGroup          m_taskGroup;
 	
     public DxWorldProcessMemArena m_stepperArena() {
@@ -101,6 +104,10 @@ public final class DxStepperProcessingCallContext {
 
 	public int m_stepperAllowedThreads() {
 		return m_stepperAllowedThreads;
+	}
+
+	public int m_lcpAllowedThreads() {
+		return m_lcpAllowedThreads;
 	}
 
 	public DxBody[] m_islandBodiesStartA() {
