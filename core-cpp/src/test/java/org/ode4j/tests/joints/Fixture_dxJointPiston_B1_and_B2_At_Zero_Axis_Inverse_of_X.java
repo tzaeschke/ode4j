@@ -224,7 +224,7 @@ public class Fixture_dxJointPiston_B1_and_B2_At_Zero_Axis_Inverse_of_X extends T
 	// Test Position Rate
 	// ==========================================================================
 
-	// Apply force on 1st body in the X direction also the Axis direction
+	// Apply force on 1st body in the X direction that also is the axis direction
 	//
 	//  X------->       X---------> <-- Axis
 	//  B1  F->      =>     B1
@@ -258,7 +258,7 @@ public class Fixture_dxJointPiston_B1_and_B2_At_Zero_Axis_Inverse_of_X extends T
 		CHECK_CLOSE (1, dJointGetPistonPositionRate (jId), 1e-4);
 	}
 
-	// Apply force on 1st body in the X direction also the Axis direction
+	// Apply force on 1st body in the X direction that also is the axis direction
 	//
 	//  X------->       X---------> <-- Axis
 	//  B1          =>  B1

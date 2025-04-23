@@ -55,7 +55,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.joints.DxJointUniversal;
 
-//  The 2 bodies are positionned at (0, 0, 0), with no rotation
+//  The 2 bodies are positioned at (0, 0, 0) with no rotation
 //  The joint is an Universal Joint.
 //  Axis in the inverse direction of the X axis
 //  Anchor at (0, 0, 0)

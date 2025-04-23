@@ -56,8 +56,8 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 import org.ode4j.ode.internal.joints.DxJointUniversal;
 
-// The 2 bodies are positionned at (0, 0, 0)
-// The bodis have no rotation.
+// The 2 bodies are positioned at (0, 0, 0)
+// The bodies have no rotation.
 // The joint is a Universal Joint
 // Axis1 is along the X axis
 // Axis2 is along the Y axis
@@ -654,7 +654,7 @@ public class Fixture_dxJointUniversal_B1_and_B2_At_Zero_Axis1_Along_X_Axis2_Alon
 
 	// Rotate 1st body 0.23rad around X axis and 2nd body 0.37rad around Y (Axis2)
 	// then back to their original position.
-	// The Axis offset are set one at a time
+	// The Axis offsets are set one at a time
 	//
 	//    ^  ^    ^         ^          Z ^   ^ Y (N.B. Y is going in the screen)
 	//    |  |  => \      /             |  /

@@ -57,7 +57,7 @@ import org.ode4j.ode.internal.joints.DxJointHinge;
 import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
- * This file create unit test for some of the functions found in:
+ * This file creates unit tests for some of the functions found in:
  * ode/src/joinst/hinge.cpp
  * @author Tilmann Zaeschke
  */

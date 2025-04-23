@@ -45,7 +45,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJointPU;
 
 // Only one body
-// The body are positionned at (0, 0, 0), with no rotation
+// The body is positioned at (0, 0, 0) with no rotation
 // The joint is a PU Joint
 // Axis is in the oppsite X axis
 // Anchor at (0, 0, 0)
@@ -159,7 +159,7 @@ public class Fixture_dxJointPU_One_Body_At_Zero_Axis_Inverse_of_X
     @Test public void test_dJointSetPUAxisOffset_B2_OffsetUnit()
     {
         // By default it is attached to position 1
-        // Now attach the body at positiojn 2
+        // Now attach the body at position 2
         dJointAttach(jId, null, bId);
 
         CHECK_CLOSE (0.0, dJointGetPUPosition (jId), 1e-4);
@@ -189,7 +189,7 @@ public class Fixture_dxJointPU_One_Body_At_Zero_Axis_Inverse_of_X
     @Test public void test_dJointSetPUAxisOffset_B2_Minus_OffsetUnit()
     {
         // By default it is attached to position 1
-        // Now attach the body at positiojn 2
+        // Now attach the body at position 2
         dJointAttach(jId, null, bId);
 
         CHECK_CLOSE (0.0, dJointGetPUPosition (jId), 1e-4);

@@ -47,7 +47,7 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 //        1         2         3         4         5         6         7
 
 ////////////////////////////////////////////////////////////////////////////////
-// This file create unit test for some of the functions found in:
+// This file creates unit tests for some of the functions found in:
 // ode/src/joint.cpp
 //
 //
@@ -181,7 +181,7 @@ public class FrictionJointContact extends TestSuperClass
 
 
         /*
-         * Now try with no frictino in the second direction. The Jacobian should look like:
+         * Now try with no friction in the second direction. The Jacobian should look like:
          * J[1] = [  0  1  0    0  0  1    0 -1  0    0  0  1 ]
          */
         // try again, with zero mu2

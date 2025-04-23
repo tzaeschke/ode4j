@@ -53,8 +53,8 @@ import org.ode4j.ode.DUniversalJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.cpp4j.java.RefDouble;
 
-// The 2 bodies are positionned at (0,0,0),  and (0,0,0)
-// The bodis have no rotation.
+// The 2 bodies are positioned at (0,0,0) and (0,0,0)
+// The bodies have no rotation.
 // The joint is a Universal Joint
 // The axis of the joint are at random (Still at 90deg w.r.t each other)
 // Anchor at (0, 0, 0)

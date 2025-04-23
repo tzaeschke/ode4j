@@ -48,8 +48,8 @@ import org.ode4j.ode.DPRJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJointPR;
 
-// The 2 bodies are positionned at (0, 0, 0),  and (0, 0, 0)
-// The bodis have rotation of 27deg around some axis.
+// The 2 bodies are positioned at (0, 0, 0)  and (0, 0, 0)
+// The bodies have rotation of 27deg around some axis.
 // The joint is a PR Joint
 // Axis is along the X axis
 // Anchor at (0, 0, 0)

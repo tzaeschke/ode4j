@@ -62,7 +62,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 // Create 2 bodies attached by a Universal joint
-// Axis is along the X axis (Default value
+// Axis is along the X axis (Default value)
 // Anchor at (0, 0, 0)      (Default value)
 //
 //       ^Y

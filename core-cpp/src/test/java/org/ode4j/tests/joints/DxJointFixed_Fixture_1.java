@@ -47,7 +47,7 @@ import org.ode4j.tests.UnitTestPlusPlus.CheckMacros;
 
 /**
  *
- * This file create unit test for some of the functions found in:
+ * This file creates unit tests for some of the functions found in:
  * ode/src/joinst/fixed.cpp
  */
 public class DxJointFixed_Fixture_1

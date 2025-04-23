@@ -32,7 +32,7 @@ import static org.ode4j.tests.UnitTestPlusPlus.CheckMacros.CHECK_CLOSE;
 
 import org.junit.Test;
 
-//This file create unit test for some of the functions found in:
+//This file creates unit tests for some of the functions found in:
 //ode/src/joinst/slider.cpp
 public class Fixture_dxJointSlider_B2_At_Zero_Axis_Along_X2
   extends Fixture_dxJointSlider_B2_At_Zero_Axis_Along_X {

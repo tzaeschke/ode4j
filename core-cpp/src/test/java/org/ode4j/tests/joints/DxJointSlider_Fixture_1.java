@@ -45,7 +45,7 @@ import org.ode4j.ode.DSliderJoint;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJointSlider;
 
-//This file create unit test for some of the functions found in:
+//This file creates unit tests for some of the functions found in:
 //ode/src/joinst/slider.cpp
 public class DxJointSlider_Fixture_1
     {

@@ -46,7 +46,7 @@ import org.ode4j.ode.internal.joints.DxJointPR;
 
 /**
  * Only body 1
- * The body are positioned at (0, 0, 0), with no rotation
+ * The body is positioned at (0, 0, 0), with no rotation
  * The joint is a PR Joint
  * Axis is along the X axis
  * Anchor at (0, 0, 0)
