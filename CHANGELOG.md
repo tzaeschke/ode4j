@@ -27,7 +27,11 @@
 
 ## 0.5.4 - in progress
 
-- Port updates until 0.16.6 (previous: 0.16.2/.3). This includes:
+TODO 
+- rename createBHVSpace to BVH!
+- Add PH-Tree space???
+
+- Port updates until 0.16.6 (previous: 0.16.2/.3) ([#147](https://github.com/tzaeschke/ode4j/pull/147)). This includes:
   - New box-plane collider
   - new DemoTrimeshCollision
   - new API method in DPUJoint: `void addTorques (double torque1, double torque2);`
