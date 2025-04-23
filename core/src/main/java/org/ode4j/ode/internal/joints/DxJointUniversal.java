@@ -109,7 +109,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint {
             // constraints won't be perfectly satisfied, or even very well
             // satisfied.)
             //
-            // However, we'd need a version of getHingeAngleFromRElativeQuat()
+            // However, we'd need a version of getHingeAngleFromRelativeQuat()
             // that CAN handle when its relative quat is rotated along a direction
             // other than the given axis.  What I have here works,
             // although it's probably much slower than need be.
@@ -133,7 +133,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint {
             // dRFrom2Axes(R, ax2[0], ax2[1], ax2[2], ax1[0], ax1[1], ax1[2]);
             // You see that the R is constructed from the same 2 axis as for angle1
             // but the first and second axis are swapped.
-            // So we can take the first R and rapply a rotation to it.
+            // So we can take the first R and reapply a rotation to it.
             // The rotation is around the axis between the 2 axes (ax1 and ax2).
             // We do a rotation of 180deg.
 
@@ -203,7 +203,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint {
             // constraints won't be perfectly satisfied, or even very well
             // satisfied.)
             //
-            // However, we'd need a version of getHingeAngleFromRElativeQuat()
+            // However, we'd need a version of getHingeAngleFromRelativeQuat()
             // that CAN handle when its relative quat is rotated along a direction
             // other than the given axis.  What I have here works,
             // although it's probably much slower than need be.
@@ -242,7 +242,7 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint {
             // constraints won't be perfectly satisfied, or even very well
             // satisfied.)
             //
-            // However, we'd need a version of getHingeAngleFromRElativeQuat()
+            // However, we'd need a version of getHingeAngleFromRelativeQuat()
             // that CAN handle when its relative quat is rotated along a direction
             // other than the given axis.  What I have here works,
             // although it's probably much slower than need be.
@@ -400,6 +400,26 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint {
                 qrel2.set(qcross);
             }
         }
+    }
+
+
+    //    void
+    //    dxJointUniversal::buildFirstBodyTorqueVector(dVector3 torqueVector, dReal torque1, dReal torque2)
+    void buildFirstBodyTorqueVector(DVector3 torqueVector, double torque1, double torque2) {
+        if ((this.flags & dJOINT_REVERSE) != 0)
+        {
+            double temp = torque1;
+            torque1 = -torque2;
+            torque2 = -temp;
+        }
+
+        DVector3 axis1 = new DVector3(), axis2 = new DVector3();
+        getAxis(axis1, this._axis1);
+        getAxis2(axis2, this._axis2);
+        //        torqueVector[0] = axis1[0] * torque1 + axis2[0] * torque2;
+        //        torqueVector[1] = axis1[1] * torque1 + axis2[1] * torque2;
+        //        torqueVector[2] = axis1[2] * torque1 + axis2[2] * torque2;
+        torqueVector.eqSum(axis1, torque1, axis2, torque2);
     }
 
 
@@ -646,23 +666,19 @@ public class DxJointUniversal extends DxJoint implements DUniversalJoint {
 
 
     private void dJointAddUniversalTorques(double torque1, double torque2) {
-        DVector3 axis1 = new DVector3(), axis2 = new DVector3();
-
         if (isFlagsReverse()) {
             double temp = torque1;
             torque1 = -torque2;
             torque2 = -temp;
         }
 
-        getAxis(axis1, _axis1);
-        getAxis2(axis2, _axis2);
-        //		axis1.v[0] = axis1.v[0] * torque1 + axis2.v[0] * torque2;
-        //		axis1.v[1] = axis1.v[1] * torque1 + axis2.v[1] * torque2;
-        //		axis1.v[2] = axis1.v[2] * torque1 + axis2.v[2] * torque2;
-        axis1.eqSum(axis1, torque1, axis2, torque2);
+        DVector3 axis = new DVector3();
+        buildFirstBodyTorqueVector(axis, torque1, torque2);
 
-        if (node[0].body != null) node[0].body.dBodyAddTorque(axis1);
-        if (node[1].body != null) node[1].body.dBodyAddTorque(axis1.scale(-1));
+        if (node[0].body != null)
+            node[0].body.dBodyAddTorque(axis);
+        if (node[1].body != null)
+            node[1].body.dBodyAddTorque(axis.scale(-1));
     }
 
 

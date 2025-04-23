@@ -30,6 +30,7 @@
 - Port updates until 0.16.6 (previous: 0.16.2/.3). This includes:
   - New box-plane collider
   - new DemoTrimeshCollision
+  - new API method in DPUJoint: `void addTorques (double torque1, double torque2);`
   - Cleanup:
     - Lots of typos fixed
     - Demos have new default window size and some a new default view position

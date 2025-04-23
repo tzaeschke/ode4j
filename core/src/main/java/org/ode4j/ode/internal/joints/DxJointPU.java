@@ -50,7 +50,7 @@ import org.ode4j.ode.internal.cpp4j.java.RefDouble;
  * anchor1: Vector from body1 to the anchor point
  *          This vector is calculated when the body are attached or
  *          when the anchor point is set. It is like the offset of the Slider
- *          joint. Since their is a prismatic between the anchor and the body1
+ *          joint. Since there is a prismatic between the anchor and the body1
  *          the distance might change as the simulation goes on.
  * anchor2: Vector from body2 to the anchor point.
  * <PRE>
@@ -571,13 +571,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	}
 
 
-	public void dJointSetPUAxisP( double x, double y, double z )
-	{
-		dJointSetPUAxis3( x, y, z );
-	}
-
-
-
 	public void dJointSetPUAxis3( double x, double y, double z )
 	{
 		setAxes( x, y, z, axisP1, null );
@@ -585,6 +578,41 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 		computeInitialRelativeRotations();
 	}
 
+
+	void dJointSetPUAxisP(double x, double y, double z)
+	{
+		dJointSetPUAxis3(x, y, z);
+	}
+
+
+	public void dJointSetPUParam( PARAM_N parameter, double value )
+	{
+		switch ( parameter.toGROUP()) //.and( 0xff00 ))
+		{
+			case dParamGroup1:
+				limot1.set( parameter.toSUB(), value );
+				break;
+			case dParamGroup2:
+				limot2.set( parameter.toSUB(), value );//.and( 0xff), value );
+				break;
+			case dParamGroup3:
+				limotP.set( parameter.toSUB(), value );//.and( 0xff ), value );
+				break;
+			default:
+				throw new IllegalArgumentException(parameter.name());
+		}
+	}
+
+	void dJointAddPUTorques(double torque1, double torque2)
+	{
+		DVector3 axis = new DVector3();
+		buildFirstBodyTorqueVector(axis, torque1, torque2);
+
+		if (this.node[0].body != null)
+			this.node[0].body.addTorque(axis);
+		if (this.node[1].body != null)
+			this.node[1].body.addTorque(axis.scale(-1));
+	}
 
 	//void dJointGetPUAngles( dJoint j, double *angle1, double *angle2 )
 	void dJointGetPUAngles( RefDouble angle1, RefDouble angle2 )
@@ -649,25 +677,6 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 			return rate;
 		}
 		return 0;
-	}
-
-
-	public void dJointSetPUParam( PARAM_N parameter, double value )
-	{
-		switch ( parameter.toGROUP()) //.and( 0xff00 ))
-		{
-		case dParamGroup1:
-			limot1.set( parameter.toSUB(), value );
-			break;
-		case dParamGroup2:
-			limot2.set( parameter.toSUB(), value );//.and( 0xff), value );
-			break;
-		case dParamGroup3:
-			limotP.set( parameter.toSUB(), value );//.and( 0xff ), value );
-			break;
-		default:
-			throw new IllegalArgumentException(parameter.name());
-		}
 	}
 
 	//	void dJointGetPUAnchor( dJoint j, dVector3 result )
@@ -817,7 +826,7 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	{ dJointGetPUAxis3 (result); }
 	@Override
 	public final void getAxisP (DVector3 result)
-	{ dJointGetPUAxis3 (result); }
+	{ dJointGetPUAxisP (result); }
 
 	/** TZ Take care to call getAngle1Internal() from dx-classes.*/
 	@Override
@@ -848,6 +857,9 @@ public class DxJointPU extends DxJointUniversal implements DPUJoint
 	public final double getParam (PARAM_N parameter)
 	{ return dJointGetPUParam (parameter); }
 
+	@Override
+	public final void addTorques (double torque1, double torque2)
+	{ dJointAddPUTorques (torque1, torque2); }
 
 	@Override
 	public void setAnchorOffset(double x, double y, double z, double dx,
