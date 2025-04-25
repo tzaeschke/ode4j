@@ -27,6 +27,8 @@
 
 ## 0.5.4 - in progress
 
+Known Bugs: TrimeshHeightfield and LayeredTrimeshHeightfield don't work with Convex
+
 TODO 
 - rename createBHVSpace to BVH!
 - Add PH-Tree space???
