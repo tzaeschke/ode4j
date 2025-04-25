@@ -1606,7 +1606,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         
         int stage4b_allowedThreads = 1;
         if (IsStage4bJointInfosIterationRequired(localContext)) {
-            int allowedThreads = callContext.m_stepperAllowedThreads();
+            int allowedThreads = Math.max(callContext.m_stepperAllowedThreads(), callContext.m_lcpAllowedThreads());
             stage4b_allowedThreads += CalculateOptimalThreadsCount(localContext.m_nj, allowedThreads - stage4b_allowedThreads, dxQUICKSTEPISLAND_STAGE4B_STEP);
         }
 
