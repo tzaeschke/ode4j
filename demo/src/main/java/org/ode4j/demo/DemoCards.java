@@ -151,9 +151,13 @@ public class DemoCards extends dsFunctions {
 	}
 
 
+	private static final float[] xyz = {-10.0f,0.0f,1.0000f}; // TZ
+	private static final float[] hpr = {0.0000f,25.000f,0.0000f}; // TZ
+	// start simulation - set viewpoint
 	@Override
 	public void start()
 	{
+		dsSetViewpoint (xyz,hpr); // TZ
 		System.out.println("Controls:");
 		System.out.println("   SPACE - reposition cards");
 		System.out.println("   -     - one less level");

@@ -42,7 +42,7 @@ import static org.ode4j.ode.internal.DxGeom.NUMC_MASK;
 class CollideBoxPlane implements DColliderFn {
 	//int dCollideBoxPlane (dxGeom *o1, dxGeom *o2,
 	//    int flags, dContactGeom *contact, int skip)
-	int dCollideBoxPlaneOld (DxBox o1, DxPlane o2,
+	int dCollideBoxPlane (DxBox o1, DxPlane o2,
 			int flags, DContactGeomBuffer contacts, int skip)
 	{
 		//dIASSERT (skip >= (int)sizeof(dContactGeom));
@@ -336,7 +336,7 @@ class CollideBoxPlane implements DColliderFn {
 
 	//	int dCollideBoxPlane(dxGeom *o1, dxGeom *o2,
 	//						 int flags, dContactGeom *contact, int skip)
-	private int dCollideBoxPlane (DxBox o1, DxPlane o2,
+	private int dCollideBoxPlaneNew (DxBox o1, DxPlane o2,
 							 int flags, DContactGeomBuffer contacts, int skip)
 	{
 		// dIASSERT(skip >= (int)sizeof(dContactGeom));

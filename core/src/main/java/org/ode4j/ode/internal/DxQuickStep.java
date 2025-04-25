@@ -289,16 +289,21 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		return mindex[pos * 2 + 1];
 	}
 
-	//
 	//	private static class dxJBodiesItem {
 	//		int first;
 	//		int second; // The index is optional and can equal to -1
 	//	}
-	private static int first(int[] jb, int m) {
+	private static int getJbFirst(int[] jb, int m) {
 		return jb[2 * m];
 	}
-	private static int second(int[] jb, int m) {
+	private static int getJbSecond(int[] jb, int m) {
 		return jb[2 * m + 1];
+	}
+	private static void setJbFirst(int[] jb, int m, int value) {
+		jb[2 * m] = value;
+	}
+	private static void setJbSecond(int[] jb, int m, int value) {
+		jb[2 * m + 1] = value;
 	}
 
 	private static class dxQuickStepperStage0Outputs
@@ -581,8 +586,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        int iMJ_ptr = mi * IMJ__MAX;
 	        int J_ptr = mi * JME__MAX;
 	        while (true) {
-		        int b1 = first(jb, mi);
-				int b2 = second(jb, mi);
+		        int b1 = getJbFirst(jb, mi);
+				int b2 = getJbSecond(jb, mi);
 				double k1 = bodyP[b1+bodyOfs].invMass;
 	            for (int j = 0; j != JVE__L_COUNT; j++) iMJ[iMJ_ptr + IMJ__1L_MIN + j] = k1 * J[J_ptr + JME__J1L_MIN + j];
 	            int invIrow1 = b1 * IIE__MAX + IIE__MATRIX_MIN;
@@ -625,8 +630,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        int miend = mi + dRESTRICT_STEP(step_size, m - mi);
 	        int J_ptr = mi * JME__MAX;
 	        while (true) {
-				int b1 = first(jb, mi);
-				int b2 = second(jb, mi);
+				int b1 = getJbFirst(jb, mi);
+				int b2 = getJbSecond(jb, mi);
 				double sum = 0.0;
 				int in_ofs = b1 * in_stride + in_offset;
 				for (int j = 0; j != JME__J1_COUNT; ++j) sum += J[J_ptr + j + JME__J1_MIN] * in[in_ofs+j];
@@ -747,6 +752,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    }
 	    else
 	    {
+			// TODO (TZ), this is very different from ODE. It has changed in ODE, e.g.  from 0.16.2 to 0.16.6
 	        TaskGroup stage1 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage1", new Runnable() {
                 @Override
                 public void run() {
@@ -1310,8 +1316,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 					int jb_ptr = 0 + ofsi;
 					final int jb_end = jb_ptr + infom;
 					for (; jb_ptr != jb_end; ++jb_ptr) {
-						jb[jb_ptr * 2] = b1;
-						jb[jb_ptr * 2 + 1] = b2;
+						setJbFirst(jb, jb_ptr, b1);
+						setJbSecond(jb, jb_ptr, b2);
 					}
 
 					if (++ji == jiend) {
@@ -1502,18 +1508,11 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 				DxWorld world = callContext.m_world();
 				stage4CallContext.m_LCP_iteration_premature_exit_delta = world.qs.GetPrematureExitDelta();
 
-				final TaskGroup stage5 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage5", new Runnable() {
-                    @Override
-                    public void run() {
-                        dxQuickStepIsland_Stage5(stage5CallContext);
-                    }
-                });
-	            TaskGroup stage4LCP_IterationSync = stage5.subgroup("QuickStepIsland Stage4LCP_Iteration Sync", new Runnable() {
-	                @Override
-	                public void run() {
-	                    dxQuickStepIsland_Stage4LCP_IterationSync(stage4CallContext, stage5);
-	                }
-	            });
+				final TaskGroup stage5 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage5",
+						() -> dxQuickStepIsland_Stage5(stage5CallContext));
+	            TaskGroup stage4LCP_IterationSync = stage5.subgroup("QuickStepIsland Stage4LCP_Iteration Sync",
+						() -> dxQuickStepIsland_Stage4LCP_IterationSync(stage4CallContext, stage5));
+
 	            int stage4LCP_Iteration_allowedThreads = CalculateOptimalThreadsCount(m, allowedThreads, 1);
 	            stage4CallContext.AssignLCP_IterationData(stage4LCP_IterationSync, stage4LCP_Iteration_allowedThreads);
 
@@ -1750,7 +1749,6 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		double[] forceMaxAdjustments = stage4CallContext.m_forceMaxAdjustments;
 		dxSetZero(forceMaxAdjustments, nb * FAE__MAX);
 
-
 		double[] fc = stage4CallContext.m_cforce;
         Matrix.dSetZero(fc, nb * CFE__MAX);
     }
@@ -1784,7 +1782,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
             while (true) {
                 double sum = 0;
                 for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ptr + j + IMJ__1JVE_MIN] * J[j_ptr + j + JME__J1_MIN];
-                int b2 = jb[mi*2+1];
+                int b2 = getJbSecond(jb, mi);
                 if (b2 != -1) {
                     for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ptr + j + IMJ__2JVE_MIN] * J[j_ptr + j + JME__J2_MIN];
                 }
@@ -1918,12 +1916,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			}
 
 			if (!lastIteration) {
-				stage4LCP_IterationStart = iterationSync.subgroup("QuickStepIsland Stage4LCP_Iteration Start", new Runnable() {
-                    @Override
-                    public void run() {
-                        dxQuickStepIsland_Stage4LCP_IterationStart(stage4CallContext);
-                    }
-                });
+				stage4LCP_IterationStart = iterationSync.subgroup("QuickStepIsland Stage4LCP_Iteration Start",
+						() -> dxQuickStepIsland_Stage4LCP_IterationStart(stage4CallContext));
             }
             final TaskGroup finalGroup = stage4LCP_IterationStart != null ? stage4LCP_IterationStart : iterationSync;
             
@@ -1932,19 +1926,12 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
                 stage4CallContext.ResetSOR_ConstraintsReorderVariables(reorderThreads);
 
-                TaskGroup stage4LCP_ConstraintsReorderingSync = finalGroup.subgroup("QuickStepIsland Stage4LCP_ConstraintsReordering Sync", new Runnable() {
-                    @Override
-                    public void run() {
-                        dxQuickStepIsland_Stage4LCP_ConstraintsReorderingSync(stage4CallContext, finalGroup);                        
-                    }
-                });
+                TaskGroup stage4LCP_ConstraintsReorderingSync = finalGroup.subgroup("QuickStepIsland Stage4LCP_ConstraintsReordering Sync",
+						() -> dxQuickStepIsland_Stage4LCP_ConstraintsReorderingSync(stage4CallContext, finalGroup));
+				// TODO (TZ) Why is this a loop? In ODE it is a simple "> 1"
                 for (int i = 1; i < reorderThreads; i++) {
-                    Task stage4LCP_ConstraintsReordering = stage4LCP_ConstraintsReorderingSync.subtask("QuickStepIsland Stage4LCP_ConstraintsReordering", new Runnable() {
-                        @Override
-                        public void run() {
-                            dxQuickStepIsland_Stage4LCP_ConstraintsReordering(stage4CallContext);
-                        }
-                    });
+                    Task stage4LCP_ConstraintsReordering = stage4LCP_ConstraintsReorderingSync.subtask("QuickStepIsland Stage4LCP_ConstraintsReordering",
+							() -> dxQuickStepIsland_Stage4LCP_ConstraintsReordering(stage4CallContext));
                     stage4LCP_ConstraintsReordering.submit();
                 }
                 dxQuickStepIsland_Stage4LCP_ConstraintsReordering(stage4CallContext);
@@ -2202,8 +2189,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         for (int i = 0; i != m; ++i) {
             int index = order[i].index;
 
-            int b1 = jb[index * 2];
-            int b2 = jb[index * 2 + 1];
+            int b1 = getJbFirst(jb, index);
+            int b2 = getJbSecond(jb, index);
 
             int encioded_i = dxENCODE_INDEX(i);
 
@@ -2465,8 +2452,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         double[] fc = stage4CallContext.m_cforce;
 
         int[] jb = localContext.m_jb;
-        b1AsSizeint = jb[index * 2];
-        int b2 = jb[index * 2 + 1];
+        b1AsSizeint = getJbFirst(jb, index);
+        final int b2 = getJbSecond(jb, index);
         
 	    // @@@ potential optimization: SIMD-ize this and the b2 >= 0 case
         fc_ptr1P = b1AsSizeint * CFE__MAX;
@@ -2478,10 +2465,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    //     loop to avoid the cost of test & jump?
 	    if (b2 != -1) {
 			b1ToB2Offset = b2 - b1AsSizeint;
-	        int fc_ptr2 = b2 * CFE__MAX;
-	        delta -= fc[fc_ptr2 + CFE_LX] * J[J_ptr + JME_J2LX] + fc[fc_ptr2 + CFE_LY] * J[J_ptr + JME_J2LY] +
-	        		fc[fc_ptr2 + CFE_LZ] * J[J_ptr + JME_J2LZ] + fc[fc_ptr2 + CFE_AX] * J[J_ptr + JME_J2AX] +
-	        		fc[fc_ptr2 + CFE_AY] * J[J_ptr + JME_J2AY] + fc[fc_ptr2 + CFE_AZ] * J[J_ptr + JME_J2AZ];
+	        fc_ptr2P = b2 * CFE__MAX;
+	        delta -= fc[fc_ptr2P + CFE_LX] * J[J_ptr + JME_J2LX] + fc[fc_ptr2P + CFE_LY] * J[J_ptr + JME_J2LY] +
+	        		fc[fc_ptr2P + CFE_LZ] * J[J_ptr + JME_J2LZ] + fc[fc_ptr2P + CFE_AX] * J[J_ptr + JME_J2AX] +
+	        		fc[fc_ptr2P + CFE_AY] * J[J_ptr + JME_J2AY] + fc[fc_ptr2P + CFE_AZ] * J[J_ptr + JME_J2AZ];
 	    }
 
 	    double hi_act, lo_act;
@@ -2532,28 +2519,28 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 			final int iMJ_ptr = index * IMJ__MAX;
 			// update fc.
 			// @@@ potential optimization: SIMD for this and the b2 >= 0 case
-			fc[fc_ptr1P + CFE_LX] += delta * iMJ[iMJ_ptr + 0];
-			fc[fc_ptr1P + CFE_LY] += delta * iMJ[iMJ_ptr + 1];
-			fc[fc_ptr1P + CFE_LZ] += delta * iMJ[iMJ_ptr + 2];
-			fc[fc_ptr1P + CFE_AX] += delta * iMJ[iMJ_ptr + 3];
-			fc[fc_ptr1P + CFE_AY] += delta * iMJ[iMJ_ptr + 4];
-			fc[fc_ptr1P + CFE_AZ] += delta * iMJ[iMJ_ptr + 5];
+			fc[fc_ptr1P + CFE_LX] += delta * iMJ[iMJ_ptr + IMJ_1LX];
+			fc[fc_ptr1P + CFE_LY] += delta * iMJ[iMJ_ptr + IMJ_1LY];
+			fc[fc_ptr1P + CFE_LZ] += delta * iMJ[iMJ_ptr + IMJ_1LZ];
+			fc[fc_ptr1P + CFE_AX] += delta * iMJ[iMJ_ptr + IMJ_1AX];
+			fc[fc_ptr1P + CFE_AY] += delta * iMJ[iMJ_ptr + IMJ_1AY];
+			fc[fc_ptr1P + CFE_AZ] += delta * iMJ[iMJ_ptr + IMJ_1AZ];
 
 			// dReal *fa1 = faBase + b1AsSizeint * FAE__MAX;
 			int fa1P = faBaseP + b1AsSizeint * FAE__MAX;
 	        faBaseA[fa1P] += delta * iMJ[iMJ_ptr + IMJ_1JVE_MAXABS];
 			// @@@ potential optimization: handle 1-body constraints in a separate
 			//     loop to avoid the cost of test & jump?
-			if (fc_ptr2P != NULL) {
+			if (b2 != -1) { // TZ: true iff "fc_ptr2 != NULL"
 				// dReal *fa2 = fa1 + b1ToB2Offset * FAE__MAX;
 				int fa2P = fa1P + b1ToB2Offset * FAE__MAX;
 	            faBaseA[fa2P] += delta * iMJ[iMJ_ptr + IMJ_2JVE_MAXABS];
-				fc[fc_ptr2P + CFE_LX] += delta * iMJ[iMJ_ptr + 6];
-				fc[fc_ptr2P + CFE_LY] += delta * iMJ[iMJ_ptr + 7];
-				fc[fc_ptr2P + CFE_LZ] += delta * iMJ[iMJ_ptr + 8];
-				fc[fc_ptr2P + CFE_AX] += delta * iMJ[iMJ_ptr + 9];
-				fc[fc_ptr2P + CFE_AY] += delta * iMJ[iMJ_ptr + 10];
-				fc[fc_ptr2P + CFE_AZ] += delta * iMJ[iMJ_ptr + 11];
+				fc[fc_ptr2P + CFE_LX] += delta * iMJ[iMJ_ptr + IMJ_2LX];
+				fc[fc_ptr2P + CFE_LY] += delta * iMJ[iMJ_ptr + IMJ_2LY];
+				fc[fc_ptr2P + CFE_LZ] += delta * iMJ[iMJ_ptr + IMJ_2LZ];
+				fc[fc_ptr2P + CFE_AX] += delta * iMJ[iMJ_ptr + IMJ_2AX];
+				fc[fc_ptr2P + CFE_AY] += delta * iMJ[iMJ_ptr + IMJ_2AY];
+				fc[fc_ptr2P + CFE_AZ] += delta * iMJ[iMJ_ptr + IMJ_2AZ];
 			}
 		}
     }  
