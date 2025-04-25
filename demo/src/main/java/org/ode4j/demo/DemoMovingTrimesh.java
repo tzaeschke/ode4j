@@ -135,7 +135,7 @@ public class DemoMovingTrimesh extends dsFunctions {
 
     // start simulation - set viewpoint
 	private static final float[] xyz = {2.1640f,-2.3079f,1.7600f};
-	private static final float[] hpr = {125.5000f,-17.0000f,0.0000f};
+	private static final float[] hpr = {125.5000f,-1.0000f,0.0000f};
 
 	@Override
 	public void start()

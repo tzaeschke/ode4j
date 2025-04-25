@@ -172,8 +172,8 @@ public class DemoJointPU extends dsFunctions {
 
 
 	//camera view
-	private static final float[] xyz = {6.0f,0.0f,6.0000f};
-	private static final float[] hpr = {-180.000f,-25.5000f,0.0000f};
+	private static final float[] xyz = {8.0f,0.0f,6.0000f};
+	private static final float[] hpr = {-180.000f,-5.5000f,0.0000f};
 
 
 	//world,space,body & geom

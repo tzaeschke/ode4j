@@ -96,8 +96,8 @@ public class DemoGyroscopic extends dsFunctions {
 	}
 
 
-	private static final float[] xyz = {4.777f, -2.084f, 2.18f};
-	private static final float[] hpr = {153.0f, -14.5f, 0.0f};
+	private static final float[] xyz = {6.777f, -4.084f, 2.18f};
+	private static final float[] hpr = {153.0f, 0f, 0.0f};
 	// start simulation - set viewpoint
 
 	@Override

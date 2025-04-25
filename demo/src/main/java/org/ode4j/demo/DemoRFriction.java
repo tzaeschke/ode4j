@@ -118,8 +118,8 @@ public class DemoRFriction extends dsFunctions {
 
 
 	// start simulation - set viewpoint
-	private static final double[] xyz = {0,-3.0f,3.0f};
-	private static final double[] hpr = {90.0000,-15.0000,0.0000};
+	private static final double[] xyz = {0,-7.0f,5.0f};
+	private static final double[] hpr = {90.0000,0.0000,0.0000};
 
 	@Override
 	public void start() {

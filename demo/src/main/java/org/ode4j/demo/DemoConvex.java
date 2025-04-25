@@ -111,7 +111,7 @@ public class DemoConvex extends DrawStuff.dsFunctions {
 		-8, 0, 5
 	};
 	private static final float[] hpr = { // [ 3] ={
-		0.0f, -29.5000f, 0.0000f
+		0.0f, -19.5000f, 0.0000f
 	};
 
 

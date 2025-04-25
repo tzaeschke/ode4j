@@ -133,7 +133,7 @@ public class DemoTrimeshCollision extends dsFunctions {
     public void start() {
         // dAllocateODEDataForThread(dAllocateMaskAll);
         float[] xyz = {-8, 0, 5};
-        float[] hpr = {0.0f, -29.5000f, 0.0000f};
+        float[] hpr = {0.0f, -15.000f, 0.0000f};
         dsSetViewpoint(xyz, hpr);
         System.err.println("Press SPACE to reset the simulation1.");
     }

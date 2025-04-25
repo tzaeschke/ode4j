@@ -234,8 +234,8 @@ class DemoLayeredTrimeshHeightfield extends dsFunctions {
 		}
 	}
 
-	private static final float[] xyz = {1.1640f,-7.0079f,4.2600f};
-	private static final float[] hpr = {95.5000f,-12.0000f,0.0000f};
+	private static final float[] xyz = {1.1640f,-9.0079f,4.2600f};
+	private static final float[] hpr = {95.5000f,5.0000f,0.0000f};
 
 	// start simulation - set viewpoint
 	@Override

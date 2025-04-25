@@ -159,7 +159,7 @@ public class DemoTransmission extends dsFunctions {
 	}
 
 	private static final double[] xyz = {1.15,-2.78,4.1};
-	private static final double[] hpr = {105,-45.5,0};
+	private static final double[] hpr = {105,-30.5,0};
 
 	@Override
 	public void start() {

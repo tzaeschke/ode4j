@@ -290,7 +290,7 @@ public class DemoTracks extends dsFunctions {
         dsSetSphereQuality(3);
     }
     private static final float[] xyz = {-7.9414f,-2.4804f,2.9800f};
-    private static final float[] hpr = {32.5000f,-10.0000f,0.0000f};
+    private static final float[] hpr = {32.5000f,0.0000f,0.0000f};
 
 
     private DNearCallback nearCallback = new DNearCallback() {

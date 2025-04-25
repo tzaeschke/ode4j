@@ -64,8 +64,8 @@ public class DemoGyro2 extends dsFunctions {
 	private DBody impGyroBody;
 
 
-	private static final double[] xyz = {0,-4.0f,3.0f};
-	private static final double[] hpr = {90.0000,-15.0000,0.0000};
+	private static final double[] xyz = {0,-6.0f,3.0f};
+	private static final double[] hpr = {90.0000,0.0000,0.0000};
 
 	// start simulation - set viewpoint
 

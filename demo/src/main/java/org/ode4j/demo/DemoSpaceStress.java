@@ -132,8 +132,8 @@ public class DemoSpaceStress extends dsFunctions {
 	}
 
 
-	private static final float[] xyz = {2.1640f,-1.3079f,3.7600f};
-	private static final float[] hpr = {125.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {4.1640f,-3.3079f,3.7600f};
+	private static final float[] hpr = {135.5000f,0.0000f,0.0000f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()	{

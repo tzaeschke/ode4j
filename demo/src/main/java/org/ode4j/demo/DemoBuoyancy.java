@@ -90,7 +90,7 @@ public class DemoBuoyancy extends dsFunctions {
 
 
     private static float[] xyz = {-3.5f, 0f, 6f};
-    private static float[] hpr = {0f, -20.0000f,0.0000f};
+    private static float[] hpr = {0f, -10.0000f,0.0000f};
 
     // start simulation - set viewpoint
 

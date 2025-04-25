@@ -84,8 +84,8 @@ class DemoJointPR extends dsFunctions {
 
 
 	//camera view
-	private static final float[] xyz = {2.0f,-3.5f,2.0000f};
-	private static final float[] hpr = {90.000f,-25.5000f,0.0000f};
+	private static final float[] xyz = {2.0f,-5.5f,2.0000f};
+	private static final float[] hpr = {90.000f,-5.5000f,0.0000f};
 	//world,space,body & geom
 	private static DWorld world;
 	private static DSpace space;

@@ -151,8 +151,8 @@ class DemoTrimesh extends dsFunctions {
 	}
 
 
-	private static final float[] xyz = {2.1640f,-4.3079f,1.7600f};
-	private static final float[] hpr = {115.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {4.1640f,-10.000f,6.00f};
+	private static final float[] hpr = {115.5000f,-5.0000f,0.0000f};
 
 	// start simulation - set viewpoint
 

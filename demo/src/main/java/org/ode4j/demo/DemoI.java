@@ -71,7 +71,7 @@ class DemoI extends dsFunctions {
 
 
 	private static final float[] xyz = {1.5572f,-1.8886f,1.5700f};
-	private static final float[] hpr = {118.5000f,-17.0000f,0.0000f};
+	private static final float[] hpr = {118.5000f,0.0000f,0.0000f};
 
 	// start simulation - set viewpoint
 	@Override

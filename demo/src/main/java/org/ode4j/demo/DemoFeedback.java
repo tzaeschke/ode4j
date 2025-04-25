@@ -119,8 +119,8 @@ class DemoFeedback extends dsFunctions {
 	}
 
 
-	private static final float[] xyz = { -6, 8, 6};
-	private static final float[] hpr = { -65.0f, -27.0f, 0.0f};
+	private static final float[] xyz = { -10, 14, 6};
+	private static final float[] hpr = { -65.0f, 10.0f, 0.0f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()

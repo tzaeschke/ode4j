@@ -48,8 +48,8 @@ public class DemoDHinge extends dsFunctions {
 	private DDoubleHingeJoint joint2;
 	private boolean applyForce = false;
 
-	private static final double[] xyz = {3.8966, -2.0614, 4.0300};
-	private static final double[] hpr = {153.5, -16.5, 0};
+	private static final double[] xyz = {5.8966, -4.0614, 4.0300};
+	private static final double[] hpr = {153.5, 0, 0};
 
 	@Override
 	public void start() {

@@ -129,8 +129,8 @@ class DemoSpace extends dsFunctions {
 	}
 
 
-	private static final float[] xyz = {2.1640f,-1.3079f,1.7600f};
-	private static final float[] hpr = {135.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {3.1640f,-2.3079f,1.7600f};
+	private static final float[] hpr = {135.5000f,7.0000f,0.0000f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()

@@ -69,8 +69,8 @@ public class DemoMotor extends dsFunctions {
 
 	// start simulation - set viewpoint
 
-	private static final float[] xyz = {1.0382f,-1.0811f,1.4700f};
-	private static final float[] hpr = {135.0000f,-19.5000f,0.0000f};
+	private static final float[] xyz = {2.0382f,-2.0811f,1.4700f};
+	private static final float[] hpr = {135.0000f,19.5000f,0.0000f};
 	@Override
 	public void start()
 	{
