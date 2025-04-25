@@ -24,12 +24,8 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.OdeConstants.dContactApprox1;
 import static org.ode4j.ode.OdeConstants.dContactRolling;
 
@@ -122,8 +118,8 @@ public class DemoRFriction extends dsFunctions {
 
 
 	// start simulation - set viewpoint
-	private static double[] xyz = {0,-3.0f,3.0f};
-	private static double[] hpr = {90.0000,-15.0000,0.0000};
+	private static final double[] xyz = {0,-7.0f,5.0f};
+	private static final double[] hpr = {90.0000,0.0000,0.0000};
 
 	@Override
 	public void start() {
@@ -274,7 +270,7 @@ public class DemoRFriction extends dsFunctions {
 		reset();
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		clear();
 		OdeHelper.closeODE();

@@ -21,13 +21,6 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawLine;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
-
 import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3C;
@@ -42,6 +35,9 @@ import org.ode4j.ode.DSpace;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
 
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
+
 public class DemoDHinge extends dsFunctions {
 
 	private DWorld world;
@@ -52,8 +48,8 @@ public class DemoDHinge extends dsFunctions {
 	private DDoubleHingeJoint joint2;
 	private boolean applyForce = false;
 
-	private static double[] xyz = {3.8966, -2.0614, 4.0300};
-	private static double[] hpr = {153.5, -16.5, 0};
+	private static final double[] xyz = {5.8966, -4.0614, 4.0300};
+	private static final double[] hpr = {153.5, 0, 0};
 
 	@Override
 	public void start() {
@@ -200,7 +196,7 @@ public class DemoDHinge extends dsFunctions {
 		OdeHelper.initODE();
 
 		// run demo
-		dsSimulationLoop (args, 800, 600, this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		OdeHelper.closeODE();
 	}

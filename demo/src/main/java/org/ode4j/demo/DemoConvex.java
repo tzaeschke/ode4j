@@ -24,7 +24,6 @@ package org.ode4j.demo;
 import org.ode4j.drawstuff.DrawStuff;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DQuaternion;
-import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 import org.ode4j.ode.*;
 
@@ -112,7 +111,7 @@ public class DemoConvex extends DrawStuff.dsFunctions {
 		-8, 0, 5
 	};
 	private static final float[] hpr = { // [ 3] ={
-		0.0f, -29.5000f, 0.0000f
+		0.0f, -19.5000f, 0.0000f
 	};
 
 
@@ -293,9 +292,7 @@ public class DemoConvex extends DrawStuff.dsFunctions {
 		}
 
 		// run simulation
-		final int w = 1280;
-		final int h = 720;
-		dsSimulationLoop(args, w, h, this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		contactgroup.empty ();
 		contactgroup.destroy ();

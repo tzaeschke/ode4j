@@ -28,9 +28,12 @@ import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DMatrix3C;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
+import org.ode4j.ode.DWorld;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- *  object, body, and world structs.
+ *  object, body, and world structures.
  *  
  *  @author Tilmann Zaeschke
  */
@@ -94,16 +97,135 @@ public class Objects_H {
 		}
 	}
 
+//	enum dxMarginalDeltaKind {
+//		MDK__MIN,
+//
+//		MDK_EXTRA_ITERATIONS_REQUIREMENT_DELTA = MDK__MIN,
+//		MDK_PREMATURE_EXIT_DELTA,
+//
+//		MDK__MAX;
+//	};
+	public static final int MDK__MIN = 0;
+	public static final int	MDK_EXTRA_ITERATIONS_REQUIREMENT_DELTA = MDK__MIN;
+	public static final int	MDK_PREMATURE_EXIT_DELTA = 1;
+	public static final int MDK__MAX = 2;
 
+	static final double[] g_QuickStepParameters_marginalDeltaValuesInitializer = //[/*MDK__MAX*/] =
+			{
+					DWorld.dWORLDQUICKSTEP_EXTRA_ITERATION_REQUIREMENT_DELTA_DEFAULT, // MDK_EXTRA_ITERATIONS_REQUIREMENT_DELTA,
+					DWorld.dWORLDQUICKSTEP_ITERATION_PREMATURE_EXIT_DELTA_DEFAULT, // MDK_PREMATURE_EXIT_DELTA,
+			};
+	static {
+		Common.dSASSERT(g_QuickStepParameters_marginalDeltaValuesInitializer.length == MDK__MAX);
+	}
 	/** quick-step parameters. */
 	public static class dxQuickStepParameters {
-		public int num_iterations;		// number of SOR iterations to perform
-		public double w;			// the SOR over-relaxation parameter
+//		public int num_iterations;		// number of SOR iterations to perform
+//		public double w;			// the SOR over-relaxation parameter
 
 	    dxQuickStepParameters() {
-	    	num_iterations = 20;
+			m_iterationCount = DWorld.dWORLDQUICKSTEP_ITERATION_COUNT_DEFAULT;
+			m_maxExtraIterationCount = DeriveExtraIterationCount(DWorld.dWORLDQUICKSTEP_ITERATION_COUNT_DEFAULT,
+					DWorld.dWORLDQUICKSTEP_MAXIMAL_EXTRA_ITERATION_COUNT_FACTOR_DEFAULT);
+			m_maxExtraIterationsFactor = DWorld.dWORLDQUICKSTEP_MAXIMAL_EXTRA_ITERATION_COUNT_FACTOR_DEFAULT;
+			m_statistics = m_internal_statistics; //(&m_internal_statistics),
+// TODO (TZ) remove	    	num_iterations = 20;
 	    	w = 1.3;
-	    }
+
+			// std::copy(g_QuickStepParameters_marginalDeltaValuesInitializer, g_QuickStepParameters_marginalDeltaValuesInitializer + dARRAY_SIZE(g_QuickStepParameters_marginalDeltaValuesInitializer), m_marginalDeltaValues);
+			m_marginalDeltaValues = g_QuickStepParameters_marginalDeltaValuesInitializer.clone();
+			Common.dSASSERT(g_QuickStepParameters_marginalDeltaValuesInitializer.length == m_marginalDeltaValues.length);
+
+			DWorld.initializeQuickStepIterationCount_DynamicAdjustmentStatistics(m_internal_statistics);
+
+			UpdateDynamicIterationCountAdjustmentEnabledState();
+		}
+
+
+		// private:
+		// private dxQuickStepParameters(const dxQuickStepParameters &anotherInstance) { dIASSERT(false); } // disabled
+		// private dxQuickStepParameters &operator =(const dxQuickStepParameters &anotherInstance) { dIASSERT(false); return *this; } // disabled
+
+		// public:
+		public void AssignNumIterations(int iterationCount)
+		{
+			Common.dIASSERT(iterationCount != 0); // QuickStep implementation relies of number of iteration not being zero
+
+			m_iterationCount = iterationCount;
+			m_maxExtraIterationCount = DeriveExtraIterationCount(iterationCount, m_maxExtraIterationsFactor);
+			UpdateDynamicIterationCountAdjustmentEnabledState();
+		}
+
+		public int GetNumIterations() { return m_iterationCount; }
+
+		public void AssignPrematureExitDelta(double deltaValue)
+		{
+			Common.dIASSERT(deltaValue >= 0);
+			m_marginalDeltaValues[MDK_PREMATURE_EXIT_DELTA] = deltaValue;
+			UpdateDynamicIterationCountAdjustmentEnabledState();
+		}
+
+		public double GetPrematureExitDelta() { return m_marginalDeltaValues[MDK_PREMATURE_EXIT_DELTA]; }
+
+		public void AssignExtraIterationsRequirementDelta(double deltaValue) { Common.dIASSERT(deltaValue >= 0); m_marginalDeltaValues[MDK_EXTRA_ITERATIONS_REQUIREMENT_DELTA] = deltaValue; }
+		public double GetExtraIterationsRequirementDelta() { return m_marginalDeltaValues[MDK_EXTRA_ITERATIONS_REQUIREMENT_DELTA]; }
+
+		public void AssignMaxNumExtraFactor(double maxNumExtraFactor)
+		{
+			Common.dIASSERT(maxNumExtraFactor >= 0);
+
+			m_maxExtraIterationsFactor = maxNumExtraFactor;
+			m_maxExtraIterationCount = DeriveExtraIterationCount(m_iterationCount, maxNumExtraFactor);
+			UpdateDynamicIterationCountAdjustmentEnabledState();
+		}
+
+		public double GetMaxNumExtraFactor() { return m_maxExtraIterationsFactor; }
+
+		public boolean GetIsDynamicIterationCountAdjustmentEnabled() { return m_dynamicIterationCountAdjustmentEnabled; }
+
+		public void AssignStatisticsSink(DWorld.dWorldQuickStepIterationCount_DynamicAdjustmentStatistics statistics) { m_statistics = statistics; }
+		public void ClearStatisticsSink() { m_statistics.set(m_internal_statistics); }
+
+		public AtomicInteger GetStatisticsIterationCountStorage() {
+			// dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, iteration_count));
+			return m_statistics.iteration_count; }
+		public AtomicInteger GetStatisticsPrematureExitsStorage() {
+			// dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, premature_exits));
+			return m_statistics.premature_exits; }
+		public AtomicInteger GetStatisticsProlongedExecutionsStorage() {
+			// dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, prolonged_execs));
+			return m_statistics.prolonged_execs; }
+		public AtomicInteger GetStatisticsFullExtraExecutionsStorage() {
+			// dSASSERT(sizeof(atomicord32) == membersize(dWorldQuickStepIterationCount_DynamicAdjustmentStatistics, full_extra_execs));
+			return m_statistics.full_extra_execs; }
+
+		// private:
+		private static int DeriveExtraIterationCount(int iterationCount, double extraIterationCountFactor)
+		{
+			Common.dIASSERT(iterationCount != 0);
+			Common.dIASSERT(extraIterationCountFactor >= 0);
+
+			double extraIterationCount = iterationCount * extraIterationCountFactor;
+			return extraIterationCount < Integer.MAX_VALUE ? (int)extraIterationCount : Integer.MAX_VALUE;
+		}
+
+		void UpdateDynamicIterationCountAdjustmentEnabledState()
+		{
+			m_dynamicIterationCountAdjustmentEnabled = m_maxExtraIterationCount != 0 || m_marginalDeltaValues[MDK_PREMATURE_EXIT_DELTA] != 0;
+		}
+
+		// public:
+		public int m_iterationCount;         // number of SOR iterations to perform
+		public int m_maxExtraIterationCount; // maximal number of extra iterations that can be performed until maximal delta falls below the upper margin
+		public double m_maxExtraIterationsFactor;      // factor of maximal extra iteration count with respect to standard iteration count
+		public double[] m_marginalDeltaValues;// = new double[MDK__MAX]; // marginal values for LCP iteration maximal delta
+		public boolean m_dynamicIterationCountAdjustmentEnabled;
+		public DWorld.dWorldQuickStepIterationCount_DynamicAdjustmentStatistics m_statistics; // Adjustment statistics (the internal one or an externally assigned)
+		public double w;                               // the SOR over-relaxation parameter
+
+		// private:
+		// The internal statistics is used to not have to check m_statistics for NULL; the local instance is used instead of a global one to avoid cache line conflicts between different threads possibly serving separate worlds.
+		private final DWorld.dWorldQuickStepIterationCount_DynamicAdjustmentStatistics m_internal_statistics = new DWorld.dWorldQuickStepIterationCount_DynamicAdjustmentStatistics();
 	}
 
 

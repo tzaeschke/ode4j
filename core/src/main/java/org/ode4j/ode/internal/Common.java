@@ -463,7 +463,11 @@ public class Common extends OdeConstants {
 	//#define dAtan2(y,x) (atan2f(y,x))		/* arc tangent with 2 args */
 	//#define dFMod(a,b) (fmodf(a,b))		/* modulo */
 	//#define dFloor(x) floorf(x)			/* floor */
-	//
+	//#define dCeil(x) ceilf(x)			    /* ceil */
+	//#define dCopySign(a,b) _ode_copysignf(a, b) /* copy value sign */
+	//#define dNextAfter(x, y) _ode_nextafterf(x, y) /* next value after */
+	//#define dMax(a, b) _ode_fmaxf(a, b)
+	//#define dMin(a, b) _ode_fminf(a, b)//
 	//#ifdef HAVE___ISNANF
 	//#define dIsNan(x) (__isnanf(x))
 	//#elif defined(HAVE__ISNANF)
@@ -526,16 +530,21 @@ public class Common extends OdeConstants {
 	//#define dCeil(x) ceilf(x)          /* ceil */
 	public static double dCeil(double x) { return Math.ceil(x); }
 
-	//#define dCopySign(a,b) ((dReal)copysignf(a,b)) /* copy value sign */
-    public static double dCopysign(double magnitude, double sign) {
-        return Math.copySign(magnitude, sign);
-    }
+	//#define dCopySign(a,b) (copysign((a),(b)))
+	public static double dCopySign(double a, double b) {
+		return Math.copySign(a, b);
+	}
 
     //#define dNextAfter(x, y) nextafterf(x, y) /* next value after */
     public static double dNextAfter(double start, double direction) {
         return Math.nextAfter(start, direction);
     }
 
+	//#define dMax(a, b) _ode_fmax(a, b)
+	public static double dMax(double x, double y) { return Math.max(x, y); }
+
+	//#define dMin(a, b) _ode_fmin(a, b)
+	public static double dMin(double x, double y) { return Math.min(x, y); }
 
 	//#ifdef HAVE___ISNAN
 	//#define dIsNan(x) (__isnan(x))
@@ -548,14 +557,6 @@ public class Common extends OdeConstants {
 	//#endif
 	public final boolean dIsNan(double x) { return Double.isNaN(x); }
 	public static final double dNaN = Double.NaN;
-
-	//#define dCopySign(a,b) (copysign((a),(b)))
-	public static double dCopySign(double a, double b) {
-		return Math.copySign(a, b);
-	}
-
-	public static double dMin(double x, double y) { return Math.min(x, y); }
-	public static double dMax(double x, double y) { return Math.max(x, y); }
 
 	/* error numbers */
 
@@ -743,6 +744,11 @@ enum {
 	}
 	public static void dxSwap(boolean[] one, int oneP, boolean[] another, int anotherP) {
 		boolean tmp = one[oneP];
+		one[oneP] = another[anotherP];
+		another[anotherP] = tmp;
+	}
+	public static <T> void dxSwap(T[] one, int oneP, T[] another, int anotherP) {
+		T tmp = one[oneP];
 		one[oneP] = another[anotherP];
 		another[anotherP] = tmp;
 	}

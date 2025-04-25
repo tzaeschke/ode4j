@@ -242,7 +242,7 @@ public class Fixture_dxJointPU_B1_and_B2_At_Zero
         CHECK_CLOSE (0.0, dJointGetPUPosition (jId), 1e-4);
     }
 
-    // Attache only one body at position 1 to the joint dJointAttach (jId, bId, 0)
+    // Attach only one body at position 1 to the joint dJointAttach (jId, bId, 0)
     // Move 1st body offset unit in the opposite X direction
     //
     //  X------->          X---------> Axis -->
@@ -275,7 +275,7 @@ public class Fixture_dxJointPU_B1_and_B2_At_Zero
 
 
 
-    // Attache only one body at position 2 to the joint dJointAttach (jId, 0, bId)
+    // Attach only one body at position 2 to the joint dJointAttach (jId, 0, bId)
     // Move 1st body offset unit in the X direction
     //
     //  X------->       X---------> Axis -->
@@ -306,7 +306,7 @@ public class Fixture_dxJointPU_B1_and_B2_At_Zero
         CHECK_CLOSE (0.0, dJointGetPUPosition (jId), 1e-4);
     }
 
-    // Attache only one body at position 2 to the joint dJointAttach (jId, 0, bId)
+    // Attach only one body at position 2 to the joint dJointAttach (jId, 0, bId)
     // Move 1st body offset unit in the opposite X direction
     //
     //  X------->          X---------> Axis -->

@@ -25,24 +25,13 @@
 package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.OdeConstants.dInfinity;
-import static org.ode4j.ode.OdeMath.dMultiply0_331;
-import static org.ode4j.ode.OdeMath.dMultiply1_331;
-import static org.ode4j.ode.OdeMath.dMultiply1_333;
-import static org.ode4j.ode.internal.Common.dCeil;
-import static org.ode4j.ode.internal.Common.dEpsilon;
-import static org.ode4j.ode.internal.Common.dFabs;
-import static org.ode4j.ode.internal.Common.dFloor;
-import static org.ode4j.ode.internal.Common.dIASSERT;
+import static org.ode4j.ode.OdeMath.*;
+import static org.ode4j.ode.internal.Common.*;
 
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
-import org.ode4j.ode.DAABB;
-import org.ode4j.ode.DColliderFn;
-import org.ode4j.ode.DContactGeom;
-import org.ode4j.ode.DContactGeomBuffer;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DHeightfieldData;
+import org.ode4j.ode.*;
 import org.ode4j.ode.internal.trimesh.DxTriMesh;
 
 /**
@@ -110,7 +99,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 
 	//Uncomment this #define to use the (0,0) corner of the geom as the origin,
 	//rather than the center. This was the way the original heightfield worked,
-	//but as it does not match the way all other geometries work, so for constancy it
+	//but as it does not match the way all other geometries work, so for consistency it
 	//was changed to work like this.
 
 	//#define DHEIGHTFIELD_CORNER_ORIGIN
@@ -785,36 +774,36 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		case dSphereClass:
 			geomRayNCollider		= new DxRay.CollideRaySphere();//dCollideRaySphere;
 			geomNPlaneCollider  	= new DxSphere.CollideSpherePlane();//.dCollideSpherePlane;
-			geomNDepthGetter		= //dGeomSpherePointDepth;
-				new dGetDepthFn() {
-				@Override
-				public double get(DGeom g, double x, double y, double z) {
-					return ((DxSphere)g).dGeomSpherePointDepth(x, y, z);
-				}};
+			geomNDepthGetter		= null; // //dGeomSpherePointDepth;
+			//				new dGetDepthFn() {
+			//				@Override
+			//				public double get(DGeom g, double x, double y, double z) {
+			//					return ((DxSphere)g).dGeomSpherePointDepth(x, y, z);
+			//				}};
 				//max_collisionContact    = 3;
 				break;
 
 		case dBoxClass:
 			geomRayNCollider		= new DxRay.CollideRayBox();//dCollideRayBox;
 			geomNPlaneCollider	    = new CollideBoxPlane();//dCollideBoxPlane;
-			geomNDepthGetter		= //dGeomBoxPointDepth;
-				new dGetDepthFn() {
-				@Override
-				public double get(DGeom g, double x, double y, double z) {
-					return ((DxBox)g).dGeomBoxPointDepth(x, y, z);
-				}};
+			geomNDepthGetter		= null; //dGeomBoxPointDepth;
+			//				new dGetDepthFn() {
+			//				@Override
+			//				public double get(DGeom g, double x, double y, double z) {
+			//					return ((DxBox)g).dGeomBoxPointDepth(x, y, z);
+			//				}};
 				//max_collisionContact    = 8;
 				break;
 
 		case dCapsuleClass:
 			geomRayNCollider		= new DxRay.CollideRayCapsule();//dCollideRayCapsule;
 			geomNPlaneCollider  	= new DxCapsule.CollideCapsulePlane();//dCollideCapsulePlane;
-			geomNDepthGetter		= //dGeomCapsulePointDepth;
-				new dGetDepthFn() {
-				@Override
-				public double get(DGeom g, double x, double y, double z) {
-					return ((DxCapsule)g).dGeomCapsulePointDepth(x, y, z);
-				}};
+			geomNDepthGetter		= null; //dGeomCapsulePointDepth;
+			//				new dGetDepthFn() {
+			//				@Override
+			//				public double get(DGeom g, double x, double y, double z) {
+			//					return ((DxCapsule)g).dGeomCapsulePointDepth(x, y, z);
+			//				}};
 				// max_collisionContact    = 3;
 				break;
 
@@ -854,7 +843,6 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		//double[] triplane = new double[4];
 		DVector3 triplaneV = new DVector3();
 		double triplaneD = 0;
-		//int i;
 
 		// check some trivial case.
 		// Vector Up plane
@@ -949,7 +937,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 	            // find collision and compute contact points
 	            const int numTerrainContacts = geomNPlaneCollider (o2, sliding_plane, flags, contact, skip);
 				dIASSERT(numTerrainContacts <= numMaxContactsPossible);
-	            for (i = 0; i < numTerrainContacts; i++)
+	            for (int i = 0; i < numTerrainContacts; i++)
 	            {
 					pContact = CONTACT(contact, i*skip);
 	                dOPESIGN(pContact->normal, =, -, triplane);
@@ -961,7 +949,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 
 		int numTerrainContacts = 0;
 		//dContactGeom *PlaneContact = m_p_data.m_contacts;
-		DContactGeomBuffer PlaneContact = m_p_data.m_contacts;
+		DContactGeomBuffer planeContact = m_p_data.m_contacts;
 
 		//final unsigned 
 		final int numTriMax = (maxX - minX) * (maxZ - minZ) * 2;
@@ -988,20 +976,13 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		// if small heightfield triangle related to O2 colliding
 		// or no Triangle colliding at all.
 		boolean needFurtherPasses = (o2.type == dTriMeshClass);
-		//compute Ratio between Triangle size and O2 aabb size
-		// no FurtherPasses are needed in ray class
-		if (o2.type != dRayClass  && needFurtherPasses == false)
+		// compute Ratio between Triangle size and O2 aabb size
+		// no further passes are needed in case of ray class
+		if (!needFurtherPasses && o2.type != dRayClass)
 		{
-			final double xratio = (o2._aabb.getMax0() - o2._aabb.getMin0()) * m_p_data.m_fInvSampleWidth;
-			if (xratio > (1.5))
-				needFurtherPasses = true;
-			else
-			{
-				final double zratio = (o2._aabb.getMax2() - o2._aabb.getMin2()) * m_p_data.m_fInvSampleDepth;
-				if (zratio > (1.5))
-					needFurtherPasses = true;
-			}
-
+			double zratio, xratio = (o2._aabb.getMax0() - o2._aabb.getMin0()) * m_p_data.m_fInvSampleWidth;
+			zratio = (o2._aabb.getMax2() - o2._aabb.getMin2()) * m_p_data.m_fInvSampleDepth;
+			needFurtherPasses = xratio > 1.5 || (zratio > 1.5);
 		}
 
 		//unsigned 
@@ -1121,12 +1102,14 @@ public class DxHeightfield extends DxAbstractHeightfield {
 			}
 		}
 
-		// at least on triangle should intersect geom
+		// at least one triangle should intersect the geom
 		dIASSERT (numTri != 0);
+
 		// pass1: VS triangle as Planes
 		// Group Triangle by same plane definition
 		// as Terrain often has many triangles using same plane definition
 		// then collide against that list of triangles.
+		boolean anyIntersectingButNotCollided = false;
 		{
 
 			DVector3 Edge1 = new DVector3(), Edge2 = new DVector3();
@@ -1165,7 +1148,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 				itTriangle.planeDefD = triplaneD;//[3];
 			}
 
-			// group by Triangles by Planes sharing shame plane definition
+			// group by Triangles by Planes sharing same plane definition
 			if (tempPlaneBufferSize  < numTri)
 			{
 				resetPlaneBuffer();
@@ -1177,8 +1160,9 @@ public class DxHeightfield extends DxAbstractHeightfield {
 			{
 				HeightFieldTriangle tri_base = tempTriangleBuffer[k];  // final ? TZ
 
-				if (tri_base.state == true)
+				if (tri_base.state) {
 					continue;// already tested or added to plane list.
+				}
 
 				//HeightFieldPlane * const currPlane = tempPlaneBuffer[numPlanes];
 				HeightFieldPlane currPlane = tempPlaneBuffer[numPlanes];// final ? TZ
@@ -1199,8 +1183,9 @@ public class DxHeightfield extends DxAbstractHeightfield {
 				{
 
 					HeightFieldTriangle tri_test = tempTriangleBuffer[m];  // final? TZ
-					if (tri_test.state == true)
+					if (tri_test.state) {
 						continue;// already tested or added to plane list.
+					}
 
 					// normals and distance are the same.
 					if (
@@ -1223,13 +1208,14 @@ public class DxHeightfield extends DxAbstractHeightfield {
 			}
 
 			// sort planes
-			if (isContactNumPointsLimited)
+			if (isContactNumPointsLimited) {
 				sortPlanes(numPlanes);
+			}
 
 			int numMaxContactsPerPlane;
 			int planeTestFlags;
-			if (!NO_CONTACT_CULLING_BY_ISONHEIGHTFIELD2) {//#if !defined(NO_CONTACT_CULLING_BY_ISONHEIGHTFIELD2)
-				/*
+
+			/*
 				Note by Oleh_Derevenko:
 				It seems to be incorrect to limit contact count by some particular value
 				since some of them (and even all of them) may be culled in following condition.
@@ -1238,16 +1224,9 @@ public class DxHeightfield extends DxAbstractHeightfield {
 				additionally repeated after some contacts have been generated (in "if (didCollide)").
 				The maximum of contacts in flags would then be set to minimum of contacts
 				remaining and HEIGHTFIELDMAXCONTACTPERCELL.
-				 */
-				planeTestFlags = (flags & ~NUMC_MASK) | HEIGHTFIELDMAXCONTACTPERCELL;
-				//dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
-			} else {//#else // if defined(NO_CONTACT_CULLING_BY_ISONHEIGHTFIELD2)
-				//				int numMaxContactsPerPlane = dMIN(numMaxContactsPossible - numTerrainContacts, HEIGHTFIELDMAXCONTACTPERCELL);
-				//				int planeTestFlags = (flags & ~NUMC_MASK) | numMaxContactsPerPlane;
-				numMaxContactsPerPlane = (int) dMIN(numMaxContactsPossible - numTerrainContacts, HEIGHTFIELDMAXCONTACTPERCELL);
-				planeTestFlags = (flags & ~NUMC_MASK) | numMaxContactsPerPlane;
-				//dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
-			}//#endif
+			 */
+			planeTestFlags = (flags & ~NUMC_MASK) | HEIGHTFIELDMAXCONTACTPERCELL;
+			dSASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
 
 			for (int k = 0; k < numPlanes; k++)
 			{
@@ -1255,82 +1234,89 @@ public class DxHeightfield extends DxAbstractHeightfield {
 				HeightFieldPlane itPlane = tempPlaneBuffer[k];
 
 				//set Geom
-				dGeomPlaneSetNoNormalize (sliding_plane,  itPlane.planeDefV, itPlane.planeDefD);
+				dGeomPlaneSetNoNormalize(sliding_plane, itPlane.planeDefV, itPlane.planeDefD);
 				//dGeomPlaneSetParams (sliding_plane, triangle_Plane[0], triangle_Plane[1], triangle_Plane[2], triangle_Plane[3]);
+
 				// find collision and compute contact points
 				boolean didCollide = false;
 				final int numPlaneContacts = 
-					geomNPlaneCollider.dColliderFn(o2, sliding_plane, planeTestFlags, PlaneContact);//, sizeof(dContactGeom));
+					geomNPlaneCollider.dColliderFn(o2, sliding_plane, planeTestFlags, planeContact);//, sizeof(dContactGeom));
 				final int planeTriListSize = itPlane.trianglelistCurrentSize;
+
 				for (int i = 0; i < numPlaneContacts; i++)
 				{
-					DContactGeom planeCurrContact = PlaneContact.get(i);
+					DContactGeom planeCurrContact = planeContact.get(i);
 					// Check if contact point found in plane is inside Triangle.
-					final DVector3C pCPos = planeCurrContact.pos;
-					for (int b = 0; planeTriListSize > b; b++)
+					final DVector3C contactPos = planeCurrContact.pos;
+
+					DVector3 triangleTestPos = new DVector3();
+					OdeMath.dAddVectorScaledVector3(triangleTestPos, contactPos, itPlane.planeDefV, planeCurrContact.depth);
+
+					for (int b = 0; b < planeTriListSize; b++)
 					{
-						if (m_p_data.IsOnHeightfield2 (itPlane.trianglelist[b].vertices[0],
-								pCPos,
+						HeightFieldTriangle testTriangle = itPlane.trianglelist[b];
+
+						if (m_p_data.IsOnHeightfield2 (testTriangle.vertices[0],
+								triangleTestPos,
 								itPlane.trianglelist[b].isUp))
 						{
 							pContact = contacts.get(numTerrainContacts*skip);//CONTACT(contact, numTerrainContacts*skip);
-							pContact.pos.set(pCPos);//dVector3Copy(pCPos, pContact.pos);
+							pContact.pos.set(triangleTestPos); //dCopyVector3(pContact->pos, triangleTestPos);
 							//dOPESIGN(pContact.normal, =, -, itPlane.planeDef);
 							pContact.normal.set(itPlane.planeDefV).scale(-1);
 							pContact.depth = planeCurrContact.depth;
 							pContact.side1 = planeCurrContact.side1;
 							pContact.side2 = planeCurrContact.side2;
 							numTerrainContacts++;
-							if ( numTerrainContacts == numMaxContactsPossible )
+							if ( numTerrainContacts == numMaxContactsPossible) {
 								return numTerrainContacts;
+							}
 
 							didCollide = true;
 							break;
 						}
 					}
 				}
-				if (didCollide)
-				{
-					if (NO_CONTACT_CULLING_BY_ISONHEIGHTFIELD2) {//#if defined(NO_CONTACT_CULLING_BY_ISONHEIGHTFIELD2)
-						/* Note by Oleh_Derevenko:
-						This code is not used - see another note above
-						 */
-						numMaxContactsPerPlane = (int) dMIN(numMaxContactsPossible - numTerrainContacts, HEIGHTFIELDMAXCONTACTPERCELL);
-						planeTestFlags = (flags & ~NUMC_MASK) | numMaxContactsPerPlane;
-						//dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
-					}//#endif
-					for (int b = 0; planeTriListSize > b; b++)
-					{
-						// flag Triangles Vertices as collided
-						// to prevent any collision test of those
-						for (int i = 0; i < 3; i++)
-							itPlane.trianglelist[b].vertices[i].state = true;
+
+				if (needFurtherPasses) {
+					if (didCollide) {
+						for (int b = 0; b < planeTriListSize; b++) {
+							HeightFieldTriangle currTriangle = itPlane.trianglelist[b];
+
+							// flag Triangles Vertices as collided
+							// to prevent any collision test of those
+							for (int i = 0; i < 3; i++) {
+								currTriangle.vertices[i].state = true;
+							}
+						}
 					}
-				}
-				else
-				{
-					// flag triangle as not collided so that Vertices or Edge
-					// of that triangles will be checked.
-					for (int b = 0; planeTriListSize > b; b++)
+					// Allow triangles for further checks only if their plane collided.
+					// If the plane did not, neither the vertices nor the edges can.
+					else if (numPlaneContacts > 0)
 					{
-						itPlane.trianglelist[b].state = false;
+						// flag triangle as not collided so that Vertices or Edge
+						// of that triangles will be checked.
+						for (int b = 0; b < planeTriListSize; b++) {
+							itPlane.trianglelist[b].state = false;
+						}
+
+						anyIntersectingButNotCollided = true;
 					}
 				}
 			}
 		}
 
-
-
 		// pass2: VS triangle vertices
-		if (needFurtherPasses)
+		if (/*needFurtherPasses && */anyIntersectingButNotCollided)
 		{
+			dIASSERT(needFurtherPasses);
+
 			DxRay tempRay = new DxRay(null, 1);
 			double depth = 0;
-			boolean vertexCollided;
 
 			// Only one contact is necessary for ray test
 			int rayTestFlags = (flags & ~NUMC_MASK) | 1;
-			//dIASSERT((1 & ~NUMC_MASK) == 0);
+			//dSASSERT((1 & ~NUMC_MASK) == 0);
 			//
 			// Find Contact Penetration Depth of each vertices
 			//
@@ -1338,24 +1324,28 @@ public class DxHeightfield extends DxAbstractHeightfield {
 			{
 				//final HeightFieldTriangle * final itTriangle = &tempTriangleBuffer[k];
 				HeightFieldTriangle itTriangle = tempTriangleBuffer[k];  // final ? TZ
-				if (itTriangle.state == true)
-					continue;// plane triangle did already collide.
+				if (itTriangle.state) {
+					continue;// the triangle plane already collided
+				}
 
 				for (int i = 0; i < 3; i++)
 				{
 					//HeightFieldVertex *vertex = itTriangle.vertices[i];
 					HeightFieldVertex vertex = itTriangle.vertices[i];
-					if (vertex.state == true)
-						continue;// vertice did already collide.
+					if (vertex.state) {
+						continue; // the vertex already collided
+					}
 
-					vertexCollided = false;
+					boolean vertexCollided = false;
 					DVector3C triVertex = vertex.vertex;
-					if ( geomNDepthGetter!=null )
+
+					boolean depthGetterAvailable = false; // geomNDepthGetter != NULL;
+					// dIASSERT(geomNDepthGetter == null);
+
+					if (depthGetterAvailable) // TODO (TZ) report -> always false
 					{
-						depth = geomNDepthGetter.get( o2,
-								triVertex.get0(), triVertex.get1(), triVertex.get2() );
-						if (depth > dEpsilon)
-							vertexCollided = true;
+						depth = geomNDepthGetter.get( o2, triVertex.get0(), triVertex.get1(), triVertex.get2() );
+
 					}
 					else
 					{
@@ -1368,29 +1358,30 @@ public class DxHeightfield extends DxAbstractHeightfield {
 						//    - itTriangle->Normal[0], - itTriangle->Normal[1], - itTriangle->Normal[2] );
 						dGeomRaySetNoNormalize(tempRay, triVertex, itTriangle.planeDefV);
 
-						if ( geomRayNCollider.dColliderFn( tempRay, o2, rayTestFlags, PlaneContact) != 0)//, sizeof( dContactGeom ) ) )
+						if ( geomRayNCollider.dColliderFn(tempRay, o2, rayTestFlags, planeContact) != 0)//, sizeof( dContactGeom ) ) )
 						{
-							depth = PlaneContact.get(0).depth;
-							vertexCollided = true;
+							depth = planeContact.get(0).depth;
+							vertexCollided = depth >= dEpsilon;
 						}
 					}
+
 					if (vertexCollided)
 					{
 						pContact = contacts.get(numTerrainContacts*skip);//CONTACT(contact, numTerrainContacts*skip);
 						//create contact using vertices
-						//dVector3Copy (triVertex, pContact.pos);
+						// dCopyVector3(pContact->pos, triVertex);
 						pContact.pos.set(triVertex);
 						//create contact using Plane Normal
 						//dOPESIGN(pContact.normal, =, -, itTriangle.planeDef);
 						pContact.normal.set(itTriangle.planeDefV).scale(-1);
-
 						pContact.depth = depth;
 						pContact.side1 = -1;
 						pContact.side2 = -1;
 
 						numTerrainContacts++;
-						if ( numTerrainContacts == numMaxContactsPossible )
+						if (numTerrainContacts == numMaxContactsPossible) {
 							return numTerrainContacts;
+						}
 
 						vertex.state = true;
 					}
@@ -1399,40 +1390,48 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		}
 
 		//	#ifdef _HEIGHTFIELDEDGECOLLIDING
-		//	    // pass3: VS triangle Edges
-		//	    if (needFurtherPasses)
-		//	    {
-		//	        dVector3 Edge;
-		//	        dxRay edgeRay(0, 1);
+		// pass3: VS triangle Edges
+		//	if (needFurtherPasses)
+		//	{
+		//		dVector3 edgeVector;
+		//		dxRay edgeRay(0, 1);
 		//
-		//			int numMaxContactsPerTri = dMIN(numMaxContactsPossible - numTerrainContacts, HEIGHTFIELDMAXCONTACTPERCELL);
-		//			int triTestFlags = (flags & ~NUMC_MASK) | numMaxContactsPerTri;
-		//			dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
+		//		int numMaxContactsPerTri = dMIN(numMaxContactsPossible - numTerrainContacts, HEIGHTFIELDMAXCONTACTPERCELL);
+		//		int triTestFlags = (flags & ~NUMC_MASK) | numMaxContactsPerTri;
+		//		dSASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
 		//
-		//	        for (unsigned int k = 0; k < numTri; k++)
-		//	        {
-		//	            final HeightFieldTriangle * final itTriangle = &tempTriangleBuffer[k];
+		//		for (unsigned int k = 0; k < numTri; k++)
+		//		{
+		//		const HeightFieldTriangle * const itTriangle = &tempTriangleBuffer[k];
 		//
-		//	            if (itTriangle.state == true)
-		//	                continue;// plane did already collide.
+		//			if (itTriangle->state)
+		//			{
+		//				continue; // the triangle plane already collided
+		//			}
 		//
-		//	            for (size_t m = 0; m < 3; m++)
-		//	            {
-		//	                final size_t next = (m + 1) % 3;
-		//	                HeightFieldVertex *vertex0 = itTriangle.vertices[m];
-		//	                HeightFieldVertex *vertex1 = itTriangle.vertices[next];
+		//			for (unsigned int m = 0; m < 3; m++)
+		//			{
+		//			const unsigned int next = (m + 1) % 3;
+		//				HeightFieldVertex *vertex0 = itTriangle->vertices[m];
+		//				HeightFieldVertex *vertex1 = itTriangle->vertices[next];
 		//
-		//	                // not concave or under the AABB
-		//	                // nor triangle already collided against vertices
-		//	                if (vertex0.state == true && vertex1.state == true)
-		//	                    continue;// plane did already collide.
+		//				// not concave or under the AABB
+		//				// nor triangle already collided against vertices
+		//				if (vertex0->state && vertex1->state)
+		//				{
+		//					continue; // the edge is not to be considered
+		//				}
 		//
-		//	                dVector3Subtract(vertex1.vertex, vertex0.vertex, Edge);
-		//	                edgeRay.length = dVector3Length (Edge);
-		//	                dGeomRaySetNoNormalize(edgeRay, vertex1.vertex, Edge);
+		//				dVector3Subtract(vertex1->vertex, vertex0->vertex, edgeVector);
+		//				edgeRay.length = dVector3Length(edgeVector);
+		//
+		//				if (edgeRay.length >= dEpsilon)
+		//				{
+		//					dScaleVector3(edgeVector, 1.0f / edgeRay.length);
+		//					dGeomRaySetNoNormalize(edgeRay, vertex1->vertex, edgeVector);
 		//					int prevTerrainContacts = numTerrainContacts;
 		//					pContact = CONTACT(contact, prevTerrainContacts*skip);
-		//	                final int numCollision = geomRayNCollider(&edgeRay,o2,triTestFlags,pContact,skip);
+		//				const int numCollision = geomRayNCollider(&edgeRay, o2, triTestFlags, pContact, skip);
 		//					dIASSERT(numCollision <= numMaxContactsPerTri);
 		//
 		//					if (numCollision)
@@ -1444,26 +1443,27 @@ public class DxHeightfield extends DxAbstractHeightfield {
 		//							pContact = CONTACT(contact, prevTerrainContacts*skip);
 		//
 		//							//create contact using Plane Normal
-		//							dOPESIGN(pContact.normal, =, -, itTriangle.planeDef);
+		//							dOPESIGN(pContact->normal, = , -, itTriangle->planeDef);
 		//
-		//							pContact.depth = DistancePointToLine(pContact.pos, vertex1.vertex, Edge, edgeRay.length);
+		//							pContact->depth = DistancePointToLine(pContact->pos, vertex1->vertex, edgeVector, edgeRay.length);
 		//						}
 		//						while (++prevTerrainContacts != numTerrainContacts);
 		//
-		//						if ( numTerrainContacts == numMaxContactsPossible )
+		//						if (numTerrainContacts == numMaxContactsPossible)
 		//							return numTerrainContacts;
 		//
 		//						numMaxContactsPerTri = dMIN(numMaxContactsPossible - numTerrainContacts, HEIGHTFIELDMAXCONTACTPERCELL);
 		//						triTestFlags = (flags & ~NUMC_MASK) | numMaxContactsPerTri;
-		//						dIASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
+		//						dSASSERT((HEIGHTFIELDMAXCONTACTPERCELL & ~NUMC_MASK) == 0);
 		//					}
-		//	            }
+		//				}
+		//			}
 		//
-		//	            itTriangle.vertices[0].state = true;
-		//	            itTriangle.vertices[1].state = true;
-		//	            itTriangle.vertices[2].state = true;
-		//	        }
-		//	    }
+		//			itTriangle->vertices[0]->state = true;
+		//			itTriangle->vertices[1]->state = true;
+		//			itTriangle->vertices[2]->state = true;
+		//		}
+		//	}
 		//	#endif // _HEIGHTFIELDEDGECOLLIDING
 		return numTerrainContacts;
 	}
@@ -1478,7 +1478,7 @@ public class DxHeightfield extends DxAbstractHeightfield {
 			int i;
 
 			// if ((flags & NUMC_MASK) == 0) -- An assertion check is made on entry
-			//	{ flags = (flags & ~NUMC_MASK) | 1; dIASSERT((1 & ~NUMC_MASK) == 0); }
+			//	{ flags = (flags & ~NUMC_MASK) | 1; dSASSERT((1 & ~NUMC_MASK) == 0); }
 
 			int numMaxTerrainContacts = (flags & NUMC_MASK);
 

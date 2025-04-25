@@ -1,15 +1,7 @@
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawConvex;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.DMisc.dRandReal;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactBounce;
@@ -98,7 +90,7 @@ public class DemoBuoyancy extends dsFunctions {
 
 
     private static float[] xyz = {-3.5f, 0f, 6f};
-    private static float[] hpr = {0f, -20.0000f,0.0000f};
+    private static float[] hpr = {0f, -10.0000f,0.0000f};
 
     // start simulation - set viewpoint
 
@@ -331,7 +323,7 @@ public class DemoBuoyancy extends dsFunctions {
         for (int i = 0; i < obj.length; i++) obj[i] = new MyObject();
         OdeHelper.createPlane( space, 0, 0, 1, 0 );
 
-        dsSimulationLoop (args,640,480,this);
+        dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
         contactgroup.destroy ();
         space.destroy ();
         world.destroy ();
@@ -343,8 +335,8 @@ public class DemoBuoyancy extends dsFunctions {
     public void stop() {
     }
 
-    private final static double WATER_LEVEL = 5; 
-    private final static double WATER_DENSITY = 0.27; 
+    private static final double WATER_LEVEL = 5;
+    private static final double WATER_DENSITY = 0.27;
 
     public void handleBuoyancy() {
         List<DGeom> floatingGeoms = new ArrayList<>();

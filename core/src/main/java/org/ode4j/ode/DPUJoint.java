@@ -212,21 +212,10 @@ public interface DPUJoint extends DJoint {
 	 */
 	double getPositionRate();
 
-//	/**
-//	 * Applies the torque about the rotoide axis of the PU joint.
-//	 *
-//	 * That is, it applies a torque with specified magnitude in the direction
-//	 * of the rotoide axis, to body 1, and with the same magnitude but in opposite
-//	 * direction to body 2. This function is just a wrapper for dBodyAddTorque()}
-//	 */
-//  TODO there is no implementation. Use dBodyAddTorque???? Or leave unimplemented?
-//	void addTorque (double torque);
-
-
 	/**
 	 * Set the PU anchor as if the 2 bodies were already at [dx, dy, dz] apart.
 	 * <p>
-	 * This function initialize the anchor and the relative position of each body
+	 * This function initializes the anchor and the relative position of each body
 	 * as if the position between body1 and body2 was already the projection of [dx, dy, dz]
 	 * along the Piston axis. (i.e as if the body1 was at its current position - [dx,dy,dy] when the
 	 * axis is set).
@@ -272,5 +261,16 @@ public interface DPUJoint extends DJoint {
 	 */
 	@Override
 	double getParam (PARAM_N parameter);
+
+	/**
+	 * Applies torques about the rotoide axes of PU joint
+	 * <p>
+	 * That is, it applies torque1 about the universal axis 1 and torque2 about the
+	 * universal axis 2 to body 1, and with the same magnitude but in opposite
+	 * direction to body 2.
+	 * <p>
+	 * <b>REMARKS:</b> This function is just a wrapper for {@link DBody#addTorque(DVector3C)}.
+	 */
+	void addTorques (double torque1, double torque2);
 
 }

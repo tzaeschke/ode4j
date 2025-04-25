@@ -70,6 +70,8 @@ public class DxUtil {
      */
     public static final int EFFICIENT_ALIGNMENT = 16;
 
+    public static final int COMMON_CACHELINE_SIZE = 128;
+
     /* ********************************************************************************************************* */
     /* ************************* TZ: This has been move here from Common because it is mostly required here **** */
     /* ********************************************************************************************************* */

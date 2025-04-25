@@ -34,7 +34,7 @@ import static org.ode4j.ode.OdeMath.dMultiply2_333;
 import static org.ode4j.ode.OdeMath.dMultiplyAdd0_331;
 import static org.ode4j.ode.OdeMath.dSetCrossMatrixMinus;
 import static org.ode4j.ode.internal.Common.*;
-import static org.ode4j.ode.internal.Matrix.dSetZero;
+import static org.ode4j.ode.internal.Matrix.*;
 import static org.ode4j.ode.internal.Misc.dRandInt;
 import static org.ode4j.ode.internal.CommonEnums.*;
 import static org.ode4j.ode.internal.QuickStepEnums.*;
@@ -55,6 +55,7 @@ import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dmaxcallcountestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxStepperProcessingCallContext.dstepper_fn_t;
+import org.ode4j.ode.internal.processmem.DxUtil;
 import org.ode4j.ode.internal.processmem.DxUtil.BlockPointer;
 import org.ode4j.ode.internal.processmem.DxWorldProcessIslandsInfo.dmemestimate_fn_t;
 import org.ode4j.ode.internal.processmem.DxWorldProcessMemArena;
@@ -116,6 +117,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	}
 
 
+	// #define PRINT_DYNAMIC_ADJUSTMENT_STATS   0
+	private static final int PRINT_DYNAMIC_ADJUSTMENT_STATS = 0;
+
+
 	//***************************************************************************
 	// configuration
 
@@ -161,22 +166,53 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	//***************************************************************************
 	// macros, typedefs, forwards and inlines
+	private static final int sizeofdReal = 8; // TODO (TZ) remove or set to 1?
+	private static final int sizeofVoidStar = 8; // TODO (TZ) remove or set to 1?
 
-	private static final int dxQUICKSTEPISLAND_STAGE2B_STEP = 16;
-	private static final int dxQUICKSTEPISLAND_STAGE2C_STEP = 32;
-	private static final int dxQUICKSTEPISLAND_STAGE4A_STEP = WARM_STARTING ? 256 : 512;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP = 8;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_AD_STEP = 8;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP = WARM_STARTING ? 128 : dxQUICKSTEPISLAND_STAGE4A_STEP / 2;
-	// IF WARM_STARTING
-	//private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP = 128;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_COMPLETE_TO_PREPARE_COMPLEXITY_DIVISOR = 4;
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_PREPARE = (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP * dxQUICKSTEPISLAND_STAGE4LCP_FC_COMPLETE_TO_PREPARE_COMPLEXITY_DIVISOR);
-	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_COMPLETE = (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP);
-	// ENDIF WARM_STARTING
-	private static final int dxQUICKSTEPISLAND_STAGE4B_STEP = 256;
-	private static final int dxQUICKSTEPISLAND_STAGE6A_STEP = 16;
-	private static final int dxQUICKSTEPISLAND_STAGE6B_STEP = 1;
+	private static int dRESTRICT_STEP(int step_size, int limit) { return step_size > 1 ? Math.min(step_size, limit) : step_size;}
+
+
+	private static final int CACHELINE_BLOCKING_FACTOR = 16;
+	private static final int PER_THREAD_PROCESSING_BLOCK_SIZE = DxUtil.COMMON_CACHELINE_SIZE * CACHELINE_BLOCKING_FACTOR;
+
+	private static final int dxQUICKSTEPISLAND_STAGE0_BODIES_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (IIE__MAX * sizeofdReal)), 1);
+
+	private static final int dxQUICKSTEPISLAND_STAGE2A_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (JME__MAX * sizeofdReal)), 1);
+
+	private static final int dxQUICKSTEPISLAND_STAGE2B_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (RHS__MAX * sizeofdReal)), 16);
+	private static final int dxQUICKSTEPISLAND_STAGE2C_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (JME__MAX * sizeofdReal)), 32);
+
+	//		#ifdef WARM_STARTING
+	static {
+		if (WARM_STARTING) throw new UnsupportedOperationException();
+	}
+	// #define dxQUICKSTEPISLAND_STAGE4A_STEP  dMAX((PER_THREAD_PROCESSING_BLOCK_SIZE / (1 * sizeof(dReal))), 256U)
+	//		#else
+	private static final int dxQUICKSTEPISLAND_STAGE4A_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (1 * sizeofdReal)), 512);
+	//		#endif
+
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (IMJ__MAX * sizeofdReal)), 8);
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_AD_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (JME__MAX * sizeofdReal)), 8);
+
+	//	#ifdef WARM_STARTING
+	static {
+		if (WARM_STARTING) throw new UnsupportedOperationException();
+	}
+	// #define dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP  dMAX((PER_THREAD_PROCESSING_BLOCK_SIZE / 4), 128U)
+	//		#define dxQUICKSTEPISLAND_STAGE4LCP_FC_COMPLETE_TO_PREPARE_COMPLEXITY_DIVISOR  4
+	//		#define dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_PREPARE  (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP * dxQUICKSTEPISLAND_STAGE4LCP_FC_COMPLETE_TO_PREPARE_COMPLEXITY_DIVISOR)
+	//		#define dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_COMPLETE (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP)
+	//		#define dxQUICKSTEPISLAND_STAGE4LCP_FORCEMAXADJ_STEP (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP_PREPARE * CFE__MAX / FAE__MAX)
+	//	#else
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP = (dxQUICKSTEPISLAND_STAGE4A_STEP / 2); // Average info.m is 3 for stage4a, while there are 6 reals per index in fc
+	private static final int dxQUICKSTEPISLAND_STAGE4LCP_FORCEMAXADJ_STEP = (dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP * CFE__MAX / FAE__MAX);
+	//	#endif
+
+
+	private static final int dxQUICKSTEPISLAND_STAGE4B_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / 2), 256);
+
+	private static final int dxQUICKSTEPISLAND_STAGE6A_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (1 * sizeofVoidStar)), 16);
+	private static final int dxQUICKSTEPISLAND_STAGE6B_STEP = Math.max((PER_THREAD_PROCESSING_BLOCK_SIZE / (1 * sizeofVoidStar)), 1);
 
 	private static int CalculateOptimalThreadsCount(int complexity, int max_threads, int step_size) {
 		int raw_threads = Math.max(complexity, step_size) / step_size; // Round down on division
@@ -193,6 +229,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	}
 
 	private static final int dxHEAD_INDEX = 0;
+
 
 	//****************************************************************************
 	// special matrix multipliers
@@ -252,16 +289,21 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		return mindex[pos * 2 + 1];
 	}
 
-	//
 	//	private static class dxJBodiesItem {
 	//		int first;
 	//		int second; // The index is optional and can equal to -1
 	//	}
-	private static int first(int[] jb, int m) {
+	private static int getJbFirst(int[] jb, int m) {
 		return jb[2 * m];
 	}
-	private static int second(int[] jb, int m) {
+	private static int getJbSecond(int[] jb, int m) {
 		return jb[2 * m + 1];
+	}
+	private static void setJbFirst(int[] jb, int m, int value) {
+		jb[2 * m] = value;
+	}
+	private static void setJbSecond(int[] jb, int m, int value) {
+		jb[2 * m + 1] = value;
 	}
 
 	private static class dxQuickStepperStage0Outputs
@@ -410,12 +452,14 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
     private static class dxQuickStepperStage4CallContext {
         void Initialize(DxStepperProcessingCallContext callContext, dxQuickStepperLocalContext localContext,
-                double[] lambda, double[] cforce, double[] iMJ, IndexError[] order, double[] last_lambda,
+                double[] lambda, double[] cforce, double[] forceMaxAdjustments, double[] iMJ, IndexError[] order,
+						double[] last_lambda,
                 AtomicInteger[] bi_links_or_mi_levels, AtomicInteger[] mi_links) {
             m_stepperCallContext = callContext;
             m_localContext = localContext;
             m_lambda = lambda;
             m_cforce = cforce;
+			m_forceMaxAdjustments = forceMaxAdjustments;
             m_iMJ = iMJ;
             m_order = order;
             m_last_lambda = last_lambda;
@@ -426,9 +470,11 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
             m_LCP_fcStartReleasee = null;
             m_ji_4a.set(0);
             m_mi_iMJ.set(0);
-            m_mi_fc.set(0);
+			m_bi_forceMaxAdj.set(0);
+			m_bi_fc.set(0);
             m_mi_Ad.set(0);
             m_LCP_iteration = 0;
+			m_LCP_extra_num_iterations = 0;
             m_cf_4b.set(0);
             m_ji_4b.set(0);
         }
@@ -448,7 +494,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         }
 
         void ResetLCP_fcComputationIndex() {
-            m_mi_fc.set(0);
+            m_bi_fc.set(0);
         }
 
         void ResetSOR_ConstraintsReorderVariables(int reorderThreads) {
@@ -471,21 +517,25 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         dxQuickStepperLocalContext m_localContext;
         double[] m_lambda;
         double[] m_cforce;
+		double[] m_forceMaxAdjustments;
         double[] m_iMJ;
         IndexError[] m_order;
         double[] m_last_lambda;
         AtomicInteger[] m_bi_links_or_mi_levels;
         AtomicInteger[] m_mi_links;
+		double m_LCP_iteration_premature_exit_delta;
         TaskGroup m_LCP_IterationSyncReleasee;
         int m_LCP_IterationAllowedThreads;
         TaskGroup m_LCP_fcStartReleasee;
         final AtomicInteger m_ji_4a = new AtomicInteger();
         final AtomicInteger m_mi_iMJ = new AtomicInteger();
-        final AtomicInteger m_mi_fc = new AtomicInteger();
+		final AtomicInteger m_bi_forceMaxAdj = new AtomicInteger();
+		final AtomicInteger m_bi_fc = new AtomicInteger();
         final AtomicInteger m_LCP_fcPrepareThreadsRemaining = new AtomicInteger();
         int m_LCP_fcCompleteThreadsTotal;
         final AtomicInteger m_mi_Ad = new AtomicInteger();
         int m_LCP_iteration;
+		int m_LCP_extra_num_iterations;
         int m_LCP_iterationThreadsTotal;
         final AtomicInteger m_LCP_iterationThreadsRemaining = new AtomicInteger();
         TaskGroup m_LCP_iterationNextReleasee;
@@ -522,30 +572,34 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	 * (TZ) Performs a 331 multiplication on the 3-5 and 9-11 parts of
 	 * each row and writes the result into iMJ.  
 	 */
-	private static void compute_invM_JT (AtomicInteger mi_storage, final int m, final double[] J, final double[] iMJ, 
-	        final int[] jb,
-			final DxBody[]bodyP, final int bodyOfs, final double[] invI, int step_size)
+	private static void compute_invM_JT (AtomicInteger mi_storage, final int m, final double[] J, final double[] iMJ,
+										 final int[] jb,
+										 final DxBody[]bodyP, final int bodyOfs, final double[] invI,
+										 boolean dynamicIterationCountAdjustmentEnabled,
+										 int step_size)
 	{
 		int m_steps = (m + (step_size - 1)) / step_size;
 	    int mi_step;
 	    while ((mi_step = Atomics.ThrsafeIncrementIntUpToLimit(mi_storage, m_steps)) != m_steps) {
 	        int mi = mi_step * step_size;
-	        int miend = mi + Math.min(step_size, m - mi);
+	        int miend = mi + dRESTRICT_STEP(step_size, m - mi);
 	        int iMJ_ptr = mi * IMJ__MAX;
 	        int J_ptr = mi * JME__MAX;
 	        while (true) {
-		        int b1 = first(jb, mi);
-				int b2 = second(jb, mi);
+		        int b1 = getJbFirst(jb, mi);
+				int b2 = getJbSecond(jb, mi);
 				double k1 = bodyP[b1+bodyOfs].invMass;
 	            for (int j = 0; j != JVE__L_COUNT; j++) iMJ[iMJ_ptr + IMJ__1L_MIN + j] = k1 * J[J_ptr + JME__J1L_MIN + j];
 	            int invIrow1 = b1 * IIE__MAX + IIE__MATRIX_MIN;
 	            dMultiply0_331 (iMJ, iMJ_ptr + IMJ__1A_MIN, invI, invIrow1, J, J_ptr + JME__J1A_MIN);
+				iMJ[iMJ_ptr + IMJ_1JVE_MAXABS] = dynamicIterationCountAdjustmentEnabled ? dxCalculateModuloMaximum(iMJ, iMJ_ptr + IMJ__1JVE_MIN, JVE__MAX) : 0.0;
 
 				if (b2 != -1) {
 					double k2 = bodyP[b2+bodyOfs].invMass;
 		            for (int j = 0; j != JVE__L_COUNT; ++j) iMJ[iMJ_ptr + IMJ__2L_MIN + j] = k2 * J[J_ptr + JME__J2L_MIN + j];
 		            int invIrow2 = b2 * IIE__MAX + IIE__MATRIX_MIN;
 		            dMultiply0_331 (iMJ, iMJ_ptr + IMJ__2A_MIN, invI, invIrow2, J, J_ptr + JME__J2A_MIN);
+					iMJ[iMJ_ptr + IMJ_2JVE_MAXABS] = dynamicIterationCountAdjustmentEnabled ? dxCalculateModuloMaximum(iMJ, iMJ_ptr + IMJ__2JVE_MIN, JVE__MAX) : 0.0;
 				}
 
 	            if (++mi == miend) {
@@ -573,11 +627,11 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    int mi_step;
 	    while ((mi_step = Atomics.ThrsafeIncrementIntUpToLimit(mi_storage, m_steps)) != m_steps) {
 	        int mi = mi_step * step_size;
-	        int miend = mi + Math.min(step_size, m - mi);
+	        int miend = mi + dRESTRICT_STEP(step_size, m - mi);
 	        int J_ptr = mi * JME__MAX;
 	        while (true) {
-				int b1 = first(jb, mi);
-				int b2 = second(jb, mi);
+				int b1 = getJbFirst(jb, mi);
+				int b2 = getJbSecond(jb, mi);
 				double sum = 0.0;
 				int in_ofs = b1 * in_stride + in_offset;
 				for (int j = 0; j != JME__J1_COUNT; ++j) sum += J[J_ptr + j + JME__J1_MIN] * in[in_ofs+j];
@@ -698,6 +752,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    }
 	    else
 	    {
+			// TODO (TZ), this is very different from ODE. It has changed in ODE, e.g.  from 0.16.2 to 0.16.6
 	        TaskGroup stage1 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage1", new Runnable() {
                 @Override
                 public void run() {
@@ -728,14 +783,14 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	private static
 	void dxQuickStepIsland_Stage0_Bodies(dxQuickStepperStage0BodiesCallContext callContext)
 	{
-	    DxBody[] bodyP = callContext.m_stepperCallContext.m_islandBodiesStartA();
+	    DxBody[] bodyA = callContext.m_stepperCallContext.m_islandBodiesStartA();
 	    int bodyOfs = callContext.m_stepperCallContext.m_islandBodiesStartOfs();
 	    int nb = callContext.m_stepperCallContext.m_islandBodiesCount();
 
 	    if (Atomics.ThrsafeExchange(callContext.m_tagsTaken, 1) == 0)
 	    {
 	        // number all bodies in the body list - set their tag values
-	        for (int i=0; i<nb; i++) bodyP[bodyOfs+i].tag = i;
+	        for (int i=0; i<nb; i++) bodyA[bodyOfs+i].tag = i;
 	    }
 
 	    if (Atomics.ThrsafeExchange(callContext.m_gravityTaken, 1) == 0)
@@ -746,29 +801,30 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		    // since gravity does normally have only one component it's more efficient
 		    // to run three loops for each individual component
 		    double gravity_x = world.gravity.get0();
+			dAssertDSA();
 		    if (gravity_x != 0) {
 		        for (int i=0; i<nb; i++) {
-		            DxBody b = bodyP[i+bodyOfs];
+		            DxBody b = bodyA[i+bodyOfs];
 		            if ((b.flags & DxBody.dxBodyNoGravity)==0) {
-		                b.facc.add(0, b.mass._mass * gravity_x);
+		                b.facc.add(dSA_X, b.mass._mass * gravity_x);
 		            }
 		        }
 		    }
 		    double gravity_y = world.gravity.get1();
 		    if (gravity_y != 0) {
 		        for (int i=0; i<nb; i++) {
-		            DxBody b = bodyP[i+bodyOfs];
+		            DxBody b = bodyA[i+bodyOfs];
 		            if ((b.flags & DxBody.dxBodyNoGravity)==0) {
-		                b.facc.add(1, b.mass._mass * gravity_y);
+		                b.facc.add(dSA_Y, b.mass._mass * gravity_y);
 		            }
 		        }
 		    }
 		    double gravity_z = world.gravity.get2();
 		    if (gravity_z != 0) {
 		        for (int i=0; i<nb; i++) {
-		            DxBody b = bodyP[i+bodyOfs];
+		            DxBody b = bodyA[i+bodyOfs];
 		            if ((b.flags & DxBody.dxBodyNoGravity)==0) {
-		                b.facc.add(2, b.mass._mass * gravity_z);
+		                b.facc.add(dSA_Z, b.mass._mass * gravity_z);
 		            }
 		        }
 		    }
@@ -778,88 +834,102 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    // frame, and compute the rotational force and add it to the torque
 	    // accumulator. I and invI are a vertical stack of 3x4 matrices, one per body.
         double[] invIA = callContext.m_invI;
-        int bodyIndex ;
-        while ((bodyIndex = Atomics.ThrsafeIncrementIntUpToLimit(callContext.m_inertiaBodyIndex, nb)) != nb) {
-            int invIrowP = bodyIndex * IIE__MAX;
-            DMatrix3 tmp = new DMatrix3();
-            DxBody b = bodyP[bodyIndex + bodyOfs];
 
-            // compute inverse inertia tensor in global frame
-            dMultiply2_333 (tmp,b.invI,b.posr().R());
-			dMultiply0_333(invIA, invIrowP + IIE__MATRIX_MIN, b.posr().R(), tmp);
+        final int step_size = dxQUICKSTEPISLAND_STAGE0_BODIES_STEP;
+		int nb_steps = (nb + (step_size - 1)) / step_size;
 
-            // Don't apply gyroscopic torques to bodies
-            // if not flagged or the body is kinematic
-            if (b.isFlagsGyroscopic() && (b.invMass>0)) {
-                DMatrix3 I = new DMatrix3();
-                // compute inertia tensor in global frame
-                dMultiply2_333 (tmp,b.mass._I,b.posr().R());
-                dMultiply0_333 (I,b.posr().R(),tmp);
-                // compute rotational force
-//	#if 0
-//	                    // Explicit computation
-//	                    dMultiply0_331 (tmp,I,b.avel);
-//	                    dSubtractVectorCross3(b.tacc,b.avel,tmp);
-//	#else
-                // Do the implicit computation based on 
-                //"Stabilizing Gyroscopic Forces in Rigid Multibody Simulations"
-                // (LacoursiÃ¨re 2006)
-                double h = callContext.m_stepperCallContext.m_stepSize(); // Step size
-                DVector3 L = new DVector3(); // Compute angular momentum
-                dMultiply0_331(L,I,b.avel);
-                
-                // Compute a new effective 'inertia tensor'
-                // for the implicit step: the cross-product 
-                // matrix of the angular momentum plus the
-                // old tensor scaled by the timestep.  
-                // Itild may not be symmetric pos-definite, 
-                // but we can still use it to compute implicit
-                // gyroscopic torques.
-                DMatrix3 Itild= new DMatrix3();//{0};  
-                dSetCrossMatrixMinus(Itild,L);//,4);
-//	                    for (int ii=0;ii<12;++ii) {
-//	                      Itild[ii]=Itild[ii]*h+I[ii];
-//	                    }
-                Itild.scale(h);
-                Itild.add(I);
+		int bi_step;
+        while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(callContext.m_inertiaBodyIndex, nb_steps)) != nb_steps) {
+			int bi = bi_step * step_size;
+            final int biend = bi + dRESTRICT_STEP(step_size, nb - bi);
 
-                // Scale momentum by inverse time to get 
-                // a sort of "torque"
-                L.scale(dRecip(h));//dScaleVector3(L,dRecip(h)); 
-                // Invert the pseudo-tensor
-                DMatrix3 itInv = new DMatrix3();
-                // This is a closed-form inversion.
-                // It's probably not numerically stable
-                // when dealing with small masses with
-                // a large asymmetry.
-                // An LU decomposition might be better.
-                if (dInvertMatrix3(itInv,Itild)!=0) {
-                    // "Divide" the original tensor
-                    // by the pseudo-tensor (on the right)
-                    dMultiply0_333(Itild,I,itInv);
-                    // Subtract an identity matrix
-                    //Itild[0]-=1; Itild[5]-=1; Itild[10]-=1;
-                    Itild.sub(0, 0, 1);
-                    Itild.sub(1, 1, 1);
-                    Itild.sub(2, 2, 1);
+			// for (dReal *invIrow = invI + (sizeint)bi * IIE__MAX; ; invIrow += IIE__MAX) {
+			for (int invIrowP = bi * IIE__MAX; ; invIrowP += IIE__MAX) {
+				DxBody b = bodyA[bi + bodyOfs];
 
-                    // This new inertia matrix rotates the 
-                    // momentum to get a new set of torques
-                    // that will work correctly when applied
-                    // to the old inertia matrix as explicit
-                    // torques with a semi-implicit update
-                    // step.
-                    DVector3 tau0 = new DVector3();
-                    dMultiply0_331(tau0,Itild,L);
-                    
-                    // Add the gyro torques to the torque 
-                    // accumulator
-                    //for (int ii=0;ii<3;++ii) {
-                    //  b.tacc[ii]+=tau0[ii];
-                    //}
-                    b.tacc.add(tau0);
-                }
-//	#endif
+	            DMatrix3 tmp = new DMatrix3();
+				// compute inverse inertia tensor in global frame
+				dMultiply2_333 (tmp,b.invI,b.posr().R());
+				dMultiply0_333(invIA, invIrowP + IIE__MATRIX_MIN, b.posr().R(), tmp);
+
+				// Don't apply gyroscopic torques to bodies
+				// if not flagged or the body is kinematic
+				if (b.isFlagsGyroscopic() && (b.invMass>0)) {
+					DMatrix3 I = new DMatrix3();
+					// compute inertia tensor in global frame
+					dMultiply2_333(tmp, b.mass._I, b.posr().R());
+					dMultiply0_333(I, b.posr().R(), tmp);
+					// compute rotational force
+
+					//	#if 0
+					//	                    // Explicit computation
+					//	                    dMultiply0_331 (tmp,I,b.avel);
+					//	                    dSubtractVectorCross3(b.tacc,b.avel,tmp);
+					//	#else
+
+					// Do the implicit computation based on
+					//"Stabilizing Gyroscopic Forces in Rigid Multibody Simulations"
+					// (LacoursiÃ¨re 2006)
+					double h = callContext.m_stepperCallContext.m_stepSize(); // Step size
+					DVector3 L = new DVector3(); // Compute angular momentum
+					dMultiply0_331(L, I, b.avel);
+
+					// Compute a new effective 'inertia tensor'
+					// for the implicit step: the cross-product
+					// matrix of the angular momentum plus the
+					// old tensor scaled by the timestep.
+					// Itild may not be symmetric pos-definite,
+					// but we can still use it to compute implicit
+					// gyroscopic torques.
+					DMatrix3 Itild = new DMatrix3();//{0};
+					dSetCrossMatrixMinus(Itild, L);//,4);
+					//	                    for (int ii=0;ii<12;++ii) {
+					//	                      Itild[ii]=Itild[ii]*h+I[ii];
+					//	                    }
+					Itild.scale(h);
+					Itild.add(I);
+
+					// Scale momentum by inverse time to get
+					// a sort of "torque"
+					L.scale(dRecip(h));//dScaleVector3(L,dRecip(h));
+					// Invert the pseudo-tensor
+					DMatrix3 itInv = new DMatrix3();
+					// This is a closed-form inversion.
+					// It's probably not numerically stable
+					// when dealing with small masses with
+					// a large asymmetry.
+					// An LU decomposition might be better.
+					if (dInvertMatrix3(itInv, Itild) != 0) {
+						// "Divide" the original tensor
+						// by the pseudo-tensor (on the right)
+						dMultiply0_333(Itild, I, itInv);
+						// Subtract an identity matrix
+						//Itild[0]-=1; Itild[5]-=1; Itild[10]-=1;
+						Itild.sub(0, 0, 1);
+						Itild.sub(1, 1, 1);
+						Itild.sub(2, 2, 1);
+
+						// This new inertia matrix rotates the
+						// momentum to get a new set of torques
+						// that will work correctly when applied
+						// to the old inertia matrix as explicit
+						// torques with a semi-implicit update
+						// step.
+						DVector3 tau0 = new DVector3();
+						dMultiply0_331(tau0, Itild, L);
+
+						// Add the gyro torques to the torque
+						// accumulator
+						//for (int ii=0;ii<3;++ii) {
+						//  b.tacc[ii]+=tau0[ii];
+						//}
+						b.tacc.add(tau0);
+					}
+					//	#endif
+				}
+				if (++bi == biend) {
+					break;
+				}
             }
 	    }
 	}
@@ -1015,7 +1085,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
                         dxQuickStepIsland_Stage2aSync(stage2CallContext, stage2bSync);
                     }
                 });
-                int stage2a_allowedThreads = CalculateOptimalThreadsCount(nj, allowedThreads, 1);
+                int stage2a_allowedThreads = CalculateOptimalThreadsCount(nj, allowedThreads, dxQUICKSTEPISLAND_STAGE2A_STEP);
                 for (int i = 1; i < stage2a_allowedThreads; i ++) {
                     Task bodies = stage2aSync.subtask("QuickStepIsland Stage2a", new Runnable() {
                         @Override
@@ -1115,89 +1185,106 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
 	        int validFIndices = 0;
 
-	        int ji;
-	        while ((ji = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_J, nj)) != nj) {
-				final int ofsi = getMIndex(mindex, ji);
-				final int infom = getMIndex(mindex, ji + 1) - ofsi;
-	            int jRow = ofsi * JME__MAX;
-				{
-					int jEnd = jRow + infom * JME__MAX;
-					for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
-						dSetZero(J, jCurr + JME__J1_MIN, JME__J1_COUNT);
-						J[jCurr + JME_RHS] = 0.0;
-						J[jCurr + JME_CFM] = worldCFM;
-						dSetZero(J, jCurr + JME__J2_MIN, JME__J2_COUNT);
-						J[jCurr + JME_LO] = -dInfinity;
-						J[jCurr + JME_HI] = dInfinity;
+			final int step_size = dxQUICKSTEPISLAND_STAGE2A_STEP;
+			int nj_steps = (nj + (step_size - 1)) / step_size;
+
+			int ji_step;
+	        while ((ji_step = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_J, nj_steps)) != nj_steps) {
+				int ji = ji_step * step_size;
+	            final int jiend = ji + dRESTRICT_STEP(step_size, nj - ji);
+
+				for (int infom, ofsi = getMIndex(mindex, ji); ; ofsi += infom) {
+					infom = getMIndex(mindex, ji + 1) - ofsi;
+
+					int jRow = ofsi * JME__MAX;
+					{
+						int jEnd = jRow + infom * JME__MAX;
+						for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
+							dSetZero(J, jCurr + JME__J1_MIN, JME__J1_COUNT);
+							J[jCurr + JME_RHS] = 0.0;
+							J[jCurr + JME_CFM] = worldCFM;
+							dSetZero(J, jCurr + JME__J2_MIN, JME__J2_COUNT);
+							J[jCurr + JME_LO] = -dInfinity;
+							J[jCurr + JME_HI] = dInfinity;
+						}
+						dSASSERT(JME__J1_COUNT + 2 + JME__J2_COUNT + 2 == JME__MAX);
 					}
-					dSASSERT(JME__J1_COUNT + 2 + JME__J2_COUNT + 2 == JME__MAX);
-				}
-	            int findexRow = ofsi;
-	            dSetValue(findex, findexRow, infom, -1);
+					int findexRow = ofsi;
+					dSetValue(findex, findexRow, infom, -1);
 
-	            DxJoint joint = jointinfos[ji].joint;
-				joint.getInfo2(stepsizeRecip, worldERP, JME__MAX, J, jRow + JME__J1_MIN, J, jRow + JME__J2_MIN,
-						JME__MAX, J, jRow + JME__RHS_CFM_MIN, J, jRow + JME__LO_HI_MIN, findex, findexRow);
+					DxJoint joint = jointinfos[ji].joint;
+					joint.getInfo2(stepsizeRecip, worldERP, JME__MAX, J, jRow + JME__J1_MIN, J, jRow + JME__J2_MIN,
+							JME__MAX, J, jRow + JME__RHS_CFM_MIN, J, jRow + JME__LO_HI_MIN, findex, findexRow);
 
-	            // findex iteration is compact and is not going to pollute caches - do it first
-				{
-					// adjust returned findex values for global index numbering
-					int findicesEndOfs = findexRow + infom;
-					for (int findexCurrOfs = findexRow; findexCurrOfs != findicesEndOfs; ++findexCurrOfs) {
-						int fival = findex[findexCurrOfs]; // *findexCurr;
-						if (fival != -1) {
-							findex[findexCurrOfs] = fival + ofsi; // *findexCurr = fival + ofsi;
-							++validFIndices;
+					// findex iteration is compact and is not going to pollute caches - do it first
+					{
+						// adjust returned findex values for global index numbering
+						int findicesEndOfs = findexRow + infom;
+						for (int findexCurrOfs = findexRow; findexCurrOfs != findicesEndOfs; ++findexCurrOfs) {
+							int fival = findex[findexCurrOfs]; // *findexCurr;
+							if (fival != -1) {
+								findex[findexCurrOfs] = fival + ofsi; // *findexCurr = fival + ofsi;
+								++validFIndices;
+							}
+						}
+						// TZ: This looks alright, but is different from the original where we use findexRow
+						//					for (int j = infom; j != 0; ) {
+						//						--j;
+						//						int fival = findex[j + ofsi];
+						//						if (fival != -1) {
+						//							findex[j + ofsi] = fival + ofsi;
+						//							++validFIndices;
+						//						}
+						//					}
+					}
+					{
+						// dReal *const JEnd = JRow + infom * JME__MAX;
+						int jEnd = jRow + infom * JME__MAX;
+						for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
+							J[jCurr + JME_RHS] *= stepsizeRecip;
+							J[jCurr + JME_CFM] *= stepsizeRecip;
 						}
 					}
-					// TZ: This looks alright, but is different from the original where we use findexRow
-//					for (int j = infom; j != 0; ) {
-//						--j;
-//						int fival = findex[j + ofsi];
-//						if (fival != -1) {
-//							findex[j + ofsi] = fival + ofsi;
-//							++validFIndices;
-//						}
-//					}
-				}
-				{
-					// dReal *const JEnd = JRow + infom * JME__MAX;
-					int jEnd = jRow + infom * JME__MAX;
-					for (int jCurr = jRow; jCurr != jEnd; jCurr += JME__MAX) {
-						J[jCurr + JME_RHS] *= stepsizeRecip;
-						J[jCurr + JME_CFM] *= stepsizeRecip;
-					}
-				}
-	            // we need a copy of Jacobian for joint feedbacks
-	            // because it gets destroyed by SOR solver
-	            // instead of saving all Jacobian, we can save just rows
-	            // for joints, that requested feedback (which is normally much less)
-				int mfbIndex = getFbIndex(mindex, ji); //mindex[ji].fbIndex;
-				if (mfbIndex != getMIndex(mindex, ji + 1)) { //mindex[ji + 1].fbIndex) {
-				// dReal *const JEnd = JRow + infom * JME__MAX;
-				// dReal *JCopyRow = JCopy + mfbIndex * JCE__MAX; // Random access by mfbIndex here! Do not optimize!
-					final int jEnd = jRow + infom * JME__MAX;
-					int JCopyRow = jCopy_ofs + mfbIndex * JCE__MAX; // Random access by mfbIndex here! Do not optimize!
-					//for (const dReal *JCurr = JRow; ; ) {
-					for (int jCurr = jRow; jCurr < jEnd ;) {
-						//for (unsigned i = 0; i != JME__J1_COUNT; ++i) { JCopyRow[i + JCE__J1_MIN] = JCurr[i + JME__J1_MIN]; }
-						//for (unsigned j = 0; j != JME__J2_COUNT; ++j) { JCopyRow[j + JCE__J2_MIN] = JCurr[j + JME__J2_MIN]; }
-						System.arraycopy(J, jCurr + JME__J1_MIN, Jcopy, JCopyRow + JCE__J1_MIN, JME__J1_COUNT);
-						System.arraycopy(J, jCurr + JME__J2_MIN, Jcopy, JCopyRow + JCE__J2_MIN, JME__J2_COUNT);
-						JCopyRow += JCE__MAX;
+					{
+						// we need a copy of Jacobian for joint feedbacks
+						// because it gets destroyed by SOR solver
+						// instead of saving all Jacobian, we can save just rows
+						// for joints, that requested feedback (which is normally much less)
+						int mfbIndex = getFbIndex(mindex, ji); //mindex[ji].fbIndex;
+						if (mfbIndex != getMIndex(mindex, ji + 1)) { //mindex[ji + 1].fbIndex) {
+							// dReal *const JEnd = JRow + infom * JME__MAX;
+							// dReal *JCopyRow = JCopy + mfbIndex * JCE__MAX; // Random access by mfbIndex here! Do not optimize!
+							final int jEnd = jRow + infom * JME__MAX;
+							int JCopyRow = jCopy_ofs + mfbIndex * JCE__MAX; // Random access by mfbIndex here! Do not optimize!
+							//for (const dReal *JCurr = JRow; ; ) {
+							for (int jCurr = jRow; jCurr < jEnd; ) {
+								//for (unsigned i = 0; i != JME__J1_COUNT; ++i) { JCopyRow[i + JCE__J1_MIN] = JCurr[i + JME__J1_MIN]; }
+								//for (unsigned j = 0; j != JME__J2_COUNT; ++j) { JCopyRow[j + JCE__J2_MIN] = JCurr[j + JME__J2_MIN]; }
+								System.arraycopy(J, jCurr + JME__J1_MIN, Jcopy, JCopyRow + JCE__J1_MIN, JME__J1_COUNT);
+								System.arraycopy(J, jCurr + JME__J2_MIN, Jcopy, JCopyRow + JCE__J2_MIN, JME__J2_COUNT);
+								JCopyRow += JCE__MAX;
 
-						// TZ move this outside of loop
-						// dSASSERT((unsigned)JCE__J1_COUNT == JME__J1_COUNT);
-						// dSASSERT((unsigned)JCE__J2_COUNT == JME__J2_COUNT);
-						// dSASSERT(JCE__J1_COUNT + JCE__J2_COUNT == JCE__MAX);
+								// TZ move this outside of loop
+								// dSASSERT((unsigned)JCE__J1_COUNT == JME__J1_COUNT);
+								// dSASSERT((unsigned)JCE__J2_COUNT == JME__J2_COUNT);
+								// dSASSERT(JCE__J1_COUNT + JCE__J2_COUNT == JCE__MAX);
 
-						if ((jCurr += JME__MAX) == jEnd) {
-							break;
+								if ((jCurr += JME__MAX) == jEnd) {
+									break;
+								}
+							}
 						}
 					}
-                }
+
+					if (++ji == jiend) {
+						break;
+					}
+				}
 	        }
-    	    Atomics.ThrsafeAdd(localContext.m_valid_findices, validFIndices);
+
+			if (validFIndices != 0) {
+				Atomics.ThrsafeAdd(localContext.m_valid_findices, validFIndices);
+			}
 	    }
 
 		// TZ moved this here from inside loop above.
@@ -1209,20 +1296,35 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        int[] jb = localContext.m_jb;
 
 	        // create an array of body numbers for each joint row
-	        int ji;
-	        while ((ji = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_jb, nj)) != nj) {
-	        	DxJoint joint = jointinfos[ji].joint;
-		                
-	        	int b1 = (joint.node[0].body!=null) ? (joint.node[0].body.tag) : -1;
-	        	int b2 = (joint.node[1].body!=null) ? (joint.node[1].body.tag) : -1;
+			final int step_size = dxQUICKSTEPISLAND_STAGE2A_STEP;
+			int nj_steps = (nj + (step_size - 1)) / step_size;
 
-	        	int jb_end = 2 * getMIndex(mindex, ji + 1);
-	        	int jb_ptr = 2 * getMIndex(mindex, ji);
-	        	for (; jb_ptr != jb_end; jb_ptr += 2) {
-	        		jb[jb_ptr] = b1;
-	        		jb[jb_ptr+1] = b2;
-	        	}
-	        }
+			int ji_step;
+			while ((ji_step = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_ji_jb, nj_steps)) != nj_steps) {
+				int ji = ji_step * step_size;
+				final int jiend = ji + dRESTRICT_STEP(step_size, nj - ji);
+
+				for (int infom, ofsi = getMIndex(mindex, ji); ; ofsi += infom) {
+					infom = getMIndex(mindex, ji + 1) - ofsi;
+
+					DxJoint joint = jointinfos[ji].joint;
+					int b1 = (joint.node[0].body != null) ? (joint.node[0].body.tag) : -1;
+					int b2 = (joint.node[1].body != null) ? (joint.node[1].body.tag) : -1;
+
+					//	dxJBodiesItem *jb_ptr = jb + ofsi;
+					//	dxJBodiesItem *const jb_end = jb_ptr + infom;
+					int jb_ptr = 0 + ofsi;
+					final int jb_end = jb_ptr + infom;
+					for (; jb_ptr != jb_end; ++jb_ptr) {
+						setJbFirst(jb, jb_ptr, b1);
+						setJbSecond(jb, jb_ptr, b2);
+					}
+
+					if (++ji == jiend) {
+						break;
+					}
+				}
+			}
 	    }
 	}
 
@@ -1255,7 +1357,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        int bi_step;
 	        while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage2CallContext.m_bi, nb_steps)) != nb_steps) {
 	            int bi = bi_step * step_size;
-	            int biend = bi + Math.min(step_size, nb - bi);
+	            int biend = bi + dRESTRICT_STEP(step_size, nb - bi);
 	            int rhscurr = bi * RHS__MAX;
 	            int invIrow = bi * IIE__MAX;
 	            while (true) {
@@ -1322,6 +1424,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
             int nb = callContext.m_islandBodiesCount();
 
             double[] cforce = memarena.AllocateArrayDReal(nb * CFE__MAX);
+			double[] forceMaxAdjustments = memarena.AllocateArrayDReal(nb * FAE__MAX);
             double[] iMJ = memarena.AllocateArrayDReal(m * IMJ__MAX);//, INVMJ_ALIGNMENT);
 	        // order to solve constraint rows in
 	        IndexError[] order = new IndexError[m];
@@ -1335,7 +1438,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        	last_lambda = memarena.AllocateArrayDReal(m);
 	        }
 
-	        int allowedThreads = callContext.m_stepperAllowedThreads();
+	        int allowedThreads = callContext.m_lcpAllowedThreads();
 	        boolean singleThreadedExecution = allowedThreads == 1;
 
 	        AtomicInteger[] bi_links_or_mi_levels = null;
@@ -1348,7 +1451,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	        }
 
 	        final dxQuickStepperStage4CallContext stage4CallContext = new dxQuickStepperStage4CallContext();
-	        stage4CallContext.Initialize(callContext, localContext, lambda, cforce, iMJ, order, last_lambda, bi_links_or_mi_levels, mi_links);
+	        stage4CallContext.Initialize(callContext, localContext, lambda, cforce, forceMaxAdjustments, iMJ, order, last_lambda, bi_links_or_mi_levels, mi_links);
         
 	        if (singleThreadedExecution) {
 	            dxQuickStepIsland_Stage4a(stage4CallContext);
@@ -1360,29 +1463,56 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	            dxQuickStepIsland_Stage4LCP_ReorderPrep(stage4CallContext);
 	            
 	            DxWorld world = callContext.m_world();
-	            int num_iterations = world.qs.num_iterations;
-				for (int iteration = 0; iteration < num_iterations; iteration++) {
+//	            int num_iterations = world.qs.num_iterations;
+//				for (int iteration = 0; iteration < num_iterations; iteration++) {
+				final boolean dynamicIterationCountAdjustmentEnabled = world.qs.GetIsDynamicIterationCountAdjustmentEnabled();
+				double prematureExitDelta = world.qs.GetPrematureExitDelta();
+				final int num_iterations = world.qs.m_iterationCount;
+
+				for (int iteration = 0, extra_num_iterations = 0; ; ) {
 					if (IsSORConstraintsReorderRequiredForIteration(iteration)) {
 						stage4CallContext.ResetSOR_ConstraintsReorderVariables(0);
 						dxQuickStepIsland_Stage4LCP_ConstraintsShuffling(stage4CallContext, iteration);
 					}
+
 					dxQuickStepIsland_Stage4LCP_STIteration(stage4CallContext);
-	            }
+					++iteration;
+
+					if (iteration - extra_num_iterations == num_iterations) {
+						if (extra_num_iterations != 0 || world.qs.m_maxExtraIterationCount == 0) {
+							if (extra_num_iterations != 0) {
+								AtomicInteger fullExtraExecutionsStorage = world.qs.GetStatisticsFullExtraExecutionsStorage();
+								Atomics.ThrsafeIncrementNoResult(fullExtraExecutionsStorage);
+							}
+							break;
+						}
+
+						extra_num_iterations = world.qs.m_maxExtraIterationCount;
+						prematureExitDelta = world.qs.GetExtraIterationsRequirementDelta();
+					}
+
+					if (dynamicIterationCountAdjustmentEnabled && CheckForMaximumToBeLessThanLimitAndResetMaxAdjustments(stage4CallContext.m_forceMaxAdjustments, nb, prematureExitDelta)) {
+						if (iteration < num_iterations) {
+							AtomicInteger prematureExitsStorage = world.qs.GetStatisticsPrematureExitsStorage();
+							Atomics.ThrsafeIncrementNoResult(prematureExitsStorage);
+						}
+						else if (iteration > num_iterations) {
+							AtomicInteger prolongedExecutionsStorage = world.qs.GetStatisticsProlongedExecutionsStorage();
+							Atomics.ThrsafeIncrementNoResult(prolongedExecutionsStorage);
+						}
+						break;
+					}	            }
 	            dxQuickStepIsland_Stage4b(stage4CallContext);
 	            dxQuickStepIsland_Stage5(stage5CallContext);
 	        } else {
-	            final TaskGroup stage5 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage5", new Runnable() {
-                    @Override
-                    public void run() {
-                        dxQuickStepIsland_Stage5(stage5CallContext);
-                    }
-                });
-	            TaskGroup stage4LCP_IterationSync = stage5.subgroup("QuickStepIsland Stage4LCP_Iteration Sync", new Runnable() {
-	                @Override
-	                public void run() {
-	                    dxQuickStepIsland_Stage4LCP_IterationSync(stage4CallContext, stage5);
-	                }
-	            });
+				DxWorld world = callContext.m_world();
+				stage4CallContext.m_LCP_iteration_premature_exit_delta = world.qs.GetPrematureExitDelta();
+
+				final TaskGroup stage5 = callContext.m_taskGroup().subgroup("QuickStepIsland Stage5",
+						() -> dxQuickStepIsland_Stage5(stage5CallContext));
+	            TaskGroup stage4LCP_IterationSync = stage5.subgroup("QuickStepIsland Stage4LCP_Iteration Sync",
+						() -> dxQuickStepIsland_Stage4LCP_IterationSync(stage4CallContext, stage5));
+
 	            int stage4LCP_Iteration_allowedThreads = CalculateOptimalThreadsCount(m, allowedThreads, 1);
 	            stage4CallContext.AssignLCP_IterationData(stage4LCP_IterationSync, stage4LCP_Iteration_allowedThreads);
 
@@ -1463,7 +1593,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         while ((ji_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_ji_4a, nj_steps)) != nj_steps) {
             int ji = ji_step * step_size;
             int lambdacurr = getMIndex(mindex, ji);
-            int lambdsnext = getMIndex(mindex, ji + Math.min(step_size, nj - ji));
+            int lambdsnext = getMIndex(mindex, ji + dRESTRICT_STEP(step_size, nj - ji));
             dSetZero(lambda, lambdacurr, lambdsnext - lambdacurr);
         }
     }
@@ -1476,7 +1606,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         
         int stage4b_allowedThreads = 1;
         if (IsStage4bJointInfosIterationRequired(localContext)) {
-            int allowedThreads = callContext.m_stepperAllowedThreads();
+            int allowedThreads = Math.max(callContext.m_stepperAllowedThreads(), callContext.m_lcpAllowedThreads());
             stage4b_allowedThreads += CalculateOptimalThreadsCount(localContext.m_nj, allowedThreads - stage4b_allowedThreads, dxQUICKSTEPISLAND_STAGE4B_STEP);
         }
 
@@ -1506,9 +1636,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    DxBody[] body = callContext.m_islandBodiesStartA();
 	    int bodyOfs = callContext.m_islandBodiesStartOfs();
 	    double[]invI = localContext.m_invI;
-	
+		boolean dynamicIterationCountAdjustmentEnabled = callContext.m_world().qs.GetIsDynamicIterationCountAdjustmentEnabled();
+
 	    // precompute iMJ = inv(M)*J'
-	    compute_invM_JT(stage4CallContext.m_mi_iMJ, m, J, iMJ, jb, body, bodyOfs, invI, dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP);
+	    compute_invM_JT(stage4CallContext.m_mi_iMJ, m, J, iMJ, jb, body, bodyOfs, invI, dynamicIterationCountAdjustmentEnabled, dxQUICKSTEPISLAND_STAGE4LCP_IMJ_STEP);
 	}
 
     private static
@@ -1518,7 +1649,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         dxQuickStepperLocalContext localContext = stage4CallContext.m_localContext;
         
         int m = localContext.m_m;
-        int allowedThreads = callContext.m_stepperAllowedThreads();
+        int allowedThreads = Math.max(callContext.m_stepperAllowedThreads(), callContext.m_lcpAllowedThreads());
 
         int stage4LCP_Ad_allowedThreads = CalculateOptimalThreadsCount(m, allowedThreads, dxQUICKSTEPISLAND_STAGE4LCP_AD_STEP);
 
@@ -1543,7 +1674,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         int fcPrepareComplexity = localContext.m_m;
         int fcCompleteComplexity = 0;
 
-        int allowedThreads = callContext.m_stepperAllowedThreads();
+        int allowedThreads = callContext.m_lcpAllowedThreads();
         int stage4LCP_fcPrepare_allowedThreads = CalculateOptimalThreadsCount(fcPrepareComplexity, allowedThreads, dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP);
         int stage4LCP_fcComplete_allowedThreads = CalculateOptimalThreadsCount(fcCompleteComplexity, allowedThreads, dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP);
         stage4CallContext.AssignLCP_fcAllowedThreads(stage4LCP_fcPrepare_allowedThreads, stage4LCP_fcComplete_allowedThreads);
@@ -1564,6 +1695,10 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     void dxQuickStepIsland_Stage4LCP_MTfcComputation(dxQuickStepperStage4CallContext stage4CallContext)
     {
         dxQuickStepIsland_Stage4LCP_MTfcComputation_cold(stage4CallContext);
+
+		// Start the forceMaxAdjustments zeroing after the cforce computation so that, in "warm" case,
+		// first threads had a work in parallel while the last one will be finishing the cforce.
+		dxQuickStepIsland_Stage4LCP_MTForceMaxAdjustmentZeroing(stage4CallContext);
     }
 
     private static 
@@ -1571,27 +1706,51 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     {
         DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
     
-        double[] fc = stage4CallContext.m_cforce;
         int nb = callContext.m_islandBodiesCount();
+
         int step_size = dxQUICKSTEPISLAND_STAGE4LCP_FC_STEP;
         int nb_steps = (nb + (step_size - 1)) / step_size;
-    
+		double[] fc = stage4CallContext.m_cforce;
+
         int bi_step;
-        while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_mi_fc, nb_steps)) != nb_steps) {
+        while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_bi_fc, nb_steps)) != nb_steps) {
             int bi = bi_step * step_size;
-            int bicnt = Math.min(step_size, nb - bi);
+            int bicnt = dRESTRICT_STEP(step_size, nb - bi);
             dSetZero(fc, bi * CFE__MAX, bicnt * CFE__MAX);
         }
     }
 
-    // TODO: not needed if we stick to allocating m_cforce on each call
+	private static
+	void dxQuickStepIsland_Stage4LCP_MTForceMaxAdjustmentZeroing(dxQuickStepperStage4CallContext stage4CallContext)
+	{
+    	final DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+
+		int nb = callContext.m_islandBodiesCount();
+
+    	final int step_size = dxQUICKSTEPISLAND_STAGE4LCP_FORCEMAXADJ_STEP;
+		int nb_steps = (nb + (step_size - 1)) / step_size;
+		double[] forceMaxAdjustments = stage4CallContext.m_forceMaxAdjustments;
+
+		int bi_step;
+		while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_bi_forceMaxAdj, nb_steps)) != nb_steps) {
+			int bi = bi_step * step_size;
+			int bicnt = dRESTRICT_STEP(step_size, nb - bi);
+			dSetZero(forceMaxAdjustments,bi * FAE__MAX, bicnt * FAE__MAX);
+		}
+	}
+
+	// TODO: not needed if we stick to allocating m_cforce on each call
     private static
     void dxQuickStepIsland_Stage4LCP_STfcComputation(dxQuickStepperStage4CallContext stage4CallContext)
     {
-    	double[] fc = stage4CallContext.m_cforce;
-        DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
-        int nb = callContext.m_islandBodiesCount();
-        dSetZero(fc, nb * CFE__MAX);
+	    final DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
+		int nb = callContext.m_islandBodiesCount();
+
+		double[] forceMaxAdjustments = stage4CallContext.m_forceMaxAdjustments;
+		dxSetZero(forceMaxAdjustments, nb * FAE__MAX);
+
+		double[] fc = stage4CallContext.m_cforce;
+        Matrix.dSetZero(fc, nb * CFE__MAX);
     }
     
     private static
@@ -1608,7 +1767,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         dxQuickStepParameters qs = world.qs;
         double sor_w = qs.w;		// SOR over-relaxation parameter
 
-        double[]iMJ = stage4CallContext.m_iMJ;
+        final double[] iMJ = stage4CallContext.m_iMJ;
 
         int step_size = dxQUICKSTEPISLAND_STAGE4LCP_AD_STEP;
         int m_steps = (m + (step_size - 1)) / step_size;
@@ -1616,16 +1775,16 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         int mi_step;
         while ((mi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_mi_Ad, m_steps)) != m_steps) {
             int mi = mi_step * step_size;
-            int miend = mi + Math.min(step_size, m - mi);
+            int miend = mi + dRESTRICT_STEP(step_size, m - mi);
 
             int iMJ_ptr = mi * IMJ__MAX;
             int j_ptr = mi * JME__MAX;
             while (true) {
                 double sum = 0;
-                for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ptr + j + IMJ__1_MIN] * J[j_ptr + j + JME__J1_MIN];
-                int b2 = jb[mi*2+1];
+                for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ptr + j + IMJ__1JVE_MIN] * J[j_ptr + j + JME__J1_MIN];
+                int b2 = getJbSecond(jb, mi);
                 if (b2 != -1) {
-                    for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ptr + j + IMJ__2_MIN] * J[j_ptr + j + JME__J2_MIN];
+                    for (int j=JVE__MIN; j != JVE__MAX; j++) sum += iMJ[iMJ_ptr + j + IMJ__2JVE_MIN] * J[j_ptr + j + JME__J2_MIN];
                 }
                 double cfm_i = J[j_ptr + JME_CFM];
                 double Ad_i = sor_w / (sum + cfm_i);
@@ -1682,7 +1841,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
     {
         DxStepperProcessingCallContext callContext = stage4CallContext.m_stepperCallContext;
         DxWorld world = callContext.m_world();
-        int num_iterations = world.qs.num_iterations;
+        int num_iterations = world.qs.m_iterationCount;
 		for (int iteration = 0; iteration < num_iterations; iteration++) {
 			if (IsSORConstraintsReorderRequiredForIteration(iteration)) {
 				stage4CallContext.ResetSOR_ConstraintsReorderVariables(0);
@@ -1701,11 +1860,26 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         DxWorld world = callContext.m_world();
         dxQuickStepParameters qs = world.qs;
 
-        int num_iterations = qs.num_iterations;
+        int num_iterations = qs.m_iterationCount;
         int iteration = stage4CallContext.m_LCP_iteration;
-        
-        if (iteration < num_iterations)
-        {
+		dIASSERT(iteration< num_iterations + stage4CallContext.m_LCP_extra_num_iterations);
+
+		boolean abortIterating = false;
+		if (iteration != 0
+				&& world.qs.GetIsDynamicIterationCountAdjustmentEnabled()
+				&& CheckForMaximumToBeLessThanLimitAndResetMaxAdjustments(stage4CallContext.m_forceMaxAdjustments, callContext.m_islandBodiesCount(), stage4CallContext.m_LCP_iteration_premature_exit_delta)) {
+			if (iteration < num_iterations) {
+				AtomicInteger prematureExitsStorage = world.qs.GetStatisticsPrematureExitsStorage();
+				Atomics.ThrsafeIncrementNoResult(prematureExitsStorage);
+			}
+			else if (iteration > num_iterations) {
+				AtomicInteger prolongedExecutionsStorage = world.qs.GetStatisticsProlongedExecutionsStorage();
+				Atomics.ThrsafeIncrementNoResult(prolongedExecutionsStorage);
+			}
+			abortIterating = true;
+		}
+
+		if (!abortIterating) {
             int stage4LCP_Iteration_allowedThreads = stage4CallContext.m_LCP_IterationAllowedThreads;
 
             boolean reorderRequired = false;
@@ -1726,13 +1900,24 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
             TaskGroup iterationSync = stage4CallContext.m_LCP_IterationSyncReleasee;
             TaskGroup stage4LCP_IterationStart = null;
-            if (iteration + 1 != num_iterations) {
-            	stage4LCP_IterationStart = iterationSync.subgroup("QuickStepIsland Stage4LCP_Iteration Start", new Runnable() {
-                    @Override
-                    public void run() {
-                        dxQuickStepIsland_Stage4LCP_IterationStart(stage4CallContext);
-                    }
-                });
+			boolean lastIteration = false;
+			if (iteration + 1 - stage4CallContext.m_LCP_extra_num_iterations == num_iterations) {
+				if (stage4CallContext.m_LCP_extra_num_iterations != 0 || world.qs.m_maxExtraIterationCount == 0) {
+					if (stage4CallContext.m_LCP_extra_num_iterations != 0) {
+						AtomicInteger fullExtraExecutionsStorage = world.qs.GetStatisticsFullExtraExecutionsStorage();
+						Atomics.ThrsafeIncrementNoResult(fullExtraExecutionsStorage);
+					}
+					lastIteration = true;
+				}
+				else {
+					stage4CallContext.m_LCP_extra_num_iterations = world.qs.m_maxExtraIterationCount;
+					stage4CallContext.m_LCP_iteration_premature_exit_delta = world.qs.GetExtraIterationsRequirementDelta();
+				}
+			}
+
+			if (!lastIteration) {
+				stage4LCP_IterationStart = iterationSync.subgroup("QuickStepIsland Stage4LCP_Iteration Start",
+						() -> dxQuickStepIsland_Stage4LCP_IterationStart(stage4CallContext));
             }
             final TaskGroup finalGroup = stage4LCP_IterationStart != null ? stage4LCP_IterationStart : iterationSync;
             
@@ -1741,19 +1926,12 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 
                 stage4CallContext.ResetSOR_ConstraintsReorderVariables(reorderThreads);
 
-                TaskGroup stage4LCP_ConstraintsReorderingSync = finalGroup.subgroup("QuickStepIsland Stage4LCP_ConstraintsReordering Sync", new Runnable() {
-                    @Override
-                    public void run() {
-                        dxQuickStepIsland_Stage4LCP_ConstraintsReorderingSync(stage4CallContext, finalGroup);                        
-                    }
-                });
+                TaskGroup stage4LCP_ConstraintsReorderingSync = finalGroup.subgroup("QuickStepIsland Stage4LCP_ConstraintsReordering Sync",
+						() -> dxQuickStepIsland_Stage4LCP_ConstraintsReorderingSync(stage4CallContext, finalGroup));
+				// TODO (TZ) Why is this a loop? In ODE it is a simple "> 1"
                 for (int i = 1; i < reorderThreads; i++) {
-                    Task stage4LCP_ConstraintsReordering = stage4LCP_ConstraintsReorderingSync.subtask("QuickStepIsland Stage4LCP_ConstraintsReordering", new Runnable() {
-                        @Override
-                        public void run() {
-                            dxQuickStepIsland_Stage4LCP_ConstraintsReordering(stage4CallContext);
-                        }
-                    });
+                    Task stage4LCP_ConstraintsReordering = stage4LCP_ConstraintsReorderingSync.subtask("QuickStepIsland Stage4LCP_ConstraintsReordering",
+							() -> dxQuickStepIsland_Stage4LCP_ConstraintsReordering(stage4CallContext));
                     stage4LCP_ConstraintsReordering.submit();
                 }
                 dxQuickStepIsland_Stage4LCP_ConstraintsReordering(stage4CallContext);
@@ -1792,14 +1970,14 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         int iteration = stage4CallContext.m_LCP_iteration - 1; // Iteration is pre-incremented before scheduled tasks are released for execution
         if (dxQuickStepIsland_Stage4LCP_ConstraintsShuffling(stage4CallContext, iteration)) {
             dxQuickStepIsland_Stage4LCP_LinksArraysZeroing(stage4CallContext);
-            if (Atomics.ThrsafeExchangeAdd(stage4CallContext.m_SOR_reorderThreadsRemaining, -1) == 1) { // If last thread has exited the reordering routine...
+            if (Atomics.ThrsafeDecrement(stage4CallContext.m_SOR_reorderThreadsRemaining) == 0) { // If last thread has exited the reordering routine...
                 // Rebuild the object dependency map
                 dxQuickStepIsland_Stage4LCP_DependencyMapForNewOrderRebuilding(stage4CallContext);
             }
         }
 		else {
 			// NOTE: So far, this branch is only called in CONSTRAINTS_REORDERING_METHOD == REORDERING_METHOD__BY_ERROR case
-			if (Atomics.ThrsafeExchangeAdd(stage4CallContext.m_SOR_reorderThreadsRemaining, -1) == 1) { // If last thread has exited the reordering routine...
+			if (Atomics.ThrsafeDecrement(stage4CallContext.m_SOR_reorderThreadsRemaining) == 0) { // If last thread has exited the reordering routine...
 				dIASSERT(iteration != 0);
 				dxQuickStepIsland_Stage4LCP_DependencyMapFromSavedLevelsReconstruction(stage4CallContext);
 			}
@@ -2011,8 +2189,8 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         for (int i = 0; i != m; ++i) {
             int index = order[i].index;
 
-            int b1 = jb[index * 2];
-            int b2 = jb[index * 2 + 1];
+            int b1 = getJbFirst(jb, index);
+            int b2 = getJbSecond(jb, index);
 
             int encioded_i = dxENCODE_INDEX(i);
 
@@ -2222,7 +2400,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         }
 
         // Decrement running threads count on exit
-        Atomics.ThrsafeAdd(stage4CallContext.m_LCP_iterationThreadsRemaining, -1);
+        Atomics.ThrsafeDecrementNoResult(stage4CallContext.m_LCP_iterationThreadsRemaining);
     }
 
 	private static
@@ -2238,7 +2416,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	//***************************************************************************
 	// SOR-LCP method
 
-		// nb is the number of bodies in the body array.
+	// nb is the number of bodies in the body array.
 	// J is an m*16 matrix of constraint rows with rhs, cfm, lo and hi in padding
 	// jb is an array of first and second body numbers for each constraint row
 	// invI is the global frame inverse inertia for each body (stacked 3x3 matrices)
@@ -2255,6 +2433,9 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
         IndexError[ ]order = stage4CallContext.m_order;
         int index = order[i].index;
 
+		final int NULL = -1;				;
+		int fc_ptr1P;
+		int fc_ptr2P = NULL;
         double delta = 0;
         
         double[] lambda = stage4CallContext.m_lambda;
@@ -2263,27 +2444,31 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		double[] J = localContext.m_J;
         int J_ptr = index * JME__MAX;
 
+		int b1AsSizeint; // 64bit in ODE --  sizeint
+		int b1ToB2Offset = 0; // 64bit in ODE --  diffint
+
         delta = J[J_ptr + JME_RHS] - old_lambda * J[J_ptr + JME_CFM];
 
         double[] fc = stage4CallContext.m_cforce;
 
         int[] jb = localContext.m_jb;
-        int b1 = jb[index * 2];
-        int b2 = jb[index * 2 + 1];
+        b1AsSizeint = getJbFirst(jb, index);
+        final int b2 = getJbSecond(jb, index);
         
 	    // @@@ potential optimization: SIMD-ize this and the b2 >= 0 case
-        int fc_ptr1 = b1 * CFE__MAX;
-        delta -= fc[fc_ptr1 + CFE_LX] * J[J_ptr + JME_J1LX] + fc[fc_ptr1 + CFE_LY] * J[J_ptr + JME_J1LY] +
-        		fc[fc_ptr1 + CFE_LZ] * J[J_ptr + JME_J1LZ] + fc[fc_ptr1 + CFE_AX] * J[J_ptr + JME_J1AX] +
-        		fc[fc_ptr1 + CFE_AY] * J[J_ptr + JME_J1AY] + fc[fc_ptr1 + CFE_AZ] * J[J_ptr + JME_J1AZ];
+        fc_ptr1P = b1AsSizeint * CFE__MAX;
+        delta -= fc[fc_ptr1P + CFE_LX] * J[J_ptr + JME_J1LX] + fc[fc_ptr1P + CFE_LY] * J[J_ptr + JME_J1LY] +
+        		fc[fc_ptr1P + CFE_LZ] * J[J_ptr + JME_J1LZ] + fc[fc_ptr1P + CFE_AX] * J[J_ptr + JME_J1AX] +
+        		fc[fc_ptr1P + CFE_AY] * J[J_ptr + JME_J1AY] + fc[fc_ptr1P + CFE_AZ] * J[J_ptr + JME_J1AZ];
         // @@@ potential optimization: handle 1-body constraints in a separate
 	    // @@@ potential optimization: handle 1-body constraints in a separate
 	    //     loop to avoid the cost of test & jump?
 	    if (b2 != -1) {
-	        int fc_ptr2 = b2 * CFE__MAX;
-	        delta -= fc[fc_ptr2 + CFE_LX] * J[J_ptr + JME_J2LX] + fc[fc_ptr2 + CFE_LY] * J[J_ptr + JME_J2LY] +
-	        		fc[fc_ptr2 + CFE_LZ] * J[J_ptr + JME_J2LZ] + fc[fc_ptr2 + CFE_AX] * J[J_ptr + JME_J2AX] +
-	        		fc[fc_ptr2 + CFE_AY] * J[J_ptr + JME_J2AY] + fc[fc_ptr2 + CFE_AZ] * J[J_ptr + JME_J2AZ];
+			b1ToB2Offset = b2 - b1AsSizeint;
+	        fc_ptr2P = b2 * CFE__MAX;
+	        delta -= fc[fc_ptr2P + CFE_LX] * J[J_ptr + JME_J2LX] + fc[fc_ptr2P + CFE_LY] * J[J_ptr + JME_J2LY] +
+	        		fc[fc_ptr2P + CFE_LZ] * J[J_ptr + JME_J2LZ] + fc[fc_ptr2P + CFE_AX] * J[J_ptr + JME_J2AX] +
+	        		fc[fc_ptr2P + CFE_AY] * J[J_ptr + JME_J2AY] + fc[fc_ptr2P + CFE_AZ] * J[J_ptr + JME_J2AZ];
 	    }
 
 	    double hi_act, lo_act;
@@ -2322,26 +2507,41 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		//@@@ a trick that may or may not help
 		//dReal ramp = (1-((dReal)(iteration+1)/(dReal)num_iterations));
 		//delta *= ramp;
-	    double[] iMJ = stage4CallContext.m_iMJ;
-	    final int iMJ_ptr = index * IMJ__MAX;
-		// update fc.
-		// @@@ potential optimization: SIMD for this and the b2 >= 0 case
-	    fc[fc_ptr1 + CFE_LX] += delta * iMJ[iMJ_ptr + 0];
-		fc[fc_ptr1 + CFE_LY] += delta * iMJ[iMJ_ptr + 1];
-		fc[fc_ptr1 + CFE_LZ] += delta * iMJ[iMJ_ptr + 2];
-		fc[fc_ptr1 + CFE_AX] += delta * iMJ[iMJ_ptr + 3];
-		fc[fc_ptr1 + CFE_AY] += delta * iMJ[iMJ_ptr + 4];
-		fc[fc_ptr1 + CFE_AZ] += delta * iMJ[iMJ_ptr + 5];
-		// @@@ potential optimization: handle 1-body constraints in a separate
-		//     loop to avoid the cost of test & jump?
-	    if (b2 != -1) {
-	        int fc_ptr2 = b2 * CFE__MAX;
-			fc[fc_ptr2 + CFE_LX] += delta * iMJ[iMJ_ptr + 6];
-			fc[fc_ptr2 + CFE_LY] += delta * iMJ[iMJ_ptr + 7];
-			fc[fc_ptr2 + CFE_LZ] += delta * iMJ[iMJ_ptr + 8];
-			fc[fc_ptr2 + CFE_AX] += delta * iMJ[iMJ_ptr + 9];
-			fc[fc_ptr2 + CFE_AY] += delta * iMJ[iMJ_ptr + 10];
-			fc[fc_ptr2 + CFE_AZ] += delta * iMJ[iMJ_ptr + 11];
+
+		if (delta != 0) {
+			double[] forceMaxAdjustments = stage4CallContext.m_forceMaxAdjustments;
+			// Reuse already available comparison result of delta with zero
+			//dReal * faBase = forceMaxAdjustments + ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(delta > 0);
+			double [] faBaseA = forceMaxAdjustments;
+			int faBaseP = ENCODE_SIGNUM_AS_FORCE_ADJUSTMENT_ELEMENT(delta > 0);
+
+			double[] iMJ = stage4CallContext.m_iMJ;
+			final int iMJ_ptr = index * IMJ__MAX;
+			// update fc.
+			// @@@ potential optimization: SIMD for this and the b2 >= 0 case
+			fc[fc_ptr1P + CFE_LX] += delta * iMJ[iMJ_ptr + IMJ_1LX];
+			fc[fc_ptr1P + CFE_LY] += delta * iMJ[iMJ_ptr + IMJ_1LY];
+			fc[fc_ptr1P + CFE_LZ] += delta * iMJ[iMJ_ptr + IMJ_1LZ];
+			fc[fc_ptr1P + CFE_AX] += delta * iMJ[iMJ_ptr + IMJ_1AX];
+			fc[fc_ptr1P + CFE_AY] += delta * iMJ[iMJ_ptr + IMJ_1AY];
+			fc[fc_ptr1P + CFE_AZ] += delta * iMJ[iMJ_ptr + IMJ_1AZ];
+
+			// dReal *fa1 = faBase + b1AsSizeint * FAE__MAX;
+			int fa1P = faBaseP + b1AsSizeint * FAE__MAX;
+	        faBaseA[fa1P] += delta * iMJ[iMJ_ptr + IMJ_1JVE_MAXABS];
+			// @@@ potential optimization: handle 1-body constraints in a separate
+			//     loop to avoid the cost of test & jump?
+			if (b2 != -1) { // TZ: true iff "fc_ptr2 != NULL"
+				// dReal *fa2 = fa1 + b1ToB2Offset * FAE__MAX;
+				int fa2P = fa1P + b1ToB2Offset * FAE__MAX;
+	            faBaseA[fa2P] += delta * iMJ[iMJ_ptr + IMJ_2JVE_MAXABS];
+				fc[fc_ptr2P + CFE_LX] += delta * iMJ[iMJ_ptr + IMJ_2LX];
+				fc[fc_ptr2P + CFE_LY] += delta * iMJ[iMJ_ptr + IMJ_2LY];
+				fc[fc_ptr2P + CFE_LZ] += delta * iMJ[iMJ_ptr + IMJ_2LZ];
+				fc[fc_ptr2P + CFE_AX] += delta * iMJ[iMJ_ptr + IMJ_2AX];
+				fc[fc_ptr2P + CFE_AY] += delta * iMJ[iMJ_ptr + IMJ_2AY];
+				fc[fc_ptr2P + CFE_AZ] += delta * iMJ[iMJ_ptr + IMJ_2AZ];
+			}
 		}
     }  
 
@@ -2391,7 +2591,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
             int ji_step;
             while ((ji_step = Atomics.ThrsafeIncrementIntUpToLimit(stage4CallContext.m_ji_4b, nj_steps)) != nj_steps) {
                 int ji = ji_step * step_size;
-				final int jiend = ji + Math.min(step_size, nj - ji);
+				final int jiend = ji + dRESTRICT_STEP(step_size, nj - ji);
 
 				//const dReal *Jcopycurr = Jcopy + (sizeint)mindex[ji].fbIndex * JCE__MAX;
 				int Jcopycurr = getFbIndex(mindex, ji) * JCE__MAX;
@@ -2470,7 +2670,21 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 		final DxStepperProcessingCallContext callContext = stage5CallContext.m_stepperCallContext;
 	    dxQuickStepperLocalContext localContext = stage5CallContext.m_localContext;
 
-	    DxWorldProcessMemArena memarena = callContext.m_stepperArena();
+		DxWorld world = callContext.m_world();
+		AtomicInteger iterationCountStorage = world.qs.GetStatisticsIterationCountStorage();
+		if (PRINT_DYNAMIC_ADJUSTMENT_STATS == 0) {
+			Atomics.ThrsafeIncrementNoResult(iterationCountStorage);
+		} else {
+			int iterationCount = Atomics.ThrsafeIncrement(iterationCountStorage);
+			if (iterationCount % 256 == 0) {
+				System.out.printf("Iteration %08u: PE=%u LE=%u, FE=%u\r", iterationCount,
+						world.qs.GetStatisticsPrematureExitsStorage().get(),
+						world.qs.GetStatisticsProlongedExecutionsStorage().get(),
+						world.qs.GetStatisticsFullExtraExecutionsStorage().get());
+			}
+		} // #endif
+
+		DxWorldProcessMemArena memarena = callContext.m_stepperArena();
 	    memarena.RestoreState(stage5CallContext.m_stage3MemArenaState);
 
 	    final dxQuickStepperStage6CallContext stage6CallContext = new dxQuickStepperStage6CallContext();
@@ -2508,7 +2722,49 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
             stage6aSync.submit();
 	    }
 	}
-	
+
+	private static
+	// bool CheckForMaximumToBeLessThanLimitAndResetMaxAdjustments(dReal *forceMaxAdjustments/*=[FAE__MAX]*/,
+	// unsigned int elementCount, dReal limitValue)
+	boolean CheckForMaximumToBeLessThanLimitAndResetMaxAdjustments(double[] forceMaxAdjustments/*=[FAE__MAX]*/,
+																   int elementCount, double limitValue)
+	{
+		dIASSERT(limitValue >= 0);
+
+		boolean hitTheLimit = false;
+
+		// dReal *const adjustmentsEnd = forceMaxAdjustments + (sizeint)elementCount * FAE__MAX;
+		int adjustmentsEndP = elementCount * FAE__MAX;
+
+		if (limitValue == 0) {
+			dxSetZero(forceMaxAdjustments, elementCount * FAE__MAX);
+			hitTheLimit = true; // Due to the "strict less" comparison (see further in the function implementation), no absolute adjustment can "pass below" this limit
+		}
+
+		// for (dReal *currentAdjustment = !hitTheLimit ? forceMaxAdjustments : adjustmentsEnd;
+		// currentAdjustment != adjustmentsEnd; currentAdjustment += FAE__MAX) {
+		for (int currentAdjustmentP = !hitTheLimit ? 0 : adjustmentsEndP; currentAdjustmentP != adjustmentsEndP; currentAdjustmentP += FAE__MAX) {
+			dIASSERT(forceMaxAdjustments[currentAdjustmentP + FAE_NEGATIVE] <= 0); // TODO (TZ) remove / comment out.
+			dIASSERT(forceMaxAdjustments[currentAdjustmentP + FAE_POSITIVE] >= 0);
+			dSASSERT(FAE__MAX == 2);
+
+			// Use "strict less" comparison to allow disabling premature algorithm exits by setting limit to zero
+			if (!(forceMaxAdjustments[currentAdjustmentP + FAE_POSITIVE] < limitValue) ||
+					!(-forceMaxAdjustments[currentAdjustmentP + FAE_NEGATIVE] < limitValue)) {
+				dxSetZero(forceMaxAdjustments, currentAdjustmentP + adjustmentsEndP - currentAdjustmentP);
+				hitTheLimit = true;
+				break;
+			}
+
+			forceMaxAdjustments[currentAdjustmentP + FAE_NEGATIVE] = 0;
+			forceMaxAdjustments[currentAdjustmentP + FAE_POSITIVE] = 0;
+			dSASSERT(FAE__MAX == 2);
+		}
+
+		boolean result = !hitTheLimit;
+		return result;
+	}
+
 	private static
 	void dxQuickStepIsland_Stage6a(dxQuickStepperStage6CallContext stage6CallContext)
 	{
@@ -2527,7 +2783,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    int bi_step;
 	    while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage6CallContext.m_bi_6a, nb_steps)) != nb_steps) {
 	        int bi = bi_step * step_size;
-	        int bicnt = Math.min(step_size, nb - bi);
+	        int bicnt = dRESTRICT_STEP(step_size, nb - bi);
 
 	        int invIrow = bi * IIE__MAX;
 	        int bodycurr = bi;
@@ -2627,7 +2883,7 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	    int bi_step;
 	    while ((bi_step = Atomics.ThrsafeIncrementIntUpToLimit(stage6CallContext.m_bi_6b, nb_steps)) != nb_steps) {
 	        int bi = bi_step * step_size;
-	        int bicnt = Math.min(step_size, nb - bi);
+	        int bicnt = dRESTRICT_STEP(step_size, nb - bi);
 
 	        int bodycurr = bi;
 	        int bodyend = bodycurr + bicnt;
@@ -2652,19 +2908,21 @@ dmemestimate_fn_t, dmaxcallcountestimate_fn_t {
 	}
 
 	/*extern */
-	private int dxEstimateQuickStepMaxCallCount(int activeThreadCount, int allowedThreadCount)
+	private int dxEstimateQuickStepMaxCallCount(int activeThreadCount, int steppingAllowedThreadCount, int lcpAllowedThreadCount)
 	{
 		//(void)activeThreadCount; // unused
+		int maxAllowedThreadCount = Math.max(steppingAllowedThreadCount, lcpAllowedThreadCount);
 	    int result = 1 // dxQuickStepIsland itself
-	        + (2 * allowedThreadCount + 2) // (dxQuickStepIsland_Stage2a + dxQuickStepIsland_Stage2b) * allowedThreadCount + 2 * dxStepIsland_Stage2?_Sync
-	        + 1; // dxStepIsland_Stage3
+	        + (2 * maxAllowedThreadCount + 2) // (dxQuickStepIsland_Stage2a + dxQuickStepIsland_Stage2b) * allowedThreadCount + 2 * dxStepIsland_Stage2?_Sync
+	        + 1 // dxStepIsland_Stage3
+			+ maxAllowedThreadCount;
 	    return result;
 	}
 
 
 	@Override
-	public int run(int activeThreadCount, int allowedThreadCount) {
-		return dxEstimateQuickStepMaxCallCount(activeThreadCount, allowedThreadCount);
+	public int run(int activeThreadCount, int steppingAllowedThreadCount, int lcpAllowedThreadCount) {
+		return dxEstimateQuickStepMaxCallCount(activeThreadCount, steppingAllowedThreadCount, lcpAllowedThreadCount);
 	}
 
 	@Override

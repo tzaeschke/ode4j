@@ -57,7 +57,7 @@ import org.ode4j.ode.internal.joints.DxJointPR;
 //   |         |--------(_)----|-----|           |  ----->Y
 //   +---------+                -    +-----------+
 //
-// N.B. X is comming out of the page
+// N.B. X is coming out of the page
 ////////////////////////////////////////////////////////////////////////////////
 public class PRGetInfo1_Fixture_3  {
 	public PRGetInfo1_Fixture_3() {

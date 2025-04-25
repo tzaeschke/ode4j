@@ -24,12 +24,6 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
-
 import org.ode4j.drawstuff.DrawStuff.DS_TEXTURE_NUMBER;
 import org.ode4j.drawstuff.DrawStuff.dsFunctions;
 import org.ode4j.math.DMatrix3;
@@ -42,6 +36,9 @@ import org.ode4j.ode.DMassC;
 import org.ode4j.ode.DWorld;
 import org.ode4j.ode.OdeHelper;
 import org.ode4j.ode.OdeMath;
+
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 
 
 /**
@@ -67,8 +64,8 @@ public class DemoGyro2 extends dsFunctions {
 	private DBody impGyroBody;
 
 
-	private static double[] xyz = {0,-4.0f,3.0f};
-	private static double[] hpr = {90.0000,-15.0000,0.0000};
+	private static final double[] xyz = {0,-6.0f,3.0f};
+	private static final double[] hpr = {90.0000,0.0000,0.0000};
 
 	// start simulation - set viewpoint
 
@@ -205,7 +202,7 @@ public class DemoGyro2 extends dsFunctions {
 		reset();
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		clear();
 		OdeHelper.closeODE();

@@ -530,7 +530,6 @@ class CollisionLibccd {
                 if (ccdCollide(o1, o2, flags, tempContacts, c1, ccdSupportConvex, ccdCenter, c2, ccdSupportTriangle,
                         ccdCenter) == 1) {
                     DContactGeom tempContact = tempContacts.get();
-                    // TODO TZ: report this to ODE!
                     tempContact.side2 = triindices[i];
 
                     if (meshFaceAngleView == null ||

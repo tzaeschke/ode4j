@@ -119,8 +119,8 @@ class DemoFeedback extends dsFunctions {
 	}
 
 
-	private static final float[] xyz = { -6, 8, 6};
-	private static final float[] hpr = { -65.0f, -27.0f, 0.0f};
+	private static final float[] xyz = { -10, 14, 6};
+	private static final float[] hpr = { -65.0f, 10.0f, 0.0f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()
@@ -159,7 +159,7 @@ class DemoFeedback extends dsFunctions {
 
 	private static void inspectJoints()
 	{
-		final double forcelimit = 4000.0;
+		final double forcelimit = 5000.0;
 		int i;
 		for (i=0; i<SEGMCNT-1; i++)
 		{
@@ -302,7 +302,7 @@ class DemoFeedback extends dsFunctions {
 			colours[i]=0.0;
 
 		// run simulation
-		dsSimulationLoop (args,1280,720,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		contactgroup.empty();
 		contactgroup.destroy();

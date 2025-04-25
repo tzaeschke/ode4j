@@ -60,6 +60,8 @@ public class DContact {
 		public double motion1,motion2,motionN;
 		public double slip1;
 		public double slip2;
+		/** Inward force limit (zero or a negative number up to -dInfinity) */
+		public double inward_force_limit;
 
 		public DSurfaceParameters() {}
 

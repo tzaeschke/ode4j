@@ -25,7 +25,10 @@ package org.ode4j.ode.internal;
 
 import static org.ode4j.ode.internal.Common.*;
 
-// Code style improvements and optimizations by Oleh Derevenko ????-2017
+/*
+ * Code style improvements and optimizations by Oleh Derevenko ????-2025
+ * LDLT cooperative factorization code of ThreadedEquationSolverLDLT copyright (c) 2017-2025 Oleh Derevenko, odar@eleks.com (change all "a" to "e")
+ */
 
 /**
  * Implementation of FastDLTImpl

@@ -177,7 +177,7 @@ class CollideCylinderTrimesh implements DColliderFn {
 	// Use to classify contacts to be "near" in normal direction
 	private static final double fSameContactNormalEpsilon = (0.0001); // 1e-4
 
-	// If this two contact can be classified as "near"
+	// If these two contact can be classified as "near"
 	//inline int _IsNearContacts(sLocalContactData& c1,sLocalContactData& c2)
 	private static boolean _IsNearContacts(sLocalContactData c1,sLocalContactData c2)
 	{
@@ -1238,24 +1238,35 @@ class CollideCylinderTrimesh implements DColliderFn {
 		DxCylinder Cylinder = o1;
 		DxGimpact Trimesh = o2;
 
-		// Main data holder
-		sCylinderTrimeshColliderData cData = new sCylinderTrimeshColliderData(flags, skip);
-		cData._InitCylinderTrimeshData(Cylinder, Trimesh);
+//		// Main data holder
+//		sCylinderTrimeshColliderData cData = new sCylinderTrimeshColliderData(flags, skip);
+//		cData._InitCylinderTrimeshData(Cylinder, Trimesh);
+//
+//		//*****at first , collide box aabb******//
+//
+//		aabb3f test_aabb = new aabb3f();
+//		DAABBC aabb = o1._aabb; // TODO TZ: remompute AABB with getAABB()?
+//		test_aabb.set(aabb.getMin0(), aabb.getMax0(), aabb.getMin1(), aabb.getMax1(), aabb.getMin2(), aabb.getMax2());
+//
+//
+		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
+
+		Cylinder.recomputeAABB();
+		Trimesh.recomputeAABB();
 
 		//*****at first , collide box aabb******//
 
 		aabb3f test_aabb = new aabb3f();
-		DAABBC aabb = o1._aabb; // TODO TZ: remompute AABB with getAABB()?
-		test_aabb.set(aabb.getMin0(), aabb.getMax0(), aabb.getMin1(), aabb.getMax1(), aabb.getMin2(), aabb.getMax2());
-
-
-		GimDynArrayInt collision_result = GimDynArrayInt.GIM_CREATE_BOXQUERY_LIST();
-
+		test_aabb.set(Cylinder._aabb.getMin0(), Cylinder._aabb.getMax0(), Cylinder._aabb.getMin1(), Cylinder._aabb.getMax1(), Cylinder._aabb.getMin2(), Cylinder._aabb.getMax2());
 		Trimesh.m_collision_trimesh().getAabbSet().gim_aabbset_box_collision(test_aabb, collision_result);
 
 		if (collision_result.size() != 0)
 		{
-		//*****Set globals for box collision******//
+			// Main data holder
+			sCylinderTrimeshColliderData cData = new sCylinderTrimeshColliderData(flags, skip);
+			cData._InitCylinderTrimeshData(Cylinder, Trimesh);
+
+			//*****Set globals for box collision******//
 
 			int ctContacts0 = 0;
 			// cData.m_gLocalContacts = (sLocalContactData*)dALLOCA16(sizeof(sLocalContactData)*(cData.m_iFlags & NUMC_MASK));

@@ -24,14 +24,8 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsElapsedTime;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
-import static org.ode4j.drawstuff.DrawStuff.dsStop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.DRotation.dQFromAxisAndAngle;
 import static org.ode4j.ode.DRotation.dQMultiply1;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
@@ -178,8 +172,8 @@ public class DemoJointPU extends dsFunctions {
 
 
 	//camera view
-	private static float[] xyz = {6.0f,0.0f,6.0000f};
-	private static float[] hpr = {-180.000f,-25.5000f,0.0000f};
+	private static final float[] xyz = {8.0f,0.0f,6.0000f};
+	private static final float[] hpr = {-180.000f,-5.5000f,0.0000f};
 
 
 	//world,space,body & geom
@@ -743,7 +737,7 @@ public class DemoJointPU extends dsFunctions {
 
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		//delete joint;
 		//joint.DESTRUCTOR();  //TZ, not necessary, is deleted from dWorldDestroy()

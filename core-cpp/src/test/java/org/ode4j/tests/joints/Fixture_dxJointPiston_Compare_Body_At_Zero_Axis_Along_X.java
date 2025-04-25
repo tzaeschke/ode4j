@@ -55,7 +55,7 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 /**
  * Compare only one body to 2 bodies with one fixed.
  * 
- * The body are positionned at (0, 0, 0), with no rotation
+ * The body is positioned at (0, 0, 0) with no rotation
  * The joint is a Piston Joint
  * Axis is along the X axis
  * Anchor at (0, 0, 0)
@@ -111,11 +111,11 @@ public class Fixture_dxJointPiston_Compare_Body_At_Zero_Axis_Along_X extends Tes
 	private DPistonJoint jId;    // Joint with one body
 	//    };
 
-	// This test compare the result of a slider with 2 bodies where body body 2 is
+	// This test compares the result of a slider with 2 bodies where body 2 is
 	// fixed to the world to a slider with only one body at position 1.
 	//
-	// Test the limits [-1, 0.25] when only one body at is attached to the joint
-	// using dJointAttache(jId, bId, 0);
+	// Test the limits [-1, 0.25] when only one body is attached to the joint
+	// using dJointAttach(jId, bId, 0);
 	//
 	//TEST_FIXTURE(Fixture_dxJointPiston_Compare_Body_At_Zero_Axis_Along_X,
 	@Test public void test_Limit_minus1_025_One_Body_on_left()
@@ -156,11 +156,11 @@ public class Fixture_dxJointPiston_Compare_Body_At_Zero_Axis_Along_X extends Tes
 
 
 
-	// This test compare the result of a slider with 2 bodies where body body 1 is
+	// This test compares the result of a slider with 2 bodies where body 1 is
 	// fixed to the world to a slider with only one body at position 2.
 	//
-	// Test the limits [-1, 0.25] when only one body at is attached to the joint
-	// using dJointAttache(jId, 0, bId);
+	// Test the limits [-1, 0.25] when only one body is attached to the joint
+	// using dJointAttach(jId, 0, bId);
 	//
 	//TEST_FIXTURE(Fixture_dxJointPiston_Compare_Body_At_Zero_Axis_Along_X,
 	@Test public void test_Limit_minus1_025_One_Body_on_right()
@@ -202,11 +202,11 @@ public class Fixture_dxJointPiston_Compare_Body_At_Zero_Axis_Along_X extends Tes
 
 
 
-	// This test compare the result of a slider with 2 bodies where body body 2 is
+	// This test compares the result of a slider with 2 bodies where body 2 is
 	// fixed to the world to a slider with only one body at position 1.
 	//
-	// Test the limits [0, 0] when only one body at is attached to the joint
-	// using dJointAttache(jId, bId, 0);
+	// Test the limits [0, 0] when only one body is attached to the joint
+	// using dJointAttach(jId, bId, 0);
 	//
 	// The body should not move since their is no room between the two limits
 	//
@@ -253,11 +253,11 @@ public class Fixture_dxJointPiston_Compare_Body_At_Zero_Axis_Along_X extends Tes
 	}
 
 
-	// This test compare the result of a slider with 2 bodies where body body 1 is
+	// This test compares the result of a slider with 2 bodies where body 1 is
 	// fixed to the world to a slider with only one body at position 2.
 	//
-	// Test the limits [0, 0] when only one body at is attached to the joint
-	// using dJointAttache(jId, 0, bId);
+	// Test the limits [0, 0] when only one body is attached to the joint
+	// using dJointAttach(jId, 0, bId);
 	//
 	// The body should not move since their is no room between the two limits
 	//

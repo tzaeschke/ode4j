@@ -124,8 +124,8 @@ class DemoFriction extends dsFunctions {
 	}
 
 
-	private static float[] xyz = {1.7772f,-0.7924f,2.7600f};
-	private static float[] hpr = {90.0000f,-54.0000f,0.0000f};
+	private static final float[] xyz = {1.7772f,-1.7924f,2.7600f};
+	private static final float[] hpr = {90.0000f,-24.0000f,0.0000f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()
@@ -196,7 +196,7 @@ class DemoFriction extends dsFunctions {
 		}
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		contactgroup.destroy();
 		space.destroy();

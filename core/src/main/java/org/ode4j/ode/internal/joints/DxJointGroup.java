@@ -94,7 +94,7 @@ public class DxJointGroup extends DBase implements DJointGroup
 	
     public static DxJointGroup dJointGroupCreate (int max_size)
     {
-        // not any more ... dUASSERT (max_size > 0,"max size must be > 0");
+        // not anymore ... dUASSERT (max_size > 0,"max size must be > 0");
         DxJointGroup group = new DxJointGroup();
 //        group.num = 0;
         return group;

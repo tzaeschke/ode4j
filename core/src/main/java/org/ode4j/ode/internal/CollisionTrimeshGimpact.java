@@ -39,7 +39,7 @@ import static org.ode4j.ode.internal.gimpact.GimGeometry.*;
 // TriMesh code by Erwin de Vries.
 // Modified for FreeSOLID Compatibility by Rodrigo Hernandez
 // Trimesh caches separation by Oleh Derevenko
-// TriMesh storage classes refactoring and face angle computation code by Oleh Derevenko (C) 2016-2017
+// TriMesh storage classes refactoring and face angle computation code by Oleh Derevenko (C) 2016-2025
 
 //****************************************************************************
 // dxTriMesh class
@@ -243,7 +243,7 @@ class CollisionTrimeshGimpact {
      *                                                                       *
      *************************************************************************/
 
-    // TriMesh storage classes refactoring and face angle computation code by Oleh Derevenko (C) 2016-2017
+    // TriMesh storage classes refactoring and face angle computation code by Oleh Derevenko (C) 2016-2025
 
     //        #include<ode/collision.h>
     //            #include<ode/rotation.h>

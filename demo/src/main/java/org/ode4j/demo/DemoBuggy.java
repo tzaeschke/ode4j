@@ -126,8 +126,8 @@ class DemoBuggy extends dsFunctions {
 	}
 
 
-	private static float[] xyz = {0.8317f,-0.9817f,0.8000f};
-	private static float[] hpr = {121.0000f,-27.5000f,0.0000f};
+	private static final float[] xyz = {0.8317f,-1.9817f,0.8000f};
+	private static final float[] hpr = {90.0000f,-5.000f,0.0000f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()
@@ -305,7 +305,7 @@ class DemoBuggy extends dsFunctions {
 		ground_box.setRotation(R);
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		box[0].destroy();
 		sphere[0].destroy();

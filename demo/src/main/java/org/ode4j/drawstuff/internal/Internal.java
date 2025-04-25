@@ -34,6 +34,9 @@ abstract class Internal {
 
 	// supplied by platform specific code
 
+	abstract void dsPlatformInitializeConsole();
+	abstract void dsPlatformFinalizeConsole();
+
 	abstract void dsPlatformSimLoop (int window_width, int window_height,
 			dsFunctions fn, boolean initial_pause);
 
@@ -43,6 +46,16 @@ abstract class Internal {
 	abstract void dsStartGraphics (int width, int height, dsFunctions fn);
 	abstract void dsDrawFrame (int width, int height, dsFunctions fn, boolean pause);
 	abstract void dsStopGraphics();
+
+	enum MOTIONMODE	{
+		dsMOTIONMODE_LBUTTONDOWN ( 0x00000001),
+		dsMOTIONMODE_MBUTTONDOWN ( 0x00000002),
+		dsMOTIONMODE_RBUTTONDOWN ( 0x00000004);
+		final int v;
+		MOTIONMODE(int v) {
+			this.v = v;
+		}
+	}
 	abstract void dsMotion (int mode, int deltax, int deltay);
 
 	abstract boolean dsGetShadows();

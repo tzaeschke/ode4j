@@ -219,7 +219,7 @@ public class OdeJointsFactoryImpl {
 
 	//dJointGroup dJointGroupCreate (int max_size)
 	//{
-	//    // not any more ... dUASSERT (max_size > 0,"max size must be > 0");
+	//    // not anymore ... dUASSERT (max_size > 0,"max size must be > 0");
 	//    dxJointGroup *group = new dxJointGroup;
 	//    group->num = 0;
 	//    return group;

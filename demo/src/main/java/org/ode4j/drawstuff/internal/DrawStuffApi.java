@@ -28,6 +28,10 @@ import org.ode4j.math.DVector3C;
 
 public interface DrawStuffApi {
 
+	void dsInitializeConsole(String[] args);
+
+	void dsFinalizeConsole();
+
 	public abstract void dsSimulationLoop(String[] args, int window_width,
 			int window_height, dsFunctions fn);
 
@@ -69,7 +73,7 @@ public interface DrawStuffApi {
 
 	public abstract void dsDrawLine(final DVector3C pos1, final DVector3C pos2);
 
-	public abstract void dsSetViewpoint(float[] xyz, float[] hpr);
+	public abstract void dsSetViewpoint(final float[] xyz, final float[] hpr);
 
 	public abstract void dsGetViewpoint(float[] xyz, float[] hpr);
 

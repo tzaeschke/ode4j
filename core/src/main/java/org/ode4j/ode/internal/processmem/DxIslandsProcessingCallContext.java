@@ -46,9 +46,13 @@ public class DxIslandsProcessingCallContext {
 		m_stepper = stepper;
 		//m_islandToProcessStorage = 0;
 		m_stepperAllowedThreads = 0;
+        m_lcpAllowedThreads = 0;
 	}
 
-	public void SetStepperAllowedThreads(int allowedThreadsLimit) { m_stepperAllowedThreads = allowedThreadsLimit; }
+	public void SetStepperAllowedThreads(int stepperAllowedThreadCount, int lcpAllowedThreadCount) {
+        m_stepperAllowedThreads = stepperAllowedThreadCount;
+        m_lcpAllowedThreads = lcpAllowedThreadCount;
+    }
 
     final DxWorld                   m_world;
     final DxWorldProcessIslandsInfo m_islandsInfo;
@@ -56,8 +60,8 @@ public class DxIslandsProcessingCallContext {
     final dstepper_fn_t             m_stepper;
     //volatile int                  m_islandToProcessStorage;
     final AtomicInteger             m_islandToProcessStorage = new AtomicInteger();
-    int                        m_stepperAllowedThreads;
-
+    int                             m_stepperAllowedThreads;
+    int                             m_lcpAllowedThreads;
     
     public void ThreadedProcessJobStart(final TaskGroup parent)
     {

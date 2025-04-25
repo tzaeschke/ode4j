@@ -44,6 +44,7 @@ import org.ode4j.math.DVector3;
 import org.ode4j.math.DVector3C;
 
 import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.internal.Internal.MOTIONMODE.*;
 
 /**
  *
@@ -1006,18 +1007,18 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	void dsMotion (int mode, int deltax, int deltay)
 	{
 		float side = 0.01f * deltax;
-		float fwd = (mode==4) ? (0.01f * deltay) : 0.0f;
+		float fwd = (mode==dsMOTIONMODE_RBUTTONDOWN.v) ? (0.01f * deltay) : 0.0f;
 		float s = (float) Math.sin (view_hpr[0]*DEG_TO_RAD);
 		float c = (float) Math.cos (view_hpr[0]*DEG_TO_RAD);
 
-		if (mode==1) {
+		if (mode==dsMOTIONMODE_LBUTTONDOWN.v) {
 			view_hpr[0] += deltax * 0.5f;
 			view_hpr[1] += deltay * 0.5f;
 		}
 		else {
 			view_xyz[0] += -s*side + c*fwd;
 			view_xyz[1] += c*side + s*fwd;
-			if (mode==2 || mode==5) view_xyz[2] += 0.01f * deltay;
+			if (mode==dsMOTIONMODE_MBUTTONDOWN.v || mode==(dsMOTIONMODE_LBUTTONDOWN.v | dsMOTIONMODE_RBUTTONDOWN.v)) view_xyz[2] += 0.01f * deltay;
 		}
 		wrapCameraAngles();
 	}
@@ -1431,9 +1432,32 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 		GL11.glDepthRange (0,0.9999);
 	}
 
+	/*extern */
+	// void dsInitializeConsole(int argc, char **argv)
+	public void dsInitializeConsole(String[] args)
+	{
+		dsPlatformInitializeConsole();
+	}
 
-	
-	//extern "C" 
+	/*extern */
+	public void dsFinalizeConsole()
+	{
+		dsPlatformFinalizeConsole();
+	}
+
+	/*extern */
+	void dsPlatformInitializeConsole()
+	{
+		// Do nothing
+	}
+
+	/*extern */
+	void dsPlatformFinalizeConsole()
+	{
+		// Do nothing
+	}
+
+	/*extern */
 	/**
 	 * If you filter out arguments beforehand, simply set them to "".
 	 * @see org.ode4j.drawstuff.DrawStuff#dsSimulationLoop(String[], int, int, dsFunctions)
@@ -1480,7 +1504,7 @@ public class DrawStuffGL extends LwJGL implements DrawStuffApi {
 	//extern "C" 
 	//void dsSetViewpoint (float xyz[3], float hpr[3])
 	@Override
-	public void dsSetViewpoint (float[] xyz, float[] hpr)
+	public void dsSetViewpoint (final float[] xyz, final float[] hpr)
 	{
 		if (current_state < 1) dsError ("dsSetViewpoint() called before simulation started");
 		if (xyz!=null) {

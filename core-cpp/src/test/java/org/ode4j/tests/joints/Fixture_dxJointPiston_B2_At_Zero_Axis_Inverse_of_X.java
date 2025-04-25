@@ -51,7 +51,7 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
  * Only body 2
- * The body are positionned at (0, 0, 0), with no rotation
+ * The body is positioned at (0, 0, 0) with no rotation
  * The joint is a Piston Joint
  * Axis is in the opposite X axis
  * Anchor at (0, 0, 0)

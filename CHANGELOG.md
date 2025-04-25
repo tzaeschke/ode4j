@@ -25,6 +25,39 @@
 
 --> See TODO.txt
 
+## 0.5.4 - in progress
+
+Known Bugs: TrimeshHeightfield and LayeredTrimeshHeightfield don't work with Convex
+
+TODO 
+- rename createBHVSpace to BVH!
+- Add PH-Tree space???
+
+- Port updates until 0.16.6 (previous: 0.16.2/.3) ([#147](https://github.com/tzaeschke/ode4j/pull/147)). This includes:
+  - Fixed porting bug in `dxQuickStepIsland_Stage4LCP_IterationStep`:
+    `fc_ptr2P = b2 * CFE__MAX;` was declared `int` and thus overwrote
+    the existing variable.
+  - New box-plane collider
+  - new DemoTrimeshCollision
+  - new API method in DPUJoint: `void addTorques (double torque1, double torque2);`
+  - Cleanup:
+    - Lots of typos fixed
+    - Demos have new default window size and some a new default view position
+    - DemoFeedback has changed parameters.
+    - Fix? DxHeightfield.dCollideHeightfieldZone() cleaned up
+    - Fix? DLCP swapping updated
+  - Skipped:
+    - quickstep.cpp / dxQuickStepIsland (allowedThreads != 1)
+    - threading_impl*, threading_pool*
+TODO verify
+    - Should dxQuickStepIsland_Stage4LCP_IterationStartSingleThread()
+    - get the same updates as dxQuickStepIsland_Stage4LCP_IterationStart()?
+    - ThrsafeDecrement
+    - Multithrading: verify calculateThreadingLimitedThreadCount()
+
+MAYBE BROKEN:
+- sizeint is "long"!!!!
+
 ## 0.5.3 - 2024-04-28
 
 - Fix INTERNAL ERROR in `FastLSolve.solveL1Straight()` caused by bug in `DLCP.solve1()`.

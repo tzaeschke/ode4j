@@ -97,8 +97,8 @@ class DemoChain2 extends dsFunctions {
 		}
 	};
 	
-	private static float[] xyz = {2.1640f,-1.3079f,1.7600f};
-	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {2.1640f,-1.3079f,1.7600f};
+	private static final float[] hpr = {125.5000f,-17.0000f,0.0000f};
 
 	// start simulation - set viewpoint
 
@@ -107,8 +107,8 @@ class DemoChain2 extends dsFunctions {
 	{
 		//TODO dAllocateODEDataForThread(dAllocateMaskAll);
 
-		//  static float xyz[3] = {2.1640f,-1.3079f,1.7600f};
-		//  static float hpr[3] = {125.5000f,-17.0000f,0.0000f};
+		//  float xyz[3] = {2.1640f,-1.3079f,1.7600f};
+		//  float hpr[3] = {125.5000f,-17.0000f,0.0000f};
 		dsSetViewpoint (xyz,hpr);
 	}
 
@@ -176,7 +176,7 @@ class DemoChain2 extends dsFunctions {
 		}
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		OdeHelper.closeODE();
 	}

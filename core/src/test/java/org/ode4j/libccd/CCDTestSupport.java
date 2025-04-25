@@ -95,17 +95,17 @@ public class CCDTestSupport {
 		return name;
 	}
 
-//	/**
-//	 * Returns supporting vertex via v.
-//	 * Supporting vertex is fathest vertex from object in direction dir.
-//	 */
-//	void ccdSupport(const void *obj, const ccd_vec3_t *dir,
-//	                ccd_vec3_t *v);
-//
-//	/**
-//	 * Returns center of object.
-//	 */
-//	void ccdObjCenter(const void *obj, ccd_vec3_t *center);
+	//	/**
+	//	 * Returns supporting vertex via v.
+	//	 * Supporting vertex is farthest vertex from object in direction dir.
+	//	 */
+	//	void ccdSupport(const void *obj, const ccd_vec3_t *dir,
+	//	                ccd_vec3_t *v);
+	//
+	//	/**
+	//	 * Returns center of object.
+	//	 */
+	//	void ccdObjCenter(const void *obj, ccd_vec3_t *center);
 
 	/***
 	 * libccd

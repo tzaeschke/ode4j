@@ -52,7 +52,7 @@ import org.ode4j.ode.DWorld;
 import org.ode4j.ode.internal.joints.DxJoint;
 import org.ode4j.ode.internal.joints.DxJointUniversal;
 
-//This file create unit test for some of the functions found in:
+//This file creates unit tests for some of the functions found in:
 //ode/src/joint.cpp
 public class UniversalGetInfo1_Fixture_1  {
 	public UniversalGetInfo1_Fixture_1() {

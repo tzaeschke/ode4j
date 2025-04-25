@@ -222,7 +222,7 @@ public class DxJointContact extends DxJoint implements DContactJoint
 		}
 
 		// set LCP limits for normal
-		pairLoHiA[pairLoHiOfs + ROW_NORMAL * pairskip + GI2_LO] = 0;
+		pairLoHiA[pairLoHiOfs + ROW_NORMAL * pairskip + GI2_LO] = (surface_mode & dContactInelastic) == 0 ? 0.0 : dMin(contact.surface.inward_force_limit, 0.0);
 		pairLoHiA[pairLoHiOfs + ROW_NORMAL * pairskip + GI2_HI] = dInfinity;
 
 

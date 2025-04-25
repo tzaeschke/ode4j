@@ -423,7 +423,7 @@ public interface DGeom {
 	    /**
 	     * @param data The user data object, as passed to dSpaceCollide.
 	     * @param o1   The first geom being tested.
-	     * @param o2   The second geom being test.
+	     * @param o2   The second geom being tested.
 	     */
 		public void call (Object data, DGeom o1, DGeom o2);
 	}
@@ -471,7 +471,7 @@ public interface DGeom {
 //	 * dGeomCommonAnyControlCode applies to any control class and returns success if 
 //	 * at least one control code is available for the given class with given geom.
 //	 * <br>
-//	 * Currently there are the folliwing control classes supported:<br>
+//	 * Currently there are the following control classes supported:<br>
 //	 * <li> dGeomColliderControlClass</li>
 //	 * <p>
 //	 * For dGeomColliderControlClass there are the following codes available:<br>

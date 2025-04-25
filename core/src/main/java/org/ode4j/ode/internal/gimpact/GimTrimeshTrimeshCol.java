@@ -189,7 +189,7 @@ class GimTrimeshTrimeshCol {
 
 
 
-	    //State variabnles
+	    //State variables
 		int mostdir=0;
 		int clipped2_count=0;
 
@@ -203,7 +203,7 @@ class GimTrimeshTrimeshCol {
 		     return false;//Reject
 		}
 
-		//find most deep interval face1
+		//find deepest interval face1
 		int deep2_count=0;
 
 		RefFloat maxdeep = new RefFloat();
@@ -283,7 +283,7 @@ class GimTrimeshTrimeshCol {
 	 * Finds the contact points from a collision of two triangles.
 	 * <p>
 	 * Returns the contact points, the penetration depth and the separating normal of the collision
-	 * between two triangles. The normal is pointing toward triangle 1 from triangle 2
+	 * between two triangles. The normal is pointing towards triangle 1 from triangle 2
 	 */
 //	int gim_triangle_triangle_collision(
 //			GIM_TRIANGLE_DATA *tri1,

@@ -406,7 +406,7 @@ public class DxWorldProcessContext {
 
             // TODO TZ: This has not been migrfated from ODE 0.16.2
             // throw new UnsupportedOperationException("This has not been ported yet from ODE");
-            int islandThreadsCount = world.GetThreadingIslandsMaxThreadsCount(null);
+            int islandThreadsCount = world.calculateIslandIterationMaxThreadCount(null);
             if (!context.ReallocateStepperMemArenas(world, islandThreadsCount, stepperReqWithCallContext,
                     memmgr, reserveInfo.m_fReserveFactor, reserveInfo.m_uiReserveMinimum))
             {

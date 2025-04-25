@@ -40,14 +40,15 @@ public abstract class DObject extends DBase {
     public int tag;            // used by dynamics algorithms
     //void userdata;        // user settable data
     protected Object userdata;        // user settable data
+
     protected DObject(DxWorld w) { //From ODE.java
         world = w;
-        _next = new Ref<DObject>();
+        _next = new Ref<>();
         _tome = null;
         userdata = null;
         tag = 0;
     }
-   
+
     /**
      * Add an object `obj' to the list who's head pointer is pointed
      * to by `first'.

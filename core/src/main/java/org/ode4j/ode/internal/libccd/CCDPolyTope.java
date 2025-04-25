@@ -218,7 +218,7 @@ public class CCDPolyTope {
 	    ccd_pt_edge_t e;
 	    int i;
 
-	    // remove face from edges' recerence lists
+	    // remove face from edges' reference lists
 	    for (i = 0; i < 3; i++){
 	        e = f.edge(i);
 	        if (e.faces0 == f){

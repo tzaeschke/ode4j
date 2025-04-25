@@ -131,8 +131,8 @@ class DemoCylVsSphere extends dsFunctions {
 	}
 
 
-	private static float[] xyz = {-8,-9,3};
-	private static float[] hpr = {45.0000f,-27.5000f,0.0000f};
+	private static final float[] xyz = {-8,-9,3};
+	private static final float[] hpr = {45.0000f,-2.5000f,0.0000f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()
@@ -228,7 +228,7 @@ class DemoCylVsSphere extends dsFunctions {
 		space.add (sphgeom);
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		contactgroup.empty();
 		contactgroup.destroy();

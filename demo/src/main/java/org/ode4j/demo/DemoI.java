@@ -70,8 +70,8 @@ class DemoI extends dsFunctions {
 	private static int iteration;
 
 
-	private static float[] xyz = {1.5572f,-1.8886f,1.5700f};
-	private static float[] hpr = {118.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {1.5572f,-1.8886f,1.5700f};
+	private static final float[] hpr = {118.5000f,0.0000f,0.0000f};
 
 	// start simulation - set viewpoint
 	@Override
@@ -243,7 +243,7 @@ class DemoI extends dsFunctions {
 		reset_test();
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		world.destroy ();
 		OdeHelper.closeODE();

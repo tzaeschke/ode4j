@@ -152,6 +152,35 @@ public class DrawStuff {
 	  }
 //	} dsFunctions;
 
+	/**
+	 * Initializes output console.
+	 * <p>
+	 * The function performs initialization routines for the application console.
+	 * <p>
+	 * The function is to be called only if @fn dsSimulationLoop is not invoked.
+	 *
+	 * @param args Reserved for future use
+	 */
+	// DS_API
+	public static void dsInitializeConsole(String[] args) {
+		get().dsInitializeConsole(args);
+	}
+
+
+	/**
+	 * Finalizes output console.
+	 * <p>
+	 * The function performs all the necessary finalization for the application console.
+	 * <p>
+	 * The function is to be called only if @fn dsSimulationLoop is not invoked.
+	 */
+	// DS_API
+	public static void dsFinalizeConsole() {
+		get().dsFinalizeConsole();
+	}
+
+	public static final int DS_SIMULATION_DEFAULT_WIDTH = 1280;
+	public static final int DS_SIMULATION_DEFAULT_HEIGHT = 720;
 
 	/**
 	 * Does the complete simulation.
@@ -222,10 +251,10 @@ public class DrawStuff {
 	 */
 	//DS_API 
 //	public static  void dsSetViewpoint (float xyz[3], float hpr[3]);
-	public static void dsSetViewpoint (float xyz[], float hpr[]) {
+	public static void dsSetViewpoint (final float[] xyz, final float[] hpr) {
 		get().dsSetViewpoint(xyz, hpr);
 	}
-	public static void dsSetViewpoint (double xyz[], double hpr[]) {
+	public static void dsSetViewpoint (final double[] xyz, final double[] hpr) {
 		get().dsSetViewpoint(toFloat(xyz), toFloat(hpr));
 	}
 

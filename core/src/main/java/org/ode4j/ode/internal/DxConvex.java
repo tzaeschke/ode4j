@@ -492,7 +492,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	//	 * @param Direction1 The direction of Ray 3
 	//	 * @param t the time "t" in Ray 1 that gives us the closest point
 	//	 * (closest_point=Origin1+(Direction1*t).
-	//	 * @return true if there is a closest point, false if the rays are paralell.
+	//	 * @return true if there is a closest point, false if the rays are parallel.
 	//	 */
 	//inline bool ClosestPointInRay(final dVector3 Origin1,
 	//	      final dVector3 Direction1,
@@ -531,6 +531,10 @@ public class DxConvex extends DxGeom implements DConvex {
 	 * @param q1 end of segment 1
 	 * @param p2 start of segment 2
 	 * @param q2 end of segment 2
+//	 * @param t the time "t" in Ray 1 that gives us the closest point
+//	 *   (closest_point=Origin1+(Direction1*t).
+//	 * @return true if there is a closest point, false if the rays are parallel.
+//	 *
 	 */
 //	private float ClosestPointBetweenSegments(dVector3& p1,
 //            dVector3& q1,
@@ -538,7 +542,7 @@ public class DxConvex extends DxGeom implements DConvex {
 //            dVector3& q2,
 //            dVector3& c1,
 //            dVector3& c2)
-	private static double ClosestPointBetweenSegments(DVector3 p1, DVector3 q1,
+	private static void ClosestPointBetweenSegments(DVector3 p1, DVector3 q1,
             DVector3 p2, DVector3 q2, DVector3 c1, DVector3 c2)
 	{
 	    // s & t were originaly part of the output args, but since
@@ -564,10 +568,7 @@ public class DxConvex extends DxGeom implements DConvex {
 	        s = t = 0.0f;
 	        c1.set( p1 );//dVector3Copy(p1,c1);
 	        c2.set( p2 );//dVector3Copy(p2,c2);
-//	        return (c1[0] - c2[0])*(c1[0] - c2[0])+
-//	               (c1[1] - c2[1])*(c1[1] - c2[1])+
-//	               (c1[2] - c2[2])*(c1[2] - c2[2]);
-	        return c1.reSub(c2).lengthSquared();
+	        return;
 	    }
 	    if (a <= dEpsilon)
 	    {
@@ -641,12 +642,6 @@ public class DxConvex extends DxGeom implements DConvex {
 //	    c2[1] = p2[1] + d2[1] * t;
 //	    c2[2] = p2[2] + d2[2] * t;
 	    c2.eqSum( p2, d2, t );
-//	    return (c1[0] - c2[0])*(c1[0] - c2[0])+
-//	           (c1[1] - c2[1])*(c1[1] - c2[1])+
-//	           (c1[2] - c2[2])*(c1[2] - c2[2]);
-	    return (c1.get0() - c2.get0())*(c1.get0() - c2.get0())+
-        (c1.get1() - c2.get1())*(c1.get1() - c2.get1())+
-        (c1.get2() - c2.get2())*(c1.get2() - c2.get2());
 	}
 
 //	#if 0
@@ -668,7 +663,7 @@ public class DxConvex extends DxGeom implements DConvex {
 //	 * @param p2 Plane 2
 //	 * @param p Contains the origin of the ray upon returning if planes intersect
 //	 * @param d Contains the direction of the ray upon returning if planes intersect
-//	 * @return true if the planes intersect, false if paralell.
+//	 * @return true if the planes intersect, false if parallel.
 //	 */
 //	private boolean IntersectPlanes(final DVector3 p1, double p13, final DVector3 p2, double p23,DVector3 p, DVector3 d)
 //	{
@@ -885,7 +880,7 @@ public class DxConvex extends DxGeom implements DConvex {
 				// Check if contacts are full and both signs have been already found
 				if (((contacts ^ maxc) | totalsign) == BOTH_SIGNS) // harder to comprehend but requires one register less
 				{
-					break; // Nothing can be changed any more
+					break; // Nothing can be changed anymore
 				}
 			}
 			if (totalsign == BOTH_SIGNS) return contacts;
@@ -1138,7 +1133,7 @@ public class DxConvex extends DxGeom implements DConvex {
 			}
 		}
 		// *: usually using the distance part of the plane (axis) is
-		// not necesary, however, here we need it here in order to know
+		// not necesary, however, here we need it in order to know
 		// which face to pick when there are 2 parallel sides.
 	}
 
@@ -1287,7 +1282,7 @@ Helper struct
         Take only into account the faces that penetrate cvx1 to determine
         minimum depth
         ((max2*min2)<=0) = different sign, or one is zero and thus
-        cvx2 barelly touches cvx1
+        cvx2 barely touches cvx1
 			 */
 			if (((max2.get()*min2.get())<=0) && (dFabs(depth)<dFabs(ccso.min_depth)))
 			{
@@ -1613,7 +1608,7 @@ Helper struct
 //								p.eqSum(i1, 1-t.get(), i2, t.get());
 //							} else { //#else // #if0
 								// Apply reference convex transformations to p
-								// The commented out piece of code is likelly to
+								// The commented out piece of code is likely to
 								// produce less operations than this one, but
 								// this way we know we are getting the right data
 								dMultiply0_331(tmp,cvx1.final_posr().R(),p);

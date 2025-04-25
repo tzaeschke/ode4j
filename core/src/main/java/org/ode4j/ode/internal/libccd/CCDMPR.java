@@ -60,7 +60,7 @@ public class CCDMPR {
 	 * Computes penetration of obj2 into obj1.
 	 * Depth of penetration, direction and position is returned, i.e. if obj2
 	 * is translated by computed depth in resulting direction obj1 and obj2
-	 * would have touching contact. Position is point in global coordinates
+	 * would have touching contact. Position is a point in global coordinates
 	 * where force should be take a place.
 	 *
 	 * Minkowski Portal Refinement algorithm is used (MPR, a.k.a. XenoCollide,

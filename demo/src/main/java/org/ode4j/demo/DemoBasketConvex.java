@@ -136,8 +136,8 @@ public class DemoBasketConvex extends dsFunctions {
 
 		dsSetViewpoint (xyz,hpr);
 	}
-	private float[] xyz = {-8,0,5};
-	private float[] hpr = {0.0f,-29.5000f,0.0000f};
+	private static final float[] xyz = {-8,0,5};
+	private static final float[] hpr = {0.0f,-9.5000f,0.0000f};
 
 
 
@@ -271,7 +271,7 @@ public class DemoBasketConvex extends dsFunctions {
 		space.add (sphgeom);
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		// Causes segm violation? Why?
 		// (because dWorldDestroy() destroys body connected to geom; must call first!)

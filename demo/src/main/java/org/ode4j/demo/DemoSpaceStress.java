@@ -24,16 +24,8 @@
  *************************************************************************/
 package org.ode4j.demo;
 
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
-import static org.ode4j.drawstuff.DrawStuff.dsSetSphereQuality;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.DMisc.dRandReal;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactBounce;
@@ -140,8 +132,8 @@ public class DemoSpaceStress extends dsFunctions {
 	}
 
 
-	private static float[] xyz = {2.1640f,-1.3079f,3.7600f};
-	private static float[] hpr = {125.5000f,-17.0000f,0.0000f};
+	private static final float[] xyz = {4.1640f,-3.3079f,3.7600f};
+	private static final float[] hpr = {135.5000f,0.0000f,0.0000f};
 	// start simulation - set viewpoint
 	@Override
 	public void start()	{
@@ -456,7 +448,7 @@ public class DemoSpaceStress extends dsFunctions {
 		}
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 		contactgroup.destroy();
 		space.destroy();

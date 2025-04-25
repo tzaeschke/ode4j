@@ -627,7 +627,7 @@ public class OdeInit {
      * in advance. If collision detection is not going to be used, it is not necessary
      * to specify this flag.
      *
-     * {@code dAllocateMaskAll} is a mask that can be used for for allocating all possible 
+     * {@code dAllocateMaskAll} is a mask that can be used for allocating all possible
      * data in cases when it is not known what exactly features of ODE will be used.
      * The mask may not be used in combination with other flags. It is guaranteed to
      * include all the current and future legal allocation flags. However, mature 

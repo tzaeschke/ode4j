@@ -299,7 +299,7 @@ class CollideCylinderBox extends DxCollisionUtil implements DColliderFn {
 				return false; 
 			} 
 
-			// Finalyze the depth calculation
+			// Finalize the depth calculation
 			fDepth -= dFabs(fd);
 
 			// get maximum depth

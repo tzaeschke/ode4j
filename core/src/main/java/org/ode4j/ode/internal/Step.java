@@ -44,6 +44,7 @@ import static org.ode4j.ode.internal.Timer.dTimerReport;
 import static org.ode4j.ode.internal.Timer.dTimerStart;
 import static org.ode4j.ode.internal.cpp4j.Cstdio.stdout;
 import static org.ode4j.ode.internal.joints.JointEnums.*;
+import static org.ode4j.ode.internal.processmem.DxUtil.COMMON_CACHELINE_SIZE;
 import static org.ode4j.ode.internal.processmem.DxUtil.EFFICIENT_ALIGNMENT;
 import static org.ode4j.ode.threading.Atomics.*;
 
@@ -113,9 +114,9 @@ dmaxcallcountestimate_fn_t {
 	// #define AMATRIX_ALIGNMENT   dMAX(64, EFFICIENT_ALIGNMENT)
 	// #define INVI_ALIGNMENT      dMAX(32, EFFICIENT_ALIGNMENT)
 	// #define JINVM_ALIGNMENT     dMAX(64, EFFICIENT_ALIGNMENT)
-	private static final int AMATRIX_ALIGNMENT = dMAX(64, EFFICIENT_ALIGNMENT);
-	// private static final int INVI_ALIGNMENT    = dMAX(32, EFFICIENT_ALIGNMENT);
-	private static final int JINVM_ALIGNMENT   = dMAX(64, EFFICIENT_ALIGNMENT);
+	private static final int AMATRIX_ALIGNMENT = dMAX(COMMON_CACHELINE_SIZE, EFFICIENT_ALIGNMENT);
+	// private static final int INVI_ALIGNMENT    = dMAX(COMMON_CACHELINE_SIZE, EFFICIENT_ALIGNMENT);
+	private static final int JINVM_ALIGNMENT   = dMAX(COMMON_CACHELINE_SIZE, EFFICIENT_ALIGNMENT);
 
 	private static class dxStepperStage0Outputs
 	{
@@ -1439,7 +1440,7 @@ dmaxcallcountestimate_fn_t {
 		{
 			// Warning!!!
 			// This code depends on A elements and JinvM elements and therefore 
-			// must be in different sub-stage from A initialization and JinvM calculation in Stage2b 
+			// must be in a different sub-stage from A initialization and JinvM calculation in Stage2b
 			// to ensure proper synchronization and avoid accessing numbers being modified.
 			// Warning!!!
 			double[] A = localContext.m_A;
@@ -1587,7 +1588,7 @@ dmaxcallcountestimate_fn_t {
 		//const unsigned int *mindex = localContext.m_mindex;
 		int[] findex = localContext.m_findex;
 		double[] A = localContext.m_A;
-		double[] pairsRhsLambda = localContext.m_pairsRhsCfm; // Reuse cfm buffer for lambdas as the former values are not needed any more
+		double[] pairsRhsLambda = localContext.m_pairsRhsCfm; // Reuse cfm buffer for lambdas as the former values are not needed anymore
 		double[] pairsLoHi = localContext.m_pairsLoHi;
 
 		if (m > 0) {
@@ -1817,16 +1818,16 @@ dmaxcallcountestimate_fn_t {
 
 	/*extern */
 	private int dxEstimateStepMaxCallCount(
-			int /*activeThreadCount*/ activeThreadCount, int allowedThreadCount)
+			int /*activeThreadCount*/ activeThreadCount, int steppingAllowedThreadCount, int lcpAllowedThreadCount)
 	{
 		int result = 1 // dxStepIsland itself
-				+ (2 * allowedThreadCount + 2) // (dxStepIsland_Stage2a + dxStepIsland_Stage2b) * allowedThreadCount + 2 * dxStepIsland_Stage2?_Sync
+				+ (2 * steppingAllowedThreadCount + 2) // (dxStepIsland_Stage2a + dxStepIsland_Stage2b) * allowedThreadCount + 2 * dxStepIsland_Stage2?_Sync
 				+ 1; // dxStepIsland_Stage3
 		return result;
 	}
 	@Override
-	public int run(int activeThreadCount, int allowedThreadCount) {
-		return dxEstimateStepMaxCallCount(activeThreadCount, allowedThreadCount);
+	public int run(int activeThreadCount, int steppingAllowedThreadCount, int lcpAllowedThreadCount) {
+		return dxEstimateStepMaxCallCount(activeThreadCount, steppingAllowedThreadCount, lcpAllowedThreadCount);
 	}
 
 	

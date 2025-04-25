@@ -65,6 +65,8 @@ public class GimMath {
 	//! @{
 	/*! Types */
 //	#define GREAL float
+//	#define GIM_FABS_FN(va) fabsf(va)
+//	#define GIM_SQRT_FN(va) sqrtf(va)
 //	#define GINT32 int32_t
 //	#define GUINT32 uint32_t
 //
@@ -101,23 +103,23 @@ public class GimMath {
 //	//#define G_RADTODEG(X) ((X)*180.0f/3.1415926f)
 //	private static final float  G_RADTODEG(float X) { return ((X)*180.0f/3.1415926f); };
 //
-//	//! Integer representation of a floating-point value.
-//	//#define IR(x)					((GUINT32&)(x))
+// ! Integer representation of a floating-point value.
+//  #define IR(x)					((GUINT32&)(x)) -- Type aliasing
 //	/** @deprecated */
 //	private static int IR(float x) {return Float.floatToRawIntBits(x);}
 //
-//	//! Signed integer representation of a floating-point value.
-//	//#define SIR(x)					((GINT32&)(x))
+//	! Signed integer representation of a floating-point value.
+//	#define SIR(x)					((GINT32&)(x)) -- Type aliasing
 //	/** @deprecated */
 //	private int SIR(float x) {return Float.floatToIntBits(x);}
 //
-//	//! Absolute integer representation of a floating-point value
-//	//#define AIR(x)					(IR(x)&0x7fffffff)
+//	! Absolute integer representation of a floating-point value
+//	#define AIR(x)					(IR(x)&0x7fffffff) -- Type aliasing
 //	/** @deprecated */
 //	private int AIR(float x) {return Float.floatToRawIntBits(x);}
 //
 //	//! Floating-point representation of an integer value.
-//	//#define FR(x)					((float&)(x))
+//	#define FR(x)					((GREAL&)(x)) -- Type aliasing
 //	/** @deprecated */
 //	private float FR(int x) {return Float.intBitsToFloat(x);}
 
@@ -148,43 +150,30 @@ public class GimMath {
 
 	///Swap numbers
 //	#define SWAP_NUMBERS(a,b){ \
-//	    (a) = (a)+(b); \
-//	    (b) = (a)-(b); \
-//	    (a) = (a)-(b); \
-//	}\
-//	private static final void SWAP_NUMBERS(final RefFloat a, final RefFloat b){ 
-//		a.d = a.d+b.d; 
-//		b.d = a.d-b.d; 
-//		a.d = a.d-b.d; 
+//	GREAL _swap_tmp = (a); \
+//			(a) = (b); \
+//			(b) = _swap_tmp; \
 //	}
 
-	//#define GIM_INV_SQRT(va,isva)\
-	protected static float GIM_INV_SQRT(final float va)
-	{
-		float isva;
-	    if((va)<=0.0000001f)
-	    {
-	        (isva) = G_REAL_INFINITY;
-	    }
-	    else
-	    {
-	    	return (float) (1./Math.sqrt(va));
-//	        float _x = (va) * 0.5f;
-//	        GUINT32 _y = 0x5f3759df - ( IR(va) >> 1);
-//	        (isva) = FR(_y);
-//	        (isva) = (isva) * ( 1.5f - ( _x * (isva) * (isva) ) );
-	    }
-	    return isva;
-	}
-
+	//	#define GIM_SQRT(va,sva)\
+	//	{\
+	//		(sva) = GIM_SQRT_FN(va);\
+	//	}
 	//#define GIM_SQRT(va,sva)\ // sva == result !
 	protected static float GIM_SQRT(final float va)
 	{
-//	    GIM_INV_SQRT(va,sva);
-//	    (sva) = 1.0f/(sva);
 		return (float) Math.sqrt(va);
 	}
 
+
+	//    #define GIM_INV_SQRT(va,isva)\
+	//	{\
+	//		(isva) = 1.0f / GIM_SQRT_FN(va);\
+	//	}
+	protected static float GIM_INV_SQRT(final float va)
+	{
+	    return 1.0f / (float) Math.sqrt(va);
+	}
 
 	//! Computes 1.0f / sqrtf(x). Comes from Quake3. See http://www.magic-software.com/3DGEDInvSqrt.html
 	static float gim_inv_sqrt(final float f)

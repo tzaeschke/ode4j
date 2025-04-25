@@ -27,17 +27,8 @@ package org.ode4j.demo;
 import static org.ode4j.demo.BunnyGeom.IndexCount;
 import static org.ode4j.demo.BunnyGeom.Indices;
 import static org.ode4j.demo.BunnyGeom.Vertices;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawBox;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCapsule;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawConvex;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawCylinder;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawSphere;
-import static org.ode4j.drawstuff.DrawStuff.dsDrawTriangle;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColor;
-import static org.ode4j.drawstuff.DrawStuff.dsSetColorAlpha;
-import static org.ode4j.drawstuff.DrawStuff.dsSetTexture;
-import static org.ode4j.drawstuff.DrawStuff.dsSetViewpoint;
-import static org.ode4j.drawstuff.DrawStuff.dsSimulationLoop;
+import static org.ode4j.drawstuff.DrawStuff.*;
+import static org.ode4j.drawstuff.DrawStuff.DS_SIMULATION_DEFAULT_HEIGHT;
 import static org.ode4j.ode.DMisc.dRandReal;
 import static org.ode4j.ode.DRotation.dRFromAxisAndAngle;
 import static org.ode4j.ode.OdeConstants.dContactBounce;
@@ -243,8 +234,8 @@ class DemoLayeredTrimeshHeightfield extends dsFunctions {
 		}
 	}
 
-	private static float[] xyz = {1.1640f,-7.0079f,4.2600f};
-	private static float[] hpr = {95.5000f,-12.0000f,0.0000f};
+	private static final float[] xyz = {1.1640f,-9.0079f,4.2600f};
+	private static final float[] hpr = {95.5000f,5.0000f,0.0000f};
 
 	// start simulation - set viewpoint
 	@Override
@@ -690,7 +681,7 @@ class DemoLayeredTrimeshHeightfield extends dsFunctions {
 //	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
 
 		// run simulation
-		dsSimulationLoop (args,640,480,this);
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 
 //	    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
 //	    pool.freeThreadPool();

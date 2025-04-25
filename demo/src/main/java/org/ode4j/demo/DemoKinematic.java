@@ -264,14 +264,18 @@ public class DemoKinematic extends dsFunctions {
 	    hinge.attach(kbody, matraca);
 	    hinge.setAnchor(kx, ky, kz+1);
 	    hinge.setAxis(0, 0, 1);
-	    
-	    dsSimulationLoop (args, 640, 480, this);
+
+		dsSimulationLoop(args, DS_SIMULATION_DEFAULT_WIDTH, DS_SIMULATION_DEFAULT_HEIGHT, this);
 	    
 	    OdeHelper.closeODE();
 	}
 
+	private static final float[] xyz = {8.0f,0.0f,4.0000f};
+	private static final float[] hpr = {-180.000f,-5.5000f,0.0000f};
+
 	@Override
-	public void start() {
+	public void start()	{
+		dsSetViewpoint (xyz,hpr);
 		// Nothing
 	}
 

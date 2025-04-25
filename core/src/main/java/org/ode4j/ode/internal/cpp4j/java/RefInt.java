@@ -32,16 +32,17 @@ public final class RefInt {
 		i = v;
 	}
 
-	public final void set(int v) {
+	public void set(int v) {
 		i = v;
 	}
 
-	public final int get() {
+	public int get() {
 		return i;
 	}
 
-	public final void inc() {
+	public int inc() {
 		i++;
+		return i;
 	}
 
 	public void add(int j) {

@@ -114,7 +114,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		//  |+---------+   -                +-----------+
 		//  |
 		// X.-----------------------------------------> Y
-		// N.B. X is comming out of the page
+		// N.B. X is coming out of the page
 		_anchor2 = new DVector3();
 
 		axisR1 = new DVector3(1, 0, 0);
@@ -549,7 +549,7 @@ public class DxJointPR extends DxJoint implements DPRJoint
 		if ( parameter.isGroup2())//and( 0xff00 ).eq( 0x100 ))
 		{
 			limotR.set( parameter.toSUB(), value);     // Take only lower part of the
-		}                                              // parameter alue
+		}                                              // parameter value
 		else
 		{
 			limotP.set( parameter.toSUB(), value );
@@ -597,10 +597,10 @@ public class DxJointPR extends DxJoint implements DPRJoint
 //	void dJointAddPRTorque( dJoint j, double torque )
 	void dJointAddPRTorque( double torque )
 	{
-		DVector3 axis = new DVector3();
-
 		if ( isFlagsReverse() )
 			torque = -torque;
+
+		DVector3 axis = new DVector3();
 
 		getAxis( axis, axisR1 );
 //		axis.v[0] *= torque;

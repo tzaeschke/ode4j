@@ -1269,9 +1269,9 @@ public abstract class ApiCppJoint extends ApiCppOther {
 //	 * @param x The x component of the axis
 //	 * @param y The y component of the axis
 //	 * @param z The z component of the axis
-//	 * @param dx The Initial position of the prismatic join in the x direction
-//	 * @param dy The Initial position of the prismatic join in the y direction
-//	 * @param dz The Initial position of the prismatic join in the z direction
+//	 * @param dx The Initial position of the prismatic joint in the x direction
+//	 * @param dy The Initial position of the prismatic joint in the y direction
+//	 * @param dz The Initial position of the prismatic joint in the z direction
 //	 * @deprecated TZ
 //	 */
 //	//ODE_API_DEPRECATED ODE_API 

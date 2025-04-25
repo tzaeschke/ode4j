@@ -38,7 +38,8 @@ public class DxSingleIslandCallContext {
 		m_arenaInitialState = arenaInitialState; 
 		m_stepperCallContext = new DxStepperProcessingCallContext(islandsProcessingContext.m_world, 
 				islandsProcessingContext.m_stepSize, 
-				islandsProcessingContext.m_stepperAllowedThreads, 
+				islandsProcessingContext.m_stepperAllowedThreads,
+				islandsProcessingContext.m_lcpAllowedThreads,
 				stepperArena, 
 				islandBodiesStart, islandJointsStart);
 	}

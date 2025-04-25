@@ -841,9 +841,9 @@ public abstract class OdeHelper {
 	}
 	
 	/**
-	 * Close ODE after it is not needed any more.
+	 * Close ODE after it is not needed anymore.
 	 * <p>
-	 * The function is required to be called when program does not need ODE features any more.
+	 * The function is required to be called when program does not need ODE features anymore.
 	 * The call to <tt>dCloseODE</tt> releases all the resources allocated for library
 	 * including all the thread local data that might be allocated for all the threads
 	 * that were using ODE.
@@ -988,10 +988,25 @@ public abstract class OdeHelper {
 	 * ODE_EXT_trimesh
 	 * ODE_EXT_opcode
 	 * ODE_EXT_gimpact
-	 * ODE_EXT_malloc_not_alloca
-	 * ODE_EXT_gyroscopic
+	 * ODE_EXT_malloc_not_alloca  ---
+	 * ODE_EXT_gyroscopic -----
 	 * ODE_OPC_16bit_indices
 	 * ODE_OPC_new_collider
+	 * ODE_EXT_libccd
+	 * ODE_CCD_IMPL_internal
+	 * ODE_CCD_COLL_box_cyl
+	 * ODE_CCD_COLL_cyl_cyl
+	 * ODE_CCD_COLL_cap_cyl
+	 * ODE_CCD_COLL_box_conv
+	 * ODE_CCD_COLL_cap_conv
+	 * ODE_CCD_COLL_conv_cyl
+	 * ODE_CCD_COLL_conv_sph
+	 * ODE_CCD_COLL_conv_conv
+	 * ODE_EXT_mt_collisions
+	 * ODE_EXT_threading
+	 * ODE_THR_builtin_impl
+	 * ODE_EXT_inelastic_collisions
+	 *
 	 * @return String
 	 */
 	public static String getConfiguration () {
@@ -999,7 +1014,7 @@ public abstract class OdeHelper {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The version String.
 	 */
 	public static String getVersion() {

@@ -51,7 +51,7 @@ import org.ode4j.tests.UnitTestPlusPlus.TestSuperClass;
 
 /**
  * Only body 1
- * The body are positionned at (0, 0, 0), with no rotation
+ * The body is positioned at (0, 0, 0) with no rotation
  * The joint is a Piston Joint
  * Axis is along the X axis
  * Anchor at (0, 0, 0)
@@ -156,7 +156,7 @@ public class Fixture_dxJointPiston_B1_At_Zero_Axis_Along_X extends TestSuperClas
 	// Test Position Rate
 	// ==========================================================================
 
-	// Apply force on 1st body in the X direction also the Axis direction
+	// Apply force on 1st body in the X direction that also is the axis direction
 	//
 	//  X------->       X---------> Axis -->
 	//  B1  F->      =>     B1
