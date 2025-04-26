@@ -341,6 +341,7 @@ public interface DWorld {
 	 *
 	 * @param stepsize The number of seconds that the simulation has to advance.
 	 * @deprecated Please use {@link #quickStep(double)} instead, it is faster and much more stable.
+	 * However, step() is sometimes more precise, see 'DemoITest'.
 	 * Please report any problems with using quickStep() instead of step().
 	 */
 	//* @return 1 for success and 0 for failure

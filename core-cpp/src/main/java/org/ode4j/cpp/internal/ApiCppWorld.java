@@ -149,7 +149,8 @@ public abstract class ApiCppWorld extends ApiCppBody {
 	 * 
 	 * @param stepsize The number of seconds that the simulation has to advance.
 	 */
-	//ODE_API 
+	//ODE_API
+	@SuppressWarnings("deprecation")
 	public static void dWorldStep (DWorld w, double stepsize) {
 		w.step(stepsize);
 	}
