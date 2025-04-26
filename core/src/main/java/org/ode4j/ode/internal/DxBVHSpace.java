@@ -39,6 +39,7 @@ import org.ode4j.ode.internal.aabbtree.AABBTreeNodeCallback;
 import org.ode4j.ode.internal.aabbtree.AABBTreePairCallback;
 import org.ode4j.ode.internal.aabbtree.ExternalObjectHandler;
 
+@SuppressWarnings("deprecation")
 public class DxBVHSpace extends DxSpace implements DBhvSpace {
 
 	private final AABBTree<DxGeom> bvhTree;

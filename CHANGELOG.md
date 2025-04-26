@@ -29,10 +29,7 @@
 
 Known Bugs: TrimeshHeightfield and LayeredTrimeshHeightfield don't work with Convex
 
-TODO 
-- rename createBHVSpace to BVH!
-- Add PH-Tree space???
-
+- Fixed BVH spelling in API [#149](https://github.com/tzaeschke/ode4j/pull/149)
 - Post 0.16.6 cleanup [#148](https://github.com/tzaeschke/ode4j/pull/148)
   - Re-enabled new BoxPlane collider
   - deprecated `DWorld.step()`

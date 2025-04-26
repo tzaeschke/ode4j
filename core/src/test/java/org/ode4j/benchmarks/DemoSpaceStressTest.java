@@ -337,8 +337,8 @@ public class DemoSpaceStressTest {
 
     @Test
     public void demoBVH() {
-        System.out.printf(":::: Using %-20s   ", "DBhvSpace");
-        demoSpace(() -> OdeHelper.createBHVSpace(0));
+        System.out.printf(":::: Using %-20s   ", "DBVHSpace");
+        demoSpace(() -> OdeHelper.createBVHSpace(0));
     }
 
     private void demo() {

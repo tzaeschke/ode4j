@@ -208,12 +208,12 @@ public class DemoSpaceTest {
     @Test
     public void testBVHSpace() {
         before();
-        space = OdeHelper.createBHVSpace(0);
+        space = OdeHelper.createBVHSpace(0);
         demo();
         after();
 
         before();
-        space = OdeHelper.createBHVSpace(0);
+        space = OdeHelper.createBVHSpace(0);
         demo();
         after();
     }
