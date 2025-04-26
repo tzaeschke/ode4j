@@ -508,8 +508,8 @@ class DemoSpaceStress extends dsFunctions {
 //				System.out.println(":::: Using DQuadTreeSpace");
 //				space = OdeHelper.createQuadTreeSpace(Center, Extents, 6);
 //			} else if (arg.equals("bhv")) {
-				System.out.println(":::: Using DBhvSpace");
-				space = OdeHelper.createBHVSpace(0);
+				System.out.println(":::: Using DBVHSpace");
+				space = OdeHelper.createBVHSpace(0);
 //			} else if (arg.equals("hash")) {
 //				System.out.println(":::: Using DHashSpace");
 //				space = OdeHelper.createHashSpace();

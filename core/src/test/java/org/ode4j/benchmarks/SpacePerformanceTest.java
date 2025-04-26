@@ -39,7 +39,7 @@ public class SpacePerformanceTest {
         test_performance_with_dynamic_world(space, iterations, staticGeoms, geoms);
         space = OdeHelper.createSapSpace2(null, AXES.XZY, STATIC_CATEGORY);
         test_performance_with_dynamic_world(space, iterations, staticGeoms, geoms);
-        space = OdeHelper.createBHVSpace(null, 16, false, 0.2, STATIC_CATEGORY);
+        space = OdeHelper.createBVHSpace(null, 16, false, 0.2, STATIC_CATEGORY);
         test_performance_with_dynamic_world(space, iterations, staticGeoms, geoms);
     }
 
@@ -121,7 +121,7 @@ public class SpacePerformanceTest {
         System.out.println("-= Iterations: " + iterations + "  Static: " + staticGeoms + " Dynamic: " + geoms + " =-");
         DSpace space = OdeHelper.createSapSpace2(null, AXES.XZY, STATIC_CATEGORY);
         test_performance_with_static_world(space, iterations, staticGeoms, geoms);
-        space = OdeHelper.createBHVSpace(null, 4, false, 0.2, STATIC_CATEGORY);
+        space = OdeHelper.createBVHSpace(null, 4, false, 0.2, STATIC_CATEGORY);
         test_performance_with_static_world(space, iterations, staticGeoms, geoms);
     }
 

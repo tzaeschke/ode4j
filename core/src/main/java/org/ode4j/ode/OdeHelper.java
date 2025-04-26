@@ -600,11 +600,14 @@ public abstract class OdeHelper {
 		return DxQuadTreeSpace.dQuadTreeSpaceCreate((DxSpace) space, 
 				Center, Extents, Depth);
 	}
+
 	/**
 	 * @param staticGeomCategoryMask Geoms that are marked as static are not checked
 	 * for mutual collision. See SpacePerformanceTest for an example.
-	 * @return SAP Space
+	 * @return BVH Space
+	 * @deprecated Please use {@link #createBVHSpace(long)}
 	 */
+	@Deprecated // TODO to be removed in 0.6.0
 	public static DBhvSpace createBHVSpace (long staticGeomCategoryMask) {
 		return DxBVHSpace.bvhSpaceCreate(null, 16, false, 0.2, staticGeomCategoryMask);
 	}
@@ -615,11 +618,36 @@ public abstract class OdeHelper {
 	 * @param fatAabbMargin Suggested default: 0.2
 	 * @param staticGeomCategoryMask Geoms that are marked as static are not checked
 	 * for mutual collision. See SpacePerformanceTest for an example.
-	 * @return SAP space
+	 * @return BVH space
+	 * @deprecated Please use {@link #createBVHSpace(DSpace, int, boolean, double, long)}
 	 */
-	public static DBhvSpace createBHVSpace (DSpace space, int nodesPerLeaf, boolean highQuality, 
-			double fatAabbMargin, long staticGeomCategoryMask) {
-		return DxBVHSpace.bvhSpaceCreate((DxSpace) space, nodesPerLeaf, highQuality, fatAabbMargin, 
+	@Deprecated // TODO to be removed in 0.6.0
+	public static DBhvSpace createBHVSpace (DSpace space, int nodesPerLeaf, boolean highQuality,
+											double fatAabbMargin, long staticGeomCategoryMask) {
+		return DxBVHSpace.bvhSpaceCreate((DxSpace) space, nodesPerLeaf, highQuality, fatAabbMargin,
+				staticGeomCategoryMask);
+	}
+
+	/**
+	 * @param staticGeomCategoryMask Geoms that are marked as static are not checked
+	 * for mutual collision. See SpacePerformanceTest for an example.
+	 * @return BVH Space
+	 */
+	public static DBVHSpace createBVHSpace (long staticGeomCategoryMask) {
+		return DxBVHSpace.bvhSpaceCreate(null, 16, false, 0.2, staticGeomCategoryMask);
+	}
+	/**
+	 * @param space space
+	 * @param nodesPerLeaf Suggested default: 4-16
+	 * @param highQuality Suggested default: false
+	 * @param fatAabbMargin Suggested default: 0.2
+	 * @param staticGeomCategoryMask Geoms that are marked as static are not checked
+	 * for mutual collision. See SpacePerformanceTest for an example.
+	 * @return BVH space
+	 */
+	public static DBVHSpace createBVHSpace (DSpace space, int nodesPerLeaf, boolean highQuality,
+											double fatAabbMargin, long staticGeomCategoryMask) {
+		return DxBVHSpace.bvhSpaceCreate((DxSpace) space, nodesPerLeaf, highQuality, fatAabbMargin,
 				staticGeomCategoryMask);
 	}
 

@@ -241,7 +241,7 @@ public class PerfCards extends dsFunctions {
 
 		//space = OdeHelper.createSimpleSpace(null);
 		//space = OdeHelper.createSapSpace(DSapSpace.AXES.XYZ);
-		space = OdeHelper.createBHVSpace(0);
+		space = OdeHelper.createBVHSpace(0);
 		contactgroup = OdeHelper.createJointGroup();
 		DGeom ground = OdeHelper.createPlane(space, 0, 0, 1, 0);
 
