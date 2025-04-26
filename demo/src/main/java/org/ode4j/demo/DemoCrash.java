@@ -534,7 +534,7 @@ class DemoCrash extends dsFunctions {
 
 
 	// simulation loop
-
+	@SuppressWarnings("deprecation")
 	private void simLoop (boolean pause)
 	{
 		int i, j;

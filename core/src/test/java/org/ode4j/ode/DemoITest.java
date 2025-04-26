@@ -27,6 +27,8 @@ package org.ode4j.ode;
 import org.junit.Test;
 import org.ode4j.math.*;
 
+import java.util.function.DoubleConsumer;
+
 import static org.junit.Assert.assertTrue;
 import static org.ode4j.ode.OdeMath.*;
 
@@ -177,7 +179,7 @@ public class DemoITest {
 
     // simulation loop
 
-    private void simLoop() {
+    private void simLoop(DoubleConsumer stepper) {
         anchor_body.addTorque(torque);
         test_body.addTorque(torque);
         world.step(0.03);
@@ -199,17 +201,35 @@ public class DemoITest {
     }
 
     @Test
-    public void demo() {
+    public void demoQuickStep() {
         OdeHelper.initODE2(0);
         dRandSetSeed(0); // System.currentTimeMillis());
         reset_test();
 
         // run simulation
         for (int i = 0; i < 1000; ++i) {
-            simLoop();
+            simLoop(s -> world.quickStep(s));
         }
 
         world.destroy();
+        world = null;
+        OdeHelper.closeODE();
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void demoSlowStep() {
+        OdeHelper.initODE2(0);
+        dRandSetSeed(0); // System.currentTimeMillis());
+        reset_test();
+
+        // run simulation
+        for (int i = 0; i < 1000; ++i) {
+            simLoop(s -> world.step(s));
+        }
+
+        world.destroy();
+        world = null;
         OdeHelper.closeODE();
     }
 }

@@ -238,7 +238,7 @@ public class DemoRFriction extends dsFunctions {
 	public void step (boolean pause)	{
 		if (!pause) {
 			space.collide (null, nearCallback);
-			world.step (0.017); // 60 fps
+			world.quickStep(0.017); // 60 fps
 			// remove all contact joints
 			contactgroup.empty();
 		}

@@ -100,7 +100,7 @@ public class DemoHinge extends dsFunctions {
 			// add an oscillating torque to body 0, and also damp its rotational motion
 			final DVector3C w = body[0].getAngularVel ();
 			body[0].addTorque ( kd*w.get0(), kd*w.get1()+0.1*Math.cos(a), kd*w.get2()+0.1*Math.sin(a));
-			world.step (0.05);
+			world.quickStep(0.05);
 			a += 0.01;
 
 			// occasionally re-orient one of the bodies to create a deliberate error.

@@ -995,7 +995,7 @@ public class DemoJointsTest {
 //			}
 
         // take a step
-        world.step(STEPSIZE);
+        world.quickStep(STEPSIZE);
 
         // occasionally re-orient the first body to create a deliberate error.
         if (cmd_occasional_error != 0) {

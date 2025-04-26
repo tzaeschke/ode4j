@@ -987,8 +987,8 @@ public class DemoJoints extends dsFunctions {
 	// simulation stuff common to all the tests
 
 	// start simulation - set viewpoint
-	private static final float[] xyz = {1.0382f,-1.0811f,1.4700f};
-	private static final float[] hpr = {135.0000f,-5.5000f,0.0000f};
+	private static final float[] xyz = {1.30f,-1.30f,1.4700f};
+	private static final float[] hpr = {135.0000f,-0.000f,0.0000f};
 	@Override
 	public void start()
 	{
@@ -1020,7 +1020,7 @@ public class DemoJoints extends dsFunctions {
 			}
 
 			// take a step
-			world.step (STEPSIZE);
+			world.quickStep(STEPSIZE);
 
 			// occasionally re-orient the first body to create a deliberate error.
 			if (cmd_occasional_error != 0) {

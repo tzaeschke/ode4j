@@ -176,7 +176,7 @@ public class DemoGyro2 extends dsFunctions {
 	public void step(boolean pause) {
 		if (!pause) {
 			expStep(expGyroBody);
-			world.step(dt); 
+			world.quickStep(dt);
 		}
 
 		dsSetTexture (DS_TEXTURE_NUMBER.DS_WOOD);
