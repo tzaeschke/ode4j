@@ -157,7 +157,7 @@ class DemoStep extends dsFunctions {
 						scale2*(dRandReal()*2-1));
 			}
 
-			world.step (0.05);
+			world.quickStep(0.05);
 			createTest();
 		}
 

@@ -26,6 +26,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.function.Consumer;
+
 /**
  * Issue #133: ODE INTERNAL ERROR in FastLSolve.solveL1Straight().
  */
@@ -71,7 +73,17 @@ public class TestIssue0133_LcpInternalError {
      * at org.ode4j/org.ode4j.ode.internal.DLCP.solve1(DLCP.java:545)
      */
     @Test
-    public void test() {
+    public void testQuickstep() {
+        test(w -> w.quickStep(0.01));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testStep() {
+        test(w -> w.step(0.01));
+    }
+
+    private void test(Consumer<DWorld> stepper) {
         double ballRadius = 5.0;
         double ballMass = 23.0;
         contactGroup = OdeHelper.createJointGroup();
@@ -88,8 +100,8 @@ public class TestIssue0133_LcpInternalError {
         OdeHelper.createPlane(space, 0, 0, 1, 0);
 
         for (int i = 0; i < 10000; i++) {
-            OdeHelper.spaceCollide(space, null, (data, o1, o2) -> nearCallback(data, o1, o2));
-            world.step(0.01);
+            OdeHelper.spaceCollide(space, null, this::nearCallback);
+            stepper.accept(world);
             contactGroup.empty();
         }
     }

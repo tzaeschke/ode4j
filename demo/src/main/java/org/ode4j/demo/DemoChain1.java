@@ -100,7 +100,7 @@ class DemoChain1 extends dsFunctions {
 
 
 	private static final float[] xyz = {2.1640f,-1.3079f,1.7600f};
-	private static final float[] hpr = {125.5000f,-17.0000f,0.0000f};
+	private static final float[] hpr = {125.5000f,0.0000f,0.0000f};
 	/**
 	 *  start simulation - set viewpoint 
 	 */
@@ -124,7 +124,7 @@ class DemoChain1 extends dsFunctions {
 			body[NUM-1].addForce(0,0,1.5*(Math.sin(angle)+1.0));
 
 			space.collide(0,myNearCallback);
-			world.step(0.05);
+			world.quickStep(0.05);
 
 			/* remove all contact joints */
 			contactgroup.empty();

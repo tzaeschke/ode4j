@@ -208,7 +208,7 @@ class DemoPlane2d extends dsFunctions {
 			{
 				//dSpaceCollide (coll_space_id, 0, cb_near_collision);
 				dSpaceCollide (coll_space_id, null, myNearCallBack );
-				dyn_world.step (TIME_STEP/n);
+				dyn_world.quickStep (TIME_STEP/n);
 				coll_contacts.empty ();
 			}
 		}

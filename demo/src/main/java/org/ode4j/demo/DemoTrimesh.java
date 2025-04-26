@@ -394,8 +394,7 @@ class DemoTrimesh extends dsFunctions {
 	{
 		dsSetColor (0,0,2);
 		space.collide (0,nearCallback);
-		if (!pause) world.step (0.05);
-		//if (!pause) dWorldStepFast (world,0.05, 1);
+		if (!pause) world.quickStep(0.05);
 
 		// remove all contact joints
 		contactgroup.empty ();

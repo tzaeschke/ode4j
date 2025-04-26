@@ -1114,6 +1114,7 @@ public class DxWorld extends DBase implements DWorld {
 	{ return dWorldGetCFM(); }
 
 	@Override
+	@Deprecated
 	public void step (double stepsize)
 	{ dWorldStep (stepsize); }
 

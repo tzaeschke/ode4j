@@ -27,6 +27,8 @@ package org.ode4j.ode;
 import org.junit.Test;
 import org.ode4j.math.*;
 
+import java.util.function.DoubleConsumer;
+
 import static org.junit.Assert.assertTrue;
 import static org.ode4j.ode.OdeMath.*;
 
@@ -177,10 +179,10 @@ public class DemoITest {
 
     // simulation loop
 
-    private void simLoop() {
+    private void simLoop(DoubleConsumer stepper, double eps1, double eps2) {
         anchor_body.addTorque(torque);
         test_body.addTorque(torque);
-        world.step(0.03);
+        stepper.accept(0.03);
 
         iteration++;
         if (iteration >= 100) {
@@ -190,26 +192,43 @@ public class DemoITest {
             DQuaternionC q1 = anchor_body.getQuaternion();
             DQuaternionC q2 = test_body.getQuaternion();
             double maxdiff = dMaxDifference(w1, w2);
-            double eps = 1e-3;
-            assertTrue("w-error = " + maxdiff + "  (" + w1 + ") and (" + w2 + ")", maxdiff < eps);
+            assertTrue("w-error = " + maxdiff + "  (" + w1 + ") and (" + w2 + ")", maxdiff < eps1);
             maxdiff = dMaxDifference(q1, q2, 1, 4);
-            assertTrue("q-error = " + maxdiff, maxdiff < 1e-3);
+            assertTrue("q-error = " + maxdiff, maxdiff < eps2);
             reset_test();
         }
     }
 
     @Test
-    public void demo() {
+    public void demoQuickStep() {
         OdeHelper.initODE2(0);
         dRandSetSeed(0); // System.currentTimeMillis());
         reset_test();
 
         // run simulation
         for (int i = 0; i < 1000; ++i) {
-            simLoop();
+            simLoop(s -> world.quickStep(s), 0.2, 1e-2);
         }
 
         world.destroy();
+        world = null;
+        OdeHelper.closeODE();
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    public void demoSlowStep() {
+        OdeHelper.initODE2(0);
+        dRandSetSeed(0); // System.currentTimeMillis());
+        reset_test();
+
+        // run simulation
+        for (int i = 0; i < 1000; ++i) {
+            simLoop(s -> world.step(s), 1e-3, 1e-3);
+        }
+
+        world.destroy();
+        world = null;
         OdeHelper.closeODE();
     }
 }

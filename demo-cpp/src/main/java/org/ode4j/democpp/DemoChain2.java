@@ -142,7 +142,7 @@ class DemoChain2 extends dsFunctions {
 			body[NUM-1].addForce (0,0,1.5*(sin(angle)+1.0));
 
 			space.collide (0,nearCallback);
-			world.step (0.05);
+			world.quickStep (0.05);
 
 			// remove all contact joints
 			contactgroup.empty();

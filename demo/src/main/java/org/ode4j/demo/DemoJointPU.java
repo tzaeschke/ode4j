@@ -461,7 +461,7 @@ public class DemoJointPU extends dsFunctions {
 
 			for (int i=0; i<nrofsteps && !pause; i++) {
 				OdeHelper.spaceCollide (space,0,nearCallback);
-				world.step (simstep);
+				world.quickStep(simstep);
 
 				contactgroup.empty ();
 			}

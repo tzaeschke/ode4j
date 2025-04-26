@@ -202,7 +202,7 @@ class DemoBuggy extends dsFunctions {
 			joint[0].setParamFudgeFactor (0.1);
 
 			space.collide(null,nearCallback);
-			world.step(0.05);
+			world.quickStep(0.05);
 
 			// remove all contact joints
 			contactgroup.empty();

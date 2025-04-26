@@ -139,8 +139,7 @@ public class DemoGyroscopic extends dsFunctions {
 		dsSetColor (0,0,2);
 		space.collide(0,nearCallback);
 		if (!pause) {
-			//world.quickStep(0.02);
-			world.step(0.02);
+			world.quickStep(0.02);
 		}
 
 		// remove all contact joints

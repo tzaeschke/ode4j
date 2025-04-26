@@ -148,7 +148,7 @@ class DemoFriction extends dsFunctions {
 			}
 
 			OdeHelper.spaceCollide (space,0,nearCallback);
-			world.step (0.05);
+			world.quickStep(0.05);
 
 			// remove all contact joints
 			contactgroup.empty();

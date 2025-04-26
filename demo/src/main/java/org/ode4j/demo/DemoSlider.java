@@ -128,7 +128,7 @@ class DemoSlider extends dsFunctions {
 				count++;
 			}
 
-			world.step (0.05);
+			world.quickStep(0.05);
 		}
 
 		DVector3 sides1= new DVector3(SIDE,SIDE,SIDE);

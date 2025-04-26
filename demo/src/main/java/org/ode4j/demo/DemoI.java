@@ -203,7 +203,7 @@ class DemoI extends dsFunctions {
 		if (!pause) {
 			anchor_body.addTorque (torque);
 			test_body.addTorque (torque);
-			world.step (0.03);
+			world.quickStep(0.03);
 
 			iteration++;
 			if (iteration >= 100) {
