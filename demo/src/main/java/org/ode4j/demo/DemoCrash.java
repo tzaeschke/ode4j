@@ -73,8 +73,8 @@ class DemoCrash extends dsFunctions {
 	private static final float COLS = 1	;		// columns of cars
 	private static final int ITERS = 20;		// number of iterations
 	private static final float WBOXSIZE = 1.0f;		// size of wall boxes
-	private static final float WALLWIDTH = 120;		// width of wall
-	private static final float WALLHEIGHT = 50;		// height of wall
+	private static final float WALLWIDTH = 12;		// width of wall
+	private static final float WALLHEIGHT = 10;		// height of wall
 	private static final float DISABLE_THRESHOLD = 0.008f;	// maximum velocity (squared) a body can have and be disabled
 	private static final float DISABLE_STEPS = 10;	// number of steps a box has to have been disable-able before it will be disabled
 	private static final float CANNON_X = -10;		// x position of cannon

@@ -35,11 +35,12 @@ TODO
 
 - Post 0.16.6 cleanup [#148](https://github.com/tzaeschke/ode4j/pull/148)
   - Re-enabled new BoxPlane collider
+  - deprecated `DWorld.step()`
   - DemoCrash cleanup
 - Port updates until 0.16.6 (previous: 0.16.2/.3) ([#147](https://github.com/tzaeschke/ode4j/pull/147)). This includes:
   - Fixed porting bug in `dxQuickStepIsland_Stage4LCP_IterationStep`:
-    `fc_ptr2P = b2 * CFE__MAX;` was declared `int` and thus overwrote
-    the existing variable.
+    `fc_ptr2P = b2 * CFE__MAX;` was declared `int` and thus overwrote the existing variable.
+    This appears to fix known stability issues, e.g. large walls of boxes. 
   - New box-plane collider
   - new DemoTrimeshCollision
   - new API method in DPUJoint: `void addTorques (double torque1, double torque2);`
@@ -52,7 +53,7 @@ TODO
   - Skipped:
     - quickstep.cpp / dxQuickStepIsland (allowedThreads != 1)
     - threading_impl*, threading_pool*
-TODO verify
+  - verify later:
     - Should dxQuickStepIsland_Stage4LCP_IterationStartSingleThread()
     - get the same updates as dxQuickStepIsland_Stage4LCP_IterationStart()?
     - ThrsafeDecrement
