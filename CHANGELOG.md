@@ -33,6 +33,9 @@ TODO
 - rename createBHVSpace to BVH!
 - Add PH-Tree space???
 
+- Post 0.16.6 cleanup [#148](https://github.com/tzaeschke/ode4j/pull/148)
+  - Re-enabled new BoxPlane collider
+  - DemoCrash cleanup
 - Port updates until 0.16.6 (previous: 0.16.2/.3) ([#147](https://github.com/tzaeschke/ode4j/pull/147)). This includes:
   - Fixed porting bug in `dxQuickStepIsland_Stage4LCP_IterationStep`:
     `fc_ptr2P = b2 * CFE__MAX;` was declared `int` and thus overwrote

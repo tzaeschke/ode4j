@@ -73,8 +73,8 @@ class DemoCrash extends dsFunctions {
 	private static final float COLS = 1	;		// columns of cars
 	private static final int ITERS = 20;		// number of iterations
 	private static final float WBOXSIZE = 1.0f;		// size of wall boxes
-	private static final float WALLWIDTH = 12;		// width of wall
-	private static final float WALLHEIGHT = 10;		// height of wall
+	private static final float WALLWIDTH = 120;		// width of wall
+	private static final float WALLHEIGHT = 50;		// height of wall
 	private static final float DISABLE_THRESHOLD = 0.008f;	// maximum velocity (squared) a body can have and be disabled
 	private static final float DISABLE_STEPS = 10;	// number of steps a box has to have been disable-able before it will be disabled
 	private static final float CANNON_X = -10;		// x position of cannon
@@ -82,57 +82,49 @@ class DemoCrash extends dsFunctions {
 	private static final float CANNON_BALL_MASS = 10;	// mass of the cannon ball
 	private static final float CANNON_BALL_RADIUS = 0.5f;
 
-	private static final DVector3C xunit = new DVector3(1, 0, 0);
-	private static final DVector3C yunit = new DVector3(0, 1, 0);
-	private static final DVector3C zpunit = new DVector3(0, 0, 1);
-	private static final DVector3C zmunit = new DVector3(0, 0, -1);
+	private final DVector3C xunit = new DVector3(1, 0, 0);
+	private final DVector3C yunit = new DVector3(0, 1, 0);
+	private final DVector3C zpunit = new DVector3(0, 0, 1);
+	private final DVector3C zmunit = new DVector3(0, 0, -1);
 
-//	private static boolean BOX = false;
-//	private static boolean CARS = true;
-//	private static boolean WALL = true;
-//	private static boolean BALLS = false;
-//	private static boolean BALLSTACK = false;
-//	private static boolean ONEBALL = false;
-//	private static boolean CENTIPEDE = false;
-//	private static boolean CANNON = true;
-	private static boolean BOX = false;
-	private static boolean CARS = true;
-	private static boolean WALL = true;
-	private static boolean BALLS = false;
-	private static boolean BALLSTACK = false;
-	private static boolean ONEBALL = true;
-	private static boolean CENTIPEDE = true;
-	private static boolean CANNON = true;
+	private static final boolean BOX = false;
+	private static final boolean CARS = true;
+	private static final boolean WALL = true;
+	private static final boolean BALLS = false;
+	private static final boolean BALLSTACK = false;
+	private static final boolean ONEBALL = true;
+	private static final boolean CENTIPEDE = true;
+	private static final boolean CANNON = true;
 
 	// dynamics and collision objects (chassis, 3 wheels, environment)
 
-	private static DWorld world;
-	private static DSpace space;
-	private static DBody[] body=new DBody[10000];
-	private static int bodies;
-	private static DHinge2Joint[] joint=new DHinge2Joint[100000];
-	private static int joints;
-	private static DJointGroup contactgroup;
+	private DWorld world;
+	private DSpace space;
+	private final DBody[] body=new DBody[10000];
+	private int bodies;
+	private final DHinge2Joint[] joint=new DHinge2Joint[100000];
+	private int joints;
+	private DJointGroup contactgroup;
 	//private static DGeom ground;
-	private static DBox[] box=new DBox[10000];
-	private static int boxes;
-	private static DSphere[] sphere=new DSphere[10000];
-	private static int spheres;
-	private static DBox[] wall_boxes=new DBox[10000];
-	private static DBody[] wall_bodies=new DBody[10000];
-	private static DSphere cannon_ball_geom;
-	private static DBody cannon_ball_body;
-	private static int[] wb_stepsdis=new int[10000];
-	private static int wb;
-	private static boolean doFast;
-	private static DBody b;
-	private static DMass m;
+	private final DBox[] box=new DBox[10000];
+	private int boxes;
+	private final DSphere[] sphere=new DSphere[10000];
+	private int spheres;
+	private final DBox[] wall_boxes=new DBox[10000];
+	private final DBody[] wall_bodies=new DBody[10000];
+	private DSphere cannon_ball_geom;
+	private DBody cannon_ball_body;
+	private final int[] wb_stepsdis=new int[10000];
+	private int wb;
+	private boolean doFast;
+	private DBody b;
+	private DMass m;
 
 
 	// things that the user controls
 
-	private static float turn = 0, speed = 0;	// user commands
-	private static float cannon_angle=0,cannon_elevation=-1.2f;
+	private float turn = 0, speed = 0;	// user commands
+	private float cannon_angle=0,cannon_elevation=-1.2f;
 
 
 	private DNearCallback nearCallback = new DNearCallback() {
@@ -156,7 +148,7 @@ class DemoCrash extends dsFunctions {
 
 		final int N = 4;
 		DContactBuffer contacts = new DContactBuffer(N);
-		n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());//[0].geom,sizeof(dContact));
+		n = OdeHelper.collide (o1,o2,N,contacts.getGeomBuffer());
 		if (n > 0) {
 			for (i=0; i<n; i++) {
 				DContact contact = contacts.get(i);
@@ -201,7 +193,6 @@ class DemoCrash extends dsFunctions {
 		int bodyIr, jointIr, boxIr, sphereIr;
 	}
 
-	//private void makeCar(double x, double y, int &bodyI, int &jointI, int &boxI, int &sphereI)
 	private void makeCar(double x, double y, IrContainer ir)
 	{
 		final int bodyI = ir.bodyIr;
@@ -275,11 +266,10 @@ class DemoCrash extends dsFunctions {
 		// destroy world if it exists
 		if (bodies!=0)
 		{
-			//TODO
-//		    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
-//		    pool.freeThreadPool();
-//		    world.setStepThreadingImplementation(null, null);
-//		    threading.free();
+			//		    threading.shutdownProcessing();//dThreadingImplementationShutdownProcessing(threading);
+			//		    pool.freeThreadPool();
+			//		    world.setStepThreadingImplementation(null, null);
+			//		    threading.free();
 
 			contactgroup.destroy ();
 			space.destroy ();
@@ -311,12 +301,11 @@ class DemoCrash extends dsFunctions {
 		world.setERP (0.8);
 		world.setQuickStepNumIterations (ITERS);
 
-		//TODO
-//	    DThreadingImplementation threading = OdeHelper.allocateMultiThreaded();
-//	    DThreadingThreadPool pool = OdeHelper.allocateThreadPool(4, 0, /*dAllocateFlagBasicData,*/ null);
-//	    pool.serveMultiThreadedImplementation(threading);
-//	    // dWorldSetStepIslandsProcessingMaxThreadCount(world, 1);
-//	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
+		//	    DThreadingImplementation threading = OdeHelper.allocateMultiThreaded();
+		//	    DThreadingThreadPool pool = OdeHelper.allocateThreadPool(4, 0, /*dAllocateFlagBasicData,*/ null);
+		//	    pool.serveMultiThreadedImplementation(threading);
+		//	    // dWorldSetStepIslandsProcessingMaxThreadCount(world, 1);
+		//	    world.setStepThreadingImplementation(threading.dThreadingImplementationGetFunctions(), threading);
 
 		OdeHelper.createPlane (space,0,0,1,0);
 
