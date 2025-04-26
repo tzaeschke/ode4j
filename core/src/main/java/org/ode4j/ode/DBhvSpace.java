@@ -24,10 +24,7 @@
  *************************************************************************/
 package org.ode4j.ode;
 
-/**
-    @deprecated Please use {@link DBVHSpace} instead.
- */
-@Deprecated // TODO (TZ) to be removed in 0.6.0
+// TODO (TZ) to be removed in 0.6.0
 public interface DBhvSpace extends DBVHSpace {
 
 	// intentionally undefined, don't use these

@@ -607,7 +607,7 @@ public abstract class OdeHelper {
 	 * @return BVH Space
 	 * @deprecated Please use {@link #createBVHSpace(long)}
 	 */
-	@Deprecated // TODO to be removed in 0.6.0
+	@Deprecated // TODO to be removed in 0.6.0 -> also remove DBhvSpace
 	public static DBhvSpace createBHVSpace (long staticGeomCategoryMask) {
 		return DxBVHSpace.bvhSpaceCreate(null, 16, false, 0.2, staticGeomCategoryMask);
 	}
@@ -621,7 +621,7 @@ public abstract class OdeHelper {
 	 * @return BVH space
 	 * @deprecated Please use {@link #createBVHSpace(DSpace, int, boolean, double, long)}
 	 */
-	@Deprecated // TODO to be removed in 0.6.0
+	@Deprecated // TODO to be removed in 0.6.0 -> also remove DBhvSpace
 	public static DBhvSpace createBHVSpace (DSpace space, int nodesPerLeaf, boolean highQuality,
 											double fatAabbMargin, long staticGeomCategoryMask) {
 		return DxBVHSpace.bvhSpaceCreate((DxSpace) space, nodesPerLeaf, highQuality, fatAabbMargin,
