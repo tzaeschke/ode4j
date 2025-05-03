@@ -60,12 +60,13 @@ public interface DGeom {
 	public static final int   dHeightfieldClass = 9;
 
 	public static final int   dFirstSpaceClass = 10;
-	public static final int   dSimpleSpaceClass = dFirstSpaceClass; //10
+	public static final int   dSimpleSpaceClass = dFirstSpaceClass; // 10
 	public static final int   dHashSpaceClass = 11;
 	public static final int   dSweepAndPruneSpaceClass = 12;
 	public static final int   dQuadTreeSpaceClass = 13;
 	public static final int   dBVHSpaceClass = 14;
-	public static final int   dLastSpaceClass = dBVHSpaceClass; //14
+	public static final int   dPHTreeSpaceClass = 15;
+	public static final int   dLastSpaceClass = dPHTreeSpaceClass; // 15
 
 	/** 
 	 * ID of the first user defined class. 

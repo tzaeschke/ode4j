@@ -27,6 +27,12 @@
 
 ## 0.5.4 - in progress
 
+- Added PH-tree.
+  TODO: 
+  - Add perf measurements to README -> recommendation. Add perf for position updates!
+  - pom: phtree non-SNAPSHOT
+
+
 Known Bugs: TrimeshHeightfield and LayeredTrimeshHeightfield don't work with Convex
 
 - Fixed BVH spelling in API [#149](https://github.com/tzaeschke/ode4j/pull/149)

@@ -42,10 +42,11 @@ import static org.ode4j.ode.OdeHelper.areConnectedExcluding;
 public class DemoSpaceStressTest {
     // some constants
 
-    private static int NUM = 2000;            // max number of objects
-    private static final float DENSITY = 5.0f;        // density of all objects
-    private static final int GPB = 3;            // maximum number of geometries per body
-    private static final int MAX_CONTACTS = 4;        // maximum number of contact points per body
+    private static int NUM_WARMUP = 500;            // max number of objects
+    private static int NUM_BENCH = 2000;            // max number of objects
+    private static final float DENSITY = 5.0f;      // density of all objects
+    private static final int GPB = 3;               // maximum number of geometries per body
+    private static final int MAX_CONTACTS = 4;      // maximum number of contact points per body
     private static final int WORLD_SIZE = 20;
     //private static final int WORLD_HEIGHT = 20;
 
@@ -62,7 +63,7 @@ public class DemoSpaceStressTest {
     private static int nextobj = 0;        // next object to recycle if num==NUM
     private static DWorld world;
     private static DSpace space = null;
-    private static final MyObject[] obj = new MyObject[NUM];
+    private static final MyObject[] obj = new MyObject[NUM_BENCH];
     private static DJointGroup contactgroup;
     private static int selected = -1;    // selected object
     private static boolean random_pos = true;    // drop objects from random position?
@@ -108,7 +109,7 @@ public class DemoSpaceStressTest {
      * x for a composite object.
      * y for cylinder.
      */
-    private void command(char cmd) {
+    private void command(char cmd, int numObj) {
         int i, j, k;
         double[] sides = new double[3];
         DMass m = OdeHelper.createMass();
@@ -116,7 +117,7 @@ public class DemoSpaceStressTest {
 
         cmd = Character.toLowerCase(cmd);
         if (cmd == 'b' || cmd == 's' || cmd == 'c' || cmd == 'x' || cmd == 'y') {
-            if (num < NUM) {
+            if (num < numObj) {
                 // new object to be created
                 i = num;
                 num++;
@@ -295,16 +296,14 @@ public class DemoSpaceStressTest {
     }
 
     private void demoSpace(Supplier<DSpace> spaceFactory) {
-        NUM = 500;
         before();
         space = spaceFactory.get();
-        demo();
+        demo(NUM_WARMUP);
         after();
 
-        NUM = 2000;
         before();
         space = spaceFactory.get();
-        demo();
+        demo(NUM_BENCH);
         after();
         System.out.println();
     }
@@ -341,16 +340,22 @@ public class DemoSpaceStressTest {
         demoSpace(() -> OdeHelper.createBVHSpace(0));
     }
 
-    private void demo() {
+    @Test
+    public void demPHT() {
+        System.out.printf(":::: Using %-20s   ", "DPHTSpace");
+        demoSpace(OdeHelper::createPHTreeSpace);
+    }
+
+    private void demo(int numObj) {
         world.setGravity(0, 0, -0.5);
         world.setCFM(1e-5);
         OdeHelper.createPlane(space, 0, 0, 1, 0);
-        for (int i = 0; i < obj.length; i++) {
+        for (int i = 0; i < numObj; i++) {
             obj[i] = new MyObject();
         }
 
-        for (int i = 0; i < NUM; i++) {
-            command('s');
+        for (int i = 0; i < numObj; i++) {
+            command('s', numObj);
         }
 
         long t0 = System.nanoTime();
@@ -359,6 +364,6 @@ public class DemoSpaceStressTest {
             simLoop();
         }
         long t1 = System.nanoTime();
-        System.out.print("time: " + (t1 - t0) / 1000 / 1000 + "ms     ");
+        System.out.print("time(" + numObj + "): " + (t1 - t0) / 1000 / 1000 + "ms     ");
     }
 }

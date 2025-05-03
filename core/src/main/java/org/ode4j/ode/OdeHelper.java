@@ -588,7 +588,7 @@ public abstract class OdeHelper {
 	public static DHashSpace createHashSpace (DSpace space) {
 		return DxHashSpace.dHashSpaceCreate((DxSpace)space);
 	}
-	//ODE_API 
+	//ODE_API
 	public static DQuadTreeSpace createQuadTreeSpace (
 			DVector3C Center, DVector3C Extents, int Depth) {
 		return DxQuadTreeSpace.dQuadTreeSpaceCreate(null, 
@@ -649,6 +649,15 @@ public abstract class OdeHelper {
 											double fatAabbMargin, long staticGeomCategoryMask) {
 		return DxBVHSpace.bvhSpaceCreate((DxSpace) space, nodesPerLeaf, highQuality, fatAabbMargin,
 				staticGeomCategoryMask);
+	}
+
+	//ODE_API
+	public static DSpace createPHTreeSpace () {
+		return DxPHTreeSpace.dPHTreeSpaceCreate(null);
+	}
+	//ODE_API
+	public static DSpace createPHTreeSpace (DSpace space) {
+		return DxPHTreeSpace.dPHTreeSpaceCreate((DxSpace)space);
 	}
 
 	/**

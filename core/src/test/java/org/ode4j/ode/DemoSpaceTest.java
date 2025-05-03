@@ -218,6 +218,19 @@ public class DemoSpaceTest {
         after();
     }
 
+    @Test
+    public void testPHTSpace() {
+        before();
+        space = OdeHelper.createPHTreeSpace();
+        demo();
+        after();
+
+        before();
+        space = OdeHelper.createPHTreeSpace();
+        demo();
+        after();
+    }
+
     private void demo() {
         Arrays.fill(geom, null);
         init_test();
