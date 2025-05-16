@@ -95,7 +95,7 @@ public class DContact {
 
 		/**
 		 * Constructs a DSurfaceParameters object that is a clone of {@code other}
-		 * @param other The DSurfacceParameters object to clone
+		 * @param other The DSurfaceParameters object to clone
 		 */
 		public void set(DSurfaceParameters other) {
 			mode = other.mode;
