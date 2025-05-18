@@ -664,73 +664,98 @@ public class DVector3 implements DVector3C {
 		return this;
 	}
 
-	// TODO really? addScaled(v, 1/x) is not that much overhead.
 	/**
-	 * Reverse-scales the first parameter with the second and then adds the
-	 * result to the current vector. 'Reverse scaling' means dividing every element by 'd'.
+	 * Perform Hadamard multiplication on two vectors and add the result to
+	 * the current vector.
 	 *
-	 * @param v2 Vector
-	 * @param d  reverse scale
-	 * @return this + v2/d
+	 * @param v vector
+	 * @param w vector for pairwise multiplication with v
+	 * @return this + (v0*w0, v1*w1, v2*w2)
 	 */
-	public final DVector3 addReverseScaled(DVector3C v2, double d) {
-		d0 += v2.get0() / d;
-		d1 += v2.get1() / d;
-		d2 += v2.get2() / d;
+	public final DVector3 addHadMul(DVector3C v, DVector3C w) {
+		d0 += v.get0() * w.get0();
+		d1 += v.get1() * w.get1();
+		d2 += v.get2() * w.get2();
 		return this;
 	}
 
-//	/**
-//	 * Scales the first parameter with the second and then adds the
-//	 * result to the current vector. 'Scaling' means pairwise multiplication.
-//	 * @param v2 vector
-//	 * @param v3 vector for pairwise multiplication with v2
-//	 * @return this + (v2[0]*v3[0] + v2[1]*v3[1] + v2[2]*v3[2])
-//	 */
-//	public final DVector3 addScaled(DVector3C v2, DVector3C v3) {
-//		d0 += v2.get0() * v3.get0();
-//		d1 += v2.get1() * v3.get1();
-//		d2 += v2.get2() * v3.get2();
-//		return this;
-//	}
-
 	/**
-	 * Scales the first parameter with the second and then adds the
-	 * result to the current vector. 'Scaling' means pairwise multiplication.
-	 * @param v2 vector
-	 * @param v3 vector for pairwise multiplication with v2
+	 * Perform Hadamard multiplication on two vectors, scale the result and add the
+	 * result to the current vector.
+	 *
+	 * @param v vector
+	 * @param w vector for pairwise multiplication with v
 	 * @param d scale factor
-	 * @return this + (v2[0]*v3[0]*d + v2[1]*v3[1]*d + v2[2]*v3[2]*d)
+	 * @return this + (v0*w0*d, v1*w1*d, v2*w2*d)
 	 */
-	public final DVector3 addScaled(DVector3C v2, DVector3C v3, double d) {
-		d0 += v2.get0() * v3.get0() * d;
-		d1 += v2.get1() * v3.get1() * d;
-		d2 += v2.get2() * v3.get2() * d;
+	public final DVector3 addHadMul(DVector3C v, DVector3C w, double d) {
+		d0 += v.get0() * w.get0() * d;
+		d1 += v.get1() * w.get1() * d;
+		d2 += v.get2() * w.get2() * d;
 		return this;
 	}
 
 	/**
-	 * Reverse-scales the first parameter with the second and then adds the
-	 * result to the current vector. 'Reverse scaling' means pairwise division.
+	 * Perform Hadamard division on two vectors and add the result to
+	 * the current vector.
 	 *
-	 * @param v2 vector
-	 * @param v3 vector for pairwise division with v2
-	 * @return this + (v2[0]/v3[0] + v2[1]/v3[1] + v2[2]/v3[2])
+	 * @param v vector
+	 * @param w vector for pairwise division with v
+	 * @return this + (v0/w0, v1/w1, v2/w2)
 	 */
-	public final DVector3 addReverseScaled(DVector3C v2, DVector3C v3) {
-		d0 += v2.get0() / v3.get0();
-		d1 += v2.get1() / v3.get1();
-		d2 += v2.get2() / v3.get2();
+	public final DVector3 addHadDiv(DVector3C v, DVector3C w) {
+		d0 += v.get0() / w.get0();
+		d1 += v.get1() / w.get1();
+		d2 += v.get2() / w.get2();
 		return this;
 	}
 
+	/**
+	 * Perform Hadamard division on two vectors, scale the result and add the
+	 * result to the current vector.
+	 *
+	 * @param v vector
+	 * @param w vector for pairwise division with v
+	 * @param d scale factor
+	 * @return this + (d * v0/w0, d * v1/w1, d * v2/w2)
+	 */
+	public final DVector3 addHadDiv(DVector3C v, DVector3C w, double d) {
+		d0 += d * v.get0() / w.get0();
+		d1 += d * v.get1() / w.get1();
+		d2 += d * v.get2() / w.get2();
+		return this;
+	}
 
 	/**
-	 * Reciprocate each element of the vector.
+	 * Perform Hadamard multiplication with vector v.
 	 *
-	 * @return {1/v[0], 1/v[1], 1/v[2]}
+	 * @return (this0 * v0, this1 * v1, this2 * v2)
 	 */
-	public final DVector3 eqReciprocal() {
+	public final DVector3 eqHadMul(DVector3C v) {
+		d0 = d0 * v.get0();
+		d1 = d1 * v.get1();
+		d2 = d2 * v.get2();
+		return this;
+	}
+
+	/**
+	 * Perform Hadamard division by vector v.
+	 *
+	 * @return (this0 / v0, this1 / v1, this2 / v2)
+	 */
+	public final DVector3 eqHadDiv(DVector3C v) {
+		d0 = d0 / v.get0();
+		d1 = d1 / v.get1();
+		d2 = d2 / v.get2();
+		return this;
+	}
+
+	/**
+	 * Perform Hadamard division (1, 1, 1) / (this).
+	 *
+	 * @return (1 / v0, 1 / v1, 1 / v2)
+	 */
+	public final DVector3 eqHadReciprocal() {
 		d0 = 1 / d0;
 		d1 = 1 / d1;
 		d2 = 1 / d2;
