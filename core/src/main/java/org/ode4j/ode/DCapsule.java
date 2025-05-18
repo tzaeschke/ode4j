@@ -31,14 +31,14 @@ public interface DCapsule extends DGeom {
 	void setParams (double radius, double length);
 
 	/**
-	 * Gets the radius of the capsule
+	 * Gets the radius of the capsule.
 	 * 
 	 * @return The radius of the capsule
 	 */
 	double getRadius();
 
 	/**
-	 * Gets the length of the capsule
+	 * Gets the length of the capsule.
 	 * 
 	 * @return The length of the capsule
 	 */

@@ -56,15 +56,17 @@ public class DContact {
 		/** Bouncing threshold */
 		public double bounce_vel;             
 		/**
-		 * <p> Error Reduction Parameter </p>
-		 * <p> How much of the penetration is corrected per time step </p>
-		 * <p> <b> Note that mode must be set with dContactSoftERP for this to have an effect. </b> </p>
+		 * Error Reduction Parameter.
+		 * How much of the penetration is corrected per time step.
+		 * Note that mode must be set with dContactSoftERP for this to have an effect.
+		 * @see OdeConstants#dContactSoftERP
 		 */
 		public double soft_erp;
 		/**
-		 * <p> Constraint Force Mixing </p>
-		 * <p> How soft or spongy the contact is </p>
-		 * <p> <b> Note that mode must be set with dContactSoftCFM for this to have an effect. </b> </p>
+		 * Constraint Force Mixing.
+		 * How soft or spongy the contact is.
+		 * Note that mode must be set with dContactSoftCFM for this to have an effect.
+		 * @see OdeConstants#dContactSoftCFM
 		 */
 		public double soft_cfm;
 		public double motion1,motion2,motionN;
@@ -94,8 +96,8 @@ public class DContact {
 		}
 
 		/**
-		 * Constructs a DSurfaceParameters object that is a clone of {@code other}
-		 * @param other The DSurfaceParameters object to clone
+		 * Sets a DSurfaceParameters object to copy the values of another DSurfaceParameters object
+		 * @param other The DSurfaceParameters object to copy values from
 		 */
 		public void set(DSurfaceParameters other) {
 			mode = other.mode;
