@@ -44,13 +44,13 @@ public class DVector3Test {
 
     @Test
     public void testToDegrees() {
-        DVector3 v1 = new DVector3(Math.PI, Math.PI/2, Math.PI/4);
+        DVector3 v1 = new DVector3(Math.PI, Math.PI / 2, Math.PI / 4);
         v1.eqToDegrees();
         assertTrue(new DVector3(180, 90, 45).isEq(v1, 0));
         v1.eqToRadians();
-        assertTrue(new DVector3(Math.PI, Math.PI/2, Math.PI/4).isEq(v1, 0));
+        assertTrue(new DVector3(Math.PI, Math.PI / 2, Math.PI / 4).isEq(v1, 0));
 
-        DVector3 v2 = new DVector3(Math.PI, Math.PI/2, Math.PI/4);
+        DVector3 v2 = new DVector3(Math.PI, Math.PI / 2, Math.PI / 4);
         DVector3 v2b = v2.eqToDegrees();
         assertSame(v2, v2b);
         DVector3 v2c = v2.eqToRadians();
@@ -58,7 +58,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testFromDoubleArray(){
+    public void testFromDoubleArray() {
         DVector3 x = new DVector3(10, 20, 30);
         double[] a = {10, 20, 30};
         DVector3 y = DVector3.fromDoubleArray(a);
@@ -66,7 +66,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testFromFloatArray(){
+    public void testFromFloatArray() {
         DVector3 x = new DVector3(10, 20, 30);
         float[] a = {10, 20, 30};
         DVector3 y = DVector3.fromFloatArray(a);
@@ -74,7 +74,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testToDoubleArray(){
+    public void testToDoubleArray() {
         DVector3 x = new DVector3(10, 20, 30);
         double[] a = x.toDoubleArray();
         assertEquals(3, a.length);
@@ -84,7 +84,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testToFloatArray(){
+    public void testToFloatArray() {
         DVector3 x = new DVector3(10, 20, 30);
         float[] a = x.toFloatArray();
         assertEquals(3, a.length);
@@ -94,7 +94,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testGet(){
+    public void testGet() {
         DVector3 x = new DVector3(1, 2, 3);
         assertEquals(1., x.get0(), 0);
         assertEquals(2., x.get1(), 0);
@@ -105,7 +105,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testEqual(){
+    public void testEqual() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 xx = new DVector3(1, 2, 3);
         DVector3 x1 = new DVector3(0, 2, 3);
@@ -118,7 +118,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testSet(){
+    public void testSet() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 x2 = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(4, 5, 6);
@@ -146,8 +146,8 @@ public class DVector3Test {
         assertTrue(x.isEq(y, 0));
 
         //This ",0" should be removed at some point (?)
-        x.set( new double[]{ 8, 9, 11, 0} );
-        assertTrue(x.get0()==8 && x.get1()==9 && x.get2()==11);
+        x.set(new double[]{8, 9, 11, 0});
+        assertTrue(x.get0() == 8 && x.get1() == 9 && x.get2() == 11);
 
 //		x.setValues(2.5);
 //		assertTrue(x.get0()==2.5 && x.get1()==2.5 && x.get2()==2.5);
@@ -158,7 +158,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testInit(){
+    public void testInit() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3();
         DVector3 z = new DVector3(x);
@@ -174,7 +174,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testAdd(){
+    public void testAdd() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(4, 8, -1);
         DVector3 t = new DVector3();
@@ -197,7 +197,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testAddScale(){
+    public void testAddScale() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(1.5, 3, 4.5);
         DVector3 t = new DVector3();
@@ -208,9 +208,9 @@ public class DVector3Test {
 
         t.setZero();
         t.addScaled(x, -5);
-        t.addScaled(x,  6);
+        t.addScaled(x, 6);
         assertTrue(t.isEq(x, 0));
-        t.addScaled(x,  0);
+        t.addScaled(x, 0);
         assertTrue(t.isEq(x, 0));
 
         t.setZero();
@@ -219,7 +219,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testCross1(){
+    public void testCross1() {
         DVector3C x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(1.5, 3, 2);
 
@@ -230,7 +230,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testCross2(){
+    public void testCross2() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(1.5, 3, 2);
         DVector3 t = new DVector3();
@@ -244,7 +244,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testSub(){
+    public void testSub() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(4, 8, -1);
         DVector3 t = new DVector3();
@@ -259,7 +259,7 @@ public class DVector3Test {
     }
 
     @Test
-    public void testScale(){
+    public void testScale() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(4, 10, -6);
         DVector3 t = new DVector3();
@@ -268,20 +268,20 @@ public class DVector3Test {
         t.scale(4, 5, -2);
         assertTrue(t.isEq(y, 0));
         t.scale(0.5);
-        assertTrue(t.isEq( new DVector3(2, 5, -3), 0 ));
+        assertTrue(t.isEq(new DVector3(2, 5, -3), 0));
     }
 
     @Test
     public void testCopy() {
         DVector3 y = new DVector3(4, 8, -1);
         DVector3 t = y.copy();
-        assertTrue( y.isEq(t, 0) );
+        assertTrue(y.isEq(t, 0));
         t.set0(1);
-        assertFalse( y.isEq(t, 0) );
+        assertFalse(y.isEq(t, 0));
     }
 
     @Test
-    public void testOther(){
+    public void testOther() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(4, 8, -1);
         DVector3 t = new DVector3();
@@ -325,15 +325,15 @@ public class DVector3Test {
     }
 
     @Test
-    public void testDot(){
+    public void testDot() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(4, 8, -1);
 
-        assertEquals( 4+16-3 , x.dot(y), eps);
+        assertEquals(4 + 16 - 3, x.dot(y), eps);
     }
 
     @Test
-    public void testSums(){
+    public void testSums() {
         DVector3 x = new DVector3(1, 2, 3);
         DVector3 y = new DVector3(4, 8, -1);
         DVector3 t = new DVector3();
@@ -347,7 +347,6 @@ public class DVector3Test {
         assertTrue(t.isEq(y, 0));
     }
 
-
     @Test
     public void testDots() {
         DVector3 x = new DVector3(21, 22, 23);
@@ -358,20 +357,20 @@ public class DVector3Test {
 
         //check dot
         d = x.dot(y);
-        ex = 21*31 + 22*32 + 23*33;
+        ex = 21 * 31 + 22 * 32 + 23 * 33;
         assertEquals(ex, d, eps);
 
         //check dotCol
         d = x.dotCol(m, 0);
-        ex = 21*11 + 22*14 + 23*17;
+        ex = 21 * 11 + 22 * 14 + 23 * 17;
         assertEquals(ex, d, eps);
 
         d = x.dotCol(m, 1);
-        ex = 21*12 + 22*15 + 23*18;
+        ex = 21 * 12 + 22 * 15 + 23 * 18;
         assertEquals(ex, d, eps);
 
         d = x.dotCol(m, 2);
-        ex = 21*13 + 22*16 + 23*19;
+        ex = 21 * 13 + 22 * 16 + 23 * 19;
         assertEquals(ex, d, eps);
 
         //check illegal arguments
@@ -390,11 +389,91 @@ public class DVector3Test {
 
         //Check col/row views
         d = x.dot(m.viewCol(0));
-        ex = 21*11 + 22*14 + 23*17;
+        ex = 21 * 11 + 22 * 14 + 23 * 17;
         assertEquals(ex, d, eps);
 
         d = x.dot(m.viewRowT(0));
-        ex = 21*11 + 22*12 + 23*13;
+        ex = 21 * 11 + 22 * 12 + 23 * 13;
         assertEquals(ex, d, eps);
+    }
+
+    @Test
+    public void testAddHadMul() {
+        DVector3 x = new DVector3(1, 2, 3);
+        DVector3 y = new DVector3(4, 8, -1);
+        DVector3 t = new DVector3(5, 3, 2);
+
+        t.addHadMul(x, y);
+        assertTrue(t.isEq(9, 19, -1, eps));
+        t.addHadMul(x, y);
+        assertTrue(t.isEq(13, 35, -4, eps));
+    }
+
+    @Test
+    public void testAddHadMulD() {
+        DVector3 x = new DVector3(1, 2, 3);
+        DVector3 y = new DVector3(4, 8, -1);
+        DVector3 t = new DVector3(5, 3, 2);
+
+        t.addHadMul(x, y, 0.5);
+        assertTrue(t.isEq(7, 11, 0.5, eps));
+        t.addHadMul(x, y, -0.5);
+        assertTrue(t.isEq(5, 3, 2, eps));
+    }
+
+    @Test
+    public void testAddHadDiv() {
+        DVector3 x = new DVector3(1, 8, 3);
+        DVector3 y = new DVector3(4, 2, -2);
+        DVector3 t = new DVector3(5, 3, 2);
+
+        t.addHadDiv(x, y);
+        assertTrue(t.isEq(5.25, 7, 0.5, eps));
+        t.addHadDiv(x, y);
+        assertTrue(t.isEq(5.5, 11, -1, eps));
+    }
+
+    @Test
+    public void testAddHadDivD() {
+        DVector3 x = new DVector3(1, 8, 3);
+        DVector3 y = new DVector3(4, 2, -2);
+        DVector3 t = new DVector3(5, 3, 2);
+
+        t.addHadDiv(x, y, 3);
+        assertTrue(t.isEq(5.75, 15, -2.5, eps));
+        t.addHadDiv(x, y, -3);
+        assertTrue(t.isEq(5, 3, 2, eps));
+    }
+
+    @Test
+    public void testEqHadMul() {
+        DVector3 x = new DVector3(3, 2, 4);
+        DVector3 t = new DVector3(5, 3, 2);
+
+        t.eqHadMul(x);
+        assertTrue(t.isEq(15, 6, 8, eps));
+        t.eqHadMul(x);
+        assertTrue(t.isEq(45, 12, 32, eps));
+    }
+
+    @Test
+    public void testEqHadDiv() {
+        DVector3 x = new DVector3(4, 8, 3);
+        DVector3 t = new DVector3(12, 32, 24);
+
+        t.eqHadDiv(x);
+        assertTrue(t.isEq(3, 4, 8, eps));
+        t.eqHadDiv(x);
+        assertTrue(t.isEq(3. / 4., 4. / 8., 8. / 3., eps));
+    }
+
+    @Test
+    public void testEqHadRec() {
+        DVector3 t = new DVector3(2, 3, 4);
+
+        t.eqHadReciprocal();
+        assertTrue(t.isEq(1. / 2., 1. / 3., 1. / 4., eps));
+        t.eqHadReciprocal();
+        assertTrue(t.isEq(2, 3, 4, eps));
     }
 }
