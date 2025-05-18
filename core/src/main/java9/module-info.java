@@ -27,6 +27,7 @@
 module org.ode4j
 {
     requires transitive org.slf4j;
+    requires phtree;
 
     exports org.ode4j.math;
     exports org.ode4j.ode.internal.aabbtree;

@@ -62,7 +62,7 @@ import org.ode4j.ode.OdeHelper;
 public class DemoSpaceStress extends dsFunctions {
 	// some constants
 
-	private static final int NUM = 2000;			// max number of objects
+	private static final int NUM = 5000;			// max number of objects
 	private static final float DENSITY = 5.0f;		// density of all objects
 	private static final int GPB = 3;			// maximum number of geometries per body
 	private static final int MAX_CONTACTS = 4;		// maximum number of contact points per body
@@ -432,6 +432,8 @@ public class DemoSpaceStress extends dsFunctions {
 			System.out.println(":::: command line to specify the type of space.");
 			System.out.println(":::: Using SAP space by default.");
 			space = OdeHelper.createSapSpace(AXES.XYZ);
+			space = OdeHelper.createBVHSpace(0);
+			//space = OdeHelper.createPHTreeSpace();
 		}
 
 		contactgroup = OdeHelper.createJointGroup();
