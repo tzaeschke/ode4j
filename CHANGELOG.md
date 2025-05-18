@@ -25,10 +25,21 @@
 
 --> See TODO.txt
 
-## 0.5.4 - in progress
+## Unreleased
 
+## 0.5.4 - in progress
 Known Bugs: TrimeshHeightfield and LayeredTrimeshHeightfield don't work with Convex
 
+- Improved javadoc for `DContact` and `DCapsule` (AustinHoover) [#150](https://github.com/tzaeschke/ode4j/pull/149)
+- Add some math functions for element wise multiplication and division (Hadamard) 
+  [#145](https://github.com/tzaeschke/ode4j/issues/145):
+    - `DVector3 addHadMul(DVector3C v, DVector3C w)`
+    - `DVector3 addHadMul(DVector3C v, DVector3C w, double d)`
+    - `DVector3 addHadDiv(DVector3C v, DVector3C w)`
+    - `DVector3 addHadDiv(DVector3C v, DVector3C w, double d)`
+    - `DVector3 addHadMul(DVector3C v)`
+    - `DVector3 addHadDiv(DVector3C v)`
+    - `DVector3 addHadReciprocal()`
 - Fixed BVH spelling in API [#149](https://github.com/tzaeschke/ode4j/pull/149)
 - Post 0.16.6 cleanup [#148](https://github.com/tzaeschke/ode4j/pull/148)
   - Re-enabled new BoxPlane collider

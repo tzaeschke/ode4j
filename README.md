@@ -254,3 +254,4 @@ ode4j (AT) gmx.de
 * [peterkir](https://github.com/peterkir)
 * [neduard](https://github.com/neduard)
 * [Namek](https://github.com/Namek)
+* [AustinHoover](https://github.com/AustinHoover)
