@@ -1,4 +1,4 @@
- # Changelog
+# Changelog
 
 ## Considered for upcoming 0.6.0
 
