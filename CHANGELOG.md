@@ -27,7 +27,9 @@
 
 ## Unreleased
 
-## 0.5.4 - in progress
+- Nothing yet
+
+## 0.5.4 - 2025-05-25
 - Fixed javadoc for `DPUJoint`, `DVector` and `DWorld` [#155](https://github.com/tzaeschke/ode4j/pull/154)
 - Fixed exception when colliding DConvex with DTrimeshHeightfield [#152](https://github.com/tzaeschke/ode4j/issues/152)
 - Improved javadoc for `DContact` and `DCapsule` (AustinHoover) [#150](https://github.com/tzaeschke/ode4j/pull/149)
