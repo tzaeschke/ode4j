@@ -35,13 +35,7 @@ import static org.ode4j.ode.internal.Common.dIASSERT;
 
 import org.ode4j.math.DMatrix3;
 import org.ode4j.math.DVector3;
-import org.ode4j.ode.DAABB;
-import org.ode4j.ode.DColliderFn;
-import org.ode4j.ode.DContactGeom;
-import org.ode4j.ode.DContactGeomBuffer;
-import org.ode4j.ode.DGeom;
-import org.ode4j.ode.DHeightfieldData;
-import org.ode4j.ode.DSpace;
+import org.ode4j.ode.*;
 
 /**
  *
@@ -613,6 +607,10 @@ public class DxTrimeshHeightfield extends DxAbstractHeightfield {
         }
         DxGimpactData data = new DxGimpactData();
         data.build(vertices, faces);
+        if (o2 instanceof DxConvex) {
+            final int preprocessFlags = (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.CONCAVE_EDGES) | (1 << DTriMeshData.dTRIDATAPREPROCESS_BUILD.FACE_ANGLES);
+            data.preprocess2(preprocessFlags, null);
+        }
         DxGimpact trimesh = new DxGimpact(null, data, null, null, null);
         trimesh.recomputeAABB();
         numTerrainContacts = DxGeom.dCollide(trimesh, o2, flags, contacts, skip);
