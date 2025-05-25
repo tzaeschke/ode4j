@@ -270,6 +270,9 @@ public interface DPUJoint extends DJoint {
 	 * direction to body 2.
 	 * <p>
 	 * <b>REMARKS:</b> This function is just a wrapper for {@link DBody#addTorque(DVector3C)}.
+	 *
+	 * @param torque1 torque about the universal axis 1
+	 * @param torque2 torque about the universal axis 2
 	 */
 	void addTorques (double torque1, double torque2);
 
