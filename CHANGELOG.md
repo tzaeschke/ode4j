@@ -28,8 +28,8 @@
 ## Unreleased
 
 ## 0.5.4 - in progress
-Known Bugs: TrimeshHeightfield and LayeredTrimeshHeightfield don't work with Convex
-
+- Fixed javadoc for `DPUJoint`, `DVector` and `DWorld` [#155](https://github.com/tzaeschke/ode4j/pull/154)
+- Fixed exception when colliding DConvex with DTrimeshHeightfield [#152](https://github.com/tzaeschke/ode4j/issues/152)
 - Improved javadoc for `DContact` and `DCapsule` (AustinHoover) [#150](https://github.com/tzaeschke/ode4j/pull/149)
 - Add some math functions for element wise multiplication and division (Hadamard) 
   [#145](https://github.com/tzaeschke/ode4j/issues/145):
@@ -44,13 +44,13 @@ Known Bugs: TrimeshHeightfield and LayeredTrimeshHeightfield don't work with Con
 - Post 0.16.6 cleanup [#148](https://github.com/tzaeschke/ode4j/pull/148)
   - Re-enabled new BoxPlane collider
   - deprecated `DWorld.step()`
-  - DemoCrash cleanup
+  - `DemoCrash` cleanup
 - Port updates until 0.16.6 (previous: 0.16.2/.3) ([#147](https://github.com/tzaeschke/ode4j/pull/147)). This includes:
   - Fixed porting bug in `dxQuickStepIsland_Stage4LCP_IterationStep`:
     `fc_ptr2P = b2 * CFE__MAX;` was declared `int` and thus overwrote the existing variable.
     This appears to fix known stability issues, e.g. large walls of boxes. 
   - New box-plane collider
-  - new DemoTrimeshCollision
+  - new `DemoTrimeshCollision`
   - new API method in DPUJoint: `void addTorques (double torque1, double torque2);`
   - Cleanup:
     - Lots of typos fixed
@@ -66,9 +66,6 @@ Known Bugs: TrimeshHeightfield and LayeredTrimeshHeightfield don't work with Con
     - get the same updates as dxQuickStepIsland_Stage4LCP_IterationStart()?
     - ThrsafeDecrement
     - Multithrading: verify calculateThreadingLimitedThreadCount()
-
-MAYBE BROKEN:
-- sizeint is "long"!!!!
 
 ## 0.5.3 - 2024-04-28
 

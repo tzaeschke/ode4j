@@ -209,7 +209,8 @@ public interface DWorld {
 	{
 		/* must always be defined */
 		// unsigned
-		public int param_set; /**< Combination of dWSTP_... flags */
+		/** Combination of dWSTP_... flags */
+		public int param_set;
 		// unsigned
 		public int world_islands_iteration_max_threads;
 		// unsigned

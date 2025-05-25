@@ -729,6 +729,7 @@ public class DVector3 implements DVector3C {
 	/**
 	 * Perform Hadamard multiplication with vector v.
 	 *
+	 * @param v vector
 	 * @return (this0 * v0, this1 * v1, this2 * v2)
 	 */
 	public final DVector3 eqHadMul(DVector3C v) {
@@ -741,6 +742,7 @@ public class DVector3 implements DVector3C {
 	/**
 	 * Perform Hadamard division by vector v.
 	 *
+	 * @param v vector
 	 * @return (this0 / v0, this1 / v1, this2 / v2)
 	 */
 	public final DVector3 eqHadDiv(DVector3C v) {
