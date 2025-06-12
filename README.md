@@ -28,7 +28,7 @@ ode4j/Java.
 * There is also the [old website](https://tzaeschke.github.io/ode4j-old/), including
 some [screenshots](https://tzaeschke.github.io/ode4j-old/ode4j-features.html).
 
-There is also a [GWT compatible fork](https://github.com/antzGames/gdx-ode4j) of ode4j.
+There is also a [GWT compatible fork](https://github.com/antzGames/ode4j) of ode4j.
 
 The following artifact contains the complete physics engine (examples etc.
 are [not included](https://github.com/tzaeschke/ode4j/wiki/Maven-HOWTO)):
